@@ -68,7 +68,7 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		snmp_item_remove();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=edit&id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
 		include_once("./include/top_header.php");
