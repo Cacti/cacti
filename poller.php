@@ -25,7 +25,7 @@
  +-------------------------------------------------------------------------+
 */
 
-define("MAX_POLLER_RUNTIME", 300);
+define("MAX_POLLER_RUNTIME", 296);
 
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0])) {
