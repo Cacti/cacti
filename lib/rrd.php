@@ -303,40 +303,50 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 
 function rrdtool_function_update($update_cache_array, $rrd_struc) {
 	while (list($rrd_path, $rrd_fields) = each($update_cache_array)) {
+		$create_rrd_file = false;
+
 		/* create the rrd if one does not already exist */
 		if (!file_exists($rrd_path)) {
 			rrdtool_function_create($rrd_fields["local_data_id"], false, $rrd_struc);
 
-			/* for some reason rrdtool will not let you update using times less than the
-			rrd create time */
-			$rrd_fields["time"] = "N";
+			$create_rrd_file = true;
 		}
 
-		/* default the rrdupdate time to now */
-		if (empty($rrd_fields["time"])) {
-			$rrd_fields["time"] = "N";
-		}
+		ksort($rrd_fields["times"]);
 
-		$i = 0; $rrd_update_template = ""; $rrd_update_values = $rrd_fields["time"] . ":";
-		while (list($field_name, $value) = each($rrd_fields["items"])) {
-			$rrd_update_template .= $field_name;
-
-			/* if we have "invalid data", give rrdtool an Unknown (U) */
-			if ((!isset($value)) || (!is_numeric($value))) {
-				$value = "U";
+		while (list($update_time, $field_array) = each($rrd_fields["times"])) {
+			if (empty($update_time)) {
+				/* default the rrdupdate time to now */
+				$current_rrd_update_time = "N";
+			}else if ($create_rrd_file == true) {
+				/* for some reason rrdtool will not let you update using times less than the
+				rrd create time */
+				$current_rrd_update_time = "N";
+			}else{
+				$current_rrd_update_time = $update_time;
 			}
 
-			$rrd_update_values .= $value;
+			$i = 0; $rrd_update_template = ""; $rrd_update_values = $current_rrd_update_time . ":";
+			while (list($field_name, $value) = each($field_array)) {
+				$rrd_update_template .= $field_name;
 
-			if (($i+1) < count($rrd_fields["items"])) {
-				$rrd_update_template .= ":";
-				$rrd_update_values .= ":";
+				/* if we have "invalid data", give rrdtool an Unknown (U) */
+				if ((!isset($value)) || (!is_numeric($value))) {
+					$value = "U";
+				}
+
+				$rrd_update_values .= $value;
+
+				if (($i+1) < count($field_array)) {
+					$rrd_update_template .= ":";
+					$rrd_update_values .= ":";
+				}
+
+				$i++;
 			}
 
-			$i++;
+			rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
 		}
-
-		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
 	}
 }
 

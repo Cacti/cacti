@@ -192,13 +192,13 @@ function process_poller_output($rrdtool_pipe) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			$value = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
+			$unix_time = strtotime($item["time"]);
 
-			$rrd_update_array{$item["rrd_path"]}["time"] = strtotime($item["time"]);
 			$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
 
 			/* single one value output */
 			if ((is_numeric($value)) || ($value == "U")) {
-				$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = $value;
+				$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$item["rrd_name"]} = $value;
 			/* multiple value output */
 			}else{
 				$values = explode(" ", $value);
@@ -217,28 +217,30 @@ function process_poller_output($rrdtool_pipe) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . "->" . $rrd_field_names{$matches[1]} . "]" , true, "POLLER");
 							}
 
-							$rrd_update_array{$item["rrd_path"]}["items"]{$rrd_field_names{$matches[1]}} = $matches[2];
+							$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$rrd_field_names{$matches[1]}} = $matches[2];
 						}
 					}
 				}
 			}
 
 			/* fallback values */
-			if ((!isset($rrd_update_array{$item["rrd_path"]}["items"])) && ($item["rrd_name"] != "")) {
-				$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = "U";
-			}else if ((!isset($rrd_update_array{$item["rrd_path"]}["items"])) && ($item["rrd_name"] == "")) {
-				unset($rrd_update_array{$item["rrd_path"]});
+			if ((!isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) && ($item["rrd_name"] != "")) {
+				$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$item["rrd_name"]} = "U";
+			}else if ((!isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) && ($item["rrd_name"] == "")) {
+				unset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time]);
 			}
 		}
 
 		/* make sure each .rrd file has complete data */
 		reset($results);
 		foreach ($results as $item) {
-			if (isset($rrd_update_array{$item["rrd_path"]})) {
-				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["items"])) {
+			$unix_time = strtotime($item["time"]);
+
+			if (isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
+				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
 					db_execute("delete from poller_output where local_data_id='" . $item["local_data_id"] . "' and rrd_name='" . $item["rrd_name"] . "' and time='" . $item["time"] . "'");
 				}else{
-					unset($rrd_update_array{$item["rrd_path"]});
+					unset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time]);
 				}
 			}
 		}
