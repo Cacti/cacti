@@ -9,7 +9,7 @@
 --
 
 CREATE TABLE cdef (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -33,9 +33,9 @@ INSERT INTO cdef VALUES (15,'Total All Data Sources, Multiply by 1024');
 --
 
 CREATE TABLE cdef_items (
-  id mediumint(8) NOT NULL auto_increment,
-  cdef_id mediumint(8) NOT NULL default '0',
-  sequence mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  cdef_id mediumint(8) unsigned NOT NULL default '0',
+  sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
   value char(150) NOT NULL default '',
   PRIMARY KEY  (id),
@@ -70,7 +70,7 @@ INSERT INTO cdef_items VALUES (23,15,3,2,'3');
 --
 
 CREATE TABLE colors (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   hex varchar(6) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -189,7 +189,7 @@ INSERT INTO colors VALUES (104,'2E3127');
 --
 
 CREATE TABLE data_input (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(200) NOT NULL default '',
   input_string varchar(255) default NULL,
   output_string varchar(255) default NULL,
@@ -221,8 +221,8 @@ INSERT INTO data_input VALUES (11,'Get Script Data (Indexed)','','',4);
 --
 
 CREATE TABLE data_input_data (
-  data_input_field_id mediumint(8) NOT NULL default '0',
-  data_template_data_id mediumint(8) NOT NULL default '0',
+  data_input_field_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_data_id mediumint(8) unsigned NOT NULL default '0',
   t_value char(2) default NULL,
   value text,
   PRIMARY KEY  (data_input_field_id,data_template_data_id),
@@ -306,8 +306,8 @@ INSERT INTO data_input_data VALUES (14,41,'on','');
 --
 
 CREATE TABLE data_input_data_cache (
-  local_data_id mediumint(8) NOT NULL default '0',
-  data_input_id mediumint(8) NOT NULL default '0',
+  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  data_input_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(2) NOT NULL default '1',
   command varchar(255) NOT NULL default '',
   management_ip varchar(15) NOT NULL default '',
@@ -335,7 +335,7 @@ CREATE TABLE data_input_data_cache (
 --
 
 CREATE TABLE data_input_data_fcache (
-  local_data_id mediumint(8) NOT NULL default '0',
+  local_data_id mediumint(8) unsigned NOT NULL default '0',
   data_input_field_name varchar(100) NOT NULL default '',
   rrd_data_source_name varchar(19) NOT NULL default '',
   PRIMARY KEY  (local_data_id,rrd_data_source_name)
@@ -352,8 +352,8 @@ CREATE TABLE data_input_data_fcache (
 --
 
 CREATE TABLE data_input_fields (
-  id mediumint(8) NOT NULL auto_increment,
-  data_input_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  data_input_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(200) NOT NULL default '',
   data_name varchar(50) NOT NULL default '',
   input_output char(3) NOT NULL default '',
@@ -413,9 +413,9 @@ INSERT INTO data_input_fields VALUES (34,11,'Output Value','output','out','on',0
 --
 
 CREATE TABLE data_local (
-  id mediumint(8) NOT NULL auto_increment,
-  data_template_id mediumint(8) NOT NULL default '0',
-  host_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  data_template_id mediumint(8) unsigned NOT NULL default '0',
+  host_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -432,7 +432,7 @@ CREATE TABLE data_local (
 --
 
 CREATE TABLE data_template (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(150) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
@@ -491,11 +491,11 @@ INSERT INTO data_template VALUES (41,'Interface - Traffic');
 --
 
 CREATE TABLE data_template_data (
-  id mediumint(8) NOT NULL auto_increment,
-  local_data_template_data_id mediumint(8) NOT NULL default '0',
-  local_data_id mediumint(8) NOT NULL default '0',
-  data_template_id mediumint(8) NOT NULL default '0',
-  data_input_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  local_data_template_data_id mediumint(8) unsigned NOT NULL default '0',
+  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_id mediumint(8) unsigned NOT NULL default '0',
+  data_input_id mediumint(8) unsigned NOT NULL default '0',
   t_name char(2) default NULL,
   name varchar(250) NOT NULL default '',
   data_source_path varchar(255) default NULL,
@@ -563,8 +563,8 @@ INSERT INTO data_template_data VALUES (41,0,0,41,2,'on','|host_description| - Tr
 --
 
 CREATE TABLE data_template_data_rra (
-  data_template_data_id mediumint(8) NOT NULL default '0',
-  rra_id mediumint(8) NOT NULL default '0',
+  data_template_data_id mediumint(8) unsigned NOT NULL default '0',
+  rra_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (data_template_data_id,rra_id),
   KEY data_template_data_id (data_template_data_id)
 ) TYPE=MyISAM;
@@ -744,10 +744,10 @@ INSERT INTO data_template_data_rra VALUES (41,4);
 --
 
 CREATE TABLE data_template_rrd (
-  id mediumint(8) NOT NULL auto_increment,
-  local_data_template_rrd_id mediumint(8) NOT NULL default '0',
-  local_data_id mediumint(8) NOT NULL default '0',
-  data_template_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  local_data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
+  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_id mediumint(8) unsigned NOT NULL default '0',
   t_rrd_maximum char(2) default NULL,
   rrd_maximum bigint(20) NOT NULL default '0',
   t_rrd_minimum char(2) default NULL,
@@ -759,7 +759,7 @@ CREATE TABLE data_template_rrd (
   t_data_source_name char(2) default NULL,
   data_source_name varchar(19) NOT NULL default '',
   t_data_input_field_id char(2) default NULL,
-  data_input_field_id mediumint(8) NOT NULL default '0',
+  data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id),
@@ -832,9 +832,9 @@ INSERT INTO data_template_rrd VALUES (56,0,0,37,'on',10000000000,'',0,'',600,'',
 --
 
 CREATE TABLE graph_local (
-  id mediumint(8) NOT NULL auto_increment,
-  graph_template_id mediumint(8) NOT NULL default '0',
-  host_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
+  host_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -851,8 +851,8 @@ CREATE TABLE graph_local (
 --
 
 CREATE TABLE graph_template_input (
-  id mediumint(8) NOT NULL auto_increment,
-  graph_template_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(255) NOT NULL default '',
   description text,
   column_name varchar(50) NOT NULL default '',
@@ -936,8 +936,8 @@ INSERT INTO graph_template_input VALUES (64,25,'Outbound Data Source','','task_i
 --
 
 CREATE TABLE graph_template_input_defs (
-  graph_template_input_id mediumint(8) NOT NULL default '0',
-  graph_template_item_id int(12) NOT NULL default '0',
+  graph_template_input_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY  (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
 ) TYPE=MyISAM COMMENT='Stores the relationship for what graph iitems are associated';
@@ -1163,7 +1163,7 @@ INSERT INTO graph_template_input_defs VALUES (64,219);
 --
 
 CREATE TABLE graph_templates (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name char(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
@@ -1206,7 +1206,7 @@ INSERT INTO graph_templates VALUES (25,'Interface - Traffic (bytes/sec)');
 --
 
 CREATE TABLE graph_templates_gprint (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(100) NOT NULL default '',
   gprint_text varchar(255) default NULL,
   PRIMARY KEY  (id),
@@ -1228,10 +1228,10 @@ INSERT INTO graph_templates_gprint VALUES (4,'Load Average','%8.2lf');
 --
 
 CREATE TABLE graph_templates_graph (
-  id mediumint(8) NOT NULL auto_increment,
-  local_graph_template_graph_id mediumint(8) NOT NULL default '0',
-  local_graph_id mediumint(8) NOT NULL default '0',
-  graph_template_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  local_graph_template_graph_id mediumint(8) unsigned NOT NULL default '0',
+  local_graph_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
   t_image_format_id char(2) default '0',
   image_format_id tinyint(1) NOT NULL default '0',
   t_title char(2) default '0',
@@ -1309,20 +1309,20 @@ INSERT INTO graph_templates_graph VALUES (25,0,0,25,'',1,'on','|host_description
 --
 
 CREATE TABLE graph_templates_item (
-  id int(12) NOT NULL auto_increment,
-  local_graph_template_item_id int(12) NOT NULL default '0',
-  local_graph_id mediumint(8) NOT NULL default '0',
-  graph_template_id mediumint(8) NOT NULL default '0',
-  task_item_id mediumint(8) NOT NULL default '0',
-  color_id mediumint(8) NOT NULL default '0',
+  id int(12) unsigned NOT NULL auto_increment,
+  local_graph_template_item_id int(12) unsigned NOT NULL default '0',
+  local_graph_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
+  task_item_id mediumint(8) unsigned NOT NULL default '0',
+  color_id mediumint(8) unsigned NOT NULL default '0',
   graph_type_id tinyint(3) NOT NULL default '0',
-  cdef_id mediumint(8) NOT NULL default '0',
+  cdef_id mediumint(8) unsigned NOT NULL default '0',
   consolidation_function_id tinyint(2) NOT NULL default '0',
   text_format varchar(255) default NULL,
   value varchar(255) default NULL,
   hard_return char(2) default NULL,
-  gprint_id mediumint(8) NOT NULL default '0',
-  sequence mediumint(8) NOT NULL default '0',
+  gprint_id mediumint(8) unsigned NOT NULL default '0',
+  sequence mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY graph_template_id (graph_template_id),
@@ -1555,8 +1555,8 @@ INSERT INTO graph_templates_item VALUES (219,0,0,25,55,0,9,0,3,'Maximum:','','',
 --
 
 CREATE TABLE graph_tree (
-  id smallint(5) NOT NULL auto_increment,
-  user_id tinyint(4) NOT NULL default '0',
+  id smallint(5) unsigned NOT NULL auto_increment,
+  user_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -1574,10 +1574,10 @@ CREATE TABLE graph_tree (
 --
 
 CREATE TABLE graph_tree_items (
-  id smallint(5) NOT NULL auto_increment,
-  graph_tree_id smallint(5) NOT NULL default '0',
-  local_graph_id mediumint(8) NOT NULL default '0',
-  rra_id smallint(5) NOT NULL default '0',
+  id smallint(5) unsigned NOT NULL auto_increment,
+  graph_tree_id smallint(5) unsigned NOT NULL default '0',
+  local_graph_id mediumint(8) unsigned NOT NULL default '0',
+  rra_id smallint(8) unsigned NOT NULL default '0',
   title varchar(255) default NULL,
   order_key varchar(60) NOT NULL default '0',
   PRIMARY KEY  (id),
@@ -1597,13 +1597,13 @@ CREATE TABLE graph_tree_items (
 --
 
 CREATE TABLE host (
-  id mediumint(8) NOT NULL auto_increment,
-  host_template_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(250) default NULL,
   management_ip varchar(15) default NULL,
   snmp_community varchar(100) default NULL,
-  snmp_version tinyint(1) NOT NULL default '1',
+  snmp_version tinyint(1) unsigned NOT NULL default '1',
   snmp_username varchar(50) default NULL,
   snmp_password varchar(50) default NULL,
   PRIMARY KEY  (id),
@@ -1622,8 +1622,8 @@ CREATE TABLE host (
 --
 
 CREATE TABLE host_snmp_cache (
-  host_id mediumint(8) NOT NULL default '0',
-  snmp_query_id mediumint(8) NOT NULL default '0',
+  host_id mediumint(8) unsigned NOT NULL default '0',
+  snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
   field_value varchar(255) default NULL,
   snmp_index varchar(60) NOT NULL default '',
@@ -1644,8 +1644,8 @@ CREATE TABLE host_snmp_cache (
 --
 
 CREATE TABLE host_snmp_query (
-  host_id mediumint(8) NOT NULL default '0',
-  snmp_query_id mediumint(8) NOT NULL default '0',
+  host_id mediumint(8) unsigned NOT NULL default '0',
+  snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_id,snmp_query_id),
   KEY host_id (host_id)
 ) TYPE=MyISAM;
@@ -1661,7 +1661,7 @@ CREATE TABLE host_snmp_query (
 --
 
 CREATE TABLE host_template (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(100) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
@@ -1684,9 +1684,9 @@ INSERT INTO host_template VALUES (6,'Netware 4/5 Server');
 --
 
 CREATE TABLE host_template_data_sv (
-  host_template_id mediumint(8) NOT NULL default '0',
-  data_template_id mediumint(8) NOT NULL default '0',
-  graph_template_id mediumint(8) NOT NULL default '0',
+  host_template_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (host_template_id,data_template_id,graph_template_id,field_name),
@@ -1720,8 +1720,8 @@ INSERT INTO host_template_data_sv VALUES (3,5,4,'name','|host_description| - CPU
 --
 
 CREATE TABLE host_template_graph (
-  host_template_id mediumint(8) NOT NULL default '0',
-  graph_template_id mediumint(8) NOT NULL default '0',
+  host_template_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_template_id,graph_template_id),
   KEY host_template_id (host_template_id)
 ) TYPE=MyISAM;
@@ -1745,8 +1745,8 @@ INSERT INTO host_template_graph VALUES (6,17);
 --
 
 CREATE TABLE host_template_graph_sv (
-  host_template_id mediumint(8) NOT NULL default '0',
-  graph_template_id mediumint(8) NOT NULL default '0',
+  host_template_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (host_template_id,graph_template_id,field_name)
@@ -1771,8 +1771,8 @@ INSERT INTO host_template_graph_sv VALUES (3,13,'title','|host_description| - Me
 --
 
 CREATE TABLE host_template_snmp_query (
-  host_template_id mediumint(8) NOT NULL default '0',
-  snmp_query_id mediumint(8) NOT NULL default '0',
+  host_template_id mediumint(8) unsigned NOT NULL default '0',
+  snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_template_id,snmp_query_id),
   KEY host_template_id (host_template_id)
 ) TYPE=MyISAM;
@@ -1796,7 +1796,7 @@ INSERT INTO host_template_snmp_query VALUES (6,4);
 --
 
 CREATE TABLE rra (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(100) NOT NULL default '',
   x_files_factor double NOT NULL default '0.1',
   steps mediumint(8) default '1',
@@ -1821,8 +1821,8 @@ INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775);
 --
 
 CREATE TABLE rra_cf (
-  rra_id mediumint(8) NOT NULL default '0',
-  consolidation_function_id smallint(5) NOT NULL default '0',
+  rra_id mediumint(8) unsigned NOT NULL default '0',
+  consolidation_function_id smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY  (rra_id,consolidation_function_id),
   KEY rra_id (rra_id)
 ) TYPE=MyISAM;
@@ -1891,7 +1891,7 @@ INSERT INTO settings VALUES ('ldap_template','');
 --
 
 CREATE TABLE settings_graphs (
-  user_id smallint(8) NOT NULL default '0',
+  user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
   value varchar(255) NOT NULL default '',
   PRIMARY KEY  (user_id,name),
@@ -1909,8 +1909,8 @@ CREATE TABLE settings_graphs (
 --
 
 CREATE TABLE settings_tree (
-  user_id mediumint(8) NOT NULL default '0',
-  graph_tree_item_id mediumint(8) NOT NULL default '0',
+  user_id mediumint(8) unsigned NOT NULL default '0',
+  graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (user_id,graph_tree_item_id)
 ) TYPE=MyISAM;
@@ -1926,12 +1926,12 @@ CREATE TABLE settings_tree (
 --
 
 CREATE TABLE snmp_query (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   xml_path varchar(255) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   description varchar(255) default NULL,
-  graph_template_id mediumint(8) NOT NULL default '0',
-  data_input_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
+  data_input_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -1953,8 +1953,8 @@ INSERT INTO snmp_query VALUES (6,'<path_cacti>/resource/script_queries/unix_disk
 --
 
 CREATE TABLE snmp_query_field (
-  snmp_query_id mediumint(8) NOT NULL default '0',
-  data_input_field_id mediumint(8) NOT NULL default '0',
+  snmp_query_id mediumint(8) unsigned NOT NULL default '0',
+  data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   action_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (snmp_query_id,data_input_field_id),
   KEY snmp_query_id (snmp_query_id),
@@ -1987,10 +1987,10 @@ INSERT INTO snmp_query_field VALUES (6,31,1);
 --
 
 CREATE TABLE snmp_query_graph (
-  id mediumint(8) NOT NULL auto_increment,
-  snmp_query_id mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(100) NOT NULL default '',
-  graph_template_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -2021,9 +2021,9 @@ INSERT INTO snmp_query_graph VALUES (16,1,'In/Out Bytes',25);
 --
 
 CREATE TABLE snmp_query_graph_rrd (
-  snmp_query_graph_id mediumint(8) NOT NULL default '0',
-  data_template_id mediumint(8) NOT NULL default '0',
-  data_template_rrd_id mediumint(8) NOT NULL default '0',
+  snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
   snmp_field_name varchar(50) NOT NULL default '0',
   PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
@@ -2071,10 +2071,10 @@ INSERT INTO snmp_query_graph_rrd VALUES (15,37,56,'dskUsed');
 --
 
 CREATE TABLE snmp_query_graph_rrd_sv (
-  id mediumint(8) NOT NULL auto_increment,
-  snmp_query_graph_id mediumint(8) NOT NULL default '0',
-  data_template_id mediumint(8) NOT NULL default '0',
-  sequence mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_id mediumint(8) unsigned NOT NULL default '0',
+  sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
@@ -2155,9 +2155,9 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (91,9,41,1,'rrd_maximum','|squery_ifS
 --
 
 CREATE TABLE snmp_query_graph_sv (
-  id mediumint(8) NOT NULL auto_increment,
-  snmp_query_graph_id mediumint(8) NOT NULL default '0',
-  sequence mediumint(8) NOT NULL default '0',
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
+  sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
@@ -2208,7 +2208,7 @@ INSERT INTO snmp_query_graph_sv VALUES (36,9,3,'title','|host_description| - Tra
 --
 
 CREATE TABLE user_auth (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   username varchar(50) NOT NULL default '0',
   password varchar(50) NOT NULL default '0',
   full_name varchar(100) default '0',
@@ -2237,8 +2237,8 @@ INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b','Guest Account','on',
 --
 
 CREATE TABLE user_auth_graph (
-  user_id mediumint(8) NOT NULL default '0',
-  local_graph_id mediumint(8) NOT NULL default '0',
+  user_id mediumint(8) unsigned NOT NULL default '0',
+  local_graph_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (user_id,local_graph_id),
   KEY user_id (user_id,local_graph_id)
 ) TYPE=MyISAM;
@@ -2254,7 +2254,7 @@ CREATE TABLE user_auth_graph (
 --
 
 CREATE TABLE user_auth_hosts (
-  user_id mediumint(8) NOT NULL default '0',
+  user_id mediumint(8) unsigned NOT NULL default '0',
   hostname varchar(100) NOT NULL default '',
   policy tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (user_id,hostname),
@@ -2272,8 +2272,8 @@ CREATE TABLE user_auth_hosts (
 --
 
 CREATE TABLE user_auth_realm (
-  realm_id mediumint(8) NOT NULL default '0',
-  user_id mediumint(8) NOT NULL default '0',
+  realm_id mediumint(8) unsigned NOT NULL default '0',
+  user_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (realm_id,user_id),
   KEY user_id (user_id)
 ) TYPE=MyISAM;
@@ -2303,8 +2303,8 @@ INSERT INTO user_auth_realm VALUES (15,1);
 --
 
 CREATE TABLE user_auth_tree (
-  user_id mediumint(8) NOT NULL default '0',
-  tree_id mediumint(8) NOT NULL default '0',
+  user_id mediumint(8) unsigned NOT NULL default '0',
+  tree_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (user_id,tree_id),
   KEY user_id (user_id,tree_id)
 ) TYPE=MyISAM;
@@ -2338,7 +2338,7 @@ CREATE TABLE user_log (
 --
 
 CREATE TABLE user_realm (
-  id mediumint(8) NOT NULL auto_increment,
+  id mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(50) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -2369,7 +2369,7 @@ INSERT INTO user_realm VALUES (15,'Global Settings');
 --
 
 CREATE TABLE user_realm_filename (
-  realm_id smallint(5) NOT NULL default '0',
+  realm_id smallint(5) unsigned NOT NULL default '0',
   filename varchar(100) NOT NULL default '',
   PRIMARY KEY  (realm_id,filename),
   KEY realm_id (realm_id)
