@@ -79,7 +79,7 @@ if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 	cacti_log("DEBUG: FILENM: " . __FILE__, false, "PHPSVR");
 }
 
-// send status back to the server
+/* send status back to the server */
 if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 	cacti_log("PHP Script Server has Started - Parent is " . $environ, false, "PHPSVR");
 }
@@ -87,18 +87,18 @@ if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 fputs(STDOUT, "PHP Script Server has Started - Parent is " . $environ . "\n");
 fflush(STDOUT);
 
-// process waits for input and then calls functions as required
+/* process waits for input and then calls functions as required */
 while (1) {
 	$result = "";
 	$in_string = fgets(STDIN,255);
 	$in_string = rtrim(strtr(strtr($in_string,'\r',''),'\n',''));
 	if (strlen($in_string)>0) {
 		if (($in_string != "quit") && ($in_string != "")) {
-			// get file to be included
+			/* get file to be included */
 			$inc = substr($in_string,0,strpos($in_string," "));
 			$remainder = substr($in_string,strpos($in_string," ")+1);
 
-			// parse function from command
+			/* parse function from command */
 			if (!strpos($remainder," ")) {
 				$cmd = $remainder;
 				$parm = "";
@@ -115,7 +115,7 @@ while (1) {
 				cacti_log("DEBUG: INCLUDE: '". $inc . "' SCRIPT: '" .$cmd . "' CMD: '" . $preparm . "'", false, "PHPSVR");
 			}
 
-			// check for existance of function.  If exists call it
+			/* check for existance of function.  If exists call it */
 			if ($cmd != "") {
 				if (!function_exists($cmd)) {
 					if (file_exists($inc)) {
