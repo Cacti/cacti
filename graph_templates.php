@@ -292,83 +292,7 @@ function item() {
 	}
 	
 	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . $_GET["id"]);
-	
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
-	print "</tr>";
-	
-	$group_counter = 0; $_graph_type_name = ""; $i = 0;
-	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
-	
-	if (sizeof($template_item_list) > 0) {
-	foreach ($template_item_list as $item) {
-		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
-		
-		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
-			
-			if ($group_counter % 2 == 0) {
-				$alternate_color_1 = "EEEEEE";
-				$alternate_color_2 = "EEEEEE";
-				$custom_row_color = "D5D5D5";
-			}else{
-				$alternate_color_1 = $colors["alternate"];
-				$alternate_color_2 = $colors["alternate"];
-				$custom_row_color = "D2D6E7";
-			}
-			
-			$group_counter++;
-		}
-		
-		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
-		
-		if ($use_custom_row_color == false) {
-			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
-		}else{
-			print "<tr bgcolor='#$custom_row_color'>";
-		}
-		
-		print "<td><a class='linkEditMain' href='graph_templates_items.php?action=item_edit&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'>Item # " . ($i+1) . "</a></td>\n";
-		
-		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
-		
-		switch (true) {
-		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			break;
-		case ereg("(HRULE|VRULE)", $_graph_type_name):
-			$matrix_title = "HRULE: " . $item["value"];
-			break;
-		case ereg("(COMMENT)", $_graph_type_name):
-			$matrix_title = "COMMENT: " . $item["text_format"];
-			break;
-		}
-		
-		if ($item["hard_return"] == "on") {
-			$hard_return = "<strong><font color='#FF0000'>&lt;HR&gt;</font></strong>";
-		}
-		
-		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
-		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
-		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-		print "<td><a href='graph_templates_items.php?action=item_movedown&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-		       	   <a href='graph_templates_items.php?action=item_moveup&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-		print "<td width='1%' align='right'><a href='graph_templates_items.php?action=item_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
-		
-		print "</tr>";
-		
-		$i++;
-	}
-	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='7'><em>No Items</em></td></tr>";
-	}
-	
+	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_GET["id"], false);
 	end_box();
 	
 	start_box("<strong>Graph Item Inputs</strong>", "98%", $colors["header"], "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . $_GET["id"]);
@@ -379,6 +303,7 @@ function item() {
 	
 	$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=" . $_GET["id"] . " order by name");
 	
+	$i = 0;
 	if (sizeof($template_item_list) > 0) {
 	foreach ($template_item_list as $item) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
