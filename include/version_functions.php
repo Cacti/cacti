@@ -220,6 +220,7 @@ function UpdateCacti($old_version, $new_version) {
 		db_execute("ALTER TABLE `settings_graphs` ADD `DefaultViewMode` TINYINT(1) DEFAULT '1' NOT NULL");
 		db_execute("INSERT INTO settings VALUES ('remove_verification', 'on', 'Remove Verification', 'Confirm Before the User Removes an Item', 'checkbox:group')");
 		db_execute("UPDATE settings set method='group:global_auth:remove_verification' where name='global'");
+	        db_execute("ALTER TABLE rrd_graph ADD order_key VARCHAR(60) NOT NULL AFTER ID, ADD INDEX (order_key)");
 	}
 	
 	return 0;
