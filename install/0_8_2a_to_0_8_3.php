@@ -50,8 +50,8 @@ function upgrade_to_0_8_3() {
 	$auth_tree = db_fetch_assoc("select user_id,tree_id from user_auth_tree");
 	
 	/* update to new 'user_auth_perms' table */
-	if (sizeof($auth_graph) > 0) {
-	foreach ($auth_graph as $item) {
+	if (sizeof($auth_tree) > 0) {
+	foreach ($auth_tree as $item) {
 		db_install_execute("0.8.3", "replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["tree_id"] . ",2);");
 	}
 	}
