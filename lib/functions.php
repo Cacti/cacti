@@ -381,9 +381,17 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 		/* determine the error message to display */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
-			$hosts[$host_id]["status_last_error"] = $ping->snmp_response . ", " . $ping->ping_response;
+			if ($hosts[$host_id]["snmp_community"] == "") {
+				$hosts[$host_id]["status_last_error"] = $ping->ping_response;
+			}else {
+				$hosts[$host_id]["status_last_error"] = $ping->snmp_response . ", " . $ping->ping_response;
+			}
 		}elseif ($ping_availability == AVAIL_SNMP) {
-			$hosts[$host_id]["status_last_error"] = $ping->snmp_response;
+			if ($hosts[$host_id]["snmp_community"] == "") {
+				$hosts[$host_id]["status_last_error"] = "Device does not require SNMP";
+			}else {
+				$hosts[$host_id]["status_last_error"] = $ping->snmp_response;
+			}
 		}else {
 			$hosts[$host_id]["status_last_error"] = $ping->ping_response;
 		}
@@ -429,10 +437,18 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 		/* determine the ping statistic to set and do so */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
-			/* calculate the average of the two times */
-			$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
+			if ($hosts[$host_id]["snmp_community"] == "") {
+				$ping_time = $ping->ping_status;
+			}else {
+				/* calculate the average of the two times */
+				$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
+			}
 		}elseif ($ping_availability == AVAIL_SNMP) {
-			$ping_time = $ping->snmp_status;
+			if ($hosts[$host_id]["snmp_community"] == "") {
+				$ping_time = 0.000;
+			}else {
+				$ping_time = $ping->snmp_status;
+			}
 		}else {
 			$ping_time = $ping->ping_status;
 		}
