@@ -311,7 +311,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			</td>\n";
 		
 		print 	"<td bgcolor='#$row_color' width='1%' align='right'>\n
-			<a href='tree.php?action=remove&id=$leaf[id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;\n
+			<a href='tree.php?action=item_remove&id=$leaf[id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;\n
 			</td></tr>\n";
 		
 	    	$already_open = false;
