@@ -51,7 +51,7 @@ function export() {
 	$cacti_export_path = read_config_option("path_html_export");
 	
 	/* copy the css/images on the first time */
-	if (file_exists(read_config_option("path_html_export") . "$cacti_export_path/main.css") == false) {
+	if (file_exists("$cacti_export_path/main.css") == false) {
 		copy("$cacti_root_path/include/main.css", "$cacti_export_path/main.css");
 		copy("$cacti_root_path/images/tab_cacti.gif", "$cacti_export_path/tab_cacti.gif");
 		copy("$cacti_root_path/images/cacti_backdrop.gif", "$cacti_export_path/cacti_backdrop.gif");
