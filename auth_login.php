@@ -110,7 +110,7 @@
 	<title>Login to cacti</title>
 	<STYLE TYPE="text/css">
 	<!--	
-		BODY, TABLE, TR, TD {font-family: "Verdana, Arial, Helvetica, sans-serif"; font-size: 12px;}
+		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
 		A {text-decoration: none;}
 		A:active { text-decoration: none;}
 		A:hover {text-decoration: underline; color: #333333;}
