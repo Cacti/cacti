@@ -88,8 +88,11 @@ $input_types = array(1 =>
 	"SNMP",
 	"SNMP Query",
 	"Script Query",
-	"PHP Script Server",
-	"Perl Script Server");
+	"Script - PHP Script Server",
+	"Script - Perl Script Server",
+	"Script Query - PHP Script Server",
+	"Script Query - Perl Script Server"
+	);
 
 $snmp_query_field_actions = array(1 =>
 	"SNMP Field Name (Dropdown)",
