@@ -131,7 +131,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (read_config_option("smnp_version") == "ucd-snmp") {
 			$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $snmp_auth -v $version $oid");
 		}elseif (read_config_option("smnp_version") == "net-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $snmp_auth -v $version $oid");
+			$snmp_value = exec(read_config_option("path_snmpget") . " $snmp_auth -v $version $hostname $oid");
 		}
 		
 		$snmp_value = trim(ereg_replace("(.*=)", "", $snmp_value));
@@ -172,7 +172,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if (read_config_option("smnp_version") == "ucd-snmp") {
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname $snmp_auth -v $version $oid");
 		}elseif (read_config_option("smnp_version") == "net-snmp") {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname $snmp_auth -v $version $oid");
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $snmp_auth -v $version $hostname $oid");
 		}
 		
 		if (sizeof($temp_array) == 0) {
