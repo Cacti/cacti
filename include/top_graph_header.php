@@ -146,12 +146,12 @@
 	}
 	?>
 	</tr>
-	<?if ($_GET["showinfo"] == true) {?>
+	<?if ($_GET["show_source"] == "true") {?>
 	<tr>
-		<td valign="top" height="1" colspan="3" bgcolor="#<?print $colors[panel];?>">
+		<td valign="top" height="1" colspan="3" bgcolor="#<?print $colors["panel"];?>">
 			<?
 			$graph_data_array["print_source"] = true;
-			print trim(rrdtool_function_graph($graphid, $rraid, $graph_data_array));
+			print trim(rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array));
 			?>
 		</td>
 	</tr>
