@@ -389,6 +389,13 @@ function expand_title($host_id, $title) {
 	}
 }
 
+function subsitute_data_query_path($path) {
+	$path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $path);
+	$path = str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path);
+	
+	return $path;
+}
+
 function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (isset($_SESSION["sess_host_cache_array"])) {
 		$host_cache_array = unserialize($_SESSION["sess_host_cache_array"]);
