@@ -81,13 +81,21 @@
 				<i3>Traffic Analysis for |host_description| - |squery_ifDesc|/|squery_ifIndex|</i3>
 			</title>
 		</graph>
-		<ds>
+		<ds_traffic_in>
 			<name>
-				<i1>Traffic - |squery_ifIP| - |squery_ifAlias|</i1>
-				<i2>Traffic - |squery_ifAlias|</i2>
-				<i3>Traffic - |squery_ifIP|/|squery_ifDesc|</i3>
-				<i4>Traffic - |squery_ifDesc|</i4>
+				<i1>Traffic - |squery_ifIP| - |squery_ifAlias| (In)</i1>
+				<i2>Traffic - |squery_ifAlias| (In)</i2>
+				<i3>Traffic - |squery_ifIP|/|squery_ifDesc| (In)</i3>
+				<i4>Traffic - |squery_ifDesc| (In)</i4>
 			</name>
-		</ds>
+		</ds_traffic_in>
+		<ds_traffic_out>
+			<name>
+				<i1>Traffic - |squery_ifIP| - |squery_ifAlias| (Out)</i1>
+				<i2>Traffic - |squery_ifAlias| (Out)</i2>
+				<i3>Traffic - |squery_ifIP|/|squery_ifDesc| (Out)</i3>
+				<i4>Traffic - |squery_ifDesc| (Out)</i4>
+			</name>
+		</ds_traffic_out>
 	</suggested_values>
 </interface>
