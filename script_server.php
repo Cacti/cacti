@@ -31,19 +31,23 @@ while (1) {
 
 	if (strlen($in_string)>0) {
 		if (($in_string != "quit") && ($in_string != "")) {
+			// get file to be included
+			$inc = substr($in_string,0,strpos($in_string," "));
+			$remainder = substr($in_string,strpos($in_string," ")+1);
+
 			// parse function from command
-			$cmd = substr($in_string,0,strpos($in_string," "));
+			$cmd = substr($remainder,0,strpos($remainder," "));
 
 			// parse parameters from remainder of command
-			$preparm = substr($in_string,strpos($in_string," ")+1);
+			$preparm = substr($remainder,strpos($remainder," ")+1);
 			$parm = explode(" ",$preparm);
 
 			// check for existance of function.  If exists call it
-			if ($cmd == "include") {
-				eval("include(\"" . $preparm . "\");");
-			} elseif (function_exists($cmd)) {
-				// print output of function arguments
+			if (isset($inc)) {
+				eval("include_once(\"" . $inc . "\");");
+			}
 
+			if (function_exists($cmd)) {
 				$result = call_user_func_array($cmd, $parm);
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
