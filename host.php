@@ -103,6 +103,7 @@ function form_save() {
 		$save["snmp_version"] = form_input_validate($_POST["snmp_version"], "snmp_version", "", true, 3);
 		$save["snmp_username"] = form_input_validate($_POST["snmp_username"], "snmp_username", "", true, 3);;
 		$save["snmp_password"] = form_input_validate($_POST["snmp_password"], "snmp_password", "", true, 3);
+		$save["disabled"] = form_input_validate((isset($_POST["disabled"]) ? $_POST["disabled"] : ""), "disabled", "", true, 3);
 		
 		if (!is_error_message()) {
 			$host_id = sql_save($save, "host");
@@ -807,9 +808,17 @@ function host_edit() {
 		<?php form_dropdown("snmp_version",$snmp_versions,"","",(isset($host) ? $host["snmp_version"] : ""),"","1");?>
 	</tr>
 	
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Disable Host</font><br>
+			Check this box to disable all checks for this host.
+		</td>
+		<?php form_checkbox("disabled", (isset($host) ? $host["disabled"] : ""), "Disable Host", "","");?>
+	</tr>
+	
 	<?php 
 	if (!empty($host["id"])) {
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td colspan="2">
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
@@ -936,21 +945,26 @@ function host_edit() {
 					if ($field_array["direction"] == "input") {
 						$i++;
 						
-						/* draw each header item <TD> */
-						DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
-						
-						/* draw the 'check all' box if we are at the end of the row */
-						if ($i >= $num_input_fields) {
-							print "<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\")'></td>\n";
-						}
-						
 						$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
 						
+						/* don't even both to display the column if it has no data */
 						if (sizeof($raw_data) > 0) {
-						foreach ($raw_data as $data) {
-							$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
-							$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
-						}
+							/* draw each header item <TD> */
+							DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
+							
+							/* draw the 'check all' box if we are at the end of the row */
+							if ($i >= $num_input_fields) {
+								print "<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\")'></td>\n";
+							}
+							
+							foreach ($raw_data as $data) {
+								$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
+								$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
+							}
+						}elseif (sizeof($raw_data) == 0) {
+							/* we are choosing to not display this column, so unset the associated
+							field in the xml array so it is not drawn */
+							unset($xml_array["fields"][0][$field_name]);
 						}
 					}
 				}
