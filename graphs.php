@@ -367,7 +367,7 @@ function form_actions() {
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
-			$graph_list .= "<li>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $matches[1]) . "<br>";
+			$graph_list .= "<li>" . get_graph_title($matches[1]) . "<br>";
 			$graph_array[$i] = $matches[1];
 		}
 		

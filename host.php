@@ -568,7 +568,6 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						print "</td></tr>\n";
 					}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
 						$subs_string = db_fetch_cell("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'");
-						$subs_string = subsitute_host_data($subs_string, "|", "|", $host_id);
 						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $subs_string);
 					}else{
 						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($data_template[$field_name]) ? $data_template[$field_name] : ""));
@@ -635,7 +634,6 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 								print "</td></tr>\n";
 							}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
 								$subs_string = db_fetch_cell("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'");
-								$subs_string = subsitute_host_data($subs_string, "|", "|", $host_id);
 								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $subs_string);
 							}else{
 								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
