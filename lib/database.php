@@ -41,11 +41,11 @@ function db_connect_real($host,$user,$pass,$db_name) {
 		if (mysql_selectdb($db_name)) {
 			return(1);
 		}else{
-			die("Cannot find the database $database");
+			die("Cannot find the database $db_name");
 			return(0);
 		}
 	}else{
-		die("Cannot connect to MySQL server on $database_hostname");
+		die("Cannot connect to MySQL server on $host");
 		return(0);
 	}
 }
