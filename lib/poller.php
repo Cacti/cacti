@@ -75,7 +75,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 function exec_background($filename, $args = "") {
 	global $config;
 
-	if ($config["verbosity"] == DEBUG) {
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 		log_data("POLLER: About to Spawn a Remote Process\n");
 	}
 

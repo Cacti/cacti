@@ -243,7 +243,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 	if ($show_source == true) {
 		return read_config_option("path_rrdtool") . " create" . RRD_NL . "$data_source_path$create_ds$create_rra";
 	}else{
-		if ($config["verbosity"] >= HIGH) {
+		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 			$log_data = true;
 		}else {
 			$log_data = false;
@@ -284,7 +284,7 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 			$i++;
 		}
 
-		if ($config["verbosity"] >= HIGH) {
+		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 			$log_data = true;
 		}else{
 			$log_data = false;

@@ -137,10 +137,10 @@ $logfile_options = array(1 =>
 	"Logfile and Syslog/Eventlog",
 	"Syslog/Eventlog Only");
 
-$logfile_verbosity = array(1 =>
-	"LOW - Statistics and Errors",
-	"HIGH - Statistics, Errors and Major I/O Events",
-	"DEBUG - Statistics, Errors, I/O and Program Flow");
+$logfile_verbosity = array(
+	POLLER_VERBOSITY_LOW => "LOW - Statistics and Errors",
+	POLLER_VERBOSITY_HIGH => "HIGH - Statistics, Errors and Major I/O Events",
+	POLLER_VERBOSITY_DEBUG => "DEBUG - Statistics, Errors, I/O and Program Flow");
 
 $poller_options = array(1 =>
 	"cmd.php",
