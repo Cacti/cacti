@@ -18,12 +18,19 @@
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.2</oid>
 		</ifDesc>
-		<ifAlias>
-			<name>Alias</name>
+		<ifName>
+			<name>Name (IF-MIB)</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.31.1.1.1.1</oid>
+		</ifName>
+		<ifAlias>
+			<name>Alias (IF-MIB)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.18</oid>
 		</ifAlias>
 		<ifType>
 			<name>Type</name>
