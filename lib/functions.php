@@ -329,30 +329,6 @@ function generate_graph_def_name($graph_item_id) {
 	return $result;
 }
 
-function create_list($data, $name, $value, $prev) {
-	if (empty($name)) {
-		foreach (array_keys($data) as $id) {
-			print '<option value="' . $id . '"';
-			
-			if ($prev == $id) {
-				print " selected";
-			}
-			
-			print ">" . $data[$id] . "</option>\n";
-		}
-	}else{
-		foreach ($data as $row) {
-			print "<option value='$row[$value]'";
-			
-			if ($prev == $row[$value]) {
-				print " selected";
-			}
-			
-			print ">$row[$name]</option>\n";
-		}
-	}
-}
-
 function get_next_item($tblname, $field, $startid, $lmt_query) {
 	$data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_query");
 	$end_seq = $data1["mymax"];
