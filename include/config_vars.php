@@ -1,5 +1,27 @@
 <?
 
+include_once("database.php");
+
+if ($do_not_read_config != true) {
+	if (isset($config) == false) {
+		/* make a connection to the database */
+		$db_settings = db_fetch_assoc("select * from settings");
+		
+		if (sizeof($db_settings) > 0) {
+		foreach ($db_settings as $setting) {
+			$name = $setting[name];
+			$config[$name][value] = db_fetch_cell("select value from settings where name='$name'");
+		}
+		}
+	}
+}
+
+/* make sure this variable reflects your operating system type: 'unix' or 'win32' */
+$config[cacti_server_os] = "unix";
+
+/* reset this variable */
+$do_not_read_config = false;
+
 /* built-in snmp support */
 $config["php_snmp_support"] = function_exists("snmpget");
 
