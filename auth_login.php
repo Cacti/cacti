@@ -91,9 +91,13 @@ case 'login':
 	}
 	/* --- end ldap section --- */
 
-	$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "'");
+	if ($ldap_auth) {
+                $user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and full_name = 'ldap user'");
+	} else {
+		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "'");
+	}
 	
-	if (sizeof($user) || $ldap_auth) {
+	if (sizeof($user)) {
 		/* --- GOOD username/password --- */
 		
 		$denied_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["id"] . " and policy='1'");
