@@ -383,7 +383,7 @@ function form_actions() {
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";
 		$save_html = "";
 	}else{
-		$save_html = "<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>";
+		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
 	}
 	
 	print "	<tr>
@@ -391,7 +391,7 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='graph_templates.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				<a href='graph_templates.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				$save_html
 			</td>
 		</tr>
