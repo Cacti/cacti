@@ -215,7 +215,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				break;
 			} /* End Switch */
 
-			if (isset($result)) {
+			if (isset($output)) {
 				db_execute("insert into poller_output (local_data_id,time,output) values (" . $item["local_data_id"] . ",NOW(),'" . addslashes($output) . "')");
 			}
 		} /* Next Cache Item */
