@@ -88,7 +88,7 @@
 			}
 		}
 		
-		if ($au != 1) {
+		if ($au != 1 && $user_id != 1) {
 			$res_id = db_fetch_assoc("select a.SectionID, a.UserID, s.ID, s.Section  from 
 				auth_acl a left join auth_sections s on a.sectionid=s.id where s.section=\"$section\" 
 		 		and a.userid=\"$user_id\"");
