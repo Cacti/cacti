@@ -30,7 +30,7 @@
    @arg $max_length - the maximum number of characters the string can contain
      before it is truncated
    @returns - the truncated string if len($text) is greater than $max_length, else
-     the origional string */
+     the original string */
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
 		return substr($text, 0, $max_length) . "...";
@@ -104,7 +104,7 @@ function read_config_option($config_name) {
    @arg $allow_nulls - (bool) whether to allow an empty string as a value or not
    @arg $custom_message - (int) the ID of the message to raise upon an error which is defined in the 
      $messages array in 'include/config_arrays.php'
-   @returns - the origional $field_value */
+   @returns - the original $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	/* write current values to the "field_values" array so we can retain them */
 	if (isset($_SESSION["sess_field_values"])) {
@@ -233,7 +233,7 @@ function kill_session_var($var_name) {
      '$arr[0] = array("id" => 23, "name" => "blah")'
      to the form
      '$arr = array(23 => "blah")'
-   @arg $array - (array) the origional array to manipulate
+   @arg $array - (array) the original array to manipulate
    @arg $key - the name of the key
    @arg $key_value - the name of the key value
    @returns - the modified array */
@@ -376,7 +376,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
    @arg $find - needle
    @arg $replace - replace needle with this
    @arg $string - haystack
-   @returns - the origional string with '$find' replaced by '$replace' */
+   @returns - the original string with '$find' replaced by '$replace' */
 function stri_replace($find, $replace, $string) {
 	$parts = explode(strtolower($find), strtolower($string));
 	
@@ -546,8 +546,8 @@ function null_out_subsitions($string) {
    @arg $host_id - (int) the host ID to match
    @arg $snmp_query_id - (int) the data query ID to match
    @arg $snmp_index - the data query index to match
-   @arg $title - the origional string that contains the data query variables
-   @returns - the origional string with all of the variable subsitutions made */
+   @arg $title - the original string that contains the data query variables
+   @returns - the original string with all of the variable subsitutions made */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, "|")) && (!empty($host_id))) {
 		if (($snmp_query_id != "0") && ($snmp_index != "")) {
@@ -562,7 +562,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 
 /* subsitute_data_query_path - takes a string and subsitutes all path variables contained in it
    @arg $path - the string to make path variable subsitutions on
-   @returns - the origional string with all of the variable subsitutions made */
+   @returns - the original string with all of the variable subsitutions made */
 function subsitute_data_query_path($path) {
 	$path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $path);
 	$path = str_replace("|path_php_binary
@@ -576,7 +576,7 @@ function subsitute_data_query_path($path) {
    @arg $l_escape_string - the character used to escape each variable on the left side
    @arg $r_escape_string - the character used to escape each variable on the right side
    @arg $host_id - (int) the host ID to match
-   @returns - the origional string with all of the variable subsitutions made */
+   @returns - the original string with all of the variable subsitutions made */
 function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (isset($_SESSION["sess_host_cache_array"])) {
 		$host_cache_array = unserialize($_SESSION["sess_host_cache_array"]);
@@ -600,13 +600,13 @@ function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_
 }
 
 /* subsitute_snmp_query_data - takes a string and subsitutes all data query variables contained in it 
-   @arg $string - the origional string that contains the data query variables
+   @arg $string - the original string that contains the data query variables
    @arg $l_escape_string - the character used to escape each variable on the left side
    @arg $r_escape_string - the character used to escape each variable on the right side
    @arg $host_id - (int) the host ID to match
    @arg $snmp_query_id - (int) the data query ID to match
    @arg $snmp_index - the data query index to match
-   @returns - the origional string with all of the variable subsitutions made */
+   @returns - the original string with all of the variable subsitutions made */
 function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
 	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
 	
@@ -1030,7 +1030,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	}
 	
 	if (!empty($sql_policy_and)) {
-		$sql .= "$sql_and$sql_policy_or";
+		$sql .= "$sql_and$sql_policy_and";
 	}
 	
 	if (empty($sql)) {
@@ -1121,6 +1121,33 @@ function get_graph_tree_array() {
 	}
 	
 	return $tree_list;
+}
+
+/* get_host_array - returns a list of hosts taking permissions into account if necessary
+   @returns - (array) an array containing a list of hosts */
+function get_host_array() {
+	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+		
+		if ($current_user["policy_trees"] == "1") {
+			$sql_where = "where user_auth_perms.user_id is null";
+		}elseif ($current_user["policy_trees"] == "2") {
+			$sql_where = "where user_auth_perms.user_id is not null";
+		}
+		
+		$host_list = db_fetch_assoc("select
+			host.id,
+			CONCAT_WS('',host.description,' (',host.hostname,')') as name,
+			user_auth_perms.user_id
+			from host
+			left join user_auth_perms on (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+			$sql_where
+			order by host.description,host.hostname");
+	}else{
+		$host_list = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
+	}
+	
+	return $host_list;
 }
 
 /* draw_navigation_text - determines the top header navigation text for the current page and displays it to
@@ -1249,7 +1276,7 @@ function draw_navigation_text() {
 /* resolve_navigation_title - apply any special functions that are necessary to the navigation text, this
      function is only called if no other title is available
    @arg $id - the special function to use
-   @returns - the origional navigation text with all subsitutions made */
+   @returns - the original navigation text with all subsitutions made */
 function resolve_navigation_title($id) {
 	switch ($id) {
 	case 'graph.php:':
@@ -1258,6 +1285,23 @@ function resolve_navigation_title($id) {
 	}
 	
 	return;
+}
+
+/* get_associated_rras - returns a list of all RRAs referenced by a particular graph
+   @arg $local_graph_id - (int) the ID of the graph to retrieve a list of RRAs for
+   @returns - (array) an array containing the name and id of each RRA found */
+function get_associated_rras($local_graph_id) {
+	return db_fetch_assoc("select
+		rra.id,
+		rra.name
+		from graph_templates_item,data_template_data_rra,data_template_rrd,data_template_data,rra
+		where graph_templates_item.task_item_id=data_template_rrd.id
+		and data_template_rrd.local_data_id=data_template_data.local_data_id
+		and data_template_data.id=data_template_data_rra.data_template_data_id
+		and data_template_data_rra.rra_id=rra.id
+		and graph_templates_item.local_graph_id=$local_graph_id
+		group by rra.id
+		order by rra.timespan");
 }
 
 ?>

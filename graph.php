@@ -49,7 +49,7 @@ if (read_config_option("global_auth") == "on") {
 	}
 }
 
-$rras = db_fetch_assoc("select id,name from rra $sql_where order by steps");
+$rras = get_associated_rras($_GET["local_graph_id"]);
 
 $graph_title = get_graph_title($_GET["local_graph_id"]);
 
