@@ -44,9 +44,7 @@ function title_trim($text, $max_length) {
      in 'include/config_settings.php'
    @returns - the default value of the configuration option */
 function read_default_graph_config_option($config_name) {
-	global $config;
-
-	include ($config["include_path"] . "/config_settings.php");
+	global $config, $settings_graphs, $tab_array;
 
 	while (list($tab_name, $tab_array) = each($settings_graphs)) {
 		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]["default"]))) {
@@ -112,9 +110,7 @@ function graph_config_value_exists($config_name, $user_id) {
      in 'include/config_settings.php'
    @returns - the default value of the configuration option */
 function read_default_config_option($config_name) {
-	global $config;
-
-	include ($config["include_path"] . "/config_settings.php");
+	global $config, $settings, $tab_array;
 
 	while (list($tab_name, $tab_array) = each($settings)) {
 		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]["default"]))) {
