@@ -6,13 +6,15 @@ problems.
 -bug#88: Possibly popen/pclose concurrency problem with cactid.
 -bug#89: Missing "check all" checkbox on polling hosts page when an empty column
 was drawn.
+-bug#91: Fix undefined index errors on data source checkbox popups.
+-bug#92: Fix undefined index errors on graph management checkbox popups.
+-bug#96: Problems creating graphs from data queries where there was only row row total
+in the query result.
 -bug: Removed size limits on Linux memory data template.
 -bug: Undefined variable errors when creating new graphs/data sources
 without a template.
 -bug: multiple problems that caused the Windows disk space and CPU graphs
 to stop working.
--bug: Problems creating graphs from data queries where there was only row row total
-in the query result.
 -bug: Broken images for bandwidth summation graphs that were less than a day old.
 -bug: Graph order changes on the tree would affect other graph trees.
 -bug: Problem with the "Host MIB - Hard Drive Space" data template that broke
