@@ -66,6 +66,7 @@ function update_database($database_old, $database_username, $database_password) 
 			'" . $item["Password"] . "','" . $item["MustChangePassword"] . "','" . $item["ShowTree"] . "',
 			'" . $item["ShowList"] . "','" . $item["ShowPreview"] . "','" . $item["LoginOpts"] . "',
 			'" . $item["GraphPolicy"] . "','" . $item["FullName"] . "')")) {
+			$user_cache{$item["ID"]} = db_fetch_insert_id();
 			
 			$status_array{count($status_array)}["user"][1] = $item["Username"];
 		}else{
@@ -79,7 +80,7 @@ function update_database($database_old, $database_username, $database_password) 
 	if (sizeof($_users_acl) > 0) {
 	foreach ($_users_acl as $item) {
 		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('" . $item["SectionID"] . "',
-			'" . $item["UserID"] . "')");
+			'" . $user_cache{$item["UserID"]} . "')");
 	}
 	}
 	
@@ -89,7 +90,7 @@ function update_database($database_old, $database_username, $database_password) 
 	
 	if (sizeof($_users_hosts) > 0) {
 	foreach ($_users_hosts as $item) {
-		db_execute("insert into $database_default.user_auth_hosts (user_id,hostname,policy) values ('" . $item["UserID"] . "',
+		db_execute("insert into $database_default.user_auth_hosts (user_id,hostname,policy) values ('" . $user_cache{$item["UserID"]} . "',
 			'" . $item["Hostname"] . "','" . $item["Type"] . "')");
 	}
 	}
@@ -106,6 +107,16 @@ function update_database($database_old, $database_username, $database_password) 
 	}
 	
 	$status_array{count($status_array)}["user_log"][1] = "all";
+	
+	/* add new realms to admin account */
+	if (sizeof(db_fetch_assoc("select SectionID from $database_old.auth_acl where UserID=1")) == 8) {
+		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('10','" . $user_cache[1] . "')");
+		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('11','" . $user_cache[1] . "')");
+		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('12','" . $user_cache[1] . "')");
+		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('13','" . $user_cache[1] . "')");
+		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('14','" . $user_cache[1] . "')");
+		db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('15','" . $user_cache[1] . "')");
+	}
 	
 	db_execute("delete from data_input_fields where data_input_id > 11");
 	db_execute("delete from data_input where id > 11");
