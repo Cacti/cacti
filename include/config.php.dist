@@ -1,4 +1,4 @@
-<?/*
+<?/* 
 +-------------------------------------------------------------------------+
 | Copyright (C) 2002 Ian Berry                                            |
 |                                                                         |
@@ -22,10 +22,6 @@
 +-------------------------------------------------------------------------+
 */?>
 <?
-/* whether or not we pull from a db, we need re-initilize */
-global $config;
-
-//$conf_cookiename = "cactilogin";
 
 /* make sure these values refect your acual database/host/user/password */
 $database_default = "dev_cacti_2";
@@ -33,58 +29,40 @@ $database_hostname = "";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 
-#$database[default] = "cacti";
-#$database[hostname] = "localhost";
-#$database[username] = "cactiuser";
-#$database[password] = "cactiuser";
-
-include_once("database.php");
-if ($do_not_read_config != true) {
-    if (isset($config) == false) {
-		/* make a connection to the database */
-		$config_res = db_fetch_assoc("select * from settings");
-		$rows_config_only = sizeof($config_res);
-		
-		if ($rows_config_only > 0) {
-		    foreach ($config_res as $row) {
-				$name_config_only = $row[Name];
-				$config[$name_config_only][value] = $row[Value];
-				$config[$name_config_only][friendlyname] = $row[FriendlyName];
-				$config[$name_config_only][description] = $row[Description];
-		    }
-		}
-		
-		/* built-in snmp support */
-		$config["php_snmp_support"] = function_exists("snmpget");
-    }
-}
-
 /* make sure this variable reflects your operating system type: 'unix' or 'win32' */
-$config[cacti_server_os] = "unix";
+$config["cacti_server_os"] = "unix";
 
-/* reset this variable */
-$do_not_read_config = false;
-
-/* -- you probably will not need to change anything below this line! -- */
+/* built-in snmp support */
+$config["php_snmp_support"] = function_exists("snmpget");
 
 /* colors */
-$colors[dark_outline] = "454E53";
-$colors[dark_bar] = "AEB4B7";
-$colors[panel] = "E5E5E5";
-$colors[panel_text] = "000000";
-$colors[panel_link] = "000000";
-$colors[light] = "F5F5F5";
-$colors[alternate] = "E7E9F2";
-$colors[panel_dark] = "C5C5C5";
+$colors["dark_outline"] = "454E53";
+$colors["dark_bar"] = "AEB4B7";
+$colors["panel"] = "E5E5E5";
+$colors["panel_text"] = "000000";
+$colors["panel_link"] = "000000";
+$colors["light"] = "F5F5F5";
+$colors["alternate"] = "E7E9F2";
+$colors["panel_dark"] = "C5C5C5";
 
-$colors[form_alternate1] = "E5E5E5";
-$colors[form_alternate2] = "F5F5F5";
+$colors["header"] = "00438C";
+$colors["header_panel"] = "6d88ad";
+$colors["header_text"] = "ffffff";
+$colors["form_background_dark"] = "E1E1E1";
 
-$paths[cacti] = read_config_option("path_webroot") . read_config_option("path_webcacti");
-$paths[images] = "$paths[cacti]/graphs";
-$paths[rra] = "$paths[cacti]/rra";
-$paths[log] = "$paths[cacti]/log/rrd.log";
+$colors["form_alternate1"] = "E5E5E5";
+$colors["form_alternate2"] = "F5F5F5";
 
-$config[cacti_version] = "0.8";
+include_once("functions.php");
+include_once("database.php");
+
+/* path variables */
+$paths["cacti"] = read_config_option("path_webroot") . read_config_option("path_webcacti");
+$paths["images"] = $paths["cacti"] . "/graphs";
+$paths["rra"] = $paths["cacti"] . "/rra";
+$paths["log"] = $paths["cacti"] . "/log/rrd.log";
+
+/* current cacti version */
+$config["cacti_version"] = "0.8";
 
 ?>
