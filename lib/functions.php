@@ -364,9 +364,9 @@ function null_out_subsitions($string) {
 
 function expand_title($host_id, $title) {
 	if ((strstr($title, "|")) && (!empty($host_id))) {
-		return subsitute_host_data($title, "|", "|", $host_id);
+		return null_out_subsitions(subsitute_host_data($title, "|", "|", $host_id));
 	}else{
-		return $title;
+		return null_out_subsitions($title);
 	}
 }
 
