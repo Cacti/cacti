@@ -354,9 +354,9 @@ function data_edit() {
 }
 
 function data() {
-	global $colors;
+	global $colors, $input_types;
 
-	html_start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "4", "center", "data_input.php?action=edit");
+	html_start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
@@ -375,30 +375,7 @@ function data() {
 				<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print $data_input["name"];?></a>
 			</td>
 			<td>
-				<p>
-				<?php
-					switch ($data_input["type_id"]) {
-						case DATA_INPUT_TYPE_SCRIPT:
-							print "Script/Command";
-							break;
-						case DATA_INPUT_TYPE_SNMP:
-							print "SNMP";
-							break;
-						case DATA_INPUT_TYPE_SNMP_QUERY:
-							print "SNMP Query";
-							break;
-						case DATA_INPUT_TYPE_SCRIPT_QUERY:
-							print "Script Query";
-							break;
-						case DATA_INPUT_TYPE_SCRIPT_SERVER:
-							print "Script - Script Server";
-							break;
-						case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
-							print "Script Query - Script Server";
-							break;
-					}
-				?>
-				</p>
+				<?php print $input_types{$data_input["type_id"]};?>
 			</td>
 			<td align="right">
 				<a href="data_input.php?action=remove&id=<?php print $data_input["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
