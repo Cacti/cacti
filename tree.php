@@ -268,16 +268,17 @@ function item_remove() {
    --------------------- */
 
 function tree_remove() {
-        if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-                include ('include/top_header.php');
-                form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "tree.php?action=remove&id=" . $_GET["id"]);
-                include ('include/bottom_footer.php');
-                exit;
-        }
-                
-        if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-                db_execute("delete from graph_tree where id=" . $_GET["id"]);
-        }
+	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
+		include ('include/top_header.php');
+		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "tree.php?action=remove&id=" . $_GET["id"]);
+		include ('include/bottom_footer.php');
+		exit;
+	}
+	
+	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
+		db_execute("delete from graph_tree where id=" . $_GET["id"]);
+		db_execute("delete from graph_tree_items where graph_tree_id=" . $_GET["id"]);
+	}
 }
 
 function tree_edit() {
