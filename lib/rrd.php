@@ -25,6 +25,7 @@
 */
 
 define("RRD_NL", " \\\n");
+define("MAX_FETCH_CACHE_SIZE", 5);
 
 function escape_command($command) {
 	return ereg_replace("(\\\$|`)", "", $command);
@@ -305,6 +306,8 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
+$rrd_fetch_cache = array();
+
 /* rrdtool_function_fetch - given a data source, return all of its data in an array
    @arg $local_data_id - the data source to fetch data for
    @arg $start_time - the start time to use for the data calculation. this value can
@@ -313,11 +316,21 @@ function rrdtool_function_tune($rrd_tune_array) {
      either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing all data in this data source broken down
-	 by each data source item. the maximum of all data source items is included in
-	 an item called 'ninety_fifth_percentile_maximum' */
+     by each data source item. the maximum of all data source items is included in
+     an item called 'ninety_fifth_percentile_maximum' */
 function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0) {
+	global $rrd_fetch_cache;
+
 	if (empty($local_data_id)) {
 		return;
+	}
+
+	/* the cache hash is used to identify unique items in the cache */
+	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution);
+
+	/* return the cached entry if available */
+	if (isset($rrd_fetch_cache[$current_hash_cache])) {
+		return $rrd_fetch_cache[$current_hash_cache];
 	}
 
 	$regexps = array();
@@ -396,6 +409,16 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 		for ($i=0; $i<count($max_array); $i++) {
 			$fetch_array["values"][$next_index][$i] = max($max_array[$i]);
 		}
+	}
+
+	/* clear the cache if it gets too big */
+	if (sizeof($rrd_fetch_cache) >= MAX_FETCH_CACHE_SIZE) {
+		$rrd_fetch_cache = array();
+	}
+
+	/* update the cache */
+	if (MAX_FETCH_CACHE_SIZE > 0) {
+		$rrd_fetch_cache[$current_hash_cache] = $fetch_array;
 	}
 
 	return $fetch_array;

@@ -111,9 +111,6 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 	return $return_array;
 }
 
-/* this variable is used as a cache to prevent extra calls to ninety_fifth_percentile() */
-$ninety_fifth_cache = array();
-
 /* variable_ninety_fifth_percentile - given a 95th percentile variable, calculate the 95th percentile
      and format it for display on the graph
    @arg $regexp_match_array - the array that contains each argument in the 95th percentile variable. it
@@ -133,19 +130,17 @@ $ninety_fifth_cache = array();
      varies depending on the RRA in use
    @returns - a string containg the 95th percentile suitable for placing on the graph */
 function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end) {
-	global $ninety_fifth_cache, $graph_item_types;
+	global $graph_item_types;
 
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
 
 	if (($regexp_match_array[3] == "current") || ($regexp_match_array[3] == "max")) {
-		if (!isset($ninety_fifth_cache{$graph_item["local_data_id"]})) {
-			$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], $graph_start, $graph_end);
-		}
+		$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], $graph_start, $graph_end);
 	}elseif ($regexp_match_array[3] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
-			if ((!isset($ninety_fifth_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
+			if (!empty($graph_items[$t]["local_data_id"])) {
 				$ninety_fifth_cache{$graph_items[$t]["local_data_id"]} = ninety_fifth_percentile($graph_items[$t]["local_data_id"], $graph_start, $graph_end);
 			}
 		}
@@ -185,9 +180,6 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 	return round($ninety_fifth, $round_to);
 }
 
-/* this variable is used as a cache to prevent extra calls to bandwidth_summation() */
-$summation_cache = array();
-
 /* variable_bandwidth_summation - given a bandwidth summation variable, calculate the summation
      and format it for display on the graph
    @arg $regexp_match_array - the array that contains each argument in the bandwidth summation variable. it
@@ -210,7 +202,7 @@ $summation_cache = array();
    @arg $ds_step - how many seconds each period represents
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
-	global $summation_cache, $graph_item_types;
+	global $graph_item_types;
 
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
@@ -223,19 +215,15 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}
 
 	if ($regexp_match_array[2] == "current") {
-		if (!isset($summation_cache{$graph_item["local_data_id"]})) {
-			$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
-		}
+		$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 	}elseif ($regexp_match_array[2] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
-			if ((!isset($summation_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
+			if (!empty($graph_items[$t]["local_data_id"])) {
 				$summation_cache{$graph_items[$t]["local_data_id"]} = bandwidth_summation($graph_items[$t]["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 			}
 		}
 	}elseif ($regexp_match_array[2] == "atomic") {
-		if (!isset($summation_cache{$graph_item["local_data_id"]})) {
-			$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, 1);
-		}
+		$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, 1);
 	}
 
 	$summation = 0;
