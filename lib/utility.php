@@ -59,12 +59,20 @@ function update_poller_cache($local_data_id) {
 		host.snmp_username,
 		host.snmp_password,
 		host.snmp_port,
-		host.snmp_timeout
+		host.snmp_timeout,
+		host.disabled
 		from
 		data_local,host
 		where data_local.host_id=host.id
-		and data_local.id=$local_data_id
-		and host.disabled=''");
+		and data_local.id=$local_data_id");
+	
+	/* clear cache for this local_data_id */
+	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
+	
+	/* check to see if this data source's host is disabled */
+	if ((!empty($host["id"])) && ($host["disabled"] == "on")) {
+		return;
+	}
 	
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == "3") || ($data_input["type_id"] == "4")) {
@@ -83,9 +91,6 @@ function update_poller_cache($local_data_id) {
 			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
 			and data_template_rrd.local_data_id=$local_data_id");
 	}
-	
-	/* clear cache for this local_data_id */
-	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
 	
 	if ($data_input["active"] == "on") {
 		switch ($data_input["type_id"]) {
