@@ -885,7 +885,10 @@ function ds() {
 							
 						</select>
 					</td>
-					<td width="5"></td>
+					<td width="30"></td>
+					<td width="60">
+						Search:&nbsp;
+					</td>
 					<td width="1">
 						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
 					</td>
