@@ -376,7 +376,7 @@ function create_list($data, $name, $value, $prev) {
                                 print " selected";
                         }
 			
-                        print ">" . title_trim($data[$id], 75) . "</option>\n";
+                        print ">" . title_trim(null_out_subsitions($data[$id]), 75) . "</option>\n";
                 }
         }else{
                 foreach ($data as $row) {
@@ -386,7 +386,7 @@ function create_list($data, $name, $value, $prev) {
                                 print " selected";
                         }
 			
-                        print ">" . title_trim($row[$name], 75) . "</option>\n";
+                        print ">" . title_trim(null_out_subsitions($row[$name]), 75) . "</option>\n";
                 }
         }
 }
