@@ -651,7 +651,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')
 				and snmp_query.id=" . $snmp_query_array["snmp_query_id"]), "type_code", "id");
 
-			$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='" . $snmp_query_array["snmp_index_on"] . "' and snmp_index='" . $snmp_query_array["snmp_index"] . "'");
+			$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id='$host_id' and snmp_query_id='" . $snmp_query_array["snmp_query_id"] . "' and field_name='" . $snmp_query_array["snmp_index_on"] . "' and snmp_index='" . $snmp_query_array["snmp_index"] . "'");
 
 			/* save the value to index on (ie. ifindex, ifip, etc) */
 			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_index_on"] . "')");
