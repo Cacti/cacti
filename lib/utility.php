@@ -23,6 +23,35 @@
    */?>
 <?
 
+$struct_graph = array("image_format_id", "title", "height", "width", "upper_limit",
+		      "lower_limit", "vertical_label", "auto_scale", "auto_scale_opts",
+		      "auto_scale_log", "auto_scale_rigid", "auto_padding", "base_value",
+		      "grouping", "export", "unit_value", "unit_exponent_value");
+
+
+function push_out_graph($graph_template_graph_id) {
+	global $struct_graph;
+	
+	/* get information about this graph template */
+	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where id=$graph_template_graph_id");
+	
+	/* must be a graph template */
+	if ($graph_template_graph[graph_template_id] == 0) { return 0; }
+	
+	foreach ($struct_graph as $struct) {
+		$value_type = "t_$struct";
+		
+		if ($graph_template_graph[$value_type] == "") {
+			db_execute("update graph_templates_graph set $struct='$graph_template_graph[$struct]' where graph_template_id=$graph_template_graph[id]"); 
+		}
+	}
+}
+
+function push_out_graph_item($graph_template_item_id) {
+	
+	
+}
+
 function change_graph_template($local_graph_id, $graph_template_id, $_graph_template_id) {
 	/* always update tables to new graph template (or no graph template) */
 	db_execute("update graph_templates_graph set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
