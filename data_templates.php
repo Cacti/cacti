@@ -124,7 +124,6 @@ function template_save() {
 	$save["data_input_id"] = $_POST["data_input_id"];
 	$save["t_name"] = $_POST["t_name"];
 	$save["name"] = $_POST["name"];
-	$save["data_source_path"] = $_POST["data_source_path"];
 	$save["t_active"] = $_POST["t_active"];
 	$save["active"] = $_POST["active"];
 	$save["t_rrd_step"] = $_POST["t_rrd_step"];
@@ -191,7 +190,7 @@ function template_edit() {
 	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
 	
 	if (isset($_GET["data_template_id"])) {
-		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["data_template_id"]);
+		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["data_template_id"] . " and local_data_id=0");
 		$template = db_fetch_row("select * from data_template where id=" . $_GET["data_template_id"]);
 	}else{
 		unset($template_data);
@@ -216,14 +215,17 @@ function template_edit() {
 	
 	start_box("Data Template Configuration", "98%", $colors["header"], "3", "center", "");
 	
+	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
+	unset($struct_data_source["data_source_path"]);
+	
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		DrawStrippedFormItemCheckBox("t_" . $field_name,$template{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_data{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
-		draw_nontemplated_item($field_array, $field_name, $template[$field_name]);
+		draw_nontemplated_item($field_array, $field_name, $template_data[$field_name]);
 		
 		print "</tr>\n";
 	}
