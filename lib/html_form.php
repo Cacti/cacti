@@ -553,9 +553,9 @@ function draw_tree_dropdown($current_tree_id) {
 	
 	$html = "";
 	
-	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
-	
 	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
+		
 		if ($current_user["graph_policy"] == "1") {
 			$sql_where = "where user_auth_tree.user_id is null";
 		}elseif ($current_user["graph_policy"] == "2") {
@@ -607,8 +607,8 @@ function draw_tree_dropdown($current_tree_id) {
 				$html .= ">" . $tree["name"] . "</option>\n";
 			}
 		
-		print "</select>\n";
-		print "</td></tr></table></td></form>\n";	
+		$html .= "</select>\n";
+		$html .= "</td></tr></table></td></form>\n";	
 	}elseif (sizeof($tree_list) == 1) {
 		/* there is only one tree; use it */
 		//print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
