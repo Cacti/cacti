@@ -31,6 +31,7 @@ $input = true;
 $order_key_array = array(); /* for graph trees */
 
 /* defaults */
+$database_type = "mysql";
 $database_hostname = "localhost";
 $database_username = "root";
 $database_password = "";
