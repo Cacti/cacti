@@ -339,15 +339,15 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 			else
 				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
 
-			if ($log_type == "err") {
-				syslog(LOG_ERR, $message);
+			if (($log_type == "err") && (read_config_option("log_perror"))) {
+				syslog(LOG_CRIT, $message);
 			}
 
-			if ($log_type == "warn") {
+			if (($log_type == "warn") && (read_config_option("log_pwarn"))) {
 				syslog(LOG_WARNING, $message);
 			}
 
-			if (($log_type == "stat") || ($log_type == "note")){
+			if ((($log_type == "stat") || ($log_type == "note")) && (read_config_option("log_pstat"))) {
 				syslog(LOG_INFO, $message);
 			}
 
@@ -375,8 +375,8 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 	if ($status == HOST_DOWN) {
 		/* update total polls, failed polls and availability */
-		$hosts[$host_id]["failed_polls"] .= + 1;
-		$hosts[$host_id]["total_polls"] .= + 1;
+		$hosts[$host_id]["failed_polls"]++;
+		$hosts[$host_id]["total_polls"]++;
 		$hosts[$host_id]["availability"] = 100 * ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
 		/* determine the error message to display */
@@ -391,10 +391,10 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		/* determine if to send an alert and update remainder of statistics */
 		if ($hosts[$host_id]["status"] == HOST_UP) {
 			/* increment the event failure count */
-			$hosts[$host_id]["status_event_count"] .= + 1;
+			$hosts[$host_id]["status_event_count"]++;
 
 			/* if it's time to issue an error message, indicate so */
-			if ($ping_failure_count >= $hosts[$host_id]["status_event_count"]) {
+			if ($hosts[$host_id]["status_event_count"] >= $ping_failure_count) {
 				/* host is now down, flag it that way */
 				$hosts[$host_id]["status"] = HOST_DOWN;
 
@@ -405,7 +405,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 					$hosts[$host_id]["status_fail_date"] = date("Y-m-d h:i:s");
 				}
 			/* host is down, but not ready to issue log message */
-		} else {
+			} else {
 				/* host down for the first time, set event date */
 				if ($hosts[$host_id]["status_event_count"] == 1) {
 					$hosts[$host_id]["status_fail_date"] = date("Y-m-d h:i:s");
@@ -417,12 +417,12 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			$hosts[$host_id]["status"] = HOST_DOWN;
 		/* host is already down, just update stats */
 		} else {
-			$hosts[$host_id]["status_event_count"] .= + 1;
+			$hosts[$host_id]["status_event_count"]++;
 		}
 	/* host is up!! */
 	} else {
 		/* update total polls and availability */
-		$hosts[$host_id]["total_polls"] .= + 1;
+		$hosts[$host_id]["total_polls"]++;
 		$hosts[$host_id]["availability"] = ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
 		/* determine the ping statistic to set and do so */
@@ -457,20 +457,23 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				$hosts[$host_id]["status"] = HOST_RECOVERING;
 				$hosts[$host_id]["status_event_count"] = 1;
 			} else {
-				$hosts[$host_id]["status_event_count"] .= + 1;
+				$hosts[$host_id]["status_event_count"]++;
 			}
 
 			/* if it's time to issue a recovery message, indicate so */
-			if ($ping_recovery_count >= $hosts[$host_id]["status_event_count"]) {
+			if ($hosts[$host_id]["status_event_count"] >= $ping_recovery_count) {
 				/* host is up, flag it that way */
 				$hosts[$host_id]["status"] = HOST_UP;
 
 				$issue_log_message = true;
 
-				/* update the recovery date only if the failure count is 1 */
+				/* update the recovery date only if the recovery count is 1 */
 				if ($ping_recovery_count == 1) {
 					$hosts[$host_id]["status_rec_date"] = date("Y-m-d h:i:s");
 				}
+
+				/* reset the event counter */
+				$hosts[$host_id]["status_event_count"] = 0;
 			/* host is recovering, but not ready to issue log message */
 		} else {
 				/* host recovering for the first time, set event date */
@@ -484,15 +487,19 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 		if (($hosts[$host_id]["status"] == HOST_UP) || ($hosts[$host_id]["status"] == HOST_RECOVERING)) {
 			/* log ping result if we are to use a ping for reachability testing */
-			if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP)) {
+			if ($ping_availability == AVAIL_SNMP_AND_PING) {
 				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+			} elseif ($ping_availability == AVAIL_SNMP) {
 				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} else {
 				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 			}
 		} else {
-			if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP)) {
+			if ($ping_availability == AVAIL_SNMP_AND_PING) {
 				cacti_log("Host[$host_id] PING ERROR: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Host[$host_id] SNMP ERROR: " . $ping->snmp_response, $print_data_to_stdout);
+			} elseif ($ping_availability == AVAIL_SNMP) {
 				cacti_log("Host[$host_id] SNMP ERROR: " . $ping->snmp_response, $print_data_to_stdout);
 			} else {
 				cacti_log("Host[$host_id] PING ERROR: " . $ping->ping_response, $print_data_to_stdout);
@@ -503,9 +510,9 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	/* if there is supposed to be an event generated, do it */
 	if ($issue_log_message) {
 		if ($hosts[$host_id]["status"] == HOST_DOWN) {
-			cacti_log("Host[$host_id] ERROR: Host is DOWN Message: " . $hosts[$host_id]["status_last_error"], $print_data_to_stdout);
+			cacti_log("Host[$host_id] ERROR: HOST EVENT: Host is DOWN Message: " . $hosts[$host_id]["status_last_error"], $print_data_to_stdout);
 		} else {
-			cacti_log("Host[$host_id] NOTICE: Host Returned from DOWN State: ", $print_data_to_stdout);
+			cacti_log("Host[$host_id] NOTICE: HOST EVENT: Host Returned from DOWN State: ", $print_data_to_stdout);
 		}
 	}
 
