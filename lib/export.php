@@ -64,7 +64,7 @@ function &graph_template_to_xml($graph_template_id) {
 		reset($struct_graph_item);
 		while (list($field_name, $field_array) = each($struct_graph_item)) {
 			if (($field_name == "task_item_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("data_template") . get_hash_data_template(db_fetch_cell("select data_template_id from data_template_rrd where id=" . $item{$field_name})) . "</$field_name>\n";
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("data_template_item") . get_hash_data_template($item{$field_name}, "data_template_item") . "</$field_name>\n";
 			}elseif (($field_name == "cdef_id") && (!empty($item{$field_name}))) {
 				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
 			}elseif (($field_name == "gprint_id") && (!empty($item{$field_name}))) {
@@ -571,7 +571,7 @@ function &data_query_to_xml($data_query_id) {
 		
 		$snmp_query_graph_rrd_sv = db_fetch_assoc("select * from snmp_query_graph_rrd_sv where snmp_query_graph_id=" . $item["id"] . " order by sequence");
 		$snmp_query_graph_sv = db_fetch_assoc("select * from snmp_query_graph_sv where snmp_query_graph_id=" . $item["id"] . " order by sequence");
-		$snmp_query_graph_rrd = db_fetch_assoc("select * from snmp_query_graph_rrd where snmp_query_graph_id=" . $item["id"]);
+		$snmp_query_graph_rrd = db_fetch_assoc("select * from snmp_query_graph_rrd where snmp_query_graph_id=" . $item["id"] . " and data_template_id > 0");
 		
 		/* XML Branch: <graphs/rrd> */
 		
