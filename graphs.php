@@ -35,6 +35,7 @@ define("GRAPH_MAX_LEN", 80);
 $graph_actions = array(
 	1 => "Delete",
 	2 => "Change Graph Template",
+	5 => "Change Host",
 	3 => "Duplicate",
 	4 => "Convert to Graph Template"
 	);
@@ -165,6 +166,7 @@ function form_save() {
 	
 	if (isset($_POST["save_component_graph"])) {
 		$save1["id"] = $_POST["local_graph_id"];
+		$save1["host_id"] = $_POST["host_id"];
 		$save1["graph_template_id"] = $_POST["graph_template_id"];
 		
 		$save2["id"] = $_POST["graph_template_graph_id"];
@@ -387,6 +389,10 @@ function form_actions() {
 					values (" . $tree["graph_tree_id"] . ",'','$order_key'," . $selected_items[$i] . ",
 					1)");
 			}
+		}elseif ($_POST["drp_action"] == "5") { /* change host */
+			for ($i=0;($i<count($selected_items));$i++) {
+				db_execute("update graph_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
+			}
 		}
 		
 		header("Location: graphs.php");
@@ -464,6 +470,15 @@ function form_actions() {
 				</td>
 			</tr>\n
 			";
+	}elseif ($_POST["drp_action"] == "5") { /* change host */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Choose a new host for these graphs:</p>
+					<p>$graph_list</p>
+					<p><strong>New Host:</strong><br>"; form_base_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
+				</td>
+			</tr>\n
+			";
 	}
 	
 	if (!isset($graph_array)) {
@@ -520,6 +535,7 @@ function item() {
 			where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 			order by graph_templates_item.sequence");
 		
+		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
 		$header_label = "[edit: " . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "]";
 	}
 	
@@ -532,7 +548,7 @@ function item() {
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
 	
 	if (empty($graph_template_id)) {
-		$add_text = "graphs.php?action=item_edit&local_graph_id=" . $_GET["id"];
+		$add_text = "graphs.php?action=item_edit&local_graph_id=" . $_GET["id"] . "&host_id=$host_id";
 	}else{
 		$add_text = "";
 	}
@@ -633,6 +649,17 @@ function item() {
 		
 		$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id order by name");
 		
+		/* modifications to the default graph items array */
+		$struct_graph_item["task_item_id"]["sql"] = "select
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			data_template_rrd.id 
+			from data_template_data,data_template_rrd,data_local 
+			left join host on data_local.host_id=host.id
+			where data_template_rrd.local_data_id=data_local.id 
+			and data_template_data.local_data_id=data_local.id
+			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "
+			order by name";
+		
 		if (sizeof($input_item_list) > 0) {
 		foreach ($input_item_list as $item) {
 			$current_def_value = db_fetch_row("select 
@@ -709,6 +736,7 @@ function item_edit() {
 	
 	if (!empty($_GET["id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
+		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["local_graph_id"]);
 	}
 	
 	start_box("Template Item Configuration", "98%", $colors["header"], "3", "center", "");
@@ -725,6 +753,17 @@ function item_edit() {
 		}else{
 			$struct_graph_item["task_item_id"]["default"] = 0;
 		}
+		
+		/* modifications to the default graph items array */
+		$struct_graph_item["task_item_id"]["sql"] = "select
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			data_template_rrd.id 
+			from data_template_data,data_template_rrd,data_local 
+			left join host on data_local.host_id=host.id
+			where data_template_rrd.local_data_id=data_local.id 
+			and data_template_data.local_data_id=data_local.id
+			" . (((!empty($host_id)) || (!empty($_GET["host_id"]))) ? (!empty($host_id) ? " and data_local.host_id=$host_id" : " and data_local.host_id=" . $_GET["host_id"]) : "") . "
+			order by name";
 	}
 	
 	$i = 0;
@@ -1016,6 +1055,7 @@ function graph_edit() {
 		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . $_GET["id"]);
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
 		
+		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $graphs["title"] . "]";
 		
 		if ($graphs["graph_template_id"] == "0") {
@@ -1044,6 +1084,13 @@ function graph_edit() {
 		<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
 			graph_templates.id,graph_templates.name 
 			from graph_templates"),"name","id",(isset($graphs) ? $graphs["graph_template_id"] : "0"),"None","0");?>
+	</tr>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Host</font><br>
+			Choose the host that this data source belongs to.
+		</td>
+		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",(isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),"None","0");?>
 	</tr>
 	
 	<?php
@@ -1110,7 +1157,7 @@ function graph() {
 		$_REQUEST["host_id"] = ""; /* default value */
 	}
 	
-	start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit");
+	start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
 	
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
@@ -1155,50 +1202,28 @@ function graph() {
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
-	if (!empty($_REQUEST["host_id"])) {
-		$sql_base = "from graph_templates_graph
-			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
-			left join graph_templates_item on graph_local.id=graph_templates_item.local_graph_id
-			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-			left join data_local on data_template_rrd.local_data_id=data_local.id
-			where data_local.host_id=" . $_REQUEST["host_id"] . "
-			and graph_templates_graph.local_graph_id>0
-			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
-			group by graph_templates_graph.id";
-		
-		$total_rows = sizeof(db_fetch_assoc("select
-			graph_templates_graph.local_graph_id
-			$sql_base"));
-		$graph_list = db_fetch_assoc("select
-			graph_templates_graph.id,
-			graph_templates_graph.local_graph_id,
-			graph_templates_graph.height,
-			graph_templates_graph.width,
-			graph_templates_graph.title,
-			graph_templates.name
-			$sql_base
-			order by graph_templates_graph.title
-			limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
-	}else{
-		$total_rows = db_fetch_cell("select
-			COUNT(id)
-			from graph_templates_graph
-			where graph_templates_graph.local_graph_id!=0
-			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'");
-		$graph_list = db_fetch_assoc("select 
-			graph_templates_graph.id,
-			graph_templates_graph.local_graph_id,
-			graph_templates_graph.height,
-			graph_templates_graph.width,
-			graph_templates_graph.title,
-			graph_templates.name
-			from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-			where graph_templates_graph.local_graph_id!=0
-			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
-			order by graph_templates_graph.title
-			limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
-	}
+	$total_rows = db_fetch_cell("select
+		COUNT(graph_templates_graph.id)
+		from graph_templates_graph
+		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+		where graph_templates_graph.local_graph_id!=0
+		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]));
+	
+	$graph_list = db_fetch_assoc("select 
+		graph_templates_graph.id,
+		graph_templates_graph.local_graph_id,
+		graph_templates_graph.height,
+		graph_templates_graph.width,
+		graph_templates_graph.title,
+		graph_templates.name
+		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
+		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+		where graph_templates_graph.local_graph_id!=0
+		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
+		order by graph_templates_graph.title
+		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 	
 	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
 	user can jump straight to it */
