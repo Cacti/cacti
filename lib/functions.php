@@ -1232,6 +1232,8 @@ function draw_navigation_text() {
 		"user_admin.php:user_remove" => array("title" => "(Remove)", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
 		"user_admin.php:graph_perms_edit" => array("title" => "Graph Permissions", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
 		"about.php:" => array("title" => "About Cacti", "mapping" => "index.php:", "url" => "about.php", "level" => "1"),
+		"templates_export.php:" => array("title" => "Export Templates", "mapping" => "index.php:", "url" => "templates_export.php", "level" => "1"),
+		"templates_export.php:save" => array("title" => "Export Results", "mapping" => "index.php:,templates_export.php:", "url" => "templates_export.php", "level" => "2"),
 		);
 	
 	$current_page = basename($_SERVER["PHP_SELF"]);

@@ -158,8 +158,7 @@ $custom_data_source_types = array(
 
 $menu = array(
 	"Create" => array(
-		"graphs_new.php" => "New Graphs",
-		"ss" => "Import Graphs"
+		"graphs_new.php" => "New Graphs"
 		),
 	"Management" => array(
 		"graphs.php" => array(
@@ -180,8 +179,12 @@ $menu = array(
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
 		"host_templates.php" => "Host Templates",
-		"data_templates.php" => "Data Templates",
-		"seffs.php" => "Import Templates"
+		"data_templates.php" => "Data Templates"
+		),
+	"Import/Export" => array(
+		"graphs_import.php" => "Import Graphs",
+		"templates_import.php" => "Import Templates",
+		"templates_export.php" => "Export Templates"
 		),
 	"Configuration"  => array(
 		"utilities.php" => "Utilities",
@@ -206,7 +209,8 @@ $user_auth_realms = array(
 	12 => "Update Host Templates",
 	13 => "SNMP Queries",
 	14 => "Update CDEF's",
-	15 => "Global Settings"
+	15 => "Global Settings",
+	16 => "Export Data"
 	);
 
 $user_auth_realm_filenames = array(
@@ -233,6 +237,7 @@ $user_auth_realm_filenames = array(
 	"rra.php" => 9,
 	"settings.php" => 15,
 	"snmp.php" => 13,
+	"templates_export.php" => 16,
 	"tree.php" => 4,
 	"user_admin.php" => 1,
 	"utilities.php" => 15
