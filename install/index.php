@@ -84,15 +84,6 @@ we want the user to input. The "name" field must exist in the 'settings' table f
 this to work. Cacti also uses different default values depending on what OS it is
 running on. */
 
-/* cacti Web Root */
-$input["path_webcacti"]["default"] = str_replace("/install", "", dirname($_SERVER["PHP_SELF"]));
-$input["path_webcacti"]["type"] = "textbox";
-
-/* Web Server Document Root */
-$input["path_webroot"]["default"] = str_replace("\\\\", "/", $current_document_root);
-$input["path_webroot"]["check"] = "";
-$input["path_webroot"]["type"] = "textbox";
-
 /* rrdtool Binary Path */
 $input["path_rrdtool"]["check"] = "";
 $input["path_rrdtool"]["type"] = "textbox";
