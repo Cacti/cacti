@@ -42,8 +42,6 @@ include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/ping.php");
 
-$verbosity = read_config_option("log_verbosity");
-
 if ( $_SERVER["argc"] == 1 ) {
 	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
 }else{
@@ -85,7 +83,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
 		$output = fgets($pipes[1], 1024);
 		if (substr_count($output, "Started") != 0) {
-			if ($verbosity == HIGH) {
+			if ($config["verbosity"] == HIGH) {
 				log_data("PHPSERVER: Server Started Properly\n");
 			}
 		}
@@ -93,7 +91,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 	}else {
 		$using_proc_function = false;
-		if ($verbosity == HIGH) {
+		if ($config["verbosity"] == HIGH) {
 			log_data("WARNING: PHP version 4.3 or above is recommended for performance considerations.\n");
 		}
 	}
@@ -115,16 +113,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$failure_typpe = "ICMP";
 					$host_down = true;
 
-					if ($verbosity == HIGH) {
+					if ($config["verbosity"] == HIGH) {
 						log_data("ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.\n");
 					}
 				} else {
-					if ($verbosity == DEBUG) {
+					if ($config["verbosity"] == DEBUG) {
 						log_data("ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.\n");
 					}
 				}
 			} else {
-				if ($verbosity == HIGH) {
+				if ($config["verbosity"] == HIGH) {
 					log_data("NOTE: PHP version is: " . phpversion() . " Please upgrade to PHP 4.3 or Above to obtain ping statistics.\n");
 				}
 			}
@@ -164,7 +162,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					where poller_reindex.host_id=" . $item["host_id"]);
 
 				if ((sizeof($reindex) > 0) && (!$host_down)) {
-					if ($verbosity == HIGH) {
+					if ($config["verbosity"] == HIGH) {
 						log_data("Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.\n");
 					}
 
@@ -203,7 +201,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SNMP: /* snmp */
 				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
 
-				if ($verbosity == HIGH) {
+				if ($config["verbosity"] == HIGH) {
 					log_data("SNMP: " . $item["hostname"] . ":" . $item["snmp_port"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", value: $output\n");
 				}
 
@@ -211,7 +209,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SCRIPT: /* script (popen) */
 				$output = exec_poll($item["arg1"]);
 
-				if ($verbosity == HIGH) {
+				if ($config["verbosity"] == HIGH) {
 					log_data("CMD: " . $item["arg1"] . ", output: $output\n");
 				}
 
@@ -219,7 +217,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
 				$output = exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp);
 
-				if ($verbosity == HIGH) {
+				if ($config["verbosity"] == HIGH) {
 					log_data("CMD[PHP]: " . $item["arg1"] . ", output: $output");
 				}
 
@@ -245,7 +243,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$return_value = proc_close($cactiphp);
 	}
 }else{
-	if ($verbosity == HIGH) {
+	if ($config["verbosity"] == HIGH) {
 		log_data("ERROR: Either there are no items in the cache or polling is disabled\n");
 	}
 }

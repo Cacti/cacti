@@ -141,8 +141,8 @@ $settings = array(
 			"array" => $logfile_verbosity,
 			),
 		"poller_log" => array(
-			"friendly_name" => "Poller Events",
-			"description" => "What Cacti poller messages should be placed in the log.",
+			"friendly_name" => "Poller Syslog/Eventlog Selection",
+			"description" => "If you are using the Syslog/Eventlog, What Cacti poller messages should be placed in the Syslog/Eventlog.",
 			"method" => "checkbox_group",
 			"tab" => "poller",
 			"items" => array(
@@ -152,14 +152,6 @@ $settings = array(
 					),
 				"log_perror" => array(
 					"friendly_name" => "Poller Errors",
-					"default" => ""
-					),
-				"log_create" => array(
-					"friendly_name" => "RRD Create Syntax",
-					"default" => ""
-					),
-				"log_update" => array(
-					"friendly_name" => "RRD Update Syntax",
 					"default" => ""
 					)
 				),

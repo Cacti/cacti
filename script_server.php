@@ -41,12 +41,8 @@ if ($_SERVER["argc"] == 2)
 else
 	$environ = "cmd";
 
-// determine logging level
-$verbosity = read_config_option("log_verbosity");
-if ($verbosity == "") $verbosity = 1;
-
 // send status back to the server
-if ($verbosity == HIGH) {
+if ($config["verbosity"] == HIGH) {
 	log_data("PHPSERVER: Script Server has Started - Parent is " . $environ . "\n");
 }
 fputs(STDOUT, "PHPSERVER: PHP Script Server has Started - Parent is " . $environ . "\n");
@@ -69,7 +65,7 @@ while (1) {
 			$preparm = substr($remainder,strpos($remainder," ")+1);
 			$parm = explode(" ",$preparm);
 
-			if ($verbosity == DEBUG) {
+			if ($config["verbosity"] == DEBUG) {
 				log_data("Include->".$inc."<-\n");
 				log_data("Command->".$cmd."<-\n");
 				log_data("Arguments->".$preparm."<-\n");
@@ -104,7 +100,7 @@ while (1) {
 				} else {
 					fputs(STDOUT, $result . "\n");
 				}
-				if ($verbosity == HIGH) {
+				if ($config["verbosity"] == HIGH) {
 					log_data("PHPSERVER: CMD:" . $in_string . " output " . $result . "\n");
 				}
 			} else {
@@ -113,7 +109,7 @@ while (1) {
 			}
 		}elseif ($in_string == "quit") {
 			fputs(STDOUT, "PHPSERVER: PHP Script Server Shutdown request received, exiting\n");
-			if ($verbosity == HIGH) {
+			if ($config["verbosity"] == HIGH) {
 				log_data("PHPSERVER: PHP Script Server Shutdown request received, exiting\n");
 			}
 			break;
