@@ -58,7 +58,7 @@ case 'login':
 
 					if ($ldap_new == true) {
 						/* acl */
-						$user_auth_realm = db_fetch_assoc("SELECT realm_id FROM `user_auth_realm` WHERE user_id = $user_id");
+						$user_auth_realm = db_fetch_assoc("SELECT realm_id FROM `user_auth_realm` WHERE user_id = " . $template_user['id']);
 
 						if (isset($user_auth_realm)) {
 							foreach ($user_auth_realm as $item) {
@@ -67,7 +67,7 @@ case 'login':
 						}
 
 						/* graph */
-						$user_auth_graph = db_fetch_assoc("SELECT local_graph_id FROM `user_auth_graph` WHERE user_id = $user_id");
+						$user_auth_graph = db_fetch_assoc("SELECT local_graph_id FROM `user_auth_graph` WHERE user_id = " . $template_user['id']);
 
 						if (isset($user_auth_graph)) {
 							foreach ($user_auth_graph as $item) {
@@ -76,7 +76,7 @@ case 'login':
 						}
 
 						/* hierarchy */
-						$user_auth_tree = db_fetch_assoc("SELECT tree_id FROM `user_auth_tree` WHERE UserID = $user_id");
+						$user_auth_tree = db_fetch_assoc("SELECT tree_id FROM `user_auth_tree` WHERE UserID = " . $template_user['id']);
 
 						if (isset($user_auth_tree)) {
 							foreach ($user_auth_tree as $item) {
@@ -85,7 +85,7 @@ case 'login':
 						}
 
 						/* hosts */
-						$user_auth_hosts = db_fetch_assoc("SELECT hostname, user_id, policy FROM `user_auth_hosts` WHERE user_id = $user_id");
+						$user_auth_hosts = db_fetch_assoc("SELECT hostname, user_id, policy FROM `user_auth_hosts` WHERE user_id = " . $template_user['id']);
 
 						if (isset($user_auth_hosts)) {
 							foreach ($user_auth_hosts as $item) {
