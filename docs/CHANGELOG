@@ -1,5 +1,43 @@
 raXnet - cacti
 
+0.8.6a
+-bug#0000287: Non-host based scripts failing to populate the poller cache (0.8.6).
+-bug#0000285: Data query variables on graphs should reflect the data source of
+each individual graph item (0.8.6).
+-bug#0000289: Check the value of PHP's "magic_quotes_gpc" setting to prevent
+potential security holes (0.8.6).
+====
+-bug#0000295: Problem with the DHTML tree when Cacti is included inside of a
+parent frame.
+-bug#0000311: Set PHP's "max_execution_time" to "0" during all upgrades.
+-bug#0000303: Correct the logic that checks if the export path directory
+exists or not.
+-bug#0000310: Problems viewing data templates with the "Data Input Method" set
+to "None".
+-bug#0000304: Problems displaying duplicate data templates on the main "Data
+Templates" screen.
+-bug#0000302: Update the Windows install documentation to mention the "PHPRC"
+environment variable.
+-bug#0000293: Problem with the JavaScript that grays out already created graphs
+on the "New Graphs" page.
+-bug#0000312: Make sure that the "host_graph" table is populated in the installer
+for users coming from a version less than 0.8.4.
+-bug#0000296: Remove references to PHP's ob_flush() function it doesn't exist
+until verion 4.2.
+-bug#0000314: Respect graph export timing settings.
+-bug: Problem saving a templated graph or data source that contained a checkbox
+field that had a value different from the default.
+-bug: Typo in graphs.php when placing graph(s) on a tree.
+-bug: Make sure that there is a user logged in before trying to read a per-user
+graph configuration value.
+-bug: Fix support for multiple cmd.php/cactid polling sessions in a single
+poller.php session.
+-bug: Revert back to older RRDTool update method as to correct several poller
+related issues with 0.8.6.
+-bug: Fix PHP-SNMP support in cmd.php.
+-bug: Fix multiple graph/data template corruption issues when converting from
+graphs or data sources.
+
 0.8.6
 -bug#0000051: HTTP header caching problems (0.8.5).
 -bug#0000121: It is no longer possible to add the same graph twice to a single
@@ -10,6 +48,7 @@ graph tree branch.
 -bug#0000139: Graph tree deletion corruption issue (0.8.5a).
 -bug#0000140: Replaced the 'None' option in several host drop downs with 'Any'
 and redefined 'None' to mean host = 0 (0.8.5a).
+====
 -bug#0000144: Possible corruption issues when deleting tree items from the root
 of the tree.
 -bug#0000149: Error using the 'total' type for 95th percentile or bandwidth
