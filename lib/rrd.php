@@ -440,6 +440,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			$text_format[$graph_item_id] = $graph_item["text_format"];
 			$value_format[$graph_item_id] = $graph_item["value"];
 			
+			if (strstr($text_format[$graph_item_id], "|date_time|")) {
+				$text_format[$graph_item_id] = str_replace("|date_time|", date('D M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $text_format[$graph_item_id]);
+			}
+			
 			/* set hard return variable if selected (\n) */
 			if ($graph_item["hard_return"] == "on") { 
 				$hardreturn[$graph_item_id] = "\\n"; 

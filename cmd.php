@@ -24,7 +24,7 @@
  | - raXnet - http://www.raxnet.net/                                       |
  +-------------------------------------------------------------------------+
 */
-
+$start = time();
 ini_set("max_execution_time", "0");
 
 include("include/config.php");
@@ -99,6 +99,9 @@ if (isset($update_cache_array)) {
 	print "There are no items in your poller cache. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
 }
 
+/* insert the current date/time for graphs */
+db_execute("replace into settings (name,value) values ('date',NOW())");
+print "time: " . (time()-$start) . "\n";
 //print_r($update_cache_array);
 
 /* dump static images/html file if user wants it */
