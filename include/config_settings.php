@@ -69,13 +69,13 @@ $settings = array(
 			),
 		"path_html_export" => array(
 			"friendly_name" => "HTML Export Path",
-			"description" => "If you want cacti to write static png's and html files a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way. Leave this field blank to disable this feature.",
+			"description" => "If you want Cacti to write static PNG's and HTML files to a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way. Leave this field blank to disable this feature.",
 			"method" => "textbox",
 			"max_length" => "255"
 			),
 		"path_html_export_skip" => array(
 			"friendly_name" => "Export Every x Times",
-			"description" => "If you don't want cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.",
+			"description" => "If you don't want Cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.",
 			"method" => "textbox",
 			"tab" => "path",
 			"max_length" => "10"
@@ -172,7 +172,7 @@ $settings = array(
 	"authentication" => array(
 		"global_auth" => array(
 			"friendly_name" => "Use Cacti's Builtin Authentication",
-			"description" => "By default cacti handles user authentication, which allows you to create users and give them rights to different areas within cacti. You can optionally turn this off if you are other other means of authentication.",
+			"description" => "By default Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti. You can optionally turn this off if you are using other other means of authentication.",
 			"method" => "checkbox",
 			"tab" => "authentication"
 			),

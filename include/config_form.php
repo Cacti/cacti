@@ -138,7 +138,7 @@ $fields_data_input_edit = array(
 	"input_string" => array(
 		"method" => "textbox",
 		"friendly_name" => "Input String",
-		"description" => "The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.",
+		"description" => "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.",
 		"value" => "|arg1:input_string|",
 		"max_length" => "255",
 		),
