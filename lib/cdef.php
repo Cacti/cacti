@@ -24,18 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-$cdef_item_types = array(
-	1 => "Function",
-	2 => "Operator",
-	4 => "Special Data Source",
-	5 => "Another CDEF",
-	6 => "Custom String");
-			      
-$custom_data_source_types = array(
-	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
-	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
-	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)");
-
 /* get_cdef_item_name - resolves a single CDEF item into its text-based representation
    @arg $cdef_item_id - the id of the individual cdef item
    @returns - a text-based representation of the cdef item */
