@@ -139,17 +139,11 @@ switch ($_REQUEST["action"]) {
 	}
 	}
 	
+	print "</table>";
+	
 	form_hidden_id("tab",$current_tab);
 	
-	?>
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?php form_save_button("save", "settings.php?tab=" . $_GET["tab"]);?>
-				</form>
-			</td>
-		</tr>
-	<?php
-	end_box();
+	form_save_button("settings.php?tab=" . $_GET["tab"]);
 	
 	include_once ("include/bottom_footer.php");
 	

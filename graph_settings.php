@@ -86,16 +86,7 @@ end_box();
 form_hidden_id("user_id",$_GET["id"]);
 form_hidden_box("save_component_graph_config","1","");
 
-start_box("", "98%", $colors["header"], "3", "center", "");
-?>
-<tr bgcolor="#FFFFFF">
-	 <td colspan="2" align="right">
-		<?php form_save_button("save", "user_admin.php");?>
-	</td>
-</tr>
-</form>
-<?php
-end_box();
+form_save_button("graph_settings.php");
 
 include_once ("include/bottom_footer.php");
 
