@@ -248,7 +248,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	if not then get out */
 	if (read_config_option("global_auth") == "on") {
 		$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=$local_graph_id and user_id=" . $_SESSION["sess_user_id"]);
-		$current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
+		$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 		
 		$access_denied = false;
 		

@@ -28,7 +28,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	include_once ('include/form.php');
 	include_once ('include/tree_functions.php');
 	
-	global $colors;
+	global $colors, $current_user;
 	
 	$options["num_columns"] = 2;
 	$options["use_expand_contract"] = true;
@@ -47,6 +47,17 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_items where id=$start_branch"));
 	}
 	
+	/* graph permissions */
+	if (read_config_option("global_auth") == "on") {
+		if ($current_user["graph_policy"] == "1") {
+			$sql_where = "and (user_auth_graph.user_id is null OR graph_tree_items.local_graph_id=0)";
+		}elseif ($current_user["graph_policy"] == "2") {
+			$sql_where = "and (user_auth_graph.user_id is not null OR graph_tree_items.local_graph_id=0)";
+		}
+		
+		$sql_join = "left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ")";
+	}
+	
 	$heirarchy = db_fetch_assoc("select
 		graph_tree_items.id,
 		graph_tree_items.title,
@@ -58,8 +69,10 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		left join settings_tree on (graph_tree_items.id=settings_tree.graph_tree_item_id and settings_tree.user_id=$user_id)
+		$sql_join
 		where graph_tree_items.graph_tree_id=$tree_id
 		and graph_tree_items.order_key like '$search_key%'
+		$sql_where
 		order by graph_tree_items.order_key");
 	
 	$search_key = preg_replace("/0+$/","",$start_branch);

@@ -218,9 +218,7 @@ function graph_perms_edit() {
 		draw_user_form_select();
 	}
 	
-	$header_label = "<strong>Graph Permissions</strong> [policy: " . (($graph_policy == "1") ? "ALLOW" : "DENY") . "]";
-	
-	start_box($header_label, "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Graph Permissions</strong> [policy: " . (($graph_policy == "1") ? "ALLOW" : "DENY") . "]", "98%", $colors["header"], "3", "center", "");
 	
 	$graphs = db_fetch_assoc("select 
 		user_auth_graph.user_id,
@@ -232,6 +230,13 @@ function graph_perms_edit() {
 		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		where graph_templates_graph.local_graph_id > 0
 		order by graph_templates_graph.title");
+	$trees = db_fetch_assoc("select 
+		user_auth_tree.user_id,
+		graph_tree.id as tree_id,
+		graph_tree.name
+		from graph_tree
+		left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ") 
+		order by graph_tree.name");
 	
 	?>
 	<form method="post" action="user_admin.php">
@@ -272,6 +277,42 @@ function graph_perms_edit() {
 							}
 							
 							form_base_checkbox("graph" . $graph["local_graph_id"], $old_value, title_trim(expand_title($graph["host_id"], $graph["title"]), 60), "", (!empty($_GET["id"]) ? 1 : 0), true);
+							$i++;
+						}
+						}
+						?>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#<?php print $colors["header"];?>">
+		<td class="textHeaderDark" colspan="2">
+			<strong>Tree Permissions</strong> [policy: <?php print (($graph_policy == "1") ? "ALLOW" : "DENY");?>]
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" width="100%">
+			<table width="100%">
+				<tr>
+					<td align="top" width="50%">
+						<?php
+						$i = 0;
+						if (sizeof($trees) > 0) {
+						foreach ($trees as $tree) {
+							if ($tree["user_id"] == "") {
+								$old_value = "";
+							}else{
+								$old_value = "on";
+							}
+							
+							$column1 = floor((sizeof($trees) / 2) + (sizeof($trees) % 2));
+							
+							if ($i == $column1) {
+								print "</td><td valign='top' width='50%'>";
+							}
+							
+							form_base_checkbox("tree" . $tree["tree_id"], $old_value, $tree["name"], "", (!empty($_GET["id"]) ? 1 : 0), true);
 							$i++;
 						}
 						}
