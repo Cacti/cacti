@@ -206,14 +206,14 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 					<td width="60" class="textHeader">
 						<strong>From:&nbsp;</strong>
 					</td>
-					<td width="180">
+					<td width="180" nowrap>
 						<input type='text' name='date1' id='date1' size='16' value='<?php print (isset($current_value_date1) ? $current_value_date1 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
 					</td>
 					<td width="40" class="textHeader">
 						<strong>To:&nbsp;</strong>
 					</td>
-					<td width="180">
+					<td width="180" nowrap>
 						<input type='text' name='date2' id='date2' size='16' value='<?php print (isset($current_value_date2) ? $current_value_date2 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
