@@ -739,7 +739,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			/* data query variables */
 			if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $graph_variables[$field_name][$graph_item_id])) {
-				$graph_variables[$field_name][$graph_item_id] = substitute_snmp_query_data($graph_variables[$field_name][$graph_item_id], $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
+				/* default to the graph data query information from the graph */
+				if (empty($graph_item["local_data_id"])) {
+					$graph_variables[$field_name][$graph_item_id] = substitute_snmp_query_data($graph_variables[$field_name][$graph_item_id], $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
+				/* use the data query information from the data source if possible */
+				}else{
+					$data_local = db_fetch_row("select snmp_index,snmp_query_id,host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
+					$graph_variables[$field_name][$graph_item_id] = substitute_snmp_query_data($graph_variables[$field_name][$graph_item_id], $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+				}
 			}
 
 			/* 95th percentile */
