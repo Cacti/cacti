@@ -26,8 +26,8 @@
 
 define("RRD_NL", " \\\n");
 
-function bufprint($text) {
-	$_SESSION["sess_debug_buffer"] .= $text;
+function escape_command($command) {
+	return ereg_replace("(\\\$|`)", "", $command);
 }
 
 function rrdtool_execute($command_line, $log_command, $output_flag) {
@@ -54,9 +54,9 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 	
 	/* use popen to eliminate the zombie issue */
 	if ($config["cacti_server_os"] == "unix") {
-		$fp = popen(read_config_option("path_rrdtool") . " $command_line", "r");
+		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 	}elseif ($config["cacti_server_os"] == "win32") {
-		$fp = popen(read_config_option("path_rrdtool") . " $command_line", "rb");
+		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
 	}
 	
 	/* Return Flag:
@@ -503,7 +503,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 					}
 				}
 				
-				$cdef_total = $cdef_total_ds . str_repeat("+,", ($item_count - 2)) . "+";
+				/* if there is only one item to total, don't even bother with the summation. otherwise
+				cdef=a,b,c,+,+ is fine. */
+				if ($item_count == 1) {
+					$cdef_total = str_replace(",", "", $cdef_total_ds);
+				}else{
+					$cdef_total = $cdef_total_ds . str_repeat("+,", ($item_count - 2)) . "+";
+				}
 			}
 			
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0")), $cdef_string);
