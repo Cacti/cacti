@@ -31,14 +31,29 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$current_document_root = "";
+$new_cacti_version = db_fetch_cell("select cacti from version");
 
-/* Make sure cacti is not already up-to-date */
-if (db_fetch_cell("select cacti from version") == $config["cacti_version"]) {
-	print "You can only run this for new installs and upgrades, this installation is already
-	    up-to-date. Click <a href='../index.php'>here</a> to use cacti.";
+/* do a version check */
+if ($new_cacti_version == $config["cacti_version"]) {
+	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
+		<p style='font-family: Verdana, Arial; font-size: 12px;'>You can only run this for new installs and 
+		upgrades, this installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
+	exit;
+}elseif (ereg("^0\.6", $new_cacti_version)) {
+	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
+		<p style='font-family: Verdana, Arial; font-size: 12px;'>You are attempting to install cacti " . $config["cacti_version"] . "
+		onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and
+		update 'include/config.php' to point to the new database.</p>";
+	exit;
+}elseif (empty($new_cacti_version)) {
+	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
+		<p style='font-family: Verdana, Arial; font-size: 12px;'>You have created a new database, but have not yet imported
+		the 'cacti.sql' file. At the command line, execute the following to continue:</p>
+		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>";
 	exit;
 }
+
+$current_document_root = "";
 
 /* find the current document root depending on if we're using apache or iis */
 if (isset($_SERVER["DOCUMENT_ROOT"])) {
