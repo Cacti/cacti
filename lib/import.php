@@ -601,7 +601,13 @@ function &xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 }
 
 function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
-	global $fields_cdef_edit, $fields_cdef_item_edit;
+	global $fields_cdef_edit;
+	
+	$fields_cdef_item_edit = array(
+		"sequence" => "sequence",
+		"type" => "type",
+		"value" => "value"
+		);
 	
 	/* import into: cdef */
 	$_cdef_id = db_fetch_cell("select id from cdef where hash='$hash'");
