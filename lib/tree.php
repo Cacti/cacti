@@ -87,7 +87,7 @@ function move_branch($dir,$order_key, $table, $field, $where) {
 	$tier = tree_tier($order_key,'2');
 	
 	if ($where != '') { $where = " AND $where"; }
-	$where = "";
+	
 	$arrow = $dir == 'up' ? '<' : '>';
 	$order = $dir == 'up' ? 'DESC' : 'ASC';
 	
