@@ -166,6 +166,9 @@ function display_output_messages() {
 						print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>";
 						print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
 						print "</table><br>";
+						
+						/* we don't need these if there are no error messages */
+						kill_session_var("sess_field_values");
 					}
 					break;
 				case 'error':
