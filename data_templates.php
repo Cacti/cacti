@@ -103,7 +103,7 @@ function form_save() {
 		
 		/* save: data_template_rrd */
 		$save3["id"] = $_POST["data_template_rrd_id"];
-		$save3["hash"] = get_hash_data_input($_POST["data_template_rrd_id"], "data_template_item");
+		$save3["hash"] = get_hash_data_template($_POST["data_template_rrd_id"], "data_template_item");
 		$save3["local_data_template_rrd_id"] = 0;
 		$save3["local_data_id"] = 0;
 		
@@ -289,7 +289,7 @@ function form_actions() {
 					<p>When you click save, the following data templates will be duplicated. You can
 					optionally change the title format for the new data templates.</p>
 					<p>$ds_list</p>
-					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<template_title> (1)", "", "255", "30", "textbox"); print "</p>
+					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 				</td>
 			</tr>\n
 			";
@@ -372,7 +372,7 @@ function template_edit() {
 	
 	draw_edit_form(array(
 		"config" => array(),
-		"fields" => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : array()), (isset($template_data) ? $template_data : array()), (isset($template_rrd) ? $template_rrd : array()), $_GET)
+		"fields" => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : array()), (isset($template_data) ? $template_data : array()), $_GET)
 		));
 	
 	end_box();
@@ -496,7 +496,12 @@ function template_edit() {
 			"config" => array(
 				"no_form_tag" => true
 				),
-			"fields" => $form_array
+			"fields" => $form_array + array(
+				"data_template_rrd_id" => array(
+					"method" => "hidden",
+					"value" => (isset($template_rrd) ? $template_rrd["id"] : "0")
+				)
+			)
 			)
 		);
 	
