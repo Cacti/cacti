@@ -473,6 +473,17 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	/* get a list of parent+children of our target group */
 	$target_graph_group_array = get_graph_group($target_id);
 	
+	/* if this "parent" item has no children, then treat it like a regular gprint */
+	if (sizeof($target_graph_group_array) == 0) {
+		if ($direction == "next") {
+			move_item_down("graph_templates_item", $graph_template_item_id, $sql_where);
+		}elseif ($direction == "previous") {
+			move_item_up("graph_templates_item", $graph_template_item_id, $sql_where);
+		}
+		
+		return;
+	}
+	
 	/* start the sequence at '1' */
 	$sequence_counter = 1;
 	
@@ -533,7 +544,7 @@ function get_graph_group($graph_template_item_id) {
 	
 	/* a parent must NOT be the following graph item types */
 	if (ereg("(GPRINT|VRULE|HRULE|COMMENT)", $graph_item_types{$graph_item["graph_type_id"]})) {
-		return 0;
+		return;
 	}
 	
 	$graph_item_children_array = array();
