@@ -304,7 +304,7 @@ $struct_data_source_item = array(
 		"max_length" => "20",
 		"size" => "30",
 		"default" => "600",
-		"description" => "The maximum amount of time that can pass before data is entered as \"unknown\". 
+		"description" => "The maximum amount of time that can pass before data is entered as \"unknown\".
 			(Usually 2x300=600)"
 		),
 	"data_input_field_id" => array(
@@ -375,14 +375,14 @@ $struct_graph = array(
 		"friendly_name" => "Auto Scale",
 		"method" => "checkbox",
 		"default" => "on",
-		"description" => "Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the 
+		"description" => "Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the
 			Upper and Lower limit will be ignored."
 		),
 	"auto_scale_opts" => array(
 		"friendly_name" => "Auto Scale Options",
 		"method" => "radio",
 		"default" => "2",
-		"description" => "Use --alt-autoscale-max to scale to the maximum value, or --alt-autoscale to scale to the absolute 
+		"description" => "Use --alt-autoscale-max to scale to the maximum value, or --alt-autoscale to scale to the absolute
 			minimum and maximum.",
 		"items" => array(
 			0 => array(
@@ -411,15 +411,15 @@ $struct_graph = array(
 		"friendly_name" => "Auto Padding",
 		"method" => "checkbox",
 		"default" => "on",
-		"description" => "Pad text so that legend and graph data always line up. Note: this could cause 
-			graphs to take longer to render because of the larger overhead. Also Auto Padding may not 
+		"description" => "Pad text so that legend and graph data always line up. Note: this could cause
+			graphs to take longer to render because of the larger overhead. Also Auto Padding may not
 			be accurate on all types of graphs, consistant labeling usually helps."
 		),
 	"export" => array(
 		"friendly_name" => "Allow Graph Export",
 		"method" => "checkbox",
 		"default" => "on",
-		"description" => "Choose whether this graph will be included in the static html/png export if you use 
+		"description" => "Choose whether this graph will be included in the static html/png export if you use
 			cacti's export feature."
 		),
 	"upper_limit" => array(
@@ -448,7 +448,7 @@ $struct_graph = array(
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "",
-		"description" => "(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was 
+		"description" => "(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was
 			recently added in rrdtool 1.0.36."
 		),
 	"unit_exponent_value" => array(
@@ -456,7 +456,7 @@ $struct_graph = array(
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "",
-		"description" => "What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or -6 
+		"description" => "What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or -6
 			to display everything in 'u' (micro)."
 		),
 	"vertical_label" => array(
@@ -475,10 +475,10 @@ $struct_graph_item = array(
 		"method" => "drop_sql",
 		"sql" => "select
 			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
-			data_template_rrd.id 
-			from data_template_data,data_template_rrd,data_local 
+			data_template_rrd.id
+			from data_template_data,data_template_rrd,data_local
 			left join host on data_local.host_id=host.id
-			where data_template_rrd.local_data_id=data_local.id 
+			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id
 			order by name",
 		"default" => "0",
@@ -525,7 +525,7 @@ $struct_graph_item = array(
 		"method" => "drop_sql",
 		"sql" => "select id,name from graph_templates_gprint order by name",
 		"default" => "2",
-		"description" => "If this graph item is a GPRINT, you can optionally choose another format 
+		"description" => "If this graph item is a GPRINT, you can optionally choose another format
 			here. You can define additional types under \"GPRINT Presets\"."
 		),
 	"text_format" => array(
@@ -642,7 +642,7 @@ $fields_host_edit = array(
 		),
 	"spacer1" => array(
 		"method" => "spacer",
-		"value" => "SNMP Options"
+		"friendly_name" => "SNMP Options"
 		),
 	"snmp_community" => array(
 		"method" => "textbox",

@@ -53,12 +53,10 @@ function draw_edit_form($array) {
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}elseif ($field_array["method"] == "spacer") {
-				print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["value"] . "</td></tr>\n";
+				print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["friendly_name"] . "</td></tr>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr bgcolor='#" . $config_array["force_row_color"] . "'>";
-				}elseif ($field_array["method"] == "header") {
-					print "<tr bgcolor='#" . $colors["header_panel"] . "' class='textSubHeaderDark'>";
 				}else{
 					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 				}
@@ -137,9 +135,6 @@ function draw_edit_form($array) {
 						print $item["name"] . "<br>";
 					}
 					}
-					break;
-				case 'header':
-					/* placeholder */
 					break;
 				default:
 					print "<em>" . $field_array["value"] . "</em>";

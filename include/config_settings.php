@@ -46,7 +46,7 @@ $settings = array(
 	"path" => array(
 		"dependent_header" => array(
 			"friendly_name" => "Required Tools",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"path_snmpwalk" => array(
 			"friendly_name" => "snmpwalk Binary Path",
@@ -74,7 +74,7 @@ $settings = array(
 			),
 		"logging_header" => array(
 			"friendly_name" => "Logging",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"path_cactilog" => array(
 			"friendly_name" => "Cacti Log File Path",
@@ -84,7 +84,7 @@ $settings = array(
 			),
 		"htmlexport_header" => array(
 			"friendly_name" => "HTML Export",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"path_html_export" => array(
 			"friendly_name" => "HTML Export Path",
@@ -103,7 +103,7 @@ $settings = array(
 	"general" => array(
 		"logging_header" => array(
 			"friendly_name" => "Event Logging",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"log_destination" => array(
 			"friendly_name" => "Log File Destination",
@@ -153,7 +153,7 @@ $settings = array(
 			),
 		"snmp_header" => array(
 			"friendly_name" => "SNMP Defaults",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"snmp_version" => array(
 			"friendly_name" => "SNMP Version",
@@ -177,7 +177,7 @@ $settings = array(
 			),
 		"other_header" => array(
 			"friendly_name" => "Other Defaults",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"remove_verification" => array(
 			"friendly_name" => "Remove Verification",
@@ -188,7 +188,7 @@ $settings = array(
 	"visual" => array(
 		"graphmgmt_header" => array(
 			"friendly_name" => "Graph Management",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"num_rows_graph" => array(
 			"friendly_name" => "Rows Per Page",
@@ -206,7 +206,7 @@ $settings = array(
 			),
 		"dataqueries_header" => array(
 			"friendly_name" => "Data Queries",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"max_data_query_field_length" => array(
 			"friendly_name" => "Maximum Field Length",
@@ -224,7 +224,7 @@ $settings = array(
 			),
 		"datasources_header" => array(
 			"friendly_name" => "Data Sources",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"num_rows_data_source" => array(
 			"friendly_name" => "Rows Per Page",
@@ -244,7 +244,7 @@ $settings = array(
 	"poller" => array(
 		"poller_header" => array(
 			"friendly_name" => "General",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"poller_enabled" => array(
 			"friendly_name" => "Poller Enabled",
@@ -260,7 +260,7 @@ $settings = array(
 			),
 		"methods_header" => array(
 			"friendly_name" => "Execution Methods",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"concurrent_processes" => array(
 			"friendly_name" => "Maximum Concurrent Cmd or Cactid Processes",
@@ -278,7 +278,7 @@ $settings = array(
 			),
 		"pollerpaths_header" => array(
 			"friendly_name" => "Poller Paths",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"path_cactid" => array(
 			"friendly_name" => "Location of Cactid Program",
@@ -296,7 +296,7 @@ $settings = array(
 	"authentication" => array(
 		"general_header" => array(
 			"friendly_name" => "General",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"global_auth" => array(
 			"friendly_name" => "Use Cacti's Builtin Authentication",
@@ -319,7 +319,7 @@ $settings = array(
 			),
 		"ldap_header" => array(
 			"friendly_name" => "LDAP Settings",
-			"method" => "header",
+			"method" => "spacer",
 			),
 		"ldap_server" => array(
 			"friendly_name" => "LDAP Server",
