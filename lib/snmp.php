@@ -95,7 +95,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	
 	$snmp_queries = get_data_query_array($snmp_query_id);
 	
-	if ((empty($host["management_ip"])) || ($script_queries == false)) {
+	if ((empty($host["management_ip"])) || ($snmp_queries == false)) {
 		return false;
 	}
 	
