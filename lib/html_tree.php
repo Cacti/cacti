@@ -143,7 +143,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			
 			/* print out the actual graph html */
 			print "<td><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all'><img align='middle' alt='" . $leaf["graph_title"] . "'
-				src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . $leaf["rra_id"] . "&graph_start=" . get_rra_timespan($leaf["rra_id"]) . '&graph_height=' .
+				src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . $leaf["rra_id"] . "&graph_start=" . -(db_fetch_cell("select timespan from rra where id=" . $leaf["rra_id"])) . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $leaf["title"] . "'></a></td>\n";
 			
 			/* if we are at the end of a row, start a new one */
