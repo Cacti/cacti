@@ -21,40 +21,39 @@
 | - raXnet - http://www.raxnet.net/                                       |
 +-------------------------------------------------------------------------+
 */?>
-<?	include ("include/database.php");
-	include ("include/config.php");
+<?
+/* initilize php session */
+session_start();
+
+include ("include/config.php");
+
+$user = db_fetch_row("select * from auth_users where id=" . $_SESSION["sess_user_id"]);
+
+$ip = trim(getenv("REMOTE_ADDR"));
+
+switch ($action) {
+case 'changepassword':
+	if (($password == $confirm) && ($password != "")) {
+		db_execute("insert into auth_log (username,success,ip) values('" . $user["Username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("update auth_users set mustchangepassword='',password=PASSWORD('" . $_POST["password"] . "') where id=" . $_SESSION["sess_user_id"]);
+		
+		$_SESSION["sess_change_password"] = "0";
+		
+		header("Location: " . $_POST["ref"]);
+		exit;
+	}else{
+		$bad_password = true;
+	}
 	
-	/* SESSION DATA */
-	session_start();
-	
-	$userid = $HTTP_SESSION_VARS["user_id"];
-	$user = db_fetch_row("select * from auth_users where id=$userid",$cnn_id);
-	
-	$ip = trim(getenv("REMOTE_ADDR"));
-	//$username = mysql_result($res_id_user, 0, "username");
-	
-	switch ($action) {
-		case 'changepassword':
-			if (($password == $confirm) && ($password != "")) {
-				mysql_query("insert into auth_log (username,success,ip) values(\"$user[Username]\",3,\"$ip\")",$cnn_id);
-				mysql_query("update auth_users set mustchangepassword=\"\",password=PASSWORD(\"$password\") where id=$userid",$cnn_id);
-				
-				$HTTP_SESSION_VARS['change_password'] = 0;
-				
-				header("Location: $ref");
-				exit;
-			}else{
-				$badpassword = true;
-			}
-			
-			break;
-	} ?>
+	break;
+}
+?>
 <html>
 <head>
 	<title>Login to cacti</title>
 	<STYLE TYPE="text/css">
 	<!--	
-		BODY, TABLE, TR, TD {font-family: "Verdana, Arial, Helvetica, sans-serif"; font-size: 12px;}
+		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
 		A {text-decoration: none;}
 		A:active { text-decoration: none;}
 		A:hover {text-decoration: underline; color: #333333;}
@@ -62,25 +61,29 @@
 	-->
 	</style>
 </head>
-<body>
-<form method="post" action="<?print $HTTP_SERVER_VARS["SCRIPT_NAME"];?>">
+
+<body onload="document.login.password.focus()">
+
+<form name="login" method="post" action="<?print $_SERVER["SCRIPT_NAME"];?>">
+
 <table align="center">
 	<tr>
 		<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
 	</tr>
-	<?if ($badpassword == true) {?>
-	<tr height="10"></tr>
+	<?if ($bad_password == true) {?>
+	<tr height="10"><td></td></tr>
 	<tr>
 		<td colspan="2"><font color="#FF0000"><strong>Your passwords do not match, please retype:</strong></font></td>
-	</tr><?}?>
-	<tr height="10"></tr>
+	</tr>
+	<?}?>
+	<tr height="10"><td></td></tr>
 	<tr>
 		<td colspan="2">
 			<strong><font color="#FF0000">*** Forced Password Change ***</font></strong><br><br>
 			Please enter a new password for cacti:
 		</td>
 	</tr>
-	<tr height="10"></tr>
+	<tr height="10"><td></td></tr>
 	<tr>
 		<td>Password:</td>
 		<td><input type="password" name="password" size="40"></td>
@@ -89,13 +92,16 @@
 		<td>Confirm:</td>
 		<td><input type="password" name="confirm" size="40"></td>
 	</tr>
-	<tr height="10"></tr>
+	<tr height="10"><td></td></tr>
 	<tr>
 		<td><input type="submit" value="Save"></td>
 	</tr>
 </table>
+
 <input type="hidden" name="action" value="changepassword">
-<input type="hidden" name="ref" value="<?print $ref;?>">
+<input type="hidden" name="ref" value="<?print $_REQUEST["ref"];?>">
+
 </form>
+
 </body>
 </html>

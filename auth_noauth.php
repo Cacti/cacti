@@ -21,8 +21,6 @@
 | - raXnet - http://www.raxnet.net/                                       |
 +-------------------------------------------------------------------------+
 */?>
-<?	session_start();
-	include ("include/config.php"); ?>
 <html>
 <head>
 	<title>cacti - Access Denied</title>
@@ -42,10 +40,10 @@
 	<tr>
 		<td colspan="2"><img src="images/auth_deny.gif" border="0" alt=""></td>
 	</tr>
-	<tr height="10"></tr>
+	<tr height="10"><td></td></tr>
 	<tr>
-		<td colspan="2">You are not permitted to access this section of cacti. 
-		If you feel that you need access to this particular section, please contact the webmaster.</td>
+		<td colspan="2">You are not permitted to access this section of cacti. If you feel that you 
+		need access to this particular section, please contact the webmaster.</td>
 	</tr>
 </table>
 
