@@ -220,6 +220,7 @@ function data_edit() {
 	
 	if (isset($args[local_data_id])) {
 		$template_data = db_fetch_row("select id,data_input_id from data_template_data where local_data_id=$args[local_data_id]");
+		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=$args[local_data_id]");
 	}else{
 		unset($template_data);
 	}
@@ -244,13 +245,17 @@ function data_edit() {
 				$old_value = "";
 			}
 			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); ?>
-				<td width="50%">
-					<strong><?print $field[name];?></strong>
-				</td>
-				<?DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");?>
-			</tr>
-			<?
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i);
+			
+			if ((!empty($host["id"])) && (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password)$', $field["type_code"]))) {
+				print "<td width='50%'><strong>$field[name]</strong> (From Host: " . $host["hostname"] . ")</td>\n";
+				print "<td><em>$old_value</em></td>\n";
+			}else{
+				print "<td width='50%'><strong>$field[name]</strong></td>\n";
+				DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");
+			}
+			
+			print "</tr>\n";
 			
 			$i++;
 		}
@@ -530,7 +535,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($data_template[t_name] == "on")) {
 			DrawFormItemTextBox("name",$data[name],"","50", "40");
 		}else{
-			print "<td><em>$data_template[name]</em></td>";
+			print "<td><em>$data[name]</em></td>";
 			DrawFormItemHiddenTextBox("name",$data_template[name],"");
 		}?>
 	</tr>
@@ -551,7 +556,7 @@ function ds_edit() {
 		<?if ($use_data_template == false) {
 			DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$data[data_input_id],"None","1");
 		}else{
-			print "<td><em>" . db_fetch_cell("select name from data_input where id=$data_template[data_input_id]") . "</em></td>";
+			print "<td><em>" . db_fetch_cell("select name from data_input where id=$data[data_input_id]") . "</em></td>";
 			DrawFormItemHiddenTextBox("data_input_id",$data_template[data_input_id],"");
 		}?>
 	</tr>
@@ -564,7 +569,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($data_template[t_rrd_step] == "on")) {
 			DrawFormItemTextBox("rrd_step",$data[rrd_step],"","50", "40");
 		}else{
-			print "<td><em>$data_template[rrd_step]</em></td>";
+			print "<td><em>$data[rrd_step]</em></td>";
 			DrawFormItemHiddenTextBox("rrd_step",$data_template[rrd_step],"");
 		}?>
 	</tr>
@@ -577,7 +582,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($data_template[t_active] == "on")) {
 			DrawFormItemCheckBox("active",$data[active],"Data Source Active","on",$args[local_data_id]);
 		}else{
-			print "<td><em>" . html_boolean_friendly($data_template[active]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($data[active]) . "</em></td>";
 			DrawFormItemHiddenTextBox("active",$data_template[active],"");
 		}?>
 	</tr>
@@ -642,7 +647,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($rrd_template[t_data_source_name] == "on")) {
 			DrawFormItemTextBox("data_source_name",$rrd[data_source_name],"","19", "40");
 		}else{
-			print "<td><em>$rrd_template[data_source_name]</em></td>";
+			print "<td><em>$rrd[data_source_name]</em></td>";
 			DrawFormItemHiddenTextBox("data_source_name",$rrd_template[data_source_name],"");
 		}?>
 	</tr>
@@ -655,7 +660,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($rrd_template[t_rrd_maximum] == "on")) {
 			DrawFormItemTextBox("rrd_maximum",$rrd[rrd_maximum],"","20", "30");
 		}else{
-			print "<td><em>$rrd_template[rrd_maximum]</em></td>";
+			print "<td><em>$rrd[rrd_maximum]</em></td>";
 			DrawFormItemHiddenTextBox("rrd_maximum",$rrd_template[rrd_maximum],"");
 		}?>
 	</tr>
@@ -668,7 +673,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($rrd_template[t_rrd_minimum] == "on")) {
 			DrawFormItemTextBox("rrd_minimum",$rrd[rrd_minimum],"","20", "30");
 		}else{
-			print "<td><em>$rrd_template[rrd_minimum]</em></td>";
+			print "<td><em>$rrd[rrd_minimum]</em></td>";
 			DrawFormItemHiddenTextBox("rrd_minimum",$rrd_template[rrd_minimum],"");
 		}?>
 	</tr>
@@ -681,7 +686,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($rrd_template[t_data_source_type_id] == "on")) {
 			DrawFormItemDropdownFromSQL("data_source_type_id",db_fetch_assoc("select * from def_ds order by Name"),"Name","ID",$rrd[data_source_type_id],"","1");
 		}else{
-			print "<td><em>" . db_fetch_cell("select name from def_ds where id=$rrd_template[data_source_type_id]") . "</em></td>";
+			print "<td><em>" . db_fetch_cell("select name from def_ds where id=$rrd[data_source_type_id]") . "</em></td>";
 			DrawFormItemHiddenTextBox("data_source_type_id",$rrd_template[data_source_type_id],"");
 		}?>
 	</tr>
@@ -694,7 +699,7 @@ function ds_edit() {
 		<?if (($use_data_template == false) || ($rrd_template[t_rrd_heartbeat] == "on")) {
 			DrawFormItemTextBox("rrd_heartbeat",$rrd[rrd_heartbeat],"","20", "30");
 		}else{
-			print "<td><em>$rrd_template[rrd_heartbeat]</em></td>";
+			print "<td><em>$rrd[rrd_heartbeat]</em></td>";
 			DrawFormItemHiddenTextBox("rrd_heartbeat",$rrd_template[rrd_heartbeat],"");
 		}?>
 	</tr>
