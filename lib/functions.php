@@ -325,17 +325,32 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	/* Log to Syslog/Eventlog */
 	/* Syslog is currently Unstable in Win32 */
 	if (($logdestination == 2) || ($logdestination == 3)) {
-		if ($config["cacti_server_os"] != "win32") {
+		$log_type = "";
+		if (substr_count($string,"ERROR:"))
+			$log_type = "err";
+		else if (substr_count($string,"WARNING:"))
+			$log_type = "warn";
+		else if (substr_count($string,"STATS:"))
+			$log_type = "stat";
+
+		if (strlen($log_type)) {
 			define_syslog_variables();
 
-			openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
+			if ($config["cacti_server_os"] == "win32")
+				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_USER);
+			else
+				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
 
-			if (substr_count($string,"ERROR:")) {
-				syslog(LOG_ALERT, $message);
+			if ($log_type == "err") {
+				syslog(LOG_ERROR, $message);
 			}
 
-			if ((substr_count($message, "WARNING:")) && (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM)) {
-				syslog(LOG_NOTICE, $message);
+			if ($log_type == "warn") {
+				syslog(LOG_WARNING, $message);
+			}
+
+			if ($log_type == "stat") {
+				syslog(LOG_INFO, $message);
 			}
 
 			closelog();
