@@ -176,13 +176,14 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			if ($field_array["source"] == "value") {
 				for ($i=0;($i<sizeof($snmp_data));$i++) {
-					if ($field_array["oid"] == ".1.3.6.1.4.1.9.5.1.4.1.1.4") {
-						$snmp_index = $i+1;
-					}else{
-						$snmp_index = ereg_replace('.*\.([0-9]+)$', "\\1", $snmp_data[$i]["oid"]);
-					}
+					$snmp_index = ereg_replace('.*\.([0-9]+)$', "\\1", $snmp_data[$i]["oid"]);
 
 					$oid = $field_array["oid"] . ".$snmp_index";
+
+					if ($field_name == "ifOperStatus") {
+						if ($snmp_data[$i]["value"] == "down(2)") $snmp_data[$i]["value"] = "Down";
+						if ($snmp_data[$i]["value"] == "up(1)") $snmp_data[$i]["value"] = "Up";
+					}
 
 					debug_log_insert("data_query", "Found item [$field_name='" . $snmp_data[$i]["value"] . "'] index: $snmp_index [from value]");
 
@@ -193,7 +194,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			}elseif (ereg("^OID/REGEXP:", $field_array["source"])) {
 				for ($i=0;($i<sizeof($snmp_data));$i++) {
 					$value = ereg_replace(ereg_replace("^OID/REGEXP:", "", $field_array["source"]), "\\1", $snmp_data[$i]["oid"]);
-					$snmp_index = $snmp_data[$i]["value"];
+
+					if ((!isset($snmp_data[$i]["value"])) || ($snmp_data[$i]["value"] == "")) {
+						/* do nothing */
+					} else {
+						$snmp_index = $snmp_data[$i]["value"];
+					}
+
+               /* correct bogus index value */
+					/* found in some devices such as an EMC Cellera */
+					if ($snmp_index == 0) {
+						$snmp_index = 1;
+					}
+
 					$oid = $field_array["oid"] .  "." . $value;
 
 					debug_log_insert("data_query", "Found item [$field_name='$value'] index: $snmp_index [from regexp oid parse]");
