@@ -75,20 +75,25 @@ switch ($_REQUEST["action"]) {
     Global Form Functions
    -------------------------- */
 
-function draw_user_form_select() { 
-	global $colors; ?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
-		</form>
-		<form name="form_user">
-		<td>
-			<select name="cbo_user" onChange="window.location=document.form_user.cbo_user.options[document.form_user.cbo_user.selectedIndex].value">
-				<option value="user_admin.php?action=user_edit&id=<?php print $_GET["id"];?>"<?php if ($_GET["action"] == "user_edit") {?> selected<?php }?>>User Configuration</option>
-				<option value="user_admin.php?action=graph_perms_edit&id=<?php print $_GET["id"];?>"<?php if ($_GET["action"] == "graph_perms_edit") {?> selected<?php }?>>Individual Graph Permissions</option>
-				<option value="user_admin.php?action=graph_config_edit&id=<?php print $_GET["id"];?>"<?php if ($_GET["action"] == "graph_config_edit") {?> selected<?php }?>>User Graph Settings</option>
-			</select>
-		</td>
-		</form>
-	</tr>
+function draw_user_form_select() {
+	?>
+	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
+		<tr>
+			<td <?php print (($_GET["action"] == "user_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+				<span class='textHeader'><a href='user_admin.php?action=user_edit&id=<?php print $_GET["id"];?>'>User Configuration</a></span>
+			</td>
+			<td width='1'></td>
+			<td <?php print (($_GET["action"] == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='230' align='center' class='tab'>
+				<span class='textHeader'><a href='user_admin.php?action=graph_perms_edit&id=<?php print $_GET["id"];?>'>Individual Graph Permissions</a></span>
+			</td>
+			<td width='1'></td>
+			<td <?php print (($_GET["action"] == "graph_config_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+				<span class='textHeader'><a href='user_admin.php?action=graph_config_edit&id=<?php print $_GET["id"];?>'>User Graph Settings</a></span>
+			</td>
+			<td width='1'></td>
+			<td></td>
+		</tr>
+	</table>
 <?php }
 
 /* --------------------------
@@ -124,7 +129,7 @@ function form_save() {
 		$save["show_preview"] = form_input_validate((isset($_POST["show_preview"]) ? $_POST["show_preview"] : ""), "show_preview", "", true, 3);
 		$save["graph_settings"] = form_input_validate((isset($_POST["graph_settings"]) ? $_POST["graph_settings"] : ""), "graph_settings", "", true, 3);
 		$save["login_opts"] = form_input_validate($_POST["login_opts"], "login_opts", "", true, 3);
-		$save["graph_policy"] = form_input_validate($_POST["graph_policy"], "graph_policy", "", true, 3);
+		$save["graph_policy"] = form_input_validate((isset($_POST["graph_policy"]) ? $_POST["graph_policy"] : $_POST["_graph_policy"]), "graph_policy", "", true, 3);
 		
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
@@ -140,7 +145,7 @@ function form_save() {
 			while (list($var, $val) = each($_POST)) {
 				if (eregi("^[section]", $var)) {
 					if (substr($var, 0, 7) == "section") {
-					    db_execute ("replace into user_auth_realm (user_id,realm_id) values($user_id," . substr($var, 7) . ")");
+					    db_execute("replace into user_auth_realm (user_id,realm_id) values($user_id," . substr($var, 7) . ")");
 					}
 				}
 			}
@@ -149,17 +154,18 @@ function form_save() {
 	
 	/* graph permissions */
 	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
-		db_execute ("delete from user_auth_graph where user_id=$user_id");
-		db_execute ("delete from user_auth_tree where user_id=$user_id");
+		db_execute("delete from user_auth_graph where user_id=" . (!empty($user_id) ? $user_id : $_POST["user_id"]));
+		db_execute("delete from user_auth_tree where user_id=" . (!empty($user_id) ? $user_id : $_POST["user_id"]));
+		db_execute("update user_auth set graph_policy='" . $_POST["graph_policy"] . "' where id=" . (!empty($user_id) ? $user_id : $_POST["user_id"]));
 		
 		reset($_POST);
 		
 		while (list($var, $val) = each($_POST)) {
 			if (eregi("^[graph|tree]", $var)) {
 				if (substr($var, 0, 5) == "graph") {
-				    db_execute ("replace into user_auth_graph (user_id,local_graph_id) values($user_id," . substr($var, 5) . ")");
+				    db_execute("replace into user_auth_graph (user_id,local_graph_id) values(" . (!empty($user_id) ? $user_id : $_POST["user_id"]) . "," . substr($var, 5) . ")");
 				}elseif (substr($var, 0, 4) == "tree") {
-				    db_execute ("replace into user_auth_tree (user_id,tree_id) values($user_id," . substr($var, 4) . ")");
+				    db_execute("replace into user_auth_tree (user_id,tree_id) values(" . (!empty($user_id) ? $user_id : $_POST["user_id"]). "," . substr($var, 4) . ")");
 				}
 			}
 		}
@@ -170,7 +176,7 @@ function form_save() {
 		if (sizeof($settings_graphs) > 0) {
 		foreach (array_keys($settings_graphs) as $setting) {
 			if (isset($_POST[$setting])) {
-				db_execute("replace into settings_graphs (user_id,name,value) values ($user_id,'$setting', '" . $_POST[$setting] . "')");
+				db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["user_id"]) . ",'$setting', '" . $_POST[$setting] . "')");
 			}
 		}
 		}
@@ -194,7 +200,7 @@ function form_save() {
 function graph_perms_edit() {
 	global $colors;
 	
-	$graph_policy = "1";
+	$graph_policy = "2";
 	
 	if (!empty($_GET["id"])) {
 		$graph_policy = db_fetch_cell("select graph_policy from user_auth where id=" . $_GET["id"]);
@@ -209,9 +215,7 @@ function graph_perms_edit() {
 	}
 	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
-		end_box();
 	}
 	
 	$header_label = "<strong>Graph Permissions</strong> [policy: " . (($graph_policy == "1") ? "ALLOW" : "DENY") . "]";
@@ -304,9 +308,7 @@ function graph_config_edit() {
 	}
 	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
-		end_box();
 	}
 	
 	print "<form method='post' action='user_admin.php'>\n";
@@ -363,7 +365,7 @@ function graph_config_edit() {
 	
 	end_box();
 	
-	form_hidden_id("user_id",(isset($user) ? $user["id"] : "0"));
+	form_hidden_id("user_id",(isset($_GET["id"]) ? $_GET["id"] : "0"));
 	form_hidden_box("save_component_graph_config","1","");
 	
 	form_save_button("user_admin.php");
@@ -382,12 +384,12 @@ function user_remove() {
 	}
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-	    db_execute("delete from user_auth where id=" . $_GET["id"]);
-	    db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
-	    db_execute("delete from user_auth_hosts where user_id=" . $_GET["id"]);
-	    db_execute("delete from user_auth_graph where user_id=" . $_GET["id"]);
-	    db_execute("delete from user_auth_tree where user_id=" . $_GET["id"]);
-	    db_execute("delete from settings_graphs where user_id=" . $_GET["id"]);
+		db_execute("delete from user_auth where id=" . $_GET["id"]);
+		db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
+		db_execute("delete from user_auth_hosts where user_id=" . $_GET["id"]);
+		db_execute("delete from user_auth_graph where user_id=" . $_GET["id"]);
+		db_execute("delete from user_auth_tree where user_id=" . $_GET["id"]);
+		db_execute("delete from settings_graphs where user_id=" . $_GET["id"]);
 	}	
 }
 
@@ -402,9 +404,7 @@ function user_edit() {
 	}
 	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
-		end_box();
 	}
 	
 	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -537,6 +537,7 @@ function user_edit() {
 	end_box();
 	
 	form_hidden_id("id",(isset($user) ? $user["id"] : "0"));
+	form_hidden_id("_graph_policy",(isset($user) ? $user["graph_policy"] : "2"));
 	form_hidden_box("save_component_user","1","");
 	
 	if (read_config_option("full_view_user_admin") == "") {
