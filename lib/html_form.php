@@ -389,7 +389,7 @@ function form_base_checkbox($form_name, $form_previous_value, $form_caption, $fo
 		}
 	}
 	
-	print "<input type='checkbox' class='chkNormal' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
+	print "<input type='checkbox' class='chkNormal' name='$form_name' id='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
 }
 
 /* creates a radio */
