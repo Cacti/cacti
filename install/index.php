@@ -132,7 +132,13 @@ if (empty($_REQUEST["step"])) {
 }
 
 if ($_REQUEST["step"] == "4") {
+	include_once("../include/utility_functions.php");
+	
 	$i = 0;
+	
+	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
+	up-to-date */
+	repopulate_poller_cache();
 	
 	/* get all items on the form and write values for them  */
 	while (list($name, $array) = each($input)) {
