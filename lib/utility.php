@@ -23,6 +23,54 @@
    */?>
 <?
 
+function change_graph_template($local_graph_id, $graph_template_id, $_graph_template_id) {
+	/* always update tables to new graph template (or no graph template) */
+	db_execute("update graph_templates_graph set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	db_execute("update graph_templates_item set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	db_execute("update graph_local set graph_template_id=$graph_template_id where id=$local_graph_id");
+	
+	/* if the user turned off the template for this graph; there is nothing more
+	to do here */
+	if ($graph_template_id == "0") { return 0; }
+	
+	/* we are going from no template -> a template */
+	if ($_graph_template_id == "0") {
+		$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id");
+		$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id");
+		
+		if (sizeof($graph_items_list) > 0) {
+			/* this graph already has "child" items */
+		}else{
+			/* this graph does NOT have "child" items; loop through each item in the template
+			and write it exactly to each item */
+			if (sizeof($template_items_list) > 0) {
+			foreach ($template_items_list as $template_item) {
+				$save["id"] = 0;
+				$save["local_graph_template_item_id"] = $template_item["id"];
+				$save["local_graph_id"] = $local_graph_id;
+				$save["graph_template_id"] = $template_item["graph_template_id"];
+				$save["task_item_id"] = $template_item["task_item_id"];
+				$save["color_id"] = $template_item["color_id"];
+				$save["graph_type_id"] = $template_item["graph_type_id"];
+				$save["cdef_id"] = $template_item["cdef_id"];
+				$save["consolidation_function_id"] = $template_item["consolidation_function_id"];
+				$save["text_format"] = $template_item["text_format"];
+				$save["value"] = $template_item["value"];
+				$save["hard_return"] = $template_item["hard_return"];
+				$save["gprint_opts"] = $template_item["gprint_opts"];
+				$save["gprint_custom"] = $template_item["gprint_custom"];
+				$save["custom"] = $template_item["custom"];
+				$save["sequence"] = $template_item["sequence"];
+				$save["sequence_parent"] = $template_item["sequence_parent"];
+				$save["parent"] = $template_item["parent"];
+				
+				sql_save($save, "graph_templates_item");
+			}
+			}
+		}
+	}
+}
+
 function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 	include_once ("include/functions.php");
 	//if ($id == 0) {
