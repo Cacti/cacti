@@ -106,13 +106,12 @@ include_once($config["library_path"] . "/functions.php");
 include_once($config["include_path"] . "/config_constants.php");
 include_once($config["include_path"] . "/config_arrays.php");
 include_once($config["include_path"] . "/config_settings.php");
-include_once($config["include_path"] . "/config_form.php");
-
 
 /* connect to the database server */
 db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type);
 
 /* include additional modules */
+include_once($config["include_path"] . "/config_form.php");
 include_once($config["library_path"] . "/html.php");
 include_once($config["library_path"] . "/html_form.php");
 include_once($config["library_path"] . "/html_utility.php");
