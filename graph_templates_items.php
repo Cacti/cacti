@@ -130,6 +130,47 @@ function form_save() {
 				if ($graph_template_item_id) {
 					raise_message(1);
 					
+					if (!empty($save["task_item_id"])) {
+						$data_source_graph_inputs = db_fetch_assoc("select
+							graph_template_input.id,
+							graph_template_input.name,
+							graph_templates_item.task_item_id
+							from graph_template_input,graph_template_input_defs,graph_templates_item
+							where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+							and graph_template_input_defs.graph_template_item_id=graph_templates_item.id
+							and graph_template_input.graph_template_id=" . $save["graph_template_id"] . "
+							and graph_template_input.column_name='task_item_id'
+							group by graph_template_input.id");
+						
+						$data_source_to_input = array_rekey($data_source_graph_inputs, "task_item_id", "id");
+						
+						/* old item clean-up */
+						if (isset($data_source_to_input{$_POST["_task_item_id"]})) {
+							db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $data_source_to_input{$_POST["_task_item_id"]} . " and graph_template_item_id=$graph_template_item_id");
+						}
+						
+						/* an input for the current data source does NOT currently exist, let's create one */
+						if (!isset($data_source_to_input{$_POST["task_item_id"]})) {
+							$ds_name = db_fetch_cell("select data_source_name from data_template_rrd where id=" . $_POST["task_item_id"]);
+							
+							db_execute("replace into graph_template_input (hash,graph_template_id,name,column_name) values (
+								'" . get_hash_graph_template(0, "graph_template_input") . "'," . $save["graph_template_id"] . ",
+								'Data Source [$ds_name]','task_item_id')");
+							
+							$graph_template_input_id = db_fetch_insert_id();
+							
+							$graph_items = db_fetch_assoc("select id from graph_templates_item where graph_template_id=" . $save["graph_template_id"] . " and task_item_id=" . $_POST["task_item_id"]);
+							
+							if (sizeof($graph_items) > 0) {
+							foreach ($graph_items as $graph_item) {
+								db_execute("replace into graph_template_input_defs (graph_template_input_id,graph_template_item_id) values ($graph_template_input_id," . $graph_item["id"] . ")");
+							}
+							}
+						}else{
+							db_execute("replace into graph_template_input_defs (graph_template_input_id,graph_template_item_id) values (" . $data_source_to_input{$_POST["task_item_id"]} . ",$graph_template_item_id)");
+						}
+					}
+					
 					push_out_graph_item($graph_template_item_id);
 				}else{
 					raise_message(2);
@@ -194,6 +235,25 @@ function item_moveup() {
 function item_remove() {
 	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);
 	db_execute("delete from graph_templates_item where local_graph_template_item_id=" . $_GET["id"]);
+	
+	/* delete the graph item input if it is empty */
+	$graph_item_inputs = db_fetch_assoc("select
+		graph_template_input.id
+		from graph_template_input,graph_template_input_defs
+		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
+		and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
+		group by graph_template_input.id");
+	
+	if (sizeof($graph_item_inputs) > 0) {
+	foreach ($graph_item_inputs as $graph_item_input) {
+		if (sizeof(db_fetch_assoc("select graph_template_input_id from graph_template_input_defs where graph_template_input_id=" . $graph_item_input["id"])) == 1) {
+			db_execute("delete from graph_template_input where id=" . $graph_item_input["id"]);
+		}
+	}
+	}
+	
+	db_execute("delete from graph_template_input_defs where graph_template_item_id=" . $_GET["id"]);
 }
 
 function item_edit() {
@@ -239,6 +299,22 @@ function item_edit() {
 		
 	}
 	
+	/* we want to mark the fields that are associated with a graph item input */
+	$graph_item_input_fields = db_fetch_assoc("select
+		graph_template_input.id,
+		graph_template_input.column_name
+		from graph_template_input,graph_template_input_defs
+		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
+		and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
+		group by graph_template_input.column_name");
+	
+	if (sizeof($graph_item_input_fields) > 0) {
+	foreach ($graph_item_input_fields as $field) {
+		$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_GET["graph_template_id"] . "'>Field Not Templated</a>]";
+	}
+	}
+	
 	draw_edit_form(
 		array(
 			"config" => array(
@@ -253,6 +329,7 @@ function item_edit() {
 	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
 	form_hidden_id("sequence",(isset($template_item) ? $template_item["sequence"] : "0"));
 	form_hidden_id("_graph_type_id",(isset($template_item) ? $template_item["graph_type_id"] : "0"));
+	form_hidden_id("_task_item_id",(isset($template_item) ? $template_item["task_item_id"] : "0"));
 	form_hidden_box("save_component_item","1","");
 	
 	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
