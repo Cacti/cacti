@@ -31,7 +31,6 @@ function escape_command($command) {
 }
 
 function rrd_init() {
-
 	// startup Cacti rrdtool for processing
 	$rrd_des = array(
    	0 => array("pipe", "r"), // stdin is a pipe that the child will read from
@@ -50,9 +49,9 @@ function rrd_init() {
 	}
 
 	/* set return array */
-	rrd_struc["fd"] = $rrd_des;
-	rrd_struc["pipes"] = $rrd_pipes;
-	rrd_struc["using_proc_open"] = $rrd_using_po_func;
+	$rrd_struc["fd"] = $rrd_des;
+	$rrd_struc["pipes"] = $rrd_pipes;
+	$rrd_struc["using_proc_open"] = $rrd_using_po_func;
 
 	return $rrd_struc;
 }
@@ -64,8 +63,94 @@ function rrd_close($rrd_struc) {
 	}
 }
 
-function rrdtool_execute($rrd_struc, $command_line, $log_command, $output_flag) {
-	global $rrd_using_po_func;
+function rrdtool_execute_batch($rrd_struc, $command_line, $log_command, $output_flag) {
+	global $config;
+
+	if ($log_command == true) {
+		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
+	}
+
+	if ($output_flag == "") { $output_flag = "1"; }
+
+	/* WIN32: before sending this command off to rrdtool, get rid
+	of all of the '\' characters. Unix does not care; win32 does.
+	Also make sure to replace all of the fancy \'s at the end of the line,
+	but make sure not to get rid of the "\n"'s that are supposed to be
+	in there (text format) */
+	$command_line = str_replace("\\\n", " ", $command_line);
+
+	/* if we want to see the error output from rrdtool; make sure to specify this */
+	if (($output_flag == "2") && (!$rrd_struc["using_proc_open"])) {
+		$command_line .= " 2>&1";
+	}
+
+	/* use popen to eliminate the zombie issue */
+	if ($config["cacti_server_os"] == "unix") {
+		if ($rrd_struc["using_proc_open"]) {
+			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
+		}else {
+			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
+		}
+	}elseif ($config["cacti_server_os"] == "win32") {
+		if ($rrd_struc["using_proc_open"]) {
+			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
+		}else {
+			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
+		}
+	}
+	/* Return Flag:
+	0: Null
+	1: Pass output back
+	2: Pass error output back */
+
+	switch ($output_flag) {
+		case '0':
+			return;
+			break;
+		case '1':
+			if ($rrd_struc["using_proc_open"]) {
+				return fgets($rrd_struc["pipes"][1], 1024);
+				break;
+			}else {
+				return fgets($fp, 1024);
+				break;
+			}
+		case '2':
+			if ($rrd_struc["using_proc_open"]) {
+				$output = fgets($rrd_struc["pipes"][2], 1000000);
+				break;
+			}else {
+				$output = fgets($fp, 1000000);
+			}
+
+			if (substr($output, 1, 3) == "PNG") {
+				return "OK";
+			}
+
+			if (substr($output, 0, 5) == "GIF87") {
+				return "OK";
+			}
+
+			print $output;
+			break;
+		case '3':
+			$line = "";
+			if ($rrd_struc["using_proc_open"]) {
+				while (!feof($rrd_proc["pipes"][1])) {
+					$line .= fgets($rrd_proc["pipes"][1], 4096);
+				}
+			}else {
+				while (!feof($fp)) {
+					$line .= fgets($fp, 4096);
+				}
+			}
+
+			return $line;
+			break;
+	}
+}
+
+function rrdtool_execute($command_line, $log_command, $output_flag) {
 	global $config;
 
 	if ($log_command == true) {
@@ -88,17 +173,9 @@ function rrdtool_execute($rrd_struc, $command_line, $log_command, $output_flag) 
 
 	/* use popen to eliminate the zombie issue */
 	if ($config["cacti_server_os"] == "unix") {
-		if ($rrd_struc["using_proc_open"]) {
-			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
-		}else {
-			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
-		}
+		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 	}elseif ($config["cacti_server_os"] == "win32") {
-		if ($rrd_struc["using_proc_open"]) {
-			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
-		}else {
-			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
-		}
+		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
 	}
 
 	/* Return Flag:
