@@ -518,7 +518,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
 		}else{
 			form_dropdown($field_name, $output_type, "name", "id", $current_value, "", "", "");
-		}	
+		}
 	}else{
 		form_text_box($field_name, $current_value, "", "");
 	}

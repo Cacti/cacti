@@ -120,7 +120,9 @@ function update_graph_title_cache($local_graph_id) {
    @arg $string - the string to clean out unsubstituted variables for
    @returns - the cleaned up string */
 function null_out_substitutions($string) {
-	return eregi_replace("\|host_(hostname|description|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
+	global $regexps;
+	
+	return eregi_replace("\|host_" . VALID_HOST_FIELDS . "\|( - )?", "", $string);
 }
 
 /* expand_title - takes a string and substitutes all data query variables contained in it or cleans
@@ -162,7 +164,7 @@ function substitute_data_query_path($path) {
    @returns - the original string with all of the variable substitutions made */
 function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
-		$host = db_fetch_row("select description,hostname,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+		$host = db_fetch_row("select * from host where id=$host_id");
 		$_SESSION["sess_host_cache_array"][$host_id] = $host;
 	}
 	
@@ -173,6 +175,8 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_port" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_port"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_timeout" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_timeout"], $string);
 	
 	return $string;
 }

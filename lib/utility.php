@@ -265,20 +265,33 @@ function update_data_source_snmp_query_cache($local_data_id) {
 	}
 }
 
-function push_out_host($host_id, $local_data_id = 0) {
+
+
+function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here from this host */
 	
+	if (!empty($data_template_id)) {
+		$hosts = db_fetch_assoc("select host_id from data_local where data_template_id=$data_template_id group by host_id");
+		
+		if (sizeof($hosts) > 0) {
+		foreach ($hosts as $host) {
+			push_out_host($host["host_id"]);
+		}
+		}
+	}
+	
 	if (empty($host_id)) { return 0; }
 	
 	/* get all information about this host so we can write it to the data source */
-	$host = db_fetch_row("select hostname,snmp_community,snmp_username,snmp_password,snmp_version from host where id=$host_id");
+	$host = db_fetch_row("select * from host where id=$host_id");
 	
 	$data_sources = db_fetch_assoc("select
 		data_template_data.id,
 		data_template_data.data_input_id,
-		data_template_data.local_data_id
+		data_template_data.local_data_id,
+		data_template_data.local_data_template_data_id
 		from data_local,data_template_data
 		where " . (empty($local_data_id) ? "data_local.host_id=$host_id" : "data_local.id=$local_data_id") . "
 		and data_local.id=data_template_data.local_data_id
@@ -287,24 +300,30 @@ function push_out_host($host_id, $local_data_id = 0) {
 	/* loop through each matching data source */
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
-		$input_fields = db_fetch_assoc("select
-			data_input_fields.id,
-			data_input_fields.type_code
-			from data_input_fields
-			where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
-			and data_input_fields.input_output='in'
-			and data_input_fields.type_code!=''");
+		/* get field information from the data template */
+		if (!isset($template_fields{$data_source["local_data_template_data_id"]})) {
+			$template_fields{$data_source["local_data_template_data_id"]} = db_fetch_assoc("select
+				data_input_data.value,
+				data_input_data.t_value,
+				data_input_fields.id,
+				data_input_fields.type_code
+				from data_input_fields left join data_input_data
+				on (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_source["local_data_template_data_id"] . ")
+				where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
+				and (data_input_data.t_value='' or data_input_data.t_value is null)
+				and data_input_fields.input_output='in'");
+		}
 		
-		/* loop through each matching field (must be special field) */
-		if (sizeof($input_fields) > 0) {
-		foreach ($input_fields as $input_field) {
-			/* fetch the appropriate data from this host based on the 'type_code'
-			  -- note: the type code name comes straight from the column names of the 'host'
-			           table, just fyi */
-			
-			/* make sure it is HOST related type code */
-			if (eregi('^(hostname|snmp_community|snmp_username|snmp_password|snmp_version)$', $input_field["type_code"])) {
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . $host{$input_field["type_code"]} . "')");
+		reset($template_fields{$data_source["local_data_template_data_id"]});
+		
+		/* loop through each field contained in the data template and push out a host value if:
+		 - the field is a valid "host field"
+		 - the value of the field is empty
+		 - the field is set to 'templated' */
+		if (sizeof($template_fields{$data_source["local_data_template_data_id"]})) {
+		foreach ($template_fields{$data_source["local_data_template_data_id"]} as $template_field) {
+			if ((eregi('^' . VALID_HOST_FIELDS . '$', $template_field["type_code"])) && ($template_field["value"] == "") && ($template_field["t_value"] == "")) {
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $template_field["id"] . "," . $data_source["id"] . ",'" . $host{$template_field["type_code"]} . "')");
 			}
 		}
 		}

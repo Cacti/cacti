@@ -67,12 +67,16 @@ function push_out_data_source_custom_data($data_template_id) {
 		if (sizeof($input_fields) > 0) {
 		foreach ($input_fields as $input_field) {
 			/* do not push out "host fields" */
-			if (!eregi('^(hostname|snmp_community|snmp_username|snmp_password|snmp_version)$', $input_field["type_code"])) {
-				if (empty($input_field["t_value"])) { /* template this value */
-					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'','" . $input_field["value"] . "')");
-				}else{
-					db_execute("update data_input_data set t_value='on' where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $data_source["id"]);
+			if (!eregi('^' . VALID_HOST_FIELDS . '$', $input_field["type_code"])) {
+				/* this is not a "host field", so we should either push out the value if it is templated
+				or leave it alone if the user checked "Use Per-Data Source Value". */
+				if ($input_field["t_value"] == "") { /* template this value */
+					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . $input_field["value"] . "')");
 				}
+			}elseif (($input_field["t_value"] == "") && ($input_field["value"] != "")) {
+				/* we only template a "host field" when the user types something in the field. this way the data
+				template always overides the host if the user chooses to do so */
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . $input_field["value"] . "')");
 			}
 		}
 		}
@@ -1072,6 +1076,10 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			if ($include_hidden_fields == true) {
 				form_hidden_box($form_field_name, $old_value, "");
 			}
+		}elseif (empty($can_template)) {
+			if ($include_hidden_fields == true) {
+				form_hidden_box($form_field_name, $old_value, "");
+			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
 				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
@@ -1092,9 +1100,8 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			print "</tr>\n";
 			
 			$draw_any_items = true;
+			$i++;
 		}
-		
-		$i++;
 	}
 	}
 }

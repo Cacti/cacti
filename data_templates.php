@@ -185,19 +185,15 @@ function form_save() {
 					
 					if (isset($_POST[$form_value])) {
 						/* save the data into the 'host_template_data' table */
-						$form_value = $_POST[$form_value];
-						
-						$form_is_templated_value = "t_value_" . $input_field["data_name"];
-						
-						if (isset($_POST[$form_is_templated_value])) {
+						if (isset($_POST{"t_value_" . $input_field["data_name"]})) {
 							$template_this_item = "on";
 						}else{
 							$template_this_item = "";
 						}
 						
-						if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
+						if ((!empty($form_value)) || (!empty($_POST{"t_value_" . $input_field["data_name"]}))) {
 							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','$form_value')");
+								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','" . $_POST[$form_value] . "')");
 						}
 					}
 				}
@@ -205,6 +201,7 @@ function form_save() {
 				
 				/* push out all "custom data" for this data source template */
 				push_out_data_source_custom_data($data_template_id);
+				push_out_host(0, 0, $data_template_id);
 			}
 		}
 		
@@ -527,6 +524,7 @@ function template_edit() {
 				</td>
 				<td>
 					<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>
+					<?php if ((eregi('^' . VALID_HOST_FIELDS . '$', $field["type_code"])) && ($data_input_data["t_value"] == "")) { print "<br><em>Value will be derived from the host if this field is left empty.</em>\n"; } ?>
 				</td>
 			</tr>
 			<?php
