@@ -94,7 +94,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 
 	/* output information to the log file if appropriate */
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-		cacti_log("RRD: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt);
+		cacti_log("CACTI2RRD: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt);
 	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
@@ -133,7 +133,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					cacti_log("RRDTOOL: " . strip_newlines($line), $log_to_stdout);
+					cacti_log("RRD2CACTI: " . strip_newlines($line), false);
 				}
 
 				return $line;
@@ -143,11 +143,10 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
 				}
 
-            $line = fgets($fp, 1024);
-				fflush(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE));
+            $line = fgets($fp, 4096);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					cacti_log("RRDTOOL: " . strip_newlines($line), $log_to_stdout);
+					cacti_log("RRD2CACTI: " . strip_newlines($line), $log_to_stdout);
 				}
 
 				return $line;
@@ -337,7 +336,7 @@ function rrdtool_function_tune($rrd_tune_array) {
 			pclose($fp);
 
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("RRD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
+				cacti_log("CACTI2RRD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
 			}
 		}
 	}
