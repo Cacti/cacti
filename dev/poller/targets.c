@@ -30,19 +30,19 @@ int get_targets(){
     temp = (target_t *) malloc(sizeof(target_t));
     
     temp->action = atoi(row[0]);
-    sprintf(temp->command, row[1]);
-    sprintf(temp->management_ip, row[2]);
-    sprintf(temp->snmp_community, row[3]);
+    sprintf(temp->command, "%s", row[1]);
+    sprintf(temp->management_ip, "%s", row[2]);
+    sprintf(temp->snmp_community, "%s", row[3]);
     temp->snmp_version = atoi(row[4]);
     //not used at the moment
-    sprintf(temp->snmp_username, row[5]);
+    sprintf(temp->snmp_username, "%s", row[5]);
     //not used at the moment
-    sprintf(temp->snmp_password, row[6]);
-    sprintf(temp->rrd_name, row[7]);
-    sprintf(temp->rrd_path, row[8]);
-    sprintf(temp->arg1, row[9]);
-    sprintf(temp->arg2, row[10]);
-    sprintf(temp->arg3, row[11]);
+    sprintf(temp->snmp_password, "%s", row[6]);
+    sprintf(temp->rrd_name, "%s", row[7]);
+    sprintf(temp->rrd_path, "%s", row[8]);
+    sprintf(temp->arg1, "%s", row[9]);
+    sprintf(temp->arg2, "%s", row[10]);
+    sprintf(temp->arg3, "%s", row[11]);
     temp->local_data_id = atoi(row[12]);
 
     temp->prev=NULL;
