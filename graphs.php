@@ -31,6 +31,13 @@ switch ($_REQUEST["action"]) {
 		
 		header ("Location: $redirect_location"); exit;
 		break;
+	case 'save_diff':
+		include_once ("include/top_header.php");
+		
+		graph_diff();
+		
+		include_once ("include/bottom_footer.php");
+		break;
 	case 'item_remove':
 		item_remove();
 		
@@ -135,7 +142,12 @@ function form_save() {
 		return "graphs.php?action=item&local_graph_id=" . $_POST["local_graph_id"];
 	}elseif (isset($_POST["save_component_item"])) {
 		item_save();
-		return "graphs.php?action=item&local_graph_id=" . $_POST["local_graph_id"];
+		
+		if (empty($config["full_view_graph"]["value"])) {
+			return "graphs.php?action=item&local_graph_id=" . $_POST["local_graph_id"];
+		}else{
+			return "graphs.php?action=graph_edit&local_graph_id=" . $_POST["local_graph_id"];
+		}
 	}
 }
    
@@ -178,12 +190,14 @@ function item() {
 		graph_templates_item.text_format,
 		graph_templates_item.value,
 		graph_templates_item.hard_return,
-		polling_items.descrip,
+		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
 		cdef.name as cdef_name,
 		def_cf.name as consolidation_function_name,
 		def_colors.hex,
 		def_graph_type.name as graph_type_name
-		from graph_templates_item left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
+		from graph_templates_item left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
+		left join data_local on data_template_rrd.local_data_id=data_local.id
+		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
 		left join def_cf on consolidation_function_id=def_cf.id
 		left join def_colors on color_id=def_colors.id
@@ -215,75 +229,82 @@ function item() {
 		
 		$_graph_type_name = $item["graph_type_name"];
 		
-		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; }			?>
-		<td <?if ($graph_template_id == "0") { print "class='linkEditMain'"; }else{ print "class='textEditTitle'"; }?>>
-				<?if ($graph_template_id == "0") {?><a href="graphs.php?action=item_edit&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><?}?>Item # <?print ($i+1);?><?if ($graph_template_id == "0") {?></a><?}?>
-			</td>
-			<?
-			if ($item["descrip"] == "") { $item["descrip"] = "(No Task)"; }
+		/* alternating row color */
+		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; } $i++;
+		
+		print "<td" . ($graph_template_id ? "class='linkEditMain'" : "class='textEditTitle'") . ">";
+		
+		print "<td>";
+		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&graph_template_item_id=" . $item["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'>"; }
+		print "<strong>Item # " . ($i) . "</strong>";
+		if (empty($graph_template_id)) { print "</a>"; }
+		print "</td>\n";
+		
+		if (empty($item["descrip"])) { $item["descrip"] = "(No Task)"; }
 			
-			switch ($item["graph_type_name"]) {
-			 case 'AREA':
-			    $matrix_title = $item["descrip"] . ": " . $item["text_format"];
-			    break;
-			 case 'STACK':
-			    $matrix_title = $item["descrip"] . ": " . $item["text_format"];
-			    break;
-			 case 'COMMENT':
-			    $matrix_title = "COMMENT: " . $item["text_format"];
-			    break;
-			 case 'GPRINT':
-			    $matrix_title = $item["descrip"] . ": " . $item["text_format"];
-			    break;
-			 case 'HRULE':
-			    $matrix_title = "HRULE: " . $item["value"];
-			    break;
-			 case 'VRULE':
-			    $matrix_title = "VRULE: " . $item["value"];
-			    break;
-			 default:
-			    $matrix_title = $item["descrip"];
-			    break;
-			}
-			
-			/* use the cdef name (if in use) if all else fails */
-			if ($matrix_title == "") {
-			    if ($item["cdef_name"] != "") {
+		switch ($item["graph_type_name"]) {
+		case 'AREA':
+			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+			break;
+		case 'STACK':
+			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+			break;
+		case 'COMMENT':
+			$matrix_title = "COMMENT: " . $item["text_format"];
+			break;
+		case 'GPRINT':
+			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+			break;
+		case 'HRULE':
+			$matrix_title = "HRULE: " . $item["value"];
+			break;
+		case 'VRULE':
+			$matrix_title = "VRULE: " . $item["value"];
+			break;
+		default:
+			$matrix_title = "(" . $item["data_source_name"] . ")";
+			break;
+		}
+		
+		$hard_return = "";
+		
+		/* use the cdef name (if in use) if all else fails */
+		if ($matrix_title == "") {
+			if ($item["cdef_name"] != "") {
 				$matrix_title .= "CDEF: " . $item["cdef_name"];
-			    }
 			}
-			
-			$hard_return = "";
-			if ($item["hard_return"] == "on") {
-			    $hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
-			}
-			
-			?>
-			<td>
-				<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
-			</td>
-			<td>
-				<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["graph_type_name"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
-			</td>
-			<td>
-				<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["consolidation_function_name"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
-			</td>
-			<td<?if ($item["hex"] != "") { print ' bgcolor="#' .  $item["hex"] . '"'; }?> width="1%">
-				&nbsp;
-			</td>
-			<td>
-				<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["hex"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
-			</td>
-			<td>
-				<a href="graphs.php?action=item_movedown&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-				<a href="graphs.php?action=item_moveup&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
-			</td>
-			<td width="1%" align="right">
-				<?if ($graph_template_id == "0") {?><a href="graphs.php?action=item_remove&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;<?}?>
-			</td>
-		</tr>
+		}
+		
+		if ($item["hard_return"] == "on") {
+			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+		}
+		
+		?>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["graph_type_name"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["consolidation_function_name"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td<?if ($item["hex"] != "") { print ' bgcolor="#' .  $item["hex"] . '"'; }?> width="1%">
+			&nbsp;
+		</td>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["hex"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td>
+			<a href="graphs.php?action=item_movedown&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+			<a href="graphs.php?action=item_moveup&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+		</td>
+		<td width="1%" align="right">
+			<?if ($graph_template_id == "0") {?><a href="graphs.php?action=item_remove&graph_template_item_id=<?print $item["id"];?>&local_graph_id=<?print $_GET["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;<?}?>
+		</td>
+	</tr>
 	<?
-	$i++;
+	
 	}
 	}else{
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -292,10 +313,10 @@ function item() {
 			</td>
 		</tr><?
 	}
+	end_box();
 	
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if ($graph_template_id != "0") {
-		end_box();
 		start_box("Graph Item Inputs", "", "");
 		
 		?>
@@ -370,9 +391,9 @@ function item() {
 				</td>
 			</tr><?
 		}
+		
+		end_box();
 	}
-	
-	end_box();
 	
 	if (($config["full_view_graph"]["value"] == "") && (sizeof($input_item_list) > 0)) {
 		start_box("", "", "");
@@ -416,17 +437,10 @@ function item_save() {
 	$save["text_format"] = $_POST["text_format"];
 	$save["value"] = $_POST["value"];
 	$save["hard_return"] = $_POST["hard_return"];
-	$save["gprint_opts"] = $_POST["gprint_opts"];
-	$save["gprint_custom"] = $_POST["gprint_custom"];
-	$save["custom"] = $_POST["custom"];
+	$save["gprint_id"] = $_POST["gprint_id"];
 	$save["sequence"] = $_POST["sequence"];
-	$save["sequence_parent"] = $_POST["sequence_parent"];
-	$save["parent"] = $_POST["parent"];
 	
 	$graph_template_item_id = sql_save($save, "graph_templates_item");
-	
-	include_once ("include/utility_functions.php");
-	update_graph_item_groups($graph_template_item_id, $_POST["graph_template_item_id"], $_POST["_graph_type_id"], $_POST["_parent"]);	
 }
 
 function item_edit() {
@@ -463,41 +477,15 @@ function item_edit() {
 			<font class="textEditTitle">Task Item</font><br>
 			The task to use for this graph item; not used for COMMENT fields.
 		</td>
-		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select item_id,descrip from polling_items order by descrip"),"descrip","item_id",$template_item["task_item_id"],"None",$default_item);?>
+		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select 
+			CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as name,
+			data_template_rrd.id 
+			from data_template_data,data_template_rrd,data_local 
+			where data_template_rrd.local_data_id=data_local.id 
+			and data_template_data.local_data_id=data_local.id"),"name","id",$template_item["task_item_id"],"None",$default_item);?>
 	</tr>
 	
-	<?
-	/* default item (last item) */
-	$groups = db_fetch_assoc("select 
-		CONCAT_WS('',def_graph_type.name,' (',def_cf.name,'): ',polling_items.descrip,' - \"',graph_templates_item.text_format,'\"') as name,
-		graph_templates_item.id
-		from graph_templates_item left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
-		left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-		left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
-		where graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
-		and (def_graph_type.name = 'AREA' or def_graph_type.name = 'STACK' or def_graph_type.name = 'LINE1'
-		or def_graph_type.name = 'LINE2' or def_graph_type.name = 'LINE3') order by graph_templates_item.sequence_parent");
-	
-	if (sizeof($groups) == 0) {
-		DrawFormItemHiddenIDField("parent","0");
-	}else{
-		if (!(isset($_GET["graph_template_id_graph"]))) {
-			$rows = (sizeof($groups) - 1);
-			$default_item = $groups[$rows]["id"];
-		}
-		
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Item Group</font><br>
-				Choose which graph item this GPRINT is associated with. NOTE: This field
-				will be ignored if it is not a GPRINT.
-			</td>
-			<?DrawFormItemDropdownFromSQL("parent",$groups,"name","id",$template_item["parent"],"",$default_item);?>
-		</tr>
-		<?
-	}
-
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Color</font><br>
 			The color that is used for this item; not used for COMMENT fields.
@@ -539,17 +527,10 @@ function item_edit() {
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
-			<font class="textEditTitle">GPRINT Options</font><br>
-			These options only apply to the GPRINT function. Choose an option or enter a custom
-			GPRINT string in the textbox (overides checkboxes).
+			<font class="textEditTitle">GPRINT String Type</font><br>
+			Choose a GPRINT string to represent textual data on your graph. To add/edit these custom strings, select "GPRINT Presets" under "Graph Templates".
 		</td>
-		<td>
-		<?
-			DrawStrippedFormItemRadioButton("gprint_opts", $template_item["gprint_opts"], "1", "Normal","1",true);
-			DrawStrippedFormItemRadioButton("gprint_opts", $template_item["gprint_opts"], "2", "Exact Numbers","1",true);
-			DrawStrippedFormItemTextBox("gprint_custom",$template_item["gprint_custom"],"","", "40");
-		?>
-		</td>
+		<?DrawFormItemDropdownFromSQL("gprint_id",db_fetch_assoc("select id,name from graph_templates_gprint order by name"),"name","id",$template_item["gprint_id"],"","2");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
@@ -571,8 +552,6 @@ function item_edit() {
 	DrawFormItemHiddenIDField("graph_template_item_id",$_GET["graph_template_item_id"]);
 	DrawFormItemHiddenIDField("graph_template_id",$template_item["graph_template_id"]);
 	DrawFormItemHiddenIDField("sequence",$template_item["sequence"]);
-	DrawFormItemHiddenIDField("sequence_parent",$template_item["sequence_parent"]);
-	DrawFormItemHiddenIDField("_parent",$template_item["parent"]);
 	DrawFormItemHiddenIDField("_graph_type_id",$template_item["graph_type_id"]);
 	DrawFormItemHiddenTextBox("save_component_item","1","");
 	
@@ -666,11 +645,231 @@ function graph_save() {
 	
 	sql_save($save, "graph_templates_graph");
 	
+	/* if template information chanegd, update all nessesary template information */
 	if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
-		/* update all nessesary template information */
+		/* check to see if the number of graph items differs, if it does; we need user input */
+		if ((!empty($_POST["graph_template_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) > 0)) {
+			header("Location: graphs.php?action=save_diff&local_graph_id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}
+		print "GAH!!!";exit;
 		include_once ("include/utility_functions.php");
 		$return_status = change_graph_template($local_graph_id, $_POST["graph_template_id"], $_POST["_graph_template_id"]);
 	}
+}
+
+function graph_diff() {
+	global $colors;
+	
+	
+	include("include/config_arrays.php");
+	
+	
+	$template_query = "select
+		graph_templates_item.id,
+		graph_templates_item.text_format,
+		graph_templates_item.value,
+		graph_templates_item.hard_return,
+		graph_templates_item.consolidation_function_id,
+		graph_templates_item.graph_type_id,
+		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as task_item_id,
+		cdef.name as cdef_id,
+		def_colors.hex as color_id
+		from graph_templates_item left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
+		left join data_local on data_template_rrd.local_data_id=data_local.id
+		left join data_template_data on data_local.id=data_template_data.local_data_id
+		left join cdef on cdef_id=cdef.id
+		left join def_colors on color_id=def_colors.id";
+	
+	/* first, get information about the graph template as that's what we're going to model this
+	graph after */
+	$graph_template_items = db_fetch_assoc("
+		$template_query
+		where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
+		and graph_templates_item.local_graph_id=0
+		order by graph_templates_item.sequence");
+	
+	/* next, get information about the current graph so we can make the appropriate comparisons */
+	$graph_items = db_fetch_assoc("
+		$template_query
+		where graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
+		order by graph_templates_item.sequence");
+	
+	$graph_template_inputs = db_fetch_assoc("select
+		graph_template_input.column_name,
+		graph_template_input_defs.graph_template_item_id
+		from graph_template_input,graph_template_input_defs
+		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"]);
+	
+	/* ok, we want to loop through the array with the GREATEST number of items so we don't have to worry
+	about tacking items on the end */
+	if (sizeof($graph_template_items) > sizeof($graph_items)) {
+		$items = $graph_template_items;
+	}else{
+		$items = $graph_items;
+	}
+	
+	
+	start_box("<strong>Graph Preview</strong>", "", "");
+	
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],2);
+		DrawMatrixHeaderItem("Task Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
+		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
+	print "</tr>";
+	
+	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
+	
+	$group_counter = 0; $i = 0; $mode = "normal";
+	if (sizeof($items) > 0) {
+	foreach ($items as $item) {
+		/* graph grouping display logic */
+		$bold_this_row = false; $use_custom_row_color = false; unset($graph_preview_item_values);
+		
+		if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
+			$mode = "add";
+		}elseif ((sizeof($graph_template_items) < sizeof($graph_items)) && ($i >= sizeof($graph_template_items))) {
+			$mode = "delete";
+		}
+		
+
+		
+		/* here is the fun meshing part. first we check the graph template to see if there is an input
+		for each field of this row. if there is, we revert to the value stored in the graph, if not
+		we revert to the value stored in the template. got that? ;) */
+		for ($j=0; ($j < count($graph_template_inputs)); $j++) {
+			if ($graph_template_inputs[$j]["graph_template_item_id"] == $item["id"]) {
+				/* if we find out that there is an "input" covering this field/item, use the 
+				value from the graph, not the template */
+				$graph_item_field_name = $graph_template_inputs[$j]["column_name"];
+				$graph_preview_item_values[$graph_item_field_name] = $graph_items[$i][$graph_item_field_name];
+			}
+		}
+		
+		/* go back through each graph field and find out which ones haven't been covered by the 
+		"inputs" above. for each one, use the value from the template */
+		for ($j=0; ($j < count($struct_graph_item)); $j++) {
+			$graph_item_field_name = $struct_graph_item[$j];
+			
+			if (!isset($graph_preview_item_values[$graph_item_field_name])) {
+				$graph_preview_item_values[$graph_item_field_name] = $graph_template_items[$i][$graph_item_field_name];
+			}
+		}
+		
+		$consolidation_function_id = $graph_preview_item_values["consolidation_function_id"];
+		$graph_type_id = $graph_preview_item_values["graph_type_id"];
+		
+		if (($graph_item_types[$graph_type_id] != "GPRINT") && ($graph_item_types[$graph_type_id] != $_graph_type_name)) {
+			$bold_this_row = true; $use_custom_row_color = true;
+			
+			if ($group_counter % 2 == 0) {
+				$alternate_color_1 = "EEEEEE";
+				$alternate_color_2 = "EEEEEE";
+				$custom_row_color = "D5D5D5";
+			}else{
+				$alternate_color_1 = $colors["alternate"];
+				$alternate_color_2 = $colors["alternate"];
+				$custom_row_color = "D2D6E7";
+			}
+			
+			$group_counter++;
+		}
+		
+		$_graph_type_name = $graph_item_types[$graph_type_id];
+		
+		/* alternating row color */
+		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; } $i++;
+		
+		/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
+		print "<td width='1%' bgcolor='#" . $colors["header"] . "' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
+		
+		print "<td" . ($graph_template_id ? "class='linkEditMain'" : "class='textEditTitle'") . ">";
+		
+		print "<td>";
+		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&graph_template_item_id=" . $graph_preview_item_values["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'>"; }
+		print "<strong>Item # " . ($i) . "</strong>";
+		if (empty($graph_template_id)) { print "</a>"; }
+		print "</td>\n";
+		
+		if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
+			
+		switch ($graph_preview_item_values["graph_type_name"]) {
+		case 'AREA':
+			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
+			break;
+		case 'STACK':
+			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
+			break;
+		case 'COMMENT':
+			$matrix_title = "COMMENT: " . $graph_preview_item_values["text_format"];
+			break;
+		case 'GPRINT':
+			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
+			break;
+		case 'HRULE':
+			$matrix_title = "HRULE: " . $graph_preview_item_values["value"];
+			break;
+		case 'VRULE':
+			$matrix_title = "VRULE: " . $graph_preview_item_values["value"];
+			break;
+		default:
+			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . ")";
+			break;
+		}
+		
+		$hard_return = "";
+		
+		/* use the cdef name (if in use) if all else fails */
+		if ($matrix_title == "") {
+			if ($graph_preview_item_values["cdef_id"] != "") {
+				$matrix_title .= "CDEF: " . $graph_preview_item_values["cdef_id"];
+			}
+		}
+		
+		if ($graph_preview_item_values["hard_return"] == "on") {
+			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+		}
+		
+		?>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $graph_item_types[$graph_type_id];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $consolidation_functions[$consolidation_function_id];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+		<td<?if ($graph_preview_item_values["color_id"] != "") { print ' bgcolor="#' .  $graph_preview_item_values["color_id"] . '"'; }?> width="1%">
+			&nbsp;
+		</td>
+		<td>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $graph_preview_item_values["hex"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+		</td>
+	</tr>
+	<?
+	
+	}
+	}else{
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+			<td colspan="7">
+				<em>No Items</em>
+			</td>
+		</tr><?
+	}
+	end_box();	
+	
+	
+	/* loop through each graph template and 
+	
+	/* 	Item # 1 (pepper_cpu - cpu1): sdfsssss   	AREA   AVERAGE   FF897C
+		Item # 2 (pepper_cpu1 - cpu1): fhfg 		GPRINT AVERAGE
+	--------Item # 3 (fsddfsdfs - cpu1): Current: 		GPRINT AVERAGE
+	++++++++""
+	*/
 }
 
 function graph_remove() {
@@ -753,7 +952,7 @@ function graph_edit() {
 			DrawFormItemTextBox("title",$graphs["title"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["title"] . "</em></td>";
-			DrawFormItemHiddenTextBox("title",$graphs_template["title"],"");
+			DrawFormItemHiddenTextBox("title",$graphs["title"],"");
 		}?>
 	</tr>
 	
@@ -766,7 +965,7 @@ function graph_edit() {
 			DrawFormItemDropdownFromSQL("image_format_id",db_fetch_assoc("select * from def_image_type order by name"),"Name","ID",$graphs["image_format_id"],"","1");
 		}else{
 			print "<td><em>" . db_fetch_cell("select name from def_image_type where id=" . $graphs["image_format_id"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("image_format_id",$graphs_template["image_format_id"],"");
+			DrawFormItemHiddenTextBox("image_format_id",$graphs["image_format_id"],"");
 		}?>
 	</tr>
 	
@@ -779,7 +978,7 @@ function graph_edit() {
 			DrawFormItemTextBox("height",$graphs["height"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["height"] . "</em></td>";
-			DrawFormItemHiddenTextBox("height",$graphs_template["height"],"");
+			DrawFormItemHiddenTextBox("height",$graphs["height"],"");
 		}?>
 	</tr>
 	
@@ -792,7 +991,7 @@ function graph_edit() {
 			DrawFormItemTextBox("width",$graphs["width"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["width"] . "</em></td>";
-			DrawFormItemHiddenTextBox("width",$graphs_template["width"],"");
+			DrawFormItemHiddenTextBox("width",$graphs["width"],"");
 		}?>
 	</tr>
 	
@@ -805,7 +1004,7 @@ function graph_edit() {
 			DrawFormItemCheckBox("auto_scale",$graphs["auto_scale"],"Auto Scale","on");
 		}else{
 			print "<td><em>" . html_boolean_friendly($graphs["auto_scale"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale",$graphs_template["auto_scale"],"");
+			DrawFormItemHiddenTextBox("auto_scale",$graphs["auto_scale"],"");
 		}?>
 	</tr>
 	
@@ -823,7 +1022,7 @@ function graph_edit() {
 			print "<td><em>";
 			if ($graphs_template["auto_scale_opts"] == "1") { print "Use --alt-autoscale"; }else{ print "Use --alt-autoscale-max";}
 			print "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale_opts",$graphs_template["auto_scale_opts"],"");
+			DrawFormItemHiddenTextBox("auto_scale_opts",$graphs["auto_scale_opts"],"");
 		}?>
 	</tr>
 	
@@ -836,7 +1035,7 @@ function graph_edit() {
 			DrawFormItemCheckBox("auto_scale_rigid",$graphs["auto_scale_rigid"],"Use Rigid Boundaries Mode (--rigid)","");
 		}else{
 			print "<td><em>" . html_boolean_friendly($graphs["auto_scale_rigid"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale_rigid",$graphs_template["auto_scale_rigid"],"");
+			DrawFormItemHiddenTextBox("auto_scale_rigid",$graphs["auto_scale_rigid"],"");
 		}?>
 	</tr>
 	
@@ -849,7 +1048,7 @@ function graph_edit() {
 			DrawFormItemCheckBox("auto_scale_log",$graphs["auto_scale_log"],"Logarithmic Auto Scaling (--logarithmic)","");
 		}else{
 			print "<td><em>" . html_boolean_friendly($graphs["auto_scale_log"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale_logg",$graphs_template["auto_scale_log"],"");
+			DrawFormItemHiddenTextBox("auto_scale_logg",$graphs["auto_scale_log"],"");
 		}?>
 	</tr>
 	
@@ -864,7 +1063,7 @@ function graph_edit() {
 			DrawFormItemCheckBox("auto_padding",$graphs["auto_padding"],"Auto Padding","on");
 		}else{
 			print "<td><em>" . html_boolean_friendly($graphs["auto_padding"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_padding",$graphs_template["auto_padding"],"");
+			DrawFormItemHiddenTextBox("auto_padding",$graphs["auto_padding"],"");
 		}?>
 	</tr>
 	
@@ -879,7 +1078,7 @@ function graph_edit() {
 			DrawFormItemCheckBox("grouping",$graphs["grouping"],"Allow Grouping","on");
 		}else{
 			print "<td><em>" . html_boolean_friendly($graphs["grouping"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("grouping",$graphs_template["grouping"],"");
+			DrawFormItemHiddenTextBox("grouping",$graphs["grouping"],"");
 		}?>
 	</tr>
 	
@@ -893,7 +1092,7 @@ function graph_edit() {
 			DrawFormItemCheckBox("export",$graphs["export"],"Allow Graph Export","on");
 		}else{
 			print "<td><em>" . html_boolean_friendly($graphs["export"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("export",$graphs_template["export"],"");
+			DrawFormItemHiddenTextBox("export",$graphs["export"],"");
 		}?>
 	</tr>
 	
@@ -906,7 +1105,7 @@ function graph_edit() {
 			DrawFormItemTextBox("upper_limit",$graphs["upper_limit"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["upper_limit"] . "</em></td>";
-			DrawFormItemHiddenTextBox("upper_limit",$graphs_template["upper_limit"],"");
+			DrawFormItemHiddenTextBox("upper_limit",$graphs["upper_limit"],"");
 		}?>
 	</tr>
 	
@@ -919,7 +1118,7 @@ function graph_edit() {
 			DrawFormItemTextBox("lower_limit",$graphs["lower_limit"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["lower_limit"] . "</em></td>";
-			DrawFormItemHiddenTextBox("lower_limit",$graphs_template["lower_limit"],"");
+			DrawFormItemHiddenTextBox("lower_limit",$graphs["lower_limit"],"");
 		}?>
 	</tr>
 	
@@ -932,7 +1131,7 @@ function graph_edit() {
 			DrawFormItemTextBox("base_value",$graphs["base_value"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["base_value"] . "</em></td>";
-			DrawFormItemHiddenTextBox("base_value",$graphs_template["base_value"],"");
+			DrawFormItemHiddenTextBox("base_value",$graphs["base_value"],"");
 		}?>
 	</tr>
 	
@@ -946,7 +1145,7 @@ function graph_edit() {
 			DrawFormItemTextBox("unit_value",$graphs["unit_value"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["unit_value"] . "</em></td>";
-			DrawFormItemHiddenTextBox("unit_value",$graphs_template["unit_value"],"");
+			DrawFormItemHiddenTextBox("unit_value",$graphs["unit_value"],"");
 		}?>
 	</tr>
 	
@@ -960,7 +1159,7 @@ function graph_edit() {
 			DrawFormItemTextBox("unit_exponent_value",$graphs["unit_exponent_value"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["unit_exponent_value"] . "</em></td>";
-			DrawFormItemHiddenTextBox("unit_exponent_value",$graphs_template["unit_exponent_value"],"");
+			DrawFormItemHiddenTextBox("unit_exponent_value",$graphs["unit_exponent_value"],"");
 		}?>
 	</tr>
 	
@@ -973,7 +1172,7 @@ function graph_edit() {
 			DrawFormItemTextBox("vertical_label",$graphs["vertical_label"],"","50", "40");
 		}else{
 			print "<td><em>" . $graphs["vertical_label"] . "</em></td>";
-			DrawFormItemHiddenTextBox("vertical_label",$graphs_template["vertical_label"],"");
+			DrawFormItemHiddenTextBox("vertical_label",$graphs["vertical_label"],"");
 		}?>
 	</tr>
 	
