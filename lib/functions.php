@@ -225,7 +225,7 @@ function CreateList($data,$name,$value,$prev) {
 	    print "<option value='$row[$value]'";
 	    
 		if ($prev == $row[$value]) {
-			print " selected ";
+			print " selected";
 	    }
 		
 	    print ">$row[$name]</option>\n";
@@ -235,7 +235,7 @@ function CreateList($data,$name,$value,$prev) {
 	    print '<option value="' . $data[$value][$i] . '"';
 	    
 		if ($prev == $data[$value][$i]) {
-			print " selected ";
+			print " selected";
 	    }
 		
 	    print ">" . $data[$name][$i] . "</option>\n";

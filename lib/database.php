@@ -284,6 +284,7 @@ function sql_save($array_items, $table_name) {
 	/* form the SQL string */
 	$sql_save = "replace into $table_name ($sql_save_fields) values ($sql_save_values)";
 	
+	//print $sql_save . "<br>";
 	db_execute($sql_save);
 	
 	/* get the last AUTO_ID and return it */
