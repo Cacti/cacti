@@ -216,6 +216,15 @@ function display_output_messages() {
 	kill_session_var("sess_messages");
 }
 
+/* display_custom_error_message - displays a custom error message to the browser that looks like
+     the pre-defined error messages
+   @arg $text - the actual text of the error message to display */
+function display_custom_error_message($message) {
+	print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #ff0000;'>";
+	print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
+	print "</table><br>";
+}
+
 /* clear_messages - clears the message cache */
 function clear_messages() {
 	kill_session_var("sess_messages");
