@@ -84,28 +84,24 @@ function decrement_id($id) {
 
 ##  This function queries the database with the table and field specified to calculate the next
 ##  available id ON THE SAME TIER.
-function get_next_tree_id($id,$table,$field,$where = '') {
-    if (preg_match("/^00/",$id)) {
-	$tier = 0;
-	$parent_root = '';
-    } else {
-	$tier = tree_tier($id,'2');
-	$parent_root = substr($id,0,($tier * 2));
-    }
-    if ($where != '') { $where = " AND $where"; }
-    $sql = "SELECT $field FROM $table WHERE $field LIKE '$parent_root%' AND $where ORDER BY $field DESC LIMIT 1";
-    $tmp = db_fetch_assoc($sql);
-    $last_id = $tmp[0][$field];
-    #  if ($last_id == '') { $last_id = '00'; }
-    if (substr($last_id,($tier * 2),'2') != '00') {
-	$next_id = increment_id($last_id);
-    } else {
-	$next_id = str_pad($parent_root."01",60,'0',STR_PAD_RIGHT);
-    }
+function get_next_tree_id($id,$table,$field) {
+	if (preg_match("/^00/",$id)) {
+		$tier = 0;
+		$parent_root = '';
+	}else{
+		$tier = tree_tier($id,'2');
+		$parent_root = substr($id,0,($tier * 2));
+	}
     
-    return($next_id);
+    	$order_key = db_fetch_cell("SELECT $field FROM $table WHERE $field LIKE '$parent_root%' ORDER BY $field DESC LIMIT 1");
+    	
+	$complete_root = substr($order_key,0,($tier * 2) + 2);
+  	$order_key_suffix = (substr($complete_root, -2) + 1);
+	$order_key_suffix = str_pad($order_key_suffix,2,'0',STR_PAD_LEFT);
+	$order_key_suffix = str_pad($parent_root . $order_key_suffix,60,'0',STR_PAD_RIGHT);
+	
+	return $order_key_suffix;
 }
-
 
 function branch_up($order_key, $table, $field, $where = '', $primary_key = 'ID') { 
     move_branch('up',$order_key, $table, $field, $where, $primary_key); 
