@@ -83,7 +83,7 @@ switch ($action) {
 	}
     }
     
-    DrawFormSaveButton();
+    DrawFormSaveButton("save");
     DrawFormItemHiddenIDField("id",$id);
     DrawFormFooter();
     
