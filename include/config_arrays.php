@@ -129,6 +129,35 @@ $graph_views = array(1 =>
 	"List View",
 	"Preview View");
 
+$menu = array(
+	"Graph Setup" => array(
+		"graphs.php" => "Graph Management",
+		"gprint_presets.php" => "GPRINT Presets",
+		"tree.php" => "Graph Trees",
+		"color.php" => "Colors"
+		),
+	"Templates" => array(
+		"graph_templates.php" => "Graph Templates",
+		"host_templates.php" => "Host Templates",
+		"data_templates.php" => "Data Templates"
+		),
+	"Data Gathering" => array(
+		"data_sources.php" => "Data Sources",
+		"host.php" => 'Polling Hosts',
+		"rra.php" => "Available RRA's",
+		"data_input.php" => "Data Input Methods",
+		"snmp.php" => "Data Queries",
+		"cdef.php" => "CDEF's"
+		),
+	"Configuration"  => array(
+		"utilities.php" => "Utilities",
+		"settings.php" => "Cacti Settings"
+		),
+	"Utilities" => array(
+		"user_admin.php" => "User Management",
+		"logout.php" => "Logout User"
+	));
+
 $struct_graph = array(
 	"title" => array(
 		"title" => "Title",

@@ -179,38 +179,9 @@ function array_rekey($array, $key, $key_value) {
 }
 
 function draw_menu() {
-	global $colors;
+	include ("config_arrays.php");
 	
-	/* set up the available menu headers */
-	$menu = array(
-		"Graph Setup" => array(
-			"graphs.php" => "Graph Management",
-			"gprint_presets.php" => "GPRINT Presets",
-			"tree.php" => "Graph Trees",
-			"color.php" => "Colors"
-			),
-		"Templates" => array(
-			"graph_templates.php" => "Graph Templates",
-			"host_templates.php" => "Host Templates",
-			"data_templates.php" => "Data Templates"
-			),
-		"Data Gathering" => array(
-			"data_sources.php" => "Data Sources",
-			"host.php" => 'Polling Hosts',
-			"rra.php" => "Available RRA's",
-			"data_input.php" => "Data Input Methods",
-			"snmp.php" => "Data Queries",
-			"cdef.php" => "CDEF's"
-			),
-		"Configuration"  => array(
-			"utilities.php" => "Utilities",
-			"settings.php" => "Cacti Settings"
-			),
-		"Utilities" => array(
-			"user_admin.php" => "User Management",
-			"logout.php" => "Logout User"
-		)
-	);
+	global $colors;
 	
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
 	
@@ -218,7 +189,11 @@ function draw_menu() {
 		print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
 		if (sizeof($menu[$header]) > 0) {
 			foreach (array_keys($menu[$header]) as $url) {
-				print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+				if (basename($_SERVER["PHP_SELF"]) == basename($url)) {
+					print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+				}else{
+					print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+				}
 			}
 		}
 	}
