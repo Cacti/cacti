@@ -328,7 +328,7 @@ function get_full_script_path($local_data_id) {
 		and data_template_data.local_data_id=$local_data_id");
 
 	/* snmp-actions don't have paths */
-	if (($data_source["type_id"] == "2") || ($data_source["type_id"] == "3")) {
+	if (($data_source["type_id"] == DATA_INPUT_TYPE_SNMP) || ($data_source["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY)) {
 		return false;
 	}
 

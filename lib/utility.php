@@ -60,7 +60,7 @@ function update_poller_cache($local_data_id) {
 	db_execute("delete from poller_field where local_data_id=$local_data_id");
 
 	/* we have to perform some additional sql queries if this is a "query" */
-	if (($data_input["type_id"] == "3") || ($data_input["type_id"] == "4")) {
+	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) || ($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY)) {
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
 		if (empty($field)) { return; }
@@ -94,7 +94,7 @@ function update_poller_cache($local_data_id) {
 		}
 
 		switch ($data_input["type_id"]) {
-		case '1': /* script */
+		case DATA_INPUT_TYPE_SCRIPT: /* script */
 			$num_output_fields = sizeof(db_fetch_assoc("select id from data_input_fields where data_input_id=" . $data_input["id"] . " and input_output='out'"));
 
 			if ($num_output_fields == 1) {
@@ -107,7 +107,7 @@ function update_poller_cache($local_data_id) {
 			api_poller_cache_item_add($host_id, $local_data_id, 1, $data_source_item_name, addslashes(get_full_script_path($local_data_id)));
 
 			break;
-		case '2': /* snmp */
+		case DATA_INPUT_TYPE_SNMP: /* snmp */
 			$field = db_fetch_assoc("select
 				data_input_fields.type_code,
 				data_input_data.value
@@ -121,7 +121,7 @@ function update_poller_cache($local_data_id) {
 			api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), $field["snmp_oid"]);
 
 			break;
-		case '3': /* snmp query */
+		case DATA_INPUT_TYPE_SNMP_QUERY: /* snmp query */
 			$snmp_queries = get_data_query_array($query["snmp_query_id"]);
 
 			if (sizeof($outputs) > 0) {
@@ -137,7 +137,7 @@ function update_poller_cache($local_data_id) {
 			}
 
 			break;
-		case '4': /* script query */
+		case DATA_INPUT_TYPE_SCRIPT_QUERY: /* script query */
 			$script_queries = get_data_query_array($query["snmp_query_id"]);
 
 			if (sizeof($outputs) > 0) {
@@ -145,16 +145,7 @@ function update_poller_cache($local_data_id) {
 				if (isset($script_queries["fields"]{$output["snmp_field_name"]}["query_name"])) {
 					$identifier = $script_queries["fields"]{$output["snmp_field_name"]}["query_name"];
 
-					/* get any extra arguments that need to be passed to the script */
-					if (!empty($script_queries["arg_prepend"])) {
-						$extra_arguments = substitute_host_data($script_queries["arg_prepend"], "|", "|", $host_id);
-					}else{
-						$extra_arguments = "";
-					}
-
-					/* get a complete path for out target script */
-					$script_path = substitute_data_query_path($script_queries["script_path"]);
-					$script_path .= " $extra_arguments " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
+					$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
 				}
 
 				if (isset($script_path)) {
