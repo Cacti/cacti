@@ -35,4 +35,58 @@ function api_graph_remove($local_graph_id) {
 	db_execute("delete from graph_local where id=$local_graph_id");
 }
 
+/* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
+   @arg $graph_templates_graph_id - the id of the graph to reapply the name to
+*/
+function api_reapply_suggested_graph_title($local_graph_id) {
+	global $config;
+
+	/* get graphs template id */
+	$graph_template_id = db_fetch_cell("select graph_template_id from graph_templates_graph where local_graph_id=" . $local_graph_id);
+
+	/* if a non-template graph, simply return */
+	if ($graph_template_id == 0) {
+		return;
+	}
+
+	/* get the host associated with this graph */
+	$graph_local = db_fetch_row("select host_id, graph_template_id, snmp_query_id, snmp_index from graph_local where id=" . $local_graph_id);
+	$snmp_query_graph_id = db_fetch_cell("select id from snmp_query_graph where graph_template_id=" . $graph_local["graph_template_id"] .
+										" and snmp_query_id=" . $graph_local["snmp_query_id"]);
+
+	/* get the suggested values from the suggested values cache */
+	$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_sv where snmp_query_graph_id=" . $snmp_query_graph_id . " order by sequence");
+
+	if (sizeof($suggested_values) > 0) {
+	foreach ($suggested_values as $suggested_value) {
+		/* once we find a match; don't try to find more */
+		if (!isset($suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]})) {
+			$subs_string = substitute_snmp_query_data($suggested_value["text"], $graph_local["host_id"], $graph_local["snmp_query_id"], $graph_local["snmp_index"], read_config_option("max_data_query_field_length"));
+			/* if there are no '|' characters, all of the substitutions were successful */
+			if (!strstr($subs_string, "|query")) {
+				db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_graph_id=" . $local_graph_id);
+				/* once we find a working value, stop */
+				$suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]} = true;
+			}
+		}
+	}
+	}
+	/* suggested values: graph */
+	if (isset($suggested_values_array[$graph_template_id]["graph_template"])) {
+		while (list($field_name, $field_value) = each($suggested_values_array[$graph_template_id]["graph_template"])) {
+			db_execute("update graph_templates_graph set $field_name='$field_value' where local_graph_id=" . $local_graph_id);
+		}
+	}
+
+	/* suggested values: graph item */
+	if (isset($suggested_values_array[$graph_template_id]["graph_template_item"])) {
+		while (list($graph_template_item_id, $field_array) = each($suggested_values_array[$graph_template_id]["graph_template_item"])) {
+			while (list($field_name, $field_value) = each($field_array)) {
+				$graph_item_id = db_fetch_cell("select id from graph_templates_item where local_graph_template_item_id=$graph_template_item_id and local_graph_id=" . $local_graph_id);
+				db_execute("update graph_templates_item set $field_name='$field_value' where id=$graph_item_id");
+			}
+		}
+	}
+}
+
 ?>
