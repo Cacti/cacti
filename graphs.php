@@ -711,10 +711,8 @@ function graph_edit() {
 		</td>
 		<?DrawFormItemDropdownFromSQL("graph_template_id",db_fetch_assoc("select 
 			graph_templates.id,graph_templates.name 
-			from graph_templates,graph_templates_graph 
-			where graph_templates.id=graph_templates_graph.graph_template_id 
-			and graph_templates_graph.local_graph_id=0
-			order by graph_templates.name"),"name","id",$graphs[graph_template_id],"None","0");?>
+			from graph_templates
+			where graph_templates.type='template'"),"name","id",$graphs[graph_template_id],"None","0");?>
 	</tr>
 	
 	<?
