@@ -36,7 +36,7 @@ case 'login':
 
 	/* --- start ldap section --- */
 	$ldap_auth = false;
-	if ((read_config_option("ldap_enabled") == "on") && (strlen($_POST["password"]))){
+	if ((read_config_option("ldap_enabled") == "on") && ($_POST["realm"] == "ldap") && (strlen($_POST["password"]))){
 		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
 
 		if ($ldap_conn) {
@@ -207,6 +207,18 @@ case 'login':
 		<td>Password:</td>
 		<td><input type="password" name="password" size="40" style="width: 295px;"></td>
 	</tr>
+	<?php
+	if (read_config_option("ldap_enabled") == "on") {?>
+        <tr>
+                <td>Realm:</td>
+                <td>
+			<select name="realm" style="width: 295px;">
+				<option value="local">Local</option>
+				<option value="ldap" selected>LDAP</option>
+			</select>
+		</td>
+        </tr>
+	<?php }?>
 	<tr height="10"><td></td></tr>
 	<tr>
 		<td><input type="submit" value="Login"></td>
