@@ -103,32 +103,6 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
-function draw_user_form_tabs() {
-	?>
-	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
-		<tr>
-			<td width='1'></td>
-			<td <?php print (strstr($_SERVER["PHP_SELF"], "graphs.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-				<span class='textHeader'><a href='graph_management.php'>Graph Management</a></span>
-			</td>
-			<td width='1'></td>
-			<td <?php print (strstr($_SERVER["PHP_SELF"], "cdef.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='80' align='center' class='tab'>
-				<span class='textHeader'><a href='cdef.php'>CDEFs</a></span>
-			</td>
-			<td width='1'></td>
-			<td <?php print (strstr($_SERVER["PHP_SELF"], "color.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='80' align='center' class='tab'>
-				<span class='textHeader'><a href='color.php'>Colors</a></span>
-			</td>
-			<td width='1'></td>
-			<td <?php print (strstr($_SERVER["PHP_SELF"], "gprint_presets.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
-				<span class='textHeader'><a href='gprint_presets.php'>GPRINT Presets</a></span>
-			</td>
-			<td></td>
-		</tr>
-	</table>
-	<br>
-<?php }
-
 /* --------------------------
     The Save Function
    -------------------------- */
@@ -301,6 +275,7 @@ function form_actions() {
 		}elseif ($_POST["drp_action"] == "5") { /* change host */
 			for ($i=0;($i<count($selected_items));$i++) {
 				db_execute("update graph_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
+				update_graph_title_cache($selected_items[$i]);
 			}
 		}
 		
@@ -460,69 +435,6 @@ function item() {
 	start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", $add_text);
 	draw_graph_items_list($template_item_list, "graphs_items.php", "local_graph_id=" . $_GET["id"], (empty($graph_template_id) ? false : true));
 	end_box();
-	
-	/* only display the "inputs" area if we are using a graph template for this graph */
-	if ($graph_template_id != "0") {
-		start_box("<strong>Graph Item Inputs</strong>", "98%", $colors["header"], "3", "center", "");
-		
-		print "<form method='post' action='graphs.php'>\n";
-		
-		$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id order by name");
-		
-		/* modifications to the default graph items array */
-		$struct_graph_item["task_item_id"]["sql"] = "select
-			CONCAT_WS('',
-			case
-			when host.description is null then 'No Host - ' 
-			when host.description is not null then ''
-			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
-			data_template_rrd.id 
-			from data_template_data,data_template_rrd,data_local 
-			left join host on data_local.host_id=host.id
-			where data_template_rrd.local_data_id=data_local.id 
-			and data_template_data.local_data_id=data_local.id
-			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "
-			order by name";
-		
-		$form_array = array();
-		
-		if (sizeof($input_item_list) > 0) {
-		foreach ($input_item_list as $item) {
-			$current_def_value = db_fetch_row("select 
-				graph_templates_item." . $item["column_name"] . ",
-				graph_templates_item.id
-				from graph_templates_item,graph_template_input_defs 
-				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id 
-				and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
-				and graph_templates_item.local_graph_id=" . $_GET["id"] . "
-				limit 0,1");
-			
-			$form_array += array($item["column_name"] . "_" . $item["id"] => $struct_graph_item{$item["column_name"]});
-			
-			$form_array{$item["column_name"] . "_" . $item["id"]}["friendly_name"] = $item["name"];
-			$form_array{$item["column_name"] . "_" . $item["id"]}["description"] = $item["description"];
-			$form_array{$item["column_name"] . "_" . $item["id"]}["value"] = $current_def_value{$item["column_name"]};
-		}
-		}else{
-			print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='2'><em>No Inputs</em></td></tr>";
-		}
-		
-		if (sizeof($input_item_list > 0)) {
-			draw_edit_form(
-				array(
-					"config" => array(
-						"left_column_width" => "35%"
-						),
-					"fields" => $form_array
-					)
-				);
-		}
-		
-		end_box();
-	}
-	
-	form_hidden_id("local_graph_id",$_GET["id"]);
-	form_hidden_box("save_component_input","1","");
 }
 
 /* ------------------------------------
@@ -751,7 +663,7 @@ function graph_diff() {
 }
 
 function graph_edit() {
-	global $colors, $struct_graph, $image_types;
+	global $colors, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 	
 	$use_graph_template = true;
 	
@@ -772,11 +684,6 @@ function graph_edit() {
 		$use_graph_template = false;
 	}
 	
-	/* graph item list goes here */
-	if (!empty($_GET["id"])) {
-		item();
-	}
-	
 	/* handle debug mode */
 	if (isset($_GET["debug"])) {
 		if ($_GET["debug"] == "0") {
@@ -786,26 +693,20 @@ function graph_edit() {
 		}
 	}
 	
-	/* display the debug mode box if the user wants it */
-	if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
-		start_box("<strong>Graph Debug</strong>", "98%", $colors["header"], "3", "center", "");
-		
-		$graph_data_array["output_flag"] = 2;
-		
+	if (!empty($_GET["id"])) {
 		?>
-		<tr>
-			<td>
-				<img src="graph_image.php?local_graph_id=<?php print $_GET["id"];?>&rra_id=1&graph_start=-86400&graph_height=100&graph_width=350" alt="">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
-			</td>
-		</tr>
+		<table width="98%" align="center">
+			<tr>
+				<td class="textInfo" colspan="2" valign="top">
+					<?php print get_graph_title($_GET["id"]);?>
+				</td>
+				<td class="textInfo" align="right" valign="top">
+					<span style="color: #c16921;">*<a href='graphs.php?action=graph_edit&id=<?php print (isset($_GET["id"]) ? $_GET["id"] : 0);?>&debug=<?php print (isset($_SESSION["graph_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a>
+				</td>
+			</tr>
+		</table>
+		<br>
 		<?php
-		
-		end_box();
 	}
 	
 	start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -826,12 +727,6 @@ function graph_edit() {
 			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
 			"none_value" => "None",
 			"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
-			),
-		"debug" => array(
-			"method" => "custom",
-			"friendly_name" => "Debug",
-			"description" => "Turn on/off graph debugging.",
-			"value" => "<a href='graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : 0) . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On") . "</strong> Graph Debug Mode.</a>"
 			),
 		"graph_template_graph_id" => array(
 			"method" => "hidden",
@@ -869,7 +764,127 @@ function graph_edit() {
 	
 	end_box();
 	
-	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
+	/* only display the "inputs" area if we are using a graph template for this graph */
+	if (!empty($graphs["graph_template_id"])) {
+		start_box("<strong>Supplimental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		?>
+		<form method='post' action='graphs.php'>
+		
+		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
+			<td colspan="2" class='textSubHeaderDark'>Graph Fields</td>
+		</tr>
+		<?php
+		
+		$form_array = array();
+		
+		while (list($field_name, $field_array) = each($struct_graph)) {
+			$form_array += array($field_name => $struct_graph[$field_name]);
+			
+			$form_array[$field_name]["value"] = (isset($graphs) ? $graphs[$field_name] : "");
+			$form_array[$field_name]["form_id"] = (isset($graphs) ? $graphs["id"] : "0");
+			
+			if (!(($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on"))) {
+				$form_array[$field_name]["method"] = "hidden";
+			}
+		}
+		
+		draw_edit_form(
+			array(
+				"config" => array(
+					"no_form_tag" => true
+					),
+				"fields" => $form_array
+				)
+			);
+		
+		$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=" . $graphs["graph_template_id"] . " order by name");
+		
+		/* modifications to the default graph items array */
+		$struct_graph_item["task_item_id"]["sql"] = "select
+			CONCAT_WS('',
+			case
+			when host.description is null then 'No Host - ' 
+			when host.description is not null then ''
+			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
+			data_template_rrd.id 
+			from data_template_data,data_template_rrd,data_local 
+			left join host on data_local.host_id=host.id
+			where data_template_rrd.local_data_id=data_local.id 
+			and data_template_data.local_data_id=data_local.id
+			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "
+			order by name";
+		
+		?>
+		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
+			<td colspan="2" class='textSubHeaderDark'>Graph Item Fields</td>
+		</tr>
+		<?php
+		
+		$form_array = array();
+		
+		if (sizeof($input_item_list) > 0) {
+		foreach ($input_item_list as $item) {
+			$current_def_value = db_fetch_row("select 
+				graph_templates_item." . $item["column_name"] . ",
+				graph_templates_item.id
+				from graph_templates_item,graph_template_input_defs 
+				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id 
+				and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
+				and graph_templates_item.local_graph_id=" . $_GET["id"] . "
+				limit 0,1");
+			
+			$form_array += array($item["column_name"] . "_" . $item["id"] => $struct_graph_item{$item["column_name"]});
+			
+			$form_array{$item["column_name"] . "_" . $item["id"]}["friendly_name"] = $item["name"];
+			$form_array{$item["column_name"] . "_" . $item["id"]}["value"] = $current_def_value{$item["column_name"]};
+		}
+		}else{
+			print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='2'><em>No Inputs</em></td></tr>";
+		}
+		
+		if (sizeof($input_item_list > 0)) {
+			draw_edit_form(
+				array(
+					"config" => array(),
+					"fields" => $form_array
+					)
+				);
+		}
+		
+		end_box();
+	}
+	
+	/* graph item list goes here */
+	if ((!empty($_GET["id"])) && (empty($graphs["graph_template_id"]))) {
+		item();
+	}
+	
+	if (!empty($_GET["id"])) {
+		?>
+		<table width="98%" align="center">
+			<tr>
+				<td align="center" class="textInfo" colspan="2">
+					<img src="graph_image.php?local_graph_id=<?php print $_GET["id"];?>&rra_id=1" alt="">
+				</td>
+				<?php
+				if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
+					$graph_data_array["output_flag"] = 2;
+					?>
+					<td>
+						<span class="textInfo">RRDTool Says:</span><br>
+						<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
+					</td>
+					<?php
+				}
+				?>
+			</tr>
+		</table>
+		<br>
+		<?php
+	}
+	
+	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
 		start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		$form_array = array();
@@ -900,6 +915,7 @@ function graph_edit() {
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		form_hidden_box("save_component_graph","1","");
+		form_hidden_box("save_component_input","1","");
 	}else{
 		form_hidden_box("save_component_graph_new","1","");
 	}
