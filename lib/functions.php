@@ -23,6 +23,16 @@
    */?>
 <?
 
+function read_config_option($config_name) {
+	$config_array = unserialize($_SESSION["sess_config_array"]);
+	
+	if (!isset($config_array[$config_name])) {
+		$config_array[$config_name] = db_fetch_cell("select value from settings where name='$config_name'");
+	}
+	
+	return $config_array[$config_name];
+}
+
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	if (($allow_nulls == true) && ($field_value == "")) {
 		$array_field_names = unserialize($_SESSION["sess_field_values"]);
