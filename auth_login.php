@@ -33,6 +33,48 @@
 		
 		if (sizeof($user) == 0) {
 			$badpassword = true;
+			/* start ldap section */
+			$ldap_conn=ldap_connect('dc.ntdomain.com'); 
+			if ($ldap_conn) {
+				$ldap_dn="NTDomain\\$username";
+				$ldap_response=@ldap_bind($ldap_conn,$ldap_dn,$password);
+				if ($ldap_response) {
+					$res_id_user = mysql_query("select * from auth_users where username=\"$username\" and FullName=\"ldap user\"",$cnn_id);
+					$rows_user = mysql_num_rows($res_id_user);
+					if ($rows_user == 0){
+						$res_template_user = mysql_query("SELECT '$username' as Username, 'ldap user' as FullName, '' as MustChangePassword, Password , ShowTree, ShowList, ShowPreview, GraphSettings, LoginOpts, GraphPolicy, ID FROM auth_users WHERE Username = 'ldap_template'",$cnn_id);
+						while ($row = mysql_fetch_array($res_template_user, MYSQL_ASSOC)) {
+							mysql_query("INSERT INTO auth_users (Username, Password, FullName, MustChangePassword, ShowTree, ShowList, ShowPreview, GraphSettings, LoginOpts, GraphPolicy) VALUES ('" . $row["Username"] . "' , '" . $row["Password"] . "' , '" . $row["FullName"] . "' , '" . $row["MustChangePassword"] . "' , '" . $row["ShowTree"] . "' , '" . $row["ShowList"] . "' , '" . $row["ShowPreview"] . "' , '" . $row["GraphSettings"] . "' , '" . $row["LoginOpts"] . "' , '" . $row["GraphPolicy"] . "')",$cnn_id);
+							$ldap_new = true;
+						}
+						$res_id_user = mysql_query("select * from auth_users where username=\"$username\" and FullName=\"ldap user\"",$cnn_id);
+						if ($ldap_new == true) {
+							/* acl */
+							$res_template_acl = mysql_query("SELECT SectionID FROM `auth_acl` WHERE UserID = " . mysql_result($res_template_user, 0, "id"),$cnn_id);
+							while ($row = mysql_fetch_array($res_template_acl, MYSQL_ASSOC)) {
+								mysql_query("INSERT INTO auth_acl (SectionID, UserID) VALUES (" . $row["SectionID"] . ", " . mysql_result($res_id_user, 0, "id") . ")",$cnn_id);
+							}
+							/* graph */
+							$res_template_graph = mysql_query("SELECT GraphID FROM `auth_graph` WHERE UserID = " . mysql_result($res_template_user, 0, "id"),$cnn_id);
+							while ($row = mysql_fetch_array($res_template_graph, MYSQL_ASSOC)) {
+								mysql_query("INSERT INTO auth_graph (GraphID, UserID) VALUES (" . $row["GraphID"] . ", " . mysql_result($res_id_user, 0, "id") . ")",$cnn_id);
+							}
+							/* hierarchy */
+							$res_template_hierarchy = mysql_query("SELECT HierarchyID FROM `auth_graph_hierarchy` WHERE UserID = " . mysql_result($res_template_user, 0, "id"),$cnn_id);
+							while ($row = mysql_fetch_array($res_template_hierarchy, MYSQL_ASSOC)) {
+								mysql_query("INSERT INTO auth_graph_hierarchy (HierarchyID, UserID) VALUES (" . $row["HierarchyID"] . ", " . mysql_result($res_id_user, 0, "id") . ")",$cnn_id);
+							}
+							/* hosts */
+							$res_template_hosts = mysql_query("SELECT ID, Hostname, UserID, Type FROM `auth_hosts` WHERE UserID = " . mysql_result($res_template_user, 0, "id"),$cnn_id);
+							while ($row = mysql_fetch_array($res_template_hosts, MYSQL_ASSOC)) {
+								mysql_query("INSERT INTO auth_hosts (Hostname, UserID, Type) VALUES ('" . $row["Hostname"] . "', " . mysql_result($res_id_user, 0, "id") . ", " . $row["Type"] . ")",$cnn_id);
+							}
+						}
+					}
+					$badpassword = false;
+				}
+			}
+			/* end ldap section */
 		}
 		
 		if ($badpassword != true) {
