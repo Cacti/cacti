@@ -35,15 +35,17 @@ function ninety_fifth_percentile($local_data_id, $seconds, $resolution) {
 	
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
-		$values_array = $fetch_array["values"][$i];
-		
-		/* sort the array in descending order */
-		usort($values_array, "cmp");
-		
-		/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
-		value */
-		$target = ((count($values_array) + 1) * .05);
-		$target = sprintf("%d", $target);
+		if (isset($fetch_array["values"][$i])) {
+			$values_array = $fetch_array["values"][$i];
+			
+			/* sort the array in descending order */
+			usort($values_array, "cmp");
+			
+			/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
+			value */
+			$target = ((count($values_array) + 1) * .05);
+			$target = sprintf("%d", $target);
+		}
 		
 		if (empty($values_array[$target])) { $values_array[$target] = 0; }
 		
@@ -73,22 +75,24 @@ function bandwidth_summation($local_data_id, $seconds, $resolution, $rra_steps, 
 	
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
-		$values_array = $fetch_array["values"][$i];
-		
 		$sum = 0;
 		
-		for ($j=0;$j<count($fetch_array["values"][$i]);$j++) {
-			$sum += $fetch_array["values"][$i][$j];
+		if (isset($fetch_array["values"][$i])) {
+			$values_array = $fetch_array["values"][$i];
+			
+			for ($j=0;$j<count($fetch_array["values"][$i]);$j++) {
+				$sum += $fetch_array["values"][$i][$j];
+			}
+			
+			if (count($fetch_array["values"][$i]) != 0) {
+				$sum = ($sum * $ds_steps * $rra_steps);
+			}else{
+				$sum = 0;
+			}
+			
+			/* collect 95th percentile values in this array so we can return them */
+			$return_array{$fetch_array["data_source_names"][$i]} = $sum;
 		}
-		
-		if (count($fetch_array["values"][$i]) != 0) {
-			$sum = ($sum * $ds_steps * $rra_steps);
-		}else{
-			$sum = 0;
-		}
-		
-		/* collect 95th percentile values in this array so we can return them */
-		$return_array{$fetch_array["data_source_names"][$i]} = $sum;
 	}
 	
 	if (isset($return_array)) {
