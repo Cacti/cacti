@@ -516,7 +516,7 @@ function update_database($database_old, $database_username, $database_password) 
 						if ((!empty($item2["Value"]) && (!empty($data_input_field_cache{$item2["FieldID"]})))) {
 							if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
 								t_value,value) values (" . $data_input_field_cache{$item2["FieldID"]} . ",
-								" . $data_template_data_cache{$item2["DSID"]} . ",'','" . $item2["Value"] . "')")) {
+								" . $data_template_data_cache{$item2["DSID"]} . ",'','" . addslashes($item2["Value"]) . "')")) {
 								$status_array{count($status_array)}["data_source_data"][1] = $item2["Value"];
 							}else{
 								$status_array{count($status_array)}["data_source_data"][0] = $item2["Value"];
