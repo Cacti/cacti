@@ -192,7 +192,7 @@ function rrdtool_function_update($update_cache_array) {
 		}
 		
 		/* if we have "invalid data", give rrdtool an Unknown (U) */
-		if (empty($rrd_update_values)) {
+		if ($rrd_update_values == "") {
 			$rrd_update_values = "U";
 		}
 		
