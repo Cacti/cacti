@@ -147,7 +147,7 @@ function delete_branch($tree_item_id) {
 	$order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
 	
 	/* get the current tree_id */
-	$graph_tree_id = db_fetch_cell("select graph_tree_id from grahp_tree_items where id=$tree_item_id");
+	$graph_tree_id = db_fetch_cell("select graph_tree_id from graph_tree_items where id=$tree_item_id");
 	
 	/* yeah, this would be really bad */
 	if (empty($order_key)) { return 0; }
