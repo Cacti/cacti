@@ -39,6 +39,9 @@ $messages = array(
 		"type" => "error"),
 	5  => array(
 		"message" => 'You must select at least one field.',
+		"type" => "error"),
+	6  => array(
+		"message" => 'You must have built in user authentication turned on to use this feature.',
 		"type" => "error")
 		);
 
