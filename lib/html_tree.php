@@ -97,13 +97,11 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$tier = tree_tier($leaf["order_key"], 2);
 		
 		##  Step through the hidden headings to see which entries to skip.
-		if (empty($hide{$leaf["order_key"]})) {
-			for ($j = 1; $j < $tier; ++$j) {
-				$parent_key = str_pad(substr($leaf["order_key"],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
-				
-				if (!empty($hide[$parent_key])) { 
-					$skip{$leaf["order_key"]} = "1";
-				}
+		for ($j = 1; $j < $tier; ++$j) {
+			$parent_key = str_pad(substr($leaf["order_key"],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
+			
+			if (!empty($hide[$parent_key])) { 
+				$skip{$leaf["order_key"]} = "1";
 			}
 		}
 				
@@ -199,7 +197,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			##  If this heading has graphs and we're supposed to show graphs, start that table.
 			if ((!empty($num_graphs{$leaf["order_key"]})) && (empty($hide{$leaf["order_key"]}))) { 
 				$need_table_close = true;
-				print "<td colspan=$colspan><table border='0' width='100%'><tr>\n"; 
+				print "<td colspan=$colspan><table border='0'><tr>\n"; 
 			}else{
 				$need_table_close = false;
 			}
@@ -210,7 +208,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			
 			print "<td><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all'><img align='middle' alt='" . $leaf["graph_title"] . "'
 				src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . '&graph_height=' .
-				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $leaf["title"] . "'></a></td>\n";
+				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $leaf["title"] . "'></a><td>\n";
 			
 			if ($graph_ct % 2 == 0) { print "</tr><tr>\n"; }
 		}
