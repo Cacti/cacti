@@ -32,28 +32,6 @@
 </body>
 </html>
 
-<script type="text/javascript">
-<!--
-function SelectAll(prefix) {
-  for (var i = 0; i < document.chk.elements.length; i++) {
-    if( document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
-      document.chk.elements[i].checked =
-        !(document.chk.elements[i].checked);
-    }
-  }
-}
-
-function SelectForce(prefix) {
-  for (var i = 0; i < document.chk.elements.length; i++) {
-    if( document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
-      document.chk.elements[i].checked = document.chk.all.checked;
-    }
-  }
-}
-
-//-->
-</script>
-
 <?php
 /* we use this session var to store field values for when a save fails,
 this way we can restore the field's previous values. we reset it here, because
