@@ -358,6 +358,6 @@ case 'list':
 	break;
 }
 
-print "<pre>";print $_SESSION["sess_debug_buffer"];print "</pre>";session_unregister("sess_debug_buffer");
+//print "<pre>";print $_SESSION["sess_debug_buffer"];print "</pre>";session_unregister("sess_debug_buffer");
 
 include_once ("include/bottom_footer.php");
