@@ -219,6 +219,7 @@ function SyncDataSourceName($data_source_id, $saved_custom_data_source_name, $sa
 }
 
 function CreateList($data,$name,$value,$prev) {
+    $data = db_fetch_assoc($data);
     
     if (sizeof($data) > 0) {
 		foreach ($data as $row) {

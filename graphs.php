@@ -23,8 +23,6 @@
 */?>
 <? 	$section = "Add/Edit Graphs"; include ('include/auth.php');
 	header("Cache-control: no-cache");
-	//include ('include/database.php');
-	//include ('include/config.php');
 	include_once ('include/form.php');
 	
 	if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
@@ -75,41 +73,46 @@ switch ($action) {
 		header ("Location: graphs.php");
 		break;
 	case 'graph_save':
-		if ($lowerlimit==""){$lowerlimit=0;} /* no nulls; zeros */
-		if ($upperlimit==""){$upperlimit=0;} /* no nulls; zeros */
-		if ($unitexponentvalue==""){$unitexponentvalue=0;} /* no nulls; zeros */
+		if ($form[LowerLimit] == "") { $form[LowerLimit] = 0; }
+		if ($form[UpperLimit] == "") { $form[UpperLimit] = 0; }
+		if ($form[UnitExponentValue] == "") { $form[UnitExponentValue] = 0; }
 		
-		if ($id != 0) {
-			$grouping = db_fetch_cell("select Grouping from rrd_graph where id=$id");
+		if ($form[ID] != 0) {
+			$grouping = db_fetch_cell("select Grouping from rrd_graph where id=$form[ID]");
 			
-			if ($grouping != $grouping) { /* the value has changed */
+			if ($form[Grouping] != $grouping) { /* the value has changed */
 				include_once ('include/utility_functions.php');
 				
-				if ($grouping == "on") {
-					group_graph_items($id);
+				if ($form[Grouping] == "on") {
+					group_graph_items($form[ID]);
 				}else{
-					ungroup_graph_items($id);
+					ungroup_graph_items($form[ID]);
 				}
 			}
 		}
 		
-		db_execute("replace into rrd_graph (id,imageformatid,title,height,width,
-			upperlimit,lowerlimit,verticallabel,autoscale,autopadding,autoscaleopts,rigid,
-			basevalue,grouping,export,unitvalue,unitexponentvalue,autoscalelog) values ($id,$imageformatid,
-			\"$title\",$height,$width,$upperlimit,$lowerlimit,\"$verticallabel\",\"$autoscale\",
-			\"$autopadding\",$autoscaleopts,\"$rigid\",$basevalue,\"$grouping\",\"$export\",
-			\"$unitvalue\",$unitexponentvalue,\"$autoscalelog\")");
+		$save["ID"] = $form["ID"];
+		$save["ImageFormatID"] = $form["ImageFormatID"];
+		$save["Title"] = $form["Title"];
+		$save["Height"] = $form["Height"];
+		$save["Width"] = $form["Width"];
+		$save["UpperLimit"] = $form["UpperLimit"];
+		$save["LowerLimit"] = $form["LowerLimit"];
+		$save["VerticalLabel"] = $form["VerticalLabel"];
+		$save["AutoScale"] = $form["AutoScale"];
+		$save["AutoPadding"] = $form["AutoPadding"];
+		$save["AutoScaleOpts"] = $form["AutoScaleOpts"];
+		$save["Rigid"] = $form["Rigid"];
+		$save["BaseValue"] = $form["BaseValue"];
+		$save["Grouping"] = $form["Grouping"];
+		$save["Export"] = $form["Export"];
+		$save["UnitValue"] = $form["UnitValue"];
+		$save["UnitExponentValue"] = $form["UnitExponentValue"];
+		$save["AutoScaleLog"] = $form["AutoScaleLog"];
+	
+		sql_save($save, "rrd_graph");
 		
-		if ($id == 0) {
-			/* get graphid if this is a new save */
-			$db_id = db_fetch_cell("select LAST_INSERT_ID()");
-			
-			if ($db_id != 0) {
-				$id = $db_id;
-			}
-		}
-		
-		header ("Location: graphs.php");
+		header ("Location: $current_script_name");
 		break;
 	case 'graph_remove':
 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
@@ -155,6 +158,8 @@ switch ($action) {
 			</td>
 		</tr>
 		
+		<form method="post" action="<?print basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);?>">
+		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Title</font><br>
@@ -168,7 +173,7 @@ switch ($action) {
 				<font class="textEditTitle">Image Format</font><br>
 				The type of graph that is generated; GIF or PNG.
 			</td>
-			<?DrawFormItemDropdownFromSQL("ImageFormatID",$cnn_id,"select * from def_image_type order by name","Name","ID",$graphs[ImageFormatID],"","1");?>
+			<?DrawFormItemDropdownFromSQL("ImageFormatID","select * from def_image_type order by Name","Name","ID",$graphs[ImageFormatID],"","1");?>
 		</tr>
 		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
