@@ -104,19 +104,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		we are getting back */
 		snmp_set_quick_print(0);
 		
-		$snmp_value = snmpget($hostname, $community, $oid);
-		
-		/* sometimes a string is presented in hex; not ASCII (ex. win32), in
-		this case, convert the hex to ASCII */
-		//if (eregi("(.*)(hex:)(.*)", $snmp_value)) {
-			/* grab the actual hex string */
-		//	$snmp_value = trim(ereg_replace("(.*)(Hex:)(.*)", "\\3", $snmp_value));
-			
-			/* strip all formatting and convert the string */
-		//	$snmp_value = hex2bin(ereg_replace("[^A-Fa-f0-9]", "", $snmp_value));
-		//}
-		
-		
+		$snmp_value = @snmpget($hostname, $community, $oid);
 	}else{
 		if ($version == "1") {
 			$snmp_auth = "-c \"$community\""; /* v1/v2 - community string */
@@ -147,10 +135,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$temp_array = array();
 	
 	if ($config["php_snmp_support"] == true) {
-		$temp_array = snmpwalkoid($hostname, $community, $oid);
+		$temp_array = @snmpwalkoid($hostname, $community, $oid);
 		
 		$o = 0;
-		for (reset($temp_array); $i = key($temp_array); next($temp_array)) {
+		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
 			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i); 
 			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i]);
 			$o++;
@@ -209,6 +197,7 @@ function format_snmp_string($string) {
 			}
 		}
 		
+		/* copy the final result and make it upper case */
 		$string = strtoupper($octet);
 	}
 	
