@@ -275,7 +275,7 @@ function rrdtool_function_create($local_data_id, $show_source) {
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
 		/* use the cacti ds name by default or the user defined one, if entered */
-		$data_source_name = get_data_source_name($data_source["id"]);
+		$data_source_name = get_data_source_item_name($data_source["id"]);
 
 		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . (empty($data_source["rrd_maximum"]) ? "U" : $data_source["rrd_maximum"]) . RRD_NL;
 	}
@@ -337,7 +337,7 @@ function rrdtool_function_tune($rrd_tune_array) {
 
 	include($config["include_path"] . "/config_arrays.php");
 
-	$data_source_name = get_data_source_name($rrd_tune_array["data_source_id"]);
+	$data_source_name = get_data_source_item_name($rrd_tune_array["data_source_id"]);
 	$data_source_type = $data_source_types{$rrd_tune_array["data-source-type"]};
 	$data_source_path = get_data_source_path($rrd_tune_array["data_source_id"], true);
 

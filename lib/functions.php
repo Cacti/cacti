@@ -361,11 +361,11 @@ function get_full_script_path($local_data_id) {
 	return $full_path;
 }
 
-/* get_data_source_name - gets the name of a data source item or generates a new one if one does not
+/* get_data_source_item_name - gets the name of a data source item or generates a new one if one does not
      already exist
    @arg $data_template_rrd_id - (int) the ID of the data source item
    @returns - the name of the data source item or an empty string for an error */
-function get_data_source_name($data_template_rrd_id) {
+function get_data_source_item_name($data_template_rrd_id) {
 	if (empty($data_template_rrd_id)) { return ""; }
 
 	$data_source = db_fetch_row("select
