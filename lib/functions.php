@@ -254,7 +254,13 @@ function array_rekey($array, $key, $key_value) {
 	foreach ($array as $item) {
 		$item_key = $item[$key];
 
-		$ret_array[$item_key] = $item[$key_value];
+		if (is_array($key_value)) {
+			for ($i=0; $i<count($key_value); $i++) {
+				$ret_array[$item_key]{$key_value[$i]} = $item{$key_value[$i]};
+			}
+		}else{
+			$ret_array[$item_key] = $item[$key_value];
+		}
 	}
 	}
 
@@ -537,13 +543,12 @@ function generate_data_source_path($local_data_id) {
    @arg $graph_item_id - (int) the ID to generate a letter-based representation of
    @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {
-	$lookup_table = array("a","b","c","d","e","f","g","h","i","j");
+	$lookup_table = array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
 
 	$result = "";
-	for($i=0; $i<strlen($graph_item_id); $i++) {
-		$current_charcter = $graph_item_id[$i];
-		$result .= $lookup_table[$current_charcter];
-	}
+
+	$current_charcter = $graph_item_id;
+	$result .= $lookup_table[$current_charcter];
 
 	return $result;
 }
@@ -891,6 +896,9 @@ function draw_navigation_text() {
 		"graph_view.php:list" => array("title" => "List Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=list", "level" => "1"),
 		"graph_view.php:preview" => array("title" => "Preview Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=preview", "level" => "1"),
 		"graph.php:" => array("title" => "|current_graph_title|", "mapping" => "graph_view.php:,?", "level" => "2"),
+		"graph.php:view" => array("title" => "|current_graph_title|", "mapping" => "graph_view.php:,?", "level" => "2"),
+		"graph.php:zoom" => array("title" => "Zoom", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
+		"graph.php:properties" => array("title" => "Properties", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
 		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
 		"index.php:" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
 		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
@@ -922,7 +930,7 @@ function draw_navigation_text() {
 		"graph_templates_inputs.php:input_remove" => array("title" => "(Remove)", "mapping" => "index.php:,graph_templates.php:,graph_templates.php:template_edit", "url" => "", "level" => "3"),
 		"host_templates.php:" => array("title" => "Host Templates", "mapping" => "index.php:", "url" => "host_templates.php", "level" => "1"),
 		"host_templates.php:edit" => array("title" => "(Edit)", "mapping" => "host_templates.php:,host_templates.php:", "url" => "", "level" => "2"),
-		"host_templates.php:remove" => array("title" => "(Remove)", "mapping" => "host_templates.php:,host_templates.php:", "url" => "", "level" => "2"),
+		"graph_templates.php:actions" => array("title" => "Actions", "mapping" => "index.php:,graph_templates.php:", "url" => "", "level" => "2"),
 		"data_templates.php:" => array("title" => "Data Templates", "mapping" => "index.php:", "url" => "data_templates.php", "level" => "1"),
 		"data_templates.php:template_edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_templates.php:", "url" => "", "level" => "2"),
 		"data_templates.php:actions" => array("title" => "Actions", "mapping" => "index.php:,data_templates.php:", "url" => "", "level" => "2"),
@@ -940,11 +948,11 @@ function draw_navigation_text() {
 		"data_input.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
 		"data_input.php:field_edit" => array("title" => "Data Input Fields", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),
 		"data_input.php:field_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),
-		"snmp.php:" => array("title" => "Data Queries", "mapping" => "index.php:", "url" => "snmp.php", "level" => "1"),
-		"snmp.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,snmp.php:", "url" => "", "level" => "2"),
-		"snmp.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,snmp.php:", "url" => "", "level" => "2"),
-		"snmp.php:item_edit" => array("title" => "Associated Graph Templates", "mapping" => "index.php:,snmp.php:,snmp.php:edit", "url" => "", "level" => "3"),
-		"snmp.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,snmp.php:,snmp.php:edit", "url" => "", "level" => "3"),
+		"data_queries.php:" => array("title" => "Data Queries", "mapping" => "index.php:", "url" => "data_queries.php", "level" => "1"),
+		"data_queries.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_queries.php:", "url" => "", "level" => "2"),
+		"data_queries.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,data_queries.php:", "url" => "", "level" => "2"),
+		"data_queries.php:item_edit" => array("title" => "Associated Graph Templates", "mapping" => "index.php:,data_queries.php:,data_queries.php:edit", "url" => "", "level" => "3"),
+		"data_queries.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,data_queries.php:,data_queries.php:edit", "url" => "", "level" => "3"),
 		"utilities.php:" => array("title" => "Utilities", "mapping" => "index.php:", "url" => "utilities.php", "level" => "1"),
 		"utilities.php:view_poller_cache" => array("title" => "View Poller Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_snmp_cache" => array("title" => "View SNMP Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
@@ -1033,7 +1041,11 @@ function resolve_navigation_variables($text) {
 function get_associated_rras($local_graph_id) {
 	return db_fetch_assoc("select
 		rra.id,
-		rra.name
+		rra.steps,
+		rra.rows,
+		rra.name,
+		rra.timespan,
+		data_template_data.rrd_step
 		from graph_templates_item,data_template_data_rra,data_template_rrd,data_template_data,rra
 		where graph_templates_item.task_item_id=data_template_rrd.id
 		and data_template_rrd.local_data_id=data_template_data.local_data_id
@@ -1225,7 +1237,9 @@ function debug_log_clear($type = "") {
 	if ($type == "") {
 		kill_session_var("debug_log");
 	}else{
-		unset($_SESSION["debug_log"][$type]);
+		if (isset($_SESSION["debug_log"])) {
+			unset($_SESSION["debug_log"][$type]);
+		}
 	}
 }
 
