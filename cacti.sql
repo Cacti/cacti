@@ -1817,7 +1817,7 @@ CREATE TABLE host (
   status_fail_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_rec_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_last_error varchar(50) default '',
-  min_time decimal(7,5) default '0.00000',
+  min_time decimal(7,5) default '99.9999',
   max_time decimal(7,5) default '0.00000',
   cur_time decimal(7,5) default '0.00000',
   avg_time decimal(7,5) default '0.00000',
