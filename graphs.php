@@ -26,6 +26,8 @@
 
 include("./include/auth.php");
 include_once("./lib/utility.php");
+include_once("./lib/api_graph.php");
+include_once("./lib/api_data_source.php");
 include_once("./lib/template.php");
 include_once("./lib/tree.php");
 include_once("./lib/html_form_template.php");
@@ -249,10 +251,30 @@ function form_actions() {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
 		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "local_graph_id"));
-			db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "local_graph_id"));
-			db_execute("delete from graph_tree_items where " . array_to_sql_or($selected_items, "local_graph_id"));
-			db_execute("delete from graph_local where " . array_to_sql_or($selected_items, "id"));
+			for ($i=0;($i<count($selected_items));$i++) {
+				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
+
+				switch ($_POST["delete_type"]) {
+					case '2': /* delete all data sources referenced by this graph */
+						$data_sources = db_fetch_assoc("select
+							data_template_data.local_data_id
+							from data_template_rrd,data_template_data,graph_templates_item
+							where graph_templates_item.task_item_id=data_template_rrd.id
+							and data_template_rrd.local_data_id=data_template_data.local_data_id
+							and " . array_to_sql_or($selected_items, "graph_templates_item.local_graph_id") . "
+							group by data_template_data.local_data_id");
+
+						if (sizeof($data_sources) > 0) {
+							foreach ($data_sources as $data_source) {
+								api_data_source_remove($data_source["local_data_id"]);
+							}
+						}
+
+						break;
+				}
+
+				api_graph_remove($selected_items[$i]);
+			}
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
 				change_graph_template($selected_items[$i], $_POST["graph_template_id"], true);
@@ -307,10 +329,39 @@ function form_actions() {
 	print "<form action='graphs.php' method='post'>\n";
 
 	if ($_POST["drp_action"] == "1") { /* delete */
+		$graphs = array();
+
+		/* find out which (if any) data sources are being used by this graph, so we can tell the user */
+		if (isset($graph_array)) {
+			$data_sources = db_fetch_assoc("select
+				data_template_data.local_data_id,
+				data_template_data.name_cache
+				from data_template_rrd,data_template_data,graph_templates_item
+				where graph_templates_item.task_item_id=data_template_rrd.id
+				and data_template_rrd.local_data_id=data_template_data.local_data_id
+				and " . array_to_sql_or($graph_array, "graph_templates_item.local_graph_id") . "
+				group by data_template_data.local_data_id
+				order by data_template_data.name_cache");
+		}
+
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Are you sure you want to delete the following graphs?</p>
 					<p>$graph_list</p>
+					";
+					if (sizeof($data_sources) > 0) {
+						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following data sources are in use by these graphs:</p>\n";
+
+						foreach ($data_sources as $data_source) {
+							print "<strong>" . $data_source["name_cache"] . "</strong><br>\n";
+						}
+
+						print "<br>";
+						form_radio_button("delete_type", "1", "1", "Leave the data sources untouched.", "1"); print "<br>";
+						form_radio_button("delete_type", "1", "2", "Delete all <strong>data sources</strong> referenced by these graphs.", "1"); print "<br>";
+						print "</td></tr>";
+					}
+				print "
 				</td>
 			</tr>\n
 			";
