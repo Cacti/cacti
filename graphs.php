@@ -249,7 +249,7 @@ switch ($action) {
 		<?
 		
 		DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
-		DrawFormItemHiddenIDField("graph_template_graph_id",$args[graph_template_item_id]);
+		DrawFormItemHiddenIDField("graph_template_item_id",$args[graph_template_item_id]);
 		DrawFormItemHiddenIDField("graph_template_id",$template_item[graph_template_id]);
 		DrawFormItemHiddenIDField("sequence",$template_item[sequence]);
 		DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
