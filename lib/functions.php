@@ -1452,6 +1452,19 @@ function get_hash_data_query($data_query_id, $sub_type = "data_query") {
 	}
 }
 
+/* get_hash_round_robin_archive - returns the current unique hash for a round robin archive
+   @arg $rra_id - (int) the ID of the round robin archive to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_round_robin_archive($rra_id) {
+	$hash = db_fetch_cell("select hash from rra where id=$rra_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
 /* get_hash_version - returns the item type and cacti version in a hash format
    @arg $type - the type of item to represent ('graph_template','data_template',
      'data_input_method','cdef','gprint_preset','data_query','host_template')
