@@ -545,7 +545,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		currently: text format and value */
 		while (list($field_name, $field_array) = each($variable_fields)) {
 			/* certain fields do not require values when the legend is not to be shown */
-			if (($field_array["process_no_legend"] == true) && (isset($graph_data_array["graph_nolegend"]))) {
+			if (($field_array["process_no_legend"] == false) && (isset($graph_data_array["graph_nolegend"]))) {
 				continue;
 			}
 			
@@ -610,7 +610,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
     	
 	$i = 0;
 	reset($graph_items);
-		
+	
 	if (sizeof($graph_items) > 0) {
 	foreach ($graph_items as $graph_item) {
 		/* first we need to check if there is a DEF for the current data source/cf combination. if so,
@@ -706,7 +706,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			$last_graph_type = $graph_item_types{$graph_item["graph_type_id"]};
 		}
 		
-	
 		/* we put this in a variable so it can be manipulated before mainly used
 		if we want to skip it, like below */
 		$current_graph_item_type = $graph_item_types{$graph_item["graph_type_id"]};
