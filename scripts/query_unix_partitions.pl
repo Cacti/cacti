@@ -9,7 +9,7 @@ open(DF, "/bin/df|");
 
 while (<DF>) {
 	#/dev/hda2             20157744  18553884    579860  97% /var
-	if (/^(\/\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s(\/\S*)$/) {
+	if (/^(\/\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(\/\S*)$/) {
 		my %output = (
 			device => $1,
 			mount => $6,
