@@ -7,7 +7,7 @@ LIB+=-L/usr/lib
 #NET-SNMP
 DEF+=-DNETSNMP
 INC+=-I/usr/include/net-snmp
-LIB+=-L/usr/lib -lsnmp
+LIB+=-L/usr/lib
 
 #UCD-SNMP
 #DEF+=-DUCDSNMP
@@ -24,9 +24,9 @@ LIB+=-L/usr/lib -lsnmp
 INC+=-I/usr/include
 LIB+=-L/usr/lib
 
-LIB+=-lmysqlclient -lrrd -lpthread
+LIB+=-lmysqlclient -lrrd -lpthread -lsnmp
 
-OBJS=snmp.o sighandler.o poller.o targets.o util.o conf.o main.o
+OBJS=snmp.o sighandler.o poller.o targets.o util.o conf.o threads.o main.o
 
 all: cactid
 

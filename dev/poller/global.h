@@ -38,7 +38,7 @@ typedef struct conf_struct{
   char sqlpw[80];
   char sqlhost[80];
   char sqldb[80];
-  int threads;
+  int interval;
 } conf_t;
 
 void *poller(void *thread_args);

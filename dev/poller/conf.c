@@ -13,7 +13,7 @@ int read_conf(){
     if(!strcmp(conf.sqlpw,"none")) sprintf(conf.sqlpw, "");
     fscanf(cfile, " %s %s", buffer, (conf.sqlhost));
     fscanf(cfile, " %s %s", buffer, (conf.sqldb));
-    //fscanf(cfile, " %s %i", buffer, &(conf.threads));
+    fscanf(cfile, " %s %i", buffer, &(conf.interval));
     fclose(cfile);
   } else {
     printf("conf not found\n");
@@ -23,5 +23,5 @@ int read_conf(){
   printf("CONF: pw: %s\n", conf.sqlpw);
   printf("CONF: host: %s\n", conf.sqlhost);
   printf("CONF: db: %s\n", conf.sqldb);
-  //printf("CONF: threads: %i\n", conf.threads);
+  printf("CONF: interval: %i\n", conf.interval);
 }

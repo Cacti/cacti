@@ -2,3 +2,4 @@ sqluser	root
 sqlpw	none
 sqlhost	localhost
 sqldb	cacti_dev
+interval 60

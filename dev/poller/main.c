@@ -53,7 +53,7 @@ int main(void){
     }
     if(pthread_mutex_unlock(&(threads.mutex)) != 0) printf("pthread_mutex_unlock error\n");
     lock = FALSE;
-    sleep(60);
+    sleep(conf.interval);
     if(sighup){
       entries = get_targets();
       sighup = FALSE;
