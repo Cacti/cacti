@@ -110,7 +110,7 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
    ------------------- */
 
 function host_reload_query() {
-	data_query($_GET["host_id"], $_GET["id"]);
+	run_data_query($_GET["host_id"], $_GET["id"]);
 }
 
 /* -------------------

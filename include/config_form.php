@@ -779,7 +779,7 @@ $fields_rra_edit = array(
 		)
 	);
 
-/* file: snmp.php, action: edit */
+/* file: data_queries.php, action: edit */
 $fields_data_query_edit = array(
 	"name" => array(
 		"method" => "textbox",
@@ -820,7 +820,7 @@ $fields_data_query_edit = array(
 		)
 	);
 
-/* file: snmp.php, action: item_edit */
+/* file: data_queries.php, action: item_edit */
 $fields_data_query_item_edit = array(
 	"name" => array(
 		"method" => "textbox",

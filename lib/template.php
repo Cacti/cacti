@@ -548,6 +548,10 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
        $values["sg"][data_query_id][data_template_id]["data_template"][field_name] = $value  // data template (w/ data query)
        $values["sg"][data_query_id][data_template_id]["data_template_item"][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_values_array) {
+	global $config;
+	
+	include_once($config["library_path"] . "/data_query.php");
+	
 	/* create the graph */
 	$save["id"] = 0;
 	$save["graph_template_id"] = $graph_template_id;
@@ -662,7 +666,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_output_type,$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
 			
 			/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
-			update_data_source_snmp_query_cache($cache_array["local_data_id"]{$data_template["id"]});
+			update_data_source_data_query_cache($cache_array["local_data_id"]{$data_template["id"]});
 		}
 		
 		/* suggested values: data source */
@@ -723,7 +727,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	
 	/* this will not work until the ds->graph dots are connected */
 	if (is_array($snmp_query_array)) {
-		update_graph_snmp_query_cache($cache_array["local_graph_id"]);
+		update_graph_data_query_cache($cache_array["local_graph_id"]);
 	}
 	
 	return $cache_array;

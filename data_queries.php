@@ -36,63 +36,63 @@ switch ($_REQUEST["action"]) {
 		
 		break;
 	case 'item_moveup_dssv':
-		snmp_item_moveup_dssv();
+		data_query_item_moveup_dssv();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_movedown_dssv':
-		snmp_item_movedown_dssv();
+		data_query_item_movedown_dssv();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove_dssv':
-		snmp_item_remove_dssv();
+		data_query_item_remove_dssv();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_moveup_gsv':
-		snmp_item_moveup_gsv();
+		data_query_item_moveup_gsv();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_movedown_gsv':
-		snmp_item_movedown_gsv();
+		data_query_item_movedown_gsv();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove_gsv':
-		snmp_item_remove_gsv();
+		data_query_item_remove_gsv();
 		
-		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove':
-		snmp_item_remove();
+		data_query_item_remove();
 		
-		header("Location: snmp.php?action=edit&id=" . $_GET["snmp_query_id"]);
+		header("Location: data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
 		include_once("./include/top_header.php");
 		
-		snmp_item_edit();
+		data_query_item_edit();
 		
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
-		snmp_remove();
+		data_query_remove();
 		
-		header ("Location: snmp.php");
+		header ("Location: data_queries.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
 		
-		snmp_edit();
+		data_query_edit();
 		
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
 		
-		snmp();
+		data_query();
 		
 		include_once("./include/bottom_footer.php");
 		break;
@@ -132,9 +132,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: snmp.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
+			header("Location: data_queries.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
 		}else{
-			header("Location: snmp.php");
+			header("Location: data_queries.php");
 		}
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
 		$redirect_back = false;
@@ -191,9 +191,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
-			header("Location: snmp.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
+			header("Location: data_queries.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
 		}else{
-			header("Location: snmp.php?action=edit&id=" . $_POST["snmp_query_id"]);
+			header("Location: data_queries.php?action=edit&id=" . $_POST["snmp_query_id"]);
 		}
 	}
 }
@@ -202,34 +202,34 @@ function form_save() {
     Data Query Graph Functions
    ---------------------------- */
 
-function snmp_item_movedown_gsv() {
+function data_query_item_movedown_gsv() {
 	move_item_down("snmp_query_graph_sv", $_GET["id"], "snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
-function snmp_item_moveup_gsv() {
+function data_query_item_moveup_gsv() {
 	move_item_up("snmp_query_graph_sv", $_GET["id"], "snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
-function snmp_item_remove_gsv() {
+function data_query_item_remove_gsv() {
 	db_execute("delete from snmp_query_graph_sv where id=" . $_GET["id"]);
 }
 
-function snmp_item_movedown_dssv() {
+function data_query_item_movedown_dssv() {
 	move_item_down("snmp_query_graph_rrd_sv", $_GET["id"], "data_template_id=" . $_GET["data_template_id"] . " and snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
-function snmp_item_moveup_dssv() {
+function data_query_item_moveup_dssv() {
 	move_item_up("snmp_query_graph_rrd_sv", $_GET["id"], "data_template_id=" . $_GET["data_template_id"] . " and snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
-function snmp_item_remove_dssv() {
+function data_query_item_remove_dssv() {
 	db_execute("delete from snmp_query_graph_rrd_sv where id=" . $_GET["id"]);
 }
 
-function snmp_item_remove() {
+function data_query_item_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", "snmp.php?action=edit&id=" . $_GET["snmp_query_id"], "snmp.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php?action=edit&id=" . $_GET["snmp_query_id"], "data_queries.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -242,7 +242,7 @@ function snmp_item_remove() {
 	}
 }
 
-function snmp_item_edit() {
+function data_query_item_edit() {
 	global $colors, $paths, $fields_data_query_item_edit;
 	
 	if (!empty($_GET["id"])) {
@@ -377,11 +377,11 @@ function snmp_item_edit() {
 									<?php print $suggested_value["text"];?>
 								</td>
 								<td width="70">
-									<a href="snmp.php?action=item_movedown_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-									<a href="snmp.php?action=item_moveup_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+									<a href="data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+									<a href="data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 								</td>
-								<td width="1%" align="right">
-									<a href="snmp.php?action=item_remove_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+								<td align="right">
+									<a href="data_queries.php?action=item_remove_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 								</td>
 							</tr>
 						</table>
@@ -399,8 +399,8 @@ function snmp_item_edit() {
 							<td width="1">
 								<input type="text" name="svds_<?php print $data_template["id"];?>_text" size="30">
 							</td>
-							<td width="200">
-								&nbsp;Field Name: <input type="text" name="svds_<?php print $data_template["id"];?>_field" size="15">
+							<td width="220" nowrap>
+								&nbsp;Field Name:&nbsp;<input type="text" name="svds_<?php print $data_template["id"];?>_field" size="15">
 							</td>
 							<td>
 								&nbsp;<input type="image" src="images/button_add.gif" name="svds_<?php print $data_template["id"];?>" alt="Add" align="absmiddle">
@@ -441,11 +441,11 @@ function snmp_item_edit() {
 								<?php print $suggested_value["text"];?>
 							</td>
 							<td width="70">
-								<a href="snmp.php?action=item_movedown_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-								<a href="snmp.php?action=item_moveup_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+								<a href="data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+								<a href="data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 							</td>
-							<td width="1%" align="right">
-								<a href="snmp.php?action=item_remove_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+							<td align="right">
+								<a href="data_queries.php?action=item_remove_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 							</td>
 						</tr>
 					</table>
@@ -463,8 +463,8 @@ function snmp_item_edit() {
 						<td width="1">
 							<input type="text" name="svg_text" size="30">
 						</td>
-						<td width="200">
-							&nbsp;Field Name: <input type="text" name="svg_field" size="15">
+						<td width="220" nowrap>
+							&nbsp;Field Name:&nbsp;<input type="text" name="svg_field" size="15">
 						</td>
 						<td>
 							&nbsp;<input type="image" src="images/button_add.gif" name="svg" alt="Add" align="absmiddle">
@@ -478,17 +478,17 @@ function snmp_item_edit() {
 		end_box();
 	}
 	
-	form_save_button("snmp.php?action=edit&id=" . $_GET["snmp_query_id"]);
+	form_save_button("data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
 }
 
 /* ---------------------
     Data Query Functions
    --------------------- */
 
-function snmp_remove() {
+function data_query_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", "snmp.php", "snmp.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php", "data_queries.php?action=remove&id=" . $_GET["id"]);
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -511,7 +511,7 @@ function snmp_remove() {
 	}
 }
 
-function snmp_edit() {
+function data_query_edit() {
 	global $colors, $snmp_query_field_actions, $paths, $fields_data_query_edit, $config;
 	
 	if (!empty($_GET["id"])) {
@@ -598,7 +598,7 @@ function snmp_edit() {
 		end_box();
 		
 		if ($xml_file_exists == true) {
-			start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+			start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
 			
 			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 					<td><span style='color: white; font-weight: bold;'>Name</span></td>
@@ -621,13 +621,13 @@ function snmp_edit() {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
 					<td>
-						<strong><a href="snmp.php?action=item_edit&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><?php print $snmp_query_graph["name"];?></a></strong>
+						<strong><a href="data_queries.php?action=item_edit&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><?php print $snmp_query_graph["name"];?></a></strong>
 					</td>
 					<td>
 						<?php print $snmp_query_graph["graph_template_name"];?>
 					</td>
-					<td width="1%" align="right">
-						<a href="snmp.php?action=item_remove&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<td align="right">
+						<a href="data_queries.php?action=item_remove&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 				<?php
@@ -640,13 +640,13 @@ function snmp_edit() {
 		}
 	}
 	
-	form_save_button("snmp.php");
+	form_save_button("data_queries.php");
 }
 
-function snmp() {
+function data_query() {
 	global $colors;
 	
-	start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=edit");
+	start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
@@ -661,10 +661,10 @@ function snmp() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="snmp.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
+				<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
 			</td>
 			<td align="right">
-				<a href="snmp.php?action=remove&id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+				<a href="data_queries.php?action=remove&id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 			</td>
 		</tr>
 	<?php

@@ -30,6 +30,7 @@ include_once("./lib/template.php");
 include_once("./lib/tree.php");
 include_once("./lib/tree_view.php");
 include_once("./lib/rrd.php");
+include_once("./lib/data_query.php");
 
 $ds_actions = array(
 	1 => "Delete",
@@ -240,7 +241,7 @@ function form_save() {
 				/* update all necessary template information */
 				change_data_template($local_data_id, $_POST["data_template_id"]);
 			}elseif (!empty($_POST["data_template_id"])) {
-				update_data_source_snmp_query_cache($local_data_id);
+				update_data_source_data_query_cache($local_data_id);
 			}
 			
 			if ($_POST["host_id"] != $_POST["_host_id"]) {

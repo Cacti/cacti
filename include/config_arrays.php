@@ -181,7 +181,7 @@ $menu = array(
 			),
 		"host.php" => 'Devices',
 		"data_input.php" => "Data Input Methods",
-		"snmp.php" => "Data Queries"
+		"data_queries.php" => "Data Queries"
 		),
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
@@ -243,7 +243,7 @@ $user_auth_realm_filenames = array(
 	"index.php" => 8,
 	"rra.php" => 9,
 	"settings.php" => 15,
-	"snmp.php" => 13,
+	"data_queries.php" => 13,
 	"templates_export.php" => 16,
 	"templates_import.php" => 17,
 	"tree.php" => 4,

@@ -30,6 +30,7 @@ include_once("./lib/template.php");
 include_once("./lib/tree.php");
 include_once("./lib/tree_view.php");
 include_once("./lib/rrd.php");
+include_once("./lib/data_query.php");
 
 $graph_actions = array(
 	1 => "Delete",
@@ -181,7 +182,7 @@ function form_save() {
 		if ((!is_error_message()) && ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
 			change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
 		}elseif (!empty($_POST["graph_template_id"])) {
-			update_graph_snmp_query_cache($local_graph_id);
+			update_graph_data_query_cache($local_graph_id);
 		}
 	}
 	

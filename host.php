@@ -87,7 +87,7 @@ function form_save() {
 		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . ")");
 		
 		/* recache snmp data */
-		data_query($_POST["id"], $_POST["snmp_query_id"]);
+		run_data_query($_POST["id"], $_POST["snmp_query_id"]);
 		
 		header("Location: host.php?action=edit&id=" . $_POST["id"]);
 		exit;
@@ -141,7 +141,7 @@ function form_save() {
 					db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $snmp_query["snmp_query_id"] . ")");
 					
 					/* recache snmp data */
-					data_query($host_id, $snmp_query["snmp_query_id"]);
+					run_data_query($host_id, $snmp_query["snmp_query_id"]);
 				}
 				}
 				
@@ -168,7 +168,7 @@ function form_save() {
    ------------------- */
 
 function host_reload_query() {
-	data_query($_GET["host_id"], $_GET["id"]);
+	run_data_query($_GET["host_id"], $_GET["id"]);
 }
 
 function host_remove_query() {

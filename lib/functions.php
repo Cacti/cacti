@@ -514,7 +514,7 @@ function generate_data_source_path($local_data_id) {
    @arg $graph_item_id - (int) the ID to generate a letter-based representation of
    @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {
-	$lookup_table = array("a","b","c","d","e","f","g","h","i","j");
+	$lookup_table = array("a","b","c","d","e","f","g","h","i","j","k","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
 	
 	$result = "";
 	for($i=0; $i<strlen($graph_item_id); $i++) {
@@ -920,11 +920,11 @@ function draw_navigation_text() {
 		"data_input.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
 		"data_input.php:field_edit" => array("title" => "Data Input Fields", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),
 		"data_input.php:field_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),
-		"snmp.php:" => array("title" => "Data Queries", "mapping" => "index.php:", "url" => "snmp.php", "level" => "1"),
-		"snmp.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,snmp.php:", "url" => "", "level" => "2"),
-		"snmp.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,snmp.php:", "url" => "", "level" => "2"),
-		"snmp.php:item_edit" => array("title" => "Associated Graph Templates", "mapping" => "index.php:,snmp.php:,snmp.php:edit", "url" => "", "level" => "3"),
-		"snmp.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,snmp.php:,snmp.php:edit", "url" => "", "level" => "3"),
+		"data_queries.php:" => array("title" => "Data Queries", "mapping" => "index.php:", "url" => "data_queries.php", "level" => "1"),
+		"data_queries.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_queries.php:", "url" => "", "level" => "2"),
+		"data_queries.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,data_queries.php:", "url" => "", "level" => "2"),
+		"data_queries.php:item_edit" => array("title" => "Associated Graph Templates", "mapping" => "index.php:,data_queries.php:,data_queries.php:edit", "url" => "", "level" => "3"),
+		"data_queries.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,data_queries.php:,data_queries.php:edit", "url" => "", "level" => "3"),
 		"utilities.php:" => array("title" => "Utilities", "mapping" => "index.php:", "url" => "utilities.php", "level" => "1"),
 		"utilities.php:view_poller_cache" => array("title" => "View Poller Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_snmp_cache" => array("title" => "View SNMP Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
