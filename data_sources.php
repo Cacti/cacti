@@ -134,7 +134,12 @@ function form_save() {
 				/* save the data into the 'data_input_data' table */
 				$form_value = $_POST{"value_" . $input_field["id"]};
 				
-				if ($input_field["allow_nulls"] == "on") {
+				/* we shouldn't enforce rules on fields the user cannot see (ie. templated ones) */
+				$is_templated = db_fetch_cell("select t_value from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . db_fetch_cell("select local_data_template_data_id from data_template_data where id=" . $_POST["data_template_data_id"]));
+				
+				if ($is_templated == "") {
+					$allow_nulls = true;
+				}elseif ($input_field["allow_nulls"] == "on") {
 					$allow_nulls = true;
 				}elseif (empty($input_field["allow_nulls"])) {
 					$allow_nulls = false;
@@ -145,7 +150,7 @@ function form_save() {
 				
 				if (!is_error_message()) {
 					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
-						(" . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'" . db_fetch_cell("select t_value from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $_POST["data_template_data_id"]) . "','$form_value')");
+						(" . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'','$form_value')");
 				}
 			}
 		}
@@ -703,7 +708,7 @@ function ds_edit() {
 		
 		end_box();
 	}
-	
+	//reset($struct_data_source);reset($struct_data_source_item);
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($data["data_template_id"]))) {
 		start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 		
