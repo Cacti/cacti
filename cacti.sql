@@ -389,6 +389,7 @@ INSERT INTO data_input_fields VALUES (30,10,'Milliseconds','out_ms','out','on',0
 INSERT INTO data_input_fields VALUES (31,11,'Index Type','index_type','in','',0,'index_type','','');
 INSERT INTO data_input_fields VALUES (32,11,'Index Value','index_value','in','',0,'index_value','','');
 INSERT INTO data_input_fields VALUES (33,11,'Output Type ID','output_type','in','',0,'output_type','','');
+INSERT INTO data_input_fields VALUES (34,11,'Output Value','output','out','on',0,'','','');
 
 --
 -- Table structure for table 'data_local'
@@ -796,7 +797,7 @@ INSERT INTO data_template_rrd VALUES (39,0,0,35,'',1000000000000,'',0,'',600,'',
 INSERT INTO data_template_rrd VALUES (40,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_freeable','',0);
 INSERT INTO data_template_rrd VALUES (42,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
 INSERT INTO data_template_rrd VALUES (43,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
-INSERT INTO data_template_rrd VALUES (44,0,0,37,'on',10000000000,'',0,'',600,'',1,'on','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (44,0,0,37,'on',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
 INSERT INTO data_template_rrd VALUES (54,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (46,0,0,38,'',10000000,'',0,'',600,'',2,'','errors_in','',0);
 INSERT INTO data_template_rrd VALUES (47,0,0,38,'',10000000,'',0,'',600,'',2,'','discards_in','',0);
@@ -807,6 +808,7 @@ INSERT INTO data_template_rrd VALUES (51,0,0,38,'',10000000,'',0,'',600,'',2,'',
 INSERT INTO data_template_rrd VALUES (52,0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_out','',0);
 INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_in','',0);
 INSERT INTO data_template_rrd VALUES (55,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
+INSERT INTO data_template_rrd VALUES (56,0,0,37,'on',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
 
 --
 -- Table structure for table 'graph_local'
@@ -1470,10 +1472,10 @@ INSERT INTO graph_templates_item VALUES (151,0,0,19,40,95,5,14,1,'Freeable Space
 INSERT INTO graph_templates_item VALUES (152,0,0,19,40,0,9,14,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (153,0,0,19,40,0,9,14,1,'Average:','','',2,11);
 INSERT INTO graph_templates_item VALUES (154,0,0,19,40,0,9,14,3,'Maximum:','','on',2,12);
-INSERT INTO graph_templates_item VALUES (171,0,0,21,45,0,9,0,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (170,0,0,21,45,0,9,0,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (169,0,0,21,45,0,9,0,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (167,0,0,21,45,48,7,0,1,'Used','','',2,1);
+INSERT INTO graph_templates_item VALUES (171,0,0,21,56,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (170,0,0,21,56,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (169,0,0,21,56,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (167,0,0,21,56,48,7,0,1,'Used','','',2,1);
 INSERT INTO graph_templates_item VALUES (159,0,0,20,43,77,7,0,1,'Used Directory Entries','','',2,1);
 INSERT INTO graph_templates_item VALUES (160,0,0,20,43,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (161,0,0,20,43,0,9,0,1,'Average:','','',3,3);
@@ -2045,6 +2047,7 @@ INSERT INTO snmp_query_graph_rrd VALUES (1,1,1,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (15,37,44,'dskAvailable');
 INSERT INTO snmp_query_graph_rrd VALUES (16,41,54,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (16,41,55,'ifOutOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (15,37,56,'dskUsed');
 
 --
 -- Table structure for table 'snmp_query_graph_rrd_sv'
@@ -2312,7 +2315,6 @@ CREATE TABLE user_log (
 --
 
 
-INSERT INTO user_log VALUES ('admin',20030417220432,1,'192.168.1.101');
 
 --
 -- Table structure for table 'user_realm'
