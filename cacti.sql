@@ -331,6 +331,23 @@ CREATE TABLE data_input_data_cache (
 
 
 --
+-- Table structure for table 'data_input_data_fcache'
+--
+
+CREATE TABLE data_input_data_fcache (
+  local_data_id mediumint(8) NOT NULL default '0',
+  data_input_field_name varchar(100) NOT NULL default '',
+  rrd_data_source_name varchar(19) NOT NULL default '',
+  PRIMARY KEY  (local_data_id,rrd_data_source_name)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'data_input_data_fcache'
+--
+
+
+
+--
 -- Table structure for table 'data_input_fields'
 --
 
@@ -1460,14 +1477,14 @@ INSERT INTO graph_templates_item VALUES (139,0,0,18,30,9,7,0,1,'CPU Usage','',''
 INSERT INTO graph_templates_item VALUES (140,0,0,18,30,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (141,0,0,18,30,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (142,0,0,18,30,0,9,0,3,'Maximum:','','',3,4);
-INSERT INTO graph_templates_item VALUES (143,0,0,19,39,25,7,14,1,'Free Space','','',2,1);
-INSERT INTO graph_templates_item VALUES (144,0,0,19,39,0,9,14,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (145,0,0,19,39,0,9,14,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (146,0,0,19,39,0,9,14,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (147,0,0,19,38,69,7,14,1,'Total Space','','',2,5);
-INSERT INTO graph_templates_item VALUES (148,0,0,19,38,0,9,14,4,'Current:','','',2,6);
-INSERT INTO graph_templates_item VALUES (149,0,0,19,38,0,9,14,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (150,0,0,19,38,0,9,14,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (143,0,0,19,39,25,7,14,1,'Free Space','','',2,5);
+INSERT INTO graph_templates_item VALUES (144,0,0,19,39,0,9,14,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (145,0,0,19,39,0,9,14,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (146,0,0,19,39,0,9,14,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (147,0,0,19,38,69,7,14,1,'Total Space','','',2,1);
+INSERT INTO graph_templates_item VALUES (148,0,0,19,38,0,9,14,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (149,0,0,19,38,0,9,14,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (150,0,0,19,38,0,9,14,3,'Maximum:','','on',2,4);
 INSERT INTO graph_templates_item VALUES (151,0,0,19,40,95,5,14,1,'Freeable Space','','',2,9);
 INSERT INTO graph_templates_item VALUES (152,0,0,19,40,0,9,14,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (153,0,0,19,40,0,9,14,1,'Average:','','',2,11);
