@@ -716,7 +716,7 @@ function item_edit() {
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["local_graph_id"]);
 	}
 	
-	$header_label = "[edit graph: " . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "]";
+	$header_label = "[edit graph: " . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "]";
 	
 	start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>
@@ -735,7 +735,7 @@ function item_edit() {
 		
 		/* modifications to the default graph items array */
 		$struct_graph_item["task_item_id"]["sql"] = "select
-			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
 			data_template_rrd.id 
 			from data_template_data,data_template_rrd,data_local 
 			left join host on data_local.host_id=host.id
