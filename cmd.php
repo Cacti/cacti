@@ -201,10 +201,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 		$return_value = proc_close($cactiphp);
 	}
-
-	db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
 }else{
 	print "Either there are no items in the cache or polling is disabled\n";
 }
+
+/* Let the poller server know about cmd.php being finished */
+db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
 
 ?>
