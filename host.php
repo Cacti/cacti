@@ -166,7 +166,7 @@ function form_save() {
 	if (isset($_POST["save_component_new_graphs"])) {
 		host_new_graphs_save();
 		
-		header ("Location: host.php?action=edit&id=" . $_POST["host_id"]);
+		header ("Location: host.php");
 	}
 }
 
@@ -793,8 +793,8 @@ function host_edit() {
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td width="50%">
-						<font class="textEditTitle">Associated SNMP Query</font><br>
-						If you choose to add this SNMP query to this host, information will be queried from this
+						<font class="textEditTitle">Associated Data Query</font><br>
+						If you choose to add this data query to this host, information will be queried from this
 						host upon addition.
 					</td>
 					<td width="1">
@@ -816,51 +816,51 @@ function host_edit() {
 	form_hidden_id("_host_template_id",(isset($host) ? $host["host_template_id"] : "0"));
 	form_hidden_box("save_component_host","1","");
 	
-	start_box("<strong>Create Graphs + Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td class='textSubHeaderDark'>Graph Template Name</td>
-			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\")'></td>\n
-		</tr>\n";
-	
-	$graph_templates = db_fetch_assoc("select
-		graph_templates.id as graph_template_id,
-		graph_templates.name as graph_template_name
-		from host_template_graph, graph_templates
-		where host_template_graph.graph_template_id=graph_templates.id
-		and host_template_graph.host_template_id=" . $host["host_template_id"] . "
-		order by graph_templates.name");
-	
-	$i = 0;
-	
-	/* create a row for each graph template associated with the host template */
-	if (sizeof($graph_templates) > 0) {
-	foreach ($graph_templates as $graph_template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-		print "		<td>
-					<strong>Create:</strong> " . $graph_template["graph_template_name"] . "
-				</td>
+	if (isset($host["id"])) {
+		start_box("<strong>Create Graphs + Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+				<td class='textSubHeaderDark'>Graph Template Name</td>
+				<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\")'></td>\n
+			</tr>\n";
+		
+		$graph_templates = db_fetch_assoc("select
+			graph_templates.id as graph_template_id,
+			graph_templates.name as graph_template_name
+			from host_template_graph, graph_templates
+			where host_template_graph.graph_template_id=graph_templates.id
+			and host_template_graph.host_template_id=" . $host["host_template_id"] . "
+			order by graph_templates.name");
+		
+		$i = 0;
+		
+		/* create a row for each graph template associated with the host template */
+		if (sizeof($graph_templates) > 0) {
+		foreach ($graph_templates as $graph_template) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+			print "		<td>
+						<strong>Create:</strong> " . $graph_template["graph_template_name"] . "
+					</td>
+					<td align='right'>";
+						form_base_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0,false);
+			print "		</td>
+				</tr>";
+		}
+		}
+		
+		/* create a row at the bottom that lets the user create any graph they choose */
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+		print "		<td width='60'>
+					<strong>Create:</strong>&nbsp;";
+					form_base_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
+		print "		</td>
 				<td align='right'>";
-					form_base_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0,false);
+					form_base_checkbox("ccg","","","",0,false);
 		print "		</td>
 			</tr>";
-	}
-	}
-	
-	/* create a row at the bottom that lets the user create any graph they choose */
-	form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-	print "		<td width='60'>
-				<strong>Create:</strong>&nbsp;";
-				form_base_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
-	print "		</td>
-			<td align='right'>";
-				form_base_checkbox("ccg","","","",0,false);
-	print "		</td>
-		</tr>";
-	
-	end_box();
-	
-	if (isset($host["id"])) {
+		
+		end_box();
+		
 		$snmp_queries = db_fetch_assoc("select
 			snmp_query.id,
 			snmp_query.name,
@@ -896,7 +896,7 @@ function host_edit() {
 							<table  cellspacing='0' cellpadding='0' width='100%' >
 								<tr>
 									<td class='textHeaderDark'>
-										<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]
+										<strong>Data Query</strong> [" . $snmp_query["name"] . "]
 									</td>
 									<td align='right' nowrap>
 										<a href='host.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/reload_icon_small.gif' alt='Reload Associated Query' border='0' align='absmiddle'></a>&nbsp;
