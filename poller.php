@@ -154,11 +154,11 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			$end = $seconds + $micro;
 
 			cacti_log(sprintf("STATS: " .
-				"Execution Time: %01.4f s, " .
+				"Time: %01.4f s, " .
 				"Method: %s, " .
-				"Max Processes: %s, " .
-				"Max Threads/Process: %s, " .
-				"Polled Hosts: %s, " .
+				"Processes: %s, " .
+				"Threads: %s, " .
+				"Hosts: %s, " .
 				"Hosts/Process: %s",
 				round($end-$start,4),
 				$method,
