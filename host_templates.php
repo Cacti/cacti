@@ -24,7 +24,6 @@
 <?
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 include_once ("include/functions.php");
-include_once ("include/cdef_functions.php");
 include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
@@ -53,7 +52,6 @@ switch ($_REQUEST["action"]) {
 		include_once ("include/bottom_footer.php");
 		break;
 }
-
 
 /* --------------------------
     The Save Function
@@ -105,10 +103,15 @@ function template_save() {
 	db_execute ("delete from host_template_graph_data where host_template_id=$host_template_id");
 	
 	while (list($var, $val) = each($_POST)) {
-		if (eregi("^dt_", $var)) {
-			db_execute ("replace into host_template_data_template (host_template_id,data_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'" . $_POST{"odt_suggested_values_" . substr($var, 3)} . "')");
-		}elseif (eregi("^gt_", $var)) {
+		if (eregi("^gt_", $var)) {
 			db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'" . $_POST{"ogt_suggested_values_" . substr($var, 3)} . "')");
+		}elseif (eregi("^odt_suggested_values_", $var)) {
+			$data_template_id = ereg_replace("^odt_suggested_values_([0-9]+)_[0-9]+$", "\\1", $var);
+			$graph_template_id = ereg_replace("^odt_suggested_values_[0-9]+_([0-9]+)$", "\\1", $var);
+			
+			if (!empty($val)) {
+				db_execute ("replace into host_template_data_template (host_template_id,data_template_id,graph_template_id,suggested_values) values($host_template_id,$data_template_id,$graph_template_id,'$val')");
+			}
 		}elseif (eregi("^ogt_graph_input_", $var)) {
 			$graph_template_input_id = substr($var, 16);
 			$graph_template_id = db_fetch_cell("select graph_template_id from graph_template_input where id=$graph_template_input_id");
@@ -146,50 +149,6 @@ function template_edit() {
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Selected Data Templates</font><br>
-			Select one or more data templates to associate with this host template.
-		</td>
-		<td>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td align="top" width="50%">
-						<?
-						$data_templates = db_fetch_assoc("select 
-							host_template_data_template.host_template_id,
-							host_template_data_template.suggested_values,
-							data_template.id,
-							data_template.name
-							from data_template left join host_template_data_template
-							on (data_template.id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=" . $_GET["id"] . ") 
-							order by data_template.name");
-						
-						$i = 0;
-						if (sizeof($data_templates) > 0) {
-						foreach($data_templates as $data_template) {
-							$column1 = floor((sizeof($data_templates) / 2) + (sizeof($data_templates) % 2));
-							
-							if (empty($data_template["host_template_id"])) {
-								$old_value = "";
-							}else{
-								$old_value = "on";
-							}
-							
-							if ($i == $column1) {
-								print "</td><td valign='top' width='50%'>";
-							}
-							DrawStrippedFormItemCheckBox("dt_".$data_template["id"], $old_value, $data_template["name"], "",true);
-							$i++;
-						}
-						}
-						?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Graph Templates</font><br>
 			Select one or more graph templates to associate with this host template.
@@ -242,11 +201,11 @@ function template_edit() {
 	foreach($graph_templates as $graph_template) {
 		if (!empty($graph_template["host_template_id"])) {
 			$i = 0;
-			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", "999999", "3", "center", "");
+			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", "777777", "3", "center", "");
 			
 			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 				<td width="50%">
-					<font class="textEditTitle">Suggested Values</font><br>
+					<font class="textEditTitle">Suggested Values</font> <em>(<?print $graph_template["name"];?>)</em><br>
 					When a user creates a host using this host template, the non-templated 
 					fields will need input from the user. You can use this field to suggest 
 					defaults to the user or even over ride the non-template bit. For a list 
@@ -263,7 +222,8 @@ function template_edit() {
 				from graph_template_input left join host_template_graph_data
 				on graph_template_input.id=host_template_graph_data.graph_template_input_id
 				where graph_template_input.graph_template_id=" . $graph_template["id"] . "
-				and graph_template_input.column_name='task_item_id'");
+				and graph_template_input.column_name='task_item_id'
+				and host_template_graph_data.host_template_id=" . $_GET["id"]);
 			
 			if (sizeof($graph_template_inputs) > 0) {
 			foreach ($graph_template_inputs as $graph_template_input) {
@@ -275,16 +235,43 @@ function template_edit() {
 					<?DrawFormItemDropdownFromSQL("ogt_graph_input_" . $graph_template_input["id"],db_fetch_assoc("select
 						data_template_rrd.id,
 						CONCAT_WS('',data_template.name,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name
-						from host_template_data_template left join data_template
-						on host_template_data_template.data_template_id=data_template.id
-						left join data_template_data
+						from data_template_data left join data_template
 						on data_template.id=data_template_data.data_template_id
 						left join data_template_rrd
 						on data_template.id=data_template_rrd.data_template_id
-						where host_template_data_template.host_template_id=" . $_GET["id"] . "
-						and data_template_rrd.local_data_id=0
+						where data_template_rrd.local_data_id=0
 						group by data_template_rrd.id
 						order by name"),"name","id",$graph_template_input["data_template_rrd_id"],"None","");?>
+				</tr>
+				<?
+			}
+			}
+			
+			$data_templates = db_fetch_assoc("select
+				data_template_rrd.data_template_id,
+				data_template.name,
+				host_template_data_template.suggested_values
+				from host_template_graph_data left join data_template_rrd
+				on host_template_graph_data.data_template_rrd_id=data_template_rrd.id
+				left join data_template
+				on data_template_rrd.data_template_id=data_template.id
+				left join host_template_data_template
+				on (data_template_rrd.data_template_id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=" . $_GET["id"] . " and host_template_data_template.graph_template_id=" . $graph_template["id"] . ")
+				where host_template_graph_data.host_template_id=" . $_GET["id"] . "
+				and host_template_graph_data.graph_template_id=" . $graph_template["id"] . "
+				group by data_template_rrd.data_template_id");
+				
+			if (sizeof($data_templates) > 0) {
+			foreach ($data_templates as $data_template) {
+				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+					<td width="50%">
+						<font class="textEditTitle">Suggested Values</font> <em>(<?print $data_template["name"];?>)</em><br>
+						When a user creates a host using this host template, the non-templated 
+						fields will need input from the user. You can use this field to suggest 
+						defaults to the user or even over ride the non-template bit. For a list 
+						of valid field names, see the documentation.
+					</td>
+					<?DrawFormItemTextBox("odt_suggested_values_" . $data_template["data_template_id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
 				</tr>
 				<?
 			}
@@ -295,35 +282,8 @@ function template_edit() {
 	}
 	}
 	
-	reset($data_templates);
-	
-	if (sizeof($data_templates) > 0) {
-	foreach($data_templates as $data_template) {
-		if (!empty($data_template["host_template_id"])) {
-			$i = 0;
-			start_box("<strong>Data Template:</strong> " . $data_template["name"], "98%", "999999", "3", "center", "");
-			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-				<td width="50%">
-					<font class="textEditTitle">Suggested Values</font><br>
-					When a user creates a host using this host template, the non-templated 
-					fields will need input from the user. You can use this field to suggest 
-					defaults to the user or even over ride the non-template bit. For a list 
-					of valid field names, see the documentation.
-				</td>
-				<?DrawFormItemTextBox("odt_suggested_values_" . $data_template["id"],$data_template["suggested_values"],"","255", "40");?>
-			</tr>
-			<?
-			
-			end_box();
-		}
-	}
-	}
-	
 	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_template","1","");
-	
-	
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
