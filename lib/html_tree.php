@@ -333,10 +333,11 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 	$options[use_expand_contract] = true;
 	$vbar_width = 20;
 	
-	/* get the "starting leaf" if the user clicked on a specific branch */
-	//if (($start_branch != "") && ($start_branch != "0")) {
-	//	$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_view_items where id=$start_branch"));
-	//}
+	if ($options[edit_mode] == true) {
+		$left_margin_color = $colors[panel_dark];
+	}else{
+		$left_margin_color = $colors[panel];
+	}
 	
 	$tree = db_fetch_assoc("select
 		data_tree.id,
@@ -439,14 +440,26 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 			++$heading_ct;
 		}
 		
-		print "<td bgcolor='#$colors[panel]' align='center' width='1%' valign='top'><a
-			href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
+		print "<td bgcolor='#$left_margin_color' align='center' width='1%' valign='top'><a
+			href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[id]'><img
 			src='images/$ec_icon.gif' border='0'></a></td>\n";
 		
 		if ($current_leaf_type == 'heading') {
-			print "<td colspan=$colspan NOWRAP><strong>$leaf[title]</strong></td>\n"; $j++;
-		}else{
-			print "<td colspan=$colspan NOWRAP'>Host: <strong><a href='host.php?action=edit&id=$leaf[host_id]'>$leaf[hostname]</a> - $leaf[description]</strong></td>\n"; $j++;
+			if ($options[edit_mode] == true) {
+				print "<td colspan=$colspan NOWRAP><strong><a href='data_sources.php?action=tree_edit&id=$leaf[id]'>$leaf[title]</a></strong></td>\n";
+			}else{
+				print "<td colspan=$colspan NOWRAP><strong>$leaf[title]</strong></td>\n";
+			}
+			
+			$j++;
+		}elseif ($current_leaf_type == 'host') {
+			if ($options[edit_mode] == true) {
+				print "<td colspan=$colspan NOWRAP'><strong>Host: <a href='data_sources.php?action=tree_edit&id=$leaf[id]'>$leaf[hostname]</a></strong></td>\n";
+			}else{
+				print "<td colspan=$colspan NOWRAP'><strong>Host: <a href='host.php?action=edit&id=$leaf[host_id]'>$leaf[hostname]</a> - $leaf[description]</strong></td>\n";
+			}
+			
+			$j++;
 		}
 		
 		if ($options[edit_mode] == true) {
@@ -484,9 +497,9 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 			if (sizeof($hosts) > 0) {
 			foreach ($hosts as $host) {
 				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++;
-				print "<td><a href='data_sources.php?action=edit&local_data_id=$host[local_data_id]'>$host[name]</a></td>";
+				print "<td><a href='data_sources.php?action=ds_edit&local_data_id=$host[local_data_id]'>$host[name]</a></td>";
 				print "<td>$host[data_input_name]</td>";
-				print "<td width='1%' align='right'><a href='data_sources.php?action=remove&local_data_id=$host[local_data_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
+				print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&local_data_id=$host[local_data_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
 				print "</tr>";
 			}
 			}else{
@@ -508,11 +521,47 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 				print "<tr bgcolor='#$colors[light]'>\n";
 			}
 			
-			print "<td bgcolor='#$colors[panel]' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
+			print "<td bgcolor='#$left_margin_color' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
 			$already_open = true;
 		}
 	}
 	}
+}
+
+function draw_data_source_dropdown($form_name, $form_previous_value) {
+	global $config,$array_settings;
+	include_once ('include/form.php');
+	include_once ('include/tree_functions.php');
+	
+	$tree = db_fetch_assoc("select
+		data_tree.id,
+		host.hostname,
+		data_tree.title,
+		host.description,
+		data_tree.order_key,
+		data_tree.host_id
+		from data_tree
+		left join host on data_tree.host_id = host.id
+		order by data_tree.order_key");
+
+	print "<td><select name='$form_name'>\n";
+	print "<option value='0'>[root]</option>\n";
+	
+	if (sizeof($tree) > 0) {
+	foreach ($tree as $leaf) {
+		$tier = tree_tier($leaf[order_key], 2);
+		$current_leaf_type = $leaf[host_id] ? "host" : "heading";
+		
+		if ($current_leaf_type == 'heading') {
+			print "<option name='$leaf[id]'";
+			if ($leaf[id] == $form_previous_value) { print " selected"; }
+			print ">" . str_pad("", ($tier * 2), "-") . " $leaf[title]</option>\n";
+		}
+		
+	}
+	}
+	
+	print "</select></td>\n";
 }
     
 ?>
