@@ -847,10 +847,11 @@ function ds() {
 	<?php
 	end_box();
 	
-	if (empty($_REQUEST["host_id"])) {
-		$sql_where = "";
-	}else{
-		$sql_where = "and data_local.host_id=" . $_REQUEST["host_id"];
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "where data_template_data.name like '%%" . $_REQUEST["filter"] . "%%'";
+	
+	if (!empty($_REQUEST["host_id"])) {
+		$sql_where .= "and data_local.host_id=" . $_REQUEST["host_id"];
 	}
 	
 	$total_rows = sizeof(db_fetch_assoc("select
@@ -870,7 +871,6 @@ function ds() {
 		on data_input.id=data_template_data.data_input_id
 		left join data_template
 		on data_local.data_template_id=data_template.id
-		where data_template_data.name like '%%" . $_REQUEST["filter"] . "%%'
 		$sql_where
 		order by data_template_data.name
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
