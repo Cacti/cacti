@@ -128,6 +128,7 @@ function template_save() {
 	$save["active"] = $_POST["active"];
 	$save["t_rrd_step"] = $_POST["t_rrd_step"];
 	$save["rrd_step"] = $_POST["rrd_step"];
+	$save["t_rra_id"] = $_POST["t_rra_id"];
 	
 	$data_template_data_id = sql_save($save, "data_template_data");
 	unset ($save);
@@ -150,6 +151,14 @@ function template_save() {
 	$save["data_input_field_id"] = $_POST["data_input_field_id"];
 	
 	$data_template_rrd_id = sql_save($save, "data_template_rrd");
+	
+	/* save entried in 'selected rras' field */
+	db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
+	
+	for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+		db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+			values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+	}
 	
 	/* push out all data source settings to child data source using this template */
 	push_out_data_source($data_template_data_id);
@@ -225,7 +234,12 @@ function template_edit() {
 		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_data{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
-		draw_nontemplated_item($field_array, $field_name, $template_data[$field_name]);
+		if ($field_array["type"] == "custom") {
+			$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
+			DrawFormItemMultipleList("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $template_data["id"]), "rra_id");
+		}else{
+			draw_nontemplated_item($field_array, $field_name, $template_data[$field_name]);
+		}
 		
 		print "</tr>\n";
 	}
