@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>cacti Installation Instruction for Windowss</title>
+	<title>cacti Installation Instruction for Windows</title>
 	<style>
 	<!--
 		BODY
@@ -72,46 +72,52 @@ Cacti requires:
 <h3>Install PHP (With Apache)</h3><p>
 
 <ol>
-	<li>Install the Apache web server. (I installed it in <strong>C:\Apache</strong>)<p>
+	<li>Install the Apache web server. This is as simple as double clicking the .msi file and following the prompts.
+	Make sure to install it as a service and for the sake of the HOWTO, install it to c:\apache or c:\apache2<p>
 	
-	<li>Extract PHP somewhere and rename the folder to "PHP". (I installed it in <strong>C:\PHP</strong>)<p>
+	<li>Extract PHP to c:\ and rename the new directory to 'php'.<p>
 
-	<li>Move the <strong>php4ts.dll</strong> file to your system directory (winnt/system32).<p>
+	<li>Copy the <strong>php4ts.dll</strong> file from c:\php to the c:\windows\system32 directory.<p>
 	
-	<li>Rename the <em>php.ini-dist</em> file to <em>php.ini</em>, copy it to your <em>winnt/</em> directory 
-	and make the following changes to the file:<p>
+	<li>Move all MIB files from c:\php\mibs to c:\usr\mibs<p>
+	
+	<li>In the c:\php directory, rename the <em>php.ini-dist</em> file to <em>php.ini</em> and make the following 
+	changes to the file:<p>
 	
 		<p class="php">extension_dir = c:/php/extensions<br>
 		extension=php_snmp.dll<br>
-		include_path=c:/apache/htdocs/cacti<br>
-		register_globals = On<br>
-		register_argc_argv = On<p>
+		include_path=c:/apache/htdocs/cacti<br><p>
 	
 	Make sure to replace <em>c:/apache/htdocs/cacti</em> with your <strong>full</strong> path to cacti.<p>
 	
-	<li>Add the following lines to Apache's <strong>httpd.conf</strong> file:<p>
+	<li>If you are using <strong>Apache 1.3.x</strong>, add the following lines to your httpd.conf file in the c:\apache\conf directory:<p>
 	
 		<p class="php">LoadModule php4_module c:/php/sapi/php4apache.dll<br>
 		AddModule mod_php4.c<br>
 		AddType application/x-httpd-php .php<br>
 		DirectoryIndex index.html index.htm index.php<p>
 	
-	Make sure to replace <em>c:/php/sapi/php4apache.dll</em> with your <strong>full</strong> path to the php4apache.dll file.<p>
+	<li>If you are using <strong>Apache 2.x</strong>, add the following lines to your httpd.conf file in the c:\apache2\conf directory:<p>
+	
+		<p class="php">LoadModule php4_module c:\php\sapi\php4apache2.dll<br>
+		AddType application/x-httpd-php .php<br>
+		DirectoryIndex index.html index.htm index.php<p>
+	
 </ol>
 
 <h3>Install PHP (With IIS)</h3><p>
 
 <ol>
-	<li>Extract PHP somewhere and rename the folder to "PHP". (I installed it in <strong>C:\PHP</strong>)<p>
+	<li>Extract PHP to c:\ and rename the new directory to 'php'.<p>
 	
-	<li>Rename the <em>php.ini-dist</em> file to <em>php.ini</em>, copy it to your <em>winnt/</em> directory 
-	and make the following changes to the file:<p>
+	<li>Move all MIB files from c:\php\mibs to c:\usr\mibs<p>
+	
+	<li>In the c:\php directory, rename the <em>php.ini-dist</em> file to <em>php.ini</em> and make the following 
+	changes to the file:<p>
 	
 		<p class="php">extension_dir = c:/php/extensions<br>
 		extension=php_snmp.dll<br>
-		include_path=c:/inetpub/wwwroot/cacti<br>
-		register_globals = On<br>
-		register_argc_argv = On<p>
+		include_path=c:/inetpub/wwwroot/cacti<p>
 	
 	Make sure to replace <em>c:/inetpub/wwwroot/cacti</em> with your <strong>full</strong> path to cacti.<p>
 	
@@ -133,6 +139,26 @@ Cacti requires:
 		
 </ol>
 
+<h3>Install MySQL</h3><p>
+
+<ol>
+	<li>Extract the MySQL zip file to a temp directory and run setup.exe.<p>
+	
+	<li>Install MySQL to the c:\mysql directory.<p>
+	
+	<li>Run c:\mysql\bin\winmysqladmin.exe<p>
+	
+	When entering a username and password make sure the user has read and write access to the following directories:<p>
+	
+	c:\apache2\htdocs\cacti\rra<br>
+	c:\apache2\htdocs\cacti\log
+	
+	<p>and execute, read and write access to the following directories</p>
+	
+	c:\php<br>
+	c:\php\sapi
+</ol>
+
 <h3>Installation Instructions</h3><p>
 
 <ol>
@@ -149,22 +175,20 @@ Cacti requires:
 	
 	<li>Create the MySQL database:<p>
 	
-		<p class="code"><tt class="shell">C:\&gt;</tt> <b>cd Apache\htdocs\cacti</b><br>
-		<tt class="shell">C:\Apache\htdocs\cacti&gt;</tt> <b>mysqladmin create cacti</b></p><br>
-		
-		<b>Note</b> These examples assume that the MySQL executables directory (commonly C:\mysql\Bin) is in your %PATH%.<p>
+		<p class="code"><tt class="shell">C:\&gt;</tt> <b>cd mysql\bin</b><br>
+		<tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysqladmin create cacti</b></p><br>
 		
 	<li>Import the default cacti database:<p>
 	
-		<p class="code"><tt class="shell">C:\Apache\htdocs\cacti&gt;</tt> <b>mysql cacti &lt; cacti.sql</b></p><br>
+		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b> mysql cacti &lt; c:\apache2\htdocs\cacti\cacti.sql</b></p><br>
 
 	<li><b>Optional:</b> Create a MySQL username and password for cacti.<p>
 	
-		<p class="code"><tt class="shell">C:\Apache\htdocs\cacti&gt;</tt> <b>mysql --user=root mysql</b><br>
+		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysql --user=root mysql</b><br>
 		<tt class="shell">mysql&gt;</tt> <b>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY '<i>somepassword</i>';</b><br>
 		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br>
 		
-	<li>Edit <b>include/config.php</b>.<p>
+	<li>Edit the <b>cacti\include\config.php</b> file.<p>
 
 	<ul>
 		<li><p>Specify the MySQL user, password and database for your cacti configuration.</p></li>
@@ -172,17 +196,14 @@ Cacti requires:
 		<p class="php"><b>$database_default</b> = <tt class="php-var">"cacti"</tt>;<br>
 		<b>$database_hostname</b> = <tt class="php-var">"localhost"</tt>;<br>
 		<b>$database_username</b> = <tt class="php-var">"cactiuser"</tt>;<br>
-		<b>$database_password</b> = <tt class="php-var">"cacti"</tt>;<br>
-		</p><br>
+		<b>$database_password</b> = <tt class="php-var">"cacti"</tt>;
+		</p>
 		
 		<li><p>Change the operating system variable to "win32":</p></li>
 		
 		<p class="php"><b>$cacti_server_os</b> = <tt class="php-var">"win32"</tt>;<br></p><br>
 		
 	</ul>
-	
-	<li>If you are using NTFS security, make sure the <em>I_USR_</em> user has write access to both the
-	<strong>log/</strong> and <strong>rra/</strong> sub-directories.<p>
 	
 	<li>You are going to need to schedule a task, so <em>cmd.php</em> can run every 5 minutes. Make sure the
 	<em>Task Scheduler</em> service is started and open up the <strong>Scheduled Tasks</strong> control panel item.
@@ -194,7 +215,7 @@ Cacti requires:
 	You are going to have to enter the full command line in the <em>Run</em> textbox. Using default paths,
 	your command line should look something like:<p>
 	
-	<p class="php">c:\php\php.exe c:\apache\htdocs\cacti\cmd.php</p>
+	<p class="php">c:\php\php.exe c:\apache2\htdocs\cacti\cmd.php</p>
 	
 	<p>Select the <em>Schedule</em> tab and click <em>Advanced</em>. Check the <em>Repeat task</em> checkbox
 	and change it to every 5 minutes, then change the <em>Duration</em> to 24 hours. That should
@@ -222,7 +243,7 @@ Cacti requires:
 		
 		<p><strong>Apache Web Root:</strong></p>
 		
-		<p class="php">c:/apache/htdocs</p>
+		<p class="php">c:/apache2/htdocs</p>
 </ol>
 
 </body>
