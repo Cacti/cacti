@@ -84,9 +84,8 @@ we want the user to input. The "name" field must exist in the 'settings' table f
 this to work. Cacti also uses different default values depending on what OS it is
 running on. */
 
-/* rrdtool Binary Path */
-$input["path_rrdtool"]["check"] = "";
-$input["path_rrdtool"]["type"] = "textbox";
+/* RRDTool Binary Path */
+$input["path_rrdtool"] = $settings["path"]["path_rrdtool"];
 
 if ($config["cacti_server_os"] == "unix") {
 	$which_rrdtool = trim(exec("which rrdtool"));
@@ -102,9 +101,8 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["path_rrdtool"]["default"] = "c:/rrdtool/rrdtool.exe";
 }
 
-/* php Binary Path */
-$input["path_php_binary"]["check"] = "";
-$input["path_php_binary"]["type"] = "textbox";
+/* PHP Binary Path */
+$input["path_php_binary"] = $settings["path"]["path_php_binary"];
 
 if ($config["cacti_server_os"] == "unix") {
 	$which_php = trim(exec("which php"));
@@ -122,8 +120,7 @@ if ($config["cacti_server_os"] == "unix") {
 
 /* snmpwalk Binary Path */
 if ($config["cacti_server_os"] == "unix") {
-	$input["path_snmpwalk"]["check"] = "";
-	$input["path_snmpwalk"]["type"] = "textbox";
+	$input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
 	
 	$which_snmpwalk = trim(exec("which snmpwalk"));
 	
@@ -138,8 +135,7 @@ if ($config["cacti_server_os"] == "unix") {
 
 /* snmpget Binary Path */
 if ($config["cacti_server_os"] == "unix") {
-	$input["path_snmpget"]["check"] = "";
-	$input["path_snmpget"]["type"] = "textbox";
+	$input["path_snmpget"] = $settings["path"]["path_snmpget"];
 	
 	$which_snmpwalk = trim(exec("which snmpget"));
 	
@@ -349,34 +345,24 @@ if ($_REQUEST["step"] == "4") {
 								the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
 								$form_check_string = "";
 								
-								if (isset($array["check"])) {
-									if (@file_exists($current_value . $array["check"])) {
-										$form_check_string = "<font color='#008000'>[FOUND]</font> ";
-									}else{
-										$form_check_string = "<font color='#FF0000'>[NOT FOUND]</font> ";
-									}
+								if (@file_exists($current_value)) {
+									$form_check_string = "<font color='#008000'>[FOUND]</font> ";
+								}else{
+									$form_check_string = "<font color='#FF0000'>[NOT FOUND]</font> ";
 								}
 								
 								/* draw the acual header and textbox on the form */
-								print "<p><strong>" . $form_check_string . $settings[$name]["friendly_name"] . "</strong>";
+								print "<p><strong>" . $form_check_string . $array["friendly_name"] . "</strong>";
 								
-								if (!empty($settings[$name]["friendly_name"])) {
-									print ": " . $settings[$name]["description"];
+								if (!empty($array["friendly_name"])) {
+									print ": " . $array["description"];
 								}else{
-									print "<strong>" . $settings[$name]["description"] . "</strong>";
+									print "<strong>" . $array["description"] . "</strong>";
 								}
 								
 								print "<br>";
-								
-								switch ($array["type"]) {
-									case 'textbox':
-										form_text_box($name, $current_value, "", "", "40", "text");
-										print "<br></p>";
-										break;
-									case 'checkbox':
-										form_checkbox($name,$current_value,$settings[$name]["description"],"");
-										break;
-								}
+								form_text_box($name, $current_value, "", "", "40", "text");
+								print "<br></p>";
 							}
 							
 							$i++;
