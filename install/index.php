@@ -104,13 +104,13 @@ if ($config["cacti_server_os"] == "unix") {
 	
 	if (!empty($which_php)) {
 		$input["path_php_binary"]["default"] = $which_php;
-	}elseif (read_config_option("path_rrdtool") != "<DEFAULT>") {
+	}elseif (read_config_option("path_php_binary") != "<DEFAULT>") {
 		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
 	}else{
 		$input["path_php_binary"]["default"] = "/usr/bin/php";
 	}
 }elseif ($config["cacti_server_os"] == "win32") {
-	$input["path_rrdtool"]["default"] = "c:/php/php.exe";
+	$input["path_php_binary"]["default"] = "c:/php/php.exe";
 }
 
 /* snmpwalk Binary Path */
