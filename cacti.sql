@@ -797,7 +797,7 @@ INSERT INTO data_template_rrd VALUES (40,0,0,35,'',1000000000000,'',0,'',600,'',
 INSERT INTO data_template_rrd VALUES (42,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
 INSERT INTO data_template_rrd VALUES (43,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
 INSERT INTO data_template_rrd VALUES (44,0,0,37,'on',10000000000,'',0,'',600,'',1,'on','hdd_free','',0);
-INSERT INTO data_template_rrd VALUES (54,0,0,41,'',100000000,'',0,'',600,'',2,'','traffic_in','',0);
+INSERT INTO data_template_rrd VALUES (54,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (46,0,0,38,'',10000000,'',0,'',600,'',2,'','errors_in','',0);
 INSERT INTO data_template_rrd VALUES (47,0,0,38,'',10000000,'',0,'',600,'',2,'','discards_in','',0);
 INSERT INTO data_template_rrd VALUES (48,0,0,39,'',1000000000,'',0,'',600,'',2,'','unicast_in','',0);
@@ -806,7 +806,7 @@ INSERT INTO data_template_rrd VALUES (50,0,0,38,'',10000000,'',0,'',600,'',2,'',
 INSERT INTO data_template_rrd VALUES (51,0,0,38,'',10000000,'',0,'',600,'',2,'','errors_out','',0);
 INSERT INTO data_template_rrd VALUES (52,0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_out','',0);
 INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_in','',0);
-INSERT INTO data_template_rrd VALUES (55,0,0,41,'',100000000,'',0,'',600,'',2,'','traffic_out','',0);
+INSERT INTO data_template_rrd VALUES (55,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
 
 --
 -- Table structure for table 'graph_local'
@@ -1202,6 +1202,7 @@ CREATE TABLE graph_templates_gprint (
 
 INSERT INTO graph_templates_gprint VALUES (2,'Normal','%8.2lf %s');
 INSERT INTO graph_templates_gprint VALUES (3,'Exact Numbers','%8.0lf');
+INSERT INTO graph_templates_gprint VALUES (4,'Load Average','%8.2lf');
 
 --
 -- Table structure for table 'graph_templates_graph'
@@ -1384,11 +1385,11 @@ INSERT INTO graph_templates_item VALUES (66,0,0,8,19,0,9,0,4,'Current:','','',3,
 INSERT INTO graph_templates_item VALUES (67,0,0,8,19,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (68,0,0,8,19,0,9,0,3,'Maximum:','','',3,4);
 INSERT INTO graph_templates_item VALUES (69,0,0,9,12,15,7,0,1,'1 Minute Average','','',2,1);
-INSERT INTO graph_templates_item VALUES (70,0,0,9,12,0,9,0,4,'Current:','','on',3,2);
+INSERT INTO graph_templates_item VALUES (70,0,0,9,12,0,9,0,4,'Current:','','on',4,2);
 INSERT INTO graph_templates_item VALUES (71,0,0,9,13,8,8,0,1,'5 Minute Average','','',2,3);
-INSERT INTO graph_templates_item VALUES (72,0,0,9,13,0,9,0,4,'Current:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (72,0,0,9,13,0,9,0,4,'Current:','','on',4,4);
 INSERT INTO graph_templates_item VALUES (73,0,0,9,14,9,8,0,1,'15 Minute Average','','',2,5);
-INSERT INTO graph_templates_item VALUES (74,0,0,9,14,0,9,0,4,'Current:','','on',3,6);
+INSERT INTO graph_templates_item VALUES (74,0,0,9,14,0,9,0,4,'Current:','','on',4,6);
 INSERT INTO graph_templates_item VALUES (75,0,0,9,0,1,4,12,1,'','','',2,7);
 INSERT INTO graph_templates_item VALUES (76,0,0,10,20,67,7,0,1,'Users','','',2,1);
 INSERT INTO graph_templates_item VALUES (77,0,0,10,20,0,9,0,4,'Current:','','',3,2);
@@ -2311,6 +2312,7 @@ CREATE TABLE user_log (
 --
 
 
+INSERT INTO user_log VALUES ('admin',20030417220432,1,'192.168.1.101');
 
 --
 -- Table structure for table 'user_realm'
