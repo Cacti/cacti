@@ -85,6 +85,23 @@ function update_poller_cache($local_data_id) {
 		
 		break;
 	case '2': /* snmp */
+		$field = db_fetch_assoc("select
+			data_input_fields.type_code,
+			data_input_data.value
+			from data_input_fields,data_input_data
+			where data_input_fields.id=data_input_data.data_input_field_id
+			and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
+			and (data_input_fields.type_code='snmp_oid')");
+		$field = array_rekey($field, "type_code", "value");
+		
+		db_execute("insert into data_input_data_cache (local_data_id,action,management_ip,
+			snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,
+			arg1) values ($local_data_id,0,'" . $host["management_ip"] . "',
+			'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
+			'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
+			'" . get_data_source_name($output["data_template_rrd_id"]) . "',
+			'" . get_data_source_path($local_data_id,true) . "','" . $field["snmp_oid"] . "')");
+		
 		break;
 	case '3': /* snmp query */
 		$field = db_fetch_assoc("select
