@@ -112,7 +112,7 @@ case 'preview':
 	
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
-		print "<td><a href='graph.php?rraid=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . "&graph_height=" . read_graph_config_option("height") . "&graph_width=" . read_graph_config_option("width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
+		print "<td><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
 		
 		$i++;
 		$k++;

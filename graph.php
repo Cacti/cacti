@@ -58,7 +58,7 @@ $graph_title = db_fetch_cell("select title from graph_templates_graph where loca
 
 if (sizeof($rras) > 0) {
 foreach ($rras as $rra) {
-	print "	<div align='center'><img src='graph_image.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . " border='0' alt='$graph_title'></div>\n
+	print "	<div align='center'><img src='graph_image.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "' border='0' alt='$graph_title'></div>\n
 		<div align='center'><strong>" . $rra["name"] . "</strong> [<a href='graph.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&show_source=true'>source</a>]</div><br>\n";
 }
 }
