@@ -219,7 +219,7 @@ function item() {
 		$_graph_type_name = $item[graph_type_name];
 		
 		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; }			?>
-			<td class="linkEditMain">
+		<td <?if ($graph_template_id == "0") { print "class='linkEditMain'"; }else{ print "class='textEditTitle'"; }?>>
 				<?if ($graph_template_id == "0") {?><a href="graphs.php?action=item_edit&graph_template_item_id=<?print $item[id];?>&local_graph_id=<?print $args[local_graph_id];?>"><?}?>Item # <?print ($i+1);?><?if ($graph_template_id == "0") {?></a><?}?>
 			</td>
 			<?
@@ -535,7 +535,7 @@ function item_edit() {
 			<font class="textEditTitle">CDEF Function</font><br>
 			A CDEF Function to apply to this item on the graph.
 		</td>
-		<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
+		<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
