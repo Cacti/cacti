@@ -428,10 +428,10 @@ $struct_data_source = array(
 		"flags" => "ALWAYSTEMPLATE"
 		),
 	"rra_id" => array(
-		"type" => "custom",
+		"type" => "drop_multi_rra",
 		"title" => "Associated RRA's",
 		"description" => "Which RRA's to use when entering data. (It is recommended that you select all of these values).",
-		"flags" => ""
+		"flags" => "ALWAYSTEMPLATE"
 		),
 	"rrd_step" => array(
 		"title" => "Step",
