@@ -272,7 +272,7 @@ function CreateMultipleList($sql,$name,$value,$prevsql,$prevsqlvalue) {
     }
 }
 
-function GetNextItem($tblname,$field,$startid,$lmt_field,$lmt_val) {
+function get_next_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
     $data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_field=$lmt_val");
     $end_seq = $data1[mymax];
     $data2 = db_fetch_row("select $field from $tblname where id=$startid");
@@ -290,8 +290,8 @@ function GetNextItem($tblname,$field,$startid,$lmt_field,$lmt_val) {
     return $start_seq;
 }
 
-function GetLastItem($dbid,$tblname,$field,$startid,$lmt_field,$lmt_val) {
-    $data1 = db_fetch_row("select min($field) myminfrom $tblname where $lmt_field=$lmt_val");
+function get_last_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
+    $data1 = db_fetch_row("select min($field) mymin from $tblname where $lmt_field=$lmt_val");
     $end_seq = $data1[mymin];
     $data2 = db_fetch_row("select $field from $tblname where id=$startid");
     $start_seq = $data2[$field];
@@ -310,7 +310,7 @@ function GetLastItem($dbid,$tblname,$field,$startid,$lmt_field,$lmt_val) {
     return $start_seq;
 }
 
-function GetSequence($id, $field, $table_name, $gid, $gid_value) {
+function get_sequence($id, $field, $table_name, $gid, $gid_value) {
     if (($id=="0") || ($id == "")) {
 		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $gid=$gid_value");
 		
@@ -323,6 +323,24 @@ function GetSequence($id, $field, $table_name, $gid, $gid_value) {
 		$data = db_fetch_row("select $field from $table_name where id=$id");
 		return $data[$field];
     }
+}
+
+function move_item_down($table_name, $current_id, $group_column_name, $group_id) {
+	$next_item = get_next_item($table_name, "sequence", $current_id, $group_column_name, $group_id);
+	
+	$id = db_fetch_cell("select id from $table_name where sequence=$next_item and $group_column_name=$group_id");
+	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
+	db_execute("update $table_name set sequence=$next_item where id=$current_id");
+	db_execute("update $table_name set sequence=$sequence where id=$id");
+}
+
+function move_item_up($table_name, $current_id, $group_column_name, $group_id) {
+	$last_item = get_last_item($table_name, "sequence", $current_id, $group_column_name, $group_id);
+	
+	$id = db_fetch_cell("select id from $table_name where sequence=$last_item and $group_column_name=$group_id");
+	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
+	db_execute("update $table_name set sequence=$last_item where id=$current_id");
+	db_execute("update $table_name set sequence=$sequence where id=$id");
 }
 
 function LoadSettingsIntoArray($user_id, $guest_account) {
