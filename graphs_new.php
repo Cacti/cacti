@@ -450,6 +450,8 @@ function graphs() {
 		
 		$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_graph where graph_local.graph_template_id=host_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
 		
+		print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
+		
 		if ((sizeof($template_graphs) > 0) && ($use_javascript == true)) {
 			print "<script type='text/javascript'>\n<!--\n";
 			print "var gt_created_graphs = new Array(";
