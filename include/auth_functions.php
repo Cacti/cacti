@@ -34,67 +34,48 @@ function DrawMenu($userid, $menuid) {
     }
     
     /* set up the available menu headers */
-    $menu_headers = array(0 => "Graph Setup", 1 => "Data Gathering", 2 => "Configuration", 3 => "Utilities");
+    $menu = array("Graph Setup"    => array(
+					    "graphs.php" => "Graph Management",
+					    "graph_templates.php" => "Graph Templates",
+					    "tree.php" => "Graph Hierarchy",
+					    "color.php" => "Colors"
+					    ),
+		  "Data Gathering" => array(
+					    "ds.php" => "Data Sources",
+					    "rra.php" => "Round Robin Archives",
+					    "snmp.php" => "SNMP Interfaces",
+					    "data.php" => "Data Input",
+					    "cdef.php" => "CDEF's"
+					    ),
+		  "Configuration"  => array(
+					    "cron.php" => "Cron Printout",
+					    "settings.php" => "Cacti Settings"
+					    ),
+		  "Utilities"      => array(
+					    "user_admin.php" => "User Management",
+					    "logout.php" => "Logout User"
+					    )
+		  );
     
-    /* link each menu item to a header */
-    $menu_items[mIndex] = array(0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3);
-    
-    /* setup the actual menu item definitions */
-    $menu_items[mTitle] = array(
-    	"Graph Management", 
-	"Graph Templates", 
-	"Graph Hierarchy",
-	"Colors",
-	"Data Sources",
-	"Round Robin Archives",
-	"SNMP Interfaces",
-	"Data Input",
-	"CDEF's",
-	"Cron Printout",
-	"cacti Settings",
-	"User Management",
-	"Logout User"
-	);
-    
-    $menu_items[mURL] = array(
-    	"graphs.php", 
-	"graph_templates.php",
-	"tree.php",
-	"color.php",
-	"ds.php",
-	"rra.php",
-	"snmp.php",
-	"data.php",
-	"cdef.php",
-	"cron.php",
-	"settings.php",
-	"user_admin.php",
-	"logout.php"
-	);
     
     /* NOTICE: we will have to come back and re-impliment "custom auth menus" at some point */
     $user_perms = db_fetch_assoc("select
-    	auth_sections.Section
-	from auth_sections left join auth_acl on auth_acl.SectionID=auth_sections.ID
-	where auth_acl.UserID=$userid");
+				   auth_sections.Section
+				   from auth_sections left join auth_acl on auth_acl.SectionID=auth_sections.ID
+				   where auth_acl.UserID=$userid");
     
-    print '<tr><td width="100%"><table cellpadding=3 cellspacing=0 border=0 width="100%">';
+    print "<tr><td width='100%'><table cellpadding=3 cellspacing=0 border=0 width='100%'>\n";
     
     $_m_index = -1;
-   
-    if (sizeof($menu_headers) > 0) {
-	    	for ($i=0; ($i < sizeof($menu_items[mIndex])); $i++) {
-		    	if ($menu_items[mIndex][$i] != $_m_index) {
-			    	$_m_index = $menu_items[mIndex][$i];
-				
-				print '<tr><td class="textMenuHeader">' . $menu_headers[$_m_index] . '</td></tr>';
-		    	}
-		    	
-			print '<tr><td class="textMenuItem" background="images/menu_line.gif"><a href="' . $menu_items[mURL][$i] . '">' . $menu_items[mTitle][$i] . '</a></td></tr>';
-		}
+    
+    foreach (array_keys($menu) as $header) {
+	print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
+	if (sizeof($menu[$header]) > 0) {
+	    foreach (array_keys($menu[$header]) as $url) {
+		print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+	    }
+	}
     }
-	
     print '</table></td></tr>';
 }
-
 ?>
