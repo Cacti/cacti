@@ -40,9 +40,9 @@ function get_cdef_item_name($cdef_item_id) {
 	include("config_arrays.php");
 	
 	$cdef_item = db_fetch_row("select type,value from cdef_items where id=$cdef_item_id");
-	$current_cdef_value = $cdef_item[value];
+	$current_cdef_value = $cdef_item["value"];
 	
-	switch ($cdef_item[type]) {
+	switch ($cdef_item["type"]) {
 		case '1': return $cdef_functions[$current_cdef_value]; break;
 		case '2': return $cdef_operators[$current_cdef_value]; break;
 		case '4': return $current_cdef_value; break;
@@ -54,18 +54,19 @@ function get_cdef_item_name($cdef_item_id) {
 function get_cdef($cdef_id) {
 	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$cdef_id order by sequence");
 	
-	$i = 0;
+	$i = 0; $cdef_string = "";
+	
 	if (sizeof($cdef_items) > 0) {
 	foreach ($cdef_items as $cdef_item) {
 		if ($i > 0) {
 			$cdef_string .= ",";
 		}
 		
-		if ($cdef_item[type] == 5) {
+		if ($cdef_item["type"] == 5) {
 			$current_cdef_id = $cdef_item[value];
 			$cdef_string .= "(" . get_cdef($current_cdef_id) . ")";
 		}else{
-			$cdef_string .= get_cdef_item_name($cdef_item[id]);
+			$cdef_string .= get_cdef_item_name($cdef_item["id"]);
 		}
 		
 		$i++;

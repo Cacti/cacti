@@ -34,6 +34,13 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	$options["use_expand_contract"] = true;
 	
 	$vbar_width = 20;
+	$search_key = "";
+	$max_tier = 0;
+	
+	$num_graphs = array();
+	$hide = array();
+	$skip = array();
+	$rowspans = array();
 	
 	/* get the "starting leaf" if the user clicked on a specific branch */
 	if (($start_branch != "") && ($start_branch != "0")) {
@@ -46,7 +53,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		graph_tree_items.local_graph_id,
 		graph_tree_items.rra_id,
 		graph_tree_items.order_key,
-		graph_templates_graph.title as graph_title
+		graph_templates_graph.title as graph_title,
+		0 as status
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		where graph_tree_items.graph_tree_id=$tree_id
@@ -60,7 +68,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$leaf = $heirarchy[$i];
 		
 		## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_viewing_tree == 1)
-		if ($leaf[status] == 1) {
+		if ($leaf["status"] == 1) {
 			$hide[$leaf["order_key"]] = 1; 
 		}
 		
@@ -69,7 +77,12 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		##  If there's a local_graph_id, the leaf is a graph, not a heading, so we increment the parent's num_graphs
 		if ($leaf["local_graph_id"]) {
 			$parent_key = str_pad(substr($leaf["order_key"],0,(($tier - 1) * 2) ),60,'0',STR_PAD_RIGHT);
-			++$num_graphs[$parent_key];
+			
+			if (isset($num_graphs[$parent_key])) {
+				$num_graphs[$parent_key]++;
+			}else{
+				$num_graphs[$parent_key] = 1;
+			}
 		}
 		
 		##  We also need the max_tier to do colspans so we do this to get it:
@@ -83,43 +96,53 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$tier = tree_tier($leaf["order_key"], 2);
 		
 		##  Step through the hidden headings to see which entries to skip.
-		if (!$hide[$leaf["order_key"]]) {
+		if (empty($hide{$leaf["order_key"]})) {
 			for ($j = 1; $j < $tier; ++$j) {
 				$parent_key = str_pad(substr($leaf["order_key"],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
 				
-				if ($hide[$parent_key]) { 
-					$skip[$leaf["order_key"]] = 1;
+				if (!empty($hide[$parent_key])) { 
+					$skip{$leaf["order_key"]} = 1;
 				}
 			}
 		}
 				
-		if (! $skip[$leaf["order_key"]]) {
-			if (!$leaf["local_graph_id"]) {
-				if (! $hide[$leaf["order_key"]]) {
-					if ($num_graphs[$leaf["order_key"]] > 0) {
-						++$rowspans[$leaf["order_key"]]; 
+		if (empty($skip{$leaf["order_key"]})) {
+			if (empty($leaf["local_graph_id"])) {
+				if (empty($hide{$leaf["order_key"]})) {
+					if (!empty($num_graphs{$leaf["order_key"]})) {
+						if (isset($rowspans{$leaf["order_key"]})) {
+							$rowspans{$leaf["order_key"]}++;
+						}else{
+							$rowspans{$leaf["order_key"]} = 1;
+						}
 					}
 				}
 				
 				$j = $tier - 1;
 				$parent_key = str_pad(substr($leaf["order_key"],0,$j * 2 ),60,'0',STR_PAD_RIGHT);
-				$rowspans[$parent_key] += ($rowspans[$leaf["order_key"]] + 1);
+				
+				if (!isset($rowspans[$parent_key])) {
+					$rowspans[$parent_key] = 0;
+				}
+				
+				$rowspans[$parent_key] += ($rowspans{$leaf["order_key"]} + 1);
 			}
 		}
 	}
     	
-	$indent = "<img src='images/gray_line.gif' width='" . ($level * $vbar_width) . "' height='1' align='middle'>&nbsp;";
+	//$indent = "<img src='images/gray_line.gif' width='" . ($level * $vbar_width) . "' height='1' align='middle'>&nbsp;";
 	
 	print "<!-- <P>Building Heirarchy w/ " . sizeof($heirarchy) . " leaves</P>  -->\n";
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong></td></tr></table></td></tr>";
 	
 	$already_open = false;
+	$heading_ct = 0;
 	
 	##  Here we go.  Starting the main tree drawing loop.
 	if (sizeof($heirarchy) > 0) {
 	foreach ($heirarchy as $leaf) {
-		if ($skip{$leaf["order_key"]}) { continue; }
+		if (!empty($skip{$leaf["order_key"]})) { continue; }
 		
 		$tier = tree_tier($leaf["order_key"], 2);
 		$current_leaf_type = $leaf["local_graph_id"] ? "graph" : "heading";
@@ -135,7 +158,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			}
 			
 			$colspan = (($max_tier - $tier) * 2);
-			$rowspan = $rowspans{$leaf["order_key"]};
+			$rowspan = (isset($rowspans{$leaf["order_key"]}) ? $rowspans{$leaf["order_key"]} : 1);
 			
 			if (! $already_open) { 
 				print "<tr>\n";
@@ -143,7 +166,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			}
 			
 			if ($options["use_expand_contract"]) {
-				if ($hide[$leaf["order_key"]] == 1) {
+				if (!empty($hide{$leaf["order_key"]})) {
 					$other_status = '0';
 					$ec_icon = 'show';
 				}else{
@@ -153,7 +176,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				}
 				
 				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1'><a
-					href='$PHP_SELF?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
+					href='graph.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
 					<img src='images/$ec_icon.gif' border='0'></a></td>\n";
 			}else{
 				print "<td bgcolor='" . $colors["panel"] . "' width='1'>$indent</td>\n";
@@ -164,13 +187,13 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				$already_open = false;
 			
 			##  If a heading isn't hidden and has graphs, start the vertical bar.
-			if (! $hide{$leaf["order_key"]} && $rowspan > 0) {
+			if ((empty($hide{$leaf["order_key"]})) && ($rowspan > 0)) {
 				print "<tr><td bgcolor='$colors[panel]' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
 				$already_open = true;
 			}
 			
 			##  If this heading has graphs and we're supposed to show graphs, start that table.
-			if ($num_graphs{$leaf["order_key"]} > 0 && ! $hide{$leaf["order_key"]}) { 
+			if ((!empty($num_graphs{$leaf["order_key"]})) && (empty($hide{$leaf["order_key"]}))) { 
 				$need_table_close = true;
 				print "<td colspan=$colspan><table border='0'><tr>\n"; 
 			}else{
@@ -213,6 +236,8 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
     	print "<!-- <P>Building Heirarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
     	
     	##  Here we go.  Starting the main tree drawing loop.
+	
+	$i = 0;
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
 	    	$tier = tree_tier($leaf["order_key"], 2);

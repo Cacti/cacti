@@ -36,15 +36,17 @@ function tree_tier($order_key, $chars_per_tier) {
 	return($tier);
 }
 
-function get_parent_id($id, $table) {
-	$order_key = db_fetch_cell("select order_key from $table where id=$id");
+function get_parent_id($id, $table, $where = "") {
+	$parent_root = 0;
+	
+	$order_key = db_fetch_cell("select order_key from $table where id=$id and $where");
 	$tier = tree_tier($order_key,'2');
 	
     	if ($tier > 1) {
 		$parent_root = substr($order_key,0,(($tier - 1) * 2) );
 	}
 	
-	return db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root,60,'0') . "'");
+	return db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root,60,'0') . "' and $where");
 }
 
 function get_next_tree_id($order_key, $table, $field) {
@@ -70,7 +72,6 @@ function get_next_tree_id($order_key, $table, $field) {
 function branch_up($order_key, $table, $field, $where = '', $primary_key = 'ID') { 
 	move_branch('up',$order_key, $table, $field, $where, $primary_key); 
 }
-
 
 function branch_down($order_key, $table, $field, $where, $primary_key = 'ID') { 
 	move_branch('down',$order_key, $table, $field, $where, $primary_key); 
@@ -111,6 +112,9 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 	$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
 	$new_order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=$new_parent_id"),"graph_tree_items","order_key");
 	
+	/* get the current tree_id */
+	$graph_tree_id = db_fetch_cell("select graph_tree_id from grahp_tree_items where id=$tree_item_id");
+	
 	/* yeah, this would be really bad */
 	if (empty($old_order_key)) { return 0; }
 	
@@ -124,6 +128,7 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 		graph_tree_items.id, graph_tree_items.order_key
 		from graph_tree_items
 		where graph_tree_items.order_key like '$old_base_tier%%'
+		and graph_tree_items.graph_tree_id=$graph_tree_id
 		order by graph_tree_items.order_key");
 	
 	/* since we are building the order_key based on two unrelated tiers, we must be sure the final product
@@ -132,7 +137,7 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 		$padding = ",'" . str_repeat('0', (($old_starting_tier * 2) + 1) - strlen($new_base_tier)) . "'";
 	}
 	
-	db_execute("update graph_tree_items set order_key = CONCAT('$new_base_tier',SUBSTRING(order_key," . (($old_starting_tier * 2) + 1) . ")$padding) where order_key like '$old_base_tier%%'");
+	db_execute("update graph_tree_items set order_key = CONCAT('$new_base_tier',SUBSTRING(order_key," . (($old_starting_tier * 2) + 1) . ")$padding) where order_key like '$old_base_tier%%' and graph_tree_id=$graph_tree_id");
 }
 
 function delete_branch($tree_item_id) {
@@ -140,6 +145,9 @@ function delete_branch($tree_item_id) {
 	
 	/* get current key so we can do a sql select on it */
 	$order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
+	
+	/* get the current tree_id */
+	$graph_tree_id = db_fetch_cell("select graph_tree_id from grahp_tree_items where id=$tree_item_id");
 	
 	/* yeah, this would be really bad */
 	if (empty($order_key)) { return 0; }
@@ -151,6 +159,7 @@ function delete_branch($tree_item_id) {
 		graph_tree_items.id, graph_tree_items.order_key
 		from graph_tree_items
 		where graph_tree_items.order_key like '$order_key%%'
+		and graph_tree_items.graph_tree_id=$graph_tree_id
 		order by graph_tree_items.order_key");
 	
 	if (sizeof($tree) > 0) {
@@ -167,6 +176,7 @@ function delete_branch($tree_item_id) {
 		graph_tree_items.id, graph_tree_items.order_key
 		from graph_tree_items
 		where graph_tree_items.order_key like '$order_key%%'
+		and graph_tree_items.graph_tree_id=$graph_tree_id
 		order by graph_tree_items.order_key");
 	
 	$i = 0; $ctr = 0;

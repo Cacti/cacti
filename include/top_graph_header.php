@@ -35,14 +35,17 @@ session_start();
 user and put them into variables to save excess SQL in the future */
 $current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 /* set the default action if none has been set */
-if (!ereg('^(tree|list|preview)$', $_GET["action"])) {
+if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 	if (read_graph_config_option("default_view_mode") == "1") {
-		$_GET["action"] = "tree";
+		$_REQUEST["action"] = "tree";
 	}elseif (read_graph_config_option("default_view_mode") == "2") {
-		$_GET["action"] = "list";
+		$_REQUEST["action"] = "list";
 	}elseif (read_graph_config_option("default_view_mode") == "2") {
-		$_GET["action"] = "preview";
+		$_REQUEST["action"] = "preview";
 	}
 }
 
@@ -66,7 +69,7 @@ if (!ereg('^(tree|list|preview)$', $_GET["action"])) {
 		<td bgcolor="#454E53" nowrap>
 			<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36></td><td width=250 valign=bottom><img src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td></tr></table></td>
 		<td bgcolor="#454E53" align="right" nowrap width='99%'>
-			<?php if (isset($_SESSION["sess_user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?php }?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?php if (basename($_SERVER["SCRIPT_FILENAME"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?php if ($action == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?php if ($action == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?php if ($action == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
+			<?php if (isset($_SESSION["sess_user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?php }?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?php if (basename($_SERVER["SCRIPT_FILENAME"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?php if ($_REQUEST == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?php if ($_REQUEST == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?php if ($_REQUEST == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
 		</td>
 	</tr>
 	<tr>
@@ -76,14 +79,14 @@ if (!ereg('^(tree|list|preview)$', $_GET["action"])) {
 	</tr>
 	<tr>
 	<?php
-	if ($_GET["action"] == "tree") {
+	if ($_REQUEST["action"] == "tree") {
 		
 	}else{
 		print "<td height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'></td>\n";
 	}
 	?>
 	</tr>
-	<?php if ($_GET["show_source"] == "true") {?>
+	<?php if (!empty($_GET["show_source"])) {?>
 	<tr>
 		<td valign="top" height="1" colspan="3" bgcolor="#<?php print $colors["panel"];?>">
 			<?php

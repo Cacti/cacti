@@ -40,6 +40,9 @@ include ("include/top_graph_header.php");
 //	}
 //}
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 case 'tree':
 	include_once ('include/tree_view_functions.php');
@@ -52,6 +55,15 @@ case 'tree':
 	graph permissions into account here. if a user does not have rights to a 
 	particular graph; do not show it. they will get an access denied message
 	if they try and view the graph directly. */
+	
+	$access_denied = false;
+	$tree_parameters = array();
+	
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'><tr>\n";
+	draw_tree_dropdown((isset($_GET["tree_id"]) ? $_GET["tree_id"] : "0"));
+	print "</tr></table>";
+	
+	print "<br>";
 	
 	if (read_config_option("global_auth") == "on") {
 		/* take tree permissions into account here, if the user does not have permission
@@ -69,13 +81,7 @@ case 'tree':
 		}
 	}
 	
-	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'><tr>\n";
-	draw_tree_dropdown($_GET["tree_id"]);
-	print "</tr></table>";
-	
-	print "<br>";
-	
-	grow_graph_tree($_SESSION["sess_view_tree_id"], $start_branch, $user_id, $tree_parameters);
+	grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), $_SESSION["sess_user_id"], $tree_parameters);
 	
 	print "<br><br>";
 	
@@ -83,31 +89,38 @@ case 'tree':
 case 'preview':
 	define("ROWS_PER_PAGE", 10);
 	
+	$sql_or = "";
+	
 	if ($current_user["show_preview"] == "") {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
 	}
 	
-	/* if no host_id is specified, use the session one */
-	if (!isset($_REQUEST["host_id"])) {
+	if (isset($_REQUEST["host_id"])) {
+		$_SESSION["sess_graph_view_host"] = $_REQUEST["host_id"];
+		$_REQUEST["page"] = "1";
+	}elseif (isset($_SESSION["sess_graph_view_host"])) {
 		$_REQUEST["host_id"] = $_SESSION["sess_graph_view_host"];
-		$_GET["page"] = 1; /* reset page to 1 */
+	}else{
+		$_REQUEST["host_id"] = "0"; /* default value */
 	}
 	
-	/* if no filter is specified, use the session one */
-	if (!isset($_REQUEST["filter"])) {
+	if (isset($_REQUEST["filter"])) {
+		$_SESSION["sess_graph_view_filter"] = $_REQUEST["filter"];
+		$_REQUEST["page"] = "1";
+	}elseif (isset($_SESSION["sess_graph_view_filter"])) {
 		$_REQUEST["filter"] = $_SESSION["sess_graph_view_filter"];
-		$_GET["page"] = 1; /* reset page to 1 */
+	}else{
+		$_REQUEST["filter"] = ""; /* default value */
 	}
 	
 	/* restore the page num from the session var if it is currently stored */
-	if (!isset($_GET["page"])) {
-		$_GET["page"] = (empty($_SESSION["sess_graph_view_current_page"]) ? $_GET["page"] : $_SESSION["sess_graph_view_current_page"]);
+	if (isset($_REQUEST["page"])) {
+		$_SESSION["sess_graph_view_current_page"] = $_REQUEST["page"];
+	}elseif (isset($_SESSION["sess_graph_view_current_page"])) {
+		$_REQUEST["page"] = $_SESSION["sess_graph_view_current_page"];
+	}else{
+		$_REQUEST["page"] = "1"; /* default value */
 	}
-	
-	/* remember the last used vars */
-	$_SESSION["sess_graph_view_host"] = $_REQUEST["host_id"];
-	$_SESSION["sess_graph_view_filter"] = $_REQUEST["filter"];
-	$_SESSION["sess_graph_view_current_page"] = $_GET["page"];
 	
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
@@ -121,24 +134,26 @@ case 'preview':
 	}
 	
 	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
-	if ($_GET["style"] == "selective") {
-		$i = 0;
-		while (list($var, $val) = each($_GET)) {
-			if (ereg('^graph_([0-9]+)$', $var, $matches)) {
-				$graph_array[$i] = $matches[1];
-				$i++;
+	if (isset($_GET["style"])) {
+		if ($_GET["style"] == "selective") {
+			$i = 0;
+			while (list($var, $val) = each($_GET)) {
+				if (ereg('^graph_([0-9]+)$', $var, $matches)) {
+					$graph_array[$i] = $matches[1];
+					$i++;
+				}
 			}
-		}
-		
-		if (sizeof($graph_array) > 0) {
-			/* build sql string including each graph the user checked */
-			$sql_or = "and " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
 			
-			/* clear the filter vars so they don't affect our results */
-			$_REQUEST["filter"] = "";
-			$_REQUEST["host_id"] = "0";
-			
-			$set_rra_id = $_GET["rra_id"];
+			if (sizeof($graph_array) > 0) {
+				/* build sql string including each graph the user checked */
+				$sql_or = "and " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
+				
+				/* clear the filter vars so they don't affect our results */
+				$_REQUEST["filter"] = "";
+				$_REQUEST["host_id"] = "0";
+				
+				$set_rra_id = $_GET["rra_id"];
+			}
 		}
 	}
 	
@@ -164,15 +179,15 @@ case 'preview':
 			group by graph_templates_graph.id";
 	}
 	
-	$total_rows = db_fetch_cell("select 
-		count(graph_templates_graph.local_graph_id)
-		$sql_base");
+	$total_rows = count(db_fetch_assoc("select 
+		graph_templates_graph.local_graph_id
+		$sql_base"));
 	$graphs = db_fetch_assoc("select 
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title
 		$sql_base
 		order by graph_templates_graph.title
-		limit " . (ROWS_PER_PAGE*($_GET["page"]-1)) . "," . ROWS_PER_PAGE);
+		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 			
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 	
@@ -214,6 +229,15 @@ case 'preview':
 	</tr>	
 	<?php
 	
+	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
+	if (ereg("page=[0-9]+",basename($_SERVER["REQUEST_URI"]))) {
+		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["REQUEST_URI"]));
+	}else{
+		$nav_url = basename($_SERVER["REQUEST_URI"]) . "&page=<PAGE>";
+	}
+	
+	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
+	
 	print "	</table>
 		<br>
 		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
@@ -222,13 +246,13 @@ case 'preview':
 					<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 						<tr>
 							<td align='left' class='textHeaderDark'>
-								<strong>&lt;&lt; "; if ($_GET["page"] > 1) { print "<a class='linkOverDark' href='graph_view.php?action=preview&filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_GET["page"]-1) . "'>"; } print "Previous"; if ($_GET["page"] > 1) { print "</a>"; } print "</strong>
+								<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
 							</td>\n
 							<td align='center' class='textHeaderDark'>
-								Showing Rows " . ((ROWS_PER_PAGE*($_GET["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_GET["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_GET["page"])) . " of $total_rows
+								Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows
 							</td>\n
 							<td align='right' class='textHeaderDark'>
-								<strong>"; if (($_GET["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='graph_view.php?action=preview&filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_GET["page"]+1) . "'>"; } print "Next"; if (($_GET["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
+								<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
 							</td>\n
 						</tr>
 					</table>
@@ -236,7 +260,7 @@ case 'preview':
 			</tr>\n
 			<tr>";
 	
-	$i = 0;
+	$i = 0; $k = 0;
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
 		print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . (empty($set_rra_id) ? read_graph_config_option("default_rra_id") : $set_rra_id) . "&graph_start=-" . (empty($set_rra_id) ? read_graph_config_option("timespan") : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
@@ -294,6 +318,7 @@ case 'list':
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Displaying " . sizeof($graphs) . " Graph" . ((sizeof($graphs) == 1) ? "" : "s") . "</strong></td></tr></table></td></tr>";
 	
+	$i = 0;
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
 		form_alternate_row_color("f5f5f5", "ffffff", $i);
@@ -325,6 +350,7 @@ case 'list':
 				</td>
 			</tr>
 		</table><br><br>\n
+	<input type='hidden' name='page' value='1'>
 	<input type='hidden' name='style' value='selective'>\n
 	<input type='hidden' name='action' value='preview'>\n
 	</form>\n";

@@ -29,6 +29,9 @@ include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -128,7 +131,7 @@ function snmp_edit() {
 	
 	global $colors, $paths, $snmp_query_field_actions;
 	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $snmp_query["name"] . "]";
 	}else{
@@ -145,7 +148,7 @@ function snmp_edit() {
 			<font class="textEditTitle">Name</font><br>
 			A name for this SNMP query.
 		</td>
-		<?php form_text_box("name",$snmp_query["name"],"","100", "40");?>
+		<?php form_text_box("name",(isset($snmp_query) ? $snmp_query["name"] : ""),"","100", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -153,7 +156,7 @@ function snmp_edit() {
 			<font class="textEditTitle">Description</font><br>
 			A description for this SNMP query.
 		</td>
-		<?php form_text_box("description",$snmp_query["description"],"","255", "40");?>
+		<?php form_text_box("description",(isset($snmp_query) ? $snmp_query["description"] : ""),"","255", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -161,7 +164,7 @@ function snmp_edit() {
 			<font class="textEditTitle">XML Path</font><br>
 			The full path to the XML file containing definitions for this snmp query.
 		</td>
-		<?php form_text_box("xml_path",$snmp_query["xml_path"],"<path_cacti>/resource/","255", "40");?>
+		<?php form_text_box("xml_path",(isset($snmp_query) ? $snmp_query["xml_path"] : ""),"<path_cacti>/resource/","255", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -169,7 +172,7 @@ function snmp_edit() {
 			<font class="textEditTitle">Graph Template</font><br>
 			Choose a graph template to associate with this SNMP query.
 		</td>
-		<?php form_dropdown("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",$snmp_query["graph_template_id"],"","");?>
+		<?php form_dropdown("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",(isset($snmp_query) ? $snmp_query["graph_template_id"] : "0"),"","");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -177,14 +180,14 @@ function snmp_edit() {
 			<font class="textEditTitle">Data Input Method</font><br>
 			Select the data input method that will store/execute the data for this query.
 		</td>
-		<?php form_dropdown("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$snmp_query["data_input_id"],"","");?>
+		<?php form_dropdown("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",(isset($snmp_query) ? $snmp_query["data_input_id"] : "0"),"","");?>
 	</tr>
 	
 	<?php
-	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("id",(isset($snmp_query) ? $snmp_query["id"] : ""));
 	end_box();
 	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		start_box("", "98%", "aaaaaa", "3", "center", "");
 		print "<tr bgcolor='#f5f5f5'><td>" . (file_exists(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])) ? "<font color='#0d7c09'><strong>XML File Exists</strong></font>" : "<font color='#ff0000'><strong>XML File Does Not Exist</strong></font>") . "</td></tr>";
 		end_box();
@@ -337,6 +340,7 @@ function snmp() {
     	
 	$snmp_queries = db_fetch_assoc("select id,name from snmp_query order by name");
 	
+	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
 	foreach ($snmp_queries as $snmp_query) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;

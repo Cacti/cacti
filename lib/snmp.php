@@ -104,7 +104,7 @@ function cacti_snmp_get($hostname, $community, $oid, $force_type, $force_version
 		
 		$snmp_value = snmpget($hostname, $community, $oid);
 		
-		/* sometimes a string is presenting in hex; not ASCII (ex. win32), in
+		/* sometimes a string is presented in hex; not ASCII (ex. win32), in
 		this case, convert the hex to ASCII */
 		if ($force_type == "hex") {
 			$snmp_value = convert_mac_address(trim(eregi_replace("hex:", "", $snmp_value)));

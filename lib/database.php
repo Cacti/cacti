@@ -24,13 +24,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/* if no database name is specified; used default */
-if ($database == "") { $database = $database_default; }
 db_connect();
 
 function db_connect() {
-	global $database_hostname,$database_username,$database_password,$database;
-	db_connect_real($database_hostname,$database_username,$database_password,$database); 
+	global $database_hostname,$database_username,$database_password,$database_default;
+	db_connect_real($database_hostname,$database_username,$database_password,$database_default); 
 }
 
 function db_connect_real($host,$user,$pass,$db_name) {
@@ -151,7 +149,9 @@ function array_to_sql_or($array, $sql_column) {
 }
 
 function sql_save($array_items, $table_name) {
-	$sql_save .= "replace into $table_name (";
+	$sql_save = "replace into $table_name (";
+	
+	$sql_save_fields = ""; $sql_save_values = "";
 	
 	while (list($field_name, $field_value) = each($array_items)) {
 	 	$sql_save_fields .= "$field_name,";

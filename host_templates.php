@@ -28,6 +28,9 @@ include ('include/auth.php');
 include_once ("include/functions.php");
 include_once ('include/form.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -74,7 +77,13 @@ function form_save() {
 				
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^gt_", $var)) {
-						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'" . $_POST{"ogt_suggested_values_" . substr($var, 3)} . "')");
+						if (isset($_POST{"ogt_suggested_values_" . substr($var, 3)})) {
+							$suggested_value = $_POST{"ogt_suggested_values_" . substr($var, 3)};
+						}else{
+							$suggested_value = "";
+						}
+						
+						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'$suggested_value')");
 					}elseif (eregi("^odt_suggested_values_", $var)) {
 						$data_template_id = ereg_replace("^odt_suggested_values_([0-9]+)_[0-9]+$", "\\1", $var);
 						$graph_template_id = ereg_replace("^odt_suggested_values_[0-9]+_([0-9]+)$", "\\1", $var);
@@ -102,16 +111,14 @@ function form_save() {
    --------------------- */
 
 function template_remove() {
-	global $config;
-	
-	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
 		form_confirm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "host_templates.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from host_template where id=" . $_GET["id"]);
 	}
 }
@@ -121,7 +128,7 @@ function template_edit() {
 	
 	display_output_messages();
 	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		$host_template = db_fetch_row("select * from host_template where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $host_template["name"] . "]";
 	}else{
@@ -139,7 +146,7 @@ function template_edit() {
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this host template.
 		</td>
-		<?php form_text_box("name",$host_template["name"],"","255", "40");?>
+		<?php form_text_box("name",(isset($host_template) ? $host_template["name"] : ""),"","255", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -208,7 +215,8 @@ function template_edit() {
 			
 			$data_templates = db_fetch_assoc("select
 				data_template.id,
-				data_template.name
+				data_template.name,
+				host_template_data_template.suggested_values
 				from data_template left join data_template_rrd
 				on data_template_rrd.data_template_id=data_template.id
 				left join graph_templates_item
@@ -229,7 +237,7 @@ function template_edit() {
 						You can use this field to suggest defaults to the user or even over ride 
 						the non-template bit. For a list of valid field names, see the documentation.
 					</td>
-					<?php form_text_box("odt_suggested_values_" . $data_template["data_template_id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
+					<?php form_text_box("odt_suggested_values_" . $data_template["id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
 				</tr>
 				<?php
 			}
@@ -240,7 +248,7 @@ function template_edit() {
 	}
 	}
 	
-	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("id",(isset($host_template) ? $host_template["id"] : "0"));
 	form_hidden_box("save_component_template","1","");
 	
 	form_save_button("host_templates.php");	
@@ -260,6 +268,7 @@ function template() {
     
 	$host_templates = db_fetch_assoc("select * from host_template order by name");
 	
+	$i = 0;
 	if (sizeof($host_templates) > 0) {
 	foreach ($host_templates as $host_template) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;

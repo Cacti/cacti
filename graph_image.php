@@ -29,7 +29,9 @@ include_once ("include/rrd_functions.php");
 
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
-header("Content-type: image/png");
+//header("Content-type: image/png");
+
+$graph_data_array = array();
 
 /* check to see if there are user specified vars */
 if (!empty($_GET["graph_start"])) {
@@ -44,7 +46,9 @@ if (!empty($_GET["graph_nolegend"])) {
 	$graph_data_array["graph_nolegend"] = $_GET["graph_nolegend"];
 }
 
-$graph_data_array["print_source"] = $_GET["showsource"];
+if (!empty($_GET["showsource"])) {
+	$graph_data_array["print_source"] = $_GET["showsource"];
+}
 
 print rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array);
 

@@ -28,6 +28,9 @@ include ('include/auth.php');
 include_once ("include/config_settings.php");
 include_once ('include/form.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
  case 'save':
 	if (sizeof($settings) > 0) {
@@ -46,6 +49,8 @@ switch ($_REQUEST["action"]) {
 	}
 	}
 	
+	raise_message(1);
+	
 	/* reset local settings cache so the user sees the new settings */
 	session_unregister("sess_config_array");
 
@@ -54,7 +59,7 @@ switch ($_REQUEST["action"]) {
  default:
     	include_once ('include/top_header.php');
 	
-	if (!(isset($_GET["tab"]))) {
+	if (!isset($_GET["tab"])) {
 		/* there is no selected tab; select the first one */
 		$current_tab = array_keys($tabs);
 		$current_tab = $current_tab[0];
@@ -89,6 +94,7 @@ switch ($_REQUEST["action"]) {
 	
     	print "<form method='post' action='settings.php?action=save'>\n";
 	
+	$i = 0;
 	if (sizeof($settings) > 0) {
 	foreach (array_keys($settings) as $setting) {
 	    	/* make sure to skip group members here; only parents are allowed */
@@ -121,7 +127,7 @@ switch ($_REQUEST["action"]) {
 						
 			    			switch ($settings[$setting]["items"][$item]["method"]) {
 							case 'textbox':
-								DrawtrippedFormItemTextBox($item,$current_value,"","");
+								//DrawtrippedFormItemTextBox($item,$current_value,"","");
 								break;
 							case 'checkbox':
 								form_base_checkbox($item,$current_value,$settings[$setting]["items"][$item]["description"],"",0,true);
@@ -143,7 +149,7 @@ switch ($_REQUEST["action"]) {
 	
 	form_hidden_id("tab",$current_tab);
 	
-	form_save_button("settings.php?tab=" . $_GET["tab"]);
+	form_save_button("settings.php?tab=$current_tab");
 	
 	include_once ("include/bottom_footer.php");
 	

@@ -36,20 +36,20 @@ include("config.php");
 /* check to see if this is a new installation */
 include_once ("include/version_functions.php");
 
-if (GetCurrentVersion() != $config[cacti_version]) {
+if (GetCurrentVersion() != $config["cacti_version"]) {
 	header ("Location: install.php");
 	exit;
 }
 
 if (read_config_option("global_auth") == "on") {
 	/* handle change password dialog */
-	if ($_SESSION['sess_change_password'] == "1") {
+	if (isset($_SESSION['sess_change_password'])) {
 		header ("Location: auth_changepassword.php?ref=" . $_SERVER["HTTP_REFERER"]);
 		exit;
 	}
 	
 	/* don't even bother with the guest code if we're already logged in */
-	if (($guest_account == true) && (empty($_SESSION["sess_user_id"]))) {
+	if ((isset($guest_account)) && (empty($_SESSION["sess_user_id"]))) {
 		$guest_user_id = db_fetch_cell("select id from user where username='" . read_config_option("guest_user") . "'");
 		
 		/* cannot find guest user */

@@ -36,6 +36,9 @@ $messages = array(
 		"type" => "error"),
 	4  => array(
 		"message" => 'Passwords do not match, please retype.',
+		"type" => "error"),
+	5  => array(
+		"message" => 'You must select at least one field.',
 		"type" => "error")
 		);
 
@@ -351,7 +354,8 @@ $struct_data_source = array(
 		"text_maxlen" => "250",
 		"text_size" => "40",
 		"default" => "",
-		"description" => "Choose a name for this data source."
+		"description" => "Choose a name for this data source.",
+		"flags" => ""
 		),
 	"data_source_path" => array(
 		"title" => "Data Source Path",
@@ -368,12 +372,14 @@ $struct_data_source = array(
 		"sql" => "select id,name from data_input order by name",
 		"default" => "",
 		"null_item" => "",
-		"description" => "The script/source used to gather data for this data source."
+		"description" => "The script/source used to gather data for this data source.",
+		"flags" => ""
 		),
 	"rra_id" => array(
 		"type" => "custom",
 		"title" => "Associated RRA's",
-		"description" => "Which RRA's to use when entering data. (It is recommended that you select all of these values)."
+		"description" => "Which RRA's to use when entering data. (It is recommended that you select all of these values).",
+		"flags" => ""
 		),
 	"rrd_step" => array(
 		"title" => "Step",
@@ -381,14 +387,16 @@ $struct_data_source = array(
 		"text_maxlen" => "10",
 		"text_size" => "20",
 		"default" => "300",
-		"description" => "The amount of time in seconds between expected updates."
+		"description" => "The amount of time in seconds between expected updates.",
+		"flags" => ""
 		),
 	"active" => array(
 		"title" => "Data Source Active",
 		"type" => "check",
 		"check_caption" => "Data Source Active",
 		"default" => "on",
-		"description" => "Whether cacti should gather data for this data source or not."
+		"description" => "Whether cacti should gather data for this data source or not.",
+		"flags" => ""
 		)
 	);
 		

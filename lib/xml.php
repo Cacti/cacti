@@ -40,12 +40,14 @@ function xml2array($data) {
 	return $tree;
 }
 
-function get_children($vals, &$i) {      
+function get_children($vals, &$i) {
 	$children = array();
 	
-	if ($vals[$i]['value']) array_push($children, $vals[$i]['value']);
+	if (isset($vals[$i]['value'])) {
+		if ($vals[$i]['value']) array_push($children, $vals[$i]['value']);
+	}
 	
-	$prevtag = "";
+	$prevtag = ""; $j = 0;
 	
 	while (++$i < count($vals)) {      
 		switch ($vals[$i]['type']) {      

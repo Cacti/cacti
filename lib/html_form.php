@@ -39,39 +39,24 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
-	}
-	
 	print "<td>\n<input type='text'";
 	
-	if (!empty($array_error_fields[$form_name])) {
-		print "class='txtErrorTextBox'";
-		unset($array_error_fields[$form_name]);
-		$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+	if (isset($_SESSION["sess_error_fields"])) {
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_error_fields[$form_name])) {
+			print "class='txtErrorTextBox'";
+			unset($array_error_fields[$form_name]);
+			$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+		}
 	}
 	
-	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? "maxlength='$form_max_length'" : "") . " value='$form_previous_value'>\n</td>\n";
-}
-
-/* creates a standard html password textbox */
-function form_password_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
-	if ($form_previous_value == "") {
-		$form_previous_value = $form_default_value;
-	}
-	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	print "<td>\n<input type='password'";
-	
-	if (!empty($array_error_fields[$form_name])) {
-		print "class='txtErrorTextBox'";
-		unset($array_error_fields[$form_name]);
-		$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+	if (isset($_SESSION["sess_field_values"])) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? "maxlength='$form_max_length'" : "") . " value='$form_previous_value'>\n</td>\n";
@@ -94,11 +79,13 @@ function form_dropdown($form_name, $form_data, $column_display,$column_id, $form
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<td><select name='$form_name'>";
@@ -118,11 +105,13 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<td><input type='checkbox' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n</td>\n";
@@ -134,11 +123,13 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<td><input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption\n</td>\n";
@@ -150,11 +141,13 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<td><textarea cols='$form_columns' rows='$form_rows' name='$form_name'>$form_previous_value</textarea>\n</td>\n";
@@ -186,13 +179,13 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 				<?php
 				if (sizeof($colors_list) > 0) {
 					foreach ($colors_list as $color) {
-						print "<option style='background: #$color[hex];' value='$color[id]'";
+						print "<option style='background: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
 						
-						if ($form_previous_value == $color[id]) {
+						if ($form_previous_value == $color["id"]) {
 							print " selected";
 						}
 						
-						print ">$color[hex]</option>\n";
+						print ">" . $color["hex"] . "</option>\n";
 					}
 				}
 				?>
@@ -313,15 +306,24 @@ function form_base_password_box($form_name, $form_previous_value, $form_default_
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
 	print "<input type='password'";
 	
-	if (!empty($array_error_fields[$form_name])) {
-		print " class='txtErrorTextBox'";
-		unset($array_error_fields[$form_name]);
-		$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+	if (isset($_SESSION["sess_error_fields"])) {
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_error_fields[$form_name])) {
+			print "class='txtErrorTextBox'";
+			unset($array_error_fields[$form_name]);
+			$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+		}
+	}
+	
+	if (isset($_SESSION["sess_field_values"])) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? "maxlength='$form_max_length'" : "") . " value='$form_previous_value'>\n";
@@ -335,11 +337,13 @@ function form_base_dropdown($form_name, $form_data, $column_display,$column_id, 
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<select name='$form_name'>";
@@ -359,11 +363,13 @@ function form_base_checkbox($form_name, $form_previous_value, $form_caption, $fo
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<input type='checkbox' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
@@ -375,11 +381,13 @@ function form_base_radio_button($form_name, $form_previous_value, $form_current_
 		$form_previous_value = $form_default_value;
 	}
 	
-	$array_field_values = unserialize($_SESSION["sess_field_values"]);
-	$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-	
-	if (!empty($array_field_values[$form_name])) {
-		$form_previous_value = $array_field_values[$form_name];
+	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
+		$array_field_values = unserialize($_SESSION["sess_field_values"]);
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		
+		if (!empty($array_field_values[$form_name])) {
+			$form_previous_value = $array_field_values[$form_name];
+		}
 	}
 	
 	print "<input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "") . "\n";

@@ -29,6 +29,9 @@ include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -200,7 +203,12 @@ function host_new_graphs_save() {
 					change_graph_template($local_graph_id, $graph_template_id, true);
 					
 					/* cache arrays; used down below */
-					$new_graph_templates["sg"][$snmp_query_id][$graph_template_id] .= $local_graph_id . ":";
+					if (isset($new_graph_templates["sg"][$snmp_query_id][$graph_template_id])) {
+						$new_graph_templates["sg"][$snmp_query_id][$graph_template_id] .= $local_graph_id . ":";
+					}else{
+						$new_graph_templates["sg"][$snmp_query_id][$graph_template_id] = $local_graph_id . ":";
+					}
+					
 					$new_graph_snmp_indexes[$snmp_query_id][$local_graph_id] = $snmp_index;
 					$new_graph_index_to_local[$snmp_query_id][$snmp_index] = $local_graph_id;
 					
@@ -260,7 +268,12 @@ function host_new_graphs_save() {
 						change_data_template($local_data_id, $data_template["id"]);
 						
 						/* cache arrays; used down below */
-						$new_data_templates["sg"][$snmp_query_id]{$data_template["id"]} .= $local_data_id . ":";
+						if (isset($new_data_templates["sg"][$snmp_query_id]{$data_template["id"]})) {
+							$new_data_templates["sg"][$snmp_query_id]{$data_template["id"]} .= $local_data_id . ":";
+						}else{
+							$new_data_templates["sg"][$snmp_query_id]{$data_template["id"]} = $local_data_id . ":";
+						}
+						
 						$new_data_snmp_indexes[$snmp_query_id][$local_data_id] = $snmp_index;
 						$new_data_index_to_local[$snmp_query_id]{$data_template["id"]}[$snmp_index] = $local_data_id;
 						
@@ -497,6 +510,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]</span></td></tr>";
 					}
 					
+					$row_counter = 1; /* so we have an all 'light' background */
+					
 					/* we must treat suggested values for snmp queries different because one
 					entry here might might 20 graphs... so we can't automatically fill in the 
 					values */
@@ -506,10 +521,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
 						print "</td></tr>\n";
 					}else{
-						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $data_template[$field_name]);
+						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($data_template[$field_name]) ? $data_template[$field_name] : ""));
 					}
 					
-					$row_counter = 0; $drew_items = true;
+					$drew_items = true;
 				}
 			}
 			
@@ -519,6 +534,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				if ($drew_items == false) {
 					print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Graph Items</strong> [Template: " . $graph_template_name . "]</span></td></tr>";
 				}
+				
+				$row_counter = 1; /* so we have an all 'light' background */
 				
 				$current_value = db_fetch_cell("select 
 					graph_templates_item." . $graph_input["column_name"] . "
@@ -541,7 +558,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				
 				print "</tr>\n";
 				
-				$row_counter = 0; $drew_items = true;
+				$drew_items = true;
 			}
 			}
 			
@@ -552,25 +569,29 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				$drew_items = false;
 				
 				while (list($field_name, $field_array) = each($struct_data_source)) {
-					if ($data_template{"t_" . $field_name} == "on") {
-						if ($drew_items == false) {
-							print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</span></td></tr>";
+					if (isset($data_template{"t_" . $field_name})) {
+						if ($data_template{"t_" . $field_name} == "on") {
+							if ($drew_items == false) {
+								print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</span></td></tr>";
+							}
+							
+							$row_counter = 1; /* so we have an all 'light' background */
+							
+							/* we must treat suggested values for snmp queries different because one
+							entry here might might 20 graphs... so we can't automatically fill in the 
+							values */
+							
+							if ((!empty($snmp_query_id)) && (isset($snmp_queries["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0][$field_name]))) {
+								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
+								print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
+								print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
+								print "</td></tr>\n";
+							}else{
+								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
+							}
+							
+							$drew_items = true;
 						}
-						
-						/* we must treat suggested values for snmp queries different because one
-						entry here might might 20 graphs... so we can't automatically fill in the 
-						values */
-						
-						if ((!empty($snmp_query_id)) && (isset($snmp_queries["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0][$field_name]))) {
-							print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-							print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
-							print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
-							print "</td></tr>\n";
-						}else{
-							draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
-						}
-						
-						$row_counter = 0; $drew_items = true;
 					}
 				}
 				
@@ -592,8 +613,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 								//print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Source Item</strong> - " . $data_template_item["data_source_name"] . " - [Template: " . $data_template["data_template_name"] . "]</span></td></tr>";
 							}
 							
-							$row_counter = 1;
+							$row_counter = 1; /* so we have an all 'light' background */
+							
 							draw_templated_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
+							
 							$drew_items = true;
 						}
 					}
@@ -623,13 +646,14 @@ function host_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Polling Hosts</strong> [edit]", "98%", $colors["header"], "3", "center", "");
-	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $host["hostname"] . "]";
 	}else{
-		unset($host);
+		$header_label = "[new]";
 	}
+	
+	start_box("<strong>Polling Hosts</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="host.php">
@@ -639,7 +663,7 @@ function host_edit() {
 			<font class="textEditTitle">Description</font><br>
 			Give this host a meaningful description.
 		</td>
-		<?php form_text_box("description",$host["description"],"","250", "40");?>
+		<?php form_text_box("description",(isset($host) ? $host["description"] : ""),"","250", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -648,7 +672,7 @@ function host_edit() {
 			Choose what type of host, host template this is. The host template will govern what kinds
 			of data should be gathered from this type of host.
 		</td>
-		<?php form_dropdown("host_template_id",db_fetch_assoc("select id,name from host_template"),"name","id",$host["host_template_id"],"None","1");?>
+		<?php form_dropdown("host_template_id",db_fetch_assoc("select id,name from host_template"),"name","id",(isset($host) ? $host["host_template_id"] : "0"),"None","1");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -656,7 +680,7 @@ function host_edit() {
 			<font class="textEditTitle">Hostname</font><br>
 			Fill in the fully qualified hostname for this device.
 		</td>
-		<?php form_text_box("hostname",$host["hostname"],"","250", "40");?>
+		<?php form_text_box("hostname",(isset($host) ? $host["hostname"] : ""),"","250", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -665,7 +689,7 @@ function host_edit() {
 			Choose the IP address that will be used to gather data from this host. The hostname will be
 			used a fallback in case this fails.
 		</td>
-		<?php form_text_box("management_ip",$host["management_ip"],"","15", "40");?>
+		<?php form_text_box("management_ip",(isset($host) ? $host["management_ip"] : ""),"","15", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -673,7 +697,7 @@ function host_edit() {
 			<font class="textEditTitle">SNMP Community</font><br>
 			Fill in the SNMP read community for this device.
 		</td>
-		<?php form_text_box("snmp_community",$host["snmp_community"],"","15", "40");?>
+		<?php form_text_box("snmp_community",(isset($host) ? $host["snmp_community"] : ""),"","15", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -681,7 +705,7 @@ function host_edit() {
 			<font class="textEditTitle">SNMP Username</font><br>
 			Fill in the SNMP username for this device (v3).
 		</td>
-		<?php form_text_box("snmp_username",$host["snmp_username"],"","50", "40");?>
+		<?php form_text_box("snmp_username",(isset($host) ? $host["snmp_username"] : ""),"","50", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -689,7 +713,7 @@ function host_edit() {
 			<font class="textEditTitle">SNMP Community</font><br>
 			Fill in the SNMP password for this device (v3).
 		</td>
-		<?php form_text_box("snmp_password",$host["snmp_password"],"","50", "40");?>
+		<?php form_text_box("snmp_password",(isset($host) ? $host["snmp_password"] : ""),"","50", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -697,7 +721,7 @@ function host_edit() {
 			<font class="textEditTitle">SNMP Version</font><br>
 			Choose the SNMP version for this host.
 		</td>
-		<?php form_dropdown("snmp_version",$snmp_versions,"","",$host["snmp_version"],"","1");?>
+		<?php form_dropdown("snmp_version",$snmp_versions,"","",(isset($host) ? $host["snmp_version"] : ""),"","1");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -723,7 +747,7 @@ function host_edit() {
 	<?php
 	end_box();
 	
-	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("id",(isset($host) ? $host["id"] : "0"));
 	form_hidden_box("save_component_host","1","");
 	
 	$i = 0;
@@ -746,7 +770,8 @@ function host_edit() {
 			group by data_template.id,graph_templates.id
 			order by graph_templates.id,data_template.name");
 		
-		$j = 0;
+		$j = 0; $_graph_template_id = "";
+		
 		if (sizeof($graph_templates) > 0) {
 		foreach ($graph_templates as $graph_template) {
 			if ($graph_template["graph_template_id"] != $_graph_template_id) {
@@ -755,84 +780,85 @@ function host_edit() {
 				print "<font class='textEditTitle'>Create Graph: " . $graph_template["graph_template_name"] . "</font><br>";
 			}
 			
-			print "&nbsp;&nbsp;&nbsp;+ " .  $graph_template["data_template_name"] . "<br>";
+			print "&nbsp;&nbsp;&nbsp;+ " . $graph_template["data_template_name"] . "<br>";
 			
-			$_graph_template_id = $graph_template["graph_template_id"];
-			
-			if ($graph_templates{$j+1}["graph_template_id"] != $_graph_template_id) {
+			if (((($j+1) == sizeof($graph_templates)) ? 0 : $graph_templates{$j+1}["graph_template_id"]) != $graph_template["graph_template_id"]) {
 				print "</td>\n";
 				form_checkbox("cg_" . $graph_template["graph_template_id"],"","Create this Graph","");
 				print "</tr>";
 			}
+			
+			$_graph_template_id = $graph_template["graph_template_id"];
 			
 			$j++;
 		}
 		}
 		
 		end_box();
-	}
-	
-	$snmp_queries = db_fetch_assoc("select
-		snmp_query.id,
-		snmp_query.name,
-		snmp_query.xml_path,
-		snmp_query.graph_template_id
-		from snmp_query,host_snmp_query
-		where host_snmp_query.snmp_query_id=snmp_query.id
-		and host_snmp_query.host_id=" . $_GET["id"] . "
-		order by snmp_query.name");
-	
-	if (sizeof($snmp_queries) > 0) {
-	foreach ($snmp_queries as $snmp_query) {
-		start_box("<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]", "98%", $colors["header"], "3", "center", "");
 		
-		$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
-		$snmp_queries = xml2array($data);
-		$xml_outputs = array();
+		$snmp_queries = db_fetch_assoc("select
+			snmp_query.id,
+			snmp_query.name,
+			snmp_query.xml_path,
+			snmp_query.graph_template_id
+			from snmp_query,host_snmp_query
+			where host_snmp_query.snmp_query_id=snmp_query.id
+			and host_snmp_query.host_id=" . $_GET["id"] . "
+			order by snmp_query.name");
 		
-		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		
-		$i = 0;
-		while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
-			$i++;
-			$field_array = $field_array[0];
+		if (sizeof($snmp_queries) > 0) {
+		foreach ($snmp_queries as $snmp_query) {
+			start_box("<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]", "98%", $colors["header"], "3", "center", "");
 			
-			if (($i+1) < count($snmp_queries["fields"][0])) { $colspan = 1; }else{ $colspan = 2; }
+			$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
+			$snmp_queries = xml2array($data);
+			$xml_outputs = array();
 			
-			if ($field_array["direction"] == "input") {
-				DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
-				$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
+			print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+			
+			$i = 0;
+			while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
+				$i++;
+				$field_array = $field_array[0];
 				
-				/* insert blank data so the TD is rendered even if there is no data */
-				$snmp_query_data[$field_name]{$data["snmp_index"]} = "";
+				if (($i+1) < count($snmp_queries["fields"][0])) { $colspan = 1; }else{ $colspan = 2; }
 				
-				if (sizeof($raw_data) > 0) {
-				foreach ($raw_data as $data) {
-					$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
-					$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
-				}
+				if ($field_array["direction"] == "input") {
+					DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
+					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
+					
+					if (sizeof($raw_data) > 0) {
+					foreach ($raw_data as $data) {
+						$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
+						$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
+					}
+					}
 				}
 			}
-		}
-		
-		print "</tr>";
-		
-		if (sizeof($snmp_query_indexes) > 0) {
-		while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			
-			reset($snmp_query_data);
-			while (list($field_name, $field_array) = each($snmp_query_data)) {
-				print "<td>" . $field_array[$snmp_index] . "</td>";
+			print "</tr>";
+			
+			if (sizeof($snmp_query_indexes) > 0) {
+			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
+				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				
+				reset($snmp_query_data);
+				while (list($field_name, $field_array) = each($snmp_query_data)) {
+					if (isset($field_array[$snmp_index])) {
+						print "<td>" . $field_array[$snmp_index] . "</td>";
+					}else{
+						print "<td></td>";
+					}
+				}
+				
+				form_checkbox("sg_" . $snmp_query["graph_template_id"] . "_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
+				print "</tr>\n";
+			}
 			}
 			
-			form_checkbox("sg_" . $snmp_query["graph_template_id"] . "_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
-			print "</tr>\n";
+			end_box();
 		}
 		}
-		
-		end_box();
-	}
 	}
 	
 	form_save_button("host.php");
@@ -853,6 +879,7 @@ function host() {
     
 	$hosts = db_fetch_assoc("select id,hostname,description from host order by description");
 	
+	$i = 0;
 	if (sizeof($hosts) > 0) {
 	foreach ($hosts as $host) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;

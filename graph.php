@@ -39,11 +39,13 @@ give an "access denied" message */
 if (read_config_option("global_auth") == "on") {
 	$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=" . $_GET["local_graph_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
 	
-		if ($current_user["graph_policy"] == "1") {
-			if (sizeof($user_auth) > 0) { $access_denied = true; }
-		}elseif ($current_user["graph_policy"] == "2") {
-			if (sizeof($user_auth) == 0) { $access_denied = true; }
-		}
+	$access_denied = false;
+	
+	if ($current_user["graph_policy"] == "1") {
+		if (sizeof($user_auth) > 0) { $access_denied = true; }
+	}elseif ($current_user["graph_policy"] == "2") {
+		if (sizeof($user_auth) == 0) { $access_denied = true; }
+	}
 	
 	if ($access_denied == true) {
 		print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
@@ -61,6 +63,7 @@ $graph_title = db_fetch_cell("select title from graph_templates_graph where loca
 print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'><strong>Viewing Graph '$graph_title'</strong></td></tr>";
 
+$i = 0;
 if (sizeof($rras) > 0) {
 foreach ($rras as $rra) {
 	print "<tr><td>";

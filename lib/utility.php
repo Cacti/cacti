@@ -95,12 +95,14 @@ function update_poller_cache($local_data_id) {
 			and (data_input_fields.type_code='snmp_oid')");
 		$field = array_rekey($field, "type_code", "value");
 		
+		$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
+		
 		db_execute("insert into data_input_data_cache (local_data_id,action,management_ip,
 			snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,
 			arg1) values ($local_data_id,0,'" . $host["management_ip"] . "',
 			'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
 			'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
-			'" . get_data_source_name($output["data_template_rrd_id"]) . "',
+			'" . get_data_source_name($data_template_rrd_id) . "',
 			'" . get_data_source_path($local_data_id,true) . "','" . $field["snmp_oid"] . "')");
 		
 		break;
@@ -208,16 +210,13 @@ function push_out_data_source_item($data_template_rrd_id) {
 	$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=$data_template_rrd_id");
 	
 	/* must be a data template */
-	if ($data_template_rrd[data_template_id] == 0) { return 0; }
+	if (empty($data_template_rrd["data_template_id"])) { return 0; }
 	
 	/* loop through each data source column name (from the above array) */
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
-		//$current_name = str_replace("FORCE:", "", $struct_data_source_item[$i]);
-		$value_type = "t_$field_name";
-		
 		/* are we allowed to push out the column? */
-		if (($data_template_rrd[$value_type] == "") || (ereg("FORCE:", $field_name))) {
-			db_execute("update data_template_rrd set $field_name='$data_template_rrd[$field_name]' where local_data_template_rrd_id=$data_template_rrd[id]"); 
+		if (((empty($data_template_rrd{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_rrd{"t_" . $field_name})) && (isset($data_template_rrd[$field_name])))) {
+			db_execute("update data_template_rrd set $field_name='" . $data_template_rrd[$field_name] . "' where local_data_template_rrd_id=" . $data_template_rrd["id"]); 
 		}
 	}
 }
@@ -230,16 +229,13 @@ function push_out_data_source($data_template_data_id) {
 	$data_template_data = db_fetch_row("select * from data_template_data where id=$data_template_data_id");
 	
 	/* must be a data template */
-	if ($data_template_data[data_template_id] == 0) { return 0; }
+	if (empty($data_template_data["data_template_id"])) { return 0; }
 	
 	/* loop through each data source column name (from the above array) */
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		//$current_name = str_replace("FORCE:", "", $struct_data_source[$i]);
-		$value_type = "t_$field_name";
-		
 		/* are we allowed to push out the column? */
-		if (($data_template_data[$value_type] == "") || (ereg("FORCE:", $field_name))) {
-			db_execute("update data_template_data set $field_name='$data_template_data[$field_name]' where local_data_template_data_id=$data_template_data[id]"); 
+		if (((empty($data_template_data{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_data{"t_" . $field_name})) && (isset($data_template_data[$field_name])))) {
+			db_execute("update data_template_data set $field_name='" . $data_template_data[$field_name] . "' where local_data_template_data_id=" . $data_template_data["id"]); 
 		}
 	}
 }
@@ -323,7 +319,11 @@ function change_data_template($local_data_id, $data_template_id) {
 	/* loop through the "templated field names" to find to the rest... */
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		if ($field_array["type"] != "custom") {
-			if ($template_data{"t_" . $field_name} == "on") { $save[$field_name] = $data[$field_name]; }else{ $save[$field_name] = $template_data[$field_name]; }
+			if (!empty($template_data{"t_" . $field_name})) {
+				$save[$field_name] = $data[$field_name];
+			}else{
+				$save[$field_name] = $template_data[$field_name];
+			}
 		}
 	}
 	
@@ -426,7 +426,7 @@ function push_out_graph_item($graph_template_item_id) {
 	$graph_template_item = db_fetch_row("select * from graph_templates_item where id=$graph_template_item_id");
 	
 	/* must be a graph template */
-	if ($graph_template_item[graph_template_id] == 0) { return 0; }
+	if ($graph_template_item["graph_template_id"] == 0) { return 0; }
 	
 	/* this is trickier with graph_items than with the actual graph... we have to make sure not to 
 	overright any items covered in the "graph item inputs". the same thing applies to graphs, but
@@ -444,8 +444,10 @@ function push_out_graph_item($graph_template_item_id) {
 	/* loop through each graph item column name (from the above array) */
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
-		if ($graph_item_inputs[$field_name] != $graph_template_item_id) {
-			db_execute("update graph_templates_item set $field_name='$graph_template_item[$field_name]' where local_graph_template_item_id=$graph_template_item[id]"); 
+		if (isset($graph_item_inputs[$field_name])) {
+			if ($graph_item_inputs[$field_name] != $graph_template_item_id) {
+				db_execute("update graph_templates_item set $field_name='$graph_template_item[$field_name]' where local_graph_template_item_id=$graph_template_item[id]"); 
+			}
 		}
 	}
 }
@@ -488,8 +490,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	//print "<pre>";print_r($save);print "</pre>";
 	sql_save($save, "graph_templates_graph");
 	
-	$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id");
-	$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id");
+	$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id order by sequence");
+	$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id order by sequence");
 	
 	$graph_template_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,

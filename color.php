@@ -27,6 +27,9 @@
 include ('include/auth.php');
 include_once ('include/form.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -91,7 +94,7 @@ function color_remove() {
 function color_edit() {
 	global $colors;
 	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $color["hex"] . "]";
 	}else{
@@ -108,12 +111,12 @@ function color_edit() {
 			<font class="textEditTitle">Hex Value</font><br>
 			The hex value for this color; valid range: 000000-FFFFFF.
 		</td>
-		<?php form_text_box("hex",$color["hex"],"","6", "40");?>
+		<?php form_text_box("hex",(isset($color) ? $color["hex"] : ""),"","6", "40");?>
 	</tr>
 	<?php
 	end_box();
 	
-	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("id",(isset($color) ? $color["id"] : "0"));
 	form_hidden_box("save_component_color","1","");
 	
 	form_save_button("color.php");
@@ -137,6 +140,7 @@ function color() {
     
 	$color_list = db_fetch_assoc("select * from colors order by hex");
 	
+	$i = 0;
 	if (sizeof($color_list) > 0) {
 		$j=0; ## even/odd counter
 		foreach ($color_list as $color) {

@@ -35,7 +35,7 @@ $database_hostname = "localhost";
 $database_username = "root";
 $database_password = "";
 $database_old = "rrdtool";
-$database = "dev_cacti_3";
+$database_default = "dev_cacti_3";
 
 print "+------------------------------------------------------------------+\n";
 print "|  Welcome to the cacti 0.6.8 to 0.8 database converter. This      |\n";
@@ -73,10 +73,10 @@ while($input == true) {
 	if (!empty($buffer)) { $database_old = $buffer; }
 	
 	/* get new database name from user */
-	print "0.8 Database Name <$database>: ";
+	print "0.8 Database Name <$database_default>: ";
 	$buffer = trim(fgets($stdin,256));
 	
-	if (!empty($buffer)) { $database = $buffer; }
+	if (!empty($buffer)) { $database_default = $buffer; }
 	
 	$input = false;
 }
@@ -100,16 +100,16 @@ if ($cnn_id) {
 
 print "\n+++++++++++++++++++++++ Importing Users +++++++++++++++++++++++\n";
 
-db_execute("truncate table $database.user");
-db_execute("truncate table $database.user_auth_realm");
-db_execute("truncate table $database.user_auth_hosts");
-db_execute("truncate table $database.user_log");
+db_execute("truncate table $database_default.user");
+db_execute("truncate table $database_default.user_auth_realm");
+db_execute("truncate table $database_default.user_auth_hosts");
+db_execute("truncate table $database_default.user_log");
 
 $_users = db_fetch_assoc("select * from $database_old.auth_users");
 
 if (sizeof($_users) > 0) {
 foreach ($_users as $item) {
-	if (db_execute("insert into $database.user (id,username,password,must_change_password,show_tree,show_list,
+	if (db_execute("insert into $database_default.user (id,username,password,must_change_password,show_tree,show_list,
 		show_preview,login_opts,graph_policy,full_name) values ('" . $item["ID"] . "','" . $item["Username"] . "',
 		'" . $item["Password"] . "','" . $item["MustChangePassword"] . "','" . $item["ShowTree"] . "',
 		'" . $item["ShowList"] . "','" . $item["ShowPreview"] . "','" . $item["LoginOpts"] . "',
@@ -126,7 +126,7 @@ $_users_acl = db_fetch_assoc("select * from $database_old.auth_acl");
 
 if (sizeof($_users_acl) > 0) {
 foreach ($_users_acl as $item) {
-	db_execute("insert into $database.user_auth_realm (realm_id,user_id) values ('" . $item["SectionID"] . "',
+	db_execute("insert into $database_default.user_auth_realm (realm_id,user_id) values ('" . $item["SectionID"] . "',
 		'" . $item["UserID"] . "')");
 }
 }
@@ -137,7 +137,7 @@ $_users_hosts = db_fetch_assoc("select * from $database_old.auth_hosts");
 
 if (sizeof($_users_hosts) > 0) {
 foreach ($_users_hosts as $item) {
-	db_execute("insert into $database.user_auth_hosts (user_id,hostname,policy) values ('" . $item["UserID"] . "',
+	db_execute("insert into $database_default.user_auth_hosts (user_id,hostname,policy) values ('" . $item["UserID"] . "',
 		'" . $item["Hostname"] . "','" . $item["Type"] . "')");
 }
 }
@@ -148,7 +148,7 @@ $_users_logs = db_fetch_assoc("select * from $database_old.auth_log");
 
 if (sizeof($_users_logs) > 0) {
 foreach ($_users_logs as $item) {
-	db_execute("insert into $database.user_log (username,time,result,ip) values ('" . $item["Username"] . "',
+	db_execute("insert into $database_default.user_log (username,time,result,ip) values ('" . $item["Username"] . "',
 		'" . $item["Time"] . "','" . $item["Success"] . "','" . $item["IP"] . "')");
 }
 }
@@ -164,7 +164,7 @@ $_src = db_fetch_assoc("select * from $database_old.src where id != 11 and id !=
 
 if (sizeof($_src) > 0) {
 foreach ($_src as $item) {
-	if (db_execute("insert into $database.data_input (id,name,input_string,output_string,type_id) values (0,
+	if (db_execute("insert into $database_default.data_input (id,name,input_string,output_string,type_id) values (0,
 		'" . $item["Name"] . "','" . $item["FormatStrIn"] . "','" . $item["FormatStrOut"] . "',
 		1)")) {
 		$data_input_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
@@ -199,9 +199,9 @@ $data_input_cache[11] = 2;
 
 print "\n+++++++++++++++++++++++ Importing SNMP Hosts +++++++++++++++++++++++\n";
 
-db_execute("truncate table $database.host");
-db_execute("truncate table $database.host_snmp_query");
-db_execute("truncate table $database.host_snmp_cache");
+db_execute("truncate table $database_default.host");
+db_execute("truncate table $database_default.host_snmp_query");
+db_execute("truncate table $database_default.host_snmp_cache");
 
 $_hosts = db_fetch_assoc("select * from $database_old.snmp_hosts");
 
@@ -219,7 +219,7 @@ foreach ($_hosts as $item) {
 		print "SUCCESS: Host: " . $item["Hostname"] . "\n";
 		
 		print "   Re-caching interface data for host: " . $item["Hostname"] . "\n";
-		query_snmp_host($host_id, 1);
+		//query_snmp_host($host_id, 1);
 	}else{
 		print "FAIL: Host: " . $item["Hostname"] . "\n";
 	}
@@ -237,9 +237,9 @@ foreach ($non_templated_data_sources as $item) {
 }
 }
 
-db_execute("truncate table $database.data_local");
-db_execute("delete from $database.data_template_data where local_data_id > 0");
-db_execute("delete from $database.data_template_rrd where local_data_id > 0");
+db_execute("truncate table $database_default.data_local");
+db_execute("delete from $database_default.data_template_data where local_data_id > 0");
+db_execute("delete from $database_default.data_template_rrd where local_data_id > 0");
 
 $_ds = db_fetch_assoc("select * from $database_old.rrd_ds where subdsid=0");
 
@@ -268,7 +268,7 @@ foreach ($_ds as $item) {
 		$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=1");
 	}
 	
-	if (!empty($hostname)) {
+	if ((!empty($hostname)) && (isset($ip_to_host_cache{gethostbyname($hostname)}))) {
 		$host_id = $ip_to_host_cache{gethostbyname($hostname)};
 	}
 	
@@ -481,8 +481,8 @@ foreach ($_ds as $item) {
 
 print "\n+++++++++++++++++++++++ CDEF's +++++++++++++++++++++++\n";
 
-db_execute("truncate table $database.cdef");
-db_execute("truncate table $database.cdef_items");
+db_execute("truncate table $database_default.cdef");
+db_execute("truncate table $database_default.cdef_items");
 
 $_cdef = db_fetch_assoc("select * from $database_old.rrd_ds_cdef");
 
@@ -549,9 +549,9 @@ foreach ($_cdef as $item) {
 
 print "\n+++++++++++++++++++++++ Graphs +++++++++++++++++++++++\n";
 
-db_execute("truncate table $database.graph_local");
-db_execute("delete from $database.graph_templates_graph where local_graph_id > 0");
-db_execute("delete from $database.graph_templates_item where local_graph_id > 0");
+db_execute("truncate table $database_default.graph_local");
+db_execute("delete from $database_default.graph_templates_graph where local_graph_id > 0");
+db_execute("delete from $database_default.graph_templates_item where local_graph_id > 0");
 
 $_graphs = db_fetch_assoc("select * from $database_old.rrd_graph");
 
@@ -630,8 +630,8 @@ foreach ($_graphs as $item) {
 
 print "\n+++++++++++++++++++++++ Graph Trees +++++++++++++++++++++++\n";
 
-db_execute("truncate table $database.graph_tree");
-db_execute("truncate table $database.graph_tree_items");
+db_execute("truncate table $database_default.graph_tree");
+db_execute("truncate table $database_default.graph_tree_items");
 
 $_tree = db_fetch_assoc("select * from $database_old.graph_hierarchy");
 
@@ -640,7 +640,7 @@ foreach ($_tree as $item) {
 	if (db_execute("insert into graph_tree (id,user_id,name) values (0,0,'" . $item["Name"] . "')")) {
 		$graph_tree_id = db_fetch_cell("select LAST_INSERT_ID()");
 		print "SUCCESS: Graph Tree: " . $item["Name"] . "\n";
-		climb_tree(0, $item["ID"], 0, "", "", "");
+		climb_tree(0, $item["ID"], 0, "", "");
 		
 		$_tree_items = db_fetch_assoc("select * from $database_old.graph_hierarchy_items where TreeID=" . $item["ID"]);
 		
@@ -674,7 +674,11 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 	
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $item) {
-		$item_count_array[$branch]++;
+		if (isset($item_count_array[$branch])) {
+			$item_count_array[$branch]++;
+		}else{
+			$item_count_array[$branch] = 1;
+		}
 		
 		$current_key_item = str_pad($item_count_array[$branch],2,'0',STR_PAD_LEFT);
 		$order_key = str_pad("$prefix_key$current_key_item",60,'0',STR_PAD_RIGHT);
@@ -691,6 +695,7 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 	return $branch;
 }
 
+$paths["rra"] = read_config_option("path_webroot") . read_config_option("path_webcacti") . "/rra";
 repopulate_poller_cache();
 
 ?>

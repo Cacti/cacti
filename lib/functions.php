@@ -27,7 +27,9 @@
 function read_graph_config_option($config_name) {
 	include ("config_settings.php");
 	
-	$graph_config_array = unserialize($_SESSION["sess_graph_config_array"]);
+	if (isset($_SESSION["sess_graph_config_array"])) {
+		$graph_config_array = unserialize($_SESSION["sess_graph_config_array"]);
+	}
 	
 	if (!isset($graph_config_array[$config_name])) {
 		$graph_config_array[$config_name] = db_fetch_cell("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]);
@@ -43,7 +45,9 @@ function read_graph_config_option($config_name) {
 }
 
 function read_config_option($config_name) {
-	$config_array = unserialize($_SESSION["sess_config_array"]);
+	if (isset($_SESSION["sess_config_array"])) {
+		$config_array = unserialize($_SESSION["sess_config_array"]);
+	}
 	
 	if (!isset($config_array[$config_name])) {
 		$config_array[$config_name] = db_fetch_cell("select value from settings where name='$config_name'");
@@ -55,7 +59,10 @@ function read_config_option($config_name) {
 
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	if (($allow_nulls == true) && ($field_value == "")) {
-		$array_field_names = unserialize($_SESSION["sess_field_values"]);
+		if (isset($_SESSION["sess_field_values"])) {
+			$array_field_names = unserialize($_SESSION["sess_field_values"]);
+		}
+		
 		$array_field_names[$field_name] = $field_value;
 		$_SESSION["sess_field_values"] = serialize($array_field_names);
 		
@@ -65,11 +72,17 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	if ((!ereg($regexp_match, $field_value) || (($allow_nulls == false) && ($field_value == "")))) {
 		raise_message($custom_message);
 		
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		if (isset($_SESSION["sess_error_fields"])) {
+			$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		}
+		
 		$array_error_fields[$field_name] = $field_name;
 		$_SESSION["sess_error_fields"] = serialize($array_error_fields);
 	}else{
-		$array_field_names = unserialize($_SESSION["sess_field_values"]);
+		if (isset($_SESSION["sess_error_fields"])) {
+			$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		}
+		
 		$array_field_names[$field_name] = $field_value;
 		$_SESSION["sess_field_values"] = serialize($array_field_names);
 	}
@@ -80,11 +93,13 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 function is_error_message() {
 	include("config_arrays.php");
 	
-	$array_messages = unserialize($_SESSION["sess_messages"]);
-	
-	if (is_array($array_messages)) {
-		foreach (array_keys($array_messages) as $current_message_id) {
-			if ($messages[$current_message_id]["type"] == "error") { return true; }
+	if (isset($_SESSION["sess_messages"])) {
+		$array_messages = unserialize($_SESSION["sess_messages"]);
+		
+		if (is_array($array_messages)) {
+			foreach (array_keys($array_messages) as $current_message_id) {
+				if ($messages[$current_message_id]["type"] == "error") { return true; }
+			}
 		}
 	}
 	
@@ -92,7 +107,10 @@ function is_error_message() {
 }
 
 function raise_message($message_id) {
-	$array_messages = unserialize($_SESSION["sess_messages"]);
+	if (isset($_SESSION["sess_messages"])) {
+		$array_messages = unserialize($_SESSION["sess_messages"]);
+	}
+	
 	$array_messages[$message_id] = $message_id;
 	$_SESSION["sess_messages"] = serialize($array_messages);
 }
@@ -100,25 +118,30 @@ function raise_message($message_id) {
 function display_output_messages() {
 	include("config_arrays.php");
 	include_once("form.php");
-	global $colors;
 	
-	$array_messages = unserialize($_SESSION["sess_messages"]);
-	
-	if (is_array($array_messages)) {
-		foreach (array_keys($array_messages) as $current_message_id) {
-			eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
-			
-			switch ($messages[$current_message_id]["type"]) {
-			case 'info':
-				print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>";
-				print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
-				print "</table><br>";
-				break;
-			case 'error':
-				print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #ff0000;'>";
-				print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
-				print "</table><br>";
-				break;
+	if (isset($_SESSION["sess_messages"])) {
+		$error_message = is_error_message();
+		
+		$array_messages = unserialize($_SESSION["sess_messages"]);
+		
+		if (is_array($array_messages)) {
+			foreach (array_keys($array_messages) as $current_message_id) {
+				eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
+				
+				switch ($messages[$current_message_id]["type"]) {
+				case 'info':
+					if ($error_message == false) {
+						print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>";
+						print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
+						print "</table><br>";
+					}
+					break;
+				case 'error':
+					print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #ff0000;'>";
+					print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
+					print "</table><br>";
+					break;
+				}
 			}
 		}
 	}
@@ -295,14 +318,15 @@ function generate_data_source_path($local_data_id) {
 }
 
 function generate_graph_def_name($graph_item_id) {
-    $lookup_table = array("a","b","c","d","e","f","g","h","i","j");
-    
-    for($i=0; $i<strlen($graph_item_id); $i++) {
+	$lookup_table = array("a","b","c","d","e","f","g","h","i","j");
+	
+	$result = "";
+	for($i=0; $i<strlen($graph_item_id); $i++) {
 		$current_charcter = $graph_item_id[$i];
 		$result .= $lookup_table[$current_charcter];
-    }
-    
-    return $result;
+	}
+	
+	return $result;
 }
 
 function create_list($data, $name, $value, $prev) {
@@ -408,6 +432,8 @@ function move_item_up($table_name, $current_id, $group_query) {
 
 function exec_into_array($command_line) {
 	exec($command_line,$out,$err);
+	
+	$command_array = array();
 	
 	for($i=0; list($key, $value) = each($out); $i++) {
 		$command_array[$i] = $value;

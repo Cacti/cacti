@@ -54,6 +54,9 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "E5E5E5";
 $colors["form_alternate2"] = "F5F5F5";
 
+/* display ALL errors */
+error_reporting(E_ALL);
+
 include_once("functions.php");
 include_once("database.php");
 

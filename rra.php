@@ -29,6 +29,9 @@ include_once ('include/config_arrays.php');
 include_once ('include/functions.php');
 include_once ('include/form.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -82,8 +85,6 @@ function form_save() {
 			}else{
 				raise_message(2);
 			}
-			
-
 		}
 		
 		if (is_error_message()) {
@@ -98,18 +99,14 @@ function form_save() {
     RRA Functions
    ------------------- */
 
-function rra_save() {
-
-}
-
 function rra_remove() {
-	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include_once ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . db_fetch_cell("select name from rra where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "rra.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
 	
-	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from rra where id=" . $_GET["id"]);
 		db_execute("delete from rra_cf where rra_id=" . $_GET["id"]);
     	}	
@@ -118,7 +115,7 @@ function rra_remove() {
 function rra_edit() {
 	global $colors, $consolidation_functions;
 	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $rra["name"] . "]";
 	}else{
@@ -135,7 +132,7 @@ function rra_edit() {
 			<font class="textEditTitle">Name</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?php form_text_box("name",$rra["name"],"","100", "40");?>
+		<?php form_text_box("name",(isset($rra) ? $rra["name"] : ""),"","100", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -143,7 +140,7 @@ function rra_edit() {
 			<font class="textEditTitle">Consolidation Functions</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?php form_multi_dropdown("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=" . $_GET["id"]), "consolidation_function_id");?>
+		<?php form_multi_dropdown("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=" . (isset($rra) ? $rra["id"] : "0")), "consolidation_function_id");?>
 	</tr>
     
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -151,7 +148,7 @@ function rra_edit() {
 			<font class="textEditTitle">X-Files Factor</font><br>
 			The amount of unknown data that can still be regarded as known.
 		</td>
-		<?php form_text_box("x_files_factor",$rra["x_files_factor"],"","10", "40");?>
+		<?php form_text_box("x_files_factor",(isset($rra) ? $rra["x_files_factor"] : ""),"","10", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -159,7 +156,7 @@ function rra_edit() {
 			<font class="textEditTitle">Steps</font><br>
 			How many data points are needed to put data into the RRA.
 		</td>
-		<?php form_text_box("steps",$rra["steps"],"","8", "40");?>
+		<?php form_text_box("steps",(isset($rra) ? $rra["steps"] : ""),"","8", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -167,13 +164,13 @@ function rra_edit() {
 			<font class="textEditTitle">Rows</font><br>
 			How many generations data is kept in the RRA.
 		</td>
-		<?php form_text_box("rows",$rra["rows"],"","8", "40");?>
+		<?php form_text_box("rows",(isset($rra) ? $rra["rows"] : ""),"","8", "40");?>
 	</tr>
 	
 	<?php
 	end_box();
 	
-	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("id",(isset($rra) ? $rra["id"] : "0"));
 	form_hidden_box("save_component_rra","1","");
 	
 	form_save_button("rra.php");	
@@ -192,6 +189,7 @@ function rra() {
     
 	$rras = db_fetch_assoc("select id,name,rows,steps from rra order by steps");
 	
+	$i = 0;
 	if (sizeof($rras) > 0) {
 	foreach ($rras as $rra) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;

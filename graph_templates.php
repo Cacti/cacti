@@ -28,6 +28,9 @@ include ('include/auth.php');
 include_once ("include/form.php");
 include_once ("include/config_arrays.php");
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -170,11 +173,47 @@ function form_save() {
 	include_once ("include/utility_functions.php");
 	
 	if (isset($_POST["save_component_template"])) {
-		$save["id"] = $_POST["graph_template_id"];
-		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save1["id"] = $_POST["graph_template_id"];
+		$save1["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		
+		$save2["id"] = $_POST["graph_template_graph_id"];
+		$save2["local_graph_template_graph_id"] = 0;
+		$save2["local_graph_id"] = 0;
+		$save2["t_image_format_id"] = (isset($_POST["t_image_format_id"]) ? $_POST["t_image_format_id"] : "");
+		$save2["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
+		$save2["t_title"] = form_input_validate((isset($_POST["t_title"]) ? $_POST["t_title"] : ""), "t_title", "", true, 3);
+		$save2["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
+		$save2["t_height"] = form_input_validate((isset($_POST["t_height"]) ? $_POST["t_height"] : ""), "t_height", "", true, 3);
+		$save2["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
+		$save2["t_width"] = form_input_validate((isset($_POST["t_width"]) ? $_POST["t_width"] : ""), "t_width", "", true, 3);
+		$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
+		$save2["t_upper_limit"] = form_input_validate((isset($_POST["t_upper_limit"]) ? $_POST["t_upper_limit"] : ""), "t_upper_limit", "", true, 3);
+		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[0-9]+$", false, 3);
+		$save2["t_lower_limit"] = form_input_validate((isset($_POST["t_lower_limit"]) ? $_POST["t_lower_limit"] : ""), "t_lower_limit", "", true, 3);
+		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[0-9]+$", false, 3);
+		$save2["t_vertical_label"] = form_input_validate((isset($_POST["t_vertical_label"]) ? $_POST["t_vertical_label"] : ""), "t_vertical_label", "", true, 3);
+		$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
+		$save2["t_auto_scale"] = form_input_validate((isset($_POST["t_auto_scale"]) ? $_POST["t_auto_scale"] : ""), "t_auto_scale", "", true, 3);
+		$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
+		$save2["t_auto_scale_opts"] = form_input_validate((isset($_POST["t_auto_scale_opts"]) ? $_POST["t_auto_scale_opts"] : ""), "t_auto_scale_opts", "", true, 3);
+		$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
+		$save2["t_auto_scale_log"] = form_input_validate((isset($_POST["t_auto_scale_log"]) ? $_POST["t_auto_scale_log"] : ""), "t_auto_scale_log", "", true, 3);
+		$save2["auto_scale_log"] = form_input_validate((isset($_POST["auto_scale_log"]) ? $_POST["auto_scale_log"] : ""), "auto_scale_log", "", true, 3);
+		$save2["t_auto_scale_rigid"] = form_input_validate((isset($_POST["t_auto_scale_rigid"]) ? $_POST["t_auto_scale_rigid"] : ""), "t_auto_scale_rigid", "", true, 3);
+		$save2["auto_scale_rigid"] = form_input_validate((isset($_POST["auto_scale_rigid"]) ? $_POST["auto_scale_rigid"] : ""), "auto_scale_rigid", "", true, 3);
+		$save2["t_auto_padding"] = form_input_validate((isset($_POST["t_auto_padding"]) ? $_POST["t_auto_padding"] : ""), "t_auto_padding", "", true, 3);
+		$save2["auto_padding"] = form_input_validate((isset($_POST["auto_padding"]) ? $_POST["auto_padding"] : ""), "auto_padding", "", true, 3);
+		$save2["t_base_value"] = form_input_validate((isset($_POST["t_base_value"]) ? $_POST["t_base_value"] : ""), "t_base_value", "", true, 3);
+		$save2["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", false, 3);
+		$save2["t_export"] = form_input_validate((isset($_POST["t_export"]) ? $_POST["t_export"] : ""), "t_export", "", true, 3);
+		$save2["export"] = form_input_validate((isset($_POST["export"]) ? $_POST["export"] : ""), "export", "", true, 3);
+		$save2["t_unit_value"] = form_input_validate((isset($_POST["t_unit_value"]) ? $_POST["t_unit_value"] : ""), "t_unit_value", "", true, 3);
+		$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
+		$save2["t_unit_exponent_value"] = form_input_validate((isset($_POST["t_unit_exponent_value"]) ? $_POST["t_unit_exponent_value"] : ""), "t_unit_exponent_value", "", true, 3);
+		$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^[0-9]+$", false, 3);
 		
 		if (!is_error_message()) {
-			$graph_template_id = sql_save($save, "graph_templates");
+			$graph_template_id = sql_save($save1, "graph_templates");
 			
 			if ($graph_template_id) {
 				raise_message(1);
@@ -183,47 +222,9 @@ function form_save() {
 			}
 		}
 		
-		unset ($save);
-		
-		$save["id"] = $_POST["graph_template_graph_id"];
-		$save["local_graph_template_graph_id"] = 0;
-		$save["local_graph_id"] = 0;
-		$save["graph_template_id"] = $graph_template_id;
-		$save["t_image_format_id"] = $_POST["t_image_format_id"];
-		$save["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
-		$save["t_title"] = form_input_validate($_POST["t_title"], "t_title", "", true, 3);
-		$save["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
-		$save["t_height"] = form_input_validate($_POST["t_height"], "t_height", "", true, 3);
-		$save["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
-		$save["t_width"] = form_input_validate($_POST["t_width"], "t_width", "", true, 3);
-		$save["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
-		$save["t_upper_limit"] = form_input_validate($_POST["t_upper_limit"], "t_upper_limit", "", true, 3);
-		$save["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[0-9]+$", false, 3);
-		$save["t_lower_limit"] = form_input_validate($_POST["t_lower_limit"], "t_lower_limit", "", true, 3);
-		$save["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[0-9]+$", false, 3);
-		$save["t_vertical_label"] = form_input_validate($_POST["t_vertical_label"], "t_vertical_label", "", true, 3);
-		$save["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
-		$save["t_auto_scale"] = form_input_validate($_POST["t_auto_scale"], "t_auto_scale", "", true, 3);
-		$save["auto_scale"] = form_input_validate($_POST["auto_scale"], "auto_scale", "", true, 3);
-		$save["t_auto_scale_opts"] = form_input_validate($_POST["t_auto_scale_opts"], "t_auto_scale_opts", "", true, 3);
-		$save["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
-		$save["t_auto_scale_log"] = form_input_validate($_POST["t_auto_scale_log"], "t_auto_scale_log", "", true, 3);
-		$save["auto_scale_log"] = form_input_validate($_POST["auto_scale_log"], "auto_scale_log", "", true, 3);
-		$save["t_auto_scale_rigid"] = form_input_validate($_POST["t_auto_scale_rigid"], "t_auto_scale_rigid", "", true, 3);
-		$save["auto_scale_rigid"] = form_input_validate($_POST["auto_scale_rigid"], "auto_scale_rigid", "", true, 3);
-		$save["t_auto_padding"] = form_input_validate($_POST["t_auto_padding"], "t_auto_padding", "", true, 3);
-		$save["auto_padding"] = form_input_validate($_POST["auto_padding"], "auto_padding", "", true, 3);
-		$save["t_base_value"] = form_input_validate($_POST["t_base_value"], "t_base_value", "", true, 3);
-		$save["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", false, 3);
-		$save["t_export"] = form_input_validate($_POST["t_export"], "t_export", "", true, 3);
-		$save["export"] = form_input_validate($_POST["export"], "export", "", true, 3);
-		$save["t_unit_value"] = form_input_validate($_POST["t_unit_value"], "t_unit_value", "", true, 3);
-		$save["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
-		$save["t_unit_exponent_value"] = form_input_validate($_POST["t_unit_exponent_value"], "t_unit_exponent_value", "", true, 3);
-		$save["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^[0-9]+$", false, 3);
-		
 		if (!is_error_message()) {
-			$graph_template_graph_id = sql_save($save, "graph_templates_graph");
+			$save2["graph_template_id"] = $graph_template_id;
+			$graph_template_graph_id = sql_save($save2, "graph_templates_graph");
 			
 			if ($graph_template_graph_id) {
 				raise_message(1);
@@ -251,7 +252,7 @@ function form_save() {
 		$save["consolidation_function_id"] = form_input_validate($_POST["consolidation_function_id"], "consolidation_function_id", "", true, 3);
 		$save["text_format"] = form_input_validate($_POST["text_format"], "text_format", "", true, 3);
 		$save["value"] = form_input_validate($_POST["value"], "value", "", true, 3);
-		$save["hard_return"] = form_input_validate($_POST["hard_return"], "hard_return", "", true, 3);
+		$save["hard_return"] = form_input_validate((isset($_POST["hard_return"]) ? $_POST["hard_return"] : ""), "hard_return", "", true, 3);
 		$save["gprint_id"] = form_input_validate($_POST["gprint_id"], "gprint_id", "", true, 3);
 		$save["sequence"] = $_POST["sequence"];
 		
@@ -274,7 +275,7 @@ function form_save() {
 			header ("Location: graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"]);
 			exit;
 		}elseif (read_config_option("full_view_graph_template") == "on") {
-			header ("graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"]);
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"]);
 			exit;
 		}
 	}
@@ -317,7 +318,7 @@ function form_save() {
 			header ("Location: graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"]);
 			exit;
 		}elseif (read_config_option("full_view_graph_template") == "on") {
-			header ("graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"]);
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"]);
 			exit;
 		}
 	}
@@ -341,7 +342,7 @@ function form_save() {
 			header ("Location: graph_templates.php?action=gprint_presets_edit&gprint_preset_id=" . (empty($gprint_preset_id) ? $_POST["gprint_preset_id"] : $gprint_preset_id));
 			exit;
 		}else{
-			header ("graph_templates.php?action=gprint_presets");
+			header ("Location: graph_templates.php?action=gprint_presets");
 			exit;
 		}
 	}
@@ -364,14 +365,15 @@ function gprint_presets_remove() {
 function gprint_presets_edit() {
 	global $colors;
 	
-	if (isset($_GET["gprint_preset_id"])) {
+	if (!empty($_GET["gprint_preset_id"])) {
 		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]);
+		$header_label = "[edit: " . $gprint_preset["name"] . "]";
 	}else{
-		unset($gprint_preset);
+		$header_label = "[new]";
 	}
 	
 	draw_tabs();
-	start_box("<strong>GPRINT Presets [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -381,7 +383,7 @@ function gprint_presets_edit() {
 			<font class="textEditTitle">Name</font><br>
 			Enter a name for this GPRINT preset, make sure it is something you recognize.
 		</td>
-		<?php form_text_box("name",$gprint_preset["name"],"","50", "40");?>
+		<?php form_text_box("name",(isset($gprint_preset) ? $gprint_preset["name"] : ""),"","50", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -389,13 +391,13 @@ function gprint_presets_edit() {
 			<font class="textEditTitle">GPRINT Text</font><br>
 			Enter the custom GPRINT string here.
 		</td>
-		<?php form_text_box("gprint_text",$gprint_preset["gprint_text"],"","50", "40");?>
+		<?php form_text_box("gprint_text",(isset($gprint_preset) ? $gprint_preset["gprint_text"] : ""),"","50", "40");?>
 	</tr>
 	
 	<?php
 	end_box();
 	
-	form_hidden_id("gprint_preset_id",$gprint_preset["id"]);
+	form_hidden_id("gprint_preset_id",(isset($gprint_preset) ? $gprint_preset["id"] : "0"));
 	form_hidden_box("save_component_gprint_presets","1","");
 	
 	form_save_button("graph_templates.php?action=gprint_presets");
@@ -416,6 +418,7 @@ function gprint_presets() {
 		graph_templates_gprint.name 
 		from graph_templates_gprint");
 	
+	$i = 0;
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
@@ -476,8 +479,30 @@ function item() {
 	global $colors, $consolidation_functions, $graph_item_types;
 	
 	if (empty($_GET["graph_template_id"])) {
+		$template_item_list = array();
+		
 		$header_label = "[new]";
 	}else{
+		$template_item_list = db_fetch_assoc("select
+			graph_templates_item.id,
+			graph_templates_item.text_format,
+			graph_templates_item.value,
+			graph_templates_item.hard_return,
+			graph_templates_item.graph_type_id,
+			graph_templates_item.consolidation_function_id,
+			CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
+			cdef.name as cdef_name,
+			colors.hex
+			from graph_templates_item
+			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
+			left join data_local on data_template_rrd.local_data_id=data_local.id
+			left join data_template_data on data_local.id=data_template_data.local_data_id
+			left join cdef on cdef_id=cdef.id
+			left join colors on color_id=colors.id
+			where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
+			and graph_templates_item.local_graph_id=0
+			order by graph_templates_item.sequence");
+		
 		$header_label = "[edit: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 	}
 	
@@ -486,26 +511,6 @@ function item() {
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
-	
-	$template_item_list = db_fetch_assoc("select
-		graph_templates_item.id,
-		graph_templates_item.text_format,
-		graph_templates_item.value,
-		graph_templates_item.hard_return,
-		graph_templates_item.graph_type_id,
-		graph_templates_item.consolidation_function_id,
-		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
-		cdef.name as cdef_name,
-		colors.hex
-		from graph_templates_item
-		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-		left join data_local on data_template_rrd.local_data_id=data_local.id
-		left join data_template_data on data_local.id=data_template_data.local_data_id
-		left join cdef on cdef_id=cdef.id
-		left join colors on color_id=colors.id
-		where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
-		and graph_templates_item.local_graph_id=0
-		order by graph_templates_item.sequence");
 	
 	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["graph_template_id"]);
 	
@@ -517,7 +522,8 @@ function item() {
 		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
 	print "</tr>";
 	
-	$group_counter = 0;
+	$group_counter = 0; $_graph_type_name = ""; $i = 0;
+	
 	if (sizeof($template_item_list) > 0) {
 	foreach ($template_item_list as $item) {
 		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
@@ -633,7 +639,7 @@ function item_edit() {
 	
 	start_box("<strong>Template Item</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	if (isset($_GET["graph_template_item_id"])) {
+	if (!empty($_GET["graph_template_item_id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["graph_template_item_id"]);
 	}
 	
@@ -659,160 +665,32 @@ function item_edit() {
 		and data_template_rrd.local_data_id=0
 		order by data_template.name,data_template_data.name,data_template_rrd.data_source_name";
 	
+	$i = 0;
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		
-		if (($use_graph_template == false) || ($template_item_template{"t_" . $field_name} == "on")) {
+		if (isset($field_array["description"])) {
 			print $field_array["description"];
 		}
 		
 		print "</td>\n";
 		
-		draw_nontemplated_item($field_array, $field_name, $template_item[$field_name]);
+		draw_nontemplated_item($field_array, $field_name, (isset($template_item) ? $template_item[$field_name] : ""));
 		
 		print "</tr>\n";
 	}
 	
 	end_box();
 	
-	form_hidden_id("graph_template_item_id",$_GET["graph_template_item_id"]);
+	form_hidden_id("graph_template_item_id",(isset($template_item) ? $template_item["id"] : "0"));
 	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
-	form_hidden_id("sequence",$template_item["sequence"]);
-	form_hidden_id("_graph_type_id",$template_item["graph_type_id"]);
+	form_hidden_id("sequence",(isset($template_item) ? $template_item["sequence"] : "0"));
+	form_hidden_id("_graph_type_id",(isset($template_item) ? $template_item["graph_type_id"] : "0"));
 	form_hidden_box("save_component_item","1","");
 	
 	form_save_button("graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
-}
-
-/* ----------------------------
-    template - Graph Templates 
-   ---------------------------- */
-
-function template_remove() {
-	global $config;
-	
-	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
-		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=" . $_GET["graph_template_id"]);
-		include ('include/bottom_footer.php');
-		exit;
-	}
-	
-	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
-		db_execute("delete from graph_templates where id=" . $_GET["graph_template_id"]);
-		
-		$graph_template_input = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
-		
-		if (sizeof($graph_template_input) > 0) {
-		foreach ($graph_template_input as $item) {
-			db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
-		}
-		}
-		
-		db_execute("delete from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
-		db_execute("delete from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
-		db_execute("delete from graph_templates_item where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
-		
-		/* "undo" any graph that is currently using this template */
-		db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
-		db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
-	}	
-}
-
-function template_edit() {
-	global $colors, $struct_graph, $image_types;
-	
-	draw_tabs();
-	
-	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
-		end_box();
-	}
-	
-	if (isset($_GET["graph_template_id"])) {
-		$template = db_fetch_row("select * from graph_templates where id=" . $_GET["graph_template_id"]);
-		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
-		
-		$header_label = "[edit: " . $template["name"] . "]";
-	}else{
-		$header_label = "[new]";
-	}
-	
-	if ((read_config_option("full_view_graph_template") == "on") && (isset($_GET["graph_template_id"]))) {
-		item();	
-	}
-	
-	start_box("<strong>Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	?>
-	
-	<form method="post" action="graph_templates.php">
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			The name given to this graph template.
-		</td>
-		<?php form_text_box("name",$template["name"],"","50", "40");?>
-	</tr>
-	
-	<?php
-	end_box();
-	start_box("<strong>Graph Template</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	while (list($field_name, $field_array) = each($struct_graph)) {
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-		
-		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,$template_graph{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",$_GET["graph_template_id"],false);
-		print "</td>\n";
-		
-		draw_nontemplated_item($field_array, $field_name, $template_graph[$field_name]);
-		
-		print "</tr>\n";
-	}
-	
-	end_box();
-	
-	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
-	form_hidden_id("graph_template_graph_id",$template_graph["id"]);
-	form_hidden_box("save_component_template","1","");
-	
-	form_save_button("graph_templates.php");
-}
-
-function template() {
-	global $colors;
-	
-	draw_tabs();
-	start_box("<strong>Graph Template Management</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
-	
-	print "<tr bgcolor='#" . $colors["panel"] . "'>";
-		DrawMatrixHeaderItem("Template Title",$colors["panel_text"],2);
-	print "</tr>";
-	
-	$template_list = db_fetch_assoc("select 
-		graph_templates.id,graph_templates.name 
-		from graph_templates");
-       
-	if (sizeof($template_list) > 0) {
-	foreach ($template_list as $template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=template_edit&graph_template_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
-			</td>
-			<td width="1%" align="right">
-				<a href="graph_templates.php?action=template_remove&graph_template_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-			</td>
-		</tr>
-		<?php
-		$i++;
-	}
-	}
-	end_box();
 }
 
 /* ------------------------------------
@@ -820,16 +698,14 @@ function template() {
    ------------------------------------ */
 
 function input_remove() {
-	global $config;
-	
-	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
 		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from graph_template_input where id=" . $_GET["graph_template_input_id"]);
 		db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $_GET["graph_template_input_id"]);
 	}
@@ -855,10 +731,8 @@ function input_edit() {
 		}
 	}
 			
-	if (isset($_GET["graph_template_input_id"])) {
+	if (!empty($_GET["graph_template_input_id"])) {
 		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["graph_template_input_id"]);
-	}else{
-		unset($graph_template_input);
 	}
 	
 	start_box("<strong>Graph Item Input</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -871,7 +745,7 @@ function input_edit() {
 			<font class="textEditTitle">Name</font><br>
 			Enter a name for this graph item input, make sure it is something you recognize.
 		</td>
-		<?php form_text_box("name",$graph_template_input["name"],"","50", "40");?>
+		<?php form_text_box("name",(isset($graph_template_input) ? $graph_template_input["name"] : ""),"","50", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -879,7 +753,7 @@ function input_edit() {
 			<font class="textEditTitle">Description</font><br>
 			Enter a description for this graph item input to describe what this input is used for.
 		</td>
-		<?php form_text_area("description",$graph_template_input["description"],5,40,"");?>
+		<?php form_text_area("description",(isset($graph_template_input) ? $graph_template_input["description"] : ""),5,40,"");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -887,7 +761,7 @@ function input_edit() {
 			<font class="textEditTitle">Field Type</font><br>
 			How data is to be represented on the graph.
 		</td>
-		<?php form_dropdown("column_name",$graph_template_items,"","",$graph_template_input["column_name"],"","");?>
+		<?php form_dropdown("column_name",$graph_template_items,"","",(isset($graph_template_input) ? $graph_template_input["column_name"] : ""),"","");?>
 	</tr>
 	
 	<?php
@@ -916,6 +790,7 @@ function input_edit() {
 		</td>
 		<td>
 		<?php
+		$i = 0;
 		if (sizeof($item_list) > 0) {
 		foreach ($item_list as $item) {
 			if ($item["graph_template_input_id"] == "") {
@@ -952,6 +827,135 @@ function input_edit() {
 	form_hidden_box("save_component_input","1","");
 	
 	form_save_button("graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
+}
+
+/* ----------------------------
+    template - Graph Templates 
+   ---------------------------- */
+
+function template_remove() {
+	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
+		include ('include/top_header.php');
+		form_confirm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=" . $_GET["graph_template_id"]);
+		include ('include/bottom_footer.php');
+		exit;
+	}
+	
+	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
+		db_execute("delete from graph_templates where id=" . $_GET["graph_template_id"]);
+		
+		$graph_template_input = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
+		
+		if (sizeof($graph_template_input) > 0) {
+		foreach ($graph_template_input as $item) {
+			db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
+		}
+		}
+		
+		db_execute("delete from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
+		db_execute("delete from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
+		db_execute("delete from graph_templates_item where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
+		
+		/* "undo" any graph that is currently using this template */
+		db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
+		db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
+	}	
+}
+
+function template_edit() {
+	global $colors, $struct_graph, $image_types;
+	
+	draw_tabs();
+	
+	if (read_config_option("full_view_graph_template") == "") {
+		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		draw_graph_form_select("?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
+		end_box();
+	}
+	
+	if (!empty($_GET["graph_template_id"])) {
+		$template = db_fetch_row("select * from graph_templates where id=" . $_GET["graph_template_id"]);
+		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
+		
+		$header_label = "[edit: " . $template["name"] . "]";
+	}else{
+		$header_label = "[new]";
+	}
+	
+	if ((read_config_option("full_view_graph_template") == "on") && (!empty($_GET["graph_template_id"]))) {
+		item();	
+	}
+	
+	start_box("<strong>Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	?>
+	
+	<form method="post" action="graph_templates.php">
+	
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Name</font><br>
+			The name given to this graph template.
+		</td>
+		<?php form_text_box("name",(isset($template) ? $template["name"] : ""),"","50", "40");?>
+	</tr>
+	
+	<?php
+	end_box();
+	start_box("<strong>Graph Template</strong>", "98%", $colors["header"], "3", "center", "");
+	
+	$i = 0;
+	while (list($field_name, $field_array) = each($struct_graph)) {
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		form_base_checkbox("t_" . $field_name,(isset($template_graph) ? $template_graph{"t_" . $field_name} : ""),"Use Per-Graph Value (Ignore this Value)","",(isset($template_graph) ? $template_graph["graph_template_id"] : "0"),false);
+		print "</td>\n";
+		
+		draw_nontemplated_item($field_array, $field_name, (isset($template_graph) ? $template_graph[$field_name] : ""));
+		
+		print "</tr>\n";
+	}
+	
+	end_box();
+	
+	form_hidden_id("graph_template_id",(isset($template_graph) ? $template_graph["graph_template_id"] : "0"));
+	form_hidden_id("graph_template_graph_id",(isset($template_graph) ? $template_graph["id"] : "0"));
+	form_hidden_box("save_component_template","1","");
+	
+	form_save_button("graph_templates.php");
+}
+
+function template() {
+	global $colors;
+	
+	draw_tabs();
+	start_box("<strong>Graph Template Management</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
+	
+	print "<tr bgcolor='#" . $colors["panel"] . "'>";
+		DrawMatrixHeaderItem("Template Title",$colors["panel_text"],2);
+	print "</tr>";
+	
+	$template_list = db_fetch_assoc("select 
+		graph_templates.id,graph_templates.name 
+		from graph_templates");
+	
+	$i = 0;
+	if (sizeof($template_list) > 0) {
+	foreach ($template_list as $template) {
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+			?>
+			<td>
+				<a class="linkEditMain" href="graph_templates.php?action=template_edit&graph_template_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="graph_templates.php?action=template_remove&graph_template_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+		<?php
+		$i++;
+	}
+	}
+	end_box();
 }
 
 ?>

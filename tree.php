@@ -28,6 +28,9 @@ include ('include/auth.php');
 include_once ('include/form.php');
 include_once ('include/functions.php');
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -106,6 +109,7 @@ function form_save() {
 		if (empty($_POST["id"])) {
 			/* new/save - generate new order key */
 			$order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["parent_item_id"]),"graph_tree_items","order_key");
+			print "new order key";
 		}else{
 			/* edit/save - use old order_key */
 			$order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["id"]);
@@ -148,12 +152,18 @@ function item_edit() {
 	
 	global $colors;
 	
-	if (isset($_GET["tree_item_id"])) {
-		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["tree_item_id"]);
-	}
+	$title_graph = "Tree Item [graph]";
+	$title_header = "Tree Item [header]";
 	
-	/* bold the active "type" */
-	if ($tree_item["local_graph_id"] > 0) { $title = "<strong>Tree Item [graph]</strong>"; }else{ $title = "Tree Item [graph]"; }
+	if (!empty($_GET["tree_item_id"])) {
+		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["tree_item_id"]);
+		
+		/* bold the active "type" */
+		if ($tree_item["local_graph_id"] > 0) { $title_graph = "<strong>Tree Item [graph]</strong>"; }
+		
+		/* bold the active "type" */
+		if ($tree_item["title"] != "") { $title_header = "<strong>Tree Item [header]</strong>"; }
+	}
 	
 	print "<form method='post' action='tree.php'>\n";
 	
@@ -165,21 +175,21 @@ function item_edit() {
 			Choose the parent for this header/graph.
 		</td>
 		<td>
-			<?php grow_dropdown_tree($_GET["tree_id"], "parent_item_id", ($_GET["parent_id"] ? $_GET["parent_id"] : get_parent_id($tree_item["id"], "graph_tree_items")));?>
+			<?php grow_dropdown_tree($_GET["tree_id"], "parent_item_id", (isset($_GET["parent_id"]) ? $_GET["parent_id"] : get_parent_id($tree_item["id"], "graph_tree_items", "graph_tree_id=" . $_GET["tree_id"])));?>
 		</td>
 	</tr>
 	<?php
 	
 	end_box();
 	
-	start_box($title, "98%", $colors["header"], "3", "center", "");
+	start_box($title_graph, "98%", $colors["header"], "3", "center", "");
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Graph</font><br>
 			Choose a graph from this list to add it to the tree.
 		</td>
-		<?php form_dropdown("local_graph_id",db_fetch_assoc("select local_graph_id,title from graph_templates_graph where local_graph_id != 0 order by title"),"title","local_graph_id",$tree_item["local_graph_id"],"None","");?>
+		<?php form_dropdown("local_graph_id",db_fetch_assoc("select local_graph_id,title from graph_templates_graph where local_graph_id != 0 order by title"),"title","local_graph_id",(isset($tree_item) ? $tree_item["local_graph_id"] : "0"),"None","");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -187,30 +197,27 @@ function item_edit() {
 			<font class="textEditTitle">Round Robin Archive</font><br>
 			Choose a round robin archive to control how this graph is displayed.
 		</td>
-		<?php form_dropdown("rra_id",db_fetch_assoc("select id,name from rra"),"name","id",$tree_item["rra_id"],"None","1");?>
+		<?php form_dropdown("rra_id",db_fetch_assoc("select id,name from rra"),"name","id",(isset($tree_item) ? $tree_item["rra_id"] : 0),"None","1");?>
 	</tr>
 	
 	<?php
 	
 	end_box();
 	
-	/* bold the active "type" */
-	if ($tree_item["title"] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
-	
-	start_box($title, "98%", $colors["header"], "3", "center", "");
+	start_box($title_header, "98%", $colors["header"], "3", "center", "");
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Header Title</font><br>
 			If this item is a header, enter a title here.
 		</td>
-		<?php form_text_box("title",$tree_item["title"],"","255","40");?>
+		<?php form_text_box("title",(isset($tree_item) ? $tree_item["title"] : ""),"","255","40");?>
 	</tr>
 	<?php
 	
 	end_box();
 	
-	form_hidden_id("id",$_GET["tree_item_id"]);
+	form_hidden_id("id",(isset($tree_item) ? $tree_item["id"] : 0));
 	form_hidden_id("graph_tree_id",$_GET["tree_id"]);
 	form_hidden_box("save_component_tree_item","1","");
 	
@@ -234,14 +241,14 @@ function item_movedown() {
 function item_remove() {
 	include_once("include/tree_functions.php");
 	
-        if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
+        if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
                 include ('include/top_header.php');
                 form_confirm("Are You Sure?", "Are you sure you want to delete the item <strong>'" . db_fetch_cell("select title from graph_tree_items where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]);
                 include ('include/bottom_footer.php');
                 exit;
         }
 
-        if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
+        if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
                delete_branch($_GET["id"]);
         }
 	
@@ -254,14 +261,14 @@ function item_remove() {
    --------------------- */
 
 function tree_remove() {
-        if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
+        if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
                 include ('include/top_header.php');
                 form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=" . $_GET["id"]);
                 include ('include/bottom_footer.php');
                 exit;
         }
                 
-        if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
+        if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
                 db_execute("delete from graph_tree where id=" . $_GET["id"]);
         }
 }
@@ -273,10 +280,8 @@ function tree_edit() {
 	
 	start_box("<strong>Trees [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
-	if (isset($_GET["id"])) {
+	if (!empty($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree where id=" . $_GET["id"]);
-	}else{
-		unset($tree);
 	}
 	
 	?>
@@ -315,6 +320,7 @@ function tree() {
     
 	$trees = db_fetch_assoc("select * from graph_tree order by name");
 	
+	$i = 0;
 	if (sizeof($trees) > 0) {
 	foreach ($trees as $tree) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;

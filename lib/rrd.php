@@ -237,6 +237,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	if not then get out */
 	if (read_config_option("global_auth") == "on") {
 		$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=$local_graph_id and user_id=" . $_SESSION["sess_user_id"]);
+		$current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
+		
+		$access_denied = false;
 		
 		if ($current_user["graph_policy"] == "1") {
 			if (sizeof($user_auth) > 0) { $access_denied = true; }
@@ -251,8 +254,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	
 	/* define the time span, which decides which rra to use */
 	$rra = db_fetch_row("select rows,steps from rra where id=$rra_id");
+	
 	$timespan = -($rra["rows"] * $rra["steps"] * 144);
-    	
+	
 	$graph = db_fetch_row("select
 		graph_templates_graph.title,
 		graph_templates_graph.vertical_label,
@@ -296,11 +300,19 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	
   	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 	
+	/* define some variables */
+	$scale = "";
+	$rigid = "";
+	$graph_legend = "";
+	$graph_defs = "";
+	$txt_graph_items = "";
+	$text_padding = "";
+	
     	if ($graph["auto_scale"] == "on") {
 		if ($graph["auto_scale_opts"] == "1") {
-			$scale .= "--alt-autoscale" . RRD_NL;
+			$scale = "--alt-autoscale" . RRD_NL;
 		}elseif ($graph["auto_scale_opts"] == "2") {
-			$scale .= "--alt-autoscale-max" . RRD_NL;
+			$scale = "--alt-autoscale-max" . RRD_NL;
 			$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL; 
 		}
 		
@@ -312,7 +324,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
 	}
 	
-	if ($graph["rigid"] == "on") {
+	if ($graph["auto_scale_rigid"] == "on") {
 		$rigid = "--rigid" . RRD_NL;
 	}
 	
@@ -326,7 +338,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	
 	/* optionally you can specify and array that overrides some of the db's
 	values, lets set that all up here */
-	if ($graph_data_array["use"] == true) {
+	if (isset($graph_data_array["use"])) {
 		if ($graph_data_array["graph_start"] == "0") {
 			$graph_start = $timespan;
 		}else{
@@ -341,17 +353,17 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$graph_width = $graph["width"];
 	}
 	
-	if ($graph_data_array["graph_nolegend"] == true) {
+	if (isset($graph_data_array["graph_nolegend"])) {
 		$graph_legend = "--no-legend" . RRD_NL;
 	}else{
 		$graph_legend = "";
 	}
     
 	/* export options */
-	if ($graph_data_array["export"] == true) {
+	if (isset($graph_data_array["export"])) {
 		$graph_opts = read_config_option("path_html_export") . "/" . $graph_data_array["export_filename"] . RRD_NL;
 	}else{
-		if ($graph_data_array["output_filename"] == "") {
+		if (empty($graph_data_array["output_filename"])) {
 	    		$graph_opts = "-" . RRD_NL;
 		}else{
 			$graph_opts = $graph_data_array["output_filename"] . RRD_NL;
@@ -389,6 +401,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			the same way, except a 'cdef' is put on the beginning of the hash */
 			$graph_defs .= "DEF:" . generate_graph_def_name(("$i")) . "=\"$data_source_path\":$data_source_name:" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
 			
+			//print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
 			$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
 			
 			$i++;
@@ -398,7 +411,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
     
 	/* if we are not displaying a legend there is no point in us even processing the auto padding,
 	text format stuff. */
-	if ($graph_data_array["graph_nolegend"] != true) {
+	if (!isset($graph_data_array["graph_nolegend"])) {
 		/* use this loop to to setup all textformat data (hr, padding, subsitution, etc) */
 		$greatest_text_format = 0;
 		
@@ -460,7 +473,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a 
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_graph_defs = "";
+		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_total = "";
 		
 		if ((!empty($graph_item["cdef_id"])) && (isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}) == false)) {
 			$cdef_string = get_cdef($graph_item["cdef_id"]);
@@ -469,7 +482,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
 				$item_count = 0;
 				for ($t=0;($t<count($graph_items));$t++) {
-					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_source_name"]))) {
+					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						$cdef_total_ds .= generate_graph_def_name($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) . ",";
 						
 						$item_count++;
@@ -479,7 +492,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$cdef_total = $cdef_total_ds . str_repeat("+,", ($item_count - 2)) . "+";
 			}
 			
-			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0")), $cdef_string);
 			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
 			
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
@@ -499,7 +512,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		
 		/* if we are not displaying a legend there is no point in us even processing the auto padding,
 		text format stuff. */
-		if (($graph_data_array["graph_nolegend"] != true) && ($graph["auto_padding"] == "on")) {
+		if ((!isset($graph_data_array["graph_nolegend"])) && ($graph["auto_padding"] == "on")) {
 			/* we are basing how much to pad on area and stack text format, 
 			not gprint. but of course the padding has to be displayed in gprint,
 			how fun! */
@@ -521,11 +534,25 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		if we want to skip it, like below */
 		$current_graph_item_type = $graph_item_types{$graph_item["graph_type_id"]};
 		
-		/* use cdef if one if specified */
+		/* IF this graph item has a data source... get a DEF name for it, or the cdef if that applies
+		to this graph item */
 		if ($graph_item["cdef_id"] == "0") {
-			$data_source_name = generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]);
+			if (isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id])) {
+				$data_source_name = generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]);
+			}else{
+				$data_source_name = "";
+			}
 		}else{
 			$data_source_name = "cdef" . generate_graph_def_name($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]});
+		}
+		
+		/* to make things easier... if there is no text format set; set blank text */
+		if (!isset($text_format[$graph_item_id])) {
+			$text_format[$graph_item_id] = "";
+		}
+		
+		if (!isset($hardreturn[$graph_item_id])) {
+			$hardreturn[$graph_item_id] = "";
 		}
 		
 		/* +++++++++++++++++++++++ GRAPH ITEMS +++++++++++++++++++++++ */
@@ -574,7 +601,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'GPRINT':
-			if ($graph_data_array["graph_nolegend"] != true) {
+			if (!isset($graph_data_array["graph_nolegend"])) {
 				$gprint_text = $graph_item["gprint_text"];
 				
 				$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
@@ -618,13 +645,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	}
     
 	/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
-	if ($graph_data_array["print_source"] == "true") {
+	if (isset($graph_data_array["print_source"])) {
 		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items</PRE>";
 	}else{
-		if ($graph_data_array["export"] == true) {
+		if (isset($graph_data_array["export"])) {
 			rrdtool_execute("graph $graph_opts$graph_defs$graph_items", false, "0");
 			return 0;
 		}else{
+			$log_data = false;
 			if (read_config_option("log_graph") == "on") { $log_data = true; }
 			//if ($graph_data_array["output_flag"] == "") { $graph_data_array["output_flag"] = 1; }
 			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items",$log_data,1);

@@ -24,6 +24,9 @@
  +-------------------------------------------------------------------------+
 */
 
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
 switch ($_REQUEST["action"]) {
 case 'login':
 	$user = db_fetch_row("select * from user where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
@@ -31,8 +34,10 @@ case 'login':
 	if (sizeof($user)) {
 		/* --- GOOD username/password --- */
 		
-		$denied_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["ID"] . " and policy='1'");
-		$allowed_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["ID"] . " and policy='2'");
+		$denied_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["id"] . " and policy='1'");
+		$allowed_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["id"] . " and policy='2'");
+		
+		$deny_ip = false; /* do not deny by ip by default */
 		
 		if (sizeof($denied_ips) > 0) {
 			/* if our ip is in this list, it means that we're denied */
@@ -117,7 +122,7 @@ case 'login':
 		
 		/* handle "force change password" */
 		if ($user["must_change_password"] == "on") {
-			$_SESSION["sess_change_password"] = "1";
+			$_SESSION["sess_change_password"] = true;
 		}
 		
 		/* ok, at the point the user has been sucessfully authenticated; so we must
@@ -164,7 +169,7 @@ case 'login':
 		<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
 	</tr>
 	<?php
-	if ($_POST["action"] == "login") {?>
+	if ($_REQUEST["action"] == "login") {?>
 	<tr height="10"><td></td></tr>
 	<tr>
 		<td colspan="2"><font color="#FF0000"><strong>Invalid User Name/Password Please Retype:</strong></font></td>
