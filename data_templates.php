@@ -107,6 +107,8 @@ function form_save() {
 		$save3["data_source_type_id"] = form_input_validate($_POST["data_source_type_id"], "data_source_type_id", "", true, 3);
 		$save3["t_data_source_name"] = form_input_validate((isset($_POST["t_data_source_name"]) ? $_POST["t_data_source_name"] : ""), "t_data_source_name", "", true, 3);
 		$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_]{1,19}$", false, 3);
+		$save3["t_data_input_field_id"] = form_input_validate((isset($_POST["t_data_input_field_id"]) ? $_POST["t_data_input_field_id"] : ""), "t_data_input_field_id", "", true, 3);
+		$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
 		
 		if (!is_error_message()) {
 			$data_template_id = sql_save($save1, "data_template");
@@ -338,6 +340,13 @@ function template_edit() {
 		}elseif (sizeof($template_data_rrds) == 1) {
 			$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 		}
+	}
+	
+	/* data input fields list */
+	if ((empty($template_data["data_input_id"])) || (db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) > "1")) {
+		unset($struct_data_source_item["data_input_field_id"]);
+	}else{
+		$struct_data_source_item["data_input_field_id"]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='out' and update_rra='on' order by data_name,name";
 	}
 	
 	$i = 1;
