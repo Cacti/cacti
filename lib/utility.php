@@ -101,19 +101,26 @@ function update_poller_cache($local_data_id) {
 				$data_source_item_name = "";
 			}
 
-			api_poller_cache_item_add($host_id, $local_data_id, $action, $data_source_item_name, 1, addslashes($script_path));
+			api_poller_cache_item_add($host_id, array(), $local_data_id, $action, $data_source_item_name, 1, addslashes($script_path));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP) { /* snmp */
-			$field = db_fetch_assoc("select
+			$host_fields = array_rekey(db_fetch_assoc("select
 				data_input_fields.type_code,
 				data_input_data.value
 				from data_input_fields left join data_input_data
 				on (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
-				where data_input_fields.type_code='snmp_oid'");
-			$field = array_rekey($field, "type_code", "value");
+				where (data_input_fields.type_code='snmp_oid'
+					or data_input_fields.type_code='hostname'
+					or data_input_fields.type_code='snmp_community'
+					or data_input_fields.type_code='snmp_username'
+					or data_input_fields.type_code='snmp_password'
+					or data_input_fields.type_code='snmp_version'
+					or data_input_fields.type_code='snmp_port'
+					or data_input_fields.type_code='snmp_timeout')
+				and data_input_data.value != ''"), "type_code", "value");
 
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 
-			api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), 1, $field["snmp_oid"]);
+			api_poller_cache_item_add($host_id, $host_fields, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields["snmp_oid"]) ? $host_fields["snmp_oid"] : ""));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
 			$snmp_queries = get_data_query_array($query["snmp_query_id"]);
 
@@ -124,7 +131,7 @@ function update_poller_cache($local_data_id) {
 				}
 
 				if (!empty($oid)) {
-					api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
+					api_poller_cache_item_add($host_id, array(), $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
 				}
 			}
 			}
@@ -150,7 +157,7 @@ function update_poller_cache($local_data_id) {
 					}
 
 					if (isset($script_path)) {
-						api_poller_cache_item_add($host_id, $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
+						api_poller_cache_item_add($host_id, array(), $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
 					}
 				}
 			}

@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function api_poller_cache_item_add($host_id, $local_data_id, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = "", $arg2 = "", $arg3 = "") {
+function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = "", $arg2 = "", $arg3 = "") {
 	$host = db_fetch_row("select
 		host.id,
 		host.hostname,
@@ -37,6 +37,9 @@ function api_poller_cache_item_add($host_id, $local_data_id, $poller_action_id, 
 		host.disabled
 		from host
 		where host.id=$host_id");
+
+	/* the $host_field_override array can be used to override certain host fields in the poller cache */
+	$host = array_merge($host, $host_field_override);
 
 	if ($host["disabled"] == "on") {
 		return true;
