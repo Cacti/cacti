@@ -28,10 +28,23 @@ int update_rrd(rrd_t *rrd_targets, int rrd_target_count){
   #endif
 }
 
-int update_multirrd(){
+char *rrdcmd_multids(multi_rrd_t *multi_targets, int multi_target_count){
+  int i;
+  char part1[64]="", part2[64]="";
+  char rrdcmd[512];
+  char temp[64];
+
+  for(i=0; i<=multi_target_count; i++){
+    if(i!=0) strcat(part1, ":");
+    strcat(part1, multi_targets[i].rrd_name);
+    sprintf(temp, ":%lli", multi_targets[i].result);
+    strcat(part2, temp);
+  }
+  sprintf(rrdcmd, "update %s --template %s N%s", multi_targets[0].rrd_path, part1, part2);
+
+  return rrdcmd;
 
 }
-
 
 char *rrdcmd_lli(char *rrd_name, char *rrd_path, unsigned long long int result){
   char rrdcmd[512];

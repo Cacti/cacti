@@ -89,12 +89,14 @@ void *poller(){
         rrd_multids[rrd_multids_counter].result = entry->result;
         rrd_multids_counter++;
       }
-    } else if(current_head==0 && entry->local_data_id == current_local_data_id && current->local_data_id != current_local_data_id){
+    } else if(/*current_head==0 && */entry->local_data_id == current_local_data_id && current->local_data_id != current_local_data_id){
       printf("Last MultiDS: %i\n", entry->local_data_id);
       sprintf(rrd_multids[rrd_multids_counter].rrd_name, "%s", entry->rrd_name);
       sprintf(rrd_multids[rrd_multids_counter].rrd_path, "%s", entry->rrd_path);
       rrd_multids[rrd_multids_counter].result = entry->result;
-      update_multirrd(rrd_multids,rrd_multids_counter);
+      //plah
+      sprintf(rrd_targets[rrd_target_counter].rrdcmd, "%s", rrdcmd_multids(rrd_multids,rrd_multids_counter));
+      rrd_target_counter++;
       free(rrd_multids);
       current_local_data_id=0;
     } else if(entry->action==2){
