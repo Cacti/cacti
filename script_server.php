@@ -43,7 +43,7 @@ while (1) {
 			$parm = explode(" ",$preparm);
 
 			// check for existance of function.  If exists call it
-			if (isset($inc)) {
+			if (!function_exists($cmd)) {
 				eval("include_once(\"" . $inc . "\");");
 			}
 
