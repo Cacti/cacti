@@ -526,26 +526,26 @@ $settings_graphs = array(
 			"array" => $graph_timespans,
 			"default" => GT_LAST_DAY
 			),
+		"timespan_sel" => array(
+			"friendly_name" => "Display Graph View Timespan Selector",
+			"description" => "Choose if you want the time span selection box to be displayed.",
+			"method" => "checkbox",
+			"default" => "on"
+		),
 		"default_date_format" => array(
-			"friendly_name" => "Default Graph View Display Date Format",
-			"description" => "The default date format to include on graphs",
+			"friendly_name" => "Graph Date Display Format",
+			"description" => "The date format to use for graphs",
 			"method" => "drop_array",
 			"array" => $graph_dateformats,
 			"default" => GD_Y_MO_D
 			),
 		"default_datechar" => array(
-			"friendly_name" => "Default Graph View Date Separater",
-			"description" => "The default date separator to include on graphs",
+			"friendly_name" => "Graph Date Separator",
+			"description" => "The date separator to be used for graphs",
 			"method" => "drop_array",
 			"array" => $graph_datechar,
 			"default" => GDC_SLASH
 			),
-		"timestamp_sel" => array(
-			"friendly_name" => "Display Timestamp Selector",
-			"description" => "Choose if you want the timestamp selection box to be displayed.",
-			"method" => "checkbox",
-			"default" => "on"
-		),
 		"page_refresh" => array(
 			"friendly_name" => "Page Refresh",
 			"description" => "The number of seconds between automatic page refreshes.",
