@@ -62,7 +62,7 @@ switch ($action) {
 		unset($zone);
 	}
 	
-    print "<form method='post' action='".basename($HTTP_SERVER_VARS["SCRIPT_NAME"])."'>\n";
+	print "<form method='post' action='".basename($HTTP_SERVER_VARS["SCRIPT_NAME"])."'>\n";
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%" align='right'>
 			<font class="textEditTitle">Zone Name</font><br>
@@ -71,17 +71,20 @@ switch ($action) {
 		<?DrawFormItemTextBox('zone_name',$zone[zone_name],"","");?>
 	</tr>
 	
+	<?
+	DrawFormItemHiddenIDField("pz_id",$args[id]);
+	?>
+	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save");?>
+			<?DrawFormSaveButton("save", "pzones.php");?>
 		</td>
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("pz_id",$args[id]);
-	DrawFormFooter();
-    include_once ("include/bottom_table_footer.php");
+	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
+	
 	break;
  default:
     include_once ("include/top_header.php");

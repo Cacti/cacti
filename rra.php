@@ -115,7 +115,11 @@ switch ($action) {
 		</td>
 		<?DrawFormItemTextBox("Rows",$rra[Rows],"","100", "40");?>
 	</tr>
-    
+	
+	<?
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	?>
+	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save", "rra.php");?>
@@ -123,10 +127,9 @@ switch ($action) {
 	</tr>
 	<?
 	
-	DrawFormItemHiddenIDField("ID",$args[id]);
-	DrawFormFooter();
-	
+	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
+	
 	break;
  default:
 	include_once ("include/top_header.php");
@@ -161,9 +164,9 @@ switch ($action) {
 	<?
 	$i++;
 	}
-		
-	include_once ("include/bottom_footer.php");
+	
 	include_once ("include/bottom_table_footer.php");
+	include_once ("include/bottom_footer.php");
 	
 	break;
 } ?>

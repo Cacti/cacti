@@ -269,14 +269,16 @@
 					
 					?>
 				</tr>
-			<?}?>
+			<?
+			}
+			DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
+			?>
 			<tr bgcolor="#FFFFFF">
 				 <td colspan="2" align="right" background="images/blue_line.gif">
-					<?DrawFormSaveButton("input_save");?>
+					<?DrawFormSaveButton("input_save", "graphs.php");?>
 				</td>
 			</tr>
 			<?
-			DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
 			}
 		}
 	}
@@ -453,13 +455,7 @@ switch ($action) {
 			</td>
 		</tr>
 		
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("item_save", "graphs.php?action=graph_edit&local_graph_id=$args[local_graph_id]");?>
-			</td>
-		</tr>
 		<?
-		
 		DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
 		DrawFormItemHiddenIDField("graph_template_item_id",$args[graph_template_item_id]);
 		DrawFormItemHiddenIDField("graph_template_id",$template_item[graph_template_id]);
@@ -467,6 +463,14 @@ switch ($action) {
 		DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
 		DrawFormItemHiddenIDField("_parent",$template_item[parent]);
 		DrawFormItemHiddenIDField("_graph_type_id",$template_item[graph_type_id]);
+		?>
+		
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right" background="images/blue_line.gif">
+				<?DrawFormSaveButton("item_save", "graphs.php?action=graph_edit&local_graph_id=$args[local_graph_id]");?>
+			</td>
+		</tr>
+		<?
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
@@ -882,18 +886,20 @@ switch ($action) {
 			}?>
 		</tr>
 		
+		<?
+		DrawFormItemHiddenIDField("graph_template_graph_id",$graphs[id]);
+		DrawFormItemHiddenIDField("local_graph_id",$graphs[local_graph_id]);
+		DrawFormItemHiddenIDField("order_key",$graphs[order_key]);
+		DrawFormItemHiddenIDField("local_graph_template_graph_id",$graphs[local_graph_template_graph_id]);
+		DrawFormItemHiddenIDField("_graph_template_id",$graphs[graph_template_id]);
+		?>
+		
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("graph_save", "graphs.php");?>
 			</td>
 		</tr>
 		<?
-		
-		DrawFormItemHiddenIDField("graph_template_graph_id",$graphs[id]);
-		DrawFormItemHiddenIDField("local_graph_id",$graphs[local_graph_id]);
-		DrawFormItemHiddenIDField("order_key",$graphs[order_key]);
-		DrawFormItemHiddenIDField("local_graph_template_graph_id",$graphs[local_graph_template_graph_id]);
-		DrawFormItemHiddenIDField("_graph_template_id",$graphs[graph_template_id]);
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");

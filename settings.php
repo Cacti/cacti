@@ -138,6 +138,8 @@ switch ($action) {
 	}
 	}
 	
+	DrawFormItemHiddenIDField("tab",$current_tab);
+	
 	?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
@@ -145,7 +147,6 @@ switch ($action) {
 			</td>
 		</tr>
 	<?
-	DrawFormItemHiddenIDField("tab",$current_tab);
 	
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");

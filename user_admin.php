@@ -218,6 +218,10 @@ switch ($action) {
 		</td>
 	</tr>
 	
+	<?
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	?>
+	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save", "user_admin.php");?>
@@ -225,7 +229,6 @@ switch ($action) {
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("ID",$args[id]);
 	
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
@@ -328,7 +331,11 @@ switch ($action) {
 			</table>
 		</td>
 	</tr>
-    
+	
+    	<?
+	DrawFormItemHiddenIDField("id",$args[id]);
+	?>
+    	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save_perms", "user_admin.php");?>
@@ -336,8 +343,6 @@ switch ($action) {
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("id",$args[id]);
-	
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
@@ -501,6 +506,11 @@ switch ($action) {
 		</td>
 	</tr>
 	
+	<?
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	DrawFormItemHiddenTextBox("_password",$user[Password],"");
+	?>
+	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save", "user_admin.php");?>
@@ -508,9 +518,6 @@ switch ($action) {
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("ID",$args[id]);
-	DrawFormItemHiddenTextBox("_password",$user[Password],"");
-	
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	

@@ -448,15 +448,17 @@ switch ($action) {
 			</td>
 		</tr>
 		
+		<?
+		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
+		DrawFormItemHiddenIDField("graph_template_input_id",$args[graph_template_input_id]);
+		?>
+		
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("input_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
 			</td>
 		</tr>
 		<?
-		
-		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
-		DrawFormItemHiddenIDField("graph_template_input_id",$args[graph_template_input_id]);
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
@@ -606,19 +608,21 @@ switch ($action) {
 			</td>
 		</tr>
 		
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("item_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
-			</td>
-		</tr>
 		<?
-		
 		DrawFormItemHiddenIDField("graph_template_item_id",$args[graph_template_item_id]);
 		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
 		DrawFormItemHiddenIDField("sequence",$template_item[sequence]);
 		DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
 		DrawFormItemHiddenIDField("_parent",$template_item[parent]);
 		DrawFormItemHiddenIDField("_graph_type_id",$template_item[graph_type_id]);
+		?>
+		
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right" background="images/blue_line.gif">
+				<?DrawFormSaveButton("item_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
+			</td>
+		</tr>
+		<?
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
@@ -828,15 +832,17 @@ switch ($action) {
 			<?DrawFormItemTextBox("vertical_label",$template_graph[vertical_label],"","200","40");?>
 		</tr>
 		
+		<?
+		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
+		DrawFormItemHiddenIDField("graph_template_graph_id",$template_graph[id]);
+		?>
+		
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("template_save", "graph_templates.php");?>
 			</td>
 		</tr>
 		<?
-		
-		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
-		DrawFormItemHiddenIDField("graph_template_graph_id",$template_graph[id]);
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
