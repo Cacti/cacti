@@ -154,7 +154,6 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			</td>
 			<?php
 
-
 			$i++;
 			$k++;
 
