@@ -30,8 +30,8 @@ function bufprint($text) {
 }
 
 function rrdtool_execute($command_line, $log_command, $output_flag) {
-	include ('include/config.php');
-	include_once ('include/functions.php');
+	include ('config.php');
+	include_once ('functions.php');
 	
 	if ($log_command == true) {
 		LogData("CMD: " . read_config_option("path_rrdtool") . " $command_line");
@@ -130,6 +130,7 @@ function rrdtool_function_create($local_data_id, $show_source) {
 	
 	/* query the data sources to be used in this .rrd file */
 	$data_sources = db_fetch_assoc("select
+		data_template_rrd.id,
 		data_template_rrd.rrd_heartbeat,
 		data_template_rrd.rrd_minimum,
 		data_template_rrd.rrd_maximum,
@@ -144,7 +145,7 @@ function rrdtool_function_create($local_data_id, $show_source) {
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
 		/* use the cacti ds name by default or the user defined one, if entered */
-		$data_source_name = get_data_source_name($local_data_id);
+		$data_source_name = get_data_source_name($data_source["id"]);
 	
 		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . $data_source["rrd_maximum"] . RRD_NL;
 	}
@@ -163,71 +164,29 @@ function rrdtool_function_create($local_data_id, $show_source) {
 	}
 }
 
-function rrdtool_function_update($local_data_id, $show_source) {
-	include_once ('include/functions.php');
+function rrdtool_function_update($update_cache_array) {
+	include_once ("functions.php");
 	
-	$data_source_path = get_data_source_path($local_data_id, true);
-	
-	if ($multi_data_source == true) {
-		/* multi DS: This string joins on the rrd_ds->src_fields to get the 
-		field names */
-		$data = db_fetch_assoc("select 
-		d.DSName,
-		a.Value
-		from rrd_ds d left join src_fields f on d.subfieldid=f.id 
-		left join src_data a on d.id=a.dsid
-		where d.subdsid=$dsid
-		and f.inputoutput=\"out\"
-		and f.updaterra=\"on\"
-		order by d.id");
-	}else{
-		/* single DS: This string joins on the src_data->src_fields table to get 
-		the field name */
-		$data = db_fetch_assoc("select 
-		d.DSName,
-		a.Value
-		from rrd_ds d left join src_data a on d.id=a.dsid
-		left join src_fields f on a.fieldid=f.id 
-		where d.id=$dsid
-		and f.inputoutput=\"out\"
-		and f.updaterra=\"on\"
-		order by d.id");
-	}
-    
-    /* setup the counter */
-    $rows = sizeof($data);
-    
-    /* set initial values for strings to be used in the loop */
-    $update_string = "N";
-    $template_string = "--template ";
-    
-    $i = 0;
-    /* loop through each item in this data source and build the UPDATE string */
-    if (sizeof($data) > 0) {
-		foreach ($data as $item) {
-		    ++$i;
-		    if (trim($data[Value]) == "") {
-				$data_value = "U"; /* rrdtool: unknown */
-		    }else{
-				$data_value = $data[Value];
-		    }
-		    
-		    $update_string .= ":$data_value";
-		    $template_string .= $data[DSName];
-		    
-		    /* do NOT put a colon after the last template item */
-		    if ($i != sizeof($data)) { $template_string .= ":"; }
+	while (list($local_data_id, $update_array) = each($update_cache_array)) {
+		$data_source_path = get_data_source_path($local_data_id, true);
+		
+		$i = 0; $rrd_update_template = ""; $rrd_update_values = "";
+		while (list($field_name, $field_value) = each($update_array)) {
+			$rrd_update_template .= $field_name;
+			$rrd_update_values .= $field_value;
+			
+			if (($i+1) < count($update_array)) {
+				$rrd_update_template .= ":";
+				$rrd_update_values .= ":";
+			}
+			
+			$i++;
 		}
-    }
-    
-    $update_string = "update $data_source_path $template_string $update_string";
-    
-    if ($show_source == true) {
-		return read_config_option("path_rrdtool") . " $update_string";
-    }else{
+		
 		if (read_config_option("log_update") == "on") { $log_data = true; }
-		rrdtool_execute($update_string,true,1);
-    }
+		
+		rrdtool_execute("update $data_source_path --template $rrd_update_template N:$rrd_update_values",$log_data,1);
+	}
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
@@ -497,15 +456,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		foreach ($graph_items as $graph_item) {
 			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
 			
+			/* note the current item_id for easy access */
+			$graph_item_id = $graph_item["graph_templates_item_id"];
+			
 			/* format the textformat string, and add values where there are <>'s */
-			$text_format[$i] = $graph_item["text_format"];
-			$value_format[$i] = $graph_item["value"];
+			$text_format[$graph_item_id] = $graph_item["text_format"];
+			$value_format[$graph_item_id] = $graph_item["value"];
 			
 			/* set hard return variable if selected (\n) */
 			if ($graph_item["hard_return"] == "on") { 
-				$hardreturn[$i] = "\\n"; 
+				$hardreturn[$graph_item_id] = "\\n"; 
 			}else{
-				$hardreturn[$i] = "";
+				$hardreturn[$graph_item_id] = "";
 			}
 			
 			if ($graph_item["graph_templates_item_id"] != "") {
@@ -531,19 +493,17 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			of course it can be used in other situations, however may not work as intended.
 			If you have any additions to this small peice of code, feel free to send them to me. */
 			if ($graph["auto_padding"] == "on") {
-				$graph_item_dsid = $graph_item[ID];
-				
 				/* only applies to AREA and STACK */
 				if (ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) {
-					$text_format_lengths{$graph_item["data_template_rrd_id"]} = strlen($text_format[$i]);
+					$text_format_lengths{$graph_item["data_template_rrd_id"]} = strlen($text_format[$graph_item_id]);
 					
-					if ((strlen($text_format[$i]) > $greatest_text_format) && ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT")) {
-						$greatest_text_format = strlen($text_format[$i]);
+					if ((strlen($text_format[$graph_item_id]) > $greatest_text_format) && ($graph_item_types{$graph_item["graph_type_id"]} != "COMMENT")) {
+						$greatest_text_format = strlen($text_format[$graph_item_id]);
 					}
 				}
 			}
 	    		
-	    		$i++;
+	    		//$i++;
 		}
 		}
     	}
@@ -623,6 +583,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		/* add the cdef string to the end of the def string */
 		$graph_defs .= $cdef_graph_defs;
 		
+		/* note the current item_id for easy access */
+		$graph_item_id = $graph_item["graph_templates_item_id"];
+		
 		/* if we are not displaying a legend there is no point in us even processing the auto padding,
 		text format stuff. */
 		if (($graph_data_array["graph_nolegend"] != true) && ($graph["auto_padding"] == "on")) {
@@ -678,77 +641,77 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		
 		switch ($graph_item_types{$graph_item["graph_type_id"]}) {
 		case 'AREA':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
-			"\"$text_format[$i]$hardreturn[$i]\" ";
+			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'STACK':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" .
-			"\"$text_format[$i]$hardreturn[$i]\" ";
+			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'LINE1':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
-			"\"$text_format[$i]$hardreturn[$i]\" ";
+			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'LINE2':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
-			"\"$text_format[$i]$hardreturn[$i]\" ";
+			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'LINE3':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
-			"\"$text_format[$i]$hardreturn[$i]\" ";
+			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'COMMENT':
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
-			"$text_format[$i]$hardreturn[$i]\" ";
+			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'GPRINT':
 			if ($graph_data_array["graph_nolegend"] != true) {
 				$gprint_text = $graph_item["gprint_text"];
-			
-				$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+				
+				$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
 				$data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} .
-				":\"$text_padding$text_format[$i]$gprint_text$hardreturn[$i]\" ";
+				":\"$text_padding$text_format[$graph_item_id]$gprint_text$hardreturn[$graph_item_id]\" ";
 			}
 			
 			break;
 		case 'HRULE':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			
 			if ($graph_data_array["graph_nolegend"] == true) {
-				$value_format[$i] = "0";
+				$value_format[$graph_item_id] = "0";
 			}else{
-				$value_format[$i] = ereg_replace (":", "\:" ,$value_format[$i]); /* escape colons */
+				$value_format[$graph_item_id] = ereg_replace (":", "\:" ,$value_format[$graph_item_id]); /* escape colons */
 			}
 			
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
-			$value_format[$i] . "#" . $graph_item["hex"] . ":\"" . 
-			"$text_format[$i]$hardreturn[$i]\" ";
+			$value_format[$graph_item_id] . "#" . $graph_item["hex"] . ":\"" . 
+			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'VRULE':
-			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+			$text_format[$graph_item_id] = ereg_replace (":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			
 			$value_array = explode(":", $graph_item["value"]);
 			$value = date("U", mktime($value_array[0],$value_array[1],0));
 			
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
 			$value . "#" . $graph_item["hex"] . ":\"" . 
-			"$text_format[$i]$hardreturn[$i]\" ";
+			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		}
 		
@@ -770,7 +733,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		}else{
 			if (read_config_option("log_graph") == "on") { $log_data = true; }
 			//if ($graph_data_array["output_flag"] == "") { $graph_data_array["output_flag"] = 1; }
-			return rrdtool_execute("graph $graph_opts$graph_defs$graph_items",$log_data,$graph_data_array["output_flag"]);
+			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items",$log_data,$graph_data_array["output_flag"]);
 		}
 	}
 }
