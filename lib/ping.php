@@ -305,7 +305,7 @@ class Net_Ping
 		}
 
 		/* snmp test */
-		if (($avail_method <= AVAIL_SNMP) || (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == true))) {
+		if (($avail_method == AVAIL_SNMP) || (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == true))) {
 			if ($this->host["snmp_community"] != "") {
 				$snmp_result = $this->ping_snmp();
 			}else{
