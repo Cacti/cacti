@@ -899,7 +899,7 @@ function template_edit() {
 	
 	if (isset($_GET["graph_template_id"])) {
 		$template = db_fetch_row("select * from graph_templates where id=" . $_GET["graph_template_id"]);
-		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"]);
+		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
 	}else{
 		unset($template);
 		unset($template_graph);
