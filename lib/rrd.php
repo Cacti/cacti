@@ -35,15 +35,16 @@ function rrd_init() {
 	$rrd_des = array(
 		RRDTOOL_PIPE_CHILD_READ => array("pipe", "r"), // stdin is a pipe that the child will read from
 		RRDTOOL_PIPE_CHILD_WRITE => array("pipe", "w"), // stdout is a pipe that the child will write to
-		RRDTOOL_PIPE_WRITE => array("pipe", "w")  // stderr is a pipe to write to
+		RRDTOOL_PIPE_STDERR_WRITE => array("pipe", "w")  // stderr is a pipe to write to
 		);
 
 	if (function_exists("proc_open")) {
 		$rrd_struc["fd"] = proc_open(read_config_option("path_rrdtool") . " -", $rrd_des, $rrd_pipes);
 		$rrd_struc["pipes"] = $rrd_pipes;
 
-		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ], true);
-		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE], true);
+		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ], false);
+		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE], false);
+		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_STDERR_WRITE], false);
 	}else {
 		$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
 	}
@@ -59,7 +60,7 @@ function rrd_close($rrd_struc) {
 	if ($rrd_struc["using_proc_open"]) {
 		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ]);
 		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE]);
-		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_WRITE]);
+		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_STDERR_WRITE]);
 		proc_close($rrd_struc["fd"]);
 	}else{
 		pclose($rrd_struc["fd"]);
@@ -145,15 +146,32 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 
 				/* Prepare the read array */
 				$read_fd = array($fp);
+				$except_fd = array(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_STDERR_WRITE));
 
-				if (false === ($num_changed_streams = stream_select($read_fd, $write_fd = NULL, $except_fd = NULL, 2, 0))) {
+				/* turn off warnings for now in case an error occurs */
+				error_reporting(E_ERROR);
+
+				if (false === ($num_changed_streams = stream_select($read_fd, $write_fd = NULL, $except_fd, 2, 0))) {
 				   /* Error handling */
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 						cacti_log("RRD2CACTI: ERROR: RRD Did not Respond to RRDTool Command", $log_to_stdout, "POLLER");
 					}
 				} elseif ($num_changed_streams > 0) {
+print "The number of changed fd's is " . $num_changed_streams . "\n";
+					/* turn off warnings for now in case an error occurs */
+					error_reporting(E_ALL);
+
+					$line = "";
+					$error = "";
+
 				   /* At least on one of the streams something interesting happened */
-	            $line = fgets($fp, 4096);
+					foreach ($read_fd as $file) {
+		            $line .= fgets($file, 4096);
+					}
+
+					foreach ($except_fd as $file) {
+						$error .= fgets($file, 4096);
+					}
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 						cacti_log("RRD2CACTI: " . strip_newlines($line), $log_to_stdout, "POLLER");
