@@ -668,6 +668,9 @@ function draw_templated_item($array_struct, $field_name, $previous_value) {
 	case 'check':
 		print "<td><em>" . html_boolean_friendly($previous_value) . "</em></td>";
 		break;
+	case 'drop_array':
+		print "<td><em>" . ${$array_struct["array_name"]}[$previous_value] . "</em></td>";
+		break;
 	default:
 		print "<td><em>" . $previous_value . "</em></td>";
 		break;
