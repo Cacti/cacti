@@ -494,13 +494,14 @@ function item() {
 	print "</tr>";
 	
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
+	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
 	
 	if (sizeof($template_item_list) > 0) {
 	foreach ($template_item_list as $item) {
 		/* graph grouping display logic */
 		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
 		
-		if (($graph_item_types{$item["graph_type_id"]} != "GPRINT") && ($graph_item_types{$item["graph_type_id"]} != $_graph_type_name)) {
+		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
 			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
 			
 			if ($group_counter % 2 == 0) {
