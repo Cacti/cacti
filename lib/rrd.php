@@ -434,24 +434,58 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	/* use some defaults if the $rra_id is not specified */
-	if (empty($rra_id)) {
-		$rra["timespan"] = 86400;
-		$rra["rows"] = 600;
-		$rra["steps"] = 1;
-	}else{
-		$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
-	}
+	if (!isset($graph_data_array["graph_start"])) {
+		if (empty($rra_id)) {
+			$rra["timespan"] = 86400;
+			$rra["rows"] = 600;
+			$rra["steps"] = 1;
+		}else{
+			$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
+		}
 
-	/* find the step and how often this graph is updated with new data */
-	$ds_step = db_fetch_cell("select
-		data_template_data.rrd_step
-		from data_template_data,data_template_rrd,graph_templates_item
-		where graph_templates_item.task_item_id=data_template_rrd.id
-		and data_template_rrd.local_data_id=data_template_data.local_data_id
-		and graph_templates_item.local_graph_id=$local_graph_id
-		limit 0,1");
-	$ds_step = empty($ds_step) ? 300 : $ds_step;
-	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
+		/* find the step and how often this graph is updated with new data */
+		$ds_step = db_fetch_cell("select
+			data_template_data.rrd_step
+			from data_template_data,data_template_rrd,graph_templates_item
+			where graph_templates_item.task_item_id=data_template_rrd.id
+			and data_template_rrd.local_data_id=data_template_data.local_data_id
+			and graph_templates_item.local_graph_id=$local_graph_id
+			limit 0,1");
+		$ds_step = empty($ds_step) ? 300 : $ds_step;
+		$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
+	} else {
+		/* get all the rows required to choose RRA to use */
+		$rras = db_fetch_assoc("select timespan,rows,steps from rra order by timespan DESC");
+
+		$graph_start = $graph_data_array["graph_start"];
+		$graph_end   = $graph_data_array["graph_end"];
+
+		$temp_seconds = $graph_end - $graph_start;
+
+		foreach($rras as $rra) {
+			if ($rra["timespan"] *(300/288) < $temp_seconds) {
+				if (!isset($last)) {
+					$ds_step = $rra["steps"];
+					$seconds_between_graph_updates = $rra["steps"] * 300;
+				} else {
+					$rra = $last;
+					$ds_step = $rra["steps"];;
+					$seconds_between_graph_updates = $rra["steps"] * 300;
+
+				}
+
+				break;
+			}
+			$last = $rra;
+		}
+
+		if (!isset($ds_step)) {
+			$ds_step = 1;
+			$rra = $last;
+			$seconds_between_graph_updates = $rra["steps"] * 300;
+		}
+	}
+// cacti_log("The values are ds_step " . $ds_step . " RRA Steps " . $rra["steps"] . " Timespan " . $rra["timespan"]);
 
 	$graph = db_fetch_row("select
 		graph_local.host_id,
@@ -709,14 +743,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* 95th percentile */
 			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
-					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_start, $seconds_between_graph_updates), $graph_variables[$field_name][$graph_item_id]);
+					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_end - $graph_start, $seconds_between_graph_updates), $graph_variables[$field_name][$graph_item_id]);
+//cacti_log("Graph Variables are ->".$graph_variables[$field_name][$graph_item_id]);
 				}
 			}
 
 			/* bandwidth summation */
 			if (preg_match_all("/\|sum:(\d|auto):(current|total):(\d):(\d+|auto)\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
-					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_start, $seconds_between_graph_updates, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
+					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_end - $graph_start, $seconds_between_graph_updates, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
+//cacti_log("Graph Variables are ->".$graph_variables[$field_name][$graph_item_id]);
 				}
 			}
 		}
