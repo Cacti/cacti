@@ -1,6 +1,6 @@
 <?php
 /*
- V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+ V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -10,6 +10,9 @@
   28 Feb 2001: Currently indicate that we support LIMIT
   01 Dec 2001: dannym added support for default values
 */
+
+// security - hide paths
+if (!defined('ADODB_DIR')) die();
 
 include_once(ADODB_DIR."/drivers/adodb-postgres64.inc.php");
 
@@ -24,6 +27,7 @@ class ADODB_postgres7 extends ADODB_postgres64 {
 		$this->ADODB_postgres64();
 	}
 
+	
 	// the following should be compat with postgresql 7.2, 
 	// which makes obsolete the LIMIT limit,offset syntax
 	 function &SelectLimit($sql,$nrows=-1,$offset=-1,$inputarr=false,$secs2cache=0) 
@@ -47,7 +51,44 @@ class ADODB_postgres7 extends ADODB_postgres64 {
 		return $sql;
 	}
  	*/
-    function MetaForeignKeys($table, $owner=false, $upper=false)
+
+	// from  Edward Jaramilla, improved version - works on pg 7.4
+function MetaForeignKeys($table, $owner=false, $upper=false)
+{
+	$sql = 'SELECT t.tgargs as args
+	FROM
+	pg_trigger t,pg_class c,pg_proc p
+	WHERE
+	t.tgenabled AND
+	t.tgrelid = c.oid AND
+	t.tgfoid = p.oid AND
+	p.proname = \'RI_FKey_check_ins\' AND
+	c.relname = \''.strtolower($table).'\'
+	ORDER BY
+		t.tgrelid';
+	
+	$rs = $this->Execute($sql);
+	
+	if ($rs && !$rs->EOF) {
+		$arr =& $rs->GetArray();
+		$a = array();
+		foreach($arr as $v)
+		{
+			$data = explode(chr(0), $v['args']);
+			if ($upper) {
+				$a[strtoupper($data[2])][] = strtoupper($data[4].'='.$data[5]);
+			} else {
+			$a[$data[2]][] = $data[4].'='.$data[5];
+			}
+		}
+		return $a;
+	}
+	return false;
+}
+
+
+
+    function xMetaForeignKeys($table, $owner=false, $upper=false)
 	{
 
         $sql = '
@@ -137,7 +178,7 @@ class ADORecordSet_postgres7 extends ADORecordSet_postgres64{
 				$this->fields = @pg_fetch_array($this->_queryID,$this->_currentRow,$this->fetchMode);
 			
 				if (is_array($this->fields)) {
-					if (isset($this->_blobArr)) $this->_fixblobs();
+					if ($this->fields && isset($this->_blobArr)) $this->_fixblobs();
 					return true;
 				}
 			}

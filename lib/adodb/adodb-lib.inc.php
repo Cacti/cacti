@@ -1,10 +1,13 @@
 <?php
 
+// security - hide paths
+if (!defined('ADODB_DIR')) die();
+
 global $ADODB_INCLUDED_LIB;
 $ADODB_INCLUDED_LIB = 1;
 
 /* 
-V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+ @version V4.23 16 June 2004 (c) 2000-2004 John Lim (jlim\@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -20,9 +23,9 @@ function _array_change_key_case($an_array)
 {
 	if (is_array($an_array)) {
 		foreach($an_array as $key=>$value)
-        	$new_array[strtoupper($key)] = $value;
+			$new_array[strtoupper($key)] = $value;
 
-       	return $new_array;
+	   	return $new_array;
    }
 
 	return $an_array;
@@ -51,19 +54,15 @@ function _adodb_replace(&$zthis, $table, $fieldArray, $keyCol, $autoQuote, $has_
 				$uSet .= ",$k=$v";
 		}
 		 
-		$first = true;
+		$where = false;
 		foreach ($keyCol as $v) {
-			if ($first) {
-				$first = false;
-				$where = "$v=$fieldArray[$v]";
-			} else {
-				$where .= " and $v=$fieldArray[$v]";
-			}
+			if ($where) $where .= " and $v=$fieldArray[$v]";
+			else $where = "$v=$fieldArray[$v]";
 		}
 		
-		if ($uSet) {
+		if ($uSet && $where) {
 			$update = "UPDATE $table SET $uSet WHERE $where";
-		
+			
 			$rs = $zthis->Execute($update);
 			if ($rs) {
 				if ($zthis->poorAffectedRows) {
@@ -81,7 +80,6 @@ function _adodb_replace(&$zthis, $table, $fieldArray, $keyCol, $autoQuote, $has_
 				} else
 					 if (($zthis->Affected_Rows()>0)) return 1;
 			}
-				
 		}
 	//	print "<p>Error=".$this->ErrorNo().'<p>';
 		$first = true;
@@ -128,12 +126,12 @@ function _adodb_getmenu(&$zthis, $name,$defstr='',$blank1stItem=true,$multiple=f
 	
 	$value = '';
 	while(!$zthis->EOF) {
-		$zval = trim(reset($zthis->fields));
+		$zval = rtrim(reset($zthis->fields));
 		if (sizeof($zthis->fields) > 1) {
 			if (isset($zthis->fields[1]))
-				$zval2 = trim($zthis->fields[1]);
+				$zval2 = rtrim($zthis->fields[1]);
 			else
-				$zval2 = trim(next($zthis->fields));
+				$zval2 = rtrim(next($zthis->fields));
 		}
 		$selected = ($compareFields0) ? $zval : $zval2;
 		
@@ -147,7 +145,7 @@ function _adodb_getmenu(&$zthis, $name,$defstr='',$blank1stItem=true,$multiple=f
 		if (is_array($defstr))  {
 			
 			if (in_array($selected,$defstr)) 
-				$s .= "<option selected$value>".htmlspecialchars($zval).'</option>';
+				$s .= "<option selected='selected'$value>".htmlspecialchars($zval).'</option>';
 			else 
 				$s .= "\n<option".$value.'>'.htmlspecialchars($zval).'</option>';
 		}
@@ -215,11 +213,13 @@ function _adodb_getcount(&$zthis, $sql,$inputarr=false,$secs2cache=0)
 	//--------------------------------------------
 	// query rewrite failed - so try slower way...
 	
-	// strip off unneeded ORDER BY
-	$rewritesql = preg_replace('/(\sORDER\s+BY\s.*)/is','',$sql); 
+	// strip off unneeded ORDER BY if no UNION
+	if (preg_match('/\s*UNION\s*/is', $sql)) $rewritesql = $sql;
+	else $rewritesql = preg_replace('/(\sORDER\s+BY\s.*)/is','',$sql); 
+	
 	$rstest = &$zthis->Execute($rewritesql,$inputarr);
 	if ($rstest) {
-   		$qryRecs = $rstest->RecordCount();
+	  		$qryRecs = $rstest->RecordCount();
 		if ($qryRecs == -1) { 
 		global $ADODB_EXTENSION;
 		// some databases will return -1 on MoveLast() - change to MoveNext()
@@ -237,7 +237,7 @@ function _adodb_getcount(&$zthis, $sql,$inputarr=false,$secs2cache=0)
 		$rstest->Close();
 		if ($qryRecs == -1) return 0;
 	}
-
+	
 	return $qryRecs;
 }
 
@@ -363,11 +363,10 @@ function _adodb_getupdatesql(&$zthis,&$rs, $arrFields,$forceUpdate=false,$magicq
 		$arrFields = _array_change_key_case($arrFields);
 
 		$hasnumeric = isset($rs->fields[0]);
-		$updateSQL = '';
+		$setFields = '';
 		
 		// Loop through all of the fields in the recordset
 		for ($i=0, $max=$rs->FieldCount(); $i < $max; $i++) {
-		
 			// Get the field from the recordset
 			$field = $rs->FetchField($i);
 
@@ -387,47 +386,36 @@ function _adodb_getupdatesql(&$zthis,&$rs, $arrFields,$forceUpdate=false,$magicq
 				else if (isset($rs->fields[strtolower($upperfname)])) $val =  $rs->fields[strtolower($upperfname)];
 				else $val = '';
 				
+			
 				if ($forceUpdate || strcmp($val, $arrFields[$upperfname])) {
 					// Set the counter for the number of fields that will be updated.
 					$fieldUpdatedCount++;
 
 					// Based on the datatype of the field
 					// Format the value properly for the database
-					$mt = $rs->MetaType($field->type);
+				$type = $rs->MetaType($field->type);
 					
-					// "mike" <mike@partner2partner.com> patch and "Ryan Bailey" <rebel@windriders.com> 
-					//PostgreSQL uses a 't' or 'f' and therefore needs to be processed as a string ('C') type field.
-					if ((strncmp($zthis->databaseType,"postgres",8) === 0) && ($mt == "L")) $mt = "C";
 					// is_null requires php 4.0.4
-					if ((defined('ADODB_FORCE_NULLS') && is_null($arrFields[$upperfname])) || $arrFields[$upperfname] === 'null') 
-						$updateSQL .= $field->name . " = null, ";
-					else		
-					switch($mt) {
-						case 'null':
-						case "C":
-						case "X":
-						case 'B':
-							$updateSQL .= $field->name . " = " . $zthis->qstr($arrFields[$upperfname],$magicq) . ", ";
-							break;
-						case "D":
-							$updateSQL .= $field->name . " = " . $zthis->DBDate($arrFields[$upperfname]) . ", ";
-	   						break;
-						case "T":
-							$updateSQL .= $field->name . " = " . $zthis->DBTimeStamp($arrFields[$upperfname]) . ", ";
-							break;
-						default:
-							$val = $arrFields[$upperfname];
-							if (!is_numeric($val)) $val = (float) $val;
-							$updateSQL .= $field->name . " = " . $val  . ", ";
-							break;
-					};
-				};
-			};
-		};
+				if ((defined('ADODB_FORCE_NULLS') && is_null($arrFields[$upperfname])) || 
+					$arrFields[$upperfname] === 'null') {
+					$setFields .= $field->name . " = null, ";
+				} else {
+					if ($type == 'null') {
+						$type = 'C';
+					}
+					//we do this so each driver can customize the sql for
+					//DB specific column types. 
+					//Oracle needs BLOB types to be handled with a returning clause
+					//postgres has special needs as well
+					$setFields .= _adodb_column_sql($zthis, 'U', $type, $upperfname,
+													  $arrFields, $magicq);
+				}
+			}
+		}
+	}
 
 		// If there were any modified fields then build the rest of the update query.
 		if ($fieldUpdatedCount > 0 || $forceUpdate) {
-		
 					// Get the table name from the existing query.
 			preg_match("/FROM\s+".ADODB_TABLE_REGEX."/is", $rs->sql, $tableName);
 	
@@ -445,18 +433,15 @@ function _adodb_getupdatesql(&$zthis,&$rs, $arrFields,$forceUpdate=false,$magicq
 			if ($discard)
 				$whereClause[1] = substr($whereClause[1], 0, strlen($whereClause[1]) - strlen($discard[1]));
 			
-			// updateSQL will contain the full update query when all
-			// processing has completed.
-			$updateSQL = "UPDATE " . $tableName[1] . " SET ".substr($updateSQL, 0, -2);
+		$sql = 'UPDATE '.$tableName[1].' SET '.substr($setFields, 0, -2);
+		if (strlen($whereClause[1]) > 0) 
+			$sql .= ' WHERE '.$whereClause[1];
 
-			// If the recordset has a where clause then use that same where clause
-			// for the update.
-			if ($whereClause[1]) $updateSQL .= " WHERE " . $whereClause[1];
+		return $sql;
 
-			return $updateSQL;
 		} else {
 			return false;
-   		};
+	}
 }
 
 function adodb_key_exists($key, &$arr)
@@ -472,84 +457,230 @@ function adodb_key_exists($key, &$arr)
 	return false;
 }
 
+/**
+ * There is a special case of this function for the oci8 driver.
+ * The proper way to handle an insert w/ a blob in oracle requires
+ * a returning clause with bind variables and a descriptor blob.
+ * 
+ * 
+ */
 function _adodb_getinsertsql(&$zthis,&$rs,$arrFields,$magicq=false)
 {
+	$tableName = '';
 	$values = '';
 	$fields = '';
+	$recordSet = null;
 	$arrFields = _array_change_key_case($arrFields);
-	if (!$rs) {
-			printf(ADODB_BAD_RS,'GetInsertSQL');
-			return false;
-		}
-
-		$fieldInsertedCount = 0;
+	$fieldInsertedCount = 0;
 	
+	if (is_string($rs)) {
+		//ok we have a table name
+		//try and get the column info ourself.
+		$tableName = $rs;			
+	
+		//we need an object for the recordSet
+		//because we have to call MetaType.
+		//php can't do a $rsclass::MetaType()
+		$rsclass = $zthis->rsPrefix.$zthis->databaseType;
+		$recordSet =& new $rsclass(-1,$zthis->fetchMode);
+		$recordSet->connection = &$zthis;
+	
+		$columns = $zthis->MetaColumns( $tableName );
+	} else if (is_subclass_of($rs, 'adorecordset')) {
+		for ($i=0, $max=$rs->FieldCount(); $i < $max; $i++) 
+			$columns[] = $rs->FetchField($i);
+		$recordSet =& $rs;
+	
+	} else {
+		printf(ADODB_BAD_RS,'GetInsertSQL');
+		return false;
+	}
+
+	// Loop through all of the fields in the recordset
+	foreach( $columns as $field ) { 
+		$upperfname = strtoupper($field->name);
+		if (adodb_key_exists($upperfname,$arrFields)) {
+
+			// Set the counter for the number of fields that will be inserted.
+			$fieldInsertedCount++;
+
+			// Get the name of the fields to insert
+			$fields .= $field->name . ", ";
 		
-		// Loop through all of the fields in the recordset
-		for ($i=0, $max=$rs->FieldCount(); $i < $max; $i++) {
+			$type = $recordSet->MetaType($field->type);
+		
+			if ((defined('ADODB_FORCE_NULLS') && is_null($arrFields[$upperfname])) || 
+				$arrFields[$upperfname] === 'null') {
+				$values  .= "null, ";
+			} else {
+				//we do this so each driver can customize the sql for
+				//DB specific column types. 
+				//Oracle needs BLOB types to be handled with a returning clause
+				//postgres has special needs as well
+				$values .= _adodb_column_sql($zthis, 'I', $type, $upperfname,
+											   $arrFields, $magicq);
+			}				
+		}
+	}
 
-			// Get the field from the recordset
-			$field = $rs->FetchField($i);
-			// If the recordset field is one
-			// of the fields passed in then process.
-			$upperfname = strtoupper($field->name);
-			if (adodb_key_exists($upperfname,$arrFields)) {
+
+	// If there were any inserted fields then build the rest of the insert query.
+	if ($fieldInsertedCount <= 0)  return false;
 	
-				// Set the counter for the number of fields that will be inserted.
-				$fieldInsertedCount++;
+	// Get the table name from the existing query.
+	if (!$tableName) {
+		preg_match("/FROM\s+".ADODB_TABLE_REGEX."/is", $rs->sql, $tableName);
+			$tableName = $tableName[1];
+	}		
 
-				// Get the name of the fields to insert
-				$fields .= $field->name . ", ";
-				
-				$mt = $rs->MetaType($field->type);
-				
-				// "mike" <mike@partner2partner.com> patch and "Ryan Bailey" <rebel@windriders.com> 
-				//PostgreSQL uses a 't' or 'f' and therefore needs to be processed as a string ('C') type field.
-				if ((strncmp($zthis->databaseType,"postgres",8) === 0) && ($mt == "L")) $mt = "C";
+	// Strip off the comma and space on the end of both the fields
+	// and their values.
+	$fields = substr($fields, 0, -2);
+	$values = substr($values, 0, -2);
 
-				// Based on the datatype of the field
-				// Format the value properly for the database
-				if ((defined('ADODB_FORCE_NULLS') && is_null($arrFields[$upperfname])) || $arrFields[$upperfname] === 'null') 
-						$values .= "null, ";
-				else		
-				switch($mt) {
-					case "C":
-					case "X":
-					case 'B':
-						$values .= $zthis->qstr($arrFields[$upperfname],$magicq) . ", ";
-						break;
-					case "D":
-						$values .= $zthis->DBDate($arrFields[$upperfname]) . ", ";
-						break;
-					case "T":
-						$values .= $zthis->DBTimeStamp($arrFields[$upperfname]) . ", ";
-						break;
-					default:
-						$val = $arrFields[$upperfname];
-						if (!is_numeric($val)) $val = (float) $val;
-						$values .= $val . ", ";
-						break;
-				};
-			};
-	  	};
+	// Append the fields and their values to the insert query.
+	return 'INSERT INTO '.$tableName.' ( '.$fields.' ) VALUES ( '.$values.' )';
+}
 
-		// If there were any inserted fields then build the rest of the insert query.
-		if ($fieldInsertedCount > 0) {
-			// Get the table name from the existing query.
-			preg_match("/FROM\s+".ADODB_TABLE_REGEX."/is", $rs->sql, $tableName);
 
-			// Strip off the comma and space on the end of both the fields
-			// and their values.
-			$fields = substr($fields, 0, -2);
-			$values = substr($values, 0, -2);
+/**
+ * This private method is used to help construct
+ * the update/sql which is generated by GetInsertSQL and GetUpdateSQL.
+ * It handles the string construction of 1 column -> sql string based on
+ * the column type.  We want to do 'safe' handling of BLOBs
+ * 
+ * @param string the type of sql we are trying to create
+ *                'I' or 'U'. 
+ * @param string column data type from the db::MetaType() method  
+ * @param string the column name
+ * @param array the column value
+ * 
+ * @return string
+ * 
+ */
+function _adodb_column_sql_oci8(&$zthis,$action, $type, $fname, $arrFields, $magicq) 
+{
+    $sql = '';
+    
+    // Based on the datatype of the field
+    // Format the value properly for the database
+    switch($type) {
+    case 'B':
+        //in order to handle Blobs correctly, we need
+        //to do some magic for Oracle
 
-			// Append the fields and their values to the insert query.
-			$insertSQL = "INSERT INTO " . $tableName[1] . " ( $fields ) VALUES ( $values )";
+        //we need to create a new descriptor to handle 
+        //this properly
+        if (!empty($zthis->hasReturningInto)) {
+            if ($action == 'I') {
+                $sql = 'empty_blob(), ';
+            } else {
+                $sql = $fname. '=empty_blob(), ';
+            }
+            //add the variable to the returning clause array
+            //so the user can build this later in
+            //case they want to add more to it
+            $zthis->_returningArray[$fname] = ':xx'.$fname.'xx';
+        } else if (empty($arrFields[$fname])){
+            if ($action == 'I') {
+                $sql = 'empty_blob(), ';
+            } else {
+                $sql = $fname. '=empty_blob(), ';
+            }            
+        } else {
+            //this is to maintain compatibility
+            //with older adodb versions.
+            $sql = _adodb_column_sql($zthis, $action, $type, $fname, $arrFields, $magicq,false);
+        }
+        break;
 
-			return $insertSQL;
+    case "X":
+        //we need to do some more magic here for long variables
+        //to handle these correctly in oracle.
 
-		} else {
-			return false;
-   		};
+        //create a safe bind var name
+        //to avoid conflicts w/ dupes.
+       if (!empty($zthis->hasReturningInto)) {
+            if ($action == 'I') {
+                $sql = ':xx'.$fname.'xx, ';                
+            } else {
+                $sql = $fname.'=:xx'.$fname.'xx, ';
+            }
+            //add the variable to the returning clause array
+            //so the user can build this later in
+            //case they want to add more to it
+            $zthis->_returningArray[$fname] = ':xx'.$fname.'xx';
+        } else {
+            //this is to maintain compatibility
+            //with older adodb versions.
+            $sql = _adodb_column_sql($zthis, $action, $type, $fname, $arrFields, $magicq,false);
+        }            
+        break;
+        
+    default:
+        $sql = _adodb_column_sql($zthis, $action, $type, $fname, $arrFields, $magicq,false);
+        break;
+    }
+    
+    return $sql;
+}    
+	
+function _adodb_column_sql(&$zthis, $action, $type, $fname, $arrFields, $magicq, $recurse=true) 
+{
+
+	if ($recurse) {
+		switch($zthis->dataProvider)  {
+		case 'postgres':
+			if ($type == 'L') $type = 'C';
+			break;
+		case 'oci8':
+			return _adodb_column_sql_oci8($zthis, $action, $type, $fname, $arrFields, $magicq);
+			
+		}
+	}
+	
+	$sql = '';
+
+	switch($type) {
+		case "C":
+		case "X":
+		case 'B':
+			if ($action == 'I') {
+				$sql = $zthis->qstr($arrFields[$fname],$magicq) . ", ";
+			} else {
+				$sql .= $fname . "=" . $zthis->qstr($arrFields[$fname],$magicq) . ", ";
+			}
+		  break;
+
+		case "D":
+			if ($action == 'I') {
+				$sql = $zthis->DBDate($arrFields[$fname]) . ", ";
+			} else {
+				$sql .= $fname . "=" . $zthis->DBDate($arrFields[$fname]) . ", ";
+			}
+			break;
+
+		case "T":
+			if ($action == 'I') {
+				$sql = $zthis->DBTimeStamp($arrFields[$fname]) . ", ";
+			} else {
+				$sql .= $fname . "=" . $zthis->DBTimeStamp($arrFields[$fname]) . ", ";
+			}
+			break;
+
+		default:
+			$val = $arrFields[$fname];
+			if (empty($val)) $val = '0';
+
+
+			if ($action == 'I') {
+				$sql .= $val . ", ";
+			} else {
+				$sql .= $fname . "=" . $val  . ", ";
+			}
+			break;
+	}
+
+	return $sql;
 }
 ?>

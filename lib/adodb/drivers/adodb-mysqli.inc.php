@@ -1,6 +1,6 @@
 <?php
 /*
-V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -12,6 +12,10 @@ V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 21 October 2003: MySQLi extension implementation by Arjen de Rijke (a.de.rijke@xs4all.nl)
 Based on adodb 3.40
 */ 
+
+// security - hide paths
+if (!defined('ADODB_DIR')) die();
+
 if (! defined("_ADODB_MYSQL_LAYER")) {
  define("_ADODB_MYSQL_LAYER", 1 );
  
@@ -34,13 +38,10 @@ class ADODB_mysqli extends ADOConnection {
 	var $forceNewConnect = false;
 	var $poorAffectedRows = true;
 	var $clientFlags = 0;
-	var $dbxDriver = 1;
-	// Only execute the query or get the resultset as well.
-	// Choose between using mysql_query or mysql_real_query
 	var $executeOnly = true;
-	// Transfer entire resultset
-	var $getAllResults = true;
 	var $substr = "substring";
+	var $nameQuote = '`';		/// string to use to quote identifiers and names
+	//var $_bindInputArray = true;
 	
 	function ADODB_mysqli() 
 	{			
@@ -104,20 +105,12 @@ class ADODB_mysqli extends ADOConnection {
 	//Eg. $s = $db->qstr(HTTP_GET_VARS['name'],get_magic_quotes_gpc());
 	function qstr($s, $magic_quotes = false)
 	{
-	  if (!$magic_quotes) {
-	    if (ADODB_PHPVER >= 0x5000) {
-	      $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
-	      return "'" . mysqli_real_escape_string($this->_connectionID, $s) . "'";
-	    }
-	    else
-	      {
-		trigger_error("phpver < 5 not implemented", E_USER_ERROR);
-	      }
+		if (!$magic_quotes) {
+	    	if (PHP_VERSION >= 5)
+	      		return "'" . mysqli_real_escape_string($this->_connectionID, $s) . "'";   
 	    
-	    if ($this->replaceQuote[0] == '\\')
-	      {
-		$s = adodb_str_replace(array('\\',"\0"),array('\\\\',"\\\0"),$s);
-	      }
+		if ($this->replaceQuote[0] == '\\')
+			$s = adodb_str_replace(array('\\',"\0"),array('\\\\',"\\\0"),$s);
 	    return  "'".str_replace("'",$this->replaceQuote,$s)."'"; 
 	  }
 	  // undo magic quotes for "
@@ -127,26 +120,22 @@ class ADODB_mysqli extends ADOConnection {
 	
 	function _insertid()
 	{
-	  $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
+//	  $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
 	  $result = @mysqli_insert_id($this->_connectionID);
-	  if ($result == -1)
-	    {
-	      if ($this->debug) 
-		ADOConnection::outp("mysqli_insert_id() failed : "  . $this->ErrorMsg());
-	    }
+	  if ($result == -1){
+	      if ($this->debug) ADOConnection::outp("mysqli_insert_id() failed : "  . $this->ErrorMsg());
+	  }
 	  return $result;
 	}
 	
 	// Only works for INSERT, UPDATE and DELETE query's
 	function _affectedrows()
 	{
-	  $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
+	//  $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
 	  $result =  @mysqli_affected_rows($this->_connectionID);
-	  if ($result == -1)
-	    {
-	      if ($this->debug) 
-		ADOConnection::outp("mysqli_addected_rows() failed : "  . $this->ErrorMsg());
-	    }
+	  if ($result == -1) {
+	      if ($this->debug) ADOConnection::outp("mysqli_affected_rows() failed : "  . $this->ErrorMsg());
+	  }
 	  return $result;
 	}
   
@@ -514,21 +503,18 @@ class ADODB_mysqli extends ADOConnection {
 		
 	// returns true or false
 	function SelectDB($dbName) 
-	  {
-	    $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
+	{
+//	    $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
 	    $this->databaseName = $dbName;
-	    if ($this->_connectionID) 
-	      {
-                $result = @mysqli_select_db($this->_connectionID, $dbName);
-		if (!$result)
-		  {
-		    ADOConnection::outp("Select of database " . $dbName . " failed. " . $this->ErrorMsg());
-		  }
-		return $result;		
-	      }
-	    else 
-	      return false;	
-	  }
+	    if ($this->_connectionID) {
+        	$result = @mysqli_select_db($this->_connectionID, $dbName);
+			if (!$result) {
+		    	ADOConnection::outp("Select of database " . $dbName . " failed. " . $this->ErrorMsg());
+			}
+			return $result;		
+		}
+	    return false;	
+	}
 	
 	// parameters use PostgreSQL convention, not MySQL
 	function &SelectLimit($sql,
@@ -548,77 +534,46 @@ class ADODB_mysqli extends ADOConnection {
 		return $rs;
 	}
 	
+	
+	function Prepare($sql)
+	{
+		return $sql;
+		
+		$stmt = mysqli_prepare($this->_connectionID,$sql);
+		if (!$stmt) return false;
+		return array($sql,$stmt);
+	}
+	
+	
 	// returns queryID or false
 	function _query($sql, $inputarr)
-	  {
-	    $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
-	    if ($this->executeOnly)
-	      {
-		if (mysqli_real_query($this->_connectionID, $sql))
-		  {
-		  if ($this->getAllResults)
-		    {
-		      if ( mysqli_field_count($this->_connectionID) == 0)
-			{
-			  return null;
+	{
+	global $ADODB_COUNTRECS;
+	
+		if (is_array($sql)) {
+			$stmt = $sql[1];
+			foreach($inputarr as $k => $v) {
+				if (is_string($v)) $a[] = MYSQLI_BIND_STRING;
+				else if (is_integer($v)) $a[] = MYSQLI_BIND_INT; 
+				else $a[] = MYSQLI_BIND_DOUBLE;
+				
+				$fnarr =& array_merge( array($stmt,$a) , $inputarr);
+				$ret = call_user_func_array('mysqli_bind_param',$fnarr);
 			}
-		      $mysql_res = mysqli_store_result($this->_connectionID);
-		      //
-		      if (is_null($mysql_res))
-			{
-			  if ($this->debug) 
-			    ADOConnection::outp("Query: " . $sql . " failed. " . $this->ErrorMsg());
-			  return false;
-			}
-		      else
-			return $mysql_res;
-		    }
-		  else
-		    {
-		      $mysql_res = mysqli_use_result($this->_connectionID);
-		      if (is_null($mysql_res))
-			{
-			  if ($this->debug) 
-			    ADOConnection::outp("Query: " . $sql . " failed. " . $this->ErrorMsg());
-			  return false;
-			}
-		      else
-			return $mysql_res;
-		    }
- 		  }
- 		else
- 		  {
-		    if ($this->debug) 
-		      ADOConnection::outp("Query: " . $sql . " failed. " . $this->ErrorMsg());
+			$ret = mysqli_execute($stmt);
+			return $ret;
+		}
+		if (!$mysql_res =  mysqli_query($this->_connectionID, $sql, ($ADODB_COUNTRECS) ? MYSQLI_STORE_RESULT : MYSQLI_USE_RESULT)) {
+		    if ($this->debug) ADOConnection::outp("Query: " . $sql . " failed. " . $this->ErrorMsg());
 		    return false;
- 		  }
-	      }
-	    else
-	      {
-		$mysql_res =  mysqli_query($this->_connectionID, $sql);
-		if (is_null($mysql_res))
-		  {
-		    if ($this->debug) 
-		      ADOConnection::outp("Query: " . $sql . " failed. " . $this->ErrorMsg());
-		    return false;
-		  }
-		else
-		  return $mysql_res;
-	      }
-	    
-            // Do we need this?
-	    global $ADODB_COUNTRECS;
-	    if($ADODB_COUNTRECS) 
-	      {
-		// If the entire recordset is not loaded, than 
-		// find another way to count the number of records.
-	      }
-	  }
+		}
+		
+		return $mysql_res;
+	}
 
 	/*	Returns: the last error message from previous database operation	*/	
 	function ErrorMsg() 
 	  {
-	    $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
 	    if (empty($this->_connectionID)) 
 	      $this->_errorMsg = @mysqli_error();
 	    else 
@@ -629,7 +584,6 @@ class ADODB_mysqli extends ADOConnection {
 	/*	Returns: the last error number from previous database operation	*/	
 	function ErrorNo() 
 	  {
-	    $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
 	    if (empty($this->_connectionID))  
 	      return @mysqli_errno();
 	    else 
@@ -639,7 +593,6 @@ class ADODB_mysqli extends ADOConnection {
 	// returns true or false
 	function _close()
 	  {
-	    $this->_connectionID = $this->mysqli_resolve_link($this->_connectionID);
 	    @mysqli_close($this->_connectionID);
 	    $this->_connectionID = false;
 	  }
@@ -660,23 +613,7 @@ class ADODB_mysqli extends ADOConnection {
 	  return 4294967295; 
 	}
 
-	// Added 09-10-2003
-	// Let op: de default waarde van $link zou ook false kunnen zijn.
-	function mysqli_resolve_link($link) {
-	  if(is_null($link)) {
-            if(!is_object($this->_connectionID)) 
-	      {
-		trigger_error("A connection must be made to the database (invalid link handle)", E_USER_ERROR);
-	      } 
-	    else 
-	      {
-		// usually, $link = $this->_connectionID
-		return $this->_connectionID;
-	      }
-	  }
-	  return $link;
-	}
-	
+
 }
  
 /*--------------------------------------------------------------------------------------
@@ -713,27 +650,24 @@ class ADORecordSet_mysqli extends ADORecordSet{
 	}
 	
 	function _initrs()
-	  {
+	{
 	    // mysqli_num_rows only return correct number, depens
 	    // on the use of mysql_store_result and mysql_use_result
-	    if (!$this->Connection->executeOnly)
-	      {
-		// $getAllResults = true;
-		$this->_numOfRows = @mysqli_num_rows($this->_queryID);
-		$this->_numOfFields = @mysqli_num_fields($this->_queryID);
-	      }
-	    else
-	      {
-		$this->_numOfRows = 0;
-		$this->_numOfFields = 0;
-	      }
-	  }
+	    if (!$this->Connection->executeOnly) {
+			$this->_numOfRows = @mysqli_num_rows($this->_queryID);
+			$this->_numOfFields = @mysqli_num_fields($this->_queryID);
+	    }
+	    else {
+			$this->_numOfRows = 0;
+			$this->_numOfFields = 0;
+	    }
+	}
 	
 	function &FetchField($fieldOffset = -1) 
 	{	
 	  $fieldnr = $fieldOffset;
 	  if ($fieldOffset != -1) {
-	    $fieldOffset = mysqi_field_seek($this->_queryID, $fieldnr);
+	    $fieldOffset = mysqli_field_seek($this->_queryID, $fieldnr);
 	  }
 	  $o = mysqli_fetch_field($this->_queryID);
 	  return $o;
@@ -814,7 +748,8 @@ class ADORecordSet_mysqli extends ADORecordSet{
 	  return is_array($this->fields);
 	}
 	
-	function _close() {
+	function _close() 
+	{
 	  mysqli_free_result($this->_queryID); 
 	  $this->_queryID = false;	
 	}

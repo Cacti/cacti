@@ -1,6 +1,6 @@
 <?php
 /*
-V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -11,6 +11,9 @@ V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
   
  28 Feb 2001: MetaColumns bug fix - suggested by  Freek Dijkstra (phpeverywhere@macfreek.com)
 */ 
+
+// security - hide paths
+if (!defined('ADODB_DIR')) die();
 
 if (! defined("_ADODB_MYSQL_LAYER")) {
  define("_ADODB_MYSQL_LAYER", 1 );
@@ -34,8 +37,8 @@ class ADODB_mysql extends ADOConnection {
 	var $forceNewConnect = false;
 	var $poorAffectedRows = true;
 	var $clientFlags = 0;
-	var $dbxDriver = 1;
 	var $substr = "substring";
+	var $nameQuote = '`';		/// string to use to quote identifiers and names
 	
 	function ADODB_mysql() 
 	{			
@@ -43,7 +46,7 @@ class ADODB_mysql extends ADOConnection {
 	
 	function ServerInfo()
 	{
-		$arr['description'] = $this->GetOne("select version()");
+		$arr['description'] = ADOConnection::GetOne("select version()");
 		$arr['version'] = ADOConnection::_findvers($arr['description']);
 		return $arr;
 	}
@@ -55,68 +58,71 @@ class ADODB_mysql extends ADOConnection {
 	
 	function &MetaTables($ttype=false,$showSchema=false,$mask=false) 
 	{	
+		$save = $this->metaTablesSQL;
+		if ($showSchema) {
+			$this->metaTablesSQL .= " from $showSchema";
+		}
+		
 		if ($mask) {
-			$save = $this->metaTablesSQL;
 			$mask = $this->qstr($mask);
 			$this->metaTablesSQL .= " like $mask";
 		}
 		$ret =& ADOConnection::MetaTables($ttype,$showSchema);
 		
-		if ($mask) {
-			$this->metaTablesSQL = $save;
-		}
+		$this->metaTablesSQL = $save;
 		return $ret;
 	}
 	
+	
 	function &MetaIndexes ($table, $primary = FALSE, $owner=false)
 	{
-	        // save old fetch mode
-	        global $ADODB_FETCH_MODE;
-	        
-	        $save = $ADODB_FETCH_MODE;
-	        $ADODB_FETCH_MODE = ADODB_FETCH_NUM;
-	        if ($this->fetchMode !== FALSE) {
-	               $savem = $this->SetFetchMode(FALSE);
-	        }
-	        
-	        // get index details
-	        $rs = $this->Execute(sprintf('SHOW INDEXES FROM %s',$table));
-	        
-	        // restore fetchmode
-	        if (isset($savem)) {
-	                $this->SetFetchMode($savem);
-	        }
-	        $ADODB_FETCH_MODE = $save;
-	        
-	        if (!is_object($rs)) {
-	                return FALSE;
-	        }
-	        
-	        $indexes = array ();
-	        
-	        // parse index data into array
-	        while ($row = $rs->FetchRow()) {
-	                if ($primary == FALSE AND $row[2] == 'PRIMARY') {
-	                        continue;
-	                }
-	                
-	                if (!isset($indexes[$row[2]])) {
-	                        $indexes[$row[2]] = array(
-	                                'unique' => ($row[1] == 0),
-	                                'columns' => array()
-	                        );
-	                }
-	                
-	                $indexes[$row[2]]['columns'][$row[3] - 1] = $row[4];
-	        }
-	        
-	        // sort columns by order in the index
-	        foreach ( array_keys ($indexes) as $index )
-	        {
-	                ksort ($indexes[$index]['columns']);
-	        }
-	        
-	        return $indexes;
+        // save old fetch mode
+        global $ADODB_FETCH_MODE;
+        
+        $save = $ADODB_FETCH_MODE;
+        $ADODB_FETCH_MODE = ADODB_FETCH_NUM;
+        if ($this->fetchMode !== FALSE) {
+               $savem = $this->SetFetchMode(FALSE);
+        }
+        
+        // get index details
+        $rs = $this->Execute(sprintf('SHOW INDEX FROM %s',$table));
+        
+        // restore fetchmode
+        if (isset($savem)) {
+                $this->SetFetchMode($savem);
+        }
+        $ADODB_FETCH_MODE = $save;
+        
+        if (!is_object($rs)) {
+                return FALSE;
+        }
+        
+        $indexes = array ();
+        
+        // parse index data into array
+        while ($row = $rs->FetchRow()) {
+                if ($primary == FALSE AND $row[2] == 'PRIMARY') {
+                        continue;
+                }
+                
+                if (!isset($indexes[$row[2]])) {
+                        $indexes[$row[2]] = array(
+                                'unique' => ($row[1] == 0),
+                                'columns' => array()
+                        );
+                }
+                
+                $indexes[$row[2]]['columns'][$row[3] - 1] = $row[4];
+        }
+        
+        // sort columns by order in the index
+        foreach ( array_keys ($indexes) as $index )
+        {
+                ksort ($indexes[$index]['columns']);
+        }
+        
+        return $indexes;
 	}
 
 	
@@ -430,6 +436,8 @@ class ADODB_mysql extends ADOConnection {
 	function &SelectLimit($sql,$nrows=-1,$offset=-1,$inputarr=false,$secs=0)
 	{
 		$offsetStr =($offset>=0) ? "$offset," : '';
+		// jason judge, see http://phplens.com/lens/lensforum/msgs.php?id=9220
+		if ($nrows < 0) $nrows = '18446744073709551615'; 
 		
 		if ($secs)
 			$rs =& $this->CacheExecute($secs,$sql." LIMIT $offsetStr$nrows",$inputarr);

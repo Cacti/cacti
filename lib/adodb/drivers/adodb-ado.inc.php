@@ -1,19 +1,24 @@
 <?php
 /* 
-V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
 Set tabs to 4 for best viewing.
   
-  Latest version is available at http://php.weblogs.com/
+  Latest version is available at http://adodb.sourceforge.net
   
 	Microsoft ADO data driver. Requires ADO. Works only on MS Windows.
 */
-  define("_ADODB_ADO_LAYER", 1 );
+
+// security - hide paths
+if (!defined('ADODB_DIR')) die();
+	
+define("_ADODB_ADO_LAYER", 1 );
 /*--------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------*/
-  
+
+	
 class ADODB_ado extends ADOConnection {
 	var $databaseType = "ado";	
 	var $_bindInputArray = false;
@@ -45,7 +50,9 @@ class ADODB_ado extends ADOConnection {
 	
 	function _affectedrows()
 	{
-			return $this->_affectedRows->value;
+		if (PHP_VERSION >= 5) return $this->_affectedRows;
+		
+		return $this->_affectedRows->value;
 	}
 	
 	// you can also pass a connection string like this:
@@ -547,7 +554,7 @@ class ADORecordSet_ado extends ADORecordSet {
 			switch($t) {
 			case 135: // timestamp
 				if (!strlen((string)$f->value)) $this->fields[] = false;
-				else $this->fields[] = adodb_date('Y-m-d H:i:s',(integer)$f->value);
+				else $this->fields[] = adodb_date('Y-m-d H:i:s',(float)$f->value);
 				break;			
 			case 133:// A date value (yyyymmdd) 
 				if ($val = $f->value) {
@@ -557,7 +564,7 @@ class ADORecordSet_ado extends ADORecordSet {
 				break;
 			case 7: // adDate
 				if (!strlen((string)$f->value)) $this->fields[] = false;
-				else $this->fields[] = adodb_date('Y-m-d',(integer)$f->value);
+				else $this->fields[] = adodb_date('Y-m-d',(float)$f->value);
 				break;
 			case 1: // null
 				$this->fields[] = false;

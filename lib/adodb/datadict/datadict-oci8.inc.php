@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -9,6 +9,9 @@
   Set tabs to 4 for best viewing.
  
 */
+
+// security - hide paths
+if (!defined('ADODB_DIR')) die();
 
 class ADODB2_oci8 extends ADODB_DataDict {
 	
@@ -40,7 +43,7 @@ class ADODB2_oci8 extends ADODB_DataDict {
 			return 'X2';
 			
 		case 'NCLOB':
-		case 'CLOB';
+		case 'CLOB':
 			return 'XL';
 		
 		case 'LONG RAW':
@@ -211,18 +214,37 @@ end;
 	
 	function _IndexSQL($idxname, $tabname, $flds,$idxoptions)
 	{
-		if (isset($idxoptions['REPLACE'])) $sql[] = "DROP INDEX $idxname";
+		$sql = array();
+		
+		if ( isset($idxoptions['REPLACE']) || isset($idxoptions['DROP']) ) {
+			$sql[] = sprintf ($this->dropIndex, $idxname, $tabname);
+			if ( isset($idxoptions['DROP']) )
+				return $sql;
+		}
+		
+		if ( empty ($flds) ) {
+			return $sql;
+		}
+		
 		if (isset($idxoptions['BITMAP'])) {
 			$unique = ' BITMAP'; 
-		} else if (isset($idxoptions['UNIQUE'])) 
+		} elseif (isset($idxoptions['UNIQUE'])) {
 			$unique = ' UNIQUE';
-		else 
+		} else {
 			$unique = '';
+		}
 		
-		if (is_array($flds)) $flds = implode(', ',$flds);
-		$s = "CREATE$unique INDEX $idxname ON $tabname ($flds)";
-		if (isset($idxoptions[$this->upperName])) $s .= $idxoptions[$this->upperName];
-		if (isset($idxoptions['oci8'])) $s .= $idxoptions['oci8'];
+		if ( is_array($flds) )
+			$flds = implode(', ',$flds);
+		$s = 'CREATE' . $unique . ' INDEX ' . $idxname . ' ON ' . $tabname . ' (' . $flds . ')';
+		
+		if ( isset($idxoptions[$this->upperName]) )
+			$s .= $idxoptions[$this->upperName];
+		
+		if (isset($idxoptions['oci8']))
+			$s .= $idxoptions['oci8'];
+		
+
 		$sql[] = $s;
 		
 		return $sql;

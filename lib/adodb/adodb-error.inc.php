@@ -1,6 +1,6 @@
 <?php
 /** 
- * @version V4.05 13 Dec 2003 (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+ * @version V4.23 16 June 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
  * Released under both BSD license and Lesser GPL library license. 
  * Whenever there is any discrepancy between the two licenses, 
  * the BSD license will take precedence. 
@@ -10,6 +10,7 @@
  * The following code is adapted from the PEAR DB error handling code.
  * Portions (c)1997-2002 The PHP Group.
  */
+
 
 if (!defined("DB_ERROR")) define("DB_ERROR",-1);
 
@@ -89,6 +90,7 @@ function adodb_error($provider,$dbType,$errno)
 
 function adodb_error_pg($errormsg)
 {
+	if (is_numeric($errormsg)) return (integer) $errormsg;
     static $error_regexps = array(
             '/(Table does not exist\.|Relation [\"\'].*[\"\'] does not exist|sequence does not exist|class ".+" not found)$/' => DB_ERROR_NOSUCHTABLE,
             '/Relation [\"\'].*[\"\'] already exists|Cannot insert a duplicate key into (a )?unique index.*/'      => DB_ERROR_ALREADY_EXISTS,
@@ -96,7 +98,9 @@ function adodb_error_pg($errormsg)
             '/pg_atoi: error in .*: can\'t parse /' => DB_ERROR_INVALID_NUMBER,
             '/ttribute [\"\'].*[\"\'] not found|Relation [\"\'].*[\"\'] does not have attribute [\"\'].*[\"\']/' => DB_ERROR_NOSUCHFIELD,
             '/parser: parse error at or near \"/'   => DB_ERROR_SYNTAX,
-            '/referential integrity violation/'     => DB_ERROR_CONSTRAINT
+            '/referential integrity violation/'     => DB_ERROR_CONSTRAINT,
+			'/Relation [\"\'].*[\"\'] already exists|Cannot insert a duplicate key into (a )?unique index.*|duplicate key violates unique constraint/'     
+			 	 => DB_ERROR_ALREADY_EXISTS
         );
 	reset($error_regexps);
     while (list($regexp,$code) = each($error_regexps)) {
@@ -190,6 +194,7 @@ static $MAP = array(
 function adodb_error_oci8()
 {
 static $MAP = array(
+			 1 => DB_ERROR_ALREADY_EXISTS,
             900 => DB_ERROR_SYNTAX,
             904 => DB_ERROR_NOSUCHFIELD,
             923 => DB_ERROR_SYNTAX,

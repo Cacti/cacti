@@ -1,12 +1,12 @@
 <?php
 /* 
-V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
   Set tabs to 4 for best viewing.
   
-  Latest version is available at http://php.weblogs.com/
+  Latest version is available at http://adodb.sourceforge.net
   
   Library for basic performance monitoring and tuning.
   
@@ -19,6 +19,12 @@ V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 if (!defined(ADODB_DIR)) include_once(dirname(__FILE__).'/adodb.inc.php');
 include_once(ADODB_DIR.'/tohtml.inc.php');
 
+
+// avoids localization problems where , is used instead of .
+function adodb_round($n,$prec)
+{
+	return number_format($n, $prec, '.', '');
+}
 
 /* return microtime value as a float */
 function adodb_microtime()
@@ -33,6 +39,7 @@ function& adodb_log_sql(&$conn,$sql,$inputarr)
 {
 global $HTTP_SERVER_VARS;
 	
+    $perf_table = adodb_perf::table();
 	$conn->fnExecute = false;
 	$t0 = microtime();
 	$rs =& $conn->Execute($sql,$inputarr);
@@ -88,13 +95,13 @@ global $HTTP_SERVER_VARS;
 		
 		if (is_array($sql)) $sql = $sql[0];
 		$arr = array('b'=>trim(substr($sql,0,230)),
-					'c'=>substr($sql,0,3900), 'd'=>$params,'e'=>$tracer,'f'=>round($time,6));
-
+					'c'=>substr($sql,0,3900), 'd'=>$params,'e'=>$tracer,'f'=>adodb_round($time,6));
+		//var_dump($arr);
 		$saved = $conn->debug;
 		$conn->debug = 0;
 		
 		if ($conn->dataProvider == 'oci8' && $dbT != 'oci8po') {
-			$isql = "insert into adodb_logsql values($conn->sysTimeStamp,:b,:c,:d,:e,:f)";
+			$isql = "insert into $perf_table values($conn->sysTimeStamp,:b,:c,:d,:e,:f)";
 		} else if ($dbT == 'odbc_mssql' || $dbT == 'informix') {
 			$timer = $arr['f'];
 			if ($dbT == 'informix') $sql2 = substr($sql2,0,230);
@@ -104,11 +111,11 @@ global $HTTP_SERVER_VARS;
 			$params = $conn->qstr($arr['d']);
 			$tracer = $conn->qstr($arr['e']);
 			
-			$isql = "insert into adodb_logsql (created,sql0,sql1,params,tracer,timer) values($conn->sysTimeStamp,$sql1,$sql2,$params,$tracer,$timer)";
+			$isql = "insert into $perf_table (created,sql0,sql1,params,tracer,timer) values($conn->sysTimeStamp,$sql1,$sql2,$params,$tracer,$timer)";
 			if ($dbT == 'informix') $isql = str_replace(chr(10),' ',$isql);
 			$arr = false;
 		} else {
-			$isql = "insert into adodb_logsql (created,sql0,sql1,params,tracer,timer) values( $conn->sysTimeStamp,?,?,?,?,?)";
+			$isql = "insert into $perf_table (created,sql0,sql1,params,tracer,timer) values( $conn->sysTimeStamp,?,?,?,?,?)";
 		}
 		$ok = $conn->Execute($isql,$arr);
 		$conn->debug = $saved;
@@ -122,7 +129,7 @@ global $HTTP_SERVER_VARS;
 			if ($perf) {
 				if ($perf->CreateLogTable()) $ok = $conn->Execute($isql,$arr);
 			} else {
-				$ok = $conn->Execute("create table adodb_logsql (
+				$ok = $conn->Execute("create table $perf_table (
 				created varchar(50),
 				sql0 varchar(250), 
 				sql1 varchar(4000),
@@ -171,6 +178,16 @@ class adodb_perf {
 	var $createTableSQL = false;
 	var $maxLength = 2000;
 	
+    // Sets the tablename to be used            
+    function table($newtable = false)
+    {
+        static $_table;
+
+        if (!empty($newtable))  $_table = $newtable;
+		if (empty($_table)) $_table = 'adodb_logsql';
+        return $_table;
+    }
+
 	// returns array with info to calculate CPU Load
 	function _CPULoad()
 	{
@@ -290,10 +307,14 @@ Committed_AS:   348732 kB
 	
 	function Tracer($sql)
 	{
+        $perf_table = adodb_perf::table();
+		$saveE = $this->conn->fnExecute;
+		$this->conn->fnExecute = false;
+			
 		$sqlq = $this->conn->qstr($sql);
 		$arr = $this->conn->GetArray(
 "select count(*),tracer 
-	from adodb_logsql where sql1=$sqlq 
+	from $perf_table where sql1=$sqlq 
 	group by tracer
 	order by 1 desc");
 		$s = '';
@@ -303,6 +324,7 @@ Committed_AS:   348732 kB
 				$s .= sprintf("%4d",$k[0]).' &nbsp; '.strip_tags($k[1]).'<br>';
 			}
 		}
+		$this->conn->fnExecute = $saveE;
 		return $s;
 	}
 
@@ -324,7 +346,8 @@ Committed_AS:   348732 kB
 		$s = '<h3>Invalid SQL</h3>';
 		$saveE = $this->conn->fnExecute;
 		$this->conn->fnExecute = false;
-		$rs =& $this->conn->SelectLimit("select distinct count(*),sql1,tracer as error_msg from adodb_logsql where tracer like 'ERROR:%' group by sql1,tracer order by 1 desc",$numsql);//,$numsql);
+        $perf_table = adodb_perf::table();
+		$rs =& $this->conn->SelectLimit("select distinct count(*),sql1,tracer as error_msg from $perf_table where tracer like 'ERROR:%' group by sql1,tracer order by 1 desc",$numsql);//,$numsql);
 		$this->conn->fnExecute = $saveE;
 		if ($rs) {
 			$s .= rs2html($rs,false,false,false,false);
@@ -342,6 +365,7 @@ Committed_AS:   348732 kB
 	{
 		global $ADODB_FETCH_MODE,$HTTP_GET_VARS;
 		
+            $perf_table = adodb_perf::table();
 			$saveE = $this->conn->fnExecute;
 			$this->conn->fnExecute = false;
 			
@@ -358,7 +382,7 @@ Committed_AS:   348732 kB
 			//$this->conn->debug=1;
 			$rs =& $this->conn->SelectLimit(
 			"select avg(timer) as avg_timer,$sql1,count(*),max(timer) as max_timer,min(timer) as min_timer
-				from adodb_logsql
+				from $perf_table
 				where {$this->conn->upperCase}({$this->conn->substr}(sql0,1,5)) not in ('DROP ','INSER','COMMI','CREAT')
 				and (tracer is null or tracer not like 'ERROR:%')
 				group by sql1
@@ -384,7 +408,7 @@ Committed_AS:   348732 kB
 					$suffix = ' ... <i>String too long for GET parameter: '.strlen($prefix).'</i>';
 					$prefix = '';
 				}
-				$s .= "<tr><td>".round($rs->fields[0],6)."<td align=right>".$rs->fields[2]."<td><font size=-1>".$prefix.htmlspecialchars($sql).$suffix."</font>".
+				$s .= "<tr><td>".adodb_round($rs->fields[0],6)."<td align=right>".$rs->fields[2]."<td><font size=-1>".$prefix.htmlspecialchars($sql).$suffix."</font>".
 					"<td>".$rs->fields[3]."<td>".$rs->fields[4]."</tr>";
 				$rs->MoveNext();
 			}
@@ -418,6 +442,7 @@ Committed_AS:   348732 kB
 	{
 		global $HTTP_GET_VARS,$ADODB_FETCH_MODE;
 		
+            $perf_table = adodb_perf::table();
 			$saveE = $this->conn->fnExecute;
 			$this->conn->fnExecute = false;
 			
@@ -433,7 +458,7 @@ Committed_AS:   348732 kB
 			$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
 			$rs =& $this->conn->SelectLimit(
 			"select sum(timer) as total,$sql1,count(*),max(timer) as max_timer,min(timer) as min_timer
-				from adodb_logsql
+				from $perf_table
 				where {$this->conn->upperCase}({$this->conn->substr}(sql0,1,5))  not in ('DROP ','INSER','COMMI','CREAT')
 				and (tracer is null or tracer not like 'ERROR:%')
 				group by sql1
@@ -459,7 +484,7 @@ Committed_AS:   348732 kB
 					$prefix = '';
 					$suffix = '';
 				}
-				$s .= "<tr><td>".round($rs->fields[0],6)."<td align=right>".$rs->fields[2]."<td><font size=-1>".$prefix.htmlspecialchars($sql).$suffix."</font>".
+				$s .= "<tr><td>".adodb_round($rs->fields[0],6)."<td align=right>".$rs->fields[2]."<td><font size=-1>".$prefix.htmlspecialchars($sql).$suffix."</font>".
 					"<td>".$rs->fields[3]."<td>".$rs->fields[4]."</tr>";
 				$rs->MoveNext();
 			}
@@ -552,8 +577,9 @@ Committed_AS:   348732 kB
 	
 	function UI($pollsecs=5)
 	{
-	global $HTTP_GET_VARS,$HTTP_SERVER_VARS;
+	global $HTTP_GET_VARS,$HTTP_SERVER_VARS,$HTTP_POST_VARS;
 	
+    $perf_table = adodb_perf::table();
 	$conn = $this->conn;
 	
 	$app = $conn->host;
@@ -564,7 +590,7 @@ Committed_AS:   348732 kB
 	$savelog = $this->conn->LogSQL(false);	
 	$info = $conn->ServerInfo();
 	if (isset($HTTP_GET_VARS['clearsql'])) {
-		$this->conn->Execute('delete from adodb_logsql');
+		$this->conn->Execute("delete from $perf_table");
 	}
 	$this->conn->LogSQL($savelog);
 	
@@ -577,10 +603,11 @@ Committed_AS:   348732 kB
 	if (!isset($_SESSION['ADODB_PERF_SQL'])) $nsql = $_SESSION['ADODB_PERF_SQL'] = 10;
 	else  $nsql = $_SESSION['ADODB_PERF_SQL'];
 	
-	$app .= '<font size=-1>'.$info['description'].'</font>';
+	$app .= $info['description'];
 	
 	
 	if (isset($HTTP_GET_VARS['do'])) $do = $HTTP_GET_VARS['do'];
+	else if (isset($HTTP_POST_VARS['do'])) $do = $HTTP_POST_VARS['do'];
 	 else if (isset($HTTP_GET_VARS['sql'])) $do = 'viewsql';
 	 else $do = 'stats';
 	 
@@ -591,11 +618,14 @@ Committed_AS:   348732 kB
 	if ($do == 'viewsql') $form = "<td><form># SQL:<input type=hidden value=viewsql name=do> <input type=text size=4 name=nsql value=$nsql><input type=submit value=Go></td></form>";
 	else $form = "<td>&nbsp;</td>";
 	
+	$allowsql = !defined('ADODB_PERF_NO_RUN_SQL');
+	
 	if  (empty($HTTP_GET_VARS['hidem']))
 	echo "<table border=1 width=100% bgcolor=lightyellow><tr><td colspan=2>
-	<b><a href=http://php.weblogs.com/adodb?perf=1>ADOdb</a> Performance Monitor</b> for $app</tr><tr><td>
-	<a href=?do=stats>Performance Stats</a> &nbsp; <a href=?do=viewsql>View SQL</a>
-	 &nbsp; <a href=?do=tables>View Tables</a> &nbsp; <a href=?do=poll>Poll Stats</a>",
+	<b><a href=http://php.weblogs.com/adodb?perf=1>ADOdb</a> Performance Monitor</b> <font size=1>for $app</font></tr><tr><td>
+	<a href=?do=stats><b>Performance Stats</b></a> &nbsp; <a href=?do=viewsql><b>View SQL</b></a>
+	 &nbsp; <a href=?do=tables><b>View Tables</b></a> &nbsp; <a href=?do=poll><b>Poll Stats</b></a>",
+	 $allowsql ? ' &nbsp; <a href=?do=dosql><b>Run SQL</b></a>' : '',
 	 "$form",
 	 "</tr></table>";
 
@@ -604,7 +634,7 @@ Committed_AS:   348732 kB
 		default:
 		case 'stats':
 			echo $this->HealthCheck();
-			
+			//$this->conn->debug=1;
 			echo $this->CheckMemory();
 			break;
 		case 'poll':
@@ -614,6 +644,12 @@ Committed_AS:   348732 kB
 		case 'poll2':
 			echo "<pre>";
 			$this->Poll($pollsecs);
+			break;
+		
+		case 'dosql':
+			if (!$allowsql) break;
+			
+			$this->DoSQLForm();
 			break;
 		case 'viewsql':
 			if (empty($HTTP_GET_VARS['hidem']))
@@ -770,8 +806,103 @@ Committed_AS:   348732 kB
 		$this->conn->LogSQL($savelog);
 		return ($ok) ? true : false;
 	}
-}
+	
+	function DoSQLForm()
+	{
+	global $HTTP_SERVER_VARS,$HTTP_GET_VARS,$HTTP_POST_VARS,$HTTP_SESSION_VARS;
+	
+		$HTTP_VARS = array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
+		
+		$PHP_SELF = $HTTP_SERVER_VARS['PHP_SELF'];
+		$sql = isset($HTTP_VARS['sql']) ? $HTTP_VARS['sql'] : '';
 
+		if (isset($HTTP_SESSION_VARS['phplens_sqlrows'])) $rows = $HTTP_SESSION_VARS['phplens_sqlrows'];
+		else $rows = 3;
+		
+		if (isset($HTTP_VARS['SMALLER'])) {
+			$rows /= 2;
+			if ($rows < 3) $rows = 3;
+			$HTTP_SESSION_VARS['phplens_sqlrows'] = $rows;
+		}
+		if (isset($HTTP_VARS['BIGGER'])) {
+			$rows *= 2;
+			$HTTP_SESSION_VARS['phplens_sqlrows'] = $rows;
+		}
+		
+?>
+
+<form method="POST" action="<?php echo $PHP_SELF ?>">
+<table><tr>
+<td> Form size: <input type="submit" value=" &lt; " name="SMALLER"><input type="submit" value=" &gt; &gt; " name="BIGGER">
+</td>
+<td align=right>
+<input type="submit" value=" Run SQL Below " name="RUN"><input type=hidden name=do value=dosql>
+</td></tr>
+  <tr>
+  <td colspan=2><textarea rows=<?php print $rows; ?> name="sql" cols="80"><?php print htmlspecialchars($sql) ?></textarea>
+  </td>
+  </tr>
+ </table>
+</form>
+
+<?php
+		if (!isset($HTTP_VARS['sql'])) return;
+		
+		$sql = $this->undomq(trim($sql));
+		if (substr($sql,strlen($sql)-1) === ';') {
+			$print = true;
+			$sqla = $this->SplitSQL($sql);
+		} else  {
+			$print = false;
+			$sqla = array($sql);
+		}
+		foreach($sqla as $sqls) {
+
+			if (!$sqls) continue;
+			
+			if ($print) {
+				print "<p>".htmlspecialchars($sqls)."</p>";
+				flush();
+			}
+			$savelog = $this->conn->LogSQL(false);
+			$rs = $this->conn->Execute($sqls);
+			$this->conn->LogSQL($savelog);
+			if ($rs && is_object($rs) && !$rs->EOF) {
+				rs2html($rs);
+				while ($rs->NextRecordSet()) {
+					print "<table width=98% bgcolor=#C0C0FF><tr><td>&nbsp;</td></tr></table>";
+					rs2html($rs);
+				}
+			} else {
+				$e1 = (integer) $this->conn->ErrorNo();
+				$e2 = $this->conn->ErrorMsg();
+				if (($e1) || ($e2)) {
+					if (empty($e1)) $e1 = '-1'; // postgresql fix
+					print ' &nbsp; '.$e1.': '.$e2;
+				} else {
+					print "<p>No Recordset returned<br></p>";
+				}
+			}
+		} // foreach
+	}
+	
+	function SplitSQL($sql)
+	{
+		$arr = explode(';',$sql);
+		return $arr;
+	}
+	
+	function undomq(&$m) 
+	{
+	if (get_magic_quotes_gpc()) {
+		// undo the damage
+		$m = str_replace('\\\\','\\',$m);
+		$m = str_replace('\"','"',$m);
+		$m = str_replace('\\\'','\'',$m);
+	}
+	return $m;
+}
+}
 
 
 

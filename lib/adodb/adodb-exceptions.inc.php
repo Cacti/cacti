@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+ * @version V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
  * Released under both BSD license and Lesser GPL library license.
  * Whenever there is any discrepancy between the two licenses,
  * the BSD license will take precedence.
@@ -12,7 +12,8 @@
  *
  * Exception-handling code using PHP5 exceptions (try-catch-throw).
  */
-	
+
+
 if (!defined('ADODB_ERROR_HANDLER_TYPE')) define('ADODB_ERROR_HANDLER_TYPE',E_USER_ERROR); 
 define('ADODB_ERROR_HANDLER','adodb_throw');
 
@@ -23,7 +24,7 @@ var $sql = '';
 var $params = '';
 var $host = '';
 var $database = '';
-
+	
 	function __construct($dbms, $fn, $errno, $errmsg, $p1, $p2, $thisConnection)
 	{
 		switch($fn) {
@@ -49,6 +50,7 @@ var $database = '';
 		$this->fn = $fn;
 		$this->msg = $errmsg;
 				
+		if (!is_numeric($errno)) $errno = -1;
 		parent::__construct($s,$errno);
 	}
 }
