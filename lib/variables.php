@@ -1,0 +1,202 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
+/* update_data_source_title_cache_from_template - updates the title cache for all data sources
+     that match a given data template
+   @arg $data_template_id - (int) the ID of the data template to match */
+function update_data_source_title_cache_from_template($data_template_id) {
+	$data = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=$data_template_id and local_data_id>0");
+	
+	if (sizeof($data) > 0) {
+	foreach ($data as $item) {
+		update_data_source_title_cache($item["local_data_id"]);
+	}
+	}
+}
+
+/* update_data_source_title_cache_from_query - updates the title cache for all data sources
+     that match a given data query/index combination
+   @arg $snmp_query_id - (int) the ID of the data query to match
+   @arg $snmp_index - the index within the data query to match */
+function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
+	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
+	
+	if (sizeof($data) > 0) {
+	foreach ($data as $item) {
+		update_data_source_title_cache($item["id"]);
+	}
+	}
+}
+
+/* update_data_source_title_cache_from_host - updates the title cache for all data sources
+     that match a given host
+   @arg $host_id - (int) the ID of the host to match */
+function update_data_source_title_cache_from_host($host_id) {
+	$data = db_fetch_assoc("select id from data_local where host_id=$host_id");
+	
+	if (sizeof($data) > 0) {
+	foreach ($data as $item) {
+		update_data_source_title_cache($item["id"]);
+	}
+	}
+}
+
+/* update_data_source_title_cache - updates the title cache for a single data source
+   @arg $local_data_id - (int) the ID of the data source to update the title cache for */
+function update_data_source_title_cache($local_data_id) {
+	db_execute("update data_template_data set name_cache='" . get_data_source_title($local_data_id) . "' where local_data_id=$local_data_id");
+}
+
+/* update_graph_title_cache_from_template - updates the title cache for all graphs
+     that match a given graph template
+   @arg $graph_template_id - (int) the ID of the graph template to match */
+function update_graph_title_cache_from_template($graph_template_id) {
+	$graphs = db_fetch_assoc("select local_graph_id from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id>0");
+	
+	if (sizeof($graphs) > 0) {
+	foreach ($graphs as $item) {
+		update_graph_title_cache($item["local_graph_id"]);
+	}
+	}
+}
+
+/* update_graph_title_cache_from_query - updates the title cache for all graphs
+     that match a given data query/index combination
+   @arg $snmp_query_id - (int) the ID of the data query to match
+   @arg $snmp_index - the index within the data query to match */
+function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
+	$graphs = db_fetch_assoc("select id from graph_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
+	
+	if (sizeof($graphs) > 0) {
+	foreach ($graphs as $item) {
+		update_graph_title_cache($item["id"]);
+	}
+	}
+}
+
+/* update_graph_title_cache_from_host - updates the title cache for all graphs
+     that match a given host
+   @arg $host_id - (int) the ID of the host to match */
+function update_graph_title_cache_from_host($host_id) {
+	$graphs = db_fetch_assoc("select id from graph_local where host_id=$host_id");
+	
+	if (sizeof($graphs) > 0) {
+	foreach ($graphs as $item) {
+		update_graph_title_cache($item["id"]);
+	}
+	}
+}
+
+/* update_graph_title_cache - updates the title cache for a single graph
+   @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
+function update_graph_title_cache($local_graph_id) {
+	db_execute("update graph_templates_graph set title_cache='" . get_graph_title($local_graph_id) . "' where local_graph_id=$local_graph_id");
+}
+
+/* null_out_substitutions - takes a string and cleans out any host variables that do not have values
+   @arg $string - the string to clean out unsubstituted variables for
+   @returns - the cleaned up string */
+function null_out_substitutions($string) {
+	return eregi_replace("\|host_(hostname|description|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
+}
+
+/* expand_title - takes a string and substitutes all data query variables contained in it or cleans
+     them out if no data query is in use
+   @arg $host_id - (int) the host ID to match
+   @arg $snmp_query_id - (int) the data query ID to match
+   @arg $snmp_index - the data query index to match
+   @arg $title - the original string that contains the data query variables
+   @returns - the original string with all of the variable substitutions made */
+function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
+	if ((strstr($title, "|")) && (!empty($host_id))) {
+		if (($snmp_query_id != "0") && ($snmp_index != "")) {
+			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, "|", "|", $host_id)), "|", "|", $host_id, $snmp_query_id, $snmp_index);
+		}else{
+			return null_out_substitutions(substitute_host_data($title, "|", "|", $host_id));
+		}
+	}else{
+		return null_out_substitutions($title);
+	}
+}
+
+/* substitute_data_query_path - takes a string and substitutes all path variables contained in it
+   @arg $path - the string to make path variable substitutions on
+   @returns - the original string with all of the variable substitutions made */
+function substitute_data_query_path($path) {
+	global $config;
+	
+	$path = clean_up_path(str_replace("|path_cacti|", $config["base_path"], $path));
+	$path = clean_up_path(str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path));
+	
+	return $path;
+}
+
+/* substitute_host_data - takes a string and substitutes all host variables contained in it
+   @arg $string - the string to make host variable substitutions on
+   @arg $l_escape_string - the character used to escape each variable on the left side
+   @arg $r_escape_string - the character used to escape each variable on the right side
+   @arg $host_id - (int) the host ID to match
+   @returns - the original string with all of the variable substitutions made */
+function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
+	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
+		$host = db_fetch_row("select description,hostname,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+		$_SESSION["sess_host_cache_array"][$host_id] = $host;
+	}
+	
+	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string); /* for compatability */
+	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
+	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
+	
+	return $string;
+}
+
+/* substitute_snmp_query_data - takes a string and substitutes all data query variables contained in it 
+   @arg $string - the original string that contains the data query variables
+   @arg $l_escape_string - the character used to escape each variable on the left side
+   @arg $r_escape_string - the character used to escape each variable on the right side
+   @arg $host_id - (int) the host ID to match
+   @arg $snmp_query_id - (int) the data query ID to match
+   @arg $snmp_index - the data query index to match
+   @returns - the original string with all of the variable substitutions made */
+function substitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
+	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
+	
+	if (sizeof($snmp_cache_data) > 0) {
+	foreach ($snmp_cache_data as $data) {
+		if ($data["field_value"] != "") {
+			$string = stri_replace($l_escape_string . "query_" . $data["field_name"] . $r_escape_string, substr($data["field_value"],0,read_config_option("max_data_query_field_length")), $string);
+		}
+	}
+	}
+	
+	return $string;
+}
+
+?>
