@@ -95,13 +95,13 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
 					<td nowrap>
-						&nbsp;<?php if ($show_console_tab == true) {?><a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Console" align="absmiddle" border="0"></a>&nbsp;
+						&nbsp;<?php if ($show_console_tab == true) {?><a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a>&nbsp;
 					</td>
 					<td>
 						<img src="images/cacti_backdrop2.gif" align="absmiddle">
 					</td>
 					<td align="right" nowrap>
-						<a href="graph_settings.php"><img src="images/tab_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings" align="absmiddle"></a>&nbsp;&nbsp;<a href="graph_view.php?action=tree"><img src="images/tab_mode_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View" align="absmiddle"></a><a href="graph_view.php?action=list"><img src="images/tab_mode_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View" align="absmiddle"></a><a href="graph_view.php?action=preview"><img src="images/tab_mode_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View" align="absmiddle"></a>&nbsp;<br>
+						<a href="graph_settings.php"><img src="images/tab_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings" align="absmiddle"></a>&nbsp;&nbsp;<a href="graph_view.php?action=tree"><img src="images/tab_mode_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><a href="graph_view.php?action=list"><img src="images/tab_mode_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><a href="graph_view.php?action=preview"><img src="images/tab_mode_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a>&nbsp;<br>
 					</td>
 				</tr>
 			</table>
