@@ -33,7 +33,7 @@ if (!isset($_SERVER["argv"][0])) {
 }
 
 /* define STDOUT/STDIN file descriptors if not running under CLI */
-if (php_sapi_name() == "cgi") {
+if (php_sapi_name() != "cli") {
 	define("STDIN", fopen('php://stdin', 'r'));
 	define("STDOUT", fopen('php://stdout', 'w'));
 }
