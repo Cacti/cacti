@@ -42,6 +42,11 @@ switch ($_REQUEST["action"]) {
 		
 		header ("Location: host.php?action=edit&id=" . $_GET["host_id"]);
 		break;
+	case 'query_reload':
+		host_reload_query();
+		
+		header ("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		break;
 	case 'new_graphs':
 		include_once ("include/top_header.php");
 		
@@ -167,6 +172,12 @@ function form_save() {
     Host Functions
    --------------------- */
 
+function host_reload_query() {
+	include_once ("include/snmp_functions.php");
+	
+	data_query($_GET["host_id"], $_GET["id"]);
+}
+
 function host_remove_query() {
 	db_execute("delete from host_snmp_cache where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
 	db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
@@ -184,6 +195,8 @@ function host_remove() {
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from host where id=" . $_GET["id"]);
+		db_execute("delete from host_snmp_query where host_id=" . $_GET["id"]);
+		db_execute("delete from host_snmp_cache where host_id=" . $_GET["id"]);
 	}
 }
 
@@ -869,11 +882,18 @@ function host_edit() {
 			
 			print "	<table width='98%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
 					<tr>
-						<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark' colspan='$num_input_fields'>
-							<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]
-						</td>
-						<td bgcolor='#" . $colors["header"] . "' align='right'>
-							<a href='host.php?action=query_remove&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/delete_icon_large.gif' alt='Delete Associated Query' border='0'></a>
+						<td bgcolor='#" . $colors["header"] . "' colspan='" . ($num_input_fields+1) . "'>
+							<table  cellspacing='0' cellpadding='0' width='100%' >
+								<tr>
+									<td class='textHeaderDark'>
+										<strong>SNMP Query</strong> [" . $snmp_query["name"] . "] - (Reload)
+									</td>
+									<td align='right' nowrap>
+										<a href='host.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/reload_icon_small.gif' alt='Reload Associated Query' border='0' align='absmiddle'></a>&nbsp;
+										<a href='host.php?action=query_remove&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/delete_icon_large.gif' alt='Delete Associated Query' border='0' align='absmiddle'></a>
+									</td>
+								</tr>
+							</table>
 						</td>
 					</tr>
 					<tr bgcolor='#" . $colors["header_panel"] . "'>";
@@ -944,9 +964,6 @@ function host_edit() {
 						<td align='right'>";
 							form_base_dropdown("sgg_" . $snmp_query["id"],db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name"),"name","id","0","","");
 			print "			</td>
-						<td width='1' align='right'>
-							<input type='image' src='images/button_create.gif' alt='Create Graphs'>
-						</td>
 					</tr>
 				</table>
 				<br>";
