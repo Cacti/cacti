@@ -831,11 +831,11 @@ function get_graph_tree_array($return_sql = false) {
    @returns - (array) an array containing a list of hosts */
 function get_host_array() {
 	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+		$current_user = db_fetch_row("select policy_hosts from user_auth where id=" . $_SESSION["sess_user_id"]);
 		
-		if ($current_user["policy_trees"] == "1") {
+		if ($current_user["policy_hosts"] == "1") {
 			$sql_where = "where user_auth_perms.user_id is null";
-		}elseif ($current_user["policy_trees"] == "2") {
+		}elseif ($current_user["policy_hosts"] == "2") {
 			$sql_where = "where user_auth_perms.user_id is not null";
 		}
 		
