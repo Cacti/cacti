@@ -40,11 +40,11 @@ case 'login':
 		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
 
 		if (($ldap_conn) && ($_POST["password"])) {
-			$ldap_auth = true;
 			$ldap_dn = str_replace("<username>",$_POST["username"],read_config_option("ldap_dn"));
 			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$_POST["password"]);
 
 			if ($ldap_response) {
+				$ldap_auth = true;
 				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and full_name='ldap user'")) == 0) {
 					/* get information about the template user */
 					$template_user = db_fetch_row("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, '' as password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = '" . read_config_option("ldap_template") . "'");
