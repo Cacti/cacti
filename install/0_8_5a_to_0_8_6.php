@@ -26,6 +26,7 @@
 
 function upgrade_to_0_8_6() {
 	include("../lib/data_query.php");
+	include("../lib/tree.php");  
 
 	db_install_execute("0.8.6", "DROP TABLE `snmp_query_field`;");
 	db_install_execute("0.8.6", "DROP TABLE `data_input_data_cache`;");
