@@ -327,6 +327,14 @@ $struct_data_source = array(
 		"default" => "",
 		"description" => "Choose a name for this data source."
 		),
+	"data_source_path" => array(
+		"title" => "Data Source Path",
+		"type" => "text",
+		"text_maxlen" => "255",
+		"text_size" => "40",
+		"default" => "<path_rra>/",
+		"description" => "The full path to the RRD file."
+		),
 	"data_input_id" => array(
 		"title" => "Data Input Source",
 		"type" => "drop_sql",
