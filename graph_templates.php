@@ -52,6 +52,11 @@
 	<?}
 	
 switch ($action) {
+	case 'item_remove':
+		db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
+		
+		header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
+		break;
 	case 'input_save':
 		$save["id"] = $form["graph_template_input_id"];
 		$save["graph_template_id"] = $form["graph_template_id"];
@@ -335,38 +340,34 @@ switch ($action) {
 		</tr>
 		
 		<?
-		if ($graph_parameters[grouping] == "on") {
-			/* default item (last item) */
-			$groups = db_fetch_assoc("select 
-				CONCAT_WS('',def_graph_type.name,' (',def_cf.name,'): ',polling_items.descrip,' - \"',graph_templates_item.text_format,'\"') as name,
-				graph_templates_item.id
-				from graph_templates_item left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
-				left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-				left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
-				where graph_templates_item.graph_template_id=$args[graph_template_id]
-				and (def_graph_type.name = 'AREA' or def_graph_type.name = 'STACK' or def_graph_type.name = 'LINE1'
-				or def_graph_type.name = 'LINE2' or def_graph_type.name = 'LINE3') order by graph_templates_item.sequence_parent");
-			
-			if (sizeof($groups) == 0) {
-				DrawFormItemHiddenIDField("parent","0");
-			}else{
-				if (!(isset($args[graph_template_id_graph]))) {
-					$rows = (sizeof($groups) - 1);
-					$default_item = $groups[$rows][id];
-				}
-				
-				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-					<td width="50%">
-						<font class="textEditTitle">Item Group</font><br>
-						Choose which graph item this GPRINT is associated with. NOTE: This field
-						will be ignored if it is not a GPRINT.
-					</td>
-					<?DrawFormItemDropdownFromSQL("parent",$groups,"name","id",$template_item[parent],"",$default_item);?>
-				</tr>
-				<?
-			}
-		}else{
+		/* default item (last item) */
+		$groups = db_fetch_assoc("select 
+			CONCAT_WS('',def_graph_type.name,' (',def_cf.name,'): ',polling_items.descrip,' - \"',graph_templates_item.text_format,'\"') as name,
+			graph_templates_item.id
+			from graph_templates_item left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
+			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
+			left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
+			where graph_templates_item.graph_template_id=$args[graph_template_id]
+			and (def_graph_type.name = 'AREA' or def_graph_type.name = 'STACK' or def_graph_type.name = 'LINE1'
+			or def_graph_type.name = 'LINE2' or def_graph_type.name = 'LINE3') order by graph_templates_item.sequence_parent");
+		
+		if (sizeof($groups) == 0) {
 			DrawFormItemHiddenIDField("parent","0");
+		}else{
+			if (!(isset($args[graph_template_id_graph]))) {
+				$rows = (sizeof($groups) - 1);
+				$default_item = $groups[$rows][id];
+			}
+			
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+				<td width="50%">
+					<font class="textEditTitle">Item Group</font><br>
+					Choose which graph item this GPRINT is associated with. NOTE: This field
+					will be ignored if it is not a GPRINT.
+				</td>
+				<?DrawFormItemDropdownFromSQL("parent",$groups,"name","id",$template_item[parent],"",$default_item);?>
+			</tr>
+			<?
 		}
     
 		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
@@ -587,7 +588,7 @@ switch ($action) {
 					<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item[hex];?><?if ($bold_this_row == true) { print "</strong>"; }?>
 				</td>
 				<td width="1%" align="right">
-					<a href="graph_templates.php?action=item_remove&graph_template_id_graph=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<a href="graph_templates.php?action=item_remove&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 				</td>
 			</tr>
 		<?
