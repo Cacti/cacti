@@ -191,6 +191,47 @@ function host_edit() {
 		$header_label = "[new]";
 	}
 	
+	if (!empty($host["id"])) {
+		?>
+		<table width="98%" align="center">
+			<tr>
+				<td class="textInfo" colspan="2">
+					<?php print $host["description"];?> (<?php print $host["hostname"];?>)
+				</td>
+			</tr>
+			<tr>
+				<td class="textHeader">
+					SNMP Information<br>
+					
+					<span style="font-size: 10px; font-weight: normal; font-family: monospace;">
+					<?php
+					if (($host["snmp_community"] == "") && ($host["snmp_username"] == "")) {
+						print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
+					}else{
+						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"]);
+						$snmp_uptime = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"]);
+						$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"]);
+						
+						if ($snmp_system == "") {
+							print "<span style='color: #ff0000; font-weight: bold;'>SNMP error</span>\n";
+						}else{
+							print "<strong>System:</strong> $snmp_system<br>\n";
+							print "<strong>Uptime:</strong> $snmp_uptime<br>\n";
+							print "<strong>Hostname:</strong> $snmp_hostname<br>\n";
+						}
+					}
+					?>
+					</span>
+				</td>
+				<td class="textInfo" valign="top">
+					<span style="color: #c16921;">*</span><a href="graphs_new.php?host_id=<?php print $host["id"];?>">Create Graphs for this Host</a>
+				</td>
+			</tr>
+		</table>
+		<br>
+		<?php
+	}
+	
 	start_box("<strong>Polling Hosts</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	draw_edit_form(array(
