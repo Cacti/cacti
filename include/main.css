@@ -7,6 +7,7 @@ body, table, tr, td {
 
 body {
 	background-color: #FFFFFF;
+	background-repeat: repeat-y;
 }
 
 /* links */
@@ -91,13 +92,19 @@ a:hover {
 }
 
 .textMenuItem {
-	background-color: #F1F1F1;
+	background-color: #f5f5f5;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+.textMenuSubItem {
+	background-color: #ffffff;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
 .textMenuItemSelected {
-	background-color: #D1D1D1;
+	background-color: #E1E1E1;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }

@@ -217,7 +217,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		}
 	}
 	
-	print "<input type='checkbox' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
+	print "<input type='checkbox' name='$form_name' id='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
 }
 
 /* creates a radio */
@@ -669,18 +669,71 @@ function draw_menu() {
 	
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
 	
-	foreach (array_keys($menu) as $header) {
-		print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
-		if (sizeof($menu[$header]) > 0) {
-			foreach (array_keys($menu[$header]) as $url) {
-				if (basename($_SERVER["PHP_SELF"]) == basename($url)) {
-					print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+	/* loop through each header */
+	while (list($header_name, $header_array) = each($menu)) {
+		print "<tr><td class='textMenuHeader'>$header_name</td></tr>\n";
+		
+		/* loop through each top level item */
+		while (list($item_url, $item_title) = each($header_array)) {
+			/* if this item is an array, then it contains sub-items. if not, is just
+			the title string and needs to be displayed */
+			if (is_array($item_title)) {
+				$i = 0;
+				
+				/* if the current page exists in the sub-items array, draw each sub-item */
+				if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
+					$draw_sub_items = true;
 				}else{
-					print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+					$draw_sub_items = false;
+				}
+				
+				while (list($item_sub_url, $item_sub_title) = each($item_title)) {
+					/* indent sub-items */
+					if ($i > 0) {
+						$prepend_string = "---&nbsp;";
+					}else{
+						$prepend_string = "";
+					}
+					
+					/* do not put a line between each sub-item */
+					if (($i == 0) || ($draw_sub_items == false)) {
+						$background = "images/menu_line.gif";
+					}else{
+						$background = "";
+					}
+					
+					/* draw all of the sub-items as selected for ui grouping reasons. we can use the 'bold'
+					or 'not bold' to distinguish which sub-item is actually selected */
+					if ((basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) || ($draw_sub_items)) {
+						$td_class = "textMenuItemSelected";
+					}else{
+						$td_class = "textMenuItem";
+					}
+					
+					/* always draw the first item (parent), only draw the children if we are viewing a page
+					that is contained in the sub-items array */
+					if (($i == 0) || ($draw_sub_items)) {
+						if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
+							print "<tr><td class='$td_class' background='$background'>$prepend_string<strong><a href='$item_sub_url'>$item_sub_title</a></strong></td></tr>\n";
+						}else{
+							print "<tr><td class='$td_class' background='$background'>$prepend_string<a href='$item_sub_url'>$item_sub_title</a></td></tr>\n";
+						}
+					}
+					
+					$i++;
+				}
+			}else{
+				/* draw normal (non sub-item) menu item */
+				if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
+					print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
+				}else{
+					print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
 				}
 			}
 		}
 	}
+	
+	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
 	
 	print '</table></td></tr>';
 }

@@ -102,6 +102,32 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
+function draw_user_form_tabs() {
+	?>
+	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
+		<tr>
+			<td width='1'></td>
+			<td <?php print (strstr($_SERVER["PHP_SELF"], "graphs.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+				<span class='textHeader'><a href='graph_management.php'>Graph Management</a></span>
+			</td>
+			<td width='1'></td>
+			<td <?php print (strstr($_SERVER["PHP_SELF"], "cdef.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='80' align='center' class='tab'>
+				<span class='textHeader'><a href='cdef.php'>CDEFs</a></span>
+			</td>
+			<td width='1'></td>
+			<td <?php print (strstr($_SERVER["PHP_SELF"], "color.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='80' align='center' class='tab'>
+				<span class='textHeader'><a href='color.php'>Colors</a></span>
+			</td>
+			<td width='1'></td>
+			<td <?php print (strstr($_SERVER["PHP_SELF"], "gprint_presets.php") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
+				<span class='textHeader'><a href='gprint_presets.php'>GPRINT Presets</a></span>
+			</td>
+			<td></td>
+		</tr>
+	</table>
+	<br>
+<?php }
+
 /* --------------------------
     The Save Function
    -------------------------- */

@@ -30,10 +30,11 @@ global $colors;
 <head>
 	<title>cacti</title>
 	<link href="include/main.css" rel="stylesheet">
+	<script type="text/javascript" src="include/layout.js"></script>
 </style>
 </head>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" background="images/left_border.gif">
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr height="37" bgcolor="#a9a9a9">
@@ -72,22 +73,24 @@ global $colors;
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
-		
+		<td bgcolor="#f5f5f5" colspan="1" height="8" width="135" style="background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="images/transparent_line.gif" width="135" height="2" border="0"><br>
+		</td>
+		<td colspan="2" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
+			
 		</td>
 	</tr>
 	<tr height="5">
-		<td width="1%" rowspan="2" align="center" valign="top">
-			<img src="images/transparent_line.gif" width="142" height="5" border="0"><br>
-			
-			<table bgcolor="#888888" width="133" cellpadding="1" cellspacing="0" border="0">
+		<td valign="top" rowspan="2" width="135" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#f5f5f5'>
+			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0">
 				<?php draw_menu();?>
 			</table>
 			
+			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
 		</td>
 		<td></td>
 	</tr>
 	<tr>
-		<td height="500"></td>
-		<td valign="top"><?php display_output_messages();?>
+		<td width="135" height="500"></td>
+		<td width="100%" valign="top"><?php display_output_messages();?>
