@@ -216,7 +216,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			if ($form_type == "cg") {
 				$graph_template_id = $form_id1;
 				
-				start_box("<strong>Create 1 Graph from Host Template", "98%", $colors["header"], "3", "center", "");
+				start_box("<strong>Create 1 Graph from Graph Template", "98%", $colors["header"], "3", "center", "");
 			}elseif ($form_type == "sg") {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					$snmp_query_id = $form_id1;
