@@ -1,6 +1,9 @@
 raXnet - cacti
 
 0.8.4
+-bug#87: Deleting top level branches without children on the tree caused ordering
+problems.
+-bug#88: Possibly popen/pclose concurrency problem with cactid.
 -bug: Removed size limits on Linux memory data template.
 -bug: Undefined variable errors when creating new graphs/data sources
 without a template.
@@ -12,11 +15,31 @@ in the query result.
 -bug: Graph order changes on the tree would affect other graph trees.
 -bug: Problem with the "Host MIB - Hard Drive Space" data template that broke
 Windows disk spaces graphs.
+-bug: Fixed the LDAP authentication code, which was partially broken in 0.8.3.
+-bug: Fixed a cmd.php parsing problem when input and output fields are sharing the
+same name.
+-bug: Added basename() to all PHP_SELF references to make sure all hrefs stay
+absolute.
 -feature: The "Total All Items" CDEF is now able to total NaN's without becoming
 'U'.
 -feature: Data query results are now grayed out if they have already been created.
+-feature: The "cacti Web Root" and "Web Server Document Root" settings are completely
+auto-detected now.
+-feature: Add SNMP port and SNMP timeout fields to each host.
+-feature: Removed the "Management IP" field in polling hosts in favor of "Hostname".
+-feature: Re-organized the menus expand/contract for less used items to help save
+vertical space.
+-feature: Added complete template to XML import and export support.
+-feature: Moved the graph creation features of "Polling Hosts" to a new menu item,
+"New Graphs".
+-feature: Added verbose debugging support for data queries.
 -doc: Added a FAQ.
-
+-cactid: Removed lots of potential buffer overflows.
+-cactid: Several libz/openssl autoconf fixes that improve FreeBSD 5.x support.
+-cactid: Fixed some potential segfaults on FreeBSD when reading information from
+the targets table.
+-cactid: The snmp_get() function now respects the SNMP version chosen under
+"Polling Hosts", so 64-bit counters should work.
 
 0.8.3a
 -bug#81: Partial/complete poller cache rebuild failure after an upgrade.
