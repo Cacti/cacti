@@ -226,8 +226,9 @@ function template_remove() {
 
 function template_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
+	db_execute("delete from snmp_query_graph_rrd where data_template_rrd_id=" . $_GET["id"]);
 	
-	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["data_template_id"]);
+	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["id"]);
 }
 
 function template_rrd_add() {
