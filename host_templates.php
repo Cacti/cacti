@@ -160,7 +160,7 @@ function template_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Host Templates [edit]</strong>", "", "");
+	start_box("<strong>Host Templates [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["id"])) {
 		$host_template = db_fetch_row("select * from host_template where id=" . $_GET["id"]);
@@ -253,7 +253,7 @@ function template_edit() {
 	
 	/* if it is not using any input; skip this step: no custom data */
 	if (!empty($template_data["data_input_id"])) {
-		start_box("Custom Data for Host Template [" . $data_template["name"] . ": " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "", "");
+		start_box("Custom Data for Host Template [" . $data_template["name"] . ": " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		/* loop through each data template in use and draw tabs if there is more than one */
 		if (sizeof($data_templates) > 1) {
@@ -317,7 +317,7 @@ function template_edit() {
 	DrawFormItemHiddenTextBox("save_component_data","1","");
 	DrawFormItemHiddenIDField("data_template_id",$_GET["view_data_template"]);
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -334,8 +334,8 @@ function template() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Host Templates</strong>", "", "host_templates.php?action=edit");
-	                         
+	start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
+	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);

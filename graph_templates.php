@@ -382,7 +382,13 @@ function draw_item_edit() {
 			<font class="textEditTitle">Task Item</font><br>
 			The task to use for this graph item; not used for COMMENT fields.
 		</td>
-		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select item_id,descrip from polling_items order by descrip"),"descrip","item_id",$template_item["task_item_id"],"None",$default_item);?>
+		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			data_template_rrd.id 
+			from data_template_data,data_template_rrd,data_local 
+			left join host on data_local.host_id=host.id
+			where data_template_rrd.local_data_id=data_local.id 
+			and data_template_data.local_data_id=data_local.id"),"name","id",$template_item["task_item_id"],"None",$default_item);?>
 	</tr>
 	
 	<?
@@ -484,8 +490,6 @@ function draw_item_edit() {
 	DrawFormItemHiddenIDField("graph_template_item_id",$_GET["graph_template_item_id"]);
 	DrawFormItemHiddenIDField("graph_template_id",$_GET["graph_template_id"]);
 	DrawFormItemHiddenIDField("sequence",$template_item["sequence"]);
-	DrawFormItemHiddenIDField("sequence_parent",$template_item["sequence_parent"]);
-	DrawFormItemHiddenIDField("_parent",$template_item["parent"]);
 	DrawFormItemHiddenIDField("_graph_type_id",$template_item["graph_type_id"]);
 }
 
@@ -515,7 +519,7 @@ function gprint_presets_edit() {
 	}
 	
 	draw_tabs();
-	start_box("<strong>GPRINT Presets [edit]</strong>", "", "");
+	start_box("<strong>GPRINT Presets [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -542,7 +546,7 @@ function gprint_presets_edit() {
 	DrawFormItemHiddenIDField("gprint_preset_id",$gprint_preset["id"]);
 	DrawFormItemHiddenTextBox("save_component_gprint_presets","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -558,7 +562,7 @@ function gprint_presets() {
 	global $colors;
 	
 	draw_tabs();
-	start_box("<strong>GPRINT Presets</strong>", "", "graph_templates.php?action=gprint_presets_edit");
+	start_box("<strong>GPRINT Presets</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=gprint_presets_edit");
 	
 	print "<tr bgcolor='#" . $colors["panel"] . "'>";
 		DrawMatrixHeaderItem("GPRINT Preset Title",$colors["panel_text"],2);
@@ -601,7 +605,7 @@ function item_presets() {
 	global $colors;
 	
 	draw_tabs();
-	start_box("<strong>Graph Item Presets</strong>", "", "graph_templates.php?action=item_presets_edit");
+	start_box("<strong>Graph Item Presets</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_presets_edit");
 	
 	print "<tr bgcolor='#" . $colors["panel"] . "'>";
 		DrawMatrixHeaderItem("Item Preset Title",$colors["panel_text"],2);
@@ -654,7 +658,7 @@ function item_presets_edit() {
 	}
 	
 	draw_tabs();
-	start_box("<strong>Graph Item Presets</strong> [edit]", "", "");
+	start_box("<strong>Graph Item Presets</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 	?>
 	<form method="post" action="graph_templates.php">
 	
@@ -687,14 +691,14 @@ function item_presets_edit() {
 		and graph_templates_item.local_graph_id=0
 		order by graph_templates_item.sequence");
 	
-	start_box("<strong>Graph Item Presets Configuration</strong>", "", "graph_templates.php?action=item_presets_item_edit&graph_template_id=" . $_GET["graph_template_id"]);
+	start_box("<strong>Graph Item Presets Configuration</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_presets_item_edit&graph_template_id=" . $_GET["graph_template_id"]);
 	draw_graph_items($template_item_list, "item_presets_item");
 	end_box();
 	
 	DrawFormItemHiddenIDField("graph_template_id",$_GET["graph_template_id"]);
 	DrawFormItemHiddenTextBox("save_component_item_presets","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -710,13 +714,13 @@ function item_presets_item_edit() {
 	global $config, $colors;
 	
 	draw_tabs();
-	start_box("<strong>Graph Item Presets</strong> - Item [edit]", "", "");
+	start_box("<strong>Graph Item Presets</strong> - Item [edit]", "98%", $colors["header"], "3", "center", "");
 	draw_item_edit();
 	end_box();
 	
 	DrawFormItemHiddenTextBox("save_component_item_presets_item","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -765,7 +769,7 @@ function item() {
 	global $colors, $config;
 	
 	if ($config["full_view_graph_template"]["value"] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
@@ -789,11 +793,11 @@ function item() {
 		and graph_templates_item.local_graph_id=0
 		order by graph_templates_item.sequence");
 	
-	start_box("Graph Template Item Configuration", "", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["graph_template_id"]);
+	start_box("Graph Template Item Configuration", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["graph_template_id"]);
 	draw_graph_items($template_item_list, "item");
 	end_box();
 	
-	start_box("Graph Template User Input Configuration", "", "graph_templates.php?action=input_edit&graph_template_id=" . $_GET["graph_template_id"]);
+	start_box("Graph Template User Input Configuration", "98%", $colors["header"], "3", "center", "graph_templates.php?action=input_edit&graph_template_id=" . $_GET["graph_template_id"]);
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],2);
@@ -831,6 +835,8 @@ function item_remove() {
 }
 
 function item_save() {
+	include_once ("include/utility_functions.php");
+	
 	$save["id"] = $_POST["graph_template_item_id"];
 	$save["graph_template_id"] = $_POST["graph_template_id"];
 	$save["local_graph_id"] = 0;
@@ -844,13 +850,8 @@ function item_save() {
 	$save["hard_return"] = $_POST["hard_return"];
 	$save["gprint_id"] = $_POST["gprint_id"];
 	$save["sequence"] = $_POST["sequence"];
-	$save["sequence_parent"] = $_POST["sequence_parent"];
-	$save["parent"] = $_POST["parent"];
 	
 	$graph_template_item_id = sql_save($save, "graph_templates_item");
-	
-	include_once ("include/utility_functions.php");
-	update_graph_item_groups($graph_template_item_id, $_POST["graph_template_item_id"], $_POST["_graph_type_id"], $_POST["_parent"]);
 	
 	push_out_graph_item($graph_template_item_id);
 }
@@ -861,18 +862,18 @@ function item_edit() {
 	draw_tabs();
 	
 	if ($config["full_view_graph_template"]["value"] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
 	
-	start_box("Template Item Configuration", "", "");
+	start_box("Template Item Configuration", "98%", $colors["header"], "3", "center", "");
 	draw_item_edit();
 	end_box();
 	
 	DrawFormItemHiddenTextBox("save_component_item","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -982,7 +983,7 @@ function template_edit() {
 	draw_tabs();
 	
 	if ($config["full_view_graph_template"]["value"] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
@@ -999,7 +1000,7 @@ function template_edit() {
 		item();	
 	}
 	
-	start_box("Template Configuration", "", "");
+	start_box("Template Configuration", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<form method="post" action="graph_templates.php">
@@ -1014,7 +1015,7 @@ function template_edit() {
 	
 	<?
 	end_box();
-	start_box("Graph Template Configuration", "", "");
+	start_box("Graph Template Configuration", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<form method="post" action="graph_templates.php">
@@ -1167,7 +1168,7 @@ function template_edit() {
 	DrawFormItemHiddenIDField("graph_template_graph_id",$template_graph["id"]);
 	DrawFormItemHiddenTextBox("save_component_template","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -1183,7 +1184,7 @@ function template() {
 	global $colors;
 	
 	draw_tabs();
-	start_box("<strong>Graph Template Management</strong>", "", "graph_templates.php?action=template_edit");
+	start_box("<strong>Graph Template Management</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
 	
 	print "<tr bgcolor='#" . $colors["panel"] . "'>";
 		DrawMatrixHeaderItem("Template Title",$colors["panel_text"],2);
@@ -1263,7 +1264,7 @@ function input_edit() {
 	draw_tabs();
 	
 	if ($config["full_view_graph_template"]["value"] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
@@ -1286,7 +1287,7 @@ function input_edit() {
 		unset($graph_template_input);
 	}
 	
-	start_box("Graph Item Input Configuration", "", "");
+	start_box("Graph Item Input Configuration", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -1372,7 +1373,7 @@ function input_edit() {
 	DrawFormItemHiddenIDField("graph_template_input_id",$_GET["graph_template_input_id"]);
 	DrawFormItemHiddenTextBox("save_component_input","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">

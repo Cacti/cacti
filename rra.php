@@ -111,7 +111,7 @@ function rra_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Round Robin Archives [edit]</strong>", "", "");
+	start_box("<strong>Round Robin Archives [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
@@ -182,7 +182,7 @@ function rra() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Round Robin Archives</strong>", "", "rra.php?action=edit");
+	start_box("<strong>Round Robin Archives</strong>", "98%", $colors["header"], "3", "center", "rra.php?action=edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);

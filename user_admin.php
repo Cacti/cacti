@@ -147,7 +147,7 @@ function graph_perms_edit() {
 	}
 	
 	if ($config["full_view_user_admin"]["value"] == "") {
-		start_box("<strong>User Management [edit]</strong>", "", "");
+		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
 	}
@@ -158,7 +158,7 @@ function graph_perms_edit() {
 		$graph_policy_text = "Select the graphs you want <strong>ALLOW</strong> this user to view.";
 	}
 	
-	start_box("$graph_policy_text", "", "");
+	start_box($graph_policy_text, "98%", $colors["header"], "3", "center", "");
 	
 	$graphs = db_fetch_assoc("select 
 		ag.UserID,
@@ -211,7 +211,7 @@ function graph_perms_edit() {
 	DrawFormItemHiddenTextBox("save_component_graph_perms","1","");
 	
 	if ($config["full_view_user_admin"]["value"] == "") {
-		start_box("", "", "");
+		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
@@ -239,12 +239,12 @@ function graph_config_edit() {
 	}
 	
 	if ($config["full_view_user_admin"]["value"] == "") {
-		start_box("<strong>User Management [edit]</strong>", "", "");
+		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
 	}
 	
-	start_box("Graph Preview Settings", "", "");
+	start_box("Graph Preview Settings", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="user_admin.php">
@@ -329,7 +329,7 @@ function graph_config_edit() {
 	DrawFormItemHiddenIDField("user_id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_graph_config","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -417,12 +417,12 @@ function user_edit() {
 	}
 	
 	if ($config["full_view_user_admin"]["value"] == "") {
-		start_box("<strong>User Management [edit]</strong>", "", "");
+		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
 	}
 	
-	start_box("User Configuration", "", "");
+	start_box("User Configuration", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="user_admin.php">
@@ -511,7 +511,7 @@ function user_edit() {
 	
 	<?
 	end_box();
-	start_box("User Permissions", "", "");
+	start_box("User Permissions", "98%", $colors["header"], "3", "center", "");
 	
 	$sections = db_fetch_assoc("select 
 		auth_acl.UserID,
@@ -563,7 +563,7 @@ function user_edit() {
 	DrawFormItemHiddenTextBox("save_component_user","1","");
 	
 	if ($config["full_view_user_admin"]["value"] == "") {
-		start_box("", "", "");
+		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
@@ -584,7 +584,7 @@ function user_edit() {
 function user() {
 	global $colors;
 	
-	start_box("<strong>User Management</strong>", "", "user_admin.php?action=user_edit");
+	start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("User Name",$colors["header_text"],1);

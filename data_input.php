@@ -248,7 +248,7 @@ function field_edit() {
 	DrawFormItemHiddenTextBox("save_component_field","1","");
 	end_box();
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -433,7 +433,7 @@ function data_edit() {
 	
 	DrawFormItemHiddenTextBox("save_component_data_input","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -448,8 +448,8 @@ function data_edit() {
 function data() {
 	global $colors;
 	
-	start_box("<strong>Data Input Methods</strong>", "", "data_input.php?action=edit");
-	                         
+	start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
+	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);

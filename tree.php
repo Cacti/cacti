@@ -105,7 +105,7 @@ function item_edit() {
 	/* bold the active "type" */
 	if ($tree_item["graph_id"] > 0) { $title = "<strong>Tree Item [graph]</strong>"; }else{ $title = "Tree Item [graph]"; }
 	
-	start_box($title, "", "");
+	start_box($title, "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="tree.php">
@@ -133,7 +133,7 @@ function item_edit() {
 	/* bold the active "type" */
 	if ($tree_item["title"] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
 	
-	start_box($title, "", "");
+	start_box($title, "98%", $colors["header"], "3", "center", "");
 	
 	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
@@ -150,7 +150,7 @@ function item_edit() {
 	DrawFormItemHiddenIDField("tree_id",$_GET["tree_id"]);
 	DrawFormItemHiddenTextBox("save_component_tree_item","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -246,7 +246,7 @@ function tree_edit() {
 	
 	global $colors, $cdef_item_types;
 	
-	start_box("<strong>Trees [edit]</strong>", "", "");
+	start_box("<strong>Trees [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree_view where id=" . $_GET["id"]);
@@ -269,13 +269,13 @@ function tree_edit() {
 	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	end_box();
 	
-	start_box("Tree Items", "", "tree.php?action=item_edit&tree_id=" . $tree["id"]);
+	start_box("Tree Items", "98%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"]);
 	grow_edit_graph_tree($_GET["id"], "", "");
 	end_box();
 	
 	DrawFormItemHiddenTextBox("save_component_tree","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -290,7 +290,7 @@ function tree_edit() {
 function tree() {
 	global $colors;
 	
-	start_box("<strong>Graph Trees</strong>", "", "tree.php?action=edit");
+	start_box("<strong>Graph Trees</strong>", "98%", $colors["header"], "3", "center", "tree.php?action=edit");
 	                         
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);

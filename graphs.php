@@ -162,7 +162,7 @@ function item() {
 	global $colors, $config;
 	
 	if ($config["full_view_graph"]["value"] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["local_graph_id"]);
 		end_box();
 	}
@@ -178,7 +178,7 @@ function item() {
 		$add_text = "";
 	}
 	
-	start_box($header_text, "", $add_text);
+	start_box($header_text, "98%", $colors["header"], "3", "center", $add_text);
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
@@ -320,7 +320,7 @@ function item() {
 	
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if ($graph_template_id != "0") {
-		start_box("Graph Item Inputs", "", "");
+		start_box("Graph Item Inputs", "98%", $colors["header"], "3", "center", "");
 		
 		?>
 		<form method="post" action="graphs.php">
@@ -401,7 +401,7 @@ function item() {
 	}
 	
 	if (($config["full_view_graph"]["value"] == "") && (sizeof($input_item_list) > 0)) {
-		start_box("", "", "");
+		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
@@ -452,7 +452,7 @@ function item_edit() {
 	global $colors, $config;
 	
 	if ($config["full_view_graph"]["value"] == "") {
-		start_box("Graph Template Management [edit]", "", "");
+		start_box("Graph Template Management [edit]", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["local_graph_id"]);
 		end_box();
 	}
@@ -463,7 +463,7 @@ function item_edit() {
 		unset($template_item);
 	}
 	
-	start_box("Template Item Configuration", "", "");
+	start_box("Template Item Configuration", "98%", $colors["header"], "3", "center", "");
 	?>
 	<form method="post" action="graphs.php">
 	
@@ -563,7 +563,7 @@ function item_edit() {
 	
 	end_box();
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -747,7 +747,7 @@ function graph_diff() {
 	<br>
 	<?
 	
-	start_box("<strong>Graph Preview</strong>", "", "");
+	start_box("<strong>Graph Preview</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
 	
@@ -954,7 +954,7 @@ function graph_edit() {
 	global $config, $colors;
 	
 	if ($config["full_view_graph"]["value"] == "") {
-		start_box("<strong>Graph Management [edit]</strong>", "", "");
+		start_box("<strong>Graph Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);
 		end_box();
 	}
@@ -983,7 +983,7 @@ function graph_edit() {
 		item();
 	}
 	
-	start_box("Graph Template Selection", "", "");
+	start_box("Graph Template Selection", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<form method="post" action="graphs.php">
@@ -1002,7 +1002,7 @@ function graph_edit() {
 	
 	<?
 	end_box();
-	start_box("Custom Graph Configuration", "", "");
+	start_box("Custom Graph Configuration", "98%", $colors["header"], "3", "center", "");
 	
 	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
@@ -1247,7 +1247,7 @@ function graph_edit() {
 	
 	end_box();
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -1262,7 +1262,7 @@ function graph_edit() {
 function graph() {
 	global $colors;
 	
-	start_box("<strong>Graph Management</strong>", "", "graphs.php?action=graph_edit");
+	start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit");
 	
 	?>
 	<tr bgcolor="<?print $colors["panel"];?>">
@@ -1304,7 +1304,7 @@ function graph() {
 	
 	end_box();
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Title",$colors["header_text"],1);

@@ -166,7 +166,7 @@ function template_edit() {
 		unset($template);
 	}
 	
-	start_box("Template Configuration", "", "");
+	start_box("Template Configuration", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<form method="post" action="data_templates.php">
@@ -182,7 +182,7 @@ function template_edit() {
 	<?
 	end_box();
 	
-	start_box("Data Template Configuration", "", "");
+	start_box("Data Template Configuration", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -243,7 +243,7 @@ function template_edit() {
 		$template_rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
 	}
 	
-	start_box("Data Source Configuration [" . $template_rrd["data_source_name"] . "]", "", "");
+	start_box("Data Source Configuration [" . $template_rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
 	if (sizeof($template_data_rrds) > 1) {
 		?>
@@ -324,7 +324,7 @@ function template_edit() {
 	DrawFormItemHiddenIDField("current_rrd",$_GET["view_rrd"]);
 	DrawFormItemHiddenTextBox("save_component_template","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -339,7 +339,7 @@ function template_edit() {
 function template() {
 	global $colors;
 	
-	start_box("<strong>Data Template Management</strong>", "", "data_templates.php?action=template_edit");
+	start_box("<strong>Data Template Management</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Template Title",$colors["header_text"],2);

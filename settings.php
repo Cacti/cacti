@@ -58,7 +58,7 @@ switch ($_REQUEST["action"]) {
 		$current_tab = $_GET["tab"];
 	}
 	
-	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "", "");
+	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	

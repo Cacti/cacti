@@ -197,7 +197,7 @@ function data_edit() {
 	display_output_messages();
 	
 	if ($config["full_view_data_source"]["value"] == "") {
-		start_box("<strong>Data Sources</strong> [edit]", "", "");
+		start_box("<strong>Data Sources</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
 	}
@@ -216,7 +216,7 @@ function data_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 		
-		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "", "");
+		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -259,7 +259,7 @@ function data_edit() {
 	DrawFormItemHiddenTextBox("save_component_data","1","");
 	
 	if ($config["full_view_data_source"]["value"] == "") {
-		start_box("", "", "");
+		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
@@ -391,12 +391,12 @@ function ds_edit() {
 	$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 	
 	if ($config["full_view_data_source"]["value"] == "") {
-		start_box("<strong>Data Sources</strong> [edit]", "", "");
+		start_box("<strong>Data Sources</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 		draw_data_form_select("?action=ds_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
 	}
 	
-	start_box("<strong>Data Sources</strong> [edit] - Data Templation Selection", "", "");	
+	start_box("<strong>Data Sources</strong> [edit] - Data Templation Selection", "98%", $colors["header"], "3", "center", "");
 	
 	print "<form method='post' action='data_sources.php'>\n";
 	
@@ -419,7 +419,7 @@ function ds_edit() {
 	<?
 	end_box();
 	
-	start_box("Data Source Configuration", "", "");
+	start_box("Data Source Configuration", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
@@ -503,7 +503,7 @@ function ds_edit() {
 		$rrd_template = db_fetch_row("select * from data_template_rrd where id=$local_data_template_rrd_id");
 	}
 	
-	start_box("Data Source Item Configuration [" . $rrd["data_source_name"] . "]", "", "");
+	start_box("Data Source Item Configuration [" . $rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
 	if (sizeof($template_data_rrds) > 1) {
 		?>
@@ -616,7 +616,7 @@ function ds_edit() {
 	DrawFormItemHiddenIDField("current_rrd",$_GET["view_rrd"]);
 	DrawFormItemHiddenTextBox("save_component_data_source","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -643,7 +643,7 @@ function ds() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Data Sources</strong>", "", "");
+	start_box("<strong>Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<tr bgcolor="<?print $colors["panel"];?>">

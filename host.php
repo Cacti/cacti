@@ -119,7 +119,7 @@ function host_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Polling Hosts [edit]</strong>", "", "");
+	start_box("<strong>Polling Hosts [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
@@ -202,7 +202,7 @@ function host_edit() {
 	
 	DrawFormItemHiddenTextBox("save_component_host","1","");
 	
-	start_box("", "", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
@@ -219,8 +219,8 @@ function host() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Polling Hosts</strong>", "", "host.php?action=edit");
-	                         
+	start_box("<strong>Polling Hosts</strong>", "98%", $colors["header"], "3", "center", "host.php?action=edit");
+	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Description",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Hostname",$colors["header_text"],1);

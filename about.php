@@ -24,8 +24,8 @@
 	include_once ("include/form.php");
 	include_once ("include/top_header.php");
 	
-	start_box("<strong>About cacti</strong>", "", "");
-	?> 
+	start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center", "");
+	?>
 	
 	<tr>
 		<td bgcolor="#<?print $colors["header_panel"];?>" colspan="2">
