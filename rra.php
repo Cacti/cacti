@@ -76,7 +76,10 @@ switch ($action) {
 		unset($rra);
 	}
 	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	?>
+	<form method="post" action="rra.php">
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			How data is to be entered in RRA's.

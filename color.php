@@ -57,7 +57,10 @@ switch ($action) {
 	
 	start_box("<strong>Color Management [edit]</strong>", "", "");
     	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	?>
+	<form method="post" action="color.php">
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Hex Value</font><br>
 			The hex value for this color; valid range: 000000-FFFFFF.
