@@ -601,9 +601,7 @@ function user_remove() {
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from user_auth where id=" . $_GET["id"]);
 		db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
-		db_execute("delete from user_auth_hosts where user_id=" . $_GET["id"]);
-		db_execute("delete from user_auth_graph where user_id=" . $_GET["id"]);
-		db_execute("delete from user_auth_tree where user_id=" . $_GET["id"]);
+		db_execute("delete from user_auth_perms where user_id=" . $_GET["id"]);
 		db_execute("delete from settings_graphs where user_id=" . $_GET["id"]);
 	}	
 }
