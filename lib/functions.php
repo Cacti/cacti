@@ -54,17 +54,19 @@ function read_graph_config_option($config_name) {
 	}
 	
 	if (isset($_SESSION["sess_graph_config_array"])) {
-		$graph_config_array = unserialize($_SESSION["sess_graph_config_array"]);
+		$graph_config_array = $_SESSION["sess_graph_config_array"];
 	}
 	
 	if (!isset($graph_config_array[$config_name])) {
-		$graph_config_array[$config_name] = db_fetch_cell("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]);
+		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]);
 		
-		if (empty($graph_config_array[$config_name])) {
+		if (isset($db_setting["value"])) {
+			$graph_config_array[$config_name] = $db_setting["value"];
+		}else{
 			$graph_config_array[$config_name] = $settings_graphs[$config_name]["default"];
 		}
-			
-		$_SESSION["sess_graph_config_array"] = serialize($graph_config_array);
+		
+		$_SESSION["sess_graph_config_array"] = $graph_config_array;
 	}
 	
 	return $graph_config_array[$config_name];
@@ -80,17 +82,19 @@ function read_config_option($config_name) {
 	include ($config["include_path"] . "/config_settings.php");
 	
 	if (isset($_SESSION["sess_config_array"])) {
-		$config_array = unserialize($_SESSION["sess_config_array"]);
+		$config_array = $_SESSION["sess_config_array"];
 	}
 	
 	if (!isset($config_array[$config_name])) {
-		$config_array[$config_name] = db_fetch_cell("select value from settings where name='$config_name'");
+		$db_setting = db_fetch_row("select value from settings where name='$config_name'");
 		
-		if ((empty($config_array[$config_name])) && (isset($settings[$config_name]["default"]))) {
+		if (isset($db_setting["value"])) {
+			$config_array[$config_name] = $db_setting["value"];
+		}elseif (isset($settings[$config_name]["default"])) {
 			$config_array[$config_name] = $settings[$config_name]["default"];
 		}
 		
-		$_SESSION["sess_config_array"] = serialize($config_array);
+		$_SESSION["sess_config_array"] = $config_array;
 	}
 	
 	return $config_array[$config_name];
@@ -107,12 +111,7 @@ function read_config_option($config_name) {
    @returns - the original $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	/* write current values to the "field_values" array so we can retain them */
-	if (isset($_SESSION["sess_field_values"])) {
-		$array_field_names = unserialize($_SESSION["sess_field_values"]);
-	}
-	
-	$array_field_names[$field_name] = $field_value;
-	$_SESSION["sess_field_values"] = serialize($array_field_names);
+	$_SESSION["sess_field_values"][$field_name] = $field_value;
 	
 	if (($allow_nulls == true) && ($field_value == "")) {
 		return $field_value;
@@ -124,19 +123,9 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	if ((!ereg($regexp_match, $field_value) || (($allow_nulls == false) && ($field_value == "")))) {
 		raise_message($custom_message);
 		
-		if (isset($_SESSION["sess_error_fields"])) {
-			$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		}
-		
-		$array_error_fields[$field_name] = $field_name;
-		$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+		$_SESSION["sess_error_fields"][$field_name] = $field_name;
 	}else{
-		if (isset($_SESSION["sess_error_fields"])) {
-			$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		}
-		
-		$array_field_names[$field_name] = $field_value;
-		$_SESSION["sess_field_values"] = serialize($array_field_names);
+		$_SESSION["sess_field_values"][$field_name] = $field_value;
 	}
 	
 	return $field_value;
@@ -151,10 +140,8 @@ function is_error_message() {
 	include($config["include_path"] . "/config_arrays.php");
 	
 	if (isset($_SESSION["sess_messages"])) {
-		$array_messages = unserialize($_SESSION["sess_messages"]);
-		
-		if (is_array($array_messages)) {
-			foreach (array_keys($array_messages) as $current_message_id) {
+		if (is_array($_SESSION["sess_messages"])) {
+			foreach (array_keys($_SESSION["sess_messages"]) as $current_message_id) {
 				if ($messages[$current_message_id]["type"] == "error") { return true; }
 			}
 		}
@@ -166,12 +153,7 @@ function is_error_message() {
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/config_arrays.php' */
 function raise_message($message_id) {
-	if (isset($_SESSION["sess_messages"])) {
-		$array_messages = unserialize($_SESSION["sess_messages"]);
-	}
-	
-	$array_messages[$message_id] = $message_id;
-	$_SESSION["sess_messages"] = serialize($array_messages);
+	$_SESSION["sess_messages"][$message_id] = $message_id;
 }
 
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
@@ -185,10 +167,8 @@ function display_output_messages() {
 	if (isset($_SESSION["sess_messages"])) {
 		$error_message = is_error_message();
 		
-		$array_messages = unserialize($_SESSION["sess_messages"]);
-		
-		if (is_array($array_messages)) {
-			foreach (array_keys($array_messages) as $current_message_id) {
+		if (is_array($_SESSION["sess_messages"])) {
+			foreach (array_keys($_SESSION["sess_messages"]) as $current_message_id) {
 				eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
 				
 				switch ($messages[$current_message_id]["type"]) {
@@ -578,23 +558,18 @@ function subsitute_data_query_path($path) {
    @arg $host_id - (int) the host ID to match
    @returns - the original string with all of the variable subsitutions made */
 function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
-	if (isset($_SESSION["sess_host_cache_array"])) {
-		$host_cache_array = unserialize($_SESSION["sess_host_cache_array"]);
-	}
-	
-	if (!isset($host_cache_array[$host_id])) {
+	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
 		$host = db_fetch_row("select description,hostname,management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
-		$host_cache_array[$host_id] = $host;
-		$_SESSION["sess_host_cache_array"] = serialize($host_cache_array);
+		$_SESSION["sess_host_cache_array"][$host_id] = $host;
 	}
 	
-	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $host_cache_array[$host_id]["hostname"], $string);
-	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $host_cache_array[$host_id]["description"], $string);
-	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $host_cache_array[$host_id]["management_ip"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $host_cache_array[$host_id]["snmp_community"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $host_cache_array[$host_id]["snmp_version"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $host_cache_array[$host_id]["snmp_username"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $host_cache_array[$host_id]["snmp_password"], $string);
+	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
+	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
+	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["management_ip"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
 	
 	return $string;
 }

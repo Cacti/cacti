@@ -40,20 +40,15 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	print "<td>\n<input type='text'";
 	
 	if (isset($_SESSION["sess_error_fields"])) {
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_error_fields[$form_name])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
 			print "class='txtErrorTextBox'";
-			unset($array_error_fields[$form_name]);
-			$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+			unset($_SESSION["sess_error_fields"][$form_name]);
 		}
 	}
 	
 	if (isset($_SESSION["sess_field_values"])) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -75,12 +70,9 @@ function form_dropdown($form_name, $form_data, $column_display,$column_id, $form
 		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -101,12 +93,9 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$form_previous_value = $form_default_value;
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -119,12 +108,9 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		$form_previous_value = $form_default_value;
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -137,12 +123,9 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -327,20 +310,15 @@ function form_base_text_box($form_name, $form_previous_value, $form_default_valu
 	print "<input type='$type'";
 	
 	if (isset($_SESSION["sess_error_fields"])) {
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_error_fields[$form_name])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
 			print "class='txtErrorTextBox'";
-			unset($array_error_fields[$form_name]);
-			$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+			unset($_SESSION["sess_error_fields"][$form_name]);
 		}
 	}
 	
 	if (isset($_SESSION["sess_field_values"])) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -353,12 +331,9 @@ function form_base_dropdown($form_name, $form_data, $column_display,$column_id, 
 		$form_previous_value = $form_default_value;
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -408,12 +383,9 @@ function form_base_checkbox($form_name, $form_previous_value, $form_caption, $fo
 		$form_previous_value = $form_default_value;
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
@@ -426,12 +398,9 @@ function form_base_radio_button($form_name, $form_previous_value, $form_current_
 		$form_previous_value = $form_default_value;
 	}
 	
-	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
-		$array_field_values = unserialize($_SESSION["sess_field_values"]);
-		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-		
-		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
 		}
 	}
 	
