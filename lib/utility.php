@@ -298,6 +298,8 @@ function push_out_graph_item($graph_template_item_id) {
 }
 
 function change_graph_template($local_graph_id, $graph_template_id, $_graph_template_id) {
+	include("config_arrays.php");
+	
 	/* always update tables to new graph template (or no graph template) */
 	db_execute("update graph_templates_graph set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
 	db_execute("update graph_templates_item set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
@@ -305,13 +307,34 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 	
 	/* make sure the 'local_graph_template_graph_id' column is set */
 	$local_graph_template_graph_id = db_fetch_cell("select id from graph_templates_graph where graph_template_id=$graph_template_id and graph_template_id=id");
-	//print "select local_graph_template_graph_id from graph_templates_graph where graph_template_id=$graph_template_id<br>";
+	
 	if ($local_graph_template_graph_id == "") { $local_graph_template_graph_id = 0; }
 	db_execute("update graph_templates_graph set local_graph_template_graph_id=$local_graph_template_graph_id where local_graph_id=$local_graph_id");
-	//print "update graph_templates_graph set local_graph_template_graph_id=$local_graph_template_graph_id where local_graph_id=$local_graph_id<br>";
+	
 	/* if the user turned off the template for this graph; there is nothing more
 	to do here */
 	if ($graph_template_id == "0") { return 0; }
+	
+	/* get information about both the graph and the graph template we're using */
+	$graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=$local_graph_id");
+	$template_graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=0 and graph_template_id=$graph_template_id");
+	
+	/* some basic field values that ALL graphs should have */
+	$save["id"] = $graph_list["id"];
+	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
+	$save["local_graph_id"] = $local_graph_id;
+	$save["graph_template_id"] = $graph_template_id;
+	$save["order_key"] = $graph_list["order_key"];
+	
+	/* loop through the "templated field names" to find to the rest... */
+	for ($i=0; ($i < count($struct_graph)); $i++) {
+		$current_name = $struct_graph[$i];
+		$value_type = "t_$current_name";
+		
+		if ($template_graph_list[$value_type] == "on") { $save[$current_name] = $graph_list[$current_name]; }else{ $save[$current_name] = $template_graph_list[$current_name]; }
+	}
+	
+	sql_save($save, "graph_templates_graph");
 	
 	/* we are going from no template -> a template */
 	if ($_graph_template_id == "0") {
@@ -319,8 +342,14 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 		$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id");
 		
 		if (sizeof($graph_items_list) > 0) {
-			/* this graph already has "child" items */
+			/* this graph already has "child" items, we means we need user confirmation/input...
+			redirect the user to a page that does just that. */
+			
+			header("Location: graphs.php?action=save_diff&local_graph_id=$local_graph_id&_graph_template_id=$_graph_template_id&graph_template_id=$graph_template_id");
+			return false;
 		}else{
+			unset($save);
+			
 			/* this graph does NOT have "child" items; loop through each item in the template
 			and write it exactly to each item */
 			if (sizeof($template_items_list) > 0) {
@@ -329,7 +358,13 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 				$save["local_graph_template_item_id"] = $template_item["id"];
 				$save["local_graph_id"] = $local_graph_id;
 				$save["graph_template_id"] = $template_item["graph_template_id"];
-				$save["task_item_id"] = $template_item["task_item_id"];
+				
+				for ($i=0; ($i < count($struct_graph_item)); $i++) {
+					$current_name = $struct_graph_item[$i];
+					
+					$save[$current_name] = $template_item[$current_name];
+				}
+				/*$save["task_item_id"] = $template_item["task_item_id"];
 				$save["color_id"] = $template_item["color_id"];
 				$save["graph_type_id"] = $template_item["graph_type_id"];
 				$save["cdef_id"] = $template_item["cdef_id"];
@@ -340,62 +375,38 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 				$save["gprint_opts"] = $template_item["gprint_opts"];
 				$save["gprint_custom"] = $template_item["gprint_custom"];
 				$save["custom"] = $template_item["custom"];
-				$save["sequence"] = $template_item["sequence"];
-				//$save["sequence_parent"] = $template_item["sequence_parent"];
-				//$save["parent"] = $template_item["parent"];
+				$save["sequence"] = $template_item["sequence"];*/
 				
 				sql_save($save, "graph_templates_item");
 			}
 			}
 		}
-		
-		/* make sure to "correct" parent column for graph items */
-		//unset($graph_items_list);
-		//$graph_items_list = db_fetch_assoc("select
-		//	id,
-		//	parent
-		//	from graph_templates_item
-		//	where local_graph_template_item_id=parent
-		//	and local_graph_id=$local_graph_id");
-		
-		//if (sizeof($graph_items_list) > 0) {
-		//foreach ($graph_items_list as $graph_item) {
-		//	db_execute("update graph_templates_item set parent=$graph_item[id] where parent=$graph_item[parent] and local_graph_id=$local_graph_id");
-		//}
-		//}
 	}
 	
-	/* "merge" graph stuff */
-	$graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=$local_graph_id");
-	$template_graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=0 and graph_template_id=$graph_template_id");
+
 	
-	unset($save);
+/*	
+	if ($template_graph_list["t_image_format_id"] == "on") { $save["image_format_id"] = $graph_list["image_format_id"]; }else{ $save["image_format_id"] = $template_graph_list["image_format_id"]; }
+	if ($template_graph_list["t_title"] == "on") { $save["title"] = $graph_list["title"]; }else{ $save["title"] = $template_graph_list["title"]; }
+	if ($template_graph_list["t_height"] == "on") { $save["height"] = $graph_list["height"]; }else{ $save["height"] = $template_graph_list["height"]; }
+	if ($template_graph_list["t_width"] == "on") { $save["width"] = $graph_list["width"]; }else{ $save["width"] = $template_graph_list["width"]; }
+	if ($template_graph_list["t_upper_limit"] == "on") { $save["upper_limit"] = $graph_list["upper_limit"]; }else{ $save["upper_limit"] = $template_graph_list["upper_limit"]; }
+	if ($template_graph_list["t_lower_limit"] == "on") { $save["lower_limit"] = $graph_list["lower_limit"]; }else{ $save["lower_limit"] = $template_graph_list["lower_limit"]; }
+	if ($template_graph_list["t_vertical_label"] == "on") { $save["vertical_label"] = $graph_list["vertical_label"]; }else{ $save["vertical_label"] = $template_graph_list["vertical_label"]; }
+	if ($template_graph_list["t_auto_scale"] == "on") { $save["auto_scale"] = $graph_list["auto_scale"]; }else{ $save["auto_scale"] = $template_graph_list["auto_scale"]; }
+	if ($template_graph_list["t_auto_scale_opts"] == "on") { $save["auto_scale_opts"] = $graph_list["auto_scale_opts"]; }else{ $save["auto_scale_opts"] = $template_graph_list["auto_scale_opts"]; }
+	if ($template_graph_list["t_auto_scale_log"] == "on") { $save["auto_scale_log"] = $graph_list["auto_scale_log"]; }else{ $save["auto_scale_log"] = $template_graph_list["auto_scale_log"]; }
+	if ($template_graph_list["t_auto_scale_rigid"] == "on") { $save["auto_scale_rigid"] = $graph_list["auto_scale_rigid"]; }else{ $save["auto_scale_rigid"] = $template_graph_list["auto_scale_rigid"]; }
+	if ($template_graph_list["t_auto_padding"] == "on") { $save["auto_padding"] = $graph_list["auto_padding"]; }else{ $save["auto_padding"] = $template_graph_list["auto_padding"]; }
+	if ($template_graph_list["t_base_value"] == "on") { $save["base_value"] = $graph_list["base_value"]; }else{ $save["base_value"] = $template_graph_list["base_value"]; }
+	if ($template_graph_list["t_grouping"] == "on") { $save["grouping"] = $graph_list["grouping"]; }else{ $save["grouping"] = $template_graph_list["grouping"]; }
+	if ($template_graph_list["t_export"] == "on") { $save["export"] = $graph_list["export"]; }else{ $save["export"] = $template_graph_list["export"]; }
+	if ($template_graph_list["t_unit_value"] == "on") { $save["unit_value"] = $graph_list["unit_value"]; }else{ $save["unit_value"] = $template_graph_list["unit_value"]; }
+	if ($template_graph_list["t_unit_exponent_value"] == "on") { $save["unit_exponent_value"] = $graph_list["unit_exponent_value"]; }else{ $save["unit_exponent_value"] = $template_graph_list["unit_exponent_value"]; }
+	*/
 	
-	$save["id"] = $graph_list["id"];
-	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
-	$save["local_graph_id"] = $local_graph_id;
-	$save["graph_template_id"] = $graph_template_id;
-	$save["order_key"] = $graph_list["order_key"];
+	return true;
 	
-	if ($template_graph_list[t_image_format_id] == "on") { $save["image_format_id"] = $graph_list["image_format_id"]; }else{ $save["image_format_id"] = $template_graph_list["image_format_id"]; }
-	if ($template_graph_list[t_title] == "on") { $save["title"] = $graph_list["title"]; }else{ $save["title"] = $template_graph_list["title"]; }
-	if ($template_graph_list[t_height] == "on") { $save["height"] = $graph_list["height"]; }else{ $save["height"] = $template_graph_list["height"]; }
-	if ($template_graph_list[t_width] == "on") { $save["width"] = $graph_list["width"]; }else{ $save["width"] = $template_graph_list["width"]; }
-	if ($template_graph_list[t_upper_limit] == "on") { $save["upper_limit"] = $graph_list["upper_limit"]; }else{ $save["upper_limit"] = $template_graph_list["upper_limit"]; }
-	if ($template_graph_list[t_lower_limit] == "on") { $save["lower_limit"] = $graph_list["lower_limit"]; }else{ $save["lower_limit"] = $template_graph_list["lower_limit"]; }
-	if ($template_graph_list[t_vertical_label] == "on") { $save["vertical_label"] = $graph_list["vertical_label"]; }else{ $save["vertical_label"] = $template_graph_list["vertical_label"]; }
-	if ($template_graph_list[t_auto_scale] == "on") { $save["auto_scale"] = $graph_list["auto_scale"]; }else{ $save["auto_scale"] = $template_graph_list["auto_scale"]; }
-	if ($template_graph_list[t_auto_scale_opts] == "on") { $save["auto_scale_opts"] = $graph_list["auto_scale_opts"]; }else{ $save["auto_scale_opts"] = $template_graph_list["auto_scale_opts"]; }
-	if ($template_graph_list[t_auto_scale_log] == "on") { $save["auto_scale_log"] = $graph_list["auto_scale_log"]; }else{ $save["auto_scale_log"] = $template_graph_list["auto_scale_log"]; }
-	if ($template_graph_list[t_auto_scale_rigid] == "on") { $save["auto_scale_rigid"] = $graph_list["auto_scale_rigid"]; }else{ $save["auto_scale_rigid"] = $template_graph_list["auto_scale_rigid"]; }
-	if ($template_graph_list[t_auto_padding] == "on") { $save["auto_padding"] = $graph_list["auto_padding"]; }else{ $save["auto_padding"] = $template_graph_list["auto_padding"]; }
-	if ($template_graph_list[t_base_value] == "on") { $save["base_value"] = $graph_list["base_value"]; }else{ $save["base_value"] = $template_graph_list["base_value"]; }
-	if ($template_graph_list[t_grouping] == "on") { $save["grouping"] = $graph_list["grouping"]; }else{ $save["grouping"] = $template_graph_list["grouping"]; }
-	if ($template_graph_list[t_export] == "on") { $save["export"] = $graph_list["export"]; }else{ $save["export"] = $template_graph_list["export"]; }
-	if ($template_graph_list[t_unit_value] == "on") { $save["unit_value"] = $graph_list["unit_value"]; }else{ $save["unit_value"] = $template_graph_list["unit_value"]; }
-	if ($template_graph_list[t_unit_exponent_value] == "on") { $save["unit_exponent_value"] = $graph_list["unit_exponent_value"]; }else{ $save["unit_exponent_value"] = $template_graph_list["unit_exponent_value"]; }
-	
-	sql_save($save, "graph_templates_graph");
 }
 
 function DuplicateGraph($graph_id) {
