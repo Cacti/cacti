@@ -171,9 +171,22 @@ function form_save() {
 		$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
 		$save2["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
 		
+		if (!is_error_message()) {
+			$local_data_id = sql_save($save1, "data_local");
+			
+			$save2["local_data_id"] = $local_data_id;
+			$data_template_data_id = sql_save($save2, "data_template_data");
+			
+			if ($data_template_data_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
 		/* if this is a new data source and a template has been selected, skip item creation this time
 		otherwise it throws off the templatate creation because of the NULL data */
-		if ((!empty($save1["id"])) || (empty($save1["data_template_id"]))) {
+		if ((!empty($_POST["local_data_id"])) || (empty($_POST["data_template_id"])) && (!is_error_message())) {
 			/* if no template was set before the save, there will be only one data source item to save;
 			otherwise there might be >1 */
 			if (empty($_POST["_data_template_id"])) {
@@ -191,6 +204,7 @@ function form_save() {
 				}
 				
 				$save3["id"] = $rrd["id"];
+				$save3["local_data_id"] = $local_data_id;
 				$save3["local_data_template_rrd_id"] = db_fetch_cell("select local_data_template_rrd_id from data_template_rrd where id=" . $rrd["id"]); 
 				$save3["data_template_id"] = $_POST["data_template_id"];
 				$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum$name_modifier"], "rrd_maximum$name_modifier", "^-?[0-9]+$", false, 3);
@@ -199,33 +213,15 @@ function form_save() {
 				$save3["data_source_type_id"] = $_POST["data_source_type_id$name_modifier"];
 				$save3["data_source_name"] = form_input_validate($_POST["data_source_name$name_modifier"], "data_source_name$name_modifier", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
 				$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id$name_modifier"]) ? $_POST["data_input_field_id$name_modifier"] : "0"), "data_input_field_id$name_modifier", "", true, 3);
+				
+				$data_template_rrd_id = sql_save($save3, "data_template_rrd");
+				
+				if ($data_template_rrd_id) {
+					raise_message(1);
+				}else{
+					raise_message(2);
+				}
 			}
-			}
-		}
-		
-		if (!is_error_message()) {
-			$local_data_id = sql_save($save1, "data_local");
-			
-			$save2["local_data_id"] = $local_data_id;
-			$data_template_data_id = sql_save($save2, "data_template_data");
-			
-			if ($data_template_data_id) {
-				raise_message(1);
-			}else{
-				raise_message(2);
-			}
-		}
-		
-		/* if this is a new data source and a template has been selected, skip item creation this time
-		otherwise it throws off the templatate creation because of the NULL data */
-		if (($_POST["data_template_id"] == $_POST["_data_template_id"]) && (!is_error_message())){
-			$save3["local_data_id"] = $local_data_id;
-			$data_template_rrd_id = sql_save($save3, "data_template_rrd");
-			
-			if ($data_template_rrd_id) {
-				raise_message(1);
-			}else{
-				raise_message(2);
 			}
 		}
 		
