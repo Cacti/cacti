@@ -479,7 +479,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$unit_value = "--unit=" . $graph["unit_value"] . RRD_NL;
 	}
 	
-	if (!empty($graph["unit_exponent_value"])) {
+	if (ereg("^[0-9]+$", $graph["unit_exponent_value"])) {
 		$unit_exponent_value = "--units-exponent=" . $graph["unit_exponent_value"] . RRD_NL;
 	}
 	

@@ -195,11 +195,12 @@ function sql_save($array_items, $table_name, $key_cols='id') {
 	global $cnn_id;
 	
 	while (list ($key, $value) = each ($array_items)) {
-		if (eregi("(PASSWORD\()|(MD5\()|(NOW\()", $value)) {
+		if (preg_match("/^((password|md5|now)\(.*\)|null)$/i", $value)) {
 			$quote = "";
 		}else{
 			$quote = "\"";
 		}
+		
 		$array_items[$key] = "$quote$value$quote";
 	}
 	

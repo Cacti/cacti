@@ -55,5 +55,10 @@ function upgrade_to_0_8_5() {
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=33;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=23;");
 	
+	/* typo */
 	db_install_execute("0.8.5", "UPDATE settings set name='snmp_version' where name='smnp_version';");
+	
+	/* allow 'Unit Exponent Value' = 0 */
+	db_install_execute("0.8.5", "ALTER TABLE `graph_templates_graph` CHANGE `unit_exponent_value` `unit_exponent_value` SMALLINT( 5 ) DEFAULT '0';");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set unit_exponent_value=NULL where unit_exponent_value=0;");
 }

@@ -144,7 +144,7 @@ function form_save() {
 		$save2["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", false, 3);
 		$save2["export"] = form_input_validate((isset($_POST["export"]) ? $_POST["export"] : ""), "export", "", true, 3);
 		$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
-		$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^-?[0-9]+$", false, 3);
+		$save2["unit_exponent_value"] = form_input_validate((($_POST["unit_exponent_value"] == "") ? "NULL" : $_POST["unit_exponent_value"]), "unit_exponent_value", (($_POST["unit_exponent_value"] == "") ? "" : "^-?[0-9]+$"), true, 3);
 		
 		if (!is_error_message()) {
 			$local_graph_id = sql_save($save1, "graph_local");
