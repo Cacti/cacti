@@ -195,13 +195,13 @@ function update_poller_cache($local_data_id) {
 					$script_path = subsitute_data_query_path($script_queries["script_path"]);
 					$script_path .= " $extra_arguments " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
 				}
-				
+			
 				if (isset($script_path)) {
 					db_execute("insert into data_input_data_cache (local_data_id,host_id,data_input_id,action,hostname,
 						snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,command,rrd_num) values 
 						($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . "," . $data_input["id"]. ",1,'" . $host["hostname"] . "',
 						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "'
+						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
 						'" . get_data_source_path($local_data_id,true) . "','$script_path'," . sizeof($outputs) . ")");
 				}
@@ -306,8 +306,6 @@ function push_out_host($host_id, $local_data_id = 0) {
 	}
 	}
 }
-
-
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	global $config;
