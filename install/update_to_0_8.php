@@ -196,7 +196,7 @@ function update_database($database_old, $database_username, $database_password) 
 			
 			/* mark localhost for later */
 			if (gethostbyname($item["Hostname"]) == "127.0.0.1") {
-				$my_local_host = $host_id;
+				$ip_to_host_cache["127.0.0.1"] = $host_id;
 			}
 			
 			$status_array{count($status_array)}["host"][1] = $item["Hostname"];
@@ -221,11 +221,39 @@ function update_database($database_old, $database_username, $database_password) 
 	}
 	}
 	
-	if (!isset($my_local_host)) {
+	if (!isset($ip_to_host_cache["127.0.0.1"])) {
 		db_execute("insert into host (id,host_template_id,description,hostname,management_ip,snmp_community,
 			snmp_version,snmp_username,snmp_password) values (0,0,'Localhost','localhost','127.0.0.1',
 			'public',1,'','')");
-		$my_local_host = db_fetch_insert_id();
+		$ip_to_host_cache["127.0.0.1"] = db_fetch_insert_id();
+	}
+	
+	/* now that we've inserted all of the hosts from the 'snmp_hosts' table, go back through and see if there
+	is any other hosts that we've missed */
+	$_hosts = db_fetch_assoc("select FieldID,Value,DSID from $database_old.src_data where (FieldID=41 or FieldID=21) and value != '' group by value");
+	
+	if (sizeof($_hosts) > 0) {
+	foreach ($_hosts as $item) {
+		if (!isset($ip_to_host_cache{gethostbyname($item["Value"])})) {
+			if ($item["FieldID"] == "21") {
+				$snmp_community = db_fetch_cell("select Value from $database_old.src_data where FieldID=22 and DSID=" . $item["DSID"]);
+			}elseif ($item["FieldID"] == "41") {
+				$snmp_community = db_fetch_cell("select Value from $database_old.src_data where FieldID=42 and DSID=" . $item["DSID"]);
+			}
+			
+			if (db_execute("insert into host (id,host_template_id,description,hostname,management_ip,snmp_community,
+				snmp_version,snmp_username,snmp_password) values (0,0,'" . $item["Value"] . "',
+				'" . $item["Value"] . "','" . gethostbyname($item["Value"]) . "','$snmp_community',
+				1,'','')")) {
+				$host_id = db_fetch_insert_id();
+				$ip_to_host_cache{gethostbyname($item["Value"])} = $host_id;
+				
+				$status_array{count($status_array)}["host"][1] = $item["Value"];
+			}else{
+				$status_array{count($status_array)}["host"][0] = $item["Value"];
+			}
+		}
+	}
 	}
 	
 	$non_templated_data_sources = db_fetch_assoc("select id from data_template_data where local_data_id > 0");
@@ -475,7 +503,7 @@ function update_database($database_old, $database_username, $database_password) 
 							}
 						}
 						
-						data_query($my_local_host, 5);
+						data_query($ip_to_host_cache["127.0.0.1"], 5);
 					}else{
 						if ((!empty($item2["Value"]) && (!empty($data_input_field_cache{$item2["FieldID"]})))) {
 							if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
