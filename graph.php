@@ -53,7 +53,12 @@ $rras = get_associated_rras($_GET["local_graph_id"]);
 
 $graph_title = get_graph_title($_GET["local_graph_id"]);
 
-print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
+if ((isset($_GET["type"]) ? $_GET["type"] : "") == "tree") {
+	print "<table width='98%' style='background-color: #ffffff; border: 1px solid #ffffff;' align='center' cellpadding='3'>";
+}else{
+	print "<br><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
+}
+
 print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'><strong>Viewing Graph '$graph_title'</strong></td></tr>";
 
 $i = 0;
