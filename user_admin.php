@@ -48,197 +48,8 @@ function draw_user_form_select() {
 	</tr>
 <?}
 
-switch ($action) {
- case 'save_perms':
-    	db_execute ("delete from auth_graph where userid=$form[id]");
-    	db_execute ("delete from auth_graph_hierarchy where userid=$form[id]");
-	
-	while (list($var, $val) = each($form)) {
-		if (eregi("^[graph|tree|section]", $var)) {
-			if (substr($var, 0, 5) == "graph") {
-			    db_execute ("replace into auth_graph (userid,graphid) values($form[id]," . substr($var, 5) . ")");
-			}elseif (substr($var, 0, 4) == "tree") {
-			    db_execute ("replace into auth_graph_hierarchy (userid,hierarchyid) values($form[id]," . substr($var, 4) . ")");
-			}
-		}
-	}
-	
-	header ("Location: $current_script_name");
- 	break;
- case 'save':
-    	/* only change password when user types on */
-	if ($form[Password] != $form[Confirm]) {
-		$passwords_do_not_match = true;
-	}elseif (($form[Password] == "") && ($form[Confirm] == "")) {
-		$password = $form[_password];
-	}else{
-		$password = "PASSWORD('$form[Password]')";
-	}
-	
-	if ($passwords_do_not_match != true) {
-		$save["ID"] = $form["ID"];
-		$save["Username"] = $form["Username"];
-		$save["FullName"] = $form["FullName"];
-		$save["Password"] = $password;
-		$save["MustChangePassword"] = $form["MustChangePassword"];
-		$save["ShowTree"] = $form["ShowTree"];
-		$save["ShowList"] = $form["ShowList"];
-		$save["ShowPreview"] = $form["ShowPreview"];
-		$save["GraphSettings"] = $form["GraphSettings"];
-		$save["LoginOpts"] = $form["LoginOpts"];
-		$save["GraphPolicy"] = $form["GraphPolicy"];
-		
-		$id = sql_save($save, "auth_users");
-		
-		db_execute("delete from auth_acl where userid=$id");
-		while (list($var, $val) = each($form)) {
-			if (eregi("^[section]", $var)) {
-				if (substr($var, 0, 7) == "section") {
-				    db_execute ("replace into auth_acl (userid,sectionid) values($id," . substr($var, 7) . ")");
-				}
-			}
-		}
-	}
-    
-    	header ("Location: $current_script_name");
-	break;
- case 'remove':
-	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
-		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", getenv("HTTP_REFERER"), "user_admin.php?action=remove&id=$args[id]");
-		exit;
-	}
-	
-	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-	    db_execute("delete from auth_users where id=$args[id]");
-	    db_execute("delete from auth_acl where userid=$args[id]");
-	    db_execute("delete from auth_hosts where userid=$args[id]");
-	    db_execute("delete from auth_graph where userid=$args[id]");
-	    db_execute("delete from auth_graph_hierarchy where userid=$args[id]");
-	    db_execute("delete from settings_graphs where userid=$args[id]");
-	    db_execute("delete from settings_viewing_tree where userid=$args[id]");
-	    db_execute("delete from settings_graph_tree where userid=$args[id]");
-	    db_execute("delete from settings_ds_tree where userid=$args[id]");
-	}
-    
-    header ("Location: $current_script_name");
-    break;
- case 'edit_graph_config':
- 	include_once ("include/functions.php");
-	include_once ("include/top_header.php");
-	$title_text = "User Management [edit]";
-	include_once ("include/top_table_header.php");
-	if (isset($args[id])) {
-		$graph_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS["user_id"], $config["guest_user"]["value"]);
-	}else{
-		unset($user);
-	}
-	
-	draw_user_form_select();
- 	new_table();
-	
-	?>
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Preview Settings</td>
-	</tr>
-	
-	<form method="post" action="user_admin.php">
-	<?
-	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Height</font><br>
-			The height of graphs created in preview mode.
-		</td>
-		<?DrawFormItemTextBox("Height",$graph_settings[Height],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Width</font><br>
-			The width of graphs created in preview mode.
-		</td>
-		<?DrawFormItemTextBox("Width",$graph_settings[Width],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Timespan</font><br>
-			The amount of time to represent on a graph created in preview mode (0 uses auto).
-		</td>
-		<?DrawFormItemTextBox("TimeSpan",$graph_settings[TimeSpan],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Default RRA</font><br>
-			The default RRA to use when displaying graphs in preview mode.
-		</td>
-		<?DrawFormItemDropdownFromSQL("RRAID",db_fetch_assoc("select * from rrd_rra order by name"),"Name","ID",$graph_settings[RRAID],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Columns</font><br>
-			The number of columns to display graphs in using preview mode.
-		</td>
-		<?DrawFormItemTextBox("ColumnNumber",$graph_settings[ColumnNumber],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Page Refresh</font><br>
-			The number of seconds between automatic page refreshes.
-		</td>
-		<?DrawFormItemTextBox("PageRefresh",$graph_settings[PageRefresh],"","50", "40");?>
-	</tr>
-	
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Hierarchical Settings</td>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Default Graph Hierarchy</font><br>
-			The default graph hierarchy to use when displaying graphs in tree mode.
-		</td>
-		<?DrawFormItemDropdownFromSQL("TreeID",db_fetch_assoc("select * from viewing_trees order by Title"),"Title","ID",$graph_settings[TreeID],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">View Settings</font><br>
-			Options that govern how the graphs are displayed.
-		</td>
-		<td>
-		<?
-			DrawStrippedFormItemRadioButton("ViewType", $graph_settings[ViewType], "1", "Show a preview of the graph.", "1",true);
-			DrawStrippedFormItemRadioButton("ViewType", $graph_settings[ViewType], "2", "Show a text-based listing of the graph.", "1",true);
-		?>
-		</td>
-	</tr>
-	
-	<?
-	DrawFormItemHiddenIDField("ID",$args[id]);
-	?>
-	
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save", "user_admin.php");?>
-			</form>
-		</td>
-	</tr>
-	
-	<?
-	
-	include_once ("include/bottom_table_footer.php");
-	include_once ("include/bottom_footer.php");
-	
-	break;
- case 'edit_perms':
-	include_once ("include/top_header.php");
-	$title_text = "User Management [edit]";
-	include_once ("include/top_table_header.php");
+function edit_perms() {
+	global $colors, $args;
 	
 	if (isset($args[id])) {
 		$graph_policy = db_fetch_cell("select GraphPolicy from auth_users where id=$args[id]");
@@ -251,9 +62,6 @@ switch ($action) {
 	}else{
 		unset($user);
 	}
-	
-	draw_user_form_select();
-	new_table();
 	
 	?>
 	<tr>
@@ -344,14 +152,229 @@ switch ($action) {
 		</td>
 	</tr>
 	
+	<?	
+}
+
+function edit_graph_config() {
+	include_once ("include/functions.php");
+	global $colors, $args, $config, $HTTP_SESSION_VARS;
+	
+	if (isset($args[id])) {
+		$graph_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS["user_id"], $config["guest_user"]["value"]);
+	}else{
+		unset($user);
+	}
+	?>
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Preview Settings</td>
+	</tr>
+	
+	<form method="post" action="user_admin.php">
 	<?
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Height</font><br>
+			The height of graphs created in preview mode.
+		</td>
+		<?DrawFormItemTextBox("Height",$graph_settings[height],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Width</font><br>
+			The width of graphs created in preview mode.
+		</td>
+		<?DrawFormItemTextBox("Width",$graph_settings[width],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Timespan</font><br>
+			The amount of time to represent on a graph created in preview mode (0 uses auto).
+		</td>
+		<?DrawFormItemTextBox("TimeSpan",$graph_settings[time_span],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Default RRA</font><br>
+			The default RRA to use when displaying graphs in preview mode.
+		</td>
+		<?DrawFormItemDropdownFromSQL("RRAID",db_fetch_assoc("select * from rrd_rra order by name"),"Name","ID",$graph_settings[rra_id],"","");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Columns</font><br>
+			The number of columns to display graphs in using preview mode.
+		</td>
+		<?DrawFormItemTextBox("ColumnNumber",$graph_settings[column_number],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Page Refresh</font><br>
+			The number of seconds between automatic page refreshes.
+		</td>
+		<?DrawFormItemTextBox("PageRefresh",$graph_settings[page_refresh],"","50", "40");?>
+	</tr>
+	
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Hierarchical Settings</td>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Default Graph Hierarchy</font><br>
+			The default graph hierarchy to use when displaying graphs in tree mode.
+		</td>
+		<?DrawFormItemDropdownFromSQL("TreeID",db_fetch_assoc("select * from viewing_trees order by Title"),"Title","ID",$graph_settings[tree_id],"","");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">View Settings</font><br>
+			Options that govern how the graphs are displayed.
+		</td>
+		<td>
+		<?
+			DrawStrippedFormItemRadioButton("ViewType", $graph_settings[view_type], "1", "Show a preview of the graph.", "1",true);
+			DrawStrippedFormItemRadioButton("ViewType", $graph_settings[view_type], "2", "Show a text-based listing of the graph.", "1",true);
+		?>
+		</td>
+	</tr>
+	
+	<?
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	?>
+	
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right" background="images/blue_line.gif">
+			<?DrawFormSaveButton("save", "user_admin.php");?>
+			</form>
+		</td>
+	</tr>
+	
+	<?	
+}
+
+switch ($action) {
+ case 'save_perms':
+    	db_execute ("delete from auth_graph where userid=$form[id]");
+    	db_execute ("delete from auth_graph_hierarchy where userid=$form[id]");
+	
+	while (list($var, $val) = each($form)) {
+		if (eregi("^[graph|tree]", $var)) {
+			if (substr($var, 0, 5) == "graph") {
+			    db_execute ("replace into auth_graph (userid,graphid) values($form[id]," . substr($var, 5) . ")");
+			}elseif (substr($var, 0, 4) == "tree") {
+			    db_execute ("replace into auth_graph_hierarchy (userid,hierarchyid) values($form[id]," . substr($var, 4) . ")");
+			}
+		}
+	}
+	
+	if ($config[full_view_user_admin][value] == "") {
+		header ("Location: user_admin.php");
+	}elseif ($config[full_view_user_admin][value] == "on") {
+		header ("Location: user_admin.php?action=edit&id=$form[id]");
+	}
+	
+ 	break;
+ case 'save':
+    	/* only change password when user types on */
+	if ($form[Password] != $form[Confirm]) {
+		$passwords_do_not_match = true;
+	}elseif (($form[Password] == "") && ($form[Confirm] == "")) {
+		$password = $form[_password];
+	}else{
+		$password = "PASSWORD('$form[Password]')";
+	}
+	
+	if ($passwords_do_not_match != true) {
+		$save["ID"] = $form["ID"];
+		$save["Username"] = $form["Username"];
+		$save["FullName"] = $form["FullName"];
+		$save["Password"] = $password;
+		$save["MustChangePassword"] = $form["MustChangePassword"];
+		$save["ShowTree"] = $form["ShowTree"];
+		$save["ShowList"] = $form["ShowList"];
+		$save["ShowPreview"] = $form["ShowPreview"];
+		$save["GraphSettings"] = $form["GraphSettings"];
+		$save["LoginOpts"] = $form["LoginOpts"];
+		$save["GraphPolicy"] = $form["GraphPolicy"];
+		
+		$id = sql_save($save, "auth_users");
+		
+		db_execute("delete from auth_acl where userid=$id");
+		while (list($var, $val) = each($form)) {
+			if (eregi("^[section]", $var)) {
+				if (substr($var, 0, 7) == "section") {
+				    db_execute ("replace into auth_acl (userid,sectionid) values($id," . substr($var, 7) . ")");
+				}
+			}
+		}
+	}
+    
+	if ($config[full_view_user_admin][value] == "") {
+		header ("Location: user_admin.php");
+	}elseif ($config[full_view_user_admin][value] == "on") {
+		header ("Location: user_admin.php?action=edit&id=$id");
+	}
+	
+	break;
+ case 'remove':
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+		include_once ('include/top_header.php');
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", getenv("HTTP_REFERER"), "user_admin.php?action=remove&id=$args[id]");
+		exit;
+	}
+	
+	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+	    db_execute("delete from auth_users where id=$args[id]");
+	    db_execute("delete from auth_acl where userid=$args[id]");
+	    db_execute("delete from auth_hosts where userid=$args[id]");
+	    db_execute("delete from auth_graph where userid=$args[id]");
+	    db_execute("delete from auth_graph_hierarchy where userid=$args[id]");
+	    db_execute("delete from settings_graphs where userid=$args[id]");
+	    db_execute("delete from settings_viewing_tree where userid=$args[id]");
+	    db_execute("delete from settings_graph_tree where userid=$args[id]");
+	    db_execute("delete from settings_ds_tree where userid=$args[id]");
+	}
+    
+    	header ("Location: user_auth.php");
+	break;
+ case 'edit_graph_config':
+	include_once ("include/top_header.php");
+	$title_text = "User Management [edit]";
+	include_once ("include/top_table_header.php");
+	
+	draw_user_form_select();
+ 	new_table();
+	
+	edit_graph_config();
+	
+	include_once ("include/bottom_table_footer.php");
+	include_once ("include/bottom_footer.php");
+	
+	break;
+ case 'edit_perms':
+	include_once ("include/top_header.php");
+	$title_text = "User Management [edit]";
+	include_once ("include/top_table_header.php");
+	
+	draw_user_form_select();
+	new_table();
+	
+	edit_perms();
+
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
 	break;
  case 'edit':
 	include_once ("include/top_header.php");
-	$title_text = "User Management [edit]";
+	if ($config[full_view_user_admin][value] == "") { $title_text = "User Management [edit]"; }
 	include_once ("include/top_table_header.php");
 	
 	if (isset($args[id])) {
@@ -360,8 +383,10 @@ switch ($action) {
 		unset($user);
 	}
 	
-	draw_user_form_select();
-	new_table();
+	if ($config[full_view_user_admin][value] == "") {
+		draw_user_form_select();
+		new_table();
+	}
 	
 	?>
 	<tr>
@@ -460,7 +485,6 @@ switch ($action) {
 	</tr>
 	
 	<?
-	new_table();
 	
 	$sections = db_fetch_assoc("select 
 		auth_acl.UserID,
@@ -521,6 +545,13 @@ switch ($action) {
 	</tr>
 	
 	<?
+	if ($config[full_view_user_admin][value] == "on") {
+		new_table();
+		edit_perms();
+		new_table();
+		edit_graph_config();
+	}
+	
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
