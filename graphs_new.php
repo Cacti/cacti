@@ -576,9 +576,9 @@ function graphs() {
 			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'><span id='gt_text$query_row" . "_0'>
 						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
 					</td>
-					<td align='right'>";
-						form_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0);
-			print "		</td>
+					<td align='right'>
+						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onClick='gt_update_selection_indicators();'>
+					</td>
 				</tr>";
 		}
 		}
