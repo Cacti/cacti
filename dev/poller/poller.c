@@ -7,7 +7,6 @@ void *poller(){
   target_t *entry = NULL;
   rrd_t *rrd_targets = (rrd_t *)malloc(entries * sizeof(rrd_t));
   multi_rrd_t *rrd_multids;
-  unsigned long long result = 0;
   FILE *cmd_stdout;
   char cmd_result[64];
   int current_head=0;
@@ -37,7 +36,7 @@ void *poller(){
       case 1:
         cmd_stdout=popen(entry->command, "r");
         if(cmd_stdout != NULL) fgets(cmd_result, 64, cmd_stdout);
-        if(is_number(cmd_result)) entry->result = atoll(cmd_result);
+        if(is_number(cmd_result)) entry->result = atof(cmd_result);
         pclose(cmd_stdout);
       break;
       //Action 2
@@ -69,7 +68,7 @@ void *poller(){
       current_head=1;
     }
 
-    printf("management_ip: %s target_id: %i result: %lli\n",entry->management_ip, entry->target_id, entry->result);
+    printf("management_ip: %s target_id: %i result: %f\n",entry->management_ip, entry->target_id, entry->result);
 
     if(/*current_head==0 && */entry->local_data_id == current->local_data_id){
       printf("Multi DS RRA\n");

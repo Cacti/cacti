@@ -2,7 +2,7 @@
 
 typedef struct target_struct{
   int target_id;
-  unsigned long long result;
+  double result;
   char stringresult[255];
   int local_data_id;
   int action;
@@ -41,5 +41,5 @@ typedef struct conf_struct{
 } conf_t;
 
 void *poller();
-unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int who);
+double snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int who);
 

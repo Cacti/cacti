@@ -66,5 +66,5 @@ int get_targets(){
   free(temp);
   temp2=NULL;
   free(temp2);
-  return mysql_num_rows(result);;
+  return (int)mysql_num_rows(result);
 }

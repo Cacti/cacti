@@ -1,6 +1,6 @@
 #include "inc.h"
 
-unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int who){
+double snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int who){
 
   void *sessp = NULL;
   struct snmp_session session;
@@ -11,7 +11,8 @@ unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char 
   struct variable_list *vars = NULL;
   int status=0;
   char result_string[BUFSIZE];
-  unsigned long long result;
+  unsigned long long int result;
+  double dresult;
 
   //snmp query
   snmp_sess_init(&session);

@@ -33,13 +33,14 @@ int main(void){
 
   printf("INIT: ready\n");
 
+  current=targets;
   while(1){
-    current=targets;
     poller();
     sleep(conf.interval);
     if(conf_changed==1){
       printf("conf changed\n");
       entries=get_targets();
+      current=targets;
       conf_changed=0;
     }
 
