@@ -51,7 +51,7 @@ ini_set("max_execution_time", "0");
 
 /* Get number of polling items from the database */
 $num_polling_items = db_fetch_cell("select count(*) from poller_item");
-$polling_hosts = db_fetch_assoc("select id from host where disabled = '' order by id");
+$polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("select id from host where disabled = '' order by id"));
 
 /* Retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
