@@ -188,7 +188,7 @@ function delete_branch($tree_item_id) {
 		and graph_tree_items.graph_tree_id=$graph_tree_id
 		order by graph_tree_items.order_key");
 	
-	$i = 0; $ctr = 0;
+	$i = 0; $ctr = 0; $_suffix_order_key = 0;
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $tree_item) {
 		/* ignore first entry */
