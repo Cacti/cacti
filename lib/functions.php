@@ -1176,13 +1176,14 @@ function get_web_browser() {
 	@arg $force_refresh - (bool) Force the refresh of the array from the database
    @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array($return_sql = false, $force_refresh = false) {
+
 	/* set the tree update time if not already set */
 	if (!isset($_SESSION["tree_update_time"])) {
 		$_SESSION["tree_update_time"] = time();
 	}
 
 	/* build tree array */
-	if (($_SESSION["tree_array"] == NULL) || ($force_refresh) ||
+	if (!isset($_SESSION["tree_array"]) || ($force_refresh) ||
 		(($_SESSION["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
 
 		if (read_config_option("auth_method") != "0") {
