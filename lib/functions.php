@@ -880,12 +880,13 @@ function generate_data_source_path($local_data_id) {
    @arg $graph_item_id - (int) the ID to generate a letter-based representation of
    @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {
-	$lookup_table = array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
+	$lookup_table = array("a","b","c","d","e","f","g","h","i","j");
 
 	$result = "";
 
-	$current_charcter = $graph_item_id;
-	$result .= $lookup_table[$current_charcter];
+	for ($i=0; $i<strlen(strval($graph_item_id)); $i++) {
+		$result .= $lookup_table{substr(strval($graph_item_id), $i, 1)};
+	}
 
 	return $result;
 }
