@@ -31,17 +31,15 @@ include(dirname(__FILE__) . "/scripts/script_functions.php" );
 // process waits for input and then calls functions as required
 while (1) {
 	$in_string = fgets(STDIN,255);
-	if (strlen($in_string)>0) {
-		if (($in_string != "quit\r\n") && ($in_string != "\r\n")) {
-			// parse function from command
-			$in_string = strtr($in_string,"\r","\0");
-			$in_string = strtr($in_string,"\n","\0");
+	$in_string = rtrim(strtr(strtr($in_string,'\r',''),'\n',''));
 
+	if (strlen($in_string)>0) {
+		if (($in_string != "quit") && ($in_string != "")) {
+			// parse function from command
 			$cmd = substr($in_string,0,strpos($in_string," "));
 
 			// parse parameters from remainder of command
 			$preparm = substr($in_string,strpos($in_string," ")+1);
-//			$preparm = substr($preparm,0,strlen($preparm)-2);
 			$parm = explode(" ",$preparm);
 
 			// check for existance of function.  If exists call it
@@ -57,7 +55,7 @@ while (1) {
 			} else {
 				fputs(STDOUT, "ERROR: Function does not exist\n");
 			}
-		}elseif ($in_string == "quit\r\n") {
+		}elseif ($in_string == "quit") {
 			break;
 		}else {
 			fputs(STDOUT, "ERROR: Problems with input\n");
