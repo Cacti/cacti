@@ -345,7 +345,8 @@ function change_data_template($local_data_id, $data_template_id) {
 	$template_data = db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id");
 	
 	/* determine if we are here for the first time, or coming back */
-	if (db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "0") {
+	if ((db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "0") ||
+	(db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "")) {
 		$new_save = true;
 	}else{
 		$new_save = false;
@@ -369,7 +370,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	/* loop through the "templated field names" to find to the rest... */
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		if ($field_array["type"] != "custom") {
-			if (!empty($template_data{"t_" . $field_name})) {
+			if ((!empty($template_data{"t_" . $field_name})) && ($new_save == false)) {
 				$save[$field_name] = $data[$field_name];
 			}else{
 				$save[$field_name] = $template_data[$field_name];
@@ -521,6 +522,14 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	$graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=$local_graph_id");
 	$template_graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=0 and graph_template_id=$graph_template_id");
 	
+	/* determine if we are here for the first time, or coming back */
+	if ((db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=$local_graph_id") == "0") ||
+	(db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=$local_graph_id") == "")) {
+		$new_save = true;
+	}else{
+		$new_save = false;
+	}
+	
 	/* some basic field values that ALL graphs should have */
 	$save["id"] = $graph_list["id"];
 	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
@@ -531,7 +540,11 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		$value_type = "t_$field_name";
 		
-		if ($template_graph_list[$value_type] == "on") { $save[$field_name] = $graph_list[$field_name]; }else{ $save[$field_name] = $template_graph_list[$field_name]; }
+		if ((!empty($template_graph_list[$value_type])) && ($new_save == false)) {
+			$save[$field_name] = $graph_list[$field_name];
+		}else{
+			$save[$field_name] = $template_graph_list[$field_name];
+		}
 	}
 	
 	//print "<pre>";print_r($save);print "</pre>";
