@@ -289,7 +289,11 @@ function sql_save($array_items, $table_name) {
 	
 	/* get the last AUTO_ID and return it */
 	if (db_fetch_cell("select LAST_INSERT_ID()") == "0") {
-		return $array_items["id"];
+		if (!(isset($array_items["id"]))) {
+			return $array_items["ID"];
+		}else{
+			return $array_items["id"];
+		}
 	}else{
 		return db_fetch_cell("select LAST_INSERT_ID()");
 	}
