@@ -154,9 +154,11 @@ function form_save() {
 			/* save entried in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
 			
-			for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
-				db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
-					values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+			if (isset($_POST["rra_id"])) {
+				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+				}
 			}
 			
 			if (!empty($_POST["data_template_id"])) {
@@ -370,7 +372,7 @@ function template_edit() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,(isset($template_data{"t_" . $field_name}) ? $template_data{"t_" . $field_name} : ""),"Use Per-Graph Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
+		form_base_checkbox("t_" . $field_name,(isset($template_data{"t_" . $field_name}) ? $template_data{"t_" . $field_name} : ""),"Use Per-Data Source Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
 		print "</td>\n";
 		
 		if ($field_array["type"] == "custom") {
@@ -449,7 +451,7 @@ function template_edit() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,(isset($template_rrd) ? $template_rrd{"t_" . $field_name} : ""),"Use Per-Graph Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
+		form_base_checkbox("t_" . $field_name,(isset($template_rrd) ? $template_rrd{"t_" . $field_name} : ""),"Use Per-Data Source Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
 		print "</td>\n";
 		
 		draw_nontemplated_item($field_array, $field_name, (isset($template_rrd) ? $template_rrd[$field_name] : ""));
