@@ -871,7 +871,7 @@ function host_edit() {
 		
 		/* create a row at the bottom that lets the user create any graph they choose */
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-		print "		<td width='60'>
+		print "		<td width='60' nowrap>
 					<strong>Create:</strong>&nbsp;";
 					form_base_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
 		print "		</td>
