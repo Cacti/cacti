@@ -1817,7 +1817,7 @@ CREATE TABLE host (
   status_fail_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_rec_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_last_error varchar(50) default '',
-  min_time decimal(7,5) default '99.9999',
+  min_time decimal(7,5) default '9.99999',
   max_time decimal(7,5) default '0.00000',
   cur_time decimal(7,5) default '0.00000',
   avg_time decimal(7,5) default '0.00000',
@@ -1833,7 +1833,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','',1,'','',161,500,'',0);
+INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','',1,'','',161,500,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','','9.99999','0.00000','0.00000','0.00000','0','0','100.00');
 
 --
 -- Table structure for table `host_graph`
