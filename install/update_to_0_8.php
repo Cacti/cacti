@@ -24,12 +24,12 @@
  +-------------------------------------------------------------------------+
 */
 
-
 include_once("../include/functions.php");
 include_once("../include/utility_functions.php");
 include_once("../include/snmp_functions.php");
 
 set_time_limit(0);
+ini_set("memory_limit", "32M");
 error_reporting(E_ALL & ~E_NOTICE);
 
 $status_array = array();
@@ -544,12 +544,7 @@ function update_database($database_old, $database_username, $database_password) 
 				
 				if (sizeof($_ds_rra) > 0) {
 				foreach ($_ds_rra as $item2) {
-					if (db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values
-						(" . $data_template_data_cache{$item2["DSID"]} . "," . $item2["RRAID"] . ")")) {
-						$status_array{count($status_array)}["data_source_rra"][1] = $item2["RRAID"];
-					}else{
-						$status_array{count($status_array)}["data_source_rra"][0] = $item2["RRAID"];
-					}
+					db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values(" . $data_template_data_cache{$item2["DSID"]} . "," . $item2["RRAID"] . ")");
 				}
 				}
 			}else{
