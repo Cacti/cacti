@@ -888,8 +888,8 @@ INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'
 INSERT INTO data_template_rrd VALUES (55,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
 INSERT INTO data_template_rrd VALUES (56,0,0,37,'on',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (76,0,0,42,'',100,'',0,'',600,'',1,'','cpu','',0);
-INSERT INTO data_template_rrd VALUES (77,0,0,43,'',10000000000,'',0,'',600,'',1,'','hdd_total','',0);
-INSERT INTO data_template_rrd VALUES (78,0,0,43,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (77,0,0,43,'',100000000000,'',0,'',600,'',1,'','hdd_total','',0);
+INSERT INTO data_template_rrd VALUES (78,0,0,43,'',100000000000,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (79,0,0,44,'',100,'',0,'',600,'',1,'','cpu','',0);
 INSERT INTO data_template_rrd VALUES (81,0,0,46,'',5000,'',0,'',600,'',1,'','users','',0);
 INSERT INTO data_template_rrd VALUES (84,16,3,13,NULL,10000000,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
@@ -1667,14 +1667,14 @@ INSERT INTO graph_templates_item VALUES (216,0,0,25,55,20,4,0,1,'Outbound','',''
 INSERT INTO graph_templates_item VALUES (217,0,0,25,55,0,9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (218,0,0,25,55,0,9,0,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (219,0,0,25,55,0,9,0,3,'Maximum:','','',2,8);
-INSERT INTO graph_templates_item VALUES (303,0,0,26,78,0,9,14,3,'Maximum:','','on',2,8);
-INSERT INTO graph_templates_item VALUES (304,0,0,26,78,0,9,14,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (305,0,0,26,78,0,9,14,4,'Current:','','',2,6);
-INSERT INTO graph_templates_item VALUES (306,0,0,26,78,48,7,14,1,'Used','','',2,5);
-INSERT INTO graph_templates_item VALUES (307,0,0,26,77,20,7,14,1,'Total','','',2,1);
-INSERT INTO graph_templates_item VALUES (308,0,0,26,77,0,9,14,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (309,0,0,26,77,0,9,14,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (310,0,0,26,77,0,9,14,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (303,0,0,26,78,0,9,0,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (304,0,0,26,78,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (305,0,0,26,78,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (306,0,0,26,78,48,7,0,1,'Used','','',2,5);
+INSERT INTO graph_templates_item VALUES (307,0,0,26,77,20,7,0,1,'Total','','',2,1);
+INSERT INTO graph_templates_item VALUES (308,0,0,26,77,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (309,0,0,26,77,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (310,0,0,26,77,0,9,0,3,'Maximum:','','on',2,4);
 INSERT INTO graph_templates_item VALUES (317,0,0,27,79,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (316,0,0,27,79,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (315,0,0,27,79,9,7,0,1,'CPU Utilization','','',2,1);
@@ -1753,6 +1753,7 @@ CREATE TABLE graph_tree_items (
   local_graph_id mediumint(8) unsigned NOT NULL default '0',
   rra_id smallint(8) unsigned NOT NULL default '0',
   title varchar(255) default NULL,
+  host_id mediumint(8) unsigned NOT NULL default '0',
   order_key varchar(60) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -1765,11 +1766,11 @@ CREATE TABLE graph_tree_items (
 --
 
 
-INSERT INTO graph_tree_items VALUES (1,1,0,1,'System Graphs','010000000000000000000000000000000000000000000000000000000000');
-INSERT INTO graph_tree_items VALUES (2,1,2,1,'','010100000000000000000000000000000000000000000000000000000000');
-INSERT INTO graph_tree_items VALUES (3,1,3,1,'','010200000000000000000000000000000000000000000000000000000000');
-INSERT INTO graph_tree_items VALUES (4,1,1,1,'','010300000000000000000000000000000000000000000000000000000000');
-INSERT INTO graph_tree_items VALUES (5,1,4,1,'','010400000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (1,1,0,1,'System Graphs',0,'010000000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (2,1,2,1,'',0,'010100000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (3,1,3,1,'',0,'010200000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (4,1,1,1,'',0,'010300000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (5,1,4,1,'',0,'010400000000000000000000000000000000000000000000000000000000');
 
 --
 -- Table structure for table 'host'
@@ -1797,7 +1798,7 @@ CREATE TABLE host (
 --
 
 
-INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','127.0.0.1','public',1,'','',NULL,0);
+INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','127.0.0.1','public',1,'','','',0);
 
 --
 -- Table structure for table 'host_snmp_cache'
@@ -1994,6 +1995,7 @@ CREATE TABLE rra (
   x_files_factor double NOT NULL default '0.1',
   steps mediumint(8) default '1',
   rows int(12) NOT NULL default '600',
+  timespan int(12) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
   KEY id_2 (id)
@@ -2004,10 +2006,10 @@ CREATE TABLE rra (
 --
 
 
-INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600);
-INSERT INTO rra VALUES (2,'Weekly (30 Minute Average)',0.5,6,700);
-INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797);
-INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775);
+INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600,0);
+INSERT INTO rra VALUES (2,'Weekly (30 Minute Average)',0.5,6,700,0);
+INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797,0);
+INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775,0);
 
 --
 -- Table structure for table 'rra_cf'
@@ -2071,7 +2073,7 @@ INSERT INTO settings VALUES ('remove_verification','on');
 INSERT INTO settings VALUES ('use_polling_zones','on');
 INSERT INTO settings VALUES ('full_view_graph_template','on');
 INSERT INTO settings VALUES ('full_view_graph','on');
-INSERT INTO settings VALUES ('full_view_user_admin','on');
+INSERT INTO settings VALUES ('full_view_user_admin','');
 INSERT INTO settings VALUES ('full_view_data_template','on');
 INSERT INTO settings VALUES ('smnp_version','ucd-snmp');
 INSERT INTO settings VALUES ('ldap_enabled','');
@@ -2455,7 +2457,10 @@ CREATE TABLE user_auth (
   show_preview char(2) NOT NULL default 'on',
   graph_settings char(2) default NULL,
   login_opts tinyint(1) NOT NULL default '1',
-  graph_policy tinyint(1) NOT NULL default '1',
+  policy_graphs tinyint(1) unsigned NOT NULL default '1',
+  policy_trees tinyint(1) unsigned NOT NULL default '1',
+  policy_hosts tinyint(1) unsigned NOT NULL default '1',
+  policy_graph_templates tinyint(1) unsigned NOT NULL default '1',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
   KEY id_2 (id)
@@ -2466,8 +2471,8 @@ CREATE TABLE user_auth (
 --
 
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1);
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1);
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1);
 
 --
 -- Table structure for table 'user_auth_graph'
@@ -2570,6 +2575,9 @@ CREATE TABLE user_log (
 --
 
 
+INSERT INTO user_log VALUES ('admin',1,'2003-08-07 23:50:24',1,'192.168.1.101');
+INSERT INTO user_log VALUES ('admin',0,'0000-00-00 00:00:00',3,'192.168.1.101');
+INSERT INTO user_log VALUES ('admin',1,'2003-08-13 23:03:05',1,'192.168.1.101');
 
 --
 -- Table structure for table 'user_realm'
