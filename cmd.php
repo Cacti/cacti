@@ -236,7 +236,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
 
 				if (!validate_result($output)) {
-					cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, 20), $print_data_to_stdout);
+					if (strlen($output) > 20) {
+						$strout = 20;
+					} else {
+						$strout = strlen($output);
+					}
+
+					cacti_log("Host[$host_id] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 					$output = "U";
 				}
 
@@ -249,7 +255,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				$output = trim(exec_poll($item["arg1"]));
 
 				if (!validate_result($output)) {
-					cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, 20), $print_data_to_stdout);
+					if (strlen($output) > 20) {
+						$strout = 20;
+					} else {
+						$strout = strlen($output);
+					}
+
+					cacti_log("Host[$host_id] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 					$output = "U";
 				}
 
@@ -263,7 +275,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$output = trim(str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp)));
 
 					if (!validate_result($output)) {
-						cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, 20), $print_data_to_stdout);
+						if (strlen($output) > 20) {
+							$strout = 20;
+						} else {
+							$strout = strlen($output);
+						}
+
+						cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 						$output = "U";
 					}
 
