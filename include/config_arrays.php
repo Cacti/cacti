@@ -132,6 +132,10 @@ $graph_views = array(1 =>
 	"List View",
 	"Preview View");
 
+$auth_realms = array(0 =>
+	"Local",
+	"LDAP");
+
 $menu = array(
 	"Graph Setup" => array(
 		"graphs.php" => "Graph Management",

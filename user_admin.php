@@ -27,6 +27,7 @@
 include ('include/auth.php');
 include ("include/config_settings.php");
 include_once ("include/form.php");
+include_once ("include/config_arrays.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -592,18 +593,20 @@ function user_edit() {
 }
 
 function user() {
-	global $colors;
 	
+	global $colors, $auth_realms;
+
 	start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("User Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Full Name",$colors["header_text"],1);
+                DrawMatrixHeaderItem("Realm",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],1);
                 DrawMatrixHeaderItem("Last Login",$colors["header_text"],2);
 	print "</tr>";
 	
-	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, graph_policy, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.username = user_log.username group by id");
+	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, graph_policy, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.username = user_log.username group by id");
 	
 	$i = 0;
 	if (sizeof($user_list) > 0) {
@@ -615,6 +618,9 @@ function user() {
 			</td>
 			<td>
 				<?php print $user["full_name"];?>
+			</td>
+			<td>
+				<?php print $auth_realms[$user["realm"]];?>
 			</td>
 			<td>
 				<?php if ($user["graph_policy"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
