@@ -5,18 +5,20 @@ INC+=-I/usr/include/mysql
 LIB+=-L/usr/lib
 
 #NET-SNMP
-DEF=-DNETSNMP
+DEF+=-DNETSNMP
 INC+=-I/usr/include/net-snmp
 LIB+=-L/usr/lib -lsnmp
 
 #UCD-SNMP
-#DEF=-DUCDSNMP
+#DEF+=-DUCDSNMP
 #INC+=-I/usr/include/ucd-snmp
 #LIB+=-L/usr/lib
 
 #RRD path
-INC+=-I/usr/include
-LIB+=-L/usr/lib
+#Comment out if you want to use external rrdtool
+#INC+=-I/usr/include
+#LIB+=-L/usr/lib
+#DEF+=-DRRD
 
 #PThread path
 INC+=-I/usr/include

@@ -31,10 +31,18 @@ void *poller(void *thread_args){
       if (pthread_mutex_unlock(&threads->mutex) != 0) printf("pthread_mutex_unlock error\n");
       if(result!=0) {
         printf("[%d] got: (%llu)\n",worker->index, result);
-        sprintf(rrdcmd,"rrdtool update %s N:%llu", entry->rrd, result);
-        printf("RRD: %s\n",rrdcmd);
-        //wrap_rrd_update(rrdcmd);
-        system(rrdcmd);
+	
+	#ifdef RRD
+	  //internal rrd_update
+          sprintf(rrdcmd,"update %s N:%llu", entry->rrd, result);
+          printf("RRD: wrap_rrd_update(%s)\n",rrdcmd);
+          wrap_rrd_update(rrdcmd);
+	#else
+	  //external rrdtool command
+          sprintf(rrdcmd,"rrdtool update %s N:%llu", entry->rrd, result);
+          printf("RRD: %s\n",rrdcmd);
+          system(rrdcmd);
+	#endif
       }
 
       printf("[%d] lock work_count\n", worker->index);

@@ -1,3 +1,4 @@
+#ifdef RRD
 #include "inc.h"
 
 char** string_to_argv(char *argstring, int *argc){
@@ -54,3 +55,4 @@ int wrap_rrd_update(char *argstr){
     return i;
   } else return (-1);
 }
+#endif
