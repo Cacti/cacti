@@ -188,7 +188,7 @@ function DrawFormItemTextArea($form_name, $form_previous_value, $form_rows, $for
 /* creates a user defined drop down box header */
 function DrawFormItemDropDownCustomHeader($form_name) { ?>
 		<td>
-			;<select name="<?print $form_name;?>">
+			<select name="<?print $form_name;?>">
 <?}
 
 /* creates a user defined drop down box item */
