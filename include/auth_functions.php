@@ -33,64 +33,66 @@ function DrawMenu($userid, $menuid) {
 		$userid = $HTTP_COOKIE_VARS[$conf_cookiename];
     }
     
-    $item = db_fetch_row("select ItemOrder from menu where id=$menuid");
+    /* set up the available menu headers */
+    $menu_headers = array(0 => "Graph Setup", 1 => "Data Gathering", 2 => "Configuration", 3 => "Utilities");
     
-    /* decide whether this menu is sorted alphabetically or seqentially */
-    if ($item[ItemOrder] == 1) {
-		$sql_sort_string = "cname, name";
-    }else{
-		$sql_sort_string = "c.sequence,i.sequence";
-    }
+    /* link each menu item to a header */
+    $menu_items[mIndex] = array(0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3);
     
-    if ($config["global_auth"]["value"] == "on") {
-		/* auth is on: show items based on user logged in */
-		$data = db_fetch_assoc("select a.SectionID, a.UserID,
-			s.ID, s.Section, 
-			c.Name as CName,c.ID, c.ImagePath as CImagePath, 
-			i.*
-			from auth_acl a 
-			left join auth_sections s 
-			on a.sectionid=s.id 
-			left join menu_items i
-			on a.sectionid=i.sectionid 
-			left join menu_category c 
-			on c.id=i.categoryid 
-			where a.userid=$userid 
-			and i.menuid=$menuid 
-			order by $sql_sort_string");
-    }else{
-		/* auth is off: show all items */
-		$data = db_fetch_assoc("select
-			c.name as CName,c.ID, c.ImagePath as CImagePath, 
-			i.*
-			from menu_items i
-			left join menu_category c 
-			on c.id=i.categoryid 
-			where i.menuid=$menuid 
-			order by $sql_sort_string");
-    }
+    /* setup the actual menu item definitions */
+    $menu_items[mTitle] = array(
+    	"Graph Management", 
+	"Graph Hierarchy",
+	"Colors",
+	"Data Sources",
+	"Round Robin Archives",
+	"SNMP Interfaces",
+	"Data Input",
+	"CDEF's",
+	"Cron Printout",
+	"cacti Settings",
+	"User Management",
+	"Logout User"
+	);
     
-	print '<tr><td width="100%"><table cellpadding=3 cellspacing=0 border=0 width="100%">';
+    $menu_items[mURL] = array(
+    	"graphs.php", 
+	"tree.php",
+	"color.php",
+	"ds.php",
+	"rra.php",
+	"snmp.php",
+	"data.php",
+	"cdef.php",
+	"cron.php",
+	"settings.php",
+	"user_admin.php",
+	"logout.php"
+	);
     
-    if (sizeof($data) > 0) {
-		foreach ($data as $row) {
-		    if ($row[CName] != $old_cat_name) {
-				print '<tr><td class="textMenuHeader">' . $row[CName] . '</td></tr>';
+    /* NOTICE: we will have to come back and re-impliment "custom auth menus" at some point */
+    $user_perms = db_fetch_assoc("select
+    	auth_sections.Section
+	from auth_sections left join auth_acl on auth_acl.SectionID=auth_sections.ID
+	where auth_acl.UserID=$userid");
+    
+    print '<tr><td width="100%"><table cellpadding=3 cellspacing=0 border=0 width="100%">';
+    
+    $_m_index = -1;
+   
+    if (sizeof($menu_headers) > 0) {
+	    	for ($i=0; ($i < sizeof($menu_items[mIndex])); $i++) {
+		    	if ($menu_items[mIndex][$i] != $_m_index) {
+			    	$_m_index = $menu_items[mIndex][$i];
 				
-				$old_cat_name = $row[CName];
-		    }
-		    
-			if ($row[Parent] == ""){
-				$parent = "_self";
-			}else{
-				$parent = $row[Parent];
-			}
-			
-			print '<tr><td class="textMenuItem" background="images/menu_line.gif"><a parent="' . $parent . '" href="' . $row[URL] . '">' . $row[Name] . '</a></td></tr>';
+				print '<tr><td class="textMenuHeader">' . $menu_headers[$_m_index] . '</td></tr>';
+		    	}
+		    	
+			print '<tr><td class="textMenuItem" background="images/menu_line.gif"><a href="' . $menu_items[mURL][$i] . '">' . $menu_items[mTitle][$i] . '</a></td></tr>';
 		}
     }
 	
-	print '</table></td></tr>';
+    print '</table></td></tr>';
 }
 
 ?>
