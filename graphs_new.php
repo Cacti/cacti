@@ -37,11 +37,6 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
-	case 'query_remove':
-		host_remove_query();
-		
-		header("Location: graphs_new.php?host_id=" . $_GET["host_id"]);
-		break;
 	case 'query_reload':
 		host_reload_query();
 		
@@ -120,11 +115,6 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
 
 function host_reload_query() {
 	data_query($_GET["host_id"], $_GET["id"]);
-}
-
-function host_remove_query() {
-	db_execute("delete from host_snmp_cache where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
-	db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
 }
 
 /* -------------------
@@ -542,71 +532,62 @@ function graphs() {
 	<form name="chk" method="post" action="graphs_new.php">
 	<?php
 	
-	start_box("<strong>Host Template</strong> [" . db_fetch_cell("select name from host_template where id=" . $host["host_template_id"]) . "]", "98%", $colors["header"], "3", "center", "");
-	
-	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td class='textSubHeaderDark'>Graph Template Name</td>
-			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\");gt_update_selection_indicators();'></td>\n
-		</tr>\n";
-	
-	$graph_templates = db_fetch_assoc("select
-		graph_templates.id as graph_template_id,
-		graph_templates.name as graph_template_name
-		from host_template_graph, graph_templates
-		where host_template_graph.graph_template_id=graph_templates.id
-		and host_template_graph.host_template_id=" . $host["host_template_id"] . "
-		order by graph_templates.name");
-	
-	$i = 0;
-	
-	$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_template_graph where graph_local.graph_template_id=host_template_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
-	
-	print "<script type='text/javascript'>\n<!--\n";
-	print "var gt_created_graphs = new Array(";
-	
-	if (sizeof($template_graphs) > 0) {
-		$cg_ctr = 0;
-		foreach ($template_graphs as $template_graph) {
-			print (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'"; 
-			
-			$cg_ctr++;
+	if (!empty($host["host_template_id"])) {
+		start_box("<strong>Host Template</strong> [" . db_fetch_cell("select name from host_template where id=" . $host["host_template_id"]) . "]", "98%", $colors["header"], "3", "center", "");
+		
+		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+				<td class='textSubHeaderDark'>Graph Template Name</td>
+				<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\");gt_update_selection_indicators();'></td>\n
+			</tr>\n";
+		
+		$graph_templates = db_fetch_assoc("select
+			graph_templates.id as graph_template_id,
+			graph_templates.name as graph_template_name
+			from host_template_graph, graph_templates
+			where host_template_graph.graph_template_id=graph_templates.id
+			and host_template_graph.host_template_id=" . $host["host_template_id"] . "
+			order by graph_templates.name");
+		
+		$i = 0;
+		
+		$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_template_graph where graph_local.graph_template_id=host_template_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
+		
+		print "<script type='text/javascript'>\n<!--\n";
+		print "var gt_created_graphs = new Array(";
+		
+		if (sizeof($template_graphs) > 0) {
+			$cg_ctr = 0;
+			foreach ($template_graphs as $template_graph) {
+				print (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'"; 
+				
+				$cg_ctr++;
+			}
 		}
-	}
-	
-	print ")\n";
-	print "//-->\n</script>\n";
-	
-	/* create a row for each graph template associated with the host template */
-	if (sizeof($graph_templates) > 0) {
-	foreach ($graph_templates as $graph_template) {
-		$query_row = $graph_template["graph_template_id"];
 		
-		print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
+		print ")\n";
+		print "//-->\n</script>\n";
 		
-		print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'><span id='gt_text$query_row" . "_0'>
-					<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
-				</td>
-				<td align='right'>";
-					form_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0);
-		print "		</td>
-			</tr>";
+		/* create a row for each graph template associated with the host template */
+		if (sizeof($graph_templates) > 0) {
+		foreach ($graph_templates as $graph_template) {
+			$query_row = $graph_template["graph_template_id"];
+			
+			print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
+			
+			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'><span id='gt_text$query_row" . "_0'>
+						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
+					</td>
+					<td align='right'>";
+						form_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0);
+			print "		</td>
+				</tr>";
+		}
+		}
+		
+		print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
+		
+		end_box();
 	}
-	}
-	
-	print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
-	
-	/* create a row at the bottom that lets the user create any graph they choose */
-	//print "	<tr bgcolor='#" . $colors["alternate"] . "'>
-	//		<td width='60' nowrap>
-	//			<strong>Create:</strong>&nbsp;";
-	//			form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
-	//print "		</td>
-	//		<td align='right'>";
-	//			form_checkbox("ccg","","","",0);
-	//print "		</td>
-	//	</tr>";
-	
-	end_box();
 	
 	$snmp_queries = db_fetch_assoc("select
 		snmp_query.id,
@@ -684,8 +665,7 @@ function graphs() {
 									<strong>Data Query</strong> [" . $snmp_query["name"] . "]
 								</td>
 								<td align='right' nowrap>
-									<a href='graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'><img src='images/reload_icon_small.gif' alt='Reload Associated Query' border='0' align='absmiddle'></a>&nbsp;
-									<a href='graphs_new.php?action=query_remove&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'><img src='images/delete_icon_large.gif' alt='Delete Associated Query' border='0' align='absmiddle'></a>
+									<a href='graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'><img src='images/reload_icon_small.gif' alt='Reload Associated Query' border='0' align='absmiddle'></a>
 								</td>
 							</tr>
 						</table>
