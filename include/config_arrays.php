@@ -35,78 +35,118 @@ $messages = array(
 		"type" => "error")
 		);
 
-$cdef_operators = array(1 => "+",
-			     "-",
-			     "*",
-			     "/",
-			     "%");
+$cdef_operators = array(1 =>
+	"+",
+	"-",
+	"*",
+	"/",
+	"%");
 
-$cdef_functions = array(1 => "SIN",
-			     "COS",
-			     "LOG",
-			     "EXP",
-			     "FLOOR",
-			     "CEIL",
-			     "LT",
-			     "LE",
-			     "GT",
-			     "GE",
-			     "EQ",
-			     "IF",
-			     "MIN",
-			     "MAX",
-			     "LIMIT",
-			     "DUP",
-			     "EXC",
-			     "POP",
-			     "UN",
-			     "UNKN",
-			     "PREV",
-			     "INF",
-			     "NEGINF",
-			     "NOW",
-			     "TIME",
-			     "LTIME");
+$cdef_functions = array(1 =>
+	"SIN",
+	"COS",
+	"LOG",
+	"EXP",
+	"FLOOR",
+	"CEIL",
+	"LT",
+	"LE",
+	"GT",
+	"GE",
+	"EQ",
+	"IF",
+	"MIN",
+	"MAX",
+	"LIMIT",
+	"DUP",
+	"EXC",
+	"POP",
+	"UN",
+	"UNKN",
+	"PREV",
+	"INF",
+	"NEGINF",
+	"NOW",
+	"TIME",
+	"LTIME");
 
-				
-$consolidation_functions = array(1 => "AVERAGE",
-				      "MIN",
-				      "MAX",
-				      "LAST");
+$consolidation_functions = array(1 =>
+	"AVERAGE",
+	"MIN",
+	"MAX",
+	"LAST");
 					
-$data_source_types = array(1 => "GAUGE",
-				"COUNTER",
-				"DERIVE",
-				"ABSOLUTE");
+$data_source_types = array(1 =>
+	"GAUGE",
+	"COUNTER",
+	"DERIVE",
+	"ABSOLUTE");
 				
-$graph_item_types = array(1 => "COMMENT",
-			       "HRULE",
-			       "VRULE",
-			       "LINE1",
-			       "LINE2",
-			       "LINE3",
-			       "AREA",
-			       "STACK",
-			       "GPRINT");
+$graph_item_types = array(1 =>
+	"COMMENT",
+	"HRULE",
+	"VRULE",
+	"LINE1",
+	"LINE2",
+	"LINE3",
+	"AREA",
+	"STACK",
+	"GPRINT");
 
-$image_types = array(1 => "PNG",
-			  "GIF");
+$image_types = array(1 =>
+	"PNG",
+	"GIF");
 
-$struct_graph = array("image_format_id", "title", "height", "width", "upper_limit",
-		      "lower_limit", "vertical_label", "auto_scale", "auto_scale_opts",
-		      "auto_scale_log", "auto_scale_rigid", "auto_padding", "base_value",
-		      "grouping", "export", "unit_value", "unit_exponent_value");
+$struct_graph = array(
+	"image_format_id",
+	"title",
+	"height",
+	"width",
+	"upper_limit",
+	"lower_limit",
+	"vertical_label",
+	"auto_scale",
+	"auto_scale_opts",
+	"auto_scale_log",
+	"auto_scale_rigid",
+	"auto_padding",
+	"base_value",
+	"grouping",
+	"export",
+	"unit_value",
+	"unit_exponent_value");
 
-$struct_graph_item = array("task_item_id", "color_id", "graph_type_id", "cdef_id", "consolidation_function_id",
-			    "text_format", "value", "hard_return", "gprint_id", "sequence");
+$struct_graph_item = array(
+	"task_item_id",
+	"color_id",
+	"graph_type_id",
+	"cdef_id",
+	"consolidation_function_id",
+	"text_format",
+	"value",
+	"hard_return",
+	"gprint_id",
+	"sequence");
 
-$struct_data_source = array("name", "active", "rrd_step", "FORCE:data_input_id");
+$struct_data_source = array(
+	"name",
+	"active",
+	"rrd_step",
+	"FORCE:data_input_id");
 
-$struct_data_source_item = array("rrd_maximum", "rrd_minimum", "rrd_heartbeat", "data_source_type_id", "data_source_name", "FORCE:data_input_field_id");
+$struct_data_source_item = array(
+	"rrd_maximum",
+	"rrd_minimum",
+	"rrd_heartbeat",
+	"data_source_type_id",
+	"data_source_name",
+	"FORCE:data_input_field_id");
 
-$snmp_versions = array(1 => "Version 1",
-			    "Version 2",
-			    "Version 3");
+$snmp_versions = array(1 =>
+	"Version 1",
+	"Version 2",
+	"Version 3");
 
-$registered_cacti_names = array("path_cacti");
+$registered_cacti_names = array(
+	"path_cacti");
 ?>
