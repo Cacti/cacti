@@ -1,6 +1,6 @@
 Summary: The complete RRDTool-based graphing solution.
 Name: cacti
-Version: 0.8.6a
+Version: 0.8.6b
 Release: 1
 License: GPL
 Group: Application/System
@@ -12,11 +12,11 @@ Requires: php, php-mysql, mysql, webserver, rrdtool, net-snmp, php-snmp
 BuildRequires: mysql-devel, net-snmp-devel
 
 %description
-Cacti is a complete frontend to RRDTool. It stores all of the necessary 
-information to create graphs and populate them with data in a MySQL database. 
-The frontend is completely PHP driven. Along with being able to maintain graphs, 
-data sources, and round robin archives in a database, Cacti also handles the data 
-gathering. There is SNMP support for those used to creating traffic graphs with 
+Cacti is a complete frontend to RRDTool. It stores all of the necessary
+information to create graphs and populate them with data in a MySQL database.
+The frontend is completely PHP driven. Along with being able to maintain graphs,
+data sources, and round robin archives in a database, Cacti also handles the data
+gathering. There is SNMP support for those used to creating traffic graphs with
 MRTG.
 
 %package cactid
@@ -58,7 +58,9 @@ useradd -d %{_localstatedir}/www/html/cacti cacti > /dev/null 2>&1 || true
 echo "Be sure to follow steps 2 through 5 in the install guide for new Cacti installations."
 
 %postun
-userdel cacti > /dev/null 2>&1 || true
+if [ $1 = 0 ]; then
+	userdel cacti > /dev/null 2>&1 || true
+fi
 
 %files
 %defattr(-, root, root, 0755)
@@ -86,6 +88,9 @@ userdel cacti > /dev/null 2>&1 || true
 %{_bindir}/*
 
 %changelog
+* Wed Oct 5 2004 Ian Berry <iberry@raxnet.net> - 0.8.6b-1
+- Updated to release 0.8.6b.
+
 * Sun Oct 3 2004 Ian Berry <iberry@raxnet.net> - 0.8.6a-1
 - Updated to release 0.8.6a.
 
