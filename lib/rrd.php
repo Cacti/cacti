@@ -411,7 +411,7 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 	return $fetch_array;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrd_struc = array()) {
 	global $config;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -428,10 +428,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		}
 	}
 
-	$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
-
-	/* define the time span, which decides which rra to use */
-	//$timespan = -($rra["timespan"]);
+	/* use some defaults if the $rra_id is not specified */
+	if (empty($rra_id)) {
+		$rra["timespan"] = 86400;
+		$rra["rows"] = 600;
+		$rra["steps"] = 1;
+	}else{
+		$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
+	}
 
 	/* find the step and how often this graph is updated with new data */
 	$ds_step = db_fetch_cell("select
@@ -870,7 +874,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items</PRE>";
 	}else{
 		if (isset($graph_data_array["export"])) {
-			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL);
+			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrd_struc);
 			return 0;
 		}else{
 			if (isset($graph_data_array["output_flag"])) {
@@ -879,7 +883,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 			}
 
-			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag);
+			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrd_struc);
 		}
 	}
 }
