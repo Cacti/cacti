@@ -150,6 +150,10 @@ $settings = array(
 					"friendly_name" => "Poller Statsistics",
 					"default" => ""
 					),
+				"log_pwarn" => array(
+					"friendly_name" => "Poller Warnings",
+					"default" => ""
+					),
 				"log_perror" => array(
 					"friendly_name" => "Poller Errors",
 					"default" => ""
