@@ -286,7 +286,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$end = $seconds + $micro;
 
 		cacti_log(sprintf("Time: %01.4f s, " .
-			"Method: cmd.php " .
 			"Hosts: %s",
 			round($end-$start,4),
 			$host_count),$print_data_to_stdout);

@@ -73,10 +73,10 @@ if ($_SERVER["argc"] >= 2) {
 }
 
 if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-	cacti_log("SERVER is->" . $environ, false, "PHPSVR");
-	cacti_log("GETCWD is->" . strtolower(strtr(getcwd(),"\\","/")), false, "PHPSVR");
-	cacti_log("DIRNAM is->" . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
-	cacti_log("FILENM is->" . __FILE__, false, "PHPSVR");
+	cacti_log("DEBUG: SERVER: " . $environ, false, "PHPSVR");
+	cacti_log("DEBUG: GETCWD: " . strtolower(strtr(getcwd(),"\\","/")), false, "PHPSVR");
+	cacti_log("DEBUG: DIRNAM: " . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
+	cacti_log("DEBUG: FILENM: " . __FILE__, false, "PHPSVR");
 }
 
 // send status back to the server
@@ -106,10 +106,10 @@ while (1) {
 			$parm = explode(" ",$preparm);
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				cacti_log("DEBUG: Include->".$inc."<-", false, "PHPSVR");
-				cacti_log("DEBUG: Command->".$cmd."<-", false, "PHPSVR");
-				cacti_log("DEBUG: Arguments->".$preparm."<-", false, "PHPSVR");
-				cacti_log("DEBUG: ArgV->".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3]."<-", false, "PHPSVR");
+				cacti_log("DEBUG: INCLUDE: ".$inc, false, "PHPSVR");
+				cacti_log("DEBUG: SCRIPT: ".$cmd, false, "PHPSVR");
+				cacti_log("DEBUG: CMD: ".$preparm, false, "PHPSVR");
+				cacti_log("DEBUG: ARGS: ".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3], false, "PHPSVR");
 			}
 
 			// check for existance of function.  If exists call it
@@ -147,7 +147,7 @@ while (1) {
 					fflush(STDOUT);
 				}
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-					cacti_log("CMD: " . $in_string . " output " . $result, false, "PHPSVR");
+					cacti_log("SERVER: " . $in_string . " output " . $result, false, "PHPSVR");
 				}
 			} else {
 				cacti_log("WARNING: Function does not exist\n", false, "PHPSVR");
@@ -155,8 +155,8 @@ while (1) {
 			}
 		}elseif ($in_string == "quit") {
 			fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
-			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-				cacti_log("PHP Script Server Shutdown request received, exiting", false, "PHPSVR");
+			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PHP Script Server Shutdown request received, exiting", false, "PHPSVR");
 			}
 			break;
 		}else {

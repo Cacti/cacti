@@ -538,12 +538,12 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			}
 		} else {
 			if ($ping_availability == AVAIL_SNMP_AND_PING) {
-				cacti_log("Host[$host_id] PING ERROR: " . $ping->ping_response, $print_data_to_stdout);
-				cacti_log("Host[$host_id] SNMP ERROR: " . $ping->snmp_response, $print_data_to_stdout);
+				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} elseif ($ping_availability == AVAIL_SNMP) {
-				cacti_log("Host[$host_id] SNMP ERROR: " . $ping->snmp_response, $print_data_to_stdout);
+				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} else {
-				cacti_log("Host[$host_id] PING ERROR: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 			}
 		}
 	}
