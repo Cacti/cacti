@@ -627,7 +627,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		}else{
 			if (read_config_option("log_graph") == "on") { $log_data = true; }
 			//if ($graph_data_array["output_flag"] == "") { $graph_data_array["output_flag"] = 1; }
-			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items",$log_data,$graph_data_array["output_flag"]);
+			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items",$log_data,1);
 		}
 	}
 }
