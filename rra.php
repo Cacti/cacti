@@ -69,6 +69,7 @@ function form_save() {
 		$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[0-9]+(\.[0-9])?$", false, 3);
 		$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
 		$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
+		$save["timespan"] = form_input_validate($_POST["timespan"], "timespan", "^[0-9]*$", false, 3);
 		
 		if (!is_error_message()) {
 			$rra_id = sql_save($save, "rra");
@@ -169,6 +170,14 @@ function rra_edit() {
 		<?php form_text_box("rows",(isset($rra) ? $rra["rows"] : ""),"","8", "40");?>
 	</tr>
 	
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Timespan</font><br>
+			How many seconds to display in graph for this RRA.
+		</td>
+		<?php form_text_box("timespan",(isset($rra) ? $rra["timespan"] : ""),"","8", "40");?>
+	</tr>
+	
 	<?php
 	end_box();
 	
@@ -186,10 +195,11 @@ function rra() {
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Steps",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Rows",$colors["header_text"],2);
+		DrawMatrixHeaderItem("Rows",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Timespan",$colors["header_text"],2);
 	print "</tr>";
     
-	$rras = db_fetch_assoc("select id,name,rows,steps from rra order by steps");
+	$rras = db_fetch_assoc("select id,name,rows,steps,timespan from rra order by steps");
 	
 	$i = 0;
 	if (sizeof($rras) > 0) {
@@ -204,6 +214,9 @@ function rra() {
 			</td>
 			<td>
 				<?php print $rra["rows"];?>
+			</td>
+			<td>
+				<?php print $rra["timespan"];?>
 			</td>
 			<td width="1%" align="right">
 				<a href="rra.php?action=remove&id=<?php print $rra["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;

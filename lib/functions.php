@@ -826,9 +826,8 @@ function hex2bin($data) {
 
 /* Converts the number of rra records into a time period */
 function get_rra_timespan($rra_id) {
-	$rra = db_fetch_row("select rows,steps from rra where id=$rra_id");
-	
-	$timespan = -($rra["rows"] * $rra["steps"] * 144);
+	$rra = db_fetch_row("select timespan from rra where id=$rra_id");
+	$timespan = -($rra["timespan"]);
 	
 	return $timespan;
 }
