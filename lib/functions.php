@@ -296,6 +296,13 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
+/* strip_newlines - removes \n\r from lines
+	@arg $string - the string to strip
+*/
+function strip_newlines($string) {
+	return strtr(strtr($string, "\n", "\0"), "\r","\0");
+}
+
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using pring() or not */

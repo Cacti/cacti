@@ -133,7 +133,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					cacti_log("RRDTOOL: " . $line);
+					cacti_log("RRDTOOL: " . strip_newlines($line), $log_to_stdout);
 				}
 
 				return $line;
@@ -147,7 +147,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 				fflush(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE));
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					cacti_log("RRDTOOL: " . $line);
+					cacti_log("RRDTOOL: " . strip_newlines($line), $log_to_stdout);
 				}
 
 				return $line;
