@@ -63,5 +63,5 @@ function upgrade_to_0_8_5() {
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set unit_exponent_value='' where unit_exponent_value='0';");
 	
 	/* allow larger rrd steps */
-	db_install_execute("0.8.5", "ALTER TABLE `data_template_data` CHANGE `rrd_step` `rrd_step` SMALLINT( 8 ) UNSIGNED DEFAULT '0' NOT NULL;");
+	db_install_execute("0.8.5", "ALTER TABLE `data_template_data` CHANGE `rrd_step` `rrd_step` MEDIUMINT( 8 ) UNSIGNED DEFAULT '0' NOT NULL;");
 }
