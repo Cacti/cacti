@@ -121,7 +121,7 @@ class Net_Ping
 			$this->start_time();
 
 			socket_write($this->socket, $this->request, $this->request_len);
-			$code = @socket_recv($this->socket, &$this->reply, 256, 0);
+			$code = @socket_recv($this->socket, $this->reply, 256, 0);
 
 			/* get the end time */
 			$this->time = $this->get_time($this->precision);
@@ -133,7 +133,7 @@ class Net_Ping
 			} else {
 				$this->status = "down";
 				$this->response = "ICMP Timed out";
-				return FALSE;
+				return false;
 			}
 			$this->close_socket();
 		} else {
@@ -170,10 +170,12 @@ class Net_Ping
 			/* calculte total time */
 			$this->time*1000;
 			$this->snmp_status = $this->time;
-			$this->snmp_response = $output;
+			$this->snmp_response = "SNMP availability check successful";
+			return true;
 		}else {
 			$this->snmp_status = "down";
 			$this->snmp_response = "SNMP did not respond";
+			return false;
 		}
 	} /* ping_snmp */
 
@@ -216,7 +218,7 @@ class Net_Ping
 			socket_write($this->socket, $this->request, $this->request_len);
 
 			/* get packet response */
-			$code = @socket_recv($this->socket, &$this->reply, 256, 0);
+			$code = @socket_recv($this->socket, $this->reply, 256, 0);
 
 			/* caculate total time */
 			$this->time = $this->get_time($this->precision);
@@ -225,22 +227,26 @@ class Net_Ping
 				if (($this->time*1000) <= $this->timeout) {
 					$this->ping_status = $this->time;
 					$this->ping_response = "Host responded within timeout period.";
+					return true;
 				} else {
 					$this->ping_response = "Destination address not specified";
 					$thos->ping_status = "down";
+					return false;
 				}
 			} else {
 				$this->ping_status = "down";
 				$this->ping_response = "UDP Ping Timed out";
+				return false;
 			}
 			$this->close_socket();
 		} else {
 			$this->ping_response = "Destination address not specified";
 			$this->ping_status = "down";
+			return false;
 		}
 	} /* end ping_udp */
 
-	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = ICMP_PING, $timeout=500,$precision=3)
+	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = ICMP_PING, $timeout=500, $precision=3)
 	{
 		/* initialize variables */
 		$ping_ping = true;
@@ -282,10 +288,6 @@ class Net_Ping
 		$ping_result = false;
 		$snmp_result = false;
 
-echo "Ping_snmp>>".(int)$ping_snmp."<<\n";
-echo "Ping_ping>>".(int)$ping_ping."<<\n";
-
-
 		/* snmp pinging has been selected */
 		if ($ping_snmp) {
 			/* ping ICMP/UDP first */
@@ -295,10 +297,10 @@ echo "Ping_ping>>".(int)$ping_ping."<<\n";
 				} else {
 					$ping_result = $this->ping_udp();
 				}
-   		}
+			}
 
 			/* SNMP always goes last */
-			if (is_numeric($this->ping_status)) {
+			if ($this->host["snmp_community"] != "") {
 				$snmp_result = $this->ping_snmp();
 			}
 		} else {
@@ -309,10 +311,10 @@ echo "Ping_ping>>".(int)$ping_ping."<<\n";
 				} else {
 					$ping_result = $this->ping_udp();
 				}
-   		}
+			}
 		}
 
-		switch ($this->avail_method) {
+		switch ($avail_method) {
 			case AVAIL_SNMP_AND_PING:
 				if (!$snmp_result)
 					return false;
@@ -334,54 +336,6 @@ echo "Ping_ping>>".(int)$ping_ping."<<\n";
 				return false;
 		}
 	} /* end_ping */
-}
-
-/* test driver - must be in a separate file */
-print $start . "\n";
-ini_set("max_execution_time", "0");
-$no_http_headers = true;
-
-include_once("c:/wwwroot/cacti/include/config.php");
-include_once("c:/wwwroot/cacti/include/config_constants.php");
-include_once("c:/wwwroot/cacti/include/config_arrays.php");
-include_once("c:/wwwroot/cacti/include/config_form.php");
-include_once("c:/wwwroot/cacti/lib/snmp.php");
-include_once("c:/wwwroot/cacti/lib/functions.php");
-include_once("c:/wwwroot/cacti/lib/database.php");
-include_once("c:/wwwroot/cacti/lib/variables.php");
-
-$ping = new Net_Ping;
-
-$i = 0;
-$j = 0;
-
-/* initialize calling parms */
-$ping->host["hostname"] = "192.168.0.2";
-$ping->host["snmp_community"] = "public";
-$ping->host["snmp_version"] = 1;
-$ping->host["snmp_username"] = "";
-$ping->host["snmp_password"] = "";
-$ping->host["snmp_port"] = "161";
-$ping->host["snmp_timeout"] = "500";
-
-$ping->avail_method = AVAIL_SNMP_AND_PING;
-$ping->ping_method = PING_ICMP;
-
-while (1) {
-	$i++;
-	if ($i == 100) {
-		$j++;
-		$k = $j * 100;
-		echo "Number of Hosts Polled->" . $k . "\n";
-		$i = 0;
-	}
-
-
-	echo "Pinging>>\n";
-	$ping->ping(1,1,5000, 4);
-	echo "SNMP Result>>".$ping->snmp_status."<<\n";
-	echo "PING Result>>".$ping->ping_status."<<\n";
-	echo "\n";
 }
 
 ?>

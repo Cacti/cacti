@@ -104,7 +104,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		);
 
 	// create new ping socket for host pinging
-	if (phpversion() >= "4.3")	$ping = new Net_Ping;
+	$ping = new Net_Ping;
 
 	if (function_exists("proc_open")) {
 		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
@@ -134,51 +134,64 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$host_id = $item["host_id"];
 
 		if ($new_host) {
-			// perform a ping if PHP is greater than 4.3
-			if (phpversion() >= "4.3") {
-				$ping->ping($item["hostname"], $item["snmp_timeout"], 4);
+			$ping->host["hostname"] = $item["hostname"];
+			$ping->host["snmp_community"] = $item["snmp_community"];
+			$ping->host["snmp_version"] = $item["snmp_version"];
+			$ping->host["snmp_username"] = $item["snmp_username"];
+			$ping->host["snmp_password"] = $item["snmp_password"];
+			$ping->host["snmp_port"] = $item["snmp_port"];
+			$ping->host["snmp_timeout"] = $item["snmp_timeout"];
 
-				if (!isset($ping->time)) {
-					$failure_typpe = "ICMP";
-					$host_down = true;
-
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("Host[$host_id] ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.",$print_data_to_stdout);
-					}
-				} else {
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_NONE) {
-						cacti_log("Host[$host_id] ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$true);
-//						cacti_log("Host[$host_id] ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$print_data_to_stdout);
-					}
-				}
-			} else {
-				cacti_log("WARNING: PHP version is: " . phpversion() . " Please upgrade to PHP 4.3 or Above to obtain ping statistics.",$print_data_to_stdout);
+			if ((!function_exists("socket_create")) || (phpversion() < "4.3")) {
+				/* the ping test will fail under PHP < 4.3 without socket support */
+				$ping_availability = AVAIL_SNMP;
+			}else{
+				$ping_availability = read_config_option("availability_method");
 			}
 
-			// Perform an SNMP test for earlier versions of PHP
+			/* if we are only allowed to use an snmp check and this host does not support snnp, we
+			must assume that this host is up */
+			if (($ping_availability == AVAIL_SNMP) && ($item["snmp_community"] == "")) {
+				$host_down = false;
+
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+					cacti_log("Host[$host_id] No host availability check possible for '" . $item["hostname"] . "'.", $print_data_to_stdout);
+				}
+			}else{
+				if ($ping->ping($ping_availability, read_config_option("ping_method"), read_config_option("ping_timeout"), read_config_option("ping_reties"))) {
+					$host_down = false;
+				}else{
+					$host_down = true;
+				}
+
+				/* log ping result if we are to use a ping for reachability testing */
+				if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_PING)) {
+					if (is_numeric($ping->ping_status)) {
+						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+							cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+						}
+					}else{
+						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_NONE) {
+							cacti_log("Host[$host_id] PING ERROR: " . $ping->ping_response, $print_data_to_stdout);
+						}
+					}
+				}
+
+				/* log snmp ping result if we are to use snmp for reachability testing */
+				if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP)) {
+					if (is_numeric($ping->snmp_status)) {
+						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+							cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+						}
+					}else{
+						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_NONE) {
+							cacti_log("Host[$host_id] SNMP ERROR: " . $ping->snmp_response, $print_data_to_stdout);
+						}
+					}
+				}
+			}
+
 			if (!$host_down) {
-				$last_host = $current_host;
-				$output = cacti_snmp_get($item["hostname"],
-					$item["snmp_community"],
-					".1.3.6.1.2.1.1.5.0" ,
-					$item["snmp_version"],
-					$item["snmp_username"],
-					$item["snmp_password"],
-					$item["snmp_port"],
-					$item["snmp_timeout"]);
-
-				if ((substr_count($output, "ERROR") != 0) || ($output == "")) {
-					$failure_type = "SNMP";
-					$host_down = true;
-				}
-			}
-
-			if ($host_down) {
-				if ($failure_type == "ICMP")
-					cacti_log(sprintf("Host[$host_id] ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
-				else
-					cacti_log(sprintf("Host[$host_id] ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
-			} else {
 				/* do the reindex check for this host */
 				$reindex = db_fetch_assoc("select
 					poller_reindex.data_query_id,
@@ -257,9 +270,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			}
 		} /* Next Cache Item */
 	} /* End foreach */
-
-	// create new ping socket for host pinging
-	if (phpversion() >= "4.3")	$ping->close_socket();
 
 	if ($using_proc_function == true) {
 		// close php server process
