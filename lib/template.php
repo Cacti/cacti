@@ -271,6 +271,40 @@ function push_out_graph($graph_template_graph_id) {
 	}
 }
 
+/* push_out_graph_input - pushes out the value of a graph input to a single child item. this function
+     differs from other push_out_* functions in that it does not push out the value of this element to
+     all attached children. instead, it obtains the current value of the graph input based on other
+     graph items and pushes out the "active" value
+   @arg $graph_template_input_id - the id of the graph input to push out values for
+   @arg $graph_template_item_id - the id the graph template item to push out
+   @arg $session_members - when looking for the "active" value of the graph input, ignore these graph
+     template items. typically you want to ignore all items that were just selected and have yet to be
+     saved to the database. this is because these items most likely contain incorrect data */
+function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
+	$graph_input = db_fetch_row("select graph_template_id,column_name from graph_template_input where id=$graph_template_input_id");
+	
+	if (sizeof($session_members) == 0) {
+		$values_to_apply = db_fetch_assoc("select local_graph_id," . $graph_input["column_name"] . " from graph_templates_item where graph_template_id=" . $graph_input["graph_template_id"] . " and local_graph_id>0 group by local_graph_id");
+	}else{
+		$i = 0;
+		while (list($item_id, $item_id) = each($session_members)) {
+			$new_session_members[$i] = $item_id;
+			$i++;
+		}
+		
+		$values_to_apply = db_fetch_assoc("select local_graph_id," . $graph_input["column_name"] . " from graph_templates_item where graph_template_id=" . $graph_input["graph_template_id"] . " and local_graph_id>0 and !(" . array_to_sql_or($new_session_members, "local_graph_template_item_id") . ") group by local_graph_id");
+	}
+	
+	if (sizeof($values_to_apply) > 0) {
+	foreach ($values_to_apply as $value) {
+		/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
+		if (!(($graph_input["column_name"] == "task_item_id") && (empty($value{$graph_input["column_name"]})))) {
+			db_execute("update graph_templates_item set " . $graph_input["column_name"] . "='" . $value{$graph_input["column_name"]} . "' where local_graph_id=" . $value["local_graph_id"] . " and local_graph_template_item_id=$graph_template_item_id");
+		}
+	}
+	}
+}
+
 /* push_out_graph_item - pushes out templated graph template item fields to all matching
      children. if the graph template item is part of a graph input, the field will not be
      pushed out

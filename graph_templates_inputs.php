@@ -25,6 +25,7 @@
 */
 
 include("./include/auth.php");
+include_once("./lib/template.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -63,28 +64,32 @@ function form_save() {
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, "graph_template_input");
 			
-			/* list all select graph items for use down below */
-			$i = 0;
-			while (list($var, $val) = each($_POST)) {
-				if (eregi("^i_", $var)) {
-					$selected_graph_items[$i] = str_replace("i_", "", $var);
-					$i++;
-				}
-			}
-			
-			if (!empty($_POST["any_selected_item"])) {
-				/* list each graph using this graph template and find the "current" value for this input */
-				$graphs = db_fetch_assoc("select " . $save["column_name"] . ",local_graph_id from graph_templates_item where graph_template_id=" . $save["graph_template_id"] . " and local_graph_id>0 and local_graph_template_item_id=" . $_POST["any_selected_item"]);
-				
-				if (sizeof($graphs) > 0) {
-				foreach ($graphs as $graph) {
-					$graph_input_values{$graph["local_graph_id"]} = $graph{$save["column_name"]};
-				}
-				}
-			}
-			
 			if ($graph_template_input_id) {
 				raise_message(1);
+				
+				/* list all graph items from the db so we can compare them with the current form */
+				$db_selected_graph_item = array_rekey(db_fetch_assoc("select graph_template_item_id from graph_template_input_defs where graph_template_input_id=$graph_template_input_id"), "graph_template_item_id", "graph_template_item_id");
+				
+				/* list all select graph items for use down below */
+				while (list($var, $val) = each($_POST)) {
+					if (preg_match("/^i_(\d+)$/", $var, $matches)) {
+						$selected_graph_items{$matches[1]} = $matches[1];
+						
+						if (isset($db_selected_graph_item{$matches[1]})) {
+							/* is selected and exists in the db; old item */
+							$old_members{$matches[1]} = $matches[1];
+						}else{
+							/* is selected and does not exist the db; new item */
+							$new_members{$matches[1]} = $matches[1];
+						}
+					}
+				}
+				
+				if ((isset($new_members)) && (sizeof($new_members) > 0)) {
+					while (list($item_id, $item_id) = each($new_members)) {
+						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : array()));
+					}
+				}
 				
 				db_execute("delete from graph_template_input_defs where graph_template_input_id=$graph_template_input_id");
 				
@@ -93,14 +98,6 @@ function form_save() {
 					db_execute("insert into graph_template_input_defs (graph_template_input_id,graph_template_item_id)
 						values ($graph_template_input_id,$graph_template_item_id)");
 					
-				}
-				}
-				
-				/* loop through each graph attached to this graph template and re-apply the current value for this
-				input */
-				if (sizeof($graph_input_values) > 0) {
-				while (list($local_graph_id, $value) = each($graph_input_values)) {
-					db_execute("update graph_templates_item set " . $save["column_name"] . "='$value' where local_graph_id=$local_graph_id and " . array_to_sql_or($selected_graph_items, "local_graph_template_item_id"));
 				}
 				}
 			}else{

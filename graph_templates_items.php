@@ -172,6 +172,11 @@ function form_save() {
 					}
 					
 					push_out_graph_item($graph_template_item_id);
+					
+					if (isset($data_source_to_input{$_POST["task_item_id"]})) {
+						/* make sure all current graphs using this graph input are aware of this change */
+						push_out_graph_input($data_source_to_input{$_POST["task_item_id"]}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
+					}
 				}else{
 					raise_message(2);
 				}
