@@ -25,11 +25,12 @@
 	
 	include ("include/config.php");
 	include_once ("include/functions.php");
-	
- 	if ($action=="login"){
+
+
+
+ 	if ($form[action]=="login"){
 		include_once ("include/database.php");
-		
-		$user = db_fetch_row("select * from auth_users where Username=\"$username\" and Password = PASSWORD(\"$password\")");
+		$user = db_fetch_row("select * from auth_users where Username=\"$form[username]\" and Password = PASSWORD(\"$form[password]\")");
 		$ip = trim(getenv("REMOTE_ADDR"));
 		
 		if (sizeof($user) == 0) {
