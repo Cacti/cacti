@@ -182,9 +182,44 @@ function process_poller_output($rrdtool_pipe) {
 	if (sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
+			$value = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
+
 			$rrd_update_array{$item["rrd_path"]}["time"] = strtotime($item["time"]);
 			$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
-			$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
+
+			/* single one value output */
+			if ((is_numeric($value)) || ($value == "U")) {
+				$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = $value;
+			/* multiple value output */
+			}else{
+				$values = explode(" ", $value);
+
+				$rrd_field_names = array_rekey(db_fetch_assoc("select
+					data_template_rrd.data_source_name,
+					data_input_fields.data_name
+					from data_template_rrd,data_input_fields
+					where data_template_rrd.data_input_field_id=data_input_fields.id
+					and data_template_rrd.local_data_id=" . $item["local_data_id"]), "data_name", "data_source_name");
+
+				for ($i=0; $i<count($values); $i++) {
+					if (preg_match("/^([a-zA-Z0-9_-]+):(\d+(\.\d+)?)$/", $values[$i], $matches)) {
+						if (isset($rrd_field_names{$matches[1]})) {
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . "->" . $rrd_field_names{$matches[1]} . "]" , true);
+							}
+
+							$rrd_update_array{$item["rrd_path"]}["items"]{$rrd_field_names{$matches[1]}} = $matches[2];
+						}
+					}
+				}
+			}
+
+			/* fallback values */
+			if ((!isset($rrd_update_array{$item["rrd_path"]}["items"])) && ($item["rrd_name"] != "")) {
+				$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = "U";
+			}else if ((!isset($rrd_update_array{$item["rrd_path"]}["items"])) && ($item["rrd_name"] == "")) {
+				unset($rrd_update_array{$item["rrd_path"]});
+			}
 		}
 
 		/* make sure each .rrd file has complete data */
