@@ -177,7 +177,7 @@ $menu = array(
 			"data_sources.php" => "Data Sources",
 			"rra.php" => "RRAs"
 			),
-		"host.php" => 'Polling Hosts',
+		"host.php" => 'Devices',
 		"data_input.php" => "Data Input Methods",
 		"snmp.php" => "Data Queries"
 		),

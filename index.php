@@ -35,8 +35,8 @@ include("./include/top_header.php");
 			started.</strong>
 			
 			<ul>
-				<li><a href="host.php">Create polling hosts</a> for your devices</li>
-				<li><a href="graphs_new.php">Create graphs</a> for your new polling hosts</li>
+				<li><a href="host.php">Create devices</a> for network</li>
+				<li><a href="graphs_new.php">Create graphs</a> for your new devices</li>
 				<li><a href="graph_view.php">View</a> your new graphs</li>
 			</ul>
 		</td>

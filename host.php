@@ -260,7 +260,7 @@ function host_edit() {
 		<?php
 	}
 	
-	start_box("<strong>Polling Hosts</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Devices</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk"),
@@ -421,7 +421,7 @@ function host() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Polling Hosts</strong>", "98%", $colors["header"], "3", "center", "host.php?action=edit");
+	start_box("<strong>Devices</strong>", "98%", $colors["header"], "3", "center", "host.php?action=edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Description",$colors["header_text"],1);

@@ -528,16 +528,16 @@ $database_password = "cacti";</userinput></screen>
 			The next two sections will outline the two basic steps which are typically required to create graphs for 
 			most devices.
 		</para>
-		<sect1 id="new_polling_host">
-			<title>Creating a Polling Host</title>
+		<sect1 id="new_device">
+			<title>Creating a Device</title>
 			<para>
-				The first step to creating graphs for your network is adding a polling host for each device that 
-				you want to create graphs for. A polling host specifies important details such as the network 
+				The first step to creating graphs for your network is adding a device for each network device that 
+				you want to create graphs for. A device specifies important details such as the network 
 				hostname, SNMP parameters, and host type.
 			</para>
 			<para>
-				To manage polling hosts within Cacti, click on the <guilabel>Polling Hosts</guilabel> menu item. 
-				Clicking <guilabel>Add</guilabel>  will bring up a new polling host form. The first two fields, 
+				To manage devices within Cacti, click on the <guilabel>Devices</guilabel> menu item. 
+				Clicking <guilabel>Add</guilabel>  will bring up a new device form. The first two fields, 
 				<guilabel>Description</guilabel> and <guilabel>Hostname</guilabel> are the only two fields that 
 				require your input beyond the defaults. If your host type is defined under the host template 
 				dropdown, be sure to select it here. You can always choose "Generic SNMP-enabled Host" if you are 
@@ -545,17 +545,17 @@ $database_password = "cacti";</userinput></screen>
 				template you choose will not lock you into any particular configuration, it will just provide 
 				more intelligent defaults for that type of host.
 			</para>
-			<figure id="img_polling_host_new">
-				<title>Adding a New Polling Host</title>
+			<figure id="img_device_new">
+				<title>Adding a New Device</title>
 				
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="images/new_polling_host" format="PNG">
+						<imagedata fileref="images/new_device" format="PNG">
 					</imageobject>
 				</mediaobject>
 			</figure>
 			<para>
-				After saving your new polling host, you should be redirected back to the same edit form with some 
+				After saving your new device, you should be redirected back to the same edit form with some 
 				additional information. If you configured SNMP for this host by providing a valid community string, 
 				you should see various statistics listed at the top of the page. If you see "SNMP error" instead, 
 				this indicates an SNMP problem between Cacti and your device.
@@ -565,7 +565,7 @@ $database_password = "cacti";</userinput></screen>
 				Queries</guilabel>, and <guilabel>Associated Graph Templates</guilabel>. If you selected a host 
 				template on the previous page, there will probably be a few items in each box. If there is nothing 
 				listed in either box, you will need to associate at least one data query or graph template with 
-				your new polling host or you will not be able to create graphs in the next step. If no available 
+				your new device or you will not be able to create graphs in the next step. If no available 
 				graph template or data query applies to your device, you can check the Cacti templates repository 
 				or create your own if nothing currently exists.
 			</para>
@@ -625,7 +625,7 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="new_graphs">
 			<title>Creating the Graphs</title>
 			<para>
-				Now that you have created some polling hosts, it is time to create graphs for these devices. To 
+				Now that you have created some devices, it is time to create graphs for these devices. To 
 				do this, select the <guilabel>New Graphs</guilabel> menu option under the <guilabel>Create</guilabel> 
 				heading. You will see a screen similar to the image pictured below.
 			</para>
@@ -639,7 +639,7 @@ $database_password = "cacti";</userinput></screen>
 				</mediaobject>
 			</figure>
 			<para>
-				The dropdown menu that contains each polling host should be used to select the host that you 
+				The dropdown menu that contains each device should be used to select the host that you 
 				want to create new graphs for. The basic concept to this page is simple, place a check in each 
 				row that you want to create a graph for and click <guilabel>Create</guilabel>.
 			</para>
@@ -1776,10 +1776,10 @@ $database_password = "cacti";</userinput></screen>
 						</para>
 						<orderedlist>
 							<listitem>
-								<para>Click <guilabel>Polling Hosts</guilabel> on Cacti's menu.</para>
+								<para>Click <guilabel>Devices</guilabel> on Cacti's menu.</para>
 							</listitem>
 							<listitem>
-								<para>Click <guilabel>Add</guilabel> to add a new polling host.</para>
+								<para>Click <guilabel>Add</guilabel> to add a new device.</para>
 							</listitem>
 							<listitem>
 								<para>Type a description, hostname, management IP, and SNMP community. Make sure to select "Generic SNMP-enabled Host" under <guilabel>Host Template</guilabel> and click <guilabel>Create</guilabel>.</para>
