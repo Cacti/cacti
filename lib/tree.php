@@ -86,18 +86,18 @@ function decrement_id($id) {
 ##  available id ON THE SAME TIER.
 function get_next_tree_id($id,$table,$field,$where = '') {
     if (preg_match("/^00/",$id)) {
-	$tree_tier = 0;
+	$tier = 0;
 	$parent_root = '';
     } else {
-	$tree_tier = tree_tier($id,'2');
-	$parent_root = substr($id,0,($tree_tier * 2));
+	$tier = tree_tier($id,'2');
+	$parent_root = substr($id,0,($tier * 2));
     }
     if ($where != '') { $where = " AND $where"; }
     $sql = "SELECT $field FROM $table WHERE $field LIKE '$parent_root%' AND $where ORDER BY $field DESC LIMIT 1";
     $tmp = db_fetch_assoc($sql);
     $last_id = $tmp[0][$field];
     #  if ($last_id == '') { $last_id = '00'; }
-    if (substr($last_id,($tree_tier * 2),'2') != '00') {
+    if (substr($last_id,($tier * 2),'2') != '00') {
 	$next_id = increment_id($last_id);
     } else {
 	$next_id = str_pad($parent_root."01",60,'0',STR_PAD_RIGHT);
@@ -107,41 +107,39 @@ function get_next_tree_id($id,$table,$field,$where = '') {
 }
 
 
-function branch_up($id, $table, $field, $where = '', $primary_key = 'ID') {
+function branch_up($order_key, $table, $field, $where = '', $primary_key = 'ID') { move_branch('up',$order_key, $table, $field, $where, $primary_key); }
+
+
+function branch_down($order_key, $table, $field, $where, $primary_key = 'ID') { move_branch('down',$order_key, $table, $field, $where, $primary_key); }
+
+
+function move_branch($dir,$order_key, $table, $field, $where, $primary_key = 'ID') {
+    $tier = tree_tier($order_key,'2');
     if ($where != '') { $where = " AND $where"; }
-    $sql = "SELECT * FROM $table WHERE $field  < $id '$where";
+    $arrow = $dir == 'up' ? '<' : '>';
+    $order = $dir == 'up' ? 'DESC' : 'ASC';
+    $sql = "SELECT * FROM $table WHERE $field  $arrow $order_key AND $field LIKE '%".substr($order_key,($tier * 2))."' AND $field NOT LIKE '%00".substr($order_key,($tier * 2))."'ORDER BY $field $order $where";
     $displaced_row = db_fetch_row($sql);
-    $tier = tree_tier($id);
-    $old_root = substr($id,0,($tier * 2));
-    $new_root = substr($displaced_row[$field],0,($tier * 2));
-    db_execute("LOCK TABLES $table WRITE");
-    db_execute("UPDATE $table SET $field = CONCAT('".str_pad('',($tier * 2),'Z')."',SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$new_root%'$where");
-    db_execute("UPDATE $table SET $field = CONCAT('$new_root',SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$old_root%' $where");
-    db_execute("UPDATE $table SET $field = CONCAT('$old_root',SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".str_pad('',($tier * 2),'Z')."%'$where");
-    db_execute("UNLOCK TABLES $table");
+    if (sizeof($displaced_row) > 0) {
+	$old_root = substr($order_key,0,($tier * 2));
+	$new_root = substr($displaced_row[$field],0,($tier * 2));
+
+	db_execute("LOCK TABLES $table WRITE");
+	$sql = "UPDATE $table SET $field = CONCAT('".str_pad('',($tier * 2),'Z')."',SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$new_root%'$where";
+	db_execute($sql);
+	$sql = "UPDATE $table SET $field = CONCAT('$new_root',SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$old_root%' $where";
+	db_execute($sql);
+	$sql = "UPDATE $table SET $field = CONCAT('$old_root',SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".str_pad('',($tier * 2),'Z')."%'$where";
+	db_execute($sql);
+	db_execute("UNLOCK TABLES $table");
+    }
 }
 
-
-function branch_down($id, $table, $field, $where, $primary_key = 'ID') {
+function spread_branches($order_key,$table,$field,$where = '') {
+    $tier = tree_tier($order_key,'2');
+    $wcard = str_pad(substr($order_key,0,(($tier - 1) * 2)). '%',60,'0',STR_PAD_RIGHT);
     if ($where != '') { $where = " AND $where"; }
-    $sql = "SELECT * FROM $table WHERE $field  > $id '$where";
-    $displaced_row = db_fetch_row($sql);
-    $tier = tree_tier($id);
-    $old_root = substr($id,0,($tier * 2));
-    $new_root = substr($displaced_row[$field],0,($tier * 2));
-    db_execute("LOCK TABLES $table WRITE");
-    db_execute("UPDATE $table SET $field = CONCAT('".str_pad('',($tier * 2),'Z')."',SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$new_root%'$where");
-    db_execute("UPDATE $table SET $field = CONCAT('$new_root',SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$old_root%' $where");
-    db_execute("UPDATE $table SET $field = CONCAT('$old_root',SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".str_pad('',($tier * 2),'Z')."%'$where");
-    db_execute("UNLOCK TABLES $table");
-}
-
-
-function spread_branches($id,$table,$field,$where = '') {
-    $tier = tree_tier($id,'2');
-    $wcard = str_pad(substr($id,0,(($tier - 1) * 2)). '%',60,'0',STR_PAD_RIGHT);
-    if ($where != '') { $where = " AND $where"; }
-    $sql = "SELECT $field FROM $table WHERE $field LIKE '$wcard' AND $field >= $id $where ORDER by $field DESC";
+    $sql = "SELECT $field FROM $table WHERE $field LIKE '$wcard' AND $field >= $order_key $where ORDER by $field DESC";
     print "'$sql'<BR>\n";
     $br_to_move = db_fetch_assoc($sql);
     if (sizeof($br_to_move) > 0) {
@@ -153,7 +151,7 @@ function spread_branches($id,$table,$field,$where = '') {
 		$next_id = increment_id($branch[$field]);
 	    }
 	    $next_id = trim($next_id,"0");
-	    $sql = "UPDATE $table SET $field = CONCAT($next_id, SUBSTR($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".substr($id,0,($tier * 2))."'";
+	    $sql = "UPDATE $table SET $field = CONCAT($next_id, SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".substr($order_key,0,($tier * 2))."'";
 	    print "'$sql'<BR>\n";
 	}
 	db_execute("UNLOCK TABLES $table");
