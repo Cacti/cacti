@@ -98,7 +98,7 @@ function form_save() {
 			}
 		}
 		
-		if (is_error_message()) {
+		if ((is_error_message()) || (empty($_POST["id"]))) {
 			header ("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
 		}else{
 			header ("Location: host_templates.php");
@@ -201,13 +201,12 @@ function template_edit() {
 	foreach($graph_templates as $graph_template) {
 		if (!empty($graph_template["host_template_id"])) {
 			$i = 0;
-			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", "777777", "3", "center", "");
+			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", $colors["header"], "3", "center", "");
 			
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 				<td width="50%">
-					<font class="textEditTitle">Suggested Values</font> <em>(<?php print $graph_template["name"];?>)</em><br>
-					You can use this field to suggest defaults to the user or even over ride 
-					the non-template bit. For a list of valid field names, see the documentation.
+					<font class="textEditTitle">Suggested Values - Graph</font><br>
+					<?php print $graph_template["name"];?>
 				</td>
 				<?php form_text_box("ogt_suggested_values_" . $graph_template["id"],$graph_template["suggested_values"],"","255", "40");?>
 			</tr>
@@ -233,9 +232,8 @@ function template_edit() {
 			foreach ($data_templates as $data_template) {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 					<td width="50%">
-						<font class="textEditTitle">Suggested Values</font> <em>(<?php print $data_template["name"];?>)</em><br>
-						You can use this field to suggest defaults to the user or even over ride 
-						the non-template bit. For a list of valid field names, see the documentation.
+						<font class="textEditTitle">Suggested Values - Data Source</font><br>
+						<?php print $data_template["name"];?>
 					</td>
 					<?php form_text_box("odt_suggested_values_" . $data_template["id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
 				</tr>
