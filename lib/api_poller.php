@@ -44,13 +44,15 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	if ($host["disabled"] == "on") {
 		return true;
 	}else{
-		return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
-			snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
-			rrd_num,arg1,arg2,arg3) values ($local_data_id," . $host["id"] . ",$poller_action_id,'" . $host["hostname"] . "',
-			'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-			'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-			'$data_source_item_name','" . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
-			'$num_rrd_items','$arg1','$arg2','$arg3')");
+		if (isset($host["id"])) {
+			return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
+				snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
+				rrd_num,arg1,arg2,arg3) values ($local_data_id," . $host["id"] . ",$poller_action_id,'" . $host["hostname"] . "',
+				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
+				'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
+				'$data_source_item_name','" . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
+				'$num_rrd_items','$arg1','$arg2','$arg3')");
+		}
 	}
 }
 ?>
