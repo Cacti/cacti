@@ -207,31 +207,39 @@ function data_edit() {
 	}
 	
 	if (isset($_GET["local_data_id"])) {
-		$template_data = db_fetch_row("select id,data_input_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+		$data = db_fetch_row("select id,data_input_id,data_template_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+		$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
+		
 		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=" . $_GET["local_data_id"]);
 	}else{
-		unset($template_data);
+		unset($data);
 	}
 	
 	print "<form method='post' action='data_sources.php'>\n";
 	
 	$i = 0;
-	if (!empty($template_data["data_input_id"])) {
+	if (!empty($data["data_input_id"])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
+		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='in' order by name");
 		
-		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
+		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
+			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=" . $data["id"] . " and data_input_field_id=" . $field["id"]);
 			
 			if (sizeof($data_input_data) > 0) {
 				$old_value = $data_input_data["value"];
 			}else{
 				$old_value = "";
-				$data_input_data["t_value"] = "on"; /* default to allow users to input data */
+			}
+			
+			/* if data template then get t_value from template, else always allow user input */
+			if (empty($data["data_template_id"])) {
+				$can_template = "on";
+			}else{
+				$can_template = db_fetch_cell("select t_value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
 			}
 			
 			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i);
@@ -239,7 +247,7 @@ function data_edit() {
 			if ((!empty($host["id"])) && (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password|snmp_version)$', $field["type_code"]))) {
 				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host: " . $host["hostname"] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
-			}elseif (empty($data_input_data["t_value"])) {
+			}elseif (empty($can_template)) {
 				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Data Template)</td>\n";
 				print "<td><em>" . (empty($old_value) ? "Nothing Entered" : $old_value) . "</em></td>\n";
 			}else{
@@ -259,7 +267,7 @@ function data_edit() {
 	}
 	
 	DrawFormItemHiddenIDField("local_data_id",$_GET["local_data_id"]);
-	DrawFormItemHiddenIDField("data_template_data_id",$template_data["id"]);
+	DrawFormItemHiddenIDField("data_template_data_id",$data["id"]);
 	DrawFormItemHiddenTextBox("save_component_data","1","");
 	
 	if (read_config_option("full_view_data_source") == "") {
@@ -355,7 +363,7 @@ function ds_save() {
 			sql_save($save, "data_template_rrd");
 		}
 	}
-	
+	push_out_host($_POST["host_id"]);
 	if (!is_error_message()) {
 		if ($_POST["host_id"] != $_POST["_host_id"]) {
 			/* push out all nessesary host information */
