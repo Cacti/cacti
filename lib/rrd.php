@@ -592,12 +592,43 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
+	/* setup date format */
+	$date_fmt = read_graph_config_option("default_date_format");
+	$datechar = read_graph_config_option("default_datechar");
+
+	if ($datechar == GDC_HYPHEN) {
+		$datechar = "-";
+	}else {
+		$datechar = "/";
+	}
+
+	switch ($date_fmt) {
+		case GD_m_d_Y:
+			$graph_date = "\"m" . $datechar . "d" . $datechar . "Y H:i:s\"";
+			break;
+		case GD_M_d_Y:
+			$graph_date = "\"M" . $datechar . "d" . $datechar . "Y H:i:s\"";
+			break;
+		case GD_d_m_Y:
+			$graph_date = "\"d" . $datechar . "m" . $datechar . "Y H:i:s\"";
+			break;
+		case GD_d_M_Y:
+			$graph_date = "\"d" . $datechar . "M" . $datechar . "Y H:i:s\"";
+			break;
+		case GD_Y_m_d:
+			$graph_date = "\"Y" . $datechar . "m" . $datechar . "d H:i:s\"";
+			break;
+		case GD_Y_M_d:
+			$graph_date = "\"Y" . $datechar . "M" . $datechar . "d H:i:s\"";
+			break;
+	}
+
 	/* display the timespan for zoomed graphs */
 	if ((isset($graph_data_array["graph_start"])) && (isset($graph_data_array["graph_end"]))) {
 		if (($graph_data_array["graph_start"] < 0) && ($graph_data_array["graph_end"] < 0)) {
-			$graph_legend .= "COMMENT:\"From " . date("Y-m-d H:i:s", time()+$graph_data_array["graph_start"]) . " To " . date("Y-m-d H:i:s", time()+$graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"\\n\"" . RRD_NL;
+			$graph_legend .= "COMMENT:\"From " . date($graph_date, time()+$graph_data_array["graph_start"]) . " To " . date($graph_date, time()+$graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"\\n\"" . RRD_NL;
 		}else if (($graph_data_array["graph_start"] >= 0) && ($graph_data_array["graph_end"] >= 0)) {
-			$graph_legend .= "COMMENT:\"From " . date("Y-m-d H:i:s", $graph_data_array["graph_start"]) . " To " . date("Y-m-d H:i:s", $graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"\\n\"" . RRD_NL;
+			$graph_legend .= "COMMENT:\"From " . date($graph_date, $graph_data_array["graph_start"]) . " To " . date($graph_date, $graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"\\n\"" . RRD_NL;
 		}
 	}
 

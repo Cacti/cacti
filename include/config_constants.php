@@ -103,4 +103,14 @@ define("GT_LAST_2_YEARS", 19);
 
 define("DEFAULT_TIMESPAN", 86400);
 
+define("GD_m_d_Y", 0);
+define("GD_M_d_Y", 1);
+define("GD_d_m_Y", 2);
+define("GD_d_M_Y", 3);
+define("GD_Y_m_d", 4);
+define("GD_Y_M_d", 5);
+
+define("GDC_HYPHEN", 0);
+define("GDC_SLASH", 1);
+
 ?>

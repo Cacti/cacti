@@ -393,4 +393,18 @@ $graph_timespans = array(
 	GT_LAST_2_YEARS =>"Last 2 Years"
 	);
 
+$graph_dateformats = array(
+	GD_m_d_Y =>"Month Number, Day, Year",
+	GD_M_d_Y =>"Month Name, Day, Year",
+	GD_d_m_Y =>"Day, Month Number, Year",
+	GD_d_M_Y =>"Day, Month Name, Year",
+	GD_Y_m_d =>"Year, Month Number, Day",
+	GD_Y_M_d =>"Year, Month Name, Day"
+	);
+
+$graph_datechar = array(
+	GDC_HYPHEN => "-",
+	GDC_SLASH => "/"
+	);
+
 ?>
