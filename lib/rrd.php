@@ -265,9 +265,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	}
 	
 	/* define the time span, which decides which rra to use */
-	$rra = db_fetch_row("select rows,steps from rra where id=$rra_id");
-	
-	$timespan = -($rra["rows"] * $rra["steps"] * 144);
+	$timespan = get_rra_timespan($rra_id);
 	
 	$graph = db_fetch_row("select
 		graph_templates_graph.title_cache,
