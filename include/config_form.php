@@ -648,6 +648,7 @@ $fields_host_edit = array(
 		"description" => "Fill in the SNMP read community for this device.",
 		"value" => "|arg1:snmp_community|",
 		"form_id" => "|arg1:id|",
+		"default" => read_config_option("snmp_community"),
 		"max_length" => "100",
 		),
 	"snmp_username" => array(
@@ -655,6 +656,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Username",
 		"description" => "Fill in the SNMP username for this device (v3).",
 		"value" => "|arg1:snmp_username|",
+		"default" => read_config_option("snmp_username"),
 		"max_length" => "50",
 		),
 	"snmp_password" => array(
@@ -662,6 +664,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Password",
 		"description" => "Fill in the SNMP password for this device (v3).",
 		"value" => "|arg1:snmp_password|",
+		"default" => read_config_option("snmp_password"),
 		"max_length" => "50",
 		),
 	"snmp_version" => array(
@@ -669,6 +672,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Version",
 		"description" => "Choose the SNMP version for this host.",
 		"value" => "|arg1:snmp_version|",
+		"default" => read_config_option("snmp_ver"),
 		"array" => $snmp_versions,
 		),
 	"snmp_port" => array(
@@ -677,6 +681,7 @@ $fields_host_edit = array(
 		"description" => "Enter the UDP port number to use for SNMP (default is 161).",
 		"value" => "|arg1:snmp_port|",
 		"max_length" => "5",
+		"default" => read_config_option("snmp_port"),
 		"size" => "15"
 		),
 	"snmp_timeout" => array(
@@ -685,6 +690,7 @@ $fields_host_edit = array(
 		"description" => "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).",
 		"value" => "|arg1:snmp_timeout|",
 		"max_length" => "8",
+		"default" => read_config_option("snmp_timeout"),
 		"size" => "15"
 		),
 	"id" => array(
@@ -990,17 +996,5 @@ $fields_user_user_edit_host = array(
 		"value" => "1"
 		)
 	);
-
-/*
- * set certain default values here to prevent loops later on
- */
-if ((isset($no_read_config_option) ? $no_read_config_option : false) != true) {
-	$fields_host_edit["snmp_community"]["default"] = read_config_option("snmp_community");
-	$fields_host_edit["snmp_username"]["default"] = read_config_option("snmp_username");
-	$fields_host_edit["snmp_password"]["default"] = read_config_option("snmp_password");
-	$fields_host_edit["snmp_version"]["default"] = read_config_option("snmp_ver");
-	$fields_host_edit["snmp_port"]["default"] = read_config_option("snmp_port");
-	$fields_host_edit["snmp_timeout"]["default"] = read_config_option("snmp_timeout");
-}
 
 ?>
