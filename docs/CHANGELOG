@@ -9,11 +9,19 @@ raXnet - cacti
 -bug#76: Cactid segfault on Solaris caused by unchecked use of NULL with
 sprintf.
 -bug#77: Cactid segfault upon a MySQL connect error.
+-bug#79: Check for unique/valid data when the user selects a field to index
+their new data sources off of.
 -bug: Redirect user to the correct page after a forced password change.
 -bug: Problems entering negative numbers for upper/lower limit fields on
 graph pages.
 -bug: Never try to use internal SNMP support if SNMP version 2 or 3 is 
 selected.
+-bug: Adding or removing data source items in a data template should update
+attached data sources as well.
+-bug: Problems updating certain fields when switching or turning off both
+graph and data templates.
+-bug: Got rid of the "Use Per-Data Source Value" checkbox where it isn't 
+usable.
 -feature: Added host and graph template permissions for graph viewing users.
 -feature: Added a new 'dual pane' tree view type that draws the graph trees
 on a DHTML tree on the left side of the page.
