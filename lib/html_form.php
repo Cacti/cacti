@@ -410,4 +410,72 @@ function draw_templated_row($array_struct, $field_name, $previous_value) {
 	print "</tr>\n";
 }
 
+function draw_tree_dropdown($current_tree_id) {
+	include_once ("functions.php");
+	
+	global $colors;
+	
+	$current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
+	
+	print "<form name='form_tree_id'>";
+	
+	if (read_config_option("global_auth") == "on") {
+		if ($current_user["graph_policy"] == "1") {
+			$sql_where = "where user_auth_tree.user_id is null";
+		}elseif ($current_user["graph_policy"] == "2") {
+			$sql_where = "where user_auth_tree.user_id is not null";
+		}
+		
+		$tree_list = db_fetch_assoc("select
+			graph_tree.id,
+			graph_tree.name,
+			user_auth_tree.user_id
+			from graph_tree
+			left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
+			$sql_where
+			order by graph_tree.name");
+	}else{
+		$tree_list = db_fetch_assoc("select * from graph_tree order by name");
+	}
+	
+	if (isset($_GET["tree_id"])) {
+		$_SESSION["sess_view_tree_id"] = $current_tree_id;
+	}
+	
+	/* set a default tree if none is already selected */
+	if (empty($_SESSION["sess_view_tree_id"])) {
+		if (read_graph_config_option("default_tree_id")) {
+			$_SESSION["sess_view_tree_id"] = read_graph_config_option("default_tree_id");
+		}else{
+			if (sizeof($tree_list) > 0) {
+				$_SESSION["sess_view_tree_id"] = $tree_list[0]["id"];
+			}
+		}
+	}
+	
+	/* make the dropdown list of trees */
+	if (sizeof($tree_list) > 1) {
+		print "	<td valign='middle' height='30' bgcolor='#" . $colors["panel"] . "'>\n
+				<table width='100%' cellspacing='0' cellpadding='0'>\n
+					<tr>\n
+						<td width='200' class='textHeader'>\n
+							&nbsp;&nbsp;Select a Graph Hierarchy:&nbsp;\n
+						</td>\n
+						<td bgcolor='#" . $colors["panel"] . "'>\n
+							<select name='cbo_tree_id' onChange='window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value'>\n";
+		
+		foreach ($tree_list as $tree) {
+			print "	<option value='graph_view.php?action=tree&tree_id=" . $tree["id"] . "'";
+				if ($_SESSION["sess_view_tree_id"] == $tree["id"]) { print " selected"; }
+				print ">" . $tree["name"] . "</option>\n";
+			}
+		
+		print "</select>\n";
+		print "</td></tr></table></td></form>\n";	
+	}elseif (sizeof($tree_list) == 1) {
+		/* there is only one tree; use it */
+		//print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
+	}
+}
+
 ?>
