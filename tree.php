@@ -188,7 +188,7 @@ function item_edit() {
 			<font class="textEditTitle">Graph</font><br>
 			Choose a graph from this list to add it to the tree.
 		</td>
-		<?php form_dropdown("local_graph_id",db_fetch_assoc("select local_graph_id,title from graph_templates_graph where local_graph_id != 0 order by title"),"title","local_graph_id",(isset($tree_item) ? $tree_item["local_graph_id"] : "0"),"None","");?>
+		<?php form_dropdown("local_graph_id",db_fetch_assoc("select graph_templates_graph.local_graph_id,graph_templates_graph.title,graph_local.host_id from graph_templates_graph,graph_local where graph_local.id=graph_templates_graph.local_graph_id and local_graph_id != 0 order by title"),"title","local_graph_id",(isset($tree_item) ? $tree_item["local_graph_id"] : "0"),"None","");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
