@@ -36,7 +36,7 @@ switch ($_REQUEST["action"]) {
 	case 'template_remove':
 		template_remove();
 		
-		header ("Location: graph_templates.php");
+		header ("Location: data_templates.php");
 		break;
 	case 'template_edit':
 		include_once ("include/top_header.php");
@@ -62,8 +62,7 @@ function form_save() {
 	global $config;
 	
 	if (isset($_POST["save_component_template"])) {
-		template_save();
-		return "data_templates.php?action=template_edit&data_template_id=" . $_POST["data_template_id"] . "&view_rrd=" . $_POST["current_rrd"];
+		return template_save();
 	}
 }
    
@@ -184,6 +183,12 @@ function template_save() {
 	
 	/* push out all "custom data" for this data source template */
 	push_out_data_template($data_template_id);
+	
+	if (empty($_POST["data_template_id"])) {
+		return "data_templates.php?action=template_edit&data_template_id=" . $data_template_id . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id);
+	}else{
+		return "data_templates.php";
+	}
 }
 
 function template_edit() {
