@@ -35,7 +35,7 @@ if ($config["cacti_server_os"] == "unix") {
 	define("SNMP_ESCAPE_CHARACTER", "\"");
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 1000) {
+function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500) {
 	global $config;
 
 	$retries = read_config_option("snmp_retries");
@@ -46,7 +46,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		we are getting back */
 		snmp_set_quick_print(0);
 
-		$snmp_value = @snmpget("$hostname:$port", $community, $oid, $timeout, $retries);
+		$snmp_value = @snmpget("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
 	}else{
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
@@ -75,7 +75,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 1000) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500) {
 	global $config;
 
 	$snmp_array = array();
@@ -85,7 +85,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	if ($retries == "") $retries = 3;
 
 	if (($config["php_snmp_support"] == true) && ($version == "1")) {
-		$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid, $timeout, $retries);
+		$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
 
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
