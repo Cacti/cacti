@@ -24,7 +24,7 @@
 	include_once ("include/form.php");
 	include_once ("include/top_header.php");
 	
-	start_box("About cacti", "", "");
+	start_box("<strong>About cacti</strong>", "", "");
 	?> 
 
 

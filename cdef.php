@@ -49,7 +49,7 @@ switch ($action) {
  case 'edit':
 	include_once ("include/top_header.php");
 	
-	start_box("CDEF's [edit]", "", "");
+	start_box("<strong>CDEF's [edit]</strong>", "", "");
 	
 	if (isset($args[id])) {
 		$cdef = db_fetch_row("select * from cdef where id=$args[id]");
@@ -114,7 +114,7 @@ switch ($action) {
  default:
 	include_once ("include/top_header.php");
 	
-	start_box("CDEF's", "", "cdef.php?action=edit");
+	start_box("<strong>CDEF's</strong>", "", "cdef.php?action=edit");
 	                         
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Name",$colors[header_text],1);

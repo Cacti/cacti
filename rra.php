@@ -68,7 +68,7 @@ switch ($action) {
  case 'edit':
 	include_once ("include/top_header.php");
 	
-	start_box("Round Robin Archive Management [edit]", "", "");
+	start_box("<strong>Round Robin Archive Management [edit]</strong>", "", "");
 	
 	if (isset($args[id])) {
 		$rra = db_fetch_row("select * from rrd_rra where id=$args[id]");
@@ -135,7 +135,7 @@ switch ($action) {
  default:
 	include_once ("include/top_header.php");
 	
-	start_box("Round Robin Archive Management", "", "rra.php?action=edit");
+	start_box("<strong>Round Robin Archive Management</strong>", "", "rra.php?action=edit");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Name",$colors[header_text],1);

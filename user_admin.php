@@ -347,7 +347,7 @@ switch ($action) {
  case 'edit_graph_config':
 	include_once ("include/top_header.php");
 	
-	start_box("User Management [edit]", "", "");
+	start_box("<strong>User Management [edit]</strong>", "", "");
 	draw_user_form_select();
 	end_box();
 	
@@ -359,7 +359,7 @@ switch ($action) {
  case 'edit_perms':
 	include_once ("include/top_header.php");
 	
-	start_box("User Management [edit]", "", "");
+	start_box("<strong>User Management [edit]</strong>", "", "");
 	draw_user_form_select();
 	end_box();
 	
@@ -378,7 +378,7 @@ switch ($action) {
 	}
 	
 	if ($config[full_view_user_admin][value] == "") {
-		start_box("User Management [edit]", "", "");
+		start_box("<strong>User Management [edit]</strong>", "", "");
 		draw_user_form_select();
 		end_box();
 	}
@@ -552,7 +552,7 @@ switch ($action) {
  default:
 	include_once ("include/top_header.php");
 	
-	start_box("User Management", "", "user_admin.php?action=edit");
+	start_box("<strong>User Management</strong>", "", "user_admin.php?action=edit");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("User Name",$colors[header_text],1);

@@ -61,7 +61,7 @@ switch ($action) {
 		$current_tab = $args[tab];
 	}
 	
-	start_box("cacti Settings (" . $tabs[$current_tab] . ")", "", "");
+	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "", "");
 	
 	?>
 	

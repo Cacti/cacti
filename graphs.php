@@ -75,9 +75,14 @@
 		global $args, $colors;
 		
 		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=$args[local_graph_id]");
-		$graph_template_name = db_fetch_cell("select  name from graph_templates where id=$graph_template_id");
+		$graph_template_name = db_fetch_cell("select name from graph_templates where id=$graph_template_id");
 		
-		if ($graph_template_name != "") { $header_text = "Graph Item Configuration <strong>[Template: $graph_template_name]</strong>"; }
+		if ($graph_template_name == "") {
+			$header_text = "Graph Item Configuration";
+		}else{
+			$header_text = "Graph Item Configuration <strong>[Template: $graph_template_name]</strong>";
+		}
+		
 		start_box($header_text, "", "graphs.php?action=item_edit&local_graph_id=$args[local_graph_id]");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
@@ -94,12 +99,12 @@
 			graph_templates_item.value,
 			graph_templates_item.hard_return,
 			polling_items.descrip,
-			rrd_ds_cdef.name as cdef_name,
+			cdef.name as cdef_name,
 			def_cf.name as consolidation_function_name,
 			def_colors.hex,
 			def_graph_type.name as graph_type_name
 			from graph_templates_item left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-			left join rrd_ds_cdef on cdef_id=rrd_ds_cdef.id
+			left join cdef on cdef_id=cdef.id
 			left join def_cf on consolidation_function_id=def_cf.id
 			left join def_colors on color_id=def_colors.id
 			left join def_graph_type on graph_type_id=def_graph_type.id
@@ -535,7 +540,7 @@ switch ($action) {
 	case 'item':
 		include_once ("include/top_header.php");
 		
-		start_box("Graph Template Management [edit]", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
 		end_box();
 		
@@ -610,7 +615,7 @@ switch ($action) {
 		include_once ("include/top_header.php");
 		
 		if ($config[full_view_graph][value] == "") {
-			start_box("Graph Management [edit]", "", "");
+			start_box("<strong>Graph Management [edit]</strong>", "", "");
 			draw_graph_form_select("?action=graph_edit&local_graph_id=$args[local_graph_id]");
 			end_box();
 		}
@@ -922,7 +927,7 @@ switch ($action) {
 			unset($graph_tree);
 		}
 		
-		start_box("Graph Management [edit]", "", "graphs.php?action=edit_tree");
+		start_box("<strong>Graph Management [edit]</strong>", "", "graphs.php?action=edit_tree");
 		draw_main_form_select();
 		end_box();
 		
@@ -996,7 +1001,7 @@ switch ($action) {
 	default:
 		include_once ("include/top_header.php");
 		
-		start_box("Graph Management", "", "graphs.php?action=graph_edit");
+		start_box("<strong>Graph Management</strong>", "", "graphs.php?action=graph_edit");
 		draw_main_form_select();
 		end_box();
 		

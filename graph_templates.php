@@ -70,12 +70,12 @@
 			graph_templates_item.value,
 			graph_templates_item.hard_return,
 			polling_items.descrip,
-			rrd_ds_cdef.name as cdef_name,
+			cdef.name as cdef_name,
 			def_cf.name as consolidation_function_name,
 			def_colors.hex,
 			def_graph_type.name as graph_type_name
 			from graph_templates_item left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-			left join rrd_ds_cdef on cdef_id=rrd_ds_cdef.id
+			left join cdef on cdef_id=cdef.id
 			left join def_cf on consolidation_function_id=def_cf.id
 			left join def_colors on color_id=def_colors.id
 			left join def_graph_type on graph_type_id=def_graph_type.id
@@ -397,7 +397,7 @@ switch ($action) {
 		include_once ("include/top_header.php");
 		
 		if ($config[full_view_graph_template][value] == "") {
-			start_box("Graph Template Management [edit]", "", "");
+			start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 			draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
 			end_box();
 		}
@@ -531,7 +531,7 @@ switch ($action) {
 		include_once ("include/top_header.php");
 		
 		if ($config[full_view_graph_template][value] == "") {
-			start_box("Graph Template Management [edit]", "", "");
+			start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 			draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
 			end_box();
 		}
@@ -692,7 +692,7 @@ switch ($action) {
 	case 'item':
 		include_once ("include/top_header.php");
 		
-		start_box("Graph Template Management [edit]", "", "");
+		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
 		end_box();
 		
@@ -705,7 +705,7 @@ switch ($action) {
 		include_once ("include/top_header.php");
 		
 		if ($config[full_view_graph_template][value] == "") {
-			start_box("Graph Template Management [edit]", "", "");
+			start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 			draw_graph_form_select("?action=template_edit&graph_template_id=$args[graph_template_id]");
 			end_box();
 		}
@@ -902,7 +902,7 @@ switch ($action) {
 	default:
 		include_once ("include/top_header.php");
 		
-		start_box("Graph Template Management", "", "graph_templates.php?action=template_edit");
+		start_box("<strong>Graph Template Management</strong>", "", "graph_templates.php?action=template_edit");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Template Title",$colors[header_text],2);

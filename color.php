@@ -55,7 +55,7 @@ switch ($action) {
 		unset($color);
 	}
 	
-	start_box("Color Management [edit]", "", "");
+	start_box("<strong>Color Management [edit]</strong>", "", "");
     	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
@@ -84,7 +84,7 @@ switch ($action) {
  default:
 	include_once ("include/top_header.php");
 	
-	start_box("Color Management", "", "color.php?action=edit");
+	start_box("<strong>Color Management</strong>", "", "color.php?action=edit");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Hex Value",$colors[header_text],1);
