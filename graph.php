@@ -58,12 +58,24 @@ if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where loca
 $rras = db_fetch_assoc("select id,name from rra $sql_where order by steps");
 $graph_title = db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
 
+print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
+print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'><strong>Viewing Graph '$graph_title'</strong></td></tr>";
+
 if (sizeof($rras) > 0) {
 foreach ($rras as $rra) {
+	print "<tr><td>";
+	
 	print "	<div align='center'><img src='graph_image.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "' border='0' alt='$graph_title'></div>\n
 		<div align='center'><strong>" . $rra["name"] . "</strong> [<a href='graph.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&show_source=true'>source</a>]</div><br>\n";
+	
+	print "</td></tr>";
+	
+	$i++;
 }
 }
+
+print "</table>";
+print "<br><br>";
 
 include_once ("include/bottom_footer.php");
 

@@ -26,6 +26,7 @@
 
 include_once ("include/rrd_functions.php");
 include_once ("include/functions.php");
+include_once ("include/form.php");
 include ("include/top_graph_header.php");
 
 //if (isset($args[hide]) == true) {
@@ -68,16 +69,15 @@ case 'tree':
 		}
 	}
 	
-	print "	<table width='98%' align='center'>
-			<tr>
-				<td>
-					<strong><a href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong>
-				</td>
-			</tr>
-		</table>
-		<br>\n";
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'><tr>\n";
+	draw_tree_dropdown($_GET["tree_id"]);
+	print "</tr></table>";
+	
+	print "<br>";
 	
 	grow_graph_tree($_SESSION["sess_view_tree_id"], $start_branch, $user_id, $tree_parameters);
+	
+	print "<br><br>";
 	
 	break;
 case 'preview':
@@ -110,6 +110,28 @@ case 'preview':
 		$sql_join = "left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ")";
 	}
 	
+	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
+	if ($_GET["style"] == "selective") {
+		$i = 0;
+		while (list($var, $val) = each($_GET)) {
+			if (ereg('^graph_([0-9]+)$', $var, $matches)) {
+				$graph_array[$i] = $matches[1];
+				$i++;
+			}
+		}
+		
+		if (sizeof($graph_array) > 0) {
+			/* build sql string including each graph the user checked */
+			$sql_or = "and " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
+			
+			/* clear the filter vars so they don't affect our results */
+			$_REQUEST["filter"] = "";
+			$_REQUEST["host_id"] = "0";
+			
+			$set_rra_id = $_GET["rra_id"];
+		}
+	}
+	
 	if (empty($_REQUEST["host_id"])) {
 		$graphs = db_fetch_assoc("select 
 			graph_templates_graph.local_graph_id,
@@ -119,6 +141,7 @@ case 'preview':
 			$sql_where
 			" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
 			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+			$sql_or
 			order by graph_templates_graph.title");
 	}else{
 		$graphs = db_fetch_assoc("select 
@@ -147,7 +170,7 @@ case 'preview':
 		<td colspan='<?php print read_graph_config_option("num_columns");?>'>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="100">
+					<td width="120" class="textHeader">
 						Filter by host:&nbsp;
 					</td>
 					<td width="1">
@@ -179,17 +202,23 @@ case 'preview':
 	</tr>	
 	<?php
 	
+	print "</table>";
 	
+	print "<br>";
+	
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Displaying " . sizeof($graphs) . " Graph" . ((sizeof($graphs) == 1) ? "" : "s") . "</strong></td></tr></table></td></tr>";
 	print "<tr>";
 	
+	$i = 0;
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
-		print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
+		print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . (empty($set_rra_id) ? read_graph_config_option("default_rra_id") : $set_rra_id) . "&graph_start=-" . (empty($set_rra_id) ? read_graph_config_option("timespan") : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
 		
 		$i++;
 		$k++;
 		
-		if (($i == read_graph_config_option("num_columns")) && ($k < sizeof($graphs))) {
+		if (($i == read_graph_config_option("num_columns")) && ($k < count($graphs))) {
 			$i = 0;
 			print "</tr><tr>";
 		}
@@ -234,7 +263,9 @@ case 'list':
 			order by title");
 	}
 	
+	print "<form action='graph_view.php' method='get'>\n";
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Displaying " . sizeof($graphs) . " Graph" . ((sizeof($graphs) == 1) ? "" : "s") . "</strong></td></tr></table></td></tr>";
 	
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
@@ -260,14 +291,16 @@ case 'list':
 					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 				</td>
 				<td width='1'>";
-					form_base_dropdown("rra_id", db_fetch_assoc("select id,name from rra order by name"), "name", "id", "1", "", "");
+					form_base_dropdown("rra_id", db_fetch_assoc("select id,name,(rra.rows*rra.steps) as rra_order from rra order by rra_order,name"), "name", "id", "1", "", "");
 	print "			</td>
 				<td>	
 					<input type='image' src='images/button_view.gif' alt='View'>
 				</td>
 			</tr>
-		</table><br><br>\n";
-	
+		</table><br><br>\n
+	<input type='hidden' name='style' value='selective'>\n
+	<input type='hidden' name='action' value='preview'>\n
+	</form>\n";
 	
 	break;
 }
