@@ -27,15 +27,15 @@ session_start();
 
 include ("include/config.php");
 
-$user = db_fetch_row("select * from auth_users where id=" . $_SESSION["sess_user_id"]);
+$user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
 
 $ip = trim(getenv("REMOTE_ADDR"));
 
 switch ($action) {
 case 'changepassword':
 	if (($password == $confirm) && ($password != "")) {
-		db_execute("insert into auth_log (username,success,ip) values('" . $user["Username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
-		db_execute("update auth_users set mustchangepassword='',password=PASSWORD('" . $_POST["password"] . "') where id=" . $_SESSION["sess_user_id"]);
+		db_execute("insert into user_log (username,result,ip) values('" . $user["username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("update user set must_change_password='',password=PASSWORD('" . $_POST["password"] . "') where id=" . $_SESSION["sess_user_id"]);
 		
 		$_SESSION["sess_change_password"] = "0";
 		

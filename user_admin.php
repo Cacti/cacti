@@ -115,17 +115,17 @@ function form_save() {
    -------------------------- */
 
 function graph_perms_save() {
-	db_execute ("delete from auth_graph where userid=" . $_POST["user_id"]);
-    	db_execute ("delete from auth_graph_hierarchy where userid=" . $_POST["user_id"]);
+	db_execute ("delete from user_auth_graph where user_id=" . $_POST["user_id"]);
+    	db_execute ("delete from user_auth_tree where user_id=" . $_POST["user_id"]);
 	
 	reset($_POST);
 	
 	while (list($var, $val) = each($_POST)) {
 		if (eregi("^[graph|tree]", $var)) {
 			if (substr($var, 0, 5) == "graph") {
-			    db_execute ("replace into auth_graph (userid,graphid) values(" . $_POST["user_id"] . "," . substr($var, 5) . ")");
+			    db_execute ("replace into user_auth_graph (user_id,local_graph_id) values(" . $_POST["user_id"] . "," . substr($var, 5) . ")");
 			}elseif (substr($var, 0, 4) == "tree") {
-			    db_execute ("replace into auth_graph_hierarchy (userid,hierarchyid) values(" . $_POST["user_id"] . "," . substr($var, 4) . ")");
+			    db_execute ("replace into user_auth_tree (user_id,tree_id) values(" . $_POST["user_id"] . "," . substr($var, 4) . ")");
 			}
 		}
 	}
@@ -135,7 +135,7 @@ function graph_perms_edit() {
 	global $colors, $config;
 	
 	if (isset($_GET["id"])) {
-		$graph_policy = db_fetch_cell("select GraphPolicy from auth_users where id=" . $_GET["id"]);
+		$graph_policy = db_fetch_cell("select graph_policy from user where id=" . $_GET["id"]);
 		
 		if ($graph_policy == "1") {
 			$graph_policy_text = "DENIED";
@@ -161,11 +161,13 @@ function graph_perms_edit() {
 	start_box($graph_policy_text, "98%", $colors["header"], "3", "center", "");
 	
 	$graphs = db_fetch_assoc("select 
-		ag.UserID,
-		g.ID, g.Title 
-		from rrd_graph g
-		left join auth_graph ag on (g.id=ag.graphid and ag.userid=" . $_GET["id"] . ") 
-		order by g.title");
+		user_auth_graph.user_id,
+		graph_templates_graph.local_graph_id,
+		graph_templates_graph.title
+		from graph_templates_graph
+		left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_GET["id"] . ") 
+		where graph_templates_graph.local_graph_id > 0
+		order by graph_templates_graph.title");
 	$rows = sizeof($graphs);
 	
 	?>
@@ -180,7 +182,7 @@ function graph_perms_edit() {
 		
 		if (sizeof($graphs) > 0) {
 			foreach ($graphs as $graph) {
-			    if ($graph["UserID"] == "") {
+			    if ($graph["user_id"] == "") {
 				$old_value = "";
 			    }else{
 				$old_value = "on";
@@ -192,7 +194,7 @@ function graph_perms_edit() {
 				print "</td><td valign='top' width='50%'>";
 			    }
 					
-			    DrawStrippedFormItemCheckBox("graph".$graph["ID"], $old_value, $graph["Title"],"",true);
+			    DrawStrippedFormItemCheckBox("graph".$graph["id"], $old_value, $graph["title"],"",true);
 			    
 			    $i++;
 			}
@@ -347,37 +349,37 @@ function graph_config_edit() {
 
 function user_save() {
 	/* only change password when user types one */
-	if ($_POST["Password"] != $_POST["Confirm"]) {
+	if ($_POST["password"] != $_POST["Confirm"]) {
 		$passwords_do_not_match = true;
-	}elseif (($_POST["Password"] == "") && ($_POST["Confirm"] == "")) {
+	}elseif (($_POST["password"] == "") && ($_POST["Confirm"] == "")) {
 		$password = $_POST["_password"];
 	}else{
-		$password = "PASSWORD('" . $_POST["Password"] . "')";
+		$password = "PASSWORD('" . $_POST["password"] . "')";
 	}
 	
 	if ($passwords_do_not_match != true) {
-		$save["ID"] = $_POST["user_id"];
-		$save["Username"] = $_POST["Username"];
-		$save["FullName"] = $_POST["FullName"];
-		$save["Password"] = $password;
-		$save["MustChangePassword"] = $_POST["MustChangePassword"];
-		$save["ShowTree"] = $_POST["ShowTree"];
-		$save["ShowList"] = $_POST["ShowList"];
-		$save["ShowPreview"] = $_POST["ShowPreview"];
-		$save["GraphSettings"] = $_POST["GraphSettings"];
-		$save["LoginOpts"] = $_POST["LoginOpts"];
-		$save["GraphPolicy"] = $_POST["GraphPolicy"];
+		$save["id"] = $_POST["user_id"];
+		$save["username"] = $_POST["username"];
+		$save["full_name"] = $_POST["full_name"];
+		$save["password"] = $password;
+		$save["must_change_password"] = $_POST["must_change_password"];
+		$save["show_tree"] = $_POST["show_tree"];
+		$save["show_list"] = $_POST["show_list"];
+		$save["show_preview"] = $_POST["show_preview"];
+		$save["graph_settings"] = $_POST["graph_settings"];
+		$save["login_opts"] = $_POST["login_opts"];
+		$save["graph_policy"] = $_POST["graph_policy"];
 		
-		$id = sql_save($save, "auth_users");
+		$id = sql_save($save, "user");
 		
 		reset($_POST);
 		
-		db_execute("delete from auth_acl where userid=$id");
+		db_execute("delete from user_auth_realm where user_id=$id");
 		
 		while (list($var, $val) = each($_POST)) {
 			if (eregi("^[section]", $var)) {
 				if (substr($var, 0, 7) == "section") {
-				    db_execute ("replace into auth_acl (userid,sectionid) values($id," . substr($var, 7) . ")");
+				    db_execute ("replace into user_auth_realm (user_id,realm_id) values($id," . substr($var, 7) . ")");
 				}
 			}
 		}
@@ -389,21 +391,18 @@ function user_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select Username from auth_users where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=" . $_GET["id"]);
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
-	    db_execute("delete from auth_users where id=" . $_GET["id"]);
-	    db_execute("delete from auth_acl where userid=" . $_GET["id"]);
-	    db_execute("delete from auth_hosts where userid=" . $_GET["id"]);
-	    db_execute("delete from auth_graph where userid=" . $_GET["id"]);
-	    db_execute("delete from auth_graph_hierarchy where userid=" . $_GET["id"]);
-	    db_execute("delete from settings_graphs where userid=" . $_GET["id"]);
-	    db_execute("delete from settings_viewing_tree where userid=" . $_GET["id"]);
-	    db_execute("delete from settings_graph_tree where userid=" . $_GET["id"]);
-	    db_execute("delete from settings_ds_tree where userid=" . $_GET["id"]);
+	    db_execute("delete from user where id=" . $_GET["id"]);
+	    db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
+	    db_execute("delete from user_auth_hosts where user_id=" . $_GET["id"]);
+	    db_execute("delete from user_auth_graph where user_id=" . $_GET["id"]);
+	    db_execute("delete from user_auth_tree where user_id=" . $_GET["id"]);
+	    db_execute("delete from settings_graphs where user_id=" . $_GET["id"]);
 	}	
 }
 
@@ -411,7 +410,7 @@ function user_edit() {
 	global $colors, $config;
 	
 	if (isset($_GET["id"])) {
-		$user = db_fetch_row("select * from auth_users where id=" . $_GET["id"]);
+		$user = db_fetch_row("select * from user where id=" . $_GET["id"]);
 	}else{
 		unset($user);
 	}
@@ -433,7 +432,7 @@ function user_edit() {
 			<font class="textEditTitle">User Name</font><br>
 			
 		</td>
-		<?DrawFormItemTextBox('Username',$user["Username"],"","");?>
+		<?DrawFormItemTextBox('username',$user["username"],"","");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -441,7 +440,7 @@ function user_edit() {
 			<font class="textEditTitle">Full Name</font><br>
 			
 		</td>
-		<?DrawFormItemTextBox('FullName',$user["FullName"],"","");?>
+		<?DrawFormItemTextBox('full_name',$user["full_name"],"","");?>
 	</tr>
     
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -450,8 +449,8 @@ function user_edit() {
 			
 		</td>
 		<td>
-			<?DrawStrippedFormItemPasswordTextBox("Password","","","","40");?><br>
-			<?DrawStrippedFormItemPasswordTextBox("Confirm","","","","40");?>
+			<?DrawStrippedFormItemPasswordTextBox("password","","","","40");?><br>
+			<?DrawStrippedFormItemPasswordTextBox("confirm","","","","40");?>
 		</td>
 	</tr>
     
@@ -462,8 +461,8 @@ function user_edit() {
 		</td>
 		<td>
 		<?
-			DrawStrippedFormItemCheckBox("MustChangePassword",$user["MustChangePassword"],"User Must Change Password at Next Login","",true);
-			DrawStrippedFormItemCheckBox("GraphSettings",$user["GraphSettings"],"Allow this User to Keep Custom Graph Settings","on",true);
+			DrawStrippedFormItemCheckBox("must_change_password",$user["must_change_password"],"User Must Change Password at Next Login","",true);
+			DrawStrippedFormItemCheckBox("graph_settings",$user["graph_settings"],"Allow this User to Keep Custom Graph Settings","on",true);
 		?>
 		</td>
 	</tr>
@@ -475,9 +474,9 @@ function user_edit() {
 		</td>
 		<td>
 		<?
-			DrawStrippedFormItemCheckBox("ShowTree",$user["ShowTree"],"User Has Rights to View Tree Mode","on",true);
-			DrawStrippedFormItemCheckBox("ShowList",$user["ShowList"],"User Has Rights to View List Mode","on",true);
-			DrawStrippedFormItemCheckBox("ShowPreview",$user["ShowPreview"],"User Has Rights to View Preview Mode","on",true);
+			DrawStrippedFormItemCheckBox("show_tree",$user["show_tree"],"User Has Rights to View Tree Mode","on",true);
+			DrawStrippedFormItemCheckBox("show_list",$user["show_list"],"User Has Rights to View List Mode","on",true);
+			DrawStrippedFormItemCheckBox("show_preview",$user["show_preview"],"User Has Rights to View Preview Mode","on",true);
 		?>
 		</td>
 	</tr>
@@ -488,9 +487,9 @@ function user_edit() {
 			The default allow/deny graph policy for this user.
 		</td>
 		<?
-		DrawFormItemDropDownCustomHeader("GraphPolicy");
-		DrawFormItemDropDownCustomItem("GraphPolicy","1","Allow",$user["GraphPolicy"]);
-		DrawFormItemDropDownCustomItem("GraphPolicy","2","Deny",$user["GraphPolicy"]);
+		DrawFormItemDropDownCustomHeader("graph_policy");
+		DrawFormItemDropDownCustomItem("graph_policy","1","Allow",$user["graph_policy"]);
+		DrawFormItemDropDownCustomItem("graph_policy","2","Deny",$user["graph_policy"]);
 		DrawFormItemDropDownCustomFooter();
 		?>
 	</tr>
@@ -502,9 +501,9 @@ function user_edit() {
 		</td>
 		<td>
 		<?
-			DrawStrippedFormItemRadioButton("LoginOpts", $user["LoginOpts"], "1", "Show the page that user pointed their browser to.","1",true);
-			DrawStrippedFormItemRadioButton("LoginOpts", $user["LoginOpts"], "2", "Show the default console screen.","1",true);
-			DrawStrippedFormItemRadioButton("LoginOpts", $user["LoginOpts"], "3", "Show the default graph screen.","1",true);
+			DrawStrippedFormItemRadioButton("login_opts", $user["login_opts"], "1", "Show the page that user pointed their browser to.","1",true);
+			DrawStrippedFormItemRadioButton("login_opts", $user["login_opts"], "2", "Show the default console screen.","1",true);
+			DrawStrippedFormItemRadioButton("login_opts", $user["login_opts"], "3", "Show the default graph screen.","1",true);
 		?>
 		</td>
 	</tr>
@@ -513,15 +512,16 @@ function user_edit() {
 	end_box();
 	start_box("User Permissions", "98%", $colors["header"], "3", "center", "");
 	
-	$sections = db_fetch_assoc("select 
-		auth_acl.UserID,
-		auth_sections.ID, auth_sections.Section
-		from auth_sections
-		left join auth_acl on (auth_sections.id=auth_acl.sectionid and auth_acl.userid=" . $_GET["id"] . ") 
-		order by auth_sections.Section");
-	$rows = sizeof($sections);
+	$realms = db_fetch_assoc("select 
+		user_auth_realm.user_id,
+		user_realm.id,
+		user_realm.name
+		from user_realm
+		left join user_auth_realm on (user_realm.id=user_auth_realm.realm_id and user_auth_realm.user_id=" . $_GET["id"] . ") 
+		order by user_realm.name");
 	
 	?>
+	
 	<tr>
 		<td colspan="2" width="100%">
 			<table width="100%">
@@ -529,24 +529,24 @@ function user_edit() {
 					<td align="top" width="50%">
 		<?
 		
-		if (sizeof($sections) > 0) {
-			foreach ($sections as $section) {
-			    if ($section["UserID"] == "") {
+		if (sizeof($realms) > 0) {
+		foreach ($realms as $realm) {
+			if ($realm["user_id"] == "") {
 				$old_value = "";
-			    }else{
+			}else{
 				$old_value = "on";
-			    }
-			    
-			    $column1 = floor(($rows / 2) + ($rows % 2));
-			    
-			    if ($i == $column1) {
-				print "</td><td valign='top' width='50%'>";
-			    }
-					
-			    DrawStrippedFormItemCheckBox("section".$section["ID"], $old_value, $section["Section"],"",true);
-			    
-			    $i++;
 			}
+			
+			$column1 = floor((sizeof($realms) / 2) + (sizeof($realms) % 2));
+			
+			if ($i == $column1) {
+				print "</td><td valign='top' width='50%'>";
+			}
+			
+			DrawStrippedFormItemCheckBox("section".$realm["id"], $old_value, $realm["name"],"",true);
+			
+			$i++;
+		}
 		}
 		?>
 					</td>
@@ -592,23 +592,23 @@ function user() {
 		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],2);
 	print "</tr>";
 	
-	$user_list = db_fetch_assoc("select ID,Username,FullName,GraphPolicy from auth_users order by Username");
+	$user_list = db_fetch_assoc("select id,username,full_name,graph_policy from user order by username");
 	
 	if (sizeof($user_list) > 0) {
 	foreach ($user_list as $user) {
 		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?print $user["ID"];?>"><?print $user["Username"];?></a>
+				<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?print $user["id"];?>"><?print $user["username"];?></a>
 			</td>
 			<td>
-				<?print $user["FullName"];?>
+				<?print $user["full_name"];?>
 			</td>
 			<td>
-				<?if ($user["GraphPolicy"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
+				<?if ($user["graph_policy"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
 			</td>
 			<td width="1%" align="right">
-				<a href="user_admin.php?action=user_remove&id=<?print $user["ID"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="user_admin.php?action=user_remove&id=<?print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?

@@ -62,11 +62,11 @@ function DrawMenu($userid, $menuid) {
 		  );
     
     
-    /* NOTICE: we will have to come back and re-impliment "custom auth menus" at some point */
-    $user_perms = db_fetch_assoc("select
-				   auth_sections.Section
-				   from auth_sections left join auth_acl on auth_acl.SectionID=auth_sections.ID
-				   where auth_acl.UserID=$userid");
+	/* NOTICE: we will have to come back and re-impliment "custom auth menus" at some point */
+	$user_perms = db_fetch_assoc("select
+		user_realm.id
+		from user_realm,user_auth_realm
+		where user_auth_realm.user_id=$userid");
     
     print "<tr><td width='100%'><table cellpadding=3 cellspacing=0 border=0 width='100%'>\n";
     

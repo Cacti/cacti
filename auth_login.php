@@ -25,30 +25,30 @@
 
 switch ($_REQUEST["action"]) {
 case 'login':
-	$user = db_fetch_row("select * from auth_users where Username='" . $_POST["username"] . "' and Password = PASSWORD('" . $_POST["password"] . "')");
+	$user = db_fetch_row("select * from user where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
 	
 	if (sizeof($user)) {
 		/* --- GOOD username/password --- */
 		
-		$denied_ips = db_fetch_assoc("select Hostname,Type from auth_hosts where userid=" . $user["ID"] . " where Type='1'");
-		$allowed_ips = db_fetch_assoc("select Hostname,Type from auth_hosts where userid=" . $user["ID"] . " where Type='2'");
+		$denied_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["ID"] . " and policy='1'");
+		$allowed_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["ID"] . " and policy='2'");
 		
 		if (sizeof($denied_ips) > 0) {
 			/* if our ip is in this list, it means that we're denied */
-			if (in_array($_SERVER["REMOTE_ADDR"],array_rekey($denied_ips, "Hostname", "Hostname"))) {
+			if (in_array($_SERVER["REMOTE_ADDR"],array_rekey($denied_ips, "hostname", "hostname"))) {
 				$deny_ip = true;
 			}
 		}
 		
 		if (sizeof($allowed_ips) > 0) {
 			/* if this list contains items, but our ip is not in this list, the we're denied */
-			if (!in_array($_SERVER["REMOTE_ADDR"],array_rekey($allowed_ips, "Hostname", "Hostname"))) {
+			if (!in_array($_SERVER["REMOTE_ADDR"],array_rekey($allowed_ips, "hostname", "hostname"))) {
 				$deny_ip = true;
 			}
 		}
 		
 		if ($deny_ip == true) {
-			db_execute("insert into auth_log (username,success,ip) values('$username',2,'" . $_SERVER["REMOTE_ADDR"] . "')");
+			db_execute("insert into user_log (username,result,ip) values('$username',2,'" . $_SERVER["REMOTE_ADDR"] . "')");
 			include ("noauth.php");
 			exit;
 		}
@@ -62,12 +62,12 @@ case 'login':
 				$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$password);
 				
 				if ($ldap_response) {
-					if (sizeof(db_fetch_assoc("select * from auth_users where username='$username' and FullName='ldap user'")) == 0) {
+					if (sizeof(db_fetch_assoc("select * from user where username='$username' and full_name='ldap user'")) == 0) {
 						/* get information about the template user */
-						$template_user = db_fetch_assoc("SELECT '$username' as Username, 'ldap user' as FullName, '' as MustChangePassword, Password , ShowTree, ShowList, ShowPreview, GraphSettings, LoginOpts, GraphPolicy, ID FROM auth_users WHERE Username = " . read_config_option("ldap_template"));
+						$template_user = db_fetch_assoc("SELECT '$username' as username, 'ldap user' as full_name, '' as must_change_password, password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user WHERE username = " . read_config_option("ldap_template"));
 						
 						/* write out that information to the new ldap user */
-						db_execute("INSERT INTO auth_users (Username, Password, FullName, MustChangePassword, ShowTree, ShowList, ShowPreview, GraphSettings, LoginOpts, GraphPolicy) VALUES ('" . $template_user["Username"] . "' , '" . $template_user["Password"] . "' , '" . $template_user["FullName"] . "' , '" . $template_user["MustChangePassword"] . "' , '" . $template_user["ShowTree"] . "' , '" . $template_user["ShowList"] . "' , '" . $template_user["ShowPreview"] . "' , '" . $template_user["GraphSettings"] . "' , '" . $template_user["LoginOpts"] . "' , '" . $template_user["GraphPolicy"] . "')");
+						db_execute("INSERT INTO user (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
 						$ldap_new = true;
 						
 						/* get the newly created user_id */
@@ -75,17 +75,17 @@ case 'login':
 						
 						if ($ldap_new == true) {
 							/* acl */
-							$auth_acl = db_fetch_assoc("SELECT SectionID FROM `auth_acl` WHERE UserID = $user_id");
+							$user_auth_realm = db_fetch_assoc("SELECT realm_id FROM `user_auth_realm` WHERE user_id = $user_id");
 							
-							foreach ($auth_acl as $item) {
-								db_execute("INSERT INTO auth_acl (SectionID, UserID) VALUES (" . $item["SectionID"] . ", $user_id)");
+							foreach ($user_auth_realm as $item) {
+								db_execute("INSERT INTO user_auth_realm (realm_id, user_id) VALUES (" . $item["realm_id"] . ", $user_id)");
 							}
 							
 							/* graph */
-							$auth_graph = db_fetch_assoc("SELECT GraphID FROM `auth_graph` WHERE UserID = $user_id");
+							$user_auth_graph = db_fetch_assoc("SELECT local_graph_id FROM `user_auth_graph` WHERE user_id = $user_id");
 							
-							foreach ($auth_graph as $item) {
-								db_execute("INSERT INTO auth_graph (GraphID, UserID) VALUES (" . $item["GraphID"] . ", $user_id)");
+							foreach ($user_auth_graph as $item) {
+								db_execute("INSERT INTO user_auth_graph (local_graph_id, user_id) VALUES (" . $item["local_graph_id"] . ", $user_id)");
 							}
 							
 							/* hierarchy */
@@ -96,10 +96,10 @@ case 'login':
 							}
 							
 							/* hosts */
-							$auth_hosts = db_fetch_assoc("SELECT ID, Hostname, UserID, Type FROM `auth_hosts` WHERE UserID = $user_id");
+							$user_auth_hosts = db_fetch_assoc("SELECT hostname, user_id, policy FROM `user_auth_hosts` WHERE user_id = $user_id");
 							
-							foreach ($auth_hosts as $item) {
-								db_execute("INSERT INTO auth_hosts (Hostname, UserID, Type) VALUES ('" . $item["Hostname"] . "', $user_id, " . $item["Type"] . ")");
+							foreach ($user_auth_hosts as $item) {
+								db_execute("INSERT INTO user_auth_hosts (hostname, user_id, policy) VALUES ('" . $item["hostname"] . "', $user_id, " . $item["policy"] . ")");
 							}
 						}
 					}
@@ -109,7 +109,7 @@ case 'login':
 		/* --- end ldap section --- */
 		
 		/* make entry in the transactions log */
-		db_execute("insert into auth_log (username,success,ip) values('$username',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("insert into user_log (username,result,ip) values('$username',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
 		
 		/* set the php session */
 		$_SESSION["sess_user_id"] = $user["ID"];
@@ -133,7 +133,7 @@ case 'login':
 		exit;
 	}else{
 		/* --- BAD username/password --- */
-		db_execute("insert into auth_log (username,success,ip) values('$username',0,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("insert into user_log (username,result,ip) values('$username',0,'" . $_SERVER["REMOTE_ADDR"] . "')");
 	}
 }
 
