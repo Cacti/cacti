@@ -553,10 +553,11 @@ function user() {
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("User Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Full Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],2);
+		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],1);
+                DrawMatrixHeaderItem("Last Login",$colors["header_text"],2);
 	print "</tr>";
 	
-	$user_list = db_fetch_assoc("select id,username,full_name,graph_policy from user_auth order by username");
+	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, graph_policy, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.username = user_log.username group by user_auth.username");
 	
 	$i = 0;
 	if (sizeof($user_list) > 0) {
@@ -571,6 +572,9 @@ function user() {
 			</td>
 			<td>
 				<?php if ($user["graph_policy"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
+			</td>
+			<td>
+				<?php print $user["time"];?>
 			</td>
 			<td width="1%" align="right">
 				<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
