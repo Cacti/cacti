@@ -231,7 +231,7 @@ function form_actions() {
 					<p>When you click save, the following graph templates will be duplicated. You can
 					optionally change the title format for the new graph templates.</p>
 					<p>$graph_list</p>
-					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<template_title> (1)", "", "255", "30", "textbox"); print "</p>
+					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 				</td>
 			</tr>\n
 			";

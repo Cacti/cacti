@@ -370,7 +370,7 @@ if ($_REQUEST["step"] == "4") {
 								
 								switch ($array["type"]) {
 									case 'textbox':
-										form_base_text_box($name, $current_value, "", "", "40", "text");
+										form_text_box($name, $current_value, "", "", "40", "text");
 										print "<br></p>";
 										break;
 									case 'checkbox':
