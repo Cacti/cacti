@@ -29,6 +29,7 @@ $using_guest_account = false;
 
 include_once ("./include/auth.php");
 include($config["include_path"] . "/config_arrays.php");
+include_once($config["include_path"] . "/tree_view_functions.php");
 
 session_start();
 
@@ -47,7 +48,7 @@ if (read_config_option("global_auth") == "on") {
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 /* set the default action if none has been set */
-if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
+if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER["PHP_SELF"]) == "graph_view.php")) {
 	if (read_graph_config_option("default_view_mode") == "1") {
 		$_REQUEST["action"] = "tree";
 	}elseif (read_graph_config_option("default_view_mode") == "2") {
@@ -63,53 +64,61 @@ if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 	<title>cacti</title>
 	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . $_SERVER["PHP_SELF"] . "'>\r\n";?>
 	<link href="include/main.css" rel="stylesheet">
+	
+	<script src="include/treeview/ua.js"></script>
+	<script src="include/treeview/ftiens4.js"></script>
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
-<table width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td bgcolor="#454E53" nowrap>
-			<table border="0" cellpadding="0" cellspacing="0" width='100%'>
+<table width="100%" height="100%" cellspacing="0" cellpadding="0">
+	<tr height="37" bgcolor="#a9a9a9">
+		<td colspan="2" valign="bottom" nowrap>
+			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
-					<td valign="bottom" nowrap>
-						&nbsp;
-						<?php
-						$no_console = false;
-						
-						if (read_config_option("global_auth") == "on") {
-							if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"] . " and realm_id=8")) == 0) {
-								$no_console = true;
-							}
-						}
-						
-						if ($no_console == false) {
-							print "<a href='index.php'><img src='images/top_tabs_console.gif' border='0' width='79' height='32' align='absmiddle'></a>";
-						}
-						
-						print "<a href='graph_view.php'><img src='images/top_tabs_graphs.gif' border='0' width='79' height='32' align='absmiddle'></a>";
-						?>
+					<td nowrap>
+						&nbsp;<a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Console" align="absmiddle" border="0"></a>&nbsp;
+					</td>
+					<td>
+						<img src="images/cacti_backdrop2.gif">
+					</td>
+					<td align="right" nowrap>
+						<a href="graph_settings.php"><img src="images/tab_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings" align="absmiddle"></a>&nbsp;&nbsp;<a href="graph_view.php?action=tree"><img src="images/tab_mode_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View" align="absmiddle"></a><a href="graph_view.php?action=list"><img src="images/tab_mode_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View" align="absmiddle"></a><a href="graph_view.php?action=preview"><img src="images/tab_mode_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View" align="absmiddle"></a>&nbsp;<br>
 					</td>
 				</tr>
 			</table>
-		<td bgcolor="#454E53" align="right" nowrap width='99%'>
-			<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?php }?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
+		</td>
+	</tr>
+	<tr height="2" colspan="2" bgcolor="#183c8f">
+		<td colspan="2">
+			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
+		</td>
+	</tr>
+	<tr height="5" bgcolor="#e9e9e9">
+		<td colspan="2">
+			<table width="100%">
+				<tr>
+					<td>
+						<?php draw_navigation_text();?>
+					</td>
+					<td align="right">
+						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { ?>
+						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="logout.php">Logout</a>)&nbsp;
+						<?php } ?>
+					</td>
+				</tr>
+			</table>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" bgcolor="#<?php print $colors["panel"];?>">
-			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
+		<td bgcolor="#efefef" colspan="1" height="8" style="background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
 		</td>
-	</tr>
-	<tr>
-	<?php
-	if ($_REQUEST["action"] == "tree") {
+		<td bgcolor="#ffffff" colspan="1" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;">
 		
-	}else{
-		print "<td height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'></td>\n";
-	}
-	?>
+		</td>
 	</tr>
+	
 	<?php if (!empty($_GET["show_source"])) {?>
 	<tr>
 		<td valign="top" height="1" colspan="3" bgcolor="#<?php print $colors["panel"];?>">
@@ -120,9 +129,13 @@ if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 		</td>
 	</tr>
 	<?php }?>
-</table>
-
-<table width="100%" cellspacing="0" cellpadding="0">
-	<tr height="5"><td>&nbsp;</td></tr>
+	
 	<tr>
+		<?php if ((read_graph_config_option("default_tree_view_mode") == "2") && (($_REQUEST["action"] == "tree") || ((isset($_GET["type"]) ? $_GET["type"] : "") == "tree"))) { ?>
+		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='200'>
+			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></font></td></tr></table>
+			<?php grow_dhtml_trees(); ?>
+			<script>initializeDocument()</script>
+		</td>
+		<?php } ?>
 		<td valign="top">

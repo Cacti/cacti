@@ -36,57 +36,51 @@ global $colors;
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
 <table width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td colspan="3" bgcolor="#454E53">
-			<table border="0" cellpadding="0" cellspacing="0" width='100%'>
+	<tr height="37" bgcolor="#a9a9a9">
+		<td valign="bottom" colspan="3" nowrap>
+			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
 					<td valign="bottom">
-						&nbsp;
-						<?php
-						$no_console = false;
-						
-						if (read_config_option("global_auth") == "on") {
-							if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"] . " and realm_id=8")) == 0) {
-								$no_console = true;
-							}
-						}
-						
-						if ($no_console == false) {
-							print "<a href='index.php'><img src='images/top_tabs_console.gif' border='0' width='79' height='32' align='absmiddle'></a>";
-						}
-						
-						print "<a href='graph_view.php'><img src='images/top_tabs_graphs.gif' border='0' width='79' height='32' align='absmiddle'></a>";
-						?>
+						&nbsp;<a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Console" align="absmiddle" border="0"></a>
 					</td>
-					<?php if (read_config_option("global_auth") == "on") { ?>
-					<td align="right" class="textHeaderDark">
-						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong>&nbsp;
+					<td align="right">
+						<img src="images/cacti_backdrop.gif" align="absmiddle">
 					</td>
-					<?php } ?>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr height="2" bgcolor="#183c8f">
+		<td colspan="3">
+			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
+		</td>
+	</tr>
+	<tr height="5" bgcolor="#e9e9e9">
+		<td colspan="3">
+			<table width="100%">
+				<tr>
+					<td>
+						<?php draw_navigation_text();?>
+					</td>
+					<td align="right">
+						<?php if (read_config_option("global_auth") == "on") { ?>
+						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="logout.php">Logout</a>)&nbsp;
+						<?php } ?>
+					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" bgcolor="#<?php print $colors["panel"];?>">
-			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
+		<td colspan="3" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
+		
 		</td>
 	</tr>
-	<tr>
-		<td height="27" colspan="3" bgcolor="#<?php print $colors["panel"];?>" background="images/top_banner.gif">
-			&nbsp;
-		</td>
-	</tr>
-	<tr>
-		<td colspan="3" bgcolor="#<?php print $colors["panel"];?>">
-			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
-		</td>
-	</tr>
-	<tr height="5" bgcolor="#<?php print $colors["dark_outline"];?>"><td colspan="3"><img src="images/transparent_line.gif" width="20" height="5" border="0"></td></tr>
 	<tr height="5">
 		<td width="1%" rowspan="2" align="center" valign="top">
 			<img src="images/transparent_line.gif" width="142" height="5" border="0"><br>
-			<table bgcolor="#888888" width="133" cellpadding="1" cellspacing="0" border="0"
+			
+			<table bgcolor="#888888" width="133" cellpadding="1" cellspacing="0" border="0">
 				<?php draw_menu();?>
 			</table>
 			
