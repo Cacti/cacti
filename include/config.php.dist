@@ -35,7 +35,6 @@ $database_password = "cactiuser";
 
 /* this should be auto-detected, set it manually if needed */
 $config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
-define("PATH_DELIMITER", (strstr(PHP_OS, "WIN")) ? "\"" : "/");
 
 /* built-in snmp support */
 $config["php_snmp_support"] = function_exists("snmpget");
