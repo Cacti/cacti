@@ -331,6 +331,7 @@ CREATE TABLE data_input_data_cache (
   snmp_password varchar(50) NOT NULL default '',
   rrd_name varchar(19) NOT NULL default '',
   rrd_path varchar(255) NOT NULL default '',
+  rrd_num tinyint(2) unsigned NOT NULL default '0',
   arg1 varchar(255) default NULL,
   arg2 varchar(255) default NULL,
   arg3 varchar(255) default NULL,
@@ -1718,9 +1719,9 @@ INSERT INTO graph_templates_item VALUES (366,0,0,31,55,20,4,2,1,'Outbound','',''
 INSERT INTO graph_templates_item VALUES (367,0,0,31,55,0,9,2,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (368,0,0,31,55,0,9,2,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (369,0,0,31,55,0,9,2,3,'Maximum:','','on',2,8);
-INSERT INTO graph_templates_item VALUES (370,0,0,31,55,0,1,0,1,'','','on',2,9);
-INSERT INTO graph_templates_item VALUES (371,0,0,31,55,0,2,0,1,'95th Percentile','|95:bits:0:total|','',2,10);
-INSERT INTO graph_templates_item VALUES (372,0,0,31,55,0,1,0,1,'(|95:bits:6:total| mbit in+out)','','',2,11);
+INSERT INTO graph_templates_item VALUES (370,0,0,31,0,0,1,0,1,'','','on',2,9);
+INSERT INTO graph_templates_item VALUES (371,0,0,31,0,9,2,0,1,'95th Percentile','|95:bits:0:total|','',2,10);
+INSERT INTO graph_templates_item VALUES (372,0,0,31,0,0,1,0,1,'(|95:bits:6:total| mbit in+out)','','',2,11);
 
 --
 -- Table structure for table 'graph_tree'
