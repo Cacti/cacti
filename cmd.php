@@ -218,7 +218,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						}
 					}
 				}
-         }
+			}
 
 			$new_host = false;
 			$last_host = $current_host;
