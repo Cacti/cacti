@@ -254,7 +254,13 @@ function array_rekey($array, $key, $key_value) {
 	foreach ($array as $item) {
 		$item_key = $item[$key];
 		
-		$ret_array[$item_key] = $item[$key_value];
+		if (is_array($key_value)) {
+			for ($i=0; $i<count($key_value); $i++) {
+				$ret_array[$item_key]{$key_value[$i]} = $item{$key_value[$i]};
+			}
+		}else{
+			$ret_array[$item_key] = $item[$key_value];
+		}
 	}
 	}
 	
@@ -1207,7 +1213,9 @@ function debug_log_clear($type = "") {
 	if ($type == "") {
 		kill_session_var("debug_log");
 	}else{
-		unset($_SESSION["debug_log"][$type]);
+		if (isset($_SESSION["debug_log"])) {
+			unset($_SESSION["debug_log"][$type]);
+		}
 	}
 }
 
