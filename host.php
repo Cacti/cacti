@@ -542,14 +542,18 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					
 					$row_counter = 1; /* so we have an all 'light' background */
 					
-					/* we must treat suggested values for snmp queries different because one
-					entry here might might 20 graphs... so we can't automatically fill in the 
-					values */
+					/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
+					one entry here might might 20 graphs... so we can't automatically fill in the values. 
+					if it is not an snmp query, automatically fill in the values right here. */
 					if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id and field_name='$field_name'")) > 0)) {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 						print "<td><strong>" . $struct_graph[$field_name]["title"] . "</strong></td>";
 						print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 						print "</td></tr>\n";
+					}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
+						$subs_string = db_fetch_cell("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'");
+						$subs_string = subsitute_host_data($subs_string, "|", "|", $host_id);
+						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $subs_string);
 					}else{
 						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($data_template[$field_name]) ? $data_template[$field_name] : ""));
 					}
@@ -605,14 +609,18 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 							
 							$row_counter = 1; /* so we have an all 'light' background */
 							
-							/* we must treat suggested values for snmp queries different because one
-							entry here might might 20 graphs... so we can't automatically fill in the 
-							values */
+							/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
+							one entry here might might 20 graphs... so we can't automatically fill in the values. 
+							if it is not an snmp query, automatically fill in the values right here. */
 							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
 								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 								print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
 								print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 								print "</td></tr>\n";
+							}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
+								$subs_string = db_fetch_cell("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'");
+								$subs_string = subsitute_host_data($subs_string, "|", "|", $host_id);
+								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $subs_string);
 							}else{
 								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
 							}
@@ -636,13 +644,23 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					
 					while (list($field_name, $field_array) = each($struct_data_source_item)) {
 						if ($data_template_item{"t_" . $field_name} == "on") {
-							if ($drew_items == false) {
-								//print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Source Item</strong> - " . $data_template_item["data_source_name"] . " - [Template: " . $data_template["data_template_name"] . "]</span></td></tr>";
-							}
-							
 							$row_counter = 1; /* so we have an all 'light' background */
 							
-							draw_templated_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
+							/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
+							one entry here might might 20 graphs... so we can't automatically fill in the values. 
+							if it is not an snmp query, automatically fill in the values right here. */
+							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
+								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
+								print "<td><strong>" . $struct_data_source_item[$field_name]["title"] . "</strong></td>";
+								print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
+								print "</td></tr>\n";
+							}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
+								$subs_string = db_fetch_cell("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'");
+								$subs_string = subsitute_host_data($subs_string, "|", "|", $host_id);
+								draw_templated_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $subs_string);
+							}else{
+								draw_templated_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
+							}
 							
 							$drew_items = true;
 						}
@@ -783,48 +801,36 @@ function host_edit() {
 	
 	$i = 0;
 	if (!empty($host["host_template_id"])) {
-		
-		
 		$graph_templates = db_fetch_assoc("select
 			graph_templates.id as graph_template_id,
-			data_template.id as data_template_id,
-			graph_templates.name as graph_template_name,
-			data_template.name as data_template_name
-			from host_template_graph_template, graph_templates, graph_templates_item, data_template, data_template_rrd
+			graph_templates.name as graph_template_name
+			from host_template_graph_template, graph_templates
 			where host_template_graph_template.graph_template_id=graph_templates.id
-			and graph_templates.id=graph_templates_item.graph_template_id
-			and graph_templates_item.task_item_id=data_template_rrd.id
-			and data_template_rrd.data_template_id=data_template.id
 			and host_template_graph_template.host_template_id=" . $host["host_template_id"] . "
-			and data_template_rrd.local_data_id=0
-			and graph_templates_item.local_graph_id=0
-			group by data_template.id,graph_templates.id
-			order by graph_templates.id,data_template.name");
+			order by graph_templates.name");
 		
 		$j = 0; $_graph_template_id = "";
 		
 		if (sizeof($graph_templates) > 0) {
-		start_box("<strong>Host Template Items</strong>", "98%", $colors["header"], "3", "center", "");
-		foreach ($graph_templates as $graph_template) {
-			if ($graph_template["graph_template_id"] != $_graph_template_id) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-				print "<td width='50%'>";
-				print "<font class='textEditTitle'>Create Graph: " . $graph_template["graph_template_name"] . "</font><br>";
-			}
+			start_box("<strong>Create Associated Graphs + Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
 			
-			print "&nbsp;&nbsp;&nbsp;+ " . $graph_template["data_template_name"] . "<br>";
+			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+					<td class='textSubHeaderDark'>Graph Template Name</td>
+					<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\")'></td>\n
+				</tr>\n";
 			
-			if (((($j+1) == sizeof($graph_templates)) ? 0 : $graph_templates{$j+1}["graph_template_id"]) != $graph_template["graph_template_id"]) {
-				print "</td>\n";
-				form_checkbox("cg_" . $graph_template["graph_template_id"],"","Create this Graph","");
+			foreach ($graph_templates as $graph_template) {
+				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				print "<td><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</td>";
+				
+				print "<td align='right'>";
+				form_base_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0,false);
+				print "</td>";
+				
 				print "</tr>";
 			}
 			
-			$_graph_template_id = $graph_template["graph_template_id"];
-			
-			$j++;
-		}
-		end_box();
+			end_box();
 		}
 	}
 	
@@ -840,8 +846,6 @@ function host_edit() {
 		
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
-			
-			
 			$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
 			$xml_array = xml2array($data);
 			$xml_outputs = array();

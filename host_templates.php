@@ -41,6 +41,16 @@ switch ($_REQUEST["action"]) {
 		
 		header ("Location: host_templates.php");
 		break;
+	case 'item_remove_gsv':
+		template_item_remove_gsv();
+		
+		header ("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
+		break;
+	case 'item_remove_dssv':
+		template_item_remove_dssv();
+		
+		header ("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
+		break;
 	case 'edit':
 		include_once ("include/top_header.php");
 		
@@ -63,6 +73,8 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_template"])) {
+		$redirect_back = false;
+		
 		$save["id"] = $_POST["id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		
@@ -78,22 +90,21 @@ function form_save() {
 				
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^gt_", $var)) {
-						if (isset($_POST{"ogt_suggested_values_" . substr($var, 3)})) {
-							$suggested_value = $_POST{"ogt_suggested_values_" . substr($var, 3)};
-						}else{
-							$suggested_value = "";
-						}
-						
-						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'$suggested_value')");
+						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id) values($host_template_id," . substr($var, 3) . ")");
 					}elseif (eregi("^sq_", $var)) {
 						db_execute ("replace into host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . substr($var, 3) . ")");
-					}elseif (eregi("^odt_suggested_values_", $var)) {
-						$data_template_id = ereg_replace("^odt_suggested_values_([0-9]+)_[0-9]+$", "\\1", $var);
-						$graph_template_id = ereg_replace("^odt_suggested_values_[0-9]+_([0-9]+)$", "\\1", $var);
+					}elseif ((eregi("^svds_([0-9]+)_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_text"})) && (!empty($_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_field"}))) {
+						/* suggested values -- data templates */
+						db_execute("insert into host_template_data_sv (host_template_id,data_template_id,graph_template_id,field_name,text) values (" . $_POST["id"] . "," . $matches[2] . "," . $matches[1] . ",'" . $_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_field"} . "','" . $_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_text"} . "')"); 
 						
-						if (!empty($val)) {
-							db_execute ("replace into host_template_data_template (host_template_id,data_template_id,graph_template_id,suggested_values) values($host_template_id,$data_template_id,$graph_template_id,'$val')");
-						}
+						$redirect_back = true;
+						clear_messages();
+					}elseif ((eregi("^svg_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svg_" . $matches[1] . "_text"})) && (!empty($_POST{"svg_" . $matches[1] . "_field"}))) {
+						/* suggested values -- graph templates */
+						db_execute("insert into host_template_graph_sv (host_template_id,graph_template_id,field_name,text) values (" . $_POST["id"] . "," . $matches[1] . ",'" . $_POST{"svg_" . $matches[1] . "_field"} . "','" . $_POST{"svg_" . $matches[1] . "_text"} . "')"); 
+						
+						$redirect_back = true;
+						clear_messages();
 					}
 				}
 			}else{
@@ -101,7 +112,7 @@ function form_save() {
 			}
 		}
 		
-		if ((is_error_message()) || (empty($_POST["id"]))) {
+		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
 			header ("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
 		}else{
 			header ("Location: host_templates.php");
@@ -112,6 +123,14 @@ function form_save() {
 /* ---------------------
     Template Functions
    --------------------- */
+
+function template_item_remove_gsv() {
+	db_execute("delete from host_template_graph_sv where host_template_id=" . $_GET["host_template_id"] . " and graph_template_id=" . $_GET["graph_template_id"] . " and field_name='" . $_GET["field_name"] . "'");
+}
+
+function template_item_remove_dssv() {
+	db_execute("delete from host_template_data_sv where host_template_id=" . $_GET["host_template_id"] . " and data_template_id=" . $_GET["data_template_id"] . " and graph_template_id=" . $_GET["graph_template_id"] . " and field_name='" . $_GET["field_name"] . "'");
+}
 
 function template_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
@@ -250,18 +269,6 @@ function template_edit() {
 	if (sizeof($graph_templates) > 0) {
 	foreach($graph_templates as $graph_template) {
 		if (!empty($graph_template["host_template_id"])) {
-			$i = 0;
-			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", $colors["header"], "3", "center", "");
-			
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-				<td width="50%">
-					<font class="textEditTitle">Suggested Values - Graph</font><br>
-					<?php print $graph_template["name"];?>
-				</td>
-				<?php form_text_box("ogt_suggested_values_" . $graph_template["id"],$graph_template["suggested_values"],"","255", "40");?>
-			</tr>
-			<?php
-			
 			$data_templates = db_fetch_assoc("select
 				data_template.id,
 				data_template.name,
@@ -277,19 +284,129 @@ function template_edit() {
 				and graph_templates_item.graph_template_id=" . $graph_template["id"] . "
 				group by data_template.id
 				order by data_template.name");
-				
+			
+			start_box("<strong>Suggested Values</strong> - " . $graph_template["name"], "98%", $colors["header"], "3", "center", "");
+			
+			/* suggested values for data templates */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-					<td width="50%">
-						<font class="textEditTitle">Suggested Values - Data Source</font><br>
-						<?php print $data_template["name"];?>
+				$suggested_values = db_fetch_assoc("select
+					text,
+					field_name
+					from host_template_data_sv
+					where host_template_id=" . $_GET["id"] . "
+					and graph_template_id=" . $graph_template["id"] . "
+					and data_template_id=" . $data_template["id"] . "
+					order by field_name");
+				
+				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+						<td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
+					</tr>";
+					
+				$i = 0;
+				if (sizeof($suggested_values) > 0) {
+				foreach ($suggested_values as $suggested_value) {
+					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+					?>
+						<td>
+							<table cellspacing="0" cellpadding="0" border="0" width="100%">
+								<tr>
+									<td width="120">
+										<strong><?php print $suggested_value["field_name"];?></strong>
+									</td>
+									<td>
+										<?php print $suggested_value["text"];?>
+									</td>
+									<td width="1%" align="right">
+										<a href="host_templates.php?action=item_remove_dssv&host_template_id=<?php print $_GET["id"];?>&field_name=<?php print $suggested_value["field_name"];?>&graph_template_id=<?php print $graph_template["id"];?>&data_template_id=<?php print $data_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?php
+				}
+				}
+				
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+				?>
+					<td>
+						<table cellspacing="0" cellpadding="0" border="0" width="100%">
+							<tr>
+								<td width="1">
+									<input type="text" name="svds_<?php print $graph_template["id"];?>_<?php print $data_template["id"];?>_text" size="30">
+								</td>
+								<td width="200">
+									&nbsp;Field Name: <input type="text" name="svds_<?php print $graph_template["id"];?>_<?php print $data_template["id"];?>_field" size="15">
+								</td>
+								<td>
+									&nbsp;<input type="image" src="images/button_add.gif" name="svds_<?php print $graph_template["id"];?>_<?php print $data_template["id"];?>" alt="Add" align="absmiddle">
+								</td>
+							</tr>
+						</table>
 					</td>
-					<?php form_text_box("odt_suggested_values_" . $data_template["id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
 				</tr>
 				<?php
 			}
 			}
+			
+			/* suggested values for graphs templates */
+			$suggested_values = db_fetch_assoc("select
+				text,
+				field_name
+				from host_template_graph_sv
+				where host_template_id=" . $_GET["id"] . "
+				and graph_template_id=" . $graph_template["id"] . "
+				order by field_name");
+			
+			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+					<td><span style='color: white; font-weight: bold;'>Graph Template - " . $graph_template["name"] . "</span></td>
+				</tr>";
+			
+			$i = 0;
+			if (sizeof($suggested_values) > 0) {
+			foreach ($suggested_values as $suggested_value) {
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				?>
+					<td>
+						<table cellspacing="0" cellpadding="0" border="0" width="100%">
+							<tr>
+								<td width="120">
+									<strong><?php print $suggested_value["field_name"];?></strong>
+								</td>
+								<td>
+									<?php print $suggested_value["text"];?>
+								</td>
+								<td width="1%" align="right">
+									<a href="host_templates.php?action=item_remove_gsv&host_template_id=<?php print $_GET["id"];?>&graph_template_id=<?php print $graph_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<?php
+			}
+			}
+			
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			?>
+				<td>
+					<table cellspacing="0" cellpadding="0" border="0" width="100%">
+						<tr>
+							<td width="1">
+								<input type="text" name="svg_<?php print $graph_template["id"];?>_text" size="30">
+							</td>
+							<td width="200">
+								&nbsp;Field Name: <input type="text" name="svg_<?php print $graph_template["id"];?>_field" size="15">
+							</td>
+							<td>
+								&nbsp;<input type="image" src="images/button_add.gif" name="svg_<?php print $graph_template["id"];?>" alt="Add" align="absmiddle">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<?php
 			
 			end_box();
 		}
