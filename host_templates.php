@@ -182,7 +182,7 @@ function template_edit() {
 	<form method="post" action="host_templates.php">
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
+		<td width="30%">
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this host template.
 		</td>
@@ -190,7 +190,7 @@ function template_edit() {
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
+		<td width="30%">
 			<font class="textEditTitle">Associated Graph Templates</font><br>
 			Select one or more graph templates to associate with this host template.
 		</td>
@@ -234,7 +234,7 @@ function template_edit() {
 	<?php
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
+		<td width="30%">
 			<font class="textEditTitle">Associated SNMP Queries</font><br>
 			Select one or more SNMP queries to associate with this host template.
 		</td>
