@@ -108,16 +108,12 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		
 		/* sometimes a string is presented in hex; not ASCII (ex. win32), in
 		this case, convert the hex to ASCII */
-		if ($force_type == "hex") {
-			$snmp_value = convert_mac_address(trim(eregi_replace("hex:", "", $snmp_value)));
-		}else{
-			if (eregi("(.*)(hex:)(.*)", $snmp_value)) {
-				/* grab the actual hex string */
-				$snmp_value = trim(ereg_replace("(.*)(Hex:)(.*)", "\\3", $snmp_value));
-				
-				/* strip all formatting and convert the string */
-				$snmp_value = hex2bin(ereg_replace("[^A-Fa-f0-9]", "", $snmp_value));
-			}
+		if (eregi("(.*)(hex:)(.*)", $snmp_value)) {
+			/* grab the actual hex string */
+			$snmp_value = trim(ereg_replace("(.*)(Hex:)(.*)", "\\3", $snmp_value));
+			
+			/* strip all formatting and convert the string */
+			$snmp_value = hex2bin(ereg_replace("[^A-Fa-f0-9]", "", $snmp_value));
 		}
 		
 		/* remove ALL quotes */
