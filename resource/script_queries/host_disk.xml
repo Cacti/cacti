@@ -1,6 +1,9 @@
 <interface>
 	<name>Get Host MIB Partitions</name>
 	<script_path>|path_php_binary| -q |path_cacti|/scripts/query_host_partitions.php</script_path>
+	<script_function>query_host_partitions</script_function>
+	<script_server>yes</script_server>
+	<include_file>|path_cacti|/scripts/script_functions.php</include_file>
 	<arg_prepend>|host_hostname| |host_snmp_community| |host_snmp_version|</arg_prepend>
 	<arg_index>index</arg_index>
 	<arg_query>query</arg_query>

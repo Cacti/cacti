@@ -140,18 +140,27 @@ function update_poller_cache($local_data_id) {
 		case DATA_INPUT_TYPE_SCRIPT_QUERY: /* script query */
 			$script_queries = get_data_query_array($query["snmp_query_id"]);
 
-			if (sizeof($outputs) > 0) {
-			foreach ($outputs as $output) {
-				if (isset($script_queries["fields"]{$output["snmp_field_name"]}["query_name"])) {
-					$identifier = $script_queries["fields"]{$output["snmp_field_name"]}["query_name"];
-
-					$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
-				}
-
-				if (isset($script_path)) {
-					api_poller_cache_item_add($host_id, $local_data_id, 1, get_data_source_item_name($output["data_template_rrd_id"]), addslashes($script_path));
-				}
+			if (isset($script_queries["script_server"])) {
+				$using_script_server = true;
+				$action = 2;
+				$script_queries["script_path"] = $script_queries["include_file"] . " " . $script_queries["script_function"];
+			} else {
+				$using_script_server = false;
+				$action = 1;
 			}
+
+			if (sizeof($outputs) > 0) {
+				foreach ($outputs as $output) {
+					if (isset($script_queries["fields"]{$output["snmp_field_name"]}["query_name"])) {
+						$identifier = $script_queries["fields"]{$output["snmp_field_name"]}["query_name"];
+
+						$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
+					}
+
+					if (isset($script_path)) {
+							api_poller_cache_item_add($host_id, $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), addslashes($script_path));
+					}
+				}
 			}
 
 			break;
