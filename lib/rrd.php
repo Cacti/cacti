@@ -149,18 +149,12 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 				$efp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_STDERR_WRITE);
 				$except_fd = array($efp);
 
-				/* turn off warnings for now in case an error occurs */
-				error_reporting(E_ERROR);
-
-				if (false === ($num_changed_streams = stream_select($read_fd, $write_fd = NULL, $except_fd, 2, 0))) {
+				if (false === ($num_changed_streams = @stream_select($read_fd, $write_fd = NULL, $except_fd, 2, 0))) {
 				   /* Error handling */
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 						cacti_log("RRD2CACTI: ERROR: RRD Did not Respond to RRDTool Command", $log_to_stdout, "POLLER");
 					}
 				} elseif ($num_changed_streams > 0) {
-					/* turn off warnings for now in case an error occurs */
-					error_reporting(E_ALL);
-
 					$line = "";
 					$error = "";
 
