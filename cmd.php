@@ -86,7 +86,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	if (phpversion() >= "4.3")	$ping = new Net_Ping;
 
 	if (function_exists("proc_open")) {
-		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/resource/script_server/script_server.php", $cactides, $pipes);
+		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
 		$using_proc_function = true;
 
 	}else {
