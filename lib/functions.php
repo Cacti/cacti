@@ -110,14 +110,14 @@ function display_output_messages() {
 			
 			switch ($messages[$current_message_id]["type"]) {
 			case 'info':
-				start_box("", "98%", "00438C", "3", "center", "");
+				print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>";
 				print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
-				end_box();
+				print "</table><br>";
 				break;
 			case 'error':
-				start_box("", "98%", "ff0000", "3", "center", "");
+				print "<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #ff0000;'>";
 				print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
-				end_box();
+				print "</table><br>";
 				break;
 			}
 		}
