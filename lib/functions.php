@@ -357,6 +357,16 @@ function clean_up_name($string) {
 	return $string;
 }
 
+function update_data_source_title_cache_from_template($data_template_id) {
+	$data = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=$data_template_id and local_data_id>0");
+	
+	if (sizeof($data) > 0) {
+	foreach ($data as $item) {
+		update_data_source_title_cache($item["local_data_id"]);
+	}
+	}
+}
+
 function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
 	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
 	
@@ -379,6 +389,16 @@ function update_data_source_title_cache_from_host($host_id) {
 
 function update_data_source_title_cache($local_data_id) {
 	db_execute("update data_template_data set name_cache='" . get_data_source_title($local_data_id) . "' where local_data_id=$local_data_id");
+}
+
+function update_graph_title_cache_from_template($graph_template_id) {
+	$graphs = db_fetch_assoc("select local_graph_id from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id>0");
+	
+	if (sizeof($graphs) > 0) {
+	foreach ($graphs as $item) {
+		update_graph_title_cache($item["local_graph_id"]);
+	}
+	}
 }
 
 function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {

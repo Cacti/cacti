@@ -343,7 +343,7 @@ function push_out_data_source($data_template_data_id) {
 			
 			/* update the title cache */
 			if ($field_name == "name") {
-				update_data_source_title_cache(db_fetch_cell("select local_data_id from data_template_data where local_data_template_data_id=" . $data_template_data["id"]));
+				update_data_source_title_cache_from_template($data_template_data["data_template_id"]);
 			}
 		}
 	}
@@ -537,7 +537,7 @@ function push_out_graph($graph_template_graph_id) {
 			
 			/* update the title cache */
 			if ($field_name == "title") {
-				update_graph_title_cache(db_fetch_cell("select local_graph_id from graph_templates_graph where local_graph_template_graph_id=" . $graph_template_graph["id"]));
+				update_graph_title_cache_from_template($graph_template_graph["graph_template_id"]);
 			}
 		}
 	}
