@@ -38,8 +38,7 @@ function repopulate_poller_cache() {
 
 function update_poller_cache($local_data_id) {
 	include_once ("snmp_functions.php");
-	
-	global $paths;
+	include ("config.php");
 	
 	$data_input = db_fetch_row("select
 		data_input.id,
@@ -73,6 +72,7 @@ function update_poller_cache($local_data_id) {
 			and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
 			and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
 		$field = array_rekey($field, "type_code", "value");
+		print "<pre>";print_r($field);print "</pre>";
 		
 		$query = db_fetch_row("select
 			host_snmp_cache.snmp_query_id,
@@ -81,6 +81,7 @@ function update_poller_cache($local_data_id) {
 			where host_snmp_cache.field_name='" . $field["index_type"] . "'
 			and host_snmp_cache.field_value='" . $field["index_value"] . "'
 			and host_snmp_cache.host_id=" . $host["id"]);
+		print "<pre>";print_r($query);print "</pre>";
 		
 		$outputs = db_fetch_assoc("select
 			snmp_query_graph_rrd.snmp_field_name,
@@ -90,6 +91,7 @@ function update_poller_cache($local_data_id) {
 			and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"] . "
 			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
 			and data_template_rrd.local_data_id=$local_data_id");
+		print "<pre>";print_r($outputs);print "</pre>";
 	}
 	
 	/* clear cache for this local_data_id */
@@ -163,6 +165,13 @@ function update_poller_cache($local_data_id) {
 						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
 						'" . get_data_source_path($local_data_id,true) . "','$oid')");
+					print "insert into data_input_data_cache (local_data_id,data_input_id,action,management_ip,
+						snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,
+						arg1) values ($local_data_id," . $data_input["id"]. ",0,'" . $host["management_ip"] . "',
+						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
+						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
+						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
+						'" . get_data_source_path($local_data_id,true) . "','$oid')<br>";
 				}
 			}
 			}

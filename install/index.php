@@ -156,8 +156,8 @@ if ($_REQUEST["step"] == "4") {
 	up-to-date */
 	repopulate_poller_cache();
 	
-	db_execute("delete from version");
-	db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
+	//db_execute("delete from version");
+	//db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
 	
 	header ("Location: ../index.php");
 	exit;
