@@ -39,6 +39,7 @@
 	.textArea {font-size: 12px;}
 	.textTab {font-size: 10px; font-weight: bold;}
 	.textEditTitle {font-size: 10px; font-weight: bold;}
+	.textMenuBackground {background-color: #888888;}
 	.textMenuHeader {background-color: #AEB4B7; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; font-weight: bold;}
 	.textMenuItem {background-color: #E3E3E3; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
 	.cboSmall {font-size: 10px;}
@@ -95,7 +96,7 @@
 	<tr height="5">
 		<td width="1%" rowspan="2" align="center" valign="top">
 			<img src="images/transparent_line.gif" width="142" height="5" border="0"><br>
-			<table width="133" cellpadding=1 cellspacing=0 border=0 class="textMenuHeader">
+			<table width="133" cellpadding=1 cellspacing=0 border=0 class="textMenuBackground">
 				<?DrawMenu ($HTTP_SESSION_VARS['user_id'], 1);?>
 			</table>
 			
@@ -104,5 +105,5 @@
 		<td></td>
 	</tr>
 	<tr>
-		<td height="300" bgcolor="#<?print $colors[light];?>"></td>
-		<td valign="top" width="99%">
+		<td height="500"></td>
+		<td valign="top" width="100%">
