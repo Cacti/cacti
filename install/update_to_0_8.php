@@ -155,12 +155,21 @@ function update_database($database_old, $database_username, $database_password) 
 			$status_array{count($status_array)}["host"][1] = $item["Hostname"];
 			db_execute("insert into host_snmp_query (host_id,snmp_query_id) values ($host_id,1)");
 			
-			if (query_snmp_host($host_id, 1)) {
-				$status_array{count($status_array)}["host_recache"][1] = $item["Hostname"];
-			}else{
-				$status_array{count($status_array)}["host_recache"][0] = $item["Hostname"];
+			$_snmp_cache = db_fetch_assoc("select * from $database_old.snmp_hosts_interfaces where HostID=" . $item["ID"]);
+			
+			if (sizeof($_snmp_cache) > 0) {
+			foreach ($_snmp_cache as $item2) {
+				$snmp_index = $item2["InterfaceNumber"];
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifDesc','" . $item2["Description"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.2.$snmp_index')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifType','" . $item2["Type"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.3.$snmp_index')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifSpeed','" . $item2["Speed"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.5.$snmp_index')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifIndex','" . $item2["InterfaceNumber"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.1.$snmp_index')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifHwAddr','" . $item2["HardwareAddress"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.6.$snmp_index')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifIP','" . $item2["IPAddress"] . "',$snmp_index,'.1.3.6.1.2.1.4.20.1.2." . $item2["IPAddress"] . "')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifInOctets','0',$snmp_index,'.1.3.6.1.2.1.2.2.1.10.$snmp_index')");
+				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifOutOctets','0',$snmp_index,'.1.3.6.1.2.1.2.2.1.16.$snmp_index')");
 			}
-				
+			}
 		}else{
 			$status_array{count($status_array)}["host"][0] = $item["Hostname"];
 		}
@@ -193,13 +202,13 @@ function update_database($database_old, $database_username, $database_password) 
 			$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=21");
 			
 			if ($inout == "in") {
-				$data_template_id = "2";
-				$local_data_template_data_id = "3";
-				$local_data_template_rrd_id = "3";
+				$data_template_id = "1";
+				$local_data_template_data_id = "1";
+				$local_data_template_rrd_id = "1";
 			}elseif ($inout == "out") {
-				$data_template_id = "8";
-				$local_data_template_data_id = "139";
-				$local_data_template_rrd_id = "258";
+				$data_template_id = "2";
+				$local_data_template_data_id = "2";
+				$local_data_template_rrd_id = "2";
 			}
 		}elseif ($item["SrcID"] == "13") {
 			$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=41");
