@@ -148,7 +148,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		if (!empty($skip{$leaf["order_key"]})) { continue; }
 		
 		$tier = tree_tier($leaf["order_key"], 2);
-		$current_leaf_type = $leaf["local_graph_id"] ? "graph" : "heading";
+		$current_leaf_type = $leaf["title"] ? "heading" : "graph";
 		
 		if (($current_leaf_type == 'heading') || ($i == 0)) {
 			##  If this isn't the first heading, we may have to close tables/rows.
