@@ -40,7 +40,7 @@ include_once($config["base_path"] . "/lib/snmp.php");
 include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
-include_once($config["base_path"] . "/lib/api_ping.php");
+include_once($config["base_path"] . "/lib/ping.php");
 
 if ( $_SERVER["argc"] == 1 ) {
 	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
