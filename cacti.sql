@@ -213,6 +213,7 @@ INSERT INTO data_input VALUES (8,'47d6bfe8be57a45171afd678920bd399','Unix - Get 
 INSERT INTO data_input VALUES (9,'cc948e4de13f32b6aea45abaadd287a3','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>',1);
 INSERT INTO data_input VALUES (10,'8bd153aeb06e3ff89efc73f35849a7a0','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1);
 INSERT INTO data_input VALUES (11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4);
+INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6);
 
 --
 -- Table structure for table `data_input_data`
@@ -299,12 +300,12 @@ INSERT INTO data_input_data VALUES (12,41,'on','');
 INSERT INTO data_input_data VALUES (14,55,'on','');
 INSERT INTO data_input_data VALUES (13,55,'on','');
 INSERT INTO data_input_data VALUES (12,55,'on','');
-INSERT INTO data_input_data VALUES (33,56,'on','');
-INSERT INTO data_input_data VALUES (32,56,'on','');
-INSERT INTO data_input_data VALUES (31,56,'on','');
-INSERT INTO data_input_data VALUES (33,57,'on','');
-INSERT INTO data_input_data VALUES (32,57,'on','');
-INSERT INTO data_input_data VALUES (31,57,'on','');
+INSERT INTO data_input_data VALUES (37,56,'on','');
+INSERT INTO data_input_data VALUES (36,56,'on','');
+INSERT INTO data_input_data VALUES (35,56,'on','');
+INSERT INTO data_input_data VALUES (37,57,'on','');
+INSERT INTO data_input_data VALUES (36,57,'on','');
+INSERT INTO data_input_data VALUES (35,57,'on','');
 INSERT INTO data_input_data VALUES (6,58,'','.1.3.6.1.2.1.25.1.6.0');
 INSERT INTO data_input_data VALUES (6,59,'','.1.3.6.1.2.1.25.1.5.0');
 INSERT INTO data_input_data VALUES (6,20,'','.1.3.6.1.4.1.23.2.28.3.2.0');
@@ -373,6 +374,10 @@ INSERT INTO data_input_fields VALUES (31,'d39556ecad6166701bfb0e28c5a11108',11,'
 INSERT INTO data_input_fields VALUES (32,'3b7caa46eb809fc238de6ef18b6e10d5',11,'Index Value','index_value','in','',0,'index_value','','');
 INSERT INTO data_input_fields VALUES (33,'74af2e42dc12956c4817c2ef5d9983f9',11,'Output Type ID','output_type','in','',0,'output_type','','');
 INSERT INTO data_input_fields VALUES (34,'8ae57f09f787656bf4ac541e8bd12537',11,'Output Value','output','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (35,'172b4b0eacee4948c6479f587b62e512',12,'Index Type','index_type','in','',0,'index_type','','');
+INSERT INTO data_input_fields VALUES (36,'30fb5d5bcf3d66bb5abe88596f357c26',12,'Index Value','index_value','in','',0,'index_value','','');
+INSERT INTO data_input_fields VALUES (37,'31112c85ae4ff821d3b288336288818c',12,'Output Type ID','output_type','in','',0,'output_type','','');
+INSERT INTO data_input_fields VALUES (38,'5be8fa85472d89c621790b43510b5043',12,'Output Value','output','out','on',0,'','','');
 
 --
 -- Table structure for table `data_local`
@@ -526,8 +531,8 @@ INSERT INTO data_template_data VALUES (39,0,0,39,2,'on','|host_description| - Un
 INSERT INTO data_template_data VALUES (40,0,0,40,2,'on','|host_description| - Non-Unicast Packets','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (41,0,0,41,2,'on','|host_description| - Traffic','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (55,0,0,42,2,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (56,0,0,43,11,'','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (57,0,0,44,11,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (56,0,0,43,12,'','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (57,0,0,44,12,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (59,0,0,46,1,'on','|host_description| - Logged in Users','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (62,13,3,13,6,NULL,'|host_description| - Memory - Free','Localhost - Memory - Free','<path_rra>/localhost_mem_buffers_3.rrd',NULL,'on',NULL,300,NULL);
 INSERT INTO data_template_data VALUES (63,15,4,15,6,NULL,'|host_description| - Memory - Free Swap','Localhost - Memory - Free Swap','<path_rra>/localhost_mem_swap_4.rrd',NULL,'on',NULL,300,NULL);
@@ -1357,23 +1362,23 @@ CREATE TABLE graph_templates_graph (
 
 INSERT INTO graph_templates_graph VALUES (2,0,0,2,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (3,0,0,3,'',1,'on','|host_description| - Hard Drive Space','','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1024,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (4,0,0,4,'',1,'on','|host_description| - CPU Usage','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (4,0,0,4,'',1,'','|host_description| - CPU Usage','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (5,0,0,5,'',1,'on','|host_description| - Wireless Levels','','',120,'',500,'',100,'',0,'','percent','','','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (6,0,0,6,'',1,'on','|host_description| - Wireless Transmissions','','',120,'',500,'',100,'',0,'','transmissions','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (7,0,0,7,'',1,'on','|host_description| - Ping Latency','','',120,'',500,'',100,'',0,'','milliseconds','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (8,0,0,8,'',1,'on','|host_description| - Processes','','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (9,0,0,9,'',1,'on','|host_description| - Load Average','','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','0');
-INSERT INTO graph_templates_graph VALUES (10,0,0,10,'',1,'on','|host_description| - Logged in Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (11,0,0,11,'',1,'on','|host_description| - Load Average','','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','0');
-INSERT INTO graph_templates_graph VALUES (12,0,0,12,'',1,'on','|host_description| - Memory Usage','','',120,'',500,'',100,'',0,'','kilobytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'on','|host_description| - Memory Usage','','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (14,0,0,14,'',1,'on','|host_description| - File System Cache','','',120,'',500,'',100,'',0,'','cache checks/hits','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (15,0,0,15,'',1,'on','|host_description| - CPU Utilization','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (16,0,0,16,'',1,'on','|host_description| - File System Activity','','',120,'',500,'',100,'',0,'','reads/writes per sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (17,0,0,17,'',1,'on','|host_description| - Logged In Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (18,0,0,18,'',1,'on','|host_description| - CPU Usage','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (7,0,0,7,'',1,'','|host_description| - Ping Latency','','',120,'',500,'',100,'',0,'','milliseconds','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (8,0,0,8,'',1,'','|host_description| - Processes','','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (9,0,0,9,'',1,'','|host_description| - Load Average','','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','0');
+INSERT INTO graph_templates_graph VALUES (10,0,0,10,'',1,'','|host_description| - Logged in Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (11,0,0,11,'',1,'','|host_description| - Load Average','','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','0');
+INSERT INTO graph_templates_graph VALUES (12,0,0,12,'',1,'','|host_description| - Memory Usage','','',120,'',500,'',100,'',0,'','kilobytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'','|host_description| - Memory Usage','','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (14,0,0,14,'',1,'','|host_description| - File System Cache','','',120,'',500,'',100,'',0,'','cache checks/hits','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (15,0,0,15,'',1,'','|host_description| - CPU Utilization','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (16,0,0,16,'',1,'','|host_description| - File System Activity','','',120,'',500,'',100,'',0,'','reads/writes per sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (17,0,0,17,'',1,'','|host_description| - Logged In Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (18,0,0,18,'',1,'','|host_description| - CPU Usage','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (19,0,0,19,'',1,'on','|host_description| - Volume Information','','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (20,0,0,20,'',1,'on','|host_description| - Directory Information','','',120,'',500,'',100,'',0,'','directory entries','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (20,0,0,20,'',1,'','|host_description| - Directory Information','','',120,'',500,'',100,'',0,'','directory entries','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (21,0,0,21,'',1,'on','|host_description| - Available Disk Space','','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1024,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (22,0,0,22,'',1,'on','|host_description| - Errors/Discards','','',120,'',500,'',100,'',0,'','errors/sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (23,0,0,23,'',1,'on','|host_description| - Unicast Packets','','',120,'',500,'',100,'',0,'','packets/sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
@@ -1381,13 +1386,13 @@ INSERT INTO graph_templates_graph VALUES (24,0,0,24,'',1,'on','|host_description
 INSERT INTO graph_templates_graph VALUES (25,0,0,25,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (34,0,0,26,'',1,'on','|host_description| - Available Disk Space','','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1024,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (35,0,0,27,'',1,'on','|host_description| - CPU Utilization','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (36,0,0,28,'',1,'on','|host_description| - Logged in Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'on','|host_description| - Processes','','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (36,0,0,28,'',1,'','|host_description| - Logged in Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'','|host_description| - Processes','','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (38,12,1,12,'0',1,'0','|host_description| - Memory Usage','Localhost - Memory Usage','0',120,'0',500,'0',100,'0',0,'0','kilobytes','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0','');
 INSERT INTO graph_templates_graph VALUES (39,9,2,9,'0',1,'0','|host_description| - Load Average','Localhost - Load Average','0',120,'0',500,'0',100,'0',0,'0','processes in the run queue','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0','0');
 INSERT INTO graph_templates_graph VALUES (40,10,3,10,'0',1,'0','|host_description| - Logged in Users','Localhost - Logged in Users','0',120,'0',500,'0',100,'0',0,'0','users','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0','');
 INSERT INTO graph_templates_graph VALUES (41,8,4,8,'0',1,'0','|host_description| - Processes','Localhost - Processes','0',120,'0',500,'0',100,'0',0,'0','processes','0','on','0',2,'0','','0','','0','on','0',1000,'0','','0','on','0','','0','');
-INSERT INTO graph_templates_graph VALUES (42,0,0,30,'',1,'on','|host_description| - Open Files','','',120,'',500,'',100,'',0,'','files','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (42,0,0,30,'',1,'','|host_description| - Open Files','','',120,'',500,'',100,'',0,'','files','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
@@ -2211,8 +2216,8 @@ INSERT INTO snmp_query VALUES (3,'59aab7b0feddc7860002ed9303085ba5','<path_cacti
 INSERT INTO snmp_query VALUES (4,'ad06f46e22e991cb47c95c7233cfaee8','<path_cacti>/resource/snmp_queries/netware_disk.xml','Netware - Get Available Volumes','Retrieves a list of volumes from a Netware server.',0,2);
 INSERT INTO snmp_query VALUES (6,'8ffa36c1864124b38bcda2ae9bd61f46','<path_cacti>/resource/script_queries/unix_disk.xml','Unix - Get Mounted Partitions','Queries a list of mounted partitions on a unix-based host with the',0,11);
 INSERT INTO snmp_query VALUES (7,'30ec734bc0ae81a3d995be82c73f46c1','<path_cacti>/resource/snmp_queries/netware_cpu.xml','Netware - Get Processor Information','Gets information about running processors in a Netware server',0,2);
-INSERT INTO snmp_query VALUES (8,'9343eab1f4d88b0e61ffc9d020f35414','<path_cacti>/resource/script_queries/host_disk.xml','SNMP - Get Mounted Partitions','Gets a list of partitions using SNMP\\',0,11);
-INSERT INTO snmp_query VALUES (9,'0d1ab53fe37487a5d0b9e1d3ee8c1d0d','<path_cacti>/resource/script_queries/host_cpu.xml','SNMP - Get Processor Information','Gets usage for each processor in the system using the host MIB.',0,11);
+INSERT INTO snmp_query VALUES (8,'9343eab1f4d88b0e61ffc9d020f35414','<path_cacti>/resource/script_server/host_disk.xml','SNMP - Get Mounted Partitions','Gets a list of partitions using SNMP',0,12);
+INSERT INTO snmp_query VALUES (9,'0d1ab53fe37487a5d0b9e1d3ee8c1d0d','<path_cacti>/resource/script_server/host_cpu.xml','SNMP - Get Processor Information','Gets usage for each processor in the system using the host MIB.',0,12);
 
 --
 -- Table structure for table `snmp_query_graph`
