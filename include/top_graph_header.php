@@ -27,7 +27,7 @@
 include ('include/config.php');
 include ('include/config_arrays.php');
 
-$section = "View Graphs"; include_once ("include/auth.php");
+include_once ("include/auth.php");
 
 session_start();
 
@@ -51,19 +51,7 @@ if (!ereg('^(tree|list|preview)$', $_GET["action"])) {
 <head>
 	<title>cacti</title>
 	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . $_SERVER["SCRIPT_NAME"] . "'>\r\n";?>
-	<STYLE TYPE="text/css">
-	<!--	
-		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
-		BODY {background-color: #F5F5F5;}
-		A {text-decoration: none;}
-		A:active { text-decoration: none;}
-		A:hover {text-decoration: underline; color: #333333;}
-		A:visited {color: Blue;}
-		.textHeader {font-size: 12px; font-weight: bold;}
-		.textHeaderDark {font-size: 12px; font-weight: bold; color: #ffffff;}
-		.textArea {font-size: 12px;}
-	-->
-	</style>
+	<link href="include/main.css" rel="stylesheet">
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
@@ -89,61 +77,7 @@ if (!ereg('^(tree|list|preview)$', $_GET["action"])) {
 	<tr>
 	<?php
 	if ($_GET["action"] == "tree") {
-		print "<form name='form_tree_id'>";
 		
-		if (read_config_option("global_auth") == "on") {
-			if ($current_user["graph_policy"] == "1") {
-				$sql_where = "where user_auth_tree.user_id is null";
-			}elseif ($current_user["graph_policy"] == "2") {
-				$sql_where = "where user_auth_tree.user_id is not null";
-			}
-			
-			$tree_list = db_fetch_assoc("select
-				graph_tree.id,
-				graph_tree.name,
-				user_auth_tree.user_id
-				from graph_tree
-				left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
-				$sql_where
-				order by graph_tree.name");
-		}else{
-			$tree_list = db_fetch_assoc("select * from graph_tree order by name");
-		}
-		
-		if (isset($_GET["tree_id"])) {
-			$_SESSION["sess_view_tree_id"] = $_GET["tree_id"];
-		}
-		
-		/* set a default tree if none is already selected */
-		if (empty($_SESSION["sess_view_tree_id"])) {
-			if (read_graph_config_option("default_tree_id")) {
-				$_SESSION["sess_view_tree_id"] = read_graph_config_option("default_tree_id");
-			}else{
-				if (sizeof($tree_list) > 0) {
-					$_SESSION["sess_view_tree_id"] = $tree_list[0]["id"];
-				}
-			}
-		}
-		
-		/* make the dropdown list of trees */
-		if (sizeof($tree_list) > 1) {
-			print "	<td valign='middle' height='30' colspan='3' bgcolor='#" . $colors["panel"] . "'>
-					&nbsp;&nbsp;Select a Graph Hierarchy:&nbsp;
-					<select name='cbo_tree_id' onChange='window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value'>";
-			
-			foreach ($tree_list as $tree) {
-				print "	<option value='graph_view.php?action=tree&tree_id=" . $tree["id"] . "'";
-					if ($_SESSION["sess_view_tree_id"] == $tree["id"]) { print " selected"; }
-					print ">" . $tree["name"] . "</option>\n";
-				}
-			
-			print "</select>\n";
-		}elseif (sizeof($tree_list) == 1) {
-			/* there is only one tree; use it */
-			print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
-		}
-		
-		print "</td></form>\n";
 	}else{
 		print "<td height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'></td>\n";
 	}
