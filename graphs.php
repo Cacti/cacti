@@ -29,9 +29,6 @@ include_once ("include/form.php");
 include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 
-define("ROWS_PER_PAGE", 30);
-define("GRAPH_MAX_LEN", 80);
-
 $graph_actions = array(
 	1 => "Delete",
 	2 => "Change Graph Template",
@@ -62,14 +59,7 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		item_remove();
 		
-		if (read_config_option("full_view_graph_template") == "") {
-			header ("Location: graphs.php?action=item&id=" . $_GET["local_graph_id"]);
-			exit;
-		}elseif (read_config_option("full_view_graph_template") == "on") {
-			header ("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
-			exit;
-		}
-		
+		header ("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -119,30 +109,6 @@ switch ($_REQUEST["action"]) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
-
-function draw_graph_form_select($main_action) { 
-	global $colors; ?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_graph_id">
-		<td>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td width="1%">
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graphs.php?action=graph_edit&id=<?php print $_GET["id"];?>"<?php if (($_GET["action"]=="") || (strstr($_GET["action"],"graph"))) {?> selected<?php }?>>Graph Configuration</option>
-							<option value="graphs.php?action=item&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"item")){?> selected<?php }?>>Custom Graph Item Configuration</option>
-						</select>
-					</td>
-					<td>
-						&nbsp;<a href="graphs.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
-					</td>
-				</tr>
-			</table>
-		</td>
-		</form>
-	</tr>
-<?php
-}
 
 function add_tree_names_to_actions_array() {
 	global $graph_actions;
@@ -332,10 +298,7 @@ function form_save() {
 		if (is_error_message()) {
 			header ("Location: graphs.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&id=" . $_POST["local_graph_id"]);
 			exit;
-		}elseif (read_config_option("full_view_graph") == "") {
-			header ("Location: graphs.php?action=item&id=" . $_POST["local_graph_id"]);
-			exit;
-		}elseif (read_config_option("full_view_graph") == "on") {
+		}else{
 			header ("Location: graphs.php?action=graph_edit&id=" . $_POST["local_graph_id"]);
 			exit;
 		}
@@ -374,7 +337,7 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
-				duplicate_graph($selected_items[$i], $_POST["title_format"]);
+				duplicate_graph($selected_items[$i], 0, $_POST["title_format"]);
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -536,13 +499,7 @@ function item() {
 			order by graph_templates_item.sequence");
 		
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
-		$header_label = "[edit: " . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "]";
-	}
-	
-	if (read_config_option("full_view_graph") == "") {
-		start_box("<strong>Graph Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["id"]);
-		end_box();
+		$header_label = "[edit: " . expand_title($host_id, db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"])) . "]";
 	}
 	
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
@@ -606,7 +563,7 @@ function item() {
 		
 		switch (true) {
 		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+			$matrix_title = "(" . expand_title($host_id, $item["data_source_name"]) . "): " . $item["text_format"];
 			break;
 		case ereg("(HRULE|VRULE)", $_graph_type_name):
 			$matrix_title = "HRULE: " . $item["value"];
@@ -693,10 +650,6 @@ function item() {
 	
 	form_hidden_id("local_graph_id",$_GET["id"]);
 	form_hidden_box("save_component_input","1","");
-	
-	if ((read_config_option("full_view_graph") == "") && (sizeof($input_item_list) > 0)) {
-		form_save_button("graphs.php");
-	}
 }
 
 function item_movedown() {
@@ -727,12 +680,6 @@ function item_remove() {
 
 function item_edit() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
-	
-	if (read_config_option("full_view_graph") == "") {
-		start_box("Graph Template Management [edit]", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&id=" . $_GET["id"]);
-		end_box();
-	}
 	
 	if (!empty($_GET["id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
@@ -1043,12 +990,6 @@ function graph_edit() {
 	
 	global $colors, $struct_graph, $image_types;
 	
-	if (read_config_option("full_view_graph") == "") {
-		start_box("<strong>Graph Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=graph_edit&id=" . $_GET["id"]);
-		end_box();
-	}
-	
 	$use_graph_template = true;
 	
 	if (!empty($_GET["id"])) {
@@ -1058,7 +999,7 @@ function graph_edit() {
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
 		
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $graphs["title"] . "]";
+		$header_label = "[edit: " . expand_title($host_id, $graphs["title"]) . "]";
 		
 		if ($graphs["graph_template_id"] == "0") {
 			$use_graph_template = false;
@@ -1068,9 +1009,8 @@ function graph_edit() {
 		$use_graph_template = false;
 	}
 	
-	if ((read_config_option("full_view_graph") == "on") && (!empty($_GET["id"]))) {
-		item();
-	}
+	/* graph item list goes here */
+	item();
 	
 	/* handle debug mode */
 	if (isset($_GET["debug"])) {
@@ -1258,19 +1198,20 @@ function graph() {
 		graph_templates_graph.height,
 		graph_templates_graph.width,
 		graph_templates_graph.title,
-		graph_templates.name
+		graph_templates.name,
+		graph_local.host_id
 		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
 		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		where graph_templates_graph.local_graph_id!=0
 		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
 		order by graph_templates_graph.title
-		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
 	
 	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
 	user can jump straight to it */
 	$page_number = 0; $url_page_select = "";
-	for ($i=0; ($i<$total_rows); $i += ROWS_PER_PAGE) {
+	for ($i=0; ($i<$total_rows); $i += read_config_option("num_rows_graph")) {
 		$page_number++;
 		
 		if ($_REQUEST["page"] == $page_number) {
@@ -1279,7 +1220,7 @@ function graph() {
 			$url_page_select .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a>";
 		}
 		
-		if (($i+ROWS_PER_PAGE) < $total_rows) { $url_page_select .= ","; }
+		if (($i+read_config_option("num_rows_graph")) < $total_rows) { $url_page_select .= ","; }
 	}
 	
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
@@ -1290,10 +1231,10 @@ function graph() {
 							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . ((read_config_option("num_rows_graph")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_graph")) || ($total_rows < (read_config_option("num_rows_graph")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_graph")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
+							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_graph")) < $total_rows) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } print "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_graph")) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -1314,7 +1255,7 @@ function graph() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title"], GRAPH_MAX_LEN));?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(expand_title($graph["host_id"], $graph["title"]), read_config_option("max_title_graph")));?></a>
 			</td>
 			<td>
 				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>

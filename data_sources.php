@@ -29,9 +29,6 @@ include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
-define("ROWS_PER_PAGE", 30);
-define("DATA_SOURCE_MAX_LEN", 45);
-
 $ds_actions = array(
 	1 => "Delete",
 	2 => "Change Data Template",
@@ -227,10 +224,6 @@ function form_save() {
 			}
 		}
 		}
-		
-		if ((read_config_option("full_view_data_source") == "") && (is_error_message())) {
-			/* ds data edit page */
-		}
 	}
 	
 	if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
@@ -239,33 +232,6 @@ function form_save() {
 		header ("Location: data_sources.php");
 	}
 }
-
-/* --------------------------
-    Global Form Functions
-   -------------------------- */
-
-function draw_data_form_select($main_action) { 
-	global $colors; ?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_id">
-		<td colspan="6">
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td width="1%">
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"ds")) {?> selected<?php }?>>Data Source Configuration</option>
-							<option value="data_sources.php?action=data_edit&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"data")) {?> selected<?php }?>>Custom Data Configuration</option>
-						</select>
-					</td>
-					<td>
-						&nbsp;<a href="data_sources.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
-					</td>
-				</tr>
-			</table>
-		</td>
-		</form>
-	</tr>
-<?php }
 
 /* ------------------------
     The "actions" function 
@@ -351,7 +317,7 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
 			for ($i=0;($i<count($selected_items));$i++) {
-				data_source_to_data_template($selected_items[$i], $_POST["title_format"]);
+				data_source_to_data_template($selected_items[$i], 0, $_POST["title_format"]);
 			}
 		}
 		
@@ -500,12 +466,6 @@ function data_edit() {
 		$header_label = "[new]";
 	}
 	
-	if (read_config_option("full_view_data_source") == "") {
-		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["id"]);
-		end_box();
-	}
-	
 	print "<form method='post' action='data_sources.php'>\n";
 	
 	$i = 0;
@@ -560,10 +520,6 @@ function data_edit() {
 	form_hidden_id("local_data_id",(isset($data) ? $data["local_data_id"] : "0"));
 	form_hidden_id("data_template_data_id",(isset($data) ? $data["id"] : "0"));
 	form_hidden_box("save_component_data","1","");
-	
-	if (read_config_option("full_view_data_source") == "") {
-		form_save_button("data_sources.php");
-	}
 }
 
 /* ------------------------
@@ -601,7 +557,7 @@ function ds_edit() {
 		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["id"]);
 		$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 		
-		$header_label = "[edit: " . $data["name"] . "]";
+		$header_label = "[edit: " . expand_title($host_id, $data["name"]) . "]";
 		
 		if ($data["data_template_id"] == "0") {
 			$use_data_template = false;
@@ -610,12 +566,6 @@ function ds_edit() {
 		$header_label = "[new]";
 		
 		$use_data_template = false;
-	}
-	
-	if (read_config_option("full_view_data_source") == "") {
-		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_data_form_select("?action=ds_edit&id=" . $_GET["id"]);
-		end_box();
 	}
 	
 	/* handle debug mode */
@@ -795,9 +745,8 @@ function ds_edit() {
 	
 	end_box();
 	
-	if (read_config_option("full_view_data_source") == "on") {
-		data_edit();	
-	}
+	/* data source data goes here */
+	data_edit();	
 	
 	form_hidden_id("_data_template_id",(isset($data) ? $data["data_template_id"] : "0"));
 	form_hidden_id("_host_id",$host_id,(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));
@@ -914,14 +863,14 @@ function ds() {
 		on data_local.data_template_id=data_template.id
 		$sql_where
 		order by data_template_data.name
-		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+		limit " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
 	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
 	user can jump straight to it */
 	$page_number = 0; $url_page_select = "";
-	for ($i=0; ($i<$total_rows); $i += ROWS_PER_PAGE) {
+	for ($i=0; ($i<$total_rows); $i += read_config_option("num_rows_data_source")) {
 		$page_number++;
 		
 		if ($_REQUEST["page"] == $page_number) {
@@ -930,7 +879,7 @@ function ds() {
 			$url_page_select .= "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a>";
 		}
 		
-		if (($i+ROWS_PER_PAGE) < $total_rows) { $url_page_select .= ","; }
+		if (($i+read_config_option("num_rows_data_source")) < $total_rows) { $url_page_select .= ","; }
 	}
 	
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
@@ -941,10 +890,10 @@ function ds() {
 							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . ((read_config_option("num_rows_data_source")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_data_source")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
+							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { print "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } print "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -966,7 +915,7 @@ function ds() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name"], DATA_SOURCE_MAX_LEN));?></a>
+				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(expand_title($_REQUEST["host_id"], $data_source["name"]), read_config_option("max_title_data_source")));?></a>
 			</td>
 			<td>
 				<?php print $data_source["data_input_name"];?>
