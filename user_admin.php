@@ -168,7 +168,6 @@ function form_save() {
 						db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
 					}
 				}
-
 				/* reset local settings cache so the user sees the new settings */
 				kill_session_var("sess_graph_config_array");
 			}elseif (isset($_POST["save_component_graph_perms"])) {
@@ -574,14 +573,14 @@ function graph_settings_edit() {
 						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
 					}
 
-					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_SESSION["sess_user_id"]);
+					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_GET["id"]);
 				}
 			}else{
 				if (graph_config_value_exists($field_name)) {
 					$form_array[$field_name]["form_id"] = 1;
 				}
 
-				$form_array[$field_name]["value"] = db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_SESSION["sess_user_id"]);
+				$form_array[$field_name]["value"] = db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_GET["id"]);
 			}
 		}
 
