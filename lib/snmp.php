@@ -71,7 +71,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			exec(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
 		}elseif (read_config_option("snmp_version") == "net-snmp") {
-			exec(read_config_option("path_snmpget") . " -O vt $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
+			exec(read_config_option("path_snmpget") . " -O fntUev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
 		}
 	}
 
@@ -127,7 +127,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
 		}elseif (read_config_option("snmp_version") == "net-snmp") {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -OfntUe $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
 		}
 
 		if (sizeof($temp_array) == 0) {
