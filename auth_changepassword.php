@@ -24,10 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* initilize php session */
-session_start();
-
-include ("./include/config.php");
+include("./include/config.php");
 
 $user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 
