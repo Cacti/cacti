@@ -357,6 +357,7 @@ foreach ($_ds as $item) {
 				11: SNMP Version (1, 2, or 3)
 				12: Index Type
 				13: Index Value
+				14: Output Type ID
 				*/
 				$field_name = "";
 				$field_value = "";
@@ -391,6 +392,8 @@ foreach ($_ds as $item) {
 					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "28")) {
 						$field_value = "1";
 						$field_value_id = "11";
+						$field_name = "1";
+						$field_name_id = "14";
 					}
 					
 					if (!empty($field_value)) {
