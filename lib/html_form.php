@@ -463,4 +463,22 @@ function form_save_button($cancel_url, $force_type = "") {
 	<?php
 }
 
+function iconify_host($disabled, $status) {
+	if ($disabled) {
+		return "<img src=\"images/device_dis.gif\" width=\"170\" height=\"2\" border=\"0\">";
+	}
+
+	if ($status == HOST_UP) {
+		return "<img src=\"images/device_ok.gif\" width=\"170\" height=\"2\" border=\"0\">";
+	}
+
+	if ($status == HOST_RECOVERING) {
+		return "<img src=\"images/device_recovered.gif\" width=\"170\" height=\"2\" border=\"0\">";
+	}
+
+	if ($status == HOST_DOWN) {
+		return "<img src=\"images/device_failed.gif\" width=\"170\" height=\"2\" border=\"0\">";
+	}
+}
+
 ?>

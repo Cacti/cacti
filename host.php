@@ -542,8 +542,13 @@ function host() {
 
 	$hosts = db_fetch_assoc("select
 		host.id,
+		host.disabled,
+		host.status,
 		host.hostname,
-		host.description
+		host.description,
+		host.cur_time,
+		host.avg_time,
+		host.availability,
 		from host
 		$sql_where
 		order by host.description
@@ -584,7 +589,7 @@ function host() {
 
 	print $nav;
 
-	html_header_checkbox(array("Description", "Hostname"));
+	html_header_checkbox(array("Status", "Description", "Hostname", "Current", "Average", "Availability"));
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {
@@ -595,7 +600,7 @@ function host() {
 					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
 				</td>
 				<td>
-					<?php print $host["hostname"];?>
+					<?php print iconify_host($host["disabled"], $host["status"])  . "   " . $host["hostname"] . "   " . $host["cur_time"] . "   " . $host["avg_time"] . "   " . $host["availability"];?>
 				</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">
