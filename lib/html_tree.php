@@ -199,10 +199,10 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		 case "1":
 		    print "<td><a href='graph.php?graphid=$leaf[graph_id]&rraid=all'><img align='middle' 
 			    src='graph_image.php?graphid=$leaf[graph_id]&rraid=$leaf[rra_id]&graph_start=-".$array_settings["preview"]["timespan"].'&graph_height='.
-		      $array_settings["preview"]["height"].'&graph_width='.$array_settings["preview"]["width"] ."&graph_nolegend=true' border='0' alt='$leaf[Title]'></a><td>\n";
+		      $array_settings["preview"]["height"].'&graph_width='.$array_settings["preview"]["width"] ."&graph_nolegend=true' border='0' alt='$leaf[gtitle]'></a><td>\n";
 		    break;
 		 case "2":
-		    print "<td><a href='graph.php?graphid=$leaf[graph_id]&rraid=all'>$leaf[title]</a></td>";
+		    print "<td><a href='graph.php?graphid=$leaf[graph_id]&rraid=all'>$leaf[gtitle]</a></td>";
 		    break;
 		}
 		if ($graph_ct % 2 == 0) { print "</tr><tr>\n"; }
