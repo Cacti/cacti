@@ -1,5 +1,32 @@
 raXnet - cacti
 
+0.8.5a
+-bug#84: Updated internal CDEF caching to take CFs into account.
+-bug#86: Updated the LDAP code to correctly copy template users.
+-bug#136: Inaccurate total bandwidth readings for RRAs with a step > 1.
+-bug#138: Typo on install/index.php
+-bug#141: Incorrect pre-requisite file check when doing a graph export.
+-bug#142: Added the '-t' option when calling ucd-snmp or net-snmp to support numeric
+timeticks.
+-bug#145: phpMyAdmin was choking on the import of cacti.sql.
+-bug#146: Minor HTML fix in lib/form.php
+-bug: Fixed potential graph item input corruption when saving a graph template item.
+-bug: Fixed problem saving a data source using a template that had more than one item.
+-bug: Correctly display the console menu when authentication has been turned off.
+-bug: Correctly display the two pane tree when authentication has been turned off.
+-bug: Support regular expression characters in passwords: \+*?[^]$(){}=!<>|:
+-bug: Fixed certain re-ordering problems when deleting branches from a graph tree.
+-bug: Add support for a 3 digit exponents in RRDTool fetch output on Windows.
+-bug: Correctly escape community strings with a quotation mark under Windows.
+-bug: 95th percentile and bandwidth summation code should result in less errors
+when things don't go as planned.
+-bug: Fix 'data_input_data_fcache' orphan when deleting a data source.
+-feature: Make the 'None' option on the graph management and data sources host filter
+dropdowns only display items with no host assigned. Add an 'Any' option to display
+items assigned to all hosts.
+-cactid: Fix segfault problems on all platforms when performing SNMP queries.
+-cactid: Fix deadlock issues on Windows and Solaris when making popen calls.
+
 0.8.5
 -bug#102: Fix problem with SNMP community strings that contain certain variable shell
 characters.
