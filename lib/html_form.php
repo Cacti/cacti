@@ -314,12 +314,12 @@ function DrawFormItemColorSelect($form_name, $form_previous_value, $form_none_en
     
     
 /* create a multiselect listbox */
-function DrawFormItemMultipleList($form_name, $database_conn_id, $sql_string_display, $sql_display_name,
+function DrawFormItemMultipleList($form_name,  $sql_string_display, $sql_display_name,
 	$sql_display_value, $sql_string_previous_values, $sql_previous_value) {
 	global $current_path; include_once ("$current_path/functions.php");?>
 		<td>
 			&nbsp;<select name="<?print $form_name;?>[]" multiple>
-				<?CreateMultipleList($database_conn_id,$sql_string_display,$sql_display_name,$sql_display_value,$sql_string_previous_values,$sql_previous_value);?>
+				<?CreateMultipleList($sql_string_display,$sql_display_name,$sql_display_value,$sql_string_previous_values,$sql_previous_value);?>
 			</select>
 		</td>
 <?}
