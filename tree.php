@@ -53,10 +53,15 @@ switch ($action) {
 		
 		include_once ("include/bottom_footer.php");
 		break;
+	case 'item_remove':
+		item_remove();
+
+		header ("Location: " . getenv("HTTP_REFERER"));
+                break;
     	case 'remove':
-		tree_remove();
+		tree_remove();	
 		
-		header ("Location: tree.php");
+		header ("Location: tree");
 		break;
 	case 'edit':
 		include_once ("include/top_header.php");
@@ -181,6 +186,41 @@ function item_movedown() {
 	if ($order_key > 0) { branch_down($order_key, 'graph_tree_view_items', 'order_key', ''); }
 }
 
+function item_save() {
+	global $form;
+	
+	$save["id"] 		= $form["id"];
+	$save["tree_id"]	= $form["tree_id"];
+	$save["title"]  	= $form["title"];
+	$save["graph_id"]	= $form["graph_id"];
+	$save["rra_id"]		= $form["rra_id"];
+
+	if (sql_Save($save, "graph_tree_view_items")) {
+		raise_message(1);
+	} else {
+		raise_message(2);
+                header("Location: " . $_SERVER["HTTP_REFERER"]);
+                exit;
+	}
+
+}
+
+function item_remove() {
+        global $args, $config;
+
+        if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+                include ('include/top_header.php');
+                DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the item <strong>'" . db_fetch_cell("select title from graph_tree_view_items where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=$args[id]");
+                include ('include/bottom_footer.php');
+                exit;
+        }
+
+        if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+                db_execute("delete from graph_tree_view_items where id=$args[id]");
+        }
+}
+
+
 /* ---------------------
     Tree Functions
    --------------------- */
@@ -213,9 +253,6 @@ function tree_remove() {
         if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
                 db_execute("delete from graph_tree_view where id=$args[id]");
         }
-
-
-
 }
 
 function tree_edit() {
