@@ -53,11 +53,13 @@ function form_save() {
 		if (trim($_POST["import_text"] != "")) {
 			/* textbox input */
 			$xml_data = $_POST["import_text"];
-		}elseif ($_FILES["import_file"]["tmp_name"] != "none") {
+		}elseif (($_FILES["import_file"]["tmp_name"] != "none") && ($_FILES["import_file"]["tmp_name"] != "")) {
 			/* file upload */
 			$fp = fopen($_FILES["import_file"]["tmp_name"],"r");
 			$xml_data = fread($fp,filesize($_FILES["import_file"]["tmp_name"]));
 			fclose($fp);
+		}else{
+			header("Location: templates_import.php"); exit;
 		}
 		
 		$_SESSION["import_debug_info"] = import_xml_data($xml_data);
