@@ -23,7 +23,7 @@
    */?>
 <?
 
-function push_out_host_template($host_template_id, $data_template_id) {
+function push_out_data_template($data_template_id) {
 	/* get data_input_id */
 	$data_input_id = db_fetch_cell("select
 		data_input_id
@@ -31,28 +31,23 @@ function push_out_host_template($host_template_id, $data_template_id) {
 		where id=$data_template_id");
 	
 	/* must be a data template */
-	if ((empty($data_template_id)) || (empty($data_input_id)) || (empty($host_template_id))) { return 0; }
+	if ((empty($data_template_id)) || (empty($data_input_id))) { return 0; }
 	
 	/* get a list of data sources using this template */
 	$data_sources = db_fetch_assoc("select
-		data_template_data.id,
-		data_template_data.data_input_id
-		from data_template_data,data_local,host
-		where data_template_data.local_data_id=data_local.id
-		and data_local.host_id=host.id
-		and host.host_template_id=$host_template_id
-		and data_template_data.data_template_id=$data_template_id");
+		data_template_data.id
+		from data_template_data
+		where data_template_id=$data_template_id
+		and local_data_id>0");
 	
 	/* pull out all 'input' values so we know how much to save */
 	$input_fields = db_fetch_assoc("select
 		data_input_fields.id,
-		data_input_fields.input_output,
-		data_input_fields.data_name,
-		host_template_data.t_value,
-		host_template_data.value
-		from data_input_fields left join host_template_data
-		on (data_input_fields.id=host_template_data.data_input_field_id and host_template_data.data_template_id=$data_template_id and host_template_data.host_template_id=$host_template_id)
-		where data_input_fields.data_input_id=$data_input_id
+		data_input_data.value,
+		data_input_data.t_value
+		from data_input_fields left join data_input_data
+		on data_input_fields.id=data_input_data.data_input_field_id
+		where data_input_data.data_template_data_id=1
 		and data_input_fields.input_output='in'
 		and (data_input_fields.type_code = '' or data_input_fields.type_code is null)");
 	

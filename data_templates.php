@@ -153,6 +153,36 @@ function template_save() {
 	/* push out all data source settings to child data source using this template */
 	push_out_data_source($data_template_data_id);
 	push_out_data_source_item($data_template_rrd_id);
+	
+	/* ok, first pull out all 'input' values so we know how much to save */
+	$input_fields = db_fetch_assoc("select
+		id,
+		input_output,
+		data_name 
+		from data_input_fields
+		where data_input_id=" . $_POST["data_input_id"] . "
+		and input_output='in'");
+	
+	db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
+	
+	if (sizeof($input_fields) > 0) {
+	foreach ($input_fields as $input_field) {
+		/* save the data into the 'host_template_data' table */
+		$form_value = "value_" . $input_field["data_name"];
+		$form_value = $_POST[$form_value];
+		
+		$form_is_templated_value = "t_value_" . $input_field["data_name"];
+		$form_is_templated_value = $_POST[$form_is_templated_value];
+		
+		if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
+			db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
+				values (" . $input_field["id"] . ",$data_template_data_id,'$form_is_templated_value','$form_value')");
+		}
+	}
+	}
+	
+	/* push out all "custom data" for this data source template */
+	push_out_data_template($data_template_id);
 }
 
 function template_edit() {
@@ -315,6 +345,39 @@ function template_edit() {
 	</tr>
 	
 	<?
+	end_box();
+	
+	/* get each INPUT field for this data input source */
+	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
+	
+	start_box("Custom Data", "98%", $colors["header"], "3", "center", "");
+	
+	/* loop through each field found */
+	if (sizeof($fields) > 0) {
+	foreach ($fields as $field) {
+		$data_input_data = db_fetch_row("select t_value,value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
+		
+		if (sizeof($data_input_data) > 0) {
+			$old_value = $data_input_data["value"];
+		}else{
+			$old_value = "";
+		}
+		
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
+			<td width="50%">
+				<strong><?print $field["name"];?></strong><br>
+				<?DrawStrippedFormItemCheckBox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+			</td>
+			<?DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");?>
+		</tr>
+		<?
+		
+		$i++;
+	}
+	}else{
+		print "<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>";
+	}
+	
 	end_box();
 	
 	DrawFormItemHiddenIDField("data_template_id",$_GET["data_template_id"]);

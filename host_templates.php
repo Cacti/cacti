@@ -60,51 +60,10 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if ((isset($_POST["save_component_template"])) && (isset($_POST["save_component_data"]))) {
-		data_save();
+	if (isset($_POST["save_component_template"])) {
 		template_save();
 		
 		return "host_templates.php";
-	}
-}
-
-
-/* ----------------------------
-    data - Custom Data
-   ---------------------------- */
-
-function data_save() {
-	/* get data_input_id */
-	$data_input_id = db_fetch_cell("select
-		data_input_id
-		from data_template_data
-		where id=" . $_POST["data_template_id"]);
-	
-	/* ok, first pull out all 'input' values so we know how much to save */
-	$input_fields = db_fetch_assoc("select
-		id,
-		input_output,
-		data_name 
-		from data_input_fields
-		where data_input_id=$data_input_id
-		and input_output='in'");
-	
-	db_execute("delete from host_template_data where data_template_id=" . $_POST["data_template_id"] . " and host_template_id=" . $_POST["id"]);
-	
-	if (sizeof($input_fields) > 0) {
-	foreach ($input_fields as $input_field) {
-		/* save the data into the 'host_template_data' table */
-		$form_value = "value_" . $input_field["data_name"];
-		$form_value = $_POST[$form_value];
-		
-		$form_is_templated_value = "t_value_" . $input_field["data_name"];
-		$form_is_templated_value = $_POST[$form_is_templated_value];
-		
-		if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
-			db_execute("insert into host_template_data (data_input_field_id,data_template_id,host_template_id,t_value,value)
-				values (" . $input_field["id"] . "," . $_POST["data_template_id"] . "," . $_POST["id"] . ",'$form_is_templated_value','$form_value')");
-		}
-	}
 	}
 }
 
@@ -128,8 +87,6 @@ function template_remove() {
 }
 
 function template_save() {
-	include_once("include/utility_functions.php");
-	
 	$save["id"] = $_POST["id"];
 	$save["name"] = $_POST["name"];
 	
@@ -150,9 +107,6 @@ function template_save() {
 			db_execute ("replace into host_template_data_template (host_template_id,data_template_id) values($host_template_id," . substr($var, 3) . ")");
 		}
 	}
-	
-	/* push out settings to each data source under a host using this template. got that? */
-	push_out_host_template($host_template_id, $_POST["data_template_id"]);
 }
 
 function template_edit() {
@@ -194,7 +148,7 @@ function template_edit() {
 							data_template.id,
 							data_template.name
 							from data_template left join host_template_data_template
-							on (data_template.id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=2) 
+							on (data_template.id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=" . $_GET["id"] . ") 
 							order by data_template.name");
 						
 						if (sizeof($data_templates) > 0) {
@@ -223,99 +177,8 @@ function template_edit() {
 	<?
 	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_template","1","");
+	
 	end_box();
-	
-	/* fetch ALL data templates for this data host template */
-	if (isset($_GET["id"])) {
-		$data_templates = db_fetch_assoc("select
-			data_template.id,
-			data_template.name
-			from data_template, host_template_data_template
-			where host_template_data_template.data_template_id=data_template.id
-			and host_template_data_template.host_template_id=" . $_GET["id"] . "
-			order by data_template.name");
-	}
-	
-	/* select the "first" data template of this host template by default */
-	if (empty($_GET["view_data_template"])) {
-		$_GET["view_data_template"] = $data_templates[0]["id"];
-	}
-	
-	/* get more information about the data template we chose */
-	if (!empty($_GET["view_data_template"])) {
-		$data_template = db_fetch_row("select * from data_template where id=" . $_GET["view_data_template"]);
-	}
-	
-	/* find out what type of input it is using */
-	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $_GET["view_data_template"] . " and local_data_id=0");
-	
-	$i = 0;
-	
-	/* if it is not using any input; skip this step: no custom data */
-	if (!empty($template_data["data_input_id"])) {
-		start_box("Custom Data for Host Template [" . $data_template["name"] . ": " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
-		
-		/* loop through each data template in use and draw tabs if there is more than one */
-		if (sizeof($data_templates) > 1) {
-			?>
-			<tr height="33">
-				<td valign="bottom" colspan="3" background="images/tab_back.gif">
-					<table border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<?
-							$i=0;
-							foreach ($data_templates as $data_template) {
-							$i++;
-							?>
-							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="host_templates.php?action=edit&id=<?print $_GET["id"];?>&view_data_template=<?print $data_template["id"];?>"><?print "$i: " . $data_template["name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
-							</td>
-							<?
-							}
-							?>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<?
-		}elseif (sizeof($data_templates) == 1) {
-			$_GET["view_data_template"] = $data_templates[0]["id"];
-		}
-		
-		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
-		
-		/* loop through each field found */
-		if (sizeof($fields) > 0) {
-		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select t_value,value from host_template_data where data_template_id=" . $_GET["view_data_template"] . " and host_template_id=" . $_GET["id"] . " and data_input_field_id=" . $field["id"]);
-			
-			if (sizeof($data_input_data) > 0) {
-				$old_value = $data_input_data["value"];
-			}else{
-				$old_value = "";
-			}
-			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
-				<td width="50%">
-					<strong><?print $field["name"];?></strong><br>
-					<?DrawStrippedFormItemCheckBox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
-				</td>
-				<?DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");?>
-			</tr>
-			<?
-			
-			$i++;
-		}
-		}else{
-			print "<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>";
-		}
-		
-		end_box();
-	}
-	
-	DrawFormItemHiddenTextBox("save_component_data","1","");
-	DrawFormItemHiddenIDField("data_template_id",$_GET["view_data_template"]);
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
