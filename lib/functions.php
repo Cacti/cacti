@@ -294,7 +294,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 
 	/* determine how to log data */
 	$logdestination = read_config_option("log_destination");
-	$logfile = read_config_option("path_cactilog");
+	$logfile        = read_config_option("path_cactilog");
 
 	/* format the message */
 	if ($environ != "SYSTEM") {
@@ -315,10 +315,6 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 		if ($fp) {
 			@fwrite($fp, $message);
 			fclose($fp);
-		}
-
-		if ($output == true) {
-			print $message;
 		}
 	}
 
@@ -342,7 +338,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
 
 			if ($log_type == "err") {
-				syslog(LOG_ERROR, $message);
+				syslog(LOG_ERR, $message);
 			}
 
 			if ($log_type == "warn") {
@@ -355,6 +351,11 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 
 			closelog();
 		}
+   }
+
+	/* print output to standard out if required */
+	if ($output == true) {
+		print $message;
 	}
 }
 

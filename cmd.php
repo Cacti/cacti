@@ -42,7 +42,7 @@ include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/ping.php");
 
-/* PHP Bug.  Not yet logged */
+/* PHP Bug.  Not yet submitted */
 if ($config["cacti_server_os"] == "win32") {
 	$guess = substr(__FILE__,0,2);
 	if ($guess == strtoupper($guess)) {
@@ -134,13 +134,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$host_id = $item["host_id"];
 
 		if ($new_host) {
-			$ping->host["hostname"] = $item["hostname"];
+			$ping->host["hostname"]       = $item["hostname"];
 			$ping->host["snmp_community"] = $item["snmp_community"];
-			$ping->host["snmp_version"] = $item["snmp_version"];
-			$ping->host["snmp_username"] = $item["snmp_username"];
-			$ping->host["snmp_password"] = $item["snmp_password"];
-			$ping->host["snmp_port"] = $item["snmp_port"];
-			$ping->host["snmp_timeout"] = $item["snmp_timeout"];
+			$ping->host["snmp_version"]   = $item["snmp_version"];
+			$ping->host["snmp_username"]  = $item["snmp_username"];
+			$ping->host["snmp_password"]  = $item["snmp_password"];
+			$ping->host["snmp_port"]      = $item["snmp_port"];
+			$ping->host["snmp_timeout"]   = $item["snmp_timeout"];
 
 			if ((!function_exists("socket_create")) || (phpversion() < "4.3")) {
 				/* the ping test will fail under PHP < 4.3 without socket support */
