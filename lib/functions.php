@@ -23,6 +23,17 @@
    */?>
 <?
 
+function read_graph_config_option($config_name) {
+	$graph_config_array = unserialize($_SESSION["sess_graph_config_array"]);
+	
+	if (!isset($graph_config_array[$config_name])) {
+		$graph_config_array[$config_name] = db_fetch_cell("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]);
+		$_SESSION["sess_graph_config_array"] = serialize($graph_config_array);
+	}
+	
+	return $graph_config_array[$config_name];
+}
+
 function read_config_option($config_name) {
 	$config_array = unserialize($_SESSION["sess_config_array"]);
 	
@@ -182,18 +193,6 @@ function GetDataSourceName($dsid) {
     }else{
 		return $data[Name];
     }
-}
-
-function GetDataSourceType($dstypeid) {    
-    if ($dstypeid == 0) { return ""; }
-    
-    $data = db_fetch_row("select Name from def_ds where id=$dstypeid");
-    
-    if (sizeof($data) >  0) {
-		return $data[Name];
-    }
-    
-    return "";
 }
 
 function GetDataSourcePath($data_source_id, $expand_paths) {
@@ -409,55 +408,6 @@ function move_item_up($table_name, $current_id, $group_query) {
 	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
 	db_execute("update $table_name set sequence=$last_item where id=$current_id");
 	db_execute("update $table_name set sequence=$sequence where id=$id");
-}
-
-function LoadSettingsIntoArray($user_id, $guest_account) {
-    /* get settings, use guest account if there is no user cookie */
-    $user_id = GetCurrentUserID($user_id, $guest_account);
-    
-    $settings = db_fetch_row("select * from settings_graphs where userid=$user_id");
-    
-    /* whether to revert to defaults or not */
-    if ($user_id == "") {
-		$use_default_settings = true;
-    }else{
-	    if (sizeof($settings) == 0) {
-		    $use_default_settings = true;
-	    }
-    }
-    
-    if ($use_default_settings == true) {
-		/* use defaults */
-		$array_settings[height] = 100;
-		$array_settings[width] = 300;
-		$array_settings[time_span] = 60000;
-		$array_settings[rra] = 1;
-		$array_settings[column_number] = 2;
-		$array_settings[page_refresh] = 300;
-		$array_settings[list_view_type] = 1;
-		$array_settings[view_type] = 1;
-    }else{
-		$array_settings[height] = $settings[Height];
-		$array_settings[width] = $settings[Width];
-		$array_settings[time_span] = $settings[Timespan];
-		$array_settings[rra] = $settings[RRAID];
-		$array_settings[column_number] = $settings[ColumnNumber];
-		$array_settings[page_refresh] = $settings[PageRefresh];
-		$array_settings[list_view_type] = $settings[ListViewType];
-		$array_settings[view_type] = $settings[ViewType];
-		$array_settings[tree_id] = $settings[TreeID];
-    }
-    
-    return $array_settings;
-}
-
-function GetCurrentUserID($user_id, $guest_account) {
-    if (($user_id == "") || ($user_id == 0)) {
-		$data = db_fetch_row("select id from auth_users where username=\"$guest_account\"");
-		if (sizeof($data) >  0) { $user_id = $data[ID]; }
-    }
-    
-    return $user_id;
 }
 
 function ParseDelimitedLine($str,$delimiter) {
