@@ -261,7 +261,6 @@ function data_save() {
 	
 	global $form;
 	
-	
 	/* first, find out if any fields have been added -- get a list from POST and compare it to
 	what we've got from the database
 	
@@ -289,7 +288,7 @@ function data_save() {
 					
 					$j = 0;
 					
-					start_box("", "", "");
+					start_pagebox("", "98%", "aaaaaa", "3", "center", "");
 					DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
 						print "<td width='50%'><font class='textEditTitle'>Field Name</font><br></td>\n";
 						print "<td>" . $matches[1][$i] . "</td>\n";
@@ -321,52 +320,6 @@ function data_save() {
 				}
 			}
 		}
-	}
-	
-	$fields = db_fetch_assoc("select id,data_name,name,input_output from data_input_fields where data_input_id=$form[id] order by input_output,data_name");
-	
-	$j = 0;
-	
-	if (sizeof($fields) > 0) {
-	foreach ($fields as $field) {
-		if ((strstr($form["input_string"], "<" . $field["data_name"] . ">") == false) && (strstr($form["output_string"], "<" . $field["data_name"] . ">") == false)) {
-			/* nothing has been drawn yet, do the header */
-			if (!$drew_field) {
-				include_once ("include/top_header.php");
-				
-				$drew_field = true;
-			}
-			
-			if ($j == 0) {
-				/* at least do the header for the deletion */
-				
-				start_pagebox("", "98%", "00438C", "3", "center", "");
-				print "<tr><td bgcolor='#00438C' style='color: white;'><font style='color: white;' class='textInfo'>Old (Deleted) Fields Detected</font><br>\n";
-				print "Cacti has detected that the following fields have been removed from this data input method. 
-				Once you click \"Save\", they will be removed from the database.\n";
-				print "</td></tr>\n";
-				end_box();
-			}
-			
-			start_box("", "", "");
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
-				print "<td width='50%'><font class='textEditTitle'>Field Name</font><br></td>\n";
-				print "<td>" . $field["data_name"] . "</td>\n";
-			print "</tr>\n";
-			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
-				print "<td width='50%'><font class='textEditTitle'>Friendly Field Name</font><br></td>\n";
-				print "<td>" . $field["name"] . "</td>\n";
-			print "</tr>\n";
-			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
-				print "<td width='50%'><font class='textEditTitle'>Field Type</font><br></td>\n";
-				print "<td>"; print $field["input_output"] ? "Output" : "Input"; print "</td>\n";
-			print "</tr>\n";
-			end_box();
-		}
-	
-	}
 	}
 	
 	if ($drew_field == true) {
@@ -436,29 +389,64 @@ function data_edit() {
 	end_box();
 	
 	start_box("Input Fields", "", "");
-	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Name",$colors[header_text],1);
-		DrawMatrixHeaderItem("Update RRA",$colors[header_text],1);
+		DrawMatrixHeaderItem("Friendly Name",$colors[header_text],2);
 	print "</tr>";
     
-	$input_fields = db_fetch_assoc("select id,data_name,update_rra from data_input_fields where data_input_id=$args[id] and input_output='in' order by data_name");
+	$fields = db_fetch_assoc("select id,data_name,name from data_input_fields where data_input_id=$args[id] and input_output='in' order by data_name");
 	
-	if (sizeof($input_fields) > 0) {
-	foreach ($input_fields as $input_field) {
+	if (sizeof($fields) > 0) {
+	foreach ($fields as $field) {
 		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?print $input_field[id];?>&data_input_id=<?print $args[id];?>"><?print $input_field[data_name];?></a>
+				<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?print $field[id];?>&data_input_id=<?print $args[id];?>"><?print $field[data_name];?></a>
 			</td>
 			<td>
-				<?print html_boolean_friendly($input_field[update_rra]);?>
+				<?print $field[name];?>
 			</td>
+                        <td width="1%" align="right">
+                                <a href="data_input.php?action=field_remove&id=<?print $field[id];?>&data_input_id=<?print $args[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+                        </td>
 		</tr>
 	<?
 	}
 	}
 	end_box();
+	
+        start_box("Output Fields", "", "");
+        print "<tr bgcolor='#$colors[header_panel]'>";
+                DrawMatrixHeaderItem("Name",$colors[header_text],1);
+		DrawMatrixHeaderItem("Friendly Name",$colors[header_text],1);
+                DrawMatrixHeaderItem("Update RRA",$colors[header_text],2);
+        print "</tr>";
+
+        $fields = db_fetch_assoc("select id,name,data_name,update_rra from data_input_fields where data_input_id=$args[id] and input_output='out' order by data_name");
+        
+	if (sizeof($fields) > 0) {
+        foreach ($fields as $field) {
+                DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+                        ?>
+                        <td>
+                                <a class="linkEditMain" href="data_input.php?action=field_edit&id=<?print $field[id];?>&data_i
+nput_id=<?print $args[id];?>"><?print $field[data_name];?></a>
+                        </td>
+                        <td>
+                                <?print $field[name];?>
+                        </td>
+			<td>
+                                <?print html_boolean_friendly($field[update_rra]);?>
+                        </td>
+                        <td width="1%" align="right">
+                                <a href="data_input.php?action=field_remove&id=<?print $field[id];?>&data_input_id=<?print $args[id];?>"><img src="images/delete_icon.g
+if" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+                        </td>
+                </tr>
+        <?
+        }
+        }
+        end_box();
 	
 	DrawFormItemHiddenTextBox("save_component_data_input","1","");
 	
