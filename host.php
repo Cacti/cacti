@@ -104,21 +104,108 @@ function host_new_graphs_save() {
 	
 	include_once ("include/utility_functions.php");
 	
-	$selected_graphs = unserialize($_POST["host_selected_graphs"]);
+	$selected_graphs = unserialize(stripslashes($_POST["host_selected_graphs"]));
 	
 	for ($i=0; ($i < count($selected_graphs)); $i++) {
-		$graph_template = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $selected_graphs[$i] . " and local_graph_id = 0");
+		unset($save);
 		
 		$save["id"] = 0;
 		$save["graph_template_id"] = $selected_graphs[$i];
 		
 		$local_graph_id = sql_save($save, "graph_local");
-		//unset($save);
+		
 		change_graph_template($local_graph_id, $selected_graphs[$i], true);
-		//$save["id"] = $graph_list["id"];
-		//$save["local_graph_template_graph_id"] = $template_graph_list["id"];
-		//$save["local_graph_id"] = $local_graph_id;
-		//$save["graph_template_id"] = $graph_template_id;
+		
+		/* just a friendly note: this model of storing graph template->local_graph_id data relies
+		on the fact that each graph template will be unique. this is true for now, but something to
+		keep in mind if going to a multi-graph template model */
+		$new_graph_templates{$selected_graphs[$i]} = $local_graph_id;
+		
+		$data_templates = db_fetch_assoc("select
+			data_template.id,
+			data_template.name
+			from host_template_graph_data, data_template, data_template_rrd
+			where host_template_graph_data.data_template_rrd_id=data_template_rrd.id
+			and data_template_rrd.data_template_id=data_template.id
+			and data_template_rrd.local_data_id=0
+			and host_template_graph_data.host_template_id=" . $_POST["host_template_id"] . "
+			and host_template_graph_data.graph_template_id=" . $selected_graphs[$i] . "
+			group by data_template.id
+			order by data_template.name");
+		
+		if (sizeof($data_templates) > 0) {
+		foreach ($data_templates as $data_template) {
+			unset($save);
+			
+			$save["id"] = 0;
+			$save["data_template_id"] = $data_template["id"];
+			$save["host_id"] = $_POST["host_id"];
+			
+			$local_data_id = sql_save($save, "data_local");
+			
+			change_data_template($local_data_id, $data_template["id"]);
+			
+			/* same deal as above, cache data_template->local_data_id mapping for below */
+			$new_data_templates{$data_template["id"]} = $local_data_id;
+		}
+		}
+		
+		/* connect the dots: graph -> data source(s) */
+		$graph_inputs = db_fetch_assoc("select
+			host_template_graph_data.data_template_rrd_id,
+			host_template_graph_data.graph_template_input_id,
+			data_template_rrd.data_template_id
+			from
+			host_template_graph_data,data_template_rrd
+			where host_template_graph_data.data_template_rrd_id=data_template_rrd.id
+			and host_template_graph_data.host_template_id=" . $_POST["host_template_id"] . "
+			and host_template_graph_data.graph_template_id=" . $selected_graphs[$i]);
+		
+		if (sizeof($graph_inputs) > 0) {
+		foreach ($graph_inputs as $input) {
+			/* we need to find out which graph items will be affected by saving this particular item */
+			$item_list = db_fetch_assoc("select
+				graph_templates_item.id
+				from graph_template_input_defs,graph_templates_item
+				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
+				and graph_templates_item.local_graph_id=" . $new_graph_templates{$selected_graphs[$i]} . "
+				and graph_template_input_defs.graph_template_input_id=" . $input["graph_template_input_id"]);
+			
+			/* loop through each item affected and update column data */
+			if (sizeof($item_list) > 0) {
+			foreach ($item_list as $item) {
+				$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=" . $input["data_template_rrd_id"] . " and local_data_id=" . $new_data_templates{$input["data_template_id"]});
+				db_execute("update graph_templates_item set task_item_id='$data_template_rrd_id' where id=" . $item["id"]);
+			}
+			}
+		}
+		}
+	}
+	
+	/* go ahead and write out values from the POST form to our new data */
+	while (list($var, $val) = each($_POST)) {
+		if (preg_match("/^g_(\d+)_(\w+)/", $var, $matches)) {
+			db_execute("update graph_templates_graph set " . $matches[2] . "='$val' where local_graph_id=" . $new_graph_templates{$matches[1]});
+		}elseif (preg_match("/^gi_(\d+)_(\d+)_(\w+)/", $var, $matches)) {
+			/* we need to find out which graph items will be affected by saving this particular item */
+			$item_list = db_fetch_assoc("select
+				graph_templates_item.id
+				from graph_template_input_defs,graph_templates_item
+				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
+				and graph_templates_item.local_graph_id=" . $new_graph_templates{$matches[1]} . "
+				and graph_template_input_defs.graph_template_input_id=" . $matches[2]);
+			
+			/* loop through each item affected and update column data */
+			if (sizeof($item_list) > 0) {
+			foreach ($item_list as $item) {
+				db_execute("update graph_templates_item set " . $matches[3] . "='$val' where id=" . $item["id"]);
+			}
+			}
+		}elseif (preg_match("/^d_(\d+)_(\d+)_(\w+)/", $var, $matches)) {
+			db_execute("update data_template_data set " . $matches[3] . "='$val' where local_data_id=" . $new_data_templates{$matches[2]});
+		}elseif (preg_match("/^di_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) {
+			db_execute("update data_template_rrd set " . $matches[4] . "='$val' where local_data_id=" . $new_data_templates{$matches[2]} . " and local_data_template_rrd_id=" . $matches[3]);
+		}
 	}
 }
 
@@ -178,6 +265,7 @@ function host_new_graphs() {
 			where host_template_graph_data.data_template_rrd_id=data_template_rrd.id
 			and data_template_rrd.data_template_id=data_template.id
 			and data_template.id=data_template_data.data_template_id
+			and data_template_data.local_data_id=0
 			and host_template_graph_data.host_template_id=" . $_GET["host_template_id"] . "
 			and host_template_graph_data.graph_template_id=" . $selected_graphs[$i] . "
 			group by data_template.id
@@ -188,7 +276,8 @@ function host_new_graphs() {
 			graph_templates_graph.*
 			from graph_templates, graph_templates_graph
 			where graph_templates.id=graph_templates_graph.graph_template_id
-			and graph_templates.id=" . $selected_graphs[$i]);
+			and graph_templates.id=" . $selected_graphs[$i] . "
+			and graph_templates_graph.local_graph_id=0");
 		$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $selected_graphs[$i]);
 		
 		$graph_inputs = db_fetch_assoc("select
@@ -212,7 +301,7 @@ function host_new_graphs() {
 					print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]</td></tr>";
 				}
 				
-				draw_templated_row($field_array, "g_" . $field_name, $graph_template[$field_name]);
+				draw_templated_row($field_array, "g_" . $selected_graphs[$i] . "_" . $field_name, $graph_template[$field_name]);
 				$row_counter = 0; $drew_items = true;
 			}
 		}
@@ -241,7 +330,7 @@ function host_new_graphs() {
 					if (!empty($graph_input["description"])) { print "<br>" . $graph_input["description"]; }
 			print "	</td>\n";
 			
-			draw_nontemplated_item($struct_graph_item{$graph_input["column_name"]}, "gi_" . $field_name, $current_value);
+			draw_nontemplated_item($struct_graph_item{$graph_input["column_name"]}, "gi_" . $selected_graphs[$i] . "_" . $graph_input["id"] . "_" . $graph_input["column_name"], $current_value);
 			
 			print "</tr>\n";
 			
@@ -249,9 +338,9 @@ function host_new_graphs() {
 		}
 		}
 		
-		if (($drew_items == false) && (sizeof($graph_inputs) == 0)) {
-			print "<tr><td><em>No Input Needed</em></td></tr>";
-		}
+		///if (($drew_items == false) && (sizeof($graph_inputs) == 0)) {
+		//	print "<tr><td><em>No Input Needed</em></td></tr>";
+		//}
 		
 		/* DRAW: Data Sources */
 		if (sizeof($data_templates) > 0) {
@@ -265,7 +354,7 @@ function host_new_graphs() {
 						print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</td></tr>";
 					}
 					
-					draw_templated_row($field_array, "d_" . $field_name, $data_template[$field_name]);
+					draw_templated_row($field_array, "d_" . $selected_graphs[$i] . "_" . $data_template["data_template_id"] . "_" . $field_name, $data_template[$field_name]);
 					$row_counter = 0; $drew_items = true;
 				}
 			}
@@ -288,16 +377,16 @@ function host_new_graphs() {
 							print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Data Source Item</strong> - " . $data_template_item["data_source_name"] . " - [Template: " . $data_template["data_template_name"] . "]</td></tr>";
 						}
 						
-						draw_templated_row($field_array, "di_" . $field_name, $data_template_item[$field_name]);
+						draw_templated_row($field_array, "di_" . $selected_graphs[$i] . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
 						$row_counter = 0; $drew_items = true;
 					}
 				}
 			}
 			}
 			
-			if ($drew_items = false) {
-				print "<tr><td><em>No Input Needed</em></td></tr>";
-			}
+			//if ($drew_items = false) {
+			//	print "<tr><td><em>No Input Needed</em></td></tr>";
+			//}
 		}
 		}
 		
