@@ -531,8 +531,18 @@ function snmp_edit() {
 	end_box();
 	
 	if (!empty($snmp_query["id"])) {
+		$xml_filename = str_replace("<path_cacti>", $config["base_path"], $snmp_query["xml_path"]);
+		
+		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
+			$text = "<font color='#0d7c09'><strong>Successfully located XML file</strong></font>";
+			$xml_file_exists = true;
+		}else{
+			$text = "<font color='#ff0000'><strong>Could not locate XML file.</strong></font>";
+			$xml_file_exists = false;
+		}
+		
 		start_box("", "98%", "aaaaaa", "3", "center", "");
-		print "<tr bgcolor='#f5f5f5'><td>" . (file_exists(str_replace("<path_cacti>", $config["base_path"], $snmp_query["xml_path"])) ? "<font color='#0d7c09'><strong>XML File Exists</strong></font>" : "<font color='#ff0000'><strong>XML File Does Not Exist</strong></font>") . "</td></tr>";
+		print "<tr bgcolor='#f5f5f5'><td>$text</td></tr>";
 		end_box();
 		
 		start_box("<strong>Data Input Method</strong> [" . db_fetch_cell("select name from data_input where id=" . $snmp_query["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
@@ -587,45 +597,47 @@ function snmp_edit() {
 		
 		end_box();
 		
-		start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
-		
-		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-				<td><span style='color: white; font-weight: bold;'>Name</span></td>
-				<td><span style='color: white; font-weight: bold;'>Graph Template Name</span></td>
-				<td></td>
-			</tr>";
-		
-		$snmp_query_graphs = db_fetch_assoc("select
-			snmp_query_graph.id,
-			graph_templates.name as graph_template_name,
-			snmp_query_graph.name
-			from snmp_query_graph
-			left join graph_templates on snmp_query_graph.graph_template_id=graph_templates.id
-			where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . "
-			order by snmp_query_graph.name");
-		
-		$i = 0;
-		if (sizeof($snmp_query_graphs) > 0) {
-		foreach ($snmp_query_graphs as $snmp_query_graph) {
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-			?>
-				<td>
-					<strong><a href="snmp.php?action=item_edit&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><?php print $snmp_query_graph["name"];?></a></strong>
-				</td>
-				<td>
-					<?php print $snmp_query_graph["graph_template_name"];?>
-				</td>
-				<td width="1%" align="right">
-					<a href="snmp.php?action=item_remove&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-				</td>
-			</tr>
-			<?php
+		if ($xml_file_exists == true) {
+			start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+			
+			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+					<td><span style='color: white; font-weight: bold;'>Name</span></td>
+					<td><span style='color: white; font-weight: bold;'>Graph Template Name</span></td>
+					<td></td>
+				</tr>";
+			
+			$snmp_query_graphs = db_fetch_assoc("select
+				snmp_query_graph.id,
+				graph_templates.name as graph_template_name,
+				snmp_query_graph.name
+				from snmp_query_graph
+				left join graph_templates on snmp_query_graph.graph_template_id=graph_templates.id
+				where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . "
+				order by snmp_query_graph.name");
+			
+			$i = 0;
+			if (sizeof($snmp_query_graphs) > 0) {
+			foreach ($snmp_query_graphs as $snmp_query_graph) {
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				?>
+					<td>
+						<strong><a href="snmp.php?action=item_edit&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><?php print $snmp_query_graph["name"];?></a></strong>
+					</td>
+					<td>
+						<?php print $snmp_query_graph["graph_template_name"];?>
+					</td>
+					<td width="1%" align="right">
+						<a href="snmp.php?action=item_remove&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					</td>
+				</tr>
+				<?php
+			}
+			}else{
+				print "<tr><td><em>No Graph Templates Defined.</em></td></tr>";
+			}
+			
+			end_box();
 		}
-		}else{
-			print "<tr><td><em>No Graph Templates Defined.</em></td></tr>";
-		}
-		
-		end_box();
 	}
 	
 	form_save_button("snmp.php");
