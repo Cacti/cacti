@@ -155,7 +155,7 @@ switch ($action) {
 				<?print $rra[Rows];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="<?print $current_script_name;?>?action=graph_remove&id=<?print $rra[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="<?print $current_script_name;?>?action=remove&id=<?print $rra[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
