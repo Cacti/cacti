@@ -86,21 +86,19 @@ default:
 
 		if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-				$current_value = db_fetch_cell("select value from settings where name='$sub_field_name'");
-				$form_array[$field_name]["items"][$sub_field_name]["value"] = $current_value;
+				if (config_value_exists($sub_field_name)) {
+					$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
+				}
+
+				$form_array[$field_name]["items"][$sub_field_name]["value"] = db_fetch_cell("select value from settings where name='$sub_field_name'");
 			}
 		}else{
-			$current_value = db_fetch_cell("select value from settings where name='$field_name'");
-
-			/* if there is no value and there is a default value, use that instead */
-			if ((empty($current_value)) && (isset($field_array["default"]))) {
-				$current_value = $field_array["default"];
+			if (config_value_exists($field_name)) {
+				$form_array[$field_name]["form_id"] = 1;
 			}
 
-			$form_array[$field_name]["value"] = $current_value;
+			$form_array[$field_name]["value"] = db_fetch_cell("select value from settings where name='$field_name'");
 		}
-
-		$form_array[$field_name]["form_id"] = 1;
 	}
 
 	draw_edit_form(
