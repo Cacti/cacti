@@ -271,9 +271,12 @@ function log_data($string, $output = false) {
 	$date = date("m/d/Y g:i A");
 	
 	/* echo the data to the log (append) */
-	$fp = fopen($config["base_path"] . "/log/rrd.log", "a");
-	@fwrite($fp, "$date - $string\n");
-	fclose($fp);
+	$fp = @fopen($config["base_path"] . "/log/rrd.log", "a");
+	
+	if ($fp) {
+		@fwrite($fp, "$date - $string\n");
+		fclose($fp);
+	}
 	
 	if ($output == true) {
 		print "$string\n";
