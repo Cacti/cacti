@@ -1,6 +1,7 @@
 <?
 //include ("include/functions.php");
 include ("include/database.php");
+$version="2";
 $i=0; $j=0;
        $sql_id = mysql_query("select id,srcid,dspath from rrd_ds where active='on' and subdsid=0",$cnn_id);
        $rows = mysql_num_rows($sql_id); $i = 0;
@@ -32,7 +33,7 @@ $i=0; $j=0;
 		$j++;
 		}
 
-	if($host!="" && $comm!="" && $oid!="") mysql_query("insert into targets values('','$host','$comm','$oid$int','$rrd')",$cnn_id);
+	if($host!="" && $comm!="" && $oid!="") mysql_query("insert into targets values('','$host','$comm','$version','$oid$int','$rrd')",$cnn_id);
 $i++;
 }
 ?>

@@ -24,7 +24,7 @@ LIB+=-L/usr/lib
 
 LIB+=-lmysqlclient -lrrd -lpthread
 
-OBJS=snmp.o sighandler.o poller.o targets.o rrd.o main.o
+OBJS=snmp.o sighandler.o poller.o targets.o rrd.o conf.o main.o
 
 all: poller
 

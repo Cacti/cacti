@@ -3,13 +3,15 @@
 target_t *current = NULL;
 target_t *targets = NULL;
 int entries = 0;
+conf_t conf;
 
 int main(void){
   threads_t threads;
   pthread_t sig_thread;
   sigset_t signal_set;
   int i;
-
+  printf("INIT: reading conf\n");
+  read_conf();
   printf("INIT: signal handlers\n");
   sigemptyset(&signal_set);
   sigaddset(&signal_set, SIGHUP);

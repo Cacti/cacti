@@ -1,6 +1,6 @@
 #include "inc.h"
 
-unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who){
+unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int who){
 
   void *sessp = NULL;
   struct snmp_session session;
@@ -15,7 +15,8 @@ unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid
 
   //snmp query
   snmp_sess_init(&session);
-  session.version = SNMP_VERSION_2c;
+  if(ver=2) session.version = SNMP_VERSION_2c;
+  else session.version = SNMP_VERSION_1;
   session.peername = snmp_host;
   session.community = snmp_comm;
   session.community_len = strlen(session.community);
