@@ -44,17 +44,17 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<application>RRDTool</application>
+					<application>RRDTool</application> 1.0.48 or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>MySQL</application> 3.23 or greater
+					<application>MySQL</application> 3.23 or greater, 4.0.20d or greater highly recommended for advanced features
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>PHP</application> 4.1 or greater
+					<application>PHP</application> 4.1 or greater, 4.3.6 or greater highly recommended for advanced features
 				</para>
 			</listitem>
 		</itemizedlist>
@@ -208,39 +208,63 @@ $database_password = "cacti";</userinput></screen>
 			<title>Install PHP</title>
 			<listitem>
 				<para>
-					Extract PHP to <filename>c:\</filename> and rename the new directory to 'php'.
+					Extract PHP to <filename>c:\</filename> and rename the install (ie. php5.0.1) directory to 'php'.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Copy the files in <filename>c:\php\dlls</filename> to <filename>c:\winnt\system32</filename>.
+					If using PHP 4, move the files in <filename>c:\php\dlls</filename> to <filename>c:\php</filename>.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Copy the file <filename>c:\php\php4ts.dll</filename> to <filename>c:\winnt\system32</filename>.
+					Add the following to your Windows PATH <filename>c:\php</filename>.  The Windows path can be accessed via 
+					Control Panel at: 'System', 'Advanced', 'Environment'.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Move all MIB files from <filename>c:\php\mibs</filename> to <filename>c:\usr\mibs</filename>.
+					Add the following two environment variables to your system using the procedure above: 'MIBS=ALL' and 'MIBSDIR=<filename>c:\php\mibs</filename>'.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Create the directory <filename>c:\tmp</filename>.
+					If using PHP 4.3.5 or less (not recommended), create the following directory <filename>c:\tmp</filename>.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					In the <filename>c:\php</filename> directory, copy the <filename>php.ini-dist</filename> file to
-					<filename>c:\winnt</filename>, rename the file to <filename>php.ini</filename>, and make the
+					Rename the file <filename>c:\php\php.ini.dist</filename> to <filename>php.ini</filename>, and make the
 					following changes to the file:
 				</para>
-				<screen><userinput>extension_dir = c:\php\extensions</userinput>
-<userinput>extension=php_snmp.dll</userinput>
-<userinput>session.save_path=c:\tmp</userinput></screen>
+				<para>
+					If using PHP 4 add the following line.
+				<para>
+				<screen>
+				<userinput>extension_dir = c:\php\extensions</userinput>
+				</screen>
+				<para>
+					If using PHP 5 add the following line.
+				</para>
+				<screen>
+				<userinput>extension_dir = c:\php\ext</userinput>
+				</screen>
+				<screen>
+				<userinput>extension=php_snmp.dll</userinput>
+				<userinput>extension=php_sockets.dll</userinput>
+				</screen>
+				<para>
+					If using PHP 4.3.5 or less include the following line.  If using 4.3.6 or greater, you should remove this line if present.
+				</para>
+				<screen>
+					<userinput>session.save_path=c:\tmp</userinput>
+				</screen>
 			</listitem>
+			<listitem>
+				<para>
+					If you are planning on using CACTID, then create the following directory <filename>c:\cactid</filename>.  Download CACTID
+					and place all the files that came with the distribution into that directory.  Follow the directions that came with CACTID
+					to modify the file <filename>cactid.conf</filename> in that directory.
 		</orderedlist>
 		<orderedlist>
 			<title>Configure the Webserver (Apache)</title>
@@ -271,9 +295,23 @@ $database_password = "cacti";</userinput></screen>
 					If you are using <emphasis>Apache 2.x</emphasis>, add the following lines to your <filename>httpd.conf</filename>
 					file in the <filename>c:\apache2\conf</filename> directory:
 				</para>
-				<screen><userinput>LoadModule php4_module c:\php\sapi\php4apache2.dll</userinput>
-<userinput>AddType application/x-httpd-php .php</userinput>
-<userinput>DirectoryIndex index.html index.htm index.php</userinput></screen>
+				<para>
+					If using PHP 4, then add the following line.
+				</para>
+				<screen>
+				<userinput>LoadModule php4_module c:\php\sapi\php4apache2.dll
+				</userinput>
+				</screen>
+				<para>
+					If using PHP 5, then add the following line.
+				</para>
+				<screen>
+				<userinput>LoadModule php5_module c:\php\php5apache2.dll
+				</userinput>
+				</screen>
+				<screen>
+					<userinput>AddType application/x-httpd-php .php</userinput>
+					<userinput>DirectoryIndex index.html index.htm index.php</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
@@ -287,14 +325,14 @@ $database_password = "cacti";</userinput></screen>
 			<listitem>
 				<para>
 					Under the <guilabel>Home Directory</guilabel> tab, select <guilabel>Configuration</guilabel>
-					and click <guilabel>Add</guilabel>. Browse to the path of <filename>php4isapi.dll</filename>,
-					and type in .php as the extension.
+					and click <guilabel>Add</guilabel>. Browse to the path of <filename>php4isapi.dll</filename> or 
+					<filename>php5isapi.dll</filename>,	and type in .php as the extension.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
 					Under the <guilabel>ISAPI Filters</guilabel> tab, click <guilabel>Add</guilabel> and browse
-					to the <filename>php4isapi.dll</filename> file. Name the filter "php" and click OK.
+					to the <filename>php4isapi.dll</filename> or <filename>php5isapi.dll</filename> file. Name the filter "php" and click OK.
 				</para>
 			</listitem>
 			<listitem>
@@ -408,7 +446,8 @@ $database_password = "cacti";</userinput></screen>
 					<listitem>
 						<para>
 							Click <guilabel>Next</guilabel> and <guilabel>Browse</guilabel> on the following screen. Find <filename>c:\php</filename> and select
-							<filename>php.exe</filename>. Choose <guilabel>Daily</guilabel> on and click <guilabel>Next</guilabel>.
+							<filename>php.exe</filename>. If using PHP 5, use <filename>php-win.exe</filename> instead.  Choose <guilabel>Daily</guilabel> 
+							on and click <guilabel>Next</guilabel>.
 						</para>
 					</listitem>
 					<listitem>
@@ -421,12 +460,12 @@ $database_password = "cacti";</userinput></screen>
 							When entering a username and password make sure the user has read and write access to the following directories:
 						</para>
 						<screen>c:\apache2\htdocs\cacti\rra
-c:\apache2\htdocs\cacti\log</screen>
+						c:\apache2\htdocs\cacti\log</screen>
 						<para>
 							Make sure the user has read, write, and execute access to the following directories:
 						</para>
-						<screen>c:\php
-c:\php\sapi</screen>
+						<screen>c:\php 
+						c:\php\sapi</screen>
 					</listitem>
 					<listitem>
 						<para>
@@ -462,9 +501,9 @@ c:\php\sapi</screen>
 						<para>
 							In the <guilabel>Run</guilabel> textbox enter the following text making sure to use the appropriate paths.
 						</para>
-						<screen>c:\php\php.exe c:\apache2\htdocs\cacti\poller.php</screen>
+						<screen>c:\php\php.exe c:\mycacti\website\cacti\poller.php</screen>
 						<para>
-							The start in box should say <filename>c:\apache2\htdocs\cacti</filename>.
+							The start in box should say <filename>c:\mycacti\website\cacti</filename>.
 						</para>
 					</listitem>
 				</orderedlist>
@@ -485,7 +524,7 @@ c:\php\sapi</screen>
 				<para>
 					<emphasis>PHP Binary Path:</emphasis>
 				</para>
-				<screen>c:\php\php.exe</screen>
+				<screen>c:\php\php.exe</screen><para>If using PHP 5, you should change this to c:\php\php-win.exe</para>
 				<para>
 					<emphasis>RRDTool Binary Path:</emphasis>
 				</para>
