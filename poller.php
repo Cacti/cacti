@@ -182,7 +182,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				exit;
 			}
 
-			usleep(100000);
+			sleep(1);
 			$loop_count++;
 		}
 	}
