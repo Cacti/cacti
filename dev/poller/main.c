@@ -10,24 +10,23 @@ int main(void){
   sigset_t signal_set;
   int i;
 
-  printf("INIT: signal handlers.\n");
+  printf("INIT: signal handlers\n");
   sigemptyset(&signal_set);
   sigaddset(&signal_set, SIGHUP);
   if(pthread_sigmask(SIG_BLOCK, &signal_set, NULL) != 0) printf("pthread_sigmask error\n");
 
-  printf("INIT: jobs.\n");
+  printf("INIT: jobs\n");
   entries = get_targets();
+  if(entries==0) printf("INIT: No jobs\n");
 
-  printf("INIT: create threads.\n");
+  printf("INIT: SNMP\n");
+  init_snmp("Cacti Poller");
+
+  printf("INIT: create threads\n");
   pthread_mutex_init(&(threads.mutex), NULL);
   pthread_cond_init(&(threads.done), NULL);
   pthread_cond_init(&(threads.work), NULL);
   threads.work_count = 0;
-
-  printf("INIT: SNMP.\n");
-  init_snmp("CPoll");
-
-  printf("INIT: start threads\n");
   for(i = 0; i < THREADS; i++){
     threads.member[i].index = i;
     threads.member[i].threads = &threads;
@@ -44,7 +43,6 @@ int main(void){
     current = targets;
     threads.work_count = entries;
     if(pthread_mutex_unlock(&(threads.mutex)) != 0) printf("pthread_mutex_unlock error\n");
-    printf("Queue ready, broadcasting thread go condition.\n");
     if(pthread_cond_broadcast(&(threads.work)) != 0) printf("pthread_cond_broadcast error\n");
     if(pthread_mutex_lock(&(threads.mutex)) != 0) printf("pthread_mutex_lock error\n");
     while(threads.work_count > 0){

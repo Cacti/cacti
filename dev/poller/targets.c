@@ -22,8 +22,11 @@ int get_targets(){
     exit(1);
   }
   sprintf(query, "select host,comm,oid,rrd from targets");
-  if (mysql_query(&mysql, query)) fprintf(stderr, "Query error.\n");
-  if ((result = mysql_store_result(&mysql)) == NULL) fprintf(stderr, "Retrieval error.\n");
+  if (mysql_query(&mysql, query)) fprintf(stderr, "Error in query\n");
+  if ((result = mysql_store_result(&mysql)) == NULL){
+    fprintf(stderr, "Error retrieving data\n");
+    exit(1);
+  }
   mysql_close(&mysql);
   free(targets);
   targets=NULL;

@@ -30,7 +30,7 @@ $i=0; $j=0;
 		$j++;
 		}
 
-	mysql_query("insert into targets values('','$host','$comm','$oid$int','$rrd')",$cnn_id);
+	if($host!="" && $comm!="" && $oid!="") mysql_query("insert into targets values('','$host','$comm','$oid$int','$rrd')",$cnn_id);
 $i++;
 }
 ?>
