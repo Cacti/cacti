@@ -30,12 +30,12 @@ function upgrade_to_0_8_5() {
 	db_install_execute("0.8.5", "UPDATE snmp_query_graph_rrd_sv set text = REPLACE(text,'ifDesc','ifDescr') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4 or snmp_query_graph_id=20 or snmp_query_graph_id=21 or snmp_query_graph_id=22);");
 	db_install_execute("0.8.5", "UPDATE snmp_query_graph_sv set text = REPLACE(text,'ifDesc','ifDescr') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4 or snmp_query_graph_id=20 or snmp_query_graph_id=21 or snmp_query_graph_id=22);");
 	
-	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=1;");
-	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=2;");
-	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=38;");
-	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=39;");
-	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=40;");
-	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=41;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=1;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=2;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=38;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=39;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=40;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=41;");
 	
 	$data_templates = db_fetch_assoc("select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);");
 	
@@ -45,15 +45,15 @@ function upgrade_to_0_8_5() {
 	}
 	}
 	
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=22;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=24;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=1;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=2;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=31;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=32;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=25;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=33;");
-	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=23;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=22;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=24;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=1;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=2;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=31;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=32;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=25;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=33;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=23;");
 	
 	db_install_execute("0.8.5", "UPDATE settings set name='snmp_version' where name='smnp_version';");
 }
