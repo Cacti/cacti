@@ -31,6 +31,12 @@ include_once ("include/config_arrays.php");
 
 define("ROWS_PER_PAGE", 30);
 
+$graph_actions = array(
+	1 => "Delete",
+	2 => "Change Graph Template",
+	3 => "Duplicate"
+	);
+	
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -38,6 +44,13 @@ switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
 		
+		break;
+	case 'actions':
+		include_once ("include/top_header.php");
+		
+		form_actions();
+		
+		include_once ("include/bottom_footer.php");
 		break;
 	case 'graph_diff':
 		include_once ("include/top_header.php");
@@ -58,13 +71,6 @@ switch ($_REQUEST["action"]) {
 		
 		include_once ("include/bottom_footer.php");
 		break;
-	case 'graph_duplicate':
-		include_once ('include/utility_functions.php');
-		
-		DuplicateGraph($id);
-		
-		header ("Location: graphs.php");
-		break;
 	case 'item':
 		include_once ("include/top_header.php");
 		
@@ -75,12 +81,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		item_movedown();
 		
-		header ("Location: " . getenv("HTTP_REFERER"));
+		header ("Location: " . $_SERVER["HTTP_REFERER"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 		
-		header ("Location: " . getenv("HTTP_REFERER"));
+		header ("Location: " . $_SERVER["HTTP_REFERER"]);
 		break;
 	case 'graph_remove':
 		graph_remove();
@@ -129,6 +135,19 @@ function draw_graph_form_select($main_action) {
 		</form>
 	</tr>
 <?php
+}
+
+function add_tree_names_to_actions_array() {
+	global $graph_actions;
+	
+	/* add a list of tree names to the actions dropdown */
+	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
+	
+	if (sizeof($trees) > 0) {
+	foreach ($trees as $tree) {
+		$graph_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
+	}
+	}
 }
 
 /* --------------------------
@@ -274,7 +293,85 @@ function form_save() {
 		header ("Location: graphs.php");
 	}
 }
-   
+
+/* ------------------------
+    The "actions" function 
+   ------------------------ */
+
+function form_actions() {
+	include_once ("include/tree_functions.php");
+	include_once ("include/tree_view_functions.php");
+	
+	global $colors, $graph_actions;
+	
+	/* add a list of tree names to the actions dropdown */
+	add_tree_names_to_actions_array();
+	
+	start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	
+	$graph_list = "";
+	
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			$graph_list .= "<li>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $matches[1]) . "<br>";
+			$graph_array{$matches[1]} = $matches[1];
+		}
+	}
+	
+	print "<form action='graphs.php' method='post'>\n";
+	
+	if ($_POST["drp_action"] == "1") {
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following graphs?</p>
+					<p>$graph_list</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "2") {
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Choose a graph template and click save to change the graph template for
+					the following graphs. Be aware that all warnings will be suppressed during the
+					conversion, so graph data loss is possible.</p>
+					<p>$graph_list</p>
+					<p><strong>New Graph Template:</strong><br>"; form_base_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates"),"name","id","","","0"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "3") {
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following graphs will be duplicated. You can
+					optionally change the title format for the new graphs.</p>
+					<p>$graph_list</p>
+					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<graph_title> (1)", "", "255", "30", "textbox"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) {
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following graphs will be place under the branch selected
+					below.</p>
+					<p>$graph_list</p>
+					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}
+	
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<a href='graphs.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>\n
+				<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>
+			</td>
+		</tr>
+		";	
+	
+	end_box();
+}
+
 /* -----------------------
     item - Graph Items 
    ----------------------- */
@@ -865,7 +962,7 @@ function graph_edit() {
 }
 
 function graph() {
-	global $colors;
+	global $colors, $graph_actions;
 	
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	if (isset($_REQUEST["page"])) {
@@ -999,11 +1096,13 @@ function graph() {
 			</td>
 		</tr>\n";
 	
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Title",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Template Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Size",$colors["header_text"],2);
-	print "</tr>";
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Graph Title</td>
+			<td class='textSubHeaderDark'>Template Name</td>
+			<td class='textSubHeaderDark'>Size</td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll()'></td>
+		<form name='chk' method='post' action='graphs.php'>
+		</tr>";
 	
 	$i = 0;
 	if (sizeof($graph_list) > 0) {
@@ -1019,8 +1118,8 @@ function graph() {
 			<td>
 				<?php print $graph["height"];?>x<?php print $graph["width"];?>
 			</td>
-			<td width="1%" align="right">
-				<a href="graphs.php?action=graph_remove&id=<?php print $graph["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $graph["local_graph_id"];?>' title="<?php print $graph["title"];?>">
 			</td>
 		</tr>
 	<?php
@@ -1029,7 +1128,27 @@ function graph() {
 	}else{
 		print "<tr><td><em>No Graphs Found</em></td></tr>";
 	}
-	end_box();
+	end_box(false);
+	
+	/* add a list of tree names to the actions dropdown */
+	add_tree_names_to_actions_array();
+	
+	print "	<table align='center' width='98%'>
+			<tr>
+				<td width='1' valign='top'>
+					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+				</td>
+				<td align='right'>";
+					form_base_dropdown("drp_action",$graph_actions,"","","1","","");
+	print "			</td>
+				<td width='1' align='right'>
+					<input type='image' src='images/button_go.gif' alt='Create Graphs'>
+				</td>
+			</tr>
+		</table>
+		<input type='hidden' name='action' value='actions'>
+		</form>
+		<br>";
 }
 
 ?>
