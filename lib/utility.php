@@ -558,7 +558,7 @@ function push_out_graph_item($graph_template_item_id) {
 	}
 	
 	/* this is trickier with graph_items than with the actual graph... we have to make sure not to 
-	overright any items covered in the "graph item inputs". the same thing applies to graphs, but
+	overwrite any items covered in the "graph item inputs". the same thing applies to graphs, but
 	is easier to detect there (t_* columns). */
 	$graph_item_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
