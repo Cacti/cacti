@@ -1,8 +1,11 @@
+							</table>
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td bgcolor="#FFFFFF">
 				&nbsp;
 			</td>
 		</tr>
