@@ -66,7 +66,7 @@ $input["path_rrdtool"]["check"] = "";
 $input["path_rrdtool"]["type"] = "textbox";
 
 if ($config["cacti_server_os"] == "unix") {
-	$which_rrdtool = `which rrdtool`;
+	$which_rrdtool = trim(shell_exec("which rrdtool"));
 	
 	if (!empty($which_rrdtool)) {
 		$input["path_rrdtool"]["default"] = $which_rrdtool;
@@ -84,7 +84,7 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpwalk"]["check"] = "";
 	$input["path_snmpwalk"]["type"] = "textbox";
 	
-	$which_snmpwalk = `which snmpwalk`;
+	$which_snmpwalk = trim(shell_exec("which snmpwalk"));
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
@@ -100,7 +100,7 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpget"]["check"] = "";
 	$input["path_snmpget"]["type"] = "textbox";
 	
-	$which_snmpwalk = `which snmpget`;
+	$which_snmpwalk = trim(shell_exec("which snmpget"));
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpget"]["default"] = $which_snmpwalk;
