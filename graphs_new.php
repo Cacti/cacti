@@ -477,11 +477,29 @@ function graphs() {
 		print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
 	}
 
+	$available_graph_templates = db_fetch_assoc("SELECT
+		graph_templates.id, graph_templates.name
+		FROM snmp_query_graph RIGHT JOIN graph_templates
+		ON snmp_query_graph.graph_template_id = graph_templates.id
+		WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
+
+	$keeper = array();
+	foreach ($available_graph_templates as $item) {
+		if (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" .
+				$item["id"] . " and host_id=" . $host["id"])) > 0) {
+			/* do nothing */
+		} else {
+			array_push($keeper, $item);
+		}
+	}
+
+	$available_graph_templates = $keeper;
+
 	/* create a row at the bottom that lets the user create any graph they choose */
 	print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
 			<td colspan='2' width='60' nowrap>
 				<strong>Create:</strong>&nbsp;";
-				form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "(Select a graph type to create)", "", "font-size: 10px;");
+				form_dropdown("cg_g", $available_graph_templates, "name", "id", "", "(Select a graph type to create)", "", "font-size: 10px;");
 	print "		</td>
 		</tr>";
 
