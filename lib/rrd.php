@@ -373,7 +373,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$i = 0;
     	if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
-		if (ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) {
+		if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && (!empty($graph_item["data_source_name"]))) {
 			$data_source_name = $graph_item["data_source_name"];
 			
 			/* use a user-specified ds path if one is entered */
@@ -381,7 +381,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			
 			/* FOR WIN32: Ecsape all colon for drive letters (ex. D\:/path/to/rra) */
 			$data_source_path = str_replace(":", "\:", $data_source_path);
-	
+			
 			/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
 			to a function that matches the digits with letters. rrdtool likes letters instead
 			of numbers in DEF names; especially with CDEF's. cdef's are created
@@ -463,13 +463,29 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		
 		if ((!empty($graph_item["cdef_id"])) && (isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}) == false)) {
 			$cdef_string = get_cdef($graph_item["cdef_id"]);
-			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]), $cdef_string);
 			
-			/* make the initial "virtual" cdef name: 'cdef' + md5(dsid) */
+			/* create cdef string for "total all data sources" if requested */
+			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
+				$item_count = 0;
+				for ($t=0;($t<count($graph_items));$t++) {
+					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_source_name"]))) {
+						$cdef_total_ds .= generate_graph_def_name($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) . ",";
+						
+						$item_count++;
+					}
+				}
+				
+				$cdef_total = $cdef_total_ds . str_repeat("+,", ($item_count - 2)) . "+";
+			}
+			
+			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]), $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
+			
+			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
 			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name("$i") . "=";
 			$cdef_graph_defs .= $cdef_string;
 			$cdef_graph_defs .= " \\\n";
-		
+			
 			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
 			$cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]} = "$i";
 		}
