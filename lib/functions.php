@@ -231,8 +231,9 @@ function get_full_script_path($local_data_id) {
 		where data_template_data.data_input_id=data_input.id
 		and data_template_data.local_data_id=$local_data_id");
 	
-	if ($data_source["type_id"] > 1) {
-		return 0;
+	/* snmp-actions don't have paths */
+	if (($data_source["type_id"] == "2") || ($data_source["type_id"] == "3")) {
+		return false;
 	}
 	
 	$data = db_fetch_assoc("select
