@@ -304,7 +304,7 @@ function form_save() {
 				input */
 				if (sizeof($graph_input_values) > 0) {
 				while (list($local_graph_id, $value) = each($graph_input_values)) {
-					db_execute("update graph_templates_item set " . $save["column_name"] . "='$value' where graph_template_id=" . $save["graph_template_id"] . " and local_graph_id>0 and " . array_to_sql_or($selected_graph_items, "local_graph_template_item_id"));
+					db_execute("update graph_templates_item set " . $save["column_name"] . "='$value' where local_graph_id=$local_graph_id and " . array_to_sql_or($selected_graph_items, "local_graph_template_item_id"));
 				}
 				}
 			}else{
