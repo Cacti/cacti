@@ -447,7 +447,7 @@ function push_out_graph_item($graph_template_item_id) {
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
 		from graph_template_input, graph_template_input_defs
-		where graph_template_input.graph_template_id=$graph_template_item[graph_template_id]
+		where graph_template_input.graph_template_id=" . $graph_template_item["graph_template_id"] . "
 		and graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		and graph_template_input_defs.graph_template_item_id=$graph_template_item_id");
 	
@@ -456,10 +456,8 @@ function push_out_graph_item($graph_template_item_id) {
 	/* loop through each graph item column name (from the above array) */
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
-		if (isset($graph_item_inputs[$field_name])) {
-			if ($graph_item_inputs[$field_name] != $graph_template_item_id) {
-				db_execute("update graph_templates_item set $field_name='$graph_template_item[$field_name]' where local_graph_template_item_id=$graph_template_item[id]"); 
-			}
+		if (!isset($graph_item_inputs[$field_name])) {
+			db_execute("update graph_templates_item set $field_name='$graph_template_item[$field_name]' where local_graph_template_item_id=" . $graph_template_item["id"]); 
 		}
 	}
 }
