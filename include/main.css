@@ -116,3 +116,7 @@ a:hover {
 .cboSmall {
 	font-size: 10px;
 }
+
+.txtErrorTextBox {
+	border: 2px solid #ff0000;
+}

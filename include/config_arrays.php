@@ -30,6 +30,9 @@ $messages = array(
 	2  => array(
 		"message" => 'Save Failed',
 		"type" => "error"),
+	3  => array(
+		"message" => 'Save Failed: Field Input Error (Check Red Fields)',
+		"type" => "error")
 		);
 
 $cdef_operators = array(1 => "+",

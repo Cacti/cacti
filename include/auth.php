@@ -48,6 +48,8 @@
 	/* SESSION DATA */
 	session_start();
 	
+
+	
         if (isset($_SESSION)) { $HTTP_SESSION_VARS = $_SESSION; }
 
 #if (isset($_SESSION)) { print "Got _SESSION.<BR>\n";foreach (array_keys($_SESSION) as $key) { print "key of '$key', val of '$_SESSION[$key]'<BR>\n"; }  } else { print "No session.<BR>\n";}

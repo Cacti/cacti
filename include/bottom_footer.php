@@ -54,3 +54,10 @@ function drag_prep() {
 	
 </body>
 </html>
+
+<?
+/* we use this session var to store field values for when a save fails,
+this way we can restore the field's previous values. we reset it here, because
+they only need to be stored for a single page */
+session_unregister("sess_field_values");
+?>
