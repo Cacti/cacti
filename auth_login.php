@@ -50,7 +50,7 @@ case 'login':
 					$template_user = db_fetch_row("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, '' as password , 1 as realm, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = '" . read_config_option("ldap_template") . "'");
 
 					/* write out that information to the new ldap user */
-					db_execute("INSERT INTO user_auth (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["realm"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
+					db_execute("INSERT INTO user_auth (username, password, realm, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["realm"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
 					$ldap_new = true;
 
 					/* get the newly created user_id */
