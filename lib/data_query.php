@@ -38,8 +38,8 @@ function run_data_query($host_id, $snmp_query_id) {
 	}elseif ($type_id == DATA_INPUT_TYPE_SCRIPT_QUERY) {
 		debug_log_insert("data_query", "Found type = '4 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
-	}elseif ($type_id == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) {
-		debug_log_insert("data_query", "Found type = '5 '[script query].");
+	}elseif ($type_id == DATA_INPUT_TYPE_PHP_SCRIPT_QUERY_SERVER) {
+		debug_log_insert("data_query", "Found type = '7 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}else{
 		debug_log_insert("data_query", "Unknown type = '$type_id'");

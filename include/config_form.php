@@ -808,7 +808,7 @@ $fields_data_query_edit = array(
 		"friendly_name" => "Data Input Method",
 		"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
 		"value" => "|arg1:data_input_id|",
-		"sql" => "select id,name from data_input where (type_id=3 or type_id=4 or type_id=5 or type_id=6 or type_id=7 or type_id=8) order by name",
+		"sql" => "select id,name from data_input where (type_id=3 or type_id=4 or type_id=7 or type_id=8) order by name",
 		),
 	"id" => array(
 		"method" => "hidden_zero",
