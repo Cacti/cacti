@@ -36,7 +36,7 @@ case 'login':
 
 	/* --- start ldap section --- */
 	$ldap_auth = false;
-	if (read_config_option("ldap_enabled") == "on"){
+	if ((read_config_option("ldap_enabled") == "on") && (strlen($_POST["password"]))){
 		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
 
 		if ($ldap_conn) {
