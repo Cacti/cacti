@@ -58,11 +58,18 @@ case 'tree':
 	$access_denied = false;
 	$tree_parameters = array();
 	
-	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'><tr>\n";
-	draw_tree_dropdown((isset($_GET["tree_id"]) ? $_GET["tree_id"] : "0"));
-	print "</tr></table>";
+	$tree_dropdown_html = draw_tree_dropdown((isset($_GET["tree_id"]) ? $_GET["tree_id"] : "0"));
 	
-	print "<br>";
+	/* don't even print the table if there is not >1 tree */
+	if (!empty($tree_dropdown_html)) {
+		print "
+		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
+			<tr>\n
+				$tree_dropdown_html
+			</tr>
+		</table>
+		<br>";
+	}
 	
 	if (isset($_SESSION["sess_view_tree_id"])) {
 		if (read_config_option("global_auth") == "on") {

@@ -551,9 +551,9 @@ function draw_tree_dropdown($current_tree_id) {
 	
 	global $colors;
 	
-	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
+	$html = "";
 	
-	print "<form name='form_tree_id'>";
+	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 	
 	if (read_config_option("global_auth") == "on") {
 		if ($current_user["graph_policy"] == "1") {
@@ -591,7 +591,8 @@ function draw_tree_dropdown($current_tree_id) {
 	
 	/* make the dropdown list of trees */
 	if (sizeof($tree_list) > 1) {
-		print "	<td valign='middle' height='30' bgcolor='#" . $colors["panel"] . "'>\n
+		$html ="<form name='form_tree_id'>
+			<td valign='middle' height='30' bgcolor='#" . $colors["panel"] . "'>\n
 				<table width='100%' cellspacing='0' cellpadding='0'>\n
 					<tr>\n
 						<td width='200' class='textHeader'>\n
@@ -601,9 +602,9 @@ function draw_tree_dropdown($current_tree_id) {
 							<select name='cbo_tree_id' onChange='window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value'>\n";
 		
 		foreach ($tree_list as $tree) {
-			print "	<option value='graph_view.php?action=tree&tree_id=" . $tree["id"] . "'";
-				if ($_SESSION["sess_view_tree_id"] == $tree["id"]) { print " selected"; }
-				print ">" . $tree["name"] . "</option>\n";
+			$html .= "<option value='graph_view.php?action=tree&tree_id=" . $tree["id"] . "'";
+				if ($_SESSION["sess_view_tree_id"] == $tree["id"]) { $html .= " selected"; }
+				$html .= ">" . $tree["name"] . "</option>\n";
 			}
 		
 		print "</select>\n";
@@ -612,6 +613,8 @@ function draw_tree_dropdown($current_tree_id) {
 		/* there is only one tree; use it */
 		//print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
 	}
+	
+	return $html;
 }
 
 ?>
