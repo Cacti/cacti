@@ -207,10 +207,17 @@ $settings_graphs = array(
 	"general" => array(
 		"default_rra_id" => array(
 			"friendly_name" => "Default RRA",
-			"description" => "The default RRA to use when displaying graphs in preview mode.",
+			"description" => "The default RRA to use when displaying graphs.",
 			"method" => "drop_sql",
 			"sql" => "select id,name from rra order by name",
 			"default" => "1"
+			),
+		"timespan" => array(
+			"friendly_name" => "Preview Timespan",
+			"description" => "The amount of time to represent on a thumbnail graph in seconds. Putting '0' in this field uses the timespan of the RRA specified in 'Default RRA'.",
+			"method" => "textbox",
+			"default" => "60000",
+			"max_length" => "12"
 			),
 		"default_height" => array(
 			"friendly_name" => "Height",
@@ -232,13 +239,6 @@ $settings_graphs = array(
 			"method" => "drop_array",
 			"array" => $graph_views,
 			"default" => "1"
-			),
-		"timespan" => array(
-			"friendly_name" => "Timespan",
-			"description" => "The amount of time to represent on a graph created in preview mode (0 uses auto).",
-			"method" => "textbox",
-			"default" => "60000",
-			"max_length" => "12"
 			),
 		"num_columns" => array(
 			"friendly_name" => "Columns",
