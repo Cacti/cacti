@@ -18,5 +18,5 @@ if ($ARGV[0] eq "30") {
 
 chomp $avg;
 $avg =~ s/,//;
-
+$avg =~ s/\n//;
 print $avg;
