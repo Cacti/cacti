@@ -24,46 +24,45 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ('include/form.php');
-include_once ('include/utility_functions.php');
+include("./include/auth.php");
+include_once("./lib/utility.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'clear_poller_cache':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		repopulate_poller_cache();
 		
 		utilities();
 		utilities_view_poller_cache();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'view_snmp_cache':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		utilities();
 		utilities_view_snmp_cache();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'view_poller_cache':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		utilities();
 		utilities_view_poller_cache();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		utilities();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 

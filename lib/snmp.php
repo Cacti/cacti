@@ -8,7 +8,7 @@
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
  |                                                                         |
- | This program is distributed in the hope that it will be useful,         |
+ | This program is distributed in the hope that it will be useful,        
  | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
@@ -39,7 +39,7 @@ function data_query($host_id, $snmp_query_id) {
 function get_data_query_array($snmp_query_id) {
 	global $config;
 	
-	include_once ($config["include_path"] . "/xml_functions.php");
+	include_once($config["library_path"] . "/xml.php");
 	
 	$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
 	$xml_file_path = str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $xml_file_path);

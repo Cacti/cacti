@@ -24,10 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/functions.php");
-include_once ("include/config_arrays.php");
-include_once ('include/form.php');
+include ("./include/auth.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -40,33 +37,33 @@ switch ($_REQUEST["action"]) {
 	case 'field_remove':
 		field_remove();
 	    
-		header ("Location: data_input.php?action=edit&id=" . $_GET["data_input_id"]);
+		header("Location: data_input.php?action=edit&id=" . $_GET["data_input_id"]);
 		break;
 	case 'field_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		field_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
 		data_remove();
 		
-		header ("Location: data_input.php");
+		header("Location: data_input.php");
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		data_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		data();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -103,9 +100,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header ("Location: data_input.php?action=edit&id=" . (empty($data_input_id) ? $_POST["id"] : $data_input_id));
+			header("Location: data_input.php?action=edit&id=" . (empty($data_input_id) ? $_POST["id"] : $data_input_id));
 		}else{
-			header ("Location: data_input.php");
+			header("Location: data_input.php");
 		}
 	}elseif (isset($_POST["save_component_field"])) {
 		$save["id"] = $_POST["id"];
@@ -134,9 +131,9 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header ("Location: data_input.php?action=field_edit&data_input_id=" . $_POST["data_input_id"] . "&id=" . (empty($data_input_field_id) ? $_POST["id"] : $data_input_field_id) . (!empty($_POST["input_output"]) ? "&type=" . $_POST["input_output"] : ""));
+			header("Location: data_input.php?action=field_edit&data_input_id=" . $_POST["data_input_id"] . "&id=" . (empty($data_input_field_id) ? $_POST["id"] : $data_input_field_id) . (!empty($_POST["input_output"]) ? "&type=" . $_POST["input_output"] : ""));
 		}else{
-			header ("Location: data_input.php?action=edit&id=" . $_POST["data_input_id"]);
+			header("Location: data_input.php?action=edit&id=" . $_POST["data_input_id"]);
 		}
 	}
 }
@@ -149,9 +146,9 @@ function field_remove() {
 	global $registered_cacti_names;
 	
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -213,87 +210,117 @@ function field_edit() {
 	
 	start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="data_input.php">
+	$form_array = array(
+			"config" => array(
+				),
+			"fields" => array(
+				)
+			);
 	
-	<?php
 	$i = 0;
+	
+	/* field name */
 	if (($data_input["type_id"] == "1") && ($current_field_type == "in")) { /* script */
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Field [<?php print $header_name;?>]</font><br>
-				Choose the associated field from the <?php print $header_name;?> field.
-			</td>
-			<?php form_dropdown("data_name",$array_field_names,"","",(isset($field) ? $field["data_name"] : ""),"","");?>
-		</tr><?php
+		$form_array["fields"] += array(
+			"data_name" => array(
+				"method" => "drop_array",
+				"friendly_name" => "Field [$header_name]",
+				"description" => "Choose the associated field from the $header_name field.",
+				"value" => (isset($field) ? $field["data_name"] : ""),
+				"array" => $array_field_names,
+				)
+			);
 	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($current_field_type == "out")) { /* snmp */
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Field Name [<?php print $header_name;?>]</font><br>
-				Enter a name for this <?php print $header_name;?> field.
-			</td>
-			<?php form_text_box("data_name",(isset($field) ? $field["data_name"] : ""),"","50", "40");?>
-		</tr><?php
+		$form_array["fields"] += array(
+			"data_name" => array(
+				"method" => "textbox",
+				"friendly_name" => "Field [$header_name]",
+				"description" => "Enter a name for this $header_name field.",
+				"value" => (isset($field) ? $field["data_name"] : ""),
+				"max_length" => "50",
+				)
+			);
 	}
 	
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Friendly Name</font><br>
-			Enter a meaningful name for this data input method.
-		</td>
-		<?php form_text_box("name",(isset($field) ? $field["name"] : ""),"","200", "40");?>
-	</tr>
+	/* field friendly name (or description) */
+	$form_array["fields"] += array(
+		"name" => array(
+			"method" => "textbox",
+			"friendly_name" => "Friendly Name",
+			"description" => "Enter a meaningful name for this data input method.",
+			"value" => (isset($field) ? $field["name"] : ""),
+			"max_length" => "200",
+			)
+		);
 	
-	<?php
+	/* ONLY if the field is an output */
 	if ($current_field_type == "out") {
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Update RRD File</font><br>
-			Whether data from this output field is to be entered into the rrd file.
-		</td>
-		<?php form_checkbox("update_rra",(isset($field) ? $field["update_rra"] : ""),"Update RRD File","on",(isset($field) ? $field["id"] : ""));?>
-	</tr>
-	<?php
+		$form_array["fields"] += array(
+			"name" => array(
+				"method" => "checkbox",
+				"friendly_name" => "Update RRD File",
+				"description" => "Whether data from this output field is to be entered into the rrd file.",
+				"value" => (isset($field) ? $field["update_rra"] : ""),
+				"default" => "on",
+				"form_id" => (isset($field) ? $field["id"] : "")
+				)
+			);
 	}
 	
+	/* ONLY if the field is an input */
 	if ($current_field_type == "in") {
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Regular Expression Match</font><br>
-			If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).
-		</td>
-		<?php form_text_box("regexp_match",(isset($field) ? $field["regexp_match"] : ""),"","200", "40");?>
-	</tr>
-	<?php
+		$form_array["fields"] += array(
+			"regexp_match" => array(
+				"method" => "textbox",
+				"friendly_name" => "Regular Expression Match",
+				"description" => "If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).",
+				"value" => (isset($field) ? $field["regexp_match"] : ""),
+				"max_length" => "200"
+				),
+			"allow_nulls" => array(
+				"method" => "checkbox",
+				"friendly_name" => "Allow Empty Input",
+				"description" => "Check here if you want to allow NULL input in this field from the user.",
+				"value" => (isset($field) ? $field["allow_nulls"] : ""),
+				"default" => "",
+				"form_id" => false
+				),
+			"type_code" => array(
+				"method" => "textbox",
+				"friendly_name" => "Special Type Code",
+				"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.",
+				"value" => (isset($field) ? $field["type_code"] : ""),
+				"max_length" => "40"
+				),
+			);
+		
 	}
 	
-	if ($current_field_type == "in") {
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Allow Empty Input</font><br>
-			Check here if you want to allow NULL input in this field from the user.
-		</td>
-		<?php form_checkbox("allow_nulls",(isset($field) ? $field["allow_nulls"] : ""),"Allow NULL's","",false);?>
-	</tr>
-	<?php
-	}
+	$form_array["fields"] += array(
+		"id" => array(
+			"method" => "hidden",
+			"value" => (isset($field) ? $field["id"] : "0")
+			),
+		"input_output" => array(
+			"method" => "hidden",
+			"value" => $current_field_type
+			),
+		"sequence" => array(
+			"method" => "hidden",
+			"value" => (isset($field) ? $field["sequence"] : "0")
+			),
+		"data_input_id" => array(
+			"method" => "hidden",
+			"value" => (isset($field) ? $field["data_input_id"] : "0")
+			),
+		"save_component_field" => array(
+			"method" => "hidden",
+			"value" => "1"
+			),
+		);
 	
-	if ($current_field_type == "in") {
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Special Type Code</font><br>
-			If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.
-		</td>
-		<?php form_text_box("type_code",(isset($field) ? $field["type_code"] : ""),"","40", "40");?>
-	</tr>
-	<?php
-	}
+	draw_edit_form($form_array);
 	
-	form_hidden_id("id",(isset($field) ? $field["id"] : "0"));
-	form_hidden_box("input_output",$current_field_type,"");
-	form_hidden_box("sequence",(isset($field) ? $field["sequence"] : "0"),"");
-	form_hidden_box("data_input_id",$_GET["data_input_id"],(isset($field) ? $field["data_input_id"] : "0"));
-	form_hidden_box("save_component_field","1","");
 	end_box();
 	
 	form_save_button("data_input.php?action=edit&id=" . $_GET["data_input_id"]);	
@@ -305,9 +332,9 @@ function field_edit() {
 
 function data_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "data_input.php?action=remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -330,43 +357,51 @@ function data_edit() {
 	
 	start_box("<strong>Data Input Methods</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="data_input.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "Enter a meaningful name for this data input method.",
+					"value" => (isset($data_input) ? $data_input["name"] : ""),
+					"max_length" => "255",
+					),
+				"type_id" => array(
+					"method" => "drop_array",
+					"friendly_name" => "Input Type",
+					"description" => "Choose what type of data input method this is.",
+					"value" => (isset($data_input) ? $data_input["type_id"] : ""),
+					"array" => $input_types,
+					),
+				"input_string" => array(
+					"method" => "textbox",
+					"friendly_name" => "Input String",
+					"description" => "The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.",
+					"value" => (isset($data_input) ? $data_input["input_string"] : ""),
+					"max_length" => "255",
+					),
+				"output_string" => array(
+					"method" => "textbox",
+					"friendly_name" => "Output String",
+					"description" => "The data that is expected back from the input script; defined as &lt;&gt; brackets.",
+					"value" => (isset($data_input) ? $data_input["output_string"] : ""),
+					"max_length" => "255",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($data_input) ? $data_input["id"] : "0")
+					),
+				"save_component_data_input" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			Enter a meaningful name for this data input method.
-		</td>
-		<?php form_text_box("name",(isset($data_input) ? $data_input["name"] : ""),"","255", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Input Type</font><br>
-			Choose what type of data input method this is.
-		</td>
-		<?php form_dropdown("type_id",$input_types,"","",(isset($data_input) ? $data_input["type_id"] : ""),"","");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Input String</font><br>
-			The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.
-		</td>
-		<?php form_text_box("input_string",(isset($data_input) ? $data_input["input_string"] : ""),"","255", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Output String</font><br>
-			The data that is expected back from the input script; defined as &lt;&gt; brackets.
-		</td>
-		<?php form_text_box("output_string",(isset($data_input) ? $data_input["output_string"] : ""),"","255", "40");?>
-	</tr>
-	
-	<?php
-	form_hidden_id("id",(isset($data_input) ? $data_input["id"] : "0"));
 	end_box();
 	
 	if (!empty($_GET["id"])) {
@@ -442,8 +477,6 @@ function data_edit() {
 		}
 		end_box();
 	}
-	
-	form_hidden_box("save_component_data_input","1","");
 	
 	form_save_button("data_input.php");
 }

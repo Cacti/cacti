@@ -211,7 +211,7 @@ function rrdtool_function_update($update_cache_array) {
 function rrdtool_function_tune($rrd_tune_array) {
 	global $config;
 	
-	include ($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/config_arrays.php");
 	
 	$data_source_name = get_data_source_name($rrd_tune_array["data_source_id"]);
 	$data_source_type = $data_source_types{$rrd_tune_array["data-source-type"]};
@@ -372,8 +372,8 @@ function bandwidth_summation($local_data_id, $seconds) {
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	global $config;
 	
-	include_once ($config["include_path"] . "/cdef_functions.php");
-	include ($config["include_path"] . "/config_arrays.php");
+	include_once($config["library_path"] . "/cdef.php");
+	include($config["include_path"] . "/config_arrays.php");
 	
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */

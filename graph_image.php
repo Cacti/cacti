@@ -27,8 +27,10 @@
 /* since we'll have additional headers, tell php when to flush them */
 ob_start();
 
-$guest_account = true; include ('include/auth.php');
-include_once ("include/rrd_functions.php");
+$guest_account = true;
+
+include("./include/auth.php");
+include_once("./lib/rrd.php");
 
 header("Content-type: image/png");
 

@@ -24,9 +24,10 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ('include/form.php');
-include_once ("include/config_arrays.php");
+include ("./include/auth.php");
+include_once("./lib/tree.php");
+include_once("./lib/tree_view.php");
+include_once("./lib/utility.php");
 
 $ds_actions = array(
 	1 => "Delete",
@@ -56,21 +57,21 @@ switch ($_REQUEST["action"]) {
 	case 'template_remove':
 		template_remove();
 		
-		header ("Location: data_templates.php");
+		header("Location: data_templates.php");
 		break;
 	case 'template_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		template_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once ("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		template();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -79,8 +80,6 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	include_once ("include/utility_functions.php");
-	
 	if (isset($_POST["save_component_template"])) {
 		/* save: data_template */
 		$save1["id"] = $_POST["data_template_id"];
@@ -207,9 +206,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["data_template_id"]))) {
-			header ("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
+			header("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
 		}else{
-			header ("Location: data_templates.php");
+			header("Location: data_templates.php");
 		}
 	}
 }
@@ -219,10 +218,6 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	include_once ("include/tree_functions.php");
-	include_once ("include/tree_view_functions.php");
-	include_once ("include/utility_functions.php");
-	
 	global $colors, $ds_actions;
 	
 	/* if we are to save this form, instead of display it */
@@ -271,7 +266,7 @@ function form_actions() {
 		$i++;
 	}
 	
-	include_once ("include/top_header.php");
+	include_once("./include/top_header.php");
 	
 	start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 	
@@ -318,7 +313,7 @@ function form_actions() {
 	
 	end_box();
 	
-	include_once ("include/bottom_footer.php");
+	include_once("./include/bottom_footer.php");
 }
  
 /* ----------------------------
@@ -336,7 +331,7 @@ function template_rrd_remove() {
 	}
 	}
 	
-	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["data_template_id"]);
+	header("Location: data_templates.php?action=template_edit&id=" . $_GET["data_template_id"]);
 }
 
 function template_rrd_add() {
@@ -353,7 +348,7 @@ function template_rrd_add() {
 	}
 	}
 	
-	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
+	header("Location: data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 }
 
 function template_edit() {
@@ -369,19 +364,43 @@ function template_edit() {
 	}
 	
 	start_box("<strong>Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	?>
 	
-	<form method="post" action="data_templates.php">
-		
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			The name given to this data template.
-		</td>
-		<?php form_text_box("template_name",(isset($template) ? $template["name"] : ""),"","150", "40");?>
-	</tr>
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"template_name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "The name given to this data template.",
+					"value" => (isset($template) ? $template["name"] : ""),
+					"max_length" => "150",
+					),
+				"data_template_id" => array(
+					"method" => "hidden",
+					"value" => (isset($template_data) ? $template_data["data_template_id"] : "0")
+					),
+				"data_template_data_id" => array(
+					"method" => "hidden",
+					"value" => (isset($template_data) ? $template_data["id"] : "0")
+					),
+				"data_template_rrd_id" => array(
+					"method" => "hidden",
+					"value" => (isset($template_rrd) ? $template_rrd["id"] : "0")
+					),
+				"current_rrd" => array(
+					"method" => "hidden",
+					"value" => (isset($_GET["view_rrd"]) ? $_GET["view_rrd"] : "0")
+					),
+				"save_component_template" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php
 	end_box();
 	
 	start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
@@ -389,24 +408,40 @@ function template_edit() {
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source["data_source_path"]);
 	
-	$i = 0;
+	
+	$form_array = array();
+	
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-		
-		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		$form_array += array($field_name => $struct_data_source[$field_name]);
 		
 		if ($field_array["flags"] == "ALWAYSTEMPLATE") {
-			print "<em>This field is always templated.</em>";
+			$form_array[$field_name]["description"] = "<em>This field is always templated.</em>";
 		}else{
-			form_base_checkbox("t_" . $field_name,(isset($template_data{"t_" . $field_name}) ? $template_data{"t_" . $field_name} : ""),"Use Per-Data Source Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
+			$form_array[$field_name]["description"] = "";
+			$form_array[$field_name]["sub_checkbox"] = array(
+				"name" => "t_" . $field_name,
+				"friendly_name" => "Use Per-Data Source Value (Ignore this Value)",
+				"value" => (isset($template_data{"t_" . $field_name}) ? $template_data{"t_" . $field_name} : "")
+				);
 		}
 		
-		print "</td>\n";
+		/* "hack" for rra multi_select */
+		if ($field_name == "rra_id") {
+			$form_array[$field_name]["array"] = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
+			$form_array[$field_name]["sql"] = "select rra_id as id,data_template_data_id from data_template_data_rra where data_template_data_id=" . (isset($template_data) ? $template_data["id"] : "0");
+		}
 		
-		draw_nontemplated_item($field_array, $field_name, (isset($template_data[$field_name]) ? $template_data[$field_name] : ""), (empty($template_data["id"]) ? "0" : $template_data["id"]));
-		
-		print "</tr>\n";
+		$form_array[$field_name]["value"] = (isset($template_data[$field_name]) ? $template_data[$field_name] : "");
+		$form_array[$field_name]["form_id"] = (isset($template_data) ? $template_data["data_template_id"] : "0");
 	}
+	
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => $form_array
+			)
+		);
 	
 	end_box();
 	
@@ -469,18 +504,28 @@ function template_edit() {
 		$struct_data_source_item["data_input_field_id"]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='out' and update_rra='on' order by data_name,name";
 	}
 	
-	$i = 1;
+	$form_array = array();
+	
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		$form_array += array($field_name => $struct_data_source_item[$field_name]);
 		
-		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,(isset($template_rrd) ? $template_rrd{"t_" . $field_name} : ""),"Use Per-Data Source Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
-		print "</td>\n";
-		
-		draw_nontemplated_item($field_array, $field_name, (isset($template_rrd) ? $template_rrd[$field_name] : ""));
-		
-		print "</tr>\n";
+		$form_array[$field_name]["description"] = "";
+		$form_array[$field_name]["value"] = (isset($template_rrd) ? $template_rrd[$field_name] : "");
+		$form_array[$field_name]["sub_checkbox"] = array(
+			"name" => "t_" . $field_name,
+			"friendly_name" => "Use Per-Data Source Value (Ignore this Value)",
+			"value" => (isset($template_rrd) ? $template_rrd{"t_" . $field_name} : "")
+			);
 	}
+	
+	draw_edit_form(
+		array(
+			"config" => array(
+				"no_form_tag" => true
+				),
+			"fields" => $form_array
+			)
+		);
 	
 	end_box();
 	
@@ -505,9 +550,11 @@ function template_edit() {
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
 				<td width="50%">
 					<strong><?php print $field["name"];?></strong><br>
-					<?php form_base_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",$_GET["id"],false);?>
+					<?php form_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",$_GET["id"]);?>
 				</td>
-				<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>
+				<td>
+					<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>
+				</td>
 			</tr>
 			<?php
 			
@@ -519,12 +566,6 @@ function template_edit() {
 		
 		end_box();
 	}
-	
-	form_hidden_id("data_template_id",(isset($template_data) ? $template_data["data_template_id"] : "0"));
-	form_hidden_id("data_template_data_id",(isset($template_data) ? $template_data["id"] : "0"));
-	form_hidden_id("data_template_rrd_id",(isset($template_rrd) ? $template_rrd["id"] : "0"));
-	form_hidden_id("current_rrd",(isset($_GET["view_rrd"]) ? $_GET["view_rrd"] : "0"));
-	form_hidden_box("save_component_template","1","");
 	
 	form_save_button("data_templates.php");
 }
@@ -573,7 +614,7 @@ function template() {
 				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 			</td>
 			<td align='right'>
-				<?php form_base_dropdown("drp_action",$ds_actions,"","","1","","");?>
+				<?php form_dropdown("drp_action",$ds_actions,"","","1","","");?>
 			</td>
 			<td width='1' align='right'>
 				<input type='image' src='images/button_go.gif' alt='Go'>

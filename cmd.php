@@ -27,11 +27,11 @@
 $start = time();
 ini_set("max_execution_time", "0");
 
-include("include/config.php");
-include_once("include/snmp_functions.php");
-include_once("include/rrd_functions.php");
-include_once("include/functions.php");
-include_once("include/graph_export_functions.php");
+include("./include/config.php");
+include_once("./lib/snmp.php");
+include_once("./lib/rrd.php");
+include_once("./lib/functions.php");
+include_once("./lib/graph_export.php");
 
 $polling_items = db_fetch_assoc("select * from data_input_data_cache");
 

@@ -24,10 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include ("include/config_settings.php");
-include_once ("include/form.php");
-include_once ("include/config_arrays.php");
+include("./include/auth.php");
+include("./include/config_settings.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -44,35 +42,35 @@ switch ($_REQUEST["action"]) {
 	case 'user_remove':
 		user_remove();
     
-    		header ("Location: user_admin.php");
+    		header("Location: user_admin.php");
 		break;
 	case 'graph_config_edit':
-		include_once ("include/top_header.php");
+		include_once("include/top_header.php");
 		
 		graph_config_edit();
 	
-		include_once ("include/bottom_footer.php");
+		include_once("include/bottom_footer.php");
 		break;
 	case 'graph_perms_edit':
-		include_once ("include/top_header.php");
+		include_once("include/top_header.php");
 	
 		graph_perms_edit();
 	
-		include_once ("include/bottom_footer.php");
+		include_once("include/bottom_footer.php");
 		break;
 	case 'user_edit':
-		include_once ("include/top_header.php");
+		include_once("include/top_header.php");
 		
 		user_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("include/top_header.php");
 		
 		user();
 	
-		include_once ("include/bottom_footer.php");
+		include_once("include/bottom_footer.php");
 		break;
 }
 
@@ -188,7 +186,7 @@ function form_save() {
 		}
 		
 		if ($add_button_clicked == true) {
-			header ("Location: user_admin.php?action=graph_perms_edit&id=" . $_POST["user_id"]);
+			header("Location: user_admin.php?action=graph_perms_edit&id=" . $_POST["user_id"]);
 			exit;
 		}
 		
@@ -202,9 +200,9 @@ function form_save() {
 	
 	/* redirect to the appropriate page */
 	if (is_error_message()) {
-		header ("Location: user_admin.php?action=user_edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
+		header("Location: user_admin.php?action=user_edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
 	}else{
-		header ("Location: user_admin.php");
+		header("Location: user_admin.php");
 	}
 }
 
@@ -223,7 +221,7 @@ function perm_remove() {
 		db_execute("delete from user_auth_perms where type=4 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
 	}
 	
-	header ("Location: user_admin.php?action=graph_perms_edit&id=" . $_GET["user_id"]);
+	header("Location: user_admin.php?action=graph_perms_edit&id=" . $_GET["user_id"]);
 }
 
 function graph_perms_edit() {
@@ -273,7 +271,7 @@ function graph_perms_edit() {
 			The default allow/deny graph policy for this user.
 		</td>
 		<td align="right">
-			<?php form_base_dropdown("policy_graphs",$graph_policy_array,"","",$policy["policy_graphs"],"",""); ?>
+			<?php form_dropdown("policy_graphs",$graph_policy_array,"","",$policy["policy_graphs"],"",""); ?>
 		</td>
 	</tr>
 	<tr>
@@ -303,7 +301,7 @@ function graph_perms_edit() {
 	<table align='center' width='98%'>
 		<tr>
 			<td nowrap>Add Graph:&nbsp;
-				<?php form_base_dropdown("perm_graphs",db_fetch_assoc("select local_graph_id,title_cache from graph_templates_graph where local_graph_id>0 order by title_cache"),"title_cache","local_graph_id","","","");?>
+				<?php form_dropdown("perm_graphs",db_fetch_assoc("select local_graph_id,title_cache from graph_templates_graph where local_graph_id>0 order by title_cache"),"title_cache","local_graph_id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph" align="absmiddle">
@@ -331,7 +329,7 @@ function graph_perms_edit() {
 			The default allow/deny graph policy for this user.
 		</td>
 		<td align="right">
-			<?php form_base_dropdown("policy_hosts",$graph_policy_array,"","",$policy["policy_hosts"],"",""); ?>
+			<?php form_dropdown("policy_hosts",$graph_policy_array,"","",$policy["policy_hosts"],"",""); ?>
 		</td>
 	</tr>
 	<tr>
@@ -362,7 +360,7 @@ function graph_perms_edit() {
 	<table align='center' width='98%'>
 		<tr>
 			<td nowrap>Add Host:&nbsp;
-				<?php form_base_dropdown("perm_hosts",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","");?>
+				<?php form_dropdown("perm_hosts",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_host" align="absmiddle">
@@ -390,7 +388,7 @@ function graph_perms_edit() {
 			The default allow/deny graph policy for this user.
 		</td>
 		<td align="right">
-			<?php form_base_dropdown("policy_graph_templates",$graph_policy_array,"","",$policy["policy_graph_templates"],"",""); ?>
+			<?php form_dropdown("policy_graph_templates",$graph_policy_array,"","",$policy["policy_graph_templates"],"",""); ?>
 		</td>
 	</tr>
 	<tr>
@@ -421,7 +419,7 @@ function graph_perms_edit() {
 	<table align='center' width='98%'>
 		<tr>
 			<td nowrap>Add Graph Template:&nbsp;
-				<?php form_base_dropdown("perm_graph_templates",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id","","","");?>
+				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph_template" align="absmiddle">
@@ -449,7 +447,7 @@ function graph_perms_edit() {
 			The default allow/deny graph policy for this user.
 		</td>
 		<td align="right">
-			<?php form_base_dropdown("policy_trees",$graph_policy_array,"","",$policy["policy_trees"],"",""); ?>
+			<?php form_dropdown("policy_trees",$graph_policy_array,"","",$policy["policy_trees"],"",""); ?>
 		</td>
 	</tr>
 	<tr>
@@ -480,7 +478,7 @@ function graph_perms_edit() {
 	<table align='center' width='98%'>
 		<tr>
 			<td nowrap>Add Tree:&nbsp;
-				<?php form_base_dropdown("perm_trees",db_fetch_assoc("select id,name from graph_tree order by name"),"name","id","","","");?>
+				<?php form_dropdown("perm_trees",db_fetch_assoc("select id,name from graph_tree order by name"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_tree" align="absmiddle">
@@ -502,9 +500,9 @@ function graph_perms_edit() {
 
 function user_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "user_admin.php?action=user_remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -535,80 +533,124 @@ function user_edit() {
 	
 	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" name="chk" action="user_admin.php">
-	<?php
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"username" => array(
+					"method" => "textbox",
+					"friendly_name" => "User Name",
+					"description" => "The login name for this user.",
+					"value" => (isset($user) ? $user["username"] : ""),
+					"max_length" => "255"
+					),
+				"full_name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Full Name",
+					"description" => "A more descriptive name for this user, that can include spaces or special characters.",
+					"value" => (isset($user) ? $user["full_name"] : ""),
+					"max_length" => "255"
+					),
+				"password" => array(
+					"method" => "textbox_password",
+					"friendly_name" => "Password",
+					"description" => "Enter the password for this user twice. Remember that passwords are case sensitive!",
+					"value" => "",
+					"max_length" => "255"
+					),
+				"" => array(
+					"friendly_name" => "Account Options",
+					"method" => "checkbox_group",
+					"form_id" => (!empty($_GET["id"]) ? 1 : 0),
+					"description" => "Set any user account-specific options here.",
+					"items" => array(
+						"must_change_password" => array(
+							"value" => (isset($user) ? $user["must_change_password"] : ""),
+							"friendly_name" => "User Must Change Password at Next Login",
+							"default" => ""
+							),
+						"graph_settings" => array(
+							"value" => (isset($user) ? $user["graph_settings"] : ""),
+							"friendly_name" => "Allow this User to Keep Custom Graph Settings",
+							"default" => "on"
+							)
+						)
+					),
+				"" => array(
+					"friendly_name" => "Graph Options",
+					"method" => "checkbox_group",
+					"form_id" => (!empty($_GET["id"]) ? 1 : 0),
+					"description" => "Set any graph-specific options here.",
+					"items" => array(
+						"show_tree" => array(
+							"value" => (isset($user) ? $user["show_tree"] : ""),
+							"friendly_name" => "User Has Rights to Tree View",
+							"default" => "on"
+							),
+						"show_list" => array(
+							"value" => (isset($user) ? $user["show_list"] : ""),
+							"friendly_name" => "User Has Rights to List View",
+							"default" => "on"
+							),
+						"show_preview" => array(
+							"value" => (isset($user) ? $user["show_preview"] : ""),
+							"friendly_name" => "User Has Rights to Preview View",
+							"default" => "on"
+							)
+						)
+					),
+				"login_opts" => array(
+					"friendly_name" => "Login Options",
+					"method" => "radio",
+					"default" => "1",
+					"description" => "What to do when this user logs in.",
+					"value" => (isset($user) ? $user["login_opts"] : ""),
+					"items" => array(
+						0 => array(
+							"radio_value" => "1",
+							"radio_caption" => "Show the page that user pointed their browser to."
+							),
+						1 => array(
+							"radio_value" => "2",
+							"radio_caption" => "Show the default console screen."
+							),
+						2 => array(
+							"radio_value" => "3",
+							"radio_caption" => "Show the default graph screen."
+							)
+						)
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($user) ? $user["id"] : "0")
+					),
+				"_policy_graphs" => array(
+					"method" => "hidden",
+					"value" => (isset($user) ? $user["policy_graphs"] : "0")
+					),
+				"_policy_trees" => array(
+					"method" => "hidden",
+					"value" => (isset($user) ? $user["policy_trees"] : "0")
+					),
+				"_policy_hosts" => array(
+					"method" => "hidden",
+					"value" => (isset($user) ? $user["policy_hosts"] : "0")
+					),
+				"_policy_graph_templates" => array(
+					"method" => "hidden",
+					"value" => (isset($user) ? $user["policy_graph_templates"] : "0")
+					),
+				"save_component_user" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">User Name</font><br>
-			The login name for this user.
-		</td>
-		<?php form_text_box('username',(isset($user) ? $user["username"] : ""),"","");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Full Name</font><br>
-			A more descriptive name for this user, that can include spaces or special characters.
-		</td>
-		<?php form_text_box('full_name',(isset($user) ? $user["full_name"] : ""),"","");?>
-	</tr>
-    
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Password</font><br>
-			Enter the password for this user twice. Remember that passwords are case sensitive!
-		</td>
-		<td>
-			<?php form_base_text_box("password","","","","40","password");?><br>
-			<?php form_base_text_box("password_confirm","","","","40","password");?>
-		</td>
-	</tr>
-    
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Account Options</font><br>
-			Set any user account-specific options here.
-		</td>
-		<td>
-		<?php
-			form_base_checkbox("must_change_password", (isset($user) ? $user["must_change_password"] : ""), "User Must Change Password at Next Login", "", (!empty($_GET["id"]) ? 1 : 0), true);
-			form_base_checkbox("graph_settings", (isset($user) ? $user["graph_settings"] : ""), "Allow this User to Keep Custom Graph Settings", "on", (!empty($_GET["id"]) ? 1 : 0), true);
-		?>
-		</td>
-	</tr>
-    
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Graph Options</font><br>
-			Set any graph-specific options here.
-		</td>
-		<td>
-		<?php
-			form_base_checkbox("show_tree", (isset($user) ? $user["show_tree"] : ""), "User Has Rights to Tree View", "on", (!empty($_GET["id"]) ? 1 : 0), true);
-			form_base_checkbox("show_list", (isset($user) ? $user["show_list"] : ""), "User Has Rights to List View", "on", (!empty($_GET["id"]) ? 1 : 0), true);
-			form_base_checkbox("show_preview", (isset($user) ? $user["show_preview"] : ""), "User Has Rights to Preview View", "on", (!empty($_GET["id"]) ? 1 : 0), true);
-		?>
-		</td>
-	</tr>
-    	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Login Options</font><br>
-			What to do when this user logs in.
-		</td>
-		<td>
-		<?php
-			form_base_radio_button("login_opts", (isset($user) ? $user["login_opts"] : ""), "1", "Show the page that user pointed their browser to.","1",true);
-			form_base_radio_button("login_opts", (isset($user) ? $user["login_opts"] : ""), "2", "Show the default console screen.","1",true);
-			form_base_radio_button("login_opts", (isset($user) ? $user["login_opts"] : ""), "3", "Show the default graph screen.","1",true);
-		?>
-		</td>
-	</tr>
-	
-	<?php
 	end_box();
+	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
@@ -647,7 +689,7 @@ function user_edit() {
 								print "</td><td valign='top' width='50%'>";
 							}
 							
-							form_base_checkbox("section" . $realm["id"], $old_value, $realm["name"], "", (!empty($_GET["id"]) ? 1 : 0), true);
+							form_checkbox("section" . $realm["id"], $old_value, $realm["name"], "", (!empty($_GET["id"]) ? 1 : 0)); print "<br>";
 							
 							$i++;
 						}
@@ -664,8 +706,7 @@ function user_edit() {
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
-	if (sizeof($tabs_graphs) > 0) {
-	foreach (array_keys($tabs_graphs) as $tab_short_name) {
+	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
 		<tr>
 			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
@@ -674,55 +715,26 @@ function user_edit() {
 		</tr>
 		<?php
 		
-		reset($settings_graphs);
+		$form_array = array();
 		
-		$i = 0;
-		if (sizeof($settings_graphs) > 0) {
-		foreach (array_keys($settings_graphs) as $setting) {
-			/* make sure to skip group members here; only parents are allowed */
-			if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-				
-				/* draw the acual header and textbox on the form */
-				form_item_label($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
-				
-				$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));
-				
-				/* choose what kind of item this is */
-				switch ($settings_graphs[$setting]["method"]) {
-					case 'textbox':
-						form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
-						break;
-					case 'drop_sql':
-						form_dropdown($setting,db_fetch_assoc($settings_graphs[$setting]["sql"]),"name","id",$current_value,"",$settings_graphs[$setting]["default"]);
-						break;
-					case 'drop_array':
-						form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
-						break;
-					case 'checkbox':
-						form_checkbox($setting, $current_value, $settings_graphs[$setting]["friendly_name"], $settings_graphs[$setting]["default"], (isset($user) ? $user["id"] : "0"));
-						break;
-				}
-				
-				$i++;
-				
-				print "</tr>\n";
-			}
+		while (list($field_name, $field_array) = each($tab_fields)) {
+			$form_array += array($field_name => $tab_fields[$field_name]);
+			
+			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));
+		}
 		
-		}
-		}
+		draw_edit_form(
+			array(
+				"config" => array(
+					"no_form_tag" => true
+					),
+				"fields" => $form_array
+				)
+			);
+	}
 	
-	}
-	}
 	
 	end_box();
-	
-	form_hidden_id("id",(isset($user) ? $user["id"] : "0"));
-	form_hidden_id("_policy_graphs",(isset($user) ? $user["policy_graphs"] : "2"));
-	form_hidden_id("_policy_trees",(isset($user) ? $user["policy_trees"] : "2"));
-	form_hidden_id("_policy_hosts",(isset($user) ? $user["policy_hosts"] : "2"));
-	form_hidden_id("_policy_graph_templates",(isset($user) ? $user["policy_graph_templates"] : "2"));
-	form_hidden_box("save_component_user","1","");
 	
 	form_save_button("user_admin.php");
 }

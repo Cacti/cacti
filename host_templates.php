@@ -24,9 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/functions.php");
-include_once ('include/form.php');
+include("./include/auth.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -39,31 +37,31 @@ switch ($_REQUEST["action"]) {
 	case 'remove':
 		template_remove();
 		
-		header ("Location: host_templates.php");
+		header("Location: host_templates.php");
 		break;
 	case 'item_remove_gsv':
 		template_item_remove_gsv();
 		
-		header ("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
+		header("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
 		break;
 	case 'item_remove_dssv':
 		template_item_remove_dssv();
 		
-		header ("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
+		header("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		template_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		template();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -128,9 +126,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
-			header ("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
+			header("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
 		}else{
-			header ("Location: host_templates.php");
+			header("Location: host_templates.php");
 		}
 	}
 }
@@ -149,9 +147,9 @@ function template_item_remove_dssv() {
 
 function template_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "host_templates.php?action=remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -180,18 +178,31 @@ function template_edit() {
 	
 	start_box("<strong>Host Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="host_templates.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "A useful name for this host template.",
+					"value" => (isset($host_template) ? $host_template["name"] : ""),
+					"max_length" => "255",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($host_template) ? $host_template["id"] : "0")
+					),
+				"save_component_template" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="30%">
-			<font class="textEditTitle">Name</font><br>
-			A useful name for this host template.
-		</td>
-		<?php form_text_box("name",(isset($host_template) ? $host_template["name"] : ""),"","255", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="30%">
 			<font class="textEditTitle">Associated Graph Templates</font><br>
 			Select one or more graph templates to associate with this host template.
@@ -223,7 +234,7 @@ function template_edit() {
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
-							form_base_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",$_GET["id"],true);
+							form_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",$_GET["id"]); print "<br>";
 							$i++;
 						}
 						}
@@ -267,7 +278,7 @@ function template_edit() {
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
-							form_base_checkbox("sq_".$snmp_query["id"], $old_value, $snmp_query["name"], "",$_GET["id"],true);
+							form_checkbox("sq_".$snmp_query["id"], $old_value, $snmp_query["name"], "",$_GET["id"]); print "<br>";
 							$i++;
 						}
 						}
@@ -424,9 +435,6 @@ function template_edit() {
 		}
 	}
 	}
-	
-	form_hidden_id("id",(isset($host_template) ? $host_template["id"] : "0"));
-	form_hidden_box("save_component_template","1","");
 	
 	form_save_button("host_templates.php");	
 }

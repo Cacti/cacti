@@ -24,9 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once ("include/rrd_functions.php");
-include_once ("include/functions.php");
-include ("include/top_graph_header.php");
+include("./include/auth.php");
+include("./include/top_graph_header.php");
 
 if ($_GET["rra_id"] == "all") {
 	$sql_where = " where id is not null";
@@ -78,6 +77,6 @@ foreach ($rras as $rra) {
 print "</table>";
 print "<br><br>";
 
-include_once ("include/bottom_footer.php");
+include_once("./include/bottom_footer.php");
 
 ?>

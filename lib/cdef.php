@@ -35,7 +35,10 @@ $custom_data_source_types = array(
 	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
 	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
 	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)");
-		      
+
+/* get_cdef_item_name - resolves a single CDEF item into its text-based representation
+   @arg $cdef_item_id - the id of the individual cdef item
+   @returns - a text-based representation of the cdef item */
 function get_cdef_item_name($cdef_item_id) {
 	global $config;
 	
@@ -53,6 +56,10 @@ function get_cdef_item_name($cdef_item_id) {
 	}
 }
 
+/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDTool 'graph'
+     string. this name will be resolved recursively if necessary
+   @arg $cdef_id - the id of the cdef to resolve
+   @returns - a text-based representation of the cdef */
 function get_cdef($cdef_id) {
 	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$cdef_id order by sequence");
 	

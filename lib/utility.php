@@ -39,7 +39,7 @@ function repopulate_poller_cache() {
 function update_poller_cache($local_data_id) {
 	global $config;
 	
-	include_once($config["include_path"] . "/snmp_functions.php");
+	include_once($config["library_path"] . "/snmp.php");
 	
 	$data_input = db_fetch_row("select
 		data_input.id,

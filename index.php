@@ -24,10 +24,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ('include/form.php');
-include_once ("include/top_header.php");
+include("./include/auth.php");
+include("./include/top_header.php");
 
 print "<strong>raXnet cacti (<a href='about.php'>about</a>)</strong>\n";
 
-include_once ("include/bottom_footer.php"); ?>
+include("./include/bottom_footer.php");
+
+?>

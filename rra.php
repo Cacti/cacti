@@ -24,10 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ('include/config_arrays.php');
-include_once ('include/functions.php');
-include_once ('include/form.php');
+include("./include/auth.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -40,21 +37,21 @@ switch ($_REQUEST["action"]) {
     	case 'remove':
 		rra_remove();
 		
-		header ("Location: rra.php");
+		header("Location: rra.php");
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		rra_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		rra();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -91,9 +88,9 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header ("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
+			header("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
 		}else{
-			header ("Location: rra.php");
+			header("Location: rra.php");
 		}
 	}
 }
@@ -104,7 +101,7 @@ function form_save() {
 
 function rra_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include_once ('include/top_header.php');
+		include_once("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . db_fetch_cell("select name from rra where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "rra.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
@@ -127,62 +124,66 @@ function rra_edit() {
 	
 	start_box("<strong>Round Robin Archives</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="rra.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "How data is to be entered in RRA's.",
+					"value" => (isset($rra) ? $rra["name"] : ""),
+					"max_length" => "100",
+					),
+				"consolidation_function_id" => array(
+					"method" => "drop_multi",
+					"friendly_name" => "Consolidation Functions",
+					"description" => "How data is to be entered in RRA's.",
+					"array" => $consolidation_functions,
+					"sql" => "select consolidation_function_id as id,rra_id from rra_cf where rra_id=" . (isset($rra) ? $rra["id"] : "0"),
+					),
+				"x_files_factor" => array(
+					"method" => "textbox",
+					"friendly_name" => "X-Files Factor",
+					"description" => "The amount of unknown data that can still be regarded as known.",
+					"value" => (isset($rra) ? $rra["x_files_factor"] : ""),
+					"max_length" => "10",
+					),
+				"steps" => array(
+					"method" => "textbox",
+					"friendly_name" => "Steps",
+					"description" => "How many data points are needed to put data into the RRA.",
+					"value" => (isset($rra) ? $rra["steps"] : ""),
+					"max_length" => "8",
+					),
+				"rows" => array(
+					"method" => "textbox",
+					"friendly_name" => "Rows",
+					"description" => "How many generations data is kept in the RRA.",
+					"value" => (isset($rra) ? $rra["rows"] : ""),
+					"max_length" => "8",
+					),
+				"timespan" => array(
+					"method" => "textbox",
+					"friendly_name" => "Timespan",
+					"description" => "How many seconds to display in graph for this RRA.",
+					"value" => (isset($rra) ? $rra["timespan"] : ""),
+					"max_length" => "8",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($rra) ? $rra["id"] : "0")
+					),
+				"save_component_rra" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			How data is to be entered in RRA's.
-		</td>
-		<?php form_text_box("name",(isset($rra) ? $rra["name"] : ""),"","100", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Consolidation Functions</font><br>
-			How data is to be entered in RRA's.
-		</td>
-		<?php form_multi_dropdown("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=" . (isset($rra) ? $rra["id"] : "0")), "consolidation_function_id");?>
-	</tr>
-    
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">X-Files Factor</font><br>
-			The amount of unknown data that can still be regarded as known.
-		</td>
-		<?php form_text_box("x_files_factor",(isset($rra) ? $rra["x_files_factor"] : ""),"","10", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Steps</font><br>
-			How many data points are needed to put data into the RRA.
-		</td>
-		<?php form_text_box("steps",(isset($rra) ? $rra["steps"] : ""),"","8", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Rows</font><br>
-			How many generations data is kept in the RRA.
-		</td>
-		<?php form_text_box("rows",(isset($rra) ? $rra["rows"] : ""),"","8", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Timespan</font><br>
-			How many seconds to display in graph for this RRA.
-		</td>
-		<?php form_text_box("timespan",(isset($rra) ? $rra["timespan"] : ""),"","8", "40");?>
-	</tr>
-	
-	<?php
 	end_box();
-	
-	form_hidden_id("id",(isset($rra) ? $rra["id"] : "0"));
-	form_hidden_box("save_component_rra","1","");
 	
 	form_save_button("rra.php");	
 }

@@ -24,9 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once ("include/functions.php");
-include_once ("include/form.php");
-include ("include/top_graph_header.php");
+include("./include/auth.php");
+include("./include/top_graph_header.php");
 
 if (isset($_GET["hide"])) {
 	if (($_GET["hide"] == "0") || ($_GET["hide"] == "1")) {
@@ -47,8 +46,6 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 case 'tree':
-	include_once ('include/tree_view_functions.php');
-	
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_tree"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
 	}
@@ -278,8 +275,6 @@ case 'preview':
 	
 	break;
 case 'list':
-	include_once("include/form.php");
-	
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_list"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
 	}
@@ -321,7 +316,7 @@ case 'list':
 		form_alternate_row_color("f5f5f5", "ffffff", $i);
 		
 		print "<td width='1%'>";
-		form_base_checkbox("graph_" . $graph["local_graph_id"], "", "", "", 0, false);
+		form_checkbox("graph_" . $graph["local_graph_id"], "", "", "", 0);
 		print "</td>";
 		
 		print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title_cache"] . "</a></strong></td>\n";
@@ -339,7 +334,7 @@ case 'list':
 					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 				</td>
 				<td width='1'>";
-					form_base_dropdown("rra_id", db_fetch_assoc("select id,name,(rra.rows*rra.steps) as rra_order from rra order by rra_order,name"), "name", "id", "1", "", "");
+					form_dropdown("rra_id", db_fetch_assoc("select id,name,(rra.rows*rra.steps) as rra_order from rra order by rra_order,name"), "name", "id", "1", "", "");
 	print "			</td>
 				<td>	
 					<input type='image' src='images/button_view.gif' alt='View'>
@@ -356,4 +351,4 @@ case 'list':
 
 //print "<pre>";print $_SESSION["sess_debug_buffer"];print "</pre>";session_unregister("sess_debug_buffer");
 
-include_once ("include/bottom_footer.php");
+include_once("./include/bottom_footer.php");

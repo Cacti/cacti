@@ -39,18 +39,30 @@ function title_trim($text, $max_length) {
 	}
 }
 
+/* read_default_graph_config_option - finds the default value of a graph configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings array
+     in 'include/config_settings.php'
+   @returns - the default value of the configuration option */
+function read_default_graph_config_option($config_name) {
+	global $config;
+	
+	include ($config["include_path"] . "/config_settings.php");
+	
+	while (list($tab_name, $tab_array) = each($settings_graphs)) {
+		if (isset($tab_array[$config_name])) {
+			return $tab_array[$config_name]["default"];
+		}
+	}
+}
+
 /* read_graph_config_option - finds the current value of a graph configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings_graphs array
      in 'include/config_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name) {
-	global $config;
-	
-	include ($config["include_path"] . "/config_settings.php");
-	
 	/* users must have cacti user auth turned on to use this */
 	if (read_config_option("global_auth") != "on") {
-		return $settings_graphs[$config_name]["default"];
+		return read_default_graph_config_option($config_name);
 	}
 	
 	if (isset($_SESSION["sess_graph_config_array"])) {
@@ -63,7 +75,7 @@ function read_graph_config_option($config_name) {
 		if (isset($db_setting["value"])) {
 			$graph_config_array[$config_name] = $db_setting["value"];
 		}else{
-			$graph_config_array[$config_name] = $settings_graphs[$config_name]["default"];
+			$graph_config_array[$config_name] = read_default_graph_config_option($config_name);
 		}
 		
 		$_SESSION["sess_graph_config_array"] = $graph_config_array;
@@ -72,15 +84,27 @@ function read_graph_config_option($config_name) {
 	return $graph_config_array[$config_name];
 }
 
+/* read_default_config_option - finds the default value of a Cacti configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings array
+     in 'include/config_settings.php'
+   @returns - the default value of the configuration option */
+function read_default_config_option($config_name) {
+	global $config;
+	
+	include ($config["include_path"] . "/config_settings.php");
+	
+	while (list($tab_name, $tab_array) = each($settings)) {
+		if (isset($tab_array[$config_name])) {
+			return $tab_array[$config_name]["default"];
+		}
+	}
+}
+
 /* read_config_option - finds the current value of a Cacti configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/config_settings.php'
    @returns - the current value of the configuration option */
 function read_config_option($config_name) {
-	global $config;
-	
-	include ($config["include_path"] . "/config_settings.php");
-	
 	if (isset($_SESSION["sess_config_array"])) {
 		$config_array = $_SESSION["sess_config_array"];
 	}
@@ -90,8 +114,8 @@ function read_config_option($config_name) {
 		
 		if (isset($db_setting["value"])) {
 			$config_array[$config_name] = $db_setting["value"];
-		}elseif (isset($settings[$config_name]["default"])) {
-			$config_array[$config_name] = $settings[$config_name]["default"];
+		}else{
+			$config_array[$config_name] = read_default_config_option($config_name);
 		}
 		
 		$_SESSION["sess_config_array"] = $config_array;
@@ -159,10 +183,7 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config;
-	
-	include($config["include_path"] . "/config_arrays.php");
-	include_once($config["include_path"] . "/form.php");
+	global $config, $messages;
 	
 	if (isset($_SESSION["sess_messages"])) {
 		$error_message = is_error_message();

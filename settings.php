@@ -24,29 +24,22 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include ("include/config_settings.php");
-include_once ('include/form.php');
+include("./include/auth.php");
+include("./include/config_settings.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
- case 'save':
-	if (sizeof($settings) > 0) {
-	foreach (array_keys($settings) as $setting) {
-		if ($settings[$setting]["tab"] == $_POST["tab"]) {
-			if ($settings[$setting]["method"] == "group") {
-				if (sizeof($settings[$setting]["items"]) > 0) {
-				foreach (array_keys($settings[$setting]["items"]) as $item) {
-					db_execute("replace into settings (name,value) values ('$item', '" . (isset($_POST[$item]) ? $_POST[$item] : "") . "')");
-				}
-				}
-			}else{
-				db_execute("replace into settings (name,value) values ('$setting', '" . (isset($_POST[$setting]) ? $_POST[$setting] : "") . "')");
+case 'save':
+	while (list($field_name, $field_array) = each($settings{$_POST["tab"]})) {
+		if ($field_array["method"] == "checkbox_group") {
+			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+				db_execute("replace into settings (name,value) values ('$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
 			}
+		}else{
+			db_execute("replace into settings (name,value) values ('$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
 		}
-	}
 	}
 	
 	raise_message(1);
@@ -54,10 +47,10 @@ switch ($_REQUEST["action"]) {
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_config_array");
 
-	header ("Location: settings.php?tab=" . $_POST["tab"]);
+	header("Location: settings.php?tab=" . $_POST["tab"]);
 	break;
- default:
-    	include_once ('include/top_header.php');
+default:
+    	include("./include/top_header.php");
 	
 	/* set the default settings category */
 	if (!isset($_GET["tab"])) {
@@ -88,69 +81,39 @@ switch ($_REQUEST["action"]) {
 	
 	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
 	
-    	print "<form method='post' action='settings.php?action=save'>\n";
 	
-	$i = 0;
-	if (sizeof($settings) > 0) {
-	foreach (array_keys($settings) as $setting) {
-	    	/* make sure to skip group members here; only parents are allowed */
-		if (($settings[$setting]["method"] != "internal") && ($settings[$setting]["tab"] == $current_tab)) {
-			++$i;
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-			
-			/* draw the acual header and textbox on the form */
-			form_item_label($settings[$setting]["friendly_name"],$settings[$setting]["description"]);
-			
-			$current_value = db_fetch_cell("select value from settings where name='$setting'");
+	$form_array = array();
+	
+	while (list($field_name, $field_array) = each($settings[$current_tab])) {
+		$form_array += array($field_name => $field_array);
+		
+		if ($field_array["method"] == "checkbox_group") {
+			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+				$current_value = db_fetch_cell("select value from settings where name='$sub_field_name'");
+		
+				$form_array[$field_name]["items"][$sub_field_name]["value"] = $current_value;
+			}
+		}else{
+			$current_value = db_fetch_cell("select value from settings where name='$field_name'");
 			
 			/* if there is no value and there is a default value, use that instead */
-			if ((empty($current_value)) && (isset($settings[$setting]["default"]))) {
-				$current_value = $settings[$setting]["default"];
+			if ((empty($current_value)) && (isset($field_array["default"]))) {
+				$current_value = $field_array["default"];
 			}
 			
-			/* choose what kind of item this is */
-			switch ($settings[$setting]["method"]) {
-				case 'textbox':
-					form_text_box($setting,$current_value,"","");
-					print "</tr>\n";
-					break;
-				case 'checkbox':
-					form_checkbox($setting,$current_value,$settings[$setting]["friendly_name"],"");
-					print "</tr>\n";
-					break;
-				case 'dropdown':
-                                        /* loop through the resultset and draw each item in the group */
-                                        if (sizeof($settings[$setting]["items"]) > 0) {
-                                        	form_dropdown($setting,$settings[$setting]["items"],"","",$current_value,"","net-snmp");
-					}
-
-					break;
-				case 'group':
-					print "<td>\n";
-					
-		    			/* loop through the resultset and draw each item in the group */
-					if (sizeof($settings[$setting]["items"]) > 0) {
-					foreach (array_keys($settings[$setting]["items"]) as $item) {
-						$current_value = db_fetch_cell("select value from settings where name='$item'");
-						
-			    			switch ($settings[$setting]["items"][$item]["method"]) {
-							case 'textbox':
-								//DrawtrippedFormItemTextBox($item,$current_value,"","");
-								break;
-							case 'checkbox':
-								form_base_checkbox($item,$current_value,$settings[$setting]["items"][$item]["description"],"",0,true);
-								break;
-						}
-			    
-					}
-					}
-					
-					print "</td></tr>\n";
-					break;
-			}
+			$form_array[$field_name]["value"] = $current_value;
 		}
+		
+		$form_array[$field_name]["form_id"] = 1;
 	}
-	}
+	
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => $form_array
+			)
+		);
 	
 	end_box();
 	
@@ -158,7 +121,7 @@ switch ($_REQUEST["action"]) {
 	
 	form_save_button("settings.php?tab=$current_tab", "save");
 	
-	include_once ("include/bottom_footer.php");
+	include("./include/bottom_footer.php");
 	
 	break;
 } ?>	

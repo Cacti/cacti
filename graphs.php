@@ -24,10 +24,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/form.php");
-include_once ("include/functions.php");
-include_once ("include/config_arrays.php");
+include("./include/auth.php");
+include_once("./lib/utility.php");
+include_once("./lib/tree.php");
+include_once("./lib/tree_view.php");
+include_once("./lib/rrd.php");
 
 $graph_actions = array(
 	1 => "Delete",
@@ -50,30 +51,30 @@ switch ($_REQUEST["action"]) {
 		
 		break;
 	case 'graph_diff':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		graph_diff();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'item_remove':
 		item_remove();
 		
-		header ("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
+		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		item_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'item':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		item();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'item_movedown':
 		item_movedown();
@@ -88,21 +89,21 @@ switch ($_REQUEST["action"]) {
 	case 'graph_remove':
 		graph_remove();
 		
-		header ("Location: graphs.php");
+		header("Location: graphs.php");
 		break;
 	case 'graph_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		graph_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		graph();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -128,8 +129,6 @@ function add_tree_names_to_actions_array() {
    -------------------------- */
 
 function form_save() {
-	include_once ("include/utility_functions.php");
-	
 	if ((isset($_POST["save_component_graph_new"])) && (!empty($_POST["graph_template_id"]))) {
 		$save["id"] = $_POST["local_graph_id"];
 		$save["graph_template_id"] = $_POST["graph_template_id"];
@@ -316,20 +315,20 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header ("Location: graphs.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&id=" . $_POST["local_graph_id"]);
+			header("Location: graphs.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&id=" . $_POST["local_graph_id"]);
 			exit;
 		}else{
-			header ("Location: graphs.php?action=graph_edit&id=" . $_POST["local_graph_id"]);
+			header("Location: graphs.php?action=graph_edit&id=" . $_POST["local_graph_id"]);
 			exit;
 		}
 	}
 	
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
-		header ("Location: graphs.php?action=graph_edit&host_id=" . $_POST["host_id"] . "&new=1");
+		header("Location: graphs.php?action=graph_edit&host_id=" . $_POST["host_id"] . "&new=1");
 	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
-		header ("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
+		header("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
 	}else{
-		header ("Location: graphs.php");
+		header("Location: graphs.php");
 	}
 }
 
@@ -338,10 +337,6 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	include_once ("include/tree_functions.php");
-	include_once ("include/tree_view_functions.php");
-	include_once ("include/utility_functions.php");
-	
 	global $colors, $graph_actions;
 	
 	/* if we are to save this form, instead of display it */
@@ -396,7 +391,7 @@ function form_actions() {
 		$i++;
 	}
 	
-	include_once ("include/top_header.php");
+	include_once("./include/top_header.php");
 	
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
@@ -420,7 +415,7 @@ function form_actions() {
 					the following graphs. Be aware that all warnings will be suppressed during the
 					conversion, so graph data loss is possible.</p>
 					<p>$graph_list</p>
-					<p><strong>New Graph Template:</strong><br>"; form_base_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates"),"name","id","","","0"); print "</p>
+					<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates"),"name","id","","","0"); print "</p>
 				</td>
 			</tr>\n
 			";
@@ -460,7 +455,7 @@ function form_actions() {
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Choose a new host for these graphs:</p>
 					<p>$graph_list</p>
-					<p><strong>New Host:</strong><br>"; form_base_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
+					<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
 				</td>
 			</tr>\n
 			";
@@ -486,7 +481,7 @@ function form_actions() {
 	
 	end_box();
 	
-	include_once ("include/bottom_footer.php");
+	include_once("./include/bottom_footer.php");
 }
 
 /* -----------------------
@@ -643,6 +638,8 @@ function item() {
 			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "
 			order by name";
 		
+		$form_array = array();
+		
 		if (sizeof($input_item_list) > 0) {
 		foreach ($input_item_list as $item) {
 			$current_def_value = db_fetch_row("select 
@@ -654,21 +651,25 @@ function item() {
 				and graph_templates_item.local_graph_id=" . $_GET["id"] . "
 				limit 0,1");
 			
-			$field_name = $item["column_name"];
+			$form_array += array($item["column_name"] . "_" . $item["id"] => $struct_graph_item{$item["column_name"]});
 			
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-			
-			print "	<td width='35%'>
-					<font class='textEditTitle'>" . $item["name"] . "</font>";
-					if (!empty($item["description"])) { print "<br>" . $item["description"]; }
-			print "	</td>\n";
-			
-			draw_nontemplated_item($struct_graph_item{$item["column_name"]}, $field_name . "_" . $item["id"], $current_def_value[$field_name]);
-			
-			print "</tr>\n";
+			$form_array{$item["column_name"] . "_" . $item["id"]}["friendly_name"] = $item["name"];
+			$form_array{$item["column_name"] . "_" . $item["id"]}["description"] = $item["description"];
+			$form_array{$item["column_name"] . "_" . $item["id"]}["value"] = $current_def_value{$item["column_name"]};
 		}
 		}else{
 			print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='2'><em>No Inputs</em></td></tr>";
+		}
+		
+		if (sizeof($input_item_list > 0)) {
+			draw_edit_form(
+				array(
+					"config" => array(
+						"left_column_width" => "35%"
+						),
+					"fields" => $form_array
+					)
+				);
 		}
 		
 		end_box();
@@ -719,10 +720,7 @@ function item_edit() {
 	$header_label = "[edit graph: " . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "]";
 	
 	start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	?>
-	<form method="post" action="graphs.php">
 	
-	<?php
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!empty($_GET["local_graph_id"])) {
 		$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence DESC");
@@ -745,22 +743,23 @@ function item_edit() {
 			order by name";
 	}
 	
-	$i = 0;
+	$form_array = array();
+	
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		$form_array += array($field_name => $struct_graph_item[$field_name]);
 		
-		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		$form_array[$field_name]["value"] = (isset($template_item) ? $template_item[$field_name] : "");
+		$form_array[$field_name]["form_id"] = (isset($template_item) ? $template_item["id"] : "0");
 		
-		if (isset($field_array["description"])) {
-			print $field_array["description"];
-		}
-		
-		print "</td>\n";
-		
-		draw_nontemplated_item($field_array, $field_name, (isset($template_item) ? $template_item[$field_name] : ""));
-		
-		print "</tr>\n";
 	}
+	
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => $form_array
+			)
+		);
 	
 	form_hidden_id("local_graph_id",$_GET["local_graph_id"]);
 	form_hidden_id("graph_template_item_id",(isset($template_item) ? $template_item["id"] : "0"));
@@ -781,7 +780,6 @@ function item_edit() {
 
 function graph_diff() {
 	global $colors;
-	include ("include/config_arrays.php");
 	
 	$template_query = "select
 		graph_templates_item.id,
@@ -1002,8 +1000,6 @@ function graph_diff() {
 }
 
 function graph_edit() {
-	include_once ("include/rrd_functions.php");
-	
 	global $colors, $struct_graph, $image_types;
 	
 	$use_graph_template = true;
@@ -1062,69 +1058,84 @@ function graph_edit() {
 	}
 	
 	start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	?>
 	
-	<form method="post" action="graphs.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"graph_template_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Selected Graph Template",
+					"description" => "Choose a graph template to apply to this graph. Please note that graph data may be lost if you change the graph template after one is already applied.",
+					"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0"),
+					"none_value" => "None",
+					"sql" => "select graph_templates.id,graph_templates.name from graph_templates order by name"
+					),
+				"host_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Host",
+					"description" => "Choose the host that this graph belongs to.",
+					"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
+					"none_value" => "None",
+					"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
+					),
+				"" => array(
+					"method" => "custom",
+					"friendly_name" => "Debug",
+					"description" => "Turn on/off graph debugging.",
+					"value" => "<a href='graphs.php?action=graph_edit&id=" . $_GET["id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On") . "</strong> Graph Debug Mode.</a>"
+					),
+				"graph_template_graph_id" => array(
+					"method" => "hidden",
+					"value" => (isset($graphs) ? $graphs["id"] : "0")
+					),
+				"local_graph_id" => array(
+					"method" => "hidden",
+					"value" => (isset($graphs) ? $graphs["local_graph_id"] : "0")
+					),
+				"local_graph_template_graph_id" => array(
+					"method" => "hidden",
+					"value" => (isset($graphs) ? $graphs["local_graph_template_graph_id"] : "0")
+					),
+				"_graph_template_id" => array(
+					"method" => "hidden",
+					"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0")
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Selected Graph Template</font><br>
-			Choose a graph template to apply to this graph. Please note that graph data may be lost if you 
-			change the graph template after one is already applied.
-		</td>
-		<?php form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id",(isset($graphs) ? $graphs["graph_template_id"] : "0"),"None","0");?>
-	</tr>
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Host</font><br>
-			Choose the host that this graph belongs to.
-		</td>
-		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",(isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),"None","0");?>
-	</tr>
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Debug</font><br>
-			Turn on/off graph debugging.
-		</td>
-		<td>
-			<a href="graphs.php?action=graph_edit&id=<?php print $_GET["id"];?>&debug=<?php print isset($_SESSION["graph_debug_mode"]) ? "0" : "1";?>">Turn <strong><?php print isset($_SESSION["graph_debug_mode"]) ? "Off" : "On";?></strong> Graph Debug Mode.</a>
-		</td>
-	</tr>
-	
-	<?php
 	end_box();
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
 		
-		$i = 0;
+		$form_array = array();
+		
 		while (list($field_name, $field_array) = each($struct_graph)) {
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			$form_array += array($field_name => $struct_graph[$field_name]);
 			
-			print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+			$form_array[$field_name]["value"] = (isset($graphs) ? $graphs[$field_name] : "");
+			$form_array[$field_name]["form_id"] = (isset($graphs) ? $graphs["id"] : "0");
 			
-			if (($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on")) {
-				print $field_array["description"];
+			if (!(($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on"))) {
+				$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
+				$form_array[$field_name]["description"] = "";
 			}
-			
-			print "</td>\n";
-			
-			if (($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on")) {
-				draw_nontemplated_item($field_array, $field_name, (isset($graphs) ? $graphs[$field_name] : ""));
-			}else{
-				draw_templated_item($field_array, $field_name, (isset($graphs) ? $graphs[$field_name] : ""));
-			}
-			
-			print "</tr>\n";
 		}
+		
+		draw_edit_form(
+			array(
+				"config" => array(
+					"no_form_tag" => true
+					),
+				"fields" => $form_array
+				)
+			);
 		
 		end_box();
 	}
-	
-	form_hidden_id("graph_template_graph_id",(isset($graphs) ? $graphs["id"] : "0"));
-	form_hidden_id("local_graph_id",(isset($graphs) ? $graphs["local_graph_id"] : "0"));
-	form_hidden_id("local_graph_template_graph_id",(isset($graphs) ? $graphs["local_graph_template_graph_id"] : "0"));
-	form_hidden_id("_graph_template_id",(isset($graphs) ? $graphs["graph_template_id"] : "0"));
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		form_hidden_box("save_component_graph","1","");
@@ -1313,7 +1324,7 @@ function graph() {
 				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 			</td>
 			<td align='right'>
-				<?php form_base_dropdown("drp_action",$graph_actions,"","","1","","");?>
+				<?php form_dropdown("drp_action",$graph_actions,"","","1","","");?>
 			</td>
 			<td width='1' align='right'>
 				<input type='image' src='images/button_go.gif' alt='Go'>

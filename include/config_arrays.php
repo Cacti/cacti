@@ -140,6 +140,10 @@ $auth_realms = array(0 =>
 	"Local",
 	"LDAP");
 
+$snmp_implimentations = array(
+	"ucd-snmp" => "UCD-SNMP 4.x",
+	"net-snmp" => "NET-SNMP 5.x");
+
 $menu = array(
 	"Graph Setup" => array(
 		"graphs.php" => "Graph Management",
@@ -171,48 +175,43 @@ $menu = array(
 
 $struct_graph = array(
 	"title" => array(
-		"title" => "Title",
-		"type" => "text",
-		"text_maxlen" => "255",
-		"text_size" => "40",
+		"friendly_name" => "Title",
+		"method" => "textbox",
+		"max_length" => "255",
 		"default" => "",
 		"description" => "The name that is printed on the graph."
 		),
 	"image_format_id" => array(
-		"title" => "Image Format",
-		"type" => "drop_array",
-		"array_name" => "image_types",
+		"friendly_name" => "Image Format",
+		"method" => "drop_array",
+		"array" => $image_types,
 		"default" => "1",
 		"description" => "The type of graph that is generated; GIF or PNG."
 		),
 	"height" => array(
-		"title" => "Height",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "40",
+		"friendly_name" => "Height",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "120",
 		"description" => "The height (in pixels) that the graph is."
 		),
 	"width" => array(
-		"title" => "Width",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "40",
+		"friendly_name" => "Width",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "500",
 		"description" => "The width (in pixels) that the graph is."
 		),
 	"auto_scale" => array(
-		"title" => "Auto Scale",
-		"type" => "check",
-		"check_caption" => "Auto Scale",
+		"friendly_name" => "Auto Scale",
+		"method" => "checkbox",
 		"default" => "on",
 		"description" => "Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the 
-			Upper and Lower limit will be ignored.",
-		"check_id" => "id"
+			Upper and Lower limit will be ignored."
 		),
 	"auto_scale_opts" => array(
-		"title" => "Auto Scale Options",
-		"type" => "radio",
+		"friendly_name" => "Auto Scale Options",
+		"method" => "radio",
 		"default" => "2",
 		"description" => "Use --alt-autoscale-max to scale to the maximum value, or --alt-autoscale to scale to the absolute 
 			minimum and maximum.",
@@ -228,87 +227,73 @@ $struct_graph = array(
 			)
 		),
 	"auto_scale_log" => array(
-		"title" => "Logarithmic Auto Scaling",
-		"type" => "check",
-		"check_caption" => "Logarithmic Auto Scaling (--logarithmic)",
+		"friendly_name" => "Logarithmic Auto Scaling (--logarithmic)",
+		"method" => "checkbox",
 		"default" => "",
-		"description" => "Use Logarithmic y-axis scaling",
-		"check_id" => "id"
+		"description" => "Use Logarithmic y-axis scaling"
 		),
 	"auto_scale_rigid" => array(
-		"title" => "Rigid Boundaries Mode",
-		"type" => "check",
-		"check_caption" => "Use Rigid Boundaries Mode (--rigid)",
+		"friendly_name" => "Rigid Boundaries Mode (--rigid)",
+		"method" => "checkbox",
 		"default" => "",
-		"description" => "Do not expand the lower and upper limit if the graph contains a value outside the valid range.",
-		"check_id" => "id"
+		"description" => "Do not expand the lower and upper limit if the graph contains a value outside the valid range."
 		),
 	"auto_padding" => array(
-		"title" => "Auto Padding",
-		"type" => "check",
-		"check_caption" => "Auto Padding",
+		"friendly_name" => "Auto Padding",
+		"method" => "checkbox",
 		"default" => "on",
 		"description" => "Pad text so that legend and graph data always line up. Note: this could cause 
 			graphs to take longer to render because of the larger overhead. Also Auto Padding may not 
-			be accurate on all types of graphs, consistant labeling usually helps.",
-		"check_id" => "id"
+			be accurate on all types of graphs, consistant labeling usually helps."
 		),
 	"export" => array(
-		"title" => "Allow Graph Export",
-		"type" => "check",
-		"check_caption" => "Allow Graph Export",
+		"friendly_name" => "Allow Graph Export",
+		"method" => "checkbox",
 		"default" => "on",
 		"description" => "Choose whether this graph will be included in the static html/png export if you use 
-			cacti's export feature.",
-		"check_id" => "id"
+			cacti's export feature."
 		),
 	"upper_limit" => array(
-		"title" => "Upper Limit",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "40",
+		"friendly_name" => "Upper Limit",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "100",
 		"description" => "The maximum vertical value for the rrd graph."
 		),
 	"lower_limit" => array(
-		"title" => "Lower Limit",
-		"type" => "text",
-		"text_maxlen" => "255",
-		"text_size" => "40",
+		"friendly_name" => "Lower Limit",
+		"method" => "textbox",
+		"max_length" => "255",
 		"default" => "0",
 		"description" => "The minimum vertical value for the rrd graph."
 		),
 	"base_value" => array(
-		"title" => "Base Value",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "40",
+		"friendly_name" => "Base Value",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "1000",
 		"description" => "Should be set to 1024 for memory and 1000 for traffic measurements."
 		),
 	"unit_value" => array(
-		"title" => "Unit Value",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "40",
+		"friendly_name" => "Unit Value",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "",
 		"description" => "(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was 
 			recently added in rrdtool 1.0.36."
 		),
 	"unit_exponent_value" => array(
-		"title" => "Unit Exponent Value",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "40",
+		"friendly_name" => "Unit Exponent Value",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "0",
 		"description" => "What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or -6 
 			to display everything in 'u' (micro)."
 		),
 	"vertical_label" => array(
-		"title" => "Vertical Label",
-		"type" => "text",
-		"text_maxlen" => "255",
-		"text_size" => "40",
+		"friendly_name" => "Vertical Label",
+		"method" => "textbox",
+		"max_length" => "255",
 		"default" => "",
 		"description" => "The label vertically printed to the left of the graph."
 		)
@@ -316,8 +301,8 @@ $struct_graph = array(
 
 $struct_graph_item = array(
 	"task_item_id" => array(
-		"title" => "Data Source",
-		"type" => "drop_sql",
+		"friendly_name" => "Data Source",
+		"method" => "drop_sql",
 		"sql" => "select
 			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
 			data_template_rrd.id 
@@ -327,50 +312,47 @@ $struct_graph_item = array(
 			and data_template_data.local_data_id=data_local.id
 			order by name",
 		"default" => "0",
-		"null_item" => "None",
+		"none_value" => "None",
 		"description" => "The task to use for this graph item; not used for COMMENT fields."
 		),
 	"color_id" => array(
-		"title" => "Color",
-		"type" => "drop_color",
+		"friendly_name" => "Color",
+		"method" => "drop_color",
 		"default" => "0",
 		"description" => "The task to use for this graph item; not used for COMMENT fields."
 		),
 	"graph_type_id" => array(
-		"title" => "Graph Item Type",
-		"type" => "drop_array",
-		"array_name" => "graph_item_types",
+		"friendly_name" => "Graph Item Type",
+		"method" => "drop_array",
+		"array" => $graph_item_types,
 		"default" => "0",
-		"null_item" => "",
 		"description" => "How data for this item is displayed."
 		),
 	"consolidation_function_id" => array(
-		"title" => "Consolidation Function",
-		"type" => "drop_array",
-		"array_name" => "consolidation_functions",
+		"friendly_name" => "Consolidation Function",
+		"method" => "drop_array",
+		"array" => $consolidation_functions,
 		"default" => "0",
-		"null_item" => "",
 		"description" => "How data is to be represented on the graph."
 		),
 	"cdef_id" => array(
-		"title" => "CDEF Function",
-		"type" => "drop_sql",
+		"friendly_name" => "CDEF Function",
+		"method" => "drop_sql",
 		"sql" => "select id,name from cdef order by name",
 		"default" => "0",
 		"null_item" => "None",
 		"description" => "A CDEF Function to apply to this item on the graph."
 		),
 	"value" => array(
-		"title" => "Value",
-		"type" => "text",
-		"text_maxlen" => "50",
-		"text_size" => "30",
+		"friendly_name" => "Value",
+		"method" => "textbox",
+		"max_length" => "50",
 		"default" => "",
 		"description" => "For use with VRULE and HRULE, <em>numbers</em> only."
 		),
 	"gprint_id" => array(
-		"title" => "GPRINT Type",
-		"type" => "drop_sql",
+		"friendly_name" => "GPRINT Type",
+		"method" => "drop_sql",
 		"sql" => "select id,name from graph_templates_gprint order by name",
 		"default" => "2",
 		"null_item" => "",
@@ -378,49 +360,44 @@ $struct_graph_item = array(
 			here. You can define additional types under \"Graph Templates\"."
 		),
 	"text_format" => array(
-		"title" => "Text Format",
-		"type" => "text",
-		"text_maxlen" => "255",
-		"text_size" => "40",
+		"friendly_name" => "Text Format",
+		"method" => "textbox",
+		"max_length" => "255",
 		"default" => "",
 		"description" => "The text of the comment or legend, input and output keywords are allowed."
 		),
 	"hard_return" => array(
-		"title" => "Hard Return",
-		"type" => "check",
-		"check_caption" => "Insert Hard Return",
+		"friendly_name" => "Insert Hard Return",
+		"method" => "checkbox",
 		"default" => "",
-		"description" => "",
-		"check_id" => "id"
+		"description" => ""
 		),
 	"sequence" => array(
-		"title" => "Sequence",
-		"type" => "view"
+		"friendly_name" => "Sequence",
+		"method" => "view"
 		)
 	);
 
 $struct_data_source = array(
 	"name" => array(
-		"title" => "Name",
-		"type" => "text",
-		"text_maxlen" => "250",
-		"text_size" => "40",
+		"friendly_name" => "Name",
+		"method" => "textbox",
+		"max_length" => "250",
 		"default" => "",
 		"description" => "Choose a name for this data source.",
 		"flags" => ""
 		),
 	"data_source_path" => array(
-		"title" => "Data Source Path",
-		"type" => "text",
-		"text_maxlen" => "255",
-		"text_size" => "40",
+		"friendly_name" => "Data Source Path",
+		"method" => "textbox",
+		"max_length" => "255",
 		"default" => "",
 		"description" => "The full path to the RRD file.",
 		"flags" => "NOTEMPLATE"
 		),
 	"data_input_id" => array(
-		"title" => "Data Input Source",
-		"type" => "drop_sql",
+		"friendly_name" => "Data Input Source",
+		"method" => "drop_sql",
 		"sql" => "select id,name from data_input order by name",
 		"default" => "",
 		"null_item" => "None",
@@ -428,78 +405,73 @@ $struct_data_source = array(
 		"flags" => "ALWAYSTEMPLATE"
 		),
 	"rra_id" => array(
-		"type" => "drop_multi_rra",
-		"title" => "Associated RRA's",
+		"method" => "drop_multi",
+		"friendly_name" => "Associated RRA's",
 		"description" => "Which RRA's to use when entering data. (It is recommended that you select all of these values).",
 		"flags" => "ALWAYSTEMPLATE"
 		),
 	"rrd_step" => array(
-		"title" => "Step",
-		"type" => "text",
-		"text_maxlen" => "10",
-		"text_size" => "20",
+		"friendly_name" => "Step",
+		"method" => "textbox",
+		"max_length" => "10",
+		"size" => "20",
 		"default" => "300",
 		"description" => "The amount of time in seconds between expected updates.",
 		"flags" => ""
 		),
 	"active" => array(
-		"title" => "Data Source Active",
-		"type" => "check",
-		"check_caption" => "Data Source Active",
+		"friendly_name" => "Data Source Active",
+		"method" => "checkbox",
 		"default" => "on",
-		"description" => "Whether cacti should gather data for this data source or not.",
-		"flags" => "",
-		"check_id" => "id"
+		"description" => "Whether Cacti should gather data for this data source or not.",
+		"flags" => ""
 		)
 	);
 
 $struct_data_source_item = array(
 	"data_source_name" => array(
-		"title" => "Internal Data Source Name",
-		"type" => "text",
-		"text_maxlen" => "19",
-		"text_size" => "40",
+		"friendly_name" => "Internal Data Source Name",
+		"method" => "textbox",
+		"max_length" => "19",
 		"default" => "",
 		"description" => "Choose unique name to represent this piece of data inside of the rrd file."
 		),
 	"rrd_minimum" => array(
-		"title" => "Minimum Value",
-		"type" => "text",
-		"text_maxlen" => "20",
-		"text_size" => "30",
+		"friendly_name" => "Minimum Value",
+		"method" => "textbox",
+		"max_length" => "20",
+		"size" => "30",
 		"default" => "0",
 		"description" => "The minimum value of data that is allowed to be collected."
 		),
 	"rrd_maximum" => array(
-		"title" => "Maximum Value",
-		"type" => "text",
-		"text_maxlen" => "20",
-		"text_size" => "30",
+		"friendly_name" => "Maximum Value",
+		"method" => "textbox",
+		"max_length" => "20",
+		"size" => "30",
 		"default" => "0",
 		"description" => "The maximum value of data that is allowed to be collected."
 		),
 	"data_source_type_id" => array(
-		"title" => "Data Source Type",
-		"type" => "drop_array",
-		"array_name" => "data_source_types",
+		"friendly_name" => "Data Source Type",
+		"method" => "drop_array",
+		"array" => $data_source_types,
 		"default" => "",
-		"null_item" => "",
 		"description" => "How data is represented in the RRA."
 		),
 	"rrd_heartbeat" => array(
-		"title" => "Heartbeat",
-		"type" => "text",
-		"text_maxlen" => "20",
-		"text_size" => "30",
+		"friendly_name" => "Heartbeat",
+		"method" => "textbox",
+		"max_length" => "20",
+		"size" => "30",
 		"default" => "600",
 		"description" => "The maximum amount of time that can pass before data is entered as \"unknown\". 
 			(Usually 2x300=600)"
 		),
 	"data_input_field_id" => array(
-		"title" => "Output Field",
-		"type" => "drop_sql",
+		"friendly_name" => "Output Field",
+		"method" => "drop_sql",
 		"default" => "0",
-		"null_item" => "",
 		"description" => "When data is gathered, the data for this field will be put into this data source."
 		)
 	);

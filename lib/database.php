@@ -24,14 +24,18 @@
  +-------------------------------------------------------------------------+
 */
 
-include($config["include_path"] . "/adodb/adodb.inc.php");
-db_connect();
+include($config["library_path"] . "/adodb/adodb.inc.php");
 
-function db_connect() {
-	global $database_hostname,$database_username,$database_password,$database_default, $database_type;
-	db_connect_real($database_hostname,$database_username,$database_password,$database_default, $database_type); 
-}
+db_connect_real($database_hostname,$database_username,$database_password,$database_default, $database_type);
 
+/* db_connect_real - makes a connection to the database server
+   @arg $host - the hostname of the database server, 'localhost' if the database server is running
+      on this machine
+   @arg $user - the username to connect to the database server as
+   @arg $pass - the password to connect to the database server with
+   @arg $db_name - the name of the database to connect to
+   @arg $db_type - the type of database server to connect to, only 'mysql' is currently supported
+   @returns - (bool) '1' for success, '0' for error */
 function db_connect_real($host,$user,$pass,$db_name,$db_type) {
 	global $cnn_id;
 	
@@ -46,7 +50,9 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type) {
 	}
 }
 
-
+/* db_execute - run an sql query and do not return any output
+   @arg $sql - the sql query to execute
+   @returns - '1' for success, '0' for error */
 function db_execute($sql) {
 	global $cnn_id;
 	
@@ -61,7 +67,11 @@ function db_execute($sql) {
 	}
 }
 
-
+/* db_fetch_cell - run a 'select' sql query and return the first column of the 
+     first row found
+   @arg $sql - the sql query to execute
+   @arg $col_name - use this column name instead of the first one
+   @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql,$col_name = '') {
 	global $cnn_id;
 	
@@ -72,6 +82,7 @@ function db_fetch_cell($sql,$col_name = '') {
 	}else{
 		$cnn_id->SetFetchMode(ADODB_FETCH_NUM);
 	}
+	
 	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
@@ -85,6 +96,9 @@ function db_fetch_cell($sql,$col_name = '') {
 	}
 }
 
+/* db_fetch_row - run a 'select' sql query and return the first row found
+   @arg $sql - the sql query to execute
+   @returns - the first row of the result as a hash */
 function db_fetch_row($sql) {
 	global $cnn_id;
 	
@@ -100,6 +114,9 @@ function db_fetch_row($sql) {
 	}
 }
 
+/* db_fetch_assoc - run a 'select' sql query and return all rows found
+   @arg $sql - the sql query to execute
+   @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql) {
 	global $cnn_id;
 	
@@ -118,12 +135,21 @@ function db_fetch_assoc($sql) {
 	}
 }
 
+/* db_fetch_insert_id - get the last insert_id or auto incriment
+   @returns - the id of the last auto incriment row that was created */
 function db_fetch_insert_id() {
 	global $cnn_id;
 	
 	return $cnn_id->Insert_ID();
 }
 
+/* array_to_sql_or - loops through a single dimentional array and converts each 
+     item to a string that can be used in the OR portion of an sql query in the
+     following form:
+        column=item1 OR column=item2 OR column=item2 ...
+   @arg $array - the array to convert
+   @arg $sql_column - the column to set each item in the array equal to
+   @returns - a string that can be placed in a SQL OR statement */
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
 	if ((empty($array{count($array)-1})) && (sizeof($array) > 1)) {
@@ -147,6 +173,12 @@ function array_to_sql_or($array, $sql_column) {
 	}
 }
 
+/* db_replace - replaces the data contained in a particular row
+   @arg $table_name - the name of the table to make the replacement in
+   @arg $array_items - an array containing each column -> value mapping in the row
+   @arg $keyCols - the name of the column containing the primary key
+   @arg $autoQuote - whether to use intelligent quoting or not
+   @returns - the auto incriment id column (if applicable) */
 function db_replace($table_name, $array_items, $keyCols, $autoQuote=false) {
 	global $cnn_id;
 	$cnn_id->Replace($table_name, $array_items, $keyCols,$autoQuote);
@@ -154,6 +186,10 @@ function db_replace($table_name, $array_items, $keyCols, $autoQuote=false) {
 	return $cnn_id->Insert_ID();
 }
 
+/* sql_save - saves data to an sql table
+   @arg $array_items - an array containing each column -> value mapping in the row
+   @arg $table_name - the name of the table to make the replacement in
+   @returns - the auto incriment id column (if applicable) */
 function sql_save($array_items, $table_name) {
 	global $cnn_id;
 	

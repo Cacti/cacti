@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/config.php');
+include ("./include/config.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

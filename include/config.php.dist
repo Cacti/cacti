@@ -41,6 +41,7 @@ $config["php_snmp_support"] = function_exists("snmpget");
 
 /* used for includes */
 $config["include_path"] = dirname(__FILE__);
+$config["library_path"] = ereg_replace("(.*[\/\\])include", "\\1lib", dirname(__FILE__));
 
 /* colors */
 $colors["dark_outline"] = "454E53";
@@ -63,8 +64,20 @@ $colors["form_alternate2"] = "E5E5E5";
 /* display ALL errors */
 error_reporting(E_ALL);
 
-include_once($config["include_path"] . "/functions.php");
-include_once($config["include_path"] . "/database.php");
+/* we don't want these pages cached */
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
+/* initilize php session */
+session_start();
+
+include_once($config["include_path"] . "/config_arrays.php");
+include_once($config["library_path"] . "/functions.php");
+include_once($config["library_path"] . "/form.php");
+include_once($config["library_path"] . "/database.php");
 
 /* current cacti version */
 $config["cacti_version"] = "0.8.3a";

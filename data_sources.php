@@ -24,10 +24,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php'); 
-include_once ("include/functions.php");
-include_once ("include/config_arrays.php");
-include_once ('include/form.php');
+include ("./include/auth.php"); 
+include_once("./lib/utility.php");
+include_once("./lib/tree.php");
+include_once("./lib/tree_view.php");
+include_once("./lib/rrd.php");
 
 $ds_actions = array(
 	1 => "Delete",
@@ -58,11 +59,11 @@ switch ($_REQUEST["action"]) {
 		
 		break;
 	case 'data_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		data_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'ds_remove':
 		ds_remove();
@@ -70,18 +71,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: data_sources.php");
 		break;
 	case 'ds_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		ds_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		ds();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -91,8 +92,6 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	include_once ("include/utility_functions.php");
-	
 	if ((isset($_POST["save_component_data_source_new"])) && (!empty($_POST["data_template_id"]))) {
 		$save["id"] = $_POST["local_data_id"];
 		$save["data_template_id"] = $_POST["data_template_id"];
@@ -250,11 +249,11 @@ function form_save() {
 	}
 	
 	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {
-		header ("Location: data_sources.php?action=ds_edit&host_id=" . $_POST["host_id"] . "&new=1");
+		header("Location: data_sources.php?action=ds_edit&host_id=" . $_POST["host_id"] . "&new=1");
 	}elseif ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
-		header ("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
+		header("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
 	}else{
-		header ("Location: data_sources.php");
+		header("Location: data_sources.php");
 	}
 }
 
@@ -263,10 +262,6 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	include_once ("include/tree_functions.php");
-	include_once ("include/tree_view_functions.php");
-	include_once ("include/utility_functions.php");
-	
 	global $colors, $ds_actions;
 	
 	/* if we are to save this form, instead of display it */
@@ -364,7 +359,7 @@ function form_actions() {
 		$i++;
 	}
 	
-	include_once ("include/top_header.php");
+	include_once("./include/top_header.php");
 	
 	start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 	
@@ -401,9 +396,9 @@ function form_actions() {
 						}
 						
 						print "<br>";
-						form_base_radio_button("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
-						form_base_radio_button("delete_type", "1", "2", "Delete all <strong>graph items</strong> that reference to this data source.", "1", true);
-						form_base_radio_button("delete_type", "1", "3", "Delete all <strong>graphs</strong> that reference to this data source.", "1", true);
+						form_radio_button("delete_type", "1", "1", "Leave the graphs untouched.", "1"); print "<br>";
+						form_radio_button("delete_type", "1", "2", "Delete all <strong>graph items</strong> that reference to this data source.", "1"); print "<br>";
+						form_radio_button("delete_type", "1", "3", "Delete all <strong>graphs</strong> that reference to this data source.", "1"); print "<br>";
 						print "</td></tr>";
 					}
 				print "
@@ -417,7 +412,7 @@ function form_actions() {
 					the following data souces. Be aware that all warnings will be suppressed during the
 					conversion, so graph data loss is possible.</p>
 					<p>$ds_list</p>
-					<p><strong>New Data Template:</strong><br>"; form_base_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
+					<p><strong>New Data Template:</strong><br>"; form_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
 				</td>
 			</tr>\n
 			";
@@ -426,7 +421,7 @@ function form_actions() {
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Choose a new host for these data sources:</p>
 					<p>$ds_list</p>
-					<p><strong>New Host:</strong><br>"; form_base_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
+					<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
 				</td>
 			</tr>\n
 			";
@@ -472,7 +467,7 @@ function form_actions() {
 	
 	end_box();
 	
-	include_once ("include/bottom_footer.php");
+	include_once("./include/bottom_footer.php");
 }
 
 /* ----------------------------
@@ -530,7 +525,9 @@ function data_edit() {
 				print "<td><em>" . (empty($old_value) ? "Nothing Entered" : $old_value) . "</em></td>\n";
 			}else{
 				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
+				print "<td>";
 				form_text_box("value_" . $field["data_name"],$old_value,"","");
+				print "</td>";
 			}
 			
 			print "</tr>\n";
@@ -557,7 +554,7 @@ function ds_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
 	db_execute("update graph_templates_item set task_item_id=0 where task_item_id=" . $_GET["id"]);
 	
-	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["local_data_id"]);
+	header("Location: data_sources.php?action=ds_edit&id=" . $_GET["local_data_id"]);
 }
 
 function ds_rrd_add() {
@@ -565,12 +562,10 @@ function ds_rrd_add() {
 		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
 	$data_template_rrd_id = db_fetch_insert_id();
 	
-	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
+	header("Location: data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 }
 
 function ds_edit() {
-	include_once ("include/rrd_functions.php");
-	
 	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
 	
 	$use_data_template = true;
@@ -622,59 +617,106 @@ function ds_edit() {
 	
 	start_box("<strong>Data Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	print "<form method='post' action='data_sources.php'>\n";
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"data_template_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Selected Data Template",
+					"description" => "The name given to this data template.",
+					"value" => (isset($data_template) ? $data_template["data_template_id"] : "0"),
+					"none_value" => "None",
+					"sql" => "select id,name from data_template order by name"
+					),
+				"host_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Host",
+					"description" => "Choose the host that this graph belongs to.",
+					"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
+					"none_value" => "None",
+					"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
+					),
+				"" => array(
+					"method" => "custom",
+					"friendly_name" => "Debug",
+					"description" => "Turn on/off data source debugging.",
+					"value" => "<a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&debug=" . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On") . "</strong> Data Source Debug Mode.</a>"
+					),
+				"_data_template_id" => array(
+					"method" => "hidden",
+					"value" => (isset($data) ? $data["data_template_id"] : "0")
+					),
+				"_host_id" => array(
+					"method" => "hidden",
+					"value" => (empty($host_id) ? (isset($_GET["host_id"]) ? $_GET["host_id"] : "0") : $host_id)
+					),
+				"_data_input_id" => array(
+					"method" => "hidden",
+					"value" => (isset($data["data_input_id"]) ? $data["data_input_id"] : "0")
+					),
+				"data_template_data_id" => array(
+					"method" => "hidden",
+					"value" => (isset($data) ? $data["id"] : "0")
+					),
+				"data_template_rrd_id" => array(
+					"method" => "hidden",
+					"value" => (isset($rrd) ? $rrd["id"] : "0")
+					),
+				"local_data_template_data_id" => array(
+					"method" => "hidden",
+					"value" => (isset($data) ? $data["local_data_template_data_id"] : "0")
+					),
+				"local_data_template_rrd_id" => array(
+					"method" => "hidden",
+					"value" => (isset($rrd) ? $rrd["local_data_template_rrd_id"] : "0")
+					),
+				"local_data_id" => array(
+					"method" => "hidden",
+					"value" => (isset($data) ? $data["local_data_id"] : "0")
+					),
+				)
+			)
+		);
 	
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Selected Data Template</font><br>
-			The name given to this data template.
-		</td>
-		<?php form_dropdown("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",(isset($data_template) ? $data_template["data_template_id"] : "0"),"None","0");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Host</font><br>
-			Choose the host that this data source belongs to.
-		</td>
-		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",$host_id,"None",(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Debug</font><br>
-			Turn on/off data source debugging.
-		</td>
-		<td>
-			<a href="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>&debug=<?php print isset($_SESSION["ds_debug_mode"]) ? "0" : "1";?>">Turn <strong><?php print isset($_SESSION["ds_debug_mode"]) ? "Off" : "On";?></strong> Data Source Debug Mode.</a>
-		</td>
-	</tr>
-	
-	<?php
 	end_box();
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 		
-		$i = 0;
+		$form_array = array();
+		
 		while (list($field_name, $field_array) = each($struct_data_source)) {
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			$form_array += array($field_name => $struct_data_source[$field_name]);
 			
-			print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-			if (($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE")) {
-				print $field_array["description"];
+			if (!(($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
+				$form_array[$field_name]["description"] = "";
 			}
 			
-			print "</td>\n";
+			$form_array[$field_name]["value"] = (isset($data[$field_name]) ? $data[$field_name] : "");
+			$form_array[$field_name]["form_id"] = (empty($data["id"]) ? "0" : $data["id"]);
 			
-			if (($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE")) {
-				draw_nontemplated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), (empty($data["id"]) ? "0" : $data["id"]));
-			}else{
-				draw_templated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), (empty($data["id"]) ? "0" : $data["id"]));
+			/* "hack" for rra multi_select */
+			if ($field_name == "rra_id") {
+				$form_array[$field_name]["array"] = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
+				$form_array[$field_name]["sql"] = "select data_template_data_id,rra_id as id from data_template_data_rra where data_template_data_id=" . (empty($data["id"]) ? "0" : $data["id"]);
+				$form_array[$field_name]["sql_print"] = "select rra.name from data_template_data_rra,rra where data_template_data_rra.rra_id=rra.id and data_template_data_rra.data_template_data_id=" . (empty($data["id"]) ? "0" : $data["id"]);
 			}
 			
-			print "</tr>\n";
+			if (!(($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
+				$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
+			}
 		}
+		
+		draw_edit_form(
+			array(
+				"config" => array(
+					"no_form_tag" => true
+					),
+				"fields" => $form_array
+				)
+			);
 		
 		end_box();
 		
@@ -744,28 +786,30 @@ function ds_edit() {
 			$struct_data_source_item["data_input_field_id"]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='out' and update_rra='on' order by data_name,name";
 		}
 		
-		print "<form method='post' action='data_sources.php'>";
+		$form_array = array();
 		
-		$i = 1;
 		while (list($field_name, $field_array) = each($struct_data_source_item)) {
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			$form_array += array($field_name => $struct_data_source_item[$field_name]);
 			
-			print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-			
-			if (($use_data_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
-				print $field_array["description"];
+			if (!(($use_data_template == false) || ($rrd_template{"t_" . $field_name} == "on"))) {
+				$form_array[$field_name]["description"] = "";
 			}
 			
-			print "</td>\n";
+			$form_array[$field_name]["value"] = (isset($rrd) ? $rrd[$field_name] : "");
 			
-			if (($use_data_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
-				draw_nontemplated_item($field_array, $field_name, (isset($rrd) ? $rrd[$field_name] : ""));
-			}else{
-				draw_templated_item($field_array, $field_name, (isset($rrd) ? $rrd[$field_name] : ""));
+			if (!(($use_data_template == false) || ($rrd_template{"t_" . $field_name} == "on"))) {
+				$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
 			}
-			
-			print "</tr>\n";
 		}
+		
+		draw_edit_form(
+			array(
+				"config" => array(
+					"no_form_tag" => true
+					),
+				"fields" => $form_array
+				)
+			);
 		
 		end_box();
 		
@@ -774,15 +818,6 @@ function ds_edit() {
 		
 		form_hidden_id("current_rrd",$_GET["view_rrd"]);
 	}
-	
-	form_hidden_id("_data_template_id",(isset($data) ? $data["data_template_id"] : "0"));
-	form_hidden_id("_host_id",$host_id,(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));
-	form_hidden_id("_data_input_id",(isset($data["data_input_id"]) ? $data["data_input_id"] : "0"));
-	form_hidden_id("data_template_data_id",(isset($data) ? $data["id"] : "0"));
-	form_hidden_id("data_template_rrd_id",(isset($rrd) ? $rrd["id"] : "0"));
-	form_hidden_id("local_data_template_data_id",(isset($data) ? $data["local_data_template_data_id"] : "0"));
-	form_hidden_id("local_data_template_rrd_id",(isset($rrd) ? $rrd["local_data_template_rrd_id"] : "0"));
-	form_hidden_id("local_data_id",(isset($data) ? $data["local_data_id"] : "0"));
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		form_hidden_box("save_component_data_source","1","");
@@ -980,7 +1015,7 @@ function ds() {
 				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 			</td>
 			<td align='right'>
-				<?php form_base_dropdown("drp_action",$ds_actions,"","","1","","");?>
+				<?php form_dropdown("drp_action",$ds_actions,"","","1","","");?>
 			</td>
 			<td width='1' align='right'>
 				<input type='image' src='images/button_go.gif' alt='Go'>

@@ -24,10 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/functions.php");
-include_once ("include/config_arrays.php");
-include_once ('include/form.php');
+include("./include/auth.php");
+include_once("./lib/snmp.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -40,44 +38,44 @@ switch ($_REQUEST["action"]) {
 	case 'item_moveup_dssv':
 		snmp_item_moveup_dssv();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_movedown_dssv':
 		snmp_item_movedown_dssv();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove_dssv':
 		snmp_item_remove_dssv();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_moveup_gsv':
 		snmp_item_moveup_gsv();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_movedown_gsv':
 		snmp_item_movedown_gsv();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove_gsv':
 		snmp_item_remove_gsv();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove':
 		snmp_item_remove();
 		
-		header ("Location: snmp.php?action=item_edit&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		header("Location: snmp.php?action=item_edit&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		snmp_item_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
 		snmp_remove();
@@ -85,18 +83,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: snmp.php");
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		snmp_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		snmp();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -133,9 +131,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header ("Location: snmp.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
+			header("Location: snmp.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
 		}else{
-			header ("Location: snmp.php");
+			header("Location: snmp.php");
 		}
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
 		$redirect_back = false;
@@ -189,9 +187,9 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
-			header ("Location: snmp.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
+			header("Location: snmp.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
 		}else{
-			header ("Location: snmp.php?action=edit&id=" . $_POST["snmp_query_id"]);
+			header("Location: snmp.php?action=edit&id=" . $_POST["snmp_query_id"]);
 		}
 	}
 }
@@ -226,9 +224,9 @@ function snmp_item_remove_dssv() {
 
 function snmp_item_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -241,8 +239,6 @@ function snmp_item_remove() {
 }
 
 function snmp_item_edit() {
-	include_once ("include/snmp_functions.php");
-	
 	global $colors, $paths;
 	
 	if (!empty($_GET["id"])) {
@@ -254,25 +250,45 @@ function snmp_item_edit() {
 	
 	start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="snmp.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "A name for this associated graph.",
+					"value" => (isset($snmp_query_item) ? $snmp_query_item["name"] : ""),
+					"max_length" => "100",
+					),
+				"graph_template_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Graph Template",
+					"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
+					"value" => (isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0"),
+					"sql" => "select id,name from graph_templates order by name",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($snmp_query_item) ? $snmp_query_item["id"] : "0")
+					),
+				"snmp_query_id" => array(
+					"method" => "hidden",
+					"value" => $_GET["snmp_query_id"]
+					),
+				"_graph_template_id" => array(
+					"method" => "hidden",
+					"value" => (isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0")
+					),
+				"save_component_snmp_query_item" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			A name for this associated graph.
-		</td>
-		<?php form_text_box("name",(isset($snmp_query_item) ? $snmp_query_item["name"] : ""),"","100", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Graph Template</font><br>
-			Choose a graph template to use for this association.
-		</td>
-		<?php form_dropdown("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",(isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0"),"","");?>
-	</tr>
-	<?php
 	end_box();
 	
 	if (!empty($snmp_query_item["id"])) {
@@ -341,10 +357,10 @@ function snmp_item_edit() {
 										}
 									}
 									
-									form_base_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
+									form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
 								</td>
 								<td align="right">
-									<?php form_base_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "",$_GET["id"],true);?>
+									<?php form_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "",$_GET["id"]); print "<br>";?>
 								</td>
 							</tr>
 						</table>
@@ -494,11 +510,6 @@ function snmp_item_edit() {
 		end_box();
 	}
 	
-	form_hidden_id("id",(isset($snmp_query_item) ? $snmp_query_item["id"] : "0"));
-	form_hidden_id("snmp_query_id",$_GET["snmp_query_id"]);
-	form_hidden_id("_graph_template_id",(isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0"));
-	form_hidden_box("save_component_snmp_query_item","1","");
-	
 	form_save_button("snmp.php?action=edit&id=" . $_GET["snmp_query_id"]);
 }
 
@@ -508,9 +519,9 @@ function snmp_item_edit() {
 
 function snmp_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -544,43 +555,52 @@ function snmp_edit() {
 	
 	start_box("<strong>Data Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="snmp.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "A name for this data query.",
+					"value" => (isset($snmp_query) ? $snmp_query["name"] : ""),
+					"max_length" => "100",
+					),
+				"description" => array(
+					"method" => "textbox",
+					"friendly_name" => "Description",
+					"description" => "A description for this data query.",
+					"value" => (isset($snmp_query) ? $snmp_query["description"] : ""),
+					"max_length" => "255",
+					),
+				"xml_path" => array(
+					"method" => "textbox",
+					"friendly_name" => "XML Path",
+					"description" => "The full path to the XML file containing definitions for this data query.",
+					"value" => (isset($snmp_query) ? $snmp_query["xml_path"] : ""),
+					"default" => "<path_cacti>/resource/",
+					"max_length" => "255",
+					),
+				"data_input_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Data Input Method",
+					"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
+					"value" => (isset($host) ? $host["data_input_id"] : "0"),
+					"sql" => "select id,name from data_input order by name",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($snmp_query) ? $snmp_query["id"] : "0")
+					),
+				"save_component_snmp_query" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			A name for this data query.
-		</td>
-		<?php form_text_box("name",(isset($snmp_query) ? $snmp_query["name"] : ""),"","100", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Description</font><br>
-			A description for this data query.
-		</td>
-		<?php form_text_box("description",(isset($snmp_query) ? $snmp_query["description"] : ""),"","255", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">XML Path</font><br>
-			The full path to the XML file containing definitions for this data query.
-		</td>
-		<?php form_text_box("xml_path",(isset($snmp_query) ? $snmp_query["xml_path"] : ""),"<path_cacti>/resource/","255", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Input Method</font><br>
-			Select the data input method that will store/execute the data for this query.
-		</td>
-		<?php form_dropdown("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",(isset($snmp_query) ? $snmp_query["data_input_id"] : "0"),"","");?>
-	</tr>
-	
-	<?php
-	form_hidden_id("id",(isset($snmp_query) ? $snmp_query["id"] : "0"));
 	end_box();
 	
 	if (!empty($snmp_query["id"])) {
@@ -625,10 +645,10 @@ function snmp_edit() {
 								<?php print $field["name"];?>
 							</td>
 							<td width="1">
-								<?php form_base_dropdown("mdt_" . $field["id"] . "_action_id",$snmp_query_field_actions,"","",$field["action_id"],"","");?>
+								<?php form_dropdown("mdt_" . $field["id"] . "_action_id",$snmp_query_field_actions,"","",$field["action_id"],"","");?>
 							</td>
 							<td align="right">
-								<?php form_base_checkbox("mdt_" . $field["id"] . "_check", $old_value, "", "",$_GET["id"],true);?>
+								<?php form_checkbox("mdt_" . $field["id"] . "_check", $old_value, "", "",$_GET["id"]); print "<br>";?>
 							</td>
 						</tr>
 					</table>
@@ -680,8 +700,6 @@ function snmp_edit() {
 		
 		end_box();
 	}
-	
-	form_hidden_box("save_component_snmp_query","1","");
 	
 	form_save_button("snmp.php");
 }

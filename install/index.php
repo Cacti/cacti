@@ -191,8 +191,8 @@ if (empty($_REQUEST["step"])) {
 }
 
 if ($_REQUEST["step"] == "4") {
-	include_once("../include/snmp_functions.php");
-	include_once("../include/utility_functions.php");
+	include_once("../lib/snmp.php");
+	include_once("../lib/utility.php");
 	
 	$i = 0;
 	
@@ -246,7 +246,7 @@ if ($_REQUEST["step"] == "4") {
 			upgrade_to_0_8_2a();
 		}elseif ($cacti_versions[$i] == "0.8.3") {
 			include ("0_8_2a_to_0_8_3.php");
-			include_once("../include/utility_functions.php");
+			include_once("../lib/utility.php");
 			upgrade_to_0_8_3();
 		}
 	}
@@ -380,7 +380,7 @@ if ($_REQUEST["step"] == "4") {
 										print "<br></p>";
 										break;
 									case 'checkbox':
-										form_base_checkbox($name,$current_value,$settings[$name]["description"],"");
+										form_checkbox($name,$current_value,$settings[$name]["description"],"");
 										break;
 								}
 							}

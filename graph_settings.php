@@ -24,11 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include ("include/auth.php");
-include ("include/config_settings.php");
-include ("include/config_arrays.php");
-include_once ("include/form.php");
-include_once ("include/functions.php");
+include("./include/auth.php");
+include("./include/config_settings.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -39,11 +36,11 @@ switch ($_REQUEST["action"]) {
 		
 		break;
 	default:
-		include_once ("include/top_graph_header.php");
+		include_once("./include/top_graph_header.php");
 		
 		settings();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -67,7 +64,7 @@ function form_save() {
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_graph_config_array");
 	
-	header ("Location: " . $_POST["referer"]);
+	header("Location: " . $_POST["referer"]);
 }
 
 /* --------------------------
@@ -87,7 +84,7 @@ function settings() {
 	/* Find out whether this user has right here */
 	if($current_user["graph_settings"] == "") {
 		print "<strong><font size='+1' color='#FF0000'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		exit;
 	} 
 	
@@ -105,53 +102,31 @@ function settings() {
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
-	if (sizeof($tabs_graphs) > 0) {
-	foreach (array_keys($tabs_graphs) as $tab_short_name) {
+	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
 		<tr>
 			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
-				<span class="textHeaderDark"><strong><?php print $tabs_graphs[$tab_short_name];?></strong> [user: <?php print $current_user["username"];?>]</span>
+				<span class="textHeaderDark"><strong>Graph Settings</strong> [<?php print $tabs_graphs[$tab_short_name];?>]</span>
 			</td>
 		</tr>
 		<?php
 		
-		reset($settings_graphs);
+		$form_array = array();
 		
-		$i = 0;
-		if (sizeof($settings_graphs) > 0) {
-		foreach (array_keys($settings_graphs) as $setting) {
-			/* make sure to skip group members here; only parents are allowed */
-			if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
-				++$i;
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-				
-				/* draw the acual header and textbox on the form */
-				form_item_label($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
-				
-				$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . $_SESSION["sess_user_id"]);
-				
-				/* choose what kind of item this is */
-				switch ($settings_graphs[$setting]["method"]) {
-					case 'textbox':
-						form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
-						break;
-					case 'drop_sql':
-						form_dropdown($setting,db_fetch_assoc($settings_graphs[$setting]["sql"]),"name","id",$current_value,"",$settings_graphs[$setting]["default"]);
-						break;
-					case 'drop_array':
-						form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
-						break;
-					case 'checkbox':
-						form_checkbox($setting, $current_value, $settings_graphs[$setting]["friendly_name"], $settings_graphs[$setting]["default"], 1);
-						break;
-				}
-				
-				print "</tr>\n";
-			}
+		while (list($field_name, $field_array) = each($tab_fields)) {
+			$form_array += array($field_name => $tab_fields[$field_name]);
+			
+			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));
 		}
-		}
-	
-	}
+		
+		draw_edit_form(
+			array(
+				"config" => array(
+					"no_form_tag" => true
+					),
+				"fields" => $form_array
+				)
+			);
 	}
 	
 	end_box();

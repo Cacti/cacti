@@ -24,10 +24,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/functions.php");
-include_once ("include/config_arrays.php");
-include_once ('include/form.php');
+include("./include/auth.php");
+include_once("./lib/utility.php");
+include_once("./lib/snmp.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -40,19 +39,19 @@ switch ($_REQUEST["action"]) {
 	case 'query_remove':
 		host_remove_query();
 		
-		header ("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
 		break;
 	case 'query_reload':
 		host_reload_query();
 		
-		header ("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
 		break;
 	case 'new_graphs':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		host_new_graphs();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
 		host_remove();
@@ -60,18 +59,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: host.php");
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		host_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		host();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -80,16 +79,13 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	include_once ("include/utility_functions.php");
-	include_once ("include/snmp_functions.php");
-	
 	if ((isset($_POST["add_y"])) && (!empty($_POST["snmp_query_id"]))) {
 		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . ")");
 		
 		/* recache snmp data */
 		data_query($_POST["id"], $_POST["snmp_query_id"]);
 		
-		header ("Location: host.php?action=edit&id=" . $_POST["id"]);
+		header("Location: host.php?action=edit&id=" . $_POST["id"]);
 		exit;
 	}
 	
@@ -162,17 +158,37 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
-			header ("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
+			header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
 		}else{
-			header ("Location: host.php");
+			header("Location: host.php");
 		}
 	}
 	
 	if (isset($_POST["save_component_new_graphs"])) {
 		host_new_graphs_save();
 		
-		header ("Location: host.php");
+		header("Location: host.php");
 	}
+}
+
+/* ---------------------
+    Misc Functions
+   --------------------- */
+
+function draw_edit_form_row($field_array, $field_name, $previous_value) {
+	$field_array["value"] = $previous_value;
+	
+	draw_edit_form(
+		array(
+			"config" => array(
+				"no_form_tag" => true,
+				"force_row_color" => "F5F5F5"
+				),
+			"fields" => array(
+				$field_name => $field_array
+				)
+			)
+		);
 }
 
 /* ---------------------
@@ -180,8 +196,6 @@ function form_save() {
    --------------------- */
 
 function host_reload_query() {
-	include_once ("include/snmp_functions.php");
-	
 	data_query($_GET["host_id"], $_GET["id"]);
 }
 
@@ -194,9 +208,9 @@ function host_remove() {
 	global $config;
 	
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
+		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . db_fetch_cell("select description from host where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "host.php?action=remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
+		include("./include/bottom_footer.php");
 		exit;
 	}
 	
@@ -211,9 +225,6 @@ function host_remove() {
 }
 
 function host_new_graphs_save() {
-	include_once ("include/utility_functions.php");
-	include_once ("include/snmp_functions.php");
-	
 	global $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item, $paths;
 	
 	$selected_graphs_array = unserialize(stripslashes($_POST["selected_graphs_array"]));
@@ -460,8 +471,7 @@ function host_new_graphs_save() {
 }
 
 function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
-	include_once ("include/snmp_functions.php");
-	include_once ("include/top_header.php");
+	include_once("./include/top_header.php");
 	
 	global $colors, $paths, $struct_graph, $row_counter, $struct_data_source, $struct_graph_item, $struct_data_source_item;
 	
@@ -551,7 +561,9 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						}
 					}
 					
+					print "<td>";
 					form_dropdown("sg_" . $snmp_query_id . "_" . $field["data_template_id"] . "_" . $field["data_input_field_id"],$xml_outputs,"","","","","");
+					print "</td>";
 					
 					print "</tr>\n";
 				}
@@ -606,14 +618,14 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					if it is not an snmp query, automatically fill in the values right here. */
 					if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id and field_name='$field_name'")) > 0)) {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-						print "<td><strong>" . $struct_graph[$field_name]["title"] . "</strong></td>";
+						print "<td><strong>" . $struct_graph[$field_name]["friendly_name"] . "</strong></td>";
 						print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 						print "</td></tr>\n";
 					}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
 						$subs_string = db_fetch_cell("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'");
-						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $subs_string);
+						draw_edit_form_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $subs_string);
 					}else{
-						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($graph_template[$field_name]) ? $graph_template[$field_name] : ""));
+						draw_edit_form_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($graph_template[$field_name]) ? $graph_template[$field_name] : ""));
 					}
 					
 					$drew_items = true;
@@ -644,7 +656,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						if (!empty($graph_input["description"])) { print "<br>" . $graph_input["description"]; }
 				print "	</td>\n";
 				
-				draw_nontemplated_item($struct_graph_item{$graph_input["column_name"]}, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_" . $graph_input["id"] . "_" . $graph_input["column_name"], $current_value);
+				draw_edit_form_row($struct_graph_item{$graph_input["column_name"]}, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_" . $graph_input["id"] . "_" . $graph_input["column_name"], $current_value);
 				
 				print "</tr>\n";
 				
@@ -672,14 +684,14 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 							if it is not an snmp query, automatically fill in the values right here. */
 							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
 								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-								print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
+								print "<td><strong>" . $struct_data_source[$field_name]["friendly_name"] . "</strong></td>";
 								print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 								print "</td></tr>\n";
 							}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
 								$subs_string = db_fetch_cell("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'");
-								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $subs_string);
+								draw_edit_form_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $subs_string);
 							}else{
-								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
+								draw_edit_form_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
 							}
 							
 							$drew_items = true;
@@ -708,15 +720,15 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 							if it is not an snmp query, automatically fill in the values right here. */
 							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
 								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-								print "<td><strong>" . $struct_data_source_item[$field_name]["title"] . "</strong></td>";
+								print "<td><strong>" . $struct_data_source_item[$field_name]["friendly_name"] . "</strong></td>";
 								print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 								print "</td></tr>\n";
 							}elseif ((empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'")) > 0)) {
 								$subs_string = db_fetch_cell("select text from host_template_data_sv where host_template_id=$host_template_id and data_template_id=" . $data_template["data_template_id"] . " and graph_template_id=$graph_template_id and field_name='$field_name'");
 								$subs_string = subsitute_host_data($subs_string, "|", "|", $host_id);
-								draw_templated_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $subs_string);
+								draw_edit_form_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $subs_string);
 							}else{
-								draw_templated_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
+								draw_edit_form_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
 							}
 							
 							$drew_items = true;
@@ -738,12 +750,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	
 	form_save_button("host.php?action=edit&id=$host_id");
 	
-	include_once ("include/bottom_footer.php");
+	include_once("./include/bottom_footer.php");
 }
 
 function host_edit() {
-	include_once ("include/snmp_functions.php");
-	
 	global $colors, $snmp_versions, $paths;
 	
 	display_output_messages();
@@ -757,84 +767,93 @@ function host_edit() {
 	
 	start_box("<strong>Polling Hosts</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" name="chk" action="host.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				"form_name" => "chk"
+				),
+			"fields" => array(
+				"description" => array(
+					"method" => "textbox",
+					"friendly_name" => "Description",
+					"description" => "Give this host a meaningful description.",
+					"value" => (isset($host) ? $host["description"] : ""),
+					"max_length" => "250",
+					),
+				"host_template_id" => array(
+					"method" => "drop_sql",
+					"friendly_name" => "Host Template",
+					"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
+					"value" => (isset($host) ? $host["host_template_id"] : "0"),
+					"none_value" => "None",
+					"sql" => "select id,name from host_template",
+					),
+				"hostname" => array(
+					"method" => "textbox",
+					"friendly_name" => "Hostname",
+					"description" => "Fill in the fully qualified hostname for this device.",
+					"value" => (isset($host) ? $host["hostname"] : ""),
+					"max_length" => "250",
+					),
+				"management_ip" => array(
+					"method" => "textbox",
+					"friendly_name" => "Management IP",
+					"description" => "Choose the IP address that will be used to gather data from this host. The hostname will be used a fallback in case this fails.",
+					"value" => (isset($host) ? $host["management_ip"] : ""),
+					"max_length" => "15",
+					),
+				"snmp_community" => array(
+					"method" => "textbox",
+					"friendly_name" => "SNMP Community",
+					"description" => "Fill in the SNMP read community for this device.",
+					"value" => (isset($host) ? $host["snmp_community"] : ""),
+					"max_length" => "100",
+					),
+				"snmp_username" => array(
+					"method" => "textbox",
+					"friendly_name" => "SNMP Username",
+					"description" => "Fill in the SNMP username for this device (v3).",
+					"value" => (isset($host) ? $host["snmp_username"] : ""),
+					"max_length" => "50",
+					),
+				"snmp_password" => array(
+					"method" => "textbox",
+					"friendly_name" => "SNMP Password",
+					"description" => "Fill in the SNMP password for this device (v3).",
+					"value" => (isset($host) ? $host["snmp_password"] : ""),
+					"max_length" => "50",
+					),
+				"snmp_version" => array(
+					"method" => "drop_array",
+					"friendly_name" => "SNMP Version",
+					"description" => "Choose the SNMP version for this host.",
+					"value" => (isset($host) ? $host["snmp_version"] : ""),
+					"array" => $snmp_versions,
+					),
+				"disabled" => array(
+					"method" => "checkbox",
+					"friendly_name" => "Disable Host",
+					"description" => "Check this box to disable all checks for this host.",
+					"value" => (isset($host) ? $host["disabled"] : ""),
+					"default" => "",
+					"form_id" => false
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($host) ? $host["id"] : "0")
+					),
+				"_host_template_id" => array(
+					"method" => "hidden",
+					"value" => (isset($host) ? $host["host_template_id"] : "0")
+					),
+				"save_component_host" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Description</font><br>
-			Give this host a meaningful description.
-		</td>
-		<?php form_text_box("description",(isset($host) ? $host["description"] : ""),"","250", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Host Template</font><br>
-			Choose what type of host, host template this is. The host template will govern what kinds
-			of data should be gathered from this type of host.
-		</td>
-		<?php form_dropdown("host_template_id",db_fetch_assoc("select id,name from host_template"),"name","id",(isset($host) ? $host["host_template_id"] : "0"),"None","1");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Hostname</font><br>
-			Fill in the fully qualified hostname for this device.
-		</td>
-		<?php form_text_box("hostname",(isset($host) ? $host["hostname"] : ""),"","250", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Management IP</font><br>
-			Choose the IP address that will be used to gather data from this host. The hostname will be
-			used a fallback in case this fails.
-		</td>
-		<?php form_text_box("management_ip",(isset($host) ? $host["management_ip"] : ""),"","15", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">SNMP Community</font><br>
-			Fill in the SNMP read community for this device.
-		</td>
-		<?php form_text_box("snmp_community",(isset($host) ? $host["snmp_community"] : ""),"","100", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">SNMP Username</font><br>
-			Fill in the SNMP username for this device (v3).
-		</td>
-		<?php form_text_box("snmp_username",(isset($host) ? $host["snmp_username"] : ""),"","50", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">SNMP Password</font><br>
-			Fill in the SNMP password for this device (v3).
-		</td>
-		<?php form_text_box("snmp_password",(isset($host) ? $host["snmp_password"] : ""),"","50", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">SNMP Version</font><br>
-			Choose the SNMP version for this host.
-		</td>
-		<?php form_dropdown("snmp_version",$snmp_versions,"","",(isset($host) ? $host["snmp_version"] : ""),"","1");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Disable Host</font><br>
-			Check this box to disable all checks for this host.
-		</td>
-		<?php form_checkbox("disabled", (isset($host) ? $host["disabled"] : ""), "Disable Host", "","");?>
-	</tr>
-	
-	<?php 
 	if (!empty($host["id"])) {
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td colspan="2">
@@ -846,7 +865,7 @@ function host_edit() {
 						host upon addition.
 					</td>
 					<td width="1">
-						<?php form_base_dropdown("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","None","");?>
+						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","None","");?>
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add" align="absmiddle">
@@ -859,10 +878,6 @@ function host_edit() {
 	}
 	
 	end_box();
-	
-	form_hidden_id("id",(isset($host) ? $host["id"] : "0"));
-	form_hidden_id("_host_template_id",(isset($host) ? $host["host_template_id"] : "0"));
-	form_hidden_box("save_component_host","1","");
 	
 	if (isset($host["id"])) {
 		start_box("<strong>Create Graphs + Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
@@ -890,7 +905,7 @@ function host_edit() {
 						<strong>Create:</strong> " . $graph_template["graph_template_name"] . "
 					</td>
 					<td align='right'>";
-						form_base_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0,false);
+						form_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0);
 			print "		</td>
 				</tr>";
 		}
@@ -900,10 +915,10 @@ function host_edit() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 		print "		<td width='60' nowrap>
 					<strong>Create:</strong>&nbsp;";
-					form_base_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
+					form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
 		print "		</td>
 				<td align='right'>";
-					form_base_checkbox("ccg","","","",0,false);
+					form_checkbox("ccg","","","",0);
 		print "		</td>
 			</tr>";
 		
@@ -1053,7 +1068,7 @@ function host_edit() {
 					}
 					
 					print "<td align='right'>";
-					form_base_checkbox("sg_$query_row","","","",0,false);
+					form_checkbox("sg_$query_row","","","",0);
 					print "</td>";
 					print "</tr>\n";
 					
@@ -1220,4 +1235,5 @@ function host() {
 	}
 	end_box();
 }
+
 ?>

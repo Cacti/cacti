@@ -27,9 +27,8 @@
 $guest_account = true;
 $using_guest_account = false;
 
-include_once ("./include/auth.php");
-include($config["include_path"] . "/config_arrays.php");
-include_once($config["include_path"] . "/tree_view_functions.php");
+include_once($config["library_path"] . "/tree_view.php");
+include_once($config["library_path"] . "/rrd.php");
 
 if (read_config_option("global_auth") == "on") {
 	/* at this point this user is good to go... so get some setting about this
@@ -44,7 +43,7 @@ if (read_config_option("global_auth") == "on") {
 
 /* use cached url if available and applicable */
 if ((isset($_SESSION["sess_graph_view_url_cache"])) && (empty($_REQUEST["action"])) && (basename($_SERVER["PHP_SELF"]) == "graph_view.php") && (ereg("action=(tree|preview|list)", $_SESSION["sess_graph_view_url_cache"]))) {
-	header ("Location: " . $_SESSION["sess_graph_view_url_cache"]);
+	header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
 }
 
 /* set default action */
@@ -68,7 +67,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 	$first_branch = find_first_folder_url();
 	
 	if (!empty($first_branch)) {
-		header ("Location: $first_branch");
+		header("Location: $first_branch");
 	}
 }
 

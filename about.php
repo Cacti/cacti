@@ -24,9 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/form.php");
-include_once ("include/top_header.php");
+include("./include/auth.php");
+include("./include/top_header.php");
 
 start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center", "");
 ?>
@@ -81,5 +80,5 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 
 <?php
 end_box();
-include_once ("include/bottom_footer.php");
+include("./include/bottom_footer.php");
 ?>

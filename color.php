@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ('include/form.php');
+include("./include/auth.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -41,18 +40,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: color.php");
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		color_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		color();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -76,9 +75,9 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header ("Location: color.php?action=edit&id=" . (empty($color_id) ? $_POST["id"] : $color_id));
+			header("Location: color.php?action=edit&id=" . (empty($color_id) ? $_POST["id"] : $color_id));
 		}else{
-			header ("Location: color.php");
+			header("Location: color.php");
 		}
 	}
 }
@@ -103,21 +102,31 @@ function color_edit() {
 	
 	start_box("<strong>Colors</strong> $header_label", "98%", $colors["header"], "3", "center", "");
     	
-	?>
-	<form method="post" action="color.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"hex" => array(
+					"method" => "textbox",
+					"friendly_name" => "Hex Value",
+					"description" => "The hex value for this color; valid range: 000000-FFFFFF.",
+					"value" => (isset($color) ? $color["hex"] : ""),
+					"max_length" => "6",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($color) ? $color["id"] : "0")
+					),
+				"save_component_color" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Hex Value</font><br>
-			The hex value for this color; valid range: 000000-FFFFFF.
-		</td>
-		<?php form_text_box("hex",(isset($color) ? $color["hex"] : ""),"","6", "40");?>
-	</tr>
-	<?php
 	end_box();
-	
-	form_hidden_id("id",(isset($color) ? $color["id"] : "0"));
-	form_hidden_box("save_component_color","1","");
 	
 	form_save_button("color.php");
 }

@@ -27,8 +27,7 @@
 function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	global $colors, $current_user, $config;
 	
-	include_once($config["include_path"] . "/form.php");
-	include_once($config["include_path"] . "/tree_functions.php");
+	include_once($config["library_path"] . "/tree.php");
 	
 	$search_key = "";
 	$already_open = false;
@@ -173,8 +172,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	global $config, $colors;
 	
-	include_once($config["include_path"] . "/form.php");
-	include_once($config["include_path"] . "/tree_functions.php");
+	include_once($config["library_path"] . "/tree.php");
 	
 	$tree = db_fetch_assoc("select
 		graph_tree_items.id,
@@ -228,7 +226,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 	global $colors, $config;
 	
-	include_once ($config["include_path"] . "/tree_functions.php");
+	include_once($config["library_path"] . "/tree.php");
 	
 	$tree = db_fetch_assoc("select
 		graph_tree_items.id,
@@ -263,7 +261,7 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 function grow_dhtml_trees() {
 	global $colors, $config;
 	
-	include_once ($config["include_path"] . "/tree_functions.php");
+	include_once($config["library_path"] . "/tree.php");
 	?>
 	<script type="text/javascript">
 	<!--

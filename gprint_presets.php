@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/auth.php');
-include_once ("include/form.php");
+include("./include/auth.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -38,21 +37,21 @@ switch ($_REQUEST["action"]) {
 	case 'remove':
 		gprint_presets_remove();
 		
-		header ("Location: gprint_presets.php");
+		header("Location: gprint_presets.php");
 		break;
 	case 'edit':
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		gprint_presets_edit();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 	default:
-		include_once ("include/top_header.php");
+		include_once("./include/top_header.php");
 		
 		gprint_presets();
 		
-		include_once ("include/bottom_footer.php");
+		include_once("./include/bottom_footer.php");
 		break;
 }
 
@@ -62,7 +61,7 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_gprint_presets"])) {
-		$save["id"] = $_POST["gprint_preset_id"];
+		$save["id"] = $_POST["id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["gprint_text"] = form_input_validate($_POST["gprint_text"], "gprint_text", "", false, 3);
 		
@@ -77,10 +76,10 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header ("Location: gprint_presets.php?action=edit&gprint_preset_id=" . (empty($gprint_preset_id) ? $_POST["gprint_preset_id"] : $gprint_preset_id));
+			header("Location: gprint_presets.php?action=edit&id=" . (empty($gprint_preset_id) ? $_POST["id"] : $gprint_preset_id));
 			exit;
 		}else{
-			header ("Location: gprint_presets.php");
+			header("Location: gprint_presets.php");
 			exit;
 		}
 	}
@@ -92,21 +91,21 @@ function form_save() {
 
 function gprint_presets_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include_once ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", $_SERVER["HTTP_REFERER"], "gprint_presets.php?action=remove&gprint_preset_id=" . $_GET["gprint_preset_id"]);
+		include_once("./include/top_header.php");
+		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", $_SERVER["HTTP_REFERER"], "gprint_presets.php?action=remove&gprint_preset_id=" . $_GET["id"]);
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]);
+		db_execute("delete from graph_templates_gprint where id=" . $_GET["id"]);
 	}
 }
 
 function gprint_presets_edit() {
 	global $colors;
 	
-	if (!empty($_GET["gprint_preset_id"])) {
-		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]);
+	if (!empty($_GET["id"])) {
+		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $gprint_preset["name"] . "]";
 	}else{
 		$header_label = "[new]";
@@ -114,30 +113,38 @@ function gprint_presets_edit() {
 	
 	start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	?>
-	<form method="post" action="gprint_presets.php">
+	draw_edit_form(
+		array(
+			"config" => array(
+				),
+			"fields" => array(
+				"name" => array(
+					"method" => "textbox",
+					"friendly_name" => "Name",
+					"description" => "Enter a name for this GPRINT preset, make sure it is something you recognize.",
+					"value" => (isset($gprint_preset) ? $gprint_preset["name"] : ""),
+					"max_length" => "50",
+					),
+				"gprint_text" => array(
+					"method" => "textbox",
+					"friendly_name" => "GPRINT Text",
+					"description" => "Enter the custom GPRINT string here.",
+					"value" => (isset($gprint_preset) ? $gprint_preset["gprint_text"] : ""),
+					"max_length" => "50",
+					),
+				"id" => array(
+					"method" => "hidden",
+					"value" => (isset($gprint_preset) ? $gprint_preset["id"] : "0")
+					),
+				"save_component_gprint_presets" => array(
+					"method" => "hidden",
+					"value" => "1"
+					)
+				)
+			)
+		);
 	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			Enter a name for this GPRINT preset, make sure it is something you recognize.
-		</td>
-		<?php form_text_box("name",(isset($gprint_preset) ? $gprint_preset["name"] : ""),"","50", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">GPRINT Text</font><br>
-			Enter the custom GPRINT string here.
-		</td>
-		<?php form_text_box("gprint_text",(isset($gprint_preset) ? $gprint_preset["gprint_text"] : ""),"","50", "40");?>
-	</tr>
-	
-	<?php
 	end_box();
-	
-	form_hidden_id("gprint_preset_id",(isset($gprint_preset) ? $gprint_preset["id"] : "0"));
-	form_hidden_box("save_component_gprint_presets","1","");
 	
 	form_save_button("gprint_presets.php");
 }
@@ -162,10 +169,10 @@ function gprint_presets() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="gprint_presets.php?action=edit&gprint_preset_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
+				<a class="linkEditMain" href="gprint_presets.php?action=edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="gprint_presets.php?action=remove&gprint_preset_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="gprint_presets.php?action=remove&id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 		<?php

@@ -24,20 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* we don't want these pages cached */
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
-header ("Cache-Control: no-cache, must-revalidate");
-header ("Pragma: no-cache");
-
 include("./include/config.php");
-
-/* initilize php session */
-session_start();
 
 /* check to see if this is a new installation */
 if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
@@ -72,7 +59,7 @@ if (read_config_option("global_auth") == "on") {
 	}
 	
 	if (empty($_SESSION["sess_user_id"])) {
-		include ("./auth_login.php");
+		include("./auth_login.php");
 		exit;
 	}elseif (!empty($_SESSION["sess_user_id"])) {
 		$realm_id = db_fetch_cell("select realm_id from user_realm_filename where filename='" . basename($_SERVER["PHP_SELF"]) . "'");
@@ -84,8 +71,8 @@ if (read_config_option("global_auth") == "on") {
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
 			and user_auth_realm.realm_id='$realm_id'")) {
 			
-			include_once ($config["include_path"] . "/form.php");
-			include ($config["include_path"] . "/top_header.php");
+			include_once($config["include_path"] . "/form.php");
+			include($config["include_path"] . "/top_header.php");
 			
 			print "	<table width='98%' align='center'>\n
 					<tr>\n
@@ -98,7 +85,7 @@ if (read_config_option("global_auth") == "on") {
 					</tr>\n
 				</table>\n";
 			
-			include ($config["include_path"] . "/bottom_footer.php");
+			include($config["include_path"] . "/bottom_footer.php");
 			exit;
 		}
 	}
