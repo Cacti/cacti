@@ -207,9 +207,11 @@ $menu = array(
 			"data_sources.php" => "Data Sources",
 			"rra.php" => "RRAs"
 			),
-		"host.php" => 'Devices',
-		"data_input.php" => "Data Input Methods",
-		"data_queries.php" => "Data Queries"
+		"host.php" => 'Devices'
+		),
+	"Collection Methods" => array(
+		"data_queries.php" => "Data Queries",
+		"data_input.php" => "Data Input Methods"
 		),
 	//"Event Management" => array(
 	//	"smtp_servers.php" => "Mail Servers",
