@@ -200,8 +200,13 @@ $menu = array(
 			),
 		"host.php" => 'Devices',
 		"data_input.php" => "Data Input Methods",
-		"data_queries.php" => "Data Queries",
-		"coming_soon.php" => "Mail Servers"
+		"data_queries.php" => "Data Queries"
+		),
+	"Event Management" => array(
+		"smtp_servers.php" => "Mail Servers",
+		"email_templates.php" => "Email Templates",
+		"event_queue.php" => "Event Queue",
+		"smtp_queue.php" => "Mail Queue"
 		),
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
@@ -216,8 +221,8 @@ $menu = array(
 		"settings.php" => "Settings"
 		),
 	"Utilities" => array(
-		"user_admin.php" => "User Management",
 		"utilities.php" => "System Utilities",
+		"user_admin.php" => "User Management",
 		"logout.php" => "Logout User"
 	));
 
@@ -269,7 +274,10 @@ $user_auth_realm_filenames = array(
 	"tree.php" => 4,
 	"user_admin.php" => 1,
 	"utilities.php" => 15,
-	"coming_soon.php" => 8
+	"smtp_servers.php" => 8,
+	"email_templates.php" => 8,
+	"event_queue.php" => 8,
+	"smtp_queue.php" => 8
 	);
 
 $hash_type_codes = array(
