@@ -111,6 +111,20 @@ function form_save() {
 				exit;
 			}
 			
+			/* if the user changes the host template, add each snmp query associated with it */
+			if (($_POST["host_template_id"] != $_POST["_host_template_id"]) && ($_POST["host_template_id"] != "0")) {
+				$snmp_queries = db_fetch_assoc("select snmp_query_id from host_template_snmp_query where host_template_id=" . $_POST["host_template_id"]);
+				
+				if (sizeof($snmp_queries) > 0) {
+				foreach ($snmp_queries as $snmp_query) {
+					db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $snmp_query["snmp_query_id"] . ")");
+					
+					/* recache snmp data */
+					query_snmp_host($host_id, $snmp_query["snmp_query_id"]);
+				}
+				}
+			}
+			
 			/* summarize the 'create graph from host template/snmp index' stuff into an array */
 			while (list($var, $val) = each($_POST)) {
 				if (preg_match('/^cg_\d+$/', $var)) {
@@ -132,7 +146,7 @@ function form_save() {
 			}
 		}
 		
-		if (is_error_message()) {
+		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
 			header ("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
 		}else{
 			header ("Location: host.php");
@@ -764,6 +778,7 @@ function host_edit() {
 	end_box();
 	
 	form_hidden_id("id",(isset($host) ? $host["id"] : "0"));
+	form_hidden_id("_host_template_id",(isset($host) ? $host["host_template_id"] : "0"));
 	form_hidden_box("save_component_host","1","");
 	
 	$i = 0;
