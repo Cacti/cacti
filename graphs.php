@@ -96,13 +96,13 @@ switch ($action) {
 		</tr>
 		<?
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Graph Item",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Task Name",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Graph Item Type",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("CF Type",$colors[panel],$colors[panel_text]);
-			DrawMatrixCustom("<td bgcolor=\"$colors[panel]\" colspan=\"2\"><strong>Item Color</strong></td>");
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[header_panel]'>";
+			DrawMatrixHeaderItem("Graph Item",$colors[header_text],1);
+			DrawMatrixHeaderItem("Task Name",$colors[header_text],1);
+			DrawMatrixHeaderItem("Graph Item Type",$colors[header_text],1);
+			DrawMatrixHeaderItem("CF Type",$colors[header_text],1);
+			DrawMatrixHeaderItem("Item Color",$colors[header_text],3);
+		print "</tr>";
 		
 		$template_item_list = db_fetch_assoc("select
 			graph_templates_item.id,
@@ -225,16 +225,20 @@ switch ($action) {
 			</tr>
 			<?
 			
-			$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id");
+			$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id order by name");
 			
 			if (sizeof($input_item_list) > 0) {
 			foreach ($input_item_list as $item) {
 				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 					<td width="50%">
 						<font class="textEditTitle"><?print $item[name];?></font>
+						<?if ($item[description] != "") { print "<br>$item[description]"; }?>
 					</td>
 					<?
 					switch ($item[column_name]) {
+					case 'task_item_id':
+						DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select item_id,descrip from polling_items order by descrip"),"descrip","item_id",$template_item[task_item_id],"None",$default_item);
+						break;
 					case 'color_id':
 						DrawFormItemColorSelect("color_id",$template_item[color_id],"None","0");
 						break;
@@ -269,7 +273,13 @@ switch ($action) {
 					
 					?>
 				</tr>
-			<?}
+			<?}?>
+			<tr bgcolor="#FFFFFF">
+				 <td colspan="2" align="right" background="images/blue_line.gif">
+					<?DrawFormSaveButton("graph_save");?>
+				</td>
+			</tr>
+			<?
 			}
 		}
 		
@@ -710,14 +720,14 @@ switch ($action) {
 		new_table();
 		?>
 		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Tree Configuration</td>
+			<td colspan="3" class="textSubHeaderDark" bgcolor="#00438C">Graph Tree Configuration</td>
 		</tr>
 		<?
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Tree Name",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Display as Tab",$colors[panel],$colors[panel_text]);
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[panel]'>";
+			DrawMatrixHeaderItem("Tree Name",$colors[panel_text],1);
+			DrawMatrixHeaderItem("Display as Tab",$colors[panel_text],2);
+		print "</tr>";
 		
 		$graph_tree_list = db_fetch_assoc("select * from rrd_graph_tree", $cnn_id);
 		
@@ -785,11 +795,11 @@ switch ($action) {
 			
 		<?
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Graph Title",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Template Name",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Size",$colors[panel],$$colors[panel_text]);
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[panel]'>";
+			DrawMatrixHeaderItem("Graph Title",$colors[panel_text],1);
+			DrawMatrixHeaderItem("Template Name",$colors[panel_text],1);
+			DrawMatrixHeaderItem("Size",$$colors[panel_text],2);
+		print "</tr>";
 		
 		$graph_list = db_fetch_assoc("select 
 			graph_templates_graph.id,
