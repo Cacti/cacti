@@ -533,7 +533,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		
 		/* if we are not displaying a legend there is no point in us even processing the auto padding,
 		text format stuff. */
-		if ((!isset($graph_data_array["graph_nolegend"])) && ($graph["auto_padding"] == "on")) {
+		if ((!isset($graph_data_array["graph_nolegend"])) && ($graph["auto_padding"] == "on") && (isset($text_format_lengths{$graph_item["data_template_rrd_id"]}))) {
 			/* we are basing how much to pad on area and stack text format, 
 			not gprint. but of course the padding has to be displayed in gprint,
 			how fun! */
