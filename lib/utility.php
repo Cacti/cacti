@@ -113,7 +113,7 @@ function update_poller_cache($local_data_id) {
 			from data_input_fields,data_input_data
 			where data_input_fields.id=data_input_data.data_input_field_id
 			and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
-			and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value')");
+			and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
 		$field = array_rekey($field, "type_code", "value");
 		
 		$query = db_fetch_row("select
@@ -125,12 +125,12 @@ function update_poller_cache($local_data_id) {
 			and host_snmp_cache.host_id=" . $host["id"]);
 		
 		$outputs = db_fetch_assoc("select
-			snmp_query_dt_rrd.snmp_field_name,
+			snmp_query_graph_rrd.snmp_field_name,
 			data_template_rrd.id as data_template_rrd_id
-			from snmp_query_dt_rrd,data_template_rrd
-			where snmp_query_dt_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
-			and snmp_query_dt_rrd.snmp_query_id=" . $query["snmp_query_id"] . "
-			and snmp_query_dt_rrd.data_template_id=" . $data_input["data_template_id"] . "
+			from snmp_query_graph_rrd,data_template_rrd
+			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
+			and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"] . "
+			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
 			and data_template_rrd.local_data_id=$local_data_id");
 		
 		if (sizeof($outputs) > 0) {
