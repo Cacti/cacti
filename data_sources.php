@@ -29,7 +29,7 @@ include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
-	case 'ds_save':
+	case 'save':
 		$redirect_location = form_save();
 		
 		header ("Location: $redirect_location"); exit;
@@ -97,14 +97,17 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST["save_component_data_source"])) {
-		$local_data_id = ds_save();
+	if ((isset($_POST["save_component_data_source"])) && (isset($_POST["save_component_data"]))) {
+		ds_save();
+		data_save();
 		
-		if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
-			return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=" . $_POST["host_id"] . "&view_rrd=" . $_POST["view_rrd"];
+		if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"])) {
+			return $_SERVER["HTTP_REFERER"];
 		}else{
 			return "data_sources.php";
 		}
+	}elseif (isset($_POST["save_component_data_source"])) {
+		return ds_save();
 	}elseif (isset($_POST["save_component_data"])) {
 		data_save();
 		
@@ -168,7 +171,8 @@ function data_save() {
 		data_template_data.data_input_id,
 		data_input_fields.id,
 		data_input_fields.input_output,
-		data_input_fields.data_name 
+		data_input_fields.data_name,
+		data_input_fields.regexp_match 
 		from data_template_data
 		left join data_input_fields
 		on data_input_fields.data_input_id=data_template_data.data_input_id
@@ -177,28 +181,27 @@ function data_save() {
 	
 	if (sizeof($input_fields) > 0) {
 	foreach ($input_fields as $input_field) {
-		/* then, check and see if this value already exists */
-		$data_input_data_id = db_fetch_cell("select id from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $_POST["data_template_data_id"]);
-		
-		/* use id 0 if it doesn't; previd if it does */
-		if (empty($data_input_data_id)) {
-			$new_id = 0;
-		}else{
-			$new_id = $data_input_data_id;
-		}
-		
 		/* save the data into the 'data_input_data' table */
-		$form_value = "value_" . $input_field["data_name"];
-		$form_value = $_POST[$form_value];
+		$form_name = "value_" . $input_field["data_name"];
+		$form_value = $_POST[$form_name];
 		
-		db_execute("replace into data_input_data (id,data_input_field_id,data_template_data_id,value) values
-			($new_id," . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'$form_value')");
+		if (isset($_POST[$form_name])) {
+			/* run regexp match on input string */
+			$form_value = form_input_validate($form_value, $form_name, $input_field["regexp_match"], true, 3);
+			
+			if (!is_error_message()) {
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
+					(" . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'" . db_fetch_cell("select t_value from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $_POST["data_template_data_id"]) . "','$form_value')");
+			}
+		}
 	}
 	}
 }
 
 function data_edit() {
 	global $config, $colors;
+	
+	display_output_messages();
 	
 	if ($config["full_view_data_source"]["value"] == "") {
 		draw_tabs();
@@ -304,6 +307,8 @@ function tree_edit() {
 	}else{
 		unset($tree_item);
 	}
+	
+	display_output_messages();
 	
 	?>
 	<form method="post" action="data_sources.php">
@@ -434,29 +439,34 @@ function ds_save() {
 	$save["local_data_id"] = $local_data_id;
 	$save["data_template_id"] = $_POST["data_template_id"];
 	$save["data_input_id"] = $_POST["data_input_id"];
-	$save["name"] = $_POST["name"];
+	$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 	$save["data_source_path"] = $_POST["data_source_path"];
 	$save["active"] = $_POST["active"];
-	$save["rrd_step"] = $_POST["rrd_step"];
+	$save["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
 	
-	sql_save($save, "data_template_data");
+	if (!is_error_message()) {
+		sql_save($save, "data_template_data");
+	}
+	
 	unset($save);
 	
 	/* if this is a new data source and a template has been selected, skip item creation this time
 	otherwise it throws off the templatate creation because of the NULL data */
-	if (($_POST["data_template_id"] == "0") || ($_POST["data_template_rrd_id"] != "0")) {
+	if ($_POST["data_template_id"] == $_POST["_data_template_id"]) {
 		$save["id"] = $_POST["data_template_rrd_id"];
 		$save["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
 		$save["local_data_id"] = $local_data_id;
 		$save["data_template_id"] = $_POST["data_template_id"];
-		$save["rrd_maximum"] = $_POST["rrd_maximum"];
-		$save["rrd_minimum"] = $_POST["rrd_minimum"];
-		$save["rrd_heartbeat"] = $_POST["rrd_heartbeat"];
+		$save["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^[0-9]+$", false, 3);
+		$save["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^[0-9]+$", false, 3);
+		$save["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
 		$save["data_source_type_id"] = $_POST["data_source_type_id"];
-		$save["data_source_name"] = $_POST["data_source_name"];
-		$save["script_output_argument"] = $_POST["script_output_argument"];
+		$save["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_]{1,19}$", false, 3);
+		$save["data_input_field_id"] = $_POST["data_input_field_id"];
 		
-		sql_save($save, "data_template_rrd");
+		if (!is_error_message()) {
+			sql_save($save, "data_template_rrd");
+		}
 	}
 	
 	if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
@@ -465,7 +475,15 @@ function ds_save() {
 		$return_status = change_data_template($local_data_id, $_POST["data_template_id"], $_POST["_data_template_id"]);
 	}
 	
-	return $local_data_id;
+	if (is_error_message()) {
+		return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=" . $_POST["host_id"] . "&view_rrd=" . $_POST["view_rrd"];
+	}else{
+		if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
+			return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=" . $_POST["host_id"] . "&view_rrd=" . $_POST["view_rrd"];
+		}else{
+			return "data_sources.php";
+		}
+	}
 }
 
 function ds_edit() {
@@ -488,6 +506,8 @@ function ds_edit() {
 	if ($data["data_template_id"] == "0") {
 		$use_data_template = false;
 	}
+	
+	display_output_messages();
 	
 	$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 	
@@ -514,7 +534,7 @@ function ds_edit() {
 	<?
 	end_box();
 	
-	start_box("Data Template Configuration", "", "");
+	start_box("Data Source Configuration", "", "");
 	?>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
@@ -598,7 +618,7 @@ function ds_edit() {
 		$rrd_template = db_fetch_row("select * from data_template_rrd where id=$local_data_template_rrd_id");
 	}
 	
-	start_box("Data Source Configuration [" . $rrd["data_source_name"] . "]", "", "");
+	start_box("Data Source Item Configuration [" . $rrd["data_source_name"] . "]", "", "");
 	
 	if (sizeof($template_data_rrds) > 1) {
 		?>
@@ -726,8 +746,10 @@ function ds_edit() {
 function ds() {
 	include_once ('include/tree_view_functions.php');
 	
+	display_output_messages();
+	
 	draw_tabs();
-	start_box("<strong>Data Sources</strong>", "", "data_sources.php?action=edit");
+	start_box("<strong>Data Sources</strong>", "", "data_sources.php?action=ds_edit");
     	grow_polling_tree($start_branch, 1, $tree_parameters);
 	
 	end_box();
