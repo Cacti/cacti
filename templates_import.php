@@ -77,8 +77,6 @@ function import() {
 	<form method="post" action="templates_import.php" enctype="multipart/form-data">
 	<?php
 	
-	//print "<pre>";print_r($_SESSION["import_debug_info"]);print "</pre>";
-	
 	if ((isset($_SESSION["import_debug_info"])) && (is_array($_SESSION["import_debug_info"]))) {
 		start_box("<strong>Import Results</strong>", "98%", "aaaaaa", "3", "center", "");
 		
@@ -100,7 +98,7 @@ function import() {
 					$type_text = "<span style='color: blue;'>[new]</span>";
 				}
 				
-				print "<span style='font-family: monospace;'>$result_text " . $vals["title"] . " $type_text<br>\n";
+				print "<span style='font-family: monospace;'>$result_text " . $vals["title"] . " $type_text</span><br>\n";
 				
 				$dep_text = ""; $there_are_dep_errors = false;
 				if ((isset($vals["dep"])) && (sizeof($vals["dep"]) > 0)) {
