@@ -171,19 +171,21 @@ function data_edit() {
 	
 	display_output_messages();
 	
-	if (read_config_option("full_view_data_source") == "") {
-		start_box("<strong>Data Sources</strong> [edit]", "98%", $colors["header"], "3", "center", "");
-		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
-		end_box();
-	}
-	
 	if (isset($_GET["local_data_id"])) {
-		$data = db_fetch_row("select id,data_input_id,data_template_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+		$data = db_fetch_row("select id,data_input_id,data_template_id,name from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
 		
 		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=" . $_GET["local_data_id"]);
+		
+		$header_label = "[edit: " . $data["name"] . "]";
 	}else{
-		unset($data);
+		$header_label = "[new]";
+	}
+	
+	if (read_config_option("full_view_data_source") == "") {
+		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
+		end_box();
 	}
 	
 	print "<form method='post' action='data_sources.php'>\n";
@@ -193,7 +195,7 @@ function data_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='in' order by name");
 		
-		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Custom Data</strong> [data input: " . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -264,7 +266,42 @@ function ds_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"]);
+		
+		print "<br>";
+		
+		start_box("<strong>Are You Sure?</strong> $header_label", "60%", "B61D22", "3", "center", "");
+		
+		DrawFormArea("Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?");
+		
+		/* find out what (if any) graphs are using this data source, so we can complain to the user */
+		$graphs = db_fetch_assoc("select
+			graph_templates_graph.title
+			from data_template_rrd
+			left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
+			left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
+			where data_template_rrd.local_data_id=" . $_GET["local_data_id"] . "
+			and graph_templates_item.local_graph_id>0
+			and graph_templates_graph.local_graph_id>0
+			group by graph_templates_graph.title
+			order by graph_templates_graph.title");
+		
+		if (sizeof($graphs) > 0) {
+			print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td class='textArea'><p class='textArea'>The following graphs are using this data source:</p>\n";
+			
+			foreach ($graphs as $graph) {
+				print "<strong>" . $graph["title"] . "</strong><br>\n";
+			}
+			
+			print "<br>";
+			DrawStrippedFormItemRadioButton("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
+			DrawStrippedFormItemRadioButton("delete_type", "1", "2", "Delete all graph items that reference to this data source.", "1", true);
+			print "</td></tr>";
+		}
+		
+		DrawConfirmButtons("data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"], "data_sources.php");
+		
+		end_box();
+		
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -377,9 +414,10 @@ function ds_edit() {
 		$data = db_fetch_row("select * from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		$data_template = db_fetch_row("select * from data_template_data where id=$local_data_template_data_id");
 		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["local_data_id"]);
+		
+		$header_label = "[edit: " . $data["name"] . "]";
 	}else{
-		unset($data_template);
-		unset($data);
+		$header_label = "[new]";
 		
 		$use_data_template = false;
 	}
@@ -393,18 +431,18 @@ function ds_edit() {
 	$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 	
 	if (read_config_option("full_view_data_source") == "") {
-		start_box("<strong>Data Sources</strong> [edit]", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_data_form_select("?action=ds_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
 	}
 	
-	start_box("", "98%", "aaaaaa", "3", "center", "");
-	print "<tr><td><pre>";
-	print rrdtool_function_create($_GET["local_data_id"], true);
-	print "</pre></td></tr>";
-	end_box();
+	//start_box("", "98%", "aaaaaa", "3", "center", "");
+	//print "<tr><td><pre>";
+	//print rrdtool_function_create($_GET["local_data_id"], true);
+	//print "</pre></td></tr>";
+	//end_box();
 	
-	start_box("<strong>Data Sources</strong> [edit] - Data Templation Selection", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Templation Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	print "<form method='post' action='data_sources.php'>\n";
 	
@@ -427,7 +465,7 @@ function ds_edit() {
 	<?
 	end_box();
 	
-	start_box("Data Source Configuration", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
@@ -473,7 +511,7 @@ function ds_edit() {
 		$rrd_template = db_fetch_row("select * from data_template_rrd where id=$local_data_template_rrd_id");
 	}
 	
-	start_box("Data Source Item Configuration [" . $rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Source Item</strong> [edit: " . $rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
 	$i = 0;
 	if (sizeof($template_data_rrds) > 1) {
@@ -515,7 +553,7 @@ function ds_edit() {
 		
 		print "</td>\n";
 		
-		if (($use_graph_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
+		if (($use_data_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
 			draw_nontemplated_item($field_array, $field_name, $rrd[$field_name]);
 		}else{
 			draw_templated_item($field_array, $field_name, $rrd[$field_name]);
@@ -607,22 +645,26 @@ function ds() {
 	
 	$host = db_fetch_row("select hostname from host where id=" . $_GET["host_id"]);
 	
-	start_box("Data Sources for '" . $host["hostname"] . "'", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_GET["host_id"]);
+	start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_GET["host_id"]);
 	
 	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td class='textSubHeaderDark'>Name</td>
-			<td class='textSubHeaderDark' colspan='2'>Data Input Method</td>
+			<td class='textSubHeaderDark'>Data Input Method</td>
+			<td class='textSubHeaderDark' colspan='2'>Template Name</td>
 		</tr>\n";
 	
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
 		data_template_data.name,
-		data_input.name as data_input_name
+		data_input.name as data_input_name,
+		data_template.name as data_template_name
 		from data_local
 		left join data_template_data
 		on data_local.id=data_template_data.local_data_id
 		left join data_input
 		on data_input.id=data_template_data.data_input_id
+		left join data_template
+		on data_local.data_template_id=data_template.id
 		where data_local.host_id=" . $_GET["host_id"] . "
 		order by data_template_data.name");
 	
@@ -630,9 +672,10 @@ function ds() {
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
 		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
-		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&local_data_id=$data_source[local_data_id]'>$data_source[name]</a></td>";
-		print "<td>$data_source[data_input_name]</td>";
-		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&local_data_id=$data_source[local_data_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
+		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&local_data_id=" . $data_source["local_data_id"] . "'>" . $data_source["name"] . "</a></td>";
+		print "<td>" . $data_source["data_input_name"] . "</td>";
+		print "<td>" . ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]) . "</td>";
+		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&local_data_id=" . $data_source["local_data_id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
 		print "</tr>";
 	}
 	}else{
