@@ -1972,8 +1972,8 @@ CREATE TABLE settings (
 
 INSERT INTO settings VALUES ('path_webcacti','/cacti/cacti-0.8');
 INSERT INTO settings VALUES ('path_webroot','/var/www/html/users/iberry');
-INSERT INTO settings VALUES ('path_snmpwalk','/usr/local/bin/snmpwalk');
-INSERT INTO settings VALUES ('path_rrdtool','/usr/local/rrdtool/bin/rrdtool');
+INSERT INTO settings VALUES ('path_snmpwalk','/usr/bin/snmpwalk');
+INSERT INTO settings VALUES ('path_rrdtool','/usr/bin/rrdtool');
 INSERT INTO settings VALUES ('log','');
 INSERT INTO settings VALUES ('log_graph','');
 INSERT INTO settings VALUES ('log_create','on');
@@ -1981,7 +1981,7 @@ INSERT INTO settings VALUES ('log_update','on');
 INSERT INTO settings VALUES ('log_snmp','on');
 INSERT INTO settings VALUES ('full_view_data_source','on');
 INSERT INTO settings VALUES ('global_auth','on');
-INSERT INTO settings VALUES ('path_snmpget','/usr/local/bin/snmpget');
+INSERT INTO settings VALUES ('path_snmpget','/usr/bin/snmpget');
 INSERT INTO settings VALUES ('path_html_export','');
 INSERT INTO settings VALUES ('guest_user','guest');
 INSERT INTO settings VALUES ('path_html_export_skip','1');
@@ -1992,7 +1992,7 @@ INSERT INTO settings VALUES ('full_view_graph_template','on');
 INSERT INTO settings VALUES ('full_view_graph','on');
 INSERT INTO settings VALUES ('full_view_user_admin','');
 INSERT INTO settings VALUES ('full_view_data_template','on');
-INSERT INTO settings VALUES ('smnp_version','ucd-snmp');
+INSERT INTO settings VALUES ('smnp_version','net-snmp');
 INSERT INTO settings VALUES ('ldap_enabled','');
 INSERT INTO settings VALUES ('ldap_server','');
 INSERT INTO settings VALUES ('ldap_dn','');
@@ -2464,5 +2464,5 @@ CREATE TABLE version (
 -- Dumping data for table `version`
 --
 
-INSERT INTO version VALUES ('0.8.4');
+INSERT INTO version VALUES ('0.8.5');
 
