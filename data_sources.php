@@ -343,7 +343,7 @@ function form_actions() {
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
-			$ds_list .= "<li>" . db_fetch_cell("select name from data_template_data where local_data_id=" . $matches[1]) . "<br>";
+			$ds_list .= "<li>" . get_data_source_title($matches[1]) . "<br>";
 			$ds_array[$i] = $matches[1];
 		}
 		
