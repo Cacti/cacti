@@ -375,6 +375,7 @@ function data() {
 				<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print $data_input["name"];?></a>
 			</td>
 			<td>
+				<p>
 				<?php
 					switch ($data_input["type_id"]) {
 						case DATA_INPUT_TYPE_SCRIPT:
@@ -397,6 +398,7 @@ function data() {
 							break;
 					}
 				?>
+				</p>
 			</td>
 			<td align="right">
 				<a href="data_input.php?action=remove&id=<?php print $data_input["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>

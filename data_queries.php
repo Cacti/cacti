@@ -579,7 +579,7 @@ function data_query_edit() {
 function data_query() {
 	global $colors;
 
-	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
+	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "4", "center", "data_queries.php?action=edit");
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
@@ -603,7 +603,9 @@ function data_query() {
 				<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
 			</td>
 			<td>
+				<p>
 				<?php print $snmp_query["data_input_method"]; ?>
+				</p>
 			</td>
 			<td align="right">
 				<a href="data_queries.php?action=remove&id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
