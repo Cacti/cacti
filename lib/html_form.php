@@ -90,6 +90,9 @@ function draw_edit_form($array) {
 				case 'drop_multi':
 					form_multi_dropdown($field_name, $field_array["array"], db_fetch_assoc($field_array["sql"]), "id");
 					break;
+				case 'drop_multi_rra':
+					form_multi_dropdown($field_name, array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name"), (empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), "id");
+					break;
 				case 'drop_tree':
 					grow_dropdown_tree($field_array["tree_id"], $field_name, $field_array["value"]);
 					break;
@@ -122,7 +125,7 @@ function draw_edit_form($array) {
 					print "<em>" . $field_array["array"]{$field_array["value"]} . "</em>";
 					form_hidden_box($field_name, $field_array["value"], "");
 					break;
-				case 'template_drop_multi':
+				case 'template_drop_multi_rra':
 					$items = db_fetch_assoc($field_array["sql_print"]);
 					
 					if (sizeof($items) > 0) {
@@ -152,7 +155,7 @@ function draw_edit_form($array) {
 /* creates a standard html textbox */
 function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
 	if (($form_previous_value == "") && (empty($current_id))) {
-		$form_previous_value = htmlspecialchars($form_default_value);
+		$form_previous_value = $form_default_value;
 	}
 	
 	print "<input type='$type'";
@@ -166,11 +169,11 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
-			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
 	
-	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? "maxlength='$form_max_length'" : "") . " value='$form_previous_value'>\n";
+	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? "maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
 }
 
 /* creates a standard hidden html textbox */
@@ -185,12 +188,12 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 /* creates a dropdown box from a sql string */
 function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
 	if ($form_previous_value == "") {
-		$form_previous_value = htmlspecialchars($form_default_value);
+		$form_previous_value = $form_default_value;
 	}
 	
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
-			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
 	
@@ -200,7 +203,7 @@ function form_dropdown($form_name, $form_data, $column_display,$column_id, $form
 		print "<option value='0'" . (empty($form_previous_value) ? " selected" : "") . ">$form_none_entry</option>\n";
 	}
 	
-	create_list($form_data,$column_display,$column_id,$form_previous_value);
+	create_list($form_data,$column_display,$column_id,htmlspecialchars($form_previous_value, ENT_QUOTES));
 	
 	print "</select>\n";
 }
@@ -213,7 +216,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
-			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
 	
@@ -228,7 +231,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 	
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
-			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
 	
@@ -238,16 +241,16 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 /* creates a text area with a user defined rows and cols */
 function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value) { 
 	if ($form_previous_value == "") {
-		$form_previous_value = htmlspecialchars($form_default_value);
+		$form_previous_value = $form_default_value;
 	}
 	
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
-			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
 	
-	print "<textarea cols='$form_columns' rows='$form_rows' name='$form_name'>$form_previous_value</textarea>\n";
+	print "<textarea cols='$form_columns' rows='$form_rows' name='$form_name'>" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
 /* creates a hidden text box containing the ID */
@@ -703,7 +706,7 @@ function draw_menu() {
 }
 
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
-	$check_fields = array("value", "array", "friendly_name", "description", "sql", "form_id", "items");
+	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items");
 	
 	/* loop through each available field */
 	while (list($field_name, $field_array) = each($form_array)) {
