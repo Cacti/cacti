@@ -26,12 +26,13 @@
 */
 $start = time();
 ini_set("max_execution_time", "0");
+$no_http_headers = true;
 
-include("./include/config.php");
-include_once("./lib/snmp.php");
-include_once("./lib/rrd.php");
-include_once("./lib/functions.php");
-include_once("./lib/graph_export.php");
+include(dirname(__FILE__) . "/include/config.php");
+include_once($config["base_path"] . "/lib/snmp.php");
+include_once($config["base_path"] . "/lib/rrd.php");
+include_once($config["base_path"] . "/lib/functions.php");
+include_once($config["base_path"] . "/lib/graph_export.php");
 
 $polling_items = db_fetch_assoc("select * from data_input_data_cache");
 

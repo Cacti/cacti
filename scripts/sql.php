@@ -1,7 +1,7 @@
 <?
 
-$do_not_read_config = true;
-include dirname(__FILE__)."/../include/config.php";
+$no_http_headers = true;
+include(dirname(__FILE__) . "/../include/config.php");
 
 if ($database_password == "") {
 	$sql = `mysqladmin -h $database_hostname -u $database_username status | awk '{print $6 }'`;
