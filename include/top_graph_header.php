@@ -25,6 +25,7 @@
 */
 
 $using_guest_account = false;
+$show_console_tab = true;
 
 include_once($config["library_path"] . "/tree_view.php");
 include_once($config["library_path"] . "/rrd.php");
@@ -37,6 +38,11 @@ if (read_config_option("global_auth") == "on") {
 	/* find out if we are logged in as a 'guest user' or not */
 	if (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"]) {
 		$using_guest_account = true;
+	}
+	
+	/* find out if we should show the "console" tab or not, based on this user's permissions */
+	if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where realm_id=8 and user_id=" . $_SESSION["sess_user_id"])) == 0) {
+		$show_console_tab = false;
 	}
 }
 
@@ -89,7 +95,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
 					<td nowrap>
-						&nbsp;<a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Console" align="absmiddle" border="0"></a>&nbsp;
+						&nbsp;<?php if ($show_console_tab == true) {?><a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Console" align="absmiddle" border="0"></a>&nbsp;
 					</td>
 					<td>
 						<img src="images/cacti_backdrop2.gif" align="absmiddle">
