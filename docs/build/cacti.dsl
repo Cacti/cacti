@@ -1,14 +1,16 @@
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
-
 <!ENTITY % html "IGNORE">
+<![%html;[
 <!ENTITY % print "IGNORE">
-
-<![ %html; [
-<!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN" CDATA DSSSL>
+<!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN" CDATA dsssl>
 ]]>
-<![ %print; [
-<!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook Print Stylesheet//EN" CDATA DSSSL>
-
+<!ENTITY % print "INCLUDE">
+<![%print;[
+<!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook Print Stylesheet//EN" CDATA dsssl>
+]]>
+<!ENTITY % html2txt "IGNORE">
+<![%html2txt;[
+<!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML2TXT Stylesheet//EN" CDATA dsssl>
 ]]>
 ]>
 
@@ -341,6 +343,64 @@
       (if (string=? (gi nd) (normalize "appendix"))
         0
         1)))
+
+(define ($generate-book-lot-list$)
+  (list (normalize "equation")))
+
+(define %body-attr%
+ (list
+   (list "BGCOLOR" "#FFFFFF")
+   (list "TEXT" "#000000")
+   (list "LINK" "#0000FF")
+   (list "VLINK" "#840084")
+   (list "ALINK" "#0000FF")))
+
+; Styles
+(element emphasis ($bold-seq$))
+
+</style-specification-body>
+</style-specification>
+
+<style-specification id="html2txt" use="docbook">
+<style-specification-body> 
+
+; HTML
+(define %html-pubid% "-//W3C//DTD HTML 4.01//EN")
+(define %html-ext% ".html")
+(define %root-filename% "index")
+(define %stylesheet% "manual.css")
+(define %use-id-as-filename% #t)
+
+; Book
+(define %generate-book-toc% #t)
+(define %generate-book-titlepage% #t)
+
+; Part
+(define %generate-part-toc% #f)
+(define %generate-part-toc-on-titlepage% #f)
+(define %generate-part-titlepage% #f)
+(define %generate-partintro-on-titlepage% #f)
+
+; Navigation
+(define %header-navigation% #f)
+(define %footer-navigation% #f)
+(define %gentext-nav-use-tables% #f)
+(define %gentext-nav-tblwidth% "100%")
+
+; Misc
+(define %generate-legalnotice-link% #t)
+(define %graphic-default-extension% "png")
+(define %para-autolabel% #t)
+
+(define (toc-depth nd)
+  (if (string=? (gi nd) (normalize "book"))
+      3
+      (if (string=? (gi nd) (normalize "appendix"))
+        0
+        1)))
+
+(define ($generate-book-lot-list$)
+  (list (normalize "equation")))
 
 (define %body-attr%
  (list
