@@ -187,6 +187,11 @@ function rrdtool_function_update($update_cache_array) {
 		
 		if (read_config_option("log_update") == "on") { $log_data = true; }
 		
+		/* if we have "invalid data", give rrdtool an Unknown (U) */
+		if (empty($rrd_update_values)) {
+			$rrd_update_values = "U";
+		}
+		
 		print "update $data_source_path --template $rrd_update_template N:$rrd_update_values\n";
 		rrdtool_execute("update $data_source_path --template $rrd_update_template N:$rrd_update_values",$log_data,1);
 	}
