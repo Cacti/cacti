@@ -100,16 +100,24 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	if ($retries == "") $retries = 3;
 
 	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
+		/* make sure snmp* is verbose so we can see what types of data
+		we are getting back */
+		snmp_set_quick_print(0);
+
+		if (function_exists("snmp_set_valueretrieval")) {
+			snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+		}
+
 		if ($version == "1") {
-			$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = @snmprealwalk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
 		} else {
-			$temp_array = @snmp2_walk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = @snmp2_real_walk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
 		}
 
 		$o = 0;
-		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
-			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
-			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i]);
+		foreach ($temp_array as $key => $val) {
+			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $key);
+			$snmp_array[$o]["value"] = format_snmp_string($val);
 			$o++;
 		}
 	}else{
@@ -128,10 +136,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
 		}elseif (read_config_option("snmp_version") == "net-snmp") {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O fntUe $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O QfntUe $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
 		}
 
-		if (sizeof($temp_array) == 0) {
+		if ((sizeof($temp_array) == 0) || (substr_count($temp_array[0], "No Such Object"))) {
 			return array();
 		}
 
