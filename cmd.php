@@ -121,7 +121,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 	}else {
 		$using_proc_function = false;
-		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+		if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 			cacti_log("WARNING: PHP version 4.3 or above is recommended for performance considerations.",$print_data_to_stdout);
 		}
 	}
@@ -183,7 +183,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					where poller_reindex.host_id=" . $item["host_id"]);
 
 				if ((sizeof($reindex) > 0) && (!$host_down)) {
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 						cacti_log("Host[$host_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$print_data_to_stdout);
 					}
 
