@@ -12,6 +12,7 @@ query.
 -bug#61: Problems adding additional graph items to an input after the template 
 is in use by graphs.
 -bug#64: Cactid now checks for the RRDTool path in the 'settings' table.
+-bug#67: Problems with wrapping and 'diskfree.pl'.
 -bug: Problems deleting GPRINT presets.
 -bug: Undefined variable errors on the graph settings page if built in user
 authentication was turned off.
