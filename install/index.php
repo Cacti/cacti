@@ -95,6 +95,24 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["path_rrdtool"]["default"] = "c:/rrdtool/rrdtool.exe";
 }
 
+/* php Binary Path */
+$input["path_php_binary"]["check"] = "";
+$input["path_php_binary"]["type"] = "textbox";
+
+if ($config["cacti_server_os"] == "unix") {
+	$which_php = trim(shell_exec("which php"));
+	
+	if (!empty($which_rrdtool)) {
+		$input["path_php_binary"]["default"] = $which_php;
+	}elseif (read_config_option("path_rrdtool") != "<DEFAULT>") {
+		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
+	}else{
+		$input["path_php_binary"]["default"] = "/usr/bin/php";
+	}
+}elseif ($config["cacti_server_os"] == "win32") {
+	$input["path_rrdtool"]["default"] = "c:/php/php.exe";
+}
+
 /* snmpwalk Binary Path */
 if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpwalk"]["check"] = "";
@@ -141,11 +159,13 @@ if (empty($_REQUEST["step"])) {
 	}elseif (($_REQUEST["step"] == "2") && (($_REQUEST["install_type"] == "1") || ($_REQUEST["install_type"] == "3"))) {
 		$_REQUEST["step"] = "3";
 	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "2")) {
-		$_REQUEST["step"] = "10";
+		$_REQUEST["step"] = "9";
 	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "2")) {
 		$_REQUEST["step"] = "3";
 	}elseif ($_REQUEST["step"] == "3") {
 		$_REQUEST["step"] = "4";
+	}elseif ($_REQUEST["step"] == "9") {
+		$_REQUEST["step"] = "10";
 	}elseif ($_REQUEST["step"] == "10") {
 		$_REQUEST["step"] = "11";
 	}elseif ($_REQUEST["step"] == "11") {
@@ -328,6 +348,38 @@ if ($_REQUEST["step"] == "4") {
 						all of your settings will be saved and your database will be upgraded if this
 						is an upgrade. You can change any of the settings on this screen at a later
 						time by going to "cacti Settings" from within cacti.</p>
+						
+						<?php }elseif ($_REQUEST["step"] == "9") { ?>
+						
+						<p>Make sure to read important upgrade notes below before continuing!</p>
+						
+						<p><strong>Script Output Syntax</strong></p>
+				
+						<p>The output syntax for scripts with multiple outputs has been changed! For instance, the following
+						syntax was acceptable in 0.6.x:</p>
+						
+						<p><pre>0.12:0.05:0.01</pre></p>
+						
+						<p>Because of changes in the poller architecture, the following syntax is now <strong>required</strong>:</p>
+						
+						<p><pre>1min:0.12 5min:0.05 10min:0.01</pre></p>
+						
+						<p>The field names <em>1min</em>, <em>5min</em>, and <em>10min</em> derive directly from the
+						output field names under "Data Input Methods". The output field names specified in cacti and the
+						field names used in the output strings must match <strong>exactly</strong>, or your data will 
+						not end up in the RRD file. Please note that none of this is required for a script that 
+						only outputs one value.
+						
+						<p><strong>New Permissions</strong></p>
+						
+						<p>Because new permissions have been added in 0.8, you may find that 0.6.8 users such 
+						as 'admin' get "Access Denied" messages to certain areas. As a precautionary measure, you
+						must go into "User Administration" and manually give trusted users rights to the new areas.</p>
+						
+						<p><strong>Required PHP Version</strong></p>
+						
+						<p>Cacti 0.8 now requires PHP 4.1 or higher. This is because cacti makes use of PHP's super-global
+						arrays.</p>
 						
 						<?php }elseif ($_REQUEST["step"] == "10") { ?>
 						
