@@ -176,11 +176,11 @@ case 'login':
 	<tr height="10"><td></td></tr>
 	<tr>
 		<td>User Name:</td>
-		<td><input type="text" name="username" size="40"></td>
+		<td><input type="text" name="username" size="40" style="width: 295px;"></td>
 	</tr>
 	<tr>
 		<td>Password:</td>
-		<td><input type="password" name="password" size="40"></td>
+		<td><input type="password" name="password" size="40" style="width: 295px;"></td>
 	</tr>
 	<tr height="10"><td></td></tr>
 	<tr>
