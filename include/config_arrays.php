@@ -127,7 +127,7 @@ $struct_graph = array(
 		"type" => "text",
 		"text_maxlen" => "50",
 		"text_size" => "40",
-		"default" => "",
+		"default" => "120",
 		"description" => "The height (in pixels) that the graph is."
 		),
 	"width" => array(
@@ -135,7 +135,7 @@ $struct_graph = array(
 		"type" => "text",
 		"text_maxlen" => "50",
 		"text_size" => "40",
-		"default" => "",
+		"default" => "500",
 		"description" => "The width (in pixels) that the graph is."
 		),
 	"auto_scale" => array(
@@ -197,7 +197,7 @@ $struct_graph = array(
 		"type" => "text",
 		"text_maxlen" => "50",
 		"text_size" => "40",
-		"default" => "",
+		"default" => "100",
 		"description" => "The maximum vertical value for the rrd graph."
 		),
 	"lower_limit" => array(
@@ -205,7 +205,7 @@ $struct_graph = array(
 		"type" => "text",
 		"text_maxlen" => "255",
 		"text_size" => "40",
-		"default" => "",
+		"default" => "0",
 		"description" => "The minimum vertical value for the rrd graph."
 		),
 	"base_value" => array(
