@@ -995,7 +995,7 @@ $fields_user_user_edit_host = array(
 		"value" => "",
 		"max_length" => "255"
 		),
-	"" => array(
+	"grp1" => array(
 		"friendly_name" => "Account Options",
 		"method" => "checkbox_group",
 		"form_id" => "|arg1:id|",
@@ -1013,7 +1013,7 @@ $fields_user_user_edit_host = array(
 				)
 			)
 		),
-	"" => array(
+	"grp2" => array(
 		"friendly_name" => "Graph Options",
 		"method" => "checkbox_group",
 		"form_id" => "|arg1:id|",
