@@ -35,8 +35,14 @@ if ($cmd == "index") {
 	$arg = $_SERVER["argv"][4];
 	$index = $_SERVER["argv"][5];
 	
+	
+	
 	if (($arg == "total") || ($arg == "used")) {
-		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", "") * cacti_snmp_get($hostname, $snmp_community, $oids["sau"] . ".$index", "1", "", ""));
+		/* get hrStorageAllocationUnits from the snmp cache since it is faster */
+		$host_id = db_fetch_cell("select id from host where management_ip='$hostname' and snmp_community='$snmp_community'");
+		$sau = db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='hrStorageAllocationUnits' and snmp_index='$index'");
+		
+		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", "") * $sau);
 	}else{
 		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", ""));
 	}
