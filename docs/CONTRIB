@@ -1,20 +1,40 @@
 Documentation of user-contributed code:
 
+2004-08-02: branix [branix@osmcluj.ro]
+  Cacti's export function was buggy in cacti 0.8.5a, and lacked extra functionality.
+  The patches presented here allow extra graph export options.
+
+  Changes since Cacti 0.8.5a
+
+  Cacti Settings has now a new tab (called Export) where you can choose when to export
+  the graphs (Export timing). Options are:
+
+    * Disable - there will be no graph export
+    * Classic - export every x times - the default in cacti 0.8.5a
+    * Hourly at specified minutes - every hour at xx minutes past the hour (eg: 35)
+    * Daily at specified time - every day at the specified time (eg: 23:55)
+
+  The second new option is Export method:
+
+    * Classic - graph exporting will be done localy, on the host computer
+    * FTP using the PHP built-in funtions - only available to users that built PHP with FTP support
+    * FTP using the ncftpput client - for users which don't want to use PHP's built-in FTP support, and have the ncftpput binary installed.
+
 2004-05-17: Eric Steffen [eric.steffen@gmx.net]
-  Bonsai is very similar to Cactistoric developed by Bruno Prigent, with a little bit 
+  Bonsai is very similar to Cactistoric developed by Bruno Prigent, with a little bit
   more user friendly interface in mind (my opinion).
 
-  Select in the graph (with your mouse) an area you are interested in. It's magic... 
-  the selected time period is displayed in a new graph, and with the left mouse 
-  button zoom out to view a larger time period. 
+  Select in the graph (with your mouse) an area you are interested in. It's magic...
+  the selected time period is displayed in a new graph, and with the left mouse
+  button zoom out to view a larger time period.
 
   You can also add the displayed graph to your favorites in your browser.
 
-2002-02-08: Dave Neitz, Sprint E|Solutionns 
-  Added 3 new CDEF special types: 
+2002-02-08: Dave Neitz, Sprint E|Solutionns
+  Added 3 new CDEF special types:
 
   Type  Description
-  ----  ----------- 
+  ----  -----------
    3    Total staggered datasources.
    4    Average all datasources.
    5    Average staggered datasources.
@@ -23,6 +43,6 @@ Documentation of user-contributed code:
   column in the following manner:
 
   start=<starting position in datasource>&skip=<skip count>
-  
+
 2002-02-08: Dave Neitz, Sprint E|Solutionns
-  Added additional screen help text to support value expanded usage. 
+  Added additional screen help text to support value expanded usage.
