@@ -33,18 +33,18 @@ $polling_items = db_fetch_assoc("select * from data_input_data_cache");
 if (sizeof($polling_items) > 0) {
 foreach ($polling_items as $item) {
 	switch ($item["action"]) {
-	case '1': /* snmp */
+	case '0': /* snmp */
 		$output = cacti_snmp_get($item["management_ip"], $item["snmp_community"], $item["arg1"], "", $false);
 		print "snmp host: " . $item["management_ip"] . ", oid: " . $item["arg1"] . ", value: $output\n";
 		
 		break;
-	case '2': /* one output script */
+	case '1': /* one output script */
 		$command = get_full_script_path($item["local_data_id"]);
 		$output = `$command`;
 		print "command: $command, output: $output\n";
 		
 		break;
-	case '3': /* multi output script */
+	case '2': /* multi output script */
 		
 		break;
 	}

@@ -23,6 +23,18 @@
    */?>
 <?
 
+function repopulate_poller_cache() {
+	db_execute("truncate table data_input_data_cache");
+	
+	$poller_data = db_fetch_assoc("select id from data_local");
+	
+	if (sizeof($poller_data) > 0) {
+	foreach ($poller_data as $data) {
+		update_poller_cache($data["id"]);
+	}
+	}
+}
+
 function update_poller_cache($local_data_id) {
 	global $paths;
 	
@@ -56,9 +68,9 @@ function update_poller_cache($local_data_id) {
 		$data_template_rrd = db_fetch_assoc("select id from data_template_rrd where local_data_id=$local_data_id");
 		
 		if (sizeof($data_template_rrd) == 1) {
-			$action_type = 2; /* one ds */
+			$action_type = 1; /* one ds */
 		}elseif (sizeof($data_template_rrd) > 1) {
-			$action_type = 3; /* >= two ds */
+			$action_type = 2; /* >= two ds */
 		}
 		
 		$data_template_rrd_id = $data_template_rrd[0]["id"];
@@ -113,7 +125,7 @@ function update_poller_cache($local_data_id) {
 			
 			db_execute("insert into data_input_data_cache (local_data_id,action,management_ip,
 				snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,
-				arg1) values ($local_data_id,1,'" . $host["management_ip"] . "',
+				arg1) values ($local_data_id,0,'" . $host["management_ip"] . "',
 				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
 				'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
 				'" . get_data_source_name($output["data_template_rrd_id"]) . "',
