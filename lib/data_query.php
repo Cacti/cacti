@@ -48,7 +48,11 @@ function run_data_query($host_id, $snmp_query_id) {
 	/* update the sort cache */
 	update_data_query_sort_cache($host_id, $snmp_query_id);
 
+	/* update the auto reindex cache */
 	update_reindex_cache($host_id, $snmp_query_id);
+
+	/* update the the "local" data query cache */
+	update_data_query_cache($host_id, $snmp_query_id);
 
 	return (isset($result) ? $result : true);
 }
@@ -201,7 +205,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$snmp_index = $snmp_data[$i]["value"];
 					}
 
-               /* correct bogus index value */
+					/* correct bogus index value */
 					/* found in some devices such as an EMC Cellera */
 					if ($snmp_index == 0) {
 						$snmp_index = 1;
@@ -302,6 +306,28 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 			return $index["snmp_index"];
 		}
 	}
+	}
+}
+
+/* update_data_query_cache - updates the local data query cache for each graph and data
+     source tied to this host/data query
+   @arg $host_id - the id of the host to refresh
+   @arg $data_query_id - the id of the data query to refresh */
+function update_data_query_cache($host_id, $data_query_id) {
+	$graphs = db_fetch_assoc("select id from graph_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+
+	if (sizeof($graphs) > 0) {
+		foreach ($graphs as $graph) {
+			update_graph_data_query_cache($graph["id"]);
+		}
+	}
+
+	$data_sources = db_fetch_assoc("select id from data_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+
+	if (sizeof($data_sources) > 0) {
+		foreach ($data_sources as $data_source) {
+			update_data_source_data_query_cache($data_source["id"]);
+		}
 	}
 }
 
