@@ -34,10 +34,6 @@ include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/functions.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 
-print $_SERVER["argc"] . "\n";
-print $_SERVER["argv"][1] . "\n";
-print $_SERVER["argv"][2] . "\n";
-
 if ( $_SERVER["argc"] == 1 )
 {
     $polling_items = db_fetch_assoc("SELECT * from data_input_data_cache ORDER by host_id");
@@ -73,8 +69,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
      $host_down = False;
      $new_host  = True;
      $last_host = $current_host = "";
-
-     print sizeof($polling_items);
 
      foreach ($polling_items as $item)
      {
