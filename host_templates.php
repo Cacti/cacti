@@ -206,10 +206,8 @@ function template_edit() {
 			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 				<td width="50%">
 					<font class="textEditTitle">Suggested Values</font> <em>(<?print $graph_template["name"];?>)</em><br>
-					When a user creates a host using this host template, the non-templated 
-					fields will need input from the user. You can use this field to suggest 
-					defaults to the user or even over ride the non-template bit. For a list 
-					of valid field names, see the documentation.
+					You can use this field to suggest defaults to the user or even over ride 
+					the non-template bit. For a list of valid field names, see the documentation.
 				</td>
 				<?DrawFormItemTextBox("ogt_suggested_values_" . $graph_template["id"],$graph_template["suggested_values"],"","255", "40");?>
 			</tr>
@@ -266,10 +264,8 @@ function template_edit() {
 				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 					<td width="50%">
 						<font class="textEditTitle">Suggested Values</font> <em>(<?print $data_template["name"];?>)</em><br>
-						When a user creates a host using this host template, the non-templated 
-						fields will need input from the user. You can use this field to suggest 
-						defaults to the user or even over ride the non-template bit. For a list 
-						of valid field names, see the documentation.
+						You can use this field to suggest defaults to the user or even over ride 
+						the non-template bit. For a list of valid field names, see the documentation.
 					</td>
 					<?DrawFormItemTextBox("odt_suggested_values_" . $data_template["data_template_id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
 				</tr>
