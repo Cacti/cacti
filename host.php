@@ -211,6 +211,7 @@ function host_new_graphs_save() {
 
 function host_save() {
 	include_once ("include/utility_functions.php");
+	include_once ("include/snmp_functions.php");
 	
 	$save["id"] = $_POST["id"];
 	$save["host_template_id"] = $_POST["host_template_id"];
@@ -235,6 +236,16 @@ function host_save() {
 			$selected_graphs[$i] = substr($var, 3);
 			$i++;
 		}
+	}
+	
+	if (isset($_POST["add_y"])) {
+		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $_POST["snmp_query_id"] . ")");
+		
+		/* recache snmp data */
+		query_snmp_host($host_id, $_POST["snmp_query_id"]);
+		
+		header("Location: host.php?action=edit&id=" . $host_id);
+		exit;
 	}
 	
 	if (isset($selected_graphs)) {
@@ -411,11 +422,13 @@ function host_new_graphs() {
 }
 
 function host_edit() {
-	global $colors, $snmp_versions;
+	include_once ("include/xml_functions.php");
+	
+	global $colors, $snmp_versions, $paths;
 	
 	display_output_messages();
 	
-	start_box("<strong>Polling Hosts [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Polling Hosts</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
@@ -492,6 +505,26 @@ function host_edit() {
 		<?DrawFormItemDropdownFromSQL("snmp_version",$snmp_versions,"","",$host["snmp_version"],"","1");?>
 	</tr>
 	
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td colspan="2">
+			<table cellspacing="0" cellpadding="0" border="0" width="100%">
+				<tr>
+					<td width="50%">
+						<font class="textEditTitle">Associated SNMP Query</font><br>
+						If you choose to add this SNMP query to this host, information will be queried from this
+						host upon addition.
+					</td>
+					<td width="1">
+						<?DrawStrippedFormItemDropdownFromSQL("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","","");?>
+					</td>
+					<td>
+						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	
 	<?
 	end_box();
 	
@@ -500,7 +533,7 @@ function host_edit() {
 	
 	$i = 0;
 	if (!empty($host["host_template_id"])) {
-		start_box("Host Template Items", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Host Template Items</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		$graph_templates = db_fetch_assoc("select
 			graph_templates.id as graph_template_id,
@@ -539,6 +572,60 @@ function host_edit() {
 		}
 		
 		end_box();
+	}
+	
+	$snmp_queries = db_fetch_assoc("select
+		snmp_query.id,
+		snmp_query.name,
+		snmp_query.xml_path
+		from snmp_query,host_snmp_query
+		where host_snmp_query.snmp_query_id=snmp_query.id
+		and host_snmp_query.host_id=" . $_GET["id"] . "
+		order by snmp_query.name");
+	
+	if (sizeof($snmp_queries) > 0) {
+	foreach ($snmp_queries as $snmp_query) {
+		start_box("<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]", "98%", $colors["header"], "3", "center", "");
+		
+		$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
+		$snmp_queries = xml2array($data);
+		$xml_outputs = array();
+		
+		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		
+		while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
+			$field_array = $field_array[0];
+			
+			if ($field_array["direction"] == "input") {
+				DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
+				$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
+				
+				if (sizeof($raw_data) > 0) {
+				foreach ($raw_data as $data) {
+					$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
+					$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
+				}
+				}
+			}
+		}
+		
+		print "</tr>";
+		
+		if (sizeof($snmp_query_indexes) > 0) {
+		while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
+			DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+			
+			reset($snmp_query_data);
+			while (list($field_name, $field_array) = each($snmp_query_data)) {
+				print "<td>" . $field_array[$snmp_index] . "</td>";
+			}
+			
+			print "</tr>\n";
+		}
+		}
+		
+		end_box();
+	}
 	}
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
