@@ -34,7 +34,7 @@ function form_item_label($form_title, $form_description) {
 /* creates a standard html textbox */
 function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30) {
 	if ($form_previous_value == "") {
-		$form_previous_value = $form_default_value;
+		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
 	print "<td>\n<input type='text'";
@@ -53,7 +53,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$array_field_values = unserialize($_SESSION["sess_field_values"]);
 		
 		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
 		}
 	}
 	
@@ -72,7 +72,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 /* creates a dropdown box from a sql string */
 function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
 	if ($form_previous_value == "") {
-		$form_previous_value = $form_default_value;
+		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
 	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
@@ -80,7 +80,7 @@ function form_dropdown($form_name, $form_data, $column_display,$column_id, $form
 		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
 		
 		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
 		}
 	}
 	
@@ -134,7 +134,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 /* creates a text area with a user defined rows and cols */
 function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value) { 
 	if ($form_previous_value == "") {
-		$form_previous_value = $form_default_value;
+		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
 	if ((isset($_SESSION["sess_field_values"])) && (isset($_SESSION["sess_error_fields"]))) {
@@ -142,7 +142,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
 		
 		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
 		}
 	}
 	
@@ -306,7 +306,7 @@ function form_save_button($cancel_url) {
 /* creates a standard html password textbox */
 function form_base_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size, $type) {
 	if ($form_previous_value == "") {
-		$form_previous_value = $form_default_value;
+		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
 	print "<input type='$type'";
@@ -325,7 +325,7 @@ function form_base_text_box($form_name, $form_previous_value, $form_default_valu
 		$array_field_values = unserialize($_SESSION["sess_field_values"]);
 		
 		if (!empty($array_field_values[$form_name])) {
-			$form_previous_value = $array_field_values[$form_name];
+			$form_previous_value = htmlspecialchars($array_field_values[$form_name]);
 		}
 	}
 	
