@@ -101,7 +101,7 @@ function update_database($database_old, $database_username, $database_password) 
 	db_execute("delete from data_input_fields where data_input_id > 11");
 	db_execute("delete from data_input where id > 11");
 	
-	$_src = db_fetch_assoc("select * from $database_old.src where id != 11 and id != 13 and id != 19 and id != 31 and id != 6 and id != 24 and id != 5 and id != 23 and id != 1");
+	$_src = db_fetch_assoc("select * from $database_old.src where id != 11 and id != 13 and id != 19 and id != 7 and id != 31 and id != 6 and id != 24 and id != 5 and id != 23 and id != 1");
 	
 	if (sizeof($_src) > 0) {
 	foreach ($_src as $item) {
@@ -141,6 +141,11 @@ function update_database($database_old, $database_username, $database_password) 
 	$data_input_cache[19] = 8;
 	$data_input_field_cache[46] = 26;
 	$data_input_field_cache[45] = 25;
+	
+	/* Get TCP Connections */
+	$data_input_cache[7] = 8;
+	$data_input_field_cache[15] = 26;
+	$data_input_field_cache[14] = 25;
 	
 	/* Get Free Disk Space */
 	$data_input_cache[31] = 11;
