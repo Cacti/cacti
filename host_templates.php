@@ -132,7 +132,30 @@ function template_edit() {
 		</td>
 		<?DrawFormItemTextBox("name",$host_template[name],"","255", "40");?>
 	</tr>
-	
+	<tr>
+		<td colspan="2" width="100%">
+			<table width="100%">
+				<tr>
+					<td align="top" width="50%">
+		<?
+		$data_templates = db_fetch_assoc("select id, name from data_template");
+		if (sizeof($data_templates) > 0) {
+			foreach($data_templates as $data_template) {
+				$column1 = floor(($rows / 2) + ($rows % 2));
+
+				if ($i == $column1) {
+					print "</td><td valign='top' width='50%'>";
+				}
+				DrawStrippedFormItemCheckBox("data_template".$data_template[id], $old_value, $data_template[name], "",true);
+				$i++;
+			}
+		}
+		?>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 	<?
 	DrawFormItemHiddenIDField("id",$args[id]);
 	end_box();
