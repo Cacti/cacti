@@ -71,11 +71,11 @@ function query_script_host($host_id, $snmp_query_id) {
 	debug_log_insert("data_query", "XML file parsed ok.");
 	
 	/* get a complete path for out target script */
-	$script_path = subsitute_data_query_path($script_queries["script_path"]);
+	$script_path = substitute_data_query_path($script_queries["script_path"]);
 	
 	/* get any extra arguments that need to be passed to the script */
 	if (!empty($script_queries["arg_prepend"])) {
-		$extra_arguments = subsitute_host_data($script_queries["arg_prepend"], "|", "|", $host_id);
+		$extra_arguments = substitute_host_data($script_queries["arg_prepend"], "|", "|", $host_id);
 	}else{
 		$extra_arguments = "";
 	}

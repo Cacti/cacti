@@ -454,9 +454,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */
 			if (!isset($suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]})) {
-				$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $host_id, $snmp_query_array["snmp_query_id"], $snmp_query_array["snmp_index"]);
+				$subs_string = substitute_snmp_query_data($suggested_value["text"], "|", "|", $host_id, $snmp_query_array["snmp_query_id"], $snmp_query_array["snmp_index"]);
 				
-				/* if there are no '|' characters, all of the subsitutions were successful */
+				/* if there are no '|' characters, all of the substitutions were successful */
 				if (!strstr($subs_string, "|query")) {
 					db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_graph_id=" . $cache_array["local_graph_id"]);
 					
@@ -520,9 +520,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			foreach ($suggested_values as $suggested_value) {
 				/* once we find a match; don't try to find more */
 				if (!isset($suggested_values_ds{$data_template["id"]}{$suggested_value["field_name"]})) {
-					$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $host_id, $snmp_query_array["snmp_query_id"], $snmp_query_array["snmp_index"]);
+					$subs_string = substitute_snmp_query_data($suggested_value["text"], "|", "|", $host_id, $snmp_query_array["snmp_query_id"], $snmp_query_array["snmp_index"]);
 					
-					/* if there are no '|' characters, all of the subsitutions were successful */
+					/* if there are no '|' characters, all of the substitutions were successful */
 					if (!strstr($subs_string, "|query")) {
 						db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 						

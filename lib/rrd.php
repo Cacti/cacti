@@ -554,7 +554,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$text_format[$graph_item_id] = $graph_item["text_format"];
 		$value_format[$graph_item_id] = $graph_item["value"];
 		
-		/* loop through each field that we want to subsitute values for:
+		/* loop through each field that we want to substitute values for:
 		   currently: text format and value */
 		for ($s=0; $s<2; $s++) {
 			if ($s == 0) {
@@ -568,7 +568,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$current_field = $value_format[$graph_item_id];
 			}
 			
-			/* date/time subsitution */
+			/* date/time substitution */
 			if (strstr($current_field, "|date_time|")) {
 				$current_field = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $current_field);
 			}
@@ -619,7 +619,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 						$round_to = 2;
 					}
 					
-					/* subsitute in the final result and round off to two decimal digits */
+					/* substitute in the final result and round off to two decimal digits */
 					$current_field = str_replace($match[0], round($ninety_fifth,$round_to), $current_field);
 				}
 			}
@@ -692,7 +692,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 						$round_to = 2;
 					}
 					
-					/* subsitute in the final result and round off to two decimal digits */
+					/* substitute in the final result and round off to two decimal digits */
 					if (isset($summation_label)) {
 						$current_field = str_replace($match[0], round($summation,$round_to) . " $summation_label", $current_field);
 					}else{

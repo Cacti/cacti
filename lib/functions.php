@@ -566,36 +566,36 @@ function get_graph_title($local_graph_id) {
 	}
 }
 
-/* null_out_subsitions - takes a string and cleans out any host variables that do not have values
-   @arg $string - the string to clean out unsubsituted variables for
+/* null_out_substitutions - takes a string and cleans out any host variables that do not have values
+   @arg $string - the string to clean out unsubstituted variables for
    @returns - the cleaned up string */
-function null_out_subsitions($string) {
+function null_out_substitutions($string) {
 	return eregi_replace("\|host_(hostname|description|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
 }
 
-/* expand_title - takes a string and subsitutes all data query variables contained in it or cleans
+/* expand_title - takes a string and substitutes all data query variables contained in it or cleans
      them out if no data query is in use
    @arg $host_id - (int) the host ID to match
    @arg $snmp_query_id - (int) the data query ID to match
    @arg $snmp_index - the data query index to match
    @arg $title - the original string that contains the data query variables
-   @returns - the original string with all of the variable subsitutions made */
+   @returns - the original string with all of the variable substitutions made */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, "|")) && (!empty($host_id))) {
 		if (($snmp_query_id != "0") && ($snmp_index != "")) {
-			return subsitute_snmp_query_data(null_out_subsitions(subsitute_host_data($title, "|", "|", $host_id)), "|", "|", $host_id, $snmp_query_id, $snmp_index);
+			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, "|", "|", $host_id)), "|", "|", $host_id, $snmp_query_id, $snmp_index);
 		}else{
-			return null_out_subsitions(subsitute_host_data($title, "|", "|", $host_id));
+			return null_out_substitutions(substitute_host_data($title, "|", "|", $host_id));
 		}
 	}else{
-		return null_out_subsitions($title);
+		return null_out_substitutions($title);
 	}
 }
 
-/* subsitute_data_query_path - takes a string and subsitutes all path variables contained in it
-   @arg $path - the string to make path variable subsitutions on
-   @returns - the original string with all of the variable subsitutions made */
-function subsitute_data_query_path($path) {
+/* substitute_data_query_path - takes a string and substitutes all path variables contained in it
+   @arg $path - the string to make path variable substitutions on
+   @returns - the original string with all of the variable substitutions made */
+function substitute_data_query_path($path) {
 	global $config;
 	
 	$path = clean_up_path(str_replace("|path_cacti|", $config["base_path"], $path));
@@ -604,13 +604,13 @@ function subsitute_data_query_path($path) {
 	return $path;
 }
 
-/* subsitute_host_data - takes a string and subsitutes all host variables contained in it
-   @arg $string - the string to make host variable subsitutions on
+/* substitute_host_data - takes a string and substitutes all host variables contained in it
+   @arg $string - the string to make host variable substitutions on
    @arg $l_escape_string - the character used to escape each variable on the left side
    @arg $r_escape_string - the character used to escape each variable on the right side
    @arg $host_id - (int) the host ID to match
-   @returns - the original string with all of the variable subsitutions made */
-function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
+   @returns - the original string with all of the variable substitutions made */
+function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
 		$host = db_fetch_row("select description,hostname,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
 		$_SESSION["sess_host_cache_array"][$host_id] = $host;
@@ -627,15 +627,15 @@ function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_
 	return $string;
 }
 
-/* subsitute_snmp_query_data - takes a string and subsitutes all data query variables contained in it 
+/* substitute_snmp_query_data - takes a string and substitutes all data query variables contained in it 
    @arg $string - the original string that contains the data query variables
    @arg $l_escape_string - the character used to escape each variable on the left side
    @arg $r_escape_string - the character used to escape each variable on the right side
    @arg $host_id - (int) the host ID to match
    @arg $snmp_query_id - (int) the data query ID to match
    @arg $snmp_index - the data query index to match
-   @returns - the original string with all of the variable subsitutions made */
-function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
+   @returns - the original string with all of the variable substitutions made */
+function substitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
 	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
 	
 	if (sizeof($snmp_cache_data) > 0) {
@@ -1317,7 +1317,7 @@ function draw_navigation_text() {
 /* resolve_navigation_title - apply any special functions that are necessary to the navigation text, this
      function is only called if no other title is available
    @arg $id - the special function to use
-   @returns - the original navigation text with all subsitutions made */
+   @returns - the original navigation text with all substitutions made */
 function resolve_navigation_title($id) {
 	switch ($id) {
 	case 'graph.php:':

@@ -109,7 +109,7 @@ function form_save() {
 				/* push out relavant fields to data sources using this host */
 				push_out_host($host_id,0);
 				
-				/* the host subsitution cache is now stale; purge it */
+				/* the host substitution cache is now stale; purge it */
 				kill_session_var("sess_host_cache_array");
 				
 				/* update title cache for graph and data source */

@@ -186,13 +186,13 @@ function update_poller_cache($local_data_id) {
 					
 					/* get any extra arguments that need to be passed to the script */
 					if (!empty($script_queries["arg_prepend"])) {
-						$extra_arguments = subsitute_host_data($script_queries["arg_prepend"], "|", "|", $host["id"]);
+						$extra_arguments = substitute_host_data($script_queries["arg_prepend"], "|", "|", $host["id"]);
 					}else{
 						$extra_arguments = "";
 					}
 					
 					/* get a complete path for out target script */
-					$script_path = subsitute_data_query_path($script_queries["script_path"]);
+					$script_path = substitute_data_query_path($script_queries["script_path"]);
 					$script_path .= " $extra_arguments " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
 				}
 			
