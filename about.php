@@ -71,6 +71,11 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 		<a href="mailto:iberry@raxnet.net">iberry@raxnet.net</a><br>
 		<a href="mailto:rax@kuhncom.net">rax@kuhncom.net</a><br>
 		</p>
+		
+		<p><strong>Cacti Variables</a></strong><span style="font-family: monospace; font-size: 10px;"><br>
+		<strong>Operating System:</strong> <?php print $config["cacti_server_os"];?><br>
+		<strong>PHP SNMP Support:</strong> <?php print $config["php_snmp_support"] ? "yes" : "no";?><br>
+		</span></p>
 	</td>
 </tr>
 
