@@ -144,10 +144,10 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	}
 }
 
-/* substitute_data_query_path - takes a string and substitutes all path variables contained in it
+/* substitute_script_query_path - takes a string and substitutes all path variables contained in it
    @arg $path - the string to make path variable substitutions on
    @returns - the original string with all of the variable substitutions made */
-function substitute_data_query_path($path) {
+function substitute_script_query_path($path) {
 	global $config;
 
 	$path = clean_up_path(str_replace("|path_cacti|", $config["base_path"], $path));
