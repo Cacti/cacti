@@ -27,7 +27,7 @@
 include("../include/config.php");
 include("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -250,6 +250,9 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.5") {
 			include ("0_8_4_to_0_8_5.php");
 			upgrade_to_0_8_5();
+		}elseif ($cacti_versions[$i] == "0.8.5a") {
+			/* no database upgrades for 0.8.5a */
+			$_REQUEST["step"] = "3";
 		}
 	}
 }
