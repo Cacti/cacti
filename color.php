@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "Add/Edit Graphs"; include ('include/auth.php');
+include ('include/auth.php');
 include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {

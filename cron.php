@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "Data Input";  include ('include/auth.php');
-
+include ('include/auth.php');
 include_once ('include/form.php');
 include_once ("include/functions.php");
 include_once ("include/top_header.php");

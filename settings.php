@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "User Administration"; include ('include/auth.php');
-
+include ('include/auth.php');
 include_once ("include/config_settings.php");
 include_once ('include/form.php');
 

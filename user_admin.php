@@ -24,10 +24,9 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "User Administration"; include ('include/auth.php');
-
-include_once ("include/form.php");
+include ('include/auth.php');
 include ("include/config_settings.php");
+include_once ("include/form.php");
 
 switch ($_REQUEST["action"]) {
 	case 'save':
@@ -234,7 +233,9 @@ function graph_perms_edit() {
    -------------------------- */
 
 function graph_config_edit() {
+	include_once ("include/config_arrays.php");
 	include_once ("include/functions.php");
+	
 	global $colors, $tabs_graphs, $settings_graphs;
 	
 	if (read_config_option("full_view_user_admin") == "") {
@@ -275,9 +276,16 @@ function graph_config_edit() {
 				switch ($settings_graphs[$setting]["method"]) {
 					case 'textbox':
 						form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
-						print "</tr>\n";
+						break;
+					case 'drop_sql':
+						form_dropdown($setting,db_fetch_assoc($settings_graphs[$setting]["sql"]),"name","id",$current_value,"",$settings_graphs[$setting]["default"]);
+						break;
+					case 'drop_array':
+						form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
 						break;
 				}
+				
+				print "</tr>\n";
 			}
 		
 		}
@@ -309,16 +317,16 @@ function graph_config_edit() {
 
 function user_save() {
 	/* only change password when user types one */
-	if ($_POST["password"] != $_POST["Confirm"]) {
+	if ($_POST["password"] != $_POST["confirm"]) {
 		$passwords_do_not_match = true;
-	}elseif (($_POST["password"] == "") && ($_POST["Confirm"] == "")) {
-		$password = $_POST["_password"];
+	}elseif (($_POST["password"] == "") && ($_POST["confirm"] == "")) {
+		$password = db_fetch_cell("select password from user where id=" . $_POST["id"]);
 	}else{
 		$password = "PASSWORD('" . $_POST["password"] . "')";
 	}
 	
 	if ($passwords_do_not_match != true) {
-		$save["id"] = $_POST["user_id"];
+		$save["id"] = $_POST["id"];
 		$save["username"] = $_POST["username"];
 		$save["full_name"] = $_POST["full_name"];
 		$save["password"] = $password;
@@ -330,16 +338,14 @@ function user_save() {
 		$save["login_opts"] = $_POST["login_opts"];
 		$save["graph_policy"] = $_POST["graph_policy"];
 		
-		$id = sql_save($save, "user");
+		$user_id = sql_save($save, "user");
 		
-		reset($_POST);
-		
-		db_execute("delete from user_auth_realm where user_id=$id");
+		db_execute("delete from user_auth_realm where user_id=$user_id");
 		
 		while (list($var, $val) = each($_POST)) {
 			if (eregi("^[section]", $var)) {
 				if (substr($var, 0, 7) == "section") {
-				    db_execute ("replace into user_auth_realm (user_id,realm_id) values($id," . substr($var, 7) . ")");
+				    db_execute ("replace into user_auth_realm (user_id,realm_id) values($user_id," . substr($var, 7) . ")");
 				}
 			}
 		}
@@ -519,8 +525,7 @@ function user_edit() {
 	<?php
 	end_box();
 	
-	form_hidden_id("user_id",$_GET["id"]);
-	form_hidden_box("_password",$user["Password"],"");
+	form_hidden_id("id",$_GET["id"]);
 	form_hidden_box("save_component_user","1","");
 	
 	if (read_config_option("full_view_user_admin") == "") {

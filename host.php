@@ -24,13 +24,12 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "Add/Edit Graphs"; include ('include/auth.php');
-
-$row_counter = 0;
-
+include ('include/auth.php');
 include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
+
+$row_counter = 0;
 
 switch ($_REQUEST["action"]) {
 	case 'save':

@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "Console Access"; include ('include/auth.php');
-
+include ('include/auth.php');
 include_once ("include/form.php");
 include_once ("include/top_header.php");
 

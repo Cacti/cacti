@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "View Graphs"; $guest_account = true; include ('include/auth.php');
+$guest_account = true; include ('include/auth.php');
 include_once ("include/rrd_functions.php");
 
 header("Cache-Control: no-cache, must-revalidate");
