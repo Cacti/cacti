@@ -122,3 +122,20 @@ a:hover {
 .txtErrorTextBox {
 	border: 2px solid #ff0000;
 }
+
+/* tabs */
+td.tab {
+    border-top: 1px solid #999;
+    border-right: 1px solid #666;
+    border-left: 1px solid #999;
+    border-bottom: none;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+}
+
+table.tabs      {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid #666;
+}
