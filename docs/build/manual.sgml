@@ -233,8 +233,9 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					In the <filename>c:\php</filename> directory, rename the <filename>php.ini-dist</filename> file to <filename>php.ini</filename>, copy it to <filename>c:\winnt</filename>, and 
-					make the following changes to the file:
+					In the <filename>c:\php</filename> directory, copy the <filename>php.ini-dist</filename> file to 
+					<filename>c:\winnt</filename>, rename the file to <filename>php.ini</filename>, and make the 
+					following changes to the file:
 				</para>
 				<screen><userinput>extension_dir = c:/php/extensions</userinput>
 <userinput>extension=php_snmp.dll</userinput>
