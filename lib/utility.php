@@ -63,6 +63,35 @@ function update_poller_cache($local_data_id) {
 		where data_local.host_id=host.id
 		and data_local.id=$local_data_id");
 	
+	/* we have to perform some additional sql queries if this is a "query" */
+	if (($data_input["type_id"] == "3") || ($data_input["type_id"] == "4")) {
+		$field = db_fetch_assoc("select
+			data_input_fields.type_code,
+			data_input_data.value
+			from data_input_fields,data_input_data
+			where data_input_fields.id=data_input_data.data_input_field_id
+			and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
+			and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
+		$field = array_rekey($field, "type_code", "value");
+		
+		$query = db_fetch_row("select
+			host_snmp_cache.snmp_query_id,
+			host_snmp_cache.snmp_index
+			from host_snmp_cache
+			where host_snmp_cache.field_name='" . $field["index_type"] . "'
+			and host_snmp_cache.field_value='" . $field["index_value"] . "'
+			and host_snmp_cache.host_id=" . $host["id"]);
+		
+		$outputs = db_fetch_assoc("select
+			snmp_query_graph_rrd.snmp_field_name,
+			data_template_rrd.id as data_template_rrd_id
+			from snmp_query_graph_rrd,data_template_rrd
+			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
+			and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"] . "
+			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
+			and data_template_rrd.local_data_id=$local_data_id");
+	}
+	
 	/* clear cache for this local_data_id */
 	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
 	
@@ -118,33 +147,7 @@ function update_poller_cache($local_data_id) {
 			
 			break;
 		case '3': /* snmp query */
-			$field = db_fetch_assoc("select
-				data_input_fields.type_code,
-				data_input_data.value
-				from data_input_fields,data_input_data
-				where data_input_fields.id=data_input_data.data_input_field_id
-				and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
-				and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
-			$field = array_rekey($field, "type_code", "value");
-			
-			$query = db_fetch_row("select
-				host_snmp_cache.snmp_query_id,
-				host_snmp_cache.snmp_index
-				from host_snmp_cache
-				where host_snmp_cache.field_name='" . $field["index_type"] . "'
-				and host_snmp_cache.field_value='" . $field["index_value"] . "'
-				and host_snmp_cache.host_id=" . $host["id"]);
-			
-			$outputs = db_fetch_assoc("select
-				snmp_query_graph_rrd.snmp_field_name,
-				data_template_rrd.id as data_template_rrd_id
-				from snmp_query_graph_rrd,data_template_rrd
-				where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
-				and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"] . "
-				and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
-				and data_template_rrd.local_data_id=$local_data_id");
-			
-			$snmp_queries = get_snmp_query_array($query["snmp_query_id"]);
+			$snmp_queries = get_data_query_array($query["snmp_query_id"]);
 			
 			if (sizeof($outputs) > 0) {
 			foreach ($outputs as $output) {
@@ -160,6 +163,31 @@ function update_poller_cache($local_data_id) {
 						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
 						'" . get_data_source_path($local_data_id,true) . "','$oid')");
+				}
+			}
+			}
+			
+			break;
+		case '4': /* script query */
+			$script_queries = get_data_query_array($query["snmp_query_id"]);
+			
+			if (sizeof($outputs) > 0) {
+			foreach ($outputs as $output) {
+				if (isset($script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"])) {
+					$identifier = $script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"];
+					
+					/* get a complete path for out target script */
+					$script_path = str_replace("|path_cacti|", $paths["cacti"], $script_queries["script_path"]) . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
+				}
+				
+				if (isset($script_path)) {
+					db_execute("insert into data_input_data_cache (local_data_id,data_input_id,action,management_ip,
+						snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,command) values 
+						($local_data_id," . $data_input["id"]. ",1,'" . $host["management_ip"] . "',
+						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
+						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "',
+						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
+						'" . get_data_source_path($local_data_id,true) . "','$script_path')");
 				}
 			}
 			}
