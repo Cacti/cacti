@@ -27,6 +27,7 @@
 function graph_template_to_xml($graph_template_id) {
 	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item;
 	
+	$hash = get_hash_graph_template($graph_template_id);
 	$xml_text = "";
 	
 	$graph_template = db_fetch_row("select id,name from graph_templates where id=$graph_template_id");
@@ -40,7 +41,7 @@ function graph_template_to_xml($graph_template_id) {
 	
 	/* XML Branch: <graph> */
 	
-	$xml_text .= "<hash:DF34V3476WW4H6WF>\n\t<name>" . $graph_template["name"] . "</name>\n\t<graph>\n";
+	$xml_text .= "<hash:$hash>\n\t<name>" . $graph_template["name"] . "</name>\n\t<graph>\n";
 	
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		$xml_text .= "\t\t<t_$field_name>" . $graph_template_graph{"t_" . $field_name} . "</t_$field_name>\n";
@@ -116,7 +117,7 @@ function graph_template_to_xml($graph_template_id) {
 	}
 	
 	$xml_text .= "\t</inputs>\n";
-	$xml_text .= "</hash:DF34V3476WW4H6WF>";
+	$xml_text .= "</hash:$hash>";
 	
 	return $xml_text;
 }
@@ -124,6 +125,7 @@ function graph_template_to_xml($graph_template_id) {
 function data_template_to_xml($data_template_id) {
 	global $struct_data_source, $struct_data_source_item;
 	
+	$hash = get_hash_data_template($data_template_id);
 	$xml_text = "";
 	
 	$data_template = db_fetch_row("select id,name from data_template where id=$data_template_id");
@@ -145,7 +147,7 @@ function data_template_to_xml($data_template_id) {
 	
 	/* XML Branch: <graph> */
 	
-	$xml_text .= "<hash:F734HJSDH42SFDDS>\n\t<name>" . $data_template["name"] . "</name>\n\t<ds>\n";
+	$xml_text .= "<hash:$hash>\n\t<name>" . $data_template["name"] . "</name>\n\t<ds>\n";
 	
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		if (isset($data_template_data{"t_" . $field_name})) {
@@ -214,7 +216,7 @@ function data_template_to_xml($data_template_id) {
 	
 	$xml_text .= "\t</data>\n";
 	
-	$xml_text .= "</hash:F734HJSDH42SFDDS>";
+	$xml_text .= "</hash:$hash>";
 	
 	return $xml_text;
 }
@@ -222,6 +224,7 @@ function data_template_to_xml($data_template_id) {
 function data_input_method_to_xml($data_input_id) {
 	global $fields_data_input_edit, $fields_data_input_field_edit;
 	
+	$hash = get_hash_data_input($data_input_id);
 	$xml_text = "";
 	
 	$data_input = db_fetch_row("select * from data_input where id=$data_input_id");
@@ -231,7 +234,7 @@ function data_input_method_to_xml($data_input_id) {
 		return "Invalid data input method.";
 	}
 	
-	$xml_text .= "<hash:78282FSD73HJS>\n";
+	$xml_text .= "<hash:$hash>\n";
 	
 	/* XML Branch: <> */
 	
@@ -262,7 +265,7 @@ function data_input_method_to_xml($data_input_id) {
 	
 	$xml_text .= "\t</fields>\n";
 	
-	$xml_text .= "</hash:78282FSD73HJS>";
+	$xml_text .= "</hash:$hash>";
 	
 	return $xml_text;
 }
@@ -276,6 +279,7 @@ function cdef_to_xml($cdef_id) {
 		"value" => "value"
 		);
 	
+	$hash = get_hash_cdef($cdef_id);
 	$xml_text = "";
 	
 	$cdef = db_fetch_row("select * from cdef where id=$cdef_id");
@@ -285,7 +289,7 @@ function cdef_to_xml($cdef_id) {
 		return "Invalid CDEF.";
 	}
 	
-	$xml_text .= "<hash:FH536WERGF4232F>\n";
+	$xml_text .= "<hash:$hash>\n";
 	
 	/* XML Branch: <> */
 	
@@ -319,7 +323,7 @@ function cdef_to_xml($cdef_id) {
 	
 	$xml_text .= "\t</items>\n";
 	
-	$xml_text .= "</hash:FH536WERGF4232F>";
+	$xml_text .= "</hash:$hash>";
 	
 	return $xml_text;
 }
@@ -327,6 +331,7 @@ function cdef_to_xml($cdef_id) {
 function gprint_preset_to_xml($gprint_preset_id) {
 	global $fields_grprint_presets_edit;
 	
+	$hash = get_hash_gprint($gprint_preset_id);
 	$xml_text = "";
 	
 	$graph_templates_gprint = db_fetch_row("select * from graph_templates_gprint where id=$gprint_preset_id");
@@ -335,7 +340,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 		return "Invalid GPRINT preset.";
 	}
 	
-	$xml_text .= "<hash:5GWG57JEBEWR322>\n";
+	$xml_text .= "<hash:$hash>\n";
 	
 	/* XML Branch: <> */
 	
@@ -345,7 +350,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 		}
 	}
 	
-	$xml_text .= "</hash:5GWG57JEBEWR322>";
+	$xml_text .= "</hash:$hash>";
 	
 	return $xml_text;
 }
@@ -353,6 +358,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 function data_query_to_xml($data_query_id) {
 	global $fields_data_query_edit, $fields_data_query_item_edit;
 	
+	$hash = get_hash_data_query($data_query_id);
 	$xml_text = "";
 	
 	$snmp_query = db_fetch_row("select * from snmp_query where id=$data_query_id");
@@ -369,7 +375,7 @@ function data_query_to_xml($data_query_id) {
 		return "Invalid data query.";
 	}
 	
-	$xml_text .= "<hash:OEG53VERW2VQWW>\n";
+	$xml_text .= "<hash:$hash>\n";
 	
 	/* XML Branch: <> */
 	
@@ -488,13 +494,9 @@ function data_query_to_xml($data_query_id) {
 	
 	$xml_text .= "\t</graphs>\n";
 	
-	$xml_text .= "</hash:OEG53VERW2VQWW>";
+	$xml_text .= "</hash:$hash>";
 	
 	return $xml_text;
-}
-
-function xmlify($string) {
-	return urlencode($string);
 }
 
 ?>
