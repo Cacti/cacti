@@ -119,7 +119,7 @@ class Net_Ping
 			/* build the packet */
 			$this->build_icmp_packet();
 
-   		$retry_count = 0;
+			$retry_count = 0;
 			while (1) {
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
@@ -161,7 +161,7 @@ class Net_Ping
 		/* get start time */
 		$this->start_time();
 
-		/* poll ifDescription for status */
+		/* poll sysUptime for status */
 		$retry_count = 0;
 		while (1) {
 			if ($retry_count >= $this->retries) {
@@ -172,7 +172,7 @@ class Net_Ping
 
 			$output = cacti_snmp_get($this->host["hostname"],
 				$this->host["snmp_community"],
-				".1.3.6.1.2.1.1.1.0" ,
+				".1.3.6.1.2.1.1.3.0" ,
 				$this->host["snmp_version"],
 				$this->host["snmp_username"],
 				$this->host["snmp_password"],
@@ -227,7 +227,7 @@ class Net_Ping
 			$this->build_udp_packet();
 
 			$retry_count = 0;
-   		while (1) {
+			while (1) {
 				if ($retry_count >= $this->retries) {
 					$this->ping_response = "UDP ping timed out";
 					$this->ping_status   = "down";
