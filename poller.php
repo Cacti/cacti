@@ -66,7 +66,7 @@ $first_host = 0;
 $last_host = 0;
 
 /* Update web paths for the poller */
-db_execute("replace into settings (name,value) values ('path_webroot','" . dirname(__FILE__) . "')");
+db_execute("replace into settings (name,value) values ('path_webroot','" . str_replace("\\", "/", dirname(__FILE__)) . "')");
 //db_execute("replace into settings (name,value) values ('path_php_server','" . dirname(__FILE__) . "/script_server.php')");
 
 // Obtain some defaults from the database
