@@ -61,8 +61,6 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $retries = 20) {
 function db_execute($sql) {
 	global $cnn_id;
 
-	if (!$cnn_id) { db_connect(); }
-
 	$query = $cnn_id->Execute($sql);
 
 	if ($query) {
@@ -79,8 +77,6 @@ function db_execute($sql) {
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql,$col_name = '') {
 	global $cnn_id;
-
-	if (!$cnn_id) { db_connect(); }
 
 	if ($col_name != '') {
 		$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -107,8 +103,6 @@ function db_fetch_cell($sql,$col_name = '') {
 function db_fetch_row($sql) {
 	global $cnn_id;
 
-	if (!$cnn_id) { db_connect(); }
-
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
 
@@ -124,8 +118,6 @@ function db_fetch_row($sql) {
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql) {
 	global $cnn_id;
-
-	if (!$cnn_id) { db_connect(); }
 
 	$data = array();
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
