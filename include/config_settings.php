@@ -500,7 +500,7 @@ $settings = array(
 			),
 		"ldap_enabled" => array(
 			"friendly_name" => "Use LDAP Authentication",
-			"description" => "This will alow users to use their LDAP credentials with cacti.",
+			"description" => "This will allow users to use their LDAP credentials with cacti.",
 			"method" => "checkbox",
 			"tab" => "authentication"
 			),
