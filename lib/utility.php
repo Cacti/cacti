@@ -23,6 +23,98 @@
    */?>
 <?
 
+function update_poller_cache($local_data_id) {
+	global $paths;
+	
+	$data_input = db_fetch_row("select
+		data_input.type_id,
+		data_template_data.id as data_template_data_id,
+		data_template_data.data_template_id
+		from data_template_data,data_input
+		where data_template_data.data_input_id=data_input.id
+		and data_template_data.local_data_id=$local_data_id");
+	
+	$host = db_fetch_row("select
+		host.id,
+		host.management_ip,
+		host.snmp_community,
+		host.snmp_version,
+		host.snmp_username,
+		host.snmp_password
+		from
+		data_local,host
+		where data_local.host_id=host.id
+		and data_local.id=$local_data_id");
+	
+	/* clear cache for this local_data_id */
+	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
+	
+	switch ($data_input["type_id"]) {
+	case '1': /* script */
+		$command = get_full_script_path($local_data_id);
+		
+		db_execute("insert into data_input_data_cache (local_data_id,action,management_ip,
+			snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,
+			command) values ($local_data_id,1,'" . $host["management_ip"] . "','
+			" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','
+			" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','
+			" . get_data_source_name($output["data_template_rrd_id"]) . "','
+			" . get_data_source_path($local_data_id,true) . "','$command')");
+		
+		break;
+	case '2': /* snmp */
+		break;
+	case '3': /* snmp query */
+		$field = db_fetch_assoc("select
+			data_input_fields.type_code,
+			data_input_data.value
+			from data_input_fields,data_input_data
+			where data_input_fields.id=data_input_data.data_input_field_id
+			and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
+			and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value')");
+		$field = array_rekey($field, "type_code", "value");
+		
+		$query = db_fetch_row("select
+			host_snmp_cache.snmp_query_id,
+			host_snmp_cache.snmp_index
+			from host_snmp_cache
+			where host_snmp_cache.field_name='" . $field["index_type"] . "'
+			and host_snmp_cache.field_value='" . $field["index_value"] . "'
+			and host_snmp_cache.host_id=" . $host["id"]);
+		
+		$outputs = db_fetch_assoc("select
+			snmp_query_dt_rrd.snmp_field_name,
+			data_template_rrd.id as data_template_rrd_id
+			from snmp_query_dt_rrd,data_template_rrd
+			where snmp_query_dt_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
+			and snmp_query_dt_rrd.snmp_query_id=" . $query["snmp_query_id"] . "
+			and snmp_query_dt_rrd.data_template_id=" . $data_input["data_template_id"] . "
+			and data_template_rrd.local_data_id=$local_data_id");
+		
+		if (sizeof($outputs) > 0) {
+		foreach ($outputs as $output) {
+			$oid = db_fetch_cell("select
+				oid
+				from
+				host_snmp_cache
+				where host_id=" . $host["id"] . "
+				and field_name='" . $output["snmp_field_name"] . "'
+				and snmp_index=" . $query["snmp_index"]);
+			
+			db_execute("insert into data_input_data_cache (local_data_id,action,management_ip,
+				snmp_community,snmp_version,snmp_username,snmp_password,rrd_name,rrd_path,
+				arg1) values ($local_data_id,1,'" . $host["management_ip"] . "','
+				" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','
+				" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','
+				" . get_data_source_name($output["data_template_rrd_id"]) . "','
+				" . get_data_source_path($local_data_id,true) . "','$oid')");
+		}
+		}
+		
+		break;
+	}
+}
+
 function push_out_data_template($data_template_id) {
 	/* get data_input_id */
 	$data_input_id = db_fetch_cell("select
