@@ -340,6 +340,11 @@ function push_out_data_source($data_template_data_id) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_data{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_data{"t_" . $field_name})) && (isset($data_template_data[$field_name])))) {
 			db_execute("update data_template_data set $field_name='" . $data_template_data[$field_name] . "' where local_data_template_data_id=" . $data_template_data["id"]); 
+			
+			/* update the title cache */
+			if ($field_name == "name") {
+				update_data_source_title_cache(db_fetch_cell("select local_data_id from data_template_data where local_data_template_data_id=" . $data_template_data["id"]));
+			}
 		}
 	}
 }
@@ -528,7 +533,12 @@ function push_out_graph($graph_template_graph_id) {
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* are we allowed to push out the column? */
 		if (empty($graph_template_graph{"t_" . $field_name})) {
-			db_execute("update graph_templates_graph set $field_name='$graph_template_graph[$field_name]' where local_graph_template_graph_id=" . $graph_template_graph["id"]); 
+			db_execute("update graph_templates_graph set $field_name='$graph_template_graph[$field_name]' where local_graph_template_graph_id=" . $graph_template_graph["id"]);
+			
+			/* update the title cache */
+			if ($field_name == "title") {
+				update_graph_title_cache(db_fetch_cell("select local_graph_id from graph_templates_graph where local_graph_template_graph_id=" . $graph_template_graph["id"]));
+			}
 		}
 	}
 }
@@ -745,8 +755,12 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 		$save["id"] = 0;
 		$save["graph_template_id"] = $graph_local["graph_template_id"];
 		$save["host_id"] = $graph_local["host_id"];
+		$save["snmp_query_id"] = $graph_local["snmp_query_id"];
+		$save["snmp_index"] = $graph_local["snmp_index"];
 		
 		$local_graph_id = sql_save($save, "graph_local");
+		
+		$graph_template_graph["title"] = str_replace("<graph_title>", $graph_template_graph["title"], $graph_title);
 	}elseif (!empty($_graph_template_id)) {
 		$graph_template = db_fetch_row("select * from graph_templates where id=$_graph_template_id");
 		$graph_template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=$_graph_template_id and local_graph_id=0");
@@ -768,8 +782,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	$save["local_graph_id"] = (isset($local_graph_id) ? $local_graph_id : 0);
 	$save["local_graph_template_graph_id"] = (isset($graph_template_graph["local_graph_template_graph_id"]) ? $graph_template_graph["local_graph_template_graph_id"] : 0);
 	$save["graph_template_id"] = (!empty($_local_graph_id) ? $graph_template_graph["graph_template_id"] : $graph_template_id);
-	
-	$graph_template_graph["title"] = str_replace("<graph_title>", $graph_template_graph["title"], $graph_title);
+	$save["title_cache"] = $graph_template_graph["title_cache"];
 	
 	while (list($field, $array) = each($struct_graph)) {
 		$save{$field} = $graph_template_graph{$field};
@@ -823,6 +836,10 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 		}
 		}
 	}
+	
+	if (!empty($_local_graph_id)) {
+		update_graph_title_cache($local_graph_id);
+	}
 }
 
 function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
@@ -842,8 +859,12 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		$save["id"] = 0;
 		$save["data_template_id"] = $data_local["data_template_id"];
 		$save["host_id"] = $data_local["host_id"];
+		$save["snmp_query_id"] = $data_local["snmp_query_id"];
+		$save["snmp_index"] = $data_local["snmp_index"];
 		
 		$local_data_id = sql_save($save, "data_local");
+		
+		$data_template_data["name"] = str_replace("<ds_title>", $data_template_data["name"], $data_source_title);
 	}elseif (!empty($_data_template_id)) {
 		$data_template = db_fetch_row("select * from data_template where id=$_data_template_id");
 		$data_template_data = db_fetch_row("select * from data_template_data where data_template_id=$_data_template_id and local_data_id=0");
@@ -854,7 +875,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		
 		/* create new entry: data_template */
 		$save["id"] = 0;
-		$save["name"] = str_replace("<template_title>", $data_template_data["name"], $data_source_title);
+		$save["name"] = str_replace("<template_title>", $data_template["name"], $data_source_title);
 		
 		$data_template_id = sql_save($save, "data_template");
 	}
@@ -869,8 +890,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	$save["local_data_id"] = (isset($local_data_id) ? $local_data_id : 0);
 	$save["local_data_template_data_id"] = (isset($data_template_data["local_data_template_data_id"]) ? $data_template_data["local_data_template_data_id"] : 0);
 	$save["data_template_id"] = (!empty($_local_data_id) ? $data_template_data["data_template_id"] : $data_template_id);
-	
-	$data_template_data["name"] = str_replace("<ds_title>", $data_template_data["name"], $data_source_title);
+	$save["name_cache"] = $data_template_data["name_cache"];
 	
 	while (list($field, $array) = each($struct_data_source)) {
 		$save{$field} = $data_template_data{$field};
@@ -924,6 +944,10 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id,
 			" . $data_template_data_rra["rra_id"] . ")");
 	}
+	}
+	
+	if (!empty($_local_data_id)) {
+		update_data_source_title_cache($local_data_id);	
 	}
 }
 
