@@ -72,8 +72,8 @@ function DrawPlainFormHeader($title_text, $background_color, $column_span, $bold
 <?}
 
 /* draws a vertical space and a save button */
-function DrawFormSaveButton($action = "save") { ?>
-	<input type="hidden" name="action" value="<?print $action;?>">
+function DrawFormSaveButton($form_action = "save") { ?>
+	<input type="hidden" name="action" value="<?print $form_action;?>">
 	<input type="image" src="images/button_save.gif" alt="Save" align="absmiddle">
 <?}
 
@@ -144,7 +144,7 @@ function DrawFormItemDropdownFromSQL($form_name, $form_data, $column_display,$co
 ?>
 		<td>
 			<select name="<?print $form_name;?>">
-				<?if ($form_none_entry!="") {?><option value="0"><?print $form_none_entry;?></option><?}?>
+				<?if ($form_none_entry!="") {?><option value="0"<?if ($form_previous_value=="0"){print " selected";}?>><?print $form_none_entry;?></option><?}?>
 				<?CreateList($form_data,$column_display,$column_id,$form_previous_value);?>
 			</select>
 		</td>
