@@ -221,9 +221,11 @@ function graph_perms_edit() {
 	$graphs = db_fetch_assoc("select 
 		user_auth_graph.user_id,
 		graph_templates_graph.local_graph_id,
-		graph_templates_graph.title
+		graph_templates_graph.title,
+		graph_local.host_id
 		from graph_templates_graph
 		left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ") 
+		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		where graph_templates_graph.local_graph_id > 0
 		order by graph_templates_graph.title");
 	
@@ -265,7 +267,7 @@ function graph_perms_edit() {
 								print "</td><td valign='top' width='50%'>";
 							}
 							
-							form_base_checkbox("graph" . $graph["local_graph_id"], $old_value, title_trim($graph["title"], 60), "", (!empty($_GET["id"]) ? 1 : 0), true);
+							form_base_checkbox("graph" . $graph["local_graph_id"], $old_value, title_trim(expand_title($graph["host_id"], $graph["title"]), 60), "", (!empty($_GET["id"]) ? 1 : 0), true);
 							$i++;
 						}
 						}
