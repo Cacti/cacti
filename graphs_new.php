@@ -27,6 +27,7 @@
 include("./include/auth.php");
 include_once("./lib/data_query.php");
 include_once("./lib/utility.php");
+include_once("./lib/sort.php");
 include_once("./lib/html_form_template.php");
 include_once("./lib/template.php");
 
@@ -508,7 +509,7 @@ function graphs() {
 					$num_input_fields++;
 
 					if (!isset($total_rows)) {
-						$total_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $host["id"] . " and snmp_query_id=" . $snmp_query["id"] . " and field_name='$field_name'"));
+						$total_rows = db_fetch_cell("select count(*) from host_snmp_cache where host_id=" . $host["id"] . " and snmp_query_id=" . $snmp_query["id"] . " and field_name='$field_name'");
 					}
 				}
 			}
@@ -590,7 +591,10 @@ function graphs() {
 
 						foreach ($raw_data as $data) {
 							$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
-							$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
+
+							if (!in_array($data["snmp_index"], $snmp_query_indexes)) {
+								array_push($snmp_query_indexes, $data["snmp_index"]);
+							}
 						}
 
 						$num_visible_fields++;
@@ -599,6 +603,15 @@ function graphs() {
 						field in the xml array so it is not drawn */
 						unset($xml_array["fields"][$field_name]);
 					}
+				}
+			}
+
+			/* if the user specified a prefered sort order; sort the list of indexes before displaying them */
+			if (isset($xml_array["index_order_type"])) {
+				if ($xml_array["index_order_type"] == "numeric") {
+					usort($snmp_query_indexes, "usort_numeric");
+				}else if ($xml_array["index_order_type"] == "alphabetic") {
+					usort($snmp_query_indexes, "usort_alphabetic");
 				}
 			}
 
@@ -615,7 +628,7 @@ function graphs() {
 
 			$row_counter = 0;
 			if (sizeof($snmp_query_indexes) > 0) {
-			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
+			while (list($id, $snmp_index) = each($snmp_query_indexes)) {
 				$query_row = $snmp_query["id"] . "_" . encode_data_query_index($snmp_index);
 
 				print "<tr id='line$query_row' bgcolor='#" . (($row_counter % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;

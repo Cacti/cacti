@@ -6,14 +6,15 @@
 	<arg_query>query</arg_query>
 	<arg_get>get</arg_get>
 	<output_delimeter>!</output_delimeter>
-	
+	<index_order_type>numeric</index_order_type>
+
 	<fields>
 		<hrProcessorFrwID>
 			<name>Processor Index Number</name>
 			<direction>input</direction>
 			<query_name>index</query_name>
 		</hrProcessorFrwID>
-		
+
 		<hrProcessorLoad>
 			<name>Processor Usage</name>
 			<direction>output</direction>
