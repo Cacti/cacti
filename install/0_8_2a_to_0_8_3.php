@@ -56,6 +56,15 @@ function upgrade_to_0_8_3() {
 	}
 	}
 	
+	$users = db_fetch_assoc("select id from user_auth");
+	
+	/* default all current users to tree view mode 1 (single pane) */
+	if (sizeof($users) > 0) {
+	foreach ($users as $item) {
+		db_install_execute("0.8.3", "replace into settings_graphs (user_id,name,value) values (" . $item["id"] . ",'default_tree_view_mode',1);");
+	}
+	}
+	
 	/* drop unused tables */
 	db_install_execute("0.8.3", "DROP TABLE `user_auth_graph`;");
 	db_install_execute("0.8.3", "DROP TABLE `user_auth_tree`;");
