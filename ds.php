@@ -25,6 +25,7 @@
 include ('include/auth.php');
 include_once ('include/functions.php');
 include_once ('include/form.php');
+include_once('include/tree_functions.php');
 
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
@@ -43,7 +44,17 @@ if (isset($args[hide]) == true) {
 }
 
 
-switch ($action) {
+switch ($args[action]) {
+ case 'move_up': 
+    $order_key = db_fetch_cell("SELECT order_key FROM polling_tree WHERE ptree_id=$args[branch_id]");
+    if ($order_key > 0) { branch_up($order_key, 'polling_tree', 'order_key', '', 'ptree_id'); }    
+    header ("Location: $PHP_SELF");
+    break;
+ case 'move_down':
+    $order_key = db_fetch_cell("SELECT order_key FROM polling_tree WHERE ptree_id=$args[branch_id]");
+    if ($order_key > 0) { branch_down($order_key, 'polling_tree', 'order_key', '', 'ptree_id'); }
+    header ("Location: $PHP_SELF");
+    break;
  case 'duplicate':
     include_once ('include/utility_functions.php');
     

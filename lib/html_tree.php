@@ -310,63 +310,46 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 	    $tier = tree_tier($leaf[order_key], 2);
 	    $current_leaf_type = $leaf[host_id] ? "host" : "heading";
 	    
-	    if ($current_leaf_type == 'heading') {
-		##  If this isn't the first heading, we may have to close tables/rows.
-		if ($heading_ct > 0) {
-		    if ($need_table_close) { 
-			print "</table></td></tr>\n"; 
-			$already_open = false;
-		    }
-		}
-		$colspan = (($max_tier - $tier) * 2);
-		$rowspan = $rowspans[$leaf[order_key]];
-		#		print "Order key = '$leaf[order_key]', rs = '".$rowspans[$leaf[order_key]]."', rowspan = '$rowspan'<BR>\n";
-		
-		if (! $already_open) { 
-		    print "<tr>\n";
-		    $already_open = true;
-		}
-		
-		if ($options[use_expand_contract]) {
-		    if ($hide[$leaf[order_key]] == 1) {
-			$other_status = '0';
-			$ec_icon = 'show';
-		    } else {
-			$other_status = '1';
-			$ec_icon =  'hide';
-			++$heading_ct;
-		    }
-		    print "<td bgcolor=\"$colors[panel]\" align=\"center\" width=\"1\"><a
-			    href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
-			    src='images/$ec_icon.gif' border='0'></a></td>\n";
-		    
-		} else {
-		    print "<td bgcolor=\"$colors[panel]\" width=\"1\">$indent</td>\n";
-		}
-		print "<td bgcolor=\"$colors[panel]\" colspan=$colspan NOWRAP><strong>$leaf[title]</strong></td>\n</tr>";
-		$already_open = false;
-		
-		##  If a heading isn't hidden and has hosts, start the vertical bar.
-		if (! $hide[$leaf[order_key]] && $rowspan > 0) {
-		    print "<tr><td bgcolor=\"$colors[panel]\" width=\"1%\" rowspan=$rowspan>&nbsp;</td>\n";
-		    $already_open = true;
-		}
-		
-		##  If this heading has hosts and we're supposed to hide hosts, start that table.
-		if ($num_hosts[$leaf[order_key]] > 0 && ! $hide[$leaf[order_key]]) { 
-		    $need_table_close = true;
-		    print "<td colspan=$colspan><table border=0><tr>\n"; 
-		} else {
-		    $need_table_close = false;
-		}
-		$host_ct = 0;
-	    } else {
-		++$host_ct;
-		print "<td><a href=''>$leaf[hostname].$leaf[domain]</a> - $leaf[descrip]</td>";
+	    $colspan = (($max_tier - $tier) + 1);
+	    $rowspan = $rowspans[$leaf[order_key]];
+	    #		print "Order key = '$leaf[order_key]', rs = '".$rowspans[$leaf[order_key]]."', rowspan = '$rowspan'<BR>\n";
+	    
+	    if (! $already_open) { 
+		print "<tr>\n";
+		$already_open = true;
 	    }
+	    
+	    if ($hide[$leaf[order_key]] == 1) {
+		$other_status = '0';
+		$ec_icon = 'show';
+	    } else {
+		$other_status = '1';
+		$ec_icon =  'hide';
+		++$heading_ct;
+	    }
+	    print "<td bgcolor=\"$colors[panel]\" align=\"center\" width=\"1\"><a
+		    href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
+		    src='images/$ec_icon.gif' border='0'></a></td>\n";
+	    if ($current_leaf_type == 'heading') {
+		print "<td bgcolor='$colors[panel]' colspan=$colspan NOWRAP><strong>$leaf[title]</strong></td>\n";
+	    } else {
+		print "<td bgcolor='$colors[panel]'><a href=''>$leaf[hostname].$leaf[domain]</a> - $leaf[descrip]</td>\n";
+	    }
+	    print "	<td bgcolor='$colors[panel]'>
+		    [ <a href='?action=move_up&branch_id=$leaf[ptree_id]'>Up</a> ]
+		    [ <a href='?action=move_down&branch_id=$leaf[ptree_id]'>Down</a> ]
+		    </td></tr>";
+	    $already_open = false;
+	    
+	    ##  If a heading isn't hidden and has hosts, start the vertical bar.
+	    if (! $hide[$leaf[order_key]] && $rowspan > 0) {
+		print "<tr><td bgcolor=\"$colors[panel]\" width=\"1%\" rowspan=$rowspan>&nbsp;</td>\n";
+		$already_open = true;
+	    }
+	    
 	}
     }
     DrawMatrixTableEnd();
 }
-
-?>
+    
+    ?>
