@@ -49,7 +49,7 @@ function DrawMenu($userid, $menuid) {
 					    "data_sources.php" => "Data Sources",
 					    "host.php" => 'Polling Hosts',
 					    "rra.php" => "Available RRA's",
-					    "data.php" => "Data Input Methods",
+					    "data_input.php" => "Data Input Methods",
 					    "pzones.php" => "Polling Zones",
 					    "cdef.php" => "CDEF's"
 					    ),
