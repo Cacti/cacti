@@ -582,7 +582,7 @@ function update_database($database_old, $database_username, $database_password) 
 		if (db_execute("insert into graph_tree (id,user_id,name) values (0,0,'" . $item["Name"] . "')")) {
 			$graph_tree_id = db_fetch_insert_id();
 			$status_array{count($status_array)}["tree"][1] = $item["Name"];
-			climb_tree(0, $item["ID"], 0, "", "");
+			climb_tree(0, $item["ID"], 0, "", "", $database_old);
 			
 			$_tree_items = db_fetch_assoc("select * from $database_old.graph_hierarchy_items where TreeID=" . $item["ID"]);
 			
@@ -612,8 +612,8 @@ function update_database($database_old, $database_username, $database_password) 
 	return $status_array;
 }
 
-function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) {
-	global $database_old, $order_key_array;
+function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array, $database_old) {
+	global $order_key_array;
 	
 	$tree = db_fetch_assoc("select ID from $database_old.graph_hierarchy_items where TreeID=$tree_id and Parent=$parent order by Sequence");
 	
@@ -632,7 +632,7 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 		$order_key_array{$item["ID"]} = $order_key;
 		
 		if (sizeof(db_fetch_assoc("select ID from $database_old.graph_hierarchy_items where TreeID=$tree_id and Parent=" . $item["ID"])) > 0) {
-			climb_tree($item["ID"], $tree_id, ($branch+1), "$local_prefix_key", $item_count_array);
+			climb_tree($item["ID"], $tree_id, ($branch+1), "$local_prefix_key", $item_count_array, $database_old);
 		}
 	}
 	}
