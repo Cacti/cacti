@@ -145,7 +145,7 @@ switch ($action) {
 			</td>
 		</tr>
 	<?
-	DrawFormItemHiddenIDField("tab",$args[tab]);
+	DrawFormItemHiddenIDField("tab",$current_tab);
 	
 	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
