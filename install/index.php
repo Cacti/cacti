@@ -214,7 +214,20 @@ if ($_REQUEST["step"] == "4") {
 		if ($cacti_versions[$i] == "0.8") {
 			/* nothing here... base version */
 		}elseif ($cacti_versions[$i] == "0.8.1") {
-			
+			db_execute("alter table user_log add user_id mediumint(8) not null after username");
+			db_execute("alter table user_log change time time datetime not null");
+			db_execute("alter table user_log drop primary key");
+			db_execute("alter table user_log add primary key (username, user_id, time)");
+			db_execute("alter table user_auth add realm mediumint(8) not null after password");
+			db_execute("update user_auth set realm = 1 where full_name='ldap user'");
+
+		        $_src = db_fetch_assoc("select id, username from user_auth");
+
+		        if (sizeof($_src) > 0) {
+			        foreach ($_src as $item) {
+                			db_execute("update user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "'");
+				}
+			}
 		}
 	}
 }
