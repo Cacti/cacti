@@ -9,6 +9,9 @@ to stop working.
 -bug: Problems creating graphs from data queries where there was only row row total
 in the query result.
 -bug: Broken images for bandwidth summation graphs that were less than a day old.
+-bug: Graph order changes on the tree would affect other graph trees.
+-bug: Problem with the "Host MIB - Hard Drive Space" data template that broke
+Windows disk spaces graphs.
 -feature: The "Total All Items" CDEF is now able to total NaN's without becoming
 'U'.
 -feature: Data query results are now grayed out if they have already been created.
