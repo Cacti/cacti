@@ -4,6 +4,8 @@ raXnet - cacti
 -bug#87: Deleting top level branches without children on the tree caused ordering
 problems.
 -bug#88: Possibly popen/pclose concurrency problem with cactid.
+-bug#89: Missing "check all" checkbox on polling hosts page when an empty column
+was drawn.
 -bug: Removed size limits on Linux memory data template.
 -bug: Undefined variable errors when creating new graphs/data sources
 without a template.
@@ -20,6 +22,8 @@ Windows disk spaces graphs.
 same name.
 -bug: Added basename() to all PHP_SELF references to make sure all hrefs stay
 absolute.
+-bug: The RRA field is now honored for the dual pane tree view.
+-bug: The |date_time| graph variable now displays the current day of the month.
 -feature: The "Total All Items" CDEF is now able to total NaN's without becoming
 'U'.
 -feature: Data query results are now grayed out if they have already been created.
