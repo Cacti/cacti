@@ -303,34 +303,33 @@ function grow_dhtml_trees() {
 		
 		print "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
 		
-		$i = 0;
 		if (sizeof($heirarchy) > 0) {
 		foreach ($heirarchy as $leaf) {
 			$tier = tree_tier($leaf["order_key"], 2);
 			
 			if ($leaf["host_id"] > 0) {
-				print "ou" . ($i+1) . " = insFld(ou" . ($i) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
-				
-				$graph_templates = db_fetch_assoc("select
-					graph_templates.id,
-					graph_templates.name
-					from graph_local,graph_templates,graph_templates_graph
-					where graph_local.id=graph_templates_graph.local_graph_id
-					and graph_templates_graph.graph_template_id=graph_templates.id
-					and graph_local.host_id=" . $leaf["host_id"] . "
-					group by graph_templates.id
-					order by graph_templates.name");
-				
-				if (sizeof($graph_templates) > 0) {
-				foreach ($graph_templates as $graph_template) {
-					print "ou" . ($i+2) . " = insFld(ou" . ($i+1) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&graph_template_id=" . $graph_template["id"] . "\"))\n";
-				}
+				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+				print "sdf" . read_graph_config_option("expand_hosts");
+				if (read_graph_config_option("expand_hosts") == "on") {
+					$graph_templates = db_fetch_assoc("select
+						graph_templates.id,
+						graph_templates.name
+						from graph_local,graph_templates,graph_templates_graph
+						where graph_local.id=graph_templates_graph.local_graph_id
+						and graph_templates_graph.graph_template_id=graph_templates.id
+						and graph_local.host_id=" . $leaf["host_id"] . "
+						group by graph_templates.id
+						order by graph_templates.name");
+					
+					if (sizeof($graph_templates) > 0) {
+					foreach ($graph_templates as $graph_template) {
+						print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&graph_template_id=" . $graph_template["id"] . "\"))\n";
+					}
+					}
 				}
 			}else{
-				print "ou" . ($i+1) . " = insFld(ou" . ($i) . ", gFld(\"" . $leaf["title"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
 			}
-			
-			$i++;
 		}
 		}
 	}
