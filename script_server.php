@@ -43,8 +43,9 @@ include_once(dirname(__FILE__) . "/include/config.php");
 if ($config["cacti_server_os"] == "win32") {
 	$guess = substr(__FILE__,0,2);
 	if ($guess == strtoupper($guess)) {
-		$response = "\nERROR: The PHP Script Server MUST be started using the full path to the file and in lower case.  This is a PHP Bug!!!\n";
-		log_data($response, true, "PHPSVR");
+		$response = "ERROR: The PHP Script Server MUST be started using the full path to the file and in lower case.  This is a PHP Bug!!!";
+		print "\n";
+		cacti_log($response, true, "PHPSVR");
 		exit(-1);
 	}
 }
@@ -69,15 +70,15 @@ if ($_SERVER["argc"] >= 2) {
 }
 
 if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-	log_data("SERVER is->" . $environ, false, "PHPSVR");
-	log_data("GETCWD is->" . strtolower(strtr(getcwd(),"\\","/")) . "\n", false, "PHPSVR");
-	log_data("DIRNAM is->" . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
-	log_data("FILENM is->" . __FILE__, false, "PHPSVR");
+	cacti_log("SERVER is->" . $environ, false, "PHPSVR");
+	cacti_log("GETCWD is->" . strtolower(strtr(getcwd(),"\\","/")), false, "PHPSVR");
+	cacti_log("DIRNAM is->" . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
+	cacti_log("FILENM is->" . __FILE__, false, "PHPSVR");
 }
 
 // send status back to the server
 if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-	log_data("PHP Script Server has Started - Parent is " . $environ . "\n", false, "PHPSVR");
+	cacti_log("PHP Script Server has Started - Parent is " . $environ, false, "PHPSVR");
 }
 fputs(STDOUT, "PHP Script Server has Started - Parent is " . $environ . "\n");
 
@@ -100,10 +101,10 @@ while (1) {
 			$parm = explode(" ",$preparm);
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				log_data("DEBUG: Include->".$inc."<-\n", false, "PHPSVR");
-				log_data("DEBUG: Command->".$cmd."<-\n", false, "PHPSVR");
-				log_data("DEBUG: Arguments->".$preparm."<-\n", false, "PHPSVR");
-				log_data("DEBUG: ArgV->".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3]."<-\n", false, "PHPSVR");
+				cacti_log("DEBUG: Include->".$inc."<-", false, "PHPSVR");
+				cacti_log("DEBUG: Command->".$cmd."<-", false, "PHPSVR");
+				cacti_log("DEBUG: Arguments->".$preparm."<-", false, "PHPSVR");
+				cacti_log("DEBUG: ArgV->".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3]."<-", false, "PHPSVR");
 			}
 
 			// check for existance of function.  If exists call it
@@ -115,43 +116,43 @@ while (1) {
 						$inc = strtolower($inc);
 						include_once($inc);
 					} else {
-						log_data("ERROR: PHP Script File to be included, does not exist\n", false, "PHPSVR");
+						cacti_log("ERROR: PHP Script File to be included, does not exist", false, "PHPSVR");
 					}
 				}
 			} else {
-				log_data("ERROR: PHP Script Server encountered errors parsing the command\n", false, "PHPSVR");
+				cacti_log("ERROR: PHP Script Server encountered errors parsing the command", false, "PHPSVR");
 			}
 
 			if (function_exists($cmd)) {
 				$result = call_user_func_array($cmd, $parm);
 				if (!is_numeric($result)) {
 					$result = "U";
-					log_data("ERROR: Result from PHP Script Server was Invalid\n", false, "PHPSVR");
+					cacti_log("ERROR: Result from PHP Script Server was Invalid", false, "PHPSVR");
 				}
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
 				} else {
 					fputs(STDOUT, $result . "\n");
 				}
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					log_data("CMD: " . $in_string . " output " . $result . "\n", false, "PHPSVR");
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+					cacti_log("CMD: " . $in_string . " output " . $result, false, "PHPSVR");
 				}
 			} else {
-				log_data("ERROR: Function does not exist\n", false, "PHPSVR");
+				cacti_log("ERROR: Function does not exist\n", false, "PHPSVR");
 				fputs(STDOUT, "ERROR: Function does not exist\n");
 			}
 		}elseif ($in_string == "quit") {
 			fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-				log_data("PHP Script Server Shutdown request received, exiting\n", false, "PHPSVR");
+				cacti_log("PHP Script Server Shutdown request received, exiting", false, "PHPSVR");
 			}
 			break;
 		}else {
-			log_data("ERROR: Problems with input\n", false, "PHPSVR");
+			cacti_log("ERROR: Problems with input", false, "PHPSVR");
 			fputs(STDOUT, "ERROR: Problems with input\n");
 		}
 	}else {
-		log_data("ERROR: Input Expected\n", false, "PHPSVR");
+		cacti_log("ERROR: Input Expected", false, "PHPSVR");
 		fputs(STDOUT, "ERROR: Input expected\n");
 	}
 }

@@ -42,11 +42,39 @@ include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/ping.php");
 
+/* PHP Bug.  Not yet logged */
+if ($config["cacti_server_os"] == "win32") {
+	$guess = substr(__FILE__,0,2);
+	if ($guess == strtoupper($guess)) {
+		$response = "ERROR: The PHP Script: CMD.PHP Must be started using the full path to the file and in lower case.  This is a PHP Bug!!!";
+		print "\n";
+		cacti_log($response,true);
+		exit(-1);
+	}
+}
+
+/* Record Start Time */
+list($micro,$seconds) = split(" ", microtime());
+$start = $seconds + $micro;
+
 if ( $_SERVER["argc"] == 1 ) {
 	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
+	$print_data_to_stdout = true;
+	/* Get number of polling items from the database */
+	$hosts = db_fetch_assoc("select id from host where disabled = '' order by id");
+	$host_count = sizeof($hosts);
+
 }else{
+	$print_data_to_stdout = false;
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
+			$hosts = db_fetch_assoc("select id from host where disabled = ''" .
+					"WHERE (host_id >= " .
+					$_SERVER["argv"][1] .
+					" and host_id <= " .
+					$_SERVER["argv"][2] . ") ORDER by host_id");
+			$host_count = sizeof($hosts);
+
 			$polling_items = db_fetch_assoc("SELECT * from poller_item " .
 					"WHERE (host_id >= " .
 					$_SERVER["argv"][1] .
@@ -55,11 +83,10 @@ if ( $_SERVER["argc"] == 1 ) {
 		}else{
 			print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
 			print "USAGE: CMD.PHP [[first_host] [second_host]]\n";
-			log_data("ERROR: Invalid Arguments.  This rist argument must be less than or equal to the first.");
+			cacti_log("ERROR: Invalid Arguments.  This rist argument must be less than or equal to the first.");
 		}
 	}else{
-		print "ERROR: Invalid Number of Arguments.  You must specify 0 or 2 arguments.\n";
-		log_data("ERROR: Invalid Number of Arguments.  You must specify 0 or 2 arguments.");
+		cacti_log("ERROR: Invalid Number of Arguments.  You must specify 0 or 2 arguments.",$print_data_to_stdout);
 	}
 }
 
@@ -80,19 +107,19 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	if (phpversion() >= "4.3")	$ping = new Net_Ping;
 
 	if (function_exists("proc_open")) {
-		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
+		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
 		$output = fgets($pipes[1], 1024);
 		if (substr_count($output, "Started") != 0) {
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-				log_data("PHPSERVER: Server Started Properly\n");
+				cacti_log("PHP Script Server Started Properly",$print_data_to_stdout);
 			}
 		}
 		$using_proc_function = true;
 
 	}else {
 		$using_proc_function = false;
-		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-			log_data("WARNING: PHP version 4.3 or above is recommended for performance considerations.\n");
+		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+			cacti_log("WARNING: PHP version 4.3 or above is recommended for performance considerations.",$print_data_to_stdout);
 		}
 	}
 
@@ -113,18 +140,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$failure_typpe = "ICMP";
 					$host_down = true;
 
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-						log_data("ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.\n");
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+						cacti_log("ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.",$print_data_to_stdout);
 					}
 				} else {
 					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-						log_data("ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.\n");
+						cacti_log("ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$print_data_to_stdout);
 					}
 				}
 			} else {
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					log_data("NOTE: PHP version is: " . phpversion() . " Please upgrade to PHP 4.3 or Above to obtain ping statistics.\n");
-				}
+				cacti_log("WARNING: PHP version is: " . phpversion() . " Please upgrade to PHP 4.3 or Above to obtain ping statistics.",$print_data_to_stdout);
 			}
 
 			// Perform an SNMP test for earlier versions of PHP
@@ -147,9 +172,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 			if ($host_down) {
 				if ($failure_type == "ICMP")
-					log_data(sprintf("ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host));
+					cacti_log(sprintf("ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
 				else
-					log_data(sprintf("ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host));
+					cacti_log(sprintf("ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
 			} else {
 				/* do the reindex check for this host */
 				$reindex = db_fetch_assoc("select
@@ -162,8 +187,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					where poller_reindex.host_id=" . $item["host_id"]);
 
 				if ((sizeof($reindex) > 0) && (!$host_down)) {
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-						log_data("Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.\n");
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+						cacti_log("Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$print_data_to_stdout);
 					}
 
 					foreach ($reindex as $index_item) {
@@ -201,24 +226,24 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SNMP: /* snmp */
 				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
 
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					log_data("SNMP: " . $item["hostname"] . ":" . $item["snmp_port"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", value: $output\n");
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+					cacti_log("SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
 			case POLLER_ACTION_SCRIPT: /* script (popen) */
 				$output = exec_poll($item["arg1"]);
 
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					log_data("CMD: " . $item["arg1"] . ", output: $output\n");
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+					cacti_log("CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
-				$output = exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp);
+				$output = str_replace("\n","",exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp));
 
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					log_data("CMD[PHP]: " . $item["arg1"] . ", output: $output");
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+					cacti_log("SERVER: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
@@ -242,10 +267,20 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 		$return_value = proc_close($cactiphp);
 	}
+
+	/* take time and log performance data */
+	list($micro,$seconds) = split(" ", microtime());
+	$end = $seconds + $micro;
+
+	cacti_log(sprintf("STATS: " .
+		"Execution Time: %01.4f s, " .
+		"Method: cmd.php " .
+		"Polled Hosts: %s",
+		round($end-$start,4),
+		$host_count),$print_data_to_stdout);
+
 }else{
-	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-		log_data("ERROR: Either there are no items in the cache or polling is disabled\n");
-	}
+	cacti_log("ERROR: Either there are no items in the cache or polling is disabled",$print_data_to_stdout);
 }
 
 /* Let the poller server know about cmd.php being finished */
