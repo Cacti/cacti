@@ -170,7 +170,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 			process_poller_output($rrdtool_pipe);
 
-			usleep(200000);
+			usleep(500000);
 			$loop_count++;
 		}
 	}
