@@ -57,6 +57,11 @@ switch ($action) {
 		
 		header ("Location: data_sources.php?action=tree");
 		break;
+	case 'leaf_remove':
+		leaf_remove();
+
+		header ("Location: data_sources.php?action=tree");
+		break;
 	case 'remove':
 		ds_remove();
 		
@@ -152,7 +157,20 @@ function tree_movedown() {
 /* ---------------------
     Template Functions
    --------------------- */
+function leaf_remove() {
+	global $args, $config;
+	
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+		include ('include/top_header.php');
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source tree <strong>'" . db_fetch_cell("select title from data_tree where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=leaf_remove&id=$args[id]");
+		include ('include/bottom_footer.php');
+		exit;
+	}
 
+	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+		db_execute("delete from data_tree where id=$args[id]");
+	}
+}
 
 function ds_remove() {
 	global $args, $config;
