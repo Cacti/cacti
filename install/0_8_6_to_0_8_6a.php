@@ -47,6 +47,45 @@ function upgrade_to_0_8_6a() {
 			db_execute("update graph_template_input set hash='" . get_hash_graph_template($item2[$j]["id"], "graph_template_input") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
+
+	/* clean up data template item orphans left behind by the graph->graph template bug */
+	$graph_templates = db_fetch_assoc("select id from graph_templates");
+
+	if (sizeof($graph_templates) > 0) {
+		foreach ($graph_templates as $graph_template) {
+			/* find non-templated graph template items */
+			$non_templated_items = array_rekey(db_fetch_assoc("select
+				graph_template_input_defs.graph_template_item_id
+				from graph_template_input,graph_template_input_defs
+				where graph_template_input_defs.graph_template_input_id=graph_template_input.id
+				and graph_template_input.column_name = 'task_item_id'
+				and graph_template_input.graph_template_id = '" . $graph_template["id"] . "'"), "graph_template_item_id", "graph_template_item_id");
+
+			/* find all graph items */
+			$graph_template_items = db_fetch_assoc("select
+				graph_templates_item.id,
+				graph_templates_item.task_item_id
+				from graph_templates_item
+				where graph_templates_item.graph_template_id = '" . $graph_template["id"] . "'
+				and graph_templates_item.local_graph_id = 0");
+
+			if (sizeof($graph_template_items) > 0) {
+				foreach ($graph_template_items as $graph_template_item) {
+					if (!isset($non_templated_items{$graph_template_item["id"]})) {
+						$dest_dti = db_fetch_row("select local_data_id from data_template_rrd where id = '" . $graph_template_item["task_item_id"] . "'");
+
+						/* it's an orphan! */
+						if ((!isset($dest_dti["local_data_id"])) || ($dest_dti["local_data_id"] > 0)) {
+							/* clean graph template */
+							db_execute("update graph_templates_item set task_item_id = 0 where id = '" . $graph_template_item["id"] . "' and local_graph_id = 0 and graph_template_id = '" . $graph_template["id"] . "'");
+							/* clean attached graphs */
+							db_execute("update graph_templates_item set task_item_id = 0 where local_graph_template_item_id = '" . $graph_template_item["id"] . "' and local_graph_id > 0 and graph_template_id = '" . $graph_template["id"] . "'");
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 ?>

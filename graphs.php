@@ -265,6 +265,7 @@ function form_actions() {
 							where graph_templates_item.task_item_id=data_template_rrd.id
 							and data_template_rrd.local_data_id=data_template_data.local_data_id
 							and " . array_to_sql_or($selected_items, "graph_templates_item.local_graph_id") . "
+							and data_template_data.local_data_id > 0
 							group by data_template_data.local_data_id");
 
 						if (sizeof($data_sources) > 0) {
@@ -339,6 +340,7 @@ function form_actions() {
 				where graph_templates_item.task_item_id=data_template_rrd.id
 				and data_template_rrd.local_data_id=data_template_data.local_data_id
 				and " . array_to_sql_or($graph_array, "graph_templates_item.local_graph_id") . "
+				and data_template_data.local_data_id > 0
 				group by data_template_data.local_data_id
 				order by data_template_data.name_cache");
 		}
