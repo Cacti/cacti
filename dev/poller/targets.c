@@ -6,6 +6,8 @@ int get_targets(){
   extern conf_t conf;
   target_t *temp;
   target_t *temp2;
+  target_t *head;
+  int target_id=0;
   MYSQL mysql;
   MYSQL_RES *result;
   MYSQL_ROW row;
@@ -28,7 +30,8 @@ int get_targets(){
   targets=NULL;
   while ((row = mysql_fetch_row(result))) {
     temp = (target_t *) malloc(sizeof(target_t));
-    
+
+    temp->target_id = target_id;
     temp->action = atoi(row[0]);
     sprintf(temp->command, "%s", row[1]);
     sprintf(temp->management_ip, "%s", row[2]);
@@ -47,12 +50,17 @@ int get_targets(){
 
     temp->prev=NULL;
     temp->next=NULL;
-    if(targets == NULL) targets = temp;
-    else{
+    temp->head=NULL;
+    if(targets == NULL){
+      targets = temp;
+      head = temp;
+    }else{
       for(temp2 = targets; temp2->next !=NULL; temp2 = temp2->next);
       temp->prev = temp2;
+      temp->head = head;
       temp2->next = temp;
     }
+  target_id++;
   }
   temp=NULL;
   free(temp);

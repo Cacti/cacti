@@ -1,6 +1,8 @@
 #define BUFSIZE 512
 
 typedef struct target_struct{
+  int target_id;
+  unsigned long long result;
   int local_data_id;
   int action;
   char command[256];
@@ -16,7 +18,14 @@ typedef struct target_struct{
   char arg3[255];
   struct target_struct *next;
   struct target_struct *prev;
+  struct target_struct *head;
 }target_t;
+
+typedef struct rrd_struct{
+  char rrd_name[19];
+  char rrd_path[255];
+  unsigned long long int result;
+}rrd_t;
 
 typedef struct conf_struct{
   char sqluser[80];

@@ -57,3 +57,7 @@ unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char 
   if (sessp != NULL) snmp_sess_close(sessp);
   return result;
 }
+
+snmpasync_get(){
+
+};
