@@ -1,7 +1,7 @@
 <?php
 
-include("../include/config.php");
-include("../include/snmp_functions.php");
+include(dirname(__FILE__) . "/../include/config.php");
+include(dirname(__FILE__) . "/../include/snmp_functions.php");
 
 $oids = array(
 	"index" => ".1.3.6.1.2.1.25.3.3.1",

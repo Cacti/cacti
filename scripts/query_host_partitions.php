@@ -1,7 +1,7 @@
 <?php
 
-include("../include/config.php");
-include("../include/snmp_functions.php");
+include(dirname(__FILE__) . "/../include/config.php");
+include(dirname(__FILE__) . "/../include/snmp_functions.php");
 
 $oids = array(
 	"total" => ".1.3.6.1.2.1.25.2.3.1.5",
@@ -20,7 +20,7 @@ if ($cmd == "index") {
 	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], "1", "", ""));
 	
 	for ($i=0;($i<sizeof($return_arr));$i++) {
-		print $return_arr[$i]["value"] . "\n";
+		print $return_arr[$i] . "\n";
 	}
 }elseif ($cmd == "query") {
 	$arg = $_SERVER["argv"][4];
@@ -34,8 +34,6 @@ if ($cmd == "index") {
 }elseif ($cmd == "get") {
 	$arg = $_SERVER["argv"][4];
 	$index = $_SERVER["argv"][5];
-	
-	
 	
 	if (($arg == "total") || ($arg == "used")) {
 		/* get hrStorageAllocationUnits from the snmp cache since it is faster */
