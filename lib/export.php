@@ -266,7 +266,7 @@ function &data_input_method_to_xml($data_input_id) {
 	reset($fields_data_input_edit);
 	while (list($field_name, $field_array) = each($fields_data_input_edit)) {
 		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
-			$xml_text .= "\t<$field_name>" . htmlspecialchars($data_input{$field_name}) . "</$field_name>\n";
+			$xml_text .= "\t<$field_name>" . xml_character_encode($data_input{$field_name}) . "</$field_name>\n";
 		}
 	}
 	
@@ -524,7 +524,7 @@ function &data_query_to_xml($data_query_id) {
 			$xml_text .= "\t<$field_name>hash_" . get_hash_version("data_input_method") . get_hash_data_input($snmp_query{$field_name}) . "</$field_name>\n";
 		}else{
 			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
-				$xml_text .= "\t<$field_name>" . htmlspecialchars($snmp_query{$field_name}) . "</$field_name>\n";
+				$xml_text .= "\t<$field_name>" . xml_character_encode($snmp_query{$field_name}) . "</$field_name>\n";
 			}
 		}
 	}
@@ -829,6 +829,10 @@ function &get_item_xml($type, $id, $follow_deps) {
 	}
 	
 	return "<cacti>" . $xml_indent . "</cacti>";
+}
+
+function xml_character_encode($text) {
+	return str_replace("&", "&amp;", htmlentities($text, ENT_NOQUOTES));
 }
 
 ?>

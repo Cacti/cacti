@@ -126,7 +126,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 		
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array["graph"][$field_name])) {
-			$save[$field_name] = $xml_array["graph"][$field_name];
+			$save[$field_name] = addslashes($xml_array["graph"][$field_name]);
 		}
 	}
 	
@@ -164,7 +164,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 						
 						$save[$field_name] = $color_id;
 					}else{
-						$save[$field_name] = $item_array[$field_name];
+						$save[$field_name] = addslashes($item_array[$field_name]);
 					}
 				}
 			}
@@ -194,7 +194,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 			while (list($field_name, $field_array) = each($fields_graph_template_input_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = $item_array[$field_name];
+					$save[$field_name] = addslashes($item_array[$field_name]);
 				}
 			}
 			
@@ -260,7 +260,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 			if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $xml_array["ds"][$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array["ds"][$field_name], $hash_cache);
 			}else{
-				$save[$field_name] = $xml_array["ds"][$field_name];
+				$save[$field_name] = addslashes($xml_array["ds"][$field_name]);
 			}
 		}
 	}
@@ -312,7 +312,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
-						$save[$field_name] = $item_array[$field_name];
+						$save[$field_name] = addslashes($item_array[$field_name]);
 					}
 				}
 			}
@@ -360,7 +360,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $xml_array[$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], $hash_cache);
 			}else{
-				$save[$field_name] = $xml_array[$field_name];
+				$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
 			}
 		}
 	}
@@ -404,7 +404,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
-						$save[$field_name] = $item_array[$field_name];
+						$save[$field_name] = addslashes($item_array[$field_name]);
 					}
 				}
 			}
@@ -497,7 +497,7 @@ function &xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_grprint_presets_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = $xml_array[$field_name];
+			$save[$field_name] = addslashes($xml_array[$field_name]);
 		}
 	}
 	
@@ -525,7 +525,7 @@ function &xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_rra_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = $xml_array[$field_name];
+			$save[$field_name] = addslashes($xml_array[$field_name]);
 		}
 	}
 	
@@ -562,7 +562,7 @@ function &xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_host_template_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = $xml_array[$field_name];
+			$save[$field_name] = addslashes($xml_array[$field_name]);
 		}
 	}
 	
@@ -630,7 +630,7 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_cdef_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = $xml_array[$field_name];
+			$save[$field_name] = addslashes($xml_array[$field_name]);
 		}
 	}
 	
@@ -657,7 +657,7 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = $item_array[$field_name];
+					$save[$field_name] = addslashes($item_array[$field_name]);
 				}
 			}
 			
@@ -690,7 +690,7 @@ function &xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_data_input_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = $xml_array[$field_name];
+			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
 		}
 	}
 	
@@ -717,7 +717,7 @@ function &xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			while (list($field_name, $field_array) = each($fields_data_input_field_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = $item_array[$field_name];
+					$save[$field_name] = addslashes($item_array[$field_name]);
 				}
 			}
 			
@@ -876,6 +876,12 @@ function get_version_index($string_version) {
 	}
 	
 	return -1;
+}
+
+function xml_character_decode($text) {
+	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+	$trans_tbl = array_flip($trans_tbl);
+	return strtr($text, $trans_tbl);
 }
 
 ?>
