@@ -65,6 +65,6 @@ include_once($config["include_path"] . "/functions.php");
 include_once($config["include_path"] . "/database.php");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8";
+$config["cacti_version"] = "0.8.1";
 
 ?>
