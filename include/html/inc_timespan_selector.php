@@ -1,6 +1,6 @@
 <?php
 /* set default timespan if there isn't one set */
-if (!isset($_SESSION["sess_current_timespan"])) {
+if ((!isset($_SESSION["sess_current_timespan"])) || (isset($_POST["button_default_x"]))) {
 	$_SESSION["sess_current_timespan"] = read_graph_config_option("default_timespan");
 }
 
@@ -89,12 +89,7 @@ if ($_SESSION["sess_current_timespan"] != GT_CUSTOM) {
 }else {
 	if (isset($_POST["date1"]) and ($_POST["date1"]!="")) {
 		$current_value_date1 = $_POST["date1"];
-		$begin_now = mktime(substr($current_value_date1,12,2),  // hour
-			substr($current_value_date1,15,2), // minute
-			"00", // second
-			substr($current_value_date1,6,2), // month
-			substr($current_value_date1,9,2), // day
-			substr($current_value_date1,1,4)); // year
+		$begin_now =strtotime($current_value_date1);
 	} else {
 		if (isset($_SESSION["sess_current_timespan_begin_now"])) {
 			$begin_now = $_SESSION["sess_current_timespan_begin_now"];
@@ -105,12 +100,7 @@ if ($_SESSION["sess_current_timespan"] != GT_CUSTOM) {
 
 	if (isset($_POST["date2"]) && ($_POST["date2"] != "")) {
 		$current_value_date2 = $_POST["date2"];
-		$end_now = mktime(substr($current_value_date2,12,2),  // hour
-			substr($current_value_date2,15,2), // minute
-			"00", // second
-			substr($current_value_date2,6,2), // month
-			substr($current_value_date2,9,2), // day
-			substr($current_value_date2,1,4)); // year
+		$end_now=strtotime($current_value_date2);
 	} else {
 		if (isset($_SESSION["sess_current_timespan_end_now"])) {
 			$end_now = $_SESSION["sess_current_timespan_end_now"];
@@ -229,6 +219,9 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 					</td>
 					<td>
 						&nbsp;<input type='image' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit'>
+					</td>
+					<td>
+						&nbsp;<input type='image' name='button_default' src='images/button_default.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
 					</td>
 				</tr>
 			</table>
