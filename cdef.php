@@ -219,7 +219,7 @@ function item_edit() {
 				form_dropdown("value", $custom_data_source_types, "", "", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
 				break;
 			case '5':
-				form_dropdown("value", db_fetch_assoc("select name,id from cdef"), "name", "id", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
+				form_dropdown("value", db_fetch_assoc("select name,id from cdef order by name"), "name", "id", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
 				break;
 			case '6':
 				form_text_box("value", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "255", 30, "text", (isset($_GET["id"]) ? $_GET["id"] : "0"));
