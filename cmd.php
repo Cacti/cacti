@@ -66,15 +66,24 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$new_host  = True;
 	$last_host = $current_host = "";
 
-	// startup Cacti php polling server
+	// startup Cacti php polling server and include the include file for script processing
 	$cactides = array(
    	0 => array("pipe", "r"), // stdin is a pipe that the child will read from
    	1 => array("pipe", "w"), // stdout is a pipe that the child will write to
    	2 => array("pipe", "w")  // stderr is a pipe to write to
 	);
 
-//	$cactiphp = proc_open("c:/php/php-win.exe -q c:/wwwroot/cacti/script_server.php", $cactides, $pipes);
-	$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
+	if (function_exists("proc_open")) {
+		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
+		$using_proc_function = True;
+		// step below calls the include function with the script file
+	   fwrite($pipes[0], "include " . dirname(__FILE__) . "/scripts/script_functions.php\r\n");
+	}else {
+		$using_proc_function = False;
+		if (read_config_option("log_perror") == "on") {
+			log_data("WARNING: PHP version 4.3 or above is recommended for performance considerations.\n");
+		}
+	}
 
 	foreach ($polling_items as $item) {
 		$current_host = $item["hostname"];
@@ -194,22 +203,31 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				break;
 			case '3': /* one output script */
 				$command = $item["command"];
-			   if (is_resource($cactiphp)) {
-				   // $pipes now looks like this:
-				   // 0 => writeable handle connected to child stdin
-				   // 1 => readable handle connected to child stdout
-				   // 2 => any error output will be sent to child stderr
 
-					// send command to the php server
-				   fwrite($pipes[0], $command . "\r\n");
+				// execute using php process
+				if ($using_proc_function == 1) {
+				   if (is_resource($cactiphp)) {
+					   // $pipes now looks like this:
+					   // 0 => writeable handle connected to child stdin
+					   // 1 => readable handle connected to child stdout
+					   // 2 => any error output will be sent to child stderr
 
-					// get result from server
-					$output = fgets($pipes[1], 1024);
+						// send command to the php server
+					   fwrite($pipes[0], $command . "\r\n");
 
-					if (substr_count($output, "ERROR") > 0) {
-						$output = "";
-					}
-			   }
+						// get result from server
+						$output = fgets($pipes[1], 1024);
+
+						if (substr_count($output, "ERROR") > 0) {
+							$output = "";
+						}
+				   }
+				// execute the old fashion way
+				} else {
+					$command = read_config_option("path_php_binary") - " " . $command;
+					$output = `$command`;
+				}
+
 				print "CMD: $command, output: $output";
 
 				$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
@@ -228,21 +246,31 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				break;
 			case '4': /* multi output script */
 				$command = $item["command"];
-			   if (is_resource($cactiphp)) {
-				   // $pipes now looks like this:
-				   // 0 => writeable handle connected to child stdin
-				   // 1 => readable handle connected to child stdout
-				   // 2 => any error output will be sent to child stderr
 
-					// send command to the php server
-				   fwrite($pipes[0], $command . "\r\n");
+				// execute using php process
+				if ($using_proc_function == 1) {
+				   if (is_resource($cactiphp)) {
+					   // $pipes now looks like this:
+					   // 0 => writeable handle connected to child stdin
+					   // 1 => readable handle connected to child stdout
+					   // 2 => any error output will be sent to child stderr
 
-					// get result from server
-					$output = fgets($pipes[1], 1024);
-					if (substr_count($output, "ERROR") > 0) {
-						$output = "U";
-					}
-			   }
+						// send command to the php server
+					   fwrite($pipes[0], $command . "\r\n");
+
+						// get result from server
+						$output = fgets($pipes[1], 1024);
+
+						if (substr_count($output, "ERROR") > 0) {
+							$output = "";
+						}
+				   }
+				// execute the old fashion way
+				} else {
+					$command = read_config_option("path_php_binary") - " " . $command;
+					$output = `$command`;
+				}
+
 				print "CMD: $command, output: $output\n";
 
 				$output_array = split(" ", $output);
