@@ -455,6 +455,13 @@ $struct_data_source_item = array(
 		"default" => "600",
 		"description" => "The maximum amount of time that can pass before data is entered as \"unknown\". 
 			(Usually 2x300=600)"
+		),
+	"data_input_field_id" => array(
+		"title" => "Output Field",
+		"type" => "drop_sql",
+		"default" => "0",
+		"null_item" => "",
+		"description" => "When data is gathered, the data for this field will be put into this data source."
 		)
 	);
 
