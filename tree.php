@@ -233,7 +233,7 @@ function tree_edit() {
 function tree() {
 	global $colors;
 	
-	start_box("<strong>Graph Trees</strong>", "", "cdef.php?action=edit");
+	start_box("<strong>Graph Trees</strong>", "", "tree.php?action=edit");
 	                         
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Name",$colors[header_text],1);
