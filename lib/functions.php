@@ -1173,27 +1173,43 @@ function get_web_browser() {
 /* get_graph_tree_array - returns a list of graph trees taking permissions into account if
      necessary
    @arg $return_sql - (bool) Whether to return the SQL to create the dropdown rather than an array
+	@arg $force_refresh - (bool) Force the refresh of the array from the database
    @returns - (array) an array containing a list of graph trees */
-function get_graph_tree_array($return_sql = false) {
-	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+function get_graph_tree_array($return_sql = false, $force_refresh = false) {
+	/* set the tree update time if not already set */
+	if (!isset($_SESSION["tree_update_time"])) {
+		$_SESSION["tree_update_time"] = time();
+	}
 
-		if ($current_user["policy_trees"] == "1") {
-			$sql_where = "where user_auth_perms.user_id is null";
-		}elseif ($current_user["policy_trees"] == "2") {
-			$sql_where = "where user_auth_perms.user_id is not null";
+	/* build tree array */
+	if (($_SESSION["tree_array"] == NULL) || ($force_refresh) ||
+		(($_SESSION["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
+
+		if (read_config_option("auth_method") != "0") {
+			$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+
+			if ($current_user["policy_trees"] == "1") {
+				$sql_where = "where user_auth_perms.user_id is null";
+			}elseif ($current_user["policy_trees"] == "2") {
+				$sql_where = "where user_auth_perms.user_id is not null";
+			}
+
+			$sql = "select
+				graph_tree.id,
+				graph_tree.name,
+				user_auth_perms.user_id
+				from graph_tree
+				left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+				$sql_where
+				order by graph_tree.name";
+		}else{
+			$sql = "select * from graph_tree order by name";
 		}
 
-		$sql = "select
-			graph_tree.id,
-			graph_tree.name,
-			user_auth_perms.user_id
-			from graph_tree
-			left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
-			$sql_where
-			order by graph_tree.name";
-	}else{
-		$sql = "select * from graph_tree order by name";
+		$_SESSION["tree_array"] = $sql;
+		$_SESSION["tree_update_time"] = time();
+	} else {
+		$sql = $_SESSION["tree_array"];
 	}
 
 	if ($return_sql == true) {
