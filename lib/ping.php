@@ -172,7 +172,7 @@ class Net_Ping
 
 			$output = cacti_snmp_get($this->host["hostname"],
 				$this->host["snmp_community"],
-				".1.3.6.1.2.1.1.5.0" ,
+				".1.3.6.1.2.1.1.1.0" ,
 				$this->host["snmp_version"],
 				$this->host["snmp_username"],
 				$this->host["snmp_password"],
