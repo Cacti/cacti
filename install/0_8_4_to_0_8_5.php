@@ -55,6 +55,8 @@ function upgrade_to_0_8_5() {
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=33;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=23;");
 	
+	db_install_execute("0.8.5", "CREATE TABLE `host_graph` (`host_id` mediumint(8) unsigned NOT NULL default '0', `graph_template_id` mediumint(8) unsigned NOT NULL default '0', PRIMARY KEY  (`host_id`,`graph_template_id`)) TYPE=MyISAM;");
+	
 	/* typo */
 	db_install_execute("0.8.5", "UPDATE settings set name='snmp_version' where name='smnp_version';");
 	
