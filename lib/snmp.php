@@ -35,9 +35,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$snmp_query = db_fetch_row("select xml_path from snmp_query where id=$snmp_query_id");
 	
 	$xml_file_path = str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"]);
-	print "query xml: $xml_file_path\n";
+	
 	if ((empty($host["management_ip"])) || (!file_exists($xml_file_path))) {
-		print "does not exist!!\n";
 		return 0;
 	}
 	
@@ -150,7 +149,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
 	include ('include/config.php');
 	include_once ('include/functions.php');
-	print "walk: host: $hostname, comm: $community: oid: $oid\n";
+	
 	$snmp_array = array();
 	$temp_array = array();
 	
