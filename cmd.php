@@ -97,7 +97,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$failure_type = "";
 	$host_down = false;
 	$new_host  = true;
-	$last_host = $current_host = "";
+	$last_host = ""; $current_host = "";
 
 	// startup Cacti php polling server and include the include file for script processing
 	$cactides = array(
@@ -136,7 +136,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 		$host_id = $item["host_id"];
 
-		if ($new_host) {
+		if (($new_host) && (!empty($host_id))) {
 			$ping->host["hostname"]       = $item["hostname"];
 			$ping->host["snmp_community"] = $item["snmp_community"];
 			$ping->host["snmp_version"]   = $item["snmp_version"];

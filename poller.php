@@ -50,8 +50,8 @@ $start = $seconds + $micro;
 ini_set("max_execution_time", "0");
 
 /* Get number of polling items from the database */
-$polling_items = db_fetch_assoc("select id from host where disabled = '' order by id");
-$total_hosts = sizeof($polling_items);
+$num_polling_items = db_fetch_cell("select count(*) from poller_item");
+$polling_hosts = db_fetch_assoc("select id from host where disabled = '' order by id");
 
 /* Retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
@@ -78,9 +78,9 @@ $max_threads = read_config_option("max_threads");
 db_execute("truncate table poller_time");
 
 // Enter Mainline Processing
-if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "on")) {
+if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) {
 	/* Determine the number of hosts to process per file */
-	$hosts_per_file = ceil(sizeof($polling_items) / $concurrent_processes );
+	$hosts_per_file = ceil(sizeof($polling_hosts) / $concurrent_processes );
 
 	/* Determine Command Name */
 	if (($config["cacti_server_os"] == "unix") and ($poller == "2")) {
@@ -104,7 +104,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 	}
 
 	/* Populate each execution file with appropriate information */
-	foreach ($polling_items as $item) {
+	foreach ($polling_hosts as $item) {
 		if ($host_count == 1) {
 			$first_host = $item["id"];
 		}
@@ -166,7 +166,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				$method,
 				$concurrent_processes,
 				$max_threads,
-				$total_hosts,
+				sizeof($polling_hosts),
 				$hosts_per_file),true,"SYSTEM");
 
 			break;
