@@ -58,12 +58,19 @@ function read_graph_config_option($config_name) {
 }
 
 function read_config_option($config_name) {
+	include ("config_settings.php");
+	
 	if (isset($_SESSION["sess_config_array"])) {
 		$config_array = unserialize($_SESSION["sess_config_array"]);
 	}
 	
 	if (!isset($config_array[$config_name])) {
 		$config_array[$config_name] = db_fetch_cell("select value from settings where name='$config_name'");
+		
+		if ((empty($config_array[$config_name])) && (isset($settings[$config_name]["default"]))) {
+			$config_array[$config_name] = $settings[$config_name]["default"];
+		}
+		
 		$_SESSION["sess_config_array"] = serialize($config_array);
 	}
 	
@@ -341,16 +348,46 @@ function clean_up_name($string) {
 	return $string;
 }
 
-function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
-	$host = db_fetch_row("select description,hostname,management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+function get_graph_title($local_graph_id) {
+	$graph = db_fetch_row("select
+		graph_local.host_id,graph_templates_graph.title
+		from graph_templates_graph,graph_local
+		where graph_templates_graph.local_graph_id=graph_local.id
+		and graph_local.id=$local_graph_id");
 	
-	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $host["hostname"], $string);
-	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $host["description"], $string);
-	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $host["management_ip"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $host["snmp_community"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $host["snmp_version"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $host["snmp_username"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $host["snmp_password"], $string);
+	return expand_title($graph["host_id"], $graph["title"]);
+}
+
+function null_out_subsitions($string) {
+	return eregi_replace("\|host_(hostname|description|management_ip|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
+}
+
+function expand_title($host_id, $title) {
+	if ((strstr($title, "|")) && (!empty($host_id))) {
+		return subsitute_host_data($title, "|", "|", $host_id);
+	}else{
+		return $title;
+	}
+}
+
+function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
+	if (isset($_SESSION["sess_host_cache_array"])) {
+		$host_cache_array = unserialize($_SESSION["sess_host_cache_array"]);
+	}
+	
+	if (!isset($host_cache_array[$host_id])) {
+		$host = db_fetch_row("select description,hostname,management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+		$host_cache_array[$host_id] = $host;
+		$_SESSION["sess_host_cache_array"] = serialize($host_cache_array);
+	}
+	
+	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $host_cache_array[$host_id]["hostname"], $string);
+	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $host_cache_array[$host_id]["description"], $string);
+	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $host_cache_array[$host_id]["management_ip"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $host_cache_array[$host_id]["snmp_community"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $host_cache_array[$host_id]["snmp_version"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $host_cache_array[$host_id]["snmp_username"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $host_cache_array[$host_id]["snmp_password"], $string);
 	
 	return $string;
 }
