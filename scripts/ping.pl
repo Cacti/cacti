@@ -1,11 +1,7 @@
 #!/usr/bin/perl
 
-if ($ARGV[0]=="x") {
-	$db = ":0";
-	$ARGV[0] = 2;
-}
+$ping = `/bin/ping -c $ARGV[0] -w 300 -n -q $ARGV[1]`;
+($packet_loss) = ($ping =~ /received, (\d+)% loss/);
+($round_trip) = ($ping =~ /rtt min\/avg\/max\/mdev = \d+\.\d+\/(\d+\.\d+)\/.* ms/);
 
-$response = `ping $ARGV[1] -c $ARGV[0] |grep round-trip| awk '\{print \$4 \}' | awk -F / '\{print \$1 \}' | grep -v "Warning"`;
-chomp $response;
-$response = $response;
-print "$response$db";
+print "$round_trip $packet_loss"; 
