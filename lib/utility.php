@@ -23,6 +23,71 @@
    */?>
 <?
 
+function change_data_template($local_data_id, $data_template_id, $_data_template_id) {
+	/* always update tables to new data template (or no data template) */
+	db_execute("update data_template_data set data_template_id=$data_template_id where local_data_id=$local_data_id");
+	db_execute("update data_template_rrd set data_template_id=$data_template_id where local_data_id=$local_data_id");
+	db_execute("update data_local set data_template_id=$data_template_id where id=$local_data_id");
+	
+	/* make sure the 'local_data_template_data_id' column is set */
+	$local_data_template_data_id = db_fetch_cell("select id from data_template_data where data_template_id=$data_template_id and data_template_id=id");
+	
+	if ($local_data_template_data_id == "") { $local_data_template_data_id = 0; }
+	db_execute("update data_template_data set local_data_template_data_id=$local_data_template_data_id where local_data_id=$local_data_id");
+	
+	/* if the user turned off the template for this data source; there is nothing more
+	to do here */
+	if ($data_template_id == "0") { return 0; }
+	
+	/* we are going from no template -> a template */
+	if ($_data_template_id == "0") {
+		$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
+		$template_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id");
+		
+		if (sizeof($data_rrds_list) > 0) {
+			/* this data source already has "child" items */
+		}else{
+			/* this data source does NOT have "child" items; loop through each item in the template
+			and write it exactly to each item */
+			if (sizeof($template_rrds_list) > 0) {
+			foreach ($template_rrds_list as $template_rrd) {
+				$save["id"] = 0;
+				$save["local_data_template_rrd_id"] = $template_rrd["id"];
+				$save["local_data_id"] = $local_data_id;
+				$save["data_template_id"] = $template_rrd["data_template_id"];
+				$save["rrd_maximum"] = $template_rrd["rrd_maximum"];
+				$save["rrd_minimum"] = $template_rrd["rrd_minimum"];
+				$save["rrd_heartbeat"] = $template_rrd["rrd_heartbeat"];
+				$save["data_source_type_id"] = $template_rrd["data_source_type_id"];
+				$save["data_source_name"] = $template_rrd["data_source_name"];
+				$save["script_output_argument"] = $template_rrd["script_output_argument"];
+				
+				sql_save($save, "data_template_rrd");
+			}
+			}
+		}
+	}
+	
+	/* "merge" 'data_template_data' table stuff */
+	$data = db_fetch_row("select * from data_template_data where local_data_id=$local_data_id");
+	$template_data = db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id");
+	
+	unset($save);
+	
+	$save["id"] = $data["id"];
+	$save["local_data_template_data_id"] = $template_data["id"];
+	$save["local_data_id"] = $local_data_id;
+	$save["data_template_id"] = $data_template_id;
+	$save["data_input_id"] = $template_data["data_input_id"];
+	$save["data_source_path"] = $data["data_source_path"]; /* NEVER overright */
+	
+	if ($template_data[t_name] == "on") { $save["name"] = $data["name"]; }else{ $save["name"] = $template_data["name"]; }
+	if ($template_data[t_active] == "on") { $save["active"] = $data["active"]; }else{ $save["active"] = $template_data["active"]; }
+	if ($template_data[t_rrd_step] == "on") { $save["rrd_step"] = $data["rrd_step"]; }else{ $save["rrd_step"] = $template_data["rrd_step"]; }
+	
+	sql_save($save, "data_template_data");
+}
+
 /* propagates values from the graph template out to each graph using that template */
 function push_out_graph($graph_template_graph_id) {
 	include ("config_arrays.php");
@@ -125,8 +190,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 				$save["gprint_custom"] = $template_item["gprint_custom"];
 				$save["custom"] = $template_item["custom"];
 				$save["sequence"] = $template_item["sequence"];
-				$save["sequence_parent"] = $template_item["sequence_parent"];
-				$save["parent"] = $template_item["parent"];
+				//$save["sequence_parent"] = $template_item["sequence_parent"];
+				//$save["parent"] = $template_item["parent"];
 				
 				sql_save($save, "graph_templates_item");
 			}
@@ -134,19 +199,19 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 		}
 		
 		/* make sure to "correct" parent column for graph items */
-		unset($graph_items_list);
-		$graph_items_list = db_fetch_assoc("select
-			id,
-			parent
-			from graph_templates_item
-			where local_graph_template_item_id=parent
-			and local_graph_id=$local_graph_id");
+		//unset($graph_items_list);
+		//$graph_items_list = db_fetch_assoc("select
+		//	id,
+		//	parent
+		//	from graph_templates_item
+		//	where local_graph_template_item_id=parent
+		//	and local_graph_id=$local_graph_id");
 		
-		if (sizeof($graph_items_list) > 0) {
-		foreach ($graph_items_list as $graph_item) {
-			db_execute("update graph_templates_item set parent=$graph_item[id] where parent=$graph_item[parent] and local_graph_id=$local_graph_id");
-		}
-		}
+		//if (sizeof($graph_items_list) > 0) {
+		//foreach ($graph_items_list as $graph_item) {
+		//	db_execute("update graph_templates_item set parent=$graph_item[id] where parent=$graph_item[parent] and local_graph_id=$local_graph_id");
+		//}
+		//}
 	}
 	
 	/* "merge" graph stuff */
