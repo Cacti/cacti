@@ -73,13 +73,30 @@ function form_save() {
    -------------------------- */
 
 function settings() {
-	global $colors, $tabs_graphs, $settings_graphs, $current_user, $graph_views;
+	global $colors, $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user;
 	
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option("global_auth") == "") {
 		raise_message(6);
 		display_output_messages();
 		return;
+	}
+	
+	if (read_config_option("global_auth") == "on") {
+		if ($current_user["graph_policy"] == "1") {
+			$sql_where = "where user_auth_tree.user_id is null";
+		}elseif ($current_user["graph_policy"] == "2") {
+			$sql_where = "where user_auth_tree.user_id is not null";
+		}
+		
+		$settings_graphs["default_tree_id"]["sql"] = "select
+			graph_tree.id,
+			graph_tree.name,
+			user_auth_tree.user_id
+			from graph_tree
+			left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
+			$sql_where
+			order by graph_tree.name";
 	}
 	
 	print "<form method='post' action='graph_settings.php'>\n";
