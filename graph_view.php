@@ -38,7 +38,7 @@ if (isset($_GET["hide"])) {
 	}
 }
 
-if (!empty($_REQUEST["action"])) {
+if (ereg("action=(tree|preview|list)", $_SERVER["REQUEST_URI"])) {
 	$_SESSION["sess_graph_view_url_cache"] = $_SERVER["REQUEST_URI"];
 }
 
