@@ -115,7 +115,7 @@ case 'login':
 		/* --- end ldap section --- */
 		
 		/* make entry in the transactions log */
-		db_execute("insert into user_log (username,result,ip) values('$username',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"] . "',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
 		
 		/* set the php session */
 		$_SESSION["sess_user_id"] = $user["id"];
