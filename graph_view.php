@@ -60,13 +60,16 @@ case 'tree':
 	$tree_dropdown_html = draw_tree_dropdown((isset($_GET["tree_id"]) ? $_GET["tree_id"] : "0"));
 	
 	/* don't even print the table if there is not >1 tree */
-	if (!empty($tree_dropdown_html)) {
+	if ((!empty($tree_dropdown_html)) && (read_graph_config_option("default_tree_view_mode") == "1")) {
 		print "
+		<br>
 		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
-			<tr>\n
-				$tree_dropdown_html
+			<tr>
+				<td>
+					$tree_dropdown_html
+				</td>
 			</tr>
-		</table>
+		</table>\n
 		<br>";
 	}
 	
@@ -74,20 +77,18 @@ case 'tree':
 		if (read_config_option("global_auth") == "on") {
 			/* take tree permissions into account here, if the user does not have permission
 			give an "access denied" message */
-			$user_auth = db_fetch_row("select user_id from user_auth_tree where tree_id=" . $_SESSION["sess_view_tree_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
-			
-			if ($current_user["policy_graphs"] == "1") {
-				if (sizeof($user_auth) > 0) { $access_denied = true; }
-			}elseif ($current_user["policy_graphs"] == "2") {
-				if (sizeof($user_auth) == 0) { $access_denied = true; }
-			}
+			$access_denied = !(is_tree_allowed($_SESSION["sess_view_tree_id"]));
 			
 			if ($access_denied == true) {
 				print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
 			}
 		}
 		
-		grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), isset($_SESSION["sess_user_id"]) ? $_SESSION["sess_user_id"] : 0, $tree_parameters);
+		if (read_graph_config_option("default_tree_view_mode") == "1") {
+			grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), isset($_SESSION["sess_user_id"]) ? $_SESSION["sess_user_id"] : 0, $tree_parameters);
+		}elseif (read_graph_config_option("default_tree_view_mode") == "2") {
+			grow_right_pane_tree((isset($_GET["tree_id"]) ? $_GET["tree_id"] : 0), (isset($_GET["leaf_id"]) ? $_GET["leaf_id"] : 0), (isset($_GET["graph_template_id"]) ? $_GET["graph_template_id"] : 0));
+		}
 	}
 	
 	print "<br><br>";
@@ -183,7 +184,7 @@ case 'preview':
 		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 	
-	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
+	print "<br><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 	
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
@@ -307,7 +308,7 @@ case 'list':
 	}
 	
 	print "<form action='graph_view.php' method='get'>\n";
-	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
+	print "<br><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Displaying " . sizeof($graphs) . " Graph" . ((sizeof($graphs) == 1) ? "" : "s") . "</strong></td></tr></table></td></tr>";
 	
 	$i = 0;
@@ -327,9 +328,8 @@ case 'list':
 	}
 	}
 	
-	print "</table>";
-	
-	print "	<table align='center' width='98%'>
+	print "	</table>
+		<table align='center' width='98%'>
 			<tr>
 				<td width='1'>
 					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;

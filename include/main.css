@@ -122,3 +122,10 @@ table.tabs      {
     border-left: none;
     border-bottom: 1px solid #666;
 }
+
+/* tables */
+td.shadow {
+	background-image: url(images/shadow.jpg);
+	background-repeat: repeat-x;
+	height: 8px;
+}

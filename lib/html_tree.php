@@ -46,13 +46,13 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
-		if ($current_user["policy_graphs"] == "1") {
-			$sql_where = "and (user_auth_graph.user_id is null OR graph_tree_items.local_graph_id=0)";
-		}elseif ($current_user["policy_graphs"] == "2") {
-			$sql_where = "and (user_auth_graph.user_id is not null OR graph_tree_items.local_graph_id=0)";
-		}
-		
-		$sql_join = "left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ")";
+		/* get policy information for the sql where clause */
+		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+		$sql_where = (empty($sql_where) ? "" : "and (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
+		$sql_join = "left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+			left join host on host.id=graph_local.host_id
+			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
 	}
 	
 	$heirarchy = db_fetch_assoc("select
@@ -187,10 +187,13 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		graph_tree_items.id,
 		graph_tree_items.title,
 		graph_tree_items.local_graph_id,
+		graph_tree_items.host_id,
 		graph_tree_items.order_key,
-		graph_templates_graph.title_cache as graph_title
+		graph_templates_graph.title_cache as graph_title,
+		CONCAT_WS('',description,' (',hostname,')') as hostname
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
+		left join host on host.id=graph_tree_items.host_id
 		where graph_tree_items.graph_tree_id=$tree_id
 		order by graph_tree_items.order_key");
 	
@@ -206,12 +209,15 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
 		
-	    	if ($leaf["title"] == "") {
+	    	if ($leaf["local_graph_id"] > 0) {
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'>" . $leaf["graph_title"] . "</a></td>\n";
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
-		}else{
+		}elseif ($leaf["title"] != "") {
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'><strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Heading</td>";
+		}elseif ($leaf["host_id"] > 0) {
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a></td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
 		}
 		
 		print 	"<td bgcolor='#$row_color' width='80' align='center'>\n
@@ -260,5 +266,196 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 	
 	print "</select>\n";
 }
-    
+
+function grow_dhtml_trees() {
+	global $colors, $config;
+	
+	include_once ($config["include_path"] . "/tree_functions.php");
+	?>
+	<script type="text/javascript">
+	<!--
+	USETEXTLINKS = 1
+	STARTALLOPEN = 0
+	USEFRAMES = 0
+	USEICONS = 0
+	WRAPTEXT = 1
+	PERSERVESTATE = 1
+	HIGHLIGHT = 1
+	<?php
+	
+	print "foldersTree = gFld(\"<b>Graph Trees</b>\", \"\")\n";
+	
+	$tree_list = get_graph_tree_array();
+	
+	if (sizeof($tree_list) > 0) {
+	foreach ($tree_list as $tree) {
+		$heirarchy = db_fetch_assoc("select
+			graph_tree_items.id,
+			graph_tree_items.title,
+			graph_tree_items.order_key,
+			graph_tree_items.host_id,
+			CONCAT_WS('',host.description,' (',host.hostname,')') as hostname
+			from graph_tree_items
+			left join host on host.id=graph_tree_items.host_id
+			where graph_tree_items.graph_tree_id=" . $tree["id"] . "
+			and graph_tree_items.local_graph_id = 0
+			order by graph_tree_items.order_key");
+		
+		print "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
+		
+		$i = 0;
+		if (sizeof($heirarchy) > 0) {
+		foreach ($heirarchy as $leaf) {
+			$tier = tree_tier($leaf["order_key"], 2);
+			
+			if ($leaf["host_id"] > 0) {
+				print "ou" . ($i+1) . " = insFld(ou" . ($i) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+				
+				$graph_templates = db_fetch_assoc("select
+					graph_templates.id,
+					graph_templates.name
+					from graph_local,graph_templates,graph_templates_graph
+					where graph_local.id=graph_templates_graph.local_graph_id
+					and graph_templates_graph.graph_template_id=graph_templates.id
+					and graph_local.host_id=" . $leaf["host_id"] . "
+					group by graph_templates.id
+					order by graph_templates.name");
+				
+				if (sizeof($graph_templates) > 0) {
+				foreach ($graph_templates as $graph_template) {
+					print "ou" . ($i+2) . " = insFld(ou" . ($i+1) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&graph_template_id=" . $graph_template["id"] . "\"))\n";
+				}
+				}
+			}else{
+				print "ou" . ($i+1) . " = insFld(ou" . ($i) . ", gFld(\"" . $leaf["title"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+			}
+			
+			$i++;
+		}
+		}
+	}
+	}
+	
+	?>
+	foldersTree.treeID = "t2";
+	//-->
+	</script>
+	<?php
+}
+
+function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
+	global $current_user, $colors;
+	
+	if (empty($tree_id)) { return; }
+	
+	$sql_where = "";
+	$sql_join = "";
+	$title = "";
+	$title_delimeter = "";
+	$search_key = "";
+	
+	/* get the "starting leaf" if the user clicked on a specific branch */
+	if (!empty($leaf_id)) {
+		$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_items where id=$leaf_id"));
+	}
+	
+	/* graph permissions */
+	if (read_config_option("global_auth") == "on") {
+		/* get policy information for the sql where clause */
+		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+		$sql_where = (empty($sql_where) ? "" : "and $sql_where");
+		$sql_join = "left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+			left join host on host.id=graph_local.host_id
+			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
+	}
+	
+	/* get information for the headers */
+	if (!empty($tree_id)) { $tree_name = db_fetch_cell("select name from graph_tree where id=$tree_id"); }
+	if (!empty($leaf_id)) { $leaf_name = db_fetch_cell("select title from graph_tree_items where id=$leaf_id"); }
+	if (!empty($leaf_id)) { $host_name = db_fetch_cell("select CONCAT_WS('',host.description,' (',host.hostname,')') from graph_tree_items,host where graph_tree_items.host_id=host.id and graph_tree_items.id=$leaf_id"); }
+	if (!empty($leaf_id)) { $host_id = db_fetch_cell("select host_id from graph_tree_items where id=$leaf_id"); }
+	if (!empty($graph_template_id)) { $graph_template_name = db_fetch_cell("select name from graph_templates where id=$graph_template_id"); }
+	
+	if (!empty($tree_name)) { $title .= $title_delimeter . "<strong>Tree:</strong> $tree_name"; $title_delimeter = "-> "; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; $title_delimeter = ", "; }
+	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = ", "; }
+	if (!empty($graph_template_name)) { $title .= $title_delimeter . "<strong>Graph Template:</strong> $graph_template_name"; $title_delimeter = "-> "; }
+	
+	print "<table width='98%' align='center' cellpadding='3'>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'>$title</td></tr>";
+	
+	if (empty($host_id)) {
+		$heirarchy = db_fetch_assoc("select
+			graph_tree_items.id,
+			graph_tree_items.title,
+			graph_tree_items.local_graph_id,
+			graph_tree_items.rra_id,
+			graph_tree_items.order_key,
+			graph_templates_graph.title_cache as graph_title
+			from graph_tree_items
+			left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
+			$sql_join
+			where graph_tree_items.graph_tree_id=$tree_id
+			and graph_tree_items.order_key like '$search_key" . "__%'
+			and graph_tree_items.local_graph_id>0
+			$sql_where
+			order by graph_tree_items.order_key");
+		
+		$i = 0;
+		if (sizeof($heirarchy) > 0) {
+		foreach ($heirarchy as $leaf) {
+			form_alternate_row_color("f9f9f9", "ffffff", $i);
+			print "<td align='center'><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all&type=tree'><img src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $leaf["graph_title"] . "'></a></td>";
+			print "<tr>\n";
+			
+			$i++;
+		}
+		}
+	}else{
+		$graph_templates = db_fetch_assoc("select
+			graph_templates.id,
+			graph_templates.name
+			from graph_local,graph_templates,graph_templates_graph
+			where graph_local.id=graph_templates_graph.local_graph_id
+			and graph_templates_graph.graph_template_id=graph_templates.id
+			and graph_local.host_id=$host_id
+			" . (empty($graph_template_id) ? "" : "and graph_templates.id=$graph_template_id") . "
+			group by graph_templates.id
+			order by graph_templates.name");
+		
+		if (sizeof($graph_templates) > 0) {
+		foreach ($graph_templates as $graph_template) {
+			if (empty($graph_template_id)) {
+				print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>";
+			}
+			
+			$graphs = db_fetch_assoc("select
+				graph_templates_graph.title_cache,
+				graph_templates_graph.local_graph_id
+				from graph_local,graph_templates,graph_templates_graph
+				where graph_local.id=graph_templates_graph.local_graph_id
+				and graph_templates_graph.graph_template_id=graph_templates.id
+				and graph_local.graph_template_id=" . $graph_template["id"] . "
+				and graph_local.host_id=$host_id
+				order by graph_templates_graph.title_cache");
+			
+			$i = 0;
+			if (sizeof($graphs) > 0) {
+			foreach ($graphs as $graph) {
+				form_alternate_row_color("f9f9f9", "ffffff", $i);
+				print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all&type=tree'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
+				print "<tr>\n";
+				
+				$i++;
+			}
+			}
+		}
+		}
+	}
+	
+	print "</table>";
+	
+}
+
 ?>
