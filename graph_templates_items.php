@@ -265,6 +265,22 @@ function item_edit() {
 	
 	if (!empty($_GET["id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
+		
+		/* we want to mark the fields that are associated with a graph item input */
+		$graph_item_input_fields = db_fetch_assoc("select
+			graph_template_input.id,
+			graph_template_input.column_name
+			from graph_template_input,graph_template_input_defs
+			where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+			and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
+			and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
+			group by graph_template_input.column_name");
+		
+		if (sizeof($graph_item_input_fields) > 0) {
+		foreach ($graph_item_input_fields as $field) {
+			$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_GET["graph_template_id"] . "'>Field Not Templated</a>]";
+		}
+		}
 	}
 	
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
@@ -297,22 +313,6 @@ function item_edit() {
 		$form_array[$field_name]["value"] = (isset($template_item) ? $template_item[$field_name] : "");
 		$form_array[$field_name]["form_id"] = (isset($template_item) ? $template_item["id"] : "0");
 		
-	}
-	
-	/* we want to mark the fields that are associated with a graph item input */
-	$graph_item_input_fields = db_fetch_assoc("select
-		graph_template_input.id,
-		graph_template_input.column_name
-		from graph_template_input,graph_template_input_defs
-		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
-		and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
-		group by graph_template_input.column_name");
-	
-	if (sizeof($graph_item_input_fields) > 0) {
-	foreach ($graph_item_input_fields as $field) {
-		$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_GET["graph_template_id"] . "'>Field Not Templated</a>]";
-	}
 	}
 	
 	draw_edit_form(
