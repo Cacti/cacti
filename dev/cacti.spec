@@ -30,7 +30,7 @@ excellent performance.
 
 %prep
 %setup
-echo -e "*/5 * * * *\tcacti\tphp %{_localstatedir}/www/cacti/poller.php &>/dev/null" >cacti.crontab
+echo -e "*/5 * * * *\tcacti\tphp %{_localstatedir}/www/html/cacti/poller.php > /dev/null 2>&1" >cacti.crontab
 
 %build
 tar xzf %{SOURCE1}
@@ -40,9 +40,9 @@ cd cacti-cactid-%{version}
 
 %install
 rm -rf %{buildroot}
-%{__install} -d -m0755 %{buildroot}%{_localstatedir}/www/cacti/
-%{__install} -m0644 *.php cacti.sql %{buildroot}%{_localstatedir}/www/cacti/
-%{__cp} -avx docs/ images/ include/ install/ lib/ log/ resource/ rra/ scripts/ %{buildroot}%{_localstatedir}/www/cacti/
+%{__install} -d -m0755 %{buildroot}%{_localstatedir}/www/html/cacti/
+%{__install} -m0644 *.php cacti.sql %{buildroot}%{_localstatedir}/www/html/cacti/
+%{__cp} -avx docs/ images/ include/ install/ lib/ log/ resource/ rra/ scripts/ %{buildroot}%{_localstatedir}/www/html/cacti/
 
 %{__install} -D -m0755 cacti-cactid-%{version}/cactid %{buildroot}%{_bindir}/cactid
 %{__install} -D -m0644 cacti-cactid-%{version}/cactid.conf %{buildroot}%{_sysconfdir}/cactid.conf
@@ -52,11 +52,10 @@ rm -rf %{buildroot}
 rm -rf %{buildroot}
 
 %pre
-useradd -d %{_localstatedir}/www/cacti cacti > /dev/null 2>&1 || true
+useradd -d %{_localstatedir}/www/html/cacti cacti > /dev/null 2>&1 || true
 
 %post
-echo "Make sure to import the default database at /var/www/html/cacti/cacti.sql and edit"
-echo "the database configuration in /var/www/html/cacti/include/config.php."
+echo "Be sure to follow steps 2 through 5 in the install guide for new Cacti installations."
 
 %postun
 userdel cacti > /dev/null 2>&1 || true
@@ -64,21 +63,21 @@ userdel cacti > /dev/null 2>&1 || true
 %files
 %defattr(-, root, root, 0755)
 %doc LICENSE README
-%config %{_localstatedir}/www/cacti/include/config.php
+%config %{_localstatedir}/www/html/cacti/include/config.php
 %config %{_sysconfdir}/cron.d/*
-%dir %{_localstatedir}/www/cacti/
-%{_localstatedir}/www/cacti/*.php
-%{_localstatedir}/www/cacti/cacti.sql
-%{_localstatedir}/www/cacti/docs/
-%{_localstatedir}/www/cacti/images/
-%{_localstatedir}/www/cacti/include/
-%{_localstatedir}/www/cacti/install/
-%{_localstatedir}/www/cacti/lib/
-%{_localstatedir}/www/cacti/resource/
-%{_localstatedir}/www/cacti/scripts/
+%dir %{_localstatedir}/www/html/cacti/
+%{_localstatedir}/www/html/cacti/*.php
+%{_localstatedir}/www/html/cacti/cacti.sql
+%{_localstatedir}/www/html/cacti/docs/
+%{_localstatedir}/www/html/cacti/images/
+%{_localstatedir}/www/html/cacti/include/
+%{_localstatedir}/www/html/cacti/install/
+%{_localstatedir}/www/html/cacti/lib/
+%{_localstatedir}/www/html/cacti/resource/
+%{_localstatedir}/www/html/cacti/scripts/
 %defattr(-, cacti, cacti, 0755 )
-%{_localstatedir}/www/cacti/log/
-%{_localstatedir}/www/cacti/rra/
+%{_localstatedir}/www/html/cacti/log/
+%{_localstatedir}/www/html/cacti/rra/
 
 %files cactid
 %defattr(-, root, root, 0755)
