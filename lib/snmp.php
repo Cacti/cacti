@@ -204,9 +204,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		$timeout = ceil($timeout / 1000);
 		
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "\"$community\"" : "-c \"$community\""; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "\"$community\"" : "-c \"$community\""; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
@@ -247,9 +247,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$timeout = ceil($timeout / 1000);
 		
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "\"$community\"" : "-c \"$community\""; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "\"$community\"" : "-c \"$community\""; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
