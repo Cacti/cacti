@@ -170,8 +170,6 @@ function form_save() {
 				generate_data_source_path($local_data_id);
 			}
 			
-			update_poller_cache($local_data_id);
-			
 			/* save entried in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
 			
@@ -224,6 +222,11 @@ function form_save() {
 			}
 		}
 		}
+	}
+	
+	/* update the poller cache last to make sure everything is fresh */
+	if (!is_error_message()) {
+		update_poller_cache($local_data_id);
 	}
 	
 	if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {

@@ -67,10 +67,15 @@ function update_poller_cache($local_data_id) {
 		$field = db_fetch_assoc("select
 			data_input_fields.type_code,
 			data_input_data.value
-			from data_input_fields left join data_input_data
-			on (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
-			where (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
+			from data_input_fields,data_input_data
+			where data_input_fields.id=data_input_data.data_input_field_id
+			and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . "
+			and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
 		$field = array_rekey($field, "type_code", "value");
+		
+		if ((!isset($field["index_type"])) || (!isset($field["index_value"])) || (!isset($field["output_type"]))) {
+			return;
+		}
 		
 		$query = db_fetch_row("select
 			host_snmp_cache.snmp_query_id,
