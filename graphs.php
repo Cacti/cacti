@@ -34,18 +34,19 @@
 	
 	function draw_main_form_select() { 
 		global $current_script_name, $colors;?>
-		<tr bgcolor="#<?print $colors[panel];?>">
-			</form>
-			<form name="form_tree_id">
+		<tr>
 			<td valign="middle">
-				<select name="cbo_tree_id" onChange="window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value">
-					<option value="<?print $current_script_name;?>"<?if (($_GET[action]=="") || (strstr($_GET[action],"graph"))) {?> selected<?}?>>Main Graph Management Page</option>
-					<option value="<?print $current_script_name;?>?action=tree"<?if (strstr($_GET[action],"tree")){?> selected<?}?>>Graph Tree Configuration</option>
-				</select>
-				
-				<input type="image" src="images/button_go.gif" alt="Go" align="absmiddle">
+				<table cellspacing="0" cellpadding="0" border="0">
+					<tr>
+						<td bgcolor="#<?print $colors[panel];?>">
+							<a href="<?print $current_script_name;?>"><img src="images/button_graph_management_<?if ($_GET[action]==""){ print "down.gif"; }else{ print "up.gif"; }?>" border="0" alt="Graph Management" align="absmiddle"></a>
+						</td>
+						<td>
+							<a href="<?print $current_script_name;?>?action=tree"><img src="images/button_graph_trees_<?if (strstr($_GET[action],"tree")){ print "down.gif"; }else{ print "up.gif"; }?>" border="0" alt="Graph Management" align="absmiddle"></a>
+						</td>
+					</tr>
+				</table>
 			</td>
-			</form>
 		</tr>
 	<?}
 	
@@ -178,7 +179,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("Height",$graphs[Height],"","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Width</font><br>
 				The width (in pixels) that the graph is.
@@ -186,7 +187,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("Width",$graphs[Width],"","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Auto Scale</font><br>
 				Auto scale vertical data instead of defining an upper and lower limit. Note: if this 
@@ -203,7 +204,7 @@ switch ($action) {
 			</td>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Auto Padding</font><br>
 				Pad text so that legend and graph data always line up. Note: this could cause graphs 
@@ -213,7 +214,7 @@ switch ($action) {
 			<?DrawFormItemCheckBox("AutoPadding",$graphs[AutoPadding],"Auto Padding","");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Allow Grouping</font><br>
 				This will enable you to "group" items of your graph together for eaier manipulation. 
@@ -223,7 +224,7 @@ switch ($action) {
 			<?DrawFormItemCheckBox("Grouping",$graphs[Grouping],"Allow Grouping","on");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Allow Graph Export</font><br>
 				Choose whether this graph will be included in the static html/png export if you use 
@@ -232,7 +233,7 @@ switch ($action) {
 			<?DrawFormItemCheckBox("Export",$graphs[Export],"Allow Graph Export","on");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Upper Limit</font><br>
 				The maximum vertical value for the rrd graph.
@@ -240,7 +241,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("UpperLimit",$graphs[UpperLimit],"0","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Lower Limit</font><br>
 				The minimum vertical value for the rrd graph.
@@ -248,7 +249,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("LowerLimit",$graphs[LowerLimit],"0","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Base Value</font><br>
 				Should be set to 1024 for memory and 1000 for traffic measurements.
@@ -256,7 +257,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("BaseValue",$graphs[BaseValue],"1000","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Unit Value</font><br>
 				(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was 
@@ -265,7 +266,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("UnitValue",$graphs[UnitValue],"","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Unit Exponent Value</font><br>
 				What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or -6 
@@ -274,7 +275,7 @@ switch ($action) {
 			<?DrawFormItemTextBox("UnitExponentValue",$graphs[UnitExponentValue],"","50", "40");?>
 		</tr>
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Vertical Label</font><br>
 				The label vertically printed to the left of the graph.
