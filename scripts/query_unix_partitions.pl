@@ -5,7 +5,7 @@ if (($ARGV[0] ne "query") && ($ARGV[0] ne "get") && ($ARGV[0] ne "index")) {
 	exit;
 }
 
-open(DF, "/bin/df|");
+open(DF, "/bin/df -P|");
 
 while (<DF>) {
 	#/dev/hda2             20157744  18553884    579860  97% /var
@@ -18,7 +18,7 @@ while (<DF>) {
 			available => $4,
 			percent => $5
 		);
-			
+
 		if ($ARGV[0] eq "index") {
 			print "$1\n";
 		}elsif (($ARGV[0] eq "get") && ($ARGV[2] eq $1)) {
