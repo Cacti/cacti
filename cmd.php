@@ -70,6 +70,7 @@ if ( $_SERVER["argc"] == 1 ) {
 }
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on")) {
+	$failure_type = "";
 	$host_down = false;
 	$new_host  = true;
 	$last_host = $current_host = "";
@@ -108,13 +109,19 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			if (phpversion() >= "4.3") {
 				$ping->ping($item["hostname"], $item["snmp_timeout"], 4);
 
-				if (!$ping->time) {
+				if (!isset($ping->time)) {
+					$failure_typpe = "ICMP";
 					$host_down = true;
-					print "ERROR: Host is not respoding to ICMP Ping.\n";
+					print "ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.\n";
+				} else {
+					print "ICMP: ". $item["hostname"] . " is " . $ping->time . " seconds.\n";
 				}
+			} else {
+				print "NOTE: PHP version is: " . phpversion() . " Please upgrade to PHP 4.3 or Above to obtain ping statistics.\n";
+			}
 
 			// Perform an SNMP test for earlier versions of PHP
-			} else {
+			if (!$host_down) {
 				$last_host = $current_host;
 				$output = cacti_snmp_get($item["hostname"],
 					$item["snmp_community"],
@@ -126,17 +133,18 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$item["snmp_timeout"]);
 
 				if ((substr_count($output, "ERROR") != 0) || ($output == "")) {
+					$failure_type = "SNMP";
 					$host_down = true;
-					print "ERROR: Host is not respoding to SNMP query.\n";
+					print "ERROR: SNMP Query failed for Host " . $item["hostname"] . ", assumed down.\n";
 				}
 			}
 
 			if ($host_down) {
 				if (read_config_option("log_perror") == "on") {
-					if (phpversion() >= "4.3")
-						log_data(sprintf("ERROR: host '%s' is not responding to ICMP ping, assumed down.", $current_host));
+					if ($failure_type == "ICMP")
+						log_data(sprintf("ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host));
 					else
-						log_data(sprintf("ERROR: host '%s' is not responding to SNMP query, assumed down.", $current_host));
+						log_data(sprintf("ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host));
 				}
 			} else {
 				/* do the reindex check for this host */
