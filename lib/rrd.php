@@ -420,7 +420,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		}
 	}
 	}
-    
+    	
 	/* if we are not displaying a legend there is no point in us even processing the auto padding,
 	text format stuff. */
 	if (!isset($graph_data_array["graph_nolegend"])) {
@@ -639,8 +639,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		case 'HRULE':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			
-			if ($graph_data_array["graph_nolegend"] == true) {
-				$value_format[$graph_item_id] = "0";
+			if (isset($graph_data_array["graph_nolegend"])) {
+				$value_format[$graph_item_id] = $graph_item["value"];
 			}else{
 				$value_format[$graph_item_id] = str_replace(":", "\:" ,$value_format[$graph_item_id]); /* escape colons */
 			}
@@ -653,7 +653,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
 			
 			$value_array = explode(":", $graph_item["value"]);
-			$value = date("U", mktime($value_array[0],$value_array[1],0));
+			
+			if ($value_array[0] < 0) {
+				$value = date("U") - (-3600 * $value_array[0]) - 60 * $value_array[1];
+			}else{
+				$value = date("U", mktime($value_array[0],$value_array[1],0));
+			}
 			
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
 			$value . "#" . $graph_item["hex"] . ":\"" . 
