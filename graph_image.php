@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* since we'll have addition headers, tell php when to flush them */
+/* since we'll have additional headers, tell php when to flush them */
 ob_start();
 
 $guest_account = true; include ('include/auth.php');
