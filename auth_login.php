@@ -128,13 +128,13 @@ case 'login':
 		}
 		
 		if ($deny_ip == true) {
-			db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"]. "',2,'" . $_SERVER["REMOTE_ADDR"] . "')");
+			db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"]. "'," . $user["id"] . ",2,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 			include ("noauth.php");
 			exit;
 		}
 		
 		/* make entry in the transactions log */
-		db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"] . "',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"] ."'," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 		
 		/* set the php session */
 		$_SESSION["sess_user_id"] = $user["id"];
@@ -158,7 +158,7 @@ case 'login':
 		exit;
 	}else{
 		/* --- BAD username/password --- */
-		db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"] . "',0,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"] . "',0,0,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 	}
 }
 
