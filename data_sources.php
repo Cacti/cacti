@@ -1018,6 +1018,7 @@ function ds() {
 				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 			</td>
 			<td align='right'>
+				Choose an action:
 				<?php form_dropdown("drp_action",$ds_actions,"","","1","","");?>
 			</td>
 			<td width='1' align='right'>
