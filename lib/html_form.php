@@ -49,7 +49,7 @@ function draw_edit_form($array) {
 			}
 			
 			if ($field_array["method"] == "hidden") {
-				form_hidden_box($field_name, $field_array["value"], "");
+				form_hidden_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}else{
@@ -71,12 +71,12 @@ function draw_edit_form($array) {
 				
 				switch ($field_array["method"]) {
 				case 'textbox':
-					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"));
+					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text");
 					break;
 				case 'textbox_password':
-					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"));
+					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
 					print "<br>";
-					form_text_box($field_name . "_confirm", $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"));
+					form_text_box($field_name . "_confirm", $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
 					break;
 				case 'textarea':
 					form_text_area($field_name, $field_array["value"], $field_array["textarea_rows"], $field_array["textarea_cols"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
@@ -150,12 +150,12 @@ function draw_edit_form($array) {
 }
 
 /* creates a standard html textbox */
-function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30) {
+function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text") {
 	if ($form_previous_value == "") {
 		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
-	print "<input type='text'";
+	print "<input type='$type'";
 	
 	if (isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
@@ -267,47 +267,46 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	
 	$colors_list = db_fetch_assoc("select id,hex from colors order by hex desc");
 	
-    		?>
-		<select name="<?php print $form_name;?>">
-			<?php if ($form_none_entry != "") {?><option value="0"><?php print $form_none_entry;?></option><?php }?>
-			<?php
-			if (sizeof($colors_list) > 0) {
-				foreach ($colors_list as $color) {
-					print "<option style='background: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
-					
-					if ($form_previous_value == $color["id"]) {
-						print " selected";
-					}
-					
-					print ">" . $color["hex"] . "</option>\n";
-				}
+	print "<select name='$form_name'>\n";
+	
+	if ($form_none_entry != "") {
+		print "<option value='0'>$form_none_entry</option>\n";
+	}
+	
+	if (sizeof($colors_list) > 0) {
+		foreach ($colors_list as $color) {
+			print "<option style='background: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
+			
+			if ($form_previous_value == $color["id"]) {
+				print " selected";
 			}
-			?>
-		</select>
-		<?php
+			
+			print ">" . $color["hex"] . "</option>\n";
+		}
+	}
+	
+	print "</select>\n";
 }
     
     
 /* create a multiselect listbox */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id) {
-		?>
-		<select name="<?php print $form_name;?>[]" multiple>
-			<?php
-			foreach (array_keys($array_display) as $id) {
-				print "<option value='" . $id . "'";
-				
-				for ($i=0; ($i < count($sql_previous_values)); $i++) {
-					if ($sql_previous_values[$i][$column_id] == $id) {
-						print " selected";
-					}
-				}
-				
-				print ">". $array_display[$id];
-				print "</option>\n";
+	print "<select name='$form_name" . "[]' multiple>\n";
+	
+	foreach (array_keys($array_display) as $id) {
+		print "<option value='" . $id . "'";
+		
+		for ($i=0; ($i < count($sql_previous_values)); $i++) {
+			if ($sql_previous_values[$i][$column_id] == $id) {
+				print " selected";
 			}
-			?>
-		</select>
-		<?php
+		}
+		
+		print ">". $array_display[$id];
+		print "</option>\n";
+	}
+	
+	print "</select>\n";
 }
 
 function form_area($text) { ?>
@@ -343,15 +342,6 @@ function form_confirm_buttons($action_url, $cancel_url) { ?>
 		<td bgcolor="#E1E1E1">
 			<a href="<?php print $cancel_url;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
 			<a href="<?php print $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
-		</td>
-	</tr>
-<?php }
-
-function form_post_confirm_buttons($cancel_url) { ?>
-	<tr>
-		<td bgcolor="#E1E1E1">
-			<a href="<?php print $cancel_url;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
-			<input type='image' src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle">
 		</td>
 	</tr>
 <?php }
@@ -411,32 +401,6 @@ function form_save_button($cancel_url, $force_type = "") {
 	</table>
 	</form>
 	<?php
-}
-
-/* ------------------ Stripped Form Objects Data ---------------------- */
-
-/* creates a standard html password textbox */
-function form_base_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size, $type) {
-	if ($form_previous_value == "") {
-		$form_previous_value = htmlspecialchars($form_default_value);
-	}
-	
-	print "<input type='$type'";
-	
-	if (isset($_SESSION["sess_error_fields"])) {
-		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
-			print "class='txtErrorTextBox'";
-			unset($_SESSION["sess_error_fields"][$form_name]);
-		}
-	}
-	
-	if (isset($_SESSION["sess_field_values"])) {
-		if (!empty($_SESSION["sess_field_values"][$form_name])) {
-			$form_previous_value = htmlspecialchars($_SESSION["sess_field_values"][$form_name]);
-		}
-	}
-	
-	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? "maxlength='$form_max_length'" : "") . " value='$form_previous_value'>\n";
 }
 
 /* ------------------ Data Matrix ---------------------- */
