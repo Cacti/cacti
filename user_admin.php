@@ -45,11 +45,26 @@ function draw_user_form_select() {
 			</select>
 		</td>
 		</form>
-		<form method="post" action="<?print basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);?>">
 	</tr>
 <?}
 
-switch ($action) { 
+switch ($action) {
+ case 'save_perms':
+    	db_execute ("delete from auth_graph where userid=$form[id]");
+    	db_execute ("delete from auth_graph_hierarchy where userid=$form[id]");
+	
+	while (list($var, $val) = each($form)) {
+		if (eregi("^[graph|tree|section]", $var)) {
+			if (substr($var, 0, 5) == "graph") {
+			    db_execute ("replace into auth_graph (userid,graphid) values($form[id]," . substr($var, 5) . ")");
+			}elseif (substr($var, 0, 4) == "tree") {
+			    db_execute ("replace into auth_graph_hierarchy (userid,hierarchyid) values($form[id]," . substr($var, 4) . ")");
+			}
+		}
+	}
+	
+	header ("Location: $current_script_name");
+ 	break;
  case 'save':
     	/* only change password when user types on */
 	if ($form[Password] != $form[Confirm]) {
@@ -72,29 +87,38 @@ switch ($action) {
 		$save["GraphSettings"] = $form["GraphSettings"];
 		$save["LoginOpts"] = $form["LoginOpts"];
 		$save["GraphPolicy"] = $form["GraphPolicy"];
-	
-		sql_save($save, "auth_users");
+		
+		$id = sql_save($save, "auth_users");
+		
+		db_execute("delete from auth_acl where userid=$id");
+		while (list($var, $val) = each($form)) {
+			if (eregi("^[section]", $var)) {
+				if (substr($var, 0, 7) == "section") {
+				    db_execute ("replace into auth_acl (userid,sectionid) values($id," . substr($var, 7) . ")");
+				}
+			}
+		}
 	}
     
     	header ("Location: $current_script_name");
 	break;
  case 'remove':
-	if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", $current_script_name, "?action=remove&id=$id");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", $current_script_name, "?action=remove&id=$args[id]");
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
-	    db_execute("delete from auth_users where id=$id");
-	    db_execute("delete from auth_acl where userid=$id");
-	    db_execute("delete from auth_hosts where userid=$id");
-	    db_execute("delete from auth_graph where userid=$id");
-	    db_execute("delete from auth_graph_hierarchy where userid=$id");
-	    db_execute("delete from settings_graphs where userid=$id");
-	    db_execute("delete from settings_viewing_tree where userid=$id");
-	    db_execute("delete from settings_graph_tree where userid=$id");
-	    db_execute("delete from settings_ds_tree where userid=$id");
+	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+	    db_execute("delete from auth_users where id=$args[id]");
+	    db_execute("delete from auth_acl where userid=$args[id]");
+	    db_execute("delete from auth_hosts where userid=$args[id]");
+	    db_execute("delete from auth_graph where userid=$args[id]");
+	    db_execute("delete from auth_graph_hierarchy where userid=$args[id]");
+	    db_execute("delete from settings_graphs where userid=$args[id]");
+	    db_execute("delete from settings_viewing_tree where userid=$args[id]");
+	    db_execute("delete from settings_graph_tree where userid=$args[id]");
+	    db_execute("delete from settings_ds_tree where userid=$args[id]");
 	}
     
     header ("Location: $current_script_name");
@@ -111,11 +135,14 @@ switch ($action) {
 	}
 	
 	draw_user_form_select();
- 	
+ 	new_table();
+	
 	?>
 	<tr>
 		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Preview Settings</td>
 	</tr>
+	
+	<form method="post" action="user_admin.php">
 	<?
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
@@ -199,9 +226,10 @@ switch ($action) {
 	
 	<?
 	DrawFormItemHiddenIDField("ID",$args[id]);
-	DrawFormFooter();
 	
+	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
+	
 	break;
  case 'edit_perms':
 	include_once ("include/top_header.php");
@@ -221,11 +249,14 @@ switch ($action) {
 	}
 	
 	draw_user_form_select();
+	new_table();
 	
 	?>
 	<tr>
 		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C"><strong><?print db_fetch_cell("select username from auth_users where id=$args[id]");?></strong> is Currently is <strong><?print $graph_policy_text;?></strong> to View the Following Graphs:</td>
 	</tr>
+	
+	<form method="post" action="user_admin.php">
 	
 	<?
 	$perm_graphs = db_fetch_assoc("select rrd_graph.Title from
@@ -265,48 +296,51 @@ switch ($action) {
 		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C"><?print $graph_policy_text;?></td>
 	</tr>
 	
-	<td colspan="2" width="100%">
-		<table width="100%">
-			<tr>
-				<td align="top" width="50%">
-	<?
-	
-	if (sizeof($graphs) > 0) {
-		foreach ($graphs as $graph) {
-		    if ($graph[UserID] == "") {
-			$old_value = "";
-		    }else{
-			$old_value = "on";
-		    }
-		    
-		    $column1 = floor(($rows / 2) + ($rows % 2));
-		    
-		    if ($i == $column1) {
-			print "</td><td valign='top' width='50%'>";
-		    }
-				
-		    DrawStrippedFormItemCheckBox("graph".$graph[ID], $old_value, $graph[Title],"",true);
-		    
-		    $i++;
+	<tr>
+		<td colspan="2" width="100%">
+			<table width="100%">
+				<tr>
+					<td align="top" width="50%">
+		<?
+		
+		if (sizeof($graphs) > 0) {
+			foreach ($graphs as $graph) {
+			    if ($graph[UserID] == "") {
+				$old_value = "";
+			    }else{
+				$old_value = "on";
+			    }
+			    
+			    $column1 = floor(($rows / 2) + ($rows % 2));
+			    
+			    if ($i == $column1) {
+				print "</td><td valign='top' width='50%'>";
+			    }
+					
+			    DrawStrippedFormItemCheckBox("graph".$graph[ID], $old_value, $graph[Title],"",true);
+			    
+			    $i++;
+			}
 		}
-	}
-	?>
-				</td>
-			</tr>
-		</table>
-	</td>
+		?>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
     
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save");?>
+			<?DrawFormSaveButton("save_perms");?>
 		</td>
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("ID",$args[id]);
-	DrawFormFooter();
+	DrawFormItemHiddenIDField("id",$args[id]);
 	
+	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
+	
 	break;
  case 'edit':
 	include_once ("include/top_header.php");
@@ -320,11 +354,14 @@ switch ($action) {
 	}
 	
 	draw_user_form_select();
+	new_table();
 	
 	?>
 	<tr>
 		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">User Configuration</td>
 	</tr>
+	
+	<form method="post" action="user_admin.php">
 	<?
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
@@ -415,6 +452,55 @@ switch ($action) {
 		</td>
 	</tr>
 	
+	<?
+	new_table();
+	
+	$sections = db_fetch_assoc("select 
+		auth_acl.UserID,
+		auth_sections.ID, auth_sections.Section
+		from auth_sections
+		left join auth_acl on (auth_sections.id=auth_acl.sectionid and auth_acl.userid=$args[id]) 
+		order by auth_sections.Section");
+	$rows = sizeof($sections);
+	?>
+	
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">User Permissions</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2" width="100%">
+			<table width="100%">
+				<tr>
+					<td align="top" width="50%">
+		<?
+		
+		if (sizeof($sections) > 0) {
+			foreach ($sections as $section) {
+			    if ($section[UserID] == "") {
+				$old_value = "";
+			    }else{
+				$old_value = "on";
+			    }
+			    
+			    $column1 = floor(($rows / 2) + ($rows % 2));
+			    
+			    if ($i == $column1) {
+				print "</td><td valign='top' width='50%'>";
+			    }
+					
+			    DrawStrippedFormItemCheckBox("section".$section[ID], $old_value, $section[Section],"",true);
+			    
+			    $i++;
+			}
+		}
+		?>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save");?>
@@ -424,9 +510,10 @@ switch ($action) {
 	<?
 	DrawFormItemHiddenIDField("ID",$args[id]);
 	DrawFormItemHiddenTextBox("_password",$user[Password],"");
-	DrawFormFooter();
 	
+	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
+	
 	break;
  default:
 	include_once ("include/top_header.php");
@@ -441,6 +528,7 @@ switch ($action) {
 	
 	$user_list = db_fetch_assoc("select ID,Username,FullName,GraphPolicy from auth_users order by Username");
 	
+	if (sizeof($user_list) > 0) {
 	foreach ($user_list as $user) {
 		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 			?>
@@ -459,6 +547,7 @@ switch ($action) {
 		</tr>
 	<?
 	$i++;
+	}
 	}
     
 	include_once ("include/bottom_footer.php");
