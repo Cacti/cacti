@@ -101,8 +101,9 @@ function host_remove() {
 
 function host_new_graphs_save() {
 	include_once ("include/utility_functions.php");
+	include_once ("include/xml_functions.php");
 	
-	global $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item;
+	global $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item, $paths;
 	
 	$selected_graphs_array = unserialize(stripslashes($_POST["selected_graphs_array"]));
 	
@@ -118,6 +119,9 @@ function host_new_graphs_save() {
 					$graph_template_id = $form_id2;
 					$snmp_index_array = $form_array3;
 				}
+				
+				$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id"))));
+				$snmp_query_array = xml2array($data);
 			}
 			
 			unset($save);
@@ -138,6 +142,24 @@ function host_new_graphs_save() {
 					change_graph_template($local_graph_id, $graph_template_id, true);
 					$new_graph_templates["sg"][$snmp_query_id][$graph_template_id] .= $local_graph_id . ":";
 					$new_graph_snmp_indexes[$snmp_query_id][$local_graph_id] = $snmp_index;
+					
+					/* suggested values for snmp query code */
+					if (isset($snmp_query_array["suggested_values"][0]["graph"])) {
+						while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]["graph"][0])) {
+							while (list($sv_name, $sv_value) = each($sv_array[0])) {
+								/* once we find a match; don't try to find more */
+								if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $sv_field_name})) {
+									$subs_string = subsitute_host_data($sv_value, "|", "|", $_POST["host_id"]);
+									$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
+								}
+								
+								/* if there are no '|' characters, all of the subsitutions were successful */
+								if (!strstr($subs_string, "|")) {
+									$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $sv_field_name} = $subs_string;
+								}
+							}
+						}
+					}
 				}
 			}
 			
@@ -174,6 +196,24 @@ function host_new_graphs_save() {
 						change_data_template($local_data_id, $data_template["id"]);
 						$new_data_templates["sg"][$snmp_query_id]{$data_template["id"]} .= $local_data_id . ":";
 						$new_data_snmp_indexes[$snmp_query_id][$local_data_id] = $snmp_index;
+						
+						/* suggested values for snmp query code */
+						if (isset($snmp_query_array["suggested_values"][0]["ds"])) {
+							while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]["ds"][0])) {
+								while (list($sv_name, $sv_value) = each($sv_array[0])) {
+									/* once we find a match; don't try to find more */
+									if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $sv_field_name})) {
+										$subs_string = subsitute_host_data($sv_value, "|", "|", $_POST["host_id"]);
+										$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
+									}
+									
+									/* if there are no '|' characters, all of the subsitutions were successful */
+									if (!strstr($subs_string, "|")) {
+										$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $sv_field_name} = $subs_string;
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -378,6 +418,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					$snmp_queries = xml2array($data);
 					$xml_outputs = array();
 					
+					/* list each of the input fields for this snmp query */
 					while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
 						$field_array = $field_array[0];
 						
@@ -431,7 +472,18 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]</span></td></tr>";
 					}
 					
-					draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $field_name, $graph_template[$field_name]);
+					/* we must treat suggested values for snmp queries different because one
+					entry here might might 20 graphs... so we can't automatically fill in the 
+					values */
+					if ((!empty($snmp_query_id)) && ($snmp_queries["suggested_values"][0]["graph"][0][$field_name])) {
+						print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>";
+						print "<td><strong>" . $struct_graph[$field_name]["title"] . "</strong></td>";
+						print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
+						print "</td></tr>\n";
+					}else{
+						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $field_name, $data_template[$field_name]);
+					}
+					
 					$row_counter = 0; $drew_items = true;
 				}
 			}
@@ -480,7 +532,18 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 							print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</span></td></tr>";
 						}
 						
-						draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $field_name, $data_template[$field_name]);
+						/* we must treat suggested values for snmp queries different because one
+						entry here might might 20 graphs... so we can't automatically fill in the 
+						values */
+						if ((!empty($snmp_query_id)) && ($snmp_queries["suggested_values"][0]["ds"][0][$field_name])) {
+							print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>";
+							print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
+							print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
+							print "</td></tr>\n";
+						}else{
+							draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $field_name, $data_template[$field_name]);
+						}
+						
 						$row_counter = 0; $drew_items = true;
 					}
 				}
@@ -721,6 +784,9 @@ function host_edit() {
 			if ($field_array["direction"] == "input") {
 				DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
 				$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
+				
+				/* insert blank data so the TD is rendered even if there is no data */
+				$snmp_query_data[$field_name]{$data["snmp_index"]} = "";
 				
 				if (sizeof($raw_data) > 0) {
 				foreach ($raw_data as $data) {
