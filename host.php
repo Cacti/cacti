@@ -200,6 +200,7 @@ function host_remove() {
 		db_execute("delete from host_snmp_query where host_id=" . $_GET["id"]);
 		db_execute("delete from host_snmp_cache where host_id=" . $_GET["id"]);
 		db_execute("delete from data_input_data_cache where host_id=" . $_GET["id"]);
+		db_execute("delete from graph_tree_items where host_id=" . $_GET["id"]);
 		
 		db_execute("update data_local set host_id=0 where host_id=" . $_GET["id"]);
 		db_execute("update graph_local set host_id=0 where host_id=" . $_GET["id"]);
