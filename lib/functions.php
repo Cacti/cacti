@@ -239,7 +239,7 @@ function log_data($string, $output = false) {
 	
 	/* echo the data to the log (append) */
 	$fp = fopen(read_config_option("path_webroot") . read_config_option("path_webcacti") . "/log/rrd.log", "a");
-	fwrite($fp, "$date - $string\n");
+	@fwrite($fp, "$date - $string\n");
 	fclose($fp);
 	
 	if ($output == true) {
@@ -843,6 +843,76 @@ function reverse_lines($string) {
 	}
 	
 	return $newstr;
+}
+
+function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_templates) {
+	$sql_or = "";
+	$sql_and = "";
+	$sql_policy_or = "";
+	$sql_policy_and = "";
+	
+	if ($policy_graphs == "1") {
+		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type is null)";
+		$sql_and = " AND ";
+		$sql_null = "is null";
+	}elseif ($policy_graphs == "2") {
+		$sql_policy_or .= "$sql_or(user_auth_perms.type = 1 OR user_auth_perms.type is not null)";
+		$sql_or = " OR ";
+		$sql_null = "is not null";
+	}
+	
+	if ($policy_hosts == "1") {
+		$sql_policy_and .= "$sql_and((user_auth_perms.type != 3) OR (user_auth_perms.type is null))";
+		$sql_and = " AND ";
+	}elseif ($policy_hosts == "2") {
+		$sql_policy_or .= "$sql_or((user_auth_perms.type = 3) OR (user_auth_perms.type is not null))";
+		$sql_or = " OR ";
+	}
+	
+	if ($policy_graph_templates == "1") {
+		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type is null))";
+		$sql_and = " AND ";
+	}elseif ($policy_graph_templates == "2") {
+		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type is not null))";
+		$sql_or = " OR ";
+	}
+	
+	$sql_and = "";
+	$sql = "(";
+	
+	if (!empty($sql_policy_or)) {
+		$sql_and = "AND ";
+		$sql .= $sql_policy_or;
+	}
+	
+	if (!empty($sql_policy_and)) {
+		$sql .= "$sql_and$sql_policy_or";
+	}
+	
+	$sql .= ")";
+	
+	return $sql;
+}
+
+function is_graph_allowed($local_graph_id) {
+	$current_user = db_fetch_row("select policy_graphs,policy_hosts,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
+	
+	$graphs = db_fetch_assoc("select
+		graph_templates_graph.local_graph_id
+		from graph_templates_graph,graph_local
+		left join host on host.id=graph_local.host_id
+		left join graph_templates on graph_templates.id=graph_local.graph_template_id
+		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+		where graph_templates_graph.local_graph_id=graph_local.id
+		and " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]) . "
+		and graph_templates_graph.local_graph_id=$local_graph_id
+		group by graph_templates_graph.local_graph_id");
+	
+	if (sizeof($graphs) > 0) {
+		return true;
+	}else{
+		return false;
+	}
 }
 
 ?>

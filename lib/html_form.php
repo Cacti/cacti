@@ -569,9 +569,9 @@ function draw_tree_dropdown($current_tree_id) {
 	if (read_config_option("global_auth") == "on") {
 		$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 		
-		if ($current_user["graph_policy"] == "1") {
+		if ($current_user["policy_graphs"] == "1") {
 			$sql_where = "where user_auth_tree.user_id is null";
-		}elseif ($current_user["graph_policy"] == "2") {
+		}elseif ($current_user["policy_graphs"] == "2") {
 			$sql_where = "where user_auth_tree.user_id is not null";
 		}
 		

@@ -76,9 +76,9 @@ case 'tree':
 			give an "access denied" message */
 			$user_auth = db_fetch_row("select user_id from user_auth_tree where tree_id=" . $_SESSION["sess_view_tree_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
 			
-			if ($current_user["graph_policy"] == "1") {
+			if ($current_user["policy_graphs"] == "1") {
 				if (sizeof($user_auth) > 0) { $access_denied = true; }
-			}elseif ($current_user["graph_policy"] == "2") {
+			}elseif ($current_user["policy_graphs"] == "2") {
 				if (sizeof($user_auth) == 0) { $access_denied = true; }
 			}
 			
@@ -131,13 +131,11 @@ case 'preview':
 	
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
-		if ($current_user["graph_policy"] == "1") {
-			$sql_where = "where user_auth_graph.user_id is null";
-		}elseif ($current_user["graph_policy"] == "2") {
-			$sql_where = "where user_auth_graph.user_id is not null";
-		}
+		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		
-		$sql_join = "left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ")";
+		$sql_join = "left join host on host.id=graph_local.host_id
+			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
 	}
 	
 	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
@@ -165,11 +163,11 @@ case 'preview':
 	}
 	
 	
-	$sql_base = "from graph_templates_graph 
+	$sql_base = "from graph_templates_graph,graph_local
 		$sql_join
-		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		$sql_where
 		" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
+		and graph_templates_graph.local_graph_id=graph_local.id
 		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
 		$sql_or";
@@ -181,9 +179,10 @@ case 'preview':
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title_cache
 		$sql_base
+		group by graph_templates_graph.local_graph_id
 		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
-			
+	
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 	
 	?>
@@ -285,21 +284,19 @@ case 'list':
 	
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
-		if ($current_user["graph_policy"] == "1") {
-			$sql_where = "where user_auth_graph.user_id is null";
-		}elseif ($current_user["graph_policy"] == "2") {
-			$sql_where = "where user_auth_graph.user_id is not null";
-		}
-		
-		$graphs = db_fetch_assoc("select 
+		$graphs = db_fetch_assoc("select
 			graph_templates_graph.local_graph_id,
 			graph_templates_graph.title_cache,
 			graph_templates_graph.height,
 			graph_templates_graph.width
-			from graph_templates_graph 
-			left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ") 
-			$sql_where
-			and graph_templates_graph.local_graph_id > 0
+			from graph_templates_graph,graph_local
+			left join host on host.id=graph_local.host_id
+			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+			where graph_templates_graph.local_graph_id=graph_local.id
+			and graph_templates_graph.local_graph_id>0
+			and " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]) . "
+			group by graph_templates_graph.local_graph_id
 			order by graph_templates_graph.title_cache");
 	}else{
 		$graphs = db_fetch_assoc("select 

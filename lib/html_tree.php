@@ -46,9 +46,9 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
-		if ($current_user["graph_policy"] == "1") {
+		if ($current_user["policy_graphs"] == "1") {
 			$sql_where = "and (user_auth_graph.user_id is null OR graph_tree_items.local_graph_id=0)";
-		}elseif ($current_user["graph_policy"] == "2") {
+		}elseif ($current_user["policy_graphs"] == "2") {
 			$sql_where = "and (user_auth_graph.user_id is not null OR graph_tree_items.local_graph_id=0)";
 		}
 		

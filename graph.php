@@ -34,27 +34,19 @@ if ($_GET["rra_id"] == "all") {
 	$sql_where = " where id=" . $_GET["rra_id"];
 }
 
+/* make sure the graph requested exists (sanity) */
+if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]))) {
+	print "<strong><font size='+1' color='FF0000'>GRAPH DOES NOT EXIST</font></strong>"; exit;
+}
+
 /* take graph permissions into account here, if the user does not have permission
 give an "access denied" message */
 if (read_config_option("global_auth") == "on") {
-	$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=" . $_GET["local_graph_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
-	
-	$access_denied = false;
-	
-	if ($current_user["graph_policy"] == "1") {
-		if (sizeof($user_auth) > 0) { $access_denied = true; }
-	}elseif ($current_user["graph_policy"] == "2") {
-		if (sizeof($user_auth) == 0) { $access_denied = true; }
-	}
+	$access_denied = !(is_graph_allowed($_GET["local_graph_id"]));
 	
 	if ($access_denied == true) {
 		print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
 	}
-}
-
-/* make sure the graph requested exists (sanity) */
-if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]))) {
-	print "<strong><font size='+1' color='FF0000'>GRAPH DOES NOT EXIST</font></strong>"; exit;
 }
 
 $rras = db_fetch_assoc("select id,name from rra $sql_where order by steps");
