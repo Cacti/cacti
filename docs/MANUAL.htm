@@ -3,678 +3,498 @@
 <html>
 <head>
 	<title>cacti Documentation</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link href="main.css" rel="stylesheet">
+	<style>
+	<!--
+		BODY
+		{
+			font-size: 10pt;
+			font-family: Arial, sans-serif;
+		}
+		
+		P.code
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: bold;
+			margin: 5px;
+			padding: 5px;
+			color: #000066;
+			background-color: #EEEEEE;
+		}
+		
+		TT.shell
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #999999;
+		}
+		
+		P.php
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #000000;
+			margin: 5px;
+			padding: 5px;
+			background-color: #EEEEEE;
+		}
+		
+		TT.php-var
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #008080;
+		}
+	-->
+	</style>
 </head>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body>
 
-<table height="1%" width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td colspan="3" bgcolor="#454E53">
-			<map name="tabs">
-				<area alt="Console" coords="7,5,87,35" href="../index.php">
-				<area alt="Graphs" coords="166,5,241,32" href="../graph_view.php?action=tree" shape="RECT">
-				<area alt="Documentation" coords="88,5,165,32" href="MANUAL.htm">
-			</map>
-			
-			<img src="images/top_tabs_main.gif" border="0" usemap="#tabs"><br>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="3" bgcolor="#E5E5E5">
-			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
-		</td>
-	</tr>
-	<tr>
-		<td height="27" colspan="3" bgcolor="#E5E5E5" background="images/top_banner.gif">
-			&nbsp;
-		</td>
-	</tr>
-	<tr>
-		<td colspan="3" bgcolor="#E5E5E5">
-			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
-		</td>
-	</tr>
-	<tr height="5" bgcolor="#454E53"><td colspan="3"><img src="images/transparent_line.gif" width="20" height="5" border="0"></td></tr>
-</table>
+<h2>Cacti Documentation</h2><p>
 
-<br>
-
-<table align="center" width="98%" cellspacing="0" cellpadding="0" border="0">
-	<tr>
-		<td>
-		<font class="header">cacti Documentation Outline</font>
-		
+<ul>
+	<li>1. <a href="MANUAL.htm#1">Installation</a></li>
+	<li>2. <a href="MANUAL.htm#2">Permissions/User Management</a></li>
 		<ul>
-			<li>1. <a href="MANUAL.htm#1">Installation</a></li>
-		 	<li>2. <a href="MANUAL.htm#2">Permissions/User Management</a></li>
-				<ul>
-					<li>2.1. <a href="MANUAL.htm#2.1">Default Users</a></li>
-					<li>2.2. <a href="MANUAL.htm#2.2">How to Access User Management</a></li>
-					<li>2.3. <a href="MANUAL.htm#2.3">Adding a New User</a></li>
-					<li>2.4. <a href="MANUAL.htm#2.4">Graph Permissions</a> <strong>(NEW)</strong></li>
-				</ul>
-			<li>3. <a href="MANUAL.htm#3">Creating a Graph</a></li>
-			<ul>
-				<li>3.1. <a href="MANUAL.htm#3.1">Overview</a></li>
-				<li>3.2. <a href="MANUAL.htm#3.2">Data Input Sources</a></li>
-		  		<ul>
-					<li>3.2.1. <a href="MANUAL.htm#3.2.1">Data Input Overview</a></li>
-					<li>3.2.2. <a href="MANUAL.htm#3.2.2">Pre-Installed Data Input Sources</a></li>
-					<li>3.2.3. <a href="MANUAL.htm#3.2.3">How to Add/Remove Data Input Sources</a></li>
-		   		</ul>
-				<li>3.3. <a href="MANUAL.htm#3.3">Data Sources</a></li>
-				<ul>
-					<li>3.3.1. <a href="MANUAL.htm#3.3.1">Data Source Overview</a></li>
-					<li>3.3.2. <a href="MANUAL.htm#3.3.2">How to Add/Remove Data Sources</a></li>
-					<li>3.3.3. <a href="MANUAL.htm#3.3.3">Round Robin Archives</a></li>
-				</ul>
-				<li>3.4. <a href="MANUAL.htm#3.4">CDEF's</a></li>
-				<ul>
-					<li>3.4.1. <a href="MANUAL.htm#3.4.1">CDEF's in cacti/Overview</a></li>
-					<li>3.4.2. <a href="MANUAL.htm#3.4.2">How to Create a CDEF in cacti</a></li>
-				</ul>
-				<li>3.5. <a href="MANUAL.htm#3.5">Graphs</a></li>
-				<ul>
-					<li>3.5.1. <a href="MANUAL.htm#3.5.1">How to Add/Remove Graphs</a></li>
-					<li>3.5.2. <a href="MANUAL.htm#3.5.2">How to Add/Remove Graph Items</a></li>
-				</ul>
-		        </ul>
+			<li>2.1. <a href="MANUAL.htm#2.1">Default Users</a></li>
+			<li>2.2. <a href="MANUAL.htm#2.2">How to Access User Management</a></li>
+			<li>2.3. <a href="MANUAL.htm#2.3">Adding a New User</a></li>
+			<li>2.4. <a href="MANUAL.htm#2.4">Graph Permissions</a> <strong>(NEW)</strong></li>
 		</ul>
-		</td>
-	</tr>
-</table>
+	<li>3. <a href="MANUAL.htm#3">Creating a Graph</a></li>
+	<ul>
+		<li>3.1. <a href="MANUAL.htm#3.1">Overview</a></li>
+		<li>3.2. <a href="MANUAL.htm#3.2">Data Input Sources</a></li>
+		<ul>
+			<li>3.2.1. <a href="MANUAL.htm#3.2.1">Data Input Overview</a></li>
+			<li>3.2.2. <a href="MANUAL.htm#3.2.2">Pre-Installed Data Input Sources</a></li>
+			<li>3.2.3. <a href="MANUAL.htm#3.2.3">How to Add/Remove Data Input Sources</a></li>
+		</ul>
+		<li>3.3. <a href="MANUAL.htm#3.3">Data Sources</a></li>
+		<ul>
+			<li>3.3.1. <a href="MANUAL.htm#3.3.1">Data Source Overview</a></li>
+			<li>3.3.2. <a href="MANUAL.htm#3.3.2">How to Add/Remove Data Sources</a></li>
+			<li>3.3.3. <a href="MANUAL.htm#3.3.3">Round Robin Archives</a></li>
+		</ul>
+		<li>3.4. <a href="MANUAL.htm#3.4">CDEF's</a></li>
+		<ul>
+			<li>3.4.1. <a href="MANUAL.htm#3.4.1">CDEF's in cacti/Overview</a></li>
+			<li>3.4.2. <a href="MANUAL.htm#3.4.2">How to Create a CDEF in cacti</a></li>
+		</ul>
+		<li>3.5. <a href="MANUAL.htm#3.5">Graphs</a></li>
+		<ul>
+			<li>3.5.1. <a href="MANUAL.htm#3.5.1">How to Add/Remove Graphs</a></li>
+			<li>3.5.2. <a href="MANUAL.htm#3.5.2">How to Add/Remove Graph Items</a></li>
+		</ul>
+	</ul>
+</ul>
 
+<h3>1. Installation</h3><a name="1"></a>
 
-<table align="center" width="98%" cellspacing="0" cellpadding="2" border="1">
-	<tr>
-		<td class="cell2">
-		<font class="header">1. Installation</font><a name="1"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p><b>1)</b> Extract the cacti tarball, like 'tar -xvzf cacti-0.3.tar.gz',
-		and cd to the new directory.</p>
+<p>See installation documention for <a href="INSTALL.htm">Unix-based</a> platforms or <a href="INSTALL-WIN32.htm">Windows-based</a> platforms.</p>
 
-		<p><b>2)</b> Create a database for cacti using syntax like:
-		mysqladmin -u root -p create cacti</p>
+<h3>2. Permissions/User Management</h3><a name="2"></a>
+<h3>2.1. Default Users</h3><a name="2.1"></a>
 
-		<p><b>3)</b> Then import the cacti database:
-		mysql -u root -p cacti &lt; SQL</p>
+<p>By default cacti comes with the following users:</p>
 
-		<p><b>4)</b> Edit config.php in 'include/', make sure to give a valid SQL
-		user name, password, and database.</p>
+<p><b>admin</b> - This user has privileges to everything in cacti, comes with the password 'admin' by
+default.<br>
+<b>guest</b> - The user that is used to view graphs with. You do not need a password to view graphs
+by default, so it is advised not to give this user extra permissions.</p>
 
-		<p>NOTE: Be sure the MySQL user you give cacti has at least:</p>
+<h3>2.2. How to Access User Management</h3><a name="2.2"></a>
 
-		<p>SELECT<br>
-		INSERT<br>
-		UPDATE<br>
-		DELETE<br>
-		CREATE<br>
-		ALTER<br></p>
+<p>Login to cacti with 'admin' or another eqivilant user and select "User Administration" on
+the cacti menu.</p>
 
-		<p>Privileges to cacti's database!</p>
-		
-		<p><b>5)</b> For cacti to run correctly, you must have the following settings
-		set accordingly in your php.ini file:</p>
-		
-		<p><em>register_globals = On<br> 
-		register_argc_argv = On</em></p>
-		
-		<p><b>6)</b> Become root, and add a line to your /etc/crontab similar to:<br>
-		*/5 * * * * apache php PATH_TO_CMD.PHP/cmd.php > /dev/null 2>&1</p>
+<h3>2.3. Adding a New User</h3><a name="2.3"></a>
 
-		<p>Make sure to fill in the correct path to cacti on your system.</p>
+<p>To add a new user, click the 'Add' link on the main user administration page.</p>
 
-		<p>IMPORTANT!<br>
-		Also, make sure you replace 'apache' with your web server user,
-		this user MUST have write access to the following directories in order
-		to log data and create the rrdtool RRA files.</p>
+<p><b>Full Name</b> - A description of this user.</p>
 
-		<p>log/*<br>
-		rra/*</p>
+<p><b>User Name</b> (Required) - The user name assigned to this user, no spaces please.</p>
 
-		<p>If files do not start appearing in the 'rra/' directory after 5 minutes of
-		adding your crontab entry, check your permissions.</p>
+<p><b>Password</b> (Required) - Enter this user's password twice.</p>
 
-		<p><b>7)</b> Point your browser to http://servername/cacti/, or where ever else
-		you put it.</p>
+<p><b>User Must Change Password at Next Login</b> - Check this box to force this user to change their
+password upon their next successful login.</p>
 
-		<p><b>8)</b> For each new install/upgrade, cacti will check the variables in config.php
-		to make sure everything is valid. If everything looks ok, then cacti will
-		update the database if it finds a previous version and give you any last
-		minute information.</p>
+<p><b>Allow this User to Keep Custom Graph Settings</b> - If you check this box this user will
+be allowed to set custom graph-view settings such as graph columns, height, width and page
+refresh times. This will also determine if a user can expand/contract branches in a
+graph hierarchy. <strong>NOTE:</strong> Even if you deny a user from changing their graph
+settings, the existing settings will still be used. This will allow administrators to
+create "default" settings for each user.</p>
 
-		<p><b>9)</b> Go to http://servername/cacti/ again to use cacti.
-		For new installs, you must login in with the account name of admin with
-		a password of admin you will be forced to change this password once
-		you successfully login for the first time.</p>
+<p><strong>User Has Rights to View ...</strong> - This allows you to specify what graph sections
+this user is allowed to view.</p>
 
-		<p><b>10)</b> Sample graphs have already been created, yet data will not begin to
-		be gathered until the entry in crontab has been successfully setup.</p>
-		</td>
-	</tr>
+<p><strong>Login Settings</strong> - Control what page is displayed immediatly after this user
+logs in.</p>
 
+<p>Once the user is created, it will not be able to login until you assign it at least
+the 'Console Access' privilege under 'Allowed Sections'.</p>
 
-	<tr>
-		<td class="cell2">
-		<font class="header">2. Permissions/User Management</font><a name="2"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">2.1. Default Users</font><a name="2.1"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>By default cacti comes with the following users:</p>
+<h3>2.4. Graph Permissions</h3><a name="2.4"></a>
 
-		<p><b>admin</b> - This user has privileges to everything in cacti, comes with the password 'admin' by
-		default.<br>
-		<b>guest</b> - The user that is used to view graphs with. You do not need a password to view graphs
-		by default, so it is advised not to give this user extra permissions.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">2.2. How to Access User Management</font><a name="2.3"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>Login to cacti with 'admin' or another eqivilant user and select "User Administration" on
-		the cacti menu.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">2.3. Adding a New User</font><a name="2.3"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>To add a new user, click the 'Add' link on the main user administration page.</p>
+<p>To change the graph permissions for any user, select "Graph Permissions" next to the username
+under the "User Administration" section of cacti.</p>
 
-		<p><b>Full Name</b> - A description of this user.</p>
-		
-		<p><b>User Name</b> (Required) - The user name assigned to this user, no spaces please.</p>
-		
-		<p><b>Password</b> (Required) - Enter this user's password twice.</p>
-		
-		<p><b>User Must Change Password at Next Login</b> - Check this box to force this user to change their
-		password upon their next successful login.</p>
-		
-		<p><b>Allow this User to Keep Custom Graph Settings</b> - If you check this box this user will
-		be allowed to set custom graph-view settings such as graph columns, height, width and page
-		refresh times. This will also determine if a user can expand/contract branches in a
-		graph hierarchy. <strong>NOTE:</strong> Even if you deny a user from changing their graph
-		settings, the existing settings will still be used. This will allow administrators to
-		create "default" settings for each user.</p>
-		
-		<p><strong>User Has Rights to View ...</strong> - This allows you to specify what graph sections
-		this user is allowed to view.</p>
-		
-		<p><strong>Login Settings</strong> - Control what page is displayed immediatly after this user
-		logs in.</p>
-		
-		<p>Once the user is created, it will not be able to login until you assign it at least
-		the 'Console Access' privilege under 'Allowed Sections'.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">2.4. Graph Permissions</font><a name="2.4"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>To change the graph permissions for any user, select "Graph Permissions" next to the username
-		under the "User Administration" section of cacti.</p>
-		
-		<p>In the first section, check each graph you want to DENY this user from. This is the most
-		secure way to deny users from viewing graphs, since there is no obvious way a sneaky user
-		could bookmark an unauthorized graph to view it. Graphs which users do not have permission to
-		view will be hidden from the user in all areas of cacti.</p>
-		
-		<p>In the second section, check each graph hierarchy you want to HIDE from this user. Please
-		note that this method only hides the graph hierarchy from view and does not explicitly deny it
-		like the above options.</p>
-		
-		<p>For further user control, refer to the "User Has Rights to View ..." section of
-		<a href="MANUAL.htm#2.3">Adding a New User</a>.</p>
-		</td>
-	</tr>
-	
-	
-	<tr>
-		<td class="cell2">
-		<font class="header">3. Creating a Graph</font><a name="3"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.1. Overview</font><a name="3.1"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>Creating a simple, rrdtool based graph is a very easy with cacti. Even using more advanced features
-		such as CDEF's are much easier than implementing them manually.</p>
+<p>In the first section, check each graph you want to DENY this user from. This is the most
+secure way to deny users from viewing graphs, since there is no obvious way a sneaky user
+could bookmark an unauthorized graph to view it. Graphs which users do not have permission to
+view will be hidden from the user in all areas of cacti.</p>
 
-		<p>The basic "flow" of things in cacti is as follows:</p>
+<p>In the second section, check each graph hierarchy you want to HIDE from this user. Please
+note that this method only hides the graph hierarchy from view and does not explicitly deny it
+like the above options.</p>
 
-		<p>Data Input Sources are required for Data Sources to gather data. They pretty much tell where a Data
-		Source to get data from. A Data Source is some piece of data you are gathering whether is be processes
-		on a server, traffic on a switch, or whatever. You can then place Data Sources on graphs to show the
-		data that has been gathered.</p>
-		</td>
-	<tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.2. Data Input Sources</font><a name="3.2"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.2.1. Data Input Overview</font><a name="3.2.1"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>A data input source is simply an external program that is called to gather data for cacti.</p>
+<p>For further user control, refer to the "User Has Rights to View ..." section of
+<a href="MANUAL.htm#2.3">Adding a New User</a>.</p>
 
-		<p>Every five minutes, each data input is called for each data source it is used in. Input for the
-		external programs can be gathered on a per-data source basis and can be fully customized. Output
-		parameters are also defined telling cacti what to expect back from the external program. One
-		of these parameters must be used to for updating the .rrd file, but more can be specified and
-		stored in the database for use on the graph.</p>
-		</td>
-	<tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.2.2. Pre-Installed Data Input Sources</font><a name="3.2.2"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>The following data sources come with cacti and can be used to gather data for your graphs.</p>
+<h3>3. Creating a Graph</h3><a name="3"></a>
+<h3>3.1. Overview</h3><a name="3.1"></a>
 
-		<p><b>Get Custom TCP Connections</b> - Give a <i></i>string to "grep" for in netstat output and outputs the number
-		of resulting lines.<br>
-		<b>Get Load Average</b> - Specify either (5,15, or 30) to return a load average for that interval (yes I know
-		it's 1, 5, and 10, probably only works right on Linux).<br>
-		<b>Get Logged In Users</b> - Pass a <i></i>username to get the number of instances of that user logged in, or NULL to
-		return the total number of users logged in.<br>
-		<b>Get Memory Usage</b> - Give it<i></i> a "grep" string to use on the output of /proc/meminfo to return memory
-		statistics on a Linux machine.<br>
-		<b>Get Number of Open Samba Files</b> - Returns<i></i> the number of open Samba files.<br>
-		<b>Get SNMP Data</b> - Give it<i></i> a host, SNMP community and OID and it returns the value for that SNMP
-		OID.<br>
-		<b>Get SNMP Network Data</b> - (Used f<i></i>or builtin SNMP support) Give it a host, SNMP community, "in" or
-		"out", and one or more of the following: interface MAC Address, IP Address, Number, or Description.
-		This script will then return the SNMP counter value representing this interface's traffic.<br>
-		<b>Get SQL Connections</b> - Returns<i></i> the number of "questions" asked of a MySQL server. You may have to edit
-		the username and password in the script (sql.pl).<br>
-		<b>Get Web Hits</b> - Returns<i></i> the number of lines in any file specified (you would normally specify the path
-		to an Apache log file).<br>
-		<b>Ping Host</b> - Return <i></i>the number of milliseconds it takes to respond given a hostname and the number of times
-		to ping the host.<br>
-		</p>
-		</td>
-	<tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.2.3. How to Add/Remove Data Input Sources</font><a name="3.2.3"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>1. Click "Data Source" on the cacti menu and click "Add" to create a new data input source.</p>
+<p>Creating a simple, rrdtool based graph is a very easy with cacti. Even using more advanced features
+such as CDEF's are much easier than implementing them manually.</p>
 
-		<p><b>Name</b> - Make up some meaningful name for this data input source to identify what it is used for.</p>
+<p>The basic "flow" of things in cacti is as follows:</p>
 
-		<p><b>Input String</b> - You must specify the path to the external program you are calling, along with any
-		parameters (optional) that the user must enter. A typical input string looks similar to the following:</p>
+<p>Data Input Sources are required for Data Sources to gather data. They pretty much tell where a Data
+Source to get data from. A Data Source is some piece of data you are gathering whether is be processes
+on a server, traffic on a switch, or whatever. You can then place Data Sources on graphs to show the
+data that has been gathered.</p>
 
-		<p><i>/path/to/script.pl &lt;arg1&gt; &lt;arg2&gt;</i></p>
+<h3>3.2. Data Input Sources</h3><a name="3.2"></a>
+<h3>3.2.1. Data Input Overview</h3><a name="3.2.1"></a>
 
-		<p>With the following setup, every time the user created a data source using this data input source
-		they would have to enter a value for "arg1" and "arg2". For demonstration sake, let's say this was a ping
-		script that took an <i>IP address</i> and <i>number of times to ping</i> as arguments, cacti would then execute a
-		command similar to:</p>
+<p>A data input source is simply an external program that is called to gather data for cacti.</p>
 
-		<p><i>/path/to/script.pl 192.168.1.1 2</i></p>
+<p>Every five minutes, each data input is called for each data source it is used in. Input for the
+external programs can be gathered on a per-data source basis and can be fully customized. Output
+parameters are also defined telling cacti what to expect back from the external program. One
+of these parameters must be used to for updating the .rrd file, but more can be specified and
+stored in the database for use on the graph.</p>
 
-		<p><b>Output String</b> - Cacti needs to know what to expect back from the script and is setup the
-		same way as the input string. Let's say our ping script above returns <i>milliseconds</i> and <i>"up" or "down"</i>.
-		The output string would probably looks something like:</p>
+<h3>3.2.2. Pre-Installed Data Input Sources</h3><a name="3.2.2"></a>
 
-		<i>&lt;ms&gt; &lt;updown&gt;</i>
+<p>The following data sources come with cacti and can be used to gather data for your graphs.</p>
 
-		<p>That of course assumes that the external program delimits the output arguments with spaces, make to sure
-		format your output string appropriately. Also note that unlike the input string, <b>every data input source
-		must have at least one output argument!</b></p>
+<p><b>Get Custom TCP Connections</b> - Give a <i></i>string to "grep" for in netstat output and outputs the number
+of resulting lines.<br>
+<b>Get Load Average</b> - Specify either (5,15, or 30) to return a load average for that interval (yes I know
+it's 1, 5, and 10, probably only works right on Linux).<br>
+<b>Get Logged In Users</b> - Pass a <i></i>username to get the number of instances of that user logged in, or NULL to
+return the total number of users logged in.<br>
+<b>Get Memory Usage</b> - Give it<i></i> a "grep" string to use on the output of /proc/meminfo to return memory
+statistics on a Linux machine.<br>
+<b>Get Number of Open Samba Files</b> - Returns<i></i> the number of open Samba files.<br>
+<b>Get SNMP Data</b> - Give it<i></i> a host, SNMP community and OID and it returns the value for that SNMP
+OID.<br>
+<b>Get SNMP Network Data</b> - (Used f<i></i>or builtin SNMP support) Give it a host, SNMP community, "in" or
+"out", and one or more of the following: interface MAC Address, IP Address, Number, or Description.
+This script will then return the SNMP counter value representing this interface's traffic.<br>
+<b>Get SQL Connections</b> - Returns<i></i> the number of "questions" asked of a MySQL server. You may have to edit
+the username and password in the script (sql.pl).<br>
+<b>Get Web Hits</b> - Returns<i></i> the number of lines in any file specified (you would normally specify the path
+to an Apache log file).<br>
+<b>Ping Host</b> - Return <i></i>the number of milliseconds it takes to respond given a hostname and the number of times
+to ping the host.<br>
+</p>
 
-		<p>2. Click save once you have finished filling in all of the fields. You will now see "Current Data Input Source
-		Fields" lower down on the page. You must create an entry here for <b>EVERY</b> input and output argument used
-		above.</p>
+<h3>3.2.3. How to Add/Remove Data Input Sources</h3><a name="3.2.3"></a>
 
-		<p>3. Click "Add" to begin defining your fields.</p>
+<p>1. Click "Data Source" on the cacti menu and click "Add" to create a new data input source.</p>
 
-		<p><b>Name</b> - The friendly name cacti will use to refer to this field, you may type anything meaningful here.</p>
+<p><b>Name</b> - Make up some meaningful name for this data input source to identify what it is used for.</p>
 
-		<p><b>Data Name</b> - Enter the name of this field matching it <b>EXACTLY</b> to its use in the input/output string. Please
-		do not include the "&lt;" and "&gt;" signs here. This field also cannot contain spaces or other non-alphanumeric
-		characters. Good entries here would be like ("ms", "output_str", "arg1", or "string").</p>
+<p><b>Input String</b> - You must specify the path to the external program you are calling, along with any
+parameters (optional) that the user must enter. A typical input string looks similar to the following:</p>
 
-		<p><b>Input/Output Field</b> - You <b>MUST</b> select whether this argument is used in the input or output string.</p>
+<p><i>/path/to/script.pl &lt;arg1&gt; &lt;arg2&gt;</i></p>
 
-		<p><b>Use for RRA</b> - If you want data sources using this data input source to keep track of the data
-		gathered then you <b>MUST</b> check this box for at one of your output arguments. Since rrdtool can only store numbers,
-		only check this box for an output argument that returns a number. <strong><font color="#FF0000">UPDATE</font></strong>: You
-		may check this box for each output argument you want to write to the .rrd file. If you check
-		this box more than once, cacti will automatically create an additional data sources for each
-		output item when creating a new data source using this data input source.</p>
+<p>With the following setup, every time the user created a data source using this data input source
+they would have to enter a value for "arg1" and "arg2". For demonstration sake, let's say this was a ping
+script that took an <i>IP address</i> and <i>number of times to ping</i> as arguments, cacti would then execute a
+command similar to:</p>
 
-		<p>4. Your data input source will now be available for use in any data source.</p>
-		</td>
-	<tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.3. Data Sources</font><a name="3.3"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.3.1. Data Source Overview</font><a name="3.3.1"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>A data source is basically some piece of data that is being gathered. This data can come from cacti's
-		builtin data input sources or can come from an external .rrd file. Both methods allow you to graph data the
-		same way. Whether you want to graph incoming traffic on a switch port or the 1 minute load average on your
-		mail server, you will need to create a data source for it.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.3.2. How to Add/Remove Data Sources</font><a name="3.3.2"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>1. Click "Data Sources" on the cacti menu and click "Add" to create a new data source. Keep in mind
-		that if cacti is not gathering data for this data source, only the first 3 fields are required!</p>
+<p><i>/path/to/script.pl 192.168.1.1 2</i></p>
 
-		<p><b>Name</b> - The name used by rrdtool and cacti to identify this data source. You cannot use names
-		longer than 19 characters or use non-alphanumeric characters (except "_"). Bad names in this field are
-		one of the most common reasons a graph does not render or a data source does not get created.</p>
+<p><b>Output String</b> - Cacti needs to know what to expect back from the script and is setup the
+same way as the input string. Let's say our ping script above returns <i>milliseconds</i> and <i>"up" or "down"</i>.
+The output string would probably looks something like:</p>
 
-		<p><b>(Optional) Internal Data Source Name</b> - <b>Used only if cacti is not gathering data for this
-		data source!</b> Enter the data source name used in your .rrd file here. Remember that MRTG uses the
-		data source names of "ds0" and "ds1" for incoming out outgoing traffic.</p>
+<i>&lt;ms&gt; &lt;updown&gt;</i>
 
-		<p><b>(Optional) Data Source Path</b> - <b>Used only if cacti is not gathering data for this
-		data source!</b> Enter the full unix path to the .rrd file containing the data for this data source.</p>
+<p>That of course assumes that the external program delimits the output arguments with spaces, make to sure
+format your output string appropriately. Also note that unlike the input string, <b>every data input source
+must have at least one output argument!</b></p>
 
-		<p><b>Data Source Type</b> - Describes what kind of data this data source will handle. Basically use "GAUGE" for
-		numbers that do not increment (processes, temperature, etc) and "COUNTER" for values that increment (traffic, etc).
-		More information can be found <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdcreate.html">here</a>.</p>
+<p>2. Click save once you have finished filling in all of the fields. You will now see "Current Data Input Source
+Fields" lower down on the page. You must create an entry here for <b>EVERY</b> input and output argument used
+above.</p>
 
-		<p><b>Data Input Type</b> - If cacti is gathering data for this data source, please select the data input source
-		to use from the list. You will be able to enter the input arguments for the data input source after saving
-		the data source.</p>
+<p>3. Click "Add" to begin defining your fields.</p>
 
-		<p><b>Associated RRA's</b> - What RRA's to use when gathering data. Unless you know to do otherwise, <b>select
-		ALL of the values from this list</b>.</p>
+<p><b>Name</b> - The friendly name cacti will use to refer to this field, you may type anything meaningful here.</p>
 
-		<p><b>Heartbeat</b> - As defined by rrdtool: The maximum amount of time that can pass before data is entered as
-		"unknown". This field is usually "600" or 2 data gathering intervals.</p>
+<p><b>Data Name</b> - Enter the name of this field matching it <b>EXACTLY</b> to its use in the input/output string. Please
+do not include the "&lt;" and "&gt;" signs here. This field also cannot contain spaces or other non-alphanumeric
+characters. Good entries here would be like ("ms", "output_str", "arg1", or "string").</p>
 
-		<p><b>Minimum Value</b> - The lowest possible number that rrdtool will allow for this data source, usually
-		"0" for most purposes.</p>
+<p><b>Input/Output Field</b> - You <b>MUST</b> select whether this argument is used in the input or output string.</p>
 
-		<p><b>Maximum Value</b> - The highest possible number that rrdtool will allow for this data source. Remember to
-		be generous with this value as numbers higher than the maximum will be stored as "Unknown". When graphing traffic,
-		this number is usually the maximum throughput (in bytes) of an interface.</p>
-		
-		<p><strong>Update Changes in .rrd File</strong> - If this box is checked, cacti will attempt
-		to execute an rrdtool 'tune' function when you save this data source. This allows you to
-		save updated min/max values, heartbeat, data source type and name settings to the .rrd file. </p>
-		
-		<p><b>Active</b> - Only check this box if cacti is to be gathering data for this data source. Also can be useful
-		to temporarily stop cacti from gathering data for this data source.</p>
+<p><b>Use for RRA</b> - If you want data sources using this data input source to keep track of the data
+gathered then you <b>MUST</b> check this box for at one of your output arguments. Since rrdtool can only store numbers,
+only check this box for an output argument that returns a number. <strong><font color="#FF0000">UPDATE</font></strong>: You
+may check this box for each output argument you want to write to the .rrd file. If you check
+this box more than once, cacti will automatically create an additional data sources for each
+output item when creating a new data source using this data input source.</p>
 
-		<p>2. Click save to return to the main data source screen.</p>
-		
-		<p><strong><font color="#FF0000">UPDATE:</font></strong> If you create a data source that has
-		more than one output to be saved to the .rrd file, cacti will automatically create the 
-		additional data sources necessary. These "sub-data sources" will inherit the basic settings
-		(data source type, heartbeat, and min/max values) from the data source you just created. It
-		is usually a good idea to make sure these settings are accurate before going any further.</p>
-		
-		<p>3. If cacti is gathering data for this data source, click "Edit Data" next to the data source you just
-		created. You will be able to enter data for any input arguments defined in the Input String (see <a href="MANUAL.htm#3.2.3">Data
-		Input Sources</a>). You are <b>required to enter data for all available fields</b> or cacti will not gather data
-		correctly!</p>
+<p>4. Your data input source will now be available for use in any data source.</p>
 
-		<p>4. Your data source will now be available for use in any graph.</p>
-  		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.3.3. Round Robin Archives</font><a name="3.3.3"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>Round Robin Archives (RRA's) usually do not need to be modified, but can be useful for graphing over
-		non-standard time periods like two days or full resolution over a year. The fields for Round Robin
-		Archives in cacti are pulled almost exactly from rrdtool. Beware that you can mess up data gathering
-		and the look of your graphs by messing with these settings. Read more about how to use Round Robin
-		Archives <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdcreate.html">here</a>.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.4. CDEF's</font><a name="3.4"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.4.1. CDEF's in cacti/Overview</font><a name="3.4.1"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>CDEF's serve the same function as with traditional rrdtool-based graphs. If you don't understand CDEF's
-		please see the official <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdgraph.html">
-		documentation</a> or <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/tutorial/cdeftutorial.html">
-		tutorial</a>.</p>
+<h3>3.3. Data Sources</h3><a name="3.3"></a>
+<h3>3.3.1. Data Source Overview</h3><a name="3.3.1"></a>
 
-		<p>CDEF's are useful when you want to "alter" the data you have gathered for display on a graph. This is done
-		builtin math functions in RPN (Reverse Polish Notation). Some common uses are: unit conversions, simple math, and
-		summing up data are just a few.</p>
+<p>A data source is basically some piece of data that is being gathered. This data can come from cacti's
+builtin data input sources or can come from an external .rrd file. Both methods allow you to graph data the
+same way. Whether you want to graph incoming traffic on a switch port or the 1 minute load average on your
+mail server, you will need to create a data source for it.</p>
 
-		<p>In cacti you do write a out a CDEF statement like you may be used to, instead you "build" it.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.4.2. How to Create a CDEF in cacti</font><a name="3.4.2"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>1. Click "CDEF's" on the cacti menu and click "Add" to create a new CDEF.</p>
+<h3>3.3.2. How to Add/Remove Data Sources</h3><a name="3.3.2"></a>
 
-		<p><b>Name</b> - Enter any enter name to describe this CDEF.</p>
+<p>1. Click "Data Sources" on the cacti menu and click "Add" to create a new data source. Keep in mind
+that if cacti is not gathering data for this data source, only the first 3 fields are required!</p>
 
-		<p>2. Click save to return to the main CDEF page.</p>
+<p><b>Name</b> - The name used by rrdtool and cacti to identify this data source. You cannot use names
+longer than 19 characters or use non-alphanumeric characters (except "_"). Bad names in this field are
+one of the most common reasons a graph does not render or a data source does not get created.</p>
 
-		<p>3. Click "Edit Current CDEF" next to the CDEF that you just created.</p>
+<p><b>(Optional) Internal Data Source Name</b> - <b>Used only if cacti is not gathering data for this
+data source!</b> Enter the data source name used in your .rrd file here. Remember that MRTG uses the
+data source names of "ds0" and "ds1" for incoming out outgoing traffic.</p>
 
-		<p>In this screen you will add each of the CDEF items separately. For instance if you had the statement:
-		<i>dsname,8,*</i>; you would add the data source name, the "8" and finally the "*" separately. This is why I reffer to it
-		as "building" a CDEF statement.</p>
+<p><b>(Optional) Data Source Path</b> - <b>Used only if cacti is not gathering data for this
+data source!</b> Enter the full unix path to the .rrd file containing the data for this data source.</p>
 
-		<p>4. Click "Add" to add an item to this statement.</p>
+<p><b>Data Source Type</b> - Describes what kind of data this data source will handle. Basically use "GAUGE" for
+numbers that do not increment (processes, temperature, etc) and "COUNTER" for values that increment (traffic, etc).
+More information can be found <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdcreate.html">here</a>.</p>
 
-		<p><b>Data Source</b> - Choose this option if you are inserting a data source, then choose it from the list.
-		The "Use the current data source being used on the graph instead of a preset one." checkbox should be used
-		when you do not know what data source will be used since it could vary depending on the graph it's used in.
-		If you select this box, the data source you select above will be ignored.</p>
+<p><b>Data Input Type</b> - If cacti is gathering data for this data source, please select the data input source
+to use from the list. You will be able to enter the input arguments for the data input source after saving
+the data source.</p>
 
-		<p><b>CDEF Function</b> - Select this if you want to insert a CDEF math function, then select it from the list.</p>
+<p><b>Associated RRA's</b> - What RRA's to use when gathering data. Unless you know to do otherwise, <b>select
+ALL of the values from this list</b>.</p>
 
-		<p><b>Custom Entry</b> - If you want to enter an arbitrary value such a number or other function, select
-		this and enter your value in the box.</p>
+<p><b>Heartbeat</b> - As defined by rrdtool: The maximum amount of time that can pass before data is entered as
+"unknown". This field is usually "600" or 2 data gathering intervals.</p>
 
-		<p>5. Click save and repeat this step as many times as is necessary. Also note that you do not have to include
-		the commas in your CDEF statement, cacti will insert them for you.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.5. Graphs</font><a name="3.5"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.5.1. How to Add/Remove Graphs</font><a name="3.5"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>1. Click "Graphs" on the cacti menu, and click "Add" to create a new graph.</p>
-		
-		<p><b>Title</b> - A name for this graph, can contain any character and is printed at the
-		top of each graph.</p>
-		
-		<p><b>Height</b> - The height (in pixels) that the graph is.</p>
-		
-		<p><b>Width</b> - The width (in pixels) that the graph is.</p>
-		
-		<p><b>Use Rigid Boundaries Mode (--rigid)</b> - From the rrdtool manual "<em>Normally rrdgraph 
-		will automatically expand the lower and upper limit if the graph contains a value outside 
-		the valid range. With this option you can disable this behavior.</em>"</p>
-		
-		<p><b>Auto Scale</b> - Enable auto scale in the graph. This option must be check to use the 
-		next two options. Upper/Lower limit values are ignored when using autoscale since these
-		boundaries are determined automatically.</p>
-		
-		<p><b>Use --alt-autoscale</b> - From the rrdtool manual "<em>Compute Y range based on function 
-		absolute minimum and maximum values. Default algorithm uses predefined set of ranges. 
-		This is good in many cases but it fails miserably when you need to graph something like 
-		260 + 0.001 * sin(x). Default algorithm will use Y range from 250 to 300 and on the graph 
-		you will see almost straight line. With --alt-autoscale Y range will be from slightly less 
-		the 260 - 0.001 to slightly more then 260 + 0.001 and periodic behavior will be seen. 
-		(contributed by Sasha Mikheev)"</em></p>
-		
-		<p><b>Use --alt-autoscale-max</b> - From the rrdtool manual "<em>Where --alt-autoscale will 
-		modify both the absolute maximum AND minimum values, this option will only affect the maximum 
-		value. The minimum value, if not defined on the command line, will be 0. This option can be 
-		useful when graphing router traffic when the WAN line uses compression, and thus the 
-		throughput may be higher than the WAN line speed.</em>"</p>
-		
-		<p><b>Auto Padding</b> - If you have ever created rrdtool-based graphs manually, you may have
-		realized how annoying it can be to get text to line up properly. With this option cacti will
-		do its best to make the columns on your graph legend line up.</p>
-		
-		<p>Auto Padding is not perfect and is best for graphs with consistent fields in each
-		column. Auto padding also creates a small overhead when rendering graphs due to the extra
-		text processing that is required.</p>
-		
-		<p><strong>Allow Grouping</strong> - Grouping a is new feature which "groups" the GPRINT items
-		on a graph to its "parent" item. This allows you to change the sequence of an entire group
-		without changing each item individually, removing a parent also removes its child items.
-		It is recommended that you use this feature since if anything it makes the graph items easier
-		to visualize. Also, if you are graphing MAX lines (like in newer versions of MRTG), you 
-		want this feature turned on since it will prevent anomalies from happening on the graph legend.
-		Either way, this feature can be turned on and off at any time, cacti will take care of 
-		grouping any graph that was previously not grouped <strong>without</strong> changing the order 
-		of items.</p>
-		
-		<p><strong>Allow Graph Export</strong> - If you are using cacti's graph export feature, you
-		can select whether this graph will be exported here.</p>
-		
-		<p><b>Upper Limit</b> - The highest value to display on the Y-axis.</p>
-		
-		<p><b>Lower Limit</b> - The lowest value to display on the Y-axis.</p>
-		
-		<p><b>Base Value</b> - How to label the Y-axis. Use 1024 for memory and 1000 for traffic measurements.</p>
-		
-		<p><b>Vertical Label</b> - The text to print on the left edge of the graph. Usually is the units 
-		the data in the graph is measured in.</p>
-		
-		<p>2. Click save to return to the main graph page.</p>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell2">
-		<font class="header">3.5.2. How to Add/Remove Graph Items</font><a name="3.5.2"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="cell1">
-		<p>1. Click "Edit Graph Items" next to any graph on the Graphs page in cacti.</p>
-		
-		<p>In the section of cacti, you will build your graph piece by piece; much how you would
-		stack building blocks. Creating a graph is very simple; but it still helps to know a little
-		about how rrdtool graphs work. Make sure to get comfortable with 
-		<a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdgraph.html">this 
-		manual</a> first.</p>
-		
-		<p>2. Click "Add" to add a new item to the graph.</p>
-		
-		<p><b>Data Source</b> - Where to get data from for this graph item. Whether you are printing
-		out this information using text (<em>GPRINT</em>) or graphically (<em>AREA</em>, <em>STACK</em>, <em>LINE[1-3]</em>), you
-		must select the data source to pull this information from. Some graph items will not have
-		a data source, for instance if you are printing text or using <em>HRULE</em>/<em>VRULE's</em>.</p>
-		
-		<p><strong>Item Group</strong> - If you are using cacti's graph grouping feature; you can
-		select which parent item this child item belongs to. Note: If you are adding a parent item
-		(<em>AREA</em>, <em>STACK</em>, <em>LINE[1-3]</em>) this field will be ignored. Also, by default
-		the last parent item added will automatically be selected for convenience.</p>
-		
-		<p><b>Color</b> - The color to use when putting the information on the graph. This color is
-		only for graph data, and not for text. Only applies to: <em>AREA</em>, <em>STACK</em>, <em>LINE[1-3]</em>, <em>VRULE</em>, and
-		<em>HRULE</em>.</p>
-		
-		<p><b>Graph Item Type</b> - How the data is to be represented on the graph. Represent data on
-		the graph using: <em>AREA</em>, <em>STACK</em>, and <em>LINE[1-3]</em>. Add vertical/horizontal
-		lines to the graph using: <em>VRULE</em> and <em>HRULE</em>. Add text the legend area by using <em>COMMENT</em> and <em>GPRINT</em>.</p>
-		
-		<p>One useful note: <strong>You must always put an AREA item before using STACK or your graph will
-		not render.</strong></p>
-		
-		<p><b>Consolidation Function</b> - How data is to be represented on a graph. Normally <em>AVERAGE</em>
-		is used to represent an average over the selected time span. But <em>LAST</em>, <em>MIN</em>, and <em>MAX</em> can also
-		be used to display other kinds of data too.</p>
-		
-		<p><b>CDEF Function</b> - If you want to apply a CDEF function to this graph item, select it here.
-		Look at the <a href="MANUAL.htm#3.4">CDEF section</a> of the cacti documentation for more information.</p>
-		
-		<p><b>Value</b> - This field is only used with the <em>HRULE</em>/<em>VRULE</em> graph item types.
-		Type the value of the appropriate (X/Y) axis to draw the line at.</p>
-		
-		<p><b>Text Format</b> - The text-based label for the legend. You may type any text here to
-		appear on the graph's legend. You may also put data input/output sources here using the syntax:
-		&lt;dataname&gt;. Get more information on <a href="MANUAL.htm#3.2">data input sources</a> in cacti if you do not understand
-		how this works.</p>
-		
-		<p><b>Insert Hard Return</b> - Check this box to force graph items onto the next line.</p>
-		
-		<p>3. Click save to return to the graph items page. Repeat step 2 until your graph is complete.
-		Check out some of the graphs that come with cacti to see how to create a working graph.</p>
-		</td>
-	</tr>
-</table>
+<p><b>Minimum Value</b> - The lowest possible number that rrdtool will allow for this data source, usually
+"0" for most purposes.</p>
+
+<p><b>Maximum Value</b> - The highest possible number that rrdtool will allow for this data source. Remember to
+be generous with this value as numbers higher than the maximum will be stored as "Unknown". When graphing traffic,
+this number is usually the maximum throughput (in bytes) of an interface.</p>
+
+<p><strong>Update Changes in .rrd File</strong> - If this box is checked, cacti will attempt
+to execute an rrdtool 'tune' function when you save this data source. This allows you to
+save updated min/max values, heartbeat, data source type and name settings to the .rrd file. </p>
+
+<p><b>Active</b> - Only check this box if cacti is to be gathering data for this data source. Also can be useful
+to temporarily stop cacti from gathering data for this data source.</p>
+
+<p>2. Click save to return to the main data source screen.</p>
+
+<p><strong><font color="#FF0000">UPDATE:</font></strong> If you create a data source that has
+more than one output to be saved to the .rrd file, cacti will automatically create the 
+additional data sources necessary. These "sub-data sources" will inherit the basic settings
+(data source type, heartbeat, and min/max values) from the data source you just created. It
+is usually a good idea to make sure these settings are accurate before going any further.</p>
+
+<p>3. If cacti is gathering data for this data source, click "Edit Data" next to the data source you just
+created. You will be able to enter data for any input arguments defined in the Input String (see <a href="MANUAL.htm#3.2.3">Data
+Input Sources</a>). You are <b>required to enter data for all available fields</b> or cacti will not gather data
+correctly!</p>
+
+<p>4. Your data source will now be available for use in any graph.</p>
+
+<h3>3.3.3. Round Robin Archives</h3><a name="3.3.3"></a>
+
+<p>Round Robin Archives (RRA's) usually do not need to be modified, but can be useful for graphing over
+non-standard time periods like two days or full resolution over a year. The fields for Round Robin
+Archives in cacti are pulled almost exactly from rrdtool. Beware that you can mess up data gathering
+and the look of your graphs by messing with these settings. Read more about how to use Round Robin
+Archives <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdcreate.html">here</a>.</p>
+
+<h3>3.4. CDEF's</h3><a name="3.4"></a>
+<h3>3.4.1. CDEF's in cacti/Overview</h3><a name="3.4.1"></a>
+
+<p>CDEF's serve the same function as with traditional rrdtool-based graphs. If you don't understand CDEF's
+please see the official <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdgraph.html">
+documentation</a> or <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/tutorial/cdeftutorial.html">
+tutorial</a>.</p>
+
+<p>CDEF's are useful when you want to "alter" the data you have gathered for display on a graph. This is done
+builtin math functions in RPN (Reverse Polish Notation). Some common uses are: unit conversions, simple math, and
+summing up data are just a few.</p>
+
+<p>In cacti you do write a out a CDEF statement like you may be used to, instead you "build" it.</p>
+
+<h3>3.4.2. How to Create a CDEF in cacti</h3><a name="3.4.2"></a>
+
+<p>1. Click "CDEF's" on the cacti menu and click "Add" to create a new CDEF.</p>
+
+<p><b>Name</b> - Enter any enter name to describe this CDEF.</p>
+
+<p>2. Click save to return to the main CDEF page.</p>
+
+<p>3. Click "Edit Current CDEF" next to the CDEF that you just created.</p>
+
+<p>In this screen you will add each of the CDEF items separately. For instance if you had the statement:
+<i>dsname,8,*</i>; you would add the data source name, the "8" and finally the "*" separately. This is why I reffer to it
+as "building" a CDEF statement.</p>
+
+<p>4. Click "Add" to add an item to this statement.</p>
+
+<p><b>Data Source</b> - Choose this option if you are inserting a data source, then choose it from the list.
+The "Use the current data source being used on the graph instead of a preset one." checkbox should be used
+when you do not know what data source will be used since it could vary depending on the graph it's used in.
+If you select this box, the data source you select above will be ignored.</p>
+
+<p><b>CDEF Function</b> - Select this if you want to insert a CDEF math function, then select it from the list.</p>
+
+<p><b>Custom Entry</b> - If you want to enter an arbitrary value such a number or other function, select
+this and enter your value in the box.</p>
+
+<p>5. Click save and repeat this step as many times as is necessary. Also note that you do not have to include
+the commas in your CDEF statement, cacti will insert them for you.</p>
+
+<h3>3.5. Graphs</h3><a name="3.5"></a>
+<h3>3.5.1. How to Add/Remove Graphs</h3><a name="3.5.1"></a>
+
+<p>1. Click "Graphs" on the cacti menu, and click "Add" to create a new graph.</p>
+
+<p><b>Title</b> - A name for this graph, can contain any character and is printed at the
+top of each graph.</p>
+
+<p><b>Height</b> - The height (in pixels) that the graph is.</p>
+
+<p><b>Width</b> - The width (in pixels) that the graph is.</p>
+
+<p><b>Use Rigid Boundaries Mode (--rigid)</b> - From the rrdtool manual "<em>Normally rrdgraph 
+will automatically expand the lower and upper limit if the graph contains a value outside 
+the valid range. With this option you can disable this behavior.</em>"</p>
+
+<p><b>Auto Scale</b> - Enable auto scale in the graph. This option must be check to use the 
+next two options. Upper/Lower limit values are ignored when using autoscale since these
+boundaries are determined automatically.</p>
+
+<p><b>Use --alt-autoscale</b> - From the rrdtool manual "<em>Compute Y range based on function 
+absolute minimum and maximum values. Default algorithm uses predefined set of ranges. 
+This is good in many cases but it fails miserably when you need to graph something like 
+260 + 0.001 * sin(x). Default algorithm will use Y range from 250 to 300 and on the graph 
+you will see almost straight line. With --alt-autoscale Y range will be from slightly less 
+the 260 - 0.001 to slightly more then 260 + 0.001 and periodic behavior will be seen. 
+(contributed by Sasha Mikheev)"</em></p>
+
+<p><b>Use --alt-autoscale-max</b> - From the rrdtool manual "<em>Where --alt-autoscale will 
+modify both the absolute maximum AND minimum values, this option will only affect the maximum 
+value. The minimum value, if not defined on the command line, will be 0. This option can be 
+useful when graphing router traffic when the WAN line uses compression, and thus the 
+throughput may be higher than the WAN line speed.</em>"</p>
+
+<p><b>Auto Padding</b> - If you have ever created rrdtool-based graphs manually, you may have
+realized how annoying it can be to get text to line up properly. With this option cacti will
+do its best to make the columns on your graph legend line up.</p>
+
+<p>Auto Padding is not perfect and is best for graphs with consistent fields in each
+column. Auto padding also creates a small overhead when rendering graphs due to the extra
+text processing that is required.</p>
+
+<p><strong>Allow Grouping</strong> - Grouping a is new feature which "groups" the GPRINT items
+on a graph to its "parent" item. This allows you to change the sequence of an entire group
+without changing each item individually, removing a parent also removes its child items.
+It is recommended that you use this feature since if anything it makes the graph items easier
+to visualize. Also, if you are graphing MAX lines (like in newer versions of MRTG), you 
+want this feature turned on since it will prevent anomalies from happening on the graph legend.
+Either way, this feature can be turned on and off at any time, cacti will take care of 
+grouping any graph that was previously not grouped <strong>without</strong> changing the order 
+of items.</p>
+
+<p><strong>Allow Graph Export</strong> - If you are using cacti's graph export feature, you
+can select whether this graph will be exported here.</p>
+
+<p><b>Upper Limit</b> - The highest value to display on the Y-axis.</p>
+
+<p><b>Lower Limit</b> - The lowest value to display on the Y-axis.</p>
+
+<p><b>Base Value</b> - How to label the Y-axis. Use 1024 for memory and 1000 for traffic measurements.</p>
+
+<p><b>Vertical Label</b> - The text to print on the left edge of the graph. Usually is the units 
+the data in the graph is measured in.</p>
+
+<p>2. Click save to return to the main graph page.</p>
+
+<h3>3.5.2. How to Add/Remove Graph Items</h3><a name="3.5.2"></a>
+
+<p>1. Click "Edit Graph Items" next to any graph on the Graphs page in cacti.</p>
+
+<p>In the section of cacti, you will build your graph piece by piece; much how you would
+stack building blocks. Creating a graph is very simple; but it still helps to know a little
+about how rrdtool graphs work. Make sure to get comfortable with 
+<a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdgraph.html">this 
+manual</a> first.</p>
+
+<p>2. Click "Add" to add a new item to the graph.</p>
+
+<p><b>Data Source</b> - Where to get data from for this graph item. Whether you are printing
+out this information using text (<em>GPRINT</em>) or graphically (<em>AREA</em>, <em>STACK</em>, <em>LINE[1-3]</em>), you
+must select the data source to pull this information from. Some graph items will not have
+a data source, for instance if you are printing text or using <em>HRULE</em>/<em>VRULE's</em>.</p>
+
+<p><strong>Item Group</strong> - If you are using cacti's graph grouping feature; you can
+select which parent item this child item belongs to. Note: If you are adding a parent item
+(<em>AREA</em>, <em>STACK</em>, <em>LINE[1-3]</em>) this field will be ignored. Also, by default
+the last parent item added will automatically be selected for convenience.</p>
+
+<p><b>Color</b> - The color to use when putting the information on the graph. This color is
+only for graph data, and not for text. Only applies to: <em>AREA</em>, <em>STACK</em>, <em>LINE[1-3]</em>, <em>VRULE</em>, and
+<em>HRULE</em>.</p>
+
+<p><b>Graph Item Type</b> - How the data is to be represented on the graph. Represent data on
+the graph using: <em>AREA</em>, <em>STACK</em>, and <em>LINE[1-3]</em>. Add vertical/horizontal
+lines to the graph using: <em>VRULE</em> and <em>HRULE</em>. Add text the legend area by using <em>COMMENT</em> and <em>GPRINT</em>.</p>
+
+<p>One useful note: <strong>You must always put an AREA item before using STACK or your graph will
+not render.</strong></p>
+
+<p><b>Consolidation Function</b> - How data is to be represented on a graph. Normally <em>AVERAGE</em>
+is used to represent an average over the selected time span. But <em>LAST</em>, <em>MIN</em>, and <em>MAX</em> can also
+be used to display other kinds of data too.</p>
+
+<p><b>CDEF Function</b> - If you want to apply a CDEF function to this graph item, select it here.
+Look at the <a href="MANUAL.htm#3.4">CDEF section</a> of the cacti documentation for more information.</p>
+
+<p><b>Value</b> - This field is only used with the <em>HRULE</em>/<em>VRULE</em> graph item types.
+Type the value of the appropriate (X/Y) axis to draw the line at.</p>
+
+<p><b>Text Format</b> - The text-based label for the legend. You may type any text here to
+appear on the graph's legend. You may also put data input/output sources here using the syntax:
+&lt;dataname&gt;. Get more information on <a href="MANUAL.htm#3.2">data input sources</a> in cacti if you do not understand
+how this works.</p>
+
+<p><b>Insert Hard Return</b> - Check this box to force graph items onto the next line.</p>
+
+<p>3. Click save to return to the graph items page. Repeat step 2 until your graph is complete.
+Check out some of the graphs that come with cacti to see how to create a working graph.</p>
 
 </body>
 </html>
