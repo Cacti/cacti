@@ -149,8 +149,10 @@ if ($_REQUEST["step"] == "4") {
 		}
 	}
 	
-	/* reset local settings cache so the user sees the new settings */
+	/* register_global = off: reset local settings cache so the user sees the new settings */
 	session_register("sess_config_array");
+	
+	/* register_global = on: reset local settings cache so the user sees the new settings */
 	unset($_SESSION["sess_config_array"]);
 	
 	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
