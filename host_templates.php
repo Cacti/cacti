@@ -156,7 +156,6 @@ function template_edit() {
 							graph_templates.name
 							from graph_templates left join host_template_graph_template
 							on (graph_templates.id=host_template_graph_template.graph_template_id and host_template_graph_template.host_template_id=" . $_GET["id"] . ") 
-							where graph_templates.type='template'
 							order by graph_templates.name");
 						
 						$i = 0;
