@@ -27,6 +27,7 @@
 
 include_once("../include/functions.php");
 include_once("../include/utility_functions.php");
+include_once("../include/snmp_functions.php");
 
 set_time_limit(0);
 error_reporting(E_ALL & ~E_NOTICE);
@@ -97,10 +98,10 @@ function update_database($database_old, $database_username, $database_password) 
 	
 	$status_array{count($status_array)}["user_log"][1] = "all";
 	
-	db_execute("delete from data_input_fields where data_input_id > 2");
-	db_execute("delete from data_input where id > 2");
+	db_execute("delete from data_input_fields where data_input_id > 11");
+	db_execute("delete from data_input where id > 11");
 	
-	$_src = db_fetch_assoc("select * from $database_old.src where id != 11 and id != 13");
+	$_src = db_fetch_assoc("select * from $database_old.src where id != 11 and id != 13 and id != 19 and id != 31 and id != 6 and id != 24 and id != 5 and id != 23 and id != 1");
 	
 	if (sizeof($_src) > 0) {
 	foreach ($_src as $item) {
@@ -136,6 +137,43 @@ function update_database($database_old, $database_username, $database_password) 
 	$data_input_cache[13] = 1;
 	$data_input_cache[11] = 2;
 	
+	/* Get Custom TCP Connections */
+	$data_input_cache[19] = 8;
+	$data_input_field_cache[46] = 26;
+	$data_input_field_cache[45] = 25;
+	
+	/* Get Free Disk Space */
+	$data_input_cache[31] = 11;
+	
+	/* Get Load Average */
+	//db_execute("delete from data_input where id=4");
+	//db_execute("delete from data_input_fields where data_input_id=4");
+	//db_execute("delete from data_input_data where data_input_id=4");
+	
+	/* Get Logged In Users */
+	$data_input_cache[6] = 5;
+	$data_input_field_cache[13] = 21;
+	$data_input_field_cache[58] = 20;
+	
+	/* Get Memory Usage */
+	$data_input_cache[24] = 6;
+	$data_input_field_cache[61] = 22;
+	$data_input_field_cache[60] = 23;
+	
+	/* Get System Processes */
+	$data_input_cache[5] = 7;
+	$data_input_field_cache[12] = 24;
+	
+	/* Get Web Hits */
+	$data_input_cache[23] = 9;
+	$data_input_field_cache[87] = 27;
+	$data_input_field_cache[59] = 28;
+	
+	/* Ping Host */
+	$data_input_cache[1] = 10;
+	$data_input_field_cache[1] = 29;
+	$data_input_field_cache[3] = 30;
+	
 	db_execute("truncate table $database_default.host");
 	db_execute("truncate table $database_default.host_snmp_query");
 	db_execute("truncate table $database_default.host_snmp_cache");
@@ -150,6 +188,11 @@ function update_database($database_old, $database_username, $database_password) 
 			1,'','')")) {
 			$host_id = db_fetch_insert_id();
 			$ip_to_host_cache{gethostbyname($item["Hostname"])} = $host_id;
+			
+			/* mark localhost for later */
+			if (gethostbyname($item["Hostname"]) == "127.0.0.1") {
+				$my_local_host = $host_id;
+			}
 			
 			$status_array{count($status_array)}["host"][1] = $item["Hostname"];
 			db_execute("insert into host_snmp_query (host_id,snmp_query_id) values ($host_id,1)");
@@ -171,6 +214,13 @@ function update_database($database_old, $database_username, $database_password) 
 			$status_array{count($status_array)}["host"][0] = $item["Hostname"];
 		}
 	}
+	}
+	
+	if (!isset($my_local_host)) {
+		db_execute("insert into host (id,host_template_id,description,hostname,management_ip,snmp_community,
+			snmp_version,snmp_username,snmp_password) values (0,0,'Localhost','localhost','127.0.0.1',
+			'public',1,'','')");
+		$my_local_host = db_fetch_insert_id();
 	}
 	
 	$non_templated_data_sources = db_fetch_assoc("select id from data_template_data where local_data_id > 0");
@@ -211,6 +261,8 @@ function update_database($database_old, $database_username, $database_password) 
 			$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=41");
 		}elseif ($item["SrcID"] == "1") {
 			$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=1");
+		}elseif ($item["SrcID"] == "31") {
+			$hostname = "localhost";
 		}
 		
 		if ((!empty($hostname)) && (isset($ip_to_host_cache{gethostbyname($hostname)}))) {
@@ -229,6 +281,7 @@ function update_database($database_old, $database_username, $database_password) 
 				data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,$local_data_template_data_id,$local_data_id,
 				$data_template_id," . $data_input_cache{$item["SrcID"]} . ",'" . $item["Name"] . "','" . $item["DSPath"] . "',
 				'" . $item["Active"] . "','" . $item["Step"] . "')")) {
+				
 				$data_template_data_cache{$item["ID"]} = db_fetch_insert_id();
 				$status_array{count($status_array)}["data_source"][1] = $item["Name"];
 				
@@ -392,8 +445,34 @@ function update_database($database_old, $database_username, $database_password) 
 								$status_array{count($status_array)}["data_source_data"][0] = $field_value;
 							}
 						}
+					}elseif ($item["SrcID"] == "31") {
+						if ((!empty($item2["Value"])) && ($item2["FieldID"] == "88")) {
+							if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+								t_value,value) values (31," . $data_template_data_cache{$item2["DSID"]} . ",'','dskDevice')")) {
+								
+								$status_array{count($status_array)}["data_source_data"][1] = "dskDevice";
+								
+								if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+									t_value,value) values (32," . $data_template_data_cache{$item2["DSID"]} . ",'','" . $item2["Value"] . "')")) {
+									$status_array{count($status_array)}["data_source_data"][1] = $item2["Value"];
+									
+									if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+										t_value,value) values (33," . $data_template_data_cache{$item2["DSID"]} . ",'','12')")) {
+										$status_array{count($status_array)}["data_source_data"][1] = "12";
+									}else{
+										$status_array{count($status_array)}["data_source_data"][0] = "12";
+									}
+								}else{
+									$status_array{count($status_array)}["data_source_data"][0] = $item2["Value"];	
+								}
+							}else{
+								$status_array{count($status_array)}["data_source_data"][0] = "dskDevice";
+							}
+						}
+						
+						data_query($my_local_host, 5);
 					}else{
-						if (!empty($item2["Value"])) {
+						if ((!empty($item2["Value"]) && (!empty($data_input_field_cache{$item2["FieldID"]})))) {
 							if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
 								t_value,value) values (" . $data_input_field_cache{$item2["FieldID"]} . ",
 								" . $data_template_data_cache{$item2["DSID"]} . ",'','" . $item2["Value"] . "')")) {
@@ -420,6 +499,10 @@ function update_database($database_old, $database_username, $database_password) 
 				}
 				}
 			}else{
+				print "insert into data_template_data (id,local_data_template_data_id,local_data_id,
+				data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,$local_data_template_data_id,$local_data_id,
+				$data_template_id," . $data_input_cache{$item["SrcID"]} . ",'" . $item["Name"] . "','" . $item["DSPath"] . "',
+				'" . $item["Active"] . "','" . $item["Step"] . "')<br>";
 				$status_array{count($status_array)}["data_source"][0] = $item["Name"];
 			}
 		}else{
@@ -606,8 +689,6 @@ function update_database($database_old, $database_username, $database_password) 
 		}
 	}
 	}
-	
-	repopulate_poller_cache();
 	
 	return $status_array;
 }
