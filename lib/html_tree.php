@@ -18,6 +18,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 #    print "start_branch = '$start_branch', search_key = '$search_key'<BR>\n";
  
     $treeinfo = db_fetch_row("SELECT * FROM graph_tree_view WHERE id = $args[tree_id]");
+    
+    ## This code makes sure that the tree you're trying to show is either a public tree or owned by you.
 #    if ($treeinfo[Owner] == '' || ($treeinfo[Owner] != 0 && $treeinfo[Owner] != $user_id)) {
 #	print "<P ALIGN=CENTER><strong><font size=\"+1\" color=\"FF0000\">GRAPH TREE IS NOT PUBLIC AND DOESN'T BELONG TO YOU.<BR>ACCESS DENIED!</font></strong></P>\n";
 #	exit;
@@ -86,10 +88,11 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 
     ##  Now that we know how many graphs each heading has and whether it's supposed to be hidden, we walk the tree again from top to root to figure 
     ##  out how many rows each vertical bar should span.
-    for ($i = (sizeof($heirarchy) - 1); $i > 0; --$i) {
+    for ($i = (sizeof($heirarchy) - 1); $i >= 0; --$i) {
 	$leaf = $heirarchy[$i];
 	$tier = tree_tier($leaf[order_key], 2);
 	if (!$leaf[graph_id]) {
+#	    print "Checking header $leaf[id], $leaf[order_key], num_graphs = '".$num_graphs[$leaf[order_key]]."'<BR>\n";
 	    if (! $hide[preg_replace("/0+$/","",$leaf[order_key])]) {
 		if ($num_graphs[$leaf[order_key]] > 0) {
 		    ++$rowspans[$leaf[order_key]]; 
