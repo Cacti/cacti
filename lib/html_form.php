@@ -526,7 +526,7 @@ function DrawMatrixRowAlternateColorBegin($row_color1, $row_color2, $row_value) 
 	<?return $current_color;
 }
 
-function DrawMatrixTableBegin($table_width) {
+function DrawMatrixTableBegin($table_width = false) {
 	if ($table_width == true) {
 		$table_width = " width=\"$table_width\"";
 	}
