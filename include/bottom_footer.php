@@ -42,6 +42,14 @@ function SelectAll(prefix) {
     }
   }
 }
+
+function SelectForce(prefix) {
+  for (var i = 0; i < document.chk.elements.length; i++) {
+    if( document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
+      document.chk.elements[i].checked = document.chk.all.checked;
+    }
+  }
+}
 //-->
 
 </script>
