@@ -463,9 +463,9 @@ function user_edit() {
 		</td>
 		<td>
 		<?php
-			form_base_checkbox("show_tree", (isset($user) ? $user["show_tree"] : ""), "User Has Rights to View Tree Mode", "on", (!empty($_GET["id"]) ? 1 : 0), true);
-			form_base_checkbox("show_list", (isset($user) ? $user["show_list"] : ""), "User Has Rights to View List Mode", "on", (!empty($_GET["id"]) ? 1 : 0), true);
-			form_base_checkbox("show_preview", (isset($user) ? $user["show_preview"] : ""), "User Has Rights to View Tree Mode", "on", (!empty($_GET["id"]) ? 1 : 0), true);
+			form_base_checkbox("show_tree", (isset($user) ? $user["show_tree"] : ""), "User Has Rights to Tree View", "on", (!empty($_GET["id"]) ? 1 : 0), true);
+			form_base_checkbox("show_list", (isset($user) ? $user["show_list"] : ""), "User Has Rights to List View", "on", (!empty($_GET["id"]) ? 1 : 0), true);
+			form_base_checkbox("show_preview", (isset($user) ? $user["show_preview"] : ""), "User Has Rights to Preview View", "on", (!empty($_GET["id"]) ? 1 : 0), true);
 		?>
 		</td>
 	</tr>
