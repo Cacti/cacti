@@ -138,6 +138,8 @@ function template_remove() {
 }
 
 function template_save() {
+	include_once("include/utility_functions.php");
+	
 	global $form;
 	
 	$save["id"] = $form["id"];
@@ -160,6 +162,9 @@ function template_save() {
 			db_execute ("replace into host_template_data_template (host_template_id,data_template_id) values($host_template_id," . substr($var, 3) . ")");
 		}
 	}
+	
+	/* push out settings to each data source under a host using this template. got that? */
+	push_out_host_template($host_template_id, $form[data_template_id]);
 }
 
 function template_edit() {
