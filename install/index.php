@@ -144,6 +144,11 @@ if ($config["cacti_server_os"] == "unix") {
 	}
 }
 
+/* log file path */
+$input["path_cactilog"] = $settings["path"]["path_cactilog"];
+$input["path_cactilog"]["description"] = "The path to your Cacti log file.";
+$input["path_cactilog"]["default"] = $config["base_path"] . "/log/cacti.log";
+
 /* SNMP Version */
 if ($config["cacti_server_os"] == "unix") {
 	$input["snmp_version"] = $settings["general"]["snmp_version"];
