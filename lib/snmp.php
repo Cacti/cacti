@@ -209,7 +209,7 @@ function format_snmp_string($string) {
 			}
 		}
 		
-		$string = $octet;
+		$string = strtoupper($octet);
 	}
 	
 	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
