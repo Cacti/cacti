@@ -271,8 +271,6 @@ function update_data_source_snmp_query_cache($local_data_id) {
 	}
 }
 
-
-
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
