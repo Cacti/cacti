@@ -31,6 +31,8 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
+$current_document_root = "";
+
 /* Make sure cacti is not already up-to-date */
 if (db_fetch_cell("select cacti from version") == $config["cacti_version"]) {
 	print "You can only run this for new installs and upgrades, this installation is already
@@ -38,17 +40,24 @@ if (db_fetch_cell("select cacti from version") == $config["cacti_version"]) {
 	exit;
 }
 
+/* find the current document root depending on if we're using apache or iis */
+if (isset($_SERVER["DOCUMENT_ROOT"])) {
+	$current_document_root = $_SERVER["DOCUMENT_ROOT"];
+}elseif ((isset($_SERVER["PATH_TRANSLATED"])) && (isset($_SERVER["PATH_INFO"]))) {
+	$current_document_root = str_replace($_SERVER["PATH_INFO"], "", $_SERVER["PATH_TRANSLATED"]);
+}
+
 /* Here, we define each name, default value, type, and path check for each value
- we want the user to input. The "name" field must exist in the 'settings' table for
- this to work. Cacti also uses different default values depending on what OS it is
- running on. */
+we want the user to input. The "name" field must exist in the 'settings' table for
+this to work. Cacti also uses different default values depending on what OS it is
+running on. */
 
 /* cacti Web Root */
-$input["path_webcacti"]["default"] = str_replace("/install", "", dirname($_SERVER["SCRIPT_NAME"]));
+$input["path_webcacti"]["default"] = str_replace("/install", "", dirname($_SERVER["PHP_SELF"]));
 $input["path_webcacti"]["type"] = "textbox";
 
 /* Web Server Document Root */
-$input["path_webroot"]["default"] = str_replace("\\\\", "/", $_SERVER["DOCUMENT_ROOT"]);
+$input["path_webroot"]["default"] = str_replace("\\\\", "/", $current_document_root);
 $input["path_webroot"]["check"] = "";
 $input["path_webroot"]["type"] = "textbox";
 
@@ -69,10 +78,10 @@ if ($config["cacti_server_os"] == "unix") {
 }
 
 /* snmpwalk Binary Path */
-$input["path_snmpwalk"]["check"] = "";
-$input["path_snmpwalk"]["type"] = "textbox";
-
 if ($config["cacti_server_os"] == "unix") {
+	$input["path_snmpwalk"]["check"] = "";
+	$input["path_snmpwalk"]["type"] = "textbox";
+	
 	$which_snmpwalk = `which snmpwalk`;
 	
 	if (!empty($which_snmpwalk)) {
@@ -83,10 +92,10 @@ if ($config["cacti_server_os"] == "unix") {
 }
 
 /* snmpget Binary Path */
-$input["path_snmpget"]["check"] = "";
-$input["path_snmpget"]["type"] = "textbox";
-
 if ($config["cacti_server_os"] == "unix") {
+	$input["path_snmpget"]["check"] = "";
+	$input["path_snmpget"]["type"] = "textbox";
+	
 	$which_snmpwalk = `which snmpget`;
 	
 	if (!empty($which_snmpwalk)) {
