@@ -33,6 +33,9 @@ $messages = array(
 		"type" => "error"),
 	3  => array(
 		"message" => 'Save Failed: Field Input Error (Check Red Fields)',
+		"type" => "error"),
+	4  => array(
+		"message" => 'Passwords do not match, please retype.',
 		"type" => "error")
 		);
 
@@ -235,7 +238,7 @@ $struct_graph = array(
 		"type" => "text",
 		"text_maxlen" => "50",
 		"text_size" => "40",
-		"default" => "1000",
+		"default" => "",
 		"description" => "(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was 
 			recently added in rrdtool 1.0.36."
 		),
