@@ -35,6 +35,11 @@ function title_trim($text, $max_length) {
 function read_graph_config_option($config_name) {
 	include ("config_settings.php");
 	
+	/* users must have cacti user auth turned on to use this */
+	if (read_config_option("global_auth") != "on") {
+		return;
+	}
+	
 	if (isset($_SESSION["sess_graph_config_array"])) {
 		$graph_config_array = unserialize($_SESSION["sess_graph_config_array"]);
 	}

@@ -87,7 +87,7 @@ case 'tree':
 			}
 		}
 		
-		grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), $_SESSION["sess_user_id"], $tree_parameters);
+		grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), isset($_SESSION["sess_user_id"]) ? $_SESSION["sess_user_id"] : 0, $tree_parameters);
 	}
 	
 	print "<br><br>";
