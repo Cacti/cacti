@@ -375,13 +375,14 @@ switch ($action) {
 				    }
 				}
 				
+				$hard_return = "";
 				if ($item[hard_return] == "on") {
-				    $matrix_title .= "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+				    $hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
 				}
 				
 				?>
 				<td>
-					<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title);?><?if ($bold_this_row == true) { print "</strong>"; }?>
+					<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
 				</td>
 				<td>
 					<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item[graph_type_name];?><?if ($bold_this_row == true) { print "</strong>"; }?>
@@ -698,7 +699,7 @@ switch ($action) {
 				print "<td><em>";
 				if ($graphs_template[auto_scale_opts] == "1") { print "Use --alt-autoscale"; }else{ print "Use --alt-autoscale-max";}
 				print "</em></td>";
-				DrawFormItemHiddenTextBox("auto_scale",$graphs_template[auto_scale_opts],"");
+				DrawFormItemHiddenTextBox("auto_scale_opts",$graphs_template[auto_scale_opts],"");
 			}?>
 		</tr>
 		
