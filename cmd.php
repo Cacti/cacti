@@ -30,8 +30,9 @@ if (!isset($_SERVER["argv"][0])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
 
-$start = date("Y-n-d H:i:s");
-// print $start . "\n";
+$start = date("Y-n-d H:i:s"); // for runtime measurement
+$poller_update_time = date("Y-m-d H:i:s"); // for poller update time
+
 ini_set("max_execution_time", "0");
 ini_set("memory_limit", "32M");
 
@@ -309,7 +310,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			} /* End Switch */
 
 			if (isset($output)) {
-				db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "',NOW(),'" . addslashes($output) . "')");
+				db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "','$poller_update_time','" . addslashes($output) . "')");
 			}
 		} /* Next Cache Item */
 	} /* End foreach */
