@@ -11,13 +11,13 @@
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.1</oid>
 		</ifIndex>
-		<ifDesc>
+		<ifDescr>
 			<name>Description</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.2</oid>
-		</ifDesc>
+		</ifDescr>
 		<ifName>
 			<name>Name (IF-MIB)</name>
 			<method>walk</method>
