@@ -27,7 +27,7 @@
 /* make sure these values refect your acual database/host/user/password */
 $database_type = "mysql";
 $database_default = "dev_cacti_2";
-$database_hostname = "";
+$database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 
