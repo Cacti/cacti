@@ -92,7 +92,7 @@ switch ($action) {
 		}
 		
 		print '<tr><td colspan="2">';
-		print '<strong><a href="graph_view.php?action=tree&tree_id=$tree_id">[root]</a> - ' . $tree_name . '</strong><br><br>';
+		print "<strong><a href='graph_view.php?action=tree&tree_id=$tree_id'>[root]</a> - $tree_name</strong><br><br>";
 		print '</td></tr>';
 		
 		grow_graph_tree($tree_id, $start_branch, $user_id, $tree_parameters);
