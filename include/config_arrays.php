@@ -302,7 +302,8 @@ $hash_type_codes = array(
 $hash_version_codes = array(
 	"0.8.4" => "0000",
 	"0.8.5" => "0001",
-	"0.8.5a" => "0002"
+	"0.8.5a" => "0002",
+	"0.8.6" => "0003"
 	);
 
 $hash_type_names = array(
