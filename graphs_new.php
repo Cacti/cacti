@@ -483,18 +483,6 @@ function graphs() {
 		ON snmp_query_graph.graph_template_id = graph_templates.id
 		WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
 
-	$keeper = array();
-	foreach ($available_graph_templates as $item) {
-		if (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" .
-				$item["id"] . " and host_id=" . $host["id"])) > 0) {
-			/* do nothing */
-		} else {
-			array_push($keeper, $item);
-		}
-	}
-
-	$available_graph_templates = $keeper;
-
 	/* create a row at the bottom that lets the user create any graph they choose */
 	print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
 			<td colspan='2' width='60' nowrap>
