@@ -485,24 +485,21 @@ db_execute("truncate table $database_default.cdef");
 db_execute("truncate table $database_default.cdef_items");
 
 $_cdef = db_fetch_assoc("select * from $database_old.rrd_ds_cdef");
-print_r($_cdef);
+
 if (sizeof($_cdef) > 0) {
 foreach ($_cdef as $item) {
 	if (db_execute("insert into cdef (id,name) values (0,'" . $item["Name"] . "')")) {
-		$cdef_id = 0;
 		$cdef_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
-		$cdef_id = db_fetch_cell("select LAST_INSERT_ID()");
 		print "SUCCESS: CDEF: " . $item["Name"] . "\n";
-		print "new cdef: insert into cdef (id,name) values (0,'" . $item["Name"] . "')\n";
 		
 		$_cdef_items = db_fetch_assoc("select * from $database_old.rrd_ds_cdef_item where CDEFID=" . $item["ID"]);
-		print "get items: select * from $database_old.rrd_ds_cdef_item where CDEFID=" . $item["ID"] . "\n";
+		
 		if ($item["Type"] == "2") {
 			$_cdef_items[0]["CDEFID"] = $item["ID"];
 			$_cdef_items[0]["Type"] = "Total";
 			$_cdef_items[0]["Sequence"] = "1";
 		}
-		print_r($_cdef_items);
+		
 		$cdef_ds_counter = 0;
 		if (sizeof($_cdef_items) > 0) {
 		foreach ($_cdef_items as $item2) {
@@ -536,8 +533,7 @@ foreach ($_cdef as $item) {
 				break;
 			}
 			
-			print "cdef item: insert into cdef_items (id,cdef_id,sequence,type,value) values (0,$cdef_id," . $item2["Sequence"] . ",$item_type,'$item_value')\n";
-			if (db_execute("insert into cdef_items (id,cdef_id,sequence,type,value) values (0,$cdef_id,
+			if (db_execute("insert into cdef_items (id,cdef_id,sequence,type,value) values (0," . $cdef_cache{$item["ID"]} . ",
 				" . $item2["Sequence"] . ",$item_type,'$item_value')")) {
 				
 				print "   SUCCESS: CDEF Item: Type: $item_type, Value: $item_value\n";
