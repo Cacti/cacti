@@ -69,245 +69,8 @@
 		</tr>
 	<?}
 	
-switch ($action) {
-	case 'item_remove':
-		db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
-		
-		header ("Location: graphs.php?action=item&local_graph_id=$args[local_graph_id]");
-		break;
-	case 'item_save':
-		$save["id"] = $form["graph_template_item_id"];
-		$save["graph_template_id"] = $form["graph_template_id"];
-		$save["local_graph_id"] = $form["local_graph_id"];
-		$save["task_item_id"] = $form["task_item_id"];
-		$save["color_id"] = $form["color_id"];
-		$save["graph_type_id"] = $form["graph_type_id"];
-		$save["cdef_id"] = $form["cdef_id"];
-		$save["consolidation_function_id"] = $form["consolidation_function_id"];
-		$save["text_format"] = $form["text_format"];
-		$save["value"] = $form["value"];
-		$save["hard_return"] = $form["hard_return"];
-		$save["gprint_opts"] = $form["gprint_opts"];
-		$save["gprint_custom"] = $form["gprint_custom"];
-		$save["custom"] = $form["custom"];
-		$save["sequence"] = $form["sequence"];
-		$save["sequence_parent"] = $form["sequence_parent"];
-		$save["parent"] = $form["parent"];
-		
-		$graph_template_item_id = sql_save($save, "graph_templates_item");
-		
-		include_once ("include/utility_functions.php");
-		update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
-		
-		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
-		break;
-	case 'item_edit':
-		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management [edit]";
-		include_once ("include/top_table_header.php");
-		
-		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
-		
-		new_table();
-		
-		if (isset($args[graph_template_item_id])) {
-			$template_item = db_fetch_row("select * from graph_templates_item where id=$args[graph_template_item_id]");
-		}else{
-			unset($template_item);
-		}
-		
-		?>
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Template Item Configuration</td>
-		</tr>
-		
-		<form method="post" action="graphs.php">
-		
-		<?
-		/* by default, select the LAST DS chosen to make everyone's lives easier */
-		$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=$args[local_graph_id] order by sequence_parent DESC,sequence DESC");
-    
-		if (sizeof($default) > 0) {
-			$default_item = $default[task_item_id];
-		}else{
-			$default_item = 0;
-		}
-		
-		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Task Item</font><br>
-				The task to use for this graph item; not used for COMMENT fields.
-			</td>
-			<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select item_id,descrip from polling_items order by descrip"),"descrip","item_id",$template_item[task_item_id],"None",$default_item);?>
-		</tr>
-		
-		<?
-		/* default item (last item) */
-		$groups = db_fetch_assoc("select 
-			CONCAT_WS('',def_graph_type.name,' (',def_cf.name,'): ',polling_items.descrip,' - \"',graph_templates_item.text_format,'\"') as name,
-			graph_templates_item.id
-			from graph_templates_item left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
-			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-			left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
-			where graph_templates_item.local_graph_id=$args[local_graph_id]
-			and (def_graph_type.name = 'AREA' or def_graph_type.name = 'STACK' or def_graph_type.name = 'LINE1'
-			or def_graph_type.name = 'LINE2' or def_graph_type.name = 'LINE3') order by graph_templates_item.sequence_parent");
-		
-		if (sizeof($groups) == 0) {
-			DrawFormItemHiddenIDField("parent","0");
-		}else{
-			if (!(isset($args[graph_template_id_graph]))) {
-				$rows = (sizeof($groups) - 1);
-				$default_item = $groups[$rows][id];
-			}
-			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-				<td width="50%">
-					<font class="textEditTitle">Item Group</font><br>
-					Choose which graph item this GPRINT is associated with. NOTE: This field
-					will be ignored if it is not a GPRINT.
-				</td>
-				<?DrawFormItemDropdownFromSQL("parent",$groups,"name","id",$template_item[parent],"",$default_item);?>
-			</tr>
-			<?
-		}
-    
-		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Color</font><br>
-				The color that is used for this item; not used for COMMENT fields.
-			</td>
-			<?DrawFormItemColorSelect("color_id",$template_item[color_id],"None","0");?>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Graph Item Type</font><br>
-				How data for this item is displayed.
-			</td>
-			<?DrawFormItemDropdownFromSQL("graph_type_id",db_fetch_assoc("select id,name from def_graph_type order by name"),"name","id",$template_item[graph_type_id],"","");?>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Consolidation Function</font><br>
-				How data is to be represented on the graph.
-			</td>
-			<?DrawFormItemDropdownFromSQL("consolidation_function_id",db_fetch_assoc("select id,name from def_cf order by name"),"name","id",$template_item[consolidation_function_id],"","");?>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">CDEF Function</font><br>
-				A CDEF Function to apply to this item on the graph.
-			</td>
-			<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Value</font><br>
-				For use with VRULE and HRULE, <i>numbers only</i>.
-			</td>
-			<?DrawFormItemTextBox("value",$template_item[value],"","");?>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">GPRINT Options</font><br>
-				These options only apply to the GPRINT function. Choose an option or enter a custom
-				GPRINT string in the textbox (overides checkboxes).
-			</td>
-			<td>
-			<?
-				DrawStrippedFormItemRadioButton("gprint_opts", $template_item[gprint_opts], "1", "Normal","1",true);
-				DrawStrippedFormItemRadioButton("gprint_opts", $template_item[gprint_opts], "2", "Exact Numbers","1",true);
-				DrawStrippedFormItemTextBox("gprint_custom",$template_item[gprint_custom],"","", "40");
-			?>
-			</td>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
-			<td width="50%">
-				<font class="textEditTitle">Text Format</font><br>
-				The text of the comment or legend, input and output keywords are allowed.
-			</td>
-			<td>
-			<?
-				DrawStrippedFormItemTextBox("text_format",$template_item[text_format],"","","40");
-				print "<br>";
-				DrawStrippedFormItemCheckBox("hard_return",$template_item[hard_return],"Insert Hard Return","",false);
-			?>
-			</td>
-		</tr>
-		
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("item_save");?>
-			</td>
-		</tr>
-		<?
-		
-		DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
-		DrawFormItemHiddenIDField("graph_template_item_id",$args[graph_template_item_id]);
-		DrawFormItemHiddenIDField("graph_template_id",$template_item[graph_template_id]);
-		DrawFormItemHiddenIDField("sequence",$template_item[sequence]);
-		DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
-		DrawFormItemHiddenIDField("_parent",$template_item[parent]);
-		DrawFormItemHiddenIDField("_graph_type_id",$template_item[graph_type_id]);
-		
-		include_once ("include/bottom_table_footer.php");
-		include_once ("include/bottom_footer.php");
-		
-		break;
-	case 'input_save':
-		/* first; get the current graph template id */
-		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=$form[local_graph_id]");
-		
-		/* get all inputs that go along with this graph template */
-		$input_list = db_fetch_assoc("select id,column_name from graph_template_input where graph_template_id=$graph_template_id");
-		
-		if (sizeof($input_list) > 0) {
-		foreach ($input_list as $input) {
-			/* we need to find out which graph items will be affected by saving this particular item */
-			$item_list = db_fetch_assoc("select
-				graph_templates_item.id
-				from graph_template_input_defs,graph_templates_item
-				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
-				and graph_templates_item.local_graph_id=$form[local_graph_id]
-				and graph_template_input_defs.graph_template_input_id=$input[id]");
-			
-			/* get some variables */
-			$column_name = $input[column_name];
-			$graph_template_input_id = $input[id];
-			$column_value = $form[$graph_template_input_id];
-			
-			/* loop through each item affected and update column data */
-			if (sizeof($item_list) > 0) {
-			foreach ($item_list as $item) {
-				db_execute("update graph_templates_item set $column_name=$column_value where id=$item[id]");
-			}
-			}
-		}
-		}
-		
-		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
-		break;
-	case 'graph_duplicate':
-		include_once ('include/utility_functions.php');
-		
-		DuplicateGraph($id);
-		
-		header ("Location: graphs.php");
-		break;
-	case 'item':
-		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management [edit]";
-		include_once ("include/top_table_header.php");
-		
-		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
-		
-		new_table();
+	function item() {
+		global $args, $colors;
 		
 		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=$args[local_graph_id]");
 		$graph_template_name = db_fetch_cell("select  name from graph_templates where id=$graph_template_id");
@@ -516,6 +279,249 @@ switch ($action) {
 			DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
 			}
 		}
+	}
+	
+switch ($action) {
+	case 'item_remove':
+		db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
+		
+		header ("Location: graphs.php?action=item&local_graph_id=$args[local_graph_id]");
+		break;
+	case 'item_save':
+		$save["id"] = $form["graph_template_item_id"];
+		$save["graph_template_id"] = $form["graph_template_id"];
+		$save["local_graph_id"] = $form["local_graph_id"];
+		$save["task_item_id"] = $form["task_item_id"];
+		$save["color_id"] = $form["color_id"];
+		$save["graph_type_id"] = $form["graph_type_id"];
+		$save["cdef_id"] = $form["cdef_id"];
+		$save["consolidation_function_id"] = $form["consolidation_function_id"];
+		$save["text_format"] = $form["text_format"];
+		$save["value"] = $form["value"];
+		$save["hard_return"] = $form["hard_return"];
+		$save["gprint_opts"] = $form["gprint_opts"];
+		$save["gprint_custom"] = $form["gprint_custom"];
+		$save["custom"] = $form["custom"];
+		$save["sequence"] = $form["sequence"];
+		$save["sequence_parent"] = $form["sequence_parent"];
+		$save["parent"] = $form["parent"];
+		
+		$graph_template_item_id = sql_save($save, "graph_templates_item");
+		
+		include_once ("include/utility_functions.php");
+		update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
+		
+		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		break;
+	case 'item_edit':
+		include_once ("include/top_header.php");
+		$title_text = "Graph Template Management [edit]";
+		include_once ("include/top_table_header.php");
+		
+		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
+		
+		new_table();
+		
+		if (isset($args[graph_template_item_id])) {
+			$template_item = db_fetch_row("select * from graph_templates_item where id=$args[graph_template_item_id]");
+		}else{
+			unset($template_item);
+		}
+		
+		?>
+		<tr>
+			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Template Item Configuration</td>
+		</tr>
+		
+		<form method="post" action="graphs.php">
+		
+		<?
+		/* by default, select the LAST DS chosen to make everyone's lives easier */
+		$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=$args[local_graph_id] order by sequence_parent DESC,sequence DESC");
+    
+		if (sizeof($default) > 0) {
+			$default_item = $default[task_item_id];
+		}else{
+			$default_item = 0;
+		}
+		
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Task Item</font><br>
+				The task to use for this graph item; not used for COMMENT fields.
+			</td>
+			<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select item_id,descrip from polling_items order by descrip"),"descrip","item_id",$template_item[task_item_id],"None",$default_item);?>
+		</tr>
+		
+		<?
+		/* default item (last item) */
+		$groups = db_fetch_assoc("select 
+			CONCAT_WS('',def_graph_type.name,' (',def_cf.name,'): ',polling_items.descrip,' - \"',graph_templates_item.text_format,'\"') as name,
+			graph_templates_item.id
+			from graph_templates_item left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
+			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
+			left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
+			where graph_templates_item.local_graph_id=$args[local_graph_id]
+			and (def_graph_type.name = 'AREA' or def_graph_type.name = 'STACK' or def_graph_type.name = 'LINE1'
+			or def_graph_type.name = 'LINE2' or def_graph_type.name = 'LINE3') order by graph_templates_item.sequence_parent");
+		
+		if (sizeof($groups) == 0) {
+			DrawFormItemHiddenIDField("parent","0");
+		}else{
+			if (!(isset($args[graph_template_id_graph]))) {
+				$rows = (sizeof($groups) - 1);
+				$default_item = $groups[$rows][id];
+			}
+			
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+				<td width="50%">
+					<font class="textEditTitle">Item Group</font><br>
+					Choose which graph item this GPRINT is associated with. NOTE: This field
+					will be ignored if it is not a GPRINT.
+				</td>
+				<?DrawFormItemDropdownFromSQL("parent",$groups,"name","id",$template_item[parent],"",$default_item);?>
+			</tr>
+			<?
+		}
+    
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Color</font><br>
+				The color that is used for this item; not used for COMMENT fields.
+			</td>
+			<?DrawFormItemColorSelect("color_id",$template_item[color_id],"None","0");?>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Graph Item Type</font><br>
+				How data for this item is displayed.
+			</td>
+			<?DrawFormItemDropdownFromSQL("graph_type_id",db_fetch_assoc("select id,name from def_graph_type order by name"),"name","id",$template_item[graph_type_id],"","");?>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Consolidation Function</font><br>
+				How data is to be represented on the graph.
+			</td>
+			<?DrawFormItemDropdownFromSQL("consolidation_function_id",db_fetch_assoc("select id,name from def_cf order by name"),"name","id",$template_item[consolidation_function_id],"","");?>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">CDEF Function</font><br>
+				A CDEF Function to apply to this item on the graph.
+			</td>
+			<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Value</font><br>
+				For use with VRULE and HRULE, <i>numbers only</i>.
+			</td>
+			<?DrawFormItemTextBox("value",$template_item[value],"","");?>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">GPRINT Options</font><br>
+				These options only apply to the GPRINT function. Choose an option or enter a custom
+				GPRINT string in the textbox (overides checkboxes).
+			</td>
+			<td>
+			<?
+				DrawStrippedFormItemRadioButton("gprint_opts", $template_item[gprint_opts], "1", "Normal","1",true);
+				DrawStrippedFormItemRadioButton("gprint_opts", $template_item[gprint_opts], "2", "Exact Numbers","1",true);
+				DrawStrippedFormItemTextBox("gprint_custom",$template_item[gprint_custom],"","", "40");
+			?>
+			</td>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Text Format</font><br>
+				The text of the comment or legend, input and output keywords are allowed.
+			</td>
+			<td>
+			<?
+				DrawStrippedFormItemTextBox("text_format",$template_item[text_format],"","","40");
+				print "<br>";
+				DrawStrippedFormItemCheckBox("hard_return",$template_item[hard_return],"Insert Hard Return","",false);
+			?>
+			</td>
+		</tr>
+		
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right" background="images/blue_line.gif">
+				<?DrawFormSaveButton("item_save", "graphs.php?action=graph_edit&local_graph_id=$args[local_graph_id]");?>
+			</td>
+		</tr>
+		<?
+		
+		DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
+		DrawFormItemHiddenIDField("graph_template_item_id",$args[graph_template_item_id]);
+		DrawFormItemHiddenIDField("graph_template_id",$template_item[graph_template_id]);
+		DrawFormItemHiddenIDField("sequence",$template_item[sequence]);
+		DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
+		DrawFormItemHiddenIDField("_parent",$template_item[parent]);
+		DrawFormItemHiddenIDField("_graph_type_id",$template_item[graph_type_id]);
+		
+		include_once ("include/bottom_table_footer.php");
+		include_once ("include/bottom_footer.php");
+		
+		break;
+	case 'input_save':
+		/* first; get the current graph template id */
+		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=$form[local_graph_id]");
+		
+		/* get all inputs that go along with this graph template */
+		$input_list = db_fetch_assoc("select id,column_name from graph_template_input where graph_template_id=$graph_template_id");
+		
+		if (sizeof($input_list) > 0) {
+		foreach ($input_list as $input) {
+			/* we need to find out which graph items will be affected by saving this particular item */
+			$item_list = db_fetch_assoc("select
+				graph_templates_item.id
+				from graph_template_input_defs,graph_templates_item
+				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
+				and graph_templates_item.local_graph_id=$form[local_graph_id]
+				and graph_template_input_defs.graph_template_input_id=$input[id]");
+			
+			/* get some variables */
+			$column_name = $input[column_name];
+			$graph_template_input_id = $input[id];
+			$column_value = $form[$graph_template_input_id];
+			
+			/* loop through each item affected and update column data */
+			if (sizeof($item_list) > 0) {
+			foreach ($item_list as $item) {
+				db_execute("update graph_templates_item set $column_name=$column_value where id=$item[id]");
+			}
+			}
+		}
+		}
+		
+		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		break;
+	case 'graph_duplicate':
+		include_once ('include/utility_functions.php');
+		
+		DuplicateGraph($id);
+		
+		header ("Location: graphs.php");
+		break;
+	case 'item':
+		include_once ("include/top_header.php");
+		$title_text = "Graph Template Management [edit]";
+		include_once ("include/top_table_header.php");
+		
+		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
+		
+		new_table();
+		
+		item();
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
@@ -585,11 +591,13 @@ switch ($action) {
 		break;
 	case 'graph_edit':
 		include_once ("include/top_header.php");
-		$title_text = "Graph Management [edit]";
+		if ($config[full_view_graph][value] == "") { $title_text = "Graph Management [edit]"; }
 		include_once ("include/top_table_header.php");
 		
-		draw_graph_form_select("?action=graph_edit&local_graph_id=$args[local_graph_id]");
-		new_table();
+		if ($config[full_view_graph][value] == "") {
+			draw_graph_form_select("?action=graph_edit&local_graph_id=$args[local_graph_id]");
+			new_table();
+		}
 		
 		$use_graph_template = true;
 		
@@ -627,7 +635,14 @@ switch ($action) {
 			<?DrawFormItemDropdownFromSQL("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",$graphs[graph_template_id],"None","0");?>
 		</tr>
 		
-		<?new_table();?>
+		<?
+		new_table();
+		
+		if ($config[full_view_graph][value] == "on") {
+			item();	
+			new_table();
+		}
+		?>
 		
 		<tr>
 			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Custom Graph Configuration<?if ($graph_template_name != "") { print " <strong>[Template: $graph_template_name]</strong>"; }?></td>
@@ -869,7 +884,7 @@ switch ($action) {
 		
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("graph_save");?>
+				<?DrawFormSaveButton("graph_save", "graphs.php");?>
 			</td>
 		</tr>
 		<?
@@ -920,7 +935,7 @@ switch ($action) {
 		
 		<tr bgcolor="#<?print $colors[form_alternate2];?>">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("save");?>
+				<?DrawFormSaveButton("save", "graphs.php?action=tree");?>
 			</td>
 		</tr>
 		<?
