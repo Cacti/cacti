@@ -34,7 +34,58 @@ include_once ('include/form.php');
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
-$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+switch ($action) {
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;
+	case 'item_movedown':
+		item_movedown();
+		
+		header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
+		break;
+	case 'item_moveup':
+		item_moveup();
+		
+		header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
+		break;
+	case 'item_remove':
+		item_remove();
+	    
+		header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
+		break;
+	case 'item_edit':
+		include_once ("include/top_header.php");
+		
+		item_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'remove':
+		cdef_remove();
+		
+		header ("Location: cdef.php");
+		break;
+	case 'edit':
+		include_once ("include/top_header.php");
+		
+		cdef_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	default:
+		include_once ("include/top_header.php");
+		
+		cdef();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+}
+
+/* --------------------------
+    Global Form Functions
+   -------------------------- */
 
 function draw_cdef_preview($cdef_id) {
 	global $colors; ?>
@@ -45,19 +96,49 @@ function draw_cdef_preview($cdef_id) {
 	</tr>	
 <?}
 
-switch ($action) {
- case 'movedown_item':
- 	move_item_down("cdef_items", $args[id], "cdef_id", $args[cdef_id]);
+
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form;
 	
-	header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
- 	break;
- case 'moveup_item':
- 	move_item_up("cdef_items", $args[id], "cdef_id", $args[cdef_id]);
+	if (isset($form[save_component_cdef])) {
+		cdef_save();
+		return "cdef.php";
+	}elseif (isset($form[save_component_item])) {
+		item_save();
+		return "cdef.php?action=edit&id=$form[cdef_id]";
+	}
+}
+
+/* --------------------------
+    CDEF Item Functions
+   -------------------------- */
+
+function item_movedown() {
+	global $args;
 	
-	header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
- 	break;
- case 'save_item':
- 	if ($form[value_function] != "0") { $current_type = 1; $current_value = $form[value_function]; }
+	move_item_down("cdef_items", $args[id], "cdef_id", $args[cdef_id]);	
+}
+
+function item_moveup() {
+	global $args;
+	
+	move_item_up("cdef_items", $args[id], "cdef_id", $args[cdef_id]);	
+}
+
+function item_remove() {
+	global $args;
+	
+	db_execute("delete from cdef_items where id=$args[id]");	
+}
+
+function item_save() {
+	global $form;
+	
+	if ($form[value_function] != "0") { $current_type = 1; $current_value = $form[value_function]; }
 	if ($form[value_operator] != "0") { $current_type = 2; $current_value = $form[value_operator]; }
 	if ($form[value_data_source] != "0") { $current_type = 3; $current_value = $form[value_data_source]; }
 	if ($form[value_special_data_source] != "0") { $current_type = 4; $current_value = $form[value_special_data_source]; }
@@ -77,17 +158,11 @@ switch ($action) {
 	$save["type"] = $current_type;
 	$save["value"] = $current_value;
 	
-	sql_save($save, "cdef_items");
+	sql_save($save, "cdef_items");	
+}
 
-	header ("Location: cdef.php?action=edit&id=$form[cdef_id]");
-	break;
- case 'remove_item':
-    	db_execute("delete from cdef_items where id=$args[id]");
-    
-    	header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
-	break;
- case 'edit_item':
-	include_once ("include/top_header.php");
+function item_edit() {
+	global $args, $colors, $cdef_functions, $cdef_operators, $custom_data_source_types;
 	
 	if (isset($args[id])) {
 		$cdef = db_fetch_row("select * from cdef_items where id=$args[id]");
@@ -157,37 +232,43 @@ switch ($action) {
 	<?
 	DrawFormItemHiddenIDField("id",$args[id]);
 	DrawFormItemHiddenIDField("cdef_id",$args[cdef_id]);
+	DrawFormItemHiddenTextBox("save_component_item","1","");
 	end_box();
 	
 	start_box("", "", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save_item", "cdef.php");?>
+			<?DrawFormSaveButton("save", "cdef.php");?>
 		</td>
 	</tr>
 	</form>
 	<?
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
- 	break;
- case 'save':
- 	$save["id"] = $form["id"];
-	$save["name"] = $form["name"];
-	
-	sql_save($save, "cdef");
+	end_box();	
+}
+   
+/* ---------------------
+    CDEF Functions
+   --------------------- */
 
-	header ("Location: cdef.php");
-	break;
- case 'remove':
+function cdef_remove() {
+	global $args;
+	
     	db_execute("delete from cdef where id=$args[id]");
 	db_execute("delete from cdef_items where cdef_id=$args[id]");
-    
-    	header ("Location: cdef.php");
-	break;
- case 'edit':
-	include_once ("include/top_header.php");
+}
+
+function cdef_save() {
+	global $form;
+	
+	$save["id"] = $form["id"];
+	$save["name"] = $form["name"];
+	
+	sql_save($save, "cdef");	
+}
+
+function cdef_edit() {
+	global $args, $colors, $cdef_item_types;
 	
 	start_box("<strong>CDEF's [edit]</strong>", "", "");
 	
@@ -216,7 +297,7 @@ switch ($action) {
 	draw_cdef_preview($args[id]);
 	end_box();
 	
-	start_box("CDEF Items", "", "cdef.php?action=edit_item&cdef_id=$cdef[id]");
+	start_box("CDEF Items", "", "cdef.php?action=item_edit&cdef_id=$cdef[id]");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Item",$colors[header_text],1);
@@ -231,23 +312,25 @@ switch ($action) {
 		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="cdef.php?action=edit_item&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>">Item #<?print $i;?></a>
+				<a class="linkEditMain" href="cdef.php?action=item_edit&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>">Item #<?print $i;?></a>
 			</td>
 			<td>
 				<em><?$cdef_item_type = $cdef_item[type]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?print get_cdef_item_name($cdef_item[id]);?></strong>
 			</td>
 			<td>
-				<a href="cdef.php?action=movedown_item&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-				<a href="cdef.php?action=moveup_item&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+				<a href="cdef.php?action=item_movedown&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+				<a href="cdef.php?action=item_moveup&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="cdef.php?action=remove_item&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="cdef.php?action=item_remove&id=<?print $cdef_item[id];?>&cdef_id=<?print $cdef[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
 	}
 	}
 	end_box();
+	
+	DrawFormItemHiddenTextBox("save_component_cdef","1","");
 	
 	start_box("", "", "");
 	?>
@@ -258,13 +341,11 @@ switch ($action) {
 	</tr>
 	</form>
 	<?
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-    	break;
- default:
-	include_once ("include/top_header.php");
+	end_box();	
+}
+
+function cdef() {
+	global $colors;
 	
 	start_box("<strong>CDEF's</strong>", "", "cdef.php?action=edit");
 	                         
@@ -289,9 +370,6 @@ switch ($action) {
 	<?
 	}
 	}
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-   	break;
-} ?>
+	end_box();	
+}
+?>
