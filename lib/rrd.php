@@ -440,6 +440,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$txt_graph_items = "";
 	$text_padding = "";
 	$greatest_text_format = 0;
+	$last_graph_type = "";
 	
     	if ($graph["auto_scale"] == "on") {
 		if ($graph["auto_scale_opts"] == "1") {
