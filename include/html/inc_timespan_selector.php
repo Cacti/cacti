@@ -56,7 +56,7 @@
    </script>
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form method="post">
+		<form name="timespan_selector" method="post">
 		<td>
 			<table>
 				<tr>
@@ -97,6 +97,8 @@
 					</td>
 					<td class="textHeader">
 						<strong>&nbsp;To:&nbsp;</strong>
+					</td>
+					<td>
 						<input type='text' name='date2' id='date2' size='16'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
