@@ -223,41 +223,46 @@ function sort_tree($sort_type, $item_id, $sort_style) {
 			$_search_key = substr($leaf["order_key"], 0, ((tree_tier($leaf["order_key"]) - 1) * CHARS_PER_TIER));
 
 			if ($leaf["local_graph_id"] > 0) {
-				$leaf_sort_array[$_search_key]{$leaf["order_key"]} = $leaf["graph_title"];
+				$leaf_sort_array{strlen($_search_key) / CHARS_PER_TIER}[$_search_key]{$leaf["order_key"]} = $leaf["graph_title"];
 			}elseif ($leaf["title"] != "") {
-				$leaf_sort_array[$_search_key]{$leaf["order_key"]} = $leaf["title"];
+				$leaf_sort_array{strlen($_search_key) / CHARS_PER_TIER}[$_search_key]{$leaf["order_key"]} = $leaf["title"];
 			}elseif ($leaf["host_id"] > 0) {
-				$leaf_sort_array[$_search_key]{$leaf["order_key"]} = $leaf["hostname"];
+				$leaf_sort_array{strlen($_search_key) / CHARS_PER_TIER}[$_search_key]{$leaf["order_key"]} = $leaf["hostname"];
 			}
 		}
 	}
 
 	/* do the actual sort */
-	while (list($_search_key, $search_array) = each($leaf_sort_array)) {
-		if ($sort_style == TREE_ORDERING_NUMERIC) {
-			uasort($leaf_sort_array[$_search_key], "usort_numeric");
-		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
-			uasort($leaf_sort_array[$_search_key], "usort_alphabetic");
+	while (list($_tier_key, $tier_array) = each($leaf_sort_array)) {
+		while (list($_search_key, $search_array) = each($tier_array)) {
+			if ($sort_style == TREE_ORDERING_NUMERIC) {
+				uasort($leaf_sort_array[$_tier_key][$_search_key], "usort_numeric");
+			}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+				uasort($leaf_sort_array[$_tier_key][$_search_key], "usort_alphabetic");
+			}
 		}
 	}
 
-	/* prepend all order keys will 'x' so they don't collide during the REPLACE process */
-	if (sizeof($leaf_sort_array) > 0) {
-		db_execute("update graph_tree_items set order_key = CONCAT('x',order_key) where order_key like '$search_key%%' " . (($sort_type == SORT_TYPE_TREE_ITEM) ? "and id != $item_id" : "") . " and graph_tree_id = '$tree_id'");
-	}
+	/* sort from most specific to least specific */
+	rsort($leaf_sort_array);
 
-	$i = 1;
 	reset($leaf_sort_array);
-	while (list($_search_key, $search_array) = each($leaf_sort_array)) {
-		while (list($leaf_order_key, $leaf_title) = each($search_array)) {
-			$starting_tier = tree_tier($leaf_order_key);
+	while (list($_tier_key, $tier_array) = each($leaf_sort_array)) {
+		while (list($_search_key, $search_array) = each($tier_array)) {
+			/* prepend all order keys will 'x' so they don't collide during the REPLACE process */
+			db_execute("update graph_tree_items set order_key = CONCAT('x',order_key) where order_key like '$_search_key%%' " . (($sort_type == SORT_TYPE_TREE_ITEM) ? "and id != $item_id" : "and order_key != '$_search_key" . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - strlen($_search_key)) . "'") . " and graph_tree_id = '$tree_id'");
 
-			$old_base_tier = substr($leaf_order_key, 0, ($starting_tier * CHARS_PER_TIER));
-			$new_base_tier = $_search_key . str_pad(strval($i), CHARS_PER_TIER, '0', STR_PAD_LEFT);
+			$i = 1;
+			while (list($leaf_order_key, $leaf_title) = each($search_array)) {
+				$starting_tier = tree_tier($leaf_order_key);
 
-			db_execute("update graph_tree_items set order_key = REPLACE(order_key, 'x$old_base_tier', '$new_base_tier') where order_key like 'x$old_base_tier%%' " . (($sort_type == SORT_TYPE_TREE_ITEM) ? "and id != $item_id" : "") . " and graph_tree_id = '$tree_id'");
+				$old_base_tier = substr($leaf_order_key, 0, ($starting_tier * CHARS_PER_TIER));
+				$new_base_tier = $_search_key . str_pad(strval($i), CHARS_PER_TIER, '0', STR_PAD_LEFT);
 
-			$i++;
+				db_execute("update graph_tree_items set order_key = REPLACE(order_key, 'x$old_base_tier', '$new_base_tier') where order_key like 'x$old_base_tier%%' " . (($sort_type == SORT_TYPE_TREE_ITEM) ? "and id != $item_id" : "") . " and graph_tree_id = '$tree_id'");
+
+				$i++;
+			}
 		}
 	}
 }
