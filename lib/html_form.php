@@ -289,21 +289,21 @@ function form_base_dropdown($form_name, $form_data, $column_display,$column_id, 
 }
 
 /* creates a checkbox */
-function form_base_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0) { 
+function form_base_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $trailing_br) { 
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
 	
-	print "<input type='checkbox' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
+	print "<input type='checkbox' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
 }
 
 /* creates a radio */
-function form_base_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value) { 
+function form_base_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value, $trailing_br) { 
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
 	
-	print "<input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption\n";
+	print "<input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "") . "\n";
 }
 
 /* ------------------ Data Matrix ---------------------- */
