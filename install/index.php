@@ -138,6 +138,7 @@ if (empty($_REQUEST["step"])) {
 }
 
 if ($_REQUEST["step"] == "4") {
+	include_once("../include/snmp_functions.php");
 	include_once("../include/utility_functions.php");
 	
 	$i = 0;
@@ -150,6 +151,9 @@ if ($_REQUEST["step"] == "4") {
 	}
 	
 	kill_session_var("sess_config_array");
+	
+	/* just in case we have hard drive graphs to deal with */
+	data_query(db_fetch_cell("select id from host where management_ip='127.0.0.1'"), 6);
 	
 	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
 	up-to-date */
