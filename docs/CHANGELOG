@@ -26,6 +26,8 @@ tree.
 the hidden flag set.
 -feature: Added ability to turn off checks for an entire host.
 -feature: Added SNMP and operating system variable printout to the about page.
+-feature: Added 95th percentile support. See the manual for more information.
+-feature: Added setting for data query maximum field length.
 -cactid: Added downed host detection.
 -cactid: Code cleanup: formatting, compiler warnings, and removal of unused 
 functions.
