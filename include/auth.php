@@ -53,17 +53,24 @@ if (read_config_option("global_auth") == "on") {
 		$guest_user_id = db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'");
 		
 		/* cannot find guest user */
-		if (empty($guest_user_id) == 0) {
+		if (empty($guest_user_id)) {
 			print "<strong><font size='+1' color='FF0000'>CANNOT FIND GUEST USER: " . read_config_option("guest_user") . "</font></strong>";
 		}else{
 			$_SESSION["sess_user_id"] = $guest_user_id;
 		}
 	}
 	
+	/* if we are a guest user in a non-guest area, wipe credentials */
+	if (!empty($_SESSION["sess_user_id"])) {
+		if ((!isset($guest_account)) && (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"])) {
+			kill_session_var("sess_user_id");
+		}
+	}
+	
 	if (empty($_SESSION["sess_user_id"])) {
 		include ("auth_login.php");
 		exit;
-	}else{
+	}elseif (!empty($_SESSION["sess_user_id"])) {
 		$realm_id = db_fetch_cell("select realm_id from user_realm_filename where filename='" . basename($_SERVER["SCRIPT_NAME"]) . "'");
 		
 		if (!db_fetch_assoc("select
