@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+
+<html>
+<head>
+	<title>Cacti Frequently Asked Questions</title>
+	<style>
+	<!--
+		BODY
+		{
+			font-size: 10pt;
+			font-family: Arial, sans-serif;
+		}
+		
+		P.code
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: bold;
+			margin: 5px;
+			padding: 5px;
+			color: #000066;
+			background-color: #EEEEEE;
+		}
+		
+		TT.shell
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #999999;
+		}
+		
+		P.php
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #000000;
+			margin: 5px;
+			padding: 5px;
+			background-color: #EEEEEE;
+		}
+		
+		TT.php-var
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #008080;
+		}
+	-->
+	</style>
+</head>
+
+<body>
+
+<h2>Cacti Frequently Asked Questions (FAQ)</h2><p>
+
+<h2>Using Cacti</h2><p>
+
+<h4>How do I create traffic graphs?</h4><p>
+
+<p>Before you can create traffic graphs, Cacti must have working SNMP support. One way to do this is to
+compile PHP with SNMP support built in, many times you can install the 'php-snmp' package to do this. The
+second option is to have Cacti call the snmpget and snmpwalk binaries from your ucd-snmp or net-snmp
+installation. You can use the about page to determine whether to are using "built-in" or "external" SNMP
+support.</p>
+
+<p>Now that you have working SNMP support, follow these steps.</p>
+
+<p>1. Click "Polling Hosts" on Cacti's menu.</p>
+
+<p>2. Click "Add" to add a new polling host.</p>
+
+<p>3. Type a description, hostname, management IP, and SNMP community. Make sure to select "Generic SNMP-enabled Host"
+under "Host Template" and click "Create".</p>
+
+<p>4. You should see one or more interfaces listed under the "Data Query [SNMP - Interface Statistics]" box. Place a
+check next to each interface that you want to graph. Below the box, select type of graph that you want to create
+(bits, bytes, summation, etc).</p>
+
+<p>5. Click "Save", and "Create" on the following screen to create your graphs.</p>
+
+<h2>General</h2><p>
+
+<h4>I get the following error message from Cacti: <em>Warning: Undefined variable: _SERVER in 
+.../cacti/install/index.php on line 59</em></h4><p>
+
+<p>Cacti 0.8 and above requires that you have at least PHP 4.1 or greater installed.</p>
+
+<h4>I get the following error message from Cacti: <em>Fatal error: Call to undefined function: 
+mysql_connect() in /usr/share/cacti/include/database.php on line 19</em></h4><p>
+
+<p>Your installation of PHP does not have MySQL installed or enabled. On binary-based distributions, make sure
+you have the 'php-mysql' package installed. Also make sure that 'extension=mysql.so' is uncommented in your
+php.ini file.</p>
+
+<h4>I have forgotten my 'admin' password to Cacti, how do I reset it?</h4><p>
+
+<p>To reset the admin account password back to the default of 'admin', connect to your Cacti database at the command line.</p>
+
+<p class="code"><tt class="shell">shell&gt;</tt> <b>mysql -u root -p cacti</b></p>
+
+<p>Now execute the following SQL:</p>
+
+<p class="code"><tt class="shell">mysql&gt;</tt> <b>update user_auth set password='21232f297a57a5a743894a0e4a801fc3' where username='admin';</b></p>
+
+<h2>Monitoring</h2><p>
+
+<h4>I am polling thousands of items and cmd.php takes more than 5 minutes to run.</h4><p>
+
+<p>Give cactid, the future replacement for cmd.php a try. Unlike cmd.php, cactid is written in c and makes use
+of pthreads. On a typical installation, it is not uncommon for cactid to poll about 500 items in less then 10
+seconds.</p>
+
+<h4>I changed <em>x</em>, and now some of my graphs are not updating.</h4><p>
+
+<p>The best thing to do here is to force Cacti to rebuild its poller cache. To do this click "Utilities"
+on the Cacti menu, and simply select "Clear Poller Cache".</p>
+
+<h4>I am using Redhat 8.0 and SNMP is not working.</h4><p>
+
+<p>Redhat 8.0 comes with a broken php-snmp package. Updating your 'php-snmp' and 'net-snmp' packages to their latest
+versions should fix this problem.</p>
+
+<h4>How do I configure net-snmp so it will work with Cacti?</h4><p>
+
+<p>Run <em>snmpconf -g basic_setup</em> and follow the prompts. Also check that the file being used by snmpd is the correct 
+config file. For Redhat Linux, snmpconf creates the /etc/snmpd.conf, but snmpd uses /etc/snmpd/snmpd.conf.</p>
+
+<p>If this doesn't work a very simple config file is:</p>
+
+<p class="code"># contact<br>
+syslocation  Something<br>
+syscontact  "root@someone.com"<br>
+<br>
+# auth<br>
+rocommunity  public<br>
+<br>
+# disk monitoring<br>
+disk /</p>
+
+<h2>Graphs</h2><p>
+
+<h4>I just installed Cacti and all of my graphs appear as broken images.</h4><p>
+
+<p>For you to actually get graph images, cmd.php must run at least once so it can create .rrd files in Cacti's
+'rra/' directory. Double check that you configured your /etc/crontab file to execute cmd.php every five minutes.
+Also make sure that the user cmd.php runs as has permission to create new files in Cacti's 'rra/' directory.</p>
+
+<p>If all of your settings appear correct, try running cmd.php manually by cd'ing to Cacti's directory and typing:</p>
+
+<p class="code"><tt class="shell">shell&gt;</tt> <b>php cmd.php</b></p>
+
+<p>If you have files in your 'rra/' directory, but your graphs still appear as broken images, you should enable
+graph debug mode see exactly why the graphs are not rendering. To do this go into Cacti, select "Graph Management"
+from the menu, select any graph listed, and select "Turn On Graph Debug Mode".</p>
+
+<h4>My graphs render, but they do not contain any data.</h4><p>
+
+<p>More often than not, this problem's cause is permissions. For instance if you run cmd.php manually as root for
+testing, any .rrd files that it creates will be owned by root. Now when cmd.php runs from cron, it will not be
+able to update these .rrd files because they are owned by root. You can double check the owner of your .rrd files
+by running the following command in your Cacti directory:</p>
+
+<p class="code"><tt class="shell">shell&gt;</tt> <b>ls -al rra/</b></p>
+
+<p>If only some of your graphs are not updating correctly, double check the "Maximum Value" field for all data
+sources used by these graphs. If the value being fed to the .rrd file exceeds its "Maximum Value", RRDTool will insert
+an "Unknown" and you will see no data on the graph.</p>
+
+<h4>A lot of my graphs contain long ifAlias names, but they are being truncated to 15 characters.</h4><p>
+
+<p>Cacti does this by default to better control graph title formatting. You can change this limit, by going to "Cacti
+Settings" on the Cacti menu, selecting the "Visual" tab, and changing the value for "Data Queries - Maximum Field Length".</p>
+
+<h2>Windows Related</h2><p>
+
+<h4>I get the following error message from Cacti: <em>Fatal error: Cannot redeclare title_trim() (previously 
+declared in ...\cacti\include\functions.php:27)</em></h4><p>
+
+<p>Contrary to previous versions of Cacti, you must not put Cacti in your PHP include path. Check your php.ini file to make
+sure there is not something like '<em>include_path = C:/Apache2/htdocs/cacti</em>'.
