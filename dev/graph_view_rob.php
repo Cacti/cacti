@@ -163,12 +163,12 @@ switch ($action) {
     $array_tree["options"]["hide_item"] = "<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=1&branch_id=$branch'><img src='images/hide.gif' border='0'></a>";
 				    
     $array_tree["item_can_have_children"]["Heading"] = true;
-    $array_tree["item_td_code"]["Heading"] = "bgcolor='#$colors[panel]' colspan='" . $array_settings["preview"]["columnnumber"] . "'";
+    $array_tree["item_td_code"]["Heading"] = "bgcolor='#$colors[panel]' colspan='" . $array_settings[column_number] . "'";
 #    $array_tree["item_action"]["Heading"] = "<strong><a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$branch'>" . mysql_result($sql_id, $i, "title") . "</a></strong>";
     
     $array_tree["item_can_have_children"]["Graph"] = false;
     
-    switch ($array_settings["hierarchical"]["viewtype"]) {
+    switch ($array_settings[view_type]) {
      case "1":
 #	$array_tree["item_action"]["Graph"] = "<a href='graph.php?graphid=" . mysql_result($sql_id, $i, "graphid") . 
 #	  "&rraid=all'><img align='middle' src='graph_image.php?graphid=" . mysql_result($sql_id, $i, "graphid") . 
@@ -176,7 +176,7 @@ switch ($action) {
 #	  $array_settings["preview"]["timespan"] . "&graph_height=" . 
 #	  $array_settings["preview"]["height"] . "&graph_width=" . $array_settings["preview"]["width"] . 
 #	  "&graph_nolegend='true' border='0' alt='" . mysql_result($sql_id, $i, "gtitle") . "'></a>";
-	$array_tree["item_columns"]["Graph"] = $array_settings["preview"]["columnnumber"];
+	$array_tree["item_columns"]["Graph"] = $array_settings[column_number];
 	
 	break;
      case "2":
@@ -242,9 +242,9 @@ switch ($action) {
     print "<tr><td bgcolor='$colors[light]' width='1%' rowspan='99999'></td>\n";
     if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
-	    print "<td width='25%'><a href='graph.php?rraid=all&graphid=$graph[ID]'><img src='graph_image.php?graphid=$graph[ID]&rraid=".$array_settings["preview"]["rraid"];?>&graph_start=-<?print $array_settings["preview"]["timespan"];?>&graph_height=<?print $array_settings["preview"]["height"]."&graph_width=".$array_settings["preview"]["width"]."&graph_nolegend=true' border='0' alt='$graph[Title]'></a></td>";
+	    print "<td width='25%'><a href='graph.php?rraid=all&graphid=$graph[ID]'><img src='graph_image.php?graphid=$graph[ID]&rraid=".$array_settings[rra];?>&graph_start=-<?print $array_settings["preview"]["timespan"];?>&graph_height=<?print $array_settings["preview"]["height"]."&graph_width=".$array_settings["preview"]["width"]."&graph_nolegend=true' border='0' alt='$graph[Title]'></a></td>";
 	    $k++;
-	    if ($k == $array_settings["preview"]["columnnumber"]) {
+	    if ($k == $array_settings[column_number]) {
 		$k = 0;
 		print "</tr><tr height='10'><td>&nbsp;</td></tr><tr>\n";
 	    }
@@ -288,7 +288,7 @@ switch ($action) {
     print "<tr>";
     if (sizeof($graphs) > 0) {		
 	foreach ($graphs as $graph) {
-	    switch ($array_settings["list"]["listviewtype"]) {
+	    switch ($array_settings[list_view_type]) {
 	     case "1":
 		print "<td width='25%'><strong>$graph[Title] [<a href='graph.php?graphid=$graph[ID]&rraid=all'>all</a>]</strong><br>\n";
 		if (sizeof($rra_list) > 0) {

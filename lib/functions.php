@@ -343,24 +343,24 @@ function LoadSettingsIntoArray($user_id, $guest_account) {
     
     if ($use_default_settings == true) {
 		/* use defaults */
-		$array_settings[Height] = 100;
-		$array_settings[Width] = 300;
-		$array_settings[TimeSpan] = 60000;
-		$array_settings[RRA] = 1;
-		$array_settings[ColumnNumber] = 2;
-		$array_settings[PageRefresh] = 300;
-		$array_settings[ListViewType] = 1;
-		$array_settings[ViewType] = 1;
+		$array_settings[height] = 100;
+		$array_settings[width] = 300;
+		$array_settings[time_span] = 60000;
+		$array_settings[rra] = 1;
+		$array_settings[column_number] = 2;
+		$array_settings[page_refresh] = 300;
+		$array_settings[list_view_type] = 1;
+		$array_settings[view_type] = 1;
     }else{
-		$array_settings[Height] = $settings[Height];
-		$array_settings[Width] = $settings[Width];
-		$array_settings[TimeSpan] = $settings[Timespan];
-		$array_settings[RRA] = $settings[RRAID];
-		$array_settings[ColumnNumber] = $settings[ColumnNumber];
-		$array_settings[PageRefresh] = $settings[PageRefresh];
-		$array_settings[ListViewType] = $settings[ListViewType];
-		$array_settings[ViewType] = $settings[ViewType];
-		$array_settings[TreeID] = $settings[TreeID];
+		$array_settings[height] = $settings[Height];
+		$array_settings[width] = $settings[Width];
+		$array_settings[time_span] = $settings[Timespan];
+		$array_settings[rra] = $settings[RRAID];
+		$array_settings[column_number] = $settings[ColumnNumber];
+		$array_settings[page_refresh] = $settings[PageRefresh];
+		$array_settings[list_view_type] = $settings[ListViewType];
+		$array_settings[view_type] = $settings[ViewType];
+		$array_settings[tree_id] = $settings[TreeID];
     }
     
     return $array_settings;

@@ -193,11 +193,11 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$graph_ct = 0;
 	    } else {
 		++$graph_ct;
-		switch ($array_settings["hierarchical"]["viewtype"]) {
+		switch ($array_settings[view_type]) {
 		 case "1":
 		    print "<td><a href='graph.php?graphid=$leaf[graph_id]&rraid=all'><img align='middle' 
-			    src='graph_image.php?graphid=$leaf[graph_id]&rraid=$leaf[rra_id]&graph_start=-".$array_settings["preview"]["timespan"].'&graph_height='.
-		      $array_settings["preview"]["height"].'&graph_width='.$array_settings["preview"]["width"] ."&graph_nolegend=true' border='0' alt='$leaf[gtitle]'></a><td>\n";
+			    src='graph_image.php?graphid=$leaf[graph_id]&rraid=$leaf[rra_id]&graph_start=-".$array_settings[time_span].'&graph_height='.
+			    $array_settings[height].'&graph_width='.$array_settings[width] ."&graph_nolegend=true' border='0' alt='$leaf[gtitle]'></a><td>\n";
 		    break;
 		 case "2":
 		    print "<td><a href='graph.php?graphid=$leaf[graph_id]&rraid=all'>$leaf[gtitle]</a></td>";

@@ -44,11 +44,11 @@ $graphs = db_fetch_assoc("select
 
 if (sizeof($graphs) > 0) {
     foreach ($graphs as $graph) {
-	$graph_data_array["graph_width"] = $array_settings["preview"]["width"];
-	$graph_data_array["graph_height"] = $array_settings["preview"]["height"];
+	$graph_data_array["graph_width"] = $array_settings[width];
+	$graph_data_array["graph_height"] = $array_settings[height];
 	$graph_data_array["use"] = true;
 	$graph_data_array["graph_nolegend"] = true;
-	$graph_data_array["graph_start"] = -$array_settings["preview"]["timespan"];
+	$graph_data_array["graph_start"] = -$array_settings[time_span];
 	
 	$image_filename = "prev_".$graph[ID] .".". $graph[Name];
 	
@@ -61,7 +61,7 @@ if (sizeof($graphs) > 0) {
 	print "<td width='25%'><a href='graph_$graph[ID].html'><img src='$image_filename' border='0' alt='rrdtool Graph'></a></td>\n";
 	$k++;	
 		
-	if ($k % $array_settings["preview"]["columnnumber"] == 0) {
+	if ($k % $array_settings[column_number] == 0) {
 	    print "</tr><tr height='10'><td>&nbsp;</td></tr><tr>\n";
 	}	
 }	

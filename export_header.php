@@ -27,7 +27,7 @@
 	<title>cacti</title>
 	<link href="main.css" rel="stylesheet">
 	<?
-	$page_refresh = $array_settings["preview"]["pagerefresh"];
+	$page_refresh = $array_settings[page_refresh];
 	echo "<meta http-equiv=refresh content=\"$page_refresh\"; url=\"$PHP_SELF?$QUERY_STRING\">\n";
 	echo "<meta http-equiv=Pragma content=no-cache>\n";
 	echo "<meta http-equiv=cache-control content=no-cache>\n";
@@ -38,7 +38,7 @@
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
-		<td bgcolor="#454E53" colspan="<?print $array_settings["preview"]["columnnumber"];?>" nowrap>
+		<td bgcolor="#454E53" colspan="<?print $array_settings[column_number];?>" nowrap>
 			<map name="tabs">
 				<area alt="cacti" coords="7,5,87,35" href="http://www.raxnet.net/">
 				<area alt="Graphs" coords="88,5,165,32" href="index.html" shape="RECT">

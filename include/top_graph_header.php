@@ -24,7 +24,6 @@
 <?	include ('include/config.php');
 	
 	session_start();
-	//print $HTTP_SESSION_VARS['user_id'];
 	
 	$tree_id = $HTTP_GET_VARS["tree_id"];
 	
@@ -39,16 +38,16 @@
 	$array_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]); 
 	
 	/* set the default action if none has been set */
-	if (($action != "tree") && ($action != "list") && ($action != "preview")) {
-		switch ($array_settings["global"]["defaultviewmode"]) {
-			case '1':
-				$action = "tree"; break;
-			case '2':
-				$action = "list"; break;
-			case '3':
-				$action = "preview"; break;
-		}
-	}
+	//if (($action != "tree") && ($action != "list") && ($action != "preview")) {
+	//	switch ($array_settings["global"]["defaultviewmode"]) {
+	//		case '1':
+				$action = "tree"; //break;
+	//		case '2':
+	//			$action = "list"; break;
+	//		case '3':
+	//			$action = "preview"; break;
+	//	}
+	//}
 	
 	/* if cookie has been set, use it */
 	if (isset($tree_id) == false) {
@@ -65,7 +64,7 @@
 <head>
 	<title>cacti</title>
 	<?
-	$page_refresh = $array_settings["preview"]["pagerefresh"];
+	$page_refresh = $array_settings[page_refresh];
 	echo "<meta http-equiv=refresh content=\"$page_refresh\"; url=\"$PHP_SELF?$QUERY_STRING\">\r\n";
 	?>
 	<STYLE TYPE="text/css">
@@ -87,19 +86,16 @@
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
-		<td bgcolor="#454E53" colspan="<?print $array_settings["preview"]["columnnumber"];?>" nowrap>
+		<td bgcolor="#454E53" colspan="<?print $array_settings[column_number];?>" nowrap>
 			<map name="tabs">
 				<area alt="Console" coords="7,5,87,35" href="index.php">
 				<area alt="Graphs" coords="166,5,241,32" href="graph_view.php?action=tree" shape="RECT">
 				<area alt="Documentation" coords="88,5,165,32" href="docs/MANUAL.htm">
 			</map>
-			<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36><a href='about.php'><img
-	        src="images/cactus.png" border=0 height=54 width=36></a></td><td width=250 valign=bottom><img
-	        src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td></tr></table></td>
+			<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36></td><td width=250 valign=bottom><img src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td></tr></table></td>
 		<td bgcolor="#454E53" align="right" nowrap width='99%'>
 			<?if (isset($HTTP_SESSION_VARS["user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?}?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?if (basename($SCRIPT_FILENAME) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?if ($action == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?if ($action == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?if ($action == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
 		</td>
-<!--	<td bgcolor="#454E53" align=right width=288><img src="images/cacti_raxnet.gif" border=0></td>-->
 	</tr>
 	<tr>
 		<td colspan="3" bgcolor="#<?print $colors[panel];?>">
@@ -110,8 +106,6 @@
 	<?if ($action == "tree") {?>
 		<form name="form_tree_id">
 			<?
-			//include ("include/database.php");
-			
 			if ($config["global_auth"]["value"] == "on") {
 				if ($config["graph_policy"]["auth"] == "1") {
 					$sql_where = "where agh.userid is null";
@@ -128,12 +122,10 @@
 				$tree_list = db_fetch_assoc("select * from graph_tree_view order by name");
 			}
 			
-			//$rows = mysql_num_rows($sql_id); $i = 0;
-			
 			/* set a default tree if none is already selected */
 			if (isset($tree_id) == false) {
-				if (isset($array_settings["hierarchical"]["treeid"]) == true) {
-					$tree_id = $array_settings["hierarchical"]["treeid"];
+				if (isset($array_settings[tree_id]) == true) {
+					$tree_id = $array_settings[tree_id];
 				}else{
 					if (sizeof($tree_list) != 0) {
 						$tree_id = db_fetch_cell("select id from graph_tree_view");
