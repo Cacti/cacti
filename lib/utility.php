@@ -47,7 +47,7 @@ function push_out_data_template($data_template_id) {
 		data_input_data.t_value
 		from data_input_fields left join data_input_data
 		on data_input_fields.id=data_input_data.data_input_field_id
-		where data_input_data.data_template_data_id=1
+		where data_input_data.data_template_data_id=$data_template_id
 		and data_input_fields.input_output='in'
 		and (data_input_fields.type_code = '' or data_input_fields.type_code is null)");
 	
