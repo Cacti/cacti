@@ -134,7 +134,7 @@ function array_to_sql_or($array, $sql_column) {
 		$sql_or = "(";
 		
 		for ($i=0;($i<count($array));$i++) {
-			$sql_or .= $sql_column . "=" . $array[$i];
+			$sql_or .= $sql_column . "='" . $array[$i] . "'";
 			
 			if (($i+1) < count($array)) {
 				$sql_or .= " OR ";
