@@ -143,7 +143,7 @@ function update_poller_cache($local_data_id) {
 			if (isset($script_queries["script_server"])) {
 				$using_script_server = true;
 				$action = 2;
-				$script_queries["script_path"] = $script_queries["include_file"] . " " . $script_queries["script_function"];
+				$script_queries["script_path"] = $script_queries["script_path"] . " " . $script_queries["script_function"];
 			} else {
 				$using_script_server = false;
 				$action = 1;
