@@ -150,6 +150,8 @@ function settings() {
 
 	html_graph_end_box();
 
+	print "<br>";
+
 	form_hidden_box("referer",(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""),"");
 	form_hidden_box("save_component_graph_config","1","");
 	form_save_button("graph_settings.php", "save");
