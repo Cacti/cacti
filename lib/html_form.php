@@ -141,13 +141,13 @@ function draw_edit_form($array) {
 				}
 				
 				print "</td>\n</tr>\n";
+				
+				$i++;
 			}
 			
 			if ($i == sizeof($fields_array)) {
 				//print "</form>";
 			}
-			
-			$i++;
 		}
 	}
 }
