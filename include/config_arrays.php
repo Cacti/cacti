@@ -84,14 +84,14 @@ $cdef_functions = array(1 =>
 	"LTIME");
 
 $input_types = array(
-	DATA_INPUT_TYPE_SCRIPT => "Script/Command",
-	DATA_INPUT_TYPE_SNMP => "SNMP",
+	DATA_INPUT_TYPE_SNMP => "SNMP", // Action 0:
 	DATA_INPUT_TYPE_SNMP_QUERY => "SNMP Query",
-	DATA_INPUT_TYPE_SCRIPT_QUERY => "Script Query",
+	DATA_INPUT_TYPE_SCRIPT => "Script/Command",  // Action 1:
+	DATA_INPUT_TYPE_SCRIPT_QUERY => "Script Query", // Action 1:
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER => "Script - PHP Script Server",
-	DATA_INPUT_TYPE_PERL_SCRIPT_SERVER => "Script - Perl Script Server",
-	DATA_INPUT_TYPE_PHP_SCRIPT_QUERY_SERVER => "Script Query - PHP Script Server",
-	DATA_INPUT_TYPE_PERL_SCRIPT_QUERY_SERVER => "Script Query - Perl Script Server"
+//	DATA_INPUT_TYPE_PERL_SCRIPT_SERVER => "Script - Perl Script Server",
+	DATA_INPUT_TYPE_PHP_SCRIPT_QUERY_SERVER => "Script Query - PHP Script Server"
+//	DATA_INPUT_TYPE_PERL_SCRIPT_QUERY_SERVER => "Script Query - Perl Script Server"
 	);
 
 $snmp_query_field_actions = array(1 =>
