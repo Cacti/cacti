@@ -394,12 +394,12 @@ $graph_timespans = array(
 	);
 
 $graph_dateformats = array(
-	GD_m_d_Y =>"Month Number, Day, Year",
-	GD_M_d_Y =>"Month Name, Day, Year",
-	GD_d_m_Y =>"Day, Month Number, Year",
-	GD_d_M_Y =>"Day, Month Name, Year",
-	GD_Y_m_d =>"Year, Month Number, Day",
-	GD_Y_M_d =>"Year, Month Name, Day"
+	GD_MO_D_Y =>"Month Number, Day, Year",
+	GD_MN_D_Y =>"Month Name, Day, Year",
+	GD_D_MO_Y =>"Day, Month Number, Year",
+	GD_D_MN_Y =>"Day, Month Name, Year",
+	GD_Y_MO_D =>"Year, Month Number, Day",
+	GD_Y_MN_D =>"Year, Month Name, Day"
 	);
 
 $graph_datechar = array(

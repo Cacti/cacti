@@ -531,7 +531,7 @@ $settings_graphs = array(
 			"description" => "The default date format to include on graphs",
 			"method" => "drop_array",
 			"array" => $graph_dateformats,
-			"default" => GD_Y_m_d
+			"default" => GD_Y_MO_D
 			),
 		"default_datechar" => array(
 			"friendly_name" => "Default Graph View Date Separater",

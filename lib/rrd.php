@@ -603,23 +603,23 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	switch ($date_fmt) {
-		case GD_m_d_Y:
-			$graph_date = "\"m" . $datechar . "d" . $datechar . "Y H:i:s\"";
+		case GD_MO_D_Y:
+			$graph_date = "m" . $datechar . "d" . $datechar . "Y H:i:s";
 			break;
-		case GD_M_d_Y:
-			$graph_date = "\"M" . $datechar . "d" . $datechar . "Y H:i:s\"";
+		case GD_MN_D_Y:
+			$graph_date = "M" . $datechar . "d" . $datechar . "Y H:i:s";
 			break;
-		case GD_d_m_Y:
-			$graph_date = "\"d" . $datechar . "m" . $datechar . "Y H:i:s\"";
+		case GD_D_MO_Y:
+			$graph_date = "d" . $datechar . "m" . $datechar . "Y H:i:s";
 			break;
-		case GD_d_M_Y:
-			$graph_date = "\"d" . $datechar . "M" . $datechar . "Y H:i:s\"";
+		case GD_D_MN_Y:
+			$graph_date = "d" . $datechar . "M" . $datechar . "Y H:i:s";
 			break;
-		case GD_Y_m_d:
-			$graph_date = "\"Y" . $datechar . "m" . $datechar . "d H:i:s\"";
+		case GD_Y_MO_D:
+			$graph_date = "Y" . $datechar . "m" . $datechar . "d H:i:s";
 			break;
-		case GD_Y_M_d:
-			$graph_date = "\"Y" . $datechar . "M" . $datechar . "d H:i:s\"";
+		case GD_Y_MN_D:
+			$graph_date = "Y" . $datechar . "M" . $datechar . "d H:i:s";
 			break;
 	}
 
