@@ -76,29 +76,20 @@ function template_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=" . $_GET["graph_template_id"]);
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["data_template_id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&data_template_id=" . $_GET["data_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
-		db_execute("delete from graph_templates where id=" . $_GET["graph_template_id"]);
-		
-		$graph_template_input = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
-		
-		if (sizeof($graph_template_input) > 0) {
-		foreach ($graph_template_input as $item) {
-			db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
-		}
-		}
-		
-		db_execute("delete from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
-		db_execute("delete from graph_templates_graph where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
-		db_execute("delete from graph_templates_item where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
+		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where data_template_id=" . $_GET["data_template_id"]));
+		db_execute("delete from data_template_data where data_template_id=" . $_GET["data_template_id"] . " and local_graph_id=0");
+		db_execute("delete from data_template_rrd where data_template_id=" . $_GET["data_template_id"] . " and local_graph_id=0");
+		db_execute("delete from data_template where id=" . $_GET["data_template_id"]);
 		
 		/* "undo" any graph that is currently using this template */
-		db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
-		db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
+		db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where data_template_id=" . $_GET["data_template_id"]);
+		db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where data_template_id=" . $_GET["data_template_id"]);
 	}	
 }
 
@@ -263,6 +254,7 @@ function template_edit() {
 	
 	start_box("Data Source Configuration [" . $template_rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
+	$i = 0;
 	if (sizeof($template_data_rrds) > 1) {
 		?>
 		<tr height="33">
@@ -302,6 +294,7 @@ function template_edit() {
 	
 	end_box();
 	
+	$i = 0;
 	if (!empty($_GET["data_template_id"])) {
 	/* get each INPUT field for this data input source */
 	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
