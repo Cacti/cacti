@@ -30,7 +30,6 @@ header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 
 include("config.php");
-include("functions.php");
 
 /* check to see if this is a new installation */
 include_once ("include/version_functions.php");
