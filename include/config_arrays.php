@@ -164,7 +164,8 @@ $struct_graph = array(
 		"type" => "check",
 		"check_caption" => "Auto Scale",
 		"default" => "on",
-		"description" => ""
+		"description" => "",
+		"check_id" => "id"
 		),
 	"auto_scale_opts" => array(
 		"title" => "Auto Scale Options",
@@ -187,14 +188,16 @@ $struct_graph = array(
 		"type" => "check",
 		"check_caption" => "Logarithmic Auto Scaling (--logarithmic)",
 		"default" => "",
-		"description" => ""
+		"description" => "",
+		"check_id" => "id"
 		),
 	"auto_scale_rigid" => array(
 		"title" => "Rigid Boundaries Mode",
 		"type" => "check",
 		"check_caption" => "Use Rigid Boundaries Mode (--rigid)",
 		"default" => "",
-		"description" => ""
+		"description" => "",
+		"check_id" => "id"
 		),
 	"auto_padding" => array(
 		"title" => "Auto Padding",
@@ -203,7 +206,8 @@ $struct_graph = array(
 		"default" => "on",
 		"description" => "Pad text so that legend and graph data always line up. Note: this could cause 
 			graphs to take longer to render because of the larger overhead. Also Auto Padding may not 
-			be accurate on all types of graphs, consistant labeling usually helps."
+			be accurate on all types of graphs, consistant labeling usually helps.",
+		"check_id" => "id"
 		),
 	"export" => array(
 		"title" => "Allow Graph Export",
@@ -211,7 +215,8 @@ $struct_graph = array(
 		"check_caption" => "Allow Graph Export",
 		"default" => "on",
 		"description" => "Choose whether this graph will be included in the static html/png export if you use 
-			cacti's export feature."
+			cacti's export feature.",
+		"check_id" => "id"
 		),
 	"upper_limit" => array(
 		"title" => "Upper Limit",
@@ -340,7 +345,8 @@ $struct_graph_item = array(
 		"type" => "check",
 		"check_caption" => "Insert Hard Return",
 		"default" => "",
-		"description" => ""
+		"description" => "",
+		"check_id" => "id"
 		),
 	"sequence" => array(
 		"title" => "Sequence",
@@ -397,7 +403,8 @@ $struct_data_source = array(
 		"check_caption" => "Data Source Active",
 		"default" => "on",
 		"description" => "Whether cacti should gather data for this data source or not.",
-		"flags" => ""
+		"flags" => "",
+		"check_id" => "id"
 		)
 	);
 		
