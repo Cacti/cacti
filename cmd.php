@@ -235,6 +235,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SNMP: /* snmp */
 				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], SNMP_CMDPHP);
 
+				/* remove any quotes from string */
+				$output = strip_quotes($output);
+
 				if (!validate_result($output)) {
 					if (strlen($output) > 20) {
 						$strout = 20;
@@ -253,6 +256,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				break;
 			case POLLER_ACTION_SCRIPT: /* script (popen) */
 				$output = trim(exec_poll($item["arg1"]));
+
+				/* remove any quotes from string */
+				$output = strip_quotes($output);
 
 				if (!validate_result($output)) {
 					if (strlen($output) > 20) {
@@ -273,6 +279,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
 				if ($using_proc_function == true) {
 					$output = trim(str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp)));
+
+					/* remove any quotes from string */
+					$output = strip_quotes($output);
 
 					if (!validate_result($output)) {
 						if (strlen($output) > 20) {
