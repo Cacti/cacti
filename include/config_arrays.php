@@ -97,6 +97,10 @@ $struct_graph = array("image_format_id", "title", "height", "width", "upper_limi
 $struct_graph_item = array("task_item_id", "color_id", "graph_type_id", "cdef_id", "consolidation_function_id",
 			    "text_format", "value", "hard_return", "gprint_id", "sequence");
 
+$struct_data_source = array("name", "active", "rrd_step", "FORCE:data_input_id");
+
+$struct_data_source_item = array("rrd_maximum", "rrd_minimum", "rrd_heartbeat", "data_source_type_id", "data_source_name", "FORCE:data_input_field_id");
+
 $snmp_versions = array(1 => "Version 1",
 			    "Version 2",
 			    "Version 3");
