@@ -344,7 +344,7 @@ if ($_REQUEST["step"] == "4") {
 						
 						<?php }elseif ($_REQUEST["step"] == "3") { ?>
 						
-						<p>Make sure make sure all of these values are correct before continuing.</p>
+						<p>Make sure all of these values are correct before continuing.</p>
 						<?php
 						$i = 0;
 						/* find the appropriate value for each 'config name' above by config.php, database,
