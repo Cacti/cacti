@@ -29,7 +29,6 @@ $show_console_tab = true;
 
 include_once($config["library_path"] . "/html_tree.php");
 include_once($config["library_path"] . "/rrd.php");
-include_once($config["include_path"] . "/jscalendar/calendar.php");
 
 if (read_config_option("global_auth") == "on") {
 	/* at this point this user is good to go... so get some setting about this
