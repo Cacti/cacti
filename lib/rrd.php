@@ -78,10 +78,6 @@ function rrd_get_fd(&$rrd_struc, $fd_type) {
 function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc = array()) {
 	global $config;
 
-	if ($log_command == true) {
-		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
-	}
-
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
 	}
@@ -92,6 +88,11 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 	but make sure not to get rid of the "\n"'s that are supposed to be
 	in there (text format) */
 	$command_line = str_replace("\\\n", " ", $command_line);
+
+	/* output information to the log file if appropriate */
+	if ($log_command == true) {
+		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
+	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
 	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (empty($rrd_struc["using_proc_open"]))) {
