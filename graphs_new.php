@@ -595,15 +595,15 @@ function graphs() {
 	print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
 	
 	/* create a row at the bottom that lets the user create any graph they choose */
-	print "	<tr bgcolor='#" . $colors["alternate"] . "'>
-			<td width='60' nowrap>
-				<strong>Create:</strong>&nbsp;";
-				form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
-	print "		</td>
-			<td align='right'>";
-				form_checkbox("ccg","","","",0);
-	print "		</td>
-		</tr>";
+	//print "	<tr bgcolor='#" . $colors["alternate"] . "'>
+	//		<td width='60' nowrap>
+	//			<strong>Create:</strong>&nbsp;";
+	//			form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
+	//print "		</td>
+	//		<td align='right'>";
+	//			form_checkbox("ccg","","","",0);
+	//print "		</td>
+	//	</tr>";
 	
 	end_box();
 	
@@ -627,13 +627,13 @@ function graphs() {
 		
 		if ($xml_array != false) {
 			/* loop through once so we can find out how many input fields there are */
-			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
-				if ($field_array[0]["direction"] == "input") {
+			while (list($field_name, $field_array) = each($xml_array["fields"])) {
+				if ($field_array["direction"] == "input") {
 					$num_input_fields++;
 				}
 			}
 			
-			reset($xml_array["fields"][0]);
+			reset($xml_array["fields"]);
 			$snmp_query_indexes = array();
 			$num_visible_fields{$snmp_query["id"]} = 0;
 			$i = 0;
@@ -693,9 +693,7 @@ function graphs() {
 				<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		
 		if ($xml_array != false) {
-			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
-				$field_array = $field_array[0];
-				
+			while (list($field_name, $field_array) = each($xml_array["fields"])) {
 				if ($field_array["direction"] == "input") {
 					$i++;
 					
@@ -715,7 +713,7 @@ function graphs() {
 					}elseif (sizeof($raw_data) == 0) {
 						/* we are choosing to not display this column, so unset the associated
 						field in the xml array so it is not drawn */
-						unset($xml_array["fields"][0][$field_name]);
+						unset($xml_array["fields"][$field_name]);
 					}
 					
 					/* draw the 'check all' box if we are at the end of the row */
@@ -735,9 +733,9 @@ function graphs() {
 				print "<tr id='line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 				
 				$column_counter = 0;
-				reset($xml_array["fields"][0]);
-				while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
-					if ($field_array[0]["direction"] == "input") {
+				reset($xml_array["fields"]);
+				while (list($field_name, $field_array) = each($xml_array["fields"])) {
+					if ($field_array["direction"] == "input") {
 						if (isset($snmp_query_data[$field_name][$snmp_index])) {
 							print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
 						}else{

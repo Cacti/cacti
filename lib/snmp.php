@@ -74,9 +74,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
 	
-	while (list($field_name, $field_array) = each($script_queries["fields"][0])) {
-		$field_array = $field_array[0];
-		
+	while (list($field_name, $field_array) = each($script_queries["fields"])) {
 		if ($field_array["direction"] == "input") {
 			$script_data_array = exec_into_array("$script_path $extra_arguments " . $script_queries["arg_query"] . " " . $field_array["query_name"]);
 			
@@ -115,9 +113,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
 	
-	while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
-		$field_array = $field_array[0];
-		
+	while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
 		if (($field_array["method"] == "get") && ($field_array["direction"] == "input")) {
 			if ($field_array["source"] == "value") {
 				for ($i=0;($i<sizeof($snmp_index));$i++) {
