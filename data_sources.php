@@ -111,97 +111,6 @@ function form_save() {
 		}
 	}
 	
-	if (isset($_POST["save_component_data_source"])) {
-		$save1["id"] = $_POST["local_data_id"];
-		$save1["data_template_id"] = $_POST["data_template_id"];
-		$save1["host_id"] = $_POST["host_id"];
-		
-		$save2["id"] = $_POST["data_template_data_id"];
-		$save2["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
-		$save2["data_template_id"] = $_POST["data_template_id"];
-		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
-		$save2["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-		$save2["data_source_path"] = form_input_validate($_POST["data_source_path"], "data_source_path", "", true, 3);
-		$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
-		$save2["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
-		
-		/* if this is a new data source and a template has been selected, skip item creation this time
-		otherwise it throws off the templatate creation because of the NULL data */
-		if ($_POST["data_template_id"] == $_POST["_data_template_id"]) {
-			$save3["id"] = $_POST["data_template_rrd_id"];
-			$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
-			$save3["data_template_id"] = $_POST["data_template_id"];
-			$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^-?[0-9]+$", false, 3);
-			$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^-?[0-9]+$", false, 3);
-			$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
-			$save3["data_source_type_id"] = $_POST["data_source_type_id"];
-			$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
-			$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
-		}
-		
-		if (!is_error_message()) {
-			$local_data_id = sql_save($save1, "data_local");
-			
-			$save2["local_data_id"] = $local_data_id;
-			$data_template_data_id = sql_save($save2, "data_template_data");
-			
-			if ($data_template_data_id) {
-				raise_message(1);
-			}else{
-				raise_message(2);
-			}
-		}
-		
-		/* if this is a new data source and a template has been selected, skip item creation this time
-		otherwise it throws off the templatate creation because of the NULL data */
-		if (($_POST["data_template_id"] == $_POST["_data_template_id"]) && (!is_error_message())){
-			$save3["local_data_id"] = $local_data_id;
-			$data_template_rrd_id = sql_save($save3, "data_template_rrd");
-			
-			if ($data_template_rrd_id) {
-				raise_message(1);
-			}else{
-				raise_message(2);
-			}
-		}
-		
-		
-		if (!is_error_message()) {
-			if (!empty($_POST["rra_id"])) {
-				/* save entries in 'selected rras' field */
-				db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
-				
-				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
-					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
-						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
-				}
-			}
-			
-			if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
-				/* update all necessary template information */
-				change_data_template($local_data_id, $_POST["data_template_id"]);
-			}elseif (!empty($_POST["data_template_id"])) {
-				update_data_source_snmp_query_cache($local_data_id);
-			}
-			
-			if ($_POST["host_id"] != $_POST["_host_id"]) {
-				/* push out all necessary host information */
-				push_out_host($_POST["host_id"], $local_data_id);
-				
-				/* reset current host for display purposes */
-				$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
-			}
-			
-			/* if no data source path has been entered, generate one */
-			if (empty($_POST["data_source_path"])) {
-				generate_data_source_path($local_data_id);
-			}
-			
-			/* update the title cache */
-			update_data_source_title_cache($local_data_id);
-		}
-	}
-	
 	if ((isset($_POST["save_component_data"])) && (!is_error_message())) {
 		/* ok, first pull out all 'input' values so we know how much to save */
 		$input_fields = db_fetch_assoc("select
@@ -241,6 +150,96 @@ function form_save() {
 				}
 			}
 		}
+		}
+	}
+	
+	if (isset($_POST["save_component_data_source"])) {
+		$save1["id"] = $_POST["local_data_id"];
+		$save1["data_template_id"] = $_POST["data_template_id"];
+		$save1["host_id"] = $_POST["host_id"];
+		
+		$save2["id"] = $_POST["data_template_data_id"];
+		$save2["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
+		$save2["data_template_id"] = $_POST["data_template_id"];
+		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
+		$save2["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save2["data_source_path"] = form_input_validate($_POST["data_source_path"], "data_source_path", "", true, 3);
+		$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
+		$save2["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
+		
+		/* if this is a new data source and a template has been selected, skip item creation this time
+		otherwise it throws off the templatate creation because of the NULL data */
+		if ((!empty($save1["id"])) || (empty($save1["data_template_id"]))) {
+			$save3["id"] = $_POST["data_template_rrd_id"];
+			$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
+			$save3["data_template_id"] = $_POST["data_template_id"];
+			$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^-?[0-9]+$", false, 3);
+			$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^-?[0-9]+$", false, 3);
+			$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
+			$save3["data_source_type_id"] = $_POST["data_source_type_id"];
+			$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
+			$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
+		}
+		
+		if (!is_error_message()) {
+			$local_data_id = sql_save($save1, "data_local");
+			
+			$save2["local_data_id"] = $local_data_id;
+			$data_template_data_id = sql_save($save2, "data_template_data");
+			
+			if ($data_template_data_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		/* if this is a new data source and a template has been selected, skip item creation this time
+		otherwise it throws off the templatate creation because of the NULL data */
+		if (($_POST["data_template_id"] == $_POST["_data_template_id"]) && (!is_error_message())){
+			$save3["local_data_id"] = $local_data_id;
+			$data_template_rrd_id = sql_save($save3, "data_template_rrd");
+			
+			if ($data_template_rrd_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (!is_error_message()) {
+			if (!empty($_POST["rra_id"])) {
+				/* save entries in 'selected rras' field */
+				db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
+				
+				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+				}
+			}
+			
+			if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
+				/* update all necessary template information */
+				change_data_template($local_data_id, $_POST["data_template_id"]);
+			}elseif (!empty($_POST["data_template_id"])) {
+				update_data_source_snmp_query_cache($local_data_id);
+			}
+			
+			if ($_POST["host_id"] != $_POST["_host_id"]) {
+				/* push out all necessary host information */
+				push_out_host($_POST["host_id"], $local_data_id);
+				
+				/* reset current host for display purposes */
+				$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
+			}
+			
+			/* if no data source path has been entered, generate one */
+			if (empty($_POST["data_source_path"])) {
+				generate_data_source_path($local_data_id);
+			}
+			
+			/* update the title cache */
+			update_data_source_title_cache($local_data_id);
 		}
 	}
 	
@@ -618,66 +617,64 @@ function ds_edit() {
 	
 	start_box("<strong>Data Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
+	$form_array = array(
+		"data_template_id" => array(
+			"method" => "drop_sql",
+			"friendly_name" => "Selected Data Template",
+			"description" => "The name given to this data template.",
+			"value" => (isset($data_template) ? $data_template["data_template_id"] : "0"),
+			"none_value" => "None",
+			"sql" => "select id,name from data_template order by name"
+			),
+		"host_id" => array(
+			"method" => "drop_sql",
+			"friendly_name" => "Host",
+			"description" => "Choose the host that this graph belongs to.",
+			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
+			"none_value" => "None",
+			"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
+			),
+		"debug" => array(
+			"method" => "custom",
+			"friendly_name" => "Debug",
+			"description" => "Turn on/off data source debugging.",
+			"value" => "<a href='data_sources.php?action=ds_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : 0) . "&debug=" . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On") . "</strong> Data Source Debug Mode.</a>"
+			),
+		"_data_template_id" => array(
+			"method" => "hidden",
+			"value" => (isset($data) ? $data["data_template_id"] : "0")
+			),
+		"_host_id" => array(
+			"method" => "hidden",
+			"value" => (empty($host_id) ? (isset($_GET["host_id"]) ? $_GET["host_id"] : "0") : $host_id)
+			),
+		"_data_input_id" => array(
+			"method" => "hidden",
+			"value" => (isset($data["data_input_id"]) ? $data["data_input_id"] : "0")
+			),
+		"data_template_data_id" => array(
+			"method" => "hidden",
+			"value" => (isset($data) ? $data["id"] : "0")
+			),
+		"local_data_template_data_id" => array(
+			"method" => "hidden",
+			"value" => (isset($data) ? $data["local_data_template_data_id"] : "0")
+			),
+		"local_data_id" => array(
+			"method" => "hidden",
+			"value" => (isset($data) ? $data["local_data_id"] : "0")
+			),
+		);
+	
+	/* don't display the "debug field" for a new form */
+	if (empty($_GET["id"])) {
+		unset($form_array["debug"]);
+	}
+	
 	draw_edit_form(
 		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"data_template_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Selected Data Template",
-					"description" => "The name given to this data template.",
-					"value" => (isset($data_template) ? $data_template["data_template_id"] : "0"),
-					"none_value" => "None",
-					"sql" => "select id,name from data_template order by name"
-					),
-				"host_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Host",
-					"description" => "Choose the host that this graph belongs to.",
-					"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
-					"none_value" => "None",
-					"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
-					),
-				"" => array(
-					"method" => "custom",
-					"friendly_name" => "Debug",
-					"description" => "Turn on/off data source debugging.",
-					"value" => "<a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&debug=" . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On") . "</strong> Data Source Debug Mode.</a>"
-					),
-				"_data_template_id" => array(
-					"method" => "hidden",
-					"value" => (isset($data) ? $data["data_template_id"] : "0")
-					),
-				"_host_id" => array(
-					"method" => "hidden",
-					"value" => (empty($host_id) ? (isset($_GET["host_id"]) ? $_GET["host_id"] : "0") : $host_id)
-					),
-				"_data_input_id" => array(
-					"method" => "hidden",
-					"value" => (isset($data["data_input_id"]) ? $data["data_input_id"] : "0")
-					),
-				"data_template_data_id" => array(
-					"method" => "hidden",
-					"value" => (isset($data) ? $data["id"] : "0")
-					),
-				"data_template_rrd_id" => array(
-					"method" => "hidden",
-					"value" => (isset($rrd) ? $rrd["id"] : "0")
-					),
-				"local_data_template_data_id" => array(
-					"method" => "hidden",
-					"value" => (isset($data) ? $data["local_data_template_data_id"] : "0")
-					),
-				"local_data_template_rrd_id" => array(
-					"method" => "hidden",
-					"value" => (isset($rrd) ? $rrd["local_data_template_rrd_id"] : "0")
-					),
-				"local_data_id" => array(
-					"method" => "hidden",
-					"value" => (isset($data) ? $data["local_data_id"] : "0")
-					),
-				)
+			"config" => array(),
+			"fields" => $form_array
 			)
 		);
 	
@@ -808,8 +805,17 @@ function ds_edit() {
 				"config" => array(
 					"no_form_tag" => true
 					),
-				"fields" => $form_array
-				)
+				"fields" => array(
+					"data_template_rrd_id" => array(
+						"method" => "hidden",
+						"value" => (isset($rrd) ? $rrd["id"] : "0")
+					),
+					"local_data_template_rrd_id" => array(
+						"method" => "hidden",
+						"value" => (isset($rrd) ? $rrd["local_data_template_rrd_id"] : "0")
+					)
+				) + $form_array
+			)
 			);
 		
 		end_box();

@@ -255,7 +255,7 @@ function form_save() {
 	
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
 		header("Location: graphs.php?action=graph_edit&host_id=" . $_POST["host_id"] . "&new=1");
-	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
+	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
 		header("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
 	}else{
 		header("Location: graphs.php");
@@ -530,7 +530,7 @@ function item() {
    ------------------------------------ */
 
 function graph_diff() {
-	global $colors;
+	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
 	
 	$template_query = "select
 		graph_templates_item.id,
@@ -810,50 +810,60 @@ function graph_edit() {
 	
 	start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
+	$form_array = array(
+		"graph_template_id" => array(
+			"method" => "drop_sql",
+			"friendly_name" => "Selected Graph Template",
+			"description" => "Choose a graph template to apply to this graph. Please note that graph data may be lost if you change the graph template after one is already applied.",
+			"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0"),
+			"none_value" => "None",
+			"sql" => "select graph_templates.id,graph_templates.name from graph_templates order by name"
+			),
+		"host_id" => array(
+			"method" => "drop_sql",
+			"friendly_name" => "Host",
+			"description" => "Choose the host that this graph belongs to.",
+			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
+			"none_value" => "None",
+			"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
+			),
+		"debug" => array(
+			"method" => "custom",
+			"friendly_name" => "Debug",
+			"description" => "Turn on/off graph debugging.",
+			"value" => "<a href='graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : 0) . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On") . "</strong> Graph Debug Mode.</a>"
+			),
+		"graph_template_graph_id" => array(
+			"method" => "hidden",
+			"value" => (isset($graphs) ? $graphs["id"] : "0")
+			),
+		"local_graph_id" => array(
+			"method" => "hidden",
+			"value" => (isset($graphs) ? $graphs["local_graph_id"] : "0")
+			),
+		"local_graph_template_graph_id" => array(
+			"method" => "hidden",
+			"value" => (isset($graphs) ? $graphs["local_graph_template_graph_id"] : "0")
+			),
+		"_graph_template_id" => array(
+			"method" => "hidden",
+			"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0")
+			),
+		"_host_id" => array(
+			"method" => "hidden",
+			"value" => (isset($host_id) ? $host_id : "0")
+			)
+		);
+	
+	/* don't display the "debug field" for a new form */
+	if (empty($_GET["id"])) {
+		unset($form_array["debug"]);
+	}
+	
 	draw_edit_form(
 		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"graph_template_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Selected Graph Template",
-					"description" => "Choose a graph template to apply to this graph. Please note that graph data may be lost if you change the graph template after one is already applied.",
-					"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0"),
-					"none_value" => "None",
-					"sql" => "select graph_templates.id,graph_templates.name from graph_templates order by name"
-					),
-				"host_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Host",
-					"description" => "Choose the host that this graph belongs to.",
-					"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
-					"none_value" => "None",
-					"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
-					),
-				"" => array(
-					"method" => "custom",
-					"friendly_name" => "Debug",
-					"description" => "Turn on/off graph debugging.",
-					"value" => "<a href='graphs.php?action=graph_edit&id=" . $_GET["id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On") . "</strong> Graph Debug Mode.</a>"
-					),
-				"graph_template_graph_id" => array(
-					"method" => "hidden",
-					"value" => (isset($graphs) ? $graphs["id"] : "0")
-					),
-				"local_graph_id" => array(
-					"method" => "hidden",
-					"value" => (isset($graphs) ? $graphs["local_graph_id"] : "0")
-					),
-				"local_graph_template_graph_id" => array(
-					"method" => "hidden",
-					"value" => (isset($graphs) ? $graphs["local_graph_template_graph_id"] : "0")
-					),
-				"_graph_template_id" => array(
-					"method" => "hidden",
-					"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0")
-					)
-				)
+			"config" => array(),
+			"fields" => $form_array
 			)
 		);
 	
