@@ -96,17 +96,10 @@ function settings() {
 			$sql_where = "where user_auth_tree.user_id is not null";
 		}
 		
-		$settings_graphs["default_tree_id"]["sql"] = "select
-			graph_tree.id,
-			graph_tree.name,
-			user_auth_tree.user_id
-			from graph_tree
-			left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
-			$sql_where
-			order by graph_tree.name";
+		$settings_graphs["default_tree_id"]["sql"] = get_graph_tree_array(true);
 	}
 	
-	print "<br><form method='post' action='graph_settings.php'>\n";
+	print "<form method='post' action='graph_settings.php'>\n";
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
