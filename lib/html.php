@@ -96,7 +96,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			form_alternate_row_color("f9f9f9", "ffffff", $i);
-			print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
+			print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0" . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
 			print "<tr>\n";
 
 			$i++;
@@ -126,7 +126,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 		print "<tr>";
 
 		foreach ($graph_array as $graph) {
-			print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . (empty($set_rra_id) ? read_graph_config_option("default_rra_id") : $set_rra_id) . "&graph_start=-" . (empty($set_rra_id) ? DEFAULT_TIMESPAN : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true" . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n";
+			print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_start=-" . (empty($set_rra_id) ? DEFAULT_TIMESPAN : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true" . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n";
 
 			$i++;
 			$k++;

@@ -27,11 +27,14 @@
 /* ninety_fifth_percentile - given a data source, calculate the 95th percentile for a given
      time period
    @arg $local_data_id - the data source to perform the 95th percentile calculation
-   @arg $seconds - the number of seconds into the past to perform the calculation for
+   @arg $start_time - the start time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
+   @arg $end_time - the end time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing each data source item, and its 95th percentile */
-function ninety_fifth_percentile($local_data_id, $seconds, $resolution) {
-	$fetch_array = rrdtool_function_fetch($local_data_id, $seconds, $resolution);
+function ninety_fifth_percentile($local_data_id, $start_time, $end_time) {
+	$fetch_array = rrdtool_function_fetch($local_data_id, $start_time, $end_time);
 
 	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
 		return;
@@ -65,14 +68,17 @@ function ninety_fifth_percentile($local_data_id, $seconds, $resolution) {
 /* bandwidth_summation - given a data source, sums all data in the rrd for a given
      time period
    @arg $local_data_id - the data source to perform the summation for
-   @arg $seconds - the number of seconds into the past to perform the calculation for
+   @arg $start_time - the start time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
+   @arg $end_time - the end time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
    @arg $rra_steps - how many periods each sample in the RRA counts for, values above '1'
      result in an averaged summation
    @arg $ds_steps - how many seconds each period represents
    @returns - (array) an array containing each data source item, and its sum */
-function bandwidth_summation($local_data_id, $seconds, $resolution, $rra_steps, $ds_steps) {
-	$fetch_array = rrdtool_function_fetch($local_data_id, $seconds, $resolution);
+function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
+	$fetch_array = rrdtool_function_fetch($local_data_id, $start_time, $end_time);
 
 	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
 		return;
@@ -119,12 +125,14 @@ $ninety_fifth_cache = array();
        $arr[4] // digits of floating point precision
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
-   @arg $graph_start - the start of the graph in seconds or the number of seconds to perform the 95th
-     percentile calculation for
+   @arg $graph_start - the start time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
+   @arg $graph_end - the end time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
    @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
      varies depending on the RRA in use
    @returns - a string containg the 95th percentile suitable for placing on the graph */
-function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $seconds_between_graph_updates) {
+function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $ninety_fifth_cache, $graph_item_types;
 
 	if (sizeof($regexp_match_array) == 0) {
@@ -133,12 +141,12 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 
 	if (($regexp_match_array[3] == "current") || ($regexp_match_array[3] == "max")) {
 		if (!isset($ninety_fifth_cache{$graph_item["local_data_id"]})) {
-			$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], abs($graph_start), $seconds_between_graph_updates);
+			$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], $graph_start, $graph_end);
 		}
 	}elseif ($regexp_match_array[3] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((!isset($ninety_fifth_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
-				$ninety_fifth_cache{$graph_items[$t]["local_data_id"]} = ninety_fifth_percentile($graph_items[$t]["local_data_id"], abs($graph_start), $seconds_between_graph_updates);
+				$ninety_fifth_cache{$graph_items[$t]["local_data_id"]} = ninety_fifth_percentile($graph_items[$t]["local_data_id"], $graph_start, $graph_end);
 			}
 		}
 	}
@@ -191,15 +199,17 @@ $summation_cache = array();
        $arr[4] // seconds to perform the calculation for or 'auto'
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
-   @arg $graph_start - the start of the graph in seconds or the number of seconds to perform the 95th
-     percentile calculation for
+   @arg $graph_start - the start time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
+   @arg $graph_end - the end time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
    @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
      varies depending on the RRA in use
    @arg $rra_step - how many periods each sample in the RRA counts for, values above '1' result in an
      averaged summation
    @arg $ds_step - how many seconds each period represents
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
-function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $seconds_between_graph_updates, $rra_step, $ds_step) {
+function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $summation_cache, $graph_item_types;
 
 	if (sizeof($regexp_match_array) == 0) {
@@ -207,19 +217,19 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}
 
 	if (ereg("^[0-9]+$", $regexp_match_array[4])) {
-		$summation_timespan = $regexp_match_array[4];
+		$summation_timespan_start = $regexp_match_array[4];
 	}else{
-		$summation_timespan = abs($graph_start);
+		$summation_timespan_start = $graph_start;
 	}
 
 	if ($regexp_match_array[2] == "current") {
 		if (!isset($summation_cache{$graph_item["local_data_id"]})) {
-			$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan, $seconds_between_graph_updates, $rra_step, $ds_step);
+			$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 		}
 	}elseif ($regexp_match_array[2] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((!isset($summation_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
-				$summation_cache{$graph_items[$t]["local_data_id"]} = bandwidth_summation($graph_items[$t]["local_data_id"], $summation_timespan, $seconds_between_graph_updates, $rra_step, $ds_step);
+				$summation_cache{$graph_items[$t]["local_data_id"]} = bandwidth_summation($graph_items[$t]["local_data_id"], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 			}
 		}
 	}

@@ -332,12 +332,15 @@ function rrdtool_function_tune($rrd_tune_array) {
 
 /* rrdtool_function_fetch - given a data source, return all of its data in an array
    @arg $local_data_id - the data source to fetch data for
-   @arg $seconds - the number of seconds into the past to fetch data for
+   @arg $start_time - the start time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
+   @arg $end_time - the end time to use for the data calculation. this value can
+     either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing all data in this data source broken down
 	 by each data source item. the maximum of all data source items is included in
 	 an item called 'ninety_fifth_percentile_maximum' */
-function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
+function &rrdtool_function_fetch($local_data_id, $start_time, $end_time) {
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -348,7 +351,7 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* build and run the rrdtool fetch command with all of our data */
-	$command = "fetch $data_source_path AVERAGE -r $resolution -s -$seconds -e now";
+	$command = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
 
 	$output = rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT);
 
@@ -433,59 +436,53 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
-	/* use some defaults if the $rra_id is not specified */
-	if (!isset($graph_data_array["graph_start"])) {
-		if (empty($rra_id)) {
-			$rra["timespan"] = 86400;
+	/* find the step and how often this graph is updated with new data */
+	$ds_step = db_fetch_cell("select
+		data_template_data.rrd_step
+		from data_template_data,data_template_rrd,graph_templates_item
+		where graph_templates_item.task_item_id=data_template_rrd.id
+		and data_template_rrd.local_data_id=data_template_data.local_data_id
+		and graph_templates_item.local_graph_id=$local_graph_id
+		limit 0,1");
+	$ds_step = empty($ds_step) ? 300 : $ds_step;
+
+	/* if no rra was specified, we need to figure out which one RRDTool will choose using
+	 * "best-fit" resolution fit algorithm */
+	if (empty($rra_id)) {
+		if ((empty($graph_data_array["graph_start"])) || (empty($graph_data_array["graph_end"]))) {
 			$rra["rows"] = 600;
 			$rra["steps"] = 1;
 		}else{
-			$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
-		}
+			/* get a list of RRAs related to this graph */
+			$rras = get_associated_rras($local_graph_id);
 
-		/* find the step and how often this graph is updated with new data */
-		$ds_step = db_fetch_cell("select
-			data_template_data.rrd_step
-			from data_template_data,data_template_rrd,graph_templates_item
-			where graph_templates_item.task_item_id=data_template_rrd.id
-			and data_template_rrd.local_data_id=data_template_data.local_data_id
-			and graph_templates_item.local_graph_id=$local_graph_id
-			limit 0,1");
-		$ds_step = empty($ds_step) ? 300 : $ds_step;
-		$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
-	} else {
-		/* get all the rows required to choose RRA to use */
-		$rras = db_fetch_assoc("select timespan,rows,steps from rra order by timespan DESC");
+			if (sizeof($rras) > 0) {
+				foreach ($rras as $unchosen_rra) {
+					/* the timespan specified in the RRA "timespan" field may not be accurate */
+					$real_timespan = ($ds_step * $unchosen_rra["steps"] * $unchosen_rra["rows"]);
 
-		$graph_start = $graph_data_array["graph_start"];
-		$graph_end   = $graph_data_array["graph_end"];
-
-		$temp_seconds = $graph_end - $graph_start;
-
-		foreach($rras as $rra) {
-			if ($rra["timespan"] *(300/288) < $temp_seconds) {
-				if (!isset($last)) {
-					$ds_step = $rra["steps"];
-					$seconds_between_graph_updates = $rra["steps"] * 300;
-				} else {
-					$rra = $last;
-					$ds_step = $rra["steps"];;
-					$seconds_between_graph_updates = $rra["steps"] * 300;
-
+					/* make sure the current start/end times fit within each RRA's timespan */
+					if ( (($graph_data_array["graph_end"] - $graph_data_array["graph_start"]) <= $real_timespan) && ((time() - $graph_data_array["graph_start"]) <= $real_timespan) ) {
+						/* is this RRA better than the already chosen one? */
+						if ((isset($rra)) && ($unchosen_rra["steps"] < $rra["steps"])) {
+							$rra = $unchosen_rra;
+						}else if (!isset($rra)) {
+							$rra = $unchosen_rra;
+						}
+					}
 				}
-
-				break;
 			}
-			$last = $rra;
-		}
 
-		if (!isset($ds_step)) {
-			$ds_step = 1;
-			$rra = $last;
-			$seconds_between_graph_updates = $rra["steps"] * 300;
+			if (!isset($rra)) {
+				$rra["rows"] = 600;
+				$rra["steps"] = 1;
+			}
 		}
+	}else{
+		$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
 	}
-// cacti_log("The values are ds_step " . $ds_step . " RRA Steps " . $rra["steps"] . " Timespan " . $rra["timespan"]);
+
+	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 
 	$graph = db_fetch_row("select
 		graph_local.host_id,
@@ -511,8 +508,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		where graph_local.id=graph_templates_graph.local_graph_id
 		and graph_templates_graph.local_graph_id=$local_graph_id");
 
-		/* lets make that sql query... */
-		$graph_items = db_fetch_assoc("select
+	/* lets make that sql query... */
+	$graph_items = db_fetch_assoc("select
 		graph_templates_item.id as graph_templates_item_id,
 		graph_templates_item.cdef_id,
 		graph_templates_item.text_format,
@@ -682,7 +679,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
 
 	$i = 0;
-		if (sizeof($graph_items > 0)) {
+	if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
 		if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && ($graph_item["data_source_name"] != "")) {
 			/* use a user-specified ds path if one is entered */
@@ -743,16 +740,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* 95th percentile */
 			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
-					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_end - $graph_start, $seconds_between_graph_updates), $graph_variables[$field_name][$graph_item_id]);
-//cacti_log("Graph Variables are ->".$graph_variables[$field_name][$graph_item_id]);
+					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
 				}
 			}
 
 			/* bandwidth summation */
 			if (preg_match_all("/\|sum:(\d|auto):(current|total):(\d):(\d+|auto)\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
-					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_end - $graph_start, $seconds_between_graph_updates, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
-//cacti_log("Graph Variables are ->".$graph_variables[$field_name][$graph_item_id]);
+					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
 				}
 			}
 		}
