@@ -458,7 +458,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				
 				/* if there are no '|' characters, all of the subsitutions were successful */
 				if (!strstr($subs_string, "|query")) {
-					db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='$subs_string' where local_graph_id=" . $cache_array["local_graph_id"]);
+					db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_graph_id=" . $cache_array["local_graph_id"]);
 					
 					/* once we find a working value, stop */
 					$suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]} = true;
@@ -471,7 +471,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	/* suggested values: graph */
 	if (isset($suggested_values_array[$graph_template_id]["graph_template"])) {
 		while (list($field_name, $field_value) = each($suggested_values_array[$graph_template_id]["graph_template"])) {
-			//print "update graph_templates_graph set $field_name='$field_value' where local_graph_id=" . $cache_array["local_graph_id"] . "<br>";
 			db_execute("update graph_templates_graph set $field_name='$field_value' where local_graph_id=" . $cache_array["local_graph_id"]);
 		}
 	}
@@ -481,7 +480,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		while (list($graph_template_item_id, $field_array) = each($suggested_values_array[$graph_template_id]["graph_template_item"])) {
 			while (list($field_name, $field_value) = each($field_array)) {
 				$graph_item_id = db_fetch_cell("select id from graph_templates_item where local_graph_template_item_id=$graph_template_item_id and local_graph_id=" . $cache_array["local_graph_id"]);
-				//print "update graph_templates_item set $field_name='$field_value' where id=$graph_item_id<br>";
 				db_execute("update graph_templates_item set $field_name='$field_value' where id=$graph_item_id");
 			}
 		}
@@ -526,7 +524,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					
 					/* if there are no '|' characters, all of the subsitutions were successful */
 					if (!strstr($subs_string, "|query")) {
-						db_execute("update data_template_data set " . $suggested_value["field_name"] . "='$subs_string' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+						db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 						
 						/* once we find a working value, stop */
 						$suggested_values_ds{$data_template["id"]}{$suggested_value["field_name"]} = true;
@@ -560,7 +558,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		/* suggested values: data source */
 		if (isset($suggested_values_array[$graph_template_id]["data_template"])) {
 			while (list($field_name, $field_value) = each($suggested_values_array[$graph_template_id]["data_template"])) {
-				//print "update data_template_data set $field_name='$field_value' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]} . "<br>";
 				db_execute("update data_template_data set $field_name='$field_value' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 			}
 		}
@@ -570,7 +567,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			while (list($data_template_item_id, $field_array) = each($suggested_values_array[$graph_template_id]["data_template_item"])) {
 				while (list($field_name, $field_value) = each($field_array)) {
 					$data_source_item_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=$data_template_item_id and local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
-					//print "update data_template_rrd set $field_name='$field_value' where id=$data_source_item_id<br>";
 					db_execute("update data_template_rrd set $field_name='$field_value' where id=$data_source_item_id");
 				}
 			}
@@ -603,6 +599,11 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			db_execute("update graph_templates_item set task_item_id='$data_template_rrd_id' where id=$graph_template_item_id");
 		}
 	}
+	}
+	
+	/* this will not work until the ds->graph dots are connected */
+	if (is_array($snmp_query_array)) {
+		update_graph_snmp_query_cache($cache_array["local_graph_id"]);
 	}
 	
 	return $cache_array;
