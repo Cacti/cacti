@@ -100,7 +100,7 @@ function form_save() {
 			}
 		}
 		
-		if (is_error_message()) {
+		if ((is_error_message()) || (empty($_POST["id"]))) {
 			header ("Location: tree.php?action=edit&id=" . (empty($tree_id) ? $_POST["id"] : $tree_id));
 		}else{
 			header ("Location: tree.php");
@@ -151,22 +151,22 @@ function item_edit() {
 	
 	global $colors;
 	
-	$title_graph = "Tree Item [graph]";
-	$title_header = "Tree Item [header]";
+	$title_graph = "Tree Items [graph]";
+	$title_header = "Tree Items [header]";
 	
 	if (!empty($_GET["tree_item_id"])) {
 		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["tree_item_id"]);
 		
 		/* bold the active "type" */
-		if ($tree_item["local_graph_id"] > 0) { $title_graph = "<strong>Tree Item [graph]</strong>"; }
+		if ($tree_item["local_graph_id"] > 0) { $title_graph = "<strong>Tree Items</strong> [graph]"; }
 		
 		/* bold the active "type" */
-		if ($tree_item["title"] != "") { $title_header = "<strong>Tree Item [header]</strong>"; }
+		if ($tree_item["title"] != "") { $title_header = "<strong>Tree Items</strong> [header]"; }
 	}
 	
 	print "<form method='post' action='tree.php'>\n";
 	
-	start_box("<strong>Tree Item</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Tree Items</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
@@ -277,11 +277,14 @@ function tree_edit() {
 	
 	global $colors;
 	
-	start_box("<strong>Trees [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-	
 	if (!empty($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $tree["name"] . "]";
+	}else{
+		$header_label = "[new]";
 	}
+	
+	start_box("<strong>Graph Trees</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="tree.php">
@@ -291,16 +294,18 @@ function tree_edit() {
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this graph tree.
 		</td>
-		<?php form_text_box("name",$tree["name"],"","255", "40");?>
+		<?php form_text_box("name",(isset($tree) ? $tree["name"] : ""),"","255", "40");?>
 	</tr>
 	
 	<?php
-	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("id",(isset($tree) ? $tree["id"] : "0"));
 	end_box();
 	
-	start_box("Tree Items", "98%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"] . "&parent_id=0");
-	grow_edit_graph_tree($_GET["id"], "", "");
-	end_box();
+	if (!empty($_GET["id"])) {
+		start_box("<strong>Tree Items</strong>", "98%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"] . "&parent_id=0");
+		grow_edit_graph_tree($_GET["id"], "", "");
+		end_box();
+	}
 	
 	form_hidden_box("save_component_tree","1","");
 	

@@ -48,11 +48,11 @@ if (GetCurrentVersion() == $config["cacti_version"]) {
  running on. */
 
 /* cacti Web Root */
-$input["path_webcacti"]["default"] = dirname($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+$input["path_webcacti"]["default"] = dirname($_SERVER["SCRIPT_NAME"]);
 $input["path_webcacti"]["type"] = "textbox";
 
 /* Web Server Document Root */
-$input["path_webroot"]["default"] = str_replace("\\\\", "/", $HTTP_SERVER_VARS["DOCUMENT_ROOT"]);
+$input["path_webroot"]["default"] = str_replace("\\\\", "/", $_SERVER["DOCUMENT_ROOT"]);
 $input["path_webroot"]["check"] = "";
 $input["path_webroot"]["type"] = "textbox";
 
@@ -68,7 +68,7 @@ if ($config["cacti_server_os"] == "unix") {
 	}else{
 		$input["path_rrdtool"]["default"] = "/usr/local/bin/rrdtool";
 	}
-}elseif ($cacti_server_os == "win32") {
+}elseif ($config["cacti_server_os"] == "win32") {
 	$input["path_rrdtool"]["default"] = "c:/rrdtool/rrdtool.exe";
 }
 
