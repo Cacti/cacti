@@ -94,11 +94,11 @@ switch ($action) {
 		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="color.php?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
+				<a class="linkEditMain" href="<?print $current_script_name;?>?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
 			</td>
 			<td bgcolor="#<?print $color[Hex];?>" width="1%">&nbsp;</td>
 			<td width="1%" align="right">
-				<a href="graphs.php?action=graph_remove&id=<?print $graph[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="<?print $current_script_name;?>?action=graph_remove&id=<?print $graph[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
@@ -107,6 +107,6 @@ switch ($action) {
 		
 	include_once ("include/bottom_footer.php");
 	include_once ("include/bottom_table_footer.php");
-    
-    break;
+	
+   	break;
 } ?>

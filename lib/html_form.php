@@ -313,7 +313,7 @@ function DrawFormItemColorSelect($form_name, $database_conn_id,
 function DrawFormItemMultipleList($form_name, $database_conn_id, $sql_string_display, $sql_display_name,
 	$sql_display_value, $sql_string_previous_values, $sql_previous_value) {
 	global $current_path; include_once ("$current_path/functions.php");?>
-		<td bgcolor="#DEE3E7">
+		<td>
 			&nbsp;<select name="<?print $form_name;?>[]" multiple>
 				<?CreateMultipleList($database_conn_id,$sql_string_display,$sql_display_name,$sql_display_value,$sql_string_previous_values,$sql_previous_value);?>
 			</select>
