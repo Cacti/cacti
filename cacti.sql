@@ -26,6 +26,7 @@ INSERT INTO cdef VALUES (4,'Make Per 5 Minutes');
 INSERT INTO cdef VALUES (12,'Total All Data Sources');
 INSERT INTO cdef VALUES (2,'Turn Bytes into Bits');
 INSERT INTO cdef VALUES (14,'Multiply by 1024');
+INSERT INTO cdef VALUES (15,'Total All Data Sources, Multiply by 1024');
 
 --
 -- Table structure for table 'cdef_items'
@@ -60,6 +61,9 @@ INSERT INTO cdef_items VALUES (16,12,1,4,'ALL_DATA_SOURCES_NODUPS');
 INSERT INTO cdef_items VALUES (18,14,1,4,'CURRENT_DATA_SOURCE');
 INSERT INTO cdef_items VALUES (19,14,2,6,'1024');
 INSERT INTO cdef_items VALUES (20,14,3,2,'3');
+INSERT INTO cdef_items VALUES (21,15,1,4,'ALL_DATA_SOURCES_NODUPS');
+INSERT INTO cdef_items VALUES (22,15,2,6,'1024');
+INSERT INTO cdef_items VALUES (23,15,3,2,'3');
 
 --
 -- Table structure for table 'colors'
@@ -1304,18 +1308,18 @@ INSERT INTO graph_templates_item VALUES (13,0,0,2,2,20,4,2,1,'Outbound','','',2,
 INSERT INTO graph_templates_item VALUES (14,0,0,2,2,0,9,2,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (15,0,0,2,2,0,9,2,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (16,0,0,2,2,0,9,2,3,'Maximum:','','',2,8);
-INSERT INTO graph_templates_item VALUES (17,0,0,3,4,48,7,0,1,'Used','','',2,1);
-INSERT INTO graph_templates_item VALUES (18,0,0,3,4,0,9,0,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (19,0,0,3,4,0,9,0,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (20,0,0,3,4,0,9,0,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (21,0,0,3,3,20,8,0,1,'Available','','',2,5);
-INSERT INTO graph_templates_item VALUES (22,0,0,3,3,0,9,0,4,'Current:','','',2,6);
-INSERT INTO graph_templates_item VALUES (23,0,0,3,3,0,9,0,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (24,0,0,3,3,0,9,0,3,'Maximum','','on',2,8);
-INSERT INTO graph_templates_item VALUES (25,0,0,3,0,1,5,12,1,'Total','','',2,9);
-INSERT INTO graph_templates_item VALUES (26,0,0,3,0,0,9,12,4,'Current:','','',2,10);
-INSERT INTO graph_templates_item VALUES (27,0,0,3,0,0,9,12,1,'Average:','','',2,11);
-INSERT INTO graph_templates_item VALUES (28,0,0,3,0,0,9,12,3,'Maximum:','','',2,12);
+INSERT INTO graph_templates_item VALUES (17,0,0,3,4,48,7,14,1,'Used','','',2,1);
+INSERT INTO graph_templates_item VALUES (18,0,0,3,4,0,9,14,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (19,0,0,3,4,0,9,14,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (20,0,0,3,4,0,9,14,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (21,0,0,3,3,20,8,14,1,'Available','','',2,5);
+INSERT INTO graph_templates_item VALUES (22,0,0,3,3,0,9,14,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (23,0,0,3,3,0,9,14,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (24,0,0,3,3,0,9,14,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (25,0,0,3,0,1,5,15,1,'Total','','',2,9);
+INSERT INTO graph_templates_item VALUES (26,0,0,3,0,0,9,15,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (27,0,0,3,0,0,9,15,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (28,0,0,3,0,0,9,15,3,'Maximum:','','',2,12);
 INSERT INTO graph_templates_item VALUES (29,0,0,4,5,9,7,0,1,'System','','',2,1);
 INSERT INTO graph_templates_item VALUES (30,0,0,4,5,0,9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (31,0,0,4,5,0,9,0,1,'Average:','','',2,3);
