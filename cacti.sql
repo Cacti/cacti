@@ -755,6 +755,7 @@ INSERT INTO rrd_ds_cdef_item VALUES (15, 54, 3, '', '', 29, 'CDEF Function', 3);
 
 CREATE TABLE rrd_graph (
   ID smallint(5) NOT NULL auto_increment,
+  order_key varchar(60) NOT NULL,
   ImageFormatID smallint(4) NOT NULL default '0',
   Title varchar(200) default NULL,
   Height smallint(5) NOT NULL default '0',
@@ -770,22 +771,26 @@ CREATE TABLE rrd_graph (
   Grouping char(2) default NULL,
   Export char(2) default 'on',
   PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+  UNIQUE KEY ID (ID),
+  UNIQUE KEY order_key (order_key)
 ) TYPE=MyISAM;
 
 #
 # Dumping data for table `rrd_graph`
 #
 
-INSERT INTO rrd_graph VALUES (6, 1, 'System Processes', 150, 500, 100, 0, 'Active Processes', '', 'on', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (7, 1, 'Logged In Users', 150, 500, 5, 0, 'Users Logged In', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (10, 1, 'MySQL Usage', 150, 500, 300, 0, 'SQL Questions', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (13, 1, 'Load Average', 150, 500, 4, 0, 'Average Load', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (8, 1, 'WAN Links (Ping Times)', 150, 500, 1000, 0, 'Milliseconds', 'on', 'on', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (56, 1, 'Memory Usage #2', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (53, 1, 'Apache/Samba/MySQL', 120, 500, 0, 0, 'Connections', 'on', 'on', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (55, 1, 'Memory Usage #1', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (57, 1, 'Apache Web Hits', 150, 500, 0, 0, 'Hits', 'on', '', '1', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (1, '01000000000000000000000000000000000000000000000000000000000', 1, 'Localhost', 0, 0, 0, 0, '', '', '', '', '', 0, 'on', '');
+INSERT INTO rrd_graph VALUES (2, '01010000000000000000000000000000000000000000000000000000000', 1, 'Vitals', 0, 0, 0, 0, '', '', '', '', '', 0, 'on', '');
+INSERT INTO rrd_graph VALUES (6, '01010100000000000000000000000000000000000000000000000000000', 1, 'System Processes', 150, 500, 100, 0, 'Active Processes', '', 'on', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (7, '01010200000000000000000000000000000000000000000000000000000', 1, 'Logged In Users', 150, 500, 5, 0, 'Users Logged In', 'on', '', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (55,'01010300000000000000000000000000000000000000000000000000000', 1, 'Memory Usage #1', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (56,'01010400000000000000000000000000000000000000000000000000000', 1, 'Memory Usage #2', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (13,'01010500000000000000000000000000000000000000000000000000000', 1, 'Load Average', 150, 500, 4, 0, 'Average Load', 'on', '', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (3, '01020000000000000000000000000000000000000000000000000000000', 1, 'Services', 0, 0, 0, 0, '', '', '', '', '', 0, 'on', '');
+INSERT INTO rrd_graph VALUES (10,'01020100000000000000000000000000000000000000000000000000000', 1, 'MySQL Usage', 150, 500, 300, 0, 'SQL Questions', 'on', '', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (53,'01020200000000000000000000000000000000000000000000000000000', 1, 'Apache/Samba/MySQL', 120, 500, 0, 0, 'Connections', 'on', 'on', '2', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (57,'01020300000000000000000000000000000000000000000000000000000', 1, 'Apache Web Hits', 150, 500, 0, 0, 'Hits', 'on', '', '1', 'on', 1000, 'on', 'on');
+INSERT INTO rrd_graph VALUES (8, '01030000000000000000000000000000000000000000000000000000000', 1, 'WAN Links (Ping Times)', 150, 500, 1000, 0, 'Milliseconds', 'on', 'on', '2', 'on', 1000, 'on', 'on');
 # --------------------------------------------------------
 
 #
