@@ -30,39 +30,43 @@ if (!isset($_SERVER["argv"][0])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
 
-// We are not talking to the browser
+/* We are not talking to the browser */
 $no_http_headers = true;
 
-// Start Initialization Section
+/* Start Initialization Section */
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
-// Record Start Time
+/* Record Start Time */
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
 //$start = date("Y-n-d H:i:s");
 
-// Let PHP Run Just as Long as It Has To
+/* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");
 
-// Get number of polling items from the database
+/* Get number of polling items from the database */
 $polling_items = db_fetch_assoc("select id from host where disabled = '' order by id");
 
-// Retreive the number of concurrent process settings
+/* Retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
 
-// Initialize counters for script file handling
+/* Initialize counters for script file handling */
 $host_count = 1;
 
-// Initialize file creation flags
+/* Initialize file creation flags */
 $change_files = False;
 
-// Initialize file and host count pointers
+/* Initialize file and host count pointers */
 $process_file_number = 0;
 $first_host = 0;
 $last_host = 0;
+
+/* Update web paths for the poller */
+db_execute("replace into settings (name,value) values ('path_webroot','" . dirname(__FILE__) . "')");
+db_execute("replace into settings (name,value) values ('path_php_server','" . dirname(__FILE__) . PATH_DELIMITER . "script_server.php')");
 
 // Obtain some defaults from the database
 $poller = read_config_option("poller_type");
