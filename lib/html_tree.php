@@ -140,6 +140,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	$already_open = false;
 	$heading_ct = 0;
 	$graph_ct = 0;
+	$i = 0;
 	
 	##  Here we go.  Starting the main tree drawing loop.
 	if (sizeof($heirarchy) > 0) {
@@ -149,7 +150,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$tier = tree_tier($leaf["order_key"], 2);
 		$current_leaf_type = $leaf["local_graph_id"] ? "graph" : "heading";
 		
-		if ($current_leaf_type == 'heading') {
+		if (($current_leaf_type == 'heading') || ($i == 0)) {
 			##  If this isn't the first heading, we may have to close tables/rows.
 			if ($heading_ct > 0) {
 				if ($need_table_close) { 
@@ -167,7 +168,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				$already_open = true;
 			}
 			
-			if ($options["use_expand_contract"]) {
+			if (($options["use_expand_contract"]) && (!empty($leaf["title"]))) {
 				if (!empty($hide{$leaf["order_key"]})) {
 					$other_status = '0';
 					$ec_icon = 'show';
@@ -180,16 +181,21 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
 					href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
 					<img src='images/$ec_icon.gif' border='0'></a></td>\n";
-			}else{
+			}elseif (!($options["use_expand_contract"]) && (!empty($leaf["title"]))) {
 				print "<td bgcolor='" . $colors["panel"] . "' width='1'>$indent</td>\n";
 			}
 			
-			print "<td bgcolor='" . $colors["panel"] . "' colspan=$colspan NOWRAP><strong>
-				<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a></strong></td>\n</tr>";
-				$already_open = false;
+			if (empty($leaf["title"])) {
+				$heading_ct++;
+				print "<td colspan='2' bgcolor='" . $colors["panel"] . "' align='center' width='1%'></td>\n</tr>";
+			}else{
+				print "<td bgcolor='" . $colors["panel"] . "' colspan=$colspan NOWRAP><strong>
+					<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a>&nbsp;</strong></td>\n</tr>";
+					$already_open = false;
+			}
 			
 			##  If a heading isn't hidden and has graphs, start the vertical bar.
-			if ((empty($hide{$leaf["order_key"]})) && ($rowspan > 0)) {
+			if ((empty($hide{$leaf["order_key"]})) && ($rowspan > 0) && (!empty($leaf["title"]))) {
 				print "<tr><td bgcolor='" . $colors["panel"] . "' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
 				$already_open = true;
 			}
@@ -197,7 +203,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			##  If this heading has graphs and we're supposed to show graphs, start that table.
 			if ((!empty($num_graphs{$leaf["order_key"]})) && (empty($hide{$leaf["order_key"]}))) { 
 				$need_table_close = true;
-				print "<td colspan=$colspan><table border='0'><tr>\n";
+				print "<td colspan='" . ($i ? $colspan : ($colspan+1)) . "'><table border='0'><tr>\n";
 			}else{
 				$need_table_close = false;
 			}
@@ -212,6 +218,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			
 			if ($graph_ct % 2 == 0) { print "</tr><tr>\n"; }
 		}
+		
+		$i++;
 	}
 	}
 	
