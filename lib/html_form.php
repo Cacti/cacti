@@ -487,7 +487,7 @@ function DrawMatrixRemove($matrix_custom_url, $counter, $color1, $color2) {
 	<td align="center" width=1% bgcolor="#<?print $color;?>"><a href="<?print $matrix_custom_url;?>"><img src="images/delete.gif" border="0" alt="Delete"></a></td>
 <?}
 
-function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span) { ?>
+function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
 		<td height="1" colspan="<?print $column_span;?>">
 			<strong><font color="#<?print $matrix_text_color;?>"><?print $matrix_name;?></font></strong>
 		</td>
