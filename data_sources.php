@@ -162,16 +162,16 @@ function form_save() {
 			if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
 				/* update all nessesary template information */
 				change_data_template($local_data_id, $_POST["data_template_id"]);
-				
-				if ($_POST["host_id"] != $_POST["_host_id"]) {
-					/* push out all nessesary host information */
-					push_out_host($_POST["host_id"], $local_data_id);
-					
-					/* reset current host for display purposes */
-					$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
-				}
 			}elseif (!empty($_POST["data_template_id"])) {
 				update_data_source_snmp_query_cache($local_data_id);
+			}
+			
+			if ($_POST["host_id"] != $_POST["_host_id"]) {
+				/* push out all nessesary host information */
+				push_out_host($_POST["host_id"], $local_data_id);
+				
+				/* reset current host for display purposes */
+				$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
 			}
 			
 			/* if no data source path has been entered, generate one */
@@ -180,7 +180,7 @@ function form_save() {
 			}
 			
 			/* update the title cache */
-			update_graph_title_cache($local_graph_id);
+			update_data_source_title_cache($local_data_id);
 			
 			/* save entried in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
