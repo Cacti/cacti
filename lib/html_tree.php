@@ -30,17 +30,12 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	include_once($config["include_path"] . "/form.php");
 	include_once($config["include_path"] . "/tree_functions.php");
 	
-	$options["num_columns"] = 2;
 	$options["use_expand_contract"] = true;
 	
-	$vbar_width = 20;
 	$search_key = "";
-	$max_tier = 0;
-	
-	$num_graphs = array();
-	$hide = array();
-	$skip = array();
-	$rowspans = array();
+	$already_open = false;
+	$hide_until_tier = false;
+	$graph_ct = 0;
 	
 	/* get the "starting leaf" if the user clicked on a specific branch */
 	if (($start_branch != "") && ($start_branch != "0")) {
@@ -74,121 +69,40 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		and graph_tree_items.order_key like '$search_key%'
 		$sql_where
 		order by graph_tree_items.order_key");
-	
-	$search_key = preg_replace("/0+$/","",$start_branch);
-	
-	##  First off, we walk the tree from the top to the root.  We do it in that order so that we 
-	for ($i = (sizeof($heirarchy) - 1); $i >= 0; --$i) {
-		$leaf = $heirarchy[$i];
-		
-		## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_viewing_tree == 1)
-		if ($leaf["status"] == "1") {
-			$hide[$leaf["order_key"]] = "1";
-		}
-		
-		$tier = tree_tier($leaf["order_key"], 2);
-		
-		##  If there's a local_graph_id, the leaf is a graph, not a heading, so we increment the parent's num_graphs
-		if ($leaf["local_graph_id"]) {
-			$parent_key = str_pad(substr($leaf["order_key"],0,(($tier - 1) * 2) ),60,'0',STR_PAD_RIGHT);
-			
-			if (isset($num_graphs[$parent_key])) {
-				$num_graphs[$parent_key]++;
-			}else{
-				$num_graphs[$parent_key] = 1;
-			}
-		}
-		
-		##  We also need the max_tier to do colspans so we do this to get it:
-		if ($tier > $max_tier) { $max_tier = $tier; }
-	}
-	
-	##  Now that we know how many graphs each heading has and whether it's supposed to be hidden, we walk the tree again from top to root to figure 
-	##  out how many rows each vertical bar should span.
-	for ($i = (sizeof($heirarchy) - 1); $i >= 0; --$i) {
-		$leaf = $heirarchy[$i];
-		$tier = tree_tier($leaf["order_key"], 2);
-		
-		##  Step through the hidden headings to see which entries to skip.
-		for ($j = 1; $j < $tier; ++$j) {
-			$parent_key = str_pad(substr($leaf["order_key"],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
-			
-			if (!empty($hide[$parent_key])) { 
-				$skip{$leaf["order_key"]} = "1";
-			}
-		}
-				
-		if (empty($skip{$leaf["order_key"]})) {
-			if (empty($leaf["local_graph_id"])) {
-				if (empty($hide{$leaf["order_key"]})) {
-					if (!empty($num_graphs{$leaf["order_key"]})) {
-						if (isset($rowspans{$leaf["order_key"]})) {
-							$rowspans{$leaf["order_key"]}++;
-						}else{
-							$rowspans{$leaf["order_key"]} = "1";
-						}
-					}
-				}
-				
-				$j = $tier - 1;
-				$parent_key = str_pad(substr($leaf["order_key"],0,$j * 2 ),60,'0',STR_PAD_RIGHT);
-				
-				if (!isset($rowspans[$parent_key])) {
-					$rowspans[$parent_key] = "0";
-				}
-				
-				if (!isset($rowspans{$leaf["order_key"]})) {
-					$rowspans{$leaf["order_key"]} = "0";
-				}
-				
-				$rowspans[$parent_key] += ($rowspans{$leaf["order_key"]} + 1);
-			}
-		}
-	}
     	
 	print "<!-- <P>Building Heirarchy w/ " . sizeof($heirarchy) . " leaves</P>  -->\n";
-	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='0' cellspacing='2'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='30'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong></td></tr></table></td></tr>";
 	
-	$already_open = false;
-	$heading_ct = 0;
-	$graph_ct = 0;
 	$i = 0;
 	
-	##  Here we go.  Starting the main tree drawing loop.
+	/* loop through each tree item */
 	if (sizeof($heirarchy) > 0) {
 	foreach ($heirarchy as $leaf) {
-		if (!empty($skip{$leaf["order_key"]})) { continue; }
-		
+		/* find out how 'deep' this item is */
 		$tier = tree_tier($leaf["order_key"], 2);
-		$current_leaf_type = $leaf["title"] ? "heading" : "graph";
 		
-		if (($current_leaf_type == 'heading') || ($i == 0)) {
-			##  If this isn't the first heading, we may have to close tables/rows.
-			if ($heading_ct > 0) {
-				if ($need_table_close) { 
-					if ($graph_ct % 2 == 0) { print "</tr>\n"; }
-					print "</table></td></tr>\n"; 
-					$already_open = false;
-				}
+		/* find the type of the current and next branch */
+		$current_leaf_type = $leaf["title"] ? "heading" : "graph";
+		$next_leaf_type = (isset($heirarchy{$i+1})) ? ($heirarchy{$i+1}["title"] ? "heading" : "graph") : "";
+		
+		if (($current_leaf_type == 'heading') && (($tier <= $hide_until_tier) || ($hide_until_tier == false))) {
+			/* start the nested table for the heading */
+			print "<tr><td colspan='2'><table width='100%' cellpadding='2' cellspacing='1'><tr>\n";
+			
+			/* draw one vbar for each tier */
+			for ($j=0;($j<($tier-1));$j++) {
+				print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
 			}
 			
-			$colspan = (($max_tier - $tier) * 2);
-			$rowspan = (isset($rowspans{$leaf["order_key"]}) ? $rowspans{$leaf["order_key"]} : "1");
-			
-			if (! $already_open) { 
-				print "<tr>\n";
-				$already_open = true;
-			}
-			
+			/* draw the '+' or '-' icons if configured to do so */
 			if (($options["use_expand_contract"]) && (!empty($leaf["title"]))) {
-				if (!empty($hide{$leaf["order_key"]})) {
+				if ($leaf["status"] == "1") {
 					$other_status = '0';
 					$ec_icon = 'show';
 				}else{
 					$other_status = '1';
 					$ec_icon =  'hide';
-					++$heading_ct;
 				}
 				
 				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
@@ -198,38 +112,60 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				print "<td bgcolor='" . $colors["panel"] . "' width='1'>$indent</td>\n";
 			}
 			
-			if (empty($leaf["title"])) {
-				$heading_ct++;
-				print "<td colspan='2' bgcolor='" . $colors["panel"] . "' align='center' width='1%'></td>\n</tr>";
-			}else{
-				print "<td bgcolor='" . $colors["panel"] . "' colspan=$colspan NOWRAP><strong>
-					<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a>&nbsp;</strong></td>\n</tr>";
-					$already_open = false;
+			/* draw the actual cell containing the header */
+			if (!empty($leaf["title"])) {
+				print "<td bgcolor='" . $colors["panel"] . "' NOWRAP><strong>
+					<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a>&nbsp;</strong></td>\n";
 			}
 			
-			##  If a heading isn't hidden and has graphs, start the vertical bar.
-			if ((empty($hide{$leaf["order_key"]})) && ($rowspan > 0) && (!empty($leaf["title"]))) {
-				print "<tr><td bgcolor='" . $colors["panel"] . "' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
+			/* end the nested table for the heading */
+			print "</tr></table></td></tr>\n";
+			
+			$graph_ct = 0;
+		}elseif (($current_leaf_type == 'graph') && (($tier <= $hide_until_tier) || ($hide_until_tier == false))) {
+			$graph_ct++;
+			
+			/* start the nested table for the graph group */
+			if ($already_open == false) {
+				print "<tr><td><table width='100%' cellpadding='2' cellspacing='1'><tr>\n";
+				
+				/* draw one vbar for each tier */
+				for ($j=0;($j<($tier-1));$j++) {
+					print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
+				}
+				
+				print "<td><table width='100%' cellspacing='0' cellpadding='2'><tr>\n";
+				
 				$already_open = true;
 			}
 			
-			##  If this heading has graphs and we're supposed to show graphs, start that table.
-			if ((!empty($num_graphs{$leaf["order_key"]})) && (empty($hide{$leaf["order_key"]}))) { 
-				$need_table_close = true;
-				print "<td colspan='" . ($i ? $colspan : ($colspan+1)) . "'><table border='0'><tr>\n";
-			}else{
-				$need_table_close = false;
-			}
-			
-			$graph_ct = 0;
-		}else{
-			++$graph_ct;
-			
+			/* print out the actual graph html */
 			print "<td><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all'><img align='middle' alt='" . get_graph_title($leaf["local_graph_id"]) . "'
 				src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $leaf["title"] . "'></a></td>\n";
 			
-			if ($graph_ct % 2 == 0) { print "</tr><tr>\n"; }
+			/* if we are at the end of a row, start a new one */
+			if ($graph_ct % read_graph_config_option("num_columns") == 0) {
+				print "</tr><tr>\n";
+			}
+			
+			/* if we are at the end of the graph group, end the nested table */
+			if ($next_leaf_type != "graph") {
+				print "</tr></table></td>";
+				print "</tr></table></td></tr>\n";
+				
+				$already_open = false;
+			}
+		}
+		
+		/* if we have come back to the tier that was origionally flagged, then take away the flag */
+		if (($tier <= $hide_until_tier) && ($hide_until_tier != false)) {
+			$hide_until_tier = false;
+		}
+		
+		/* if we are supposed to hide this branch, flag it */
+		if ($leaf["status"] == "1") {
+			$hide_until_tier = $tier;
 		}
 		
 		$i++;
