@@ -31,8 +31,10 @@ $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 
-/* make sure this variable reflects your operating system type: 'unix' or 'win32' */
-$config["cacti_server_os"] = "unix";
+/* ----- you probably do not need to change anything below this line ----- */
+
+/* this should be auto-detected, set it manually if needed */
+$config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
 
 /* built-in snmp support */
 $config["php_snmp_support"] = function_exists("snmpget");
