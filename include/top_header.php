@@ -21,7 +21,9 @@
 | - raXnet - http://www.raxnet.net/                                       |
 +-------------------------------------------------------------------------+
 */?>
-<?	include_once ('include/auth_functions.php'); ?>
+<?	include_once ("auth_functions.php");
+	global $colors;
+?>
 <html>
 <head>
 	<title>cacti</title>
