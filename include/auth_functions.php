@@ -37,7 +37,7 @@ function DrawMenu($userid, $menuid) {
     $menu = array("Graph Setup"    => array(
 					    "graphs.php" => "Graph Management",
 					    "graph_templates.php" => "Graph Templates",
-					    "tree.php" => "Graph Hierarchy",
+					    "tree.php" => "Graph Trees",
 					    "color.php" => "Colors"
 					    ),
 		  "Data Gathering" => array(
