@@ -218,7 +218,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Add the following to your Windows PATH <filename>c:\php</filename>.  The Windows path can be accessed via 
+					Add the following to your Windows PATH <filename>c:\php</filename>.  The Windows path can be accessed via
 					Control Panel at: 'System', 'Advanced', 'Environment'.
 				</para>
 			</listitem>
@@ -239,32 +239,26 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 				<para>
 					If using PHP 4 add the following line.
-				<para>
-				<screen>
-				<userinput>extension_dir = c:\php\extensions</userinput>
-				</screen>
+				</para>
+				<screen><userinput>extension_dir = c:\php\extensions</userinput></screen>
 				<para>
 					If using PHP 5 add the following line.
 				</para>
-				<screen>
-				<userinput>extension_dir = c:\php\ext</userinput>
-				</screen>
-				<screen>
-				<userinput>extension=php_snmp.dll</userinput>
-				<userinput>extension=php_sockets.dll</userinput>
-				</screen>
+				<screen><userinput>extension_dir = c:\php\ext</userinput>
+<userinput>extension=php_snmp.dll</userinput>
+<userinput>extension=php_sockets.dll</userinput></screen>
 				<para>
 					If using PHP 4.3.5 or less include the following line.  If using 4.3.6 or greater, you should remove this line if present.
 				</para>
-				<screen>
-					<userinput>session.save_path=c:\tmp</userinput>
-				</screen>
+				<screen><userinput>session.save_path=c:\tmp</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
 					If you are planning on using CACTID, then create the following directory <filename>c:\cactid</filename>.  Download CACTID
 					and place all the files that came with the distribution into that directory.  Follow the directions that came with CACTID
 					to modify the file <filename>cactid.conf</filename> in that directory.
+				</para>
+			</listitem>
 		</orderedlist>
 		<orderedlist>
 			<title>Configure the Webserver (Apache)</title>
@@ -298,20 +292,13 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					If using PHP 4, then add the following line.
 				</para>
-				<screen>
-				<userinput>LoadModule php4_module c:\php\sapi\php4apache2.dll
-				</userinput>
-				</screen>
+				<screen><userinput>LoadModule php4_module c:\php\sapi\php4apache2.dll</userinput></screen>
 				<para>
 					If using PHP 5, then add the following line.
 				</para>
-				<screen>
-				<userinput>LoadModule php5_module c:\php\php5apache2.dll
-				</userinput>
-				</screen>
-				<screen>
-					<userinput>AddType application/x-httpd-php .php</userinput>
-					<userinput>DirectoryIndex index.html index.htm index.php</userinput></screen>
+				<screen><userinput>LoadModule php5_module c:\php\php5apache2.dll</userinput>
+<userinput>AddType application/x-httpd-php .php</userinput>
+<userinput>DirectoryIndex index.html index.htm index.php</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
@@ -325,7 +312,7 @@ $database_password = "cacti";</userinput></screen>
 			<listitem>
 				<para>
 					Under the <guilabel>Home Directory</guilabel> tab, select <guilabel>Configuration</guilabel>
-					and click <guilabel>Add</guilabel>. Browse to the path of <filename>php4isapi.dll</filename> or 
+					and click <guilabel>Add</guilabel>. Browse to the path of <filename>php4isapi.dll</filename> or
 					<filename>php5isapi.dll</filename>,	and type in .php as the extension.
 				</para>
 			</listitem>
@@ -446,7 +433,7 @@ $database_password = "cacti";</userinput></screen>
 					<listitem>
 						<para>
 							Click <guilabel>Next</guilabel> and <guilabel>Browse</guilabel> on the following screen. Find <filename>c:\php</filename> and select
-							<filename>php.exe</filename>. If using PHP 5, use <filename>php-win.exe</filename> instead.  Choose <guilabel>Daily</guilabel> 
+							<filename>php.exe</filename>. If using PHP 5, use <filename>php-win.exe</filename> instead.  Choose <guilabel>Daily</guilabel>
 							on and click <guilabel>Next</guilabel>.
 						</para>
 					</listitem>
@@ -464,7 +451,7 @@ $database_password = "cacti";</userinput></screen>
 						<para>
 							Make sure the user has read, write, and execute access to the following directories:
 						</para>
-						<screen>c:\php 
+						<screen>c:\php
 						c:\php\sapi</screen>
 					</listitem>
 					<listitem>
