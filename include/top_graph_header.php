@@ -56,6 +56,17 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 	}
 }
 
+/* setup tree selection defaults if the user has not been here before */
+if (!isset($_SESSION["sess_has_viewed_graphs"])) {
+	$_SESSION["sess_has_viewed_graphs"] = true;
+	
+	$first_branch = find_first_folder_url();
+	
+	if (!empty($first_branch)) {
+		header ("Location: $first_branch");
+	}
+}
+
 ?>
 <html>
 <head>
@@ -133,7 +144,20 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='200'>
 			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></font></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
-			<script>initializeDocument()</script>
+			<script type="text/javascript">initializeDocument();</script>
+			
+			<?php if (isset($_GET["select_first"])) { ?>
+			<script type="text/javascript">
+			var obj;
+			obj = findObj(1);
+			
+			if (!obj.isOpen) {
+				clickOnNode(1);
+			}
+			
+			clickOnLink(2,'','main');
+			</script>
+			<?php } ?>
 		</td>
 		<?php } ?>
 		<td valign="top">
