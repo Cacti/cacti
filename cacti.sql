@@ -800,6 +800,7 @@ INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'
 CREATE TABLE graph_local (
   id mediumint(8) NOT NULL auto_increment,
   graph_template_id mediumint(8) NOT NULL default '0',
+  host_id mediumint(8) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -1844,6 +1845,23 @@ CREATE TABLE settings_graphs (
 
 --
 -- Dumping data for table 'settings_graphs'
+--
+
+
+
+--
+-- Table structure for table 'settings_tree'
+--
+
+CREATE TABLE settings_tree (
+  user_id mediumint(8) NOT NULL default '0',
+  graph_tree_item_id mediumint(8) NOT NULL default '0',
+  status tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (user_id,graph_tree_item_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'settings_tree'
 --
 
 
