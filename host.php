@@ -927,7 +927,7 @@ function host_edit() {
 				}
 				}
 			}else{
-				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td style='color: red; font-size: 12px;'>Error in data query.</td></tr>\n";
+				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td colspan='2' style='color: red; font-size: 12px; font-weight: bold;'>Error in data query.</td></tr>\n";
 			}
 			
 			/* draw the graph template drop down here */
