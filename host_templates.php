@@ -25,6 +25,12 @@
 */
 
 include("./include/auth.php");
+include_once("./lib/utility.php");
+
+$host_actions = array(
+	1 => "Delete",
+	2 => "Duplicate"
+	);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -34,10 +40,9 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
-	case 'remove':
-		template_remove();
+	case 'actions':
+		form_actions();
 		
-		header("Location: host_templates.php");
 		break;
 	case 'item_remove_gt':
 		template_item_remove_gt();
@@ -103,6 +108,97 @@ function form_save() {
 	}
 }
 
+/* ------------------------
+    The "actions" function 
+   ------------------------ */
+
+function form_actions() {
+	global $colors, $host_actions;
+	
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		
+		if ($_POST["drp_action"] == "1") { /* delete */
+			db_execute("delete from host_template where " . array_to_sql_or($selected_items, "id"));
+			db_execute("delete from host_template_snmp_query where " . array_to_sql_or($selected_items, "host_template_id"));
+			db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "host_template_id"));
+			
+			/* "undo" any device that is currently using this template */
+			db_execute("update host set host_template_id=0 where " . array_to_sql_or($selected_items, "host_template_id"));
+		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				duplicate_host_template($selected_items[$i], $_POST["title_format"]);
+			}
+		}
+		
+		header("Location: host_templates.php");
+		exit;
+	}
+	
+	/* setup some variables */
+	$host_list = ""; $i = 0;
+	
+	/* loop through each of the host templates selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			$host_list .= "<li>" . db_fetch_cell("select name from host_template where id=" . $matches[1]) . "<br>";
+			$host_array[$i] = $matches[1];
+		}
+		
+		$i++;
+	}
+	
+	include_once("./include/top_header.php");
+	
+	start_box("<strong>" . $host_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	
+	print "<form action='host_templates.php' method='post'>\n";
+	
+	if ($_POST["drp_action"] == "1") { /* delete */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following host templates? All devices currently attached
+					this these host templates will lose their template assocation.</p>
+					<p>$host_list</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following host templates will be duplicated. You can
+					optionally change the title format for the new host templates.</p>
+					<p>$host_list</p>
+					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}
+	
+	if (!isset($host_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one host template.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+	}
+	
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='host_templates.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";	
+	
+	end_box();
+	
+	include_once("./include/bottom_footer.php");
+}
+
 /* ---------------------
     Template Functions
    --------------------- */
@@ -113,21 +209,6 @@ function template_item_remove_gt() {
 
 function template_item_remove_dq() {
 	db_execute("delete from host_template_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
-}
-
-function template_remove() {
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=" . $_GET["id"]) . "'</strong>?", "host_templates.php", "host_templates.php?action=remove&id=" . $_GET["id"]);
-		include("./include/bottom_footer.php");
-		exit;
-	}
-	
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from host_template where id=" . $_GET["id"]);
-		db_execute("delete from host_template_snmp_query where host_template_id=" . $_GET["id"]);
-		db_execute("delete from host_template_graph where host_template_id=" . $_GET["id"]);
-	}
 }
 
 function template_edit() {
@@ -172,8 +253,8 @@ function template_edit() {
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
-				<td width='1%' align='right'>
-					<a href='host_templates.php?action=item_remove_gt&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+				<td align="right">
+					<a href='host_templates.php?action=item_remove_gt&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>
 				</td>
 			</tr>
 			<?php
@@ -222,8 +303,8 @@ function template_edit() {
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
-				<td width='1%' align='right'>
-					<a href='host_templates.php?action=item_remove_dq&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+				<td align='right'>
+					<a href='host_templates.php?action=item_remove_dq&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>
 				</td>
 			</tr>
 			<?php
@@ -258,17 +339,18 @@ function template_edit() {
 }
 
 function template() {
-	global $colors;
+	global $colors, $host_actions;
 	
 	display_output_messages();
 	
 	start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 	
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Template Title",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-	print "</tr>";
-    
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Template Title</td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>
+		<form name='chk' method='post' action='host_templates.php'>
+		</tr>";
+	
 	$host_templates = db_fetch_assoc("select * from host_template order by name");
 	
 	$i = 0;
@@ -279,8 +361,8 @@ function template() {
 			<td>
 				<a class="linkEditMain" href="host_templates.php?action=edit&id=<?php print $host_template["id"];?>"><?php print $host_template["name"];?></a>
 			</td>
-			<td align="right">
-				<a href="host_templates.php?action=remove&id=<?php print $host_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host_template["id"];?>' title="<?php print $host_template["name"];?>">
 			</td>
 		</tr>
 	<?php
@@ -288,6 +370,11 @@ function template() {
 	}else{
 		print "<tr><td><em>No Host Templates</em></td></tr>\n";
 	}
-	end_box();	
+	end_box(false);
+	
+	/* draw the dropdown containing a list of available actions for this form */
+	draw_actions_dropdown($host_actions);
+	
+	print "</form>\n";
 }
 ?>

@@ -902,7 +902,7 @@ function draw_navigation_text() {
 		"graph_templates_inputs.php:input_remove" => array("title" => "(Remove)", "mapping" => "index.php:,graph_templates.php:,graph_templates.php:template_edit", "url" => "", "level" => "3"),
 		"host_templates.php:" => array("title" => "Host Templates", "mapping" => "index.php:", "url" => "host_templates.php", "level" => "1"),
 		"host_templates.php:edit" => array("title" => "(Edit)", "mapping" => "host_templates.php:,host_templates.php:", "url" => "", "level" => "2"),
-		"host_templates.php:remove" => array("title" => "(Remove)", "mapping" => "host_templates.php:,host_templates.php:", "url" => "", "level" => "2"),
+		"host_templates.php:actions" => array("title" => "Actions", "mapping" => "index.php:,host_templates.php:", "url" => "", "level" => "2"),
 		"data_templates.php:" => array("title" => "Data Templates", "mapping" => "index.php:", "url" => "data_templates.php", "level" => "1"),
 		"data_templates.php:template_edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_templates.php:", "url" => "", "level" => "2"),
 		"data_templates.php:actions" => array("title" => "Actions", "mapping" => "index.php:,data_templates.php:", "url" => "", "level" => "2"),

@@ -314,6 +314,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 		
 		/* create new entry: graph_templates */
 		$save["id"] = 0;
+		$save["hash"] = get_hash_graph_template(0);
 		$save["name"] = str_replace("<template_title>", $graph_template["name"], $graph_title);
 		
 		$graph_template_id = sql_save($save, "graph_templates");
@@ -420,6 +421,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		
 		/* create new entry: data_template */
 		$save["id"] = 0;
+		$save["hash"] = get_hash_data_template(0);
 		$save["name"] = str_replace("<template_title>", $data_template["name"], $data_source_title);
 		
 		$data_template_id = sql_save($save, "data_template");
@@ -469,11 +471,6 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	/* create new entry(s): data_input_data */
 	if (sizeof($data_input_datas) > 0) {
 	foreach ($data_input_datas as $data_input_data) {
-		$save["data_input_field_id"] = $data_input_data["data_input_field_id"];
-		$save["data_template_data_id"] = $data_template_data_id;
-		$save["t_value"] = $data_input_data["t_value"];
-		$save["value"] = $data_input_data["value"];
-		
 		db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
 			(" . $data_input_data["data_input_field_id"] . ",$data_template_data_id,'" . $data_input_data["t_value"] . 
 			"','" . $data_input_data["value"] . "')");
@@ -483,9 +480,6 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	/* create new entry(s): data_template_data_rra */
 	if (sizeof($data_template_data_rras) > 0) {
 	foreach ($data_template_data_rras as $data_template_data_rra) {
-		$save["data_template_data_id"] = $data_template_data_id;
-		$save["rra_id"] = $data_template_data_rra["rra_id"];
-		
 		db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id,
 			" . $data_template_data_rra["rra_id"] . ")");
 	}
@@ -493,6 +487,45 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	
 	if (!empty($_local_data_id)) {
 		update_data_source_title_cache($local_data_id);	
+	}
+}
+
+function duplicate_host_template($_host_template_id, $host_template_title) {
+	global $config;
+	
+	include($config["include_path"] . "/config_form.php");
+	
+	$host_template = db_fetch_row("select * from host_template where id=$_host_template_id");
+	$host_template_graphs = db_fetch_assoc("select * from host_template_graph where host_template_id=$_host_template_id");
+	$host_template_data_queries = db_fetch_assoc("select * from host_template_snmp_query where host_template_id=$_host_template_id");
+	
+	/* substitute the title variable */
+	$host_template["name"] = str_replace("<template_title>", $host_template["name"], $host_template_title);
+	
+	/* create new entry: host_template */
+	$save["id"] = 0;
+	$save["hash"] = get_hash_host_template(0);
+	
+	while (list($field, $array) = each($fields_host_template_edit)) {
+		if (!ereg("^hidden", $array["method"])) {
+			$save[$field] = $host_template[$field];
+		}
+	}
+	
+	$host_template_id = sql_save($save, "host_template");
+	
+	/* create new entry(s): host_template_graph */
+	if (sizeof($host_template_graphs) > 0) {
+	foreach ($host_template_graphs as $host_template_graph) {
+		db_execute("insert into host_template_graph (host_template_id,graph_template_id) values ($host_template_id," . $host_template_graph["graph_template_id"] . ")");
+	}
+	}
+	
+	/* create new entry(s): host_template_snmp_query */
+	if (sizeof($host_template_data_queries) > 0) {
+	foreach ($host_template_data_queries as $host_template_data_query) {
+		db_execute("insert into host_template_snmp_query (host_template_id,snmp_query_id) values ($host_template_id," . $host_template_data_query["snmp_query_id"] . ")");
+	}
 	}
 }
 
