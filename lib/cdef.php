@@ -23,16 +23,18 @@
 */?>
 <?
 
-$cdef_item_types = array(1 => "Function",
-			      "Operator",
-			      "Data Source",
-			      "Special Data Source",
-			      "Another CDEF",
-			      "Custom String");
+$cdef_item_types = array(1 =>
+	"Function",
+	"Operator",
+	"Data Source",
+	"Special Data Source",
+	"Another CDEF",
+	"Custom String");
 			      
-$custom_data_source_types = array("CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
-				  "ALL_DATA_SOURCES_NODUPS" => "All Data Sources on a Graph (Don't Include Duplicates)",
-				  "ALL_DATA_SOURCES_DUPS" => "All Data Sources on a Graph (Include Duplicates)");
+$custom_data_source_types = array(
+	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
+	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
+	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)");
 		      
 function get_cdef_item_name($cdef_item_id) {
 	include("config_arrays.php");
@@ -58,8 +60,6 @@ function get_cdef($cdef_id) {
 	foreach ($cdef_items as $cdef_item) {
 		if ($i > 0) {
 			$cdef_string .= ",";
-		}else{
-			$cdef_string .= "cdef=";
 		}
 		
 		if ($cdef_item[type] == 5) {
