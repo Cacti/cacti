@@ -29,6 +29,76 @@
 	if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
 switch ($action) {
+	case 'gprint_presets_remove':
+		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+			include_once ('include/top_header.php');
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=$args[gprint_preset_id]") . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", getenv("HTTP_REFERER"), "graph_templates.php?action=gprint_presets_remove&gprint_preset_id=$args[gprint_preset_id]");
+			exit;
+		}
+		
+		gprint_presets_remove();
+		
+		header ("Location: graph_templates.php?action=gprint_presets");
+		break;
+	case 'gprint_presets_save':
+		gprint_presets_save();
+		
+		header ("Location: graph_templates.php?action=gprint_presets");
+		break;
+	case 'gprint_presets_edit':
+		include_once ("include/top_header.php");
+		
+		gprint_presets_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'gprint_presets':
+		include_once ("include/top_header.php");
+		
+		gprint_presets();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'item_presets_item_remove':
+		item_remove(); /* from graph items */
+		
+		header ("Location: graph_templates.php?action=item_presets_edit&graph_template_id=$args[graph_template_id]");
+		break;
+	case 'item_presets_item_save':
+		item_save(); /* from graph items */
+		
+		header ("Location: graph_templates.php?action=item_presets_edit&graph_template_id=$form[graph_template_id]");
+		break;
+	case 'item_presets_item_edit':
+		include_once ("include/top_header.php");
+		
+		item_presets_item_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'item_presets_remove':
+		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+			include_once ('include/top_header.php');
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the item preset <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>?", getenv("HTTP_REFERER"), "graph_templates.php?action=item_presets_remove&graph_template_id=$args[graph_template_id]");
+			exit;
+		}
+		
+		template_remove();
+		
+		header ("Location: graph_templates.php?action=item_presets");
+		break;
+	case 'item_presets_save':
+		item_presets_save();
+		
+		header ("Location: graph_templates.php?action=item_presets");
+		break;
+	case 'item_presets_edit':
+		include_once ("include/top_header.php");
+		
+		item_presets_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
 	case 'item_presets':
 		include_once ("include/top_header.php");
 		
@@ -37,6 +107,12 @@ switch ($action) {
 		include_once ("include/bottom_footer.php");
 		break;
 	case 'template_remove':
+		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+			include_once ('include/top_header.php');
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=$args[graph_template_id]");
+			exit;
+		}
+		
 		template_remove();
 		
 		header ("Location: graph_templates.php");
@@ -106,7 +182,6 @@ switch ($action) {
 		item();
 		
 		include_once ("include/bottom_footer.php");
-		
 		break;
 	case 'template_edit':
 		include_once ("include/top_header.php");
@@ -173,60 +248,8 @@ function draw_tabs() {
 <?	
 }
 
-/* ------------------------------
-    item_presets - Item Presets 
-   ------------------------------ */
-
-function item_presets() {
-	global $colors;
-	
-	start_box("<strong>Graph Template Management</strong>", "", "graph_templates.php?action=template_edit");
-	draw_tabs();
-	
-	print "<tr bgcolor='#$colors[panel]'>";
-		DrawMatrixHeaderItem("Template Title",$colors[panel_text],2);
-	print "</tr>";
-	
-	$template_list = db_fetch_assoc("select 
-		graph_templates.id,graph_templates.name 
-		from graph_templates,graph_templates_graph 
-		where graph_templates.id=graph_templates_graph.graph_template_id 
-		and graph_templates_graph.local_graph_id=0
-		order by graph_templates.name");
-	
-	if (sizeof($template_list) > 0) {
-	foreach ($template_list as $template) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=template_edit&graph_template_id=<?print $template[id];?>"><?print $template[name];?></a>
-			</td>
-			<td width="1%" align="right">
-				<a href="graph_templates.php?action=template_remove&graph_template_id=<?print $template[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-			</td>
-		</tr>
-		<?
-		$i++;
-	}
-	}
-	end_box();	
-}
-
-
-/* -----------------------
-    item - Graph Items 
-   ----------------------- */
-
-function item() {
-	global $args, $colors, $config;
-	
-	if ($config[full_view_graph_template][value] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
-		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
-		end_box();
-	}
-	
-	start_box("Graph Template Item Configuration", "", "graph_templates.php?action=item_edit&graph_template_id=$args[graph_template_id]");
+function draw_graph_items($template_item_list, $action_prefix) {
+	global $colors, $args;
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Graph Item",$colors[header_text],1);
@@ -235,25 +258,6 @@ function item() {
 		DrawMatrixHeaderItem("CF Type",$colors[header_text],1);
 		DrawMatrixHeaderItem("Item Color",$colors[header_text],3);
 	print "</tr>";
-	
-	$template_item_list = db_fetch_assoc("select
-		graph_templates_item.id,
-		graph_templates_item.text_format,
-		graph_templates_item.value,
-		graph_templates_item.hard_return,
-		polling_items.descrip,
-		cdef.name as cdef_name,
-		def_cf.name as consolidation_function_name,
-		def_colors.hex,
-		def_graph_type.name as graph_type_name
-		from graph_templates_item left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-		left join cdef on cdef_id=cdef.id
-		left join def_cf on consolidation_function_id=def_cf.id
-		left join def_colors on color_id=def_colors.id
-		left join def_graph_type on graph_type_id=def_graph_type.id
-		where graph_templates_item.graph_template_id=$args[graph_template_id]
-		and graph_templates_item.local_graph_id=0
-		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
 	
 	$group_counter = 0;
 	if (sizeof($template_item_list) > 0) {
@@ -280,7 +284,7 @@ function item() {
 		
 		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; }			?>
 			<td class="linkEditMain">
-				<a href="graph_templates.php?action=item_edit&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>">Item # <?print ($i+1);?></a>
+				<a href="graph_templates.php?action=<?print $action_prefix;?>_edit&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>">Item # <?print ($i+1);?></a>
 			</td>
 			<?
 			if ($item[descrip] == "") { $item[descrip] = "(No Task)"; }
@@ -338,7 +342,7 @@ function item() {
 				<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item[hex];?><?if ($bold_this_row == true) { print "</strong>"; }?>
 			</td>
 			<td width="1%" align="right">
-				<a href="graph_templates.php?action=item_remove&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graph_templates.php?action=<?print $action_prefix;?>_remove&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
@@ -350,83 +354,11 @@ function item() {
 				<em>No Items</em>
 			</td>
 		</tr><?
-	}
-	
-	end_box();
-	start_box("Graph Template User Input Configuration", "", "graph_templates.php?action=input_edit&graph_template_id=$args[graph_template_id]");
-	
-	print "<tr bgcolor='#$colors[header_panel]'>";
-		DrawMatrixHeaderItem("Name",$colors[header_text],2);
-	print "</tr>";
-	
-	$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=$args[graph_template_id] order by name");
-	
-	if (sizeof($template_item_list) > 0) {
-	foreach ($template_item_list as $item) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-	?>
-			<td class="linkEditMain">
-				<a href="graph_templates.php?action=input_edit&graph_template_input_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><?print $item[name];?></a>
-			</td>
-			<td width="1%" align="right">
-				<a href="graph_templates.php?action=input_remove&graph_template_input_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-			</td>
-		</tr>
-	<?
-	$i++;
-	}
-	}else{
-		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-			<td colspan="2">
-				<em>No Inputs</em>
-			</td>
-		</tr><?
-	}
-	
-	end_box();
+	}	
 }
 
-function item_remove() {
-	global $args;
-	
-	db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
-}
-
-function item_save() {
-	global $form;
-	
-	$save["id"] = $form["graph_template_item_id"];
-	$save["graph_template_id"] = $form["graph_template_id"];
-	$save["local_graph_id"] = 0;
-	$save["task_item_id"] = $form["task_item_id"];
-	$save["color_id"] = $form["color_id"];
-	$save["graph_type_id"] = $form["graph_type_id"];
-	$save["cdef_id"] = $form["cdef_id"];
-	$save["consolidation_function_id"] = $form["consolidation_function_id"];
-	$save["text_format"] = $form["text_format"];
-	$save["value"] = $form["value"];
-	$save["hard_return"] = $form["hard_return"];
-	$save["gprint_opts"] = $form["gprint_opts"];
-	$save["gprint_custom"] = $form["gprint_custom"];
-	$save["custom"] = $form["custom"];
-	$save["sequence"] = $form["sequence"];
-	$save["sequence_parent"] = $form["sequence_parent"];
-	$save["parent"] = $form["parent"];
-	
-	$graph_template_item_id = sql_save($save, "graph_templates_item");
-	
-	include_once ("include/utility_functions.php");
-	update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
-}
-
-function item_edit() {
-	global $args, $config, $colors;
-	
-	if ($config[full_view_graph_template][value] == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
-		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
-		end_box();
-	}
+function draw_item_edit() {
+	global $args, $colors;
 	
 	if (isset($args[graph_template_item_id])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=$args[graph_template_item_id]");
@@ -436,8 +368,6 @@ function item_edit() {
 	
 	/* get current graph name for the header text */
 	$graph_parameters = db_fetch_row("select title,grouping from graph_templates_graph where id=$args[graph_template_id]");
-	
-	start_box("Template Item Configuration", "", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -567,8 +497,359 @@ function item_edit() {
 	DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
 	DrawFormItemHiddenIDField("_parent",$template_item[parent]);
 	DrawFormItemHiddenIDField("_graph_type_id",$template_item[graph_type_id]);
+}
+
+/* -----------------------------------
+    gprint_presets - GPRINT Presets 
+   ----------------------------------- */
+
+function gprint_presets_remove() {
+	global $args;
+	
+	db_execute("delete from graph_templates_gprint where id=$args[gprint_preset_id]");
+}
+
+function gprint_presets_save() {
+	global $form;
+	
+	$save["id"] = $form["gprint_preset_id"];
+	$save["name"] = $form["name"];
+	$save["gprint_text"] = $form["gprint_text"];
+	
+	sql_save($save, "graph_templates_gprint");
+}
+   
+function gprint_presets_edit() {
+	global $colors, $args;
+	
+	if (isset($args[gprint_preset_id])) {
+		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=$args[gprint_preset_id]");
+	}else{
+		unset($gprint_preset);
+	}
+	
+	start_box("<strong>GPRINT Preset Configuration</strong>", "", "");
+	
+	?>
+	<form method="post" action="graph_templates.php">
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Name</font><br>
+			Enter a name for this GPRINT preset, make sure it is something you recognize.
+		</td>
+		<?DrawFormItemTextBox("name",$gprint_preset[name],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">GPRINT Text</font><br>
+			Enter the custom GPRINT string here.
+		</td>
+		<?DrawFormItemTextBox("gprint_text",$gprint_preset[gprint_text],"","50", "40");?>
+	</tr>
+	
+	<?
+	DrawFormItemHiddenIDField("gprint_preset_id",$gprint_preset[id]);
 	?>
 	
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right" background="images/blue_line.gif">
+			<?DrawFormSaveButton("gprint_presets_save", "graph_templates.php?action=gprint_presets");?>
+			</form>
+		</td>
+	</tr>
+	<?
+	end_box();
+}
+   
+function gprint_presets() {
+	global $colors;
+	
+	start_box("<strong>Graph Template Management [GPRINT Presets]</strong>", "", "graph_templates.php?action=gprint_presets_edit");
+	draw_tabs();
+	
+	print "<tr bgcolor='#$colors[panel]'>";
+		DrawMatrixHeaderItem("GPRINT Preset Title",$colors[panel_text],2);
+	print "</tr>";
+	
+	$template_list = db_fetch_assoc("select 
+		graph_templates_gprint.id,
+		graph_templates_gprint.name 
+		from graph_templates_gprint");
+	
+	if (sizeof($template_list) > 0) {
+	foreach ($template_list as $template) {
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
+			?>
+			<td>
+				<a class="linkEditMain" href="graph_templates.php?action=gprint_presets_edit&gprint_preset_id=<?print $template[id];?>"><?print $template[name];?></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="graph_templates.php?action=gprint_presets_remove&gprint_preset_id=<?print $template[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+		<?
+		$i++;
+	}
+	}else{
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+			<td colspan="2">
+				<em>No Items</em>
+			</td>
+		</tr><?
+	}
+	end_box();	
+}
+
+/* -----------------------------------
+    item_presets - Graph Item Presets 
+   ----------------------------------- */
+
+function item_presets() {
+	global $colors;
+	
+	start_box("<strong>Graph Template Management [Graph Item Presets]</strong>", "", "graph_templates.php?action=item_presets_edit");
+	draw_tabs();
+	
+	print "<tr bgcolor='#$colors[panel]'>";
+		DrawMatrixHeaderItem("Item Preset Title",$colors[panel_text],2);
+	print "</tr>";
+	
+	$template_list = db_fetch_assoc("select 
+		graph_templates.id,graph_templates.name 
+		from graph_templates
+		where graph_templates.type='item_preset'");
+	
+	if (sizeof($template_list) > 0) {
+	foreach ($template_list as $template) {
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
+			?>
+			<td>
+				<a class="linkEditMain" href="graph_templates.php?action=item_presets_edit&graph_template_id=<?print $template[id];?>"><?print $template[name];?></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="graph_templates.php?action=item_presets_remove&graph_template_id=<?print $template[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+		<?
+		$i++;
+	}
+	}else{
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+			<td colspan="2">
+				<em>No Items</em>
+			</td>
+		</tr><?
+	}
+	end_box();	
+}
+
+function item_presets_save() {
+	global $form;
+	
+	$save["id"] = $form["graph_template_id"];
+	$save["name"] = $form["name"];
+	$save["type"] = "item_preset";
+	
+	sql_save($save, "graph_templates");
+}
+
+function item_presets_edit() {
+	global $args, $colors;
+	
+	if (isset($args[graph_template_id])) {
+		$item_preset = db_fetch_row("select * from graph_templates where id=$args[graph_template_id]");
+	}else{
+		unset($item_preset);
+	}
+	
+	start_box("<strong>Graph Item Presets Configuration [edit]</strong>", "", "");
+	?>
+	<form method="post" action="graph_templates.php">
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Name</font><br>
+			Enter a name for this GPRINT preset, make sure it is something you recognize.
+		</td>
+		<?DrawFormItemTextBox("name",$item_preset[name],"","50", "40");?>
+	</tr>
+	<?
+	end_box();
+	
+	$template_item_list = db_fetch_assoc("select
+		graph_templates_item.id,
+		graph_templates_item.text_format,
+		graph_templates_item.value,
+		graph_templates_item.hard_return,
+		polling_items.descrip,
+		cdef.name as cdef_name,
+		def_cf.name as consolidation_function_name,
+		def_colors.hex,
+		def_graph_type.name as graph_type_name
+		from graph_templates_item left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
+		left join cdef on cdef_id=cdef.id
+		left join def_cf on consolidation_function_id=def_cf.id
+		left join def_colors on color_id=def_colors.id
+		left join def_graph_type on graph_type_id=def_graph_type.id
+		where graph_templates_item.graph_template_id=$args[graph_template_id]
+		and graph_templates_item.local_graph_id=0
+		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
+	
+	start_box("<strong>Graph Item Presets Configuration</strong>", "", "graph_templates.php?action=item_presets_item_edit&graph_template_id=$args[graph_template_id]");
+	draw_graph_items($template_item_list, "item_presets_item");
+	end_box();
+	
+	DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
+	
+	start_box("", "", "");
+	?>
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("item_presets_save", "graph_templates.php?action=item_presets");?>
+		</td>
+	</tr>
+	</form>
+	<?
+	end_box();
+}
+
+function item_presets_item_edit() {
+	global $args, $config, $colors;
+	
+	start_box("<strong>Graph Item Presets Configuration [edit]</strong>", "", "");
+	draw_item_edit();
+	end_box();
+	
+	start_box("", "", "");
+	?>
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("item_presets_item_save", "graph_templates.php?action=item_presets_edit&graph_template_id=$args[graph_template_id]");?>
+		</td>
+	</tr>
+	</form>
+	<?
+	end_box();
+}
+
+
+/* -----------------------
+    item - Graph Items 
+   ----------------------- */
+
+function item() {
+	global $args, $colors, $config;
+	
+	if ($config[full_view_graph_template][value] == "") {
+		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
+		end_box();
+	}
+	
+	$template_item_list = db_fetch_assoc("select
+		graph_templates_item.id,
+		graph_templates_item.text_format,
+		graph_templates_item.value,
+		graph_templates_item.hard_return,
+		polling_items.descrip,
+		cdef.name as cdef_name,
+		def_cf.name as consolidation_function_name,
+		def_colors.hex,
+		def_graph_type.name as graph_type_name
+		from graph_templates_item left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
+		left join cdef on cdef_id=cdef.id
+		left join def_cf on consolidation_function_id=def_cf.id
+		left join def_colors on color_id=def_colors.id
+		left join def_graph_type on graph_type_id=def_graph_type.id
+		where graph_templates_item.graph_template_id=$args[graph_template_id]
+		and graph_templates_item.local_graph_id=0
+		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
+	
+	start_box("Graph Template Item Configuration", "", "graph_templates.php?action=item_edit&graph_template_id=$args[graph_template_id]");
+	draw_graph_items($template_item_list, "item");
+	end_box();
+	
+	start_box("Graph Template User Input Configuration", "", "graph_templates.php?action=input_edit&graph_template_id=$args[graph_template_id]");
+	
+	print "<tr bgcolor='#$colors[header_panel]'>";
+		DrawMatrixHeaderItem("Name",$colors[header_text],2);
+	print "</tr>";
+	
+	$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=$args[graph_template_id] order by name");
+	
+	if (sizeof($template_item_list) > 0) {
+	foreach ($template_item_list as $item) {
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
+	?>
+			<td class="linkEditMain">
+				<a href="graph_templates.php?action=input_edit&graph_template_input_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><?print $item[name];?></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="graph_templates.php?action=input_remove&graph_template_input_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+	<?
+	$i++;
+	}
+	}else{
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+			<td colspan="2">
+				<em>No Inputs</em>
+			</td>
+		</tr><?
+	}
+	
+	end_box();
+}
+
+function item_remove() {
+	global $args;
+	
+	db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
+}
+
+function item_save() {
+	global $form;
+	
+	$save["id"] = $form["graph_template_item_id"];
+	$save["graph_template_id"] = $form["graph_template_id"];
+	$save["local_graph_id"] = 0;
+	$save["task_item_id"] = $form["task_item_id"];
+	$save["color_id"] = $form["color_id"];
+	$save["graph_type_id"] = $form["graph_type_id"];
+	$save["cdef_id"] = $form["cdef_id"];
+	$save["consolidation_function_id"] = $form["consolidation_function_id"];
+	$save["text_format"] = $form["text_format"];
+	$save["value"] = $form["value"];
+	$save["hard_return"] = $form["hard_return"];
+	$save["gprint_opts"] = $form["gprint_opts"];
+	$save["gprint_custom"] = $form["gprint_custom"];
+	$save["custom"] = $form["custom"];
+	$save["sequence"] = $form["sequence"];
+	$save["sequence_parent"] = $form["sequence_parent"];
+	$save["parent"] = $form["parent"];
+	
+	$graph_template_item_id = sql_save($save, "graph_templates_item");
+	
+	include_once ("include/utility_functions.php");
+	update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
+}
+
+function item_edit() {
+	global $args, $config, $colors;
+	
+	if ($config[full_view_graph_template][value] == "") {
+		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
+		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
+		end_box();
+	}
+	
+	start_box("Template Item Configuration", "", "");
+	draw_item_edit();
+	
+	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("item_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
@@ -576,6 +857,7 @@ function item_edit() {
 		</td>
 	</tr>
 	<?
+	
 	end_box();
 }
 
@@ -585,12 +867,6 @@ function item_edit() {
 
 function template_remove() {
 	global $args, $config;
-	
-	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
-		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=$args[graph_template_id]");
-		exit;
-	}
 	
 	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
 		db_execute("delete from graph_templates where id=$args[graph_template_id]");
@@ -631,6 +907,7 @@ function template_save() {
 	$save["id"] = $form["graph_template_graph_id"];
 	$save["local_graph_template_graph_id"] = 0;
 	$save["local_graph_id"] = 0;
+	$save["type"] = "template";
 	$save["graph_template_id"] = $graph_template_id;
 	$save["t_image_format_id"] = $form["t_image_format_id"];
 	$save["image_format_id"] = $form["image_format_id"];
@@ -880,10 +1157,8 @@ function template() {
 	
 	$template_list = db_fetch_assoc("select 
 		graph_templates.id,graph_templates.name 
-		from graph_templates,graph_templates_graph 
-		where graph_templates.id=graph_templates_graph.graph_template_id 
-		and graph_templates_graph.local_graph_id=0
-		order by graph_templates.name");
+		from graph_templates
+		where graph_templates.type='template'");
        
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
