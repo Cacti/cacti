@@ -375,15 +375,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	/* basic graph options */
 	$graph_opts .= 
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL . 
-		"--start='$graph_start'" . RRD_NL .
-		"--title='" . $graph["title"] . "'" . RRD_NL .
+		"--start=$graph_start" . RRD_NL .
+		"--title=\"" . $graph["title"] . "\"" . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .
 		"--height=$graph_height" . RRD_NL .
 		"--width=$graph_width" . RRD_NL .
 		"$scale" .
 		"$graph_legend" .
-		"--vertical-label='" . $graph["vertical_label"] . "'" . RRD_NL;
+		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
     	
 	$i = 0;
     	if (sizeof($graph_items > 0)) {
