@@ -133,8 +133,6 @@ if ($config["cacti_server_os"] == "unix") {
 	}else{
 		$input["path_snmpwalk"]["default"] = "/usr/local/bin/snmpwalk";
 	}
-}elseif ($config["cacti_server_os"] == "win32") {
-	$input["path_snmpwalk"]["default"] = "c:/net-snmp/bin/snmpwalk.exe";
 }
 
 /* snmpget Binary Path */
@@ -150,8 +148,6 @@ if ($config["cacti_server_os"] == "unix") {
 	}else{
 		$input["path_snmpget"]["default"] = "/usr/local/bin/snmpget";
 	}
-}elseif ($config["cacti_server_os"] == "win32") {
-	$input["path_snmpget"]["default"] = "c:/net-snmp/bin/snmpget.exe";
 }
 
 /* log file path */
