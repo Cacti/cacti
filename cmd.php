@@ -63,7 +63,7 @@ foreach ($polling_items as $item) {
 	case '2': /* multi output script */
 		$command = $item["command"];
 		$output = `$command`;
-		print "MUTLI command: $command, output: $output\n";
+		print "MULTI command: $command, output: $output\n";
 		
 		$output_array = split(" ", $output);
 		
