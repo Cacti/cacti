@@ -1,0 +1,26 @@
+<tree name="HBG000">
+	<branch name="Servers">
+		<branch name="DNS01">
+			<graph id="01">
+			<graph id="02">
+			<graph id="03">
+		</branch>
+		<branch name="DNS02">
+			<graph id="04">
+			<graph id="05">
+			<graph id="06">
+		</branch>
+		<branch name="DNS03">
+			<graph id="07">
+			<graph id="08">
+			<graph id="09">
+		</branch>
+	</branch>
+</tree>
+<tree name="HBG001">
+	<branch name="Servers">
+		<branch name="DNS04">
+		</branch>
+	</branch>
+</tree>
+
