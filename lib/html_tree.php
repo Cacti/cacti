@@ -302,8 +302,7 @@ function grow_dhtml_trees() {
 			graph_tree_items.title,
 			graph_tree_items.order_key,
 			graph_tree_items.host_id,
-			host.description as hostname,
-			user_auth_perms.user_id
+			host.description as hostname
 			from graph_tree_items
 			left join host on host.id=graph_tree_items.host_id
 			$sql_join
