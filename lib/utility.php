@@ -26,7 +26,6 @@
 
 function repopulate_poller_cache() {
 	db_execute("truncate table poller_item");
-	db_execute("truncate table poller_field");
 
 	$poller_data = db_fetch_assoc("select id from data_local");
 
@@ -57,7 +56,6 @@ function update_poller_cache($local_data_id) {
 
 	/* clear cache for this local_data_id */
 	db_execute("delete from poller_item where local_data_id=$local_data_id");
-	db_execute("delete from poller_field where local_data_id=$local_data_id");
 
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -81,21 +79,6 @@ function update_poller_cache($local_data_id) {
 	}
 
 	if ($data_input["active"] == "on") {
-		/* update the field cache (fcache) */
-		$names = db_fetch_assoc("select
-			data_template_rrd.data_source_name,
-			data_input_fields.data_name
-			from data_template_rrd,data_input_fields
-			where data_template_rrd.data_input_field_id=data_input_fields.id
-			and data_template_rrd.local_data_id=$local_data_id");
-
-		if (sizeof($names) > 0) {
-			foreach ($names as $name) {
-				db_execute("insert into poller_field (local_data_id,data_input_field_name,rrd_data_source_name)
-					values ($local_data_id,'" . $name["data_name"] . "','" . $name["data_source_name"] . "')");
-			}
-		}
-
 		switch ($data_input["type_id"]) {
 		case DATA_INPUT_TYPE_SCRIPT: /* script */
 			$num_output_fields = sizeof(db_fetch_assoc("select id from data_input_fields where data_input_id=" . $data_input["id"] . " and input_output='out' and update_rra='on'"));
@@ -273,9 +256,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 }
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
-	global $config;
-
-	include($config["include_path"] . "/config_form.php");
+	global $struct_graph, $struct_graph_item;
 
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
@@ -316,6 +297,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	$save["graph_template_id"] = (!empty($_local_graph_id) ? $graph_template_graph["graph_template_id"] : $graph_template_id);
 	$save["title_cache"] = $graph_template_graph["title_cache"];
 
+	reset($struct_graph);
 	while (list($field, $array) = each($struct_graph)) {
 		$save{$field} = $graph_template_graph{$field};
 		$save{"t_" . $field} = $graph_template_graph{"t_" . $field};
@@ -375,9 +357,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 }
 
 function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
-	global $config;
-
-	include($config["include_path"] . "/config_form.php");
+	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {
 		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");
@@ -477,9 +457,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 }
 
 function duplicate_host_template($_host_template_id, $host_template_title) {
-	global $config;
-
-	include($config["include_path"] . "/config_form.php");
+	global $fields_host_template_edit;
 
 	$host_template = db_fetch_row("select * from host_template where id=$_host_template_id");
 	$host_template_graphs = db_fetch_assoc("select * from host_template_graph where host_template_id=$_host_template_id");
@@ -492,6 +470,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	$save["id"] = 0;
 	$save["hash"] = get_hash_host_template(0);
 
+	reset($fields_host_template_edit);
 	while (list($field, $array) = each($fields_host_template_edit)) {
 		if (!ereg("^hidden", $array["method"])) {
 			$save[$field] = $host_template[$field];

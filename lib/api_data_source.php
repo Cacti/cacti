@@ -35,7 +35,6 @@ function api_data_source_remove($local_data_id) {
 	db_execute("delete from data_template_data where local_data_id=$local_data_id");
 	db_execute("delete from data_template_rrd where local_data_id=$local_data_id");
 	db_execute("delete from poller_item where local_data_id=$local_data_id");
-	db_execute("delete from poller_field where local_data_id=$local_data_id");
 	db_execute("delete from data_local where id=$local_data_id");
 }
 
