@@ -263,21 +263,6 @@ case 'list':
 				<td width='1'>
 					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 				</td>
-				<td width='1'>";
-					form_dropdown("rra_id", db_fetch_assoc("select id,name,(rra.rows*rra.steps) as rra_order from rra order by rra_order,name"), "name", "id", "1", "", "");
-	print "			</td>
-				<td>
-					<input type='image' src='images/button_view.gif' alt='View'>
-				</td>
-			</tr>
-		</table><br><br>\n
-	<input type='hidden' name='page' value='1'>
-	<input type='hidden' name='style' value='selective'>\n
-	<input type='hidden' name='action' value='preview'>\n
-	</form>\n";
-	print "	</table>
-		<table align='center' width='98%'>
-			<tr>
 				<td>
 					<input type='image' src='images/button_view.gif' alt='View'>
 				</td>
