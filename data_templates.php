@@ -275,7 +275,6 @@ function template_save() {
 	$save["local_data_template_data_id"] = 0;
 	$save["local_data_id"] = 0;
 	$save["data_template_id"] = $data_template_id;
-	$save["host_id"] = $form["host_id"];
 	$save["data_input_id"] = $form["data_input_id"];
 	$save["name"] = $form["name"];
 	$save["data_source_path"] = $form["data_source_path"];
@@ -300,6 +299,7 @@ function template_save() {
 	$save["rrd_heartbeat"] = $form["rrd_heartbeat"];
 	$save["t_data_source_type_id"] = $form["t_data_source_type_id"];
 	$save["data_source_type_id"] = $form["data_source_type_id"];
+	$save["t_data_source_name"] = $form["t_data_source_name"];
 	$save["data_source_name"] = $form["data_source_name"];
 	$save["script_output_argument"] = $form["script_output_argument"];
 	
@@ -437,7 +437,7 @@ function template_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Internal Data Source Name</font><br>
-			Choose unique name to represent this piece of data inside of the rrd file.
+			<?DrawStrippedFormItemCheckBox("t_data_source_name",$template_rrd[t_data_source_name],"Use Per-Graph Value (Ignore this Value)","",false);?>
 		</td>
 		<?DrawFormItemTextBox("data_source_name",$template_rrd[data_source_name],"","19", "40");?>
 	</tr>
