@@ -132,7 +132,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	$graph_template_graph_id = sql_save($save, "graph_templates_graph");
 	
 	/* import into: graph_templates_item */
-	if (sizeof($xml_array["items"]) > 0) {
+	if (is_array($xml_array["items"])) {
 		while (list($item_hash, $item_array) = each($xml_array["items"])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
@@ -166,7 +166,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	}
 	
 	/* import into: graph_template_input */
-	if (sizeof($xml_array["inputs"]) > 0) {
+	if (is_array($xml_array["inputs"])) {
 		while (list($item_hash, $item_array) = each($xml_array["inputs"])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
@@ -274,7 +274,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 	}
 	
 	/* import into: data_template_rrd */
-	if (sizeof($xml_array["items"]) > 0) {
+	if (is_array($xml_array["items"])) {
 		while (list($item_hash, $item_array) = each($xml_array["items"])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
@@ -313,7 +313,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 	}
 	
 	/* import into: data_input_data */
-	if (sizeof($xml_array["data"]) > 0) {
+	if (is_array($xml_array["data"])) {
 		while (list($item_hash, $item_array) = each($xml_array["data"])) {
 			unset($save);
 			$save["data_template_data_id"] = $data_template_data_id;
@@ -358,7 +358,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	$hash_cache["data_query"][$hash] = $data_query_id;
 	
 	/* import into: snmp_query_field */
-	if (sizeof($xml_array["fields"]) > 0) {
+	if (is_array($xml_array["fields"])) {
 		while (list($item_hash, $item_array) = each($xml_array["fields"])) {
 			unset($save);
 			$save["snmp_query_id"] = $data_query_id;
@@ -370,7 +370,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	}
 	
 	/* import into: snmp_query_graph */
-	if (sizeof($xml_array["graphs"]) > 0) {
+	if (is_array($xml_array["graphs"])) {
 		while (list($item_hash, $item_array) = each($xml_array["graphs"])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
@@ -402,7 +402,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			$hash_cache["data_query_graph"]{$parsed_hash["hash"]} = $data_query_graph_id;
 			
 			/* import into: snmp_query_graph_rrd */
-			if (sizeof($item_array["rrd"]) > 0) {
+			if (is_array($item_array["rrd"])) {
 				while (list($sub_item_hash, $sub_item_array) = each($item_array["rrd"])) {
 					unset($save);
 					$save["snmp_query_graph_id"] = $data_query_graph_id;
@@ -415,7 +415,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			}
 			
 			/* import into: snmp_query_graph_sv */
-			if (sizeof($item_array["sv_graph"]) > 0) {
+			if (is_array($item_array["sv_graph"])) {
 				while (list($sub_item_hash, $sub_item_array) = each($item_array["sv_graph"])) {
 					/* parse information from the hash */
 					$parsed_hash = parse_xml_hash($sub_item_hash);
@@ -439,7 +439,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			}
 			
 			/* import into: snmp_query_graph_rrd_sv */
-			if (sizeof($item_array["sv_data_source"]) > 0) {
+			if (is_array($item_array["sv_data_source"])) {
 				while (list($sub_item_hash, $sub_item_array) = each($item_array["sv_data_source"])) {
 					/* parse information from the hash */
 					$parsed_hash = parse_xml_hash($sub_item_hash);
@@ -621,7 +621,7 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	$hash_cache["cdef"][$hash] = $cdef_id;
 	
 	/* import into: cdef_items */
-	if (sizeof($xml_array["items"]) > 0) {
+	if (is_array($xml_array["items"])) {
 		while (list($item_hash, $item_array) = each($xml_array["items"])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
@@ -681,7 +681,7 @@ function &xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	$hash_cache["data_input_method"][$hash] = $data_input_id;
 	
 	/* import into: data_input_fields */
-	if (sizeof($xml_array["fields"]) > 0) {
+	if (is_array($xml_array["fields"])) {
 		while (list($item_hash, $item_array) = each($xml_array["fields"])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
