@@ -239,7 +239,12 @@ function form_save() {
 			/* loop through each item affected and update column data */
 			if (sizeof($item_list) > 0) {
 			foreach ($item_list as $item) {
-				db_execute("update graph_templates_item set " . $input["column_name"] . "='" . $_POST{$input["column_name"] . "_" . $input["id"]} . "' where id=" . $item["id"]);
+				/* if we are changing templates, the POST vars we are searching for here will not exist.
+				this is because the db and form are out of sync here, but it is ok to just skip over saving
+				the inputs in this case. */
+				if (isset($_POST{$input["column_name"] . "_" . $input["id"]})) {
+					db_execute("update graph_templates_item set " . $input["column_name"] . "='" . $_POST{$input["column_name"] . "_" . $input["id"]} . "' where id=" . $item["id"]);
+				}
 			}
 			}
 		}
