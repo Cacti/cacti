@@ -107,6 +107,19 @@ $image_types = array(1 =>
 	"PNG",
 	"GIF");
 
+$snmp_versions = array(1 =>
+	"Version 1",
+	"Version 2",
+	"Version 3");
+
+$registered_cacti_names = array(
+	"path_cacti");
+
+$graph_views = array(1 =>
+	"Tree View",
+	"List View",
+	"Preview View");
+
 $struct_graph = array(
 	"title" => array(
 		"title" => "Title",
@@ -434,11 +447,4 @@ $struct_data_source_item = array(
 	"data_source_name",
 	"FORCE:data_input_field_id");*/
 
-$snmp_versions = array(1 =>
-	"Version 1",
-	"Version 2",
-	"Version 3");
-
-$registered_cacti_names = array(
-	"path_cacti");
 ?>
