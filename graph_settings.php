@@ -24,7 +24,6 @@
  +-------------------------------------------------------------------------+
 */
  
-include ('include/auth.php');
 include ("include/config_settings.php");
 include ("include/config_arrays.php");
 include_once ("include/form.php");
@@ -72,6 +71,13 @@ function form_save() {
 
 function settings() {
 	global $colors, $tabs_graphs, $settings_graphs, $current_user, $graph_views;
+	
+	/* you cannot have per-user graph settings if cacti's user management is not turned on */
+	if (read_config_option("global_auth") == "") {
+		raise_message(6);
+		display_output_messages();
+		return;
+	}
 	
 	print "<form method='post' action='graph_settings.php'>\n";
 	
