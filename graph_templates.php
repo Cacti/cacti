@@ -799,7 +799,8 @@ function template() {
 	
 	$template_list = db_fetch_assoc("select 
 		graph_templates.id,graph_templates.name 
-		from graph_templates");
+		from graph_templates
+		order by name");
 	
 	$i = 0;
 	if (sizeof($template_list) > 0) {
