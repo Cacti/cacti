@@ -1,0 +1,9 @@
+#include <pthread.h>
+#include <signal.h>
+#include <time.h>
+#include <sys/time.h>
+#include "ucd-snmp-config.h"
+#include "ucd-snmp-includes.h"
+#include <mysql.h>
+#include <rrd.h>
+#include "global.h"
