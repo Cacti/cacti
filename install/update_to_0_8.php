@@ -123,7 +123,7 @@ function update_database($database_old, $database_username, $database_password) 
 	if (sizeof($_src) > 0) {
 	foreach ($_src as $item) {
 		if (db_execute("insert into $database_default.data_input (id,name,input_string,output_string,type_id) values (0,
-			'" . $item["Name"] . "','" . $item["FormatStrIn"] . "','" . $item["FormatStrOut"] . "',
+			'" . $item["Name"] . "','" . addslashes($item["FormatStrIn"]) . "','" . addslashes($item["FormatStrOut"]) . "',
 			1)")) {
 			$data_input_cache{$item["ID"]} = db_fetch_insert_id();
 			
