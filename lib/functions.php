@@ -357,6 +357,16 @@ function clean_up_name($string) {
 	return $string;
 }
 
+function get_data_source_title($local_data_id) {
+	$data = db_fetch_row("select
+		data_local.host_id,data_template_data.name
+		from data_template_data,data_local
+		where data_template_data.local_data_id=data_local.id
+		and data_local.id=$local_data_id");
+	
+	return expand_title($data["host_id"], $data["name"]);
+}
+
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row("select
 		graph_local.host_id,graph_templates_graph.title
