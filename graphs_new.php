@@ -530,8 +530,16 @@ function graphs() {
 	</form>
 	<form name="chk" method="post" action="graphs_new.php">
 	<?php
+	$total_rows = sizeof(db_fetch_assoc("select graph_template_id from host_graph where host_id=" . $_REQUEST["host_id"]));
 	
-	if (sizeof(db_fetch_assoc("select graph_template_id from host_graph where host_id=" . $_REQUEST["host_id"])) > 0) {
+	if ($total_rows > 0) {
+		/* we give users the option to turn off the javascript features for data queries with lots of rows */
+		if (read_config_option("max_data_query_javascript_rows") >= $total_rows) {
+			$use_javascript = true;
+		}else{
+			$use_javascript = false;
+		}
+		
 		start_box("<strong>Host Template</strong> [" . (empty($host["host_template_id"]) ? "None" : db_fetch_cell("select name from host_template where id=" . $host["host_template_id"])) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
@@ -547,43 +555,44 @@ function graphs() {
 			and host_graph.host_id=" . $_REQUEST["host_id"] . "
 			order by graph_templates.name");
 		
-		$i = 0;
-		
 		$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_graph where graph_local.graph_template_id=host_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
 		
-		print "<script type='text/javascript'>\n<!--\n";
-		print "var gt_created_graphs = new Array(";
-		
-		if (sizeof($template_graphs) > 0) {
+		if ((sizeof($template_graphs) > 0) && ($use_javascript == true)) {
+			print "<script type='text/javascript'>\n<!--\n";
+			print "var gt_created_graphs = new Array(";
+			
 			$cg_ctr = 0;
 			foreach ($template_graphs as $template_graph) {
 				print (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'"; 
 				
 				$cg_ctr++;
 			}
+			
+			print ")\n";
+			print "//-->\n</script>\n";
 		}
 		
-		print ")\n";
-		print "//-->\n</script>\n";
-		
 		/* create a row for each graph template associated with the host template */
+		$i = 0;
 		if (sizeof($graph_templates) > 0) {
 		foreach ($graph_templates as $graph_template) {
 			$query_row = $graph_template["graph_template_id"];
 			
 			print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 			
-			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'><span id='gt_text$query_row" . "_0'>
+			print "		<td" . (($use_javascript == true) ? " onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'" : "") . "><span id='gt_text$query_row" . "_0'>
 						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
 					</td>
 					<td align='right'>
-						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onClick='gt_update_selection_indicators();'>
+						<input type='checkbox' name='cg_$query_row' id='cg_$query_row'" . (($use_javascript == true) ? " onClick='gt_update_selection_indicators();'" : "") . ">
 					</td>
 				</tr>";
 		}
 		}
 		
-		print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
+		if ($use_javascript == true) {
+			print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
+		}
 		
 		end_box();
 	}
