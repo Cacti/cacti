@@ -51,7 +51,7 @@ function ss_host_cpu($hostname, $snmp_community, $snmp_version, $cmd, $arg1, $ar
 }
 
 function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_port, $snmp_timeout) {
-	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", $snmp_port, $snmp_timeout));
+	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", $snmp_port, $snmp_timeout, SNMP_POLLER));
 	$return_arr = array();
 
 	$j = 0;
@@ -67,7 +67,7 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 }
 
 function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_port, $snmp_timeout) {
-	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", $snmp_port, $snmp_timeout));
+	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", $snmp_port, $snmp_timeout, SNMP_POLLER));
 	$return_arr = array();
 
 	$j = 0;
