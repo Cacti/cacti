@@ -122,6 +122,11 @@ $snmp_versions = array(1 =>
 	"Version 2",
 	"Version 3");
 
+$logfile_options = array(1 =>
+        "Logfile Only",
+        "Logfile and Syslog/Eventlog",
+        "Syslog/Eventlog Only");
+
 $registered_cacti_names = array(
 	"path_cacti");
 
