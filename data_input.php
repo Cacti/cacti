@@ -231,7 +231,7 @@ function field_edit() {
 	}
 	
 	/* if there are no input fields to choose from, complain */
-	if ((!isset($array_field_names)) && ($_GET["type"] == "in")) {
+	if ((!isset($array_field_names)) && (isset($_GET["type"]) ? $_GET["type"] == "in" : false) && ($data_input["type_id"] == "1")) {
 		print "<span class='textError'>This script appears to have no input values, therefore there is nothing to add.</span>";
 		return;
 	}
@@ -251,7 +251,7 @@ function field_edit() {
 			</td>
 			<?php form_dropdown("data_name",$array_field_names,"","",(isset($field) ? $field["data_name"] : ""),"","");?>
 		</tr><?php
-	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($_GET["type"] == "out")) { /* snmp */
+	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($_GET["type"] == "out")) { /* snmp */
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field Name [<?php print $header_name;?>]</font><br>
@@ -329,8 +329,6 @@ function field_edit() {
    ----------------------- */
 
 function data_remove() {
-	global $config;
-	
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
 		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "data_input.php?action=remove&id=" . $_GET["id"]);
