@@ -136,6 +136,10 @@ function update_database($database_old, $database_username, $database_password) 
 				}
 			}
 			}
+			
+			/* generate sequences in the db */
+			generate_data_input_field_sequences($item["FormatStrIn"], $data_input_cache{$item["ID"]}, "in");
+			generate_data_input_field_sequences($item["FormatStrOut"], $data_input_cache{$item["ID"]}, "out");
 		}else{
 			$status_array{count($status_array)}["data_input"][0] = $item["Name"];
 		}
