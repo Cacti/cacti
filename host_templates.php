@@ -345,11 +345,7 @@ function template() {
 
 	html_start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 
-	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td class='textSubHeaderDark'>Template Title</td>
-			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>
-		<form name='chk' method='post' action='host_templates.php'>
-		</tr>";
+	html_header_checkbox(array("Template Title"));
 
 	$host_templates = db_fetch_assoc("select * from host_template order by name");
 

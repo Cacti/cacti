@@ -921,36 +921,31 @@ function graph() {
 			</td>
 		</tr>\n";
 
-	print "	$nav
-		<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td class='textSubHeaderDark'>Graph Title</td>
-			<td class='textSubHeaderDark'>Template Name</td>
-			<td class='textSubHeaderDark'>Size</td>
-			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>
-		<form name='chk' method='post' action='graphs.php'>
-		</tr>";
+	print $nav;
+
+	html_header_checkbox(array("Graph Title", "Template Name", "Size"));
 
 	$i = 0;
 	if (sizeof($graph_list) > 0) {
-	foreach ($graph_list as $graph) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph")));?></a>
-			</td>
-			<td>
-				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
-			</td>
-			<td>
-				<?php print $graph["height"];?>x<?php print $graph["width"];?>
-			</td>
-			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $graph["local_graph_id"];?>' title="<?php print $graph["title_cache"];?>">
-			</td>
-		</tr>
-	<?php
-	$i++;
-	}
+		foreach ($graph_list as $graph) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				?>
+				<td>
+					<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph")));?></a>
+				</td>
+				<td>
+					<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
+				</td>
+				<td>
+					<?php print $graph["height"];?>x<?php print $graph["width"];?>
+				</td>
+				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $graph["local_graph_id"];?>' title="<?php print $graph["title_cache"];?>">
+				</td>
+			</tr>
+			<?php
+		}
+
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{

@@ -338,8 +338,8 @@ function form_actions() {
 				db_execute("delete from data_input_data where " . array_to_sql_or($selected_dsid_items, "data_template_data_id"));
 				db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "local_data_id"));
 				db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id"));
-				db_execute("delete from data_input_data_cache where " . array_to_sql_or($selected_items, "local_data_id"));
-				db_execute("delete from data_input_data_fcache where " . array_to_sql_or($selected_items, "local_data_id"));
+				db_execute("delete from poller_item where " . array_to_sql_or($selected_items, "local_data_id"));
+				db_execute("delete from poller_field where " . array_to_sql_or($selected_items, "local_data_id"));
 				db_execute("delete from data_local where " . array_to_sql_or($selected_items, "id"));
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -899,49 +899,9 @@ function ds() {
 	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
 
 	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_REQUEST["host_id"]);
-	?>
 
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_id">
-		<td>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td width="100">
-						Select a host:&nbsp;
-					</td>
-					<td width="1">
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?host_id=-1&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
-							<option value="data_sources.php?host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
-							<?php
-							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
+	include("./include/html/inc_data_source_filter_table.php");
 
-							if (sizeof($hosts) > 0) {
-							foreach ($hosts as $host) {
-								print "<option value='data_sources.php?host_id=" . $host["id"] . "&page=1'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
-							}
-							}
-							?>
-
-						</select>
-					</td>
-					<td width="30"></td>
-					<td width="60">
-						Search:&nbsp;
-					</td>
-					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
-					</td>
-					<td>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-					</td>
-				</tr>
-			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
-		</form>
-	</tr>
-	<?php
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
@@ -1012,39 +972,34 @@ function ds() {
 			</td>
 		</tr>\n";
 
-	print "	$nav
-		<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td class='textSubHeaderDark'>Name</td>
-			<td class='textSubHeaderDark'>Data Input Method</td>
-			<td class='textSubHeaderDark'>Active</td>
-			<td class='textSubHeaderDark'>Template Name</td>
-			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>
-		<form name='chk' method='post' action='data_sources.php'>
-		</tr>\n";
+	print $nav;
+
+	html_header_checkbox(array("Name", "Data Input Method", "Active", "Template Name"));
 
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
-	foreach ($data_sources as $data_source) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-			?>
-			<td>
-				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source")));?></a>
-			</td>
-			<td>
-				<?php print $data_source["data_input_name"];?>
-			</td>
-			<td>
-				<?php print (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>");?>
-			</td>
-			<td>
-				<?php print ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);?>
-			</td>
-			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name_cache"];?>">
-			</td>
-		</tr>
-		<?php
-	}
+		foreach ($data_sources as $data_source) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				?>
+				<td>
+					<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source")));?></a>
+				</td>
+				<td>
+					<?php print $data_source["data_input_name"];?>
+				</td>
+				<td>
+					<?php print (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>");?>
+				</td>
+				<td>
+					<?php print ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);?>
+				</td>
+				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name_cache"];?>">
+				</td>
+			</tr>
+			<?php
+		}
+
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
