@@ -552,10 +552,10 @@ function update_database($database_old, $database_username, $database_password) 
 	}
 	}
 	
-	db_execute("truncate table $database_default.cdef");
-	db_execute("truncate table $database_default.cdef_items");
+	db_execute("delete from $database_default.cdef where id != 4 and id != 14 and id != 3 and id != 12 and id != 2");
+	db_execute("delete from $database_default.cdef_items where cdef_id != 4 and cdef_id != 14 and cdef_id != 3 and cdef_id != 12 and cdef_id != 2");
 	
-	$_cdef = db_fetch_assoc("select * from $database_old.rrd_ds_cdef");
+	$_cdef = db_fetch_assoc("select * from $database_old.rrd_ds_cdef where id != 2 and id != 3 and id != 4 and id != 7");
 	
 	if (sizeof($_cdef) > 0) {
 	foreach ($_cdef as $item) {
