@@ -364,11 +364,6 @@ function grow_dhtml_trees() {
 							group by snmp_query.id
 							order by snmp_query.name");
 
-						array_push($data_queries, array(
-							"id" => "0",
-							"name" => "(Non Indexed)"
-							));
-
 						if (sizeof($data_queries) > 0) {
 						foreach ($data_queries as $data_query) {
 							print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
@@ -444,10 +439,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$host_group_data_name = "<strong>Graph Template:</strong> " . db_fetch_cell("select name from graph_templates where id=" . $host_group_data_array[1]);
 		$graph_template_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == "data_query") {
-		$host_group_data_name = "<strong>Data Query:</strong> " . (empty($host_group_data_array[1]) ? "(Non Indexed)" : db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]));
+		$host_group_data_name = "<strong>Data Query:</strong> " . db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]);
 		$data_query_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == "data_query_index") {
-		$host_group_data_name = "<strong>Data Query:</strong> " . (empty($host_group_data_array[1]) ? "(Non Indexed) " : db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1])) . "-> " . (empty($host_group_data_array[2]) ? "Unknown Index" : get_formatted_data_query_index($leaf["host_id"], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = "<strong>Data Query:</strong> " . db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]) . "-> " . get_formatted_data_query_index($leaf["host_id"], $host_group_data_array[1], $host_group_data_array[2]);
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
@@ -460,7 +455,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print "<table width='98%' align='center' cellpadding='3'>";
 
 	/* include time span selector */
-	if (read_graph_config_option("timestamp_sel") == "on") {
+	if (read_graph_config_option("timespan_sel") == "on") {
 		html_graph_start_box(3, false);
 		include("./include/html/inc_timespan_selector.php");
 		html_graph_end_box();

@@ -172,7 +172,7 @@ case 'preview':
 	html_graph_end_box();
 
 	/* include time span selector */
-	if (read_graph_config_option("timestamp_sel") == "on") {
+	if (read_graph_config_option("timespan_sel") == "on") {
 		html_graph_start_box(3, true);
 		include("./include/html/inc_timespan_selector.php");
 		html_graph_end_box();

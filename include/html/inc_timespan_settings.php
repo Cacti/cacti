@@ -31,7 +31,7 @@ $timespan = array();
 initialize_timespan($timespan);
 
 /* if the user does not want to see timespan selectors */
-if (read_graph_config_option("timestamp_sel") == "") {
+if (read_graph_config_option("timespan_sel") == "") {
 	set_preset_timespan($timespan);
 /* the user does want to see them */
 }else {
@@ -143,7 +143,7 @@ function set_preset_timespan(&$timespan) {
    $end_min = date("i",$timespan["end_now"]);
    $end_sec = 00;
 
-	if ((!isset($_SESSION["sess_current_timespan"])) || (read_graph_config_option("timestamp_sel") == "")) {
+	if ((!isset($_SESSION["sess_current_timespan"])) || (read_graph_config_option("timespan_sel") == "")) {
 		$_SESSION["sess_current_timespan"] = read_graph_config_option("default_timespan");
 	}
 
