@@ -1,5 +1,51 @@
 raXnet - cacti
 
+0.8
+-feature: Added support for graph, data source, and host templates.
+-feature: Added a stricter concept of hosts which enables better 
+organization and easier graph creation.
+-feature: Created data queries which enable the retrieval of indexable 
+data in the form of a query.
+-feature: Revised the entire UI creating more functional and attractive 
+forms.
+-feature: New generic poller interface enables other pollers to handle 
+the data gathering for Cacti.
+-feature: Added support for net-snmp 5.x.
+-docs: Revised the install documentation and re-wrote the manual for this 
+version.
+-feature: The beginnings of a threaded c-based poller (cactid), which is 
+not completely function at this point.
+-feature: And much much more...
+
+0.6.8a
+-bug: Unchecked string being passed to rrdtool caused a potential security 
+problem.
+-bug: The logout funtionality was broken for some users because of a 
+missing fourth argument.
+-bug: Fixed some SNMP parsing problems.
+-bug: Fixed a problem with using quotes for data source input.
+
+0.6.8
+-feature: Added the following new rrdtool graph options: --units-exponent 
+value, --unit, and --logarithmic.
+-feature: Added the ability to show exact numbers in GPRINT, users can now 
+specify a custom GPRINT string on a per-graph item basis.
+-bug: Any data input source with more than one output would be added as a 
+multi-data source .rrd file.
+-bug: Some data source file name issues.
+-bug: Cacti now checks to see if a host exists when adding it to be graphed.
+-feature: There is now an optional "remove verification" for most of 
+cacti's dialogs.
+-feature: There is a "logout" button when viewing graphs (not for the 
+guest user).
+-docs: Updated the Win32 docs (thanks Larry).
+-bug: Fixed some rare HTML "multipart/form" bugs with PHP.
+-feature: Added a "Default View Mode" for each user when viewing graphs.
+-bug: Fixed some bugs where you would change a parent graph item to a child 
+or a child graph item to a parent when graph grouping was turned on.
+-bug: Fixed some potential security bugs by eliminating cacti's use of 
+cookies.
+
 0.6.7
 -feature: Added a "none" option for a data source when creating a CDEF.
 This can be used if you check the "Use the current data source being 
