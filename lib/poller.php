@@ -113,12 +113,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 			/* the uptime backwards method requires snmp, so make sure snmp is actually enabled
 			 * on this device first */
 			if ($host["snmp_community"] != "") {
-				$assert_value = db_fetch_cell("select assert_value from poller_reindex where host_id=$host_id and data_query_id=$data_query_id and arg1='.1.3.6.1.2.1.1.3.0'");
-
-				/* default uptime */
-				if (empty($assert_value)) {
-					$assert_value = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"]);
-				}
+				$assert_value = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"]);
 
 				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'<','$assert_value','.1.3.6.1.2.1.1.3.0')");
 			}
