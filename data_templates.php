@@ -561,7 +561,8 @@ function template() {
 		from data_template,data_template_data
 		left join data_input on data_template_data.data_input_id = data_input.id
 		where data_template.id = data_template_data.data_template_id
-		order by data_template.name;");
+		and data_template_data.local_data_id = 0
+		order by data_template.name");
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
