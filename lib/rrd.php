@@ -763,7 +763,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
-							$cdef_total_ds .= generate_graph_def_name($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) . ",";
+							$def_name = generate_graph_def_name($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]);
+							$cdef_total_ds .= "$def_name,UN,0,$def_name,IF,"; /* convert unknowns to '0' first */
 							$item_count++;
 						}
 					}
