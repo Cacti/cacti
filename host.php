@@ -24,6 +24,8 @@
 <?
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 
+$row_counter = 0;
+
 include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
@@ -70,11 +72,16 @@ function form_save() {
 	if (isset($_POST["save_component_host"])) {
 		host_save();
 		return "host.php";
+	}elseif (isset($_POST["save_component_new_graphs"])) {
+		host_new_graphs_save();
+		return "host.php?action=edit&id=" . $_POST["host_id"];
 	}
+	
+	
 }
 
 /* ---------------------
-    CDEF Functions
+    Host Functions
    --------------------- */
 
 function host_remove() {
@@ -89,6 +96,29 @@ function host_remove() {
 	
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from host where id=" . $_GET["id"]);
+	}
+}
+
+function host_new_graphs_save() {
+	global $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item;
+	
+	include_once ("include/utility_functions.php");
+	
+	$selected_graphs = unserialize($_POST["host_selected_graphs"]);
+	
+	for ($i=0; ($i < count($selected_graphs)); $i++) {
+		$graph_template = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $selected_graphs[$i] . " and local_graph_id = 0");
+		
+		$save["id"] = 0;
+		$save["graph_template_id"] = $selected_graphs[$i];
+		
+		$local_graph_id = sql_save($save, "graph_local");
+		//unset($save);
+		change_graph_template($local_graph_id, $selected_graphs[$i], true);
+		//$save["id"] = $graph_list["id"];
+		//$save["local_graph_template_graph_id"] = $template_graph_list["id"];
+		//$save["local_graph_id"] = $local_graph_id;
+		//$save["graph_template_id"] = $graph_template_id;
 	}
 }
 
@@ -122,7 +152,7 @@ function host_save() {
 	
 	if (isset($selected_graphs)) {
 		$_SESSION["sess_host_selected_graphs"] = serialize($selected_graphs);
-		header("Location: host.php?action=new_graphs&host_template_id=" . $_POST["host_template_id"]);
+		header("Location: host.php?action=new_graphs&host_template_id=" . $_POST["host_template_id"] . "&host_id=$host_id");
 		exit;
 	}
 	
@@ -135,40 +165,8 @@ function host_save() {
 	}
 }
 
-function draw_templated_row($array_struct, $field_name, $previous_value) {
-	global $colors;
-	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-	
-	print "<td width='50%'><font class='textEditTitle'>" . $array_struct["title"] . "</font><br>\n";
-	print $array_struct["description"];
-	print "</td>\n";
-	
-	switch ($array_struct["type"]) {
-	case 'text':
-		DrawFormItemTextBox($field_name,$previous_value,$array_struct["default"],$array_struct["text_maxlen"], $array_struct["text_size"]);
-		break;
-	case 'drop_array':
-		DrawFormItemDropdownFromSQL($field_name,${$array_struct["array_name"]},"","",$previous_value,"",$array_struct["default"]);
-		break;
-	case 'check':
-		DrawFormItemCheckBox($field_name,$previous_value,$array_struct["check_caption"],$array_struct["default"]);
-		break;
-	case 'radio':
-		print "<td>";
-		
-		while (list($radio_index, $radio_array) = each($array_struct["items"])) {
-			DrawStrippedFormItemRadioButton($field_name, $previous_value, $radio_array["radio_value"], $radio_array["radio_caption"],$array_struct["default"],true);
-		}
-		
-		print "</td>";
-	}
-	
-	print "</tr>\n";
-}
-
 function host_new_graphs() {
-	global $colors, $struct_graph, $struct_data_source;
+	global $colors, $row_counter, $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item;
 	
 	$selected_graphs = unserialize($_SESSION["sess_host_selected_graphs"]);
 	
@@ -191,33 +189,136 @@ function host_new_graphs() {
 			from graph_templates, graph_templates_graph
 			where graph_templates.id=graph_templates_graph.graph_template_id
 			and graph_templates.id=" . $selected_graphs[$i]);
+		$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $selected_graphs[$i]);
 		
-		start_box("<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", "98%", $colors["header"], "3", "center", "");
+		$graph_inputs = db_fetch_assoc("select
+			*
+			from graph_template_input
+			where graph_template_id=" . $selected_graphs[$i] . "
+			and column_name != 'task_item_id'
+			order by name");
+		
+		print "<form method='post' action='host.php'>\n";
+		
+		/* DRAW: Graphs */
+		start_box("", "98%", $colors["header"], "3", "center", "");
 		
 		reset($struct_graph);
+		$drew_items = false;
 		
 		while (list($field_name, $field_array) = each($struct_graph)) {
 			if ($graph_template{"t_" . $field_name} == "on") {
-				draw_templated_row($field_array, $field_name, $graph_template[$field_name]);
+				if ($drew_items == false) {
+					print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]</td></tr>";
+				}
+				
+				draw_templated_row($field_array, "g_" . $field_name, $graph_template[$field_name]);
+				$row_counter = 0; $drew_items = true;
 			}
 		}
 		
+		/* DRAW: Graphs Inputs */
+		if (sizeof($graph_inputs) > 0) {
+		foreach ($graph_inputs as $graph_input) {
+			if ($drew_items == false) {
+				print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Graph Items</strong> [Template: " . $graph_template_name . "]</td></tr>";
+			}
+			
+			$current_value = db_fetch_cell("select 
+				graph_templates_item." . $graph_input["column_name"] . "
+				from graph_templates_item,graph_template_input_defs 
+				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id 
+				and graph_template_input_defs.graph_template_input_id=" . $graph_input["id"] . "
+				and graph_templates_item.graph_template_id=" . $selected_graphs[$i] . "
+				limit 0,1");
+			
+			$field_name = $item["column_name"];
+			
+			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0);
+			
+			print "	<td width='50%'>
+					<font class='textEditTitle'>" . $graph_input["name"] . "</font>";
+					if (!empty($graph_input["description"])) { print "<br>" . $graph_input["description"]; }
+			print "	</td>\n";
+			
+			draw_nontemplated_item($struct_graph_item{$graph_input["column_name"]}, "gi_" . $field_name, $current_value);
+			
+			print "</tr>\n";
+			
+			$row_counter = 0; $drew_items = true;
+		}
+		}
+		
+		if (($drew_items == false) && (sizeof($graph_inputs) == 0)) {
+			print "<tr><td><em>No Input Needed</em></td></tr>";
+		}
+		
+		/* DRAW: Data Sources */
 		if (sizeof($data_templates) > 0) {
 		foreach ($data_templates as $data_template) {
-			print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</td></tr>";
-			
 			reset($struct_data_source);
+			$drew_items = false;
 			
 			while (list($field_name, $field_array) = each($struct_data_source)) {
 				if ($data_template{"t_" . $field_name} == "on") {
-					draw_templated_row($field_array, $field_name, $data_template[$field_name]);
+					if ($drew_items == false) {
+						print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</td></tr>";
+					}
+					
+					draw_templated_row($field_array, "d_" . $field_name, $data_template[$field_name]);
+					$row_counter = 0; $drew_items = true;
 				}
+			}
+			
+			/* DRAW: Data Source Items */
+			$data_template_items = db_fetch_assoc("select
+				data_template_rrd.*
+				from data_template_rrd
+				where data_template_rrd.data_template_id=" . $data_template["data_template_id"] . "
+				and local_data_id=0");
+			
+			if (sizeof($data_template_items) > 0) {
+			foreach ($data_template_items as $data_template_item) {
+				reset($struct_data_source_item);
+				$row_counter = 0;
+				
+				while (list($field_name, $field_array) = each($struct_data_source_item)) {
+					if ($data_template_item{"t_" . $field_name} == "on") {
+						if ($drew_items == false) {
+							print "<tr><td colspan='2' bgcolor='#" . $colors["header"] . "' class='textHeaderDark'><strong>Data Source Item</strong> - " . $data_template_item["data_source_name"] . " - [Template: " . $data_template["data_template_name"] . "]</td></tr>";
+						}
+						
+						draw_templated_row($field_array, "di_" . $field_name, $data_template_item[$field_name]);
+						$row_counter = 0; $drew_items = true;
+					}
+				}
+			}
+			}
+			
+			if ($drew_items = false) {
+				print "<tr><td><em>No Input Needed</em></td></tr>";
 			}
 		}
 		}
 		
 		end_box();
 	}
+	
+	DrawFormItemHiddenIDField("host_template_id",$_GET["host_template_id"]);
+	DrawFormItemHiddenIDField("host_id",$_GET["host_id"]);
+	DrawFormItemHiddenTextBox("save_component_new_graphs","1","");
+	print "<input type='hidden' name='host_selected_graphs' value='" . $_SESSION["sess_host_selected_graphs"] . "'>\n";
+	
+	start_box("", "98%", $colors["header"], "3", "center", "");
+	?>
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "host.php?action=edit&id=" . $_GET["host_id"]);?>
+		</td>
+	</tr>
+	</form>
+	<?
+	end_box();
 }
 
 function host_edit() {
