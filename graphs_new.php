@@ -118,8 +118,6 @@ function host_reload_query() {
    ------------------- */
 
 function host_new_graphs_save() {
-	global $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item, $paths;
-	
 	$selected_graphs_array = unserialize(stripslashes($_POST["selected_graphs_array"]));
 	
 	/* form an array that contains all of the data on the previous form */
@@ -168,6 +166,8 @@ function host_new_graphs_save() {
 		}
 	}
 	
+	debug_log_clear("new_graphs");
+	
 	while (list($form_type, $form_array) = each($selected_graphs_array)) {
 		$current_form_type = $form_type;
 		
@@ -180,7 +180,7 @@ function host_new_graphs_save() {
 					$snmp_index_array = $form_array3;
 					
 					$snmp_query_array["snmp_query_id"] = $form_id1;
-					$snmp_query_array["snmp_index_on"] = $_POST{"sg_" . $form_id1};
+					$snmp_query_array["snmp_index_on"] = get_best_data_query_index_type($_POST["host_id"], $form_id1);
 					$snmp_query_array["snmp_query_graph_id"] = $form_id2;
 				}
 				
@@ -189,11 +189,15 @@ function host_new_graphs_save() {
 			
 			if ($current_form_type == "cg") {
 				$return_array = create_complete_graph_from_template($graph_template_id, $_POST["host_id"], "", $values["cg"]);
+				
+				debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 			}elseif ($current_form_type == "sg") {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
 					$snmp_query_array["snmp_index"] = decode_data_query_index($snmp_index, $snmp_query_array["snmp_query_id"], $_POST["host_id"]); 
 					
 					$return_array = create_complete_graph_from_template($graph_template_id, $_POST["host_id"], $snmp_query_array, $values["sg"]{$snmp_query_array["snmp_query_id"]});
+					
+					debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 				}
 			}
 		}
@@ -204,19 +208,25 @@ function host_new_graphs_save() {
 }
 
 function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
-	include_once("./include/top_header.php");
+	global $colors;
 	
-	global $colors, $paths, $struct_graph, $row_counter, $struct_data_source, $struct_graph_item, $struct_data_source_item;
+	/* we use object buffering on this page to allow redirection to another page if no
+	fields are actually drawn */
+	ob_start();
+	
+	include_once("./include/top_header.php");
 	
 	print "<form method='post' action='graphs_new.php'>\n";
 	
 	$snmp_query_id = 0;
+	$num_output_fields = array();
+	
 	while (list($form_type, $form_array) = each($selected_graphs_array)) {
 		while (list($form_id1, $form_array2) = each($form_array)) {
 			if ($form_type == "cg") {
 				$graph_template_id = $form_id1;
 				
-				start_box("<strong>Create 1 Graph from Graph Template", "98%", $colors["header"], "3", "center", "");
+				start_box("<strong>Create Graph from '" . db_fetch_cell("select name from graph_templates where id=$graph_template_id") . "'", "98%", $colors["header"], "3", "center", "");
 			}elseif ($form_type == "sg") {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					$snmp_query_id = $form_id1;
@@ -230,77 +240,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						where snmp_query.id=$snmp_query_id");
 					
 					$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=$snmp_query_graph_id");
-					
-					/* list each index that was selected */
-					$i = 0;
-					while (list($snmp_index, $one) = each($form_array3)) {
-						$snmp_indexes[$snmp_query_id][$i] = decode_data_query_index($snmp_index, $snmp_query_id, $host_id); 
-						
-						$i++;
-					}
 				}
 				
 				/* DRAW: Data Query */
-				start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from Data Query", "98%", $colors["header"], "3", "center", "");
-				
-				print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Query</strong> [" . $snmp_query["name"] . "]</span></td></tr>";
-				
-				$fields = db_fetch_assoc("select
-					data_template.id as data_template_id,
-					data_template.name,
-					data_input_fields.name as field_name,
-					data_input_fields.id as data_input_field_id
-					from snmp_query_field,data_input_fields,data_template,snmp_query_graph,snmp_query_graph_rrd
-					where snmp_query_field.data_input_field_id=data_input_fields.id
-					and snmp_query_field.snmp_query_id=snmp_query_graph.snmp_query_id
-					and snmp_query_graph.id=snmp_query_graph_rrd.snmp_query_graph_id
-					and snmp_query_graph_rrd.data_template_id=data_template.id
-					and snmp_query_field.snmp_query_id=$snmp_query_id
-					and snmp_query_graph_rrd.snmp_query_graph_id=$snmp_query_graph_id
-					and snmp_query_field.action_id=1
-					group by snmp_query_graph_rrd.data_template_id");
-				
-				if (sizeof($fields) > 0) {
-				foreach ($fields as $field) {
-					print "	<tr bgcolor='#" . $colors["form_alternate1"] . "'>
-							<td width='50%'>
-								<font class='textEditTitle'>" . $field["name"] . " -> " . $field["field_name"] . "</font><br>
-								The data for each new graph will be indexed off of the following field. Certain fields may
-								have been removed from the list if they do not contain unique data. It is best to choose a field whose
-								value never changes.
-							</td>";
-					
-					$snmp_queries = get_data_query_array($snmp_query_id);
-					
-					$xml_outputs = array();
-					
-					/* create an SQL string that contains each index in this snmp_index_id */
-					$sql_or = array_to_sql_or($snmp_indexes[$snmp_query_id], "snmp_index");
-					
-					/* list each of the input fields for this snmp query */
-					while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
-						if ($field_array["direction"] == "input") {
-							/* create a list of all values for this index */
-							$field_values = db_fetch_assoc("select field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and field_name='$field_name' and $sql_or");
-							
-							/* aggregate the above list so there is no duplicates */
-							$aggregate_field_values = array_rekey($field_values, "field_value", "field_value");
-							
-							/* fields that contain duplicate or empty values are not suitable to index off of */
-							if (!((sizeof($aggregate_field_values) < sizeof($field_values)) || (in_array("", $aggregate_field_values) == true) || (sizeof($aggregate_field_values) == 0))) {
-								$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";
-							}
-						}
-					}
-					
-					print "<td>";
-					form_dropdown("sg_" . $snmp_query_id,$xml_outputs,"","","","","");
-					print "</td>";
-					
-					print "</tr>\n";
-				}
-				}else{ print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td colspan='2' style='font-weight: bold; color: red;'>There appears to be a problem with your data query. Please make sure you have made at least one data template association.</td></tr>";
-				}
+				start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from '" . db_fetch_cell("select name from snmp_query where id=$snmp_query_id") . "'", "98%", $colors["header"], "3", "center", "");
 			}
 			
 			$data_templates = db_fetch_assoc("select
@@ -326,13 +269,13 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				and graph_templates_graph.local_graph_id=0");
 			$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $graph_template_id);
 			
-			draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
-			draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]", false);
+			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]", false));
 			
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
 				
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
@@ -340,8 +283,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					where data_template_rrd.data_template_id=" . $data_template["data_template_id"] . "
 					and local_data_id=0");
 				
-				draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
-				draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, $snmp_query_id);
+				array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, $snmp_query_id));
 			}
 			}
 			
@@ -349,12 +292,32 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 		}
 	}
 	
-	form_hidden_id("host_template_id",$host_template_id);
-	form_hidden_id("host_id",$host_id);
-	form_hidden_box("save_component_new_graphs","1","");
+	/* no fields were actually drawn on the form; just save without prompting the user */
+	if (array_sum($num_output_fields) == 0) {
+		ob_clean();
+		
+		/* since the user didn't actually click "Create" to POST the data; we have to
+		pretend like they did here */
+		$_POST["host_template_id"] = $host_template_id;
+		$_POST["host_id"] = $host_id;
+		$_POST["save_component_new_graphs"] = "1";
+		$_POST["selected_graphs_array"] = serialize($selected_graphs_array);
+		
+		host_new_graphs_save();
+		
+		header("Location: graphs_new.php?host_id=" . $_POST["host_id"]);
+		exit;
+	}
+	
+	/* flush the current output buffer to the browser */
+	ob_flush();
+	
+	form_hidden_id("host_template_id", $host_template_id);
+	form_hidden_id("host_id", $host_id);
+	form_hidden_box("save_component_new_graphs", "1", "");
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
 	
-	form_save_button("graphs_new.php?id=$host_id");
+	form_save_button("graphs_new.php?host_id=$host_id");
 	
 	include_once("./include/bottom_footer.php");
 }
@@ -376,7 +339,23 @@ function graphs() {
 	
 	$host = db_fetch_row("select id,description,hostname,host_template_id from host where id=" . $_REQUEST["host_id"]);
 	
+	$debug_log = debug_log_return("new_graphs");
+	
+	if (!empty($debug_log)) {
+		debug_log_clear("new_graphs");
+		?>
+		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
+			<tr bgcolor="<?php print $colors["light"];?>">
+				<td style="padding: 3px; font-family: monospace;">
+					<?php print $debug_log;?>
+				</td>
+			</tr>
+		</table>
+		<br>
+		<?php
+	}
 	?>
+	
 	<form name="form_graph_id">
 	<table width="98%" align="center">
 		<tr>
@@ -516,7 +495,6 @@ function graphs() {
 		unset($total_rows);
 		
 		$xml_array = get_data_query_array($snmp_query["id"]);
-		$xml_outputs = array();
 		
 		$num_input_fields = 0;
 		$num_visible_fields = 0;
