@@ -79,6 +79,14 @@ function html_graph_end_box() {
 	print "</table>";
 }
 
+/* html_graph_area - draws an area the contains full sized graphs
+   @arg $graph_array - the array to contains graph information. for each graph in the
+     array, the following two keys must exist
+     $arr[0]["local_graph_id"] // graph id
+     $arr[0]["title_cache"] // graph title
+   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
+   @arg $extra_url_args - extra arguments to append to the url
+   @arg $header - html to use as a header */
 function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
 	$i = 0;
 	if (sizeof($graph_array) > 0) {
@@ -100,6 +108,14 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 	}
 }
 
+/* html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
+   @arg $graph_array - the array to contains graph information. for each graph in the
+     array, the following two keys must exist
+     $arr[0]["local_graph_id"] // graph id
+     $arr[0]["title_cache"] // graph title
+   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
+   @arg $extra_url_args - extra arguments to append to the url
+   @arg $header - html to use as a header */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
 	$i = 0; $k = 0;
 	if (sizeof($graph_array) > 0) {
