@@ -61,7 +61,7 @@ switch ($action) {
     	case 'remove':
 		tree_remove();	
 		
-		header ("Location: tree");
+		header ("Location: tree.php");
 		break;
 	case 'edit':
 		include_once ("include/top_header.php");
