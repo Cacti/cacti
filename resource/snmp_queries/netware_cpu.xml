@@ -1,0 +1,56 @@
+<interface>
+	<name>Get Netware Processor Information</name>
+	<oid_index>.1.3.6.1.4.1.23.2.27.3.16.1 </oid_index>
+	
+	<fields>
+		<nwhrProcessorIndex>
+			<name>Index</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.1</oid>
+		</nwhrProcessorIndex>
+		<nwhrProcessorNum>
+			<name>Number</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.2</oid>
+		</nwhrProcessorNum>
+		<nwhrProcessorStatus>
+			<name>Status</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.3</oid>
+		</nwhrProcessorStatus>
+		<nwhrProcessorUtilization>
+			<name>Utilization</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.4</oid>
+		</nwhrProcessorUtilization>
+		<nwhrProcessorInterrupts>
+			<name>Interrupts</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.5</oid>
+		</nwhrProcessorInterrupts>
+		<nwhrProcessorIntTime>
+			<name>Interrupt Time</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.6</oid>
+		</nwhrProcessorIntTime>
+		<nwhrProcessorThreads>
+			<name>Threads</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.23.2.27.3.16.1.7</oid>
+		</nwhrProcessorThreads>
+	</fields>
+</interface>
