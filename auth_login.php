@@ -45,12 +45,12 @@ case 'login':
 
 			if ($ldap_response) {
 				$ldap_auth = true;
-				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and full_name='ldap user'")) == 0) {
+				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1")) == 0) {
 					/* get information about the template user */
-					$template_user = db_fetch_row("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, '' as password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = '" . read_config_option("ldap_template") . "'");
+					$template_user = db_fetch_row("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, '' as password , 1 as realm, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = '" . read_config_option("ldap_template") . "'");
 
 					/* write out that information to the new ldap user */
-					db_execute("INSERT INTO user_auth (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
+					db_execute("INSERT INTO user_auth (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["realm"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
 					$ldap_new = true;
 
 					/* get the newly created user_id */
@@ -100,9 +100,9 @@ case 'login':
 	/* --- end ldap section --- */
 
 	if ($ldap_auth) {
-                $user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and full_name = 'ldap user'");
+                $user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1");
 	} else {
-		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "' and full_name!='ldap user'");
+		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "' and realm = 0");
 	}
 	
 	if (sizeof($user)) {
