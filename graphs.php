@@ -179,7 +179,7 @@ function form_save() {
 			if ($graph_templates_graph_id) {
 				raise_message(1);
 				
-				/* if template information chanegd, update all nessesary template information */
+				/* if template information chanegd, update all necessary template information */
 				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
 					if ((!empty($_POST["graph_template_id"])) && (!empty($_POST["local_graph_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
