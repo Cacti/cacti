@@ -304,7 +304,7 @@ function form_save_button($cancel_url) {
 		</tr>
 	</table>
 	</form>
-	<?
+	<?php
 }
 
 /* ------------------ Stripped Form Objects Data ---------------------- */
