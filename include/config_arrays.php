@@ -212,11 +212,11 @@ $menu = array(
 		"templates_export.php" => "Export Templates"
 		),
 	"Configuration"  => array(
-		"settings.php" => "Settings",
-		"utilities.php" => "Diagnostics"
+		"settings.php" => "Settings"
 		),
 	"Utilities" => array(
 		"user_admin.php" => "User Management",
+		"utilities.php" => "System Utilities",
 		"logout.php" => "Logout User"
 	));
 
