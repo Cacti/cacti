@@ -312,6 +312,7 @@ function GetLastItem($dbid,$tblname,$field,$startid,$lmt_field,$lmt_val) {
 function GetSequence($id, $field, $table_name, $gid, $gid_value) {
     if ($id=="0") {
 		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $gid=$gid_value");
+		
 		if ($data[seq] == "") {
 		    return 1;
 		}else{
