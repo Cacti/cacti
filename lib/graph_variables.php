@@ -123,7 +123,7 @@ $ninety_fifth_cache = array();
      varies depending on the RRA in use
    @returns - a string containg the 95th percentile suitable for placing on the graph */
 function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $seconds_between_graph_updates) {
-	global $ninety_fifth_cache;
+	global $ninety_fifth_cache, $graph_item_types;
 	
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
@@ -198,7 +198,7 @@ $summation_cache = array();
    @arg $ds_step - how many seconds each period represents
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $seconds_between_graph_updates, $rra_step, $ds_step) {
-	global $summation_cache;
+	global $summation_cache, $graph_item_types;
 	
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
