@@ -283,6 +283,18 @@ function UpdateCacti($old_version, $new_version) {
 	    
 	    db_execute("ALTER TABLE rrd_graph_tree ADD order_key VARCHAR(60) NOT NULL AFTER ID, ADD graph_id bigint NOT NULL, ADD INDEX (order_key)");
 	    db_execute("ALTER TABLE rrd_graph DROP COLUMN order_key, DROP INDEX(order_key);");
+	    
+	    ##  Added 06-07-2002 at 13:37
+	    db_execute("INSERT INTO settings VALUES ('use_polling_zones', 'off', 'Use Polling
+						     Zones', 'If you want to do distributed polling you can set up \'polling zones\'
+						     which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'internal')");
+
+	    db_execute("CREATE TABLE polling_zones (
+					pz_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					zone_name VARCHAR(100) NOT NULL
+					);");
+	    
+	    db_execute("INSERT INTO polling_zones (pz_id, zone_name) VALUES ('0', 'Default Polling Zone');");
 	}
     
     return 0;

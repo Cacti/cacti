@@ -647,6 +647,17 @@ INSERT INTO menu_items VALUES (14, 2, 'CDEF\'s', 'cdef.php', 3, 1, '', 'images/m
 INSERT INTO menu_items VALUES (1, 1, 'Graphs', 'graphs.php', 5, 1, '', 'images/menu_item_graphs.gif', 1);
 # --------------------------------------------------------
 
+#
+# Table structure for table 'polling_zones'
+#
+CREATE TABLE polling_zones (				  
+  pz_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  zone_name VARCHAR(100) NOT NULL
+) TYPE=MyISAM;
+ 
+INSERT INTO polling_zones (pz_id, zone_name) VALUES ('0', 'Default Polling Zone');
+
+
 
 #
 # Table structure for table 'polling_tree'
@@ -983,6 +994,9 @@ INSERT INTO settings VALUES ('path_html_export', '', 'HTML Export Path', 'If you
 INSERT INTO settings VALUES ('guest_user', 'guest', 'Guest User', 'The name of the guest user for viewing graphs; is "guest" by default.', 'textbox');
 INSERT INTO settings VALUES ('path_html_export_skip', '1', 'Export Every x Times', 'If you don\'t want cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.', 'textbox');
 INSERT INTO settings VALUES ('path_html_export_ctr', '', '', '', 'internal');
+INSERT INTO settings VALUES ('use_polling_zones', 'off', 'Use Polling 
+Zones', 'If you want to do distributed polling you can set up \'polling zones\' 
+which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'internal');
 # --------------------------------------------------------
 
 #
