@@ -700,7 +700,7 @@ function ds_edit() {
 		
 		start_box("<strong>Supplimental Data Template Data</strong>", "98%", $colors["header"], "3", "center", "");
 		
-		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], &$data, "|field|", "<strong>Data Source Fields</strong>", true, true, 0);
+		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], $data, "|field|", "<strong>Data Source Fields</strong>", true, true, 0);
 		draw_nontemplated_fields_data_source_item($data["data_template_id"], $template_data_rrds, "|field|_|id|", "<strong>Data Source Item Fields</strong>", true, true, true, 0);
 		draw_nontemplated_fields_custom_data($data["id"], "value_|id|", "<strong>Custom Data</strong>", true, true, 0);
 		
@@ -708,7 +708,7 @@ function ds_edit() {
 		
 		end_box();
 	}
-	//reset($struct_data_source);reset($struct_data_source_item);
+	
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($data["data_template_id"]))) {
 		start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 		
