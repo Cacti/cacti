@@ -185,7 +185,11 @@ function rrdtool_function_update($update_cache_array) {
 			$i++;
 		}
 		
-		if (read_config_option("log_update") == "on") { $log_data = true; }
+		if (read_config_option("log_update") == "on") {
+			$log_data = true;
+		}else{
+			$log_data = false;
+		}
 		
 		/* if we have "invalid data", give rrdtool an Unknown (U) */
 		if (empty($rrd_update_values)) {
