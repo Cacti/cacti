@@ -530,7 +530,7 @@ $settings_graphs = array(
 			"friendly_name" => "Display Timestamp Selector",
 			"description" => "Choose if you want the timestamp selection box to be displayed.",
 			"method" => "checkbox",
-			"default" => ""
+			"default" => "on"
 		),
 		"page_refresh" => array(
 			"friendly_name" => "Page Refresh",
