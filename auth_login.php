@@ -1,27 +1,28 @@
-<?/* 
-+-------------------------------------------------------------------------+
-| Copyright (C) 2002 Ian Berry                                            |
-|                                                                         |
-| This program is free software; you can redistribute it and/or           |
-| modify it under the terms of the GNU General Public License             |
-| as published by the Free Software Foundation; either version 2          |
-| of the License, or (at your option) any later version.                  |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-+-------------------------------------------------------------------------+
-| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-+-------------------------------------------------------------------------+
-| This code is currently maintained and debugged by Ian Berry, any        |
-| questions or comments regarding this code should be directed to:        |
-| - iberry@raxnet.net                                                     |
-+-------------------------------------------------------------------------+
-| - raXnet - http://www.raxnet.net/                                       |
-+-------------------------------------------------------------------------+
-*/?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
 
 switch ($_REQUEST["action"]) {
 case 'login':
@@ -156,19 +157,19 @@ case 'login':
 
 <!-- apparently IIS 5/4 have a bug (Q176113) where setting a cookie and calling the header via
 'Location' does not work. This seems to fix the bug for me at least... -->
-<form name="login" method="post" action="<?print $_SERVER["SCRIPT_NAME"];?>">
+<form name="login" method="post" action="<?php print $_SERVER["SCRIPT_NAME"];?>">
 
 <table align="center">
 	<tr>
 		<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
 	</tr>
-	<?
+	<?php
 	if ($_POST["action"] == "login") {?>
 	<tr height="10"><td></td></tr>
 	<tr>
 		<td colspan="2"><font color="#FF0000"><strong>Invalid User Name/Password Please Retype:</strong></font></td>
 	</tr>
-	<?}?>
+	<?php }?>
 	<tr height="10"><td></td></tr>
 	<tr>
 		<td colspan="2">Please enter your cacti user name and password below:</td>

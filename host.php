@@ -1,27 +1,29 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 
 $row_counter = 0;
@@ -89,7 +91,7 @@ function host_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . db_fetch_cell("select description from host where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "host.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . db_fetch_cell("select description from host where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "host.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -447,7 +449,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						}
 					}
 					
-					DrawFormItemDropdownFromSQL("sg_" . $snmp_query_id . "_" . $field["data_template_id"] . "_" . $field["data_input_field_id"],$xml_outputs,"","","","","");
+					form_dropdown("sg_" . $snmp_query_id . "_" . $field["data_template_id"] . "_" . $field["data_input_field_id"],$xml_outputs,"","","","","");
 					
 					print "</tr>\n";
 				}
@@ -527,7 +529,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				
 				$field_name = $item["column_name"];
 				
-				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0);
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0);
 				
 				print "	<td width='50%'>
 						<font class='textEditTitle'>" . $graph_input["name"] . "</font>";
@@ -602,25 +604,20 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 		}
 	}
 	
-	DrawFormItemHiddenIDField("host_template_id",$host_template_id);
-	DrawFormItemHiddenIDField("host_id",$host_id);
-	DrawFormItemHiddenTextBox("save_component_new_graphs","1","");
+	form_hidden_id("host_template_id",$host_template_id);
+	form_hidden_id("host_id",$host_id);
+	form_hidden_box("save_component_new_graphs","1","");
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
-	
-	if (isset($snmp_queries["suggested_values"][0]["ds_draffic_in"][0]["name"])) {
-		print "INNN";
-	}
-	
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "host.php?action=edit&id=$host_id");?>
+			<?php form_save_button("save", "host.php?action=edit&id=$host_id");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 	
 	include_once ("include/bottom_footer.php");
@@ -644,73 +641,73 @@ function host_edit() {
 	?>
 	<form method="post" action="host.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Description</font><br>
 			Give this host a meaningful description.
 		</td>
-		<?DrawFormItemTextBox("description",$host["description"],"","250", "40");?>
+		<?php form_text_box("description",$host["description"],"","250", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Host Template</font><br>
 			Choose what type of host, host template this is. The host template will govern what kinds
 			of data should be gathered from this type of host.
 		</td>
-		<?DrawFormItemDropdownFromSQL("host_template_id",db_fetch_assoc("select id,name from host_template"),"name","id",$host["host_template_id"],"None","1");?>
+		<?php form_dropdown("host_template_id",db_fetch_assoc("select id,name from host_template"),"name","id",$host["host_template_id"],"None","1");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Hostname</font><br>
 			Fill in the fully qualified hostname for this device.
 		</td>
-		<?DrawFormItemTextBox("hostname",$host["hostname"],"","250", "40");?>
+		<?php form_text_box("hostname",$host["hostname"],"","250", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Management IP</font><br>
 			Choose the IP address that will be used to gather data from this host. The hostname will be
 			used a fallback in case this fails.
 		</td>
-		<?DrawFormItemTextBox("management_ip",$host["management_ip"],"","15", "40");?>
+		<?php form_text_box("management_ip",$host["management_ip"],"","15", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">SNMP Community</font><br>
 			Fill in the SNMP read community for this device.
 		</td>
-		<?DrawFormItemTextBox("snmp_community",$host["snmp_community"],"","15", "40");?>
+		<?php form_text_box("snmp_community",$host["snmp_community"],"","15", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">SNMP Username</font><br>
 			Fill in the SNMP username for this device (v3).
 		</td>
-		<?DrawFormItemTextBox("snmp_username",$host["snmp_username"],"","50", "40");?>
+		<?php form_text_box("snmp_username",$host["snmp_username"],"","50", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">SNMP Community</font><br>
 			Fill in the SNMP password for this device (v3).
 		</td>
-		<?DrawFormItemTextBox("snmp_password",$host["snmp_password"],"","50", "40");?>
+		<?php form_text_box("snmp_password",$host["snmp_password"],"","50", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">SNMP Version</font><br>
 			Choose the SNMP version for this host.
 		</td>
-		<?DrawFormItemDropdownFromSQL("snmp_version",$snmp_versions,"","",$host["snmp_version"],"","1");?>
+		<?php form_dropdown("snmp_version",$snmp_versions,"","",$host["snmp_version"],"","1");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td colspan="2">
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
@@ -720,7 +717,7 @@ function host_edit() {
 						host upon addition.
 					</td>
 					<td width="1">
-						<?DrawStrippedFormItemDropdownFromSQL("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","","");?>
+						<?php form_base_dropdown("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","","");?>
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add" align="absmiddle">
@@ -730,11 +727,11 @@ function host_edit() {
 		</td>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("save_component_host","1","");
+	form_hidden_id("id",$_GET["id"]);
+	form_hidden_box("save_component_host","1","");
 	
 	$i = 0;
 	if (!empty($host["host_template_id"])) {
@@ -760,7 +757,7 @@ function host_edit() {
 		if (sizeof($graph_templates) > 0) {
 		foreach ($graph_templates as $graph_template) {
 			if ($graph_template["graph_template_id"] != $_graph_template_id) {
-				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				print "<td width='50%'>";
 				print "<font class='textEditTitle'>Create Graph: " . $graph_template["graph_template_name"] . "</font><br>";
 			}
@@ -771,7 +768,7 @@ function host_edit() {
 			
 			if ($graph_templates{$j+1}["graph_template_id"] != $_graph_template_id) {
 				print "</td>\n";
-				DrawFormItemCheckBox("cg_" . $graph_template["graph_template_id"],"","Create this Graph","");
+				form_checkbox("cg_" . $graph_template["graph_template_id"],"","Create this Graph","");
 				print "</tr>";
 			}
 			
@@ -829,14 +826,14 @@ function host_edit() {
 		
 		if (sizeof($snmp_query_indexes) > 0) {
 		while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
-			DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			
 			reset($snmp_query_data);
 			while (list($field_name, $field_array) = each($snmp_query_data)) {
 				print "<td>" . $field_array[$snmp_index] . "</td>";
 			}
 			
-			DrawFormItemCheckBox("sg_" . $snmp_query["graph_template_id"] . "_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
+			form_checkbox("sg_" . $snmp_query["graph_template_id"] . "_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
 			print "</tr>\n";
 		}
 		}
@@ -849,11 +846,11 @@ function host_edit() {
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "host.php");?>
+			<?php form_save_button("save", "host.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -874,19 +871,19 @@ function host() {
 	
 	if (sizeof($hosts) > 0) {
 	foreach ($hosts as $host) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="host.php?action=edit&id=<?print $host["id"];?>"><?print $host["description"];?></a>
+				<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print $host["description"];?></a>
 			</td>
 			<td>
-				<?print $host["hostname"];?>
+				<?php print $host["hostname"];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="host.php?action=remove&id=<?print $host["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="host.php?action=remove&id=<?php print $host["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}
 	end_box();

@@ -1,27 +1,30 @@
-<?/*
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?	header ("Cache-Control: no-cache, must-revalidate");
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
+header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 
 /* install form constants */
@@ -184,11 +187,11 @@ if (!(isset($step))) {
 			<td width="100%">
 				<table cellpadding="3" cellspacing="0" border="0" bgcolor="#E6E6E6" width="100%">
 					<tr>
-						<td bgcolor="#104075" class="header-text">cacti Installation Guide (Step <?print $step;?>)</td>
+						<td bgcolor="#104075" class="header-text">cacti Installation Guide (Step <?php print $step;?>)</td>
 					</tr>
 					<tr>
 						<td width="100%" style="font-size: 12px;">
-							<?switch ($step) {
+							<?php switch ($step) {
 							 case "1": ?>
 							<p>Thanks for taking the time to download and install cacti, the rrdtool frontend.
 							Before you can start making cool graphs, there are a few pieces of data that cacti
@@ -212,11 +215,11 @@ if (!(isset($step))) {
 							but WITHOUT ANY WARRANTY; without even the implied warranty of
 							MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 							GNU General Public License for more details.</p>
-							<?break;
+							<?php break;
 							 case "2":
 							    $current_version = db_fetch_cell("select cacti from version"); ?>
 							<p>Cacti has determined the following information about your setup:</p>
-							<p class="code"><?if (!$current_version > 0) {
+							<p class="code"><?php if (!$current_version > 0) {
 							    print "<strong>New Installation</strong>";
 							}else{
 							    if ($current_version == "new_install") {
@@ -230,16 +233,16 @@ if (!(isset($step))) {
 							If it is not correct, please edit 'include/config.php' before continuing.</p>
 							
 							<p class="code">
-							<?	print "Database User: $database_username<br>";
+							<?php	print "Database User: $database_username<br>";
 								print "Database Hostname: $database_hostname<br>";
 								print "Database: $database_default<br>";
 								print "Server Operating System Type: $config[cacti_server_os]<br>"; ?>
 							</p>
 							
-							<?break;
+							<?php break;
 							case "3": ?>
 							<p>Make sure make sure all of these values are correct before continuing.</p>
-							<?
+							<?php
 								/* make sure to reread config at this point so we have a fresh view of things */
 								$do_not_read_config = false; 
 	include ('include/config.php');
@@ -286,7 +289,7 @@ if (!(isset($step))) {
 											print "<br></p>";
 											break;
 										case 'checkbox':
-											DrawStrippedFormItemCheckBox($input[$i]["name"],$current_value,$config[$name]["description"],"");
+											form_base_checkbox($input[$i]["name"],$current_value,$config[$name]["description"],"");
 											break;
 									}
 								}
@@ -298,16 +301,16 @@ if (!(isset($step))) {
 							all of your settings will be saved and your database will be upgraded if this
 							is an upgrade. You can change any of the settings on this screen at a later
 							time by going to "cacti Settings" from within cacti.</p>
-							<?break;
+							<?php break;
 }?>
-							<p align="right"><input type="image" src="images/install_<?if ($step==TOTAL_STEPS){?>finish<?}else{?>next<?}?>.gif" alt="<?if ($step==TOTAL_STEPS){?>Finish<?}else{?>Next<?}?>"></p>
+							<p align="right"><input type="image" src="images/install_<?php if ($step==TOTAL_STEPS){?>finish<?php }else{?>next<?php }?>.gif" alt="<?php if ($step==TOTAL_STEPS){?>Finish<?php }else{?>Next<?php }?>"></p>
 						</td>
 					</tr>
 				</table>
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" name="step" value="<?print ($step+1);?>">
+	<input type="hidden" name="step" value="<?php print ($step+1);?>">
 	</form>
 	
 	</body>

@@ -1,28 +1,31 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
+
 include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
@@ -88,7 +91,7 @@ function field_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -179,94 +182,94 @@ function field_edit() {
 	?>
 	<form method="post" action="data_input.php">
 	
-	<?
+	<?php
 	if ($data_input["type_id"] == "1") { /* script */
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
-				<font class="textEditTitle">Field [<?print $header_name;?>]</font><br>
-				Choose the associated field from the <?print $header_name;?> field.
+				<font class="textEditTitle">Field [<?php print $header_name;?>]</font><br>
+				Choose the associated field from the <?php print $header_name;?> field.
 			</td>
-			<?DrawFormItemDropdownFromSQL("data_name",$array_field_names,"","",$field["data_name"],"","");?>
-		</tr><?
+			<?php form_dropdown("data_name",$array_field_names,"","",$field["data_name"],"","");?>
+		</tr><?php
 	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3")) { /* snmp */
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
-				<font class="textEditTitle">Field Name [<?print $header_name;?>]</font><br>
-				Enter a name for this <?print $header_name;?> field.
+				<font class="textEditTitle">Field Name [<?php print $header_name;?>]</font><br>
+				Enter a name for this <?php print $header_name;?> field.
 			</td>
-			<?DrawFormItemTextBox("data_name",$field["data_name"],"","50", "40");?>
-		</tr><?
+			<?php form_text_box("data_name",$field["data_name"],"","50", "40");?>
+		</tr><?php
 	}
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Friendly Name</font><br>
 			Enter a meaningful name for this data input method.
 		</td>
-		<?DrawFormItemTextBox("name",$field["name"],"","200", "40");?>
+		<?php form_text_box("name",$field["name"],"","200", "40");?>
 	</tr>
 	
-	<?
+	<?php
 	if ($current_field_type == "out") {
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Update RRD File</font><br>
 			Whether data from this output field is to be entered into the rrd file.
 		</td>
-		<?DrawFormItemCheckBox("update_rra",$field["update_rra"],"Update RRD File","on",$_GET["local_data_id"]);?>
+		<?php form_checkbox("update_rra",$field["update_rra"],"Update RRD File","on",$_GET["local_data_id"]);?>
 	</tr>
-	<?
+	<?php
 	}
 	
 	if ($current_field_type == "in") {
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Regular Expression Match</font><br>
 			If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).
 		</td>
-		<?DrawFormItemTextBox("regexp_match",$field["regexp_match"],"","200", "40");?>
+		<?php form_text_box("regexp_match",$field["regexp_match"],"","200", "40");?>
 	</tr>
-	<?
+	<?php
 	}
 	
 	if ($current_field_type == "in") {
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Allow Empty Input</font><br>
 			Check here if you want to allow NULL input in this field from the user.
 		</td>
-		<?DrawFormItemCheckBox("allow_nulls",$field["allow_nulls"],"Allow NULL's","",false);?>
+		<?php form_checkbox("allow_nulls",$field["allow_nulls"],"Allow NULL's","",false);?>
 	</tr>
-	<?
+	<?php
 	}
 	
 	if ($current_field_type == "in") {
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Special Type Code</font><br>
 			If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.
 		</td>
-		<?DrawFormItemTextBox("type_code",$field["type_code"],"","40", "40");?>
+		<?php form_text_box("type_code",$field["type_code"],"","40", "40");?>
 	</tr>
-	<?
+	<?php
 	}
 	
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("input_output",$current_field_type,"");
-	DrawFormItemHiddenTextBox("sequence",$field["sequence"],"");
-	DrawFormItemHiddenTextBox("data_input_id",$_GET["data_input_id"],$field["data_input_id"]);
-	DrawFormItemHiddenTextBox("save_component_field","1","");
+	form_hidden_id("id",$_GET["id"]);
+	form_hidden_box("input_output",$current_field_type,"");
+	form_hidden_box("sequence",$field["sequence"],"");
+	form_hidden_box("data_input_id",$_GET["data_input_id"],$field["data_input_id"]);
+	form_hidden_box("save_component_field","1","");
 	end_box();
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "data_input.php");?>
+			<?php form_save_button("save", "data_input.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
    
@@ -279,7 +282,7 @@ function data_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -347,40 +350,40 @@ function data_edit() {
 	?>
 	<form method="post" action="data_input.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			Enter a meaningful name for this data input method.
 		</td>
-		<?DrawFormItemTextBox("name",$data_input["name"],"","255", "40");?>
+		<?php form_text_box("name",$data_input["name"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Input Type</font><br>
 			Choose what type of data input method this is.
 		</td>
-		<?DrawFormItemDropdownFromSQL("type_id",$input_types,"","",$data_input["type_id"],"","");?>
+		<?php form_dropdown("type_id",$input_types,"","",$data_input["type_id"],"","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Input String</font><br>
 			The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.
 		</td>
-		<?DrawFormItemTextBox("input_string",$data_input["input_string"],"","255", "40");?>
+		<?php form_text_box("input_string",$data_input["input_string"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Output String</font><br>
 			The data that is expected back from the input script; defined as &lt;&gt; brackets.
 		</td>
-		<?DrawFormItemTextBox("output_string",$data_input["output_string"],"","255", "40");?>
+		<?php form_text_box("output_string",$data_input["output_string"],"","255", "40");?>
 	</tr>
 	
-	<?
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
+	<?php
+	form_hidden_id("id",$_GET["id"]);
 	end_box();
 	
 	if (!empty($_GET["id"])) {
@@ -395,22 +398,22 @@ function data_edit() {
 		
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?print $field["id"];?>&data_input_id=<?print $_GET["id"];?>"><?print $field["data_name"];?></a>
+					<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><?php print $field["data_name"];?></a>
 				</td>
 				<td>
-					<?print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
+					<?php print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
 				</td>
 				<td>
-					<?print $field["name"];?>
+					<?php print $field["name"];?>
 				</td>
 				<td width="1%" align="right">
-					<a href="data_input.php?action=field_remove&id=<?print $field["id"];?>&data_input_id=<?print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 				</td>
 			</tr>
-		<?
+		<?php
 		}
 		}else{
 			print "<tr><td><em>No Input Fields</em></td></tr>";
@@ -429,25 +432,25 @@ function data_edit() {
 		
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?print $field["id"];?>&data_input_id=<?print $_GET["id"];?>"><?print $field["data_name"];?></a>
+					<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><?php print $field["data_name"];?></a>
 				</td>
 				<td>
-					<?print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
+					<?php print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
 				</td>
 				<td>
-					<?print $field["name"];?>
+					<?php print $field["name"];?>
 				</td>
 				<td>
-					<?print html_boolean_friendly($field["update_rra"]);?>
+					<?php print html_boolean_friendly($field["update_rra"]);?>
 				</td>
 				<td width="1%" align="right">
-					<a href="data_input.php?action=field_remove&id=<?print $field["id"];?>&data_input_id=<?print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 				</td>
 			</tr>
-		<?
+		<?php
 		}
 		}else{
 			print "<tr><td><em>No Output Fields</em></td></tr>";
@@ -455,17 +458,17 @@ function data_edit() {
 		end_box();
 	}
 	
-	DrawFormItemHiddenTextBox("save_component_data_input","1","");
+	form_hidden_box("save_component_data_input","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "data_input.php");?>
+			<?php form_save_button("save", "data_input.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -483,16 +486,16 @@ function data() {
 	
 	if (sizeof($data_inputs) > 0) {
 	foreach ($data_inputs as $data_input) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="data_input.php?action=edit&id=<?print $data_input["id"];?>"><?print $data_input["name"];?></a>
+				<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print $data_input["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="data_input.php?action=remove&id=<?print $data_input["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="data_input.php?action=remove&id=<?php print $data_input["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}else{
 		print "<tr><td><em>No Data Input Methods</em></td></tr>";

@@ -1,27 +1,29 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 
 include_once ("include/functions.php");
@@ -84,12 +86,12 @@ switch ($_REQUEST["action"]) {
 
 function draw_cdef_preview($cdef_id) {
 	global $colors; ?>
-	<tr bgcolor="#<?print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
-			<pre>cdef=<?print get_cdef($cdef_id, true);?></pre>
+			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
 		</td>
 	</tr>	
-<?}
+<?php }
 
 
 /* --------------------------
@@ -165,62 +167,62 @@ function item_edit() {
 	?>
 	<form method="post" action="cdef.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td colspan="2">
 			<font class="textHeader">Choose any one of these items:</font>
 		</td>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Function</font>
 		</td>
-		<?DrawFormItemDropdownFromSQL("value_function",$cdef_functions,"","",$values[1],"None","");?>
+		<?php form_dropdown("value_function",$cdef_functions,"","",$values[1],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Operator</font>
 		</td>
-		<?DrawFormItemDropdownFromSQL("value_operator",$cdef_operators,"","",$values[2],"None","");?>
+		<?php form_dropdown("value_operator",$cdef_operators,"","",$values[2],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Special Data Source</font>
 		</td>
-		<?DrawFormItemDropdownFromSQL("value_special_data_source",$custom_data_source_types,"","",$values[4],"None","");?>
+		<?php form_dropdown("value_special_data_source",$custom_data_source_types,"","",$values[4],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Another CDEF</font>
 		</td>
-		<?DrawFormItemDropdownFromSQL("value_cdef",db_fetch_assoc("select name,id from cdef"),"name","id",$values[5],"None","");?>
+		<?php form_dropdown("value_cdef",db_fetch_assoc("select name,id from cdef"),"name","id",$values[5],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Custom String</font>
 		</td>
-		<?DrawFormItemTextBox("value_custom",$values[6],"","150", "40");?>
+		<?php form_text_box("value_custom",$values[6],"","150", "40");?>
 	</tr>
 	
-	<?
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
-	DrawFormItemHiddenIDField("cdef_id",$_GET["cdef_id"]);
-	DrawFormItemHiddenTextBox("save_component_item","1","");
+	<?php
+	form_hidden_id("id",$_GET["id"]);
+	form_hidden_id("cdef_id",$_GET["cdef_id"]);
+	form_hidden_box("save_component_item","1","");
 	end_box();
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "cdef.php");?>
+			<?php form_save_button("save", "cdef.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
    
@@ -233,7 +235,7 @@ function cdef_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "cdef.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "cdef.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -266,16 +268,16 @@ function cdef_edit() {
 	?>
 	<form method="post" action="cdef.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this CDEF.
 		</td>
-		<?DrawFormItemTextBox("name",$cdef["name"],"","255", "40");?>
+		<?php form_text_box("name",$cdef["name"],"","255", "40");?>
 	</tr>
 	
-	<?
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
+	<?php
+	form_hidden_id("id",$_GET["id"]);
 	end_box();
 	
 	start_box("", "98%", "aaaaaa", "3", "center", "");
@@ -294,38 +296,38 @@ function cdef_edit() {
 	
 	if (sizeof($cdef_items) > 0) {
 	foreach ($cdef_items as $cdef_item) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="cdef.php?action=item_edit&id=<?print $cdef_item["id"];?>&cdef_id=<?print $cdef["id"];?>">Item #<?print $i;?></a>
+				<a class="linkEditMain" href="cdef.php?action=item_edit&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>">Item #<?php print $i;?></a>
 			</td>
 			<td>
-				<em><?$cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?print get_cdef_item_name($cdef_item["id"]);?></strong>
+				<em><?php $cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print get_cdef_item_name($cdef_item["id"]);?></strong>
 			</td>
 			<td>
-				<a href="cdef.php?action=item_movedown&id=<?print $cdef_item["id"];?>&cdef_id=<?print $cdef["id"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-				<a href="cdef.php?action=item_moveup&id=<?print $cdef_item["id"];?>&cdef_id=<?print $cdef["id"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+				<a href="cdef.php?action=item_movedown&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+				<a href="cdef.php?action=item_moveup&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="cdef.php?action=item_remove&id=<?print $cdef_item["id"];?>&cdef_id=<?print $cdef["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="cdef.php?action=item_remove&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}
 	end_box();
 	
-	DrawFormItemHiddenTextBox("save_component_cdef","1","");
+	form_hidden_box("save_component_cdef","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "cdef.php");?>
+			<?php form_save_button("save", "cdef.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -343,16 +345,16 @@ function cdef() {
 	
 	if (sizeof($cdefs) > 0) {
 	foreach ($cdefs as $cdef) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="cdef.php?action=edit&id=<?print $cdef["id"];?>"><?print $cdef["name"];?></a>
+				<a class="linkEditMain" href="cdef.php?action=edit&id=<?php print $cdef["id"];?>"><?php print $cdef["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="cdef.php?action=remove&id=<?print $cdef["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="cdef.php?action=remove&id=<?php print $cdef["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}
 	end_box();	

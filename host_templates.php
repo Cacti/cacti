@@ -1,28 +1,31 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
+
 include_once ("include/functions.php");
 include_once ('include/form.php');
 
@@ -74,7 +77,7 @@ function template_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "host_templates.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "host_templates.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -131,15 +134,15 @@ function template_edit() {
 	?>
 	<form method="post" action="host_templates.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this host template.
 		</td>
-		<?DrawFormItemTextBox("name",$host_template["name"],"","255", "40");?>
+		<?php form_text_box("name",$host_template["name"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Graph Templates</font><br>
 			Select one or more graph templates to associate with this host template.
@@ -148,7 +151,7 @@ function template_edit() {
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td align="top" width="50%">
-						<?
+						<?php
 						$graph_templates = db_fetch_assoc("select 
 							host_template_graph_template.host_template_id,
 							host_template_graph_template.suggested_values,
@@ -172,7 +175,7 @@ function template_edit() {
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
-							DrawStrippedFormItemCheckBox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",true);
+							form_base_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",true);
 							$i++;
 						}
 						}
@@ -182,7 +185,7 @@ function template_edit() {
 			</table>
 		</td>
 	</tr>
-	<?
+	<?php
 	end_box();
 	
 	reset($graph_templates);
@@ -193,15 +196,15 @@ function template_edit() {
 			$i = 0;
 			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", "777777", "3", "center", "");
 			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 				<td width="50%">
-					<font class="textEditTitle">Suggested Values</font> <em>(<?print $graph_template["name"];?>)</em><br>
+					<font class="textEditTitle">Suggested Values</font> <em>(<?php print $graph_template["name"];?>)</em><br>
 					You can use this field to suggest defaults to the user or even over ride 
 					the non-template bit. For a list of valid field names, see the documentation.
 				</td>
-				<?DrawFormItemTextBox("ogt_suggested_values_" . $graph_template["id"],$graph_template["suggested_values"],"","255", "40");?>
+				<?php form_text_box("ogt_suggested_values_" . $graph_template["id"],$graph_template["suggested_values"],"","255", "40");?>
 			</tr>
-			<?
+			<?php
 			
 			$data_templates = db_fetch_assoc("select
 				data_template.id,
@@ -220,15 +223,15 @@ function template_edit() {
 				
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 					<td width="50%">
-						<font class="textEditTitle">Suggested Values</font> <em>(<?print $data_template["name"];?>)</em><br>
+						<font class="textEditTitle">Suggested Values</font> <em>(<?php print $data_template["name"];?>)</em><br>
 						You can use this field to suggest defaults to the user or even over ride 
 						the non-template bit. For a list of valid field names, see the documentation.
 					</td>
-					<?DrawFormItemTextBox("odt_suggested_values_" . $data_template["data_template_id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
+					<?php form_text_box("odt_suggested_values_" . $data_template["data_template_id"] . "_" . $graph_template["id"],$data_template["suggested_values"],"","255", "40");?>
 				</tr>
-				<?
+				<?php
 			}
 			}
 			
@@ -237,18 +240,18 @@ function template_edit() {
 	}
 	}
 	
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("save_component_template","1","");
+	form_hidden_id("id",$_GET["id"]);
+	form_hidden_box("save_component_template","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "host_templates.php");?>
+			<?php form_save_button("save", "host_templates.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -268,16 +271,16 @@ function template() {
 	
 	if (sizeof($host_templates) > 0) {
 	foreach ($host_templates as $host_template) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="host_templates.php?action=edit&id=<?print $host_template["id"];?>"><?print $host_template["name"];?></a>
+				<a class="linkEditMain" href="host_templates.php?action=edit&id=<?php print $host_template["id"];?>"><?php print $host_template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="host_templates.php?action=remove&id=<?print $host_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="host_templates.php?action=remove&id=<?php print $host_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}
 	end_box();	

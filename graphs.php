@@ -1,28 +1,31 @@
-<?/* 
-+-------------------------------------------------------------------------+
-| Copyright (C) 2002 Ian Berry                                            |
-|                                                                         |
-| This program is free software; you can redistribute it and/or           |
-| modify it under the terms of the GNU General Public License             |
-| as published by the Free Software Foundation; either version 2          |
-| of the License, or (at your option) any later version.                  |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-+-------------------------------------------------------------------------+
-| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-+-------------------------------------------------------------------------+
-| This code is currently maintained and debugged by Ian Berry, any        |
-| questions or comments regarding this code should be directed to:        |
-| - iberry@raxnet.net                                                     |
-+-------------------------------------------------------------------------+
-| - raXnet - http://www.raxnet.net/                                       |
-+-------------------------------------------------------------------------+
-*/?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
+
 include_once ("include/form.php");
 include_once ("include/config_arrays.php");
 
@@ -104,26 +107,26 @@ switch ($_REQUEST["action"]) {
 
 function draw_graph_form_select($main_action) { 
 	global $colors; ?>
-	<tr bgcolor="#<?print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_graph_id">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="1%">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graphs.php?action=graph_edit&local_graph_id=<?print $_GET["local_graph_id"];?>"<?if (($_GET["action"]=="") || (strstr($_GET["action"],"graph"))) {?> selected<?}?>>Graph Configuration</option>
-							<option value="graphs.php?action=item&local_graph_id=<?print $_GET["local_graph_id"];?>"<?if (strstr($_GET["action"],"item")){?> selected<?}?>>Custom Graph Item Configuration</option>
+							<option value="graphs.php?action=graph_edit&local_graph_id=<?php print $_GET["local_graph_id"];?>"<?php if (($_GET["action"]=="") || (strstr($_GET["action"],"graph"))) {?> selected<?php }?>>Graph Configuration</option>
+							<option value="graphs.php?action=item&local_graph_id=<?php print $_GET["local_graph_id"];?>"<?php if (strstr($_GET["action"],"item")){?> selected<?php }?>>Custom Graph Item Configuration</option>
 						</select>
 					</td>
 					<td>
-						&nbsp;<a href="graphs.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+						&nbsp;<a href="graphs.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
 					</td>
 				</tr>
 			</table>
 		</td>
 		</form>
 	</tr>
-<?
+<?php
 }
 
 /* --------------------------
@@ -237,7 +240,7 @@ function item() {
 		
 		/* alternating row color */
 		if ($use_custom_row_color == false) {
-			DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i);
+			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
 		}else{
 			print "<tr bgcolor='#$custom_row_color'>";
 		}
@@ -305,7 +308,7 @@ function item() {
 			
 			$field_name = $item["column_name"];
 			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 			
 			print "	<td width='50%'>
 					<font class='textEditTitle'>" . $item["name"] . "</font>";
@@ -323,19 +326,19 @@ function item() {
 		end_box();
 	}
 	
-	DrawFormItemHiddenIDField("local_graph_id",$_GET["local_graph_id"]);
-	DrawFormItemHiddenTextBox("save_component_input","1","");
+	form_hidden_id("local_graph_id",$_GET["local_graph_id"]);
+	form_hidden_box("save_component_input","1","");
 	
 	if ((read_config_option("full_view_graph") == "") && (sizeof($input_item_list) > 0)) {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
-				<?DrawFormSaveButton("save", "graphs.php");?>
+				<?php form_save_button("save", "graphs.php");?>
 			</td>
 		</tr>
 		</form>
-		<?
+		<?php
 		end_box();
 	}
 }
@@ -393,7 +396,7 @@ function item_edit() {
 	?>
 	<form method="post" action="graphs.php">
 	
-	<?
+	<?php
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence_parent DESC,sequence DESC");
 
@@ -404,7 +407,7 @@ function item_edit() {
 	}
 	
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		
@@ -419,12 +422,12 @@ function item_edit() {
 		print "</tr>\n";
 	}
 	
-	DrawFormItemHiddenIDField("local_graph_id",$_GET["local_graph_id"]);
-	DrawFormItemHiddenIDField("graph_template_item_id",$_GET["graph_template_item_id"]);
-	DrawFormItemHiddenIDField("graph_template_id",$template_item["graph_template_id"]);
-	DrawFormItemHiddenIDField("sequence",$template_item["sequence"]);
-	DrawFormItemHiddenIDField("_graph_type_id",$template_item["graph_type_id"]);
-	DrawFormItemHiddenTextBox("save_component_item","1","");
+	form_hidden_id("local_graph_id",$_GET["local_graph_id"]);
+	form_hidden_id("graph_template_item_id",$_GET["graph_template_item_id"]);
+	form_hidden_id("graph_template_id",$template_item["graph_template_id"]);
+	form_hidden_id("sequence",$template_item["sequence"]);
+	form_hidden_id("_graph_type_id",$template_item["graph_type_id"]);
+	form_hidden_box("save_component_item","1","");
 	
 	end_box();
 	
@@ -432,11 +435,11 @@ function item_edit() {
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", $_SERVER["HTTP_REFERER"]);?>
+			<?php form_save_button("save", $_SERVER["HTTP_REFERER"]);?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -607,7 +610,7 @@ function graph_diff() {
 		</tr>
 	</table>
 	<br>
-	<?
+	<?php
 	
 	start_box("<strong>Graph Preview</strong>", "98%", $colors["header"], "3", "center", "");
 	
@@ -738,11 +741,11 @@ function graph_diff() {
 		print "</tr>";
 	}
 	}else{
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 			<td colspan="7">
 				<em>No Items</em>
 			</td>
-		</tr><?
+		</tr><?php
 	}
 	end_box();	
 	
@@ -751,7 +754,7 @@ function graph_diff() {
 	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
 		<tr>          
 			<td class="textArea">
-				<input type='radio' name='type' value='1' checked>&nbsp;<?print $user_message;?><br>
+				<input type='radio' name='type' value='1' checked>&nbsp;<?php print $user_message;?><br>
 				<input type='radio' name='type' value='2'>&nbsp;When you click save, the graph items will remain untouched (could cause inconsistencies).
 			</td>
 		</tr>
@@ -761,22 +764,22 @@ function graph_diff() {
 	<table style="background-color: #ffffff; border: 1px solid #aaaaaa;" width="98%" align="center">
 		<tr>
 			 <td colspan="2" align="right">
-				<?DrawFormSaveButton("save", "graphs.php?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);?>
+				<?php form_save_button("save", "graphs.php?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);?>
 			</td>
 		</tr>
 	</table>
 	<input type="hidden" name="action" value="save">
 	<input type="hidden" name="save_component_graph_diff" value="1">
-	<input type="hidden" name="local_graph_id" value="<?print $_GET["local_graph_id"];?>">
-	<input type="hidden" name="graph_template_id" value="<?print $_GET["graph_template_id"];?>">
+	<input type="hidden" name="local_graph_id" value="<?php print $_GET["local_graph_id"];?>">
+	<input type="hidden" name="graph_template_id" value="<?php print $_GET["graph_template_id"];?>">
 	</form>
-	<?
+	<?php
 }
 
 function graph_remove() {
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=" . $_GET["local_graph_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=" . $_GET["local_graph_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -824,23 +827,23 @@ function graph_edit() {
 	
 	<form method="post" action="graphs.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Graph Template</font><br>
 			Choose a graph template to apply to this graph. Please note that graph data may be lost if you 
 			change the graph template after one is already applied.
 		</td>
-		<?DrawFormItemDropdownFromSQL("graph_template_id",db_fetch_assoc("select 
+		<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
 			graph_templates.id,graph_templates.name 
 			from graph_templates"),"name","id",$graphs["graph_template_id"],"None","0");?>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	while (list($field_name, $field_array) = each($struct_graph)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		
@@ -859,12 +862,12 @@ function graph_edit() {
 		print "</tr>\n";
 	}
 	
-	DrawFormItemHiddenIDField("graph_template_graph_id",$graphs["id"]);
-	DrawFormItemHiddenIDField("local_graph_id",$graphs["local_graph_id"]);
-	DrawFormItemHiddenIDField("order_key",$graphs["order_key"]);
-	DrawFormItemHiddenIDField("local_graph_template_graph_id",$graphs["local_graph_template_graph_id"]);
-	DrawFormItemHiddenIDField("_graph_template_id",$graphs["graph_template_id"]);
-	DrawFormItemHiddenTextBox("save_component_graph","1","");
+	form_hidden_id("graph_template_graph_id",$graphs["id"]);
+	form_hidden_id("local_graph_id",$graphs["local_graph_id"]);
+	form_hidden_id("order_key",$graphs["order_key"]);
+	form_hidden_id("local_graph_template_graph_id",$graphs["local_graph_template_graph_id"]);
+	form_hidden_id("_graph_template_id",$graphs["graph_template_id"]);
+	form_hidden_box("save_component_graph","1","");
 	
 	end_box();
 	
@@ -872,11 +875,11 @@ function graph_edit() {
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "graphs.php");?>
+			<?php form_save_button("save", "graphs.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -886,7 +889,7 @@ function graph() {
 	start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit");
 	
 	?>
-	<tr bgcolor="<?print $colors["panel"];?>">
+	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id" method="post">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -896,9 +899,9 @@ function graph() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graphs.php?host_id=0&filter=<?print $_REQUEST["filter"];?>"<?if ($_REQUEST["host_id"] == "0") {?> selected<?}?>>None</option>
+							<option value="graphs.php?host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							
-							<?
+							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
 							if (sizeof($hosts) > 0) {
@@ -911,7 +914,7 @@ function graph() {
 					</td>
 					<td width="5"></td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
@@ -921,7 +924,7 @@ function graph() {
 		</td>
 		</form>
 	</tr>	
-	<?
+	<?php
 	
 	end_box();
 	
@@ -1011,22 +1014,22 @@ function graph() {
 	
 	if (sizeof($graph_list) > 0) {
 	foreach ($graph_list as $graph) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?print $graph["local_graph_id"];?>"><?print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
 			</td>
 			<td>
-				<?print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
+				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
 			</td>
 			<td>
-				<?print $graph["height"];?>x<?print $graph["width"];?>
+				<?php print $graph["height"];?>x<?php print $graph["width"];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="graphs.php?action=graph_remove&local_graph_id=<?print $graph["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graphs.php?action=graph_remove&local_graph_id=<?php print $graph["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	$i++;
 	}
 	}else{

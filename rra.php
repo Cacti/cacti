@@ -1,28 +1,31 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Round Robin Archives"; include ('include/auth.php');
+
 include_once ('include/config_arrays.php');
 include_once ('include/functions.php');
 include_once ('include/form.php');
@@ -96,7 +99,7 @@ function rra_save() {
 function rra_remove() {
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
 	
@@ -122,58 +125,58 @@ function rra_edit() {
 	?>
 	<form method="post" action="rra.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?DrawFormItemTextBox("name",$rra["name"],"","100", "40");?>
+		<?php form_text_box("name",$rra["name"],"","100", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Consolidation Functions</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?DrawFormItemMultipleList("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=" . $_GET["id"]), "consolidation_function_id");?>
+		<?php form_multi_dropdown("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=" . $_GET["id"]), "consolidation_function_id");?>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">X-Files Factor</font><br>
 			The amount of unknown data that can still be regarded as known.
 		</td>
-		<?DrawFormItemTextBox("x_files_factor",$rra["x_files_factor"],"","10", "40");?>
+		<?php form_text_box("x_files_factor",$rra["x_files_factor"],"","10", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Steps</font><br>
 			How many data points are needed to put data into the RRA.
 		</td>
-		<?DrawFormItemTextBox("steps",$rra["steps"],"","8", "40");?>
+		<?php form_text_box("steps",$rra["steps"],"","8", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Rows</font><br>
 			How many generations data is kept in the RRA.
 		</td>
-		<?DrawFormItemTextBox("rows",$rra["rows"],"","8", "40");?>
+		<?php form_text_box("rows",$rra["rows"],"","8", "40");?>
 	</tr>
 	
-	<?
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("save_component_rra","1","");
+	<?php
+	form_hidden_id("id",$_GET["id"]);
+	form_hidden_box("save_component_rra","1","");
 	?>
 	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save", "rra.php");?>
+			<?php form_save_button("save", "rra.php");?>
 			</form>
 		</td>
 	</tr>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -194,22 +197,22 @@ function rra() {
 	
 	if (sizeof($rras) > 0) {
 	foreach ($rras as $rra) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="rra.php?action=edit&id=<?print $rra["id"];?>"><?print $rra["name"];?></a>
+				<a class="linkEditMain" href="rra.php?action=edit&id=<?php print $rra["id"];?>"><?php print $rra["name"];?></a>
 			</td>
 			<td>
-				<?print $rra["steps"];?>
+				<?php print $rra["steps"];?>
 			</td>
 			<td>
-				<?print $rra["rows"];?>
+				<?php print $rra["rows"];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="rra.php?action=remove&id=<?print $rra["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="rra.php?action=remove&id=<?php print $rra["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}
 	end_box();	

@@ -1,28 +1,31 @@
-<?/*
-+-------------------------------------------------------------------------+
-| Copyright (C) 2002 Ian Berry                                            |
-|                                                                         |
-| This program is free software; you can redistribute it and/or           |
-| modify it under the terms of the GNU General Public License             |
-| as published by the Free Software Foundation; either version 2          |
-| of the License, or (at your option) any later version.                  |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-+-------------------------------------------------------------------------+
-| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-+-------------------------------------------------------------------------+
-| This code is currently maintained and debugged by Ian Berry, any        |
-| questions or comments regarding this code should be directed to:        |
-| - iberry@raxnet.net                                                     |
-+-------------------------------------------------------------------------+
-| - raXnet - http://www.raxnet.net/                                       |
-+-------------------------------------------------------------------------+
-*/?>
-<?	include_once ("auth_functions.php");
-	global $colors;
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
+include_once ("auth_functions.php");
+
 ?>
 <html>
 <head>
@@ -51,26 +54,26 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" bgcolor="#<?print $colors[panel];?>">
+		<td colspan="3" bgcolor="#<?php print $colors[panel];?>">
 			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
 		</td>
 	</tr>
 	<tr>
-		<td height="27" colspan="3" bgcolor="#<?print $colors[panel];?>" background="images/top_banner.gif">
+		<td height="27" colspan="3" bgcolor="#<?php print $colors[panel];?>" background="images/top_banner.gif">
 			&nbsp;
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" bgcolor="#<?print $colors[panel];?>">
+		<td colspan="3" bgcolor="#<?php print $colors[panel];?>">
 			<img src="images/transparent_line.gif" width="170" height="5" border="0"><br>
 		</td>
 	</tr>
-	<tr height="5" bgcolor="#<?print $colors[dark_outline];?>"><td colspan="3"><img src="images/transparent_line.gif" width="20" height="5" border="0"></td></tr>
+	<tr height="5" bgcolor="#<?php print $colors[dark_outline];?>"><td colspan="3"><img src="images/transparent_line.gif" width="20" height="5" border="0"></td></tr>
 	<tr height="5">
 		<td width="1%" rowspan="2" align="center" valign="top">
 			<img src="images/transparent_line.gif" width="142" height="5" border="0"><br>
 			<table width="133" cellpadding=1 cellspacing=0 border=0 class="textMenuBackground">
-				<?DrawMenu ($HTTP_SESSION_VARS['user_id'], 1);?>
+				<?php DrawMenu ($HTTP_SESSION_VARS['user_id'], 1);?>
 			</table>
 			
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>

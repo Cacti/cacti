@@ -1,28 +1,31 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php'); 
+
 include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
@@ -98,26 +101,26 @@ function form_save() {
 
 function draw_data_form_select($main_action) { 
 	global $colors; ?>
-	<tr bgcolor="<?print $colors["panel"];?>">
+	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id">
 		<td colspan="6">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="1%">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?action=ds_edit&local_data_id=<?print $_GET["local_data_id"];?>"<?if (strstr($_GET["action"],"ds")) {?> selected<?}?>>Data Source Configuration</option>
-							<option value="data_sources.php?action=data_edit&local_data_id=<?print $_GET["local_data_id"];?>"<?if (strstr($_GET["action"],"data")) {?> selected<?}?>>Custom Data Configuration</option>
+							<option value="data_sources.php?action=ds_edit&local_data_id=<?php print $_GET["local_data_id"];?>"<?php if (strstr($_GET["action"],"ds")) {?> selected<?php }?>>Data Source Configuration</option>
+							<option value="data_sources.php?action=data_edit&local_data_id=<?php print $_GET["local_data_id"];?>"<?php if (strstr($_GET["action"],"data")) {?> selected<?php }?>>Custom Data Configuration</option>
 						</select>
 					</td>
 					<td>
-						&nbsp;<a href="data_sources.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+						&nbsp;<a href="data_sources.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
 					</td>
 				</tr>
 			</table>
 		</td>
 		</form>
 	</tr>
-<?}
+<?php }
 
 /* ----------------------------
     data - Custom Data
@@ -215,7 +218,7 @@ function data_edit() {
 				$can_template = db_fetch_cell("select t_value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
 			}
 			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 			
 			if ((!empty($host["id"])) && (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password|snmp_version)$', $field["type_code"]))) {
 				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host: " . $host["hostname"] . ")</td>\n";
@@ -225,7 +228,7 @@ function data_edit() {
 				print "<td><em>" . (empty($old_value) ? "Nothing Entered" : $old_value) . "</em></td>\n";
 			}else{
 				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
-				DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");
+				form_text_box("value_" . $field["data_name"],$old_value,"","");
 			}
 			
 			print "</tr>\n";
@@ -239,20 +242,20 @@ function data_edit() {
 		end_box();
 	}
 	
-	DrawFormItemHiddenIDField("local_data_id",$_GET["local_data_id"]);
-	DrawFormItemHiddenIDField("data_template_data_id",$data["id"]);
-	DrawFormItemHiddenTextBox("save_component_data","1","");
+	form_hidden_id("local_data_id",$_GET["local_data_id"]);
+	form_hidden_id("data_template_data_id",$data["id"]);
+	form_hidden_box("save_component_data","1","");
 	
 	if (read_config_option("full_view_data_source") == "") {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
-				<?DrawFormSaveButton("save", "data_sources.php");?>
+				<?php form_save_button("save", "data_sources.php");?>
 			</td>
 		</tr>
 		</form>
-		<?
+		<?php
 		end_box();
 	}
 }
@@ -271,7 +274,7 @@ function ds_remove() {
 		
 		start_box("<strong>Are You Sure?</strong> $header_label", "60%", "B61D22", "3", "center", "");
 		
-		DrawFormArea("Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?");
+		form_area("Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?");
 		
 		/* find out what (if any) graphs are using this data source, so we can complain to the user */
 		$graphs = db_fetch_assoc("select
@@ -293,12 +296,12 @@ function ds_remove() {
 			}
 			
 			print "<br>";
-			DrawStrippedFormItemRadioButton("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
-			DrawStrippedFormItemRadioButton("delete_type", "1", "2", "Delete all graph items that reference to this data source.", "1", true);
+			form_base_radio_button("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
+			form_base_radio_button("delete_type", "1", "2", "Delete all graph items that reference to this data source.", "1", true);
 			print "</td></tr>";
 		}
 		
-		DrawConfirmButtons("data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"], "data_sources.php");
+		form_confirm_buttons("data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"], "data_sources.php");
 		
 		end_box();
 		
@@ -446,29 +449,29 @@ function ds_edit() {
 	
 	print "<form method='post' action='data_sources.php'>\n";
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Data Template</font><br>
 			The name given to this data template.
 		</td>
-		<?DrawFormItemDropdownFromSQL("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$data_template["data_template_id"],"None","0");?>
+		<?php form_dropdown("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$data_template["data_template_id"],"None","0");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Host</font><br>
 			Choose the host that this data source belongs to.
 		</td>
-		<?DrawFormItemDropdownFromSQL("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",$host_id,"None",$_GET["host_id"]);?>
+		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",$host_id,"None",$_GET["host_id"]);?>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	
 	start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on") || ($field_array["flags"] == "NOTEMPLATE")) {
@@ -479,7 +482,7 @@ function ds_edit() {
 		
 		if ($field_array["type"] == "custom") {
 			$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
-			DrawFormItemMultipleList("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data["id"]), "rra_id");
+			form_multi_dropdown("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data["id"]), "rra_id");
 		}else{
 			if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on") || ($field_array["flags"] == "NOTEMPLATE")) {
 				draw_nontemplated_item($field_array, $field_name, $data[$field_name]);
@@ -520,21 +523,21 @@ function ds_edit() {
 			<td valign="bottom" colspan="3" background="images/tab_back_light.gif">
 				<table border="0" cellspacing="0" cellpadding="0">
 					<tr>
-						<?
+						<?php
 						foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
 						?>
 						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&local_data_id=<?print $_GET["local_data_id"];?>&view_rrd=<?print $template_data_rrd["id"];?>"><?print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&local_data_id=<?php print $_GET["local_data_id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 						</td>
-						<?
+						<?php
 						}
 						?>
 					</tr>
 				</table>
 			</td>
 		</tr>
-		<?
+		<?php
 	}elseif (sizeof($template_data_rrds) == 1) {
 		$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 	}
@@ -543,7 +546,7 @@ function ds_edit() {
 	
 	$i = 0;
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		
@@ -568,25 +571,25 @@ function ds_edit() {
 		data_edit();	
 	}
 	
-	DrawFormItemHiddenIDField("_data_template_id",$data["data_template_id"]);
-	DrawFormItemHiddenTextBox("_host_id",$host_id,$_GET["host_id"]);
-	DrawFormItemHiddenIDField("data_template_data_id",$data["id"]);
-	DrawFormItemHiddenIDField("data_template_rrd_id",$rrd["id"]);
-	DrawFormItemHiddenIDField("local_data_template_data_id",$data["local_data_template_data_id"]);
-	DrawFormItemHiddenIDField("local_data_template_rrd_id",$rrd["local_data_template_rrd_id"]);
-	DrawFormItemHiddenIDField("local_data_id",$data["local_data_id"]);
-	DrawFormItemHiddenIDField("current_rrd",$_GET["view_rrd"]);
-	DrawFormItemHiddenTextBox("save_component_data_source","1","");
+	form_hidden_id("_data_template_id",$data["data_template_id"]);
+	form_hidden_box("_host_id",$host_id,$_GET["host_id"]);
+	form_hidden_id("data_template_data_id",$data["id"]);
+	form_hidden_id("data_template_rrd_id",$rrd["id"]);
+	form_hidden_id("local_data_template_data_id",$data["local_data_template_data_id"]);
+	form_hidden_id("local_data_template_rrd_id",$rrd["local_data_template_rrd_id"]);
+	form_hidden_id("local_data_id",$data["local_data_id"]);
+	form_hidden_id("current_rrd",$_GET["view_rrd"]);
+	form_hidden_box("save_component_data_source","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "data_sources.php");?>
+			<?php form_save_button("save", "data_sources.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -608,7 +611,7 @@ function ds() {
 	start_box("<strong>Data Sources</strong>", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit");
 	?>
 	
-	<tr bgcolor="<?print $colors["panel"];?>">
+	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -618,9 +621,9 @@ function ds() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?host_id=0"<?if ($_GET["host_id"] == "0") {?> selected<?}?>>None</option>
+							<option value="data_sources.php?host_id=0"<?php if ($_GET["host_id"] == "0") {?> selected<?php }?>>None</option>
 							
-							<?
+							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
 							if (sizeof($hosts) > 0) {
@@ -633,14 +636,14 @@ function ds() {
 						</select>
 					</td>
 					<td>
-						&nbsp;<a href="data_sources.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+						&nbsp;<a href="data_sources.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
 					</td>
 				</tr>
 			</table>
 		</td>
 		</form>
 	</tr>
-	<?
+	<?php
 	end_box();
 	
 	$host = db_fetch_row("select hostname from host where id=" . $_GET["host_id"]);
@@ -671,7 +674,7 @@ function ds() {
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&local_data_id=" . $data_source["local_data_id"] . "'>" . $data_source["name"] . "</a></td>";
 		print "<td>" . $data_source["data_input_name"] . "</td>";
 		print "<td>" . ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]) . "</td>";

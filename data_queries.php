@@ -1,27 +1,29 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 
 include_once ("include/functions.php");
@@ -76,7 +78,7 @@ function snmp_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "snmp.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "snmp.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -147,48 +149,48 @@ function snmp_edit() {
 	?>
 	<form method="post" action="snmp.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			A name for this SNMP query.
 		</td>
-		<?DrawFormItemTextBox("name",$snmp_query["name"],"","100", "40");?>
+		<?php form_text_box("name",$snmp_query["name"],"","100", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Description</font><br>
 			A description for this SNMP query.
 		</td>
-		<?DrawFormItemTextBox("description",$snmp_query["description"],"","255", "40");?>
+		<?php form_text_box("description",$snmp_query["description"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">XML Path</font><br>
 			The full path to the XML file containing definitions for this snmp query.
 		</td>
-		<?DrawFormItemTextBox("xml_path",$snmp_query["xml_path"],"<path_cacti>/resource/","255", "40");?>
+		<?php form_text_box("xml_path",$snmp_query["xml_path"],"<path_cacti>/resource/","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Graph Template</font><br>
 			Choose a graph template to associate with this SNMP query.
 		</td>
-		<?DrawFormItemDropdownFromSQL("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",$snmp_query["graph_template_id"],"","");?>
+		<?php form_dropdown("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",$snmp_query["graph_template_id"],"","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Input Method</font><br>
 			Select the data input method that will store/execute the data for this query.
 		</td>
-		<?DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$snmp_query["data_input_id"],"","");?>
+		<?php form_dropdown("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$snmp_query["data_input_id"],"","");?>
 	</tr>
 	
-	<?
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
+	<?php
+	form_hidden_id("id",$_GET["id"]);
 	end_box();
 	
 	if (isset($_GET["id"])) {
@@ -235,7 +237,7 @@ function snmp_edit() {
 					$old_value = "on";
 				}
 			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 			?>
 				<td colspan="3">
 					<table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -244,19 +246,19 @@ function snmp_edit() {
 								<strong>Data Input Field:</strong>
 							</td>
 							<td width="200">
-								<?print $field["name"];?>
+								<?php print $field["name"];?>
 							</td>
 							<td width="1">
-								<?DrawStrippedFormItemDropdownFromSQL("mdt_" . $data_template["id"] . "_" . $field["id"] . "_action_id",$snmp_query_field_actions,"","",$field["action_id"],"","");?>
+								<?php form_base_dropdown("mdt_" . $data_template["id"] . "_" . $field["id"] . "_action_id",$snmp_query_field_actions,"","",$field["action_id"],"","");?>
 							</td>
 							<td align="right">
-								<?DrawStrippedFormItemCheckBox("mdt_" . $data_template["id"] . "_" . $field["id"] . "_check", $old_value, "", "",true);?>
+								<?php form_base_checkbox("mdt_" . $data_template["id"] . "_" . $field["id"] . "_check", $old_value, "", "",true);?>
 							</td>
 						</tr>
 					</table>
 				</td>
 			</tr>
-			<?
+			<?php
 			}
 			}
 			
@@ -284,7 +286,7 @@ function snmp_edit() {
 					$old_value = "on";
 				}
 				
-				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
 					<td colspan="3">
 						<table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -293,10 +295,10 @@ function snmp_edit() {
 									<strong>Data Source:</strong>
 								</td>
 								<td width="200">
-									<?print $data_template_rrd["data_source_name"];?>
+									<?php print $data_template_rrd["data_source_name"];?>
 								</td>
 								<td width="1">
-									<?
+									<?php
 									$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
 									$snmp_queries = xml2array($data);
 									$xml_outputs = array();
@@ -309,16 +311,16 @@ function snmp_edit() {
 										}
 									}
 									
-									DrawStrippedFormItemDropdownFromSQL("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
+									form_base_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
 								</td>
 								<td align="right">
-									<?DrawStrippedFormItemCheckBox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "",true);?>
+									<?php form_base_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "",true);?>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
-				<?
+				<?php
 			}
 			}
 			
@@ -327,17 +329,17 @@ function snmp_edit() {
 		}
 	}
 	
-	DrawFormItemHiddenTextBox("save_component_snmp_query","1","");
+	form_hidden_box("save_component_snmp_query","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "snmp.php");?>
+			<?php form_save_button("save", "snmp.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -357,16 +359,16 @@ function snmp() {
 	
 	if (sizeof($snmp_queries) > 0) {
 	foreach ($snmp_queries as $snmp_query) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="snmp.php?action=edit&id=<?print $snmp_query["id"];?>"><?print $snmp_query["name"];?></a>
+				<a class="linkEditMain" href="snmp.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="snmp.php?action=remove&id=<?print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="snmp.php?action=remove&id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	}
 	}
 	end_box();	

@@ -1,27 +1,29 @@
-<?/* 
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2002 Ian Berry                                            |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is distributed in the hope that it will be useful,         |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-   +-------------------------------------------------------------------------+
-   | This code is currently maintained and debugged by Ian Berry, any        |
-   | questions or comments regarding this code should be directed to:        |
-   | - iberry@raxnet.net                                                     |
-   +-------------------------------------------------------------------------+
-   | - raXnet - http://www.raxnet.net/                                       |
-   +-------------------------------------------------------------------------+
-   */?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 include_once ('include/form.php');
 
@@ -92,26 +94,26 @@ function color_edit() {
 	?>
 	<form method="post" action="color.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Hex Value</font><br>
 			The hex value for this color; valid range: 000000-FFFFFF.
 		</td>
-		<?DrawFormItemTextBox("hex",$color["hex"],"","6", "40");?>
+		<?php form_text_box("hex",$color["hex"],"","6", "40");?>
 	</tr>
 	
-	<?
-	DrawFormItemHiddenIDField("id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("save_component_color","1","");
+	<?php
+	form_hidden_id("id",$_GET["id"]);
+	form_hidden_box("save_component_color","1","");
 	?>
 	
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save", "color.php");?>
+			<?php form_save_button("save", "color.php");?>
 			</form>
 		</td>
 	</tr>
-	<?
+	<?php
 	end_box();	
 }
 
@@ -138,27 +140,27 @@ function color() {
 		foreach ($color_list as $color) {
 			$j++;
 			if ($j % 2 == 1) {
-				DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 					?>
 					<td>
-						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color["id"];?>"><?print $color["hex"];?></a>
+						<a class="linkEditMain" href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?print $color["hex"];?>" width="1%">&nbsp;</td>
+					<td bgcolor="#<?php print $color["hex"];?>" width="1%">&nbsp;</td>
 					<td width="1%" align="right">
-						<a href="color.php?action=remove&id=<?print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 					</td>
-				<?	$j=1;
+				<?php	$j=1;
 			} else { ?>
 					<td></td>
 					<td>
-						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color["id"];?>"><?print $color["hex"];?></a>
+						<a class="linkEditMain" href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?print $color["hex"];?>" width="1%">&nbsp;</td>
+					<td bgcolor="#<?php print $color["hex"];?>" width="1%">&nbsp;</td>
 					<td width="1%" align="right">
-						<a href="color.php?action=remove&id=<?print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 					</td>
 				</tr>
-			<?
+			<?php
 			}
 		}
 		## check for completion of odd number second column:
@@ -166,7 +168,7 @@ function color() {
 			?>
 				<td colspan=4></td>
 				</tr>
-			<?
+			<?php
 		}
 	}
 	end_box();	

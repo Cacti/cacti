@@ -1,27 +1,29 @@
-<?/* 
-+-------------------------------------------------------------------------+
-| Copyright (C) 2002 Ian Berry                                            |
-|                                                                         |
-| This program is free software; you can redistribute it and/or           |
-| modify it under the terms of the GNU General Public License             |
-| as published by the Free Software Foundation; either version 2          |
-| of the License, or (at your option) any later version.                  |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-+-------------------------------------------------------------------------+
-| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-+-------------------------------------------------------------------------+
-| This code is currently maintained and debugged by Ian Berry, any        |
-| questions or comments regarding this code should be directed to:        |
-| - iberry@raxnet.net                                                     |
-+-------------------------------------------------------------------------+
-| - raXnet - http://www.raxnet.net/                                       |
-+-------------------------------------------------------------------------+
-*/?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 
 include_once ("include/form.php");
@@ -36,7 +38,7 @@ switch ($_REQUEST["action"]) {
 	case 'gprint_presets_remove':
 		if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 			include_once ('include/top_header.php');
-			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", getenv("HTTP_REFERER"), "graph_templates.php?action=gprint_presets_remove&gprint_preset_id=" . $_GET["gprint_preset_id"]);
+			form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", getenv("HTTP_REFERER"), "graph_templates.php?action=gprint_presets_remove&gprint_preset_id=" . $_GET["gprint_preset_id"]);
 			exit;
 		}
 		
@@ -126,26 +128,26 @@ switch ($_REQUEST["action"]) {
 
 function draw_graph_form_select($main_action) { 
 	global $colors; ?>
-	<tr bgcolor="<?print $colors["panel"];?>">
+	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id">
 		<td colspan="6">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="1%">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graph_templates.php?action=template_edit&graph_template_id=<?print $_GET["graph_template_id"];?>"<?if (strstr($_GET["action"],"template")) {?> selected<?}?>>Graph Template Configuration</option>
-							<option value="graph_templates.php?action=item&graph_template_id=<?print $_GET["graph_template_id"];?>"<?if ((strstr($_GET["action"],"item")) || (strstr($_GET["action"],"input"))) {?> selected<?}?>>Graph Item Template Configuration</option>
+							<option value="graph_templates.php?action=template_edit&graph_template_id=<?php print $_GET["graph_template_id"];?>"<?php if (strstr($_GET["action"],"template")) {?> selected<?php }?>>Graph Template Configuration</option>
+							<option value="graph_templates.php?action=item&graph_template_id=<?php print $_GET["graph_template_id"];?>"<?php if ((strstr($_GET["action"],"item")) || (strstr($_GET["action"],"input"))) {?> selected<?php }?>>Graph Item Template Configuration</option>
 						</select>
 					</td>
 					<td>
-						&nbsp;<a href="graph_templates.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+						&nbsp;<a href="graph_templates.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
 					</td>
 				</tr>
 			</table>
 		</td>
 		</form>
 	</tr>
-<?}
+<?php }
 
 function draw_tabs() {
 	global $action;
@@ -153,13 +155,13 @@ function draw_tabs() {
 	<table height="20" cellspacing="0" cellpadding="0" width="98%" align="center">
 		<tr>
 			<td valign="bottom">
-				<?if ($action != "") {?><a href="graph_templates.php"><?}?><img src="images/tab_con_graph_templates<?if ((strstr($action,"template") == true) || (empty($action)) || ($action == "item_edit")) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?if ($action != "") {?></a><?}?>
-				<?if ($action != "gprint_presets") {?><a href="graph_templates.php?action=gprint_presets"><?}?><img src="images/tab_con_gprint_presets<?if (strstr($action,"gprint_presets") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?if ($action != "gprint_presets") {?></a><?}?>
+				<?php if ($action != "") {?><a href="graph_templates.php"><?php }?><img src="images/tab_con_graph_templates<?php if ((strstr($action,"template") == true) || (empty($action)) || ($action == "item_edit")) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?php if ($action != "") {?></a><?php }?>
+				<?php if ($action != "gprint_presets") {?><a href="graph_templates.php?action=gprint_presets"><?php }?><img src="images/tab_con_gprint_presets<?php if (strstr($action,"gprint_presets") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?php if ($action != "gprint_presets") {?></a><?php }?>
 			</td>
 		</tr>
 	</table>
 	<br>
-	<?	
+	<?php	
 }
 
 /* --------------------------
@@ -224,37 +226,37 @@ function gprint_presets_edit() {
 	?>
 	<form method="post" action="graph_templates.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			Enter a name for this GPRINT preset, make sure it is something you recognize.
 		</td>
-		<?DrawFormItemTextBox("name",$gprint_preset["name"],"","50", "40");?>
+		<?php form_text_box("name",$gprint_preset["name"],"","50", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">GPRINT Text</font><br>
 			Enter the custom GPRINT string here.
 		</td>
-		<?DrawFormItemTextBox("gprint_text",$gprint_preset["gprint_text"],"","50", "40");?>
+		<?php form_text_box("gprint_text",$gprint_preset["gprint_text"],"","50", "40");?>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	
-	DrawFormItemHiddenIDField("gprint_preset_id",$gprint_preset["id"]);
-	DrawFormItemHiddenTextBox("save_component_gprint_presets","1","");
+	form_hidden_id("gprint_preset_id",$gprint_preset["id"]);
+	form_hidden_box("save_component_gprint_presets","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "graph_templates.php?action=gprint_presets");?>
+			<?php form_save_button("save", "graph_templates.php?action=gprint_presets");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
    
@@ -275,24 +277,24 @@ function gprint_presets() {
 	
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=gprint_presets_edit&gprint_preset_id=<?print $template["id"];?>"><?print $template["name"];?></a>
+				<a class="linkEditMain" href="graph_templates.php?action=gprint_presets_edit&gprint_preset_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="graph_templates.php?action=gprint_presets_remove&gprint_preset_id=<?print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graph_templates.php?action=gprint_presets_remove&gprint_preset_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-		<?
+		<?php
 		$i++;
 	}
 	}else{
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 			<td colspan="2">
 				<em>No Items</em>
 			</td>
-		</tr><?
+		</tr><?php
 	}
 	end_box();	
 }
@@ -398,7 +400,7 @@ function item() {
 		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
 		
 		if ($use_custom_row_color == false) {
-			DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i);
+			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
 		}else{
 			print "<tr bgcolor='#$custom_row_color'>";
 		}
@@ -452,16 +454,16 @@ function item() {
 	
 	if (sizeof($template_item_list) > 0) {
 	foreach ($template_item_list as $item) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 	?>
 			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=input_edit&graph_template_input_id=<?print $item["id"];?>&graph_template_id=<?print $_GET["graph_template_id"];?>"><?print $item["name"];?></a>
+				<a class="linkEditMain" href="graph_templates.php?action=input_edit&graph_template_input_id=<?php print $item["id"];?>&graph_template_id=<?php print $_GET["graph_template_id"];?>"><?php print $item["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="graph_templates.php?action=input_remove&graph_template_input_id=<?print $item["id"];?>&graph_template_id=<?print $_GET["graph_template_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graph_templates.php?action=input_remove&graph_template_input_id=<?php print $item["id"];?>&graph_template_id=<?php print $_GET["graph_template_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	$i++;
 	}
 	}else{
@@ -544,7 +546,7 @@ function item_edit() {
 		order by data_template.name,data_template_data.name,data_template_rrd.data_source_name";
 	
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		
@@ -561,21 +563,21 @@ function item_edit() {
 	
 	end_box();
 	
-	DrawFormItemHiddenIDField("graph_template_item_id",$_GET["graph_template_item_id"]);
-	DrawFormItemHiddenIDField("graph_template_id",$_GET["graph_template_id"]);
-	DrawFormItemHiddenIDField("sequence",$template_item["sequence"]);
-	DrawFormItemHiddenIDField("_graph_type_id",$template_item["graph_type_id"]);
-	DrawFormItemHiddenTextBox("save_component_item","1","");
+	form_hidden_id("graph_template_item_id",$_GET["graph_template_item_id"]);
+	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
+	form_hidden_id("sequence",$template_item["sequence"]);
+	form_hidden_id("_graph_type_id",$template_item["graph_type_id"]);
+	form_hidden_box("save_component_item","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);?>
+			<?php form_save_button("save", "graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -588,7 +590,7 @@ function template_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=" . $_GET["graph_template_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=" . $_GET["graph_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -704,23 +706,23 @@ function template_edit() {
 	
 	<form method="post" action="graph_templates.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			The name given to this graph template.
 		</td>
-		<?DrawFormItemTextBox("name",$template["name"],"","50", "40");?>
+		<?php form_text_box("name",$template["name"],"","50", "40");?>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	start_box("<strong>Graph Template</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	while (list($field_name, $field_array) = each($struct_graph)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_graph{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		form_base_checkbox("t_" . $field_name,$template_graph{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
 		draw_nontemplated_item($field_array, $field_name, $template_graph[$field_name]);
@@ -730,19 +732,19 @@ function template_edit() {
 	
 	end_box();
 	
-	DrawFormItemHiddenIDField("graph_template_id",$_GET["graph_template_id"]);
-	DrawFormItemHiddenIDField("graph_template_graph_id",$template_graph["id"]);
-	DrawFormItemHiddenTextBox("save_component_template","1","");
+	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
+	form_hidden_id("graph_template_graph_id",$template_graph["id"]);
+	form_hidden_box("save_component_template","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "graph_templates.php");?>
+			<?php form_save_button("save", "graph_templates.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -762,16 +764,16 @@ function template() {
        
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=template_edit&graph_template_id=<?print $template["id"];?>"><?print $template["name"];?></a>
+				<a class="linkEditMain" href="graph_templates.php?action=template_edit&graph_template_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="graph_templates.php?action=template_remove&graph_template_id=<?print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graph_templates.php?action=template_remove&graph_template_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-		<?
+		<?php
 		$i++;
 	}
 	}
@@ -787,7 +789,7 @@ function input_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -854,31 +856,31 @@ function input_edit() {
 	?>
 	<form method="post" action="graph_templates.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			Enter a name for this graph item input, make sure it is something you recognize.
 		</td>
-		<?DrawFormItemTextBox("name",$graph_template_input["name"],"","50", "40");?>
+		<?php form_text_box("name",$graph_template_input["name"],"","50", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Description</font><br>
 			Enter a description for this graph item input to describe what this input is used for.
 		</td>
-		<?DrawFormItemTextArea("description",$graph_template_input["description"],5,40,"");?>
+		<?php form_text_area("description",$graph_template_input["description"],5,40,"");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Field Type</font><br>
 			How data is to be represented on the graph.
 		</td>
-		<?DrawFormItemDropdownFromSQL("column_name",$graph_template_items,"","",$graph_template_input["column_name"],"","");?>
+		<?php form_dropdown("column_name",$graph_template_items,"","",$graph_template_input["column_name"],"","");?>
 	</tr>
 	
-	<?
+	<?php
 	if (!(isset($_GET["graph_template_input_id"]))) { $_GET["graph_template_input_id"] = 0; }
 	
 	$item_list = db_fetch_assoc("select
@@ -897,13 +899,13 @@ function input_edit() {
 		and graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		order by graph_templates_item.sequence");
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Associated Graph Items</font><br>
 			Select the graph items that you want to accept user input for.
 		</td>
 		<td>
-		<?
+		<?php
 		if (sizeof($item_list) > 0) {
 		foreach ($item_list as $item) {
 			if ($item["graph_template_input_id"] == "") {
@@ -921,7 +923,7 @@ function input_edit() {
 			}
 			
 			$name = "$start_bold Item #" . ($i+1) . ": " . $graph_item_types{$item["graph_type_id"]} . " (" . $consolidation_functions{$item["consolidation_function_id"]} . ")$end_bold";
-			DrawStrippedFormItemCheckBox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",true);
+			form_base_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",true);
 			
 			$i++;
 		}
@@ -932,22 +934,22 @@ function input_edit() {
 		</td>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	
-	DrawFormItemHiddenIDField("graph_template_id",$_GET["graph_template_id"]);
-	DrawFormItemHiddenIDField("graph_template_input_id",$_GET["graph_template_input_id"]);
-	DrawFormItemHiddenTextBox("save_component_input","1","");
+	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
+	form_hidden_id("graph_template_input_id",$_GET["graph_template_input_id"]);
+	form_hidden_box("save_component_input","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);?>
+			<?php form_save_button("save", "graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 

@@ -1,28 +1,31 @@
-<?/* 
-+-------------------------------------------------------------------------+
-| Copyright (C) 2002 Ian Berry                                            |
-|                                                                         |
-| This program is free software; you can redistribute it and/or           |
-| modify it under the terms of the GNU General Public License             |
-| as published by the Free Software Foundation; either version 2          |
-| of the License, or (at your option) any later version.                  |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-+-------------------------------------------------------------------------+
-| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-+-------------------------------------------------------------------------+
-| This code is currently maintained and debugged by Ian Berry, any        |
-| questions or comments regarding this code should be directed to:        |
-| - iberry@raxnet.net                                                     |
-+-------------------------------------------------------------------------+
-| - raXnet - http://www.raxnet.net/                                       |
-+-------------------------------------------------------------------------+
-*/?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "User Administration"; include ('include/auth.php');
+
 include_once ("include/form.php");
 include ("include/config_settings.php");
 
@@ -73,19 +76,19 @@ switch ($_REQUEST["action"]) {
 
 function draw_user_form_select() { 
 	global $colors; ?>
-	<tr bgcolor="#<?print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		</form>
 		<form name="form_user">
 		<td>
 			<select name="cbo_user" onChange="window.location=document.form_user.cbo_user.options[document.form_user.cbo_user.selectedIndex].value">
-				<option value="user_admin.php?action=user_edit&id=<?print $_GET["id"];?>"<?if ($_GET["action"] == "user_edit") {?> selected<?}?>>User Configuration</option>
-				<option value="user_admin.php?action=graph_perms_edit&id=<?print $_GET["id"];?>"<?if ($_GET["action"] == "graph_perms_edit") {?> selected<?}?>>Individual Graph Permissions</option>
-				<option value="user_admin.php?action=graph_config_edit&id=<?print $_GET["id"];?>"<?if ($_GET["action"] == "graph_config_edit") {?> selected<?}?>>User Graph Settings</option>
+				<option value="user_admin.php?action=user_edit&id=<?php print $_GET["id"];?>"<?php if ($_GET["action"] == "user_edit") {?> selected<?php }?>>User Configuration</option>
+				<option value="user_admin.php?action=graph_perms_edit&id=<?php print $_GET["id"];?>"<?php if ($_GET["action"] == "graph_perms_edit") {?> selected<?php }?>>Individual Graph Permissions</option>
+				<option value="user_admin.php?action=graph_config_edit&id=<?php print $_GET["id"];?>"<?php if ($_GET["action"] == "graph_config_edit") {?> selected<?php }?>>User Graph Settings</option>
 			</select>
 		</td>
 		</form>
 	</tr>
-<?}
+<?php }
 
 /* --------------------------
     The Save Function
@@ -179,7 +182,7 @@ function graph_perms_edit() {
 			<table width="100%">
 				<tr>
 					<td align="top" width="50%">
-		<?
+		<?php
 		
 		if (sizeof($graphs) > 0) {
 			foreach ($graphs as $graph) {
@@ -195,7 +198,7 @@ function graph_perms_edit() {
 				print "</td><td valign='top' width='50%'>";
 			    }
 					
-			    DrawStrippedFormItemCheckBox("graph".$graph["id"], $old_value, $graph["title"],"",true);
+			    form_base_checkbox("graph".$graph["id"], $old_value, $graph["title"],"",true);
 			    
 			    $i++;
 			}
@@ -207,22 +210,22 @@ function graph_perms_edit() {
 		</td>
 	</tr>
 	
-    	<?
+    	<?php
 	end_box();
 	
-	DrawFormItemHiddenIDField("user_id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("save_component_graph_perms","1","");
+	form_hidden_id("user_id",$_GET["id"]);
+	form_hidden_box("save_component_graph_perms","1","");
 	
 	if (read_config_option("full_view_user_admin") == "") {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
-				<?DrawFormSaveButton("save", "user_admin.php");?>
+				<?php form_save_button("save", "user_admin.php");?>
 			</td>
 		</tr>
 		</form>
-		<?
+		<?php
 		end_box();
 	}
 }
@@ -249,11 +252,11 @@ function graph_config_edit() {
 	foreach (array_keys($tabs_graphs) as $tab_short_name) {
 		?>
 		<tr>
-			<td colspan="2" bgcolor="#<?print $colors["header"];?>">
-				<span class="textHeaderDark"><?print $tabs_graphs[$tab_short_name];?></span>
+			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
+				<span class="textHeaderDark"><?php print $tabs_graphs[$tab_short_name];?></span>
 			</td>
 		</tr>
-		<?
+		<?php
 		
 		reset($settings_graphs);
 		
@@ -262,17 +265,17 @@ function graph_config_edit() {
 			/* make sure to skip group members here; only parents are allowed */
 			if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
 				++$i;
-				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i);
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 				
 				/* draw the acual header and textbox on the form */
-				DrawFormItem($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
+				form_item_label($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
 				
 				$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . $_GET["id"]);
 				
 				/* choose what kind of item this is */
 				switch ($settings_graphs[$setting]["method"]) {
 					case 'textbox':
-						DrawFormItemTextBox($setting,$current_value,$settings_graphs[$setting]["default"],"");
+						form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
 						print "</tr>\n";
 						break;
 				}
@@ -286,18 +289,18 @@ function graph_config_edit() {
 	
 	end_box();
 	
-	DrawFormItemHiddenIDField("user_id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("save_component_graph_config","1","");
+	form_hidden_id("user_id",$_GET["id"]);
+	form_hidden_box("save_component_graph_config","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "user_admin.php");?>
+			<?php form_save_button("save", "user_admin.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -349,7 +352,7 @@ function user_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -383,90 +386,91 @@ function user_edit() {
 	
 	?>
 	<form method="post" action="user_admin.php">
-	<?
+	<?php
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">User Name</font><br>
 			
 		</td>
-		<?DrawFormItemTextBox('username',$user["username"],"","");?>
+		<?php form_text_box('username',$user["username"],"","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Full Name</font><br>
 			
 		</td>
-		<?DrawFormItemTextBox('full_name',$user["full_name"],"","");?>
+		<?php form_text_box('full_name',$user["full_name"],"","");?>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Password</font><br>
 			
 		</td>
 		<td>
-			<?DrawStrippedFormItemPasswordTextBox("password","","","","40");?><br>
-			<?DrawStrippedFormItemPasswordTextBox("confirm","","","","40");?>
+			<?php form_base_password_box("password","","","","40");?><br>
+			<?php form_base_password_box("confirm","","","","40");?>
 		</td>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Account Options</font><br>
 			
 		</td>
 		<td>
-		<?
-			DrawStrippedFormItemCheckBox("must_change_password",$user["must_change_password"],"User Must Change Password at Next Login","",true);
-			DrawStrippedFormItemCheckBox("graph_settings",$user["graph_settings"],"Allow this User to Keep Custom Graph Settings","on",true);
+		<?php
+			form_base_checkbox("must_change_password",$user["must_change_password"],"User Must Change Password at Next Login","",true);
+			form_base_checkbox("graph_settings",$user["graph_settings"],"Allow this User to Keep Custom Graph Settings","on",true);
 		?>
 		</td>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Graph Options</font><br>
 			
 		</td>
 		<td>
-		<?
-			DrawStrippedFormItemCheckBox("show_tree",$user["show_tree"],"User Has Rights to View Tree Mode","on",true);
-			DrawStrippedFormItemCheckBox("show_list",$user["show_list"],"User Has Rights to View List Mode","on",true);
-			DrawStrippedFormItemCheckBox("show_preview",$user["show_preview"],"User Has Rights to View Preview Mode","on",true);
+		<?php
+			form_base_checkbox("show_tree",$user["show_tree"],"User Has Rights to View Tree Mode","on",true);
+			form_base_checkbox("show_list",$user["show_list"],"User Has Rights to View List Mode","on",true);
+			form_base_checkbox("show_preview",$user["show_preview"],"User Has Rights to View Preview Mode","on",true);
 		?>
 		</td>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
 			The default allow/deny graph policy for this user.
 		</td>
-		<?
-		DrawFormItemDropDownCustomHeader("graph_policy");
-		DrawFormItemDropDownCustomItem("graph_policy","1","Allow",$user["graph_policy"]);
-		DrawFormItemDropDownCustomItem("graph_policy","2","Deny",$user["graph_policy"]);
-		DrawFormItemDropDownCustomFooter();
+		<?php
+		$graph_policy = array(
+			1 => "Allow",
+			2 => "Deny");
+		
+		form_dropdown("graph_policy",$graph_policy,"","",$user["graph_policy"],"","");
 		?>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Login Options</font><br>
 			What to do when this user logs in.
 		</td>
 		<td>
-		<?
-			DrawStrippedFormItemRadioButton("login_opts", $user["login_opts"], "1", "Show the page that user pointed their browser to.","1",true);
-			DrawStrippedFormItemRadioButton("login_opts", $user["login_opts"], "2", "Show the default console screen.","1",true);
-			DrawStrippedFormItemRadioButton("login_opts", $user["login_opts"], "3", "Show the default graph screen.","1",true);
+		<?php
+			form_base_radio_button("login_opts", $user["login_opts"], "1", "Show the page that user pointed their browser to.","1",true);
+			form_base_radio_button("login_opts", $user["login_opts"], "2", "Show the default console screen.","1",true);
+			form_base_radio_button("login_opts", $user["login_opts"], "3", "Show the default graph screen.","1",true);
 		?>
 		</td>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	start_box("User Permissions", "98%", $colors["header"], "3", "center", "");
 	
@@ -485,7 +489,7 @@ function user_edit() {
 			<table width="100%">
 				<tr>
 					<td align="top" width="50%">
-		<?
+		<?php
 		
 		if (sizeof($realms) > 0) {
 		foreach ($realms as $realm) {
@@ -501,7 +505,7 @@ function user_edit() {
 				print "</td><td valign='top' width='50%'>";
 			}
 			
-			DrawStrippedFormItemCheckBox("section".$realm["id"], $old_value, $realm["name"],"",true);
+			form_base_checkbox("section".$realm["id"], $old_value, $realm["name"],"",true);
 			
 			$i++;
 		}
@@ -513,23 +517,23 @@ function user_edit() {
 		</td>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	
-	DrawFormItemHiddenIDField("user_id",$_GET["id"]);
-	DrawFormItemHiddenTextBox("_password",$user["Password"],"");
-	DrawFormItemHiddenTextBox("save_component_user","1","");
+	form_hidden_id("user_id",$_GET["id"]);
+	form_hidden_box("_password",$user["Password"],"");
+	form_hidden_box("save_component_user","1","");
 	
 	if (read_config_option("full_view_user_admin") == "") {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right">
-				<?DrawFormSaveButton("save", "user_admin.php");?>
+				<?php form_save_button("save", "user_admin.php");?>
 			</td>
 		</tr>
 		</form>
-		<?
+		<?php
 		end_box();
 	}
 	
@@ -554,22 +558,22 @@ function user() {
 	
 	if (sizeof($user_list) > 0) {
 	foreach ($user_list as $user) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?print $user["id"];?>"><?print $user["username"];?></a>
+				<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?php print $user["id"];?>"><?php print $user["username"];?></a>
 			</td>
 			<td>
-				<?print $user["full_name"];?>
+				<?php print $user["full_name"];?>
 			</td>
 			<td>
-				<?if ($user["graph_policy"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
+				<?php if ($user["graph_policy"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
 			</td>
 			<td width="1%" align="right">
-				<a href="user_admin.php?action=user_remove&id=<?print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-	<?
+	<?php
 	$i++;
 	}
 	}

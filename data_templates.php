@@ -1,27 +1,29 @@
-<?/* 
-+-------------------------------------------------------------------------+
-| Copyright (C) 2002 Ian Berry                                            |
-|                                                                         |
-| This program is free software; you can redistribute it and/or           |
-| modify it under the terms of the GNU General Public License             |
-| as published by the Free Software Foundation; either version 2          |
-| of the License, or (at your option) any later version.                  |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-+-------------------------------------------------------------------------+
-| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
-+-------------------------------------------------------------------------+
-| This code is currently maintained and debugged by Ian Berry, any        |
-| questions or comments regarding this code should be directed to:        |
-| - iberry@raxnet.net                                                     |
-+-------------------------------------------------------------------------+
-| - raXnet - http://www.raxnet.net/                                       |
-+-------------------------------------------------------------------------+
-*/?>
-<?
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 
 include_once ('include/form.php');
@@ -75,7 +77,7 @@ function template_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["data_template_id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&data_template_id=" . $_GET["data_template_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["data_template_id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&data_template_id=" . $_GET["data_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -207,15 +209,15 @@ function template_edit() {
 	
 	<form method="post" action="data_templates.php">
 		
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			The name given to this data template.
 		</td>
-		<?DrawFormItemTextBox("template_name",$template["name"],"","150", "40");?>
+		<?php form_text_box("template_name",$template["name"],"","150", "40");?>
 	</tr>
 	
-	<?
+	<?php
 	end_box();
 	
 	start_box("Data Template Configuration", "98%", $colors["header"], "3", "center", "");
@@ -224,15 +226,15 @@ function template_edit() {
 	unset($struct_data_source["data_source_path"]);
 	
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_data{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		form_base_checkbox("t_" . $field_name,$template_data{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
 		if ($field_array["type"] == "custom") {
 			$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
-			DrawFormItemMultipleList("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $template_data["id"]), "rra_id");
+			form_multi_dropdown("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $template_data["id"]), "rra_id");
 		}else{
 			draw_nontemplated_item($field_array, $field_name, $template_data[$field_name]);
 		}
@@ -266,30 +268,30 @@ function template_edit() {
 			<td valign="bottom" colspan="3" background="images/tab_back_light.gif">
 				<table border="0" cellspacing="0" cellpadding="0">
 					<tr>
-						<?
+						<?php
 						foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
 						?>
 						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&data_template_id=<?print $_GET["data_template_id"];?>&view_rrd=<?print $template_data_rrd["id"];?>"><?print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&data_template_id=<?php print $_GET["data_template_id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 						</td>
-						<?
+						<?php
 						}
 						?>
 					</tr>
 				</table>
 			</td>
 		</tr>
-		<?
+		<?php
 	}elseif (sizeof($template_data_rrds) == 1) {
 		$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 	}
 	
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_rrd{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		form_base_checkbox("t_" . $field_name,$template_rrd{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
 		draw_nontemplated_item($field_array, $field_name, $template_rrd[$field_name]);
@@ -316,14 +318,14 @@ function template_edit() {
 				$old_value = "";
 			}
 			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
 				<td width="50%">
-					<strong><?print $field["name"];?></strong><br>
-					<?DrawStrippedFormItemCheckBox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+					<strong><?php print $field["name"];?></strong><br>
+					<?php form_base_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
 				</td>
-				<?DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");?>
+				<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>
 			</tr>
-			<?
+			<?php
 			
 			$i++;
 		}
@@ -334,22 +336,22 @@ function template_edit() {
 		end_box();
 	}
 	
-	DrawFormItemHiddenIDField("data_template_id",$_GET["data_template_id"]);
-	DrawFormItemHiddenIDField("host_id",$_GET["host_id"]);
-	DrawFormItemHiddenIDField("data_template_data_id",$template_data["id"]);
-	DrawFormItemHiddenIDField("data_template_rrd_id",$template_rrd["id"]);
-	DrawFormItemHiddenIDField("current_rrd",$_GET["view_rrd"]);
-	DrawFormItemHiddenTextBox("save_component_template","1","");
+	form_hidden_id("data_template_id",$_GET["data_template_id"]);
+	form_hidden_id("host_id",$_GET["host_id"]);
+	form_hidden_id("data_template_data_id",$template_data["id"]);
+	form_hidden_id("data_template_rrd_id",$template_rrd["id"]);
+	form_hidden_id("current_rrd",$_GET["view_rrd"]);
+	form_hidden_box("save_component_template","1","");
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "data_templates.php");?>
+			<?php form_save_button("save", "data_templates.php");?>
 		</td>
 	</tr>
 	</form>
-	<?
+	<?php
 	end_box();
 }
 
@@ -370,16 +372,16 @@ function template() {
        
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
-		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="data_templates.php?action=template_edit&data_template_id=<?print $template["id"];?>"><?print $template["name"];?></a>
+				<a class="linkEditMain" href="data_templates.php?action=template_edit&data_template_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="data_templates.php?action=template_remove&data_template_id=<?print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="data_templates.php?action=template_remove&data_template_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
-		<?
+		<?php
 		$i++;
 	}
 	}
