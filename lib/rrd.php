@@ -284,10 +284,13 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 			$regexps[$i] = '/[0-9]+:\s+';
 			
 			for ($j=0;$j<count($fetch_array["data_source_names"]);$j++) {
+				/* it seems that at least some versions of the Windows RRDTool binary pads
+				the exponent to 3 digits, rather than 2 on every Unix version that I have 
+				ever seen */
 				if ($j == $i) {
-					$regexps[$i] .= '([0-9]{1}\.[0-9]+)e([\+-][0-9]{2})';
+					$regexps[$i] .= '([0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})';
 				}else{
-					$regexps[$i] .= '[0-9]{1}\.[0-9]+e[\+-][0-9]{2}';
+					$regexps[$i] .= '[0-9]{1}\.[0-9]+e[\+-][0-9]{2,3}';
 				}
 				
 				if ($j < count($fetch_array["data_source_names"])) {
@@ -822,7 +825,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		data source of global cdef, but is unique when those two variables combine. */
 		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_total = "";
 		
-		if ((!empty($graph_item["cdef_id"])) && (isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}) == false)) {
+		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
 			$cdef_string = get_cdef($graph_item["cdef_id"]);
 			
 			/* create cdef string for "total all data sources" if requested */
@@ -863,7 +866,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			$cdef_graph_defs .= " \\\n";
 			
 			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
-			$cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]} = "$i";
+			$cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id] = "$i";
 		}
 		
 		/* add the cdef string to the end of the def string */
@@ -905,7 +908,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$data_source_name = "";
 			}
 		}else{
-			$data_source_name = "cdef" . generate_graph_def_name(strval($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}));
+			$data_source_name = "cdef" . generate_graph_def_name(strval($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]));
 		}
 		
 		/* to make things easier... if there is no text format set; set blank text */
