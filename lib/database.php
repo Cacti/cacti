@@ -262,4 +262,32 @@ function delrec ($table, $where) {
 	}
 }
 
+function sql_save($array_items, $table_name) {
+	$sql_save .= "replace into $table_name (";
+	
+	while (list($field_name, $field_value) = each($array_items)) {
+	 	$sql_save_fields .= "$field_name,";
+		
+		if (eregi("(PASSWORD\()|(MD5\()|(NOW\()", $field_value)) {
+			$quote = "";
+		}else{
+			$quote = "\"";
+		}
+		
+		$sql_save_values .= "$quote$field_value$quote,";
+	}
+	
+	/* chop off the last ',' */
+	$sql_save_fields = substr($sql_save_fields, 0, (strlen($sql_save_fields)-1));
+	$sql_save_values = substr($sql_save_values, 0, (strlen($sql_save_values)-1));
+	
+	/* form the SQL string */
+	$sql_save = "replace into $table_name ($sql_save_fields) values ($sql_save_values)";
+	
+	db_execute($sql_save);
+	
+	/* get the last AUTO_ID and return it */
+	return db_fetch_cell("select LAST_INSERT_ID()");
+}
+
 ?>

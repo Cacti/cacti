@@ -30,67 +30,83 @@ include_once ('include/form.php');
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
+$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+
 switch ($action) {
  case 'save':
-    $sql_id = db_execute("replace into def_colors (id,hex) values ($id,\"$form[Hex]\")");
-    
-    header ("Location: color.php");
-    break;
+ 	$save["ID"] = $form["ID"];
+	$save["Hex"] = $form["Hex"];
+	
+	sql_save($save, "def_colors");
+
+	header ("Location: $current_script_name");
+	break;
  case 'remove':
-    db_execute("delete from def_colors where id=$id");
+    	db_execute("delete from def_colors where id=$id");
     
-    header ("Location: color.php");
-    break;
+    	header ("Location: $current_script_name");
+	break;
  case 'edit':
-    include_once ('include/top_header.php');
+	include_once ("include/top_header.php");
+	$title_text = "Color Management [edit]";
+	include_once ("include/top_table_header.php");
+	
+	if (isset($args[id])) {
+		$color = db_fetch_row("select * from def_colors where id=$id");
+	}else{
+		unset($color);
+	}
     
-    if ($id != "") {
-	$color = db_fetch_row("select * from def_colors where id=$id");
-    }
-    
-    DrawFormHeader("rrdtool Colors Configuration","",false);
-    
-    DrawFormItem("Hex Value","The hex value for this color; valid range: 000000-FFFFFF.");
-    DrawFormItemTextBox("Hex",$color[Hex],"","");
-    
-    DrawFormSaveButton();
-    DrawFormItemHiddenIDField("ID",$id);
-    DrawFormFooter();
-    
-    include_once ("include/bottom_footer.php");
-    
-    break;
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Hex Value</font><br>
+			The hex value for this color; valid range: 000000-FFFFFF.
+		</td>
+		<?DrawFormItemTextBox("Hex",$color[Hex],"","6", "40");?>
+	</tr>
+	
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right" background="images/blue_line.gif">
+			<?DrawFormSaveButton("save");?>
+		</td>
+	</tr>
+	<?
+	
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	DrawFormFooter();
+	
+	include_once ("include/bottom_footer.php");
+    	break;
  default:
-    include_once ('include/top_header.php');
-    
-    DrawMatrixTableBegin("97%");
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderTop("Defined rrdtool Colors",$colors[dark_bar],"","2");
-    DrawMatrixHeaderAdd($colors[dark_bar],"","color.php?action=edit");
-    DrawMatrixRowEnd();
-    
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderItem("Hex Value",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("Color",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("",$colors[panel],$colors[panel_text]);
-    DrawMatrixRowEnd();
-    
-    $color_list = db_fetch_assoc("select * from def_colors order by hex");
-    $rows = sizeof($color_list);
-    
-    $i = 0;
-    while ($i < $rows) { 
-	$color = $color_list[$i];
-	DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-	DrawMatrixLoopItem("$color[Hex]",html_boolean($config["vis_main_column_bold"]["value"]),"color.php?action=edit&id=$color[ID]");
-	DrawMatrixCustom("<td bgcolor=\"#$color[Hex]\" width=\"1%\">&nbsp;</td>");
-	DrawMatrixLoopItemAction("Remove",$colors[panel],"",false,"color.php?action=remove&id=$color[ID]");
+	include_once ("include/top_header.php");
+	$title_text = "Color Management"; $add_text = "$current_script_name?action=edit";
+	include_once ("include/top_table_header.php");
+	
+	DrawMatrixRowBegin();
+		DrawMatrixHeaderItem("Hex Value",$colors[panel],$colors[panel_text]);
+		DrawMatrixHeaderItem("Color",$colors[panel],$$colors[panel_text]);
 	DrawMatrixRowEnd();
-	$i++;
-    }
     
-    DrawMatrixTableEnd();
-    include_once ("include/bottom_footer.php");
+	$color_list = db_fetch_assoc("select * from def_colors order by hex");
+	$rows = sizeof($color_list);
+	
+	foreach ($color_list as $color) {
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
+			?>
+			<td>
+				<a class="linkEditMain" href="color.php?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
+			</td>
+			<td bgcolor="#<?print $color[Hex];?>" width="1%">&nbsp;</td>
+			<td width="1%" align="right">
+				<a href="graphs.php?action=graph_remove&id=<?print $graph[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+	<?
+	$i++;
+	}
+		
+	include_once ("include/bottom_footer.php");
+	include_once ("include/bottom_table_footer.php");
     
     break;
 } ?>
