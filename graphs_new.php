@@ -491,7 +491,6 @@ function graphs() {
 	?>
 	<form name="form_graph_id">
 	<table width="98%" align="center">
-		
 		<tr>
 			<td class="textInfo" colspan="2">
 				<?php print $host["description"];?> (<?php print $host["hostname"];?>)
@@ -507,8 +506,8 @@ function graphs() {
 				Create new graphs for the following host:
 			</td>
 			<td class="textInfo" rowspan="2" valign="top">
-				*<a href="host.php?action=edit&id=<?php print $_REQUEST["host_id"];?>">Edit this Host</a><br>
-				*<a href="host.php?action=edit">Create New Host</a>
+				<span style="color: #c16921;">*</span><a href="host.php?action=edit&id=<?php print $_REQUEST["host_id"];?>">Edit this Host</a><br>
+				<span style="color: #c16921;">*</span><a href="host.php?action=edit">Create New Host</a>
 			</td>
 		</tr>
 			<td>
