@@ -659,7 +659,7 @@ function host_edit() {
 	start_box("<strong>Polling Hosts</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
-	<form method="post" action="host.php">
+	<form method="post" name="chk" action="host.php">
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
@@ -847,9 +847,14 @@ function host_edit() {
 				if ($field_array["direction"] == "input") {
 					$i++;
 					
-					if ($i < $num_input_fields) { $colspan = 1; }else{ $colspan = 2; }
+					/* draw each header item <TD> */
+					DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
 					
-					DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
+					/* draw the 'check all' box if we are at the end of the row */
+					if ($i >= $num_input_fields) {
+						print "<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\")'></td>\n";
+					}
+					
 					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
 					
 					if (sizeof($raw_data) > 0) {
