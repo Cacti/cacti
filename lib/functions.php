@@ -318,11 +318,11 @@ function log_data($string, $output = false) {
 	/* Log to Syslog/Eventlog */
 	if (($logdestination == 2) || ($logdestination == 3)) {
 		define_syslog_variables();
-		openlog("Cacti Logging", LOG_PID, LOG_USER);
+		openlog("Cacti Logging", LOG_PERROR | LOG_NDELAY | LOG_PID, LOG_SYSLOG);
 		if (substr_count($string,"ERROR:") <> 0)
-			syslog(1, $string);
+			syslog(LOG_ALERT, $string);
 		else
-			syslog(6, $string);
+			syslog(LOG_INFO, $string);
 		closelog();
 	}
 }
