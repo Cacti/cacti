@@ -10,7 +10,7 @@ include_once(dirname(__FILE__) . "/../lib/snmp.php");
 if ( $_SERVER["argc"] > 1 ) {
 	$args = $_SERVER["argv"];
 	array_shift($args);
-	return call_user_func_array("ss_host_disk", $args);
+	print call_user_func_array("ss_host_disk", $args);
 }
 
 function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd, $arg1, $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
@@ -45,7 +45,7 @@ function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd,
 
 			if (($arg == "total") || ($arg == "used")) {
 				/* get hrStorageAllocationUnits from the snmp cache since it is faster */
-				$sau = db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='hrStorageAllocationUnits' and snmp_index='$index'");
+				$sau = eregi_replace("[^0-9]", "", db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='hrStorageAllocationUnits' and snmp_index='$index'"));
 
 				return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, "", "", $snmp_port, $snmp_timeout) * $sau;
 			}else{

@@ -10,7 +10,7 @@ include_once(dirname(__FILE__) . "/../lib/snmp.php");
 if ( $_SERVER["argc"] > 1 ) {
 	$args = $_SERVER["argv"];
 	array_shift($args);
-	return call_user_func_array("ss_host_cpu", $args);
+	print call_user_func_array("ss_host_cpu", $args);
 }
 
 function ss_host_cpu($hostname, $snmp_community, $snmp_version, $cmd, $arg1, $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
