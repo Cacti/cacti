@@ -177,7 +177,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 					++$heading_ct;
 				}
 				
-				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1'><a
+				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
 					href='graph.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
 					<img src='images/$ec_icon.gif' border='0'></a></td>\n";
 			}else{
