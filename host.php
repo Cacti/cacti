@@ -214,24 +214,22 @@ function host_new_graphs_save() {
 					$new_graph_snmp_indexes[$snmp_query_id][$local_graph_id] = $snmp_index;
 					$new_graph_index_to_local[$snmp_query_id][$snmp_index] = $local_graph_id;
 					
-					reset($snmp_query_array["suggested_values"][0]["graph"][0]);
-					
 					/* suggested values for snmp query code */
-					if (isset($snmp_query_array["suggested_values"][0]["graph"])) {
-						while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]["graph"][0])) {
-							while (list($sv_name, $sv_value) = each($sv_array[0])) {
-								/* once we find a match; don't try to find more */
-								if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $sv_field_name})) {
-									$subs_string = subsitute_host_data($sv_value, "|", "|", $_POST["host_id"]);
-									$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
-									
-									/* if there are no '|' characters, all of the subsitutions were successful */
-									if (!strstr($subs_string, "|")) {
-										$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $sv_field_name} = $subs_string;
-									}
-								}
+					$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id order by sequence");
+					
+					if (sizeof($suggested_values) > 0) {
+					foreach ($suggested_values as $suggested_value) {
+						/* once we find a match; don't try to find more */
+						if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]})) {
+							$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
+							$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
+							
+							/* if there are no '|' characters, all of the subsitutions were successful */
+							if (!strstr($subs_string, "|")) {
+								$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $subs_string;
 							}
 						}
+					}
 					}
 				}
 			}
@@ -279,24 +277,22 @@ function host_new_graphs_save() {
 						$new_data_snmp_indexes[$snmp_query_id][$local_data_id] = $snmp_index;
 						$new_data_index_to_local[$snmp_query_id]{$data_template["id"]}[$snmp_index] = $local_data_id;
 						
-						reset($snmp_query_array["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0]);
-						
 						/* suggested values for snmp query code */
-						if (isset($snmp_query_array["suggested_values"][0]{"ds_" . $data_template["data_source_name"]})) {
-							while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0])) {
-								while (list($sv_name, $sv_value) = each($sv_array[0])) {
-									/* once we find a match; don't try to find more */
-									if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $sv_field_name})) {
-										$subs_string = subsitute_host_data($sv_value, "|", "|", $_POST["host_id"]);
-										$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
-										
-										/* if there are no '|' characters, all of the subsitutions were successful */
-										if (!strstr($subs_string, "|")) {
-											$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $sv_field_name} = $subs_string;
-										}
-									}
+						$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["id"] . " order by sequence");
+					
+						if (sizeof($suggested_values) > 0) {
+						foreach ($suggested_values as $suggested_value) {
+							/* once we find a match; don't try to find more */
+							if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]})) {
+								$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
+								$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
+								
+								/* if there are no '|' characters, all of the subsitutions were successful */
+								if (!strstr($subs_string, "|")) {
+									$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $subs_string;
 								}
 							}
+						}
 						}
 					}
 				}
@@ -522,7 +518,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					/* we must treat suggested values for snmp queries different because one
 					entry here might might 20 graphs... so we can't automatically fill in the 
 					values */
-					if ((!empty($snmp_query_id)) && ($snmp_queries["suggested_values"][0]["graph"][0][$field_name])) {
+					if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id")) > 0)) {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 						print "<td><strong>" . $struct_graph[$field_name]["title"] . "</strong></td>";
 						print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
@@ -588,7 +584,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 							entry here might might 20 graphs... so we can't automatically fill in the 
 							values */
 							
-							if ((!empty($snmp_query_id)) && (isset($snmp_queries["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0][$field_name]))) {
+							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"])) > 0)) {
 								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 								print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
 								print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
@@ -827,21 +823,32 @@ function host_edit() {
 					</tr>";
 			
 			$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
-			$snmp_queries = xml2array($data);
+			$xml_array = xml2array($data);
 			$xml_outputs = array();
 			
 			print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			
+			$num_input_fields = 0;
+			
+			/* loop through once so we can find out how many input fields there are */
+			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
+				if ($field_array[0]["direction"] == "input") {
+					$num_input_fields++;
+				}
+			}
+			
+			reset($xml_array["fields"][0]);
 			$snmp_query_indexes = array();
 			$i = 0;
 			
-			while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
-				$i++;
+			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
 				$field_array = $field_array[0];
 				
-				if (($i+1) < count($snmp_queries["fields"][0])) { $colspan = 1; }else{ $colspan = 2; }
-				
 				if ($field_array["direction"] == "input") {
+					$i++;
+					
+					if ($i < $num_input_fields) { $colspan = 1; }else{ $colspan = 2; }
+					
 					DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
 					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
 					
@@ -861,8 +868,8 @@ function host_edit() {
 			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
 				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				
-				reset($snmp_queries["fields"][0]);
-				while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
+				reset($xml_array["fields"][0]);
+				while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
 					if ($field_array[0]["direction"] == "input") {
 						if (isset($snmp_query_data[$field_name][$snmp_index])) {
 							print "<td>" . $snmp_query_data[$field_name][$snmp_index] . "</td>";
@@ -874,7 +881,9 @@ function host_edit() {
 					}
 				}
 				
-				form_checkbox("sg_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
+				print "<td align='right'>";
+				form_base_checkbox("sg_" . $snmp_query["id"] . "_" . $snmp_index,"","","",0,false);
+				print "</td>";
 				print "</tr>\n";
 			}
 			}
