@@ -217,7 +217,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}
 
 	if (ereg("^[0-9]+$", $regexp_match_array[4])) {
-		$summation_timespan_start = $regexp_match_array[4];
+		$summation_timespan_start = -$regexp_match_array[4];
 	}else{
 		$summation_timespan_start = $graph_start;
 	}
