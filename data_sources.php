@@ -178,9 +178,11 @@ function form_save() {
 			/* save entried in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
 			
-			for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
-				db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
-					values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+			if (isset($_POST["rra_id"])) {
+				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+				}
 			}
 		}
 	}
@@ -231,13 +233,12 @@ function form_save() {
 		}
 	}
 	
-	if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
+	if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
 		header ("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["view_rrd"]) ? $_POST["view_rrd"] : "0"));
 	}else{
 		header ("Location: data_sources.php");
 	}
 }
-
 
 /* --------------------------
     Global Form Functions
@@ -799,7 +800,8 @@ function ds_edit() {
 	}
 	
 	form_hidden_id("_data_template_id",(isset($data) ? $data["data_template_id"] : "0"));
-	form_hidden_box("_host_id",$host_id,(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));
+	form_hidden_id("_host_id",$host_id,(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));
+	form_hidden_id("_data_input_id",$host_id,(isset($_GET["data_input_id"]) ? $_GET["data_input_id"] : "0"));
 	form_hidden_id("data_template_data_id",(isset($data) ? $data["id"] : "0"));
 	form_hidden_id("data_template_rrd_id",(isset($rrd) ? $rrd["id"] : "0"));
 	form_hidden_id("local_data_template_data_id",(isset($data) ? $data["local_data_template_data_id"] : "0"));
