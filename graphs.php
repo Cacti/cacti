@@ -70,6 +70,37 @@
 	<?}
 	
 switch ($action) {
+	case 'item_remove':
+		db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
+		
+		header ("Location: graphs.php?action=item&local_graph_id=$args[local_graph_id]");
+		break;
+	case 'item_save':
+		$save["id"] = $form["graph_template_item_id"];
+		$save["graph_template_id"] = $form["graph_template_id"];
+		$save["local_graph_id"] = $form["local_graph_id"];
+		$save["task_item_id"] = $form["task_item_id"];
+		$save["color_id"] = $form["color_id"];
+		$save["graph_type_id"] = $form["graph_type_id"];
+		$save["cdef_id"] = $form["cdef_id"];
+		$save["consolidation_function_id"] = $form["consolidation_function_id"];
+		$save["text_format"] = $form["text_format"];
+		$save["value"] = $form["value"];
+		$save["hard_return"] = $form["hard_return"];
+		$save["gprint_opts"] = $form["gprint_opts"];
+		$save["gprint_custom"] = $form["gprint_custom"];
+		$save["custom"] = $form["custom"];
+		$save["sequence"] = $form["sequence"];
+		$save["sequence_parent"] = $form["sequence_parent"];
+		$save["parent"] = $form["parent"];
+		
+		$graph_template_item_id = sql_save($save, "graph_templates_item");
+		
+		include_once ("include/utility_functions.php");
+		update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
+		
+		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
 		$title_text = "Graph Template Management [edit]";
@@ -217,8 +248,9 @@ switch ($action) {
 		</tr>
 		<?
 		
-		DrawFormItemHiddenIDField("graph_template_item_id",$args[graph_template_item_id]);
-		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
+		DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
+		DrawFormItemHiddenIDField("graph_template_graph_id",$args[graph_template_item_id]);
+		DrawFormItemHiddenIDField("graph_template_id",$template_item[graph_template_id]);
 		DrawFormItemHiddenIDField("sequence",$template_item[sequence]);
 		DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
 		DrawFormItemHiddenIDField("_parent",$template_item[parent]);
@@ -283,7 +315,7 @@ switch ($action) {
 		?>
 		<tr>
 			<td colspan="6" class="textSubHeaderDark" bgcolor="#00438C">Graph Item Configuration<?if ($graph_template_id != 0) { print " <strong>[Template: $graph_template_name]</strong>"; }?></td>
-			<td class="textHeaderDark" align="right" bgcolor="#00438C"><?if ($graph_template_id == "0") {?><strong><a class="linkOverDark" href="graph_templates.php?action=item_edit&graph_template_id=<?print $args[graph_template_id];?>">Add</a>&nbsp;</strong><?}?></td>
+			<td class="textHeaderDark" align="right" bgcolor="#00438C"><?if ($graph_template_id == "0") {?><strong><a class="linkOverDark" href="graphs.php?action=item_edit&local_graph_id=<?print $args[local_graph_id];?>">Add</a>&nbsp;</strong><?}?></td>
 		</tr>
 		<?
 		
@@ -397,7 +429,7 @@ switch ($action) {
 					<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item[hex];?><?if ($bold_this_row == true) { print "</strong>"; }?>
 				</td>
 				<td width="1%" align="right">
-					<?if ($graph_template_id == "0") {?><a href="graph_templates.php?action=item_remove&graph_template_id_graph=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;<?}?>
+					<?if ($graph_template_id == "0") {?><a href="graphs.php?action=item_remove&graph_template_item_id=<?print $item[id];?>&local_graph_id=<?print $args[local_graph_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;<?}?>
 				</td>
 			</tr>
 		<?
@@ -505,39 +537,22 @@ switch ($action) {
 		$save["local_graph_id"] = $local_graph_id;
 		$save["graph_template_id"] = $form["graph_template_id"];
 		$save["order_key"] = $form["order_key"];
-		$save["t_image_format_id"] = $form["t_image_format_id"];
 		$save["image_format_id"] = $form["image_format_id"];
-		$save["t_title"] = $form["t_title"];
 		$save["title"] = $form["title"];
-		$save["t_height"] = $form["t_height"];
 		$save["height"] = $form["height"];
-		$save["t_width"] = $form["t_width"];
 		$save["width"] = $form["width"];
-		$save["t_upper_limit"] = $form["t_upper_limit"];
 		$save["upper_limit"] = $form["upper_limit"];
-		$save["t_lower_limit"] = $form["t_lower_limit"];
 		$save["lower_limit"] = $form["lower_limit"];
-		$save["t_vertical_label"] = $form["t_vertical_label"];
 		$save["vertical_label"] = $form["vertical_label"];
-		$save["t_auto_scale"] = $form["t_auto_scale"];
 		$save["auto_scale"] = $form["auto_scale"];
-		$save["t_auto_scale_opts"] = $form["t_auto_scale_opts"];
 		$save["auto_scale_opts"] = $form["auto_scale_opts"];
-		$save["t_auto_scale_log"] = $form["t_auto_scale_log"];
 		$save["auto_scale_log"] = $form["auto_scale_log"];
-		$save["t_auto_scale_rigid"] = $form["t_auto_scale_rigid"];
 		$save["auto_scale_rigid"] = $form["auto_scale_rigid"];
-		$save["t_auto_padding"] = $form["t_auto_padding"];
 		$save["auto_padding"] = $form["auto_padding"];
-		$save["t_base_value"] = $form["t_base_value"];
 		$save["base_value"] = $form["base_value"];
-		$save["t_grouping"] = $form["t_grouping"];
 		$save["grouping"] = $form["grouping"];
-		$save["t_export"] = $form["t_export"];
 		$save["export"] = $form["export"];
-		$save["t_unit_value"] = $form["t_unit_value"];
 		$save["unit_value"] = $form["unit_value"];
-		$save["t_unit_exponent_value"] = $form["t_unit_exponent_value"];
 		$save["unit_exponent_value"] = $form["unit_exponent_value"];
 		
 		sql_save($save, "graph_templates_graph");
@@ -554,17 +569,16 @@ switch ($action) {
 		
 		break;
 	case 'graph_remove':
-		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 			include_once ('include/top_header.php');
-			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this graph?", "graphs.php", "?action=remove&id=$id");
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=$args[local_graph_id]") . "</strong>?", "graphs.php", "?action=graph_remove&local_graph_id=$args[local_graph_id]");
 			exit;
 		}
 		
-		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
-			db_execute("delete from rrd_graph where id=$id");
-			db_execute("delete from rrd_graph_item where graphid=$id");
-			db_execute("delete from graph_hierarchy_items where graphid=$id");
-			db_execute("delete from auth_graph where graphid=$id");
+		if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+			db_execute("delete from graph_templates_graph where local_graph_id=$args[local_graph_id]");
+			db_execute("delete from graph_templates_item where local_graph_id=$args[local_graph_id]");
+			db_execute("delete from graph_local where id=$args[local_graph_id]");
 		}
 		
 		header ("Location: graphs.php");
@@ -1024,7 +1038,7 @@ switch ($action) {
 					<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?print $graph[local_graph_id];?>"><?print $graph[title];?></a>
 				</td>
 				<td>
-					<?print $graph[name];?>
+					<?if ($graph[name] == "") { print "<em>None</em>"; }else{ print $graph[name]; }?>
 				</td>
 				<td>
 					<?print $graph[height];?>x<?print $graph[width];?>
