@@ -345,10 +345,11 @@ function stri_replace($find, $replace, $string) {
 }
 
 function clean_up_name($string) {
-    $string = preg_replace("/[\s\.]+/", "_", $string);
-    $string = preg_replace("/[^a-zA-Z0-9_]+/", "", $string);
-    
-    return $string;
+	$string = preg_replace("/[\s\.]+/", "_", $string);
+	$string = preg_replace("/_{2,}/", "_", $string);
+	$string = preg_replace("/[^a-zA-Z0-9_]+/", "", $string);
+	
+	return $string;
 }
 
 function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
@@ -399,7 +400,7 @@ function generate_data_source_path($local_data_id) {
 	}
 	
 	/* put it all together using the local_data_id at the end */
-	$new_path = "<path_rra>/$host_part$ds_part" . "_" . "$local_data_id.rrd	";
+	$new_path = "<path_rra>/$host_part$ds_part" . "_" . "$local_data_id.rrd";
 	
 	/* update our changes to the db */
 	db_execute("update data_template_data set data_source_path='$new_path' where local_data_id=$local_data_id");
