@@ -1,0 +1,50 @@
+<interface>
+	<name>Get Host Partition Information</name>
+	<oid_index>.1.3.6.1.2.1.25.2.3.1</oid_index>
+	
+	<fields>
+		<hrStorageIndex>
+			<name>Index</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.25.2.3.1.1</oid>
+		</hrStorageIndex>
+		<hrStorageDescr>
+			<name>Description</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.25.2.3.1.3</oid>
+		</hrStorageDescr>
+		<hrStorageAllocationUnits>
+			<name>Storage Allocation Units</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.25.2.3.1.4</oid>
+		</hrStorageAllocationUnits>
+		
+		<hrStorageSize>
+			<name>Total Size</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.25.2.3.1.5</oid>
+		</hrStorageSize>
+		<hrStorageUsed>
+			<name>Total Used</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.25.2.3.1.6</oid>
+		</hrStorageUsed>
+		<hrStorageAllocationFailures>
+			<name>Allocation Failures</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.25.2.3.1.7</oid>
+		</hrStorageAllocationFailures>
+	</fields>
+</interface>
