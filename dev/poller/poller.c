@@ -41,13 +41,13 @@ void *poller(){
       printf("result: %lli\n",result);
       #ifdef RRD
       //internal rrd_update
-      sprintf(rrdcmd,"update %s %s N:%lli", entry->rrd_path, entry->rrd_name, result);
+      sprintf(rrdcmd,"update %s --template %s N:%lli", entry->rrd_path, entry->rrd_name, result);
       printf("RRD: rrd_update(%s)\n",rrdcmd);
       rrdargv = string_to_argv(rrdcmd, &rrdargc);
       rrd_update(rrdargc, rrdargv);
       #else
       //external rrdtool command
-      sprintf(rrdcmd,"rrdtool update %s %s N:%lli", entry->rrd_path, entry->rrd_name, result);
+      sprintf(rrdcmd,"rrdtool update %s --template %s N:%lli", entry->rrd_path, entry->rrd_name, result);
       printf("RRD: %s\n",rrdcmd);
       system(rrdcmd);
       #endif
