@@ -303,6 +303,14 @@ INSERT INTO data_input_data VALUES (14,41,'on','');
 INSERT INTO data_input_data VALUES (12,55,'on','');
 INSERT INTO data_input_data VALUES (13,55,'on','');
 INSERT INTO data_input_data VALUES (14,55,'on','');
+INSERT INTO data_input_data VALUES (33,56,'on','');
+INSERT INTO data_input_data VALUES (32,56,'on','');
+INSERT INTO data_input_data VALUES (31,56,'on','');
+INSERT INTO data_input_data VALUES (33,57,'on','');
+INSERT INTO data_input_data VALUES (32,57,'on','');
+INSERT INTO data_input_data VALUES (31,57,'on','');
+INSERT INTO data_input_data VALUES (6,58,'','.1.3.6.1.2.1.25.1.6');
+INSERT INTO data_input_data VALUES (6,59,'','.1.3.6.1.2.1.25.1.5');
 
 --
 -- Table structure for table 'data_input_data_cache'
@@ -467,7 +475,7 @@ INSERT INTO data_template VALUES (17,'Unix - Logged in Users');
 INSERT INTO data_template VALUES (18,'Unix - Ping Host');
 INSERT INTO data_template VALUES (19,'Netware - Total Users');
 INSERT INTO data_template VALUES (20,'Netware - Total Logins');
-INSERT INTO data_template VALUES (21,'Netware - CPU Usage');
+INSERT INTO data_template VALUES (45,'Host MIB - Processes');
 INSERT INTO data_template VALUES (22,'Netware - File System Reads');
 INSERT INTO data_template VALUES (23,'Netware - File System Writes');
 INSERT INTO data_template VALUES (24,'Netware - Cache Checks');
@@ -489,6 +497,9 @@ INSERT INTO data_template VALUES (39,'Interface - Unicast Packets');
 INSERT INTO data_template VALUES (40,'Interface - Non-Unicast Packets');
 INSERT INTO data_template VALUES (41,'Interface - Traffic');
 INSERT INTO data_template VALUES (42,'Netware - CPU Utilization');
+INSERT INTO data_template VALUES (43,'Host MIB - Hard Drive Space');
+INSERT INTO data_template VALUES (44,'Host MIB - CPU Utilization');
+INSERT INTO data_template VALUES (46,'Host MIB - Logged in Users');
 
 --
 -- Table structure for table 'data_template_data'
@@ -540,7 +551,7 @@ INSERT INTO data_template_data VALUES (17,0,0,17,5,'on','|host_description| - Lo
 INSERT INTO data_template_data VALUES (18,0,0,18,10,'on','|host_description| - Ping Host',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (19,0,0,19,1,'on','|host_description| - Total Users',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (20,0,0,20,1,'on','|host_description| - Total Logins',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (21,0,0,21,1,'on','|host_description| - CPU Usage',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (58,0,0,45,1,'on','|host_description| - Processes',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (22,0,0,22,1,'on','|host_description| - File System Reads',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (23,0,0,23,1,'on','|host_description| - File System Writes',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (24,0,0,24,1,'on','|host_description| - Cache Checks',NULL,'','on','',300,'');
@@ -562,6 +573,9 @@ INSERT INTO data_template_data VALUES (39,0,0,39,2,'on','|host_description| - Un
 INSERT INTO data_template_data VALUES (40,0,0,40,2,'on','|host_description| - Non-Unicast Packets',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (41,0,0,41,2,'on','|host_description| - Traffic',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (55,0,0,42,2,'','|host_description| - CPU Utilization',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (56,0,0,43,11,'','|host_description| - Hard Drive Space',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (57,0,0,44,11,'','|host_description| - CPU Utilization',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (59,0,0,46,1,'on','|host_description| - Logged in Users',NULL,'','on','',300,'');
 
 --
 -- Table structure for table 'data_template_data_rra'
@@ -659,10 +673,6 @@ INSERT INTO data_template_data_rra VALUES (20,1);
 INSERT INTO data_template_data_rra VALUES (20,2);
 INSERT INTO data_template_data_rra VALUES (20,3);
 INSERT INTO data_template_data_rra VALUES (20,4);
-INSERT INTO data_template_data_rra VALUES (21,1);
-INSERT INTO data_template_data_rra VALUES (21,2);
-INSERT INTO data_template_data_rra VALUES (21,3);
-INSERT INTO data_template_data_rra VALUES (21,4);
 INSERT INTO data_template_data_rra VALUES (22,1);
 INSERT INTO data_template_data_rra VALUES (22,2);
 INSERT INTO data_template_data_rra VALUES (22,3);
@@ -747,6 +757,22 @@ INSERT INTO data_template_data_rra VALUES (55,1);
 INSERT INTO data_template_data_rra VALUES (55,2);
 INSERT INTO data_template_data_rra VALUES (55,3);
 INSERT INTO data_template_data_rra VALUES (55,4);
+INSERT INTO data_template_data_rra VALUES (56,1);
+INSERT INTO data_template_data_rra VALUES (56,2);
+INSERT INTO data_template_data_rra VALUES (56,3);
+INSERT INTO data_template_data_rra VALUES (56,4);
+INSERT INTO data_template_data_rra VALUES (57,1);
+INSERT INTO data_template_data_rra VALUES (57,2);
+INSERT INTO data_template_data_rra VALUES (57,3);
+INSERT INTO data_template_data_rra VALUES (57,4);
+INSERT INTO data_template_data_rra VALUES (58,1);
+INSERT INTO data_template_data_rra VALUES (58,2);
+INSERT INTO data_template_data_rra VALUES (58,3);
+INSERT INTO data_template_data_rra VALUES (58,4);
+INSERT INTO data_template_data_rra VALUES (59,1);
+INSERT INTO data_template_data_rra VALUES (59,2);
+INSERT INTO data_template_data_rra VALUES (59,3);
+INSERT INTO data_template_data_rra VALUES (59,4);
 
 --
 -- Table structure for table 'data_template_rrd'
@@ -804,7 +830,7 @@ INSERT INTO data_template_rrd VALUES (20,0,0,17,'',500,'',0,'',600,'',1,'','user
 INSERT INTO data_template_rrd VALUES (21,0,0,18,'',5000,'',0,'',600,'',1,'','ping','',30);
 INSERT INTO data_template_rrd VALUES (22,0,0,19,'',100000,'',0,'',600,'',1,'','total_users','',0);
 INSERT INTO data_template_rrd VALUES (23,0,0,20,'',100000,'',0,'',600,'',1,'','total_logins','',0);
-INSERT INTO data_template_rrd VALUES (24,0,0,21,'',100,'',0,'',600,'',1,'','cpu','',0);
+INSERT INTO data_template_rrd VALUES (80,0,0,45,'',1000,'',0,'',600,'',1,'','proc','',0);
 INSERT INTO data_template_rrd VALUES (25,0,0,22,'',10000000,'',0,'',600,'',2,'','fs_reads','',0);
 INSERT INTO data_template_rrd VALUES (26,0,0,23,'',10000000,'',0,'',600,'',2,'','fs_writes','',0);
 INSERT INTO data_template_rrd VALUES (27,0,0,24,'',10000000,'',0,'',600,'',2,'','cache_checks','',0);
@@ -836,6 +862,10 @@ INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'
 INSERT INTO data_template_rrd VALUES (55,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
 INSERT INTO data_template_rrd VALUES (56,0,0,37,'on',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (76,0,0,42,'',100,'',0,'',600,'',1,'','cpu','',0);
+INSERT INTO data_template_rrd VALUES (77,0,0,43,'',10000000000,'',0,'',600,'',1,'','hdd_total','',0);
+INSERT INTO data_template_rrd VALUES (78,0,0,43,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (79,0,0,44,'',100,'',0,'',600,'',1,'','cpu','',0);
+INSERT INTO data_template_rrd VALUES (81,0,0,46,'',5000,'',0,'',600,'',1,'','users','',0);
 
 --
 -- Table structure for table 'graph_local'
@@ -940,6 +970,14 @@ INSERT INTO graph_template_input VALUES (61,22,'Discards Out Data Source','','ta
 INSERT INTO graph_template_input VALUES (62,22,'Errors Out Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (63,25,'Inbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (64,25,'Outbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (65,26,'Total Disk Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (66,26,'Used Disk Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (67,27,'CPU Utilization Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (68,27,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (69,28,'Logged in Users Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (70,28,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (71,29,'Processes Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (72,29,'Legend Color','','color_id');
 
 --
 -- Table structure for table 'graph_template_input_defs'
@@ -1167,6 +1205,29 @@ INSERT INTO graph_template_input_defs VALUES (64,216);
 INSERT INTO graph_template_input_defs VALUES (64,217);
 INSERT INTO graph_template_input_defs VALUES (64,218);
 INSERT INTO graph_template_input_defs VALUES (64,219);
+INSERT INTO graph_template_input_defs VALUES (65,307);
+INSERT INTO graph_template_input_defs VALUES (65,308);
+INSERT INTO graph_template_input_defs VALUES (65,309);
+INSERT INTO graph_template_input_defs VALUES (65,310);
+INSERT INTO graph_template_input_defs VALUES (66,303);
+INSERT INTO graph_template_input_defs VALUES (66,304);
+INSERT INTO graph_template_input_defs VALUES (66,305);
+INSERT INTO graph_template_input_defs VALUES (66,306);
+INSERT INTO graph_template_input_defs VALUES (67,315);
+INSERT INTO graph_template_input_defs VALUES (67,316);
+INSERT INTO graph_template_input_defs VALUES (67,317);
+INSERT INTO graph_template_input_defs VALUES (67,318);
+INSERT INTO graph_template_input_defs VALUES (68,315);
+INSERT INTO graph_template_input_defs VALUES (69,319);
+INSERT INTO graph_template_input_defs VALUES (69,320);
+INSERT INTO graph_template_input_defs VALUES (69,321);
+INSERT INTO graph_template_input_defs VALUES (69,322);
+INSERT INTO graph_template_input_defs VALUES (70,319);
+INSERT INTO graph_template_input_defs VALUES (71,323);
+INSERT INTO graph_template_input_defs VALUES (71,324);
+INSERT INTO graph_template_input_defs VALUES (71,325);
+INSERT INTO graph_template_input_defs VALUES (71,326);
+INSERT INTO graph_template_input_defs VALUES (72,323);
 
 --
 -- Table structure for table 'graph_templates'
@@ -1210,6 +1271,10 @@ INSERT INTO graph_templates VALUES (22,'Interface - Errors/Discards');
 INSERT INTO graph_templates VALUES (23,'Interface - Unicast Packets');
 INSERT INTO graph_templates VALUES (24,'Interface - Non-Unicast Packets');
 INSERT INTO graph_templates VALUES (25,'Interface - Traffic (bytes/sec)');
+INSERT INTO graph_templates VALUES (26,'Host MIB - Available Disk Space');
+INSERT INTO graph_templates VALUES (27,'Host MIB - CPU Utilization');
+INSERT INTO graph_templates VALUES (28,'Host MIB - Logged in Users');
+INSERT INTO graph_templates VALUES (29,'Host MIB - Processes');
 
 --
 -- Table structure for table 'graph_templates_gprint'
@@ -1313,6 +1378,10 @@ INSERT INTO graph_templates_graph VALUES (22,0,0,22,'',1,'on','|host_description
 INSERT INTO graph_templates_graph VALUES (23,0,0,23,'',1,'on','|host_description| - Unicast Packets','',120,'',500,'',100,'',0,'','packets/sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (24,0,0,24,'',1,'on','|host_description| - Non-Unicast Packets','',120,'',500,'',100,'',0,'','packets/sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (25,0,0,25,'',1,'on','|host_description| - Traffic','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (34,0,0,26,'',1,'on','|host_description| - Available Disk Space','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (35,0,0,27,'',1,'on','|host_description| - CPU Utilization','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (36,0,0,28,'',1,'on','|host_description| - Logged in Users','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'on','|host_description| - Processes','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','',0);
 
 --
 -- Table structure for table 'graph_templates_item'
@@ -1409,7 +1478,7 @@ INSERT INTO graph_templates_item VALUES (61,0,0,7,21,25,7,0,1,'','','',2,1);
 INSERT INTO graph_templates_item VALUES (62,0,0,7,21,0,9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (63,0,0,7,21,0,9,0,1,'Average:','','',2,3);
 INSERT INTO graph_templates_item VALUES (64,0,0,7,21,0,9,0,3,'Maximum:','','',2,4);
-INSERT INTO graph_templates_item VALUES (65,0,0,8,19,48,1,0,1,'Running Processes','','',2,1);
+INSERT INTO graph_templates_item VALUES (65,0,0,8,19,48,7,0,1,'Running Processes','','',2,1);
 INSERT INTO graph_templates_item VALUES (66,0,0,8,19,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (67,0,0,8,19,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (68,0,0,8,19,0,9,0,3,'Maximum:','','',3,4);
@@ -1559,6 +1628,26 @@ INSERT INTO graph_templates_item VALUES (216,0,0,25,55,20,4,0,1,'Outbound','',''
 INSERT INTO graph_templates_item VALUES (217,0,0,25,55,0,9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (218,0,0,25,55,0,9,0,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (219,0,0,25,55,0,9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (303,0,0,26,78,0,9,14,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (304,0,0,26,78,0,9,14,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (305,0,0,26,78,0,9,14,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (306,0,0,26,78,48,7,14,1,'Used','','',2,5);
+INSERT INTO graph_templates_item VALUES (307,0,0,26,77,20,7,14,1,'Total','','',2,1);
+INSERT INTO graph_templates_item VALUES (308,0,0,26,77,0,9,14,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (309,0,0,26,77,0,9,14,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (310,0,0,26,77,0,9,14,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (317,0,0,27,79,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (316,0,0,27,79,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (315,0,0,27,79,9,7,0,1,'CPU Utilization','','',2,1);
+INSERT INTO graph_templates_item VALUES (318,0,0,27,79,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (319,0,0,28,81,67,7,0,1,'Users','','',2,1);
+INSERT INTO graph_templates_item VALUES (320,0,0,28,81,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (321,0,0,28,81,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (322,0,0,28,81,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (323,0,0,29,80,48,7,0,1,'Running Processes','','',2,1);
+INSERT INTO graph_templates_item VALUES (324,0,0,29,80,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (325,0,0,29,80,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (326,0,0,29,80,0,9,0,3,'Maximum:','','',3,4);
 
 --
 -- Table structure for table 'graph_tree'
@@ -1688,6 +1777,7 @@ INSERT INTO host_template VALUES (3,'ucd/net SNMP Host');
 INSERT INTO host_template VALUES (4,'Karlnet Wireless Bridge');
 INSERT INTO host_template VALUES (5,'Cisco Router');
 INSERT INTO host_template VALUES (6,'Netware 4/5 Server');
+INSERT INTO host_template VALUES (7,'Windows 2000/XP Host');
 
 --
 -- Table structure for table 'host_template_data_sv'
@@ -1747,6 +1837,8 @@ INSERT INTO host_template_graph VALUES (5,18);
 INSERT INTO host_template_graph VALUES (6,14);
 INSERT INTO host_template_graph VALUES (6,16);
 INSERT INTO host_template_graph VALUES (6,17);
+INSERT INTO host_template_graph VALUES (7,28);
+INSERT INTO host_template_graph VALUES (7,29);
 
 --
 -- Table structure for table 'host_template_graph_sv'
@@ -1798,6 +1890,8 @@ INSERT INTO host_template_snmp_query VALUES (5,1);
 INSERT INTO host_template_snmp_query VALUES (6,1);
 INSERT INTO host_template_snmp_query VALUES (6,4);
 INSERT INTO host_template_snmp_query VALUES (6,7);
+INSERT INTO host_template_snmp_query VALUES (7,8);
+INSERT INTO host_template_snmp_query VALUES (7,9);
 
 --
 -- Table structure for table 'rra'
@@ -1956,6 +2050,8 @@ INSERT INTO snmp_query VALUES (3,'<path_cacti>/resource/snmp_queries/kbridge.xml
 INSERT INTO snmp_query VALUES (4,'<path_cacti>/resource/snmp_queries/netware_disk.xml','Netware - Get Available Volumes','Retrieves a list of volumes from a Netware server.',0,2);
 INSERT INTO snmp_query VALUES (6,'<path_cacti>/resource/script_queries/unix_disk.xml','Unix - Get Mounted Partitions','Queries a list of mounted partitions on a unix-based host with the',0,11);
 INSERT INTO snmp_query VALUES (7,'<path_cacti>/resource/snmp_queries/netware_cpu.xml','Netware - Get Processor Information','Gets information about running processors in a Netware server',0,2);
+INSERT INTO snmp_query VALUES (8,'<path_cacti>/resource/script_queries/host_disk.xml','SNMP - Get Mounted Partitions','Gets a list of partitions using SNMP\\',0,11);
+INSERT INTO snmp_query VALUES (9,'<path_cacti>/resource/script_queries/host_cpu.xml','SNMP - Get Processor Information','Gets usage for each processor in the system using the host MIB.',0,11);
 
 --
 -- Table structure for table 'snmp_query_field'
@@ -1993,6 +2089,12 @@ INSERT INTO snmp_query_field VALUES (6,31,1);
 INSERT INTO snmp_query_field VALUES (7,12,1);
 INSERT INTO snmp_query_field VALUES (7,13,2);
 INSERT INTO snmp_query_field VALUES (7,14,3);
+INSERT INTO snmp_query_field VALUES (8,31,1);
+INSERT INTO snmp_query_field VALUES (8,32,2);
+INSERT INTO snmp_query_field VALUES (8,33,3);
+INSERT INTO snmp_query_field VALUES (9,31,1);
+INSERT INTO snmp_query_field VALUES (9,32,2);
+INSERT INTO snmp_query_field VALUES (9,33,3);
 
 --
 -- Table structure for table 'snmp_query_graph'
@@ -2028,6 +2130,8 @@ INSERT INTO snmp_query_graph VALUES (13,1,'In/Out Bits',2);
 INSERT INTO snmp_query_graph VALUES (14,1,'In/Out Bits (64-bit Counters)',2);
 INSERT INTO snmp_query_graph VALUES (16,1,'In/Out Bytes',25);
 INSERT INTO snmp_query_graph VALUES (17,7,'Get Processor Utilization',15);
+INSERT INTO snmp_query_graph VALUES (18,8,'Available Disk Space',26);
+INSERT INTO snmp_query_graph VALUES (19,9,'Get Processor Utilization',27);
 
 --
 -- Table structure for table 'snmp_query_graph_rrd'
@@ -2079,6 +2183,9 @@ INSERT INTO snmp_query_graph_rrd VALUES (16,41,54,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (16,41,55,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (15,37,56,'dskUsed');
 INSERT INTO snmp_query_graph_rrd VALUES (17,42,76,'nwhrProcessorUtilization');
+INSERT INTO snmp_query_graph_rrd VALUES (18,43,77,'hrStorageSize');
+INSERT INTO snmp_query_graph_rrd VALUES (18,43,78,'hrStorageUsed');
+INSERT INTO snmp_query_graph_rrd VALUES (19,44,79,'hrProcessorLoad');
 
 --
 -- Table structure for table 'snmp_query_graph_rrd_sv'
@@ -2164,6 +2271,8 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (89,9,41,3,'name','|host_description|
 INSERT INTO snmp_query_graph_rrd_sv VALUES (90,9,41,4,'name','|host_description| - Traffic - |squery_ifDesc|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (91,9,41,1,'rrd_maximum','|squery_ifSpeed|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (92,17,42,1,'name','|host_description| - CPU Utilization - CPU|squery_nwhrProcessorNum|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (93,18,43,1,'name','|host_description| - Used Space - |squery_hrStorageDescr|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (94,19,44,1,'name','|host_description| - CPU Utilization - CPU|squery_hrProcessorFrwID|');
 
 --
 -- Table structure for table 'snmp_query_graph_sv'
@@ -2218,6 +2327,8 @@ INSERT INTO snmp_query_graph_sv VALUES (34,9,1,'title','|host_description| - Tra
 INSERT INTO snmp_query_graph_sv VALUES (35,9,2,'title','|host_description| - Traffic - |squery_ifIP| (|squery_ifDesc|)');
 INSERT INTO snmp_query_graph_sv VALUES (36,9,3,'title','|host_description| - Traffic - |squery_ifDesc|/|squery_ifIndex|');
 INSERT INTO snmp_query_graph_sv VALUES (37,17,1,'title',' |host_description| - CPU Utilization - CPU|squery_nwhrProcessorNum|');
+INSERT INTO snmp_query_graph_sv VALUES (38,18,1,'title','|host_description| - Used Space - |squery_hrStorageDescr|');
+INSERT INTO snmp_query_graph_sv VALUES (39,19,1,'title','|host_description| - CPU Utilization - CPU|squery_hrProcessorFrwID|');
 
 --
 -- Table structure for table 'user_auth'
