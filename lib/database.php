@@ -175,9 +175,9 @@ function array_to_sql_or($array, $sql_column) {
    @arg $keyCols - the name of the column containing the primary key
    @arg $autoQuote - whether to use intelligent quoting or not
    @returns - the auto incriment id column (if applicable) */
-function db_replace($table_name, $array_items, $keyCols, $autoQuote=false) {
+function db_replace($table_name, $array_items, $keyCols) {
 	global $cnn_id;
-	$cnn_id->Replace($table_name, $array_items, $keyCols,$autoQuote);
+	$cnn_id->Replace($table_name, $array_items, $keyCols);
 
 	return $cnn_id->Insert_ID();
 }
@@ -200,7 +200,7 @@ function sql_save($array_items, $table_name, $key_cols='id') {
 		$array_items[$key] = "$quote$value$quote";
 	}
 
-	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, $autoQuote=false)) { return 0; }
+	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, false)) { return 0; }
 
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {

@@ -72,6 +72,18 @@ if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 
 	/* initilize php session */
 	session_start();
+
+	/* detect and handle get_magic_quotes */
+	if (!get_magic_quotes_gpc()) {
+		function addslashes_deep($value) {
+			$value = is_array($value) ? array_map('addslashes_deep', $value) : addslashes($value);
+			return $value;
+		}
+
+		$_POST = array_map('addslashes_deep', $_POST);
+		$_GET = array_map('addslashes_deep', $_GET);
+		$_COOKIE = array_map('addslashes_deep', $_COOKIE);
+	}
 }
 
 /* display ALL errors */
