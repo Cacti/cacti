@@ -79,7 +79,7 @@ default:
 			</tr>
 		</table>\n";
 	
-	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	
 	$form_array = array();
