@@ -214,6 +214,10 @@ function update_poller_cache($local_data_id) {
 }
 
 function update_graph_snmp_query_cache($local_graph_id) {
+	global $config;
+	
+	include_once($config["library_path"] . "/data_query.php");
+	
 	$host_id = db_fetch_cell("select host_id from graph_local where id=$local_graph_id");
 	
 	$field = data_query_field_list(db_fetch_cell("select
@@ -238,6 +242,10 @@ function update_graph_snmp_query_cache($local_graph_id) {
 }
 
 function update_data_source_snmp_query_cache($local_data_id) {
+	global $config;
+	
+	include_once($config["library_path"] . "/data_query.php");
+	
 	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
 	
 	$field = data_query_field_list(db_fetch_cell("select
