@@ -165,8 +165,6 @@ function update_database($database_old, $database_username, $database_password) 
 				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifIndex','" . $item2["InterfaceNumber"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.1.$snmp_index')");
 				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifHwAddr','" . $item2["HardwareAddress"] . "',$snmp_index,'.1.3.6.1.2.1.2.2.1.6.$snmp_index')");
 				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifIP','" . $item2["IPAddress"] . "',$snmp_index,'.1.3.6.1.2.1.4.20.1.2." . $item2["IPAddress"] . "')");
-				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifInOctets','0',$snmp_index,'.1.3.6.1.2.1.2.2.1.10.$snmp_index')");
-				db_execute("insert into host_snmp_cache (host_id,snmp_query_id,field_name,field_value,snmp_index,oid) values ($host_id,1,'ifOutOctets','0',$snmp_index,'.1.3.6.1.2.1.2.2.1.16.$snmp_index')");
 			}
 			}
 		}else{
