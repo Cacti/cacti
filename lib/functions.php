@@ -164,6 +164,14 @@ function clear_messages() {
 	session_unregister("sess_messages");
 }
 
+function kill_session_var($var_name) {
+	/* register_global = off: reset local settings cache so the user sees the new settings */
+	session_register($var_name);
+	
+	/* register_global = on: reset local settings cache so the user sees the new settings */
+	unset($_SESSION[$var_name]);
+}
+
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
 	
