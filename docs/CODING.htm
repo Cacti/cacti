@@ -1,1 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
 
+<html>
+<head>
+	<title>cacti Documentation</title>
+	<style>
+	<!--
+		BODY
+		{
+			font-size: 10pt;
+			font-family: Arial, sans-serif;
+		}
+	-->
+	</style>
+</head>
+
+<body>
+
+<h2>Cacti Coding Standards</h2><p>
+
+<h3>Cacti-Specific Stuff</h3><p>
+
+<ul>
+	<li>Don't use variables such as $HTTP_SERVER_VARS["SCRIPT_NAME"] to describe the current file. Write
+	out the complete filename when referencing to the file. (ex. rra.php)</li>
+	<li>Try to store all calls to colors in the $colors array (stored in include/config_vars.php)</li>
+	<li>Try to consalidate files whenever possible. For instance, all of the CDEF stuff is stored in
+	cdef.php. In 0.6.x this was split into two separate files: cdef.php and cdef_items.php. This
+	guidline does not apply as much to files in the 'include/' directory.</li>
+	<li>Use to $args and $form arrays to reference to HTTP GET/POST variables repectively. Do not use PHP's
+	$_GET and $_POST arrays, since they require PHP 4.1.0 or higher.</li>
+	<li>When saving data from a form, try to always use the sql_save() function.</li>
+	<li>Always use the start_box() and end_box() functions to start/stop HTML "boxes".</li>
+	<li>When rendering the actual form try and use as much HTML as possible, using PHP where needed. This
+	differs from 0.6.x where the entire form was generated using functions. Many of those functions
+	are still used, however more HTML means the ability to generate more "custom looking" forms. Look
+	cdef.php for a good example of how to moderate this.</li>
+	<li>Use db_fetch_cell() when your expecting one value from one column back. Use db_fetch_row() when
+	you are expecting one whole row back. Use db_fetch_assoc() when you are expecting multiple rows 
+	back from the SQL query, use the syntax 'foreach ($output as $item)' to loop through the output.
+	Always make sure to check if you got any output before trying to loop through it, or you will
+	receive an error.</li>
+	<li>Update the 'dev/sql/changes.sql' file with any database schema changes you make.</li>
+	<li>Feel free to keep your complete database schema in 'dev/sql/complete_db-name'.</li>
+</ul>
+
+<h3>Common Sense Stuff</h3><p>
+
+<ul>
+	<li>When in doubt... indent! (loops, if/case/function statements, etc)</li>
+	<li>Comment where ever possible, there is no such thing as too many comments. Use the c-style /* */ 
+	for comments.</li>
+	<li>Your code should look clean. Make sure to space things out appropriatly and not run lots of lines
+	together one one line.</li>
+	<li>Use descriptive variables that show what the variable is for. $i is generally the only exception
+	to this rule.</li>
+	<li>If you are storing an "old variable" (previous value), name it like: $_graph_type_name, the current
+	version would be named: $graph_type_name</li>
+	<li>Only select the columns you need in your SQL select statements.</li>
+	<li>Use the print() function, not the echo() function.</li>
+	<li>Use print() when displaying small portions of HTML (1 or 2 lines), break out of PHP (?&gt; &lt;?)
+	when displaying a bunch of HTML at once.</li>
+</ul>
+  
+</body>
+</html>
