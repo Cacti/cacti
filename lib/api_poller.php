@@ -39,20 +39,33 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		where host.id=$host_id");
 
 	/* the $host_field_override array can be used to override certain host fields in the poller cache */
-	$host = array_merge($host, $host_field_override);
+	if (isset($host)) {
+		$host = array_merge($host, $host_field_override);
+	}
 
-	if (isset($host["id"])) {
-		if ($host["disabled"] == "on") {
-			return true;
-		}else{
-			return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
-				snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
-				rrd_num,arg1,arg2,arg3) values ($local_data_id," . $host["id"] . ",$poller_action_id,'" . $host["hostname"] . "',
-				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-				'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-				'$data_source_item_name','" . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
-				'$num_rrd_items','$arg1','$arg2','$arg3')");
+	if (isset($host["id"]) || (isset($host_id))) {
+		if (isset($host)) {
+			if ($host["disabled"] == "on") {
+				return true;
+			}
+		} else {
+			$host["id"] = 0;
+			$host["snmp_community"] = "";
+			$host["snmp_timeout"] = "";
+			$host["snmp_username"] = "";
+			$host["snmp_password"] = "";
+			$host["snmp_version"] = "";
+			$host["snmp_port"] = "";
+			$host["hostname"] = "None";
 		}
+
+		return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
+			snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
+			rrd_num,arg1,arg2,arg3) values ($local_data_id," . $host["id"] . ",$poller_action_id,'" . $host["hostname"] . "',
+			'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
+			'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
+			'$data_source_item_name','" . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
+			'$num_rrd_items','$arg1','$arg2','$arg3')");
 	}
 }
 ?>
