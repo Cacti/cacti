@@ -132,6 +132,10 @@ $graph_views = array(1 =>
 	"List View",
 	"Preview View");
 
+$graph_tree_views = array(1 =>
+	"Single Pane (0.6.x - 0.8.2a Default)",
+	"Dual Pane");
+
 $auth_realms = array(0 =>
 	"Local",
 	"LDAP");

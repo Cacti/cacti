@@ -211,6 +211,13 @@ $settings_graphs = array(
 		"sql" => "select id,name from graph_tree where user_id=0 order by name",
 		"default" => "0",
 		"tab" => "tree"),
+	"default_tree_view_mode" => array(
+		"friendly_name" => "Default Tree View Mode",
+		"description" => "The default mode that will be used when viewing tree mode.",
+		"method" => "drop_array",
+		"array_name" => "graph_tree_views",
+		"default" => "1",
+		"tab" => "tree"),
 	"default_height" => array(
 		"friendly_name" => "Height",
 		"description" => "The height of graphs created in preview mode.",
