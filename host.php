@@ -606,10 +606,10 @@ function host() {
 					<?php print $host["hostname"];?>
 				</td>
 				<td>
-					<?php print round(($host["cur_time"]), 2);?>
+					<?php print round(($host["cur_time"])*1000, 2);?>
 				</td>
 				<td>
-					<?php print round(($host["avg_time"]), 2);?>
+					<?php print round(($host["avg_time"])*1000, 2);?>
 				</td>
 				<td>
 					<?php print round($host["availability"], 0);?>%
