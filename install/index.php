@@ -31,21 +31,23 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$new_cacti_version = db_fetch_cell("select cacti from version");
+$cacti_versions = array("0.8", "0.8.1");
+
+$old_cacti_version = db_fetch_cell("select cacti from version");
 
 /* do a version check */
-if ($new_cacti_version == $config["cacti_version"]) {
+if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>You can only run this for new installs and 
 		upgrades, this installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
 	exit;
-}elseif (ereg("^0\.6", $new_cacti_version)) {
+}elseif (ereg("^0\.6", $old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>You are attempting to install cacti " . $config["cacti_version"] . "
 		onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and
 		update 'include/config.php' to point to the new database.</p>";
 	exit;
-}elseif (empty($new_cacti_version)) {
+}elseif (empty($old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>You have created a new database, but have not yet imported
 		the 'cacti.sql' file. At the command line, execute the following to continue:</p>
@@ -204,8 +206,18 @@ if ($_REQUEST["step"] == "4") {
 	include ("update_to_0_8.php");
 	
 	$status_array = update_database($_REQUEST["db_name"], $_REQUEST["db_user"], $_REQUEST["db_pass"]);
+}elseif (($_REQUEST["step"] == "3") && ($_REQUEST["install_type"] == "3")) {
+	/* upgrade from 0.8.x install, update db here */
+	for ($i=array_search($old_cacti_version,$cacti_versions); $i<count($cacti_versions);$i++) {
+		$version = $cacti_versions[$i];
+		
+		if ($cacti_versions[$i] == "0.8") {
+			/* nothing here... base version */
+		}elseif ($cacti_versions[$i] == "0.8.1") {
+			
+		}
+	}
 }
-
 
 ?>
 <html>
