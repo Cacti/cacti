@@ -535,6 +535,16 @@ function convert_mac_address($mac_address) {
 	return strtolower(str_replace(" ", ":", $mac_address));
 }
 
+function get_web_browser() {
+	if (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla") && (!(stristr($_SERVER["HTTP_USER_AGENT"], "compatible")))) {
+		return "moz";
+	}elseif (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
+		return "ie";
+	}else{
+		return "other";
+	}
+}
+
 function hex2bin($data) {
 	$len = strlen($data);
 	
