@@ -65,8 +65,7 @@
 
 <map name="tabs">
 	<area alt="Console" coords="7,5,87,35" href="index.php">
-	<area alt="Graphs" coords="166,5,241,32" href="graph_view.php?action=tree" shape="RECT">
-	<area alt="Documentation" coords="88,5,165,32" href="docs/MANUAL.htm">
+	<area alt="Graphs" coords="88,5,165,32" href="graph_view.php?action=tree" shape="RECT">
 </map>
 
 <table width="100%" cellspacing="0" cellpadding="0">
