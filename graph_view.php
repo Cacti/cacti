@@ -24,7 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once ("include/rrd_functions.php");
 include_once ("include/functions.php");
 include_once ("include/form.php");
 include ("include/top_graph_header.php");
@@ -230,10 +229,10 @@ case 'preview':
 	<?php
 	
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (ereg("page=[0-9]+",basename($_SERVER["REQUEST_URI"]))) {
-		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["REQUEST_URI"]));
+	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
+		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . $_SERVER["QUERY_STRING"]);
 	}else{
-		$nav_url = basename($_SERVER["REQUEST_URI"]) . "&page=<PAGE>";
+		$nav_url = basename($_SERVER["PHP_SELF"]) . $_SERVER["QUERY_STRING"] . "&page=<PAGE>";
 	}
 	
 	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
