@@ -56,7 +56,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			$output = fgets($pipes[1], 1024);
 
 			if (substr_count($output, "ERROR") > 0) {
-				$output = "";
+				$output = "U";
 			}
 		}
 	/* execute the old fashion way */
@@ -74,6 +74,10 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
    @arg $args - any additional arguments that must be passed onto the executable */
 function exec_background($filename, $args = "") {
 	global $config;
+
+	if ($verbosity == DEBUG) {
+		log_data("POLLER: About to Spawn a Remote Process\n");
+	}
 
 	if (file_exists($filename)) {
 		if ($config["cacti_server_os"] == "win32") {

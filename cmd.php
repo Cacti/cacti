@@ -119,8 +119,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						log_data("ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.\n");
 					}
 				} else {
-					if ($verbosity == HIGH) {
-						log_data("ICMP: ". $item["hostname"] . " is " . $ping->time . " seconds.\n");
+					if ($verbosity == DEBUG) {
+						log_data("ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.\n");
 					}
 				}
 			} else {
@@ -144,19 +144,14 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				if ((substr_count($output, "ERROR") != 0) || ($output == "")) {
 					$failure_type = "SNMP";
 					$host_down = true;
-					if ($verbosity == HIGH) {
-						log_data("ERROR: SNMP Query failed for Host " . $item["hostname"] . ", assumed down.\n");
-					}
 				}
 			}
 
 			if ($host_down) {
-				if (read_config_option("log_perror") == "on") {
-					if ($failure_type == "ICMP")
-						log_data(sprintf("ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host));
-					else
-						log_data(sprintf("ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host));
-				}
+				if ($failure_type == "ICMP")
+					log_data(sprintf("ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host));
+				else
+					log_data(sprintf("ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host));
 			} else {
 				/* do the reindex check for this host */
 				$reindex = db_fetch_assoc("select

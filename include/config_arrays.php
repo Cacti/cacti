@@ -200,7 +200,8 @@ $menu = array(
 			),
 		"host.php" => 'Devices',
 		"data_input.php" => "Data Input Methods",
-		"data_queries.php" => "Data Queries"
+		"data_queries.php" => "Data Queries",
+		"coming_soon.php" => "Mail Servers"
 		),
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
@@ -267,7 +268,8 @@ $user_auth_realm_filenames = array(
 	"templates_import.php" => 17,
 	"tree.php" => 4,
 	"user_admin.php" => 1,
-	"utilities.php" => 15
+	"utilities.php" => 15,
+	"coming_soon.php" => 8
 	);
 
 $hash_type_codes = array(

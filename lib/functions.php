@@ -987,6 +987,7 @@ function draw_navigation_text() {
 		"templates_export.php:" => array("title" => "Export Templates", "mapping" => "index.php:", "url" => "templates_export.php", "level" => "1"),
 		"templates_export.php:save" => array("title" => "Export Results", "mapping" => "index.php:,templates_export.php:", "url" => "templates_export.php", "level" => "2"),
 		"templates_import.php:" => array("title" => "Import Templates", "mapping" => "index.php:", "url" => "templates_import.php", "level" => "1"),
+		"coming_soon.php:" => array("title" => "Coming Soon", "mapping" => "index.php:", "url" => "coming_soon.php", "level" => "1"),
 		);
 
 	$current_page = basename($_SERVER["PHP_SELF"]);
