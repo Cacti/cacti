@@ -60,11 +60,13 @@
 		
 		if ($graph_template_name == "") {
 			$header_text = "Graph Item Configuration";
+			$add_text = "graphs.php?action=item_edit&local_graph_id=$args[local_graph_id]";
 		}else{
 			$header_text = "Graph Item Configuration <strong>[Template: $graph_template_name]</strong>";
+			$add_text = "";
 		}
 		
-		start_box($header_text, "", "graphs.php?action=item_edit&local_graph_id=$args[local_graph_id]");
+		start_box($header_text, "", $add_text);
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Graph Item",$colors[header_text],1);
