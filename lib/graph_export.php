@@ -51,11 +51,10 @@ function export() {
 	/* copy the css/images on the first time */
 	if (file_exists(read_config_option("path_html_export") . "$cacti_export_path/main.css") == false) {
 		copy("$cacti_root_path/include/main.css", "$cacti_export_path/main.css");
-		copy("$cacti_root_path/images/top_tabs_cacti.gif", "$cacti_export_path/top_tabs_cacti.gif");
-		copy("$cacti_root_path/images/top_tabs_graphs.gif", "$cacti_export_path/top_tabs_graphs.gif");
-		copy("$cacti_root_path/images/top_tabs_graph_preview.gif", "$cacti_export_path/top_tabs_graph_preview.gif");
-		copy("$cacti_root_path/images/top_tabs_graph_preview_down.gif", "$cacti_export_path/top_tabs_graph_preview_down.gif");
+		copy("$cacti_root_path/images/tab_cacti.gif", "$cacti_export_path/tab_cacti.gif");
+		copy("$cacti_root_path/images/cacti_backdrop.gif", "$cacti_export_path/cacti_backdrop.gif");
 		copy("$cacti_root_path/images/transparent_line.gif", "$cacti_export_path/transparent_line.gif");
+		copy("$cacti_root_path/images/shadow.gif", "$cacti_export_path/shadow.gif");
 	}
 	
 	/* if the index file already exists, delete it */
@@ -195,25 +194,41 @@ define("HTML_HEADER", "
 	<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0'>
 	
 	<table width='100%' cellspacing='0' cellpadding='0'>
-		<tr>
-			<td bgcolor='#454E53' colspan='2' nowrap>
-				<a href='http://www.raxnet.net/products/cacti/'><img src='top_tabs_cacti.gif' border='0' width='79' height='32' align='absmiddle'></a>
-				<a href='index.html'><img src='top_tabs_graphs.gif' border='0' width='79' height='32' align='absmiddle'></a>
-			</td>\n
-			<td bgcolor='#454E53' align='right' nowrap>
-				<a href='index.html'><img src='top_tabs_graph_preview.gif' border='0' alt='Preview View'></a><br>
+		<tr height='37' bgcolor='#a9a9a9'>
+			<td valign='bottom' colspan='3' nowrap>
+				<table width='100%' cellspacing='0' cellpadding='0'>
+					<tr>
+						<td valign='bottom'>
+							&nbsp;<a href='http://www.raxnet.net/products/cacti/'><img src='tab_cacti.gif' alt='Cacti - http://www.raxnet.net/products/cacti/' align='absmiddle' border='0'></a>
+						</td>
+						<td align='right'>
+							<img src='cacti_backdrop.gif' align='absmiddle'>
+						</td>
+					</tr>
+				</table>
 			</td>
-		</tr>
-		<tr>
-			<td colspan='3' bgcolor='#" . $colors["panel"] . "'>
-				<img src='transparent_line.gif' width='170' height='5' border='0'><br>
+		</tr>\n
+		<tr height='2' bgcolor='#183c8f'>
+			<td colspan='3'>
+				<img src='transparent_line.gif' width='170' height='2' border='0'><br>
 			</td>
-		</tr>
-		<tr>
-			<td height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>
-				
+		</tr>\n
+		<tr height='5' bgcolor='#e9e9e9'>
+			<td colspan='3'>
+				<table width='100%'>
+					<tr>
+						<td>
+							Exported Graphs
+						</td>
+					</tr>
+				</table>
 			</td>
-		</tr>
+		</tr>\n
+		<tr>
+			<td colspan='3' height='8' style='background-image: url(shadow.gif); background-repeat: repeat-x;' bgcolor='#ffffff'>
+			
+			</td>
+		</tr>\n
 	</table>
 	
 	<br>");
