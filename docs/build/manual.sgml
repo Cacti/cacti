@@ -237,13 +237,18 @@ $database_password = "cacti";</userinput></screen>
 					<filename>c:\winnt</filename>, rename the file to <filename>php.ini</filename>, and make the 
 					following changes to the file:
 				</para>
-				<screen><userinput>extension_dir = c:/php/extensions</userinput>
+				<screen><userinput>extension_dir = c:\php\extensions</userinput>
 <userinput>extension=php_snmp.dll</userinput>
 <userinput>session.save_path=c:\tmp</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
 			<title>Configure the Webserver (Apache)</title>
+			<listitem>
+				<para>
+					Make sure you have stopped any IIS web servers before you proceed with Apache installation.
+				</para>
+			</listitem>
 			<listitem>
 				<para>
 					Install the Apache web server. This is as simple as double clicking the .msi file and 
@@ -256,7 +261,7 @@ $database_password = "cacti";</userinput></screen>
 					If you are using <emphasis>Apache 1.3.x</emphasis>, add the following lines to your <filename>httpd.conf</filename>
 					file in the <filename>c:\apache\conf</filename> directory:
 				</para>
-				<screen><userinput>LoadModule php4_module c:/php/sapi/php4apache.dll</userinput>
+				<screen><userinput>LoadModule php4_module c:\php\sapi\php4apache.dll</userinput>
 <userinput>AddModule mod_php4.c</userinput>
 <userinput>AddType application/x-httpd-php .php</userinput>
 <userinput>DirectoryIndex index.html index.htm index.php</userinput></screen>
@@ -306,6 +311,14 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
+			<title>RRDTool</title>
+			<listitem>
+				<para>
+					Extract RRDTool to <filename>c:\rrdtool</filename> and copy <filename>c:\rrdtool\src\tool_release\rrdtool.exe</filename> to <filename>c:\rrdtool</filename>. 
+				</para>
+			</listitem>
+		</orderedlist>
+		<orderedlist>
 			<title>Install MySQL</title>
 			<listitem>
 				<para>
@@ -327,7 +340,7 @@ $database_password = "cacti";</userinput></screen>
 					Set a password for the root user
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>cd mysql\bin</userinput>
-<prompt>shell&gt;</prompt> <userinput>mysqladmin ?-user=root password somepassword</userinput>
+<prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root password somepassword</userinput>
 <prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password reload</userinput></screen>
 			</listitem>
 			<listitem>
@@ -363,12 +376,6 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Unzip rrdtool and copy <filename>rrdtool.exe</filename> from the <filename>src/tool_release</filename> 
-					directory to somewhere such as <filename>C:\rrdtool</filename>.
-				</para>
-			</listitem>
-			<listitem>
-				<para>
 					Edit <filename>include/config.php</filename> and specify the MySQL user, password and database for your Cacti configuration.
 				</para>
 				<screen><userinput>$database_default = "cacti";
@@ -378,24 +385,89 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					You are going to need to schedule a task, so <filename>cmd.php</filename> can run every 
-					5 minutes. Make sure the Task Scheduler service is started and open up the <guilabel>Scheduled Tasks</guilabel> 
-					control panel item. Add a new task, browse to your <filename>php.exe</filename> file and click <guilabel>Next</guilabel>. Have the 
-					task run daily (for now) and click <guilabel>Next</guilabel> twice until you are at the username/password 
-					screen. You must enter a user that has read/write permissions to Cacti's <filename>rra/</filename> and <filename>log/</filename> 
-					directories here. Click <guilabel>Next</guilabel>, check the box to open Advanced Properties and click <guilabel>Finish</guilabel>.
+					You are going to need to schedule a task so <filename>cmd.php</filename> can run every 
+					5 minutes. Make sure the Task Scheduler service is started and follow the steps below to
+					begin.
 				</para>
 				<para>
-					 You are going to have to enter the full command line in the <guilabel>Run</guilabel> textbox. Using default 
-					 paths, your command line should look something like:
+					<emphasis>Note:</emphasis> The following instructions are based on Windows XP and Windows Server
+					2003. You should be able to follow these instructions close enough for Windows 2000 as well.
 				</para>
-				<screen>c:\php\php.exe c:\apache2\htdocs\cacti\cmd.php</screen>
-				<para>
-					Select the <guilabel>Schedule</guilabel> tab and click <guilabel>Advanced</guilabel>. Check the 
-					<guilabel>Repeat task</guilabel> checkbox and change it to every 5 minutes, then change the 
-					<guilabel>Duration</guilabel> to 24 hours. That should schedule <filename>cmd.php</filename> 
-					to run every 5 minutes.
-				</para>
+				<orderedlist>
+					<listitem>
+						<para>
+							Select <guilabel>Start</guilabel> --> <guilabel>Settings</guilabel> --> <guilabel>Control Panel</guilabel> and double 
+							click on  <guilabel>Scheduled Tasks</guilabel>.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Double click on <guilabel>Add Scheduled Task</guilabel>.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Click <guilabel>Next</guilabel> and <guilabel>Browse</guilabel> on the following screen. Find <filename>c:\php</filename> and select 
+							<filename>php.exe</filename>. Choose <guilabel>Daily</guilabel> on and click <guilabel>Next</guilabel>.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Click <guilabel>Next</guilabel> again without changing the time or date settings.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							When entering a username and password make sure the user has read and write access to the following directories:
+						</para>
+						<screen>c:\apache2\htdocs\cacti\rra
+c:\apache2\htdocs\cacti\log</screen>
+						<para>
+							Make sure the user has read, write, and execute access to the following directories:
+						</para>
+						<screen>c:\php
+c:\php\sapi</screen>
+					</listitem>
+					<listitem>
+						<para>
+							Click <guilabel>Next</guilabel> and <guilabel>Finish</guilabel> to close the wizard.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Right click on the task you just created, and select <guilabel>Properties</guilabel>.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Select the <guilabel>Schedule</guilabel> tab.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Make sure <guilabel>Daily</guilabel> is selected and click the <guilabel>Advanced</guilabel> button.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Check the <guilabel>Repeat</guilabel> checkbox, set it for 5 minutes and set the duration for 24 hours.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Click <guilabel>Ok</guilabel>
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							In the <guilabel>Run</guilabel> textbox enter the following text making sure to use the appropriate paths.
+						</para>
+						<screen>c:\php\php.exe c:\apache2\htdocs\cacti\cmd.php</screen>
+						<para>
+							The start in box should say <filename>c:\apache2\htdocs\cacti</filename>.
+						</para>
+					</listitem>
+				</orderedlist>
 			</listitem>
 			<listitem>
 				<para>
