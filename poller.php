@@ -63,160 +63,134 @@ $max_threads = read_config_option("max_threads");
 // End Initialization Section
 
 // Enter Mainline Processing
-if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "on"))
-{
-    /* Determine the number of hosts to process per file */
-    $hosts_per_file = ceil(sizeof($polling_items) / $concurrent_processes );
+if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "on")) {
+	/* Determine the number of hosts to process per file */
+	$hosts_per_file = ceil(sizeof($polling_items) / $concurrent_processes );
 
-    /* Empty the polling autoexecution directory */
-    if (($config["cacti_server_os"] == "unix") or ($poller == "2"))
-    {
-        pclose(popen("rm -r -f " . read_config_option("path_scriptdir") . "/*", "r"));
-    }
-    else
-    {
-        pclose(popen("del " . stri_replace("/","\\",read_config_option("path_scriptdir")) . "\\*.* /Q", "rb"));
-    }
-    /* End Empty polling autoexecution Directory */
+	/* Empty the polling autoexecution directory */
+	if (($config["cacti_server_os"] == "unix") or ($poller == "2")) {
+		pclose(popen("rm -r -f " . read_config_option("path_scriptdir") . "/*", "r"));
+	}else{
+		pclose(popen("del " . stri_replace("/","\\",read_config_option("path_scriptdir")) . "\\*.* /Q", "rb"));
+	}
+	/* End Empty polling autoexecution Directory */
 
-    /* Determine Command Name */
-    if (($config["cacti_server_os"] == "unix") and ($poller == "2"))
-    {
-        $blast_string = "cactiplus";
-        $command_string = "cactid";
-    }
-    else if ($config["cacti_server_os"] == "unix")
-    {
-        $blast_string = "cactiplus";
-        $command_string = "cmd.php";
-    }
-    else if ($poller == "2")
-    {
-        $blast_string = "cactiplus.cmd";
-        $command_string = "cactid.exe";
-    }
-    else
-    {
-        $blast_string = "cactiplus.cmd";
-        $command_string = "cmd.php";
-    }
-
-    /* Initialize file for autoexecution */
-    touch(read_config_option("path_scriptdir") . "/" . $blast_string);
-    $process_exec_file = fopen(read_config_option("path_scriptdir") . "/" . $blast_string, "w");
-
-    /* Populate each execution file with appropriate information */
-    foreach ($polling_items as $item)
-    {
-        if ($host_count == 1)
-        {
-            $first_host = $item["id"];
-        }
-        if ($host_count == $hosts_per_file)
-        {
-            $last_host = $item["id"];
-            $change_files = True;
-        }
-        $host_count ++;
-        if ($change_files)
-        {
-            write_poller_file_item( $config["base_path"], $config["cacti_server_os"], $process_exec_file, $first_host, $last_host, $command_string );
-            $host_count = 1;
-            $change_files = False;
-            $first_host = 0;
-            $last_host = 0;
-        } /* End change_files */
-    } /* End For Each */
-
-    if ($host_count > 1)
-    {
-        $last_host = $item["id"];
-        write_poller_file_item( $config["base_path"], $config["cacti_server_os"], $process_exec_file, $first_host, $last_host, $command_string );
-    }
-
-    /* Close File - Ready to Blast Off!!! */
-    fclose( $process_exec_file );
-
-    /* Execute script file */
-    if ($config["cacti_server_os"] == "unix")
-    {
-        chmod(read_config_option("path_scriptdir") . "/" . $blast_string, "777");
-        exec(read_config_option("path_scriptdir") . "/" . $blast_string);
-    }
-    else
-    {
-        exec(read_config_option("path_scriptdir") . "\\" . $blast_string);
-    }
-    /* End if execute script file */
-
-    /* insert the current date/time for graphs */
-    db_execute("replace into settings (name,value) values ('date',NOW())");
-
-    /* take time and log performance data */
-    list($micro,$seconds) = split(" ", microtime());
-    $end = $seconds + $micro;
-
-	if ($poller == "1") {
-	    $max_threads = "N/A";
+	/* Determine Command Name */
+	if (($config["cacti_server_os"] == "unix") and ($poller == "2")) {
+		$blast_string = "cactiplus";
+		$command_string = "cactid";
+	}else if ($config["cacti_server_os"] == "unix") {
+		$blast_string = "cactiplus";
+		$command_string = "cmd.php";
+	}else if ($poller == "2") {
+		$blast_string = "cactiplus.cmd";
+		$command_string = "cactid.exe";
+	}else{
+		$blast_string = "cactiplus.cmd";
+		$command_string = "cmd.php";
 	}
 
-    if(read_config_option("log_pstats") == "on")
-        log_data(sprintf("STATS: " .
-                          "Execution Time: %01.4f s, " .
-                          "Method: %s, " .
-                          "Max Processes: %s, " .
-                          "Max Threads/Process: %s, " .
-                          "Polled Hosts: %s, " .
-                          "Hosts/Process: %s",
-                          round($end-$start,4),
-                          $command_string,
-                          $concurrent_processes,
-                          $max_threads,
-                          sizeof($polling_items),
-                          $hosts_per_file));
-}
-else
-{
-    print "There are no items in your poller cache or polling is disabled. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
+	/* Initialize file for autoexecution */
+	touch(read_config_option("path_scriptdir") . "/" . $blast_string);
+	$process_exec_file = fopen(read_config_option("path_scriptdir") . "/" . $blast_string, "w");
+
+	/* Populate each execution file with appropriate information */
+	foreach ($polling_items as $item) {
+		if ($host_count == 1) {
+			$first_host = $item["id"];
+		}
+
+		if ($host_count == $hosts_per_file) {
+			$last_host = $item["id"];
+			$change_files = True;
+		}
+
+		$host_count ++;
+
+		if ($change_files) {
+			write_poller_file_item( $config["base_path"], $config["cacti_server_os"], $process_exec_file, $first_host, $last_host, $command_string );
+			$host_count = 1;
+			$change_files = False;
+			$first_host = 0;
+			$last_host = 0;
+		} /* End change_files */
+	} /* End For Each */
+
+	if ($host_count > 1) {
+		$last_host = $item["id"];
+		write_poller_file_item( $config["base_path"], $config["cacti_server_os"], $process_exec_file, $first_host, $last_host, $command_string );
+	}
+
+	/* Close File - Ready to Blast Off!!! */
+	fclose( $process_exec_file );
+
+	/* Execute script file */
+	if ($config["cacti_server_os"] == "unix") {
+		chmod(read_config_option("path_scriptdir") . "/" . $blast_string, "777");
+		exec(read_config_option("path_scriptdir") . "/" . $blast_string);
+	}else{
+		exec(read_config_option("path_scriptdir") . "\\" . $blast_string);
+	}
+	/* End if execute script file */
+
+	/* insert the current date/time for graphs */
+	db_execute("replace into settings (name,value) values ('date',NOW())");
+
+	/* take time and log performance data */
+	list($micro,$seconds) = split(" ", microtime());
+	$end = $seconds + $micro;
+
+	if ($poller == "1") {
+		$max_threads = "N/A";
+	}
+
+	if(read_config_option("log_pstats") == "on")
+		log_data(sprintf("STATS: " .
+			"Execution Time: %01.4f s, " .
+			"Method: %s, " .
+			"Max Processes: %s, " .
+			"Max Threads/Process: %s, " .
+			"Polled Hosts: %s, " .
+			"Hosts/Process: %s",
+			round($end-$start,4),
+			$command_string,
+			$concurrent_processes,
+			$max_threads,
+			sizeof($polling_items),
+			$hosts_per_file));
+}else{
+	print "There are no items in your poller cache or polling is disabled. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
 }
 // End Mainline Processing
 
 
-function write_poller_file_item( $base_path, $cacti_server_os, $process_exec_file, $first_host, $last_host, $command_string )
-{
-    if (($cacti_server_os == "unix") and (read_config_option("poller_type") == "2"))
-    {
-        fputs($process_exec_file,
-             read_config_option("path_cactid") . " " .
-             $first_host . " " .
-             $last_host . " &\r\n");
-    }
-    else if ($cacti_server_os == "unix")
-    {
-        fputs($process_exec_file,
-             read_config_option("path_php_binary") . " " .
-             $base_path . "/" .
-             $command_string . " " .
-             $first_host . " " .
-             $last_host . " &\r\n");
-    }
-    else if (read_config_option("poller_type") != "2")
-    {
-        fputs($process_exec_file,
-             "start \"Cactiplus\" /I /B " .
-             read_config_option("path_php_binary") . " " .
-             $base_path . "\\cmd.php " .
-             $first_host . " " .
-             $last_host . "\r\n");
-    }
-    else
-    {
-        fputs($process_exec_file,
-             "start \"Cactiplus\" /I /B " .
-             read_config_option("path_cactid") . " " .
-             $first_host . " " .
-             $last_host . "\r\n");
-    }
+function write_poller_file_item( $base_path, $cacti_server_os, $process_exec_file, $first_host, $last_host, $command_string ) {
+	if (($cacti_server_os == "unix") and (read_config_option("poller_type") == "2")) {
+		fputs($process_exec_file,
+			read_config_option("path_cactid") . " " .
+			$first_host . " " .
+			$last_host . " &\r\n");
+	}else if ($cacti_server_os == "unix") {
+		fputs($process_exec_file,
+			read_config_option("path_php_binary") . " " .
+			$base_path . "/" .
+			$command_string . " " .
+			$first_host . " " .
+			$last_host . " &\r\n");
+	}else if (read_config_option("poller_type") != "2") {
+		fputs($process_exec_file,
+			"start \"Cactiplus\" /I /B " .
+			read_config_option("path_php_binary") . " " .
+			$base_path . "\\cmd.php " .
+			$first_host . " " .
+			$last_host . "\r\n");
+	}else{
+		fputs($process_exec_file,
+			"start \"Cactiplus\" /I /B " .
+			read_config_option("path_cactid") . " " .
+			$first_host . " " .
+			$last_host . "\r\n");
+	}
 }
 
 ?>

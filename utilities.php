@@ -31,57 +31,57 @@ include_once("./lib/utility.php");
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
-        case 'clear_poller_cache':
-                include_once("./include/top_header.php");
+	case 'clear_poller_cache':
+		include_once("./include/top_header.php");
 
-                repopulate_poller_cache();
+		repopulate_poller_cache();
 
-                utilities();
-                utilities_view_poller_cache();
+		utilities();
+		utilities_view_poller_cache();
 
-                include_once("./include/bottom_footer.php");
-                break;
-        case 'view_snmp_cache':
-                include_once("./include/top_header.php");
+		include_once("./include/bottom_footer.php");
+		break;
+	case 'view_snmp_cache':
+		include_once("./include/top_header.php");
 
-                utilities();
-                utilities_view_snmp_cache();
+		utilities();
+		utilities_view_snmp_cache();
 
-                include_once("./include/bottom_footer.php");
-                break;
-        case 'view_poller_cache':
-                include_once("./include/top_header.php");
+		include_once("./include/bottom_footer.php");
+		break;
+	case 'view_poller_cache':
+		include_once("./include/top_header.php");
 
-                utilities();
-                utilities_view_poller_cache();
+		utilities();
+		utilities_view_poller_cache();
 
-                include_once("./include/bottom_footer.php");
-                break;
-        case 'view_logfile':
-                include_once("./include/top_header.php");
+		include_once("./include/bottom_footer.php");
+		break;
+	case 'view_logfile':
+		include_once("./include/top_header.php");
 
-                utilities();
-                utilities_view_logfile();
+		utilities();
+		utilities_view_logfile();
 
-                include_once("./include/bottom_footer.php");
-                break;
-        case 'clear_logfile':
-                include_once("./include/top_header.php");
+		include_once("./include/bottom_footer.php");
+		break;
+	case 'clear_logfile':
+		include_once("./include/top_header.php");
 
-                utilities_clear_logfile();
+		utilities_clear_logfile();
 
-                utilities();
-                utilities_view_logfile();
+		utilities();
+		utilities_view_logfile();
 
-                include_once("./include/bottom_footer.php");
-                break;
-        default:
-                include_once("./include/top_header.php");
+		include_once("./include/bottom_footer.php");
+		break;
+	default:
+		include_once("./include/top_header.php");
 
-                utilities();
+		utilities();
 
-                include_once("./include/bottom_footer.php");
-                break;
+		include_once("./include/bottom_footer.php");
+		break;
 }
 
 /* -----------------------
@@ -89,210 +89,202 @@ switch ($_REQUEST["action"]) {
    ----------------------- */
 
 function utilities_view_logfile() {
-        global $colors;
+	global $colors;
 
-        $logfile = read_config_option("cacti_logfile");
+	$logfile = read_config_option("cacti_logfile");
 
-        if ($logfile == "")
-            $logfile = "./log/rrd.log";
+	if ($logfile == "") {
+		$logfile = "./log/rrd.log";
+	}
 
-        /* helps determine output color */
-        $linecolor = True;
+	/* helps determine output color */
+	$linecolor = True;
 
-        /* read logfile into an array and display */
-        if (file_exists($logfile))
-            $logcontents = file($logfile);
-	else {
-	    touch($logfile);
+	/* read logfile into an array and display */
+	if (file_exists($logfile)) {
+		$logcontents = file($logfile);
+	}else{
+		touch($logfile);
 		$logcontents = file($logfile);
 	}
 
-        $logcontents = array_reverse($logcontents);
+	$logcontents = array_reverse($logcontents);
 
-        start_box("<strong>View Cacti Log File</strong> [" . sizeof($logcontents) . " Item" . ((sizeof($logcontents) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>View Cacti Log File</strong> [" . sizeof($logcontents) . " Item" . ((sizeof($logcontents) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
 
-        $i = 0;
-        foreach ($logcontents as $item) {
-            if (strpos($item,":") <> 0)
-                if ($linecolor = True)
-                    $linecolor = False;
-                else
-                    $linecolor = True;
+	$i = 0;
+	foreach ($logcontents as $item) {
+		if (strpos($item,":") <> 0) {
+			if ($linecolor = True) {
+				$linecolor = False;
+			}else{
+				$linecolor = True;
+			}
+		}
 
-            switch ($linecolor) {
-                case True:
-                    form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-                    ?>
-                       <td>
-                           <?php print $item;?>
-                       </td>
-                    </tr>
-                    <?php
-                    break;
-                case False:
-                    form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-                    ?>
-                        <td>
-                            <?php print $item;?>
-                        </td>
-                    </tr>
-                    <?php
-                    break;
-            }
-        }
+		switch ($linecolor) {
+			case True:
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+				?>
+				<td>
+				<?php print $item;?>
+				</td>
+				</tr>
+				<?php
+				break;
+			case False:
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				?>
+				<td>
+				<?php print $item;?>
+				</td>
+				</tr>
+				<?php
+				break;
+		}
+	}
 
-        end_box();
+	end_box();
 }
 
 function utilities_clear_logfile() {
-        $logfile = read_config_option("cacti_logfile");
+	$logfile = read_config_option("cacti_logfile");
 
-        if ($logfile == "")
-            $logfile = "./log/rrd.log";
+	if ($logfile == "") {
+		$logfile = "./log/rrd.log";
+	}
 
-        if (file_exists($logfile)) {
-            unlink($logfile);
-            touch($logfile);
-        }
+	if (file_exists($logfile)) {
+		unlink($logfile);
+		touch($logfile);
+	}
 }
 
 function utilities_view_snmp_cache() {
-        global $colors;
+	global $colors;
 
-        $snmp_cache = db_fetch_assoc("select host_snmp_cache.*,
-                host.description,
-                snmp_query.name
-                from host_snmp_cache,snmp_query,host
-                where host_snmp_cache.host_id=host.id
-                and host_snmp_cache.snmp_query_id=snmp_query.id
-                order by host_snmp_cache.host_id,host_snmp_cache.snmp_query_id,host_snmp_cache.snmp_index");
+	$snmp_cache = db_fetch_assoc("select host_snmp_cache.*,
+		host.description,
+		snmp_query.name
+		from host_snmp_cache,snmp_query,host
+		where host_snmp_cache.host_id=host.id
+		and host_snmp_cache.snmp_query_id=snmp_query.id
+		order by host_snmp_cache.host_id,host_snmp_cache.snmp_query_id,host_snmp_cache.snmp_index");
 
-        start_box("<strong>View SNMP Cache</strong> [" . sizeof($snmp_cache) . " Item" . ((sizeof($snmp_cache) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>View SNMP Cache</strong> [" . sizeof($snmp_cache) . " Item" . ((sizeof($snmp_cache) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
 
-        $i = 0;
-        if (sizeof($snmp_cache) > 0) {
-        foreach ($snmp_cache as $item) {
-                form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-                ?>
-                        <td>
-                                Host: <?php print $item["description"];?>, SNMP Query: <?php print $item["name"];?>
-                        </td>
-                </tr>
-                <?php
-                form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-                ?>
-                        <td>
-                                Index: <?php print $item["snmp_index"];?>, Field Name: <?php print $item["field_name"];?>, Field Value: <?php print $item["field_value"];?>
-                        </td>
-                </tr>
-                <?php
-                form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-                ?>
-                        <td>
-                                OID: <?php print $item["oid"];?>
-                        </td>
-                </tr>
-                <?php
-        }
-        }
+	$i = 0;
+	if (sizeof($snmp_cache) > 0) {
+	foreach ($snmp_cache as $item) {
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			?>
+				<td>
+					Host: <?php print $item["description"];?>, SNMP Query: <?php print $item["name"];?>
+				</td>
+			</tr>
+			<?php
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			?>
+				<td>
+					Index: <?php print $item["snmp_index"];?>, Field Name: <?php print $item["field_name"];?>, Field Value: <?php print $item["field_value"];?>
+				</td>
+			</tr>
+			<?php
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			?>
+				<td>
+					OID: <?php print $item["oid"];?>
+				</td>
+			</tr>
+			<?php
+	}
+	}
 
-        end_box();
+	end_box();
 }
 
 function utilities_view_poller_cache() {
-        global $colors;
+	global $colors;
 
-        $poller_cache = db_fetch_assoc("select
-                data_input_data_cache.*,
-                data_template_data.name_cache,
-                data_local.host_id
-                from data_input_data_cache,data_template_data,data_local
-                where data_input_data_cache.local_data_id=data_template_data.local_data_id
-                and data_template_data.local_data_id=data_local.id");
+	$poller_cache = db_fetch_assoc("select
+		data_input_data_cache.*,
+		data_template_data.name_cache,
+		data_local.host_id
+		from data_input_data_cache,data_template_data,data_local
+		where data_input_data_cache.local_data_id=data_template_data.local_data_id
+		and data_template_data.local_data_id=data_local.id");
 
-        start_box("<strong>View Poller Cache</strong> [" . sizeof($poller_cache) . " Item" . ((sizeof($poller_cache) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>View Poller Cache</strong> [" . sizeof($poller_cache) . " Item" . ((sizeof($poller_cache) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
 
-        $i = 0;
-        if (sizeof($poller_cache) > 0) {
-        foreach ($poller_cache as $item) {
-                form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-                ?>
-                        <td>
-                                Data Source: <?php print $item["name_cache"];?>
-                        </td>
-                </tr>
-                <?php
-                form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-                ?>
-                        <td>
-                                RRD: <?php print $item["rrd_path"];?>
-                        </td>
-                </tr>
-                <?php
-                form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-                ?>
-                        <td>
-                                Action: <?php print $item["action"];?>, <?php print ((($item["action"] == "1") || ($item["action"] == "2")) ? "Script: " . $item["command"] : "OID: " . $item["arg1"] . " (Host: " . $item["hostname"] . ", Community: " . $item["snmp_community"] . ")");?>
-                        </td>
-                </tr>
-                <?php
-        }
-        }
+	$i = 0;
+	if (sizeof($poller_cache) > 0) {
+	foreach ($poller_cache as $item) {
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+		?>
+			<td>
+				Data Source: <?php print $item["name_cache"];?>
+			</td>
+		</tr>
+		<?php
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+		?>
+			<td>
+				RRD: <?php print $item["rrd_path"];?>
+			</td>
+		</tr>
+		<?php
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		?>
+			<td>
+				Action: <?php print $item["action"];?>, <?php print ((($item["action"] == "1") || ($item["action"] == "2")) ? "Script: " . $item["command"] : "OID: " . $item["arg1"] . " (Host: " . $item["hostname"] . ", Community: " . $item["snmp_community"] . ")");?>
+			</td>
+		</tr>
+		<?php
+	}
+	}
 
-        end_box();
+	end_box();
 }
 
 function utilities() {
-        global $colors;
+	global $colors;
 
-        start_box("<strong>Utilities</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Utilities</strong>", "98%", $colors["header"], "3", "center", "");
 
-        ?>
-        <tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-                <td class="textArea">
-                        <p><strong><a href='utilities.php?action=view_poller_cache'>View Poller Cache</a></strong></p>
+	?>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><strong><a href='utilities.php?action=view_poller_cache'>View Poller Cache</a></strong></p>
+			<p>This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.</p>
+		</td>
+	</tr>
+	<tr bgcolor="#<?php print $colors["form_alternate2"];?>">
+		<td class="textArea">
+			<p><strong><a href='utilities.php?action=view_snmp_cache'>View SNMP Cache</a></strong></p>
+			<p>The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.</p>
+		</td>
+	</tr>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><strong><a href='utilities.php?action=clear_poller_cache'>Clear Poller Cache</a></strong></p>
+			<p>The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.</p>
+		</td>
+	</tr>
+	<tr bgcolor="#<?php print $colors["form_alternate2"];?>">
+		<td class="textArea">
+			<p><strong><a href='utilities.php?action=view_logfile'>View Cacti Log File</a></strong></p>
+			<p>The Cacti Log File stores statistic and error messages.  This information can be used to identify problems with the poller and application.</p>
+		</td>
+	</tr>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><strong><a href='utilities.php?action=clear_logfile'>Clear Cacti Log File</a></strong></p>
+			<p>This action will reset the Cacti Log File.  Please note that if you are using the Syslog/Eventlog this action will have no effect.</p>
+		</td>
+	</tr>
+	<?php
 
-                        <p>This is the data that is being passed to the poller each time it runs. This data is then
-                        in turn executed/interpreted and the results are fed into the rrd files for graphing or the
-                        database for display.</p>
-                </td>
-        </tr>
-        <tr bgcolor="#<?php print $colors["form_alternate2"];?>">
-                <td class="textArea">
-                        <p><strong><a href='utilities.php?action=view_snmp_cache'>View SNMP Cache</a></strong></p>
-
-                        <p>The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine
-                        the OID to use when gathering information from an SNMP-enabled host.</p>
-                </td>
-        </tr>
-        <tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-                <td class="textArea">
-                        <p><strong><a href='utilities.php?action=clear_poller_cache'>Clear Poller Cache</a></strong></p>
-
-                        <p>The poller cache will be cleared and re-generated if you select this option. Sometimes
-                        host/data source data can get out of sync with the cache in which case it makes sense to clear
-                        the cache and start over.</p>
-                </td>
-        </tr>
-        <tr bgcolor="#<?php print $colors["form_alternate2"];?>">
-                <td class="textArea">
-                        <p><strong><a href='utilities.php?action=view_logfile'>View Cacti Log File</a></strong></p>
-
-                        <p>The Cacti Log File stores statistic and error messages.  This information can be used to
-                        identify problems with the poller and application.</p>
-                </td>
-        </tr>
-        <tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-                <td class="textArea">
-                        <p><strong><a href='utilities.php?action=clear_logfile'>Clear Cacti Log File</a></strong></p>
-
-                        <p>This action will reset the Cacti Log File.  Please note that if you are using the Syslog/Eventlog
-                        this action will have no effect.</p>
-                </td>
-        </tr>
-        <?php
-
-        end_box();
+	end_box();
 }
 
 ?>
