@@ -115,6 +115,12 @@ function db_fetch_assoc($sql) {
 	}
 }
 
+function db_fetch_insert_id() {
+	global $cnn_id;
+	
+	return $cnn_id->Insert_ID();
+}
+
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
 	if (empty($array{count($array)-1})) {
@@ -155,9 +161,9 @@ function sql_save($array_items, $table_name) {
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {
 		if (isset($array_items["id"])) {
-			return $array_items["id"];
+			return str_replace("\"", "", $array_items["id"]);
 		}else{
-			return 1;
+			return 0;
 		}
 	}else{
 		return $cnn_id->Insert_ID();
