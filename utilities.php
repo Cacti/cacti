@@ -148,7 +148,7 @@ function utilities_view_logfile() {
 }
 
 function utilities_clear_logfile() {
-	$logfile = read_config_option("cacti_logfile");
+	$logfile = read_config_option("path_cactilog");
 
 	if ($logfile == "") {
 		$logfile = "./log/rrd.log";
