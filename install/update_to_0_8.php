@@ -35,13 +35,13 @@ error_reporting(E_ALL & ~E_NOTICE);
 $status_array = array();
 $order_key_array = array(); /* for graph trees */
 
+$paths["cacti"] = str_replace("/install", "", dirname(__FILE__));
+$paths["rra"] = str_replace("/install", "", dirname(__FILE__)) . "/rra";
+
 function update_database($database_old, $database_username, $database_password) {
-	global $database_hostname, $database_default;
+	global $database_hostname, $database_default, $paths;
 	
 	db_connect_real($database_hostname,$database_username,$database_password,$database_default,"mysql");
-	
-	$paths["cacti"] = dirname(__FILE__);
-	$paths["rra"] = dirname(__FILE__) . "/rra";
 	
 	db_execute("truncate table $database_default.user_auth");
 	db_execute("truncate table $database_default.user_auth_realm");
