@@ -935,7 +935,7 @@ function host_edit() {
 							<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 						</td>
 						<td width='1'>";
-							form_base_dropdown("sgg_" . $snmp_query["id"],db_fetch_assoc("select snmp_query_graph.id,CONCAT_WS('',graph_templates.name,' - ',snmp_query_graph.name) as name from snmp_query_graph left join graph_templates on snmp_query_graph.graph_template_id=graph_templates.id where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name"),"name","id","0","","");
+							form_base_dropdown("sgg_" . $snmp_query["id"],db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name"),"name","id","0","","");
 			print "			</td>
 						<td>
 							<input type='image' src='images/button_create.gif' alt='Create Graphs'>
