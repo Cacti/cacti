@@ -23,6 +23,53 @@
    */?>
 <?
 
+function is_error_message() {
+	include("config_arrays.php");
+	
+	$message_ids = split(":", $_SESSION["sess_messages"]);
+	
+	for ($i=0; ($i < count($message_ids)); $i++) {
+		$current_message_id = $message_ids[$i];
+		
+		if ($messages[$current_message_id]["type"] == "error") { return true; }
+	}
+	
+	return false;
+}
+
+function raise_message($message_id) {
+	$_SESSION["sess_messages"] .= "$message_id:";
+}
+
+function display_output_messages() {
+	include("config_arrays.php");
+	include_once("form.php");
+	global $colors;
+	
+	$message_ids = split(":", $_SESSION["sess_messages"]);
+	
+	for ($i=0; ($i < count($message_ids)); $i++) {
+		$current_message_id = $message_ids[$i];
+		
+		eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
+		
+		switch ($messages[$current_message_id]["type"]) {
+		case 'info':
+			start_pagebox("", "98%", "00438C", "3", "center", "");
+			print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
+			end_box();
+			break;
+		case 'error':
+			start_pagebox("", "98%", "ff0000", "3", "center", "");
+			print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
+			end_box();
+			break;
+		}
+	}
+	
+	session_unregister("sess_messages");
+}
+
 function array_rekey($array, $key, $key_value) {
 	if (sizeof($array) > 0) {
 	foreach ($array as $item) {
