@@ -491,22 +491,34 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 	$field = db_fetch_row("select data_name,type_code from data_input_fields where id=$data_input_field_id");
 	
 	if (($field["type_code"] == "index_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
-		form_dropdown($field_name, db_fetch_assoc("select
+		$index_type = db_fetch_assoc("select
 			host_snmp_cache.field_name
 			from data_template_data,data_local,host_snmp_cache
 			where data_template_data.local_data_id=data_local.id
 			and data_local.snmp_query_id=host_snmp_cache.snmp_query_id
 			and data_template_data.id=$data_template_data_id
-			group by host_snmp_cache.field_name"), "field_name", "field_name", $current_value, "", "", "");
+			group by host_snmp_cache.field_name");
+		
+		if (sizeof($index_type) == 0) {
+			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
+		}else{
+			form_dropdown($field_name, $index_type, "field_name", "field_name", $current_value, "", "", "");
+		}
 	}elseif (($field["type_code"] == "output_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
-		form_dropdown($field_name, db_fetch_assoc("select
+		$output_type = db_fetch_assoc("select
 			snmp_query_graph.id,
 			snmp_query_graph.name
 			from data_template_data,data_local,snmp_query_graph
 			where data_template_data.local_data_id=data_local.id
 			and data_local.snmp_query_id=snmp_query_graph.snmp_query_id
 			and data_template_data.id=$data_template_data_id
-			group by snmp_query_graph.id"), "name", "id", $current_value, "", "", "");
+			group by snmp_query_graph.id");
+		
+		if (sizeof($output_type) == 0) {
+			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
+		}else{
+			form_dropdown($field_name, $output_type, "name", "id", $current_value, "", "", "");
+		}	
 	}else{
 		form_text_box($field_name, $current_value, "", "");
 	}
