@@ -200,6 +200,7 @@ $custom_data_source_types = array(
 	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
 	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)",
 	"CURRENT_DS_MINIMUM_VALUE" => "Current Data Source Item: Minimum Value",
+	"SIMILAR_DATA_SOURCES_NODUPS" => "All Similar Data Sources (Don't Include Duplicates)",
 	"CURRENT_DS_MAXIMUM_VALUE" => "Current Data Source Item: Maximum Value",
 	"CURRENT_GRAPH_MINIMUM_VALUE" => "Graph: Lower Limit",
 	"CURRENT_GRAPH_MAXIMUM_VALUE" => "Graph: Upper Limit");
