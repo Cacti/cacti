@@ -78,7 +78,7 @@ function rrd_get_fd(&$rrd_struc, $fd_type) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc = array()) {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc = array(), $logopt = "WEBLOG") {
 	global $config;
 
 	if (!is_numeric($output_flag)) {
@@ -94,7 +94,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 
 	/* output information to the log file if appropriate */
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-		cacti_log("RRD: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout);
+		cacti_log("RRD: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt);
 	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
@@ -246,7 +246,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 	if ($show_source == true) {
 		return read_config_option("path_rrdtool") . " create" . RRD_NL . "$data_source_path$create_ds$create_rra";
 	}else{
-		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
+		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
 	}
 }
 
@@ -285,7 +285,7 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 			$i++;
 		}
 
-		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
+		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
 	}
 }
 
