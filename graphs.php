@@ -765,7 +765,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_title] == "on")) {
 			DrawFormItemTextBox("title",$graphs[title],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[title]</em></td>";
+			print "<td><em>$graphs[title]</em></td>";
 			DrawFormItemHiddenTextBox("title",$graphs_template[title],"");
 		}?>
 	</tr>
@@ -778,7 +778,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_image_format_id] == "on")) {
 			DrawFormItemDropdownFromSQL("image_format_id",db_fetch_assoc("select * from def_image_type order by name"),"Name","ID",$graphs[image_format_id],"","1");
 		}else{
-			print "<td><em>" . db_fetch_cell("select name from def_image_type where id=$graphs_template[image_format_id]") . "</em></td>";
+			print "<td><em>" . db_fetch_cell("select name from def_image_type where id=$graphs[image_format_id]") . "</em></td>";
 			DrawFormItemHiddenTextBox("image_format_id",$graphs_template[image_format_id],"");
 		}?>
 	</tr>
@@ -791,7 +791,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_height] == "on")) {
 			DrawFormItemTextBox("height",$graphs[height],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[height]</em></td>";
+			print "<td><em>$graphs[height]</em></td>";
 			DrawFormItemHiddenTextBox("height",$graphs_template[height],"");
 		}?>
 	</tr>
@@ -804,7 +804,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_width] == "on")) {
 			DrawFormItemTextBox("width",$graphs[width],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[width]</em></td>";
+			print "<td><em>$graphs[width]</em></td>";
 			DrawFormItemHiddenTextBox("width",$graphs_template[width],"");
 		}?>
 	</tr>
@@ -817,7 +817,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_auto_scale] == "on")) {
 			DrawFormItemCheckBox("auto_scale",$graphs[auto_scale],"Auto Scale","on");
 		}else{
-			print "<td><em>" . html_boolean_friendly($graphs_template[auto_scale]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($graphs[auto_scale]) . "</em></td>";
 			DrawFormItemHiddenTextBox("auto_scale",$graphs_template[auto_scale],"");
 		}?>
 	</tr>
@@ -848,7 +848,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_auto_scale_rigid] == "on")) {
 			DrawFormItemCheckBox("auto_scale_rigid",$graphs[auto_scale_rigid],"Use Rigid Boundaries Mode (--rigid)","");
 		}else{
-			print "<td><em>" . html_boolean_friendly($graphs_template[auto_scale_rigid]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($graphs[auto_scale_rigid]) . "</em></td>";
 			DrawFormItemHiddenTextBox("auto_scale_rigid",$graphs_template[auto_scale_rigid],"");
 		}?>
 	</tr>
@@ -861,7 +861,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_auto_scale_log] == "on")) {
 			DrawFormItemCheckBox("auto_scale_log",$graphs[auto_scale_log],"Logarithmic Auto Scaling (--logarithmic)","");
 		}else{
-			print "<td><em>" . html_boolean_friendly($graphs_template[auto_scale_log]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($graphs[auto_scale_log]) . "</em></td>";
 			DrawFormItemHiddenTextBox("auto_scale_logg",$graphs_template[auto_scale_log],"");
 		}?>
 	</tr>
@@ -876,7 +876,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_auto_padding] == "on")) {
 			DrawFormItemCheckBox("auto_padding",$graphs[auto_padding],"Auto Padding","on");
 		}else{
-			print "<td><em>" . html_boolean_friendly($graphs_template[auto_padding]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($graphs[auto_padding]) . "</em></td>";
 			DrawFormItemHiddenTextBox("auto_padding",$graphs_template[auto_padding],"");
 		}?>
 	</tr>
@@ -891,7 +891,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_grouping] == "on")) {
 			DrawFormItemCheckBox("grouping",$graphs[grouping],"Allow Grouping","on");
 		}else{
-			print "<td><em>" . html_boolean_friendly($graphs_template[grouping]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($graphs[grouping]) . "</em></td>";
 			DrawFormItemHiddenTextBox("grouping",$graphs_template[grouping],"");
 		}?>
 	</tr>
@@ -905,7 +905,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_export] == "on")) {
 			DrawFormItemCheckBox("export",$graphs[export],"Allow Graph Export","on");
 		}else{
-			print "<td><em>" . html_boolean_friendly($graphs_template[export]) . "</em></td>";
+			print "<td><em>" . html_boolean_friendly($graphs[export]) . "</em></td>";
 			DrawFormItemHiddenTextBox("export",$graphs_template[export],"");
 		}?>
 	</tr>
@@ -918,7 +918,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_upper_limit] == "on")) {
 			DrawFormItemTextBox("upper_limit",$graphs[upper_limit],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[upper_limit]</em></td>";
+			print "<td><em>$graphs[upper_limit]</em></td>";
 			DrawFormItemHiddenTextBox("upper_limit",$graphs_template[upper_limit],"");
 		}?>
 	</tr>
@@ -931,7 +931,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_lower_limit] == "on")) {
 			DrawFormItemTextBox("lower_limit",$graphs[lower_limit],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[lower_limit]</em></td>";
+			print "<td><em>$graphs[lower_limit]</em></td>";
 			DrawFormItemHiddenTextBox("lower_limit",$graphs_template[lower_limit],"");
 		}?>
 	</tr>
@@ -944,7 +944,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_base_value] == "on")) {
 			DrawFormItemTextBox("base_value",$graphs[base_value],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[base_value]</em></td>";
+			print "<td><em>$graphs[base_value]</em></td>";
 			DrawFormItemHiddenTextBox("base_value",$graphs_template[base_value],"");
 		}?>
 	</tr>
@@ -958,7 +958,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_unit_value] == "on")) {
 			DrawFormItemTextBox("unit_value",$graphs[unit_value],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[unit_value]</em></td>";
+			print "<td><em>$graphs[unit_value]</em></td>";
 			DrawFormItemHiddenTextBox("unit_value",$graphs_template[unit_value],"");
 		}?>
 	</tr>
@@ -972,7 +972,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_unit_exponent_value] == "on")) {
 			DrawFormItemTextBox("unit_exponent_value",$graphs[unit_exponent_value],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[unit_exponent_value]</em></td>";
+			print "<td><em>$graphs[unit_exponent_value]</em></td>";
 			DrawFormItemHiddenTextBox("unit_exponent_value",$graphs_template[unit_exponent_value],"");
 		}?>
 	</tr>
@@ -985,7 +985,7 @@ function graph_edit() {
 		<?if (($use_graph_template == false) || ($graphs_template[t_vertical_label] == "on")) {
 			DrawFormItemTextBox("vertical_label",$graphs[vertical_label],"","50", "40");
 		}else{
-			print "<td><em>$graphs_template[vertical_label]</em></td>";
+			print "<td><em>$graphs[vertical_label]</em></td>";
 			DrawFormItemHiddenTextBox("vertical_label",$graphs_template[vertical_label],"");
 		}?>
 	</tr>
