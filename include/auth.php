@@ -79,7 +79,7 @@ if (read_config_option("global_auth") == "on") {
 			and user_auth_realm.realm_id='$realm_id'")) {
 			
 			include($config["include_path"] . "/top_header.php");
-			include($config["include_path"] . "/auth_noauth.php");
+			include("auth_noauth.php");
 			include($config["include_path"] . "/bottom_footer.php");
 			exit;
 		}
