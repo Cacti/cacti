@@ -55,7 +55,7 @@ function DrawMenu($userid, $menuid) {
 					    "cdef.php" => "CDEF's"
 					    ),
 		  "Configuration"  => array(
-					    "cron.php" => "Cron Printout",
+					    "utilities.php" => "Utilities",
 					    "settings.php" => "Cacti Settings"
 					    ),
 		  "Utilities"      => array(
