@@ -397,7 +397,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 			$sql_join
 			where graph_tree_items.graph_tree_id=$tree_id
-			and graph_tree_items.order_key like '$search_key" . "__%'
+			and graph_tree_items.order_key like '$search_key" . "__" . str_repeat('0',60-(strlen($search_key)+2)) . "'
 			and graph_tree_items.local_graph_id>0
 			$sql_where
 			order by graph_tree_items.order_key");
@@ -411,6 +411,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			
 			$i++;
 		}
+		}else{
+			print "<tr><td><em>No graphs at this branch.</em></td></tr>";
 		}
 	}else{
 		$graph_templates = db_fetch_assoc("select
