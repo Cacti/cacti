@@ -187,6 +187,7 @@ function rrdtool_function_update($update_cache_array) {
 		
 		if (read_config_option("log_update") == "on") { $log_data = true; }
 		
+		print "update $data_source_path --template $rrd_update_template N:$rrd_update_values\n";
 		rrdtool_execute("update $data_source_path --template $rrd_update_template N:$rrd_update_values",$log_data,1);
 	}
 }
