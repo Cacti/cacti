@@ -25,7 +25,11 @@
 */
 
 function graph_export() {
-	if (read_config_option("export_timing") != "disabled" && file_exists(read_config_option("path_html_export"))) {
+	if (read_config_option("export_timing") != "disabled") {
+		if (!file_exists(read_config_option("path_html_export"))) {
+			export_fatal("Export path does not exist!");
+		}
+
 		switch (read_config_option("export_timing")) {
 			case "classic":
 				if (read_config_option("path_html_export_ctr") >= read_config_option("path_html_export_skip")) {
@@ -59,14 +63,10 @@ function graph_export() {
 					db_execute("insert into settings (name,value) values ('export_daily','00:00')");
 				} ;
 				break;
-			case "disabled":
-				break;
 			default:
 				export_log("Export timing not specified. Updated config to disable exporting.");
 				db_execute("insert into settings (name,value) values ('export_timing','disabled')");
 		} ;
-	} elseif (!file_exists(read_config_option("path_html_export"))) {
-		export_fatal("Export path does not exist!");
 	} ;
 }
 
