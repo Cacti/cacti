@@ -157,9 +157,11 @@ function form_save() {
 		
 		if (sizeof($settings_graphs) > 0) {
 		foreach (array_keys($settings_graphs) as $setting) {
-			if (isset($_POST[$setting])) {
-				db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["user_id"]) . ",'$setting', '" . $_POST[$setting] . "')");
-			}
+			/* we can only get away with this because all graph settings happen to be displayed on a 
+			single page */
+			$_POST[$setting] = (isset($_POST[$setting]) ? $_POST[$setting] : "");
+			
+			db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["user_id"]) . ",'$setting', '" . $_POST[$setting] . "')");
 		}
 		}
 		
@@ -697,6 +699,9 @@ function user_edit() {
 					case 'drop_array':
 						form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
 						break;
+					case 'checkbox':
+						form_checkbox($setting, $current_value, $settings_graphs[$setting]["friendly_name"], $settings_graphs[$setting]["default"], 1);
+						break;
 				}
 				
 				$i++;
@@ -723,7 +728,6 @@ function user_edit() {
 }
 
 function user() {
-	
 	global $colors, $auth_realms;
 
 	start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
