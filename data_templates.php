@@ -228,7 +228,7 @@ function template_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
 	db_execute("delete from snmp_query_graph_rrd where data_template_rrd_id=" . $_GET["id"]);
 	
-	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["id"]);
+	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["data_template_id"]);
 }
 
 function template_rrd_add() {
@@ -318,7 +318,7 @@ function template_edit() {
 				foreach ($template_data_rrds as $template_data_rrd) {
 					$i++;
 					print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center' class='tab'>
-							<span class='textHeader'><a href='data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a> <a href='data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
+							<span class='textHeader'><a href='data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a> <a href='data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&data_template_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
 						</td>\n
 						<td width='1'></td>\n";
 				}

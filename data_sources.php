@@ -708,7 +708,7 @@ function ds_edit() {
 				foreach ($template_data_rrds as $template_data_rrd) {
 					$i++;
 					print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center' class='tab'>
-							<span class='textHeader'><a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a> <a href='data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
+							<span class='textHeader'><a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a> <a href='data_sources.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&local_data_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
 						</td>\n
 						<td width='1'></td>\n";
 				}
