@@ -351,7 +351,11 @@ function bandwidth_summation($local_data_id, $seconds) {
 			$sum += $fetch_array["values"][$i][$j];
 		}
 		
-		$sum = ($seconds * ($sum/count($fetch_array["values"][$i])));
+		if (count($fetch_array["values"][$i]) != 0) {
+			$sum = ($seconds * ($sum/count($fetch_array["values"][$i])));
+		}else{
+			$sum = 0;
+		}
 		
 		/* collect 95th percentile values in this array so we can return them */
 		$return_array{$fetch_array["data_source_names"][$i]} = $sum;
