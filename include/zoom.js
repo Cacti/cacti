@@ -25,7 +25,7 @@
 
  zoom.js version 0.4
 */
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/ 
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 // Global constant
 
@@ -52,7 +52,7 @@ function urlObj(url) {
  urlBaseAndParameters = url.split("?");
  this.urlBase = urlBaseAndParameters[0];
  this.urlParameters = urlBaseAndParameters[1].split("&");
- 
+
  this.getUrlBase = urlObjGetUrlBase;
  this.getUrlParameterValue = urlObjGetUrlParameterValue;
 }
@@ -90,15 +90,15 @@ function urlObjGetUrlParameterValue(parameter) {
 function mouseObj() {
  this.startedX = 0;
  this.startedY = 0;
- 
+
  this.stoppedX = 0;
  this.stoppedY = 0;
- 
+
  this.currentX = 0;
  this.currentY = 0;
- 
+
  this.dragging = false;
- 
+
  this.setEvent = mouseObjSetEvent;
  this.leftButtonPressed = mouseObjLeftButtonPressed;
  this.rightButtonPressed = mouseObjRightButtonPressed;
@@ -174,23 +174,23 @@ function mouseObjSaveCurrentToStopPosition() {
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 function zoomGraphObj(zoomGraphName) {
-	
+
 // We use 3 zones. The first (zoomGraph) represent the entire graph image.
 // The second (zoomBox) represent the graph itself.
-// The last zone (zoomSensitiveZone) represent the area where the user can 
+// The last zone (zoomSensitiveZone) represent the area where the user can
 // launch the zoom function
- 
+
  this.zoomGraphName = zoomGraphName;
  this.imgObject = document.getElementById(this.zoomGraphName);
  gUrlObj = new urlObj(this.imgObject.src);
- 
+
  this.zoomGraphLeft = 0;
  this.zoomGraphTop = 0;
  this.zoomGraphRight = 0;
  this.zoomGraphBottom = 0;
  this.zoomGraphWidth = 0;
  this.zoomGraphHeight = 0;
- 
+
  this.zoomBoxLeft = 0;
  this.zoomBoxTop = 0;
  this.zoomBoxRight = 0;
@@ -204,7 +204,7 @@ function zoomGraphObj(zoomGraphName) {
  this.zoomSensitiveZoneBottom = 0;
  this.zoomSensitiveZoneWith = 0;
  this.zoomSensitiveZoneHeight = 0;
- 
+
  this.refresh = zoomGraphObjRefresh;
  this.drawSelection = zoomGraphObjDrawSelection;
 
@@ -215,12 +215,12 @@ function zoomGraphObj(zoomGraphName) {
 /*+++++++++++++++++++++++++++  zoomGraphObjRefresh  +++++++++++++++++++++++++*/
 
 function zoomGraphObjRefresh() {
-//  Constants	
+//  Constants
  var cZoomBoxName = "zoomBox";
  var cZoomBoxTopOffsetWOText = 15 - 1;
  var cZoomBoxTopOffsetWText = 32 - 1;
- var cZoomBoxRightOffset = -19;
- 
+ var cZoomBoxRightOffset = -16;
+
  var cZoomSensitiveZoneName = "zoomSensitiveZone";
  var cZoomSensitiveZoneOffset = 12;
 
@@ -228,43 +228,43 @@ function zoomGraphObjRefresh() {
  var imgObject;
 // var imgSource;
  var imgAlt;
- 
+
  var divObject;
- 
+
  var left;
  var top;
  var width;
  var height;
- 
+
  var zoomBoxWidth;
  var zoomBoxHeight;
- 
+
  imgObject = this.imgObject;
  //imgSource = imgObject.src;
  imgAlt = imgObject.alt;
- 
+
  width = imgObject.width;
  height = imgObject.height;
 
  zoomBoxWidth = parseInt(gUrlObj.getUrlParameterValue("graph_width")) + 1;
  zoomBoxHeight = parseInt(gUrlObj.getUrlParameterValue("graph_height")) + 1;
- 
+
  // Get absolute graph position
  // start with the image's coordinates and walk through it's
- // ancestory of elements (tables, div's, spans, etc...) until 
- // we're at the top.  Along the way we add in each element's 
+ // ancestory of elements (tables, div's, spans, etc...) until
+ // we're at the top.  Along the way we add in each element's
  // coordinates to get the final answer
- 
+
  left = 0;
- top = 0;   
+ top = 0;
  do
  {
   left += imgObject.offsetLeft;
   top += imgObject.offsetTop;
   imgObject  = imgObject.offsetParent;
- } 
+ }
  while(imgObject);
- 
+
  this.zoomGraphLeft = left;
  this.zoomGraphTop = top;
  this.zoomGraphRight = left + width;
@@ -281,21 +281,21 @@ else {
 }
  this.zoomBoxLeft = this.zoomBoxRight - zoomBoxWidth;
  this.zoomBoxBottom = this.zoomBoxTop + zoomBoxHeight;
- 
+
  this.zoomBoxWidth = zoomBoxWidth;
  this.zoomBoxHeight = zoomBoxHeight;
 
 // this.drawSelection(this.zoomBoxLeft, this.zoomBoxTop, this.zoomBoxRight, this.zoomBoxBottom);
  this.drawSelection(0, 0, 0, 0); // reset selection
 
-  
+
  divObject = document.getElementById(cZoomBoxName);
  divObject.style.left = this.zoomBoxLeft;
  divObject.style.top = this.zoomBoxTop;
  divObject.style.width = this.zoomBoxWidth;
  divObject.style.height = this.zoomBoxHeight;
- 
- 
+
+
  this.zoomSensitiveZoneLeft = this.zoomBoxLeft - cZoomSensitiveZoneOffset;
  this.zoomSensitiveZoneTop = this.zoomBoxTop - cZoomSensitiveZoneOffset;
  this.zoomSensitiveZoneRight = this.zoomBoxRight + cZoomSensitiveZoneOffset;
@@ -315,14 +315,14 @@ else {
 function zoomGraphObjDrawSelection (x1, y1, x2, y2) {
  var cZoomBoxName = "zoomBox";
  var divObject;
- 
+
 // Calculate relative to zoomBox
- 
+
  x1 = x1 - this.zoomBoxLeft;
  x2 = x2 - this.zoomBoxLeft;
  y1 = y1 - this.zoomBoxTop;
  y2 = y2 - this.zoomBoxTop;
- 
+
  var minX = Math.min(x1, x2);
  var maxX = Math.max(x1, x2) + 1;
  var minY = Math.min(y1, y2);
@@ -502,7 +502,7 @@ function insideZoomBox() {
  var szTop = gZoomGraphObj.zoomSensitiveZoneTop;
  var szRight = gZoomGraphObj.zoomSensitiveZoneRight;
  var szBottom = gZoomGraphObj.zoomSensitiveZoneBottom;
- 
+
  var mpX = gMouseObj.currentX;
  var mpY = gMouseObj.currentY;
  return ((mpX >= szLeft) && (mpX <= szRight) && (mpY >= szTop) && (mpY <= szBottom));
@@ -515,12 +515,12 @@ function initEvents() {
  document.onmousedown = onMouseDownEvent;
  document.onmouseup = onMouseUpEvent;
  window.onresize = windowOnResizeEvent;
- 
+
  if (gBrowserObj.browser == "Netscape") {
   document.captureEvents(Event.MOUSEMOVE);
   document.captureEvents(Event.MOUSEDOWN);
   document.captureEvents(Event.MOUSEUP);
- } 
+ }
 }
 
 
@@ -534,7 +534,7 @@ function initEvents() {
 function onMouseDownEvent(e) {
  gMouseObj.setEvent(e);
  gMouseObj.getCurrentPosition();
- 
+
  if (insideZoomBox()) {
   if ((gMouseObj.leftButtonPressed()) && (!gMouseObj.dragging)) {
    gMouseObj.dragging = true;
@@ -550,7 +550,7 @@ function onMouseDownEvent(e) {
 
 function onMouseMouveEvent(e) {
  gMouseObj.setEvent(e);
- if (gMouseObj.dragging) {	
+ if (gMouseObj.dragging) {
   gMouseObj.getCurrentPosition();
   gZoomGraphObj.drawSelection(gMouseObj.startedX, gMouseObj.startedY, gMouseObj.currentX, gMouseObj.currentY);
  }
@@ -559,24 +559,24 @@ function onMouseMouveEvent(e) {
 /*+++++++++++++++++++++++++++++  onMouseUpEvent  ++++++++++++++++++++++++++++*/
 
 function onMouseUpEvent(e) {
- var graphStart;	
+ var graphStart;
  var graphEnd;
- 
+
  var newGraphStart;
  var newGraphEnd;
- 
+
  gMouseObj.setEvent(e);
- 
+
  graphStart = parseInt(gUrlObj.getUrlParameterValue("graph_start"));
  graphEnd = parseInt(gUrlObj.getUrlParameterValue("graph_end"));
- 
+
  if ((gMouseObj.rightButtonPressed()) && (insideZoomBox())) {
   var Timespan = graphEnd - graphStart;
-  
+
   gMouseObj.dragging = false;
   newGraphEnd = graphEnd + Timespan * 2;
   newGraphStart = graphStart - Timespan * 2;
-  
+
   var urlBase = cURLBase;
   var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
   var rraId = gUrlObj.getUrlParameterValue("rra_id");
@@ -587,22 +587,22 @@ function onMouseUpEvent(e) {
   open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth, "_self");
  }
 
- if ((gMouseObj.leftButtonPressed()) && (gMouseObj.dragging)) { 
+ if ((gMouseObj.leftButtonPressed()) && (gMouseObj.dragging)) {
   gMouseObj.getCurrentPosition();
   gMouseObj.saveCurrentToStopPosition();
   gMouseObj.dragging = false;
- 
+
   var x1 = gMouseObj.startedX - gZoomGraphObj.zoomBoxLeft;
   var x2 = gMouseObj.stoppedX - gZoomGraphObj.zoomBoxLeft;
- 
+
   var y1 = gMouseObj.startedY - gZoomGraphObj.zoomBoxTop;
   var y2 = gMouseObj.stoppedY - gZoomGraphObj.zoomBoxTop;
- 
+
   var minX = Math.min(x1, x2);
   var maxX = Math.max(x1, x2);
   var minY = Math.min(y1, y2);
   var maxY = Math.max(y1, y2);
- 
+
   if (minX < 0) {
    minX = 0;
   }
@@ -616,7 +616,7 @@ function onMouseUpEvent(e) {
    maxY = gZoomGraphObj.zoomBoxHeight;
   }
 
-  if ((minX != maxX) || (minY != maxY)) { 
+  if ((minX != maxX) || (minY != maxY)) {
    var OnePixel = (graphEnd - graphStart) / gZoomGraphObj.zoomBoxWidth;  // Represent # of seconds for 1 pixel on the graph
 
    newGraphEnd = Math.round(graphEnd - (gZoomGraphObj.zoomBoxWidth - maxX) * OnePixel);
