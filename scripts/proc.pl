@@ -7,4 +7,4 @@ chop($outbound);
 
 $outbound--;
 
-print("$outbound\n");
+print $outbound;
