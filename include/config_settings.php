@@ -128,18 +128,6 @@ $settings = array(
 		"description" => "Confirm Before the User Removes an Item.",
 		"method" => "checkbox",
 		"tab" => "general"),
-	"full_view" => array(
-		"friendly_name" => "Use Full View",
-		"description" => "Select the areas in cacti where you would rather see everything on one edit screen rather than having to choose each area from a drop down box.",
-		"method" => "group",
-		"tab" => "visual",
-		"items" => array(
-			"full_view_user_admin" => array("friendly_name" => "",
-				"description" => "User Management",
-				"method" => "checkbox",
-				"tab" => "general"),
-				)
-			),
 	"num_rows_graph" => array(
 		"friendly_name" => "Graph Management - Rows Per Page",
 		"description" => "The number of rows to display on a single page for graph management.",
@@ -217,6 +205,12 @@ $settings_graphs = array(
 		"method" => "drop_array",
 		"array_name" => "graph_tree_views",
 		"default" => "1",
+		"tab" => "tree"),
+	"expand_hosts" => array(
+		"friendly_name" => "Expand Hosts",
+		"description" => "Choose whether to expand the graph templates used for a host on the dual pane tree.",
+		"method" => "checkbox",
+		"default" => "on",
 		"tab" => "tree"),
 	"default_height" => array(
 		"friendly_name" => "Height",
