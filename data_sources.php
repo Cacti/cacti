@@ -170,15 +170,33 @@ function form_save() {
 		/* if this is a new data source and a template has been selected, skip item creation this time
 		otherwise it throws off the templatate creation because of the NULL data */
 		if ((!empty($save1["id"])) || (empty($save1["data_template_id"]))) {
-			$save3["id"] = $_POST["data_template_rrd_id"];
-			$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
-			$save3["data_template_id"] = $_POST["data_template_id"];
-			$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^-?[0-9]+$", false, 3);
-			$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^-?[0-9]+$", false, 3);
-			$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
-			$save3["data_source_type_id"] = $_POST["data_source_type_id"];
-			$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
-			$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
+			/* if no template was set before the save, there will be only one data source item to save;
+			otherwise there might be >1 */
+			if (empty($_POST["_data_template_id"])) {
+				$rrds[0]["id"] = $_POST["current_rrd"];
+			}else{
+				$rrds = db_fetch_assoc("select id from data_template_rrd where local_data_id=" . $_POST["local_data_id"]);
+			}
+			
+			if (sizeof($rrds) > 0) {
+			foreach ($rrds as $rrd) {
+				if (empty($_POST["_data_template_id"])) {
+					$name_modifier = "";
+				}else{
+					$name_modifier = "_" . $rrd["id"];
+				}
+				
+				$save3["id"] = $rrd["id"];
+				$save3["local_data_template_rrd_id"] = db_fetch_cell("select local_data_template_rrd_id from data_template_rrd where id=" . $rrd["id"]); 
+				$save3["data_template_id"] = $_POST["data_template_id"];
+				$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum$name_modifier"], "rrd_maximum$name_modifier", "^-?[0-9]+$", false, 3);
+				$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum$name_modifier"], "rrd_minimum$name_modifier", "^-?[0-9]+$", false, 3);
+				$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat$name_modifier"], "rrd_heartbeat$name_modifier", "^[0-9]+$", false, 3);
+				$save3["data_source_type_id"] = $_POST["data_source_type_id$name_modifier"];
+				$save3["data_source_name"] = form_input_validate($_POST["data_source_name$name_modifier"], "data_source_name$name_modifier", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
+				$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id$name_modifier"]) ? $_POST["data_input_field_id$name_modifier"] : "0"), "data_input_field_id$name_modifier", "", true, 3);
+			}
+			}
 		}
 		
 		if (!is_error_message()) {
@@ -680,7 +698,20 @@ function ds_edit() {
 	
 	end_box();
 	
-	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
+	/* only display the "inputs" area if we are using a data template for this data source */
+	if (!empty($data["data_template_id"])) {
+		$template_data_rrds = db_fetch_assoc("select * from data_template_rrd where local_data_id=" . $_GET["id"] . " order by data_source_name");
+		
+		start_box("<strong>Supplimental Data Template Data</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], &$data, "|field|", "<strong>Data Source Fields</strong>", true, true, 0);
+		draw_nontemplated_fields_data_source_item($data["data_template_id"], $template_data_rrds, "|field|_|id|", "<strong>Data Source Item Fields</strong>", true, true, true, 0);
+		draw_nontemplated_fields_custom_data($data["id"], "value_|field|", "<strong>Custom Data</strong>", true, true);
+		
+		end_box();
+	}
+	
+	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($data["data_template_id"]))) {
 		start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		$form_array = array();
@@ -816,7 +847,7 @@ function ds_edit() {
 		/* data source data goes here */
 		data_edit();
 		
-		form_hidden_id("current_rrd",$_GET["view_rrd"]);
+		form_hidden_id("current_rrd", $_GET["view_rrd"]);
 	}
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {

@@ -768,89 +768,10 @@ function graph_edit() {
 	if (!empty($graphs["graph_template_id"])) {
 		start_box("<strong>Supplimental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
 		
-		?>
-		<form method='post' action='graphs.php'>
+		print "<form method='post' action='graphs.php'>\n";
 		
-		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
-			<td colspan="2" class='textSubHeaderDark'>Graph Fields</td>
-		</tr>
-		<?php
-		
-		$form_array = array();
-		
-		while (list($field_name, $field_array) = each($struct_graph)) {
-			$form_array += array($field_name => $struct_graph[$field_name]);
-			
-			$form_array[$field_name]["value"] = (isset($graphs) ? $graphs[$field_name] : "");
-			$form_array[$field_name]["form_id"] = (isset($graphs) ? $graphs["id"] : "0");
-			
-			if (!(($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on"))) {
-				$form_array[$field_name]["method"] = "hidden";
-			}
-		}
-		
-		draw_edit_form(
-			array(
-				"config" => array(
-					"no_form_tag" => true
-					),
-				"fields" => $form_array
-				)
-			);
-		
-		$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=" . $graphs["graph_template_id"] . " order by name");
-		
-		/* modifications to the default graph items array */
-		$struct_graph_item["task_item_id"]["sql"] = "select
-			CONCAT_WS('',
-			case
-			when host.description is null then 'No Host - ' 
-			when host.description is not null then ''
-			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
-			data_template_rrd.id 
-			from data_template_data,data_template_rrd,data_local 
-			left join host on data_local.host_id=host.id
-			where data_template_rrd.local_data_id=data_local.id 
-			and data_template_data.local_data_id=data_local.id
-			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "
-			order by name";
-		
-		?>
-		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
-			<td colspan="2" class='textSubHeaderDark'>Graph Item Fields</td>
-		</tr>
-		<?php
-		
-		$form_array = array();
-		
-		if (sizeof($input_item_list) > 0) {
-		foreach ($input_item_list as $item) {
-			$current_def_value = db_fetch_row("select 
-				graph_templates_item." . $item["column_name"] . ",
-				graph_templates_item.id
-				from graph_templates_item,graph_template_input_defs 
-				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id 
-				and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
-				and graph_templates_item.local_graph_id=" . $_GET["id"] . "
-				limit 0,1");
-			
-			$form_array += array($item["column_name"] . "_" . $item["id"] => $struct_graph_item{$item["column_name"]});
-			
-			$form_array{$item["column_name"] . "_" . $item["id"]}["friendly_name"] = $item["name"];
-			$form_array{$item["column_name"] . "_" . $item["id"]}["value"] = $current_def_value{$item["column_name"]};
-		}
-		}else{
-			print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='2'><em>No Inputs</em></td></tr>";
-		}
-		
-		if (sizeof($input_item_list > 0)) {
-			draw_edit_form(
-				array(
-					"config" => array(),
-					"fields" => $form_array
-					)
-				);
-		}
+		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>Graph Fields</strong>", true, true, 0);
+		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], $_GET["id"], "|field|_|id|", "<strong>Graph Item Fields</strong>", true);
 		
 		end_box();
 	}

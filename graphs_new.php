@@ -316,7 +316,6 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				and graph_templates_item.graph_template_id=" . $graph_template_id . "
 				group by data_template.id
 				order by data_template.name");
-			
 			$graph_template = db_fetch_row("select
 				graph_templates.name as graph_template_name,
 				graph_templates_graph.*
@@ -326,140 +325,21 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				and graph_templates_graph.local_graph_id=0");
 			$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $graph_template_id);
 			
-			$graph_inputs = db_fetch_assoc("select
-				*
-				from graph_template_input
-				where graph_template_id=" . $graph_template_id . "
-				and column_name != 'task_item_id'
-				order by name");
-			
-			reset($struct_graph);
-			$drew_items = false;
-			
-			while (list($field_name, $field_array) = each($struct_graph)) {
-				if ($graph_template{"t_" . $field_name} == "on") {
-					if ($drew_items == false) {
-						print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]</span></td></tr>";
-					}
-					
-					$row_counter = 1; /* so we have an all 'light' background */
-					
-					/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
-					one entry here might might 20 graphs... so we can't automatically fill in the values. 
-					if it is not an snmp query, automatically fill in the values right here. */
-					if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id and field_name='$field_name'")) > 0)) {
-						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-						print "<td><strong>" . $struct_graph[$field_name]["friendly_name"] . "</strong></td>";
-						print "<td><em>Using Suggested Values</em> (see Data Query)</td>"; 
-						print "</td></tr>\n";
-					}else{
-						draw_edit_form_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($graph_template[$field_name]) ? $graph_template[$field_name] : ""));
-					}
-					
-					$drew_items = true;
-				}
-			}
-			
-			/* DRAW: Graphs Inputs */
-			if (sizeof($graph_inputs) > 0) {
-			foreach ($graph_inputs as $graph_input) {
-				if ($drew_items == false) {
-					print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Graph Items</strong> [Template: " . $graph_template_name . "]</span></td></tr>";
-				}
-				
-				$row_counter = 1; /* so we have an all 'light' background */
-				
-				$current_value = db_fetch_cell("select 
-					graph_templates_item." . $graph_input["column_name"] . "
-					from graph_templates_item,graph_template_input_defs 
-					where graph_template_input_defs.graph_template_item_id=graph_templates_item.id 
-					and graph_template_input_defs.graph_template_input_id=" . $graph_input["id"] . "
-					and graph_templates_item.graph_template_id=" . $graph_template_id . "
-					limit 0,1");
-				
-				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-				
-				/* fill in the field array with some values from the graph input */
-				$struct_graph_item{$graph_input["column_name"]}["friendly_name"] = $graph_input["name"];
-				$struct_graph_item{$graph_input["column_name"]}["description"] = $graph_input["description"];
-				
-				draw_edit_form_row($struct_graph_item{$graph_input["column_name"]}, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_" . $graph_input["id"] . "_" . $graph_input["column_name"], $current_value);
-				
-				print "</tr>\n";
-				
-				$drew_items = true;
-			}
-			}
+			draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . "$graph_template_id" . "_0_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+			draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]", false);
 			
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				reset($struct_data_source);
-				$drew_items = false;
+				draw_nontemplated_fields_data_source($data_template["id"], 0, &$data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
 				
-				while (list($field_name, $field_array) = each($struct_data_source)) {
-					if (isset($data_template{"t_" . $field_name})) {
-						if ($data_template{"t_" . $field_name} == "on") {
-							if ($drew_items == false) {
-								print "<tr><td colspan='2' bgcolor='#" . $colors["header_panel"] . "'><span style='font-size: 10px; color: white;'><strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]</span></td></tr>";
-							}
-							
-							$row_counter = 1; /* so we have an all 'light' background */
-							
-							/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
-							one entry here might might 20 graphs... so we can't automatically fill in the values. 
-							if it is not an snmp query, automatically fill in the values right here. */
-							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
-								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-								print "<td><strong>" . $struct_data_source[$field_name]["friendly_name"] . "</strong></td>";
-								print "<td><em>Using Suggested Values</em> (see Data Query)</td>"; 
-								print "</td></tr>\n";
-							}else{
-								draw_edit_form_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
-							}
-							
-							$drew_items = true;
-						}
-					}
-				}
-				
-				/* DRAW: Data Source Items */
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
 					from data_template_rrd
 					where data_template_rrd.data_template_id=" . $data_template["data_template_id"] . "
 					and local_data_id=0");
 				
-				if (sizeof($data_template_items) > 0) {
-				foreach ($data_template_items as $data_template_item) {
-					reset($struct_data_source_item);
-					$drew_items = false;
-					
-					while (list($field_name, $field_array) = each($struct_data_source_item)) {
-						if ($data_template_item{"t_" . $field_name} == "on") {
-							$row_counter = 1; /* so we have an all 'light' background */
-							
-							/* we do this to help the user identify which data source item they are dealing
-							with */
-							$field_array["friendly_name"] .= " (" . $data_template_item["data_source_name"] . ")";
-							
-							/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
-							one entry here might might 20 graphs... so we can't automatically fill in the values. 
-							if it is not an snmp query, automatically fill in the values right here. */
-							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
-								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-								print "<td><strong>" . $struct_data_source_item[$field_name]["friendly_name"] . " (" . $data_template_item["data_source_name"] . ")</strong></td>";
-								print "<td><em>Using Suggested Values</em> (see Data Query)</td>"; 
-								print "</td></tr>\n";
-							}else{
-								draw_edit_form_row($field_array, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $data_template_item["id"] . "_" . $field_name, $data_template_item[$field_name]);
-							}
-							
-							$drew_items = true;
-						}
-					}
-				}
-				}
+				draw_nontemplated_fields_data_source_item($data_template["id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
 			}
 			}
 			
