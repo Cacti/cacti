@@ -24,8 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include ("./include/config.php");
-
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -94,7 +92,7 @@ case 'login':
 ?>
 <html>
 <head>
-	<title>Login to cacti</title>
+	<title>Login to Cacti</title>
 	<STYLE TYPE="text/css">
 	<!--	
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
@@ -125,7 +123,7 @@ case 'login':
 	<?php }?>
 	<tr height="10"><td></td></tr>
 	<tr>
-		<td colspan="2">Please enter your cacti user name and password below:</td>
+		<td colspan="2">Please enter your Cacti user name and password below:</td>
 	</tr>
 	<tr height="10"><td></td></tr>
 	<tr>
