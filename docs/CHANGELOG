@@ -24,6 +24,7 @@ graph and data templates.
 usable.
 -bug: Strange sequence/ordering behavior after updating an already created tree 
 item.
+-bug: Error message displayed instead of 'Access Denied' message.
 -feature: Added host and graph template permissions for graph viewing users.
 -feature: Added a new 'dual pane' tree view type that draws the graph trees
 on a DHTML tree on the left side of the page.
@@ -36,6 +37,7 @@ and graph viewing pages
 location in the UI.
 -feature: Added bandwidth summation support. See the manual for more 
 information.
+-feature: Made the installer more verbose about SQL it runs during an upgrade.
 -cactid: Changed threading strategy to spawn threads based on hosts.
 -cactid: Created header files for each source file and moved precasts out
 of cactid.h.
