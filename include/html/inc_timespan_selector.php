@@ -1,4 +1,3 @@
-	<link href="c:/wwwroot/cacti/include/jscalendar/calendar-blue.css" rel="sylesheet">
 	<?php print "
      <script type='text/javascript'>
 
