@@ -56,7 +56,7 @@
 	<script language="javascript" src="include/dom-drag.js"></script>
 </head>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="drag_prep();">
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="startup();">
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
