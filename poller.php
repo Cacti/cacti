@@ -58,7 +58,7 @@ $first_host = 0;
 $last_host = 0;
 
 // Obtain some defaults from the database
-$ucactid = read_config_option("using_cactid");
+$poller = read_config_option("poller_type");
 $max_threads = read_config_option("max_threads");
 // End Initialization Section
 
@@ -69,7 +69,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
     $hosts_per_file = ceil(sizeof($polling_items) / $concurrent_processes );
 
     /* Empty the polling autoexecution directory */
-    if (($config["cacti_server_os"] == "unix") or ($ucactid == "on"))
+    if (($config["cacti_server_os"] == "unix") or ($poller == "2"))
     {
         pclose(popen("rm -r -f " . read_config_option("path_scriptdir") . "/*", "r"));
     }
@@ -80,7 +80,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
     /* End Empty polling autoexecution Directory */
 
     /* Determine Command Name */
-    if (($config["cacti_server_os"] == "unix") and ($ucactid == "on"))
+    if (($config["cacti_server_os"] == "unix") and ($poller == "2"))
     {
         $blast_string = "cactiplus";
         $command_string = "cactid";
@@ -90,7 +90,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
         $blast_string = "cactiplus";
         $command_string = "cmd.php";
     }
-    else if ($ucactid == "on")
+    else if ($poller == "2")
     {
         $blast_string = "cactiplus.cmd";
         $command_string = "cactid.exe";
@@ -156,6 +156,10 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
     list($micro,$seconds) = split(" ", microtime());
     $end = $seconds + $micro;
 
+	if ($poller = "1") {
+	    $max_threads = "N/A";
+	}
+
     if(read_config_option("log_pstats") == "on")
         log_data(sprintf("STATS: " .
                           "Execution Time: %01.4f s, " .
@@ -180,7 +184,7 @@ else
 
 function write_poller_file_item( $base_path, $cacti_server_os, $process_exec_file, $first_host, $last_host, $command_string )
 {
-    if (($cacti_server_os == "unix") and (read_config_option("using_cactid") == "on"))
+    if (($cacti_server_os == "unix") and (read_config_option("poller_type") == "2"))
     {
         fputs($process_exec_file,
              read_config_option("path_cactid") . " " .
@@ -196,7 +200,7 @@ function write_poller_file_item( $base_path, $cacti_server_os, $process_exec_fil
              $first_host . " " .
              $last_host . " &\r\n");
     }
-    else if (read_config_option("using_cactid") != "on")
+    else if (read_config_option("poller_type") != "2")
     {
         fputs($process_exec_file,
              "start \"Cactiplus\" /I /B " .
@@ -208,7 +212,7 @@ function write_poller_file_item( $base_path, $cacti_server_os, $process_exec_fil
     else
     {
         fputs($process_exec_file,
-             "start \"Cactiplus\" /I /B /SEPARATE " .
+             "start \"Cactiplus\" /I /B " .
              read_config_option("path_cactid") . " " .
              $first_host . " " .
              $last_host . "\r\n");

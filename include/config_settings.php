@@ -252,16 +252,15 @@ $settings = array(
                         "method" => "checkbox",
                         "tab" => "poller"
                         ),
+                "poller_type" => array(
+                        "friendly_name" => "Poller Type",
+                        "description" => "The Cacti poller to use.  This Setting will take effect at next polling interval.",
+                        "method" => "drop_array",
+                        "array" => $poller_options,
+                        ),
                 "methods_header" => array(
                         "friendly_name" => "Execution Methods",
                         "method" => "header",
-                        ),
-                "using_cactid" => array(
-                        "friendly_name" => "Using Cactid",
-                        "description" => "Use Cactid for polling hosts.  Otherwise use cmd.php",
-                        "method" => "checkbox",
-                        "default" => "",
-                        "tab" => "poller"
                         ),
                 "concurrent_processes" => array(
                         "friendly_name" => "Maximum Concurrent Cmd or Cactid Processes",
@@ -271,8 +270,8 @@ $settings = array(
                         "max_length" => "10"
                         ),
                 "max_threads" => array(
-                        "friendly_name" => "Maximum Threads per Process",
-                        "description" => "The maximum number of concurrent threads allowed per process.  NOTE: This setting only applies to Cactid.",
+                        "friendly_name" => "Maximum Cactid Threads per Process",
+                        "description" => "The maximum number of concurrent Cactid threads allowed per process.",
                         "method" => "textbox",
                         "default" => "1",
                         "max_length" => "10"
@@ -289,7 +288,7 @@ $settings = array(
                         ),
                 "path_scriptdir" => array(
                         "friendly_name" => "Poller Script Directory",
-                        "description" => "The path to your script directory.",
+                        "description" => "Required for multiple processes.  Empty directory to contain multiprocess script files.",
                         "method" => "textbox",
                         "max_length" => "255"
                         )
