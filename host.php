@@ -572,8 +572,6 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					and graph_templates_item.graph_template_id=" . $graph_template_id . "
 					limit 0,1");
 				
-				$field_name = $item["column_name"];
-				
 				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 				
 				print "	<td width='50%'>
@@ -783,7 +781,7 @@ function host_edit() {
 	
 	$i = 0;
 	if (!empty($host["host_template_id"])) {
-		start_box("<strong>Host Template Items</strong>", "98%", $colors["header"], "3", "center", "");
+		
 		
 		$graph_templates = db_fetch_assoc("select
 			graph_templates.id as graph_template_id,
@@ -804,6 +802,7 @@ function host_edit() {
 		$j = 0; $_graph_template_id = "";
 		
 		if (sizeof($graph_templates) > 0) {
+		start_box("<strong>Host Template Items</strong>", "98%", $colors["header"], "3", "center", "");
 		foreach ($graph_templates as $graph_template) {
 			if ($graph_template["graph_template_id"] != $_graph_template_id) {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
@@ -823,9 +822,8 @@ function host_edit() {
 			
 			$j++;
 		}
-		}
-		
 		end_box();
+		}
 	}
 	
 	if (isset($host["id"])) {
