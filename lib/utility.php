@@ -23,6 +23,141 @@
    */?>
 <?
 
+function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
+	include_once ("include/functions.php");
+	//if ($id == 0) {
+		/* get graphid if this is a new save */
+		//$tmp = db_fetch_row("select LAST_INSERT_ID() as ID");
+		
+		//if ($tmp[ID] != 0) {
+		    /* we are using new_id so only the next two queries so the 
+		     sequence code does not know about it...therefore forcing a new
+		     sequence number if this is a new save */
+		   // $new_id = $tmp[ID];
+		//}
+	//}else{
+	$new_id = $id;
+	$skip_end_save = false;
+	//}
+    
+	//$grouping = db_fetch_cell("select grouping from rrd_graph where id=$gid");
+	$graph_type_name = db_fetch_cell("select def_graph_type.name from def_graph_type,graph_templates_item where def_graph_type.id=graph_templates_item.graph_type_id and graph_templates_item.id=$id");
+	//print "select def_graph_type.name from def_graph_type,graph_templates_item where def_graph_type.id=graph_templates_item.graph_type_id and graph_type_id.id=$id";
+	$graph_items = db_fetch_row("select graph_template_id,task_item_id,parent from graph_templates_item where id=$new_id");
+	
+	//if ($grouping == "on") {
+		if ($_graph_type_id != "0") {
+			/* get the name of the LAST graph item type */
+			$_graph_type_name = db_fetch_cell("select name from def_graph_type where id=$_graph_type_id");
+		}
+		
+		//print "Current Type is a: $graph_type_name, Old Type was a: $_graph_type_name<br>";
+		//print "Current ID is: $id, Old ID was: $_id<br>";
+		//print "Current Parent is: $graph_items[parent], Old Parent was: $_parent<br>";
+		
+		if ($graph_type_name != "GPRINT") {
+			/* if item is not a GPRINT and the user changed the PARENT field... please ignore */
+			if (($_graph_type_name != "GPRINT") && ($graph_items[parent] != $_parent)) {
+				//print "EXCEPTION!";
+				db_execute("update graph_templates_item set parent=$_parent where id=$new_id");
+				return 0;
+			}
+			
+			/* graph type changed; force a new sequence id */
+			if ($_graph_type_name == "GPRINT") { $_id = 0; }
+			
+			if ($_id == 0) { db_execute("update graph_templates_item set sequence=0 where id=$new_id"); } /* reset sequence so it doesn't get taken into account */
+			$max_sequence = GetSequence($_id, "sequence_parent", "graph_templates_item", "graph_template_id", $graph_items[graph_template_id]);
+			
+			db_execute("update graph_templates_item set sequence_parent=$max_sequence where id=$new_id");
+			db_execute("update graph_templates_item set parent=$new_id where id=$new_id");
+			//print "update graph_templates_item set sequence_parent=$max_sequence where id=$new_id<br>";
+			//print "update graph_templates_item set parent=$new_id where id=$new_id<br>";
+			
+			/* if this is a GPRINT->PARENT convert; reset the sequence field */
+			if ($_graph_type_name == "GPRINT") {
+				//print "update graph_templates_item set sequence=1 where id=$new_id<br>";
+				db_execute("update graph_templates_item set sequence=1 where id=$new_id");
+			}
+			
+			/* this is a save on a parent item: if this parent has children with all of the same
+			data source, then update the data source change in the parent to the children as 
+			well. this saves the user some clicks */
+			$sql_id = db_fetch_assoc("select task_item_id from graph_templates_item where parent=$new_id and parent!=id group by task_item_id");
+			
+			if (sizeof($sql_id) == "1") {
+				/* there is only one data source in use for this group */
+				db_execute("update graph_templates_item set task_item_id=$graph_items[task_item_id] where parent=$new_id");
+				//print "update graph_templates_item set task_item_id=$graph_items[task_item_id] where parent=$new_id<br>";
+			}
+		}else{
+			/* if the group changes, force a new sequence */
+			if ($_parent != $graph_items[parent]) { $_id = 0; }
+			
+			$parent = $graph_items[parent];
+			
+			if ($_graph_type_name != "GPRINT") {
+				/* graph type changed; force a new sequence id */
+				$_id = 0;
+				
+				/* if the old item was a parent and now it is a child (GPRINT), we must find
+				a new parent for this child. cacti says... go with the last available parent... */
+				$parents = db_fetch_row("select
+					graph_templates_item.sequence_parent,
+					graph_templates_item.parent 
+					from graph_templates_item left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id 
+					where graph_templates_item.graph_template_id=$graph_items[graph_template_id] 
+					and (def_graph_type.name = 'AREA' 
+					or def_graph_type.name = 'STACK' 
+					or def_graph_type.name = 'LINE1' 
+					or def_graph_type.name = 'LINE2' 
+					or def_graph_type.name = 'LINE3')
+					order by graph_templates_item.sequence_parent desc");
+				if (sizeof($parents) != "0") { $parent = $parents[parent]; }
+				
+				/* also... what if that old parent had children... orfans need homes as well */
+				$items_list = db_fetch_assoc("select id from graph_templates_item where parent=$new_id");
+				
+				if (sizeof($items_list) > 0) {
+				$skip_end_save = true; /* already doing that here */
+				foreach ($items_list as $items) {
+					$sequence_parent = $parents[sequence_parent];
+					db_execute("update graph_templates_item set sequence=0 where id=$new_id"); /* reset sequence so it doesn't get taken into account */
+					$max_sequence = GetSequence(0, "sequence", "graph_templates_item", "graph_template_id", "$graph_items[graph_template_id] and parent=$parent");
+					
+					db_execute("update graph_templates_item set sequence=$max_sequence,
+						sequence_parent=$sequence_parent,
+						parent=$parent
+						where id=" . $items[id]);
+					//print "update graph_templates_item set sequence=$max_sequence,
+					//	sequence_parent=$sequence_parent,
+					//	parent=$parent
+					//	where id=" . $items[id] . "<br>";
+				}
+				}
+			}
+			
+			if ($_id == 0) { db_execute("update graph_templates_item set sequence=0 where id=$new_id"); } /* reset sequence so it doesn't get taken into account */
+			$max_sequence = GetSequence($_id, "sequence", "graph_templates_item", "graph_template_id", "$graph_items[graph_template_id] and parent=$parent");
+			
+			//if ($parent != 0) {
+			$sequence_parent = db_fetch_cell("select sequence_parent from graph_templates_item where id=$parent");
+			//}
+			
+			if ($skip_end_save == false) {
+				db_execute("update graph_templates_item set sequence=$max_sequence where id=$new_id");
+				db_execute("update graph_templates_item set sequence_parent=$sequence_parent where id=$new_id");
+				//print "update graph_templates_item set sequence=$max_sequence where id=$new_id<br>";
+				//print "update graph_templates_item set sequence_parent=$sequence_parent where id=$new_id<br>";
+			}
+		}
+	//}else{
+	//	$max_sequence = GetSequence($id, "sequence", "rrd_graph_item", "graphid", $gid);
+		
+	//	db_execute("update rrd_graph_item set sequence=$max_sequence where id=$new_id", $cnn_id);
+	//}
+}
+
 function DuplicateGraph($graph_id) {
     #    global $cnn_id;
     #include_once("include/database.php");
