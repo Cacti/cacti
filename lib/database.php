@@ -139,6 +139,8 @@ function array_to_sql_or($array, $sql_column) {
 }
 
 function sql_save($array_items, $table_name) {
+	global $cnn_id;
+	
 	$sql_save = "replace into $table_name (";
 	
 	$sql_save_fields = ""; $sql_save_values = "";
