@@ -146,7 +146,7 @@ function utilities_view_poller_cache() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		?>
 			<td>
-				Action: <?php print $item["action"];?>, <?php print ((($item["action"] == "1") || ($item["action"] == "2")) ? "Script: " . $item["command"] : "OID: " . $item["arg1"] . " (Host: " . $item["management_ip"] . ", Community: " . $item["snmp_community"] . ")");?>
+				Action: <?php print $item["action"];?>, <?php print ((($item["action"] == "1") || ($item["action"] == "2")) ? "Script: " . $item["command"] : "OID: " . $item["arg1"] . " (Host: " . $item["hostname"] . ", Community: " . $item["snmp_community"] . ")");?>
 			</td>
 		</tr>
 		<?php

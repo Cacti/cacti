@@ -97,16 +97,16 @@ function query_script_host($host_id, $snmp_query_id) {
 }
 
 function query_snmp_host($host_id, $snmp_query_id) {
-	$host = db_fetch_row("select management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+	$host = db_fetch_row("select hostname,snmp_community,snmp_version,snmp_username,snmp_password,snmp_port from host where id=$host_id");
 	
 	$snmp_queries = get_data_query_array($snmp_query_id);
 	
-	if ((empty($host["management_ip"])) || ($snmp_queries == false)) {
+	if ((empty($host["hostname"])) || ($snmp_queries == false)) {
 		return false;
 	}
 	
 	/* fetch specified index at specified OID */
-	$snmp_index = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $snmp_queries["oid_index"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"]);
+	$snmp_index = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"]);
 	
 	/* no data found; get out */
 	if (!$snmp_index) {
@@ -123,7 +123,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				for ($i=0;($i<sizeof($snmp_index));$i++) {
 					$oid = $field_array["oid"] .  "." . $snmp_index[$i]["value"];
 					
-					$value = cacti_snmp_get($host["management_ip"], $host["snmp_community"], $oid, $host["snmp_version"], $host["snmp_username"], $host["snmp_password"]);
+					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid, $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"]);
 					
 					db_execute("replace into host_snmp_cache 
 						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
@@ -131,7 +131,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 			}
 		}elseif (($field_array["method"] == "walk") && ($field_array["direction"] == "input")) {
-			$snmp_data = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $field_array["oid"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"]);
+			$snmp_data = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $field_array["oid"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"]);
 			
 			if ($field_array["source"] == "value") {
 				for ($i=0;($i<sizeof($snmp_data));$i++) {
@@ -159,7 +159,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	return true;
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password) {
+function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161) {
 	global $config;
 	
 	if (($config["php_snmp_support"] == true) && ($version == "1")) {
@@ -167,7 +167,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		we are getting back */
 		snmp_set_quick_print(0);
 		
-		$snmp_value = @snmpget($hostname, $community, $oid);
+		$snmp_value = @snmpget("$hostname:$port", $community, $oid);
 	}else{
 		if ($version == "1") {
 			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "\"$community\"" : "-c \"$community\""; /* v1/v2 - community string */
@@ -182,9 +182,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (empty($snmp_auth)) { return; }
 		
 		if (read_config_option("smnp_version") == "ucd-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " -v$version $hostname $snmp_auth $oid");
+			$snmp_value = exec(read_config_option("path_snmpget") . " -v$version $hostname:$port $snmp_auth $oid");
 		}elseif (read_config_option("smnp_version") == "net-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " $snmp_auth -v $version $hostname $oid");
+			$snmp_value = exec(read_config_option("path_snmpget") . " $snmp_auth -v $version $hostname:$port $oid");
 		}
 	}
 	
@@ -193,14 +193,14 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161) {
 	global $config;
 	
 	$snmp_array = array();
 	$temp_array = array();
 	
 	if (($config["php_snmp_support"] == true) && ($version == "1")) {
-		$temp_array = @snmpwalkoid($hostname, $community, $oid);
+		$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid);
 		
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
@@ -219,9 +219,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 		
 		if (read_config_option("smnp_version") == "ucd-snmp") {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version $hostname $snmp_auth $oid");
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version $hostname:$port $snmp_auth $oid");
 		}elseif (read_config_option("smnp_version") == "net-snmp") {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $snmp_auth -v $version $hostname $oid");
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $snmp_auth -v $version $hostname:$port $oid");
 		}
 		
 		if (sizeof($temp_array) == 0) {

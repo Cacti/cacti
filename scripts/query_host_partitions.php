@@ -17,7 +17,7 @@ $snmp_community = $_SERVER["argv"][2];
 $cmd = $_SERVER["argv"][3];
 
 if ($cmd == "index") {
-	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], "1", "", ""));
+	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], "1", "", "", 161));
 	
 	for ($i=0;($i<sizeof($return_arr));$i++) {
 		print $return_arr[$i] . "\n";
@@ -25,8 +25,8 @@ if ($cmd == "index") {
 }elseif ($cmd == "query") {
 	$arg = $_SERVER["argv"][4];
 	
-	$arr_index = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], "1", "", ""));
-	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], "1", "", ""));
+	$arr_index = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], "1", "", "", 161));
+	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], "1", "", "", 161));
 	
 	for ($i=0;($i<sizeof($arr_index));$i++) {
 		print $arr_index[$i] . "!" . $arr[$i] . "\n";
@@ -37,12 +37,12 @@ if ($cmd == "index") {
 	
 	if (($arg == "total") || ($arg == "used")) {
 		/* get hrStorageAllocationUnits from the snmp cache since it is faster */
-		$host_id = db_fetch_cell("select id from host where management_ip='$hostname' and snmp_community='$snmp_community'");
+		$host_id = db_fetch_cell("select id from host where hostname='$hostname' and snmp_community='$snmp_community'");
 		$sau = db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='hrStorageAllocationUnits' and snmp_index='$index'");
 		
-		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", "") * $sau);
+		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", "", 161) * $sau);
 	}else{
-		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", ""));
+		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", "1", "", "", 161));
 	}
 }
 

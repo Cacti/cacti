@@ -216,7 +216,7 @@ $fields_data_input_field_edit = array(
 	"type_code" => array(
 		"method" => "textbox",
 		"friendly_name" => "Special Type Code",
-		"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.",
+		"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.",
 		"value" => "|arg1:type_code|",
 		"max_length" => "40"
 		),
@@ -691,13 +691,6 @@ $fields_host_edit = array(
 		"value" => "|arg1:hostname|",
 		"max_length" => "250",
 		),
-	"management_ip" => array(
-		"method" => "textbox",
-		"friendly_name" => "Management IP",
-		"description" => "Choose the IP address that will be used to gather data from this host. The hostname will be used a fallback in case this fails.",
-		"value" => "|arg1:management_ip|",
-		"max_length" => "15",
-		),
 	"snmp_community" => array(
 		"method" => "textbox",
 		"friendly_name" => "SNMP Community",
@@ -725,6 +718,14 @@ $fields_host_edit = array(
 		"description" => "Choose the SNMP version for this host.",
 		"value" => "|arg1:snmp_version|",
 		"array" => $snmp_versions,
+		),
+	"snmp_port" => array(
+		"method" => "textbox",
+		"friendly_name" => "SNMP Port",
+		"description" => "Enter the UDP port number to use for SNMP (default is 161).",
+		"value" => "|arg1:snmp_port|",
+		"max_length" => "5",
+		"size" => "10"
 		),
 	"disabled" => array(
 		"method" => "checkbox",

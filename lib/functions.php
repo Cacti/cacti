@@ -94,7 +94,7 @@ function read_default_config_option($config_name) {
 	include ($config["include_path"] . "/config_settings.php");
 	
 	while (list($tab_name, $tab_array) = each($settings)) {
-		if (isset($tab_array[$config_name])) {
+		if (isset($tab_array[$config_name]["default"])) {
 			return $tab_array[$config_name]["default"];
 		}
 	}
@@ -539,7 +539,7 @@ function get_graph_title($local_graph_id) {
    @arg $string - the string to clean out unsubsituted variables for
    @returns - the cleaned up string */
 function null_out_subsitions($string) {
-	return eregi_replace("\|host_(hostname|description|management_ip|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
+	return eregi_replace("\|host_(hostname|description|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
 }
 
 /* expand_title - takes a string and subsitutes all data query variables contained in it or cleans
@@ -579,13 +579,12 @@ function subsitute_data_query_path($path) {
    @returns - the original string with all of the variable subsitutions made */
 function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
-		$host = db_fetch_row("select description,hostname,management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+		$host = db_fetch_row("select description,hostname,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
 		$_SESSION["sess_host_cache_array"][$host_id] = $host;
 	}
 	
 	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
 	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
-	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["management_ip"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
@@ -1168,6 +1167,7 @@ function draw_navigation_text() {
 		"graphs.php:graph_diff" => array("title" => "Change Graph Template", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
 		"graphs.php:actions" => array("title" => "Actions", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
 		"graphs_items.php:item_edit" => array("title" => "Graph Items", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
+		"graphs_new.php:" => array("title" => "Create New Graphs", "mapping" => "index.php:", "url" => "graphs_new.php", "level" => "1"),
 		"gprint_presets.php:" => array("title" => "GPRINT Presets", "mapping" => "index.php:", "url" => "gprint_presets.php", "level" => "1"),
 		"gprint_presets.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,gprint_presets.php:", "url" => "", "level" => "2"),
 		"gprint_presets.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,gprint_presets.php:", "url" => "", "level" => "2"),

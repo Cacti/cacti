@@ -39,8 +39,8 @@ if (sizeof($polling_items) > 0) {
 foreach ($polling_items as $item) {
 	switch ($item["action"]) {
 	case '0': /* snmp */
-		$output = cacti_snmp_get($item["management_ip"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"]);
-		print "snmp: " . $item["management_ip"] . ", dsname: " . $item["rrd_name"]. ", oid: " . $item["arg1"] . ", value: $output\n";
+		$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"]);
+		print "snmp: " . $item["hostname"] . ":" . $item["snmp_port"] . ", dsname: " . $item["rrd_name"]. ", oid: " . $item["arg1"] . ", value: $output\n";
 		
 		break;
 	case '1': /* one output script */
