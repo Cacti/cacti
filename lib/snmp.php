@@ -43,7 +43,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	/* fetch specified index at specified OID */
 	$snmp_index = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $snmp_queries["oid_index"]);
 	
-	//print "<pre>";print_r($snmp_index);print "</pre>";
+	/* no data found; get out */
+	if (!$snmp_index) {
+		return 0;
+	}
+	
 	db_execute("delete from host_snmp_cache where host_id=$host_id");
 	
 	while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
@@ -84,8 +88,6 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						values ($host_id,$snmp_query_id,'$field_name','$value',$snmp_index,'$oid')");
 				}
 			}
-			
-			//print "<pre>";print_r($snmp_data);print "</pre>";
 		}
 	}
 }
@@ -143,10 +145,13 @@ function cacti_snmp_walk($hostname, $community, $oid) {
 	}else{
 		$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname \"$community\" $oid");
 		
+		if (sizeof($temp_array) == 0) {
+			return 0;
+		}
+		
 		for ($i=0; $i < count($temp_array); $i++) {
 			$snmp_array[$i]["oid"] = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
 			$snmp_array[$i]["value"] = trim(ereg_replace(".*= ?", "", $temp_array[$i]));
-			
 			$snmp_array[$i]["value"] = trim(eregi_replace("(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress):", "", $snmp_array[$i]["value"]));
 		}
 	}
