@@ -152,7 +152,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				foreach ($results as $item) {
 					$rrd_update_array{$item["rrd_path"]}["time"] = strtotime($item["time"]);
 					$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
-					$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = $item["output"];
+					$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
 				}
 
 				rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
