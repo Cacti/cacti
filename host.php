@@ -155,7 +155,7 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
-				db_execute("update host set min_time = '', max_time = '0', cur_time = '0',	avg_time = '0',
+				db_execute("update host set min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = '" . $selected_items[$i] . "'");
 			}
