@@ -700,7 +700,7 @@ function user_edit() {
 						form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
 						break;
 					case 'checkbox':
-						form_checkbox($setting, $current_value, $settings_graphs[$setting]["friendly_name"], $settings_graphs[$setting]["default"], 1);
+						form_checkbox($setting, $current_value, $settings_graphs[$setting]["friendly_name"], $settings_graphs[$setting]["default"], (isset($user) ? $user["id"] : "0"));
 						break;
 				}
 				
