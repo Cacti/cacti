@@ -87,6 +87,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$command_string = read_config_option("path_cactid");
 		$extra_args = "";
 		$method = "cactid";
+		chdir(dirname(read_config_option("path_cactid")));
 	}else if ($config["cacti_server_os"] == "unix") {
 		$command_string = read_config_option("path_php_binary");
 		$extra_args = "-q " . $config["base_path"] . "/cmd.php";
@@ -95,6 +96,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$command_string = read_config_option("path_cactid");
 		$extra_args = "";
 		$method = "cactid";
+		chdir(dirname(read_config_option("path_cactid")));
 	}else{
 		$command_string = read_config_option("path_php_binary");
 		$extra_args = "-q " . strtolower($config["base_path"] . "/cmd.php");
@@ -246,6 +248,10 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 	/* graph export */
 	config_graph_export();
+
+	if ($method == "cactid") {
+		chdir(read_config_option("path_webroot"));
+	}
 
 	db_execute("truncate table poller_output");
 }else{
