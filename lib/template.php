@@ -542,12 +542,13 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			$data_input_field_id_output_type = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $snmp_query_array["snmp_query_id"] . " and action_id=3");
 			
 			$data_template_data_id = db_fetch_cell("select id from data_template_data where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+			$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='" . $snmp_query_array["snmp_index_on"] . "' and snmp_index='" . $snmp_query_array["snmp_index"] . "'");
 			
 			/* save the value to index on (ie. ifindex, ifip, etc) */
 			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_index,$data_template_data_id,'','" . $snmp_query_array["snmp_index_on"] . "')");
 			
 			/* save the actual value (ie. 3, 192.168.1.101, etc) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_index_value,$data_template_data_id,'','" . $snmp_query_array["snmp_index"] . "')");
+			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_index_value,$data_template_data_id,'','$snmp_cache_value')");
 			
 			/* set the expected output type (ie. bytes, errors, packets) */
 			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_output_type,$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
