@@ -256,6 +256,14 @@ function update_database($database_old, $database_username, $database_password) 
 	}
 	}
 	
+	$_settings = db_fetch_assoc("select Name,Value from $database_old.settings where Name != 'path_webcacti'");
+	
+	if (sizeof($_settings) > 0) {
+	foreach ($_settings as $item) {
+		db_execute("replace into settings (name,value) values ('" . $item["Name"] . "','" . $item["Value"] . "')");	
+	}
+	}
+	
 	$non_templated_data_sources = db_fetch_assoc("select id from data_template_data where local_data_id > 0");
 	
 	if (sizeof($non_templated_data_sources) > 0) {
