@@ -11,9 +11,12 @@ if (!isset($_SESSION["sess_current_date1"])) {
 	$begin_now = $end_now - DEFAULT_TIMESPAN;
 	$_SESSION["sess_current_date1"] = date("Y", $begin_now) . "-" . date("m", $begin_now) . "-" . date("d", $begin_now) . " " . date("H", $begin_now) . ":".date("i", $begin_now);
 	$_SESSION["sess_current_date2"] = date("Y", $end_now) . "-" . date("m", $end_now) . "-" . date("d", $end_now) . " " . date("H", $end_now) . ":" . date("i", $end_now);
+	$_SESSION["sess_current_timespan_end_now"] = $end_now;
+	$_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 }
 
 /* when a span time preselection has been defined update the span time fields */
+
 /* someone hit a button and not a dropdown */
 if (isset($_POST["date1"])) {
 	/* the dates have changed, therefore, I am now custom */
@@ -24,6 +27,7 @@ if (isset($_POST["date1"])) {
 		$end_now=strtotime($current_value_date2);
      	$_SESSION["sess_current_timespan"] = GT_CUSTOM;
 		$_SESSION["custom"] = 1;
+		$_POST["predefined_timespan"] = GT_CUSTOM;
 	}else {
 		/* the default button wasn't pushed */
 		if (!isset($_POST["button_default_x"])) {
@@ -48,8 +52,9 @@ if (isset($_POST["date1"])) {
 		}
 	}
 }else {
-	/* someone picked a timespan */
-	if (isset($_GET["predefined_timespan"]) && ($_GET["predefined_timespan"] != GT_CUSTOM)) {
+	if (isset($_GET["predefined_timespan"]) &&
+		($_GET["predefined_timespan"] != GT_CUSTOM)) {
+
 		$end_now = time();
 		$end_year = date("Y",$end_now);
 		$end_month = date("m",$end_now);
@@ -134,10 +139,15 @@ if (isset($_POST["date1"])) {
 		$_SESSION["sess_current_timespan"] = $_GET["predefined_timespan"];
 		$_SESSION["custom"] = 0;
 	}else {
-		/* first time in */
-		$begin_now = $end_now - DEFAULT_TIMESPAN;
-		$end_now = time();
-		$_SESSION["custom"] = 0;
+		$current_value_date1 = $_SESSION["sess_current_date1"];
+		$current_value_date2 = $_SESSION["sess_current_date2"];
+
+		$begin_now = $_SESSION["sess_current_timespan_begin_now"];
+		$end_now = $_SESSION["sess_current_timespan_end_now"];
+			/* custom display refresh */
+		if ($_SESSION["custom"]) {
+			$_SESSION["sess_current_timespan"] = GT_CUSTOM;
+		}
 	}
 }
 
@@ -169,10 +179,15 @@ $_SESSION["sess_current_date2"] = $current_value_date2;
 $timespan_sel_pos = strpos($_SESSION["sess_graph_view_url_cache"],"&predefined_timespan");
 if ($timespan_sel_pos) {
 	$urlval = substr($_SESSION["sess_graph_view_url_cache"],0,$timespan_sel_pos);
+	$_SESSION["sess_graph_view_url_cache"] = $urlval . "&predefined_timespan" . $_SESSION["sess_current_timespan"];
 }else {
 	$urlval = $_SESSION["sess_graph_view_url_cache"];
 }
 
+if ($_SESSION["custom"])
+	print "<meta http-equiv=refresh content='99999'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";
+else
+	print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";
 ?>
 
 <script type='text/javascript'>
@@ -261,7 +276,7 @@ if ($timespan_sel_pos) {
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
 					<td width="80" nowrap>
-						<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle'>
+						<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit' value='refresh'>
 					</td>
 					<td nowrap>
 						<input type='image' name='button_default' src='images/button_default.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
