@@ -580,8 +580,8 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 	$graph_template_id = db_fetch_insert_id();
 	
 	/* update graph to point to the new template */
-	db_execute("update graph_templates_graph set local_graph_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
-	db_execute("update graph_templates_item set local_graph_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	db_execute("update graph_templates_graph set local_graph_id=0,local_graph_template_graph_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	db_execute("update graph_templates_item set local_graph_id=0,local_graph_template_item_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
 	
 	/* delete the old graph local entry */
 	db_execute("delete from graph_local where id=$local_graph_id");
@@ -594,8 +594,8 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	$data_template_id = db_fetch_insert_id();
 	
 	/* update graph to point to the new template */
-	db_execute("update data_template_data set local_data_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
-	db_execute("update data_template_rrd set local_data_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
+	db_execute("update data_template_data set local_data_id=0,local_data_template_data_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
+	db_execute("update data_template_rrd set local_data_id=0,local_graph_template_item_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
 	
 	/* delete the old graph local entry */
 	db_execute("delete from data_local where id=$local_data_id");
