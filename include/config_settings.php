@@ -85,6 +85,16 @@ $settings = array(
 			"method" => "textbox",
 			"max_length" => "255"
 			),
+		"pollerpaths_header" => array(
+			"friendly_name" => "Poller Path",
+			"method" => "spacer",
+			),
+		"path_cactid" => array(
+			"friendly_name" => "Cactid Poller File Path",
+			"description" => "Full path to Cactid binary.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
 		"htmlexport_header" => array(
 			"friendly_name" => "HTML Export",
 			"method" => "spacer",
@@ -282,6 +292,24 @@ $settings = array(
 			"default" => 1,
 			"array" => $poller_options,
 			),
+		"methods_header" => array(
+			"friendly_name" => "Poller Execution Parameters",
+			"method" => "spacer",
+			),
+		"concurrent_processes" => array(
+			"friendly_name" => "Maximum Concurrent Poller Processes",
+			"description" => "The number of concurrent processes to execute.",
+			"method" => "textbox",
+			"default" => "1",
+			"max_length" => "10"
+			),
+		"max_threads" => array(
+			"friendly_name" => "Maximum Threads per Process",
+			"description" => "The maximum threads allowed per process.  NOTE Applies only to CACTID!",
+			"method" => "textbox",
+			"default" => "1",
+			"max_length" => "10"
+			),
 		"availability_header" => array(
 			"friendly_name" => "Poller Host Availability Settings",
 			"method" => "spacer",
@@ -314,6 +342,10 @@ $settings = array(
 			"default" => "1",
 			"max_length" => "10"
 			),
+		"updown_header" => array(
+			"friendly_name" => "Host Up/Down Settings",
+			"method" => "spacer",
+			),
 		"ping_failure_count" => array(
 			"friendly_name" => "Failure Count",
 			"description" => "The number of polling intervals a host must be down before issuing an error message.",
@@ -327,34 +359,6 @@ $settings = array(
 			"method" => "textbox",
 			"default" => "3",
 			"max_length" => "10"
-			),
-		"methods_header" => array(
-			"friendly_name" => "Poller Execution Parameters",
-			"method" => "spacer",
-			),
-		"concurrent_processes" => array(
-			"friendly_name" => "Maximum Concurrent Poller Processes",
-			"description" => "The number of concurrent processes to execute.",
-			"method" => "textbox",
-			"default" => "1",
-			"max_length" => "10"
-			),
-		"max_threads" => array(
-			"friendly_name" => "Maximum Threads per Process",
-			"description" => "The maximum threads allowed per process.  NOTE Applies only to CACTID!",
-			"method" => "textbox",
-			"default" => "1",
-			"max_length" => "10"
-			),
-		"pollerpaths_header" => array(
-			"friendly_name" => "Poller Paths",
-			"method" => "spacer",
-			),
-		"path_cactid" => array(
-			"friendly_name" => "Cactid Poller File Path",
-			"description" => "Full path to Cactid binary.",
-			"method" => "textbox",
-			"max_length" => "255"
 			)
 		),
 	"authentication" => array(
