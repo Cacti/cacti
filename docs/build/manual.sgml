@@ -420,8 +420,7 @@ $database_password = "cacti";</userinput></screen>
 					Extract the Cactid zip file to <filename>c:\cactid</filename> and modify the <filename>cactid.conf</filename> file to
 					include the following statements.
 				</para>
-				<screen><userinput>SNMP_Ver	1</userinput>
-<userinput>DB_Host	IP_Address or Hostname (not localhost)</userinput>
+				<screen><userinput>DB_Host	IP_Address or Hostname (not localhost)</userinput>
 <userinput>DB_Database	cacti</userinput>
 <userinput>DB_User	cactiuser</userinput>
 <userinput>DB_Password	cacti</userinput></screen>
@@ -434,7 +433,7 @@ $database_password = "cacti";</userinput></screen>
 			<listitem>
 				<para>
 					If you either have <application>Cygwin</application> installed, or plan on installing it, remove the 3
-					DLL files from the <filename>c:\cactid</filename> directory.
+					DLL files and the SH.EXE file from the <filename>c:\cactid</filename> directory.
 				</para>
 			</listitem>
 		</orderedlist>
