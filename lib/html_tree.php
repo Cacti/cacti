@@ -391,6 +391,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			and graph_tree_items.order_key like '$search_key" . "__" . str_repeat('0',60-(strlen($search_key)+2)) . "'
 			and graph_tree_items.local_graph_id>0
 			$sql_where
+			group by graph_tree_items.id
 			order by graph_tree_items.order_key");
 		
 		$i = 0;
