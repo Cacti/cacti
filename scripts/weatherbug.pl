@@ -20,7 +20,7 @@ $output =~ s/[%]|[°]|[n]|[s]|[r]|[f]//gi;
 # [14] - Dew Point
 # [15] - Wind Chill
 
-print $weather[3] . ":" . $weather[5] . ":" . $weather[10] . ":" . 
-	$weather[11] . ":" . $weather[12] . ":" . $weather[13] . ":" . 
-	$weather[14] . ":" . $weather[15];
+print "current_temp:" . $weather[3] . " wind_speed:" . $weather[5] . " barometer:" . $weather[10] . " humidity:" . 
+	$weather[11] . " high_temp:" . $weather[12] . " low_temp:" . $weather[13] . " dew_point_temp:" . 
+	$weather[14] . " wind_chill_temp:" . $weather[15];
 
