@@ -235,13 +235,23 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case POLLER_ACTION_SNMP: /* snmp */
 				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
 
+				if (!validate_result($output)) {
+					cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, 20), $print_data_to_stdout);
+					$output = "U";
+				}
+
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 					cacti_log("Host[$host_id] SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
 			case POLLER_ACTION_SCRIPT: /* script (popen) */
-				$output = exec_poll($item["arg1"]);
+				$output = trim(exec_poll($item["arg1"]));
+
+				if (!validate_result($output)) {
+					cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, 20), $print_data_to_stdout);
+					$output = "U";
+				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 					cacti_log("Host[$host_id] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
@@ -250,7 +260,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
 				if ($using_proc_function == true) {
-					$output = str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp));
+					$output = trim(str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp)));
+
+					if (!validate_result($output)) {
+						cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, 20), $print_data_to_stdout);
+						$output = "U";
+					}
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 						cacti_log("Host[$host_id] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
@@ -259,6 +274,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 						cacti_log("Host[$host_id] *SKIPPING* SERVER: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
 					}
+
+					$output = "U";
 				}
 
 				break;
@@ -286,7 +303,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$end = $seconds + $micro;
 
 		cacti_log(sprintf("Time: %01.4f s, " .
-			"Theads: N/A, " . 
+			"Theads: N/A, " .
 			"Hosts: %s",
 			round($end-$start,4),
 			$host_count),$print_data_to_stdout);

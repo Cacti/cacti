@@ -573,6 +573,71 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		where hostname = '" . $hosts[$host_id]["hostname"] . "'");
 }
 
+/* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
+   @arg $result - (string) the result from the poll
+   @returns - (int) either to result is valid or not */
+function validate_result($result) {
+	$delim_cnt = 0;
+   $space_cnt = 0;
+
+	$valid_result = false;
+	$checked = false;
+
+	/* check the easy cases first */
+	/* it has no delimiters, and no space, therefore, must be numeric */
+	if ((strstr($result, ":") == 0) && (strstr($result, "!") == 0) && (strstr($result, " ") == 0)) {
+		$checked = true;
+		if (is_numeric($result)) {
+			$valid_result = true;
+		} else if (is_float($result)) {
+			$valid_result = true;
+  		} else {
+			$valid_result = false;
+		}
+	}
+
+	/* it has delimiters and has no space */
+	if (!$checked) {
+		if (((strstr($result, ":")) || (strstr($result, "!")))) {
+			if (strstr($result, " ") == 0) {
+				$valid_result = true;
+				$checked = true;
+			}
+
+			if (strstr($result, " ") != 0) {
+				$checked = true;
+				if (strstr($result, ":")) {
+					$delim_cnt = substr_count($result, ":");
+				} else if (strstr($result, "!")) {
+					$delim_cnt = substr_count($result, "!");
+				}
+
+				$space_cnt = substr_count($result, " ");
+
+				if ($space_cnt+1 == $delim_cnt) {
+					$valid_result = true;
+				} else {
+					$valid_result = false;
+				}
+			}
+		}
+	}
+
+	/* default handling */
+
+	if (!$checked) {
+		if (is_numeric($result)) {
+			$valid_result = true;
+		} else if (is_float($result)) {
+			$valid_result = true;
+		} else {
+			$valid_result = false;
+		}
+	}
+
+	return($valid_result);
+}
+
 /* get_full_script_path - gets the full path to the script to execute to obtain data for a
      given data source. this function does not work on SNMP actions, only script-based actions
    @arg $local_data_id - (int) the ID of the data source
