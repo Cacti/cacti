@@ -76,7 +76,7 @@ function form_save() {
 
    
 /* ---------------------
-    CDEF Functions
+    Template Functions
    --------------------- */
 
 function template_remove() {
@@ -100,12 +100,22 @@ function template_save() {
 	$save["id"] = $form["id"];
 	$save["name"] = $form["name"];
 	
-	if (sql_save($save, "host_template")) {
+	$host_template_id = sql_save($save, "host_template");
+	
+	if ($host_template_id) {
 		raise_message(1);
 	}else{
 		raise_message(2);
 		header("Location: " . $_SERVER["HTTP_REFERER"]);
 		exit;
+	}
+	
+	db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
+	
+	while (list($var, $val) = each($form)) {
+		if (eregi("^[dt_]", $var)) {
+			db_execute ("replace into host_template_data_template (host_template_id,data_template_id) values($host_template_id," . substr($var, 3) . ")");
+		}
 	}
 }
 
@@ -132,25 +142,43 @@ function template_edit() {
 		</td>
 		<?DrawFormItemTextBox("name",$host_template[name],"","255", "40");?>
 	</tr>
-	<tr>
-		<td colspan="2" width="100%">
-			<table width="100%">
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Selected Data Templates</font><br>
+			Select one or more data templates to associate with this host template.
+		</td>
+		<td>
+			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td align="top" width="50%">
-		<?
-		$data_templates = db_fetch_assoc("select id, name from data_template");
-		if (sizeof($data_templates) > 0) {
-			foreach($data_templates as $data_template) {
-				$column1 = floor(($rows / 2) + ($rows % 2));
-
-				if ($i == $column1) {
-					print "</td><td valign='top' width='50%'>";
-				}
-				DrawStrippedFormItemCheckBox("data_template".$data_template[id], $old_value, $data_template[name], "",true);
-				$i++;
-			}
-		}
-		?>
+						<?
+						$data_templates = db_fetch_assoc("select 
+							host_template_data_template.host_template_id,
+							data_template.id,
+							data_template.name
+							from data_template left join host_template_data_template
+							on (data_template.id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=2) 
+							order by data_template.name");
+						
+						if (sizeof($data_templates) > 0) {
+						foreach($data_templates as $data_template) {
+							$column1 = floor((sizeof($data_templates) / 2) + (sizeof($data_templates) % 2));
+							
+							if (empty($data_template[host_template_id])) {
+								$old_value = "";
+							}else{
+								$old_value = "on";
+							}
+							
+							if ($i == $column1) {
+								print "</td><td valign='top' width='50%'>";
+							}
+							DrawStrippedFormItemCheckBox("dt_".$data_template[id], $old_value, $data_template[name], "",true);
+							$i++;
+						}
+						}
+						?>
 						</td>
 					</tr>
 				</table>
@@ -158,9 +186,99 @@ function template_edit() {
 		</tr>
 	<?
 	DrawFormItemHiddenIDField("id",$args[id]);
+	DrawFormItemHiddenTextBox("save_component_template","1","");
 	end_box();
 	
-	DrawFormItemHiddenTextBox("save_component_template","1","");
+	/* fetch ALL data templates for this data host template */
+	if (isset($args[id])) {
+		$data_templates = db_fetch_assoc("select
+			data_template.id,
+			data_template.name
+			from data_template, host_template_data_template
+			where host_template_data_template.data_template_id=data_template.id
+			and host_template_data_template.host_template_id=$args[id]
+			order by data_template.name");
+	}
+	
+	/* select the "first" data template of this host template by default */
+	if (empty($args[view_data_template])) {
+		$args[view_data_template] = $data_templates[0][id];
+	}
+	
+	/* get more information about the data template we chose */
+	if (!empty($args[view_data_template])) {
+		$data_template = db_fetch_row("select * from data_template where id=$args[view_data_template]");
+	}
+	
+	/* find out what type of input it is using */
+	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=$args[view_data_template] and local_data_id=0");
+	
+	$i = 0;
+	
+	/* if it is not using any input; skip this step: no custom data */
+	if (!empty($template_data[data_input_id])) {
+		start_box("Custom Data for Host Template [" . $data_template[name] . ": " . db_fetch_cell("select name from data_input where id=$template_data[data_input_id]") . "]", "", "");
+		
+		/* loop through each data template in use and draw tabs if there is more than one */
+		if (sizeof($data_templates) > 1) {
+			?>
+			<tr height="33">
+				<td valign="bottom" colspan="3" background="images/tab_back.gif">
+					<table border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<?
+							$i=0;
+							foreach ($data_templates as $data_template) {
+							$i++;
+							?>
+							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
+								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="host_templates.php?action=edit&id=<?print $args[id];?>&view_data_template=<?print $data_template[id];?>"><?print "$i: $data_template[name]";?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+							</td>
+							<?
+							}
+							?>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<?
+		}elseif (sizeof($data_templates) == 1) {
+			$args[view_data_template] = $data_templates[0][id];
+		}
+		
+		/* get each INPUT field for this data input source */
+		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=$template_data[data_input_id] and input_output='in' order by name");
+		
+		/* loop through each field found */
+		if (sizeof($fields) > 0) {
+		foreach ($fields as $field) {
+			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=$template_data[id] and data_input_field_id=$field[id]");
+			
+			if (sizeof($data_input_data) > 0) {
+				$old_value = $data_input_data[value];
+			}else{
+				$old_value = "";
+			}
+			
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); ?>
+				<td width="50%">
+					<strong><?print $field[name];?></strong><br>
+					<?DrawStrippedFormItemCheckBox("t_value_" . $field[data_name],$template_rrd[t_rrd_heartbeat],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+				</td>
+				<?DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");?>
+			</tr>
+			<?
+			
+			$i++;
+		}
+		}else{
+			print "<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>";
+		}
+		
+		end_box();
+	}
+	
+	
 	
 	start_box("", "", "");
 	?>
