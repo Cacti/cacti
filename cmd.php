@@ -31,6 +31,7 @@ include ("include/config.php");
 include_once ("include/snmp_functions.php");
 include_once ("include/rrd_functions.php");
 include_once ("include/functions.php");
+include_once ("include/graph_export_functions.php");
 
 $polling_items = db_fetch_assoc("select * from data_input_data_cache");
 
@@ -100,23 +101,7 @@ if (isset($update_cache_array)) {
 
 //print_r($update_cache_array);
 
-
 /* dump static images/html file if user wants it */
-/*if (read_config_option("path_html_export") != "") {
-	if (read_config_option("path_html_export_skip") == "1") {
-		include("export.php");
-	}else{
-		if (read_config_option("path_html_export_skip") == read_config_option("path_html_export_ctr")) {
-			mysql_query("update settings set value=1 where name=\"path_html_export_ctr\"", $cnn_id);
-			include("export.php");
-		}else{
-			if (read_config_option("path_html_export_ctr") == "") {
-				mysql_query("update settings set value=1 where name=\"path_html_export_ctr\"", $cnn_id);
-			}else{
-				mysql_query("update settings set value=" . (read_config_option("path_html_export_ctr") + 1) . " where name=\"path_html_export_ctr\"", $cnn_id);
-			}
-		}
-	}
-}*/
+graph_export();
 
 ?>
