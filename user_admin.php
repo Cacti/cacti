@@ -606,7 +606,7 @@ function user() {
                 DrawMatrixHeaderItem("Last Login",$colors["header_text"],2);
 	print "</tr>";
 	
-	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, graph_policy, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.username = user_log.username group by id");
+	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, graph_policy, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.id = user_log.user_id group by id");
 	
 	$i = 0;
 	if (sizeof($user_list) > 0) {
