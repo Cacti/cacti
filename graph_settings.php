@@ -56,7 +56,9 @@ function form_save() {
 	
 	if (sizeof($settings_graphs) > 0) {
 	foreach (array_keys($settings_graphs) as $setting) {
-		db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"]. ",'$setting', '" . $_POST[$setting] . "')");
+		if (isset($_POST[$setting])) {
+			db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"]. ",'$setting', '" . $_POST[$setting] . "')");
+		}
 	}
 	}
 	
