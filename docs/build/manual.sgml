@@ -257,7 +257,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					If you have had previous versions of PHP installed, you had likely moved the PHP system files to 
+					If you have had previous versions of PHP installed, you had likely moved the PHP system files to
 					in the Windows directory structure.  If so, you will have to remove those files.  Please review your PHP
 					installation documentation for instructions on removing those files.
 				</para>
@@ -311,7 +311,7 @@ $database_password = "cacti";</userinput></screen>
 			<title>Configure the Webserver (IIS)</title>
 			<listitem>
 				<para>
-					Start the Microsoft Management Console, right click on <guilabel>Default Web Server</guilabel> (in most cases)
+					Start the Microsoft Management Console, right click on <guilabel>Default Web Site</guilabel> (in most cases)
 					and select <guilabel>Properties</guilabel>.
 				</para>
 			</listitem>
@@ -340,6 +340,11 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 				<screen><userinput>net stop iisadmin</userinput>
 <userinput>net start w3svc</userinput></screen>
+			</listitem>
+			<listitem>
+				<para>
+					Give the <emphasis>IUSR_XXXX</emphasis> user read and execute permissions to the file <filename>c:\winnt\system32\cmd.exe</filename>.
+				</para>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
