@@ -61,18 +61,20 @@ if ( $_SERVER["argc"] == 1 ) {
 	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
 	$print_data_to_stdout = true;
 	/* Get number of polling items from the database */
-	$hosts = db_fetch_assoc("select id from host where disabled = '' order by id");
+	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
+	$hosts = array_rekey($hosts,"id",$host_struc);
 	$host_count = sizeof($hosts);
 
 }else{
 	$print_data_to_stdout = false;
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
-			$hosts = db_fetch_assoc("select id from host where disabled = ''" .
+			$hosts = db_fetch_assoc("select * from host where disabled = ''" .
 					"WHERE (host_id >= " .
 					$_SERVER["argv"][1] .
 					" and host_id <= " .
 					$_SERVER["argv"][2] . ") ORDER by host_id");
+			$hosts = array_rekey($hosts,"id",$host_struc);
 			$host_count = sizeof($hosts);
 
 			$polling_items = db_fetch_assoc("SELECT * from poller_item " .
@@ -152,42 +154,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			/* if we are only allowed to use an snmp check and this host does not support snnp, we
 			must assume that this host is up */
 			if (($ping_availability == AVAIL_SNMP) && ($item["snmp_community"] == "")) {
-				$host_down = false;
+				$host_down = update_host_status(HOST_UP,$host_id, $hosts, $ping, $ping_availability);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 					cacti_log("Host[$host_id] No host availability check possible for '" . $item["hostname"] . "'.", $print_data_to_stdout);
 				}
 			}else{
 				if ($ping->ping($ping_availability, read_config_option("ping_method"), read_config_option("ping_timeout"), read_config_option("ping_reties"))) {
-					$host_down = false;
+					$host_down = update_host_status(HOST_UP,$host_id, $hosts, $ping, $ping_availability,$print_data_to_stdout);
 				}else{
-					$host_down = true;
-				}
-
-				/* log ping result if we are to use a ping for reachability testing */
-				if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_PING)) {
-					if (is_numeric($ping->ping_status)) {
-						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-							cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
-						}
-					}else{
-						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_NONE) {
-							cacti_log("Host[$host_id] PING ERROR: " . $ping->ping_response, $print_data_to_stdout);
-						}
-					}
-				}
-
-				/* log snmp ping result if we are to use snmp for reachability testing */
-				if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP)) {
-					if (is_numeric($ping->snmp_status)) {
-						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-							cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
-						}
-					}else{
-						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_NONE) {
-							cacti_log("Host[$host_id] SNMP ERROR: " . $ping->snmp_response, $print_data_to_stdout);
-						}
-					}
+					$host_down = update_host_status(HOST_DOWN,$host_id, $hosts, $ping, $ping_availability,$print_data_to_stdout);
 				}
 			}
 

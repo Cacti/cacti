@@ -332,4 +332,30 @@ $hash_type_names = array(
 	"host_template" => "Host Template",
 	"round_robin_archive" => "Round Robin Archive"
 	);
+
+$host_struc = array(
+   "host_template_id",
+   "description",
+   "hostname",
+   "snmp_community",
+   "snmp_version",
+   "snmp_username",
+   "snmp_password",
+   "snmp_port",
+   "snmp_timeout",
+   "disabled",
+   "status",
+   "status_event_count",
+   "status_fail_date",
+   "status_rec_date",
+   "status_last_error",
+   "min_time",
+   "max_time",
+   "cur_time",
+   "avg_time",
+   "total_polls",
+	"failed_polls",
+	"availability"
+	);
+
 ?>

@@ -1822,6 +1822,8 @@ CREATE TABLE host (
   cur_time decimal(7,5) default '0.00000',
   avg_time decimal(7,5) default '0.00000',
   total_polls int(12) unsigned default '0',
+  failed_polls int(12) unsigned default '0',
+  availability decimal(7,5) default '100.00',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)

@@ -314,6 +314,20 @@ $settings = array(
 			"default" => "1",
 			"max_length" => "10"
 			),
+		"ping_failure_count" => array(
+			"friendly_name" => "Failure Count",
+			"description" => "The number of polling intervals a host must be down before issuing an error message.",
+			"method" => "textbox",
+			"default" => "2",
+			"max_length" => "10"
+			),
+		"ping_recovery_count" => array(
+			"friendly_name" => "Recovery Count",
+			"description" => "The number of polling intervals a host must be return to service before returning to normal.",
+			"method" => "textbox",
+			"default" => "3",
+			"max_length" => "10"
+			),
 		"methods_header" => array(
 			"friendly_name" => "Poller Execution Parameters",
 			"method" => "spacer",
