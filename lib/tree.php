@@ -195,7 +195,7 @@ function delete_branch($tree_item_id) {
 		if ($ctr > 0) {
 			$suffix_order_key = substr($tree_item["order_key"], (2 * $starting_tier));
 			
-			if ((!ereg("[1-9]+",$suffix_order_key)) || ($suffix_order_key < $_suffix_order_key)) {
+			if ((!ereg("[1-9]+",$suffix_order_key)) || ($suffix_order_key < $_suffix_order_key) || ($ctr==1 && $i==0)) {
 				$i++;
 			}
 			
