@@ -104,14 +104,14 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 		if (sizeof($rrd_struc) == 0) {
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 		}else{
-			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE), escape_command(" $command_line") . "\r\n");
+			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n");
 		}
 	}elseif ($config["cacti_server_os"] == "win32") {
 		/* an empty $rrd_struc array means no fp is available */
 		if (sizeof($rrd_struc) == 0) {
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
 		}else{
-			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE), escape_command(" $command_line") . "\r\n");
+			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n");
 		}
 	}
 
@@ -129,8 +129,8 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 				return $line;
 			/* stdin rrdtool pipe; read 1024 bytes and stop */
 			}else{
-				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ) != 0) {
-					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ);
+				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
+					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
 				}
 
 				return fgets($fp, 1024);
@@ -138,8 +138,8 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
-			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ) != 0) {
-				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ);
+			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
+				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
 			}
 
 			$output = fgets($fp, 1000000);
@@ -155,8 +155,8 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 			print $output;
 			break;
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ) != 0) {
-				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ);
+			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
+				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
 			}
 
 			return fpassthru($fp);
