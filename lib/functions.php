@@ -412,8 +412,8 @@ function stri_replace($find, $replace, $string) {
    @returns - the modified string */
 function clean_up_name($string) {
 	$string = preg_replace("/[\s\.]+/", "_", $string);
-	$string = preg_replace("/_{2,}/", "_", $string);
 	$string = preg_replace("/[^a-zA-Z0-9_]+/", "", $string);
+	$string = preg_replace("/_{2,}/", "_", $string);
 	
 	return $string;
 }
