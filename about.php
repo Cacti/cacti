@@ -40,14 +40,19 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 	<td valign="top" bgcolor="#<?php print $colors["light"];?>" class="textArea">
 		<a href="http://www.raxnet.net/"><img align="right" src="images/raxnet_logo.gif" border="0" alt="raXnet"></a>
 		
-		raXnet's cacti is designed to be the complete frontend to rrdtool. Cacti's goal is to make the
-		network administrator's job easier by taking care of all the nessesary details to create 
+		raXnet's cacti is designed to be a complete graphing solution for your network. Its goal is to make the
+		network administrator's job easier by taking care of all the necessary details necessary to create 
 		meaningful network graphs.
 		
 		<p>The design of cacti took many hours of SQL and PHP coding, so I hope you find it very useful.</p>
 		
 		<p><strong>Developer Thanks</strong><br>
-		
+		<ul type="disc">
+			<li><a href="http://blyler.cc">Andy Blyler</a>, for ideas, code, and that much needed overall support 
+			during really lengthy coding sessions.</li>
+			<li>Rivo Nurges, for that c-based poller that was talked so long about. This <em>really</em> fast poller
+			is what will enable cacti to make its way into larger and larger networks.</li>
+		</ul>
 		</p>
 		
 		<p><strong>Thanks</a></strong><br>
@@ -56,11 +61,9 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 				the creator of <a href="http://www.mrtg.org/">rrdtool</a> and the very popular
 				<a href="http://www.mrtg.org">MRTG</a>.</li>
 			<li>Brady Alleman, creator of NetMRG and 
-				<a href="http://www.treehousetechnologies.net">Treehouse Technolgies</a> for questions and ideas. Just
-				as a note, NetMRG is a complete Network Monitering solution also written in PHP/MySQL. His
-				product also makes use of rrdtool's graphing capabilites, I encourage you to check it out.</li>
-			<li><a href="http://www.globalunderground.co.uk/">Cluboxed</a>, the creator of the popular Global 
-				Underground compilations for hours of listening enjoyment.</li>
+				<a href="http://www.thtech.net">Treehouse Technolgies</a> for questions and ideas. Just
+				as a note, NetMRG is a complete Network Monitoring solution also written in PHP/MySQL. His
+				product also makes use of rrdtool's graphing capabilities, I encourage you to check it out.</li>
 		</ul>
 		</p>
 		
