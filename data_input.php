@@ -79,7 +79,6 @@ function form_save() {
 		$save["hash"] = get_hash_data_input($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["input_string"] = form_input_validate($_POST["input_string"], "input_string", "", true, 3);
-		$save["output_string"] = form_input_validate($_POST["output_string"], "output_string", "", true, 3);
 		$save["type_id"] = form_input_validate($_POST["type_id"], "type_id", "", true, 3);
 		
 		if (!is_error_message()) {
@@ -93,7 +92,6 @@ function form_save() {
 					db_execute("update data_input_fields set sequence=0 where data_input_id=" . $_POST["id"]);
 					
 					generate_data_input_field_sequences($_POST["input_string"], $_POST["id"], "in");
-					generate_data_input_field_sequences($_POST["output_string"], $_POST["id"], "out");
 				}
 			}else{
 				raise_message(2);
@@ -110,7 +108,7 @@ function form_save() {
 		$save["hash"] = get_hash_data_input($_POST["id"], "data_input_field");
 		$save["data_input_id"] = $_POST["data_input_id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-		$save["data_name"] = form_input_validate($_POST["data_name"], "data_name", "", true, 3);
+		$save["data_name"] = form_input_validate($_POST["data_name"], "data_name", "", false, 3);
 		$save["input_output"] = $_POST["input_output"];
 		$save["update_rra"] = form_input_validate((isset($_POST["update_rra"]) ? $_POST["update_rra"] : ""), "update_rra", "", true, 3);
 		$save["sequence"] = $_POST["sequence"];
@@ -206,7 +204,7 @@ function field_edit() {
 	
 	/* if there are no input fields to choose from, complain */
 	if ((!isset($array_field_names)) && (isset($_GET["type"]) ? $_GET["type"] == "in" : false) && ($data_input["type_id"] == "1")) {
-		print "<span class='textError'>This script appears to have no input values, therefore there is nothing to add.</span>";
+		display_custom_error_message("This script appears to have no input values, therefore there is nothing to add.");
 		return;
 	}
 	
@@ -216,9 +214,9 @@ function field_edit() {
 	
 	/* field name */
 	if (($data_input["type_id"] == "1") && ($current_field_type == "in")) { /* script */
-		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, $field);
+		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
 	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($current_field_type == "out")) { /* snmp */
-		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, $field);
+		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, (isset($field) ? $field : array()));
 	}
 	
 	/* ONLY if the field is an input */
@@ -232,7 +230,7 @@ function field_edit() {
 	
 	draw_edit_form(array(
 		"config" => array(),
-		"fields" => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type)
+		"fields" => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_GET)
 		));
 	
 	end_box();
