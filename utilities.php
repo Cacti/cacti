@@ -102,6 +102,10 @@ function utilities_view_logfile() {
         /* read logfile into an array and display */
         if (file_exists($logfile))
             $logcontents = file($logfile);
+	else {
+	    touch($logfile);
+		$logcontents = file($logfile);
+	}
 
         $logcontents = array_reverse($logcontents);
 
