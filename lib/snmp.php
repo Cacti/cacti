@@ -38,8 +38,7 @@ function data_query($host_id, $snmp_query_id) {
 
 function get_data_query_array($snmp_query_id) {
 	include_once ("xml_functions.php");
-	
-	global $paths;
+	include ("config.php");
 	
 	$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
 	$xml_file_path = str_replace("<path_cacti>", $paths["cacti"], $xml_file_path);
@@ -53,7 +52,7 @@ function get_data_query_array($snmp_query_id) {
 }
 
 function query_script_host($host_id, $snmp_query_id) {
-	global $paths;
+	include ("config.php");
 	
 	$script_queries = get_data_query_array($snmp_query_id);
 	

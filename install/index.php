@@ -142,16 +142,19 @@ if ($_REQUEST["step"] == "4") {
 	
 	$i = 0;
 	
-	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
-	up-to-date */
-	repopulate_poller_cache();
-	
 	/* get all items on the form and write values for them  */
 	while (list($name, $array) = each($input)) {
 		if (isset($_POST[$name])) {
 			db_execute("update settings set value='" . $_POST[$name] . "' where name='$name'");
 		}
 	}
+	
+	/* reset local settings cache so the user sees the new settings */
+	session_unregister("sess_config_array");
+	
+	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
+	up-to-date */
+	repopulate_poller_cache();
 	
 	db_execute("delete from version");
 	db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
