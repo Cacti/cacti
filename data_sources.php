@@ -29,12 +29,25 @@ include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
+define("ROWS_PER_PAGE", 30);
+
+$ds_actions = array(
+	1 => "Delete",
+	2 => "Change Data Template",
+	3 => "Change Host",
+	4 => "Duplicate"
+	);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
+		
+		break;
+	case 'actions':
+		form_actions();
 		
 		break;
 	case 'rrd_add':
@@ -142,7 +155,7 @@ function form_save() {
 		if (!is_error_message()) {
 			if ($_POST["host_id"] != $_POST["_host_id"]) {
 				/* push out all nessesary host information */
-				push_out_host($_POST["host_id"]);
+				push_out_host($_POST["host_id"], $local_data_id);
 				
 				/* reset current host for display purposes */
 				$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
@@ -252,6 +265,196 @@ function draw_data_form_select($main_action) {
 	</tr>
 <?php }
 
+/* ------------------------
+    The "actions" function 
+   ------------------------ */
+
+function form_actions() {
+	include_once ("include/tree_functions.php");
+	include_once ("include/tree_view_functions.php");
+	include_once ("include/utility_functions.php");
+	
+	global $colors, $ds_actions;
+	
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		
+		if ($_POST["drp_action"] == "1") { /* delete */
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 0; }
+			
+			switch ($_POST["delete_type"]) {
+				case '2': /* delete all graph items tied to this data source */
+					$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id"));
+					
+					/* loop through each data source item */
+					if (sizeof($data_template_rrds) > 0) {
+					foreach ($data_template_rrds as $item) {
+						db_execute("delete from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
+					}
+					}
+					
+					break;
+				case '3': /* delete all graphs tied to this data source */
+					$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id"));
+					
+					/* loop through each data source item */
+					if (sizeof($data_template_rrds) > 0) {
+					foreach ($data_template_rrds as $item) {
+						$graphs = db_fetch_assoc("select local_graph_id from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
+						
+						/* loop through each graph */
+						if (sizeof($graphs) > 0) {
+						foreach ($graphs as $graph) {
+							db_execute("delete from graph_templates_graph where local_graph_id=" . $graph["local_graph_id"]);
+							db_execute("delete from graph_templates_item where local_graph_id=" . $graph["local_graph_id"]);
+							db_execute("delete from graph_tree_items where local_graph_id=" . $graph["local_graph_id"]);
+							db_execute("delete from graph_local where id=" . $graph["local_graph_id"]);
+						}
+						}
+					}
+					}
+					
+					break;
+				}
+				
+				/* retrieve an array indexed on data_template_data_id */
+				$data_template_data_ids = db_fetch_assoc("select id from data_template_data where " . array_to_sql_or($selected_items, "local_data_id"));
+				
+				$selected_dsid_items = array();
+				
+				for ($i=0;($i<count($data_template_data_ids));$i++) {
+					$selected_dsid_items[$i] = $data_template_data_ids[$i]["id"];
+				}
+				
+				/* delete the data source and its data when we're done */
+				db_execute("delete from data_template_data_rra where " . array_to_sql_or($selected_dsid_items, "data_template_data_id"));
+				db_execute("delete from data_input_data where " . array_to_sql_or($selected_dsid_items, "data_template_data_id"));
+				db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "local_data_id"));
+				db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id"));
+				db_execute("delete from data_input_data_cache where " . array_to_sql_or($selected_items, "local_data_id"));
+				db_execute("delete from data_local where " . array_to_sql_or($selected_items, "id"));
+		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
+			for ($i=0;($i<count($selected_items));$i++) {
+				change_data_template($selected_items[$i], $_POST["data_template_id"]);
+			}
+		}elseif ($_POST["drp_action"] == "3") { /* change host */
+			for ($i=0;($i<count($selected_items));$i++) {
+				db_execute("update data_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
+				push_out_host($_POST["host_id"], $selected_items[$i]);
+			}
+		}elseif ($_POST["drp_action"] == "4") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				duplicate_data_source($selected_items[$i], $_POST["title_format"]);
+			}
+		}
+		
+		header("Location: data_sources.php");
+		exit;
+	}
+	
+	/* setup some variables */
+	$ds_list = ""; $i = 0;
+	
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			$ds_list .= "<li>" . db_fetch_cell("select name from data_template_data where local_data_id=" . $matches[1]) . "<br>";
+			$ds_array[$i] = $matches[1];
+		}
+		
+		$i++;
+	}
+	
+	include_once ("include/top_header.php");
+	
+	start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	
+	print "<form action='data_sources.php' method='post'>\n";
+	
+	if ($_POST["drp_action"] == "1") { /* delete */
+		/* find out what (if any) graphs are using this data source, so we can complain to the user */
+		$graphs = db_fetch_assoc("select
+			graph_templates_graph.title
+			from data_template_rrd
+			left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
+			left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
+			where " . array_to_sql_or($ds_array, "data_template_rrd.local_data_id") . "
+			and graph_templates_item.local_graph_id>0
+			and graph_templates_graph.local_graph_id>0
+			group by graph_templates_graph.title
+			order by graph_templates_graph.title");
+		
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following data sources?</p>
+					<p>$ds_list</p>
+					";
+					if (sizeof($graphs) > 0) {
+						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following graphs are using this data source:</p>\n";
+						
+						foreach ($graphs as $graph) {
+							print "<strong>" . $graph["title"] . "</strong><br>\n";
+						}
+						
+						print "<br>";
+						form_base_radio_button("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
+						form_base_radio_button("delete_type", "1", "2", "Delete all <strong>graph items</strong> that reference to this data source.", "1", true);
+						form_base_radio_button("delete_type", "1", "3", "Delete all <strong>graphs</strong> that reference to this data source.", "1", true);
+						print "</td></tr>";
+					}
+				print "
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "2") { /* change graph template */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Choose a data template and click save to change the data template for
+					the following data souces. Be aware that all warnings will be suppressed during the
+					conversion, so graph data loss is possible.</p>
+					<p>$ds_list</p>
+					<p><strong>New Data Template:</strong><br>"; form_base_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "3") { /* change host */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Choose a new host for these data sources:</p>
+					<p>$ds_list</p>
+					<p><strong>New Host:</strong><br>"; form_base_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "4") { /* duplicate */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following data sources will be duplicated. You can
+					optionally change the title format for the new data sources.</p>
+					<p>$ds_list</p>
+					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<ds_title> (1)", "", "255", "30", "textbox"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}
+	
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . serialize($ds_array) . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='graphs.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>
+			</td>
+		</tr>
+		";	
+	
+	end_box();
+	
+	include_once ("include/bottom_footer.php");
+}
+
 /* ----------------------------
     data - Custom Data
    ---------------------------- */
@@ -352,107 +555,6 @@ function ds_rrd_add() {
 	$data_template_rrd_id = db_fetch_cell("select LAST_INSERT_ID()");
 	
 	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
-}
-
-function ds_remove() {
-	global $config;
-	
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
-		
-		print "	<br>
-			<form action='data_sources.php' method='get'>";
-		
-		start_box("<strong>Are You Sure?</strong>", "60%", "B61D22", "3", "center", "");
-		
-		form_area("Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["id"]) . "'</strong>?");
-		
-		/* find out what (if any) graphs are using this data source, so we can complain to the user */
-		$graphs = db_fetch_assoc("select
-			graph_templates_graph.title
-			from data_template_rrd
-			left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
-			left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
-			where data_template_rrd.local_data_id=" . $_GET["id"] . "
-			and graph_templates_item.local_graph_id>0
-			and graph_templates_graph.local_graph_id>0
-			group by graph_templates_graph.title
-			order by graph_templates_graph.title");
-		
-		if (sizeof($graphs) > 0) {
-			print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following graphs are using this data source:</p>\n";
-			
-			foreach ($graphs as $graph) {
-				print "<strong>" . $graph["title"] . "</strong><br>\n";
-			}
-			
-			print "<br>";
-			form_base_radio_button("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
-			form_base_radio_button("delete_type", "1", "2", "Delete all <strong>graph items</strong> that reference to this data source.", "1", true);
-			form_base_radio_button("delete_type", "1", "3", "Delete all <strong>graphs</strong> that reference to this data source.", "1", true);
-			print "</td></tr>";
-		}
-		
-		form_post_confirm_buttons("data_sources.php");
-		
-		end_box();
-		
-		form_hidden_box("action","ds_remove","");
-		form_hidden_box("confirm","yes","");
-		form_hidden_box("id",$_GET["id"],"0");
-		print "</form>";
-		
-		include ('include/bottom_footer.php');
-		exit;
-	}
-	
-	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
-		/* set default delete type */
-		if (!isset($_GET["delete_type"])) { $_GET["delete_type"] = ""; }
-		
-		switch ($_GET["delete_type"]) {
-		case '2': /* delete all graph items tied to this data source */
-			$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where local_data_id=" . $_GET["id"]);
-			
-			/* loop through each data source item */
-			if (sizeof($data_template_rrds) > 0) {
-			foreach ($data_template_rrds as $item) {
-				db_execute("delete from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
-			}
-			}
-			
-			break;
-		case '3': /* delete all graphs tied to this data source */
-			$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where local_data_id=" . $_GET["id"]);
-			
-			/* loop through each data source item */
-			if (sizeof($data_template_rrds) > 0) {
-			foreach ($data_template_rrds as $item) {
-				$graphs = db_fetch_assoc("select local_graph_id from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
-				
-				/* loop through each graph */
-				if (sizeof($graphs) > 0) {
-				foreach ($graphs as $graph) {
-					db_execute("delete from graph_templates_graph where local_graph_id=" . $graph["local_graph_id"]);
-					db_execute("delete from graph_templates_item where local_graph_id=" . $graph["local_graph_id"]);
-					db_execute("delete from graph_tree_items where local_graph_id=" . $graph["local_graph_id"]);
-					db_execute("delete from graph_local where id=" . $graph["local_graph_id"]);
-				}
-				}
-			}
-			}
-			
-			break;
-		}
-		
-		/* delete the data source and its data when we're done */
-		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["id"]));
-		db_execute("delete from data_input_data where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["id"]));
-		db_execute("delete from data_template_data where local_data_id=" . $_GET["id"]);
-		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["id"]);
-		db_execute("delete from data_input_data_cache where local_data_id=" . $_GET["id"]);
-		db_execute("delete from data_local where id=" . $_GET["id"]);
-	}
 }
 
 function ds_edit() {
@@ -658,19 +760,36 @@ function ds_edit() {
 }
 
 function ds() {
-	global $colors;
+	global $colors, $ds_actions;
 	
-	include_once ('include/tree_view_functions.php');
-	
-	/* if no host_id is specified, use the session one */
-	if (!isset($_GET["host_id"])) {
-		$_GET["host_id"] = (empty($_SESSION["sess_data_source_current_host_id"]) ? 0 : $_SESSION["sess_data_source_current_host_id"]);
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	if (isset($_REQUEST["page"])) {
+		$_SESSION["sess_ds_current_page"] = $_REQUEST["page"];
+	}elseif (isset($_SESSION["sess_ds_current_page"])) {
+		$_REQUEST["page"] = $_SESSION["sess_ds_current_page"];
+	}else{
+		$_REQUEST["page"] = "1"; /* default value */
 	}
 	
-	/* remember the last used host_id */
-	$_SESSION["sess_data_source_current_host_id"] = $_GET["host_id"];
+	if (isset($_REQUEST["filter"])) {
+		$_SESSION["sess_ds_filter"] = $_REQUEST["filter"];
+	}elseif (isset($_SESSION["sess_ds_filter"])) {
+		$_REQUEST["filter"] = $_SESSION["sess_ds_filter"];
+	}else{
+		$_REQUEST["filter"] = ""; /* default value */
+	}
 	
-	start_box("<strong>Data Sources</strong>", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit");
+	if (isset($_REQUEST["host_id"])) {
+		$_SESSION["sess_ds_host_id"] = $_REQUEST["host_id"];
+	}elseif (isset($_SESSION["sess_ds_host_id"])) {
+		$_REQUEST["host_id"] = $_SESSION["sess_ds_host_id"];
+	}else{
+		$_REQUEST["host_id"] = ""; /* default value */
+	}
+	
+	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
+	
+	start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_REQUEST["host_id"]);
 	?>
 	
 	<tr bgcolor="<?php print $colors["panel"];?>">
@@ -683,22 +802,26 @@ function ds() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?host_id=0"<?php if ($_GET["host_id"] == "0") {?> selected<?php }?>>None</option>
+							<option value="data_sources.php?host_id=0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							
 							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='data_sources.php?host_id=" . $host["id"] . "'"; if ($_GET["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+								print "<option value='data_sources.php?host_id=" . $host["id"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
 							}
 							}
 							?>
 							
 						</select>
 					</td>
+					<td width="5"></td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+					</td>
 					<td>
-						&nbsp;<a href="data_sources.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
 					</td>
 				</tr>
 			</table>
@@ -708,17 +831,16 @@ function ds() {
 	<?php
 	end_box();
 	
-	$host = db_fetch_row("select hostname from host where id=" . $_GET["host_id"]);
+	if (empty($_REQUEST["host_id"])) {
+		$sql_where = "";
+	}else{
+		$sql_where = "and data_local.host_id=" . $_REQUEST["host_id"];
+	}
 	
-	start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_GET["host_id"]);
-	
-	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td class='textSubHeaderDark'>Name</td>
-			<td class='textSubHeaderDark'>Data Input Method</td>
-			<td class='textSubHeaderDark'>Active</td>
-			<td class='textSubHeaderDark' colspan='2'>Template Name</td>
-		</tr>\n";
-	
+	$total_rows = sizeof(db_fetch_assoc("select
+		data_local.id
+		from data_local
+		$sql_where"));
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
 		data_template_data.name,
@@ -732,24 +854,101 @@ function ds() {
 		on data_input.id=data_template_data.data_input_id
 		left join data_template
 		on data_local.data_template_id=data_template.id
-		where data_local.host_id=" . $_GET["host_id"] . "
-		order by data_template_data.name");
+		where data_template_data.name like '%%" . $_REQUEST["filter"] . "%%'
+		$sql_where
+		order by data_template_data.name
+		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+	
+	start_box("", "98%", $colors["header"], "3", "center", "");
+	
+	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
+	user can jump straight to it */
+	$page_number = 0; $url_page_select = "";
+	for ($i=0; ($i<$total_rows); $i += ROWS_PER_PAGE) {
+		$page_number++;
+		
+		if ($_REQUEST["page"] == $page_number) {
+			$url_page_select .= "<strong><a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a></strong>";
+		}else{
+			$url_page_select .= "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a>";
+		}
+		
+		if (($i+ROWS_PER_PAGE) < $total_rows) { $url_page_select .= ","; }
+	}
+	
+	print "	<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='5'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='left' class='textHeaderDark'>
+							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
+						</td>\n
+						<td align='center' class='textHeaderDark'>
+							Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+						</td>\n
+						<td align='right' class='textHeaderDark'>
+							<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
+						</td>\n
+					</tr>
+				</table>
+			</td>
+		</tr>\n";
+	
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Name</td>
+			<td class='textSubHeaderDark'>Data Input Method</td>
+			<td class='textSubHeaderDark'>Active</td>
+			<td class='textSubHeaderDark'>Template Name</td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll()'></td>
+		<form name='chk' method='post' action='data_sources.php'>
+		</tr>\n";
 	
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "'>" . $data_source["name"] . "</a></td>";
-		print "<td>" . $data_source["data_input_name"] . "</td>";
-		print "<td>" . (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>") . "</td>";
-		print "<td>" . ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]) . "</td>";
-		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&id=" . $data_source["local_data_id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
-		print "</tr>";
+			?>
+			<td>
+				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source["name"]);?></a>
+			</td>
+			<td>
+				<?php print $data_source["data_input_name"];?>
+			</td>
+			<td>
+				<?php print (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>");?>
+			</td>
+			<td>
+				<?php print ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);?>
+			</td>
+			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name"];?>">
+			</td>
+		</tr>
+		<?php
 	}
 	}else{
 		print "<tr><td><em>No Data Sources</em></td></tr>";
 	}
 	
-	end_box();
+	end_box(false);
+	
+	?>
+	<table align='center' width='98%'>
+		<tr>
+			<td width='1' valign='top'>
+				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+			</td>
+			<td align='right'>
+				<?php form_base_dropdown("drp_action",$ds_actions,"","","1","","");?>
+			</td>
+			<td width='1' align='right'>
+				<input type='image' src='images/button_go.gif' alt='Go'>
+			</td>
+		</tr>
+	</table>
+	
+	<input type='hidden' name='action' value='actions'>
+	</form>
+	<?php
 }
 ?>
