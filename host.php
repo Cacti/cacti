@@ -208,7 +208,7 @@ function host_remove() {
 }
 
 function host_edit() {
-	global $colors, $paths, $fields_host_edit;
+	global $colors, $fields_host_edit;
 	
 	display_output_messages();
 	
