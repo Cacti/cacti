@@ -23,6 +23,18 @@
    */?>
 <?
 
+function array_rekey($array, $key, $key_value) {
+	if (sizeof($array) > 0) {
+	foreach ($array as $item) {
+		$item_key = $item[$key];
+		
+		$ret_array[$item_key] = $item[$key_value];
+	}
+	}
+	
+	return $ret_array;
+}
+
 function LogData($string) {
     global $config,$colors,$paths;
     
@@ -272,8 +284,8 @@ function CreateMultipleList($sql,$name,$value,$prevsql,$prevsqlvalue) {
     }
 }
 
-function get_next_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
-    $data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_field=$lmt_val");
+function get_next_item($tblname,$field,$startid,$lmt_query) {
+    $data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_query");
     $end_seq = $data1[mymax];
     $data2 = db_fetch_row("select $field from $tblname where id=$startid");
     $start_seq = $data2[$field];
@@ -281,7 +293,7 @@ function get_next_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
     $i = $start_seq;
     if ($end_seq != $start_seq) {
 		while ($i < $end_seq) {
-		    $data3 = db_fetch_row("select $field from $tblname where $field=$i+1 and $lmt_field=$lmt_val");
+		    $data3 = db_fetch_row("select $field from $tblname where $field=$i+1 and $lmt_query");
 		    if (sizeof($data3) > 0) { return $data3[$field]; }
 		    $i++;
 		}
@@ -290,8 +302,8 @@ function get_next_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
     return $start_seq;
 }
 
-function get_last_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
-    $data1 = db_fetch_row("select min($field) mymin from $tblname where $lmt_field=$lmt_val");
+function get_last_item($tblname,$field,$startid,$lmt_query) {
+    $data1 = db_fetch_row("select min($field) mymin from $tblname where $lmt_query");
     $end_seq = $data1[mymin];
     $data2 = db_fetch_row("select $field from $tblname where id=$startid");
     $start_seq = $data2[$field];
@@ -299,7 +311,7 @@ function get_last_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
     $i = $start_seq;
     if ($end_seq != $start_seq) {
 		while ($i > $end_seq) {
-		    $data3 = db_fetch_row("select $field from $tblname where $field=$i-1 and $lmt_field=$lmt_val");
+		    $data3 = db_fetch_row("select $field from $tblname where $field=$i-1 and $lmt_query");
 		    if (sizeof($data3) > 0 && $data3[$field] != 0) {
 				return $data3[$field];
 		    }
@@ -310,9 +322,9 @@ function get_last_item($tblname,$field,$startid,$lmt_field,$lmt_val) {
     return $start_seq;
 }
 
-function get_sequence($id, $field, $table_name, $gid, $gid_value) {
+function get_sequence($id, $field, $table_name, $group_query) {
     if (($id=="0") || ($id == "")) {
-		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $gid=$gid_value");
+		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $group_query");
 		
 		if ($data[seq] == "") {
 		    return 1;
@@ -325,19 +337,19 @@ function get_sequence($id, $field, $table_name, $gid, $gid_value) {
     }
 }
 
-function move_item_down($table_name, $current_id, $group_column_name, $group_id) {
-	$next_item = get_next_item($table_name, "sequence", $current_id, $group_column_name, $group_id);
+function move_item_down($table_name, $current_id, $group_query) {
+	$next_item = get_next_item($table_name, "sequence", $current_id, $group_query);
 	
-	$id = db_fetch_cell("select id from $table_name where sequence=$next_item and $group_column_name=$group_id");
+	$id = db_fetch_cell("select id from $table_name where sequence=$next_item and $group_query");
 	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
 	db_execute("update $table_name set sequence=$next_item where id=$current_id");
 	db_execute("update $table_name set sequence=$sequence where id=$id");
 }
 
-function move_item_up($table_name, $current_id, $group_column_name, $group_id) {
-	$last_item = get_last_item($table_name, "sequence", $current_id, $group_column_name, $group_id);
+function move_item_up($table_name, $current_id, $group_query) {
+	$last_item = get_last_item($table_name, "sequence", $current_id, $group_query);
 	
-	$id = db_fetch_cell("select id from $table_name where sequence=$last_item and $group_column_name=$group_id");
+	$id = db_fetch_cell("select id from $table_name where sequence=$last_item and $group_query");
 	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
 	db_execute("update $table_name set sequence=$last_item where id=$current_id");
 	db_execute("update $table_name set sequence=$sequence where id=$id");
