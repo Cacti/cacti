@@ -58,6 +58,19 @@ function upgrade_to_0_8_4() {
 	db_install_execute("0.8.4", "ALTER TABLE `snmp_query` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
 	db_install_execute("0.8.4", "ALTER TABLE `rra` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
 	
+	/* new realms */
+	$users = db_fetch_assoc("select id from user_auth");
+	
+	if (sizeof($users) > 0) {
+	foreach ($users as $user) {
+		if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $user["id"])) == 13) {
+			db_install_execute("0.8.4", "insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",4)");
+			db_install_execute("0.8.4", "insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",16)");
+			db_install_execute("0.8.4", "insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",17)");
+		}
+	}
+	}
+	
 	/* there are a LOT of hashes to set */
 	db_execute("update cdef set hash='73f95f8b77b5508157d64047342c421e' where id=2;");
 	db_execute("update cdef_items set hash='9bbf6b792507bb9bb17d2af0970f9be9' where id=7;");
