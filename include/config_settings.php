@@ -510,7 +510,7 @@ $settings_graphs = array(
 			"description" => "The default RRA to use when thumbnail graphs are not being displayed or when 'Thumbnail Timespan' is set to '0'.",
 			"method" => "drop_sql",
 			"sql" => "select id,name from rra order by name",
-			"default" => "1"
+			"default" => "Default"
 			),
 		"default_view_mode" => array(
 			"friendly_name" => "Default View Mode",
@@ -519,6 +519,19 @@ $settings_graphs = array(
 			"array" => $graph_views,
 			"default" => "1"
 			),
+		"default_timespan" => array(
+			"friendly_name" => "Default Graph View Timespan",
+			"description" => "The default timespan you wish to be displayed when you display graphs",
+			"method" => "drop_array",
+			"array" => $graph_timespans,
+			"default" => "1"
+			),
+		"timestamp_sel" => array(
+			"friendly_name" => "Timestamp Selectors",
+			"description" => "Do you wish to see timestamps on thumbnail graphs",
+			"method" => "checkbox",
+			"default" => ""
+		),
 		"page_refresh" => array(
 			"friendly_name" => "Page Refresh",
 			"description" => "The number of seconds between automatic page refreshes.",

@@ -365,4 +365,28 @@ $host_struc = array(
 	"availability"
 	);
 
+$graph_timespans = array(
+	"No Preset" => "No Preset",
+	"Default" => "Default",
+	"Last Half Hour"=> "Last Half Hour",
+	"Last Hour"=> "Last Hour",
+	"Last 2 Hours"=> "Last 2 Hours",
+	"Last 4 Hours"=> "Last 4 Hours",
+	"Last 6 Hours"=>"Last 6 Hours",
+	"Last 12 Hours"=>"Last 12 Hours",
+	"Last Day"=>"Last Day",
+	"Last 2 Days"=>"Last 2 Days",
+	"Last 3 Days"=>"Last 3 Days",
+	"Last 4 Days"=>"Last 4 Days",
+	"Last Week"=>"Last Week",
+	"Last 2 Weeks"=>"Last 2 Weeks",
+	"Last Month"=>"Last Month",
+	"Last 2 Months"=>"Last 2 Months",
+	"Last 3 Months"=>"Last 3 Months",
+	"Last 4 Months"=>"Last 4 Months",
+	"Last 6 Months"=>"Last 6 Months",
+	"Last Year"=>"Last Year",
+	"Last 2 Years"=>"Last 2 Years"
+)
+
 ?>
