@@ -430,7 +430,13 @@ function graphs() {
 		and host_graph.host_id=" . $_REQUEST["host_id"] . "
 		order by graph_templates.name");
 
-	$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_graph where graph_local.graph_template_id=host_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
+	$template_graphs = db_fetch_assoc("select
+		graph_local.graph_template_id
+		from graph_local,host_graph
+		where graph_local.graph_template_id=host_graph.graph_template_id
+		and graph_local.host_id=host_graph.host_id
+		and graph_local.host_id=" . $host["id"] . "
+		group by graph_local.graph_template_id");
 
 	print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
 
