@@ -1061,7 +1061,7 @@ function graph() {
 				<?php print $graph["height"];?>x<?php print $graph["width"];?>
 			</td>
 			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $graph["local_graph_id"];?>' title="<?php print $graph["title"];?>">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $graph["local_graph_id"];?>' title="<?php print $graph["title_cache"];?>">
 			</td>
 		</tr>
 	<?php
