@@ -654,6 +654,7 @@ function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
 		}
 		
 		print "</td>";
+		break;
 	case 'view':
 		print "<td>$previous_value</td>\n";
 		break;
