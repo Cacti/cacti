@@ -155,9 +155,15 @@ function host_new_graphs_save() {
 			}
 		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_([^_]+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4: (opt) snmp_index, 5:field_name */
 			if (empty($matches[1])) { /* this is a new graph from template field */
-				$values["cg"]{$matches[3]}["data_template"]{$matches[5]} = $val;
+				$values["cg"]{$matches[2]}["data_template"]{$matches[3]}{$matches[5]} = $val;
 			}else{ /* this is a data query field */
-				$values["sg"]{$matches[1]}{$matches[2]}["data_template"]{$matches[5]} = $val;
+				$values["sg"]{$matches[1]}{$matches[2]}["data_template"]{$matches[3]}{$matches[5]} = $val;
+			}
+		}elseif (preg_match("/^c_(\d+)_(\d+)_(\d+)_(\d+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id */
+			if (empty($matches[1])) { /* this is a new graph from template field */
+				$values["cg"]{$matches[2]}["custom_data"]{$matches[3]}{$matches[4]} = $val;
+			}else{ /* this is a data query field */
+				$values["sg"]{$matches[1]}{$matches[2]}["custom_data"]{$matches[3]}{$matches[4]} = $val;
 			}
 		}elseif (preg_match("/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name */
 			if (empty($matches[1])) { /* this is a new graph from template field */
@@ -331,7 +337,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				draw_nontemplated_fields_data_source($data_template["id"], 0, &$data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+				draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, &$data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
 				
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
@@ -339,7 +345,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					where data_template_rrd.data_template_id=" . $data_template["data_template_id"] . "
 					and local_data_id=0");
 				
-				draw_nontemplated_fields_data_source_item($data_template["id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+				draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+				draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, $snmp_query_id);
 			}
 			}
 			
