@@ -57,11 +57,18 @@ function draw_edit_form($array) {
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr bgcolor='#" . $config_array["force_row_color"] . "'>";
+				}elseif ($field_array["method"] == "header") {
+					print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["value"] . "</td></tr>\n";
+					print "<tr bgcolor='#" . $colors["header"] . "'>";
 				}else{
 					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 				}
 				
-				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
+				if ($field_array["method"] <> "header") {
+					print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
+				}else {
+					print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textHeaderDark'>" . $field_array["friendly_name"] . "</font><br>\n";
+				}
 				
 				if (isset($field_array["sub_checkbox"])) {
 					form_checkbox($field_array["sub_checkbox"]["name"], $field_array["sub_checkbox"]["value"], $field_array["sub_checkbox"]["friendly_name"], "", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
@@ -135,6 +142,9 @@ function draw_edit_form($array) {
 						print $item["name"] . "<br>";
 					}
 					}
+					break;
+				case 'header':
+					print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["value"] . "</td></tr>\n";
 					break;
 				default:
 					print "<em>" . $field_array["value"] . "</em>";
