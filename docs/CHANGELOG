@@ -1,5 +1,66 @@
 raXnet - cacti
 
+0.8.5
+-bug#102: Fix problem with SNMP community strings that contain certain variable shell
+characters.
+-bug#103: Under "New Graphs", make sure to highlight the host template line when the
+right-hand checkbox is selected.
+-bug#104: Typo in the usage for the query_unix_partitions.pl script.
+-bug#105: On the data query edit page, only display compatible items in the "Data
+Input Method" dropdown.
+-bug#106: Render the main menu based on a user's permissions so graph-only users
+cannot see a list of menu options when attempting to view 'index.php'.
+-bug#109: Replaced all instances of 'ifDesc' with the correct 'ifDescr' when dealing
+with the IF MIB.
+-bug#110: Be smarter about redirecting the user to the correct page when the user's
+login option is set to "Show the page that user pointed their browser to".
+-bug#111: Take host permissions into account when rendering the left-hand pane in
+tree view.
+-bug#112: Every 10th tree item was not being displayed.
+-bug#115: Fixed a bunch of misspellings of the word 'substitute' throughout the code.
+-bug#116: Restructured the edit screens for CDEF items and tree items, making them
+less confusing to users.
+-bug#119: Added a "Search:" label to the filter textboxes on the "Graph Management"
+and "Data Sources" pages.
+-bug#127: Added an HTML "title" tag to the three graph mode images.
+-bug#129: Added support for correctly parsing timeticks in both cmd.php and cactid.
+-bug: Fix the navigation display so it doesn't display errors when directly linking
+to a graph.
+-bug: Allow the user to enter a "Unit Exponent Value" of '0'.
+-bug: Remove all references to $_SERVER["HTTP_REFERER"] for web servers that do not
+include this variable.
+-bug: Extend the "Maximum JavaScript Rows" feature to work for host templates as
+well.
+-bug: Fixed a few parsing problems that were causing problems for users including a
+'\' or '/' in their script's input string.
+-bug: The correct representation of memory usage using net-snmp should be 'free
+memory + cache memory + buffered memory'.
+-bug: Fixed a problem importing CDEF items correctly from an XML file.
+-bug: Deleting a GPRINT preset now correctly displays the name of the item about to
+be removed.
+-feature: Data query variables such as |query_ifAlias| can now be included on the 
+actual graph in the "Text Format" or "Value" field.
+-feature: Added two new special data sources to CDEFs, which enable users to use
+the data source's maximum or minimum value in a CDEF.
+-feature: Added a new SNMP query source type, "VALUE/REGEXP", which enables users
+to parse the SNMP value with a regular expression before passing it onto Cacti.
+-feature: Hide the "Console" tab from users that only have rights to view graphs.
+-feature: Added a new 95th percentile type, "max", which calculates 95th percentile
+based on the maximum of either inbound or outbound for each sample. This is how
+most co-location facilities calculate 95th percentile for billing purposes.
+-feature: Update ADODB to version 4.05.
+-feature: Data source graph inputs are automatically added and maintained by Cacti
+for new graph templates as to reduce user confusion.
+-feature: The "Graph Management" and "Data Sources" edit pages are much improved
+when using a template.
+-feature: Renamed "Polling Hosts" to "Devices" since polling hosts technically
+implies that you are managing the hosts that poll data, which could be reserved
+for later use.
+-doc: Completely re-written manual in SGML/Docbook so HTML, PDF, and ASCII versions
+of the manual are now possible. The new manual also includes a better introduction
+to Cacti for new users and makes use of screen shots to illustrate various portions
+of the user interface.
+
 0.8.4
 -bug#87: Deleting top level branches without children on the tree caused ordering
 problems.
