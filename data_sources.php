@@ -495,7 +495,7 @@ function ds_edit() {
 	//print "</pre></td></tr>";
 	//end_box();
 	
-	start_box("<strong>Data Templation Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	print "<form method='post' action='data_sources.php'>\n";
 	
