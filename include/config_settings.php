@@ -102,14 +102,14 @@ $settings = array(
 				"tab" => "general")
 				)
 			),
-	"smtp_ver" => array(
+	"smnp_version" => array(
                 "friendly_name" => "SNMP Version",
                 "description" => "The type of SNMP you have installed.",
                 "method" => "dropdown",
                 "tab" => "general",
                 "items" => array(
-                        "ucd-snmp" => "UCD-SNMP",
-                        "net-snmp" => "NET-SNMP"
+                        "ucd-snmp" => "UCD-SNMP 4.x",
+                        "net-snmp" => "NET-SNMP 5.x"
 			)
 	),
 	"guest_user" => array(
