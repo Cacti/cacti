@@ -409,7 +409,7 @@ function DrawConfirmButtons($action_url, $script_name) { ?>
 /* ------------------ Stripped Form Objects Data ---------------------- */
 
 /* creates a standard html textbox */
-function DrawStrippedFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
+function DrawStrippedFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) {
 	if (substr($form_previous_value,0,13)=="Resource id #") {
 		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
 	}else{
