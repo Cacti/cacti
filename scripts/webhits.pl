@@ -7,6 +7,6 @@ if ($ARGV[0] eq "") {
 }
 
 $webhits = `wc -l $log_path`;
-$webhits =~ s/.*\s(.*[0-9])//;
+$webhits =~ s/[\s]*([0-9]+).*//;
 
 print $1;
