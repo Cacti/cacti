@@ -260,7 +260,7 @@ INSERT INTO data_input_data VALUES (22,12,'','Buffers:');
 INSERT INTO data_input_data VALUES (22,13,'','MemFree:');
 INSERT INTO data_input_data VALUES (22,14,'','^Cached:');
 INSERT INTO data_input_data VALUES (22,15,'','SwapFree:');
-INSERT INTO data_input_data VALUES (29,18,'on','');
+INSERT INTO data_input_data VALUES (29,18,'','');
 INSERT INTO data_input_data VALUES (1,19,'','');
 INSERT INTO data_input_data VALUES (2,19,'','');
 INSERT INTO data_input_data VALUES (6,21,'','.1.3.6.1.2.1.25.3.3.1.2.1');
