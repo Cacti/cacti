@@ -262,6 +262,29 @@ function delrec ($table, $where) {
 	}
 }
 
+function array_to_sql_or($array, $sql_column) {
+	/* if the last item is null; pop it off */
+	if (empty($array{count($array)})) {
+		array_pop($array);
+	}
+	
+	if (count($array) > 0) {
+		$sql_or = "(";
+		
+		for ($i=0;($i<count($array));$i++) {
+			$sql_or .= $sql_column . "=" . $array[$i];
+			
+			if (($i+1) < count($array)) {
+				$sql_or .= " OR ";
+			}
+		}
+		
+		$sql_or .= ")";
+		
+		return $sql_or;
+	}
+}
+
 function sql_save($array_items, $table_name) {
 	$sql_save .= "replace into $table_name (";
 	
