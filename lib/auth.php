@@ -24,10 +24,14 @@
  +-------------------------------------------------------------------------+
 */
 
-
-function user_copy($template_user,$new_user) {
+/* user_copy - copies a user account
+   @arg $template_user - username of account that should be used as the template
+   @arg $new_user - username of the account to be created
+   @arg $new_realm - the realm the new account should be a member of */
+function user_copy($template_user, $new_user, $new_realm=0) {
         $user_auth = db_fetch_row("select * from user_auth where username = '$template_user'");
         $user_auth['username'] = $new_user;
+	$user_auth['realm'] = $new_realm;
         $old_id = $user_auth['id'];
         $user_auth['id'] = 0;
                                                                                                                                                
