@@ -71,7 +71,7 @@ function &import_xml_data(&$xml_data) {
 					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
 					break;
 				case 'host_template':
-					//$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
+					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
 					break;
 				case 'data_input_method':
 					$hash_cache += xml_to_data_input_method($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
@@ -84,6 +84,9 @@ function &import_xml_data(&$xml_data) {
 					break;
 				case 'cdef':
 					$hash_cache += xml_to_cdef($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
+					break;
+				case 'round_robin_archive':
+					$hash_cache += xml_to_round_robin_archive($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
 					break;
 				}
 				
@@ -192,9 +195,17 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 			/* import into: graph_template_input_defs */
 			$hash_items = explode("|", $item_array["items"]);
 			
-			for ($i=0; $i<count($hash_items); $i++) {
-				if (isset($hash_cache["graph_template_item"]{$hash_items[$i]})) {
-					db_execute("replace into graph_template_input_defs (graph_template_input_id,graph_template_item_id) values ($graph_template_input_id," . $hash_cache["graph_template_item"]{$hash_items[$i]} . ")");
+			if (!empty($hash_items[0])) {
+				for ($i=0; $i<count($hash_items); $i++) {
+					/* parse information from the hash */
+					$parsed_hash = parse_xml_hash($hash_items[$i]);
+					
+					/* invalid/wrong hash */
+					if ($parsed_hash == false) { return false; }
+					
+					if (isset($hash_cache["graph_template_item"]{$parsed_hash["hash"]})) {
+						db_execute("replace into graph_template_input_defs (graph_template_input_id,graph_template_item_id) values ($graph_template_input_id," . $hash_cache["graph_template_item"]{$parsed_hash["hash"]} . ")");
+					}
 				}
 			}
 		}
@@ -244,6 +255,23 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 	}
 	
 	$data_template_data_id = sql_save($save, "data_template_data");
+	
+	/* import into: data_template_data_rra */
+	$hash_items = explode("|", $xml_array["ds"]["rra_items"]);
+	
+	if (!empty($hash_items[0])) {
+		for ($i=0; $i<count($hash_items); $i++) {
+			/* parse information from the hash */
+			$parsed_hash = parse_xml_hash($hash_items[$i]);
+			
+			/* invalid/wrong hash */
+			if ($parsed_hash == false) { return false; }
+			
+			if (isset($hash_cache["round_robin_archive"]{$parsed_hash["hash"]})) {
+				db_execute("replace into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $hash_cache["round_robin_archive"]{$parsed_hash["hash"]} . ")");
+			}
+		}
+	}
 	
 	/* import into: data_template_rrd */
 	if (sizeof($xml_array["items"]) > 0) {
@@ -473,6 +501,105 @@ function &xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+function &xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
+	global $fields_rra_edit;
+	
+	/* import into: rra */
+	$_rra_id = db_fetch_cell("select id from rra where hash='$hash'");
+	$save["id"] = (empty($_rra_id) ? "0" : $_rra_id);
+	$save["hash"] = $hash;
+	
+	reset($fields_rra_edit);
+	while (list($field_name, $field_array) = each($fields_rra_edit)) {
+		/* make sure this field exists in the xml array first */
+		if (isset($xml_array[$field_name])) {
+			$save[$field_name] = $xml_array[$field_name];
+		}
+	}
+	
+	$rra_id = sql_save($save, "rra");
+	
+	$hash_cache["round_robin_archive"][$hash] = $rra_id;
+	
+	/* import into: rra_cf */
+	$hash_items = explode("|", $xml_array["cf_items"]);
+	
+	if (!empty($hash_items[0])) {
+		for ($i=0; $i<count($hash_items); $i++) {
+			db_execute("replace into rra_cf (rra_id,consolidation_function_id) values ($rra_id," . $hash_items[$i] . ")");
+		}
+	}
+	
+	/* status information that will be presented to the user */ 
+	$_SESSION["import_debug_info"]["type"] = (empty($_rra_id) ? "new" : "update");
+	$_SESSION["import_debug_info"]["title"] = $xml_array["name"];
+	$_SESSION["import_debug_info"]["result"] = (empty($rra_id) ? "fail" : "success");
+	
+	return $hash_cache;
+}
+
+function &xml_to_host_template($hash, &$xml_array, &$hash_cache) {
+	global $fields_host_template_edit;
+	
+	/* import into: graph_templates_gprint */
+	$_host_template_id = db_fetch_cell("select id from host_template where hash='$hash'");
+	$save["id"] = (empty($_host_template_id) ? "0" : $_host_template_id);
+	$save["hash"] = $hash;
+	
+	reset($fields_host_template_edit);
+	while (list($field_name, $field_array) = each($fields_host_template_edit)) {
+		/* make sure this field exists in the xml array first */
+		if (isset($xml_array[$field_name])) {
+			$save[$field_name] = $xml_array[$field_name];
+		}
+	}
+	
+	$host_template_id = sql_save($save, "host_template");
+	
+	$hash_cache["host_template"][$hash] = $host_template_id;
+	
+	/* import into: host_template_graph */
+	$hash_items = explode("|", $xml_array["graph_templates"]);
+	
+	if (!empty($hash_items[0])) {
+		for ($i=0; $i<count($hash_items); $i++) {
+			/* parse information from the hash */
+			$parsed_hash = parse_xml_hash($hash_items[$i]);
+			
+			/* invalid/wrong hash */
+			if ($parsed_hash == false) { return false; }
+			
+			if (isset($hash_cache["graph_template"]{$parsed_hash["hash"]})) {
+				db_execute("replace into host_template_graph (host_template_id,graph_template_id) values ($host_template_id," . $hash_cache["graph_template"]{$parsed_hash["hash"]} . ")");
+			}
+		}
+	}
+	
+	/* import into: host_template_snmp_query */
+	$hash_items = explode("|", $xml_array["data_queries"]);
+	
+	if (!empty($hash_items[0])) {
+		for ($i=0; $i<count($hash_items); $i++) {
+			/* parse information from the hash */
+			$parsed_hash = parse_xml_hash($hash_items[$i]);
+			
+			/* invalid/wrong hash */
+			if ($parsed_hash == false) { return false; }
+			
+			if (isset($hash_cache["data_query"]{$parsed_hash["hash"]})) {
+				db_execute("replace into host_template_snmp_query (host_template_id,snmp_query_id) values ($host_template_id," . $hash_cache["data_query"]{$parsed_hash["hash"]} . ")");
+			}
+		}
+	}
+	
+	/* status information that will be presented to the user */ 
+	$_SESSION["import_debug_info"]["type"] = (empty($_host_template_id) ? "new" : "update");
+	$_SESSION["import_debug_info"]["title"] = $xml_array["name"];
+	$_SESSION["import_debug_info"]["result"] = (empty($host_template_id) ? "fail" : "success");
+	
+	return $hash_cache;
+}
+
 function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	global $fields_cdef_edit, $fields_cdef_item_edit;
 	
@@ -604,7 +731,6 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	}else{
 		$prepend = "";
 	}
-		
 	
 	switch ($parsed_hash["type"]) {
 	case 'graph_template':
@@ -625,6 +751,8 @@ function hash_to_friendly_name($hash, $display_type_name) {
 		return $prepend . db_fetch_cell("select name from graph_templates_gprint where hash='" . $parsed_hash["hash"] . "'");
 	case 'cdef':
 		return $prepend . db_fetch_cell("select name from cdef where hash='" . $parsed_hash["hash"] . "'");
+	case 'round_robin_archive':
+		return $prepend . db_fetch_cell("select name from rra where hash='" . $parsed_hash["hash"] . "'");
 	}
 }
 

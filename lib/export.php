@@ -107,9 +107,7 @@ function &graph_template_to_xml($graph_template_id) {
 		$j = 0;
 		if (sizeof($graph_template_input_items) > 0) {
 		foreach ($graph_template_input_items as $item2) {
-			$hash["graph_template_item"] = get_hash_graph_template($item2["graph_template_item_id"], "graph_template_item");
-			
-			$xml_text .= get_hash_version("graph_template") . get_hash_graph_template($item2["graph_template_item_id"], "graph_template_item");
+			$xml_text .= "hash_" . get_hash_version("graph_template") . get_hash_graph_template($item2["graph_template_item_id"], "graph_template_item");
 			
 			if (($j+1) < sizeof($graph_template_input_items)) {
 				$xml_text .= "|";
@@ -166,12 +164,12 @@ function &data_template_to_xml($data_template_id) {
 		}
 	}
 	
-	$xml_text .= "\t\t<rra_id>";
+	$xml_text .= "\t\t<rra_items>";
 	
 	$i = 0;
 	if (sizeof($data_template_data_rra) > 0) {
 	foreach ($data_template_data_rra as $item) {
-		$xml_text .= $item["rra_id"];
+		$xml_text .= "hash_" . get_hash_version("round_robin_archive") . get_hash_round_robin_archive($item["rra_id"]);
 		
 		if (($i+1) < sizeof($data_template_data_rra)) {
 			$xml_text .= "|";
@@ -181,7 +179,7 @@ function &data_template_to_xml($data_template_id) {
 	}
 	}
 	
-	$xml_text .= "</rra_id>\n";
+	$xml_text .= "</rra_items>\n";
 	$xml_text .= "\t</ds>\n";
 	
 	/* XML Branch: <items> */
@@ -382,6 +380,119 @@ function &gprint_preset_to_xml($gprint_preset_id) {
 			$xml_text .= "\t<$field_name>" . $graph_templates_gprint{$field_name} . "</$field_name>\n";
 		}
 	}
+	
+	$xml_text .= "</hash_$hash>";
+	
+	return $xml_text;
+}
+
+function &round_robin_archive_to_xml($round_robin_archive_id) {
+	global $fields_rra_edit;
+	
+	$hash = get_hash_version("round_robin_archive") . get_hash_round_robin_archive($round_robin_archive_id);
+	$xml_text = "";
+	
+	$rra = db_fetch_row("select * from rra where id=$round_robin_archive_id");
+	$rra_cf = db_fetch_assoc("select * from rra_cf where rra_id=$round_robin_archive_id");
+	
+	if (empty($rra["id"])) {
+		return "Invalid round robin archive.";
+	}
+	
+	$xml_text .= "<hash_$hash>\n";
+	
+	/* XML Branch: <> */
+	reset($fields_rra_edit);
+	while (list($field_name, $field_array) = each($fields_rra_edit)) {
+		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+			if (isset($rra{$field_name})) {
+				$xml_text .= "\t<$field_name>" . $rra{$field_name} . "</$field_name>\n";
+			}
+		}
+	}
+	
+	$xml_text .= "\t<cf_items>";
+	
+	/* XML Branch: <cf_items> */
+	$i = 0;
+	if (sizeof($rra_cf) > 0) {
+	foreach ($rra_cf as $item) {
+		$xml_text .= $item["consolidation_function_id"];
+		
+		if (($i+1) < sizeof($rra_cf)) {
+			$xml_text .= "|";
+		}
+		
+		$i++;
+	}
+	}
+	
+	$xml_text .= "</cf_items>\n";
+	
+	$xml_text .= "</hash_$hash>";
+	
+	return $xml_text;
+}
+
+function &host_template_to_xml($host_template_id) {
+	global $fields_host_template_edit;
+	
+	$hash = get_hash_version("host_template") . get_hash_host_template($host_template_id);
+	$xml_text = "";
+	
+	$host_template = db_fetch_row("select * from host_template where id=$host_template_id");
+	$host_template_graph = db_fetch_assoc("select * from host_template_graph where host_template_id=$host_template_id");
+	$host_template_snmp_query = db_fetch_assoc("select * from host_template_snmp_query where host_template_id=$host_template_id");
+	
+	if (empty($host_template["id"])) {
+		return "Invalid host template.";
+	}
+	
+	$xml_text .= "<hash_$hash>\n";
+	
+	/* XML Branch: <> */
+	reset($fields_host_template_edit);
+	while (list($field_name, $field_array) = each($fields_host_template_edit)) {
+		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+			$xml_text .= "\t<$field_name>" . $host_template{$field_name} . "</$field_name>\n";
+		}
+	}
+	
+	/* XML Branch: <graph_templates> */
+	$xml_text .= "\t<graph_templates>";
+	
+	$j = 0;
+	if (sizeof($host_template_graph) > 0) {
+	foreach ($host_template_graph as $item) {
+		$xml_text .= "hash_" . get_hash_version("graph_template") . get_hash_graph_template($item["graph_template_id"]);
+		
+		if (($j+1) < sizeof($host_template_graph)) {
+			$xml_text .= "|";
+		}
+		
+		$j++;
+	}
+	}
+	
+	$xml_text .= "</graph_templates>\n";
+	
+	/* XML Branch: <data_queries> */
+	$xml_text .= "\t<data_queries>";
+	
+	$j = 0;
+	if (sizeof($host_template_snmp_query) > 0) {
+	foreach ($host_template_snmp_query as $item) {
+		$xml_text .= "hash_" . get_hash_version("data_query") . get_hash_data_query($item["snmp_query_id"]);
+		
+		if (($j+1) < sizeof($host_template_snmp_query)) {
+			$xml_text .= "|";
+		}
+		
+		$j++;
+	}
+	}
+	
+	$xml_text .= "</data_queries>\n";
 	
 	$xml_text .= "</hash_$hash>";
 	
@@ -600,6 +711,17 @@ function resolve_dependencies($type, $id, $dep_array) {
 			$dep_array = resolve_dependencies("data_input_method", $item["data_input_id"], $dep_array);
 		}
 		
+		/* dep: round robin archive */
+		$rras = db_fetch_assoc("select rra_id from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where data_template_id=$id and local_data_id = 0"));
+		
+		if (sizeof($rras) > 0) {
+		foreach ($rras as $item) {
+			if (!isset($dep_array["round_robin_archive"]{$item["rra_id"]})) {
+				$dep_array = resolve_dependencies("round_robin_archive", $item["rra_id"], $dep_array);
+			}
+		}
+		}
+		
 		break;
 	case 'data_query':
 		/* dep: data input method */
@@ -616,6 +738,30 @@ function resolve_dependencies($type, $id, $dep_array) {
 		foreach ($snmp_query_graph as $item) {
 			if (!isset($dep_array["graph_template"]{$item["graph_template_id"]})) {
 				$dep_array = resolve_dependencies("graph_template", $item["graph_template_id"], $dep_array);
+			}
+		}
+		}
+		
+		break;
+	case 'host_template':
+		/* dep: graph template */
+		$host_template_graph = db_fetch_assoc("select graph_template_id from host_template_graph where host_template_id=$id and graph_template_id > 0 group by graph_template_id");
+		
+		if (sizeof($host_template_graph) > 0) {
+		foreach ($host_template_graph as $item) {
+			if (!isset($dep_array["graph_template"]{$item["graph_template_id"]})) {
+				$dep_array = resolve_dependencies("graph_template", $item["graph_template_id"], $dep_array);
+			}
+		}
+		}
+		
+		/* dep: data query */
+		$host_template_snmp_query = db_fetch_assoc("select snmp_query_id from host_template_snmp_query where host_template_id=$id and snmp_query_id > 0 group by snmp_query_id");
+		
+		if (sizeof($host_template_snmp_query) > 0) {
+		foreach ($host_template_snmp_query as $item) {
+			if (!isset($dep_array["data_query"]{$item["snmp_query_id"]})) {
+				$dep_array = resolve_dependencies("data_query", $item["snmp_query_id"], $dep_array);
 			}
 		}
 		}
@@ -652,7 +798,7 @@ function &get_item_xml($type, $id, $follow_deps) {
 					$xml_text .= "\n" . data_template_to_xml($dep_id);
 					break;
 				case 'host_template':
-					//$xml_text .= "\n" . host_template_to_xml($dep_id);
+					$xml_text .= "\n" . host_template_to_xml($dep_id);
 					break;
 				case 'data_input_method':
 					$xml_text .= "\n" . data_input_method_to_xml($dep_id);
@@ -665,6 +811,9 @@ function &get_item_xml($type, $id, $follow_deps) {
 					break;
 				case 'cdef':
 					$xml_text .= "\n" . cdef_to_xml($dep_id);
+					break;
+				case 'round_robin_archive':
+					$xml_text .= "\n" . round_robin_archive_to_xml($dep_id);
 					break;
 				}
 			}
