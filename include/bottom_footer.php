@@ -32,6 +32,20 @@
 </body>
 </html>
 
+<script type="text/javascript">
+<!--
+function SelectAll() {
+  for (var i = 0; i < document.chk.elements.length; i++) {
+    if( document.chk.elements[i].name.substr( 0, 4 ) == 'chk_') {
+      document.chk.elements[i].checked =
+        !(document.chk.elements[i].checked);
+    }
+  }
+}
+//-->
+
+</script>
+
 <?php
 /* we use this session var to store field values for when a save fails,
 this way we can restore the field's previous values. we reset it here, because
