@@ -91,7 +91,7 @@ switch ($_REQUEST["action"]) {
 function utilities_view_logfile() {
 	global $colors;
 
-	$logfile = read_config_option("cacti_logfile");
+	$logfile = read_config_option("path_cactilog");
 
 	if ($logfile == "") {
 		$logfile = "./log/rrd.log";

@@ -286,36 +286,36 @@ function log_data($string, $output = false) {
 
 	/* determine how to log data */
 	$logdestination = read_config_option("log_destination");
-	$logfile = read_config_option("cacti_logfile");
+	$logfile = read_config_option("path_cactilog");
 
 	/* Log to Logfile */
 	if (($logdestination == 1) || ($logdestination == 2)) {
-	     if ($logfile == "") {
-		 $logfile = $config["base_path"] . "/log/rrd.log";
-	     }
+		if ($logfile == "") {
+			$logfile = $config["base_path"] . "/log/rrd.log";
+		}
 
-	     /* echo the data to the log (append) */
-	     $fp = @fopen($logfile, "a");
+		/* echo the data to the log (append) */
+		$fp = @fopen($logfile, "a");
 
-	     if ($fp) {
-		@fwrite($fp, "$date - $string\n");
-		fclose($fp);
-	     }
+		if ($fp) {
+			@fwrite($fp, "$date - $string\n");
+			fclose($fp);
+		}
 
-	     if ($output == true) {
-		 print "$string\n";
-	     }
+		if ($output == true) {
+			print "$string\n";
+		}
 	}
 
 	/* Log to Syslog/Eventlog */
 	if (($logdestination == 2) || ($logdestination == 3)) {
-	     define_syslog_variables();
-	     openlog("Cacti Logging", LOG_PID, LOG_USER);
-	     if (substr_count($string,"ERROR:") <> 0)
-		 syslog(1, $string);
-	     else
-		 syslog(6, $string);
-	     closelog();
+		define_syslog_variables();
+		openlog("Cacti Logging", LOG_PID, LOG_USER);
+		if (substr_count($string,"ERROR:") <> 0)
+			syslog(1, $string);
+		else
+			syslog(6, $string);
+		closelog();
 	}
 }
 
