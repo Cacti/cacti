@@ -120,7 +120,7 @@ case 'login':
 		}
 		
 		if ($deny_ip == true) {
-			db_execute("insert into user_log (username,result,ip) values('$username',2,'" . $_SERVER["REMOTE_ADDR"] . "')");
+			db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"]. "',2,'" . $_SERVER["REMOTE_ADDR"] . "')");
 			include ("noauth.php");
 			exit;
 		}
