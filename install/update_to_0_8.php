@@ -25,7 +25,6 @@
 */
 
 
-include_once("../include/snmp_functions.php");
 include_once("../include/functions.php");
 include_once("../include/utility_functions.php");
 
