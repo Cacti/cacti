@@ -191,7 +191,7 @@ function field_edit() {
 			</td>
 			<?DrawFormItemDropdownFromSQL("data_name",$array_field_names,"","",$field["data_name"],"","");?>
 		</tr><?
-	}elseif ($data_input_type == "2") { /* snmp */
+	}elseif (($data_input_type == "2") || ($data_input_type == "3")) { /* snmp */
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field Name [<?print $header_name;?>]</font><br>

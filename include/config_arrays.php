@@ -72,7 +72,8 @@ $cdef_functions = array(1 =>
 
 $input_types = array(1 =>
 	"Script/Command",
-	"SNMP");
+	"SNMP",
+	"SNMP Query");
 
 $snmp_query_field_actions = array(1 =>
 	"SNMP Field Name (Dropdown)",
