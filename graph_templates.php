@@ -590,6 +590,7 @@ function item() {
 
 function item_remove() {
 	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);
+	db_execute("delete from graph_templates_item where local_graph_template_item_id=" . $_GET["id"]);
 }
 
 function item_edit() {

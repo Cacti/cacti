@@ -538,6 +538,18 @@ function push_out_graph_item($graph_template_item_id) {
 	/* must be a graph template */
 	if ($graph_template_item["graph_template_id"] == 0) { return 0; }
 	
+	/* find out if any graphs actual contain this item */
+	if (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_template_item_id=$graph_template_item_id")) == 0) {
+		/* if not, reapply the template to push out the new item */
+		$attached_graphs = db_fetch_assoc("select local_graph_id from graph_templates_graph where graph_template_id=" . $graph_template_item["graph_template_id"] . " and local_graph_id>0");
+		
+		if (sizeof($attached_graphs) > 0) {
+		foreach ($attached_graphs as $item) {
+			change_graph_template($item["local_graph_id"], $graph_template_item["graph_template_id"], true);
+		}
+		}
+	}
+	
 	/* this is trickier with graph_items than with the actual graph... we have to make sure not to 
 	overright any items covered in the "graph item inputs". the same thing applies to graphs, but
 	is easier to detect there (t_* columns). */
