@@ -13,10 +13,11 @@ int update_rrd(rrd_t *rrd_targets, int rrd_target_count){
   for(i=0; i<rrd_target_count; i++){
     printf("rrdcmd: %s\n", rrd_targets[i].rrdcmd);
     #ifdef RRD
-    //internal rrd_update (don't work?)
-    sprintf(rrdcmd,"%s\n", rrd_targets[i].rrdcmd);
+    //internal rrd_update
+    sprintf(rrdcmd,"%s", rrd_targets[i].rrdcmd);
     rrdargv = string_to_argv(rrdcmd, &rrdargc);
     rrd_update(rrdargc, rrdargv);
+    free(rrdargv);
     #else
     //external rrdtool update with remote control
     fprintf(rrdtool_stdin, "%s\n",rrd_targets[i].rrdcmd);
@@ -31,8 +32,6 @@ int update_multirrd(){
 
 }
 
-//  char rrd_name[19];
-//  char rrd_path[255];
 
 char *rrdcmd_lli(char *rrd_name, char *rrd_path, unsigned long long int result){
   char rrdcmd[512];
