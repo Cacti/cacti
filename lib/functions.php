@@ -434,98 +434,6 @@ function clean_up_path($path) {
 	return $path;
 }
 
-/* update_data_source_title_cache_from_template - updates the title cache for all data sources
-     that match a given data template
-   @arg $data_template_id - (int) the ID of the data template to match */
-function update_data_source_title_cache_from_template($data_template_id) {
-	$data = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=$data_template_id and local_data_id>0");
-	
-	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		update_data_source_title_cache($item["local_data_id"]);
-	}
-	}
-}
-
-/* update_data_source_title_cache_from_query - updates the title cache for all data sources
-     that match a given data query/index combination
-   @arg $snmp_query_id - (int) the ID of the data query to match
-   @arg $snmp_index - the index within the data query to match */
-function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
-	
-	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		update_data_source_title_cache($item["id"]);
-	}
-	}
-}
-
-/* update_data_source_title_cache_from_host - updates the title cache for all data sources
-     that match a given host
-   @arg $host_id - (int) the ID of the host to match */
-function update_data_source_title_cache_from_host($host_id) {
-	$data = db_fetch_assoc("select id from data_local where host_id=$host_id");
-	
-	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		update_data_source_title_cache($item["id"]);
-	}
-	}
-}
-
-/* update_data_source_title_cache - updates the title cache for a single data source
-   @arg $local_data_id - (int) the ID of the data source to update the title cache for */
-function update_data_source_title_cache($local_data_id) {
-	db_execute("update data_template_data set name_cache='" . get_data_source_title($local_data_id) . "' where local_data_id=$local_data_id");
-}
-
-/* update_graph_title_cache_from_template - updates the title cache for all graphs
-     that match a given graph template
-   @arg $graph_template_id - (int) the ID of the graph template to match */
-function update_graph_title_cache_from_template($graph_template_id) {
-	$graphs = db_fetch_assoc("select local_graph_id from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id>0");
-	
-	if (sizeof($graphs) > 0) {
-	foreach ($graphs as $item) {
-		update_graph_title_cache($item["local_graph_id"]);
-	}
-	}
-}
-
-/* update_graph_title_cache_from_query - updates the title cache for all graphs
-     that match a given data query/index combination
-   @arg $snmp_query_id - (int) the ID of the data query to match
-   @arg $snmp_index - the index within the data query to match */
-function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$graphs = db_fetch_assoc("select id from graph_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
-	
-	if (sizeof($graphs) > 0) {
-	foreach ($graphs as $item) {
-		update_graph_title_cache($item["id"]);
-	}
-	}
-}
-
-/* update_graph_title_cache_from_host - updates the title cache for all graphs
-     that match a given host
-   @arg $host_id - (int) the ID of the host to match */
-function update_graph_title_cache_from_host($host_id) {
-	$graphs = db_fetch_assoc("select id from graph_local where host_id=$host_id");
-	
-	if (sizeof($graphs) > 0) {
-	foreach ($graphs as $item) {
-		update_graph_title_cache($item["id"]);
-	}
-	}
-}
-
-/* update_graph_title_cache - updates the title cache for a single graph
-   @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
-function update_graph_title_cache($local_graph_id) {
-	db_execute("update graph_templates_graph set title_cache='" . get_graph_title($local_graph_id) . "' where local_graph_id=$local_graph_id");
-}
-
 /* get_data_source_title - returns the title of a data source without using the title cache
    @arg $local_data_id - (int) the ID of the data source to get a title for
    @returns - the data source title */
@@ -563,131 +471,6 @@ function get_graph_title($local_graph_id) {
 		return expand_title($graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"], $graph["title"]);
 	}else{
 		return $graph["title"];
-	}
-}
-
-/* null_out_substitutions - takes a string and cleans out any host variables that do not have values
-   @arg $string - the string to clean out unsubstituted variables for
-   @returns - the cleaned up string */
-function null_out_substitutions($string) {
-	return eregi_replace("\|host_(hostname|description|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
-}
-
-/* expand_title - takes a string and substitutes all data query variables contained in it or cleans
-     them out if no data query is in use
-   @arg $host_id - (int) the host ID to match
-   @arg $snmp_query_id - (int) the data query ID to match
-   @arg $snmp_index - the data query index to match
-   @arg $title - the original string that contains the data query variables
-   @returns - the original string with all of the variable substitutions made */
-function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
-	if ((strstr($title, "|")) && (!empty($host_id))) {
-		if (($snmp_query_id != "0") && ($snmp_index != "")) {
-			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, "|", "|", $host_id)), "|", "|", $host_id, $snmp_query_id, $snmp_index);
-		}else{
-			return null_out_substitutions(substitute_host_data($title, "|", "|", $host_id));
-		}
-	}else{
-		return null_out_substitutions($title);
-	}
-}
-
-/* substitute_data_query_path - takes a string and substitutes all path variables contained in it
-   @arg $path - the string to make path variable substitutions on
-   @returns - the original string with all of the variable substitutions made */
-function substitute_data_query_path($path) {
-	global $config;
-	
-	$path = clean_up_path(str_replace("|path_cacti|", $config["base_path"], $path));
-	$path = clean_up_path(str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path));
-	
-	return $path;
-}
-
-/* substitute_host_data - takes a string and substitutes all host variables contained in it
-   @arg $string - the string to make host variable substitutions on
-   @arg $l_escape_string - the character used to escape each variable on the left side
-   @arg $r_escape_string - the character used to escape each variable on the right side
-   @arg $host_id - (int) the host ID to match
-   @returns - the original string with all of the variable substitutions made */
-function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
-	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
-		$host = db_fetch_row("select description,hostname,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
-		$_SESSION["sess_host_cache_array"][$host_id] = $host;
-	}
-	
-	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string); /* for compatability */
-	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
-	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
-	
-	return $string;
-}
-
-/* substitute_snmp_query_data - takes a string and substitutes all data query variables contained in it 
-   @arg $string - the original string that contains the data query variables
-   @arg $l_escape_string - the character used to escape each variable on the left side
-   @arg $r_escape_string - the character used to escape each variable on the right side
-   @arg $host_id - (int) the host ID to match
-   @arg $snmp_query_id - (int) the data query ID to match
-   @arg $snmp_index - the data query index to match
-   @returns - the original string with all of the variable substitutions made */
-function substitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
-	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
-	
-	if (sizeof($snmp_cache_data) > 0) {
-	foreach ($snmp_cache_data as $data) {
-		if ($data["field_value"] != "") {
-			$string = stri_replace($l_escape_string . "query_" . $data["field_name"] . $r_escape_string, substr($data["field_value"],0,read_config_option("max_data_query_field_length")), $string);
-		}
-	}
-	}
-	
-	return $string;
-}
-
-/* data_query_index - returns an array containing the data query ID and index value given
-     a data query index type/value combination and a host ID
-   @arg $index_type - the name of the index to match
-   @arg $index_value - the value of the index to match
-   @arg $host_id - (int) the host ID to match
-   @returns - (array) the data query ID and index that matches the three arguments */
-function data_query_index($index_type, $index_value, $host_id) {
-	return db_fetch_row("select
-		host_snmp_cache.snmp_query_id,
-		host_snmp_cache.snmp_index
-		from host_snmp_cache
-		where host_snmp_cache.field_name='$index_type'
-		and host_snmp_cache.field_value='$index_value'
-		and host_snmp_cache.host_id=$host_id");
-}
-
-/* data_query_field_list - returns an array containing data query information for a given data source
-   @arg $data_template_data_id - the ID of the data source to retrieve information for
-   @returns - (array) an array that looks like:
-     Array
-     (
-        [index_type] => ifIndex
-        [index_value] => 3
-        [output_type] => 13
-     ) */
-function data_query_field_list($data_template_data_id) {
-	$field = db_fetch_assoc("select
-		data_input_fields.type_code,
-		data_input_data.value
-		from data_input_fields,data_input_data
-		where data_input_fields.id=data_input_data.data_input_field_id
-		and data_input_data.data_template_data_id=$data_template_data_id
-		and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
-	$field = array_rekey($field, "type_code", "value");
-	
-	if ((!isset($field["index_type"])) || (!isset($field["index_value"])) || (!isset($field["output_type"]))) {
-		return 0;
-	}else{
-		return $field;
 	}
 }
 
@@ -1011,118 +794,6 @@ function get_web_browser() {
 	}
 }
 
-/* get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph
-     template policies
-   @arg $policy_graphs - (int) the current graph policy
-   @arg $policy_hosts - (int) the current host policy
-   @arg $policy_graph_templates - (int) the current graph template policy
-   @returns - an SQL "where" statement */
-function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_templates) {
-	$sql = "";
-	$sql_or = "";
-	$sql_and = "";
-	$sql_policy_or = "";
-	$sql_policy_and = "";
-	
-	if ($policy_graphs == "1") {
-		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type is null)";
-		$sql_and = " AND ";
-		$sql_null = "is null";
-	}elseif ($policy_graphs == "2") {
-		$sql_policy_or .= "$sql_or(user_auth_perms.type = 1 OR user_auth_perms.type is not null)";
-		$sql_or = " OR ";
-		$sql_null = "is not null";
-	}
-	
-	if ($policy_hosts == "1") {
-		$sql_policy_and .= "$sql_and((user_auth_perms.type != 3) OR (user_auth_perms.type is null))";
-		$sql_and = " AND ";
-	}elseif ($policy_hosts == "2") {
-		$sql_policy_or .= "$sql_or((user_auth_perms.type = 3) OR (user_auth_perms.type is not null))";
-		$sql_or = " OR ";
-	}
-	
-	if ($policy_graph_templates == "1") {
-		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type is null))";
-		$sql_and = " AND ";
-	}elseif ($policy_graph_templates == "2") {
-		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type is not null))";
-		$sql_or = " OR ";
-	}
-	
-	$sql_and = "";
-	
-	if (!empty($sql_policy_or)) {
-		$sql_and = "AND ";
-		$sql .= $sql_policy_or;
-	}
-	
-	if (!empty($sql_policy_and)) {
-		$sql .= "$sql_and$sql_policy_and";
-	}
-	
-	if (empty($sql)) {
-		return "";
-	}else{
-		return "(" . $sql . ")";
-	}
-}
-
-/* is_graph_allowed - determines whether the current user is allowed to view a certain graph
-   @arg $local_graph_id - (int) the ID of the graph to check permissions for
-   @returns - (bool) whether the current user is allowed the view the specified graph or not */
-function is_graph_allowed($local_graph_id) {
-	$current_user = db_fetch_row("select policy_graphs,policy_hosts,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
-	
-	/* get policy information for the sql where clause */
-	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-	
-	$graphs = db_fetch_assoc("select
-		graph_templates_graph.local_graph_id
-		from graph_templates_graph,graph_local
-		left join host on host.id=graph_local.host_id
-		left join graph_templates on graph_templates.id=graph_local.graph_template_id
-		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
-		where graph_templates_graph.local_graph_id=graph_local.id
-		" . (empty($sql_where) ? "" : "and $sql_where") . "
-		and graph_templates_graph.local_graph_id=$local_graph_id
-		group by graph_templates_graph.local_graph_id");
-	
-	if (sizeof($graphs) > 0) {
-		return true;
-	}else{
-		return false;
-	}
-}
-
-/* is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
-   @arg $tree_id - (int) the ID of the graph tree to check permissions for
-   @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
-function is_tree_allowed($tree_id) {
-	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
-	
-	$trees = db_fetch_assoc("select
-		user_id
-		from user_auth_perms
-		where user_id=" . $_SESSION["sess_user_id"] . "
-		and type=2
-		and item_id=$tree_id");
-	
-	/* policy == allow AND matches = DENY */
-	if ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "1")) {
-		return false;
-	/* policy == deny AND matches = ALLOW */
-	}elseif ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "2")) {
-		return true;
-	/* policy == allow AND no matches = ALLOW */
-	}elseif ((sizeof($trees) == 0) && ($current_user["policy_trees"] == "1")) {
-		return true;
-	/* policy == deny AND no matches = DENY */
-	}elseif ((sizeof($trees) == 0) && ($current_user["policy_trees"] == "2")) {
-		return false;
-	}
-}
-
 /* get_graph_tree_array - returns a list of graph trees taking permissions into account if
      necessary
    @arg $return_sql - (bool) Whether to return the SQL to create the dropdown rather than an array
@@ -1193,7 +864,7 @@ function draw_navigation_text() {
 		"graph_view.php:tree" => array("title" => "Tree Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=tree", "level" => "1"),
 		"graph_view.php:list" => array("title" => "List Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=list", "level" => "1"),
 		"graph_view.php:preview" => array("title" => "Preview Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=preview", "level" => "1"),
-		"graph.php:" => array("title" => "", "mapping" => "graph_view.php:,?", "level" => "2"),
+		"graph.php:" => array("title" => "|current_graph_title|", "mapping" => "graph_view.php:,?", "level" => "2"),
 		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
 		"index.php:" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
 		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
@@ -1291,21 +962,16 @@ function draw_navigation_text() {
 		
 		if ($current_mappings[$i] == "?") {
 			/* '?' tells us to pull title from the cache at this level */
-			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . $nav{$nav_level_cache{$i}["id"]}["title"] . (empty($url) ? "" : "</a>") . " -> ";
+			if (isset($nav_level_cache{$i})) {
+				$current_nav .= (empty($url) ? "" : "<a href='$url'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
+			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . $nav{$current_mappings[$i]}["title"] . (empty($url) ? "" : "</a>") . " -> ";
+			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
 		}
 	}
 	
-	/* put on the last entry (current) */
-	if (empty($current_array["title"])) {
-		/* if no title is specified, try to resolve one */
-		$current_nav .= resolve_navigation_title($current_page . ":" . $current_action);
-	}else{
-		/* use the title specified in the above array */
-		$current_nav .= $current_array["title"];
-	}
+	$current_nav .= resolve_navigation_variables($current_array["title"]);
 	
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => get_browser_query_string());
@@ -1314,18 +980,21 @@ function draw_navigation_text() {
 	print $current_nav;
 }
 
-/* resolve_navigation_title - apply any special functions that are necessary to the navigation text, this
-     function is only called if no other title is available
-   @arg $id - the special function to use
+/* resolve_navigation_variables - substitute any variables contained in the navigation text
+   @arg $text - the text to substitute in
    @returns - the original navigation text with all substitutions made */
-function resolve_navigation_title($id) {
-	switch ($id) {
-	case 'graph.php:':
-		return get_graph_title($_GET["local_graph_id"]);
-		break;
+function resolve_navigation_variables($text) {
+	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
+		for ($i=0; $i<count($matches[1]); $i++) {
+			switch ($matches[1][$i]) {
+			case 'current_graph_title':
+				$text = str_replace("|" . $matches[1][$i] . "|", get_graph_title($_GET["local_graph_id"]), $text);
+				break;
+			}
+		}
 	}
 	
-	return;
+	return $text;
 }
 
 /* get_associated_rras - returns a list of all RRAs referenced by a particular graph
