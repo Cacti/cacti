@@ -1,8 +1,8 @@
--- MySQL dump 8.22
+-- MySQL dump 9.08
 --
 -- Host: localhost    Database: dev_cacti_2
 ---------------------------------------------------------
--- Server version	3.23.54
+-- Server version	4.0.14-standard
 
 --
 -- Table structure for table 'cdef'
@@ -19,7 +19,6 @@ CREATE TABLE cdef (
 --
 -- Dumping data for table 'cdef'
 --
-
 
 INSERT INTO cdef VALUES (3,'Make Stack Negative');
 INSERT INTO cdef VALUES (4,'Make Per 5 Minutes');
@@ -46,7 +45,6 @@ CREATE TABLE cdef_items (
 --
 -- Dumping data for table 'cdef_items'
 --
-
 
 INSERT INTO cdef_items VALUES (7,2,1,4,'CURRENT_DATA_SOURCE');
 INSERT INTO cdef_items VALUES (9,2,2,6,'8');
@@ -80,7 +78,6 @@ CREATE TABLE colors (
 --
 -- Dumping data for table 'colors'
 --
-
 
 INSERT INTO colors VALUES (1,'000000');
 INSERT INTO colors VALUES (2,'FFFFFF');
@@ -203,7 +200,6 @@ CREATE TABLE data_input (
 -- Dumping data for table 'data_input'
 --
 
-
 INSERT INTO data_input VALUES (1,'Get SNMP Data','','',2);
 INSERT INTO data_input VALUES (2,'Get SNMP Data (Indexed)','','',3);
 INSERT INTO data_input VALUES (3,'Unix - Get Free Disk Space','perl <path_cacti>/scripts/diskfree.pl <partition>','',1);
@@ -232,7 +228,6 @@ CREATE TABLE data_input_data (
 --
 -- Dumping data for table 'data_input_data'
 --
-
 
 INSERT INTO data_input_data VALUES (14,1,'on','');
 INSERT INTO data_input_data VALUES (13,1,'on','');
@@ -264,7 +259,6 @@ INSERT INTO data_input_data VALUES (22,14,'','^Cached:');
 INSERT INTO data_input_data VALUES (22,15,'','SwapFree:');
 INSERT INTO data_input_data VALUES (29,18,'on','');
 INSERT INTO data_input_data VALUES (6,19,'','.1.3.6.1.4.1.23.2.28.3.1');
-INSERT INTO data_input_data VALUES (6,20,'','.1.3.6.1.4.1.23.2.28.3.2.0');
 INSERT INTO data_input_data VALUES (6,21,'','.1.3.6.1.2.1.25.3.3.1.2.1');
 INSERT INTO data_input_data VALUES (6,27,'','.1.3.6.1.4.1.9.9.109.1.1.1.1.5.1');
 INSERT INTO data_input_data VALUES (6,28,'','.1.3.6.1.4.1.9.9.109.1.1.1.1.3.1');
@@ -297,12 +291,12 @@ INSERT INTO data_input_data VALUES (12,39,'on','');
 INSERT INTO data_input_data VALUES (14,40,'on','');
 INSERT INTO data_input_data VALUES (13,40,'on','');
 INSERT INTO data_input_data VALUES (12,40,'on','');
-INSERT INTO data_input_data VALUES (12,41,'on','');
-INSERT INTO data_input_data VALUES (13,41,'on','');
 INSERT INTO data_input_data VALUES (14,41,'on','');
-INSERT INTO data_input_data VALUES (12,55,'on','');
-INSERT INTO data_input_data VALUES (13,55,'on','');
+INSERT INTO data_input_data VALUES (13,41,'on','');
+INSERT INTO data_input_data VALUES (12,41,'on','');
 INSERT INTO data_input_data VALUES (14,55,'on','');
+INSERT INTO data_input_data VALUES (13,55,'on','');
+INSERT INTO data_input_data VALUES (12,55,'on','');
 INSERT INTO data_input_data VALUES (33,56,'on','');
 INSERT INTO data_input_data VALUES (32,56,'on','');
 INSERT INTO data_input_data VALUES (31,56,'on','');
@@ -311,6 +305,7 @@ INSERT INTO data_input_data VALUES (32,57,'on','');
 INSERT INTO data_input_data VALUES (31,57,'on','');
 INSERT INTO data_input_data VALUES (6,58,'','.1.3.6.1.2.1.25.1.6.0');
 INSERT INTO data_input_data VALUES (6,59,'','.1.3.6.1.2.1.25.1.5.0');
+INSERT INTO data_input_data VALUES (6,20,'','.1.3.6.1.4.1.23.2.28.3.2.0');
 INSERT INTO data_input_data VALUES (22,62,'','MemFree:');
 INSERT INTO data_input_data VALUES (22,63,'','SwapFree:');
 
@@ -344,7 +339,6 @@ CREATE TABLE data_input_data_cache (
 --
 
 
-
 --
 -- Table structure for table 'data_input_data_fcache'
 --
@@ -359,7 +353,6 @@ CREATE TABLE data_input_data_fcache (
 --
 -- Dumping data for table 'data_input_data_fcache'
 --
-
 
 INSERT INTO data_input_data_fcache VALUES (5,'1min','load_1min');
 INSERT INTO data_input_data_fcache VALUES (5,'5min','load_5min');
@@ -389,7 +382,6 @@ CREATE TABLE data_input_fields (
 --
 -- Dumping data for table 'data_input_fields'
 --
-
 
 INSERT INTO data_input_fields VALUES (1,1,'SNMP IP Address','management_ip','in','',0,'management_ip','','');
 INSERT INTO data_input_fields VALUES (2,1,'SNMP Community','snmp_community','in','',0,'snmp_community','','');
@@ -445,7 +437,6 @@ CREATE TABLE data_local (
 -- Dumping data for table 'data_local'
 --
 
-
 INSERT INTO data_local VALUES (3,13,1,0,'');
 INSERT INTO data_local VALUES (4,15,1,0,'');
 INSERT INTO data_local VALUES (5,11,1,0,'');
@@ -467,7 +458,6 @@ CREATE TABLE data_template (
 --
 -- Dumping data for table 'data_template'
 --
-
 
 INSERT INTO data_template VALUES (1,'Interface - Traffic - In');
 INSERT INTO data_template VALUES (2,'Interface - Traffic - Out');
@@ -543,7 +533,6 @@ CREATE TABLE data_template_data (
 -- Dumping data for table 'data_template_data'
 --
 
-
 INSERT INTO data_template_data VALUES (1,0,0,1,2,'on','|host_description| - Traffic - In','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (2,0,0,2,2,'on','|host_description| - Traffic - Out','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (3,0,0,3,2,'on','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
@@ -607,7 +596,6 @@ CREATE TABLE data_template_data_rra (
 --
 -- Dumping data for table 'data_template_data_rra'
 --
-
 
 INSERT INTO data_template_data_rra VALUES (1,1);
 INSERT INTO data_template_data_rra VALUES (1,2);
@@ -834,11 +822,10 @@ CREATE TABLE data_template_rrd (
 -- Dumping data for table 'data_template_rrd'
 --
 
-
 INSERT INTO data_template_rrd VALUES (1,0,0,1,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (2,0,0,2,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
-INSERT INTO data_template_rrd VALUES (3,0,0,3,'',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
-INSERT INTO data_template_rrd VALUES (4,0,0,3,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (3,0,0,3,'',0,'',0,'',600,'',1,'','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (4,0,0,3,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (5,0,0,4,'',100,'',0,'',600,'',2,'','cpu_system','',0);
 INSERT INTO data_template_rrd VALUES (6,0,0,5,'',100,'',0,'',600,'',2,'','cpu_user','',0);
 INSERT INTO data_template_rrd VALUES (7,0,0,6,'',100,'',0,'',600,'',2,'','cpu_nice','',0);
@@ -870,12 +857,12 @@ INSERT INTO data_template_rrd VALUES (34,0,0,31,'',500,'',0,'',600,'',1,'','load
 INSERT INTO data_template_rrd VALUES (35,0,0,32,'',500,'',0,'',600,'',1,'','load_15min','',0);
 INSERT INTO data_template_rrd VALUES (36,0,0,33,'',10000000,'',0,'',600,'',1,'','mem_buffers','',0);
 INSERT INTO data_template_rrd VALUES (37,0,0,34,'',10000000,'',0,'',600,'',1,'','mem_free','',0);
-INSERT INTO data_template_rrd VALUES (38,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_total','',0);
-INSERT INTO data_template_rrd VALUES (39,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_free','',0);
-INSERT INTO data_template_rrd VALUES (40,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_freeable','',0);
+INSERT INTO data_template_rrd VALUES (38,0,0,35,'',0,'',0,'',600,'',1,'','vol_total','',0);
+INSERT INTO data_template_rrd VALUES (39,0,0,35,'',0,'',0,'',600,'',1,'','vol_free','',0);
+INSERT INTO data_template_rrd VALUES (40,0,0,35,'',0,'',0,'',600,'',1,'','vol_freeable','',0);
 INSERT INTO data_template_rrd VALUES (42,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
 INSERT INTO data_template_rrd VALUES (43,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
-INSERT INTO data_template_rrd VALUES (44,0,0,37,'on',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (44,0,0,37,'',0,'',0,'',600,'',1,'','hdd_free','',0);
 INSERT INTO data_template_rrd VALUES (54,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (46,0,0,38,'',10000000,'',0,'',600,'',2,'','errors_in','',0);
 INSERT INTO data_template_rrd VALUES (47,0,0,38,'',10000000,'',0,'',600,'',2,'','discards_in','',0);
@@ -886,10 +873,10 @@ INSERT INTO data_template_rrd VALUES (51,0,0,38,'',10000000,'',0,'',600,'',2,'',
 INSERT INTO data_template_rrd VALUES (52,0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_out','',0);
 INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_in','',0);
 INSERT INTO data_template_rrd VALUES (55,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
-INSERT INTO data_template_rrd VALUES (56,0,0,37,'on',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (56,0,0,37,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (76,0,0,42,'',100,'',0,'',600,'',1,'','cpu','',0);
-INSERT INTO data_template_rrd VALUES (77,0,0,43,'',100000000000,'',0,'',600,'',1,'','hdd_total','',0);
-INSERT INTO data_template_rrd VALUES (78,0,0,43,'',100000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (77,0,0,43,'',0,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (78,0,0,43,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (79,0,0,44,'',100,'',0,'',600,'',1,'','cpu','',0);
 INSERT INTO data_template_rrd VALUES (81,0,0,46,'',5000,'',0,'',600,'',1,'','users','',0);
 INSERT INTO data_template_rrd VALUES (84,16,3,13,NULL,10000000,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
@@ -919,7 +906,6 @@ CREATE TABLE graph_local (
 -- Dumping data for table 'graph_local'
 --
 
-
 INSERT INTO graph_local VALUES (1,12,1,0,'');
 INSERT INTO graph_local VALUES (2,9,1,0,'');
 INSERT INTO graph_local VALUES (3,10,1,0,'');
@@ -944,7 +930,6 @@ CREATE TABLE graph_template_input (
 --
 -- Dumping data for table 'graph_template_input'
 --
-
 
 INSERT INTO graph_template_input VALUES (1,1,'Inbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (2,1,'Outbound Data Source','','task_item_id');
@@ -1032,7 +1017,6 @@ CREATE TABLE graph_template_input_defs (
 --
 -- Dumping data for table 'graph_template_input_defs'
 --
-
 
 INSERT INTO graph_template_input_defs VALUES (1,1);
 INSERT INTO graph_template_input_defs VALUES (1,2);
@@ -1284,7 +1268,6 @@ CREATE TABLE graph_templates (
 -- Dumping data for table 'graph_templates'
 --
 
-
 INSERT INTO graph_templates VALUES (1,'Interface - Traffic (bytes/sec) - 0.6.x');
 INSERT INTO graph_templates VALUES (2,'Interface - Traffic (bits/sec)');
 INSERT INTO graph_templates VALUES (3,'ucd/net - Available Disk Space');
@@ -1333,7 +1316,6 @@ CREATE TABLE graph_templates_gprint (
 --
 -- Dumping data for table 'graph_templates_gprint'
 --
-
 
 INSERT INTO graph_templates_gprint VALUES (2,'Normal','%8.2lf %s');
 INSERT INTO graph_templates_gprint VALUES (3,'Exact Numbers','%8.0lf');
@@ -1393,7 +1375,6 @@ CREATE TABLE graph_templates_graph (
 --
 -- Dumping data for table 'graph_templates_graph'
 --
-
 
 INSERT INTO graph_templates_graph VALUES (1,0,0,1,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (2,0,0,2,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
@@ -1460,7 +1441,6 @@ CREATE TABLE graph_templates_item (
 --
 -- Dumping data for table 'graph_templates_item'
 --
-
 
 INSERT INTO graph_templates_item VALUES (1,0,0,1,1,22,7,0,1,'Inbound','','',2,1);
 INSERT INTO graph_templates_item VALUES (2,0,0,1,1,0,9,0,4,'Current:','','',2,2);
@@ -1740,7 +1720,6 @@ CREATE TABLE graph_tree (
 -- Dumping data for table 'graph_tree'
 --
 
-
 INSERT INTO graph_tree VALUES (1,0,'Default Tree');
 
 --
@@ -1764,7 +1743,6 @@ CREATE TABLE graph_tree_items (
 --
 -- Dumping data for table 'graph_tree_items'
 --
-
 
 INSERT INTO graph_tree_items VALUES (1,1,0,1,'System Graphs',0,'010000000000000000000000000000000000000000000000000000000000');
 INSERT INTO graph_tree_items VALUES (2,1,2,1,'',0,'010100000000000000000000000000000000000000000000000000000000');
@@ -1797,7 +1775,6 @@ CREATE TABLE host (
 -- Dumping data for table 'host'
 --
 
-
 INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','127.0.0.1','public',1,'','','',0);
 
 --
@@ -1821,7 +1798,6 @@ CREATE TABLE host_snmp_cache (
 --
 
 
-
 --
 -- Table structure for table 'host_snmp_query'
 --
@@ -1836,7 +1812,6 @@ CREATE TABLE host_snmp_query (
 --
 -- Dumping data for table 'host_snmp_query'
 --
-
 
 INSERT INTO host_snmp_query VALUES (1,6);
 
@@ -1855,7 +1830,6 @@ CREATE TABLE host_template (
 --
 -- Dumping data for table 'host_template'
 --
-
 
 INSERT INTO host_template VALUES (1,'Generic SNMP-enabled Host');
 INSERT INTO host_template VALUES (3,'ucd/net SNMP Host');
@@ -1882,7 +1856,6 @@ CREATE TABLE host_template_data_sv (
 --
 -- Dumping data for table 'host_template_data_sv'
 --
-
 
 INSERT INTO host_template_data_sv VALUES (6,22,16,'name','|host_description| - File System Reads');
 INSERT INTO host_template_data_sv VALUES (6,23,16,'name','|host_description| - File System Writes');
@@ -1915,7 +1888,6 @@ CREATE TABLE host_template_graph (
 -- Dumping data for table 'host_template_graph'
 --
 
-
 INSERT INTO host_template_graph VALUES (3,4);
 INSERT INTO host_template_graph VALUES (3,11);
 INSERT INTO host_template_graph VALUES (3,13);
@@ -1947,7 +1919,6 @@ CREATE TABLE host_template_graph_sv (
 -- Dumping data for table 'host_template_graph_sv'
 --
 
-
 INSERT INTO host_template_graph_sv VALUES (5,18,'title','|host_description| - CPU Usage');
 INSERT INTO host_template_graph_sv VALUES (6,16,'title','|host_description| - File System Activity');
 INSERT INTO host_template_graph_sv VALUES (6,14,'title','|host_description| - File System Cache');
@@ -1970,7 +1941,6 @@ CREATE TABLE host_template_snmp_query (
 --
 -- Dumping data for table 'host_template_snmp_query'
 --
-
 
 INSERT INTO host_template_snmp_query VALUES (1,1);
 INSERT INTO host_template_snmp_query VALUES (3,1);
@@ -2005,11 +1975,10 @@ CREATE TABLE rra (
 -- Dumping data for table 'rra'
 --
 
-
-INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600,0);
-INSERT INTO rra VALUES (2,'Weekly (30 Minute Average)',0.5,6,700,0);
-INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797,0);
-INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775,0);
+INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600,86400);
+INSERT INTO rra VALUES (2,'Weekly (30 Minute Average)',0.5,6,700,604800);
+INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797,33053184);
+INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775,2678400);
 
 --
 -- Table structure for table 'rra_cf'
@@ -2025,7 +1994,6 @@ CREATE TABLE rra_cf (
 --
 -- Dumping data for table 'rra_cf'
 --
-
 
 INSERT INTO rra_cf VALUES (1,1);
 INSERT INTO rra_cf VALUES (1,3);
@@ -2051,7 +2019,6 @@ CREATE TABLE settings (
 --
 -- Dumping data for table 'settings'
 --
-
 
 INSERT INTO settings VALUES ('path_webcacti','/cacti/cacti-0.8');
 INSERT INTO settings VALUES ('path_webroot','/var/www/html/users/iberry');
@@ -2105,7 +2072,6 @@ CREATE TABLE settings_graphs (
 --
 
 
-
 --
 -- Table structure for table 'settings_tree'
 --
@@ -2120,7 +2086,6 @@ CREATE TABLE settings_tree (
 --
 -- Dumping data for table 'settings_tree'
 --
-
 
 
 --
@@ -2142,7 +2107,6 @@ CREATE TABLE snmp_query (
 --
 -- Dumping data for table 'snmp_query'
 --
-
 
 INSERT INTO snmp_query VALUES (1,'<path_cacti>/resource/snmp_queries/interface.xml','SNMP - Interface Statistics','Queries a host for a list of monitorable interfaces',0,2);
 INSERT INTO snmp_query VALUES (2,'<path_cacti>/resource/snmp_queries/net-snmp_disk.xml','ucd/net -  Get Monitored Partitions','Retrieves a list of monitored partitions/disks from a net-snmp enabled host.',0,2);
@@ -2169,7 +2133,6 @@ CREATE TABLE snmp_query_field (
 --
 -- Dumping data for table 'snmp_query_field'
 --
-
 
 INSERT INTO snmp_query_field VALUES (1,14,3);
 INSERT INTO snmp_query_field VALUES (1,13,2);
@@ -2214,7 +2177,6 @@ CREATE TABLE snmp_query_graph (
 -- Dumping data for table 'snmp_query_graph'
 --
 
-
 INSERT INTO snmp_query_graph VALUES (1,1,'In/Out Bytes (0.6.x Style)',1);
 INSERT INTO snmp_query_graph VALUES (2,1,'In/Out Errors/Discarded Packets',22);
 INSERT INTO snmp_query_graph VALUES (3,1,'In/Out Non-Unicast Packets',24);
@@ -2250,7 +2212,6 @@ CREATE TABLE snmp_query_graph_rrd (
 --
 -- Dumping data for table 'snmp_query_graph_rrd'
 --
-
 
 INSERT INTO snmp_query_graph_rrd VALUES (1,2,2,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (2,38,47,'ifInDiscards');
@@ -2310,7 +2271,6 @@ CREATE TABLE snmp_query_graph_rrd_sv (
 --
 -- Dumping data for table 'snmp_query_graph_rrd_sv'
 --
-
 
 INSERT INTO snmp_query_graph_rrd_sv VALUES (1,1,1,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName| (In)');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (2,1,1,2,'name','|host_description| - Traffic - |query_ifName| (In)');
@@ -2402,7 +2362,6 @@ CREATE TABLE snmp_query_graph_sv (
 -- Dumping data for table 'snmp_query_graph_sv'
 --
 
-
 INSERT INTO snmp_query_graph_sv VALUES (1,1,1,'title','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_sv VALUES (2,1,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDesc|)');
 INSERT INTO snmp_query_graph_sv VALUES (3,1,3,'title','|host_description| - Traffic - |query_ifDesc|/|query_ifIndex|');
@@ -2470,43 +2429,24 @@ CREATE TABLE user_auth (
 -- Dumping data for table 'user_auth'
 --
 
-
 INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1);
 INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1);
 
 --
--- Table structure for table 'user_auth_graph'
+-- Table structure for table 'user_auth_perms'
 --
 
-CREATE TABLE user_auth_graph (
+CREATE TABLE user_auth_perms (
   user_id mediumint(8) unsigned NOT NULL default '0',
-  local_graph_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (user_id,local_graph_id),
-  KEY user_id (user_id,local_graph_id)
+  item_id mediumint(8) unsigned NOT NULL default '0',
+  type tinyint(2) unsigned NOT NULL default '0',
+  PRIMARY KEY  (user_id,item_id,type),
+  KEY user_id (user_id,type)
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'user_auth_graph'
+-- Dumping data for table 'user_auth_perms'
 --
-
-
-
---
--- Table structure for table 'user_auth_hosts'
---
-
-CREATE TABLE user_auth_hosts (
-  user_id mediumint(8) unsigned NOT NULL default '0',
-  hostname varchar(100) NOT NULL default '',
-  policy tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (user_id,hostname),
-  KEY user_id (user_id)
-) TYPE=MyISAM;
-
---
--- Dumping data for table 'user_auth_hosts'
---
-
 
 
 --
@@ -2524,7 +2464,6 @@ CREATE TABLE user_auth_realm (
 -- Dumping data for table 'user_auth_realm'
 --
 
-
 INSERT INTO user_auth_realm VALUES (1,1);
 INSERT INTO user_auth_realm VALUES (2,1);
 INSERT INTO user_auth_realm VALUES (3,1);
@@ -2539,23 +2478,6 @@ INSERT INTO user_auth_realm VALUES (12,1);
 INSERT INTO user_auth_realm VALUES (13,1);
 INSERT INTO user_auth_realm VALUES (14,1);
 INSERT INTO user_auth_realm VALUES (15,1);
-
---
--- Table structure for table 'user_auth_tree'
---
-
-CREATE TABLE user_auth_tree (
-  user_id mediumint(8) unsigned NOT NULL default '0',
-  tree_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (user_id,tree_id),
-  KEY user_id (user_id,tree_id)
-) TYPE=MyISAM;
-
---
--- Dumping data for table 'user_auth_tree'
---
-
-
 
 --
 -- Table structure for table 'user_log'
@@ -2575,10 +2497,6 @@ CREATE TABLE user_log (
 --
 
 
-INSERT INTO user_log VALUES ('admin',1,'2003-08-07 23:50:24',1,'192.168.1.101');
-INSERT INTO user_log VALUES ('admin',0,'0000-00-00 00:00:00',3,'192.168.1.101');
-INSERT INTO user_log VALUES ('admin',1,'2003-08-13 23:03:05',1,'192.168.1.101');
-
 --
 -- Table structure for table 'user_realm'
 --
@@ -2594,7 +2512,6 @@ CREATE TABLE user_realm (
 --
 -- Dumping data for table 'user_realm'
 --
-
 
 INSERT INTO user_realm VALUES (1,'User Administration');
 INSERT INTO user_realm VALUES (2,'Data Input');
@@ -2624,7 +2541,6 @@ CREATE TABLE user_realm_filename (
 --
 -- Dumping data for table 'user_realm_filename'
 --
-
 
 INSERT INTO user_realm_filename VALUES (1,'user_admin.php');
 INSERT INTO user_realm_filename VALUES (2,'data_input.php');
@@ -2661,6 +2577,5 @@ CREATE TABLE version (
 -- Dumping data for table 'version'
 --
 
-
-INSERT INTO version VALUES ('0.8.2');
+INSERT INTO version VALUES ('0.8.3');
 
