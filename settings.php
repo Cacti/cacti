@@ -25,7 +25,7 @@
 */
 
 include ('include/auth.php');
-include_once ("include/config_settings.php");
+include ("include/config_settings.php");
 include_once ('include/form.php');
 
 /* set default action */
@@ -102,6 +102,11 @@ switch ($_REQUEST["action"]) {
 			form_item_label($settings[$setting]["friendly_name"],$settings[$setting]["description"]);
 			
 			$current_value = db_fetch_cell("select value from settings where name='$setting'");
+			
+			/* if there is no value and there is a default value, use that instead */
+			if ((empty($current_value)) && (isset($settings[$setting]["default"]))) {
+				$current_value = $settings[$setting]["default"];
+			}
 			
 			/* choose what kind of item this is */
 			switch ($settings[$setting]["method"]) {
