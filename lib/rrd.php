@@ -96,30 +96,37 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 		case RRDTOOL_OUTPUT_NULL:
 			return; break;
 		case RRDTOOL_OUTPUT_STDOUT:
-			return; break;
+			if (isset($fp)) {
+				$line = "";
+				while (!feof($fp)) {
+					$line .= fgets($fp, 4096);
+				}
+
+				return $line;
+			}
+
+			break;
 		case RRDTOOL_OUTPUT_STDERR:
-			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
-				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
+			if (isset($fp)) {
+				$output = fgets($fp, 1000000);
+
+				if (substr($output, 1, 3) == "PNG") {
+					return "OK";
+				}
+
+				if (substr($output, 0, 5) == "GIF87") {
+					return "OK";
+				}
+
+				print $output;
 			}
 
-			$output = fgets($fp, 1000000);
-
-			if (substr($output, 1, 3) == "PNG") {
-				return "OK";
-			}
-
-			if (substr($output, 0, 5) == "GIF87") {
-				return "OK";
-			}
-
-			print $output;
 			break;
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
-				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
+			if (isset($fp)) {
+				return fpassthru($fp);
 			}
 
-			return fpassthru($fp);
 			break;
 	}
 }
