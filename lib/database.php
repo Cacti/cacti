@@ -285,7 +285,7 @@ function sql_save($array_items, $table_name) {
 	$sql_save = "replace into $table_name ($sql_save_fields) values ($sql_save_values)";
 	
 	/* replace all blank entries with NULLs */
-	$sql_save = str_replace('""', "NULL", $sql_save);
+	//$sql_save = str_replace('""', "NULL", $sql_save);
 	//print $array_items
 	//print $sql_save . "<br>";
 	if (!db_execute($sql_save)) { return 0; }
