@@ -58,17 +58,23 @@
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="startup();">
 
+<map name="tabs">
+	<area alt="Console" coords="7,5,87,35" href="index.php">
+	<area alt="Graphs" coords="166,5,241,32" href="graph_view.php?action=tree" shape="RECT">
+	<area alt="Documentation" coords="88,5,165,32" href="docs/MANUAL.htm">
+</map>
+
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td colspan="3" bgcolor="#454E53">
-			<map name="tabs">
-				<area alt="Console" coords="7,5,87,35" href="index.php">
-				<area alt="Graphs" coords="166,5,241,32" href="graph_view.php?action=tree" shape="RECT">
-				<area alt="Documentation" coords="88,5,165,32" href="docs/MANUAL.htm">
-			</map>
-	<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36><a href='about.php'><img
-	src="images/cactus.png" border=0 height=54 width=36></a></td><td width=250 valign=bottom><img
-	src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td><td align=right><img src="images/cacti_raxnet.gif" border=0></td></tr></table></td>
+			<table border=0 cellpadding=0 cellspacing=0 width='100%'>
+				<tr>
+					<td valign=bottom width=36>
+						<img src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td><td align=right>
+					</td>
+				</tr>
+			</table>
+		</td>
 	</tr>
 	<tr>
 		<td colspan="3" bgcolor="#<?print $colors[panel];?>">
@@ -92,6 +98,8 @@
 			<table width="133" cellpadding=1 cellspacing=0 border=0 class="textMenuHeader">
 				<?DrawMenu ($HTTP_SESSION_VARS['user_id'], 1);?>
 			</table>
+			
+			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
 		</td>
 		<td></td>
 	</tr>
