@@ -55,12 +55,18 @@
 							if ($_SESSION["custom"]) {
 								$graph_timespans[GT_CUSTOM] = "Custom";
 								$start_val = 0;
+								$end_val = sizeof($graph_timespans);
 							} else {
+								if (isset($graph_timespans[GT_CUSTOM])) {
+									asort($graph_timespans);
+									array_shift($graph_timespans);
+								}
 								$start_val = 1;
+								$end_val = sizeof($graph_timespans)+1;
 							}
 
 							if (sizeof($graph_timespans) > 0) {
-								for ($value=$start_val; $value < sizeof($graph_timespans); $value++) {
+								for ($value=$start_val; $value < $end_val; $value++) {
 									print "<option value='" . $_SESSION["urlval"] . "&predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
 								}
 							}

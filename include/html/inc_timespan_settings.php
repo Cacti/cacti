@@ -30,10 +30,10 @@ $timespan = array();
 /* set variables for first time use */
 initialize_timespan($timespan);
 
-/* if the user does not want timespan selectors */
+/* if the user does not want to see timespan selectors */
 if (read_graph_config_option("timestamp_sel") == "") {
 	set_preset_timespan($timespan);
-/* the user does want them */
+/* the user does want to see them */
 }else {
 	process_html_variables();
 	process_user_input($timespan);

@@ -111,7 +111,6 @@ case 'preview':
 	load_current_session_value("host_id", "sess_graph_view_host", "0");
 	load_current_session_value("filter", "sess_graph_view_filter", "");
 	load_current_session_value("page", "sess_graph_view_current_page", "1");
-	load_current_session_value("predefined_timespan", "sess_current_timespan", read_graph_config_option("default_timespan"));
 
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
