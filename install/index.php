@@ -141,6 +141,12 @@ if ($config["cacti_server_os"] == "unix") {
 	}
 }
 
+/* SNMP Version */
+if ($config["cacti_server_os"] == "unix") {
+	$input["smnp_version"] = $settings["general"]["smnp_version"];
+	$input["smnp_version"]["default"] = "net-snmp";
+}
+
 /* default value for this variable */
 if (!isset($_REQUEST["install_type"])) {
 	$_REQUEST["install_type"] = 0;
@@ -338,10 +344,12 @@ if ($_REQUEST["step"] == "4") {
 								the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
 								$form_check_string = "";
 								
-								if (@file_exists($current_value)) {
-									$form_check_string = "<font color='#008000'>[FOUND]</font> ";
-								}else{
-									$form_check_string = "<font color='#FF0000'>[NOT FOUND]</font> ";
+								if ($array["method"] == "textbox") {
+									if (@file_exists($current_value)) {
+										$form_check_string = "<font color='#008000'>[FOUND]</font> ";
+									}else{
+										$form_check_string = "<font color='#FF0000'>[NOT FOUND]</font> ";
+									}
 								}
 								
 								/* draw the acual header and textbox on the form */
@@ -354,7 +362,16 @@ if ($_REQUEST["step"] == "4") {
 								}
 								
 								print "<br>";
-								form_text_box($name, $current_value, "", "", "40", "text");
+								
+								switch ($array["method"]) {
+								case 'textbox':
+									form_text_box($name, $current_value, "", "", "40", "text");
+									break;
+								case 'drop_array':
+									form_dropdown($name, $array["array"], "", "", $current_value, "", "");
+									break;
+								}
+								
 								print "<br></p>";
 							}
 							
