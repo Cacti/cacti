@@ -35,7 +35,8 @@ $ds_actions = array(
 	1 => "Delete",
 	2 => "Change Data Template",
 	3 => "Change Host",
-	4 => "Duplicate"
+	4 => "Duplicate",
+	5 => "Convert to Data Template"
 	);
 
 /* set default action */
@@ -347,6 +348,10 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				duplicate_data_source($selected_items[$i], $_POST["title_format"]);
 			}
+		}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
+			for ($i=0;($i<count($selected_items));$i++) {
+				data_source_to_data_template($selected_items[$i], $_POST["title_format"]);
+			}
 		}
 		
 		header("Location: data_sources.php");
@@ -434,6 +439,16 @@ function form_actions() {
 					optionally change the title format for the new data sources.</p>
 					<p>$ds_list</p>
 					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<ds_title> (1)", "", "255", "30", "textbox"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "5") { /* graph -> graph template */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following data sources will be converted into data templates. 
+					You can optionally change the title format for the new data templates.</p>
+					<p>$ds_list</p>
+					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<ds_title> Template", "", "255", "30", "textbox"); print "</p>
 				</td>
 			</tr>\n
 			";
