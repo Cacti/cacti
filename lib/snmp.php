@@ -37,7 +37,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$xml_file_path = str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"]);
 	
 	if ((empty($host["management_ip"])) || (!file_exists($xml_file_path))) {
-		return 0;
+		return false;
 	}
 	
 	$data = implode("",file($xml_file_path));
@@ -48,7 +48,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	
 	/* no data found; get out */
 	if (!$snmp_index) {
-		return 0;
+		return false;
 	}
 	
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
@@ -93,11 +93,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			}
 		}
 	}
+	
+	return true;
 }
 
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password) {
-	include ('include/config.php');
-	include_once ('include/functions.php');
+	include_once ("functions.php");
 	
 	if ($config["php_snmp_support"] == true) {
 		/* make sure snmp* is verbose so we can see what types of data
@@ -128,8 +129,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
-	include ('include/config.php');
-	include_once ('include/functions.php');
+	include_once ("functions.php");
 	
 	$snmp_array = array();
 	$temp_array = array();
