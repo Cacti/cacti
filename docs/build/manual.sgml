@@ -177,7 +177,7 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					Add a line to your <filename>/etc/crontab</filename> file similar to:
 				</para>
-				<screen>*/5 * * * * cactiuser php /var/www/html/cacti/cmd.php &gt; /dev/null 2&gt;&amp;1</screen>
+				<screen>*/5 * * * * cactiuser php /var/www/html/cacti/poller.php &gt; /dev/null 2&gt;&amp;1</screen>
 				<simpara>
 					Replace <emphasis>cactiuser</emphasis> with the valid user specified in the previous step.
 				</simpara>
@@ -385,7 +385,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					You are going to need to schedule a task so <filename>cmd.php</filename> can run every
+					You are going to need to schedule a task so <filename>poller.php</filename> can run every
 					5 minutes. Make sure the Task Scheduler service is started and follow the steps below to
 					begin.
 				</para>
@@ -462,7 +462,7 @@ c:\php\sapi</screen>
 						<para>
 							In the <guilabel>Run</guilabel> textbox enter the following text making sure to use the appropriate paths.
 						</para>
-						<screen>c:\php\php.exe c:\apache2\htdocs\cacti\cmd.php</screen>
+						<screen>c:\php\php.exe c:\apache2\htdocs\cacti\poller.php</screen>
 						<para>
 							The start in box should say <filename>c:\apache2\htdocs\cacti</filename>.
 						</para>
@@ -685,13 +685,13 @@ $database_password = "cacti";</userinput></screen>
 								<entry>External SNMP</entry>
 								<entry>Calls the net-snmp snmpwalk and snmpget binaries that are installed on your system.</entry>
 								<entry>All SNMP options</entry>
-								<entry>Web interface and PHP poller (cmd.php)</entry>
+								<entry>Web interface and PHP poller (poller.php)</entry>
 							</row>
 							<row>
 								<entry>Internal SNMP (php-snmp)</entry>
 								<entry>Uses PHP's SNMP functions which are linked against net-snmp or ucd-snmp at compile time.</entry>
 								<entry>Version 1 Only (Community and Port)</entry>
-								<entry>Web interface and PHP poller (cmd.php)</entry>
+								<entry>Web interface and PHP poller (poller.php)</entry>
 							</row>
 							<row>
 								<entry>Cactid SNMP</entry>
@@ -2706,12 +2706,12 @@ print int(rand(10));</programlisting>
 				<qandaentry>
 					<question>
 						<para>
-							I am polling thousands of items and cmd.php takes more than 5 minutes to run.
+							I am polling thousands of items and poller.php takes more than 5 minutes to run.
 						</para>
 					</question>
 					<answer>
 						<para>
-							Give cactid, the future replacement for cmd.php a try. Unlike cmd.php, cactid is written in c and makes use
+							Give cactid, the future replacement for poller.php a try. Unlike poller.php, cactid is written in c and makes use
 							of pthreads. On a typical installation, it is not uncommon for cactid to poll about 500 items in less then 10
 							seconds.
 						</para>
@@ -2779,15 +2779,15 @@ disk /</userinput></screen>
 					</question>
 					<answer>
 						<para>
-							For you to actually get graph images, cmd.php must run at least once so it can create .rrd files in Cacti's 'rra/'
-							directory. Double check that you configured your <filename>/etc/crontab</filename> file to execute cmd.php every
-							five minutes. Also make sure that the user cmd.php runs as has permission to create new files in Cacti's 'rra/'
+							For you to actually get graph images, poller.php must run at least once so it can create .rrd files in Cacti's 'rra/'
+							directory. Double check that you configured your <filename>/etc/crontab</filename> file to execute poller.php every
+							five minutes. Also make sure that the user poller.php runs as has permission to create new files in Cacti's 'rra/'
 							directory.
 						</para>
 						<para>
-							If all of your settings appear correct, try running cmd.php manually by cd'ing to Cacti's directory and typing:
+							If all of your settings appear correct, try running poller.php manually by cd'ing to Cacti's directory and typing:
 						</para>
-						<screen><prompt>shell&gt;</prompt> <userinput>php cmd.php</userinput></screen>
+						<screen><prompt>shell&gt;</prompt> <userinput>php poller.php</userinput></screen>
 						<para>
 							If you have files in your 'rra/' directory, but your graphs still appear as broken images, you should enable graph
 							debug mode see exactly why the graphs are not rendering. To do this go into Cacti, select <guilabel>Graph Management</guilabel>
@@ -2803,8 +2803,8 @@ disk /</userinput></screen>
 					</question>
 					<answer>
 						<para>
-							More often than not, this problem's cause is permissions. For instance if you run cmd.php manually as root for testing, any
-							.rrd files that it creates will be owned by root. Now when cmd.php runs from cron, it will not be able to update these .rrd
+							More often than not, this problem's cause is permissions. For instance if you run poller.php manually as root for testing, any
+							.rrd files that it creates will be owned by root. Now when poller.php runs from cron, it will not be able to update these .rrd
 							files because they are owned by root. You can double check the owner of your .rrd files by running the following command in
 							your Cacti directory:
 						</para>
