@@ -1,6 +1,6 @@
 <interface>
 	<name>Get Host MIB CPU's</name>
-	<script_path>|path_cacti|/scripts/ss_query_host_cpu.php</script_path>
+	<script_path>|path_cacti|/scripts/ss_host_cpu.php</script_path>
 	<script_function>ss_query_host_cpu</script_function>
 	<script_server>php</script_server>
 	<arg_prepend>|host_hostname| |host_snmp_community| |host_snmp_version|</arg_prepend>
