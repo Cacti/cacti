@@ -1017,7 +1017,7 @@ function graph() {
 				<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?print $graph["local_graph_id"];?>"><?print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
 			</td>
 			<td>
-				<?if ($graph["name"] == "") { print "<em>None</em>"; }else{ print $graph["name"]; }?>
+				<?print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
 			</td>
 			<td>
 				<?print $graph["height"];?>x<?print $graph["width"];?>
