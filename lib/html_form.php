@@ -805,4 +805,25 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 	return $form_array;
 }
 
+function draw_actions_dropdown($actions_array) {
+	?>
+	<table align='center' width='98%'>
+		<tr>
+			<td width='1' valign='top'>
+				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+			</td>
+			<td align='right'>
+				Choose an action:
+				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
+			</td>
+			<td width='1' align='right'>
+				<input type='image' src='images/button_go.gif' alt='Go'>
+			</td>
+		</tr>
+	</table>
+	
+	<input type='hidden' name='action' value='actions'>
+	<?php
+}
+
 ?>

@@ -1022,25 +1022,10 @@ function graph() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 	
-	?>
-	<table align='center' width='98%'>
-		<tr>
-			<td width='1' valign='top'>
-				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
-			</td>
-			<td align='right'>
-				Choose an action:
-				<?php form_dropdown("drp_action",$graph_actions,"","","1","","");?>
-			</td>
-			<td width='1' align='right'>
-				<input type='image' src='images/button_go.gif' alt='Go'>
-			</td>
-		</tr>
-	</table>
+	/* draw the dropdown containing a list of available actions for this form */
+	draw_actions_dropdown($graph_actions);
 	
-	<input type='hidden' name='action' value='actions'>
-	</form>
-	<?php
+	print "</form>\n";
 }
 
 ?>
