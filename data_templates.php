@@ -175,10 +175,14 @@ function form_save() {
 					$form_is_templated_value = "t_value_" . $input_field["data_name"];
 					
 					if (isset($_POST[$form_is_templated_value])) {
-						if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
-							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-								values (" . $input_field["id"] . ",$data_template_data_id,'" . $_POST[$form_is_templated_value] . "','$form_value')");
-						}
+						$template_this_item = "on";
+					}else{
+						$template_this_item = "";
+					}
+					
+					if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
+						db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
+							values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','$form_value')");
 					}
 				}
 				}
@@ -302,6 +306,31 @@ function template_edit() {
 		$template_rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
 	}
 	
+	$i = 0;
+	if (isset($template_data_rrds)) {
+		if (sizeof($template_data_rrds) > 1) {
+		
+		/* draw the data source tabs on the top of the page */
+		print "	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
+				<tr>\n";
+				
+				foreach ($template_data_rrds as $template_data_rrd) {
+					print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center' class='tab'>
+							<span class='textHeader'><a href='data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a> <a href='data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
+						</td>\n
+						<td width='1'></td>\n";
+				}
+				
+				print "
+				<td></td>\n
+				</tr>
+			</table>\n";
+			
+		}elseif (sizeof($template_data_rrds) == 1) {
+			$_GET["view_rrd"] = $template_data_rrds[0]["id"];
+		}
+	}
+	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
 	print "	<tr>
@@ -312,34 +341,6 @@ function template_edit() {
 				" . (!empty($_GET["id"]) ? "<strong><a class='linkOverDark' href='data_templates.php?action=rrd_add&id=" . $_GET["id"] . "'>New</a>&nbsp;</strong>" : "") . "
 			</td>
 		</tr>\n";
-	
-	$i = 0;
-	if (isset($template_data_rrds)) {
-		if (sizeof($template_data_rrds) > 1) {
-			?>
-			<tr height="33">
-				<td valign="bottom" colspan="3" background="images/tab_back_light.gif">
-					<table border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<?php
-							foreach ($template_data_rrds as $template_data_rrd) {
-							$i++;
-							?>
-							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&id=<?php print $_GET["id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a>&nbsp;<a href="data_templates.php?action=rrd_remove&id=<?php print $template_data_rrd["id"];?>&data_template_id=<?php print $_GET["id"];?>"><img src="images/delete_icon_dark_back.gif" width="10" height="12" border="0" alt="Delete" align="middle"></a><img src="images/tab_right.gif" border="0" align="absmiddle">
-							</td>
-							<?php
-							}
-							?>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<?php
-		}elseif (sizeof($template_data_rrds) == 1) {
-			$_GET["view_rrd"] = $template_data_rrds[0]["id"];
-		}
-	}
 	
 	/* data input fields list */
 	if ((empty($template_data["data_input_id"])) || (db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) > "1")) {
@@ -438,6 +439,8 @@ function template() {
 		<?php
 		$i++;
 	}
+	}else{
+		print "<tr><td><em>No Data Templates</em></td></tr>\n";
 	}
 	end_box();
 }

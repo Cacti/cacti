@@ -59,6 +59,7 @@ switch ($_REQUEST["action"]) {
  default:
     	include_once ('include/top_header.php');
 	
+	/* set the default settings category */
 	if (!isset($_GET["tab"])) {
 		/* there is no selected tab; select the first one */
 		$current_tab = array_keys($tabs);
@@ -67,30 +68,25 @@ switch ($_REQUEST["action"]) {
 		$current_tab = $_GET["tab"];
 	}
 	
-	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	?>
-	
-			<tr height="33">
-				<td valign="bottom" colspan="3" background="images/tab_back.gif">
-					<table border="0" cellspacing="0" cellpadding="0">
-						<tr>
-						<?php
-						if (sizeof($tabs) > 0) {
-						foreach (array_keys($tabs) as $tab_short_name) {
-						?>
-							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="settings.php?tab=<?php print $tab_short_name;?>"><?php print $tabs[$tab_short_name];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
-							</td>
-						<?php
-						}
-						}
-						?>
-					</table>
-				</td>
+	/* draw the categories tabs on the top of the page */
+	print "	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
+			<tr>\n";
+			
+			if (sizeof($tabs) > 0) {
+			foreach (array_keys($tabs) as $tab_short_name) {
+				print "	<td " . (($tab_short_name == $current_tab) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . (strlen($tabs[$tab_short_name]) * 9) . "' align='center' class='tab'>
+						<span class='textHeader'><a href='settings.php?tab=$tab_short_name'>$tabs[$tab_short_name]</a></span>
+					</td>\n
+					<td width='1'></td>\n";
+			}
+			}
+			
+			print "
+			<td></td>\n
 			</tr>
+		</table>\n";
 	
-	<?php
+	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
 	
     	print "<form method='post' action='settings.php?action=save'>\n";
 	
