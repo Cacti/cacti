@@ -119,6 +119,8 @@ function form_save() {
 		$save["local_graph_id"] = form_input_validate((isset($_POST["local_graph_id"]) ? $_POST["local_graph_id"] : "0"), "local_graph_id", "", true, 3);
 		$save["rra_id"]	= form_input_validate((isset($_POST["rra_id"]) ? $_POST["rra_id"] : "0"), "rra_id", "", true, 3);
 		$save["host_id"] = form_input_validate((isset($_POST["host_id"]) ? $_POST["host_id"] : "0"), "host_id", "", true, 3);
+		$save["host_grouping_type"] = form_input_validate((isset($_POST["host_grouping_type"]) ? $_POST["host_grouping_type"] : "1"), "host_grouping_type", "", true, 3);
+		$save["sort_children_type"] = form_input_validate((isset($_POST["sort_children_type"]) ? $_POST["sort_children_type"] : "1"), "sort_children_type", "", true, 3);
 		
 		if (!is_error_message()) {
 			$tree_item_id = sql_save($save, "graph_tree_items");
@@ -127,8 +129,42 @@ function form_save() {
 				raise_message(1);
 				
 				/* only re-parent headings */
-				if ($save["title"] != "") {
+				if (isset($_POST["title"])) {
 					reparent_branch($_POST["parent_item_id"], $_POST["id"]);
+				}
+				
+				/* sort all children if this branch is to be sorted */
+				if ((isset($_POST["sort_children_type"])) && ($_POST["sort_children_type"] != TREE_ORDERING_NONE)) {
+					sort_branch($_POST["id"], $_POST["sort_children_type"]);
+				}
+				
+				/* keep the children in line */
+				$parent_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=" . $_POST["parent_item_id"]);
+				if ((!empty($_POST["parent_item_id"])) && ($parent_sorting_type != TREE_ORDERING_NONE)) {
+					sort_branch($_POST["parent_item_id"], $parent_sorting_type);
+				}
+				
+				/* if the user checked the 'Propagate Changes' box */
+				if (isset($_POST["propagate_changes"])) {
+					$search_key = preg_replace("/0+$/", "", $order_key);
+					
+					$tree_items = db_fetch_assoc("select
+						graph_tree_items.id
+						from graph_tree_items
+						where graph_tree_items.host_id = 0
+						and graph_tree_items.local_graph_id = 0
+						and graph_tree_items.title != ''
+						and graph_tree_items.order_key like '$search_key%%'");
+					
+					if (sizeof($tree_items) > 0) {
+						foreach ($tree_items as $item) {
+							db_execute("update graph_tree_items set sort_children_type = '" . $_POST["sort_children_type"] . "' where id = '" . $item["id"] . "'");
+							
+							if ($_POST["sort_children_type"] != TREE_ORDERING_NONE) {
+								sort_branch($item["id"], $_POST["sort_children_type"]);
+							}
+						}
+					}
 				}
 			}else{
 				raise_message(2);
@@ -154,6 +190,17 @@ function item_edit() {
 		1 => "Header",
 		2 => "Graph",
 		3 => "Host"
+		);
+	
+	$host_group_types = array(
+		1 => "Graph Template",
+		2 => "Data Query Index"
+		);
+	
+	$item_sort_types = array(
+		1 => "Manual Ordering (No Sorting)",
+		2 => "Alphabetic Ordering",
+		3 => "Numeric Ordering"
 		);
 	
 	if (!empty($_GET["id"])) {
@@ -206,6 +253,13 @@ function item_edit() {
 	<?php
 	switch ($current_type) {
 	case '1':
+		/* it's nice to default to the parent sorting style for new items */
+		if (empty($_GET["id"])) {
+			$default_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=" . $_GET["parent_id"]);
+		}else{
+			$default_sorting_type = 1;
+		}
+		
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Title</font><br>
@@ -215,7 +269,28 @@ function item_edit() {
 				<?php form_text_box("title", (isset($tree_item["title"]) ? $tree_item["title"] : ""), "", "255", 30, "text", (isset($_GET["id"]) ? $_GET["id"] : "0"));?>
 			</td>
 		</tr>
+		<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+			<td width="50%">
+				<font class="textEditTitle">Sorting Type</font><br>
+				Choose how children of this branch will be sorted.
+			</td>
+			<td>
+				<?php form_dropdown("sort_children_type", $item_sort_types, "", "", (isset($tree_item["sort_children_type"]) ? $tree_item["sort_children_type"] : $default_sorting_type), "", "");?>
+			</td>
+		</tr>
 		<?php
+		if (!empty($_GET["id"])) {
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+				<td width="50%">
+					<font class="textEditTitle">Propagate Changes</font><br>
+					Propagate all options on this form (except for 'Title') to all child 'Header' items.
+				</td>
+				<td>
+					<?php form_checkbox("propagate_changes", "", "Propagate Changes", "", 0);?>
+				</td>
+			</tr>
+			<?php
+		}
 		break;
 	case '2':
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -246,6 +321,15 @@ function item_edit() {
 			</td>
 			<td>
 				<?php form_dropdown("host_id", db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"), "name", "id", (isset($tree_item["host_id"]) ? $tree_item["host_id"] : ""), "", "");?>
+			</td>
+		</tr>
+		<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+			<td width="50%">
+				<font class="textEditTitle">Graph Grouping Style</font><br>
+				Choose how graphs are grouped when drawn for this particular host on the tree.
+			</td>
+			<td>
+				<?php form_dropdown("host_grouping_type", $host_group_types, "", "", (isset($tree_item["host_grouping_type"]) ? $tree_item["host_grouping_type"] : "1"), "", "");?>
 			</td>
 		</tr>
 		<?php
