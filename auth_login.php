@@ -140,7 +140,7 @@ case 'login':
 		exit;
 	}else{
 		/* --- BAD username/password --- */
-		db_execute("insert into user_log (username,result,ip) values('$username',0,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"] . "',0,'" . $_SERVER["REMOTE_ADDR"] . "')");
 	}
 }
 
