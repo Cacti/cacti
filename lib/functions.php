@@ -1097,8 +1097,9 @@ function is_tree_allowed($tree_id) {
 
 /* get_graph_tree_array - returns a list of graph trees taking permissions into account if
      necessary
+   @arg $return_sql - (bool) Whether to return the SQL to create the dropdown rather than an array
    @returns - (array) an array containing a list of graph trees */
-function get_graph_tree_array() {
+function get_graph_tree_array($return_sql = false) {
 	if (read_config_option("global_auth") == "on") {
 		$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
 		
@@ -1108,19 +1109,23 @@ function get_graph_tree_array() {
 			$sql_where = "where user_auth_perms.user_id is not null";
 		}
 		
-		$tree_list = db_fetch_assoc("select
+		$sql = "select
 			graph_tree.id,
 			graph_tree.name,
 			user_auth_perms.user_id
 			from graph_tree
 			left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
 			$sql_where
-			order by graph_tree.name");
+			order by graph_tree.name";
 	}else{
-		$tree_list = db_fetch_assoc("select * from graph_tree order by name");
+		$sql = "select * from graph_tree order by name";
 	}
 	
-	return $tree_list;
+	if ($return_sql == true) {
+		return $sql;
+	}else{
+		return db_fetch_assoc($sql);
+	}
 }
 
 /* get_host_array - returns a list of hosts taking permissions into account if necessary
@@ -1153,13 +1158,13 @@ function get_host_array() {
 /* draw_navigation_text - determines the top header navigation text for the current page and displays it to
      the browser */
 function draw_navigation_text() {
-	$nav_level_cache = isset($_SESSION["sess_nav_level_cache"]) ? unserialize($_SESSION["sess_nav_level_cache"]) : array();
+	$nav_level_cache = (isset($_SESSION["sess_nav_level_cache"]) ? $_SESSION["sess_nav_level_cache"] : array());
 	
 	$nav = array(
+		"graph_view.php:" => array("title" => "Graphs", "mapping" => "", "url" => "graph_view.php", "level" => "0"),
 		"graph_view.php:tree" => array("title" => "Tree Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=tree", "level" => "1"),
 		"graph_view.php:list" => array("title" => "List Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=list", "level" => "1"),
 		"graph_view.php:preview" => array("title" => "Preview Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=preview", "level" => "1"),
-		"graph_view.php:" => array("title" => "Graphs", "mapping" => "", "url" => "graph_view.php", "level" => "0"),
 		"graph.php:" => array("title" => "", "mapping" => "graph_view.php:,?", "level" => "2"),
 		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
 		"index.php:" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
@@ -1237,7 +1242,10 @@ function draw_navigation_text() {
 	for ($i=0; ($i<count($current_mappings)); $i++) {
 		if (empty($current_mappings[$i])) { continue; }
 		
-		if (!empty($nav_level_cache{$i}["url"])) {
+		if  ($i == 0) {
+			/* always use the default for level == 0 */
+			$url = $nav{$current_mappings[$i]}["url"];
+		}elseif (!empty($nav_level_cache{$i}["url"])) {
 			/* found a match in the url cache for this level */
 			$url = $nav_level_cache{$i}["url"];
 		}elseif (!empty($current_array["url"])) {
@@ -1268,7 +1276,7 @@ function draw_navigation_text() {
 	
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => $_SERVER["REQUEST_URI"]);
-	$_SESSION["sess_nav_level_cache"] = serialize($nav_level_cache);
+	$_SESSION["sess_nav_level_cache"] = $nav_level_cache;
 	
 	print $current_nav;
 }
