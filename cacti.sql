@@ -2092,7 +2092,8 @@ CREATE TABLE poller_item (
   arg2 varchar(255) default NULL,
   arg3 varchar(255) default NULL,
   PRIMARY KEY  (local_data_id,rrd_name),
-  KEY local_data_id (local_data_id)
+  KEY local_data_id (local_data_id),
+  KEY host_id (host_id)
 ) TYPE=MyISAM;
 
 --
