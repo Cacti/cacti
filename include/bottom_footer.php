@@ -34,9 +34,9 @@
 
 <script type="text/javascript">
 <!--
-function SelectAll() {
+function SelectAll(prefix) {
   for (var i = 0; i < document.chk.elements.length; i++) {
-    if( document.chk.elements[i].name.substr( 0, 4 ) == 'chk_') {
+    if( document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
       document.chk.elements[i].checked =
         !(document.chk.elements[i].checked);
     }
