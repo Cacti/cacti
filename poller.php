@@ -156,7 +156,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
     list($micro,$seconds) = split(" ", microtime());
     $end = $seconds + $micro;
 
-	if ($poller = "1") {
+	if ($poller == "1") {
 	    $max_threads = "N/A";
 	}
 
