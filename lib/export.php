@@ -69,6 +69,8 @@ function &graph_template_to_xml($graph_template_id) {
 				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
 			}elseif (($field_name == "gprint_id") && (!empty($item{$field_name}))) {
 				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("gprint_preset") . get_hash_gprint($item{$field_name}) . "</$field_name>\n";
+			}elseif (($field_name == "color_id") && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell("select hex from colors where id=" . $item{$field_name}) . "</$field_name>\n";
 			}else{
 				$xml_text .= "\t\t\t<$field_name>" . $item{$field_name} . "</$field_name>\n";
 			}

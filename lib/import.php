@@ -101,7 +101,7 @@ function &import_xml_data(&$xml_data) {
 }
 
 function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit;
+	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes;
 	
 	/* import into: graph_templates */
 	$_graph_template_id = db_fetch_cell("select id from graph_templates where hash='$hash'");
@@ -153,6 +153,15 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 					/* is the value of this field a hash or not? */
 					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
+					}elseif (($field_name == "color_id") && (ereg("^[a-fA-F0-9]{6}$", $item_array[$field_name])) && (get_version_index($parsed_hash["version"]) >= get_version_index("0.8.5"))) { /* treat the 'color' field differently */
+						$color_id = db_fetch_cell("select id from colors where hex='" . $item_array[$field_name] . "'");
+						
+						if (empty($color_id)) {
+							db_execute("insert into colors (hex) values ('" . $item_array[$field_name] . "')");
+							$color_id = db_fetch_insert_id();
+						}
+						
+						$save[$field_name] = $color_id;
 					}else{
 						$save[$field_name] = $item_array[$field_name];
 					}
@@ -847,6 +856,23 @@ function check_hash_version($hash_version) {
 	}
 	
 	return $current_version;
+}
+
+function get_version_index($string_version) {
+	global $hash_version_codes;
+	
+	$i = 0;
+	
+	reset($hash_version_codes);
+	while (list($version, $code) = each($hash_version_codes)) {
+		if ($string_version == $version) {
+			return $i;
+		}
+		
+		$i++;
+	}
+	
+	return -1;
 }
 
 ?>
