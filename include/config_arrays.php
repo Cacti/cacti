@@ -362,7 +362,7 @@ $struct_graph_item = array(
 		"text_maxlen" => "50",
 		"text_size" => "30",
 		"default" => "",
-		"description" => "For use with VRULE and HRULE, <em>numbers</em< only."
+		"description" => "For use with VRULE and HRULE, <em>numbers</em> only."
 		),
 	"gprint_id" => array(
 		"title" => "GPRINT Type",
