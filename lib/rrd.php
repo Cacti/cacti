@@ -31,51 +31,21 @@ function escape_command($command) {
 }
 
 function rrd_init() {
-	/* startup Cacti rrdtool for processing */
-	$rrd_des = array(
-		RRDTOOL_PIPE_CHILD_READ => array("pipe", "r"), // stdin is a pipe that the child will read from
-		RRDTOOL_PIPE_CHILD_WRITE => array("pipe", "w"), // stdout is a pipe that the child will write to
-		RRDTOOL_PIPE_STDERR_WRITE => array("pipe", "w")  // stderr is a pipe to write to
-		);
-
-	if (function_exists("proc_open")) {
-		$rrd_struc["fd"] = proc_open(read_config_option("path_rrdtool") . " -", $rrd_des, $rrd_pipes);
-		$rrd_struc["pipes"] = $rrd_pipes;
-
-		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ], false);
-		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE], false);
-		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_STDERR_WRITE], false);
-	}else {
-		$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
-	}
-
-	/* set return array */
-	$rrd_struc["using_proc_open"] = function_exists("proc_open");
+	$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
 
 	return $rrd_struc;
 }
 
 function rrd_close($rrd_struc) {
 	/* close the rrdtool file descriptor */
-	if ($rrd_struc["using_proc_open"]) {
-		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ]);
-		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE]);
-		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_STDERR_WRITE]);
-		proc_close($rrd_struc["fd"]);
-	}else{
-		pclose($rrd_struc["fd"]);
-	}
+	pclose($rrd_struc["fd"]);
 }
 
 function rrd_get_fd(&$rrd_struc, $fd_type) {
 	if (sizeof($rrd_struc) == 0) {
 		return 0;
 	}else{
-		if ($rrd_struc["using_proc_open"]) {
-			return $rrd_struc["pipes"][$fd_type];
-		}else{
-			return $rrd_struc["fd"];
-		}
+		return $rrd_struc["fd"];
 	}
 }
 
@@ -99,7 +69,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
-	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (empty($rrd_struc["using_proc_open"]))) {
+	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (sizeof($rrd_struc) == 0)) {
 		$command_line .= " 2>&1";
 	}
 
@@ -133,62 +103,14 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 					$line .= fgets($fp, 4096);
 				}
 
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					cacti_log("RRD2CACTI: " . strip_newlines($line), false, "POLLER");
-				}
-
 				return $line;
 			/* stdin rrdtool pipe (popen); read 1024 bytes and stop */
-			}else if (empty($rrd_struc["using_proc_open"])) {
+			}else {
 				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
 					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
 				}
 
 				return fgets($fp, 1024);
-			/* stdin rrdtool pipe (proc_open); select and wait */
-			}else{
-				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
-					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
-				}
-
-				/* Prepare the read array */
-				$read_fd = array($fp);
-
-				/* Prepare the stderr array, windows does not have one */
-				if ($config["cacti_server_os"] == "unix") {
-					$efp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_STDERR_WRITE);
-					$except_fd = array($efp);
-				} else {
-					$except_fd = Null;
-				}
-
-				if (false === ($num_changed_streams = stream_select($read_fd, $write_fd = NULL, $except_fd, 15, 0))) {
-					/* Error handling */
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-						cacti_log("RRD2CACTI: ERROR: RRD Did not Respond to RRDTool Command", $log_to_stdout, "POLLER");
-					}
-				} elseif ($num_changed_streams > 0) {
-					$line = "";
-					$error = "";
-
-					/* At least on one of the streams something interesting happened */
-					foreach ($read_fd as $file) {
-						$line .= fgets($file, 4096);
-					}
-
-					if ($config["cacti_server_os"] == "unix") {
-						foreach ($except_fd as $file) {
-							$error .= fgets($file, 4096);
-						}
-					}
-
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-						cacti_log("RRD2CACTI: " . strip_newlines($line . $error), $log_to_stdout, "POLLER");
-					}
-
-					return $line;
-				}
-
 			}
 
 			break;
