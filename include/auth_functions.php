@@ -46,6 +46,7 @@ function DrawMenu($userid, $menuid) {
 					    "rra.php" => "Available RRA's",
 #					    "snmp.php" => "SNMP Interfaces",
 					    "data.php" => "Data Input Methods",
+					    "pzones.php" => "Polling Zones",
 					    "cdef.php" => "CDEF's"
 					    ),
 		  "Configuration"  => array(
