@@ -235,10 +235,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
-				$output = str_replace("\n","",exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp));
+				if ($using_proc_function == true) {
+					$output = str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp));
 
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$host_id] SERVER: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+						cacti_log("Host[$host_id] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
+					}
+				}else{
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+						cacti_log("Host[$host_id] *SKIPPING* SERVER: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
+					}
 				}
 
 				break;
