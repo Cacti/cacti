@@ -59,7 +59,7 @@ if ((isset($_GET["type"]) ? $_GET["type"] : "") == "tree") {
 	print "<br><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 }
 
-print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'><strong>Viewing Graph '$graph_title'</strong></td></tr>";
+print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'><strong>Viewing Graph</strong> '$graph_title'</td></tr>";
 
 $i = 0;
 if (sizeof($rras) > 0) {
