@@ -130,42 +130,48 @@ function add_tree_names_to_actions_array() {
 function form_save() {
 	include_once ("include/utility_functions.php");
 	
+	if ((isset($_POST["save_component_graph_new"])) && (isset($_POST["graph_template_id"]))) {
+		$save["id"] = $_POST["local_graph_id"];
+		$save["graph_template_id"] = $_POST["graph_template_id"];
+		$save["host_id"] = $_POST["host_id"];
+		
+		$local_graph_id = sql_save($save, "graph_local");
+		
+		change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
+	}
+	
 	if (isset($_POST["save_component_graph"])) {
 		$save1["id"] = $_POST["local_graph_id"];
 		$save1["host_id"] = $_POST["host_id"];
 		$save1["graph_template_id"] = $_POST["graph_template_id"];
 		
-		if (!empty($_POST["local_graph_id"])) {
-			$save2["id"] = $_POST["graph_template_graph_id"];
-			$save2["local_graph_template_graph_id"] = $_POST["local_graph_template_graph_id"];
-			$save2["graph_template_id"] = $_POST["graph_template_id"];
-			$save2["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
-			$save2["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
-			$save2["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
-			$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
-			$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[0-9]+$", false, 3);
-			$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[0-9]+$", false, 3);
-			$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
-			$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
-			$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
-			$save2["auto_scale_log"] = form_input_validate((isset($_POST["auto_scale_log"]) ? $_POST["auto_scale_log"] : ""), "auto_scale_log", "", true, 3);
-			$save2["auto_scale_rigid"] = form_input_validate((isset($_POST["auto_scale_rigid"]) ? $_POST["auto_scale_rigid"] : ""), "auto_scale_rigid", "", true, 3);
-			$save2["auto_padding"] = form_input_validate((isset($_POST["auto_padding"]) ? $_POST["auto_padding"] : ""), "auto_padding", "", true, 3);
-			$save2["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", false, 3);
-			$save2["export"] = form_input_validate($_POST["export"], "export", "", true, 3);
-			$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
-			$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^[0-9]+$", false, 3);
-		}
+		$save2["id"] = $_POST["graph_template_graph_id"];
+		$save2["local_graph_template_graph_id"] = $_POST["local_graph_template_graph_id"];
+		$save2["graph_template_id"] = $_POST["graph_template_id"];
+		$save2["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
+		$save2["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
+		$save2["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
+		$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
+		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[0-9]+$", false, 3);
+		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[0-9]+$", false, 3);
+		$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
+		$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
+		$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
+		$save2["auto_scale_log"] = form_input_validate((isset($_POST["auto_scale_log"]) ? $_POST["auto_scale_log"] : ""), "auto_scale_log", "", true, 3);
+		$save2["auto_scale_rigid"] = form_input_validate((isset($_POST["auto_scale_rigid"]) ? $_POST["auto_scale_rigid"] : ""), "auto_scale_rigid", "", true, 3);
+		$save2["auto_padding"] = form_input_validate((isset($_POST["auto_padding"]) ? $_POST["auto_padding"] : ""), "auto_padding", "", true, 3);
+		$save2["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", false, 3);
+		$save2["export"] = form_input_validate($_POST["export"], "export", "", true, 3);
+		$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
+		$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^[0-9]+$", false, 3);
 		
 		if (!is_error_message()) {
 			$local_graph_id = sql_save($save1, "graph_local");
 		}
 		
-		if ((!is_error_message()) && (!empty($_POST["local_graph_id"]))) {
-			if (!empty($_POST["local_graph_id"])) {
-				$save2["local_graph_id"] = $local_graph_id;
-				$graph_templates_graph_id = sql_save($save2, "graph_templates_graph");
-			}
+		if (!is_error_message()) {
+			$save2["local_graph_id"] = $local_graph_id;
+			$graph_templates_graph_id = sql_save($save2, "graph_templates_graph");
 			
 			if ($graph_templates_graph_id) {
 				raise_message(1);
@@ -310,8 +316,10 @@ function form_save() {
 		}
 	}
 	
-	if ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
-		header ("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id));
+	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
+		header ("Location: graphs.php?action=graph_edit&host_id=" . $_POST["host_id"] . "&new=1");
+	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
+		header ("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . "&host_id=" . $_POST["host_id"]);
 	}else{
 		header ("Location: graphs.php");
 	}
@@ -1072,7 +1080,7 @@ function graph_edit() {
 	<?php
 	end_box();
 	
-	if (!empty($_GET["id"])) {
+	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		$i = 0;
@@ -1103,7 +1111,12 @@ function graph_edit() {
 	form_hidden_id("local_graph_id",(isset($graphs) ? $graphs["local_graph_id"] : "0"));
 	form_hidden_id("local_graph_template_graph_id",(isset($graphs) ? $graphs["local_graph_template_graph_id"] : "0"));
 	form_hidden_id("_graph_template_id",(isset($graphs) ? $graphs["graph_template_id"] : "0"));
-	form_hidden_box("save_component_graph","1","");
+	
+	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
+		form_hidden_box("save_component_graph","1","");
+	}else{
+		form_hidden_box("save_component_graph_new","1","");
+	}
 	
 	form_save_button("graphs.php");
 }

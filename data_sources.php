@@ -93,25 +93,33 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	include_once ("include/utility_functions.php");
 	
+	if ((isset($_POST["save_component_data_source_new"])) && (isset($_POST["data_template_id"]))) {
+		$save["id"] = $_POST["local_data_id"];
+		$save["data_template_id"] = $_POST["data_template_id"];
+		$save["host_id"] = $_POST["host_id"];
+		
+		$local_data_id = sql_save($save, "data_local");
+		
+		change_data_template($local_data_id, $_POST["data_template_id"]);
+	}
+	
 	if (isset($_POST["save_component_data_source"])) {
 		$save1["id"] = $_POST["local_data_id"];
 		$save1["data_template_id"] = $_POST["data_template_id"];
 		$save1["host_id"] = $_POST["host_id"];
 		
-		if (!empty($_POST["local_data_id"])) {
-			$save2["id"] = $_POST["data_template_data_id"];
-			$save2["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
-			$save2["data_template_id"] = $_POST["data_template_id"];
-			$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
-			$save2["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-			$save2["data_source_path"] = form_input_validate($_POST["data_source_path"], "data_source_path", "", true, 3);
-			$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
-			$save2["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
-		}
+		$save2["id"] = $_POST["data_template_data_id"];
+		$save2["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
+		$save2["data_template_id"] = $_POST["data_template_id"];
+		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
+		$save2["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save2["data_source_path"] = form_input_validate($_POST["data_source_path"], "data_source_path", "", true, 3);
+		$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
+		$save2["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
 		
 		/* if this is a new data source and a template has been selected, skip item creation this time
 		otherwise it throws off the templatate creation because of the NULL data */
-		if (($_POST["data_template_id"] == $_POST["_data_template_id"]) && (!empty($_POST["local_data_id"]))) {
+		if ($_POST["data_template_id"] == $_POST["_data_template_id"]) {
 			$save3["id"] = $_POST["data_template_rrd_id"];
 			$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
 			$save3["data_template_id"] = $_POST["data_template_id"];
@@ -125,9 +133,7 @@ function form_save() {
 		
 		if (!is_error_message()) {
 			$local_data_id = sql_save($save1, "data_local");
-		}
-		
-		if ((!is_error_message()) && (!empty($_POST["local_data_id"]))) {
+			
 			$save2["local_data_id"] = $local_data_id;
 			$data_template_data_id = sql_save($save2, "data_template_data");
 			
@@ -140,7 +146,7 @@ function form_save() {
 		
 		/* if this is a new data source and a template has been selected, skip item creation this time
 		otherwise it throws off the templatate creation because of the NULL data */
-		if (($_POST["data_template_id"] == $_POST["_data_template_id"]) && (!empty($_POST["local_data_id"])) && (!is_error_message())){
+		if (($_POST["data_template_id"] == $_POST["_data_template_id"]) && (!is_error_message())){
 			$save3["local_data_id"] = $local_data_id;
 			$data_template_rrd_id = sql_save($save3, "data_template_rrd");
 			
@@ -166,20 +172,18 @@ function form_save() {
 				}
 			}
 			
-			if (!empty($_POST["local_data_id"])) {
-				/* if no data source path has been entered, generate one */
-				if (empty($_POST["data_source_path"])) {
-					generate_data_source_path($local_data_id);
-				}
-				
-				/* save entried in 'selected rras' field */
-				db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
-				
-				if (isset($_POST["rra_id"])) {
-					for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
-						db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
-							values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
-					}
+			/* if no data source path has been entered, generate one */
+			if (empty($_POST["data_source_path"])) {
+				generate_data_source_path($local_data_id);
+			}
+			
+			/* save entried in 'selected rras' field */
+			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
+			
+			if (isset($_POST["rra_id"])) {
+				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
 				}
 			}
 		}
@@ -228,11 +232,13 @@ function form_save() {
 	}
 	
 	/* update the poller cache last to make sure everything is fresh */
-	if (!is_error_message()) {
+	if ((!is_error_message()) && (!empty($local_data_id))) {
 		update_poller_cache($local_data_id);
 	}
 	
-	if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
+	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {
+		header ("Location: data_sources.php?action=ds_edit&host_id=" . $_POST["host_id"] . "&new=1");
+	}elseif ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
 		header ("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["view_rrd"]) ? $_POST["view_rrd"] : "0"));
 	}else{
 		header ("Location: data_sources.php");
@@ -631,7 +637,7 @@ function ds_edit() {
 	<?php
 	end_box();
 	
-	if (!empty($_GET["id"])) {
+	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		$i = 0;
@@ -766,7 +772,12 @@ function ds_edit() {
 	form_hidden_id("local_data_template_data_id",(isset($data) ? $data["local_data_template_data_id"] : "0"));
 	form_hidden_id("local_data_template_rrd_id",(isset($rrd) ? $rrd["local_data_template_rrd_id"] : "0"));
 	form_hidden_id("local_data_id",(isset($data) ? $data["local_data_id"] : "0"));
-	form_hidden_box("save_component_data_source","1","");
+	
+	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
+		form_hidden_box("save_component_data_source","1","");
+	}else{
+		form_hidden_box("save_component_data_source_new","1","");
+	}
 	
 	form_save_button("data_sources.php");	
 }
