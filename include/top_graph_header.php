@@ -80,7 +80,12 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 <html>
 <head>
 	<title>cacti</title>
-	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";?>
+	<?php if ($_SESSION["custom"]) {
+		print "<meta http-equiv=refresh content='99999'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";
+	}else{
+		print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";
+	}
+	?>
 	<link href="include/main.css" rel="stylesheet">
 
 	<script type="text/javascript" src="include/treeview/ua.js"></script>

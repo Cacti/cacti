@@ -453,9 +453,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print "<table width='98%' align='center' cellpadding='3'>";
 
 	/* include time span selector */
-	load_current_session_value("predefined_timespan", "sess_current_timespan", read_graph_config_option("default_timespan"));
-
-	/* include time span selector */
 	if (read_graph_config_option("timestamp_sel") == "on") {
 		html_graph_start_box(3, false);
 		include("./include/html/inc_timespan_selector.php");
