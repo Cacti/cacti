@@ -762,6 +762,7 @@ function graph_remove() {
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
 		db_execute("delete from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"]);
+		db_execute("delete from graph_tree_items where local_graph_id=" . $_GET["local_graph_id"]);
 		db_execute("delete from graph_local where id=" . $_GET["local_graph_id"]);
 	}	
 }
