@@ -794,6 +794,11 @@ function input_edit() {
 function template_edit() {
 	global $colors, $struct_graph, $image_types;
 	
+	/* graph item list goes here */
+	if (!empty($_GET["id"])) {
+		item();
+	}
+	
 	if (!empty($_GET["id"])) {
 		$template = db_fetch_row("select * from graph_templates where id=" . $_GET["id"]);
 		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
@@ -801,11 +806,6 @@ function template_edit() {
 		$header_label = "[edit: " . $template["name"] . "]";
 	}else{
 		$header_label = "[new]";
-	}
-	
-	/* graph item list goes here */
-	if (!empty($_GET["id"])) {
-		item();
 	}
 	
 	start_box("<strong>Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
