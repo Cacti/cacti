@@ -27,7 +27,22 @@
 include("./include/auth.php");
 include("./include/top_header.php");
 
-print "<strong>raXnet cacti (<a href='about.php'>about</a>)</strong>\n";
+?>
+<table width="98%" align="center">
+	<tr>
+		<td class="textArea">
+			<strong>You are now logged into <a href="about.php">Cacti</a>. You can follow these basic steps to get 
+			started.</strong>
+			
+			<ul>
+				<li><a href="host.php">Create polling hosts</a> for your devices</li>
+				<li><a href="graphs_new.php">Create graphs</a> for your new polling hosts</li>
+				<li><a href="graph_view.php">View</a> your new graphs</li>
+			</ul>
+		</td>
+	</tr>
+</table>
+<?php
 
 include("./include/bottom_footer.php");
 
