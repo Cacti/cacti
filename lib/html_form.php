@@ -234,83 +234,31 @@ function DrawFormItemColorSelect($form_name, $form_previous_value, $form_none_en
 	
     if ($form_previous_value=="") {
 	$form_previous_value = $form_default_value;
+    }
+    
+    $colors_list = db_fetch_assoc("select id,hex from def_colors order by hex desc");
 
-    }
-    print "<tr><td>\n";
-    if ($form_none_entry != "") {
-	print "<input type='radio' name='$form_name' value='0'";
-	if ($form_previous_value==0){ print " checked"; }
-	print "> $form_none_entry\n";
-		
-    }
-    print "<table width='100%' border='0'>\n";
-    $colors = db_fetch_assoc("select * from def_colors order by hex");
-    $rows = sizeof($colors);
-    $i = 0;
-		
-    $row_style = "color"; $k = 0; $o = 0;
-    while ($i < $rows) {
-	$color = $colors[$i];		
-	/* we reached the end, wrap up row and continue on next. there will be no 
-	 more database pulls from this point in the loop */
-	if ($o == $rows) {
-	    $row_style = "radio";
-				
-	    /* only fill in td's if there we are NOT at the end of a row */
-	    if ($k != 0) {
-		for ($p = 1; $p < (15-$k); $p++) {
-		    print "<td></td>";
-		}
-		
-		//print "</tr><tr height=\"10\"><td>&nbsp;</td></tr><tr>";
-		print "</tr><tr>";
-	    }
-	    
-	    $k = 0; $o = 0;
-	}
-	
-	/* draw either a picture or label */
-	if ($row_style == "color") {
-	    print "<td height='15' bgcolor='#$color[Hex]'>
-						&nbsp;
-				</td>\n";
-	    $row_array_id[$k] = $color[ID];
-				
-	    $o++;
-	} else {
-	    print "<td align='center'>
-		    <input type='radio' name='$form_name' value='$row_array_id[$k]'";
-	    if ($form_previous_value == $row_array_id[$k]){ print " checked"; }
-	    print ">
-			</td>\n";
-	}
-			
-	/* every second time, incriment sql counter */
-	$j++;
-	if ($j == 2) {
-	    $j = 0;
-	    $i++;
-	}
-	
-	$k++;
-	/* every fifteenth time, write a new row */
-	if ($k == 15) {
-	    $k = 0;
-	    if ($row_style == "color") {
-		$row_style = "radio";
-		//print "</tr><tr height=\"5\"><td></td></tr><tr>";
-		print "</tr><tr>";
-	    } else {
-		$row_style = "color";
-		//print "</tr><tr height=\"5\"><td>&nbsp;</td></tr><tr>";
-		print "</tr><tr>";
-	    }
-	    
-	}
-    }?>
-			</table>
-		</td></tr>
-    <?}
+    ?>
+    
+		<td>
+			<select name="<?print $form_name;?>">
+				<?if ($form_none_entry != "") {?><option value="0"><?print $form_none_entry;?></option><?}?>
+				<?
+				if (sizeof($colors_list) > 0) {
+					foreach ($colors_list as $color) {
+						print "<option style='background: #$color[hex];' value='$color[id]'";
+						
+						if ($form_previous_value == $color[id]) {
+							print " selected";
+						}
+						
+						print ">$color[hex]</option>\n";
+					}
+				}
+				?>
+			</select>
+		</td>
+<?}
     
     
 /* create a multiselect listbox */
@@ -352,7 +300,6 @@ function DrawFormArea($text) { ?>
 <?}
 
 function DrawConfirmForm($title_text, $body_text, $current_script_name, $action_url) { ?>
-
 		<br>
 		<table align="center" cellpadding=1 cellspacing=0 border=0 bgcolor="#B61D22" width="60%">
 			<tr>
@@ -379,6 +326,24 @@ function DrawConfirmButtons($action_url, $script_name) { ?>
 			<a href="<?print $script_name . $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
 		</td>
 	</tr>
+<?}
+
+function new_table() { ?>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td>
+			<table align="center" width="98%" cellpadding=1 cellspacing=0 border=0 bgcolor="#00438C">
+				<tr>
+					<td width="100%">
+						<table cellpadding=3 cellspacing=0 border=0 bgcolor="#E1E1E1" width="100%">
 <?}
 
 /* ------------------ Stripped Form Objects Data ---------------------- */
@@ -528,7 +493,7 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_background_color, $matrix_te
 		$matrix_custom_url = $SCRIPT_FILENAME . "?action=edit";
 	} ?>
 		<td bgcolor="#<?print $matrix_background_color;?>" height="1">
-			<font color="#<?print $matrix_text_color;?>"><?print $matrix_name;?></font>
+			<strong><font color="#<?print $matrix_text_color;?>"><?print $matrix_name;?></font></strong>
 		
 		</td>
 <?}
