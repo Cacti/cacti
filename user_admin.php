@@ -108,11 +108,6 @@ function form_save() {
 		
 		/* check to make sure the passwords match; if not error */
 		if ($_POST["password"] != $_POST["password_confirm"]) {
-			$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
-			$array_error_fields["password"] = "password";
-			$array_error_fields["password_confirm"] = "password_confirm";
-			$_SESSION["sess_error_fields"] = serialize($array_error_fields);
-			
 			raise_message(4);
 		}
 		
