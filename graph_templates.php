@@ -540,7 +540,8 @@ function item_edit() {
 		where data_template_rrd.data_template_id=data_template.id 
 		and data_template_data.data_template_id=data_template.id
 		and data_template_data.local_data_id=0
-		and data_template_rrd.local_data_id=0";
+		and data_template_rrd.local_data_id=0
+		order by data_template.name,data_template_data.name,data_template_rrd.data_source_name";
 	
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
