@@ -25,6 +25,8 @@
  +-------------------------------------------------------------------------+
 */
 
+define("MAX_POLLER_RUNTIME", 300);
+
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
@@ -169,6 +171,13 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
 
 			process_poller_output($rrdtool_pipe);
+
+			/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
+			if (($start + MAX_POLLER_RUNTIME) < time()) {
+				rrd_close($rrdtool_pipe);
+				cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true);
+				exit;
+			}
 
 			usleep(500000);
 			$loop_count++;
