@@ -24,7 +24,6 @@
 <?
 $section = "User Administration"; include ('include/auth.php');
 include_once ("include/config_settings.php");
-include_once ("include/functions.php");
 include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
@@ -44,6 +43,9 @@ switch ($_REQUEST["action"]) {
 		}
 	}
 	}
+	
+	/* reset local settings cache so the user sees the new settings */
+	session_unregister("sess_config_array");
 
 	header ("Location: settings.php?tab=" . $_POST["tab"]);
 	break;

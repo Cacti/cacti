@@ -33,7 +33,7 @@ switch ($_REQUEST["action"]) {
 		header ("Location: $redirect_location"); exit;
 		break;
 	case 'gprint_presets_remove':
-		if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+		if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 			include_once ('include/top_header.php');
 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", getenv("HTTP_REFERER"), "graph_templates.php?action=gprint_presets_remove&gprint_preset_id=" . $_GET["gprint_preset_id"]);
 			exit;
@@ -70,7 +70,7 @@ switch ($_REQUEST["action"]) {
 		include_once ("include/bottom_footer.php");
 		break;
 	case 'item_presets_remove':
-		if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+		if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 			include_once ('include/top_header.php');
 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the item preset <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>?", getenv("HTTP_REFERER"), "graph_templates.php?action=item_presets_remove&graph_template_id=" . $_GET["graph_template_id"]);
 			exit;
@@ -211,17 +211,17 @@ function form_save() {
 	}elseif (isset($_POST["save_component_item"])) {
 		item_save();
 
-		if ($config["full_view_graph_template"]["value"] == "") {
+		if (read_config_option("full_view_graph_template") == "") {
 			return "graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"];
-		}elseif ($config["full_view_graph_template"]["value"] == "on") {
+		}elseif (read_config_option("full_view_graph_template") == "on") {
 			return "graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"];
 		}
 	}elseif (isset($_POST["save_component_input"])) {
 		input_save();
 		
-		if ($config["full_view_graph_template"]["value"] == "") {
+		if (read_config_option("full_view_graph_template") == "") {
 			return "graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"];
-		}elseif ($config["full_view_graph_template"]["value"] == "on") {
+		}elseif (read_config_option("full_view_graph_template") == "on") {
 			return "graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"];
 		}
 	}elseif (isset($_POST["save_component_item_presets"])) {
@@ -768,7 +768,7 @@ function item_moveup() {
 function item() {
 	global $colors, $config;
 	
-	if ($config["full_view_graph_template"]["value"] == "") {
+	if (read_config_option("full_view_graph_template") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
@@ -861,7 +861,7 @@ function item_edit() {
 	
 	draw_tabs();
 	
-	if ($config["full_view_graph_template"]["value"] == "") {
+	if (read_config_option("full_view_graph_template") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
@@ -892,14 +892,14 @@ function item_edit() {
 function template_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=" . $_GET["graph_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from graph_templates where id=" . $_GET["graph_template_id"]);
 		
 		$graph_template_input = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $_GET["graph_template_id"]);
@@ -982,7 +982,7 @@ function template_edit() {
 	
 	draw_tabs();
 	
-	if ($config["full_view_graph_template"]["value"] == "") {
+	if (read_config_option("full_view_graph_template") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
@@ -996,7 +996,7 @@ function template_edit() {
 		unset($template_graph);
 	}
 	
-	if ($config["full_view_graph_template"]["value"] == "on") {
+	if (read_config_option("full_view_graph_template") == "on") {
 		item();	
 	}
 	
@@ -1220,14 +1220,14 @@ function template() {
 function input_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from graph_template_input where id=" . $_GET["graph_template_input_id"]);
 		db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $_GET["graph_template_input_id"]);
 	}
@@ -1263,7 +1263,7 @@ function input_edit() {
 	
 	draw_tabs();
 	
-	if ($config["full_view_graph_template"]["value"] == "") {
+	if (read_config_option("full_view_graph_template") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();

@@ -239,14 +239,14 @@ function item_edit() {
 function cdef_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "cdef.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from cdef where id=" . $_GET["id"]);
 		db_execute("delete from cdef_items where cdef_id=" . $_GET["id"]);
 	}
@@ -339,13 +339,13 @@ function cdef_edit() {
 function cdef() {
 	global $colors;
 	
-	start_box("<strong>CDEF's</strong>", "", "cdef.php?action=edit");
-	                         
+	start_box("<strong>CDEF's</strong>", "98%", $colors["header"], "3", "center", "cdef.php?action=edit");
+	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
-    
+    	
 	$cdefs = db_fetch_assoc("select * from cdef order by name");
 	
 	if (sizeof($cdefs) > 0) {

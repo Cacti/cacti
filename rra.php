@@ -94,13 +94,13 @@ function rra_save() {
 }
 
 function rra_remove() {
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include_once ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from rra where id=" . $_GET["id"]);
 		db_execute("delete from rra_cf where rra_id=" . $_GET["id"]);
     	}	

@@ -38,8 +38,8 @@ switch ($_GET["rraid"]) {
 
 /* take graph permissions into account here, if the user does not have permission
  give an "access denied" message */
-if ($config["global_auth"]["value"] == "on") {
-    $user = db_fetch_row("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],$config["guest_user"]["value"]));
+if (read_config_option("global_auth") == "on") {
+    $user = db_fetch_row("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],read_config_option("guest_user")));
     
     if ($config["graph_policy"]["auth"] == "1") {
 	if (sizeof($user) > 0) { $access_denied = true; }

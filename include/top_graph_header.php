@@ -27,7 +27,7 @@
 	
 	$tree_id = $HTTP_GET_VARS["tree_id"];
 	
-	$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
+	$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], read_config_option("guest_user"));
 	
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
@@ -35,7 +35,7 @@
 	$config["graph_policy"]["auth"] = $graph_policy;
 	
 	/* load all of the custom per-user graph settings */
-	$array_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]); 
+	$array_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS['user_id'], read_config_option("guest_user")); 
 	
 	/* set the default action if none has been set */
 	//if (($action != "tree") && ($action != "list") && ($action != "preview")) {
@@ -106,7 +106,7 @@
 	<?if ($action == "tree") {?>
 		<form name="form_tree_id">
 			<?
-			if ($config["global_auth"]["value"] == "on") {
+			if (read_config_option("global_auth") == "on") {
 				if ($config["graph_policy"]["auth"] == "1") {
 					$sql_where = "where agh.userid is null";
 				}elseif ($config["graph_policy"]["auth"] == "2") {
@@ -115,7 +115,7 @@
 				
 				$tree_list = db_fetch_assoc("select gh.*,agh.userid
 					from graph_tree_view gh 
-					left join auth_graph_hierarchy agh on (gh.id=agh.hierarchyid and agh.userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]) . ") 
+					left join auth_graph_hierarchy agh on (gh.id=agh.hierarchyid and agh.userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'], read_config_option("guest_user")) . ") 
 					$sql_where
 					order by gh.name");
 			}else{

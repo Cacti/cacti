@@ -196,14 +196,14 @@ function item_save() {
 function item_remove() {
         global $config;
 
-        if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+        if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
                 include ('include/top_header.php');
                 DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the item <strong>'" . db_fetch_cell("select title from graph_tree_view_items where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=" . $_GET["id"]);
                 include ('include/bottom_footer.php');
                 exit;
         }
 
-        if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+        if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
                 db_execute("delete from graph_tree_view_items where id=" . $_GET["id"]);
         }
 }
@@ -229,14 +229,14 @@ function tree_save() {
 function tree_remove() {
 	global $config;
 
-        if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+        if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
                 include ('include/top_header.php');
                 DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree_view where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=" . $_GET["id"]);
                 include ('include/bottom_footer.php');
                 exit;
         }
                 
-        if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+        if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
                 db_execute("delete from graph_tree_view where id=" . $_GET["id"]);
         }
 }

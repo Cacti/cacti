@@ -33,7 +33,7 @@ header ("Cache-Control: no-cache, must-revalidate");
 	include_once ("include/functions.php");
 	include ("include/top_graph_header.php");
 	
-$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
+$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], read_config_option("guest_user"));
 
 if (isset($args[hide]) == true) {
 	/* find out if the current user has rights here */
@@ -48,7 +48,7 @@ if (isset($args[hide]) == true) {
 
 /* if auth is enabled, get some basic info about this user so we know what they have
 rights to */
-if ($config["global_auth"]["value"] == "on") {
+if (read_config_option("global_auth") == "on") {
 	$user = db_fetch_row("select GraphPolicy,ShowTree from auth_users where id=$user_id");
 	
 	if (sizeof($user) == 0) {
@@ -80,10 +80,10 @@ switch ($action) {
 		graph permissions into account here. if a user does not have rights to a 
 		particular graph; do not show it. they will get an access denied message
 		if they try and view the graph directly. */
-		if ($config["global_auth"]["value"] == "on") {
+		if (read_config_option("global_auth") == "on") {
 			/* take tree permissions into account here, if the user does not have permission
 			give an "access denied" message */
-			$user = db_fetch_row("select UserID from auth_graph_hierarchy where hierarchyid=$tree_id and userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'],$config["guest_user"]["value"]));
+			$user = db_fetch_row("select UserID from auth_graph_hierarchy where hierarchyid=$tree_id and userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'],read_config_option("guest_user")));
 			
 			if ($config["graph_policy"]["auth"] == "1") {
 				if (sizeof($user) > 0) { $access_denied = true; }

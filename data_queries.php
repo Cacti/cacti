@@ -29,13 +29,13 @@
 
 switch ($action) {
 	case 'remove':
-		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+		if ((read_config_option("remove_verification") == "on") && ($confirm != "yes")) {
 			include_once ('include/top_header.php');
 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this SNMP host?", $current_script_name, "?action=remove&id=$id");
 			exit;
 		}
 		
-		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+		if ((read_config_option("remove_verification") == "") || ($confirm == "yes")) {
 			db_execute("delete from snmp_hosts where id=$id");
 			db_execute("delete from snmp_hosts_interfaces where hostid=$id");
 		}

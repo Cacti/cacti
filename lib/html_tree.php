@@ -27,7 +27,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 
 #    print "<P><strong><A HREF='graph_view.php?action=tree&tree_id=$tree_id'>$treeinfo[Title]</A></strong></P>\n";
     
-    	if ($config["global_auth"]["value"] == "on") {
+    	if (read_config_option("global_auth") == "on") {
 		$sql = "select 
 			h.id,h.graph_id,h.rra_id,h.type,h.title,h.order_key,
 			g.Title as gtitle,

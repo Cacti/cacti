@@ -87,14 +87,14 @@ function form_save() {
 function field_remove() {
 	global $config, $registered_cacti_names;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		/* get information about the field we're going to delete so we can re-order the seqs */
 		$field = db_fetch_row("select input_output,data_input_id from data_input_fields where id=" . $_GET["id"]);
 		
@@ -267,14 +267,14 @@ function field_edit() {
 function data_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from data_input where id=" . $_GET["id"]);
 		db_execute("delete from data_input_fields where data_input_id=" . $_GET["id"]);
 		db_execute("delete from data_input_data where data_input_id=" . $_GET["id"]);

@@ -32,7 +32,7 @@ if (isset($form[action])) { $action = $form[action]; } else { $action = $args[ac
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
 /* get current user */
-$current_user_id = GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"], $config["guest_user"]["value"]);
+$current_user_id = GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"], read_config_option("guest_user"));
 
 switch ($action) {
  case 'save':

@@ -67,8 +67,8 @@ while ($i < $rows) {
 		}
 		
 		$str = ereg_replace("<path_cacti>", $path_cacti,$str);
-		$str = ereg_replace("<path_snmpget>", $config["path_snmpget"]["value"],$str);
-		$str = ereg_replace("<path_php_binary>", $config["path_php_binary"]["value"],$str);
+		$str = ereg_replace("<path_snmpget>", read_config_option("path_snmpget"),$str);
+		$str = ereg_replace("<path_php_binary>", read_config_option("path_php_binary"),$str);
 		
 		/* take output string and parse it on the delimiter */
 		$out_data_array = ParseDelimitedLine(`$str`,$delimeter);
@@ -173,18 +173,18 @@ while ($i < $rows) {
 }
 
 /* dump static images/html file if user wants it */
-if ($config["path_html_export"]["value"] != "") {
-	if ($config["path_html_export_skip"]["value"] == "1") {
+if (read_config_option("path_html_export") != "") {
+	if (read_config_option("path_html_export_skip") == "1") {
 		include("export.php");
 	}else{
-		if ($config["path_html_export_skip"]["value"] == $config["path_html_export_ctr"]["value"]) {
+		if (read_config_option("path_html_export_skip") == read_config_option("path_html_export_ctr")) {
 			mysql_query("update settings set value=1 where name=\"path_html_export_ctr\"", $cnn_id);
 			include("export.php");
 		}else{
-			if ($config["path_html_export_ctr"]["value"] == "") {
+			if (read_config_option("path_html_export_ctr") == "") {
 				mysql_query("update settings set value=1 where name=\"path_html_export_ctr\"", $cnn_id);
 			}else{
-				mysql_query("update settings set value=" . ($config["path_html_export_ctr"]["value"] + 1) . " where name=\"path_html_export_ctr\"", $cnn_id);
+				mysql_query("update settings set value=" . (read_config_option("path_html_export_ctr") + 1) . " where name=\"path_html_export_ctr\"", $cnn_id);
 			}
 		}
 	}

@@ -28,6 +28,7 @@ function read_config_option($config_name) {
 	
 	if (!isset($config_array[$config_name])) {
 		$config_array[$config_name] = db_fetch_cell("select value from settings where name='$config_name'");
+		$_SESSION["sess_config_array"] = serialize($config_array);
 	}
 	
 	return $config_array[$config_name];
@@ -162,8 +163,8 @@ function GetCronPath($dsid) {
 		
 		/* do a little path subsitution */
 		$str = ereg_replace ("<path_cacti>", $paths[cacti],$str);
-		$str = ereg_replace ("<path_snmpget>", $config["path_snmpget"]["value"],$str);
-		$str = ereg_replace ("<path_php_binary>", $config["path_php_binary"]["value"],$str);
+		$str = ereg_replace ("<path_snmpget>", read_config_option("path_snmpget"),$str);
+		$str = ereg_replace ("<path_php_binary>", read_config_option("path_php_binary"),$str);
 		
 		return $str;
     }

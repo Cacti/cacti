@@ -146,7 +146,7 @@ function graph_perms_edit() {
 		unset($user);
 	}
 	
-	if ($config["full_view_user_admin"]["value"] == "") {
+	if (read_config_option("full_view_user_admin") == "") {
 		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
@@ -210,7 +210,7 @@ function graph_perms_edit() {
 	DrawFormItemHiddenIDField("user_id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_graph_perms","1","");
 	
-	if ($config["full_view_user_admin"]["value"] == "") {
+	if (read_config_option("full_view_user_admin") == "") {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
@@ -233,12 +233,12 @@ function graph_config_edit() {
 	global $colors, $config;
 	
 	if (isset($_GET["id"])) {
-		$graph_settings = LoadSettingsIntoArray($_SESSION["user_id"], $config["guest_user"]["value"]);
+		$graph_settings = LoadSettingsIntoArray($_SESSION["user_id"], read_config_option("guest_user"));
 	}else{
 		unset($user);
 	}
 	
-	if ($config["full_view_user_admin"]["value"] == "") {
+	if (read_config_option("full_view_user_admin") == "") {
 		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
@@ -387,14 +387,14 @@ function user_save() {
 function user_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select Username from auth_users where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 	    db_execute("delete from auth_users where id=" . $_GET["id"]);
 	    db_execute("delete from auth_acl where userid=" . $_GET["id"]);
 	    db_execute("delete from auth_hosts where userid=" . $_GET["id"]);
@@ -416,7 +416,7 @@ function user_edit() {
 		unset($user);
 	}
 	
-	if ($config["full_view_user_admin"]["value"] == "") {
+	if (read_config_option("full_view_user_admin") == "") {
 		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
@@ -562,7 +562,7 @@ function user_edit() {
 	DrawFormItemHiddenTextBox("_password",$user["Password"],"");
 	DrawFormItemHiddenTextBox("save_component_user","1","");
 	
-	if ($config["full_view_user_admin"]["value"] == "") {
+	if (read_config_option("full_view_user_admin") == "") {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
@@ -575,7 +575,7 @@ function user_edit() {
 		end_box();
 	}
 	
-	if ($config["full_view_user_admin"]["value"] == "on") {
+	if (read_config_option("full_view_user_admin") == "on") {
 		graph_perms_edit();
 		graph_config_edit();
 	}	

@@ -111,9 +111,9 @@ function form_save() {
 	}elseif (isset($_POST["save_component_data"])) {
 		data_save();
 		
-		if ($config["full_view_data_source"]["value"] == "") {
+		if (read_config_option("full_view_data_source") == "") {
 			return "data_sources.php?action=ds_edit&local_data_id=" . $_POST["local_data_id"] . "&view_rrd=" . $_POST["current_rrd"];
-		}elseif ($config["full_view_data_source"]["value"] == "on") {
+		}elseif (read_config_option("full_view_data_source") == "on") {
 			return "data_sources.php";
 		}
 	}
@@ -196,7 +196,7 @@ function data_edit() {
 	
 	display_output_messages();
 	
-	if ($config["full_view_data_source"]["value"] == "") {
+	if (read_config_option("full_view_data_source") == "") {
 		start_box("<strong>Data Sources</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
@@ -258,7 +258,7 @@ function data_edit() {
 	DrawFormItemHiddenIDField("data_template_data_id",$template_data["id"]);
 	DrawFormItemHiddenTextBox("save_component_data","1","");
 	
-	if ($config["full_view_data_source"]["value"] == "") {
+	if (read_config_option("full_view_data_source") == "") {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
@@ -279,14 +279,14 @@ function data_edit() {
 function ds_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["local_data_id"]);
 		db_execute("delete from data_local where id=" . $_GET["local_data_id"]);
@@ -390,7 +390,7 @@ function ds_edit() {
 	
 	$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 	
-	if ($config["full_view_data_source"]["value"] == "") {
+	if (read_config_option("full_view_data_source") == "") {
 		start_box("<strong>Data Sources</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 		draw_data_form_select("?action=ds_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
@@ -602,7 +602,7 @@ function ds_edit() {
 	<?
 	end_box();
 	
-	if ($config["full_view_data_source"]["value"] == "on") {
+	if (read_config_option("full_view_data_source") == "on") {
 		data_edit();	
 	}
 	

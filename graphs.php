@@ -130,8 +130,6 @@ function draw_graph_form_select($main_action) {
    -------------------------- */
 
 function form_save() {
-	global $config;
-	
 	if ((isset($_POST["save_component_input"])) && (isset($_POST["save_component_graph"]))) {
 		graph_save();
 		input_save();
@@ -148,7 +146,7 @@ function form_save() {
 	}elseif (isset($_POST["save_component_item"])) {
 		item_save();
 		
-		if (empty($config["full_view_graph"]["value"])) {
+		if (read_config_option("full_view_graph") == "") {
 			return "graphs.php?action=item&local_graph_id=" . $_POST["local_graph_id"];
 		}else{
 			return "graphs.php?action=graph_edit&local_graph_id=" . $_POST["local_graph_id"];
@@ -163,7 +161,7 @@ function form_save() {
 function item() {
 	global $colors, $config;
 	
-	if ($config["full_view_graph"]["value"] == "") {
+	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["local_graph_id"]);
 		end_box();
@@ -402,7 +400,7 @@ function item() {
 		end_box();
 	}
 	
-	if (($config["full_view_graph"]["value"] == "") && (sizeof($input_item_list) > 0)) {
+	if ((read_config_option("full_view_graph") == "") && (sizeof($input_item_list) > 0)) {
 		start_box("", "98%", $colors["header"], "3", "center", "");
 		?>
 		<tr bgcolor="#FFFFFF">
@@ -453,7 +451,7 @@ function item_save() {
 function item_edit() {
 	global $colors, $config;
 	
-	if ($config["full_view_graph"]["value"] == "") {
+	if (read_config_option("full_view_graph") == "") {
 		start_box("Graph Template Management [edit]", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["local_graph_id"]);
 		end_box();
@@ -938,14 +936,14 @@ function graph_diff() {
 function graph_remove() {
 	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
+	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=" . $_GET["local_graph_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
 		db_execute("delete from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"]);
 		db_execute("delete from graph_local where id=" . $_GET["local_graph_id"]);
@@ -955,7 +953,7 @@ function graph_remove() {
 function graph_edit() {
 	global $config, $colors;
 	
-	if ($config["full_view_graph"]["value"] == "") {
+	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);
 		end_box();
@@ -981,7 +979,7 @@ function graph_edit() {
 	
 	$graph_template_name = db_fetch_cell("select  name from graph_templates where id=" . $graphs["graph_template_id"]);
 	
-	if (($config["full_view_graph"]["value"] == "on") && ($_GET["local_graph_id"] > 0)) {
+	if ((read_config_option("full_view_graph") == "on") && ($_GET["local_graph_id"] > 0)) {
 		item();
 	}
 	

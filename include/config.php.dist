@@ -80,7 +80,7 @@ $colors[panel_dark] = "C5C5C5";
 $colors[form_alternate1] = "E5E5E5";
 $colors[form_alternate2] = "F5F5F5";
 
-$paths[cacti] = $config["path_webroot"]["value"] . $config["path_webcacti"]["value"];
+$paths[cacti] = read_config_option("path_webroot") . read_config_option("path_webcacti");
 $paths[images] = "$paths[cacti]/graphs";
 $paths[rra] = "$paths[cacti]/rra";
 $paths[log] = "$paths[cacti]/log/rrd.log";

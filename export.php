@@ -25,16 +25,16 @@
 
 include("include/config.php");
 
-exec($config["path_php_binary"]["value"] . " -q $path_cacti/export_index.php > " . $config["path_html_export"]["value"] . "/index.html");
-exec($config["path_php_binary"]["value"] . " -q $path_cacti/export_images.php");
+exec(read_config_option("path_php_binary") . " -q $path_cacti/export_index.php > " . read_config_option("path_html_export") . "/index.html");
+exec(read_config_option("path_php_binary") . " -q $path_cacti/export_images.php");
 
 /* copy the css/images on the first time */
-if (file_exists($config["path_html_export"]["value"] . "/main.css") == false) {
-	copy("$path_cacti/css/main.css", $config["path_html_export"]["value"] . "/main.css");
-	copy("$path_cacti/images/top_tabs_export.gif", $config["path_html_export"]["value"] . "/top_tabs_export.gif");
-	copy("$path_cacti/images/top_tabs_graph_preview.gif", $config["path_html_export"]["value"] . "/top_tabs_graph_preview.gif");
-	copy("$path_cacti/images/top_tabs_graph_preview_down.gif", $config["path_html_export"]["value"] . "/top_tabs_graph_preview_down.gif");
-	copy("$path_cacti/images/transparent_line.gif", $config["path_html_export"]["value"] . "/transparent_line.gif");
+if (file_exists(read_config_option("path_html_export") . "/main.css") == false) {
+	copy("$path_cacti/css/main.css", read_config_option("path_html_export") . "/main.css");
+	copy("$path_cacti/images/top_tabs_export.gif", read_config_option("path_html_export") . "/top_tabs_export.gif");
+	copy("$path_cacti/images/top_tabs_graph_preview.gif", read_config_option("path_html_export") . "/top_tabs_graph_preview.gif");
+	copy("$path_cacti/images/top_tabs_graph_preview_down.gif", read_config_option("path_html_export") . "/top_tabs_graph_preview_down.gif");
+	copy("$path_cacti/images/transparent_line.gif", read_config_option("path_html_export") . "/transparent_line.gif");
 }
 
 ?>

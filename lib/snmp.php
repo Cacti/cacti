@@ -51,7 +51,7 @@ function cacti_snmp_get($hostname, $community, $oid, $force_type, $force_version
 		/* remove ALL quotes */
 		$snmp_value = str_replace("\"", "", $snmp_value);
 	}else{
-		$snmp_value = exec($config["path_snmpget"]["value"] . " $hostname $community $oid");
+		$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $community $oid");
 		$snmp_value = trim(ereg_replace("(.*=)", "", $snmp_value));
 	}
 	
@@ -74,7 +74,7 @@ function cacti_snmp_walk($hostname, $community, $oid) {
 			$o++;
 		}
 	}else{
-		$temp_array = exec_into_array($config["path_snmpwalk"]["value"] . " $hostname \"$community\" $oid");
+		$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname \"$community\" $oid");
 		
 		for ($i=0; $i < count($temp_array); $i++) {
 			$snmp_array[$i]["oid"] = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
@@ -91,7 +91,7 @@ function get_snmp_interfaces($hostname,$community,$hostid) {
 	include_once ('include/functions.php');
 	include ('include/config.php');
 	
-	if ($config["log_snmp"]["value"] == "on") {
+	if (read_config_option("log_snmp") == "on") {
 		LogData("SNMP: Getting SNMP data for host: $hostname, community: $community, hostid: $hostid");
 	}
 	

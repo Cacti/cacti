@@ -28,7 +28,7 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 	include_once ('include/functions.php');
 	
 	if ($log_command == true) {
-		LogData("CMD: " . $config["path_rrdtool"]["value"] . " $command_line");
+		LogData("CMD: " . read_config_option("path_rrdtool") . " $command_line");
 	}
 	
 	if ($output_flag == "") { $output_flag = "1"; }
@@ -47,9 +47,9 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 	
 	/* use popen to eliminate the zombie issue */
 	if ($config[cacti_server_os] == "unix") {
-		$fp = popen($config["path_rrdtool"]["value"] . " $command_line", "r");
+		$fp = popen(read_config_option("path_rrdtool") . " $command_line", "r");
 	}elseif ($config[cacti_server_os] == "win32") {
-		$fp = popen($config["path_rrdtool"]["value"] . " $command_line", "rb");
+		$fp = popen(read_config_option("path_rrdtool") . " $command_line", "rb");
 	}
 	
 	/* Return Flag:
@@ -156,9 +156,9 @@ function rrdtool_function_create($dsid, $show_source) {
     }
     
     if ($show_source == true) {
-		return $config["path_rrdtool"]["value"] . " create \\\n$data_source_path$create_ds$create_rra";
+		return read_config_option("path_rrdtool") . " create \\\n$data_source_path$create_ds$create_rra";
     }else{
-		if ($config["log_create"]["value"] == "on") { $log_data = true; }
+		if (read_config_option("log_create") == "on") { $log_data = true; }
 		rrdtool_execute("create $data_source_path $create_ds$create_rra",$log_data,1);
     }
 }
@@ -235,9 +235,9 @@ function rrdtool_function_update($dsid, $multi_data_source, $show_source) {
     $update_string = "update $data_source_path $template_string $update_string";
     
     if ($show_source == true) {
-		return $config["path_rrdtool"]["value"] . " $update_string";
+		return read_config_option("path_rrdtool") . " $update_string";
     }else{
-		if ($config["log_update"]["value"] == "on") { $log_data = true; }
+		if (read_config_option("log_update") == "on") { $log_data = true; }
 		rrdtool_execute($update_string,true,1);
     }
 }
@@ -272,10 +272,10 @@ function rrdtool_function_tune($rrd_tune_array) {
 	
 	if ($rrd_tune != "") {
 		if (file_exists($data_source_path) == true) {
-			$fp = popen($config["path_rrdtool"]["value"] . " tune $data_source_path $rrd_tune", "r");
+			$fp = popen(read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune", "r");
 			pclose($fp);
 			
-			LogData("CMD: " . $config["path_rrdtool"]["value"] . " tune $data_source_path $rrd_tune");
+			LogData("CMD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
 		}
  	}
 }
@@ -286,10 +286,10 @@ function rrdtool_function_graph($graphid, $rra, $graph_data_array) {
     
     /* before we do anything; make sure the user has permission to view this graph,
      if not then get out */
-    if ($config["global_auth"]["value"] == "on") {
+    if (read_config_option("global_auth") == "on") {
 		global $HTTP_COOKIE_VARS;
 		
-		$user_auth = db_fetch_row("select UserID from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],$config["guest_user"]["value"]));
+		$user_auth = db_fetch_row("select UserID from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],read_config_option("guest_user")));
 		
 		if ($config["graph_policy"]["auth"] == "1") {
 			if (sizeof($user_auth) > 0) { $access_denied = true; }
@@ -399,7 +399,7 @@ function rrdtool_function_graph($graphid, $rra, $graph_data_array) {
     
     /* export options */
     if ($graph_data_array["export"] == true) {
-		$graph_opts = $config["path_html_export"]["value"] . "/" . $graph_data_array["export_filename"] . " \\\n";
+		$graph_opts = read_config_option("path_html_export") . "/" . $graph_data_array["export_filename"] . " \\\n";
     }else{
 		if ($graph_data_array["output_filename"] == "") {
 		    $graph_opts = "- \\\n";
@@ -903,13 +903,13 @@ function rrdtool_function_graph($graphid, $rra, $graph_data_array) {
     
     /* either print out the source or pass the source onto rrdtool to get us a nice PNG */
     if ($graph_data_array["print_source"] == "true") {
-		print "<PRE>" . $config["path_rrdtool"]["value"] . " graph $graph_opts$graph_defs$graph_items</PRE>";
+		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$graph_items</PRE>";
     }else{
 		if ($graph_data_array["export"] == true) {
 	    	rrdtool_execute("graph $graph_opts$graph_defs$graph_items", false, "0");
 	    	return 0;
 		}else{
-	    	if ($config["log_graph"]["value"] == "on") { $log_data = true; }
+	    	if (read_config_option("log_graph") == "on") { $log_data = true; }
 	    	//if ($graph_data_array["output_flag"] == "") { $graph_data_array["output_flag"] = 1; }
 	    	return rrdtool_execute("graph $graph_opts$graph_defs$graph_items",$log_data,$graph_data_array["output_flag"]);
 		}

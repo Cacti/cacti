@@ -41,9 +41,9 @@ $graphs = db_fetch_assoc("select
 if (sizeof($graphs) > 0) {
     foreach ($graphs as $graph) {
 	$filename = "graph_$graph[id].html";
-	$fp = fopen($config["path_html_export"]["value"] . "/$filename", "w");
+	$fp = fopen(read_config_option("path_html_export") . "/$filename", "w");
 	
-	$exp_header = shell_exec($config["path_php_binary"]["value"] . " -q $path_cacti/export_header.php");
+	$exp_header = shell_exec(read_config_option("path_php_binary") . " -q $path_cacti/export_header.php");
 	
 	$graph_html = "";
 	$rra_list = db_fetch_assoc("select id,name from rrd_rra order by steps");
