@@ -918,6 +918,8 @@ function host_edit() {
 			and host_snmp_query.host_id=" . $_GET["id"] . "
 			order by snmp_query.name");
 		
+		print "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
+		
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			$xml_array = get_data_query_array($snmp_query["id"]);
@@ -935,7 +937,43 @@ function host_edit() {
 				
 				reset($xml_array["fields"][0]);
 				$snmp_query_indexes = array();
+				$num_visible_fields{$snmp_query["id"]} = 0;
 				$i = 0;
+			}
+			
+			$snmp_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
+			
+			if (sizeof($snmp_query_graphs) > 0) {
+				print "<script type='text/javascript'>\n<!--\n";
+				
+				foreach ($snmp_query_graphs as $snmp_query_graph) {
+					$created_graphs = db_fetch_assoc("select
+						data_local.snmp_index
+						from data_local,data_template_data
+						left join data_input_data on data_template_data.id=data_input_data.data_template_data_id 
+						left join data_input_fields on data_input_data.data_input_field_id=data_input_fields.id
+						where data_local.id=data_template_data.local_data_id
+						and data_input_fields.type_code='output_type'
+						and data_input_data.value='" . $snmp_query_graph["id"] . "'");
+					
+					
+					print "created_graphs[" . $snmp_query_graph["id"] . "] = new Array(";
+					
+					$cg_ctr = 0;
+					if (sizeof($created_graphs) > 0) {
+					foreach ($created_graphs as $created_graph) {
+						print (($cg_ctr > 0) ? "," : "") . "'" . $created_graph["snmp_index"] . "'"; 
+						
+						//$disabled_rows_cache{$snmp_query["id"]}{$created_graph["snmp_index"]} = true;
+						$cg_ctr++;
+					}
+					}
+					
+					print ")\n";
+					
+				}
+				
+				print "//-->\n</script>\n";
 			}
 			
 			print "	<table width='98%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
@@ -979,6 +1017,8 @@ function host_edit() {
 								$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
 								$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
 							}
+							
+							$num_visible_fields{$snmp_query["id"]}++;
 						}elseif (sizeof($raw_data) == 0) {
 							/* we are choosing to not display this column, so unset the associated
 							field in the xml array so it is not drawn */
@@ -989,16 +1029,21 @@ function host_edit() {
 				
 				print "</tr>";
 				
-				$column_counter = 0;
+				 $row_counter = 0;
 				if (sizeof($snmp_query_indexes) > 0) {
 				while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
-					form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+					//$query_row_hash = md5($snmp_query["id"] . "_" . $snmp_index);
+					$query_row = $snmp_query["id"] . "_" . $snmp_index;
+					//$query_row = $row_counter;
+					//form_alternate_row_color($colors["alternate"],$colors["light"],$i); 
+					print "<tr id='line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 					
+					$column_counter = 0;
 					reset($xml_array["fields"][0]);
 					while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
 						if ($field_array[0]["direction"] == "input") {
 							if (isset($snmp_query_data[$field_name][$snmp_index])) {
-								print "<td>" . $snmp_query_data[$field_name][$snmp_index] . "</td>";
+								print "<td onClick='select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
 							}else{
 								print "<td></td>";
 							}
@@ -1008,9 +1053,11 @@ function host_edit() {
 					}
 					
 					print "<td align='right'>";
-					form_base_checkbox("sg_" . $snmp_query["id"] . "_" . $snmp_index,"","","",0,false);
+					form_base_checkbox("sg_$query_row","","","",0,false);
 					print "</td>";
 					print "</tr>\n";
+					
+					$row_counter++;
 				}
 				}
 			}else{
@@ -1024,9 +1071,11 @@ function host_edit() {
 						<td width='1' valign='top'>
 							<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 						</td>
-						<td align='right'>";
-							form_base_dropdown("sgg_" . $snmp_query["id"],db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name"),"name","id","0","","");
-			print "			</td>
+						<td align='right'>
+							<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='updateDeps(" . $snmp_query["id"] . "," . $num_visible_fields{$snmp_query["id"]} . ");'>
+								"; create_list(db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name"),"name","id","0"); print "
+							</select>
+						</td>
 					</tr>
 				</table>
 				<br>";
@@ -1035,6 +1084,103 @@ function host_edit() {
 	}
 	
 	form_save_button("host.php");
+	
+	?>
+	<script type="text/javascript">
+	<!--
+	
+	
+	
+	function updateSelectionIndicators() {
+	  if (document.getElementById) {
+	  
+	  there_are_any_unchecked_ones = false;
+	  for (var j = 0; j < document.chk.elements.length; j++) {
+	    if( document.chk.elements[j].name.substr( 0, 3 ) == 'sg_') {
+	      if (document.chk.elements[j].checked == false) there_are_any_unchecked_ones = true;      
+	
+		  // make the selected ones colored
+		  lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(3));
+	      if (document.chk.elements[j].checked) lineid.style.backgroundColor = 'gold';
+		else lineid.style.backgroundColor = '';
+	    }
+	  }
+	  }
+	}
+	
+	function select_line(snmp_query_id, snmp_index, update) {
+		if (isDisabled(snmp_query_id, snmp_index)) { return; }
+		
+		if (document.getElementById) {
+			msgid = document.getElementById('sg_' + snmp_query_id + '_' + snmp_index);
+			lineid = document.getElementById('line'+ snmp_query_id + '_' + snmp_index);
+			
+			if (!update) msgid.checked = !msgid.checked;
+			
+			updateSelectionIndicators();
+		}
+	}
+	
+	function isDisabled(snmp_query_id, snmp_index) {
+		dropdown = document.getElementById('sgg_'+ snmp_query_id);
+		var snmp_query_graph_id = dropdown.value
+		
+		for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
+			if (created_graphs[snmp_query_graph_id][i] == snmp_index) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	function updateDeps(snmp_query_id, num_columns) {
+		resetDeps(snmp_query_id, num_columns);
+		
+		dropdown = document.getElementById('sgg_'+ snmp_query_id);
+		var snmp_query_graph_id = dropdown.value
+		
+		for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
+			for (var j = 0; j < num_columns; j++) {
+				lineid = document.getElementById('text' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i] + '_' + j);
+				lineid.style.color = '888888';
+			}
+			
+			chkbx = document.getElementById('sg_'+ snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
+			chkbx.style.visibility = 'hidden';
+			chkbx.checked = false;
+		}
+	}
+	
+	function resetDeps(snmp_query_id, num_columns) {
+		var prefix = 'sg_' + snmp_query_id + '_'
+		
+		for (var i = 0; i < document.chk.elements.length; i++) {
+			if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
+				for (var j = 0; j < num_columns; j++) {
+					lineid = document.getElementById('text' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
+					lineid.style.color = '000000';
+				}
+				
+				chkbx = document.getElementById('sg_'+ snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length));
+				chkbx.style.visibility = 'visible';
+			}
+		}
+	}
+	
+	//-->
+	</script>
+	<?php
+	
+	reset($snmp_queries);
+	
+	if (sizeof($snmp_queries) > 0) {
+	foreach ($snmp_queries as $snmp_query) {
+		$num_input_fields = $num_visible_fields{$snmp_query["id"]};
+		
+		print "<script type='text/javascript'>updateDeps(" . $snmp_query["id"] . "," . ($num_input_fields) . ");</script>\n";
+	}
+	}
 }
 
 function host() {
