@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004 Ian Berry                                            |
+ | Copyright (C) 2004 Larry Adams & Ian Berry                                            |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -93,7 +93,7 @@ class Net_Ping
 		if ($this->host["hostname"]) {
 			/* initialize variables */
 			$this->ping_status = "down";
-			$this->ping_response = "default";
+			$this->ping_response = "ICMP Ping timed out";
 
 			/* initialize the socket */
 			$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
@@ -123,7 +123,7 @@ class Net_Ping
 			while (1) {
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
-					$this->response = "ICMP Timed out";
+					$this->response = "ICMP ping Timed out";
 					return false;
 				}
 
@@ -155,7 +155,7 @@ class Net_Ping
 	function ping_snmp() {
 		/* initialize variables */
 		$this->snmp_status = "down";
-		$this->snmp_response = "default";
+		$this->snmp_response = "Host did not respond to SNMP";
 		$output = "";
 
 		/* get start time */
@@ -229,7 +229,7 @@ class Net_Ping
 			$retry_count = 0;
    		while (1) {
 				if ($retry_count >= $this->retries) {
-					$this->ping_response = "UDP Ping Timed out";
+					$this->ping_response = "UDP ping timed out";
 					$this->ping_status   = "down";
 					return false;
 				}
