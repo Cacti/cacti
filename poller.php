@@ -48,7 +48,7 @@ $start = $seconds + $micro;
 ini_set("max_execution_time", "0");
 
 // Get number of polling items from the database
-$polling_items = db_fetch_assoc("select distinct id from host where disabled = '' order by id");
+$polling_items = db_fetch_assoc("select id from host where disabled = '' order by id");
 
 // Retreive the number of concurrent process settings
 $concurrent_processes = read_config_option("concurrent_processes");
