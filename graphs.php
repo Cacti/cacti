@@ -245,27 +245,15 @@ function item() {
 		
 		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
 			
-		switch ($graph_item_types{$item["graph_type_id"]}) {
-		case 'AREA':
+		switch (true) {
+		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
 			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
 			break;
-		case 'STACK':
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			break;
-		case 'COMMENT':
-			$matrix_title = "COMMENT: " . $item["text_format"];
-			break;
-		case 'GPRINT':
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			break;
-		case 'HRULE':
+		case ereg("(HRULE|VRULE)", $_graph_type_name):
 			$matrix_title = "HRULE: " . $item["value"];
 			break;
-		case 'VRULE':
-			$matrix_title = "VRULE: " . $item["value"];
-			break;
-		default:
-			$matrix_title = "(" . $item["data_source_name"] . ")";
+		case ereg("(COMMENT)", $_graph_type_name):
+			$matrix_title = "COMMENT: " . $item["text_format"];
 			break;
 		}
 		
