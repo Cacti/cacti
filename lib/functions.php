@@ -1328,4 +1328,90 @@ function get_browser_query_string() {
 	}
 }
 
+/* get_hash_graph_template - returns the current unique hash for a graph template
+   @arg $graph_template_id - (int) the ID of the graph template to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_graph_template($graph_template_id) {
+	$hash = db_fetch_cell("select hash from graph_template where id=$graph_template_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/* get_hash_data_template - returns the current unique hash for a data template
+   @arg $graph_template_id - (int) the ID of the data template to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_data_template($data_template_id) {
+	$hash = db_fetch_cell("select hash from data_template where id=$data_template_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/* get_hash_data_input - returns the current unique hash for a data input method
+   @arg $graph_template_id - (int) the ID of the data input method to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_data_input($data_input_id) {
+	$hash = db_fetch_cell("select hash from data_input where id=$data_input_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/* get_hash_cdef - returns the current unique hash for a cdef
+   @arg $graph_template_id - (int) the ID of the cdef to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_cdef($cdef_id) {
+	$hash = db_fetch_cell("select hash from cdef where id=$cdef_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/* get_hash_gprint - returns the current unique hash for a gprint preset
+   @arg $graph_template_id - (int) the ID of the gprint preset to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_gprint($gprint_id) {
+	$hash = db_fetch_cell("select hash from graph_templates_gprint where id=$gprint_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/* get_hash_data_query - returns the current unique hash for a data query
+   @arg $graph_template_id - (int) the ID of the data query to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_data_query($data_query_id) {
+	$hash = db_fetch_cell("select hash from snmp_query where id=$data_query_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/* generate_hash - generates a new unique hash
+   @returns - a 128-bit, hexadecimal hash */
+function generate_hash() {
+	global $config;
+	
+	return md5(session_id() . microtime() . rand(0,1000));
+}
+
 ?>
