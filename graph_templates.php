@@ -186,25 +186,18 @@ function draw_graph_form_select($main_action) {
 <?}
 
 function draw_tabs() {
-?>
-		<tr height="33">
-			<td valign="bottom" colspan="3" background="images/tab_back.gif">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="graph_templates.php">Graph Templates</a><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="graph_templates.php?action=item_presets">Graph Item Presets</a><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="graph_templates.php?action=gprint_presets">GPRINT Presets</a><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-					</tr>
-				</table>
+	global $action;
+	?>
+	<table height="20" cellspacing="0" cellpadding="0" width="98%" align="center">
+		<tr>
+			<td valign="bottom">
+				<?if ($action != "") {?><a href="graph_templates.php"><?}?><img src="images/tab_con_graph_templates<?if ((strstr($action,"template") == true) || (empty($action)) || ($action == "item_edit")) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?if ($action != "") {?></a><?}?>
+				<?if ($action != "item_presets") {?><a href="graph_templates.php?action=item_presets"><?}?><img src="images/tab_con_graph_item_presets<?if (strstr($action,"item_presets") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?if ($action != "item_presets") {?></a><?}?>
+				<?if ($action != "gprint_presets") {?><a href="graph_templates.php?action=gprint_presets"><?}?><img src="images/tab_con_gprint_presets<?if (strstr($action,"gprint_presets") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?if ($action != "gprint_presets") {?></a><?}?>
 			</td>
 		</tr>
-<?	
+	</table>
+	<?	
 }
 
 /* --------------------------
@@ -455,7 +448,7 @@ function draw_item_edit() {
 			<font class="textEditTitle">CDEF Function</font><br>
 			A CDEF Function to apply to this item on the graph.
 		</td>
-		<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
+		<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
@@ -527,7 +520,8 @@ function gprint_presets_edit() {
 		unset($gprint_preset);
 	}
 	
-	start_box("<strong>GPRINT Preset Configuration</strong>", "", "");
+	draw_tabs();
+	start_box("<strong>GPRINT Presets [edit]</strong>", "", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -569,8 +563,8 @@ function gprint_presets_edit() {
 function gprint_presets() {
 	global $colors;
 	
-	start_box("<strong>Graph Template Management [GPRINT Presets]</strong>", "", "graph_templates.php?action=gprint_presets_edit");
 	draw_tabs();
+	start_box("<strong>GPRINT Presets</strong>", "", "graph_templates.php?action=gprint_presets_edit");
 	
 	print "<tr bgcolor='#$colors[panel]'>";
 		DrawMatrixHeaderItem("GPRINT Preset Title",$colors[panel_text],2);
@@ -612,8 +606,8 @@ function gprint_presets() {
 function item_presets() {
 	global $colors;
 	
-	start_box("<strong>Graph Template Management [Graph Item Presets]</strong>", "", "graph_templates.php?action=item_presets_edit");
 	draw_tabs();
+	start_box("<strong>Graph Item Presets</strong>", "", "graph_templates.php?action=item_presets_edit");
 	
 	print "<tr bgcolor='#$colors[panel]'>";
 		DrawMatrixHeaderItem("Item Preset Title",$colors[panel_text],2);
@@ -667,7 +661,8 @@ function item_presets_edit() {
 		unset($item_preset);
 	}
 	
-	start_box("<strong>Graph Item Presets Configuration [edit]</strong>", "", "");
+	draw_tabs();
+	start_box("<strong>Graph Item Presets</strong> [edit]", "", "");
 	?>
 	<form method="post" action="graph_templates.php">
 	
@@ -722,7 +717,8 @@ function item_presets_edit() {
 function item_presets_item_edit() {
 	global $args, $config, $colors;
 	
-	start_box("<strong>Graph Item Presets Configuration [edit]</strong>", "", "");
+	draw_tabs();
+	start_box("<strong>Graph Item Presets</strong> - Item [edit]", "", "");
 	draw_item_edit();
 	end_box();
 	
@@ -876,6 +872,8 @@ function item_save() {
 function item_edit() {
 	global $args, $config, $colors;
 	
+	draw_tabs();
+	
 	if ($config[full_view_graph_template][value] == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
@@ -996,6 +994,8 @@ function template_save() {
 
 function template_edit() {
 	global $args, $config, $colors;
+	
+	draw_tabs();
 	
 	if ($config[full_view_graph_template][value] == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
@@ -1198,8 +1198,8 @@ function template_edit() {
 function template() {
 	global $colors;
 	
-	start_box("<strong>Graph Template Management</strong>", "", "graph_templates.php?action=template_edit");
 	draw_tabs();
+	start_box("<strong>Graph Template Management</strong>", "", "graph_templates.php?action=template_edit");
 	
 	print "<tr bgcolor='#$colors[panel]'>";
 		DrawMatrixHeaderItem("Template Title",$colors[panel_text],2);
@@ -1278,6 +1278,8 @@ function input_save() {
 function input_edit() {
 	global $args, $config, $colors;
 	
+	draw_tabs();
+	
 	if ($config[full_view_graph_template][value] == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "", "");
 		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
@@ -1347,7 +1349,7 @@ function input_edit() {
 		left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
 		where graph_templates_item.local_graph_id=0
 		and graph_templates_item.graph_template_id=$args[graph_template_id]
-		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
+		order by graph_templates_item.sequence");
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 		<td width="50%">
