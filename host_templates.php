@@ -100,7 +100,6 @@ function template_save() {
 	
 	db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
 	db_execute ("delete from host_template_graph_template where host_template_id=$host_template_id");
-	db_execute ("delete from host_template_graph_data where host_template_id=$host_template_id");
 	
 	while (list($var, $val) = each($_POST)) {
 		if (eregi("^gt_", $var)) {
@@ -111,14 +110,6 @@ function template_save() {
 			
 			if (!empty($val)) {
 				db_execute ("replace into host_template_data_template (host_template_id,data_template_id,graph_template_id,suggested_values) values($host_template_id,$data_template_id,$graph_template_id,'$val')");
-			}
-		}elseif (eregi("^ogt_graph_input_", $var)) {
-			$graph_template_input_id = substr($var, 16);
-			$graph_template_id = db_fetch_cell("select graph_template_id from graph_template_input where id=$graph_template_input_id");
-			
-			/* check to see if this graph template checkbox is checked */
-			if (($_POST{"gt_$graph_template_id"} == "on") && (!empty($val))) {
-				db_execute ("replace into host_template_graph_data (host_template_id,graph_template_id,graph_template_input_id,data_template_rrd_id) values($host_template_id,$graph_template_id,$graph_template_input_id,$val)");
 			}
 		}
 	}
@@ -213,51 +204,20 @@ function template_edit() {
 			</tr>
 			<?
 			
-			$graph_template_inputs = db_fetch_assoc("select
-				graph_template_input.id,
-				graph_template_input.name,
-				host_template_graph_data.data_template_rrd_id
-				from graph_template_input left join host_template_graph_data
-				on graph_template_input.id=host_template_graph_data.graph_template_input_id
-				where graph_template_input.graph_template_id=" . $graph_template["id"] . "
-				and graph_template_input.column_name='task_item_id'
-				and host_template_graph_data.host_template_id=" . $_GET["id"]);
-			
-			if (sizeof($graph_template_inputs) > 0) {
-			foreach ($graph_template_inputs as $graph_template_input) {
-				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-					<td width="50%">
-						<font class="textEditTitle">Graph Item to Data Source Mapping</font> <em>(<?print $graph_template_input["name"];?>)</em><br>
-						Choose a data source to map this graph item input to.
-					</td>
-					<?DrawFormItemDropdownFromSQL("ogt_graph_input_" . $graph_template_input["id"],db_fetch_assoc("select
-						data_template_rrd.id,
-						CONCAT_WS('',data_template.name,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name
-						from data_template_data left join data_template
-						on data_template.id=data_template_data.data_template_id
-						left join data_template_rrd
-						on data_template.id=data_template_rrd.data_template_id
-						where data_template_rrd.local_data_id=0
-						group by data_template_rrd.id
-						order by name"),"name","id",$graph_template_input["data_template_rrd_id"],"None","");?>
-				</tr>
-				<?
-			}
-			}
-			
 			$data_templates = db_fetch_assoc("select
-				data_template_rrd.data_template_id,
-				data_template.name,
-				host_template_data_template.suggested_values
-				from host_template_graph_data left join data_template_rrd
-				on host_template_graph_data.data_template_rrd_id=data_template_rrd.id
-				left join data_template
+				data_template.id,
+				data_template.name
+				from data_template left join data_template_rrd
 				on data_template_rrd.data_template_id=data_template.id
+				left join graph_templates_item
+				on graph_templates_item.task_item_id=data_template_rrd.id
 				left join host_template_data_template
 				on (data_template_rrd.data_template_id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=" . $_GET["id"] . " and host_template_data_template.graph_template_id=" . $graph_template["id"] . ")
-				where host_template_graph_data.host_template_id=" . $_GET["id"] . "
-				and host_template_graph_data.graph_template_id=" . $graph_template["id"] . "
-				group by data_template_rrd.data_template_id");
+				where data_template_rrd.local_data_id=0
+				and graph_templates_item.local_graph_id=0
+				and graph_templates_item.graph_template_id=" . $graph_template["id"] . "
+				group by data_template.id
+				order by data_template.name");
 				
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
