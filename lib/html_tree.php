@@ -30,8 +30,6 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	include_once($config["include_path"] . "/form.php");
 	include_once($config["include_path"] . "/tree_functions.php");
 	
-	$options["use_expand_contract"] = true;
-	
 	$search_key = "";
 	$already_open = false;
 	$hide_until_tier = false;
@@ -50,7 +48,6 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
 		$sql_join = "left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
-			left join host on host.id=graph_local.host_id
 			left join graph_templates on graph_templates.id=graph_local.graph_template_id
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
 	}
@@ -60,12 +57,15 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		graph_tree_items.title,
 		graph_tree_items.local_graph_id,
 		graph_tree_items.rra_id,
+		graph_tree_items.host_id,
 		graph_tree_items.order_key,
 		graph_templates_graph.title_cache as graph_title,
+		CONCAT_WS('',host.description,' (',host.hostname,')') as hostname,
 		settings_tree.status
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		left join settings_tree on (graph_tree_items.id=settings_tree.graph_tree_item_id and settings_tree.user_id=$user_id)
+		left join host on graph_tree_items.host_id=host.id
 		$sql_join
 		where graph_tree_items.graph_tree_id=$tree_id
 		and graph_tree_items.order_key like '$search_key%'
@@ -73,7 +73,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		order by graph_tree_items.order_key");
     	
 	print "<!-- <P>Building Heirarchy w/ " . sizeof($heirarchy) . " leaves</P>  -->\n";
-	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='0' cellspacing='2'>";
+	print "<br><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='0' cellspacing='2'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='30'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong></td></tr></table></td></tr>";
 	
 	$i = 0;
@@ -84,80 +84,73 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		/* find out how 'deep' this item is */
 		$tier = tree_tier($leaf["order_key"], 2);
 		
-		/* find the type of the current and next branch */
-		$current_leaf_type = $leaf["title"] ? "heading" : "graph";
-		$next_leaf_type = (isset($heirarchy{$i+1})) ? ($heirarchy{$i+1}["title"] ? "heading" : "graph") : "";
+		/* find the type of the current branch */
+		if ($leaf["title"] != "") { $current_leaf_type = "heading"; }elseif (!empty($leaf["local_graph_id"])) { $current_leaf_type = "graph"; }else{ $current_leaf_type = "host"; }
 		
-		if (($current_leaf_type == 'heading') && (($tier <= $hide_until_tier) || ($hide_until_tier == false))) {
-			/* start the nested table for the heading */
-			print "<tr><td colspan='2'><table width='100%' cellpadding='2' cellspacing='1'><tr>\n";
+		/* find the type of the next branch. make sure the next item exists first */
+		if (isset($heirarchy{$i+1})) {
+			if ($heirarchy{$i+1}["title"] != "") { $next_leaf_type = "heading"; }elseif (!empty($heirarchy{$i+1}["local_graph_id"])) { $next_leaf_type = "graph"; }else{ $next_leaf_type = "host"; }
+		}else{
+			$next_leaf_type = "";
+		}
+		
+		if ((($current_leaf_type == 'heading') || ($current_leaf_type == 'host')) && (($tier <= $hide_until_tier) || ($hide_until_tier == false))) {
+			$current_title = (($current_leaf_type == "heading") ? $leaf["title"] : $leaf["hostname"]);
 			
-			/* draw one vbar for each tier */
-			for ($j=0;($j<($tier-1));$j++) {
-				print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
-			}
+			/* draw heading */
+			draw_tree_header_row($tree_id, $leaf["id"], $tier, $current_title, true, $leaf["status"], true);
 			
-			/* draw the '+' or '-' icons if configured to do so */
-			if (($options["use_expand_contract"]) && (!empty($leaf["title"]))) {
-				if ($leaf["status"] == "1") {
-					$other_status = '0';
-					$ec_icon = 'show';
-				}else{
-					$other_status = '1';
-					$ec_icon =  'hide';
-				}
+			/* this is an open host, lets expand a bit */
+			if (($current_leaf_type == "host") && ($leaf["status"] == "0")) {
+				/* get a list of all graph templates in use by this host */
+				$graph_templates = db_fetch_assoc("select
+					graph_templates.id,
+					graph_templates.name
+					from graph_local,graph_templates,graph_templates_graph
+					where graph_local.id=graph_templates_graph.local_graph_id
+					and graph_templates_graph.graph_template_id=graph_templates.id
+					and graph_local.host_id=" . $leaf["host_id"] . "
+					group by graph_templates.id
+					order by graph_templates.name");
 				
-				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
-					href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
-					<img src='images/$ec_icon.gif' border='0'></a></td>\n";
-			}elseif (!($options["use_expand_contract"]) && (!empty($leaf["title"]))) {
-				print "<td bgcolor='" . $colors["panel"] . "' width='1'>$indent</td>\n";
+				if (sizeof($graph_templates) > 0) {
+				foreach ($graph_templates as $graph_template) {
+					draw_tree_header_row($tree_id, $leaf["id"], ($tier+1), $graph_template["name"], false, $leaf["status"], false);
+					
+					/* get a list of each graph using this graph template for this particular host */
+					$graphs = db_fetch_assoc("select
+						graph_templates_graph.title_cache,
+						graph_templates_graph.local_graph_id
+						from graph_local,graph_templates,graph_templates_graph
+						where graph_local.id=graph_templates_graph.local_graph_id
+						and graph_templates_graph.graph_template_id=graph_templates.id
+						and graph_local.graph_template_id=" . $graph_template["id"] . "
+						and graph_local.host_id=" . $leaf["host_id"] . "
+						order by graph_templates_graph.title_cache");
+					
+					$graph_ct = 0;
+					if (sizeof($graphs) > 0) {
+					foreach ($graphs as $graph) {
+						/* incriment graph counter so we know when to start a new row or not */
+						$graph_ct++;
+						
+						if (!isset($graphs[$graph_ct])) { $next_leaf_type = "heading"; }else{ $next_leaf_type = "graph"; }
+						
+						/* draw graph */
+						$already_open = draw_tree_graph_row($already_open, $graph_ct, $next_leaf_type, ($tier+2), $graph["local_graph_id"], 1, $graph["title_cache"]);
+					}
+					}
+				}
+				}
 			}
-			
-			/* draw the actual cell containing the header */
-			if (!empty($leaf["title"])) {
-				print "<td bgcolor='" . $colors["panel"] . "' NOWRAP><strong>
-					<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a>&nbsp;</strong></td>\n";
-			}
-			
-			/* end the nested table for the heading */
-			print "</tr></table></td></tr>\n";
 			
 			$graph_ct = 0;
 		}elseif (($current_leaf_type == 'graph') && (($tier <= $hide_until_tier) || ($hide_until_tier == false))) {
+			/* incriment graph counter so we know when to start a new row or not */
 			$graph_ct++;
 			
-			/* start the nested table for the graph group */
-			if ($already_open == false) {
-				print "<tr><td><table width='100%' cellpadding='2' cellspacing='1'><tr>\n";
-				
-				/* draw one vbar for each tier */
-				for ($j=0;($j<($tier-1));$j++) {
-					print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
-				}
-				
-				print "<td><table width='100%' cellspacing='0' cellpadding='2'><tr>\n";
-				
-				$already_open = true;
-			}
-			
-			/* print out the actual graph html */
-			print "<td><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all'><img align='middle' alt='" . $leaf["graph_title"] . "'
-				src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . $leaf["rra_id"] . "&graph_start=" . -(db_fetch_cell("select timespan from rra where id=" . $leaf["rra_id"])) . '&graph_height=' .
-				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $leaf["title"] . "'></a></td>\n";
-			
-			/* if we are at the end of a row, start a new one */
-			if ($graph_ct % read_graph_config_option("num_columns") == 0) {
-				print "</tr><tr>\n";
-			}
-			
-			/* if we are at the end of the graph group, end the nested table */
-			if ($next_leaf_type != "graph") {
-				print "</tr></table></td>";
-				print "</tr></table></td></tr>\n";
-				
-				$already_open = false;
-			}
+			/* draw graph */
+			$already_open = draw_tree_graph_row($already_open, $graph_ct, $next_leaf_type, $tier, $leaf["local_graph_id"], $leaf["rra_id"], $leaf["graph_title"]);
 		}
 		
 		/* if we have come back to the tier that was origionally flagged, then take away the flag */
@@ -283,7 +276,7 @@ function grow_dhtml_trees() {
 	HIGHLIGHT = 1
 	<?php
 	
-	print "foldersTree = gFld(\"<b>Graph Trees</b>\", \"\")\n";
+	print "foldersTree = gFld(\"\", \"\")\n";
 	
 	$tree_list = get_graph_tree_array();
 	
@@ -382,7 +375,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	if (!empty($graph_template_name)) { $title .= $title_delimeter . "<strong>Graph Template:</strong> $graph_template_name"; $title_delimeter = "-> "; }
 	
 	print "<table width='98%' align='center' cellpadding='3'>";
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'>$title</td></tr>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='3' class='textHeaderDark'>$title</td></tr>";
 	
 	if (empty($host_id)) {
 		$heirarchy = db_fetch_assoc("select
@@ -456,7 +449,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	}
 	
 	print "</table>";
-	
 }
 
 function find_first_folder_url() {
@@ -477,6 +469,82 @@ function find_first_folder_url() {
 	}
 	
 	return;
+}
+
+function draw_tree_header_row($tree_id, $tree_item_id, $current_tier, $current_title, $use_expand_contract, $expand_contract_status, $show_url) {
+	global $colors;
+	
+	/* start the nested table for the heading */
+	print "<tr><td colspan='2'><table width='100%' cellpadding='2' cellspacing='1' border='0'><tr>\n";
+	
+	/* draw one vbar for each tier */
+	for ($j=0;($j<($current_tier-1));$j++) {
+		print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
+	}
+	
+	/* draw the '+' or '-' icons if configured to do so */
+	if (($use_expand_contract) && (!empty($current_title))) {
+		if ($expand_contract_status == "1") {
+			$other_status = '0';
+			$ec_icon = 'show';
+		}else{
+			$other_status = '1';
+			$ec_icon =  'hide';
+		}
+		
+		print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
+			href='graph_view.php?action=tree&tree_id=$tree_id&hide=$other_status&branch_id=$tree_item_id'>
+			<img src='images/$ec_icon.gif' border='0'></a></td>\n";
+	}elseif (!($use_expand_contract) && (!empty($current_title))) {
+		print "<td bgcolor='" . $colors["panel"] . "' width='10'></td>\n";
+	}
+	
+	/* draw the actual cell containing the header */
+	if (!empty($current_title)) {
+		print "<td bgcolor='" . $colors["panel"] . "' NOWRAP><strong>
+			" . (($show_url == true) ? "<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$tree_item_id'>" : "") . $current_title . (($show_url == true) ? "</a>" : "") . "&nbsp;</strong></td>\n";
+	}
+	
+	/* end the nested table for the heading */
+	print "</tr></table></td></tr>\n";	
+}
+
+function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $current_tier, $local_graph_id, $rra_id, $graph_title) {
+	global $colors;
+	
+	/* start the nested table for the graph group */
+	if ($already_open == false) {
+		print "<tr><td><table width='100%' cellpadding='2' cellspacing='1'><tr>\n";
+		
+		/* draw one vbar for each tier */
+		for ($j=0;($j<($current_tier-1));$j++) {
+			print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
+		}
+		
+		print "<td><table width='100%' cellspacing='0' cellpadding='2'><tr>\n";
+		
+		$already_open = true;
+	}
+	
+	/* print out the actual graph html */
+	print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title'
+		src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
+		read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
+	
+	/* if we are at the end of a row, start a new one */
+	if ($graph_counter % read_graph_config_option("num_columns") == 0) {
+		print "</tr><tr>\n";
+	}
+	
+	/* if we are at the end of the graph group, end the nested table */
+	if ($next_leaf_type != "graph") {
+		print "</tr></table></td>";
+		print "</tr></table></td></tr>\n";
+		
+		$already_open = false;
+	}
+	
+	return $already_open;
 }
 
 ?>
