@@ -44,7 +44,7 @@ switch ($_REQUEST["action"]) {
 		repopulate_poller_cache();
 
         ini_set("max_execution_time", $max_execution);
-		ini_set("memory_limit", $memory_limit);
+		ini_set("memory_limit", $max_memory);
 
 		utilities();
 		utilities_view_poller_cache();
