@@ -1826,6 +1826,10 @@ INSERT INTO settings VALUES ('full_view_graph','on');
 INSERT INTO settings VALUES ('full_view_user_admin','on');
 INSERT INTO settings VALUES ('full_view_data_template','on');
 INSERT INTO settings VALUES ('smnp_version','ucd-snmp');
+INSERT INTO settings VALUES ('ldap_enabled','');
+INSERT INTO settings VALUES ('ldap_server','');
+INSERT INTO settings VALUES ('ldap_dn','');
+INSERT INTO settings VALUES ('ldap_template','');
 
 --
 -- Table structure for table 'settings_graphs'
@@ -1844,6 +1848,13 @@ CREATE TABLE settings_graphs (
 --
 
 
+INSERT INTO settings_graphs VALUES (3,'default_rra_id','1');
+INSERT INTO settings_graphs VALUES (3,'default_height','100');
+INSERT INTO settings_graphs VALUES (3,'default_width','300');
+INSERT INTO settings_graphs VALUES (3,'default_view_mode','1');
+INSERT INTO settings_graphs VALUES (3,'timespan','60000');
+INSERT INTO settings_graphs VALUES (3,'num_columns','2');
+INSERT INTO settings_graphs VALUES (3,'page_refresh','300');
 
 --
 -- Table structure for table 'snmp_query'
@@ -1870,6 +1881,7 @@ INSERT INTO snmp_query VALUES (1,'<path_cacti>/resource/snmp_queries/interface.x
 INSERT INTO snmp_query VALUES (2,'<path_cacti>/resource/snmp_queries/net-snmp_disk.xml','ucd/net -  Get Monitored Partitions','Retrieves a list of monitored partitions/disks from a net-snmp enabled host.',0,2);
 INSERT INTO snmp_query VALUES (3,'<path_cacti>/resource/snmp_queries/kbridge.xml','Karlnet - Wireless Bridge Statistics','Gets information about the wireless connectivity of each station from a Karlnet bridge.',0,2);
 INSERT INTO snmp_query VALUES (4,'<path_cacti>/resource/snmp_queries/netware_disk.xml','Netware - Get Available Volumes','Retrieves a list of volumes from a Netware server.',0,2);
+INSERT INTO snmp_query VALUES (6,'<path_cacti>/resource/script_queries/unix_disk.xml','Unix - Get Mounted Partitions','Queries a list of mounted partitions on a unix-based host with the',0,11);
 
 --
 -- Table structure for table 'snmp_query_field'
@@ -1901,6 +1913,9 @@ INSERT INTO snmp_query_field VALUES (3,12,1);
 INSERT INTO snmp_query_field VALUES (4,14,3);
 INSERT INTO snmp_query_field VALUES (4,13,2);
 INSERT INTO snmp_query_field VALUES (4,12,1);
+INSERT INTO snmp_query_field VALUES (6,33,3);
+INSERT INTO snmp_query_field VALUES (6,32,2);
+INSERT INTO snmp_query_field VALUES (6,31,1);
 
 --
 -- Table structure for table 'snmp_query_graph'
@@ -1925,6 +1940,7 @@ INSERT INTO snmp_query_graph VALUES (1,1,'In/Out Bytes',1);
 INSERT INTO snmp_query_graph VALUES (2,1,'In/Out Errors/Discarded Packets',22);
 INSERT INTO snmp_query_graph VALUES (3,1,'In/Out Non-Unicast Packets',24);
 INSERT INTO snmp_query_graph VALUES (4,1,'In/Out Unicast Packets',23);
+INSERT INTO snmp_query_graph VALUES (15,6,'Available/Used Disk Space',21);
 INSERT INTO snmp_query_graph VALUES (6,2,'Available/Used Disk Space',3);
 INSERT INTO snmp_query_graph VALUES (7,3,'Wireless Levels',5);
 INSERT INTO snmp_query_graph VALUES (8,3,'Wireless Transmissions',6);
@@ -1979,6 +1995,8 @@ INSERT INTO snmp_query_graph_rrd VALUES (14,2,2,'ifHCOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (14,1,1,'ifHCInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (13,1,1,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (4,39,49,'ifOutUcastPkts');
+INSERT INTO snmp_query_graph_rrd VALUES (15,37,45,'dskUsed');
+INSERT INTO snmp_query_graph_rrd VALUES (15,37,44,'dskAvailable');
 
 --
 -- Table structure for table 'snmp_query_graph_rrd_sv'
@@ -2062,6 +2080,7 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (63,13,1,1,'rrd_maximum','|squery_ifS
 INSERT INTO snmp_query_graph_rrd_sv VALUES (64,13,2,1,'rrd_maximum','|squery_ifSpeed|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (65,14,1,1,'rrd_maximum','|squery_ifSpeed|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (66,14,2,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (67,15,37,1,'name','|host_description| - Partition - |squery_dskDevice|');
 
 --
 -- Table structure for table 'snmp_query_graph_sv'
@@ -2111,6 +2130,7 @@ INSERT INTO snmp_query_graph_sv VALUES (26,3,3,'title','|host_description| - Non
 INSERT INTO snmp_query_graph_sv VALUES (27,4,1,'title','|host_description| - Unicast Packets - |squery_ifAlias|');
 INSERT INTO snmp_query_graph_sv VALUES (28,4,2,'title','|host_description| - Unicast Packets - |squery_ifIP| (|squery_ifDesc|)');
 INSERT INTO snmp_query_graph_sv VALUES (29,4,3,'title','|host_description| - Unicast Packets - |squery_ifDesc|/|squery_ifIndex|');
+INSERT INTO snmp_query_graph_sv VALUES (30,15,1,'title','|host_description| - Disk Space - |squery_dskDevice|');
 
 --
 -- Table structure for table 'user_auth'
@@ -2193,7 +2213,6 @@ CREATE TABLE user_auth_realm (
 
 
 INSERT INTO user_auth_realm VALUES (1,1);
-INSERT INTO user_auth_realm VALUES (1,3);
 INSERT INTO user_auth_realm VALUES (2,1);
 INSERT INTO user_auth_realm VALUES (3,1);
 INSERT INTO user_auth_realm VALUES (5,1);
