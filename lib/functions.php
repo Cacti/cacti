@@ -283,10 +283,10 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
-/* log_data - logs a string to Cacti's log file or optionally to the browser
+/* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using pring() or not */
-function log_data($string, $output = false) {
+function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	global $config;
 
 	/* fill in the current date for printing in the log */
@@ -306,12 +306,12 @@ function log_data($string, $output = false) {
 		$fp = @fopen($logfile, "a");
 
 		if ($fp) {
-			@fwrite($fp, "$date - $string\n");
+			@fwrite($fp, "$date - " . $environ . ": Poller[0] Host[0] " . $string . "\n");
 			fclose($fp);
 		}
 
 		if ($output == true) {
-			print "$string\n";
+			print "$date - " . $environ . ": Poller[0] Host[0] " . $string . "\n";
 		}
 	}
 

@@ -76,7 +76,7 @@ function exec_background($filename, $args = "") {
 	global $config;
 
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		log_data("POLLER: About to Spawn a Remote Process\n");
+		cacti_log("POLLER: About to Spawn a Remote Process\n");
 	}
 
 	if (file_exists($filename)) {

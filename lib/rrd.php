@@ -90,8 +90,8 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 	$command_line = str_replace("\\\n", " ", $command_line);
 
 	/* output information to the log file if appropriate */
-	if ($log_command == true) {
-		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
+	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+		cacti_log("RRD: " . read_config_option("path_rrdtool") . " $command_line",true);
 	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
@@ -204,7 +204,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 
 	/* if we find that this DS has no RRA associated; get out */
 	if (sizeof($rras) <= 0) {
-		log_data("ERROR: There are no RRA's assigned to local_data_id: $local_data_id.", true);
+		cacti_log("ERROR: There are no RRA's assigned to local_data_id: $local_data_id.");
 		return false;
 	}
 
@@ -284,14 +284,7 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 			$i++;
 		}
 
-		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-			$log_data = true;
-		}else{
-			$log_data = false;
-		}
-
-		print "update $rrd_path --template $rrd_update_template $rrd_update_values\n";
-		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", $log_data, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
+		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
 	}
 }
 
@@ -329,7 +322,9 @@ function rrdtool_function_tune($rrd_tune_array) {
 			$fp = popen(read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune", "r");
 			pclose($fp);
 
-			log_data("CMD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+				cacti_log("RRD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
+			}
 		}
 	}
 }
@@ -795,7 +790,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			how fun! */
 
 			$pad_number = ($greatest_text_format - $text_format_lengths{$graph_item["data_template_rrd_id"]});
-			//log_data("MAX: $greatest_text_format, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
+			//cacti_log("MAX: $greatest_text_format, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
 			$text_padding = str_pad("", $pad_number);
 
 			/* two GPRINT's in a row screws up the padding, lets not do that */

@@ -177,6 +177,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_port" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_port"], $string);
 	$string = str_replace($l_escape_string . "host_snmp_timeout" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_timeout"], $string);
+	$string = str_replace($l_escape_string . "host_id" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["id"], $string);
 
 	return $string;
 }
