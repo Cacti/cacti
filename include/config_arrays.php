@@ -415,7 +415,7 @@ $struct_data_source = array(
 		"default" => "",
 		"null_item" => "",
 		"description" => "The script/source used to gather data for this data source.",
-		"flags" => ""
+		"flags" => "ALWAYSTEMPLATE"
 		),
 	"rra_id" => array(
 		"type" => "custom",
@@ -442,12 +442,6 @@ $struct_data_source = array(
 		"check_id" => "id"
 		)
 	);
-		
-/*$struct_data_source = array(
-	"name",
-	"active",
-	"rrd_step",
-	"FORCE:data_input_id");*/
 
 $struct_data_source_item = array(
 	"data_source_name" => array(
@@ -499,13 +493,5 @@ $struct_data_source_item = array(
 		"description" => "When data is gathered, the data for this field will be put into this data source."
 		)
 	);
-
-/*$struct_data_source_item = array(
-	"rrd_maximum",
-	"rrd_minimum",
-	"rrd_heartbeat",
-	"data_source_type_id",
-	"data_source_name",
-	"FORCE:data_input_field_id");*/
 
 ?>
