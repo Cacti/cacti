@@ -376,18 +376,6 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	
 	$hash_cache["data_query"][$hash] = $data_query_id;
 	
-	/* import into: snmp_query_field */
-	if (is_array($xml_array["fields"])) {
-		while (list($item_hash, $item_array) = each($xml_array["fields"])) {
-			unset($save);
-			$save["snmp_query_id"] = $data_query_id;
-			$save["data_input_field_id"] = resolve_hash_to_id($item_array["data_input_field_id"], $hash_cache);
-			$save["action_id"] = $item_array["action_id"];
-			
-			sql_save($save, "snmp_query_field", array("snmp_query_id", "data_input_field_id"));
-		}
-	}
-	
 	/* import into: snmp_query_graph */
 	if (is_array($xml_array["graphs"])) {
 		while (list($item_hash, $item_array) = each($xml_array["graphs"])) {

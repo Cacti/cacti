@@ -89,11 +89,6 @@ $input_types = array(1 =>
 	"SNMP Query",
 	"Script Query");
 
-$snmp_query_field_actions = array(1 =>
-	"SNMP Field Name (Dropdown)",
-	"SNMP Field Value (From User)",
-	"SNMP Output Type (Dropdown)");
-
 $consolidation_functions = array(1 =>
 	"AVERAGE",
 	"MIN",

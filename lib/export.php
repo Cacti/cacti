@@ -509,7 +509,6 @@ function &data_query_to_xml($data_query_id) {
 	
 	$snmp_query = db_fetch_row("select * from snmp_query where id=$data_query_id");
 	$snmp_query_graph = db_fetch_assoc("select * from snmp_query_graph where snmp_query_id=$data_query_id");
-	$snmp_query_field = db_fetch_assoc("select * from snmp_query_field where snmp_query_id=$data_query_id");
 	
 	if (empty($snmp_query["id"])) {
 		return "Invalid data query.";
@@ -528,26 +527,6 @@ function &data_query_to_xml($data_query_id) {
 			}
 		}
 	}
-	
-	/* XML Branch: <fields> */
-	
-	$xml_text .= "\t<fields>\n";
-	
-	$i = 0;
-	if (sizeof($snmp_query_field) > 0) {
-	foreach ($snmp_query_field as $item) {
-		$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
-		
-		$xml_text .= "\t\t\t<data_input_field_id>hash_" . get_hash_version("data_input_field") . get_hash_data_input($item{"data_input_field_id"}, "data_input_field") . "</data_input_field_id>\n";
-		$xml_text .= "\t\t\t<action_id>" . $item{"action_id"} . "</action_id>\n";
-		
-		$xml_text .= "\t\t</item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
-		
-		$i++;
-	}
-	}
-	
-	$xml_text .= "\t</fields>\n";
 	
 	/* XML Branch: <graphs> */
 	

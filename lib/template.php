@@ -650,20 +650,25 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		}
 		
 		if (is_array($snmp_query_array)) {
-			$data_input_field_id_index = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $snmp_query_array["snmp_query_id"] . " and action_id=1");
-			$data_input_field_id_index_value = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $snmp_query_array["snmp_query_id"] . " and action_id=2");
-			$data_input_field_id_output_type = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $snmp_query_array["snmp_query_id"] . " and action_id=3");
+			$data_input_field = array_rekey(db_fetch_assoc("select
+				data_input_fields.id,
+				data_input_fields.type_code
+				from snmp_query,data_input,data_input_fields
+				where snmp_query.data_input_id=data_input.id
+				and data_input.id=data_input_fields.data_input_id
+				and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')
+				and snmp_query.id=" . $snmp_query_array["snmp_query_id"]), "type_code", "id");
 			
 			$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='" . $snmp_query_array["snmp_index_on"] . "' and snmp_index='" . $snmp_query_array["snmp_index"] . "'");
 			
 			/* save the value to index on (ie. ifindex, ifip, etc) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_index,$data_template_data_id,'','" . $snmp_query_array["snmp_index_on"] . "')");
+			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_index_on"] . "')");
 			
 			/* save the actual value (ie. 3, 192.168.1.101, etc) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_index_value,$data_template_data_id,'','$snmp_cache_value')");
+			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_value"] . ",$data_template_data_id,'','$snmp_cache_value')");
 			
 			/* set the expected output type (ie. bytes, errors, packets) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id_output_type,$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
+			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["output_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
 			
 			/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
 			update_data_source_data_query_cache($cache_array["local_data_id"]{$data_template["id"]});
@@ -799,6 +804,8 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			"fields" => $form_array
 			)
 		);
+	
+	return (isset($form_array) ? sizeof($form_array) : 0);
 }
 
 /* draw_nontemplated_fields_graph_item - draws a form that consists of all non-templated graph item fields 
@@ -900,6 +907,8 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				)
 			);
 	}
+	
+	return (isset($form_array) ? sizeof($form_array) : 0);
 }
 
 /* draw_nontemplated_fields_data_source - draws a form that consists of all non-templated data source fields 
@@ -978,6 +987,8 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			"fields" => $form_array
 			)
 		);
+	
+	return (isset($form_array) ? sizeof($form_array) : 0);
 }
 
 /* draw_nontemplated_fields_data_source_item - draws a form that consists of all non-templated data source 
@@ -1000,6 +1011,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 	global $struct_data_source_item, $colors;
 	
 	$draw_any_items = false;
+	$num_fields_drawn = 0;
 	
 	/* setup form options */
 	if ($alternate_colors == true) {
@@ -1070,8 +1082,12 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				"fields" => $form_array
 				)
 			);
+		
+		$num_fields_drawn += sizeof($form_array);
 	}
 	}
+	
+	return $num_fields_drawn;
 }
 
 /* draw_nontemplated_fields_custom_data - draws a form that consists of all non-templated custom data fields 
@@ -1158,6 +1174,8 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 		}
 	}
 	}
+	
+	return $i;
 }
 
 ?>
