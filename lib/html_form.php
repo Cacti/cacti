@@ -52,6 +52,8 @@ function draw_edit_form($array) {
 				form_hidden_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
+			}elseif ($field_array["method"] == "spacer") {
+				print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["value"] . "</td></tr>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr bgcolor='#" . $config_array["force_row_color"] . "'>";
