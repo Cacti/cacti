@@ -165,6 +165,8 @@ function field_edit() {
 		$header_name = "Input";
 	}
 	
+	$data_input_type = db_fetch_cell("select type_id from data_input where id=" . $_GET["data_input_id"]);
+	
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select $current_field_type" . "put_string from data_input where id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches)) {
 		for ($i=0; ($i < count($matches[1])); $i++) {
@@ -180,17 +182,28 @@ function field_edit() {
 	?>
 	<form method="post" action="data_input.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Field [<?print $header_name;?>]</font><br>
-			Choose the associated field from the <?print $header_name;?> field.
-		</td>
-		<?DrawFormItemDropdownFromSQL("data_name",$array_field_names,"","",$field["data_name"],"","");?>
-	</tr>
+	<?
+	if ($data_input_type == "1") { /* script */
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Field [<?print $header_name;?>]</font><br>
+				Choose the associated field from the <?print $header_name;?> field.
+			</td>
+			<?DrawFormItemDropdownFromSQL("data_name",$array_field_names,"","",$field["data_name"],"","");?>
+		</tr><?
+	}elseif ($data_input_type == "2") { /* snmp */
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+			<td width="50%">
+				<font class="textEditTitle">Field Name [<?print $header_name;?>]</font><br>
+				Enter a name for this <?print $header_name;?> field.
+			</td>
+			<?DrawFormItemTextBox("data_name",$field["data_name"],"","50", "40");?>
+		</tr><?
+	}
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
+			<font class="textEditTitle">Friendly Name</font><br>
 			Enter a meaningful name for this data input method.
 		</td>
 		<?DrawFormItemTextBox("name",$field["name"],"","200", "40");?>
@@ -234,7 +247,7 @@ function field_edit() {
 	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Special Type Code</font><br>
-			If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', and 'snmp_password'.
+			If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.
 		</td>
 		<?DrawFormItemTextBox("type_code",$field["type_code"],"","40", "40");?>
 	</tr>
@@ -288,6 +301,7 @@ function data_save() {
 	$save["name"] = $_POST["name"];
 	$save["input_string"] = $_POST["input_string"];
 	$save["output_string"] = $_POST["output_string"];
+	$save["type_id"] = $_POST["type_id"];
 	
 	sql_save($save, "data_input");
 	
@@ -318,7 +332,7 @@ function data_save() {
 }
 
 function data_edit() {
-	global $colors;
+	global $colors, $input_types;
 	
 	start_box("<strong>Data Input Methods</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 	
@@ -341,13 +355,21 @@ function data_edit() {
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
+			<font class="textEditTitle">Input Type</font><br>
+			Choose what type of data input method this is.
+		</td>
+		<?DrawFormItemDropdownFromSQL("type_id",$input_types,"","",$data_input["type_id"],"","");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
 			<font class="textEditTitle">Input String</font><br>
 			The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.
 		</td>
 		<?DrawFormItemTextBox("input_string",$data_input["input_string"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Output String</font><br>
 			The data that is expected back from the input script; defined as &lt;&gt; brackets.
