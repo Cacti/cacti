@@ -49,6 +49,7 @@ function DrawMenu($userid, $menuid) {
 					    "host.php" => 'Polling Hosts',
 					    "rra.php" => "Available RRA's",
 					    "data_input.php" => "Data Input Methods",
+					    "snmp.php" => "SNMP Queries",
 					    "cdef.php" => "CDEF's"
 					    ),
 		  "Configuration"  => array(
