@@ -415,7 +415,7 @@ $struct_data_source = array(
 		"type" => "drop_sql",
 		"sql" => "select id,name from data_input order by name",
 		"default" => "",
-		"null_item" => "",
+		"null_item" => "None",
 		"description" => "The script/source used to gather data for this data source.",
 		"flags" => "ALWAYSTEMPLATE"
 		),
