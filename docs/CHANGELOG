@@ -17,6 +17,7 @@ raXnet - cacti
 -bug: Sort host templates when creating a host.
 -bug#0000339: LDAP description mispell allow
 -bug: Corrected user form edit array problem that didn't show the graph options for an edited user
+-bug: Fixed access denied problem when user doesn't have console access
 
 0.8.6b
 
