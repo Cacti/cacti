@@ -91,7 +91,7 @@ function form_save() {
 				raise_message(1);
 				
 				/* push out relavant fields to data sources using this host */
-				push_out_host($host_id);
+				push_out_host($host_id,0);
 			}else{
 				raise_message(2);
 			}
@@ -391,7 +391,7 @@ function host_new_graphs_save() {
 	}
 	
 	/* lastly push host-specific information to our data sources */
-	push_out_host($_POST["host_id"]);
+	push_out_host($_POST["host_id"],0);
 }
 
 function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
