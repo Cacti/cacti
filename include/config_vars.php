@@ -79,6 +79,6 @@ $paths[rra] = "$paths[cacti]/rra";
 $paths[log] = "$paths[cacti]/log/rrd.log";
 
 /* current cacti version */
-$config[cacti_version] = "0.6.8";
+$config[cacti_version] = "0.8";
 
 ?>
