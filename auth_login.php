@@ -105,7 +105,7 @@ case 'login':
 	</style>
 </head>
 
-<body onload="document.login.username.focus()">
+<body onload="document.login.login_username.focus()">
 
 <!-- apparently IIS 5/4 have a bug (Q176113) where setting a cookie and calling the header via
 'Location' does not work. This seems to fix the bug for me at least... -->
