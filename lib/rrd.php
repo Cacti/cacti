@@ -30,7 +30,42 @@ function escape_command($command) {
 	return ereg_replace("(\\\$|`)", "", $command);
 }
 
-function rrdtool_execute($command_line, $log_command, $output_flag) {
+function rrd_init() {
+
+	// startup Cacti rrdtool for processing
+	$rrd_des = array(
+   	0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+   	1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+   	2 => array("pipe", "w")  // stderr is a pipe to write to
+	);
+
+	if (function_exists("proc_open")) {
+		$rrd_des = proc_open(read_config_option("path_rrdtool"), $rrd_des, $rrd_pipes);
+		$rrd_using_po_func = True;
+	}else {
+		$rrd_using_po_func = False;
+		if (read_config_option("log_perror") == "on") {
+			log_data("WARNING: PHP version 4.3 or above is recommended for performance considerations.\n");
+		}
+	}
+
+	/* set return array */
+	rrd_struc["fd"] = $rrd_des;
+	rrd_struc["pipes"] = $rrd_pipes;
+	rrd_struc["using_proc_open"] = $rrd_using_po_func;
+
+	return $rrd_struc;
+}
+
+function rrd_close($rrd_struc) {
+	// close the rrdtool file descriptor
+	if (function_exists("proc_close")) {
+		proc_close($rrd_struc["fd"]);
+	}
+}
+
+function rrdtool_execute($rrd_struc, $command_line, $log_command, $output_flag) {
+	global $rrd_using_po_func;
 	global $config;
 
 	if ($log_command == true) {
@@ -53,9 +88,17 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 
 	/* use popen to eliminate the zombie issue */
 	if ($config["cacti_server_os"] == "unix") {
-		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
+		if ($rrd_struc["using_proc_open"]) {
+			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
+		}else {
+			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
+		}
 	}elseif ($config["cacti_server_os"] == "win32") {
-		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
+		if ($rrd_struc["using_proc_open"]) {
+			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
+		}else {
+			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
+		}
 	}
 
 	/* Return Flag:
