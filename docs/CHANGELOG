@@ -3,6 +3,7 @@ raXnet - cacti
 
 0.8.6c
 -bug: Fixed max runtime issues with the script server
+-feature: Added feature to parse multiple OID indexes
 -feature: Added a feature to re-apply suggested naming to graphs from the user interface
 -bug: Fixed an issue that was causing recache to fail and the poller to crash in specific circumstances
 -feature: Added TreeView feature to speed up rendering the tree with large databases
