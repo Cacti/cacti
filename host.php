@@ -850,16 +850,18 @@ function host_edit() {
 			
 			$num_input_fields = 0;
 			
-			/* loop through once so we can find out how many input fields there are */
-			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
-				if ($field_array[0]["direction"] == "input") {
-					$num_input_fields++;
+			if ($xml_array != false) {
+				/* loop through once so we can find out how many input fields there are */
+				while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
+					if ($field_array[0]["direction"] == "input") {
+						$num_input_fields++;
+					}
 				}
+				
+				reset($xml_array["fields"][0]);
+				$snmp_query_indexes = array();
+				$i = 0;
 			}
-			
-			reset($xml_array["fields"][0]);
-			$snmp_query_indexes = array();
-			$i = 0;
 			
 			print "	<table width='98%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
 					<tr>
@@ -872,58 +874,61 @@ function host_edit() {
 					</tr>
 					<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			
-			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
-				$field_array = $field_array[0];
-				
-				if ($field_array["direction"] == "input") {
-					$i++;
-					
-					/* draw each header item <TD> */
-					DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
-					
-					/* draw the 'check all' box if we are at the end of the row */
-					if ($i >= $num_input_fields) {
-						print "<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\")'></td>\n";
-					}
-					
-					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
-					
-					if (sizeof($raw_data) > 0) {
-					foreach ($raw_data as $data) {
-						$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
-						$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
-					}
-					}
-				}
-			}
-			
-			print "</tr>";
-			
-			$column_counter = 0;
-			if (sizeof($snmp_query_indexes) > 0) {
-			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
-				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				
-				reset($xml_array["fields"][0]);
+			if ($xml_array != false) {
 				while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
-					if ($field_array[0]["direction"] == "input") {
-						if (isset($snmp_query_data[$field_name][$snmp_index])) {
-							print "<td>" . $snmp_query_data[$field_name][$snmp_index] . "</td>";
-						}else{
-							print "<td></td>";
+					$field_array = $field_array[0];
+					
+					if ($field_array["direction"] == "input") {
+						$i++;
+						
+						/* draw each header item <TD> */
+						DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
+						
+						/* draw the 'check all' box if we are at the end of the row */
+						if ($i >= $num_input_fields) {
+							print "<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\")'></td>\n";
 						}
 						
-						$column_counter++;
+						$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
+						
+						if (sizeof($raw_data) > 0) {
+						foreach ($raw_data as $data) {
+							$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
+							$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
+						}
+						}
 					}
 				}
 				
-				print "<td align='right'>";
-				form_base_checkbox("sg_" . $snmp_query["id"] . "_" . $snmp_index,"","","",0,false);
-				print "</td>";
-				print "</tr>\n";
+				print "</tr>";
+				
+				$column_counter = 0;
+				if (sizeof($snmp_query_indexes) > 0) {
+				while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
+					form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+					
+					reset($xml_array["fields"][0]);
+					while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
+						if ($field_array[0]["direction"] == "input") {
+							if (isset($snmp_query_data[$field_name][$snmp_index])) {
+								print "<td>" . $snmp_query_data[$field_name][$snmp_index] . "</td>";
+							}else{
+								print "<td></td>";
+							}
+							
+							$column_counter++;
+						}
+					}
+					
+					print "<td align='right'>";
+					form_base_checkbox("sg_" . $snmp_query["id"] . "_" . $snmp_index,"","","",0,false);
+					print "</td>";
+					print "</tr>\n";
+				}
+				}
+			}else{
+				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td style='color: red; font-size: 12px;'>Error in data query.</td></tr>\n";
 			}
-			}
-			
 			
 			/* draw the graph template drop down here */
 			print "	</table>
