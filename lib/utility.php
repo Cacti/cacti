@@ -37,6 +37,8 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache($local_data_id) {
+	include_once ("snmp_functions.php");
+	
 	global $paths;
 	
 	$data_input = db_fetch_row("select
@@ -142,15 +144,13 @@ function update_poller_cache($local_data_id) {
 				and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
 				and data_template_rrd.local_data_id=$local_data_id");
 			
+			$snmp_queries = get_snmp_query_array($query["snmp_query_id"]);
+			
 			if (sizeof($outputs) > 0) {
 			foreach ($outputs as $output) {
-				$oid = db_fetch_cell("select
-					oid
-					from
-					host_snmp_cache
-					where host_id=" . $host["id"] . "
-					and field_name='" . $output["snmp_field_name"] . "'
-					and snmp_index=" . $query["snmp_index"]);
+				if (isset($snmp_queries["fields"][0]{$output["snmp_field_name"]}[0]["oid"])) {
+					$oid = $snmp_queries["fields"][0]{$output["snmp_field_name"]}[0]["oid"] . "." . $query["snmp_index"];
+				}
 				
 				if (!empty($oid)) {
 					db_execute("insert into data_input_data_cache (local_data_id,data_input_id,action,management_ip,
