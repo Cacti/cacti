@@ -2467,6 +2467,7 @@ CREATE TABLE user_auth (
   id mediumint(8) unsigned NOT NULL auto_increment,
   username varchar(50) NOT NULL default '0',
   password varchar(50) NOT NULL default '0',
+  realm mediumint(8) NOT NULL default '0',
   full_name varchar(100) default '0',
   must_change_password char(2) default NULL,
   show_tree char(2) default 'on',
@@ -2485,8 +2486,8 @@ CREATE TABLE user_auth (
 --
 
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','on','on','on','on','on',1,1);
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b','Guest Account','on','on','on','on','on',3,1);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1);
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1);
 
 --
 -- Table structure for table 'user_auth_graph'
@@ -2577,10 +2578,11 @@ CREATE TABLE user_auth_tree (
 
 CREATE TABLE user_log (
   username varchar(50) NOT NULL default '0',
-  time timestamp(14) NOT NULL,
+  user_id mediumint(8) NOT NULL default '0',
+  time datetime NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
   ip varchar(15) NOT NULL default '',
-  PRIMARY KEY  (username,time)
+  PRIMARY KEY  (username,user_id,time)
 ) TYPE=MyISAM;
 
 --
