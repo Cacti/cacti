@@ -25,7 +25,8 @@
 	header ("Cache-Control: no-cache, must-revalidate");
 	header ("Pragma: no-cache");
 	$form = $HTTP_POST_VARS;
-	parse_str(getenv('QUERY_STRING'),$args);
+	if(isset($_SERVER)) parse_str($_SERVER['QUERY_STRING'],$args);
+	else parse_str(getenv('QUERY_STRING'),$args);
 	include("config.php");
 	include("config_vars.php");
 	include_once("database.php");
