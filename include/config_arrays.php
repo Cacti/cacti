@@ -100,4 +100,6 @@ $struct_graph_item = array("task_item_id", "color_id", "graph_type_id", "cdef_id
 $snmp_versions = array(1 => "Version 1",
 			    "Version 2",
 			    "Version 3");
+
+$registered_cacti_names = array("path_cacti");
 ?>
