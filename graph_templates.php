@@ -128,6 +128,26 @@ switch ($action) {
 		
 		include_once ("include/bottom_footer.php");
 		break;
+	case 'item_movedown':
+		item_movedown();
+		
+		if ($config[full_view_graph_template][value] == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
+		}
+		
+		break;
+	case 'item_moveup':
+		item_moveup();
+		
+		if ($config[full_view_graph_template][value] == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
+		}
+		
+		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
 		
@@ -257,7 +277,7 @@ function draw_graph_items($template_item_list, $action_prefix) {
 		DrawMatrixHeaderItem("Task Name",$colors[header_text],1);
 		DrawMatrixHeaderItem("Graph Item Type",$colors[header_text],1);
 		DrawMatrixHeaderItem("CF Type",$colors[header_text],1);
-		DrawMatrixHeaderItem("Item Color",$colors[header_text],3);
+		DrawMatrixHeaderItem("Item Color",$colors[header_text],4);
 	print "</tr>";
 	
 	$group_counter = 0;
@@ -283,7 +303,7 @@ function draw_graph_items($template_item_list, $action_prefix) {
 		
 		$_graph_type_name = $item[graph_type_name];
 		
-		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; }			?>
+		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; } ?>
 			<td class="linkEditMain">
 				<a href="graph_templates.php?action=<?print $action_prefix;?>_edit&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>">Item # <?print ($i+1);?></a>
 			</td>
@@ -341,6 +361,10 @@ function draw_graph_items($template_item_list, $action_prefix) {
 			</td>
 			<td>
 				<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item[hex];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+			</td>
+			<td>
+				<a href="graph_templates.php?action=item_movedown&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+				<a href="graph_templates.php?action=item_moveup&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 			</td>
 			<td width="1%" align="right">
 				<a href="graph_templates.php?action=<?print $action_prefix;?>_remove&graph_template_item_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
@@ -464,17 +488,11 @@ function draw_item_edit() {
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
-			<font class="textEditTitle">GPRINT Options</font><br>
-			These options only apply to the GPRINT function. Choose an option or enter a custom
-			GPRINT string in the textbox (overides checkboxes).
+			<font class="textEditTitle">GPRINT Type</font><br>
+			If this graph item is a GPRINT, you can optionally choose another format here. You can define
+			additional types under "Graph Templates".
 		</td>
-		<td>
-		<?
-			DrawStrippedFormItemRadioButton("gprint_opts", $template_item[gprint_opts], "1", "Normal","1",true);
-			DrawStrippedFormItemRadioButton("gprint_opts", $template_item[gprint_opts], "2", "Exact Numbers","1",true);
-			DrawStrippedFormItemTextBox("gprint_custom",$template_item[gprint_custom],"","", "40");
-		?>
-		</td>
+		<?DrawFormItemDropdownFromSQL("gprint_id",db_fetch_assoc("select id,name from graph_templates_gprint order by name"),"name","id",$template_item[gprint_id],"Default","");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
@@ -747,6 +765,36 @@ function item_presets_item_edit() {
     item - Graph Items 
    ----------------------- */
 
+function item_movedown() {
+	include_once ("include/functions.php");
+	include_once ("include/utility_functions.php");
+	global $args;
+	
+	/* this is so we know the "other" graph item to propagate the changes to */
+	$next_item = get_next_item("graph_templates_item", "sequence", $args[graph_template_item_id], "graph_template_id=$args[graph_template_id] and local_graph_id=0");
+	
+	move_item_down("graph_templates_item", $args[graph_template_item_id], "graph_template_id=$args[graph_template_id] and local_graph_id=0");	
+	
+	/* propagate sequence changes to child graphs */
+	push_out_graph_item($args[graph_template_item_id]);
+	push_out_graph_item($next_item);
+}
+
+function item_moveup() {
+	include_once ("include/functions.php");
+	include_once ("include/utility_functions.php");
+	global $args;
+	
+	/* this is so we know the "other" graph item to propagate the changes to */
+	$last_item = get_last_item("graph_templates_item", "sequence", $args[graph_template_item_id], "graph_template_id=$args[graph_template_id] and local_graph_id=0");
+	
+	move_item_up("graph_templates_item", $args[graph_template_item_id], "graph_template_id=$args[graph_template_id] and local_graph_id=0");	
+	
+	/* propagate sequence changes to child graphs */
+	push_out_graph_item($args[graph_template_item_id]);
+	push_out_graph_item($last_item);
+}
+
 function item() {
 	global $args, $colors, $config;
 	
@@ -773,7 +821,7 @@ function item() {
 		left join def_graph_type on graph_type_id=def_graph_type.id
 		where graph_templates_item.graph_template_id=$args[graph_template_id]
 		and graph_templates_item.local_graph_id=0
-		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
+		order by graph_templates_item.sequence");
 	
 	start_box("Graph Template Item Configuration", "", "graph_templates.php?action=item_edit&graph_template_id=$args[graph_template_id]");
 	draw_graph_items($template_item_list, "item");
@@ -832,9 +880,7 @@ function item_save() {
 	$save["text_format"] = $form["text_format"];
 	$save["value"] = $form["value"];
 	$save["hard_return"] = $form["hard_return"];
-	$save["gprint_opts"] = $form["gprint_opts"];
-	$save["gprint_custom"] = $form["gprint_custom"];
-	$save["custom"] = $form["custom"];
+	$save["gprint_id"] = $form["gprint_id"];
 	$save["sequence"] = $form["sequence"];
 	$save["sequence_parent"] = $form["sequence_parent"];
 	$save["parent"] = $form["parent"];
@@ -843,6 +889,8 @@ function item_save() {
 	
 	include_once ("include/utility_functions.php");
 	update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
+	
+	push_out_graph_item($graph_template_item_id);
 }
 
 function item_edit() {
