@@ -198,13 +198,13 @@ function item() {
 		graph_templates_item.consolidation_function_id,
 		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
 		cdef.name as cdef_name,
-		def_colors.hex
+		colors.hex
 		from graph_templates_item
 		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join data_local on data_template_rrd.local_data_id=data_local.id
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
-		left join def_colors on color_id=def_colors.id
+		left join colors on color_id=colors.id
 		where graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
 		order by graph_templates_item.sequence");
 	
@@ -600,12 +600,12 @@ function graph_diff() {
 		graph_templates_item.graph_type_id,
 		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as task_item_id,
 		cdef.name as cdef_id,
-		def_colors.hex as color_id
+		colors.hex as color_id
 		from graph_templates_item left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join data_local on data_template_rrd.local_data_id=data_local.id
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
-		left join def_colors on color_id=def_colors.id";
+		left join colors on color_id=colors.id";
 	
 	/* first, get information about the graph template as that's what we're going to model this
 	graph after */

@@ -68,21 +68,21 @@ function form_save() {
    ----------------------- */
 
 function color_save() {
-	$save["ID"] = $_POST["ID"];
-	$save["Hex"] = $_POST["Hex"];
+	$save["id"] = $_POST["id"];
+	$save["hex"] = $_POST["hex"];
 	
-	sql_save($save, "def_colors");	
+	sql_save($save, "colors");	
 }
 
 function color_remove() {
-	db_execute("delete from def_colors where id=" . $_GET["id"]);	
+	db_execute("delete from colors where id=" . $_GET["id"]);	
 }
 
 function color_edit() {
 	global $colors;
 	
 	if (isset($_GET["id"])) {
-		$color = db_fetch_row("select * from def_colors where id=" . $_GET["id"]);
+		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
 	}else{
 		unset($color);
 	}
@@ -97,11 +97,11 @@ function color_edit() {
 			<font class="textEditTitle">Hex Value</font><br>
 			The hex value for this color; valid range: 000000-FFFFFF.
 		</td>
-		<?DrawFormItemTextBox("Hex",$color["Hex"],"","6", "40");?>
+		<?DrawFormItemTextBox("hex",$color["hex"],"","6", "40");?>
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("ID",$_GET["id"]);
+	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_color","1","");
 	?>
 	
@@ -131,7 +131,7 @@ function color() {
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
     
-	$color_list = db_fetch_assoc("select * from def_colors order by hex");
+	$color_list = db_fetch_assoc("select * from colors order by hex");
 	
 	if (sizeof($color_list) > 0) {
 		$j=0; ## even/odd counter
@@ -141,21 +141,21 @@ function color() {
 				DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
 					?>
 					<td>
-						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color["ID"];?>"><?print $color["Hex"];?></a>
+						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color["id"];?>"><?print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?print $color["Hex"];?>" width="1%">&nbsp;</td>
+					<td bgcolor="#<?print $color["hex"];?>" width="1%">&nbsp;</td>
 					<td width="1%" align="right">
-						<a href="color.php?action=remove&id=<?print $color["ID"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+						<a href="color.php?action=remove&id=<?print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 					</td>
 				<?	$j=1;
 			} else { ?>
 					<td></td>
 					<td>
-						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color["ID"];?>"><?print $color["Hex"];?></a>
+						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color["id"];?>"><?print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?print $color["Hex"];?>" width="1%">&nbsp;</td>
+					<td bgcolor="#<?print $color["hex"];?>" width="1%">&nbsp;</td>
 					<td width="1%" align="right">
-						<a href="color.php?action=remove&id=<?print $color["ID"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+						<a href="color.php?action=remove&id=<?print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 					</td>
 				</tr>
 			<?

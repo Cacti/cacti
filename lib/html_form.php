@@ -244,7 +244,7 @@ function DrawFormItemColorSelect($form_name, $form_previous_value, $form_none_en
 	$form_previous_value = $form_default_value;
     }
     
-    $colors_list = db_fetch_assoc("select id,hex from def_colors order by hex desc");
+    $colors_list = db_fetch_assoc("select id,hex from colors order by hex desc");
 
     ?>
 		<td>
