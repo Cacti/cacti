@@ -218,8 +218,7 @@ function SyncDataSourceName($data_source_id, $saved_custom_data_source_name, $sa
     db_execute("update rrd_ds set dspath=\"$dspath\" where subdsid=$data_source_id");
 }
 
-function CreateList($sql_string,$name,$value,$prev) {
-    $data = db_fetch_assoc($sql_string);
+function CreateList($data,$name,$value,$prev) {
     
     if (sizeof($data) > 0) {
 		foreach ($data as $row) {
