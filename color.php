@@ -135,24 +135,50 @@ function color() {
 		DrawMatrixHeaderItem("Hex Value",$colors[header_text],1);
 		DrawMatrixHeaderItem("Color",$colors[header_text],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+		## Space
+		DrawMatrixHeaderItem("&nbsp; &nbsp; ",$colors[header_text],1);
+		DrawMatrixHeaderItem("Hex Value",$colors[header_text],1);
+                DrawMatrixHeaderItem("Color",$colors[header_text],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
 	print "</tr>";
     
 	$color_list = db_fetch_assoc("select * from def_colors order by hex");
 	
 	if (sizeof($color_list) > 0) {
-	foreach ($color_list as $color) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+		$j=0; ## even/odd counter
+		foreach ($color_list as $color) {
+			$j++;
+			if ($j % 2 == 1) {
+				DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+					?>
+					<td>
+						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
+					</td>
+					<td bgcolor="#<?print $color[Hex];?>" width="1%">&nbsp;</td>
+					<td width="1%" align="right">
+						<a href="color.php?action=remove&id=<?print $color[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					</td>
+				<?	$j=1;
+			} else { ?>
+					<td></td>
+					<td>
+						<a class="linkEditMain" href="color.php?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
+					</td>
+					<td bgcolor="#<?print $color[Hex];?>" width="1%">&nbsp;</td>
+					<td width="1%" align="right">
+						<a href="color.php?action=remove&id=<?print $color[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					</td>
+				</tr>
+			<?
+			}
+		}
+		## check for completion of odd number second column:
+		if ($j == 1) {
 			?>
-			<td>
-				<a class="linkEditMain" href="color.php?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
-			</td>
-			<td bgcolor="#<?print $color[Hex];?>" width="1%">&nbsp;</td>
-			<td width="1%" align="right">
-				<a href="color.php?action=remove&id=<?print $color[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-			</td>
-		</tr>
-	<?
-	}
+				<td colspan=4></td>
+				</tr>
+			<?
+		}
 	}
 	end_box();	
 }
