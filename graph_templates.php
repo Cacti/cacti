@@ -811,8 +811,8 @@ switch ($action) {
 		DrawMatrixRowEnd();
 		
 		$template_list = db_fetch_assoc("select id,name from graph_templates order by name");
-		
-		foreach ($template_list as $template) {
+                if (sizeof($template_list) > 0) {
+		    foreach ($template_list as $template) {
 			DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 				?>
 				<td>
@@ -823,9 +823,9 @@ switch ($action) {
 				</td>
 			</tr>
 		<?
-		$i++;
+			$i++;
+		    }
 		}
-		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
