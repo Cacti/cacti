@@ -127,7 +127,7 @@ function rrdtool_function_create($local_data_id, $show_source) {
 	}
 	
 	/* create the "--step" line */
-	$create_ds .= RRD_NL . "--step ". $rras[0]["rrd_step"] . " " . RRD_NL;
+	$create_ds = RRD_NL . "--step ". $rras[0]["rrd_step"] . " " . RRD_NL;
 	
 	/* query the data sources to be used in this .rrd file */
 	$data_sources = db_fetch_assoc("select
@@ -152,6 +152,7 @@ function rrdtool_function_create($local_data_id, $show_source) {
 	}
 	}
 	
+	$create_rra = "";
 	/* loop through each available RRA for this DS */
 	foreach ($rras as $rra) {
 		$create_rra .= "RRA:" . $consolidation_functions{$rra["consolidation_function_id"]} . ":" . $rra["x_files_factor"] . ":" . $rra["steps"] . ":" . $rra["rows"] . RRD_NL;
