@@ -29,9 +29,9 @@ include_once ("include/top_header.php");
 DrawMatrixTableBegin("97%");
 $drag_inits[] = array("handle","mytarget","true");
 ?>
-<div ID=handle style="position:static"><img src='images/menu_header_graph_setup.gif' border='0' alt='Graph Setup'></DIV>
+<div ID=handle style="position:relative"><img src='images/menu_header_graph_setup.gif' border='0' alt='Graph Setup'></DIV>
 	<BR><BR><BR>
-<div ID=mytarget style="position:static"><img src='images/menu_item_cdef.gif' border='0' alt='Graph Setup'></DIV>
+<div ID=mytarget style="position:absolute;left:-300;top:-300;"><img src='images/graph_thumb.png' border='0' alt='Graph Setup'></DIV>
   <?
   
 DrawMatrixTableEnd();
