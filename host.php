@@ -274,7 +274,6 @@ function host_new_graphs_save() {
 					foreach ($suggested_values as $suggested_value) {
 						/* once we find a match; don't try to find more */
 						if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]})) {
-							//$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
 							$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
 							
 							/* if there are no '|' characters, all of the subsitutions were successful */
@@ -337,7 +336,6 @@ function host_new_graphs_save() {
 						foreach ($suggested_values as $suggested_value) {
 							/* once we find a match; don't try to find more */
 							if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]})) {
-								//$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
 								$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
 								
 								/* if there are no '|' characters, all of the subsitutions were successful */
@@ -489,6 +487,13 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						where snmp_query.id=$snmp_query_id");
 					
 					$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=$snmp_query_graph_id");
+					
+					/* list each index that was selected */
+					$i = 0;
+					while (list($snmp_index, $one) = each($form_array3)) {
+						$snmp_indexes[$snmp_query_id][$i] = $snmp_index;
+						$i++;
+					}
 				}
 				
 				/* DRAW: SNMP Query */
@@ -516,20 +521,33 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					print "	<tr bgcolor='#" . $colors["form_alternate1"] . "'>
 							<td width='50%'>
 								<font class='textEditTitle'>" . $field["name"] . " -> " . $field["field_name"] . "</font><br>
-								When these graphs are created, the following data input field will be filled with data from
-								the SNMP host.
+								The data for each new graph will be indexed off of the following field. Certain fields may
+								have been removed from the list if they do not contain unique data. It is best to choose a field whose
+								value never changes.
 							</td>";
 					
 					$snmp_queries = get_data_query_array($snmp_query_id);
 					
 					$xml_outputs = array();
 					
+					/* create an SQL string that contains each index in this snmp_index_id */
+					$sql_or = array_to_sql_or($snmp_indexes[$snmp_query_id], "snmp_index");
+					
 					/* list each of the input fields for this snmp query */
 					while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
 						$field_array = $field_array[0];
 						
 						if ($field_array["direction"] == "input") {
-							$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";	
+							/* create a list of all values for this index */
+							$field_values = db_fetch_assoc("select field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and field_name='$field_name' and $sql_or");
+							
+							/* aggregate the above list so there is no duplicates */
+							$aggregate_field_values = array_rekey($field_values, "field_value", "field_value");
+							
+							/* fields that contain duplicate or empty values are not suitable to index off of */
+							if (!((sizeof($aggregate_field_values) < sizeof($field_values)) || (in_array("", $aggregate_field_values) == true) || (sizeof($aggregate_field_values) == 0))) {
+								$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";
+							}
 						}
 					}
 					
