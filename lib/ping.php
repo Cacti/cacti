@@ -271,7 +271,7 @@ class Net_Ping
 		$this->ping_status   = "down";
 		$this->ping_response = "Ping not performed due to setting.";
 		$this->snmp_status   = "down";
-		$this->snmp_response = "SNMP not performed due to setting.";
+		$this->snmp_response = "SNMP not performed due to setting or ping result.";
 
 		/* do parameter checking before call */
 		/* apply defaults if parameters are spooky */
@@ -320,10 +320,14 @@ class Net_Ping
 			}
 
 			/* SNMP always goes last */
-			if ($this->host["snmp_community"] != "") {
-				$snmp_result = $this->ping_snmp();
-			} else {
-				$snmp_result = true;
+			if ($ping_result) {
+				if ($this->host["snmp_community"] != "") {
+					$snmp_result = $this->ping_snmp();
+				} else {
+					$snmp_result = true;
+				}
+			}else {
+				$snmp_result = false;
 			}
 		} else {
 			/* ping ICMP/UDP only */
