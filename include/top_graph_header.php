@@ -62,7 +62,7 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 }
 
 /* setup tree selection defaults if the user has not been here before */
-if (!isset($_SESSION["sess_has_viewed_graphs"])) {
+if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["action"] == "tree") && (!isset($_SESSION["sess_has_viewed_graphs"]))) {
 	$_SESSION["sess_has_viewed_graphs"] = true;
 	
 	$first_branch = find_first_folder_url();
