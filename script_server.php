@@ -81,9 +81,9 @@ while (1) {
 				if (!function_exists($cmd)) {
 					if (file_exists($inc)) {
 						// quirk in php R5.0RC3, believe it or not....
-						if ($environ == "cactid") {
+//						if (($environ == "cactid") || (getcwd() == dirname(__FILE__))) {
 							$inc = strtolower($inc);
-						}
+//						}
 						include_once($inc);
 					} else {
 						log_data("ERROR: PHP Script File to be included, does not exist\n");
