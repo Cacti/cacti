@@ -75,7 +75,7 @@ case 'login':
 		decide what to do next */
 		switch ($user["login_opts"]) {
 			case '1': /* referer */
-				header("Location: " . $_SERVER["HTTP_REFERER"]); break;
+				header("Location: " . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php")); break;
 			case '2': /* default console page */
 				header("Location: index.php"); break;
 			case '3': /* default graph page */
