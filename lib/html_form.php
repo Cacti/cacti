@@ -72,7 +72,7 @@ function DrawPlainFormHeader($title_text, $background_color, $column_span, $bold
 <?}
 
 /* draws a vertical space and a save button */
-function DrawFormSaveButton($action) { ?>
+function DrawFormSaveButton($action = "save") { ?>
 	<input type="hidden" name="action" value="<?print $action;?>">
 	<input type="image" src="images/button_save.gif" alt="Save" align="absmiddle">
 <?}
@@ -98,14 +98,11 @@ function DrawFormItem($form_title, $form_description) {
 <?}
 
 /* creates a standard html textbox */
-function DrawFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+function DrawFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30) {
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<td>
 			<input type="text" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
 		</td>
@@ -113,13 +110,10 @@ function DrawFormItemTextBox($form_name, $form_previous_value, $form_default_val
 
 /* creates a standard html password textbox */
 function DrawFormItemPasswordTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<td>
 			<input type="password" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
 		</td>
@@ -127,66 +121,52 @@ function DrawFormItemPasswordTextBox($form_name, $form_previous_value, $form_def
 
 /* creates a standard hidden html textbox */
 function DrawFormItemHiddenTextBox($form_name, $form_previous_value, $form_default_value) { 
-	if (substr($form_name, 0, 1) == "_") {
-		$form_db_name = substr($form_name, 1, strlen($form_name));
-	}else{
-		$form_db_name = $form_name;
-	}
+    if (substr($form_name, 0, 1) == "_") {
+	$form_db_name = substr($form_name, 1, strlen($form_name));
+    }else{
+	$form_db_name = $form_name;
+    }
 	
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_db_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+
 	?>
 		<input type="hidden" name="<?print $form_name;?>"<?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
 <?}
 
 /* creates a dropdown box from a sql string */
-function DrawFormItemDropdownFromSQL($form_name, $database_conn_id, $sql_string, $column_display,
-	$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
+function DrawFormItemDropdownFromSQL($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
 	global $current_path; include_once ("$current_path/functions.php");
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<td>
 			<select name="<?print $form_name;?>">
 				<?if ($form_none_entry!="") {?><option value="0"><?print $form_none_entry;?></option><?}?>
-				<?CreateList($sql_string,$column_display,$column_id,$form_previous_value);?>
+				<?CreateList($form_data,$column_display,$column_id,$form_previous_value);?>
 			</select>
 		</td>
 <?}
 
 /* creates a checkbox */
 function DrawFormItemCheckBox($form_name, $form_previous_value, $form_caption, $form_default_value) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<td>
 			<input type="checkbox" name="<?print $form_name;?>"<?if ($form_previous_value=="on"){?> checked<?}?>> <?print $form_caption;?>
 		</td>
 <?}
 
 /* creates a radio */
-function DrawFormItemRadioButton($form_name, $form_previous_value, $form_current_value, $form_caption, 
-	$form_default_value) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+function DrawFormItemRadioButton($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value) { 
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<td>
 			<input type="radio" name="<?print $form_name;?>" value="<?print $form_current_value;?>"<?if ($form_previous_value==$form_current_value){?> checked<?}?>> <?print $form_caption;?>
 		</td>
@@ -195,13 +175,10 @@ function DrawFormItemRadioButton($form_name, $form_previous_value, $form_current
 /* creates a text area with a user defined rows and cols */
 function DrawFormItemTextArea($form_name, $form_previous_value, $form_rows, $form_columns,
 	$form_default_value) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<td>
 			<textarea cols="<?print $form_columns;?>" rows="<?print $form_rows;?>" name="<?print $form_name;?>"><?print $form_previous_value;?></textarea>
 		</td>
@@ -216,13 +193,10 @@ function DrawFormItemDropDownCustomHeader($form_name) { ?>
 
 /* creates a user defined drop down box item */
 function DrawFormItemDropDownCustomItem($form_name, $form_item_value, $form_item_display, $form_previous_value) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+    ?>
 			<option value="<?print $form_item_value;?>"<?if ($form_item_value==$form_previous_value) {?> selected<?}?>><?print $form_item_display;?></option>
 <?}
 
@@ -234,13 +208,10 @@ function DrawFormItemDropDownCustomFooter() { ?>
 
 /* creates a hidden text box containing the ID */
 function DrawFormItemHiddenIDField($form_name, $form_id) { 
-	if (substr($form_id,0,13)=="Resource id #") {
-		$form_id = mysql_result($form_id, 0, $form_name);
-	}else{
-		if ($form_id=="") {
-			$form_id = 0;
-		}
-	} ?>
+    if ($form_id=="") {
+	$form_id = 0;
+    }
+    ?>
 		<input type="hidden" name="<?print $form_name;?>" value="<?print $form_id;?>">
 <?}
 
@@ -422,59 +393,45 @@ function DrawStrippedFormItemTextBox($form_name, $form_previous_value, $form_def
 
 /* creates a standard html password textbox */
 function DrawStrippedFormItemPasswordTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+    ?>
 			<input type="password" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
 <?}
 
 /* creates a dropdown box from a sql string */
-function DrawStrippedFormItemDropdownFromSQL($form_name, $database_conn_id, $sql_string, $column_display,
-	$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
-	global $current_path; include_once ("$current_path/functions.php");
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+function DrawStrippedFormItemDropdownFromSQL($form_name, $sql_string, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
+    global $current_path; include_once ("$current_path/functions.php");
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+    ?>
 		<select name="<?print $form_name;?>">
 			<?if ($form_none_entry!="") {?><option value="0"><?print $form_none_entry;?></option><?}?>
-			<?CreateList($database_conn_id,$sql_string,$column_display,$column_id,$form_previous_value);?>
+			<?CreateList($sql_string,$column_display,$column_id,$form_previous_value);?>
 		</select>
 <?}
 
 function DrawStrippedFormItemDropdownFromNumberList($form_name,$form_numbers,$form_previous_value) {
-	global $current_path; include_once ("$current_path/functions.php");
-	$form_default_value = date('j'); /* today */
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    global $current_path; include_once ("$current_path/functions.php");
+    $form_default_value = date('j'); /* today */
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<select name="<?print $form_name;?>">
 			<?DrawNumberList($form_numbers,$form_previous_value);?>
 		</select>
 <?}
 
-function DrawStrippedFormItemDropdownFromYearList($form_name,$form_year,$form_year_before,$form_year_after,
-	$form_previous_value) {
-	global $current_path; include_once ("$current_path/functions.php");
-	$form_default_value = date('Y'); /* today */
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+function DrawStrippedFormItemDropdownFromYearList($form_name,$form_year,$form_year_before,$form_year_after, $form_previous_value) {
+    global $current_path; include_once ("$current_path/functions.php");
+    $form_default_value = date('Y'); /* today */
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 		<select name="<?print $form_name;?>">
 			<?DrawYearList($form_year,$form_year_before,$form_year_after,$form_previous_value);?>
 		</select>
@@ -482,26 +439,20 @@ function DrawStrippedFormItemDropdownFromYearList($form_name,$form_year,$form_ye
 
 /* creates a checkbox */
 function DrawStrippedFormItemCheckBox($form_name, $form_previous_value, $form_caption, $form_default_value, $hard_return) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+?>
 			<input type="checkbox" name="<?print $form_name;?>"<?if ($form_previous_value=="on"){?> checked<?}?>> <?print $form_caption;?><?if ($hard_return==true){?><br><?}?>
 <?}
 
 /* creates a radio */
 function DrawStrippedFormItemRadioButton($form_name, $form_previous_value, $form_current_value, $form_caption, 
 	$form_default_value, $hard_return) { 
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+    ?>
 			<input type="radio" name="<?print $form_name;?>" value="<?print $form_current_value;?>"<?if ($form_previous_value==$form_current_value){?> checked<?}?>> <?print $form_caption;?><?if ($hard_return==true){?><br><?}?>
 <?}
 
@@ -578,15 +529,7 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_background_color, $matrix_te
 		</td>
 <?}
 
-function DrawMatrixLoopItem($matrix_name, $matrix_db_column_name, $matrix_db_row, $matrix_format_bold, 
-	$matrix_custom_url) { 
-	if (substr($matrix_name,0,13)=="Resource id #") {
-		$matrix_name = mysql_result($matrix_name, $matrix_db_row, $matrix_db_column_name);
-	}else{
-		if ($matrix_name=="") {
-			$matrix_name = $form_default_value;
-		}
-	}
+function DrawMatrixLoopItem($matrix_name, $matrix_format_bold, $matrix_custom_url) { 
 	
 	if ($matrix_custom_url == "") {
 		$matrix_custom_url = $matrix_name;
@@ -601,8 +544,7 @@ function DrawMatrixLoopItem($matrix_name, $matrix_db_column_name, $matrix_db_row
 		</td>
 <?}
 
-function DrawMatrixLoopItemAction($matrix_name, $matrix_background_color, $matrix_text_color, $matrix_format_bold, 
-	$matrix_custom_url) { ?>
+function DrawMatrixLoopItemAction($matrix_name, $matrix_background_color, $matrix_text_color, $matrix_format_bold, $matrix_custom_url) { ?>
 		
 		<td align="center" <?if ($matrix_background_color != ""){?>bgcolor="#<?print $matrix_background_color;?>"<?}?> height="1">
 			<?if ($matrix_format_bold==true){?><strong><?}?><?if ($matrix_custom_url != ""){?><a href="<?print $matrix_custom_url;?>"><?}?><?if ($matrix_text_color != ""){?><font color="#<?print $matrix_text_color;?>"><?}?><?print $matrix_name;?><?if ($matrix_text_color != ""){?></font><?}?><?if ($matrix_custom_url != ""){?></a><?}?><?if ($matrix_format_bold==true){?></strong><?}?>
@@ -628,13 +570,10 @@ function html_boolean($html_boolean) {
 /* ------------------ Header Search ---------------------- */
 
 function DrawFilterTextBox($form_name, $form_previous_value, $form_default_value, $form_size) {
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
+    }
+    ?>
 <td>
 		<input type="text" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
 	</td>
