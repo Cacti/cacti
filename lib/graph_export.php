@@ -317,7 +317,6 @@ function export() {
 		check_remove($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html");
 
 		/* settings for preview graphs */
-		$graph_data_array["graph_start"] = "-60000";
 		$graph_data_array["graph_height"] = "100";
 		$graph_data_array["graph_width"] = "300";
 		$graph_data_array["graph_nolegend"] = true;
