@@ -28,16 +28,15 @@ include_once ("include/functions.php");
 include_once ("include/form.php");
 include ("include/top_graph_header.php");
 
-//if (isset($args[hide]) == true) {
-	/* find out if the current user has rights here */
-//	$graph_settings = db_fetch_cell("select graph_settings from user where id=$user_id");
-	
-	/* only update expand/contract info is this user has rights to keep their own settings */
-//	if ($graph_settings == "on") {
-//		db_execute("delete from settings_viewing_tree where treeitemid=$args[branch_id] and userid=$user_id");
-//		db_execute("insert into settings_viewing_tree (treeitemid,userid,status) values ($args[branch_id],$user_id,$args[hide])");
-//	}
-//}
+if (isset($_GET["hide"])) {
+	if (($_GET["hide"] == "0") || ($_GET["hide"] == "1")) {
+		/* only update expand/contract info is this user has rights to keep their own settings */
+		if ($current_user["graph_settings"] == "on") {
+			db_execute("delete from settings_tree where graph_tree_item_id=" . $_GET["branch_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
+			db_execute("insert into settings_tree (graph_tree_item_id,user_id,status) values (" . $_GET["branch_id"] . "," . $_SESSION["sess_user_id"] . "," . $_GET["hide"] . ")");
+		}
+	}
+}
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

@@ -54,9 +54,10 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		graph_tree_items.rra_id,
 		graph_tree_items.order_key,
 		graph_templates_graph.title as graph_title,
-		0 as status
+		settings_tree.status
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
+		left join settings_tree on (graph_tree_items.id=settings_tree.graph_tree_item_id and settings_tree.user_id=$user_id)
 		where graph_tree_items.graph_tree_id=$tree_id
 		and graph_tree_items.order_key like '$search_key%'
 		order by graph_tree_items.order_key");
@@ -64,12 +65,12 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	$search_key = preg_replace("/0+$/","",$start_branch);
 	
 	##  First off, we walk the tree from the top to the root.  We do it in that order so that we 
-	for ($i = (sizeof($heirarchy) - 1); $i > 0; --$i) {
+	for ($i = (sizeof($heirarchy) - 1); $i >= 0; --$i) {
 		$leaf = $heirarchy[$i];
 		
 		## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_viewing_tree == 1)
-		if ($leaf["status"] == 1) {
-			$hide[$leaf["order_key"]] = 1; 
+		if ($leaf["status"] == "1") {
+			$hide[$leaf["order_key"]] = "1";
 		}
 		
 		$tier = tree_tier($leaf["order_key"], 2);
@@ -101,7 +102,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				$parent_key = str_pad(substr($leaf["order_key"],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
 				
 				if (!empty($hide[$parent_key])) { 
-					$skip{$leaf["order_key"]} = 1;
+					$skip{$leaf["order_key"]} = "1";
 				}
 			}
 		}
@@ -113,7 +114,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 						if (isset($rowspans{$leaf["order_key"]})) {
 							$rowspans{$leaf["order_key"]}++;
 						}else{
-							$rowspans{$leaf["order_key"]} = 1;
+							$rowspans{$leaf["order_key"]} = "1";
 						}
 					}
 				}
@@ -122,11 +123,11 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				$parent_key = str_pad(substr($leaf["order_key"],0,$j * 2 ),60,'0',STR_PAD_RIGHT);
 				
 				if (!isset($rowspans[$parent_key])) {
-					$rowspans[$parent_key] = 0;
+					$rowspans[$parent_key] = "0";
 				}
 				
 				if (!isset($rowspans{$leaf["order_key"]})) {
-					$rowspans{$leaf["order_key"]} = 0;
+					$rowspans{$leaf["order_key"]} = "0";
 				}
 				
 				$rowspans[$parent_key] += ($rowspans{$leaf["order_key"]} + 1);
@@ -161,7 +162,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			}
 			
 			$colspan = (($max_tier - $tier) * 2);
-			$rowspan = (isset($rowspans{$leaf["order_key"]}) ? $rowspans{$leaf["order_key"]} : 1);
+			$rowspan = (isset($rowspans{$leaf["order_key"]}) ? $rowspans{$leaf["order_key"]} : "1");
 			
 			if (! $already_open) { 
 				print "<tr>\n";
@@ -179,19 +180,19 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				}
 				
 				print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
-					href='graph.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
+					href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$start_branch&hide=$other_status&branch_id=" . $leaf["id"] . "'>
 					<img src='images/$ec_icon.gif' border='0'></a></td>\n";
 			}else{
 				print "<td bgcolor='" . $colors["panel"] . "' width='1'>$indent</td>\n";
 			}
 			
-			print "<td bgcolor='$colors[panel]' colspan=$colspan NOWRAP><strong>
+			print "<td bgcolor='" . $colors["panel"] . "' colspan=$colspan NOWRAP><strong>
 				<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a></strong></td>\n</tr>";
 				$already_open = false;
 			
 			##  If a heading isn't hidden and has graphs, start the vertical bar.
 			if ((empty($hide{$leaf["order_key"]})) && ($rowspan > 0)) {
-				print "<tr><td bgcolor='$colors[panel]' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
+				print "<tr><td bgcolor='" . $colors["panel"] . "' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
 				$already_open = true;
 			}
 			
