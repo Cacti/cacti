@@ -327,7 +327,7 @@ function get_full_script_path($local_data_id) {
 	in the input string so we don't mess up the script */
 	$full_path = preg_replace("/(<[A-Za-z0-9_]+>)+/", "", $full_path);
 	
-	return $full_path;
+	return clean_up_path($full_path);
 }
 
 /* get_data_source_name - gets the name of a data source item or generates a new one if one does not
@@ -416,6 +416,22 @@ function clean_up_name($string) {
 	$string = preg_replace("/_{2,}/", "_", $string);
 	
 	return $string;
+}
+
+/* clean_up_path - takes any path and makes sure it contains the correct directory
+     separators based on the current operating system
+   @arg $path - the path to modify
+   @returns - the modified path */
+function clean_up_path($path) {
+	global $config;
+	
+	if ($config["cacti_server_os"] == "unix") {
+		$path = str_replace("\\", "/", $path);
+	}elseif ($config["cacti_server_os"] == "win32") {
+		$path = str_replace("/", "\\", $path);
+	}
+	
+	return $path;
 }
 
 /* update_data_source_title_cache_from_template - updates the title cache for all data sources
@@ -582,8 +598,8 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 function subsitute_data_query_path($path) {
 	global $config;
 	
-	$path = str_replace("|path_cacti|", $config["base_path"], $path);
-	$path = str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path);
+	$path = clean_up_path(str_replace("|path_cacti|", $config["base_path"], $path));
+	$path = clean_up_path(str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path));
 	
 	return $path;
 }

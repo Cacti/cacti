@@ -130,7 +130,7 @@ function update_poller_cache($local_data_id) {
 					'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 					'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 					'" . get_data_source_name($data_template_rrd_id) . "',
-					'" . get_data_source_path($local_data_id,true) . "','$command',1)");
+					'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true))) . "','" . addslashes($command) . "',1)");
 			}
 			
 			break;
@@ -151,7 +151,7 @@ function update_poller_cache($local_data_id) {
 				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 				'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 				'" . get_data_source_name($data_template_rrd_id) . "',
-				'" . get_data_source_path($local_data_id,true,1) . "','" . $field["snmp_oid"] . "',1)");
+				'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true,1))) . "','" . $field["snmp_oid"] . "',1)");
 			
 			break;
 		case '3': /* snmp query */
@@ -170,7 +170,7 @@ function update_poller_cache($local_data_id) {
 						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
-						'" . get_data_source_path($local_data_id,true) . "','$oid'," . sizeof($outputs) . ")");
+						'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true))) . "','$oid'," . sizeof($outputs) . ")");
 				}
 			}
 			}
@@ -203,7 +203,7 @@ function update_poller_cache($local_data_id) {
 						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
-						'" . get_data_source_path($local_data_id,true) . "','$script_path'," . sizeof($outputs) . ")");
+						'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true))) . "','" . addslashes($script_path) . "'," . sizeof($outputs) . ")");
 				}
 			}
 			}
