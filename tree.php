@@ -120,6 +120,7 @@ function form_save() {
 		$save["order_key"] = $order_key;
 		$save["local_graph_id"] = form_input_validate($_POST["local_graph_id"], "local_graph_id", "", true, 3);
 		$save["rra_id"]	= form_input_validate($_POST["rra_id"], "rra_id", "", true, 3);
+		$save["host_id"] = form_input_validate($_POST["host_id"], "host_id", "", true, 3);
 		
 		if (!is_error_message()) {
 			$tree_item_id = sql_save($save, "graph_tree_items");
@@ -151,17 +152,21 @@ function item_edit() {
 	
 	global $colors;
 	
-	$title_graph = "Tree Items [graph]";
-	$title_header = "Tree Items [header]";
+	$color_graph = $colors["header"];
+	$color_header = $colors["header"];
+	$color_host = $colors["header"];
 	
 	if (!empty($_GET["tree_item_id"])) {
 		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["tree_item_id"]);
 		
 		/* bold the active "type" */
-		if ($tree_item["local_graph_id"] > 0) { $title_graph = "<strong>Tree Items</strong> [graph]"; }
+		if ($tree_item["local_graph_id"] > 0) { $color_graph = $colors["header_panel"]; }
 		
 		/* bold the active "type" */
-		if ($tree_item["title"] != "") { $title_header = "<strong>Tree Items</strong> [header]"; }
+		if ($tree_item["title"] != "") { $color_header = $colors["header_panel"]; }
+		
+		/* bold the active "type" */
+		if ($tree_item["host_id"] > 0) { $color_host = $colors["header_panel"]; }
 	}
 	
 	print "<form method='post' action='tree.php'>\n";
@@ -181,7 +186,20 @@ function item_edit() {
 	
 	end_box();
 	
-	start_box($title_graph, "98%", $colors["header"], "3", "center", "");
+	start_box("Tree Items [header]", "98%", $color_header, "3", "center", "");
+	
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Header Title</font><br>
+			If this item is a header, enter a title here.
+		</td>
+		<?php form_text_box("title",(isset($tree_item) ? $tree_item["title"] : ""),"","255","40");?>
+	</tr>
+	<?php
+	
+	end_box();
+	
+	start_box("Tree Items [graph]", "98%", $color_graph, "3", "center", "");
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
@@ -203,14 +221,14 @@ function item_edit() {
 	
 	end_box();
 	
-	start_box($title_header, "98%", $colors["header"], "3", "center", "");
+	start_box("Tree Items [host]", "98%", $color_host, "3", "center", "");
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
-			<font class="textEditTitle">Header Title</font><br>
-			If this item is a header, enter a title here.
+			<font class="textEditTitle">Host</font><br>
+			Choose a host here to add it to the tree.
 		</td>
-		<?php form_text_box("title",(isset($tree_item) ? $tree_item["title"] : ""),"","255","40");?>
+		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",(isset($tree_item) ? $tree_item["host_id"] : 0),"None","1");?>
 	</tr>
 	<?php
 	
