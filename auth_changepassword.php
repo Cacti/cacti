@@ -31,9 +31,13 @@ include ("include/config.php");
 
 $user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 
-$ip = trim($_SERVER["REMOTE_ADDR"]);
+/* default to !bad_password */
+$bad_password = false;
 
-switch ($action) {
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+
+switch ($_REQUEST["action"]) {
 case 'changepassword':
 	if (($password == $confirm) && ($password != "")) {
 		db_execute("insert into user_log (username,result,ip) values('" . $user["username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
