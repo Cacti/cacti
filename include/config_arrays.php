@@ -76,8 +76,15 @@ $graph_item_types = array(1 => "COMMENT",
 			       "AREA",
 			       "STACK",
 			       "GPRINT");
+
 $image_types = array(1 => "PNG",
 			  "GIF");
 
+$struct_graph = array("image_format_id", "title", "height", "width", "upper_limit",
+		      "lower_limit", "vertical_label", "auto_scale", "auto_scale_opts",
+		      "auto_scale_log", "auto_scale_rigid", "auto_padding", "base_value",
+		      "grouping", "export", "unit_value", "unit_exponent_value");
 
+$struct_graph_item = array("task_item_id", "color_id", "graph_type_id", "cdef_id", "consolidation_function_id",
+			    "text_format", "value", "hard_return", "gprint_id", "sequence");
 ?>
