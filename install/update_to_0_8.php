@@ -292,6 +292,7 @@ function update_database($database_old, $database_username, $database_password) 
 	foreach ($_ds as $item) {
 		$host_id = 0;
 		$hostname = "";
+		$data_input_field_id = 0;
 		$data_template_id = 0; $local_data_template_data_id = 0; $local_data_template_rrd_id = 0;
 		
 		if ($item["SrcID"] == "11") {
@@ -312,6 +313,9 @@ function update_database($database_old, $database_username, $database_password) 
 		}elseif ($item["SrcID"] == "1") {
 			$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=1");
 		}elseif ($item["SrcID"] == "31") {
+			$data_template_id = "37";
+			$local_data_template_data_id = "37";
+			$local_data_template_rrd_id = "44";
 			$hostname = "localhost";
 		}
 		
@@ -342,7 +346,7 @@ function update_database($database_old, $database_username, $database_password) 
 						local_data_id,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,
 						data_source_type_id,data_source_name,data_input_field_id) values (0,$local_data_template_rrd_id,$local_data_id,$data_template_id,
 						" . $item["MaxValue"] . "," . $item["MinValue"] . "," . $item["Heartbeat"] . ",
-						" . $item["DataSourceTypeID"] . ",'" . $item["DSName"] . "'," . (empty($data_input_field_cache[$old_output_field_id]) ? "0" : $data_input_field_cache{$old_output_field_id}) . ")")) {
+						" . $item["DataSourceTypeID"] . ",'" . $item["DSName"] . "'," . (empty($data_input_field_cache[$old_output_field_id]) ? $data_input_field_id : $data_input_field_cache{$old_output_field_id}) . ")")) {
 						$data_template_rrd_cache{$item["ID"]} = db_fetch_insert_id();
 						$status_array{count($status_array)}["data_source_item"][1] = $item["DSName"];
 					}else{
@@ -520,7 +524,7 @@ function update_database($database_old, $database_username, $database_password) 
 							}
 						}
 						
-						data_query($ip_to_host_cache["127.0.0.1"], 6);
+						db_execute("insert into host_snmp_query (host_id,snmp_query_id) values (" . $ip_to_host_cache["127.0.0.1"] . ",6)");
 					}else{
 						if ((!empty($item2["Value"]) && (!empty($data_input_field_cache{$item2["FieldID"]})))) {
 							if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
