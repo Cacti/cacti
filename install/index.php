@@ -24,6 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
+session_start();
+
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 
@@ -53,6 +55,18 @@ if ($old_cacti_version == $config["cacti_version"]) {
 		the 'cacti.sql' file. At the command line, execute the following to continue:</p>
 		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>";
 	exit;
+}
+
+function db_install_execute($cacti_version, $sql) {
+	$sql_install_cache = (isset($_SESSION["sess_sql_install_cache"]) ? $_SESSION["sess_sql_install_cache"] : array());
+	
+	if (db_execute($sql)) {
+		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][1] = $sql;
+	}else{
+		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][0] = $sql;
+	}
+	
+	$_SESSION["sess_sql_install_cache"] = $sql_install_cache;
 }
 
 $current_document_root = "";
@@ -165,11 +179,11 @@ if (empty($_REQUEST["step"])) {
 }else{
 	if ($_REQUEST["step"] == "1") {
 		$_REQUEST["step"] = "2";
-	}elseif (($_REQUEST["step"] == "2") && (($_REQUEST["install_type"] == "1") || ($_REQUEST["install_type"] == "3"))) {
+	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "1")) {
 		$_REQUEST["step"] = "3";
-	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "2")) {
-		$_REQUEST["step"] = "9";
-	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "2")) {
+	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "3")) {
+		$_REQUEST["step"] = "8";
+	}elseif ($_REQUEST["step"] == "8") {
 		$_REQUEST["step"] = "3";
 	}elseif ($_REQUEST["step"] == "3") {
 		$_REQUEST["step"] = "4";
@@ -203,7 +217,7 @@ if ($_REQUEST["step"] == "4") {
 	
 	header ("Location: ../index.php");
 	exit;
-}elseif (($_REQUEST["step"] == "3") && ($_REQUEST["install_type"] == "3")) {
+}elseif (($_REQUEST["step"] == "8") && ($_REQUEST["install_type"] == "3")) {
 	/* try to find current (old) version in the array */
 	$version_index = array_search($old_cacti_version, $cacti_versions);
 	
@@ -219,66 +233,18 @@ if ($_REQUEST["step"] == "4") {
 	/* loop from the old version to the current, performing updates for each version in between */
 	for ($i=($version_index+1); $i<count($cacti_versions); $i++) {
 		if ($cacti_versions[$i] == "0.8.1") {
-			db_execute("alter table user_log add user_id mediumint(8) not null after username");
-			db_execute("alter table user_log change time time datetime not null");
-			db_execute("alter table user_log drop primary key");
-			db_execute("alter table user_log add primary key (username, user_id, time)");
-			db_execute("alter table user_auth add realm mediumint(8) not null after password");
-			db_execute("update user_auth set realm = 1 where full_name='ldap user'");
-			
-		        $_src = db_fetch_assoc("select id, username from user_auth");
-			
-		        if (sizeof($_src) > 0) {
-			        foreach ($_src as $item) {
-                			db_execute("update user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "'");
-				}
-			}
+			include ("0_8_to_0_8_1.php");
+			upgrade_to_0_8_1();
 		}elseif ($cacti_versions[$i] == "0.8.2") {
-			db_execute("ALTER TABLE `data_input_data_cache` ADD `host_id` MEDIUMINT( 8 ) NOT NULL AFTER `local_data_id`");
-			db_execute("ALTER TABLE `host` ADD `disabled` CHAR( 2 ) , ADD `status` TINYINT( 2 ) NOT NULL");
-			db_execute("update host_snmp_cache set field_name='ifName' where field_name='ifAlias' and snmp_query_id=1");
-			db_execute("update snmp_query_graph_rrd_sv set text=REPLACE(text,'ifAlias','ifName') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4)");
-			db_execute("update snmp_query_graph_sv set text=REPLACE(text,'ifAlias','ifName') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4)");
-			db_execute("update host set disabled=''");
+			include ("0_8_1_to_0_8_2.php");
+			upgrade_to_0_8_2();
 		}elseif ($cacti_versions[$i] == "0.8.2a") {
-			db_execute("ALTER TABLE `data_input_data_cache` ADD `rrd_num` TINYINT( 2 ) UNSIGNED NOT NULL AFTER `rrd_path`");
+			include ("0_8_2_to_0_8_2a.php");
+			upgrade_to_0_8_2a();
 		}elseif ($cacti_versions[$i] == "0.8.3") {
-			db_execute("ALTER TABLE `user_auth` CHANGE `graph_policy` `policy_graphs` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL");
-			db_execute("ALTER TABLE `user_auth` ADD `policy_trees` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `policy_hosts` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `policy_graph_templates` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL");
-			db_execute("ALTER TABLE `graph_tree_items` ADD `host_id` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `title`");
-			db_execute("ALTER TABLE `rra` ADD `timespan` INT( 12 ) UNSIGNED NOT NULL");
-			db_execute("update rra set timespan=(rows*steps*144)");
-			
-			$auth_graph = db_fetch_assoc("select user_id,local_graph_id from user_auth_graph");
-			
-			if (sizeof($auth_graph) > 0) {
-			foreach ($auth_graph as $item) {
-				db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["local_graph_id"] . ",1)");
-			}
-			}
-			
-			$auth_tree = db_fetch_assoc("select user_id,tree_id from user_auth_tree");
-			
-			if (sizeof($auth_graph) > 0) {
-			foreach ($auth_graph as $item) {
-				db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["tree_id"] . ",2)");
-			}
-			}
-			
-			db_execute("DROP TABLE `user_auth_graph`");
-			db_execute("DROP TABLE `user_auth_tree`");
-			db_execute("DROP TABLE `user_auth_hosts`");
-			
-			/* bug#72 */
-			db_execute("update graph_templates_item set cdef_id=15 where id=25");
-			db_execute("update graph_templates_item set cdef_id=15 where id=26");
-			db_execute("update graph_templates_item set cdef_id=15 where id=27");
-			db_execute("update graph_templates_item set cdef_id=15 where id=28");
-			
-			push_out_graph_item(25);
-			push_out_graph_item(26);
-			push_out_graph_item(27);
-			push_out_graph_item(28);
+			include ("0_8_2a_to_0_8_3.php");
+			include_once("../include/utility_functions.php");
+			upgrade_to_0_8_3();
 		}
 	}
 }
@@ -423,6 +389,34 @@ if ($_REQUEST["step"] == "4") {
 						all of your settings will be saved and your database will be upgraded if this
 						is an upgrade. You can change any of the settings on this screen at a later
 						time by going to "Cacti Settings" from within Cacti.</p>
+						
+						<?php }elseif ($_REQUEST["step"] == "8") { ?>
+						
+						<p>Upgrade results:</p>
+						
+						<?php
+						$current_version  = "";
+						
+						$fail_text = "<span style='color: red; font-weight: bold; font-size: 12px;'>[Fail]</span>&nbsp;";
+						$success_text = "<span style='color: green; font-weight: bold; font-size: 12px;'>[Success]</span>&nbsp;";
+						
+						while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
+							while (list($version, $arr2) = each($arr1)) {
+								while (list($status, $sql) = each($arr2)) {
+									if ($current_version != $version) {
+										$version_index = array_search($version, $cacti_versions);
+										print "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
+									}
+									
+									print "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
+									
+									$current_version = $version;
+								}
+							}
+						}
+						
+						kill_session_var("sess_sql_install_cache");
+						?>
 						
 						<?php }?>
 						
