@@ -24,9 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-/* this file stores additional information about each configurable setting
-   and how that setting is to be rendered on a configuration page. */
-
 include($config["include_path"] . "/config_arrays.php");
 
 /* tab information */
@@ -84,7 +81,6 @@ $settings = array(
 			"friendly_name" => "Cacti Log File Path",
 			"description" => "The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti.log)",
 			"method" => "textbox",
-			"default" => read_config_option("path_webroot") . "/log/cacti.log",
 			"max_length" => "255"
 			),
 		"pollerpaths_header" => array(
@@ -673,4 +669,12 @@ $settings_graphs = array(
 			)
 		)
 	);
+
+/*
+ * set certain default values here to prevent loops later on
+ */
+if ((isset($no_read_config_option) ? $no_read_config_option : false) != true) {
+	$settings["path_cactilog"]["default"] = read_config_option("path_webroot") . "/log/cacti.log";
+}
+
 ?>

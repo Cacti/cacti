@@ -25,7 +25,6 @@
 */
 
 include("./include/auth.php");
-include("./include/config_settings.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
