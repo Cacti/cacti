@@ -441,7 +441,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	
 	/* loop through the "templated field names" to find to the rest... */
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		if ((isset($data[$field_name])) && (isset($template_data[$field_name]))) {
+		if ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
 			if ((!empty($template_data{"t_" . $field_name})) && ($new_save == false)) {
 				$save[$field_name] = $data[$field_name];
 			}else{
