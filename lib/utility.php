@@ -90,6 +90,38 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 		}
 		}
 	}
+	
+	/* "merge" graph stuff */
+	$graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=$local_graph_id");
+	$template_graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=0 and graph_template_id=$graph_template_id");
+	
+	unset($save);
+	
+	$save["id"] = $graph_list["id"];
+	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
+	$save["local_graph_id"] = $local_graph_id;
+	$save["graph_template_id"] = $graph_template_id;
+	$save["order_key"] = $graph_list["order_key"];
+	
+	if ($template_graph_list[t_image_format_id] == "on") { $save["image_format_id"] = $graph_list["image_format_id"]; }else{ $save["image_format_id"] = $template_graph_list["image_format_id"]; }
+	if ($template_graph_list[t_title] == "on") { $save["title"] = $graph_list["title"]; }else{ $save["title"] = $template_graph_list["title"]; }
+	if ($template_graph_list[t_height] == "on") { $save["height"] = $graph_list["height"]; }else{ $save["height"] = $template_graph_list["height"]; }
+	if ($template_graph_list[t_width] == "on") { $save["width"] = $graph_list["width"]; }else{ $save["width"] = $template_graph_list["width"]; }
+	if ($template_graph_list[t_upper_limit] == "on") { $save["upper_limit"] = $graph_list["upper_limit"]; }else{ $save["upper_limit"] = $template_graph_list["upper_limit"]; }
+	if ($template_graph_list[t_lower_limit] == "on") { $save["lower_limit"] = $graph_list["lower_limit"]; }else{ $save["lower_limit"] = $template_graph_list["lower_limit"]; }
+	if ($template_graph_list[t_vertical_label] == "on") { $save["vertical_label"] = $graph_list["vertical_label"]; }else{ $save["vertical_label"] = $template_graph_list["vertical_label"]; }
+	if ($template_graph_list[t_auto_scale] == "on") { $save["auto_scale"] = $graph_list["auto_scale"]; }else{ $save["auto_scale"] = $template_graph_list["auto_scale"]; }
+	if ($template_graph_list[t_auto_scale_opts] == "on") { $save["auto_scale_opts"] = $graph_list["auto_scale_opts"]; }else{ $save["auto_scale_opts"] = $template_graph_list["auto_scale_opts"]; }
+	if ($template_graph_list[t_auto_scale_log] == "on") { $save["auto_scale_log"] = $graph_list["auto_scale_log"]; }else{ $save["auto_scale_log"] = $template_graph_list["auto_scale_log"]; }
+	if ($template_graph_list[t_auto_scale_rigid] == "on") { $save["auto_scale_rigid"] = $graph_list["auto_scale_rigid"]; }else{ $save["auto_scale_rigid"] = $template_graph_list["auto_scale_rigid"]; }
+	if ($template_graph_list[t_auto_padding] == "on") { $save["auto_padding"] = $graph_list["auto_padding"]; }else{ $save["auto_padding"] = $template_graph_list["auto_padding"]; }
+	if ($template_graph_list[t_base_value] == "on") { $save["base_value"] = $graph_list["base_value"]; }else{ $save["base_value"] = $template_graph_list["base_value"]; }
+	if ($template_graph_list[t_grouping] == "on") { $save["grouping"] = $graph_list["grouping"]; }else{ $save["grouping"] = $template_graph_list["grouping"]; }
+	if ($template_graph_list[t_export] == "on") { $save["export"] = $graph_list["export"]; }else{ $save["export"] = $template_graph_list["export"]; }
+	if ($template_graph_list[t_unit_value] == "on") { $save["unit_value"] = $graph_list["unit_value"]; }else{ $save["unit_value"] = $template_graph_list["unit_value"]; }
+	if ($template_graph_list[t_unit_exponent_value] == "on") { $save["unit_exponent_value"] = $graph_list["unit_exponent_value"]; }else{ $save["unit_exponent_value"] = $template_graph_list["unit_exponent_value"]; }
+	
+	sql_save($save, "graph_templates_graph");
 }
 
 function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
