@@ -51,6 +51,8 @@ html_start_box("<strong>About Cacti</strong>", "98%", $colors["header"], "3", "c
 			during really lengthy coding sessions.</li>
 			<li>Rivo Nurges, for that c-based poller that was talked so long about. This <em>really</em> fast poller
 			is what will enable Cacti to make its way into larger and larger networks.</li>
+			<li>Larry Adams, for providing insight, time, superb support, and personal sanity. I could not have pulled
+			off a release of this magnitude without your help.
 		</ul>
 		</p>
 
