@@ -106,7 +106,7 @@ $settings = array(
 					)
 				),
 			),
-		"smnp_version" => array(
+		"snmp_version" => array(
 			"friendly_name" => "SNMP Version",
 			"description" => "The type of SNMP you have installed.",
 			"method" => "drop_array",
