@@ -287,7 +287,7 @@ function UpdateCacti($old_version, $new_version) {
 	    ##  Added 06-07-2002 at 13:37
 	    db_execute("INSERT INTO settings VALUES ('use_polling_zones', 'off', 'Use Polling
 						     Zones', 'If you want to do distributed polling you can set up \'polling zones\'
-						     which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'internal')");
+						     which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'checkbox')");
 
 	    db_execute("CREATE TABLE polling_zones (
 					pz_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

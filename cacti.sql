@@ -994,9 +994,7 @@ INSERT INTO settings VALUES ('path_html_export', '', 'HTML Export Path', 'If you
 INSERT INTO settings VALUES ('guest_user', 'guest', 'Guest User', 'The name of the guest user for viewing graphs; is "guest" by default.', 'textbox');
 INSERT INTO settings VALUES ('path_html_export_skip', '1', 'Export Every x Times', 'If you don\'t want cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.', 'textbox');
 INSERT INTO settings VALUES ('path_html_export_ctr', '', '', '', 'internal');
-INSERT INTO settings VALUES ('use_polling_zones', 'off', 'Use Polling 
-Zones', 'If you want to do distributed polling you can set up \'polling zones\' 
-which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'internal');
+INSERT INTO settings VALUES ('use_polling_zones', 'off', 'Use Polling Zones', 'If you want to do distributed polling you can set up \'polling zones\' which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'cehckbox');
 # --------------------------------------------------------
 
 #
