@@ -27,7 +27,7 @@
 include("../include/config.php");
 include("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -237,6 +237,9 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.4") {
 			include ("0_8_3_to_0_8_4.php");
 			upgrade_to_0_8_4();
+		}elseif ($cacti_versions[$i] == "0.8.5") {
+			include ("0_8_4_to_0_8_5.php");
+			upgrade_to_0_8_5();
 		}
 	}
 }
@@ -279,7 +282,7 @@ if ($_REQUEST["step"] == "4") {
 		<td width="100%">
 			<table cellpadding="3" cellspacing="0" border="0" bgcolor="#E6E6E6" width="100%">
 				<tr>
-					<td bgcolor="#104075" class="header-text">cacti Installation Guide</td>
+					<td bgcolor="#104075" class="header-text">Cacti Installation Guide</td>
 				</tr>
 				<tr>
 					<td width="100%" style="font-size: 12px;">
