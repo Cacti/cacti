@@ -773,7 +773,7 @@ function host_edit() {
 	</tr>
 	
 	<?php 
-	if ((!empty($host["id"])) && (empty($host["host_template_id"]))) {
+	if (!empty($host["id"])) {
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td colspan="2">
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
