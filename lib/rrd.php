@@ -351,9 +351,7 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time) {
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* build and run the rrdtool fetch command with all of our data */
-	$command = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
-
-	$output = rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT);
+	$output = rrdtool_execute("fetch $data_source_path AVERAGE -s $start_time -e $end_time", false, RRDTOOL_OUTPUT_STDOUT);
 
 	/* grab the first line of the output which contains a list of data sources
 	in this .rrd file */
@@ -361,6 +359,11 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time) {
 
 	/* loop through each data source in this .rrd file ... */
 	if (preg_match_all("/\w+/", $line_one, $data_source_names)) {
+		/* version 1.0.49 changed the output slightly */
+		if (preg_match("/^timestamp/", $line_one)) {
+			array_shift($data_source_names[0]);
+		}
+
 		$fetch_array["data_source_names"] = $data_source_names[0];
 
 		/* build a unique regexp to match each data source individually when
@@ -841,7 +844,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 			}
 	    /* create cdef string for "total similar data sources" if requested */
-	    if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {	
+	    if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
 		$sources_seen = array();
 		$item_count = 0;
 		for ($t=0;($t<count($graph_items));$t++) {
@@ -858,7 +861,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		    }
 		}
-	
+
 		/* if there is only one item to total, don't even bother with the summation. otherwise
 		cdef=a,b,c,+,+ is fine. */
 		if ($item_count == 1) {
