@@ -105,7 +105,7 @@ function form_save() {
 				db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $_POST["snmp_query_id"] . ")");
 				
 				/* recache snmp data */
-				query_snmp_host($host_id, $_POST["snmp_query_id"]);
+				data_query($host_id, $_POST["snmp_query_id"]);
 				
 				header ("Location: host.php?action=edit&id=" . $host_id);
 				exit;
@@ -120,7 +120,7 @@ function form_save() {
 					db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $snmp_query["snmp_query_id"] . ")");
 					
 					/* recache snmp data */
-					query_snmp_host($host_id, $snmp_query["snmp_query_id"]);
+					data_query($host_id, $snmp_query["snmp_query_id"]);
 				}
 				}
 			}
@@ -131,10 +131,10 @@ function form_save() {
 					$graph_template_id = preg_replace('/^cg_(\d+)$/', "\\1", $var);
 					
 					$selected_graphs["cg"][$graph_template_id][$graph_template_id] = true;
-				}elseif (preg_match('/^sg_\d+_\d+$/', $var)) {
-					$snmp_query_id = preg_replace('/^sg_(\d+)_(\d+)$/', "\\1", $var);
+				}elseif (preg_match('/^sg_\d+_\S+$/', $var)) {
+					$snmp_query_id = preg_replace('/^sg_(\d+)_(\S+)$/', "\\1", $var);
 					$snmp_query_graph_id = $_POST{"sgg_" . $snmp_query_id}; 
-					$snmp_index = preg_replace('/^sg_(\d+)_(\d+)$/', "\\2", $var);
+					$snmp_index = preg_replace('/^sg_(\d+)_(\S+)$/', "\\2", $var);
 					
 					$selected_graphs["sg"][$snmp_query_id][$snmp_query_graph_id][$snmp_index] = true;
 				}
@@ -210,7 +210,7 @@ function host_new_graphs_save() {
 				
 				$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=$snmp_query_graph_id");
 				
-				$snmp_query_array = get_snmp_query_array($snmp_query_id);
+				$snmp_query_array = get_data_query_array($snmp_query_id);
 			}
 			
 			unset($save);
@@ -366,7 +366,7 @@ function host_new_graphs_save() {
 	/* go ahead and write out values from the POST form to our new data */
 	
 	while (list($var, $val) = each($_POST)) {
-		if (preg_match("/^g_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: (opt) snmp index, 4: field_name */
+		if (preg_match("/^g_(\d+)_(\d+)_([^_]+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: (opt) snmp index, 4: field_name */
 			if (empty($matches[3])) { /* ALL new graphs */
 				db_execute("update graph_templates_graph set " . $matches[4] . "='$val' where " . (empty($matches[1]) ? "local_graph_id=" . $new_graph_templates["cg"]{$matches[2]} : array_to_sql_or(split(":", $new_graph_templates["sg"]{$matches[1]}{$matches[2]}),"local_graph_id")));
 			}else{ /* only new graphs for this snmp_index */
@@ -387,7 +387,7 @@ function host_new_graphs_save() {
 				db_execute("update graph_templates_item set " . $matches[4] . "='$val' where id=" . $item["id"]);
 			}
 			}
-		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4: (opt) snmp_index, 5:field_name */
+		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_([^_]+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4: (opt) snmp_index, 5:field_name */
 			if (empty($matches[4])) { /* ALL new graphs */
 				db_execute("update data_template_data set " . $matches[5] . "='$val' where " . (empty($matches[1]) ? "local_data_id=" . $new_data_templates["cg"]{$matches[2]}{$matches[3]} : array_to_sql_or(split(":", $new_data_templates["sg"]{$matches[1]}{$matches[3]}),"local_data_id")));
 			}else{ /* only new data sources for this snmp_index */
@@ -404,7 +404,7 @@ function host_new_graphs_save() {
 				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $matches[3] . ",$data_template_data_id,'','$val')");
 				
 				$data_input_field_id = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $matches[1] . " and action_id=2");
-				$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id=" . $_POST["host_id"] . " and field_name='$val' and snmp_index=$snmp_index");
+				$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id=" . $_POST["host_id"] . " and field_name='$val' and snmp_index='$snmp_index'");
 				
 				/* save the actual value (ie. 3, 192.168.1.101, etc) */
 				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id,$data_template_data_id,'','$snmp_cache_value')");
@@ -479,7 +479,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 								the SNMP host.
 							</td>";
 					
-					$snmp_queries = get_snmp_query_array($snmp_query_id);
+					$snmp_queries = get_data_query_array($snmp_query_id);
 					
 					$xml_outputs = array();
 					
@@ -845,7 +845,7 @@ function host_edit() {
 		
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
-			$xml_array = get_snmp_query_array($snmp_query["id"]);
+			$xml_array = get_data_query_array($snmp_query["id"]);
 			$xml_outputs = array();
 			
 			$num_input_fields = 0;
