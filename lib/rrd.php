@@ -312,40 +312,42 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 			$create_rrd_file = true;
 		}
 
-		ksort($rrd_fields["times"]);
+		if ((is_array($rrd_fields["times"])) && (sizeof($rrd_fields["times"]) > 0)) {
+			ksort($rrd_fields["times"]);
 
-		while (list($update_time, $field_array) = each($rrd_fields["times"])) {
-			if (empty($update_time)) {
-				/* default the rrdupdate time to now */
-				$current_rrd_update_time = "N";
-			}else if ($create_rrd_file == true) {
-				/* for some reason rrdtool will not let you update using times less than the
-				rrd create time */
-				$current_rrd_update_time = "N";
-			}else{
-				$current_rrd_update_time = $update_time;
-			}
-
-			$i = 0; $rrd_update_template = ""; $rrd_update_values = $current_rrd_update_time . ":";
-			while (list($field_name, $value) = each($field_array)) {
-				$rrd_update_template .= $field_name;
-
-				/* if we have "invalid data", give rrdtool an Unknown (U) */
-				if ((!isset($value)) || (!is_numeric($value))) {
-					$value = "U";
+			while (list($update_time, $field_array) = each($rrd_fields["times"])) {
+				if (empty($update_time)) {
+					/* default the rrdupdate time to now */
+					$current_rrd_update_time = "N";
+				}else if ($create_rrd_file == true) {
+					/* for some reason rrdtool will not let you update using times less than the
+					rrd create time */
+					$current_rrd_update_time = "N";
+				}else{
+					$current_rrd_update_time = $update_time;
 				}
 
-				$rrd_update_values .= $value;
+				$i = 0; $rrd_update_template = ""; $rrd_update_values = $current_rrd_update_time . ":";
+				while (list($field_name, $value) = each($field_array)) {
+					$rrd_update_template .= $field_name;
 
-				if (($i+1) < count($field_array)) {
-					$rrd_update_template .= ":";
-					$rrd_update_values .= ":";
+					/* if we have "invalid data", give rrdtool an Unknown (U) */
+					if ((!isset($value)) || (!is_numeric($value))) {
+						$value = "U";
+					}
+
+					$rrd_update_values .= $value;
+
+					if (($i+1) < count($field_array)) {
+						$rrd_update_template .= ":";
+						$rrd_update_values .= ":";
+					}
+
+					$i++;
 				}
 
-				$i++;
+				rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
 			}
-
-			rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
 		}
 	}
 }
@@ -886,7 +888,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		data source of global cdef, but is unique when those two variables combine. */
 		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_total = ""; $cdef_similar_ds = ""; $cdef_similar = "";
 
-
 		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
 			$cdef_string = get_cdef($graph_item["cdef_id"]);
 
@@ -909,38 +910,35 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if ($item_count == 1) {
 					$cdef_total = str_replace(",", "", $cdef_total_ds);
 				}else{
-					$cdef_total = $cdef_total_ds . str_repeat("+,", ($item_count - 2)) . "+";
+					$cdef_total = $cdef_total_ds . str_repeat("+,", max(0, ($item_count - 2))) . "+";
 				}
 			}
-	    /* create cdef string for "total similar data sources" if requested */
-	    if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
-		$sources_seen = array();
-		$item_count = 0;
-		for ($t=0;($t<count($graph_items));$t++) {
-		    if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))
-			    && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])
-			    && ($graph_item["graph_templates_item_id"] != $graph_items[$t]["graph_templates_item_id"])) {
-			/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
-			if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])
-			    && (!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]}))) {
-			    $def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
-			    $cdef_similar_ds .= "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF,"; /* convert unknowns to '0' first */
-			    $sources_seen{$graph_items[$t]["data_template_rrd_id"]} = 1;
-			    $item_count++;
+
+			/* create cdef string for "total similar data sources" if requested */
+			if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
+				$sources_seen = array();
+				$item_count = 0;
+
+				for ($t=0;($t<count($graph_items));$t++) {
+					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"])) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"]) && ($graph_item["graph_templates_item_id"] != $graph_items[$t]["graph_templates_item_id"])) {
+						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
+						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) && (!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]}))) {
+							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
+							$cdef_similar_ds .= "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF,"; /* convert unknowns to '0' first */
+							$sources_seen{$graph_items[$t]["data_template_rrd_id"]} = 1;
+							$item_count++;
+						}
+					}
+				}
+
+				/* if there is only one item to total, don't even bother with the summation. otherwise
+				cdef=a,b,c,+,+ is fine. */
+				if ($item_count == 1) {
+					$cdef_similar = str_replace(",", "", $cdef_similar_ds);
+				}else{
+					$cdef_similar = $cdef_similar_ds . str_repeat("+,", ($item_count - 2)) . "+";
+				}
 			}
-		    }
-		}
-
-		/* if there is only one item to total, don't even bother with the summation. otherwise
-		cdef=a,b,c,+,+ is fine. */
-		if ($item_count == 1) {
-		    $cdef_similar = str_replace(",", "", $cdef_similar_ds);
-		}else{
-		    $cdef_similar = $cdef_similar_ds . str_repeat("+,", ($item_count - 2)) . "+";
-		}
-	    }
-
-
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
 			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
