@@ -95,9 +95,22 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 		}
 
 		foreach ($graph_array as $graph) {
-			form_alternate_row_color("f9f9f9", "ffffff", $i);
-			print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0" . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
-			print "<tr>\n";
+			?>
+			<tr bgcolor='#<?php print ($i % 2 == 0 ? "f9f9f9" : "ffffff");?>'>
+				<td align='center'>
+					<table width='1' cellpadding='0'>
+						<tr>
+							<td>
+								<a href='graph.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
+							</td>
+							<td valign='top' style='padding: 3px;'>
+								<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<?php
 
 			$i++;
 		}
