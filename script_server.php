@@ -42,7 +42,7 @@ else
 	$environ = "cmd";
 
 // send status back to the server
-if ($config["verbosity"] == HIGH) {
+if ($config["verbosity"] >= HIGH) {
 	log_data("PHPSERVER: Script Server has Started - Parent is " . $environ . "\n");
 }
 fputs(STDOUT, "PHPSERVER: PHP Script Server has Started - Parent is " . $environ . "\n");
@@ -100,7 +100,7 @@ while (1) {
 				} else {
 					fputs(STDOUT, $result . "\n");
 				}
-				if ($config["verbosity"] == HIGH) {
+				if ($config["verbosity"] >= HIGH) {
 					log_data("PHPSERVER: CMD:" . $in_string . " output " . $result . "\n");
 				}
 			} else {
@@ -109,7 +109,7 @@ while (1) {
 			}
 		}elseif ($in_string == "quit") {
 			fputs(STDOUT, "PHPSERVER: PHP Script Server Shutdown request received, exiting\n");
-			if ($config["verbosity"] == HIGH) {
+			if ($config["verbosity"] >= HIGH) {
 				log_data("PHPSERVER: PHP Script Server Shutdown request received, exiting\n");
 			}
 			break;
