@@ -33,7 +33,7 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -209,7 +209,7 @@ if ($_REQUEST["step"] == "4") {
 	kill_session_var("sess_host_cache_array");
 	
 	/* just in case we have hard drive graphs to deal with */
-	data_query(db_fetch_cell("select id from host where management_ip='127.0.0.1'"), 6);
+	data_query(db_fetch_cell("select id from host where hostname='127.0.0.1'"), 6);
 	
 	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
 	up-to-date */
@@ -248,6 +248,9 @@ if ($_REQUEST["step"] == "4") {
 			include ("0_8_2a_to_0_8_3.php");
 			include_once("../lib/utility.php");
 			upgrade_to_0_8_3();
+		}elseif ($cacti_versions[$i] == "0.8.4") {
+			include ("0_8_3_to_0_8_4.php");
+			upgrade_to_0_8_4();
 		}
 	}
 }
