@@ -108,16 +108,15 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		
 		/* sometimes a string is presented in hex; not ASCII (ex. win32), in
 		this case, convert the hex to ASCII */
-		if (eregi("(.*)(hex:)(.*)", $snmp_value)) {
+		//if (eregi("(.*)(hex:)(.*)", $snmp_value)) {
 			/* grab the actual hex string */
-			$snmp_value = trim(ereg_replace("(.*)(Hex:)(.*)", "\\3", $snmp_value));
+		//	$snmp_value = trim(ereg_replace("(.*)(Hex:)(.*)", "\\3", $snmp_value));
 			
 			/* strip all formatting and convert the string */
-			$snmp_value = hex2bin(ereg_replace("[^A-Fa-f0-9]", "", $snmp_value));
-		}
+		//	$snmp_value = hex2bin(ereg_replace("[^A-Fa-f0-9]", "", $snmp_value));
+		//}
 		
-		/* remove ALL quotes */
-		$snmp_value = str_replace("\"", "", $snmp_value);
+		
 	}else{
 		if ($version == "1") {
 			$snmp_auth = "-c \"$community\""; /* v1/v2 - community string */
@@ -133,11 +132,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}elseif (read_config_option("smnp_version") == "net-snmp") {
 			$snmp_value = exec(read_config_option("path_snmpget") . " $snmp_auth -v $version $hostname $oid");
 		}
-		
-		$snmp_value = trim(ereg_replace("(.*=)", "", $snmp_value));
 	}
 	
-	$snmp_value = trim(eregi_replace(REGEXP_SNMP_TRIM, "", $snmp_value));
+	$snmp_value = format_snmp_string($snmp_value);
 	
 	return $snmp_value;
 }
@@ -155,8 +152,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$o = 0;
 		for (reset($temp_array); $i = key($temp_array); next($temp_array)) {
 			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i); 
-			$snmp_array[$o]["value"] = $temp_array[$i];
-			$snmp_array[$o]["value"] = trim(eregi_replace(REGEXP_SNMP_TRIM, "", $snmp_array[$o]["value"]));
+			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i]);
 			$o++;
 		}
 	}else{
@@ -181,12 +177,44 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		
 		for ($i=0; $i < count($temp_array); $i++) {
 			$snmp_array[$i]["oid"] = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
-			$snmp_array[$i]["value"] = trim(ereg_replace(".*= ?", "", $temp_array[$i]));
-			$snmp_array[$i]["value"] = trim(eregi_replace(REGEXP_SNMP_TRIM, "", $snmp_array[$i]["value"]));
+			$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i]);
 		}
 	}
 	
 	return $snmp_array;
+}
+
+function format_snmp_string($string) {
+	/* strip off all leading junk (the oid and stuff) */
+	$string = trim(ereg_replace(".*= ?", "", $string));
+	
+	/* remove ALL quotes */
+	$string = str_replace("\"", "", $string);
+	
+	if (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
+		$octet = "";
+		
+		/* strip of the 'hex:' */
+		$string = eregi_replace("hex: ?", "", $string);
+		
+		/* split the hex on the delimiter */
+		$octets = preg_split("/\s|:/", $string);
+		
+		/* loop through each octet and format it accordingly */
+		for ($i=0;($i<count($octets));$i++) {
+			$octet .= str_pad($octets[$i], 2, "0", STR_PAD_LEFT);
+			
+			if (($i+1) < count($octets)) {
+				$octet .= ":";
+			}
+		}
+		
+		$string = $octet;
+	}
+	
+	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
+	
+	return $string;
 }
 
 ?>
