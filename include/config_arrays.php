@@ -204,8 +204,8 @@ $menu = array(
 		"templates_export.php" => "Export Templates"
 		),
 	"Configuration"  => array(
-		"utilities.php" => "Utilities",
-		"settings.php" => "Cacti Settings"
+		"utilities.php" => "Diagnostics",
+		"settings.php" => "Settings"
 		),
 	"Utilities" => array(
 		"user_admin.php" => "User Management",

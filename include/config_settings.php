@@ -122,11 +122,11 @@ $settings = array(
 			"items" => array(
 				"log_snmp" => array(
 					"friendly_name" => "Web SNMP Messages",
-					"default" => "on"
+					"default" => ""
 					),
 				"log_graph" => array(
 					"friendly_name" => "Web RRD Graph Syntax",
-					"default" => "on"
+					"default" => ""
 					)
 				),
 			),
@@ -138,19 +138,19 @@ $settings = array(
 			"items" => array(
 				"log_pstats" => array(
 					"friendly_name" => "Poller Statsistics",
-					"default" => "on"
+					"default" => ""
 					),
 				"log_perror" => array(
 					"friendly_name" => "Poller Errors",
-					"default" => "on"
+					"default" => ""
 					),
 				"log_create" => array(
 					"friendly_name" => "RRD Create Syntax",
-					"default" => "on"
+					"default" => ""
 					),
 				"log_update" => array(
 					"friendly_name" => "RRD Update Syntax",
-					"default" => "on"
+					"default" => ""
 					)
 				),
 			),
