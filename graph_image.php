@@ -41,19 +41,32 @@ session_write_close();
 
 $graph_data_array = array();
 
-/* check to see if there are user specified vars */
+/* override: graph start time (unix time) */ 
 if (!empty($_GET["graph_start"])) {
-	$graph_data_array["use"] = true;
 	$graph_data_array["graph_start"] = $_GET["graph_start"];
+}
+
+/* override: graph end time (unix time) */
+if (!empty($_GET["graph_end"])) {
+	$graph_data_array["graph_end"] = $_GET["graph_end"];
+}
+
+/* override: graph height (in pixels) */
+if (!empty($_GET["graph_height"])) {
 	$graph_data_array["graph_height"] = $_GET["graph_height"];
+}
+
+/* override: graph width (in pixels) */
+if (!empty($_GET["graph_width"])) {
 	$graph_data_array["graph_width"] = $_GET["graph_width"];
 }
 
-/* treat the legend separatly */
+/* override: skip drawing the legend? */
 if (!empty($_GET["graph_nolegend"])) {
 	$graph_data_array["graph_nolegend"] = $_GET["graph_nolegend"];
 }
 
+/* print RRDTool graph source? */
 if (!empty($_GET["show_source"])) {
 	$graph_data_array["print_source"] = $_GET["show_source"];
 }

@@ -1,7 +1,16 @@
 Documentation of user-contributed code:
 
-[include/rrd_functions.php]
-- 2/8/2002 - Dave Neitz, Sprint E|Solutionns 
+2004-05-17: Eric Steffen [eric.steffen@gmx.net]
+  Bonsai is very similar to Cactistoric developed by Bruno Prigent, with a little bit 
+  more user friendly interface in mind (my opinion).
+
+  Select in the graph (with your mouse) an area you are interested in. It's magic... 
+  the selected time period is displayed in a new graph, and with the left mouse 
+  button zoom out to view a larger time period. 
+
+  You can also add the displayed graph to your favorites in your browser.
+
+2002-02-08: Dave Neitz, Sprint E|Solutionns 
   Added 3 new CDEF special types: 
 
   Type  Description
@@ -15,6 +24,5 @@ Documentation of user-contributed code:
 
   start=<starting position in datasource>&skip=<skip count>
   
-[graphs_items.php]
-- 2/8/2002 - Dave Neitz, Sprint E|Solutionns
-Added additional screen help text to support value expanded usage. 
+2002-02-08: Dave Neitz, Sprint E|Solutionns
+  Added additional screen help text to support value expanded usage. 

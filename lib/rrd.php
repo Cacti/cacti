@@ -352,7 +352,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
 	
 	/* define the time span, which decides which rra to use */
-	$timespan = -($rra["timespan"]);
+	//$timespan = -($rra["timespan"]);
 	
 	/* find the step and how often this graph is updated with new data */
 	$ds_step = db_fetch_cell("select
@@ -453,29 +453,46 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$unit_exponent_value = "--units-exponent=" . $graph["unit_exponent_value"] . RRD_NL;
 	}
 	
-	/* optionally you can specify and array that overrides some of the db's
-	values, lets set that all up here */
-	if (isset($graph_data_array["use"])) {
-		if ($graph_data_array["graph_start"] == "0") {
-			$graph_start = $timespan;
-		}else{
-			$graph_start = $graph_data_array["graph_start"];
-		}
-		
+	/*
+	 * optionally you can specify and array that overrides some of the db's values, lets set 
+	 * that all up here
+	 */
+	
+	/* override: graph start time */ 
+	if ((!isset($graph_data_array["graph_start"])) || ($graph_data_array["graph_start"] == "0")) {
+		$graph_start = -($rra["timespan"]);
+	}else{
+		$graph_start = $graph_data_array["graph_start"];
+	}
+	
+	/* override: graph end time */ 
+	if ((!isset($graph_data_array["graph_end"])) || ($graph_data_array["graph_end"] == "0")) {
+		$graph_end = -($seconds_between_graph_updates);
+	}else{
+		$graph_end = $graph_data_array["graph_end"];
+	}
+	
+	/* override: graph height (in pixels) */
+	if (isset($graph_data_array["graph_height"])) {
 		$graph_height = $graph_data_array["graph_height"];
+	}else{
+		$graph_height = $graph["height"];
+	}
+	
+	/* override: graph width (in pixels) */
+	if (isset($graph_data_array["graph_width"])) {
 		$graph_width = $graph_data_array["graph_width"];
 	}else{
-		$graph_start = $timespan;
-		$graph_height = $graph["height"];
 		$graph_width = $graph["width"];
 	}
 	
+	/* override: skip drawing the legend? */
 	if (isset($graph_data_array["graph_nolegend"])) {
 		$graph_legend = "--no-legend" . RRD_NL;
 	}else{
 		$graph_legend = "";
 	}
-    
+	
 	/* export options */
 	if (isset($graph_data_array["export"])) {
 		$graph_opts = read_config_option("path_html_export") . "/" . $graph_data_array["export_filename"] . RRD_NL;
@@ -491,7 +508,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$graph_opts .= 
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL . 
 		"--start=$graph_start" . RRD_NL .
-		"--end=" . -($seconds_between_graph_updates) . RRD_NL .
+		"--end=$graph_end" . RRD_NL .
 		"--title=\"" . $graph["title_cache"] . "\"" . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .

@@ -868,6 +868,9 @@ function draw_navigation_text() {
 		"graph_view.php:list" => array("title" => "List Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=list", "level" => "1"),
 		"graph_view.php:preview" => array("title" => "Preview Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=preview", "level" => "1"),
 		"graph.php:" => array("title" => "|current_graph_title|", "mapping" => "graph_view.php:,?", "level" => "2"),
+		"graph.php:view" => array("title" => "|current_graph_title|", "mapping" => "graph_view.php:,?", "level" => "2"),
+		"graph.php:zoom" => array("title" => "Zoom", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
+		"graph.php:properties" => array("title" => "Properties", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
 		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
 		"index.php:" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
 		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
@@ -1008,7 +1011,11 @@ function resolve_navigation_variables($text) {
 function get_associated_rras($local_graph_id) {
 	return db_fetch_assoc("select
 		rra.id,
-		rra.name
+		rra.steps,
+		rra.rows,
+		rra.name,
+		rra.timespan,
+		data_template_data.rrd_step
 		from graph_templates_item,data_template_data_rra,data_template_rrd,data_template_data,rra
 		where graph_templates_item.task_item_id=data_template_rrd.id
 		and data_template_rrd.local_data_id=data_template_data.local_data_id
