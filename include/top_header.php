@@ -90,4 +90,4 @@ global $colors;
 	</tr>
 	<tr>
 		<td height="500"></td>
-		<td valign="top" width="100%"><?php display_output_messages();?>
+		<td valign="top"><?php display_output_messages();?>
