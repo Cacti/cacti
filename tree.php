@@ -120,6 +120,11 @@ function form_save() {
 		$save["rra_id"]	= form_input_validate($_POST["rra_id"], "rra_id", "", true, 3);
 		$save["host_id"] = form_input_validate($_POST["host_id"], "host_id", "", true, 3);
 		
+		/* the user did not select anything; raise an error */
+		if (($save["title"] == "") && (empty($save["local_graph_id"])) && (empty($save["host_id"]))) {
+			raise_message(5);
+		}
+		
 		if (!is_error_message()) {
 			$tree_item_id = sql_save($save, "graph_tree_items");
 			
@@ -136,7 +141,7 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header("Location: tree.php?action=item_edit&tree_item_id=" . (empty($tree_item_id) ? $_POST["id"] : $tree_item_id) . "&tree_id=" . $_POST["graph_tree_id"]);
+			header("Location: tree.php?action=item_edit&tree_item_id=" . (empty($tree_item_id) ? $_POST["id"] : $tree_item_id) . "&tree_id=" . $_POST["graph_tree_id"] . "&parent_id=" . $_POST["parent_item_id"]);
 		}else{
 			header("Location: tree.php?action=edit&id=" . $_POST["graph_tree_id"]);
 		}
@@ -229,12 +234,14 @@ function item_movedown() {
 
 function item_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		$graph_tree_item = db_fetch_row("select title,local_graph_id from graph_tree_items where id=" . $_GET["id"]);
+		$graph_tree_item = db_fetch_row("select title,local_graph_id,host_id from graph_tree_items where id=" . $_GET["id"]);
 		
-		if (empty($graph_tree_item["local_graph_id"])) {
-			$text = "Are you sure you want to delete the header item <strong>'" . $graph_tree_item["title"] . "'</strong>?";
-		}else{
+		if (!empty($graph_tree_item["local_graph_id"])) {
 			$text = "Are you sure you want to delete the graph item <strong>'" . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $graph_tree_item["local_graph_id"]) . "'</strong>?";
+		}elseif ($graph_tree_item["title"] != "") {
+			$text = "Are you sure you want to delete the header item <strong>'" . $graph_tree_item["title"] . "'</strong>?";
+		}elseif (!empty($graph_tree_item["host_id"])) {
+			$text = "Are you sure you want to delete the host item <strong>'" . db_fetch_cell("select CONCAT_WS('',description,' (',hostname,')') as hostname from host where id=" . $graph_tree_item["host_id"]) . "'</strong>?";
 		}
 		
 		include("./include/top_header.php");
