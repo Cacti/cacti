@@ -591,7 +591,7 @@ function snmp_edit() {
 		start_box("<strong>Data Input Method</strong> [" . db_fetch_cell("select name from data_input where id=" . $snmp_query["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-				<td><span style='color: white; font-weight: bold;'>Data Input Field -> SNMP Field Action Mappings</span></td>
+				<td><span style='color: white; font-weight: bold;'>Data Input Field -> Data Query Field Action Mappings</span></td>
 			</tr>";
 		
 		$fields = db_fetch_assoc("select
@@ -640,7 +640,7 @@ function snmp_edit() {
 		
 		end_box();
 		
-		start_box("<strong>Associated Graph/Data Templates</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+		start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
 		
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 				<td><span style='color: white; font-weight: bold;'>Name</span></td>
