@@ -861,6 +861,13 @@ $fields_tree_edit = array(
 		"value" => "|arg1:name|",
 		"max_length" => "255",
 		),
+	"sort_type" => array(
+		"method" => "drop_array",
+		"friendly_name" => "Sorting Type",
+		"description" => "Choose how items in this tree will be sorted.",
+		"value" => "|arg1:sort_type|",
+		"array" => $tree_sort_types,
+		),
 	"id" => array(
 		"method" => "hidden_zero",
 		"value" => "|arg1:id|"

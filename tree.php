@@ -87,12 +87,16 @@ function form_save() {
 	if (isset($_POST["save_component_tree"])) {
 		$save["id"] = $_POST["id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["sort_type"] = form_input_validate($_POST["sort_type"], "sort_type", "", true, 3);
 
 		if (!is_error_message()) {
 			$tree_id = sql_save($save, "graph_tree");
 
 			if ($tree_id) {
 				raise_message(1);
+
+				/* sort the tree using the algorithm chosen by the user */
+				sort_tree(SORT_TYPE_TREE, $tree_id, $_POST["sort_type"]);
 			}else{
 				raise_message(2);
 			}
@@ -123,7 +127,7 @@ function form_save() {
    ----------------------- */
 
 function item_edit() {
-	global $colors;
+	global $colors, $tree_sort_types;
 
 	$tree_item_types = array(
 		TREE_ITEM_TYPE_HEADER => "Header",
@@ -132,22 +136,16 @@ function item_edit() {
 		);
 
 	$host_group_types = array(
-		1 => "Graph Template",
-		2 => "Data Query Index"
-		);
-
-	$item_sort_types = array(
-		1 => "Manual Ordering (No Sorting)",
-		2 => "Alphabetic Ordering",
-		3 => "Numeric Ordering"
+		HOST_GROUPING_GRAPH_TEMPLATE => "Graph Template",
+		HOST_GROUPING_DATA_QUERY_INDEX => "Data Query Index"
 		);
 
 	if (!empty($_GET["id"])) {
 		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["id"]);
 
-		if ($tree_item["local_graph_id"] > 0) { $db_type = 2; }
-		if ($tree_item["title"] != "") { $db_type = 1; }
-		if ($tree_item["host_id"] > 0) { $db_type = 3; }
+		if ($tree_item["local_graph_id"] > 0) { $db_type = TREE_ITEM_TYPE_GRAPH; }
+		if ($tree_item["title"] != "") { $db_type = TREE_ITEM_TYPE_HEADER; }
+		if ($tree_item["host_id"] > 0) { $db_type = TREE_ITEM_TYPE_HOST; }
 	}
 
 	if (isset($_GET["type_select"])) {
@@ -155,8 +153,10 @@ function item_edit() {
 	}elseif (isset($db_type)) {
 		$current_type = $db_type;
 	}else{
-		$current_type = "1";
+		$current_type = TREE_ITEM_TYPE_HEADER;
 	}
+
+	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . $_GET["tree_id"] . "'");
 
 	html_start_box("<strong>Tree Items</strong>", "98%", $colors["header"], "3", "center", "");
 
@@ -191,15 +191,17 @@ function item_edit() {
 	</tr>
 	<?php
 	switch ($current_type) {
-	case '1':
+	case TREE_ITEM_TYPE_HEADER:
+		$i = 0;
+
 		/* it's nice to default to the parent sorting style for new items */
 		if (empty($_GET["id"])) {
 			$default_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=" . $_GET["parent_id"]);
 		}else{
-			$default_sorting_type = 1;
+			$default_sorting_type = TREE_ORDERING_NONE;
 		}
 
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Title</font><br>
 				If this item is a header, enter a title here.
@@ -208,18 +210,23 @@ function item_edit() {
 				<?php form_text_box("title", (isset($tree_item["title"]) ? $tree_item["title"] : ""), "", "255", 30, "text", (isset($_GET["id"]) ? $_GET["id"] : "0"));?>
 			</td>
 		</tr>
-		<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-			<td width="50%">
-				<font class="textEditTitle">Sorting Type</font><br>
-				Choose how children of this branch will be sorted.
-			</td>
-			<td>
-				<?php form_dropdown("sort_children_type", $item_sort_types, "", "", (isset($tree_item["sort_children_type"]) ? $tree_item["sort_children_type"] : $default_sorting_type), "", "");?>
-			</td>
-		</tr>
 		<?php
-		if (!empty($_GET["id"])) {
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		/* don't allow the user to change the tree item ordering if a tree order has been specified */
+		if ($tree_sort_type == TREE_ORDERING_NONE) {
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+				<td width="50%">
+					<font class="textEditTitle">Sorting Type</font><br>
+					Choose how children of this branch will be sorted.
+				</td>
+				<td>
+					<?php form_dropdown("sort_children_type", $tree_sort_types, "", "", (isset($tree_item["sort_children_type"]) ? $tree_item["sort_children_type"] : $default_sorting_type), "", "");?>
+				</td>
+			</tr>
+			<?php
+		}
+
+		if ((!empty($_GET["id"])) && ($tree_sort_type == TREE_ORDERING_NONE)) {
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 				<td width="50%">
 					<font class="textEditTitle">Propagate Changes</font><br>
 					Propagate all options on this form (except for 'Title') to all child 'Header' items.
@@ -231,7 +238,7 @@ function item_edit() {
 			<?php
 		}
 		break;
-	case '2':
+	case TREE_ITEM_TYPE_GRAPH:
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Graph</font><br>
@@ -252,7 +259,7 @@ function item_edit() {
 		</tr>
 		<?php
 		break;
-	case '3':
+	case TREE_ITEM_TYPE_HOST:
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Host</font><br>

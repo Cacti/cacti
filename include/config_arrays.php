@@ -189,6 +189,12 @@ $cdef_item_types = array(
 	5 => "Another CDEF",
 	6 => "Custom String");
 
+$tree_sort_types = array(
+	TREE_ORDERING_NONE => "Manual Ordering (No Sorting)",
+	TREE_ORDERING_ALPHABETIC => "Alphabetic Ordering",
+	TREE_ORDERING_NUMERIC => "Numeric Ordering"
+	);
+
 $custom_data_source_types = array(
 	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
 	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",

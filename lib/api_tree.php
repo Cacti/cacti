@@ -70,15 +70,28 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 				reparent_branch($parent_tree_item_id, $tree_item_id);
 			}
 
-			/* resort our parent */
-			$parent_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=$parent_tree_item_id");
-			if ((!empty($parent_tree_item_id)) && ($parent_sorting_type != TREE_ORDERING_NONE)) {
-				sort_branch($parent_tree_item_id, $parent_sorting_type);
-			}
+			$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='$tree_id'");
 
-			/* if this is a header, sort direct children */
-			if (($type == TREE_ITEM_TYPE_HEADER) && ($sort_children_type != TREE_ORDERING_NONE)) {
-				sort_branch($tree_item_id, $sort_children_type);
+			/* tree item ordering */
+			if ($tree_sort_type == TREE_ORDERING_NONE) {
+				/* resort our parent */
+				$parent_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=$parent_tree_item_id");
+				if ((!empty($parent_tree_item_id)) && ($parent_sorting_type != TREE_ORDERING_NONE)) {
+					sort_tree(SORT_TYPE_TREE_ITEM, $parent_tree_item_id, $parent_sorting_type);
+				}
+
+				/* if this is a header, sort direct children */
+				if (($type == TREE_ITEM_TYPE_HEADER) && ($sort_children_type != TREE_ORDERING_NONE)) {
+					sort_tree(SORT_TYPE_TREE_ITEM, $tree_item_id, $sort_children_type);
+				}
+			/* tree ordering */
+			}else{
+				/* potential speed savings for large trees */
+				if (tree_tier($save["order_key"]) == 1) {
+					sort_tree(SORT_TYPE_TREE, $tree_id, $tree_sort_type);
+				}else{
+					sort_tree(SORT_TYPE_TREE_ITEM, $parent_tree_item_id, $tree_sort_type);
+				}
 			}
 
 			/* if the user checked the 'Propagate Changes' box */
@@ -91,14 +104,15 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 					where graph_tree_items.host_id = 0
 					and graph_tree_items.local_graph_id = 0
 					and graph_tree_items.title != ''
-					and graph_tree_items.order_key like '$search_key%%'");
+					and graph_tree_items.order_key like '$search_key%%'
+					and graph_tree_items.graph_tree_id='$tree_id'");
 
 				if (sizeof($tree_items) > 0) {
 					foreach ($tree_items as $item) {
 						db_execute("update graph_tree_items set sort_children_type = '$sort_children_type' where id = '" . $item["id"] . "'");
 
 						if ($sort_children_type != TREE_ORDERING_NONE) {
-							sort_branch($item["id"], $sort_children_type);
+							sort_tree(SORT_TYPE_TREE_ITEM, $item["id"], $sort_children_type);
 						}
 					}
 				}

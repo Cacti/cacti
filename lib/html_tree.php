@@ -180,6 +180,8 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 
 	include_once($config["library_path"] . "/tree.php");
 
+	$tree_sorting_type = db_fetch_cell("select sort_type from graph_tree where id='$tree_id'");
+
 	$tree = db_fetch_assoc("select
 		graph_tree_items.id,
 		graph_tree_items.title,
@@ -195,20 +197,20 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		where graph_tree_items.graph_tree_id=$tree_id
 		order by graph_tree_items.order_key");
 
-    	print "<!-- <P>Building Heirarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
+	print "<!-- <P>Building Heirarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
 
-    	##  Here we go.  Starting the main tree drawing loop.
+	##  Here we go.  Starting the main tree drawing loop.
 
 	$i = 0;
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
-	    	$tier = tree_tier($leaf["order_key"]);
-	    	$transparent_indent = "<img width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
+		$tier = tree_tier($leaf["order_key"]);
+		$transparent_indent = "<img width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
 		$sort_cache[$tier] = $leaf["sort_children_type"];
 
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
 
-	    	if ($leaf["local_graph_id"] > 0) {
+		if ($leaf["local_graph_id"] > 0) {
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'>" . $leaf["graph_title"] . "</a></td>\n";
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
 		}elseif ($leaf["title"] != "") {
@@ -219,7 +221,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
 		}
 
-		if ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != TREE_ORDERING_NONE)) {
+		if ( ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != TREE_ORDERING_NONE)) || ($tree_sorting_type != TREE_ORDERING_NONE) )  {
 			print "<td bgcolor='#$row_color' width='80'></td>\n";
 		}else{
 			print 	"<td bgcolor='#$row_color' width='80' align='center'>\n
