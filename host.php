@@ -36,6 +36,11 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
+	case 'gt_remove':
+		host_remove_gt();
+		
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		break;
 	case 'query_remove':
 		host_remove_query();
 		
@@ -87,6 +92,13 @@ function form_save() {
 		exit;
 	}
 	
+	if ((!empty($_POST["add_gt_y"])) && (!empty($_POST["graph_template_id"]))) {
+		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $_POST["id"] . "," . $_POST["graph_template_id"] . ")");
+		
+		header("Location: host.php?action=edit&id=" . $_POST["id"]);
+		exit;
+	}
+	
 	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_y"]))) {
 		$save["id"] = $_POST["id"];
 		$save["host_template_id"] = $_POST["host_template_id"];
@@ -131,6 +143,14 @@ function form_save() {
 					data_query($host_id, $snmp_query["snmp_query_id"]);
 				}
 				}
+				
+				$graph_templates = db_fetch_assoc("select graph_template_id from host_template_graph where host_template_id=" . $_POST["host_template_id"]);
+				
+				if (sizeof($graph_templates) > 0) {
+				foreach ($graph_templates as $graph_template) {
+					db_execute("replace into host_graph (host_id,graph_template_id) values ($host_id," . $graph_template["graph_template_id"] . ")");
+				}
+				}
 			}
 		}
 		
@@ -155,6 +175,10 @@ function host_remove_query() {
 	db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
 }
 
+function host_remove_gt() {
+	db_execute("delete from host_graph where graph_template_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
+}
+
 /* ---------------------
     Host Functions
    --------------------- */
@@ -171,6 +195,7 @@ function host_remove() {
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from host where id=" . $_GET["id"]);
+		db_execute("delete from host_graph where host_id=" . $_GET["id"]);
 		db_execute("delete from host_snmp_query where host_id=" . $_GET["id"]);
 		db_execute("delete from host_snmp_cache where host_id=" . $_GET["id"]);
 		
@@ -314,6 +339,69 @@ function host_edit() {
 					</td>
 					<td align="right">
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
+					</td>
+				</table>
+			</td>
+		</tr>
+		
+		<?php
+		end_box();
+		
+		start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+			DrawMatrixHeaderItem("Graph Template Name",$colors["header_text"],1);
+			DrawMatrixHeaderItem("Status",$colors["header_text"],1);
+			DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		print "</tr>";
+		
+		$selected_graph_templates = db_fetch_assoc("select 
+			graph_templates.id,
+			graph_templates.name
+			from graph_templates,host_graph
+			where graph_templates.id=host_graph.graph_template_id
+			and host_graph.host_id=" . $_GET["id"] . "
+			order by graph_templates.name");
+		
+		$i = 0;
+		if (sizeof($selected_graph_templates) > 0) {
+		foreach ($selected_graph_templates as $item) {
+			$i++;
+			
+			/* get status information for this graph template */
+			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
+			
+			?>
+			<tr>
+				<td style="padding: 4px;">
+					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+				</td>
+				<td>
+					<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1") . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+				</td>
+				<td align='right' nowrap>
+					<a href='host.php?action=gt_remove&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>'><img src='images/delete_icon_large.gif' alt='Delete Graph Template Association' border='0' align='absmiddle'></a>
+				</td>
+			</tr>
+			<?php
+		}
+		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
+		
+		?>
+		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+			<td colspan="4">
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<td nowrap>Add Graph Template:&nbsp;
+						<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
+							graph_templates.id,
+							graph_templates.name
+							from graph_templates left join host_graph
+							on (graph_templates.id=host_graph.graph_template_id and host_graph.host_id=" . $_GET["id"] . ")
+							where host_graph.host_id is null
+							order by graph_templates.name"),"name","id","","","");?>
+					</td>
+					<td align="right">
+						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
 					</td>
 				</table>
 			</td>

@@ -153,7 +153,7 @@ function host_new_graphs_save() {
 			}
 		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_([^_]+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4: (opt) snmp_index, 5:field_name */
 			if (empty($matches[1])) { /* this is a new graph from template field */
-				$values["cg"]{$matches[2]}["data_template"]{$matches[5]} = $val;
+				$values["cg"]{$matches[3]}["data_template"]{$matches[5]} = $val;
 			}else{ /* this is a data query field */
 				$values["sg"]{$matches[1]}{$matches[2]}["data_template"]{$matches[5]} = $val;
 			}
@@ -531,8 +531,8 @@ function graphs() {
 	<form name="chk" method="post" action="graphs_new.php">
 	<?php
 	
-	if (!empty($host["host_template_id"])) {
-		start_box("<strong>Host Template</strong> [" . db_fetch_cell("select name from host_template where id=" . $host["host_template_id"]) . "]", "98%", $colors["header"], "3", "center", "");
+	if (sizeof(db_fetch_assoc("select graph_template_id from host_graph where host_id=" . $_REQUEST["host_id"])) > 0) {
+		start_box("<strong>Host Template</strong> [" . (empty($host["host_template_id"]) ? "None" : db_fetch_cell("select name from host_template where id=" . $host["host_template_id"])) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 				<td class='textSubHeaderDark'>Graph Template Name</td>
@@ -542,14 +542,14 @@ function graphs() {
 		$graph_templates = db_fetch_assoc("select
 			graph_templates.id as graph_template_id,
 			graph_templates.name as graph_template_name
-			from host_template_graph, graph_templates
-			where host_template_graph.graph_template_id=graph_templates.id
-			and host_template_graph.host_template_id=" . $host["host_template_id"] . "
+			from host_graph,graph_templates
+			where host_graph.graph_template_id=graph_templates.id
+			and host_graph.host_id=" . $_REQUEST["host_id"] . "
 			order by graph_templates.name");
 		
 		$i = 0;
 		
-		$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_template_graph where graph_local.graph_template_id=host_template_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
+		$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_graph where graph_local.graph_template_id=host_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
 		
 		print "<script type='text/javascript'>\n<!--\n";
 		print "var gt_created_graphs = new Array(";
