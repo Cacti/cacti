@@ -96,6 +96,8 @@ function host_remove() {
 }
 
 function host_save() {
+	include_once("include/utility_functions.php");
+	
 	global $form;
 	
 	$save["id"] = $form["id"];
@@ -108,8 +110,13 @@ function host_save() {
 	$save["snmp_username"] = $form["snmp_username"];
 	$save["snmp_password"] = $form["snmp_password"];
 	
-	if (sql_save($save, "host")) {
+	$host_id = sql_save($save, "host");
+	
+	if ($host_id) {
 		raise_message(1);
+		
+		/* push out relavant fields to data sources using this host */
+		push_out_host($host_id);
 	}else{
 		raise_message(2);
 		header("Location: " . $_SERVER["HTTP_REFERER"]);
