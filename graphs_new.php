@@ -479,7 +479,7 @@ function graphs() {
 	global $colors;
 	
 	/* use the first host in the list as the default */
-	if (!isset($_SESSION["sess_graphs_new_host_id"])) {
+	if ((!isset($_SESSION["sess_graphs_new_host_id"])) && (empty($_REQUEST["host_id"]))) {
 		$_REQUEST["host_id"] = db_fetch_cell("select id from host order by description,hostname limit 1");
 	}
 	
