@@ -103,13 +103,14 @@ function template_remove() {
 }
 
 function template_save() {
+	include_once ("include/utility_functions.php");
+	
 	global $form;
 	
 	if ($form[rrd_maximum] == "") { $form[rrd_maximum] = 0; }
 	if ($form[rrd_minimum] == "") { $form[rrd_minimum] = 0; }
 	
 	/* save: data_template */
-	
 	$save["id"] = $form["data_template_id"];
 	$save["name"] = $form["template_name"];
 	$save["graph_template_id"] = 0;
@@ -149,12 +150,13 @@ function template_save() {
 	$save["data_source_type_id"] = $form["data_source_type_id"];
 	$save["t_data_source_name"] = $form["t_data_source_name"];
 	$save["data_source_name"] = $form["data_source_name"];
-	$save["script_output_argument"] = $form["script_output_argument"];
+	$save["data_input_field_id"] = $form["data_input_field_id"];
 	
 	$data_template_rrd_id = sql_save($save, "data_template_rrd");
 	
-	//include_once ("include/utility_functions.php");
-	//push_out_graph($graph_template_graph_id);
+	/* push out all data source settings to child data source using this template */
+	push_out_data_source($data_template_data_id);
+	push_out_data_source_item($data_template_rrd_id);
 }
 
 function template_edit() {
