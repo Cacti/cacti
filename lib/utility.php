@@ -23,14 +23,10 @@
    */?>
 <?
 
-$struct_graph = array("image_format_id", "title", "height", "width", "upper_limit",
-		      "lower_limit", "vertical_label", "auto_scale", "auto_scale_opts",
-		      "auto_scale_log", "auto_scale_rigid", "auto_padding", "base_value",
-		      "grouping", "export", "unit_value", "unit_exponent_value");
-
-
+/* propagates values from the graph template out to each graph using that template */
 function push_out_graph($graph_template_graph_id) {
-	global $struct_graph;
+	include ("config_arrays.php");
+	include_once ("functions.php");
 	
 	/* get information about this graph template */
 	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where id=$graph_template_graph_id");
@@ -45,14 +41,44 @@ function push_out_graph($graph_template_graph_id) {
 		
 		/* are we allowed to push out the column? */
 		if ($graph_template_graph[$value_type] == "") {
-			db_execute("update graph_templates_graph set $struct='$graph_template_graph[$current_name]' where graph_template_id=$graph_template_graph[id]"); 
+			db_execute("update graph_templates_graph set $struct='$graph_template_graph[$current_name]' where local_graph_template_graph_id=$graph_template_graph[id]"); 
 		}
 	}
 }
 
+/* propagates values from the graph template item out to each graph item using that template */
 function push_out_graph_item($graph_template_item_id) {
+	include ("config_arrays.php");
+	include_once ("functions.php");
 	
+	/* get information about this graph template */
+	$graph_template_item = db_fetch_row("select * from graph_templates_item where id=$graph_template_item_id");
 	
+	/* must be a graph template */
+	if ($graph_template_item[graph_template_id] == 0) { return 0; }
+	
+	/* this is trickier with graph_items than with the actual graph... we have to make sure not to 
+	overright any items covered in the "graph item inputs". the same thing applies to graphs, but
+	is easier to detect there (t_* columns). */
+	$graph_item_inputs = db_fetch_assoc("select
+		graph_template_input.column_name,
+		graph_template_input_defs.graph_template_item_id
+		from graph_template_input, graph_template_input_defs
+		where graph_template_input.graph_template_id=$graph_template_item[graph_template_id]
+		and graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		and graph_template_input_defs.graph_template_item_id=$graph_template_item_id");
+	
+	$graph_item_inputs = array_rekey($graph_item_inputs, "column_name", "graph_template_item_id");
+	
+	/* loop through each graph item column name (from the above array) */
+	for ($i=0; ($i < count($struct_graph_item)); $i++) {
+		$current_name = $struct_graph_item[$i];
+		
+		/* are we allowed to push out the column? */
+		if ($graph_item_inputs[$current_name] != $graph_template_item_id) {
+			db_execute("update graph_templates_item set $current_name='$graph_template_item[$current_name]' where local_graph_template_item_id=$graph_template_item[id]"); 
+		}
+	}
 }
 
 function change_graph_template($local_graph_id, $graph_template_id, $_graph_template_id) {
@@ -283,6 +309,7 @@ function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 		}
 	}
 	
+	return 0;
 }
 
 function DuplicateGraph($graph_id) {
@@ -431,19 +458,32 @@ function group_graph_items($graph_id) {
 }
 
 function ungroup_graph_items($graph_id) {
-    $data = db_fetch_assoc("select ID from rrd_graph_item where graphid=$graph_id
-			    order by sequenceparent,sequence");
-    $rows = sizeof($data);
+	$graphs = db_fetch_assoc("select graph_template_id,local_graph_id from graph_templates_graph");
+	
+	foreach ($graphs as $graph) {
+		unset($data);
+		
+		if ($graph[local_graph_id] != "0") {
+			$data = db_fetch_assoc("select id from graph_templates_item where local_graph_id=$graph[local_graph_id] order by sequence_parent,sequence");
+			//print "select id from graph_templates_item where local_graph_id=$graph[local_graph_id] order by sequence_parent,sequence<br>";
+		}else{
+			$data = db_fetch_assoc("select id from graph_templates_item where graph_template_id=$graph[graph_template_id] and local_graph_id=0 order by sequence_parent,sequence");
+			//print "select id from graph_templates_item where graph_template_id=$graph[graph_template_id] local_graph_id=0 order by sequence_parent,sequence<br>";
+		}
+		
+		$rows = sizeof($data);
+		
+		$i=0;
+    		while ($i < $rows) {
+			db_execute("update graph_templates_item set sequence=" . ($i+1) . " where id=" . $data[$i][id]);
+			//print "update graph_templates_item set sequence=" . ($i+1) . " where id=" . $data[$i][id] . "<br>";
+			$i++;
+		}
+	}
+    //db_execute("update rrd_graph_item set sequenceparent=0 where graphid=$graph_id");
+    //db_execute("update rrd_graph_item set parent=0 where graphid=$graph_id");
     
-    while ($i < $rows) {
-	db_execute("update rrd_graph_item set sequence=" . ($i+1) . " where id=".$data[$i][ID]);
-	$i++;
-    }
-    
-    db_execute("update rrd_graph_item set sequenceparent=0 where graphid=$graph_id");
-    db_execute("update rrd_graph_item set parent=0 where graphid=$graph_id");
-    
-    $i++;
+    //$i++;
 }
 
 function CreateGraphDataFromSNMPData($graph_parameters) {
