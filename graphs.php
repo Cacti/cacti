@@ -864,7 +864,7 @@ function graph() {
 	}elseif (isset($_SESSION["sess_graph_host_id"])) {
 		$_REQUEST["host_id"] = $_SESSION["sess_graph_host_id"];
 	}else{
-		$_REQUEST["host_id"] = ""; /* default value */
+		$_REQUEST["host_id"] = "-1"; /* default value */
 	}
 	
 	start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
@@ -880,8 +880,8 @@ function graph() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+							<option value="graphs.php?host_id=-1&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="graphs.php?host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
-							
 							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
@@ -913,15 +913,24 @@ function graph() {
 	
 	end_box();
 	
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'";
+	
+	if ($_REQUEST["host_id"] == "-1") {
+		/* Show all items */
+	}elseif ($_REQUEST["host_id"] == "0") {
+		$sql_where .= " and graph_local.host_id=0";
+	}elseif (!empty($_REQUEST["host_id"])) {
+		$sql_where .= " and graph_local.host_id=" . $_REQUEST["host_id"];
+	}
+	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
 	$total_rows = db_fetch_cell("select
 		COUNT(graph_templates_graph.id)
-		from graph_templates_graph
-		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
-		where graph_templates_graph.local_graph_id!=0
-		and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
-		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]));
+		from graph_local,graph_templates_graph
+		where graph_local.id=graph_templates_graph.local_graph_id
+		$sql_where");
 	
 	$graph_list = db_fetch_assoc("select 
 		graph_templates_graph.id,
@@ -931,11 +940,10 @@ function graph() {
 		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id
-		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
-		where graph_templates_graph.local_graph_id!=0
-		and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
-		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
+		from graph_local,graph_templates_graph
+		left join graph_templates on graph_local.graph_template_id=graph_templates.id
+		where graph_local.id=graph_templates_graph.local_graph_id
+		$sql_where
 		order by graph_templates_graph.title_cache,graph_local.host_id
 		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
 	

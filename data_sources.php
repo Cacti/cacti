@@ -893,7 +893,7 @@ function ds() {
 	}elseif (isset($_SESSION["sess_ds_host_id"])) {
 		$_REQUEST["host_id"] = $_SESSION["sess_ds_host_id"];
 	}else{
-		$_REQUEST["host_id"] = ""; /* default value */
+		$_REQUEST["host_id"] = "-1"; /* default value */
 	}
 	
 	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
@@ -911,9 +911,8 @@ function ds() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							
-							<option value="data_sources.php?host_id=-1"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
-							<option value="data_sources.php?host_id=0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
+							<option value="data_sources.php?host_id=-1&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
+							<option value="data_sources.php?host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
@@ -946,21 +945,20 @@ function ds() {
 	end_box();
 	
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "where data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'";
+	$sql_where = "and data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'";
 	
-	if ($_REQUEST["host_id"] == -1) {
+	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */
-	} elseif ($_REQUEST["host_id"] == 0) {
+	}elseif ($_REQUEST["host_id"] == "0") {
 		$sql_where .= " and data_local.host_id=0";
-	} elseif (!empty($_REQUEST["host_id"])) {
+	}elseif (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];
 	}
 	
 	$total_rows = sizeof(db_fetch_assoc("select
 		data_local.id
-		from data_local
-		left join data_template_data
-		on data_local.id=data_template_data.local_data_id
+		from data_local,data_template_data
+		where data_local.id=data_template_data.local_data_id
 		$sql_where"));
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
@@ -969,13 +967,12 @@ function ds() {
 		data_input.name as data_input_name,
 		data_template.name as data_template_name,
 		data_local.host_id
-		from data_local
-		left join data_template_data
-		on data_local.id=data_template_data.local_data_id
+		from data_local,data_template_data
 		left join data_input
 		on data_input.id=data_template_data.data_input_id
 		left join data_template
 		on data_local.data_template_id=data_template.id
+		where data_local.id=data_template_data.local_data_id
 		$sql_where
 		order by data_template_data.name_cache,data_local.host_id
 		limit " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
