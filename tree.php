@@ -45,6 +45,13 @@ switch ($action) {
 		
 		header ("Location: " . getenv("HTTP_REFERER"));
 		break;
+	case 'item_edit':
+		include_once ("include/top_header.php");
+		
+		item_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
     	case 'remove':
 		tree_remove();
 		
@@ -74,14 +81,86 @@ function form_save() {
 	global $form;
 	
 	if (isset($form[save_component_rra])) {
-		rra_save();
-		return "rra.php";
+		tree_save();
+		return "tree.php";
+	}elseif (isset($form[save_component_tree_item])) {
+		item_save();
+		return "tree.php?action=edit&id=$form[tree_id]";
 	}
 }
 
 /* -----------------------
     Tree Item Functions
    ----------------------- */
+
+function item_edit() {
+	global $args, $colors, $cdef_item_types;
+	
+	if (isset($args[tree_item_id])) {
+		$tree_item = db_fetch_row("select * from graph_tree_view_items where id=$args[tree_item_id]");
+	}else{
+		unset($tree_item);
+	}
+	
+	/* bold the active "type" */
+	if ($tree_item[graph_id] > 0) { $title = "<strong>Tree Item [graph]</strong>"; }else{ $title = "Tree Item [graph]"; }
+	
+	start_box($title, "", "");
+	
+	?>
+	<form method="post" action="tree.php">
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Graph</font><br>
+			Choose a graph from this list to add it to the tree.
+		</td>
+		<?DrawFormItemDropdownFromSQL("graph_id",db_fetch_assoc("select id,title from graph_templates_graph where local_graph_id != 0"),"title","id",$tree_item[graph_id],"None","");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Round Robin Archive</font><br>
+			Choose a round robin archive to control how this graph is displayed.
+		</td>
+		<?DrawFormItemDropdownFromSQL("rra_id",db_fetch_assoc("select ID,Name from rrd_rra"),"Name","ID",$tree_item[rra_id],"None","1");?>
+	</tr>
+	
+	<?
+	
+	end_box();
+	
+	/* bold the active "type" */
+	if ($tree_item[title] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
+	
+	start_box($title, "", "");
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Header Title</font><br>
+			If this item is a header, enter a title here.
+		</td>
+		<?DrawFormItemTextBox("title",$tree_item[title],"","255","40");?>
+	</tr>
+	<?
+	
+	end_box();
+	
+	DrawFormItemHiddenIDField("id",$args[tree_item_id]);
+	DrawFormItemHiddenIDField("tree_id",$args[tree_id]);
+	DrawFormItemHiddenTextBox("save_component_tree_item","1","");
+	
+	start_box("", "", "");
+	?>
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "tree.php?action=edit&id=$args[tree_id]");?>
+		</td>
+	</tr>
+	</form>
+	<?
+	end_box();
+}
 
 function item_moveup() {
 	include_once('include/tree_functions.php');
@@ -148,7 +227,7 @@ function tree_edit() {
 	</tr>
 	</form>
 	<?
-	end_box();	
+	end_box();
 }
 
 function tree() {
