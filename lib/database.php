@@ -144,6 +144,13 @@ function array_to_sql_or($array, $sql_column) {
 	}
 }
 
+function db_replace($table_name, $array_items, $keyCols, $autoQuote=false) {
+	global $cnn_id;
+	$cnn_id->Replace($table_name, $array_items, $keyCols,$autoQuote);
+
+	return $cnn_id->Insert_ID();
+}
+
 function sql_save($array_items, $table_name) {
 	global $cnn_id;
 	
