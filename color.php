@@ -30,24 +30,67 @@ include_once ('include/form.php');
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
-$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
-
 switch ($action) {
- case 'save':
- 	$save["ID"] = $form["ID"];
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;          
+	case 'remove':
+		color_remove();
+	    
+		header ("Location: color.php");
+		break;
+	case 'edit':
+		include_once ("include/top_header.php");
+		
+		color_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	default:
+		include_once ("include/top_header.php");
+		
+		color();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+}
+
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form;
+	
+	if (isset($form[save_component_color])) {
+		color_save();
+		return "color.php";
+	}
+}
+
+/* -----------------------
+    Color Functions
+   ----------------------- */
+
+function color_save() {
+	global $form;
+	
+	$save["ID"] = $form["ID"];
 	$save["Hex"] = $form["Hex"];
 	
-	sql_save($save, "def_colors");
+	sql_save($save, "def_colors");	
+}
 
-	header ("Location: color.php");
-	break;             
- case 'remove':
-    	db_execute("delete from def_colors where id=$args[id]");
-    
-    	header ("Location: color.php");
-	break;
- case 'edit':
-	include_once ("include/top_header.php");
+function color_remove() {
+	global $args;
+	
+	db_execute("delete from def_colors where id=$args[id]");	
+}
+
+function color_edit() {
+	global $args, $colors;
 	
 	if (isset($args[id])) {
 		$color = db_fetch_row("select * from def_colors where id=$args[id]");
@@ -70,6 +113,7 @@ switch ($action) {
 	
 	<?
 	DrawFormItemHiddenIDField("ID",$args[id]);
+	DrawFormItemHiddenTextBox("save_component_color","1","");
 	?>
 	
 	<tr bgcolor="#FFFFFF">
@@ -79,13 +123,11 @@ switch ($action) {
 		</td>
 	</tr>
 	<?
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-    	break;
- default:
-	include_once ("include/top_header.php");
+	end_box();	
+}
+
+function color() {
+	global $colors;
 	
 	start_box("<strong>Color Management</strong>", "", "color.php?action=edit");
 	
@@ -112,9 +154,7 @@ switch ($action) {
 	<?
 	}
 	}
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-   	break;
-} ?>
+	end_box();	
+}
+   
+?>

@@ -29,16 +29,60 @@ include_once ("include/form.php");
 if ($form[action]) { $action = $form[action]; } else { $action = $args[action]; }
 if ($form[ID]) { $id = $form[ID]; } else { $id = $args[id]; }
 
-$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
-
 switch ($action) { 
- case 'save':    
-    unset($form[action],$form[x],$form[y]);
-    sql_save($form, "polling_zones");
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;  
+	case 'remove':
+ 		pzones_remove();
     
-    header ("Location: pzones.php");
-    break;
- case 'remove':
+    		header ("Location: pzones.php");
+		break;
+	case 'edit':
+		include_once ("include/top_header.php");
+		
+		pzones_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	 default:
+	 	include_once ("include/top_header.php");
+	    
+	    	pzones();
+	    
+	    	include_once ("include/bottom_footer.php");
+		break;
+}
+
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form;
+	
+	if (isset($form[save_component_pzones])) {
+		pzones_save();
+		return "pzones.php";
+	}
+}
+
+/* --------------------------
+    Polling Zones Functions
+   -------------------------- */
+
+function pzones_save() {
+	global $form;
+	
+	unset($form[action],$form[x],$form[y]);
+	sql_save($form, "polling_zones");	
+}
+
+function pzones_remove() {
+	global $args;
+	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include_once ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this polling zone?", getenv("HTTP_REFERER"), "pzones.php?action=remove&id=$args[id]");
@@ -46,13 +90,12 @@ switch ($action) {
 	}
 	
 	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-	    db_execute("delete from polling_zones where pz_id=$args[id]");
-	}
-    
-    header ("Location: pzones.php");
-    break;
- case 'edit':
-	include_once ("include/top_header.php");
+		db_execute("delete from polling_zones where pz_id=$args[id]");
+	}	
+}
+
+function pzones_edit() {
+	global $args, $colors;
 	
 	start_box("Polling Zones [edit]", "", "");
 	
@@ -64,7 +107,7 @@ switch ($action) {
 	
 	print "<form method='post' action='".basename($HTTP_SERVER_VARS["SCRIPT_NAME"])."'>\n";
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-		<td width="50%" align='right'>
+		<td width="50%">
 			<font class="textEditTitle">Zone Name</font><br>
 			
 		</td>
@@ -73,6 +116,7 @@ switch ($action) {
 	
 	<?
 	DrawFormItemHiddenIDField("pz_id",$args[id]);
+	DrawFormItemHiddenTextBox("save_component_pzones","1","");
 	?>
 	
 	<tr bgcolor="#FFFFFF">
@@ -83,23 +127,22 @@ switch ($action) {
 	</tr>
 	
 	<?
-	end_box();
-	include_once ("include/bottom_footer.php");
+	end_box();	
+}
+
+function pzones() {
+	global $colors;
 	
-	break;
- default:
-    include_once ("include/top_header.php");
-    
-    start_box("Polling Zones", "", "pzones.php?action=edit");
-    
-    print "<tr bgcolor='#$colors[header_panel]'>";
-    DrawMatrixHeaderItem("Zone Name",$colors[header_text],1);
-    DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
-    print "</tr>";
-    
-    $zone_list = db_fetch_assoc("select * from polling_zones order by zone_name");
-    
-    if (sizeof($zone_list) > 0) {
+	start_box("Polling Zones", "", "pzones.php?action=edit");
+	
+	print "<tr bgcolor='#$colors[header_panel]'>";
+	DrawMatrixHeaderItem("Zone Name",$colors[header_text],1);
+	DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+	print "</tr>";
+	
+	$zone_list = db_fetch_assoc("select * from polling_zones order by zone_name");
+	
+	if (sizeof($zone_list) > 0) {
 	foreach ($zone_list as $zone) {
 	    DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 	    print "<td>
@@ -112,13 +155,11 @@ switch ($action) {
 	    
 	    $i++;
 	}
-    } else {
-	print "<tr><td colspan=2><p align=center><b>No Zones Defined</b></p></td></tr>\n";
-    }
-    end_box();
-    
-    include_once ("include/bottom_footer.php");
-    
-    break;
-} 
+	}else{
+		print "<tr><td colspan=2><p align=center><b>No Zones Defined</b></p></td></tr>\n";
+	}
+	
+	end_box();
+}
+
 ?>

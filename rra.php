@@ -29,29 +29,73 @@ include_once ('include/form.php');
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
-$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
-
 switch ($action) {
- case 'save':
-    $sql_id = db_execute("replace into rrd_rra (id,name,xfilesfactor,steps,rows) 
-      values ($id,\"$form[Name]\",$form[XFilesFactor],$form[Steps],$form[RRA_Rows])");
-    
-    if ($id == 0) {
-	/* get rraid if this is a new save */
-	$id = db_fetch_cell("select LAST_INSERT_ID()");
-    }
-    
-    $sql_id = db_execute("delete from lnk_rra_cf where rraid=$id"); 
-    $i = 0;
-    while ($i < count($form[ConsolidationFunctionID])) {
-	db_execute("insert into lnk_rra_cf (rraid,consolidationfunctionid) 
-	  values ($id,".$form[ConsolidationFunctionID][$i].")");
-	$i++;
-    }
-    
-    header ("Location: rra.php");
-    break;
- case 'remove':
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;
+    	case 'remove':
+		rra_remove();
+		
+		header ("Location: rra.php");
+		break;
+	case 'edit':
+		include_once ("include/top_header.php");
+		
+		rra_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	default:
+		include_once ("include/top_header.php");
+		
+		rra();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+}
+
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form;
+	
+	if (isset($form[save_component_rra])) {
+		rra_save();
+		return "rra.php";
+	}
+}
+
+/* -------------------
+    RRA Functions
+   ------------------- */
+
+function rra_save() {
+	global $form;
+	
+	$save["ID"] = $form["ID"];
+	$save["Name"] = $form["Name"];
+	$save["XFilesFactor"] = $form["XFilesFactor"];
+	$save["Steps"] = $form["Steps"];
+	$save["Rows"] = $form["RRA_Rows"];
+	$save["Name"] = $form["Hex"];
+	
+	$rra_id = sql_save($save, "rrd_rra");	
+	
+	db_execute("delete from lnk_rra_cf where rraid=$rra_id"); 
+	
+	for ($i=0; ($i < count($form[ConsolidationFunctionID])); $i++) {
+		db_execute("insert into lnk_rra_cf (rraid,consolidationfunctionid) 
+			values ($rra_id,".$form[ConsolidationFunctionID][$i].")");
+	}
+}
+
+function rra_remove() {
+	global $args;
+	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include_once ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=$args[id]");
@@ -61,12 +105,11 @@ switch ($action) {
 	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
 		db_execute("delete from rrd_rra where id=$args[id]");
 		db_execute("delete from lnk_ds_rra where rraid=$args[id]");
-    }
-	
-    header ("Location: rra.php");
-    break;
- case 'edit':
-	include_once ("include/top_header.php");
+    	}	
+}
+
+function rra_edit() {
+	global $args, $colors;
 	
 	start_box("<strong>Round Robin Archive Management [edit]</strong>", "", "");
 	
@@ -92,7 +135,7 @@ switch ($action) {
 			<font class="textEditTitle">Consolidation Functions</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?DrawFormItemMultipleList("ConsolidationFunctionID","select * from def_cf","Name","ID","select * from lnk_rra_cf where rraid=$id","ConsolidationFunctionID","");?>
+		<?DrawFormItemMultipleList("ConsolidationFunctionID","select * from def_cf","Name","ID","select * from lnk_rra_cf where rraid=$args[id]","ConsolidationFunctionID","");?>
 	</tr>
     
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
@@ -121,6 +164,7 @@ switch ($action) {
 	
 	<?
 	DrawFormItemHiddenIDField("ID",$args[id]);
+	DrawFormItemHiddenTextBox("save_component_rra","1","");
 	?>
 	
 	<tr bgcolor="#FFFFFF">
@@ -130,13 +174,11 @@ switch ($action) {
 		</td>
 	</tr>
 	<?
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-	break;
- default:
-	include_once ("include/top_header.php");
+	end_box();	
+}
+
+function rra() {
+	global $colors;
 	
 	start_box("<strong>Round Robin Archive Management</strong>", "", "rra.php?action=edit");
 	
@@ -168,9 +210,6 @@ switch ($action) {
 	<?
 	$i++;
 	}
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-	break;
-} ?>
+	end_box();	
+}
+?>
