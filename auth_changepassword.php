@@ -44,16 +44,24 @@ case 'changepassword':
 		
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
-		switch ($user["login_opts"]) {
-			case '1': /* referer */
-				header("Location: " . $_POST["ref"]); break;
-			case '2': /* default console page */
-				header("Location: index.php"); break;
-			case '3': /* default graph page */
-				header("Location: graph_view.php"); break;
+
+		/* if no console permissions show graphs otherwise, pay attention to user setting */
+		$realm_id = $user_auth_realm_filenames["index.php"];
+
+		if (sizeof(db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id = '" . $_SESSION["sess_user_id"] . "' and user_auth_realm.realm_id = '" . $realm_id . "'")) > 0) {
+			switch ($user["login_opts"]) {
+				case '1': /* referer */
+					header("Location: " . $_POST["ref"]); break;
+				case '2': /* default console page */
+					header("Location: index.php"); break;
+				case '3': /* default graph page */
+					header("Location: graph_view.php"); break;
+			}
+		}else{
+			header("Location: graph_view.php"); 
 		}
-		
 		exit;
+
 	}else{
 		$bad_password = true;
 	}
