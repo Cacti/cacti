@@ -44,14 +44,7 @@ function tree_tier($id,$chars_per_tier) {
     if (preg_match("/^$root_test/",$id)) {
 	$tier = 0;
     } else {
-	$tier = (strlen($id)/$chars_per_tier);
-	for($ct = -$chars_per_tier; abs($ct) < strlen($id); $ct -= $chars_per_tier) {
-	    if(substr($id,$ct,$chars_per_tier) == "00") {
-		$tier = (strlen($id)/$chars_per_tier)-(abs($ct)/$chars_per_tier) ;
-	    } else {
-		break;
-	    }
-	}
+	$tier = ceil(strlen(preg_replace("/0+$/",'',$id)) / $chars_per_tier);
     }
     return($tier);
 }
