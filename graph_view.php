@@ -39,7 +39,7 @@ include ("include/top_graph_header.php");
 //	}
 //}
 
-switch ($action) {
+switch ($_REQUEST["action"]) {
 case 'tree':
 	include_once ('include/tree_view_functions.php');
 	
