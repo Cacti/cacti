@@ -222,7 +222,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 }
 
 /* data_query_index - returns an array containing the data query ID and index value given
-     a data query index type/value combination and a host ID
+	a data query index type/value combination and a host ID
    @arg $index_type - the name of the index to match
    @arg $index_value - the value of the index to match
    @arg $host_id - (int) the host ID to match
@@ -240,12 +240,12 @@ function data_query_index($index_type, $index_value, $host_id) {
 /* data_query_field_list - returns an array containing data query information for a given data source
    @arg $data_template_data_id - the ID of the data source to retrieve information for
    @returns - (array) an array that looks like:
-     Array
-     (
-        [index_type] => ifIndex
-        [index_value] => 3
-        [output_type] => 13
-     ) */
+	Array
+	(
+	   [index_type] => ifIndex
+	   [index_value] => 3
+	   [output_type] => 13
+	) */
 function data_query_field_list($data_template_data_id) {
 	$field = db_fetch_assoc("select
 		data_input_fields.type_code,
@@ -264,7 +264,7 @@ function data_query_field_list($data_template_data_id) {
 }
 
 /* encode_data_query_index - encodes a data query index value so that it can be included
-     inside of a form
+	inside of a form
    @arg $index - the index name to encode
    @returns - the encoded data query index */
 function encode_data_query_index($index) {
@@ -272,7 +272,7 @@ function encode_data_query_index($index) {
 }
 
 /* decode_data_query_index - decodes a data query index value so that it can be read from
-     a form
+	a form
    @arg $encoded_index - the index that was encoded with encode_data_query_index()
    @arg $data_query_id - the id of the data query that this index belongs to
    @arg $encoded_index - the id of the host that this index belongs to
@@ -292,7 +292,7 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 }
 
 /* update_graph_data_query_cache - updates the local data query cache for a particular
-     graph
+	graph
    @arg $local_graph_id - the id of the graph to update the data query cache for */
 function update_graph_data_query_cache($local_graph_id) {
 	$host_id = db_fetch_cell("select host_id from graph_local where id=$local_graph_id");
@@ -319,7 +319,7 @@ function update_graph_data_query_cache($local_graph_id) {
 }
 
 /* update_data_source_data_query_cache - updates the local data query cache for a particular
-     data source
+	data source
    @arg $local_data_id - the id of the data source to update the data query cache for */
 function update_data_source_data_query_cache($local_data_id) {
 	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
@@ -342,12 +342,12 @@ function update_data_source_data_query_cache($local_data_id) {
 }
 
 /* get_formatted_data_query_indexes - obtains a list of indexes for a host/data query that
-     is sorted by the chosen index field and formatted using the data query index title
-     format
+	is sorted by the chosen index field and formatted using the data query index title
+	format
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query to retrieve a list of indexes for
    @returns - an array formatted like the following:
-     $arr[snmp_index] = "formatted data query index string" */
+	$arr[snmp_index] = "formatted data query index string" */
 function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	global $config;
 
@@ -380,14 +380,14 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	$sorted_results = array();
 
 	while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-		$sorted_results[$snmp_index] = substitute_snmp_query_data($sort_cache["title_format"], "|", "|", $host_id, $data_query_id, $snmp_index);
+		$sorted_results[$snmp_index] = substitute_snmp_query_data($sort_cache["title_format"], $host_id, $data_query_id, $snmp_index);
 	}
 
 	return $sorted_results;
 }
 
 /* get_formatted_data_query_index - obtains a single index for a host/data query/data query
-     index that is formatted using the data query index title format
+	index that is formatted using the data query index title format
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query which contains the data query index
    @arg $data_query_index - the index to retrieve the formatted name for
@@ -396,19 +396,19 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 	/* from the xml; cached in 'host_snmp_query' */
 	$sort_cache = db_fetch_row("select sort_field,title_format from host_snmp_query where host_id='$host_id' and snmp_query_id='$data_query_id'");
 
-	return substitute_snmp_query_data($sort_cache["title_format"], "|", "|", $host_id, $data_query_id, $data_query_index);
+	return substitute_snmp_query_data($sort_cache["title_format"], $host_id, $data_query_id, $data_query_index);
 }
 
 /* get_ordered_index_type_list - builds an ordered list of data query index types that are
-     valid given a list of data query indexes that will be checked against the data query
-     cache
+	valid given a list of data query indexes that will be checked against the data query
+	cache
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query to build the type list from
    @arg $data_query_index_array - an array containing each data query index to use when checking
-     each data query type for validity. a valid data query type will contain no empty or duplicate
-     values for each row in the cache that matches one of the $data_query_index_array
+	each data query type for validity. a valid data query type will contain no empty or duplicate
+	values for each row in the cache that matches one of the $data_query_index_array
    @returns - an array of data query types either ordered or unordered depending on whether
-     the xml file has a manual ordering preference specified */
+	the xml file has a manual ordering preference specified */
 function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index_array = array()) {
 	$raw_xml = get_data_query_array($data_query_id);
 
@@ -459,9 +459,9 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 }
 
 /* update_data_query_sort_cache - updates the sort cache for a particular host/data query
-     combination. this works by fetching a list of valid data query index types and choosing
-     the first one in the list. the user can optionally override how the cache is updated
-     in the data query xml file
+	combination. this works by fetching a list of valid data query index types and choosing
+	the first one in the list. the user can optionally override how the cache is updated
+	in the data query xml file
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query update the sort cache for */
 function update_data_query_sort_cache($host_id, $data_query_id) {
@@ -490,7 +490,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 }
 
 /* update_data_query_sort_cache_by_host - updates the sort cache for all data queries associated
-     with a particular host. see update_data_query_sort_cache() for details about updating the cache
+	with a particular host. see update_data_query_sort_cache() for details about updating the cache
    @arg $host_id - the id of the host to update the cache for */
 function update_data_query_sort_cache_by_host($host_id) {
 	$data_queries = db_fetch_assoc("select snmp_query_id from host_snmp_query where host_id = '$host_id'");
@@ -503,18 +503,18 @@ function update_data_query_sort_cache_by_host($host_id) {
 }
 
 /* get_best_data_query_index_type - returns the best available data query index type using the
-     sort cache
+	sort cache
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query to fetch the best data query index type for
    @returns - a string containing containing best data query index type. this will be one of the
-     valid input field names as specified in the data query xml file */
+	valid input field names as specified in the data query xml file */
 function get_best_data_query_index_type($host_id, $data_query_id) {
 	return db_fetch_cell("select sort_field from host_snmp_query where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
 }
 
 /* get_script_query_path - builds the complete script query executable path
    @arg $args - the variable that contains any arguments to be appended to the argument
-     list (variables will be substituted in this function)
+	list (variables will be substituted in this function)
    @arg $script_path - the path on the disk to the script file
    @arg $host_id - the id of the host that this script query belongs to
    @returns - a full path to the script query script containing all arguments */
