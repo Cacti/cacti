@@ -948,18 +948,40 @@ CREATE TABLE settings_graphs (
 # --------------------------------------------------------
 
 #
-# Table structure for table `settings_tree`
+# Table structure for table `settings_viewing_tree`
 #
 
-CREATE TABLE settings_tree (
+CREATE TABLE settings_viewing_tree (
   UserID smallint(5) NOT NULL default '0',
   TreeItemID smallint(5) NOT NULL default '0',
   Status tinyint(1) NOT NULL default '0'
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
+# --------------------------------------------------------
+
 #
-# Dumping data for table `settings_tree`
+# Table structure for table `settings_graph_tree`
 #
+
+CREATE TABLE settings_graph_tree (
+  UserID smallint(5) NOT NULL default '0',
+  TreeItemID smallint(5) NOT NULL default '0',
+  Status tinyint(1) NOT NULL default '0'
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+# --------------------------------------------------------
+
+#
+# Table structure for table `settings_ds_tree`
+#
+
+CREATE TABLE settings_ds_tree (
+  UserID smallint(5) NOT NULL default '0',
+  TreeItemID smallint(5) NOT NULL default '0',
+  Status tinyint(1) NOT NULL default '0'
+) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
