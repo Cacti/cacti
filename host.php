@@ -471,9 +471,7 @@ function host_edit() {
 						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select
 							snmp_query.id,
 							snmp_query.name
-							from snmp_query left join host_snmp_query
-							on (snmp_query.id=host_snmp_query.snmp_query_id and host_snmp_query.host_id=" . $_GET["id"] . ")
-							where host_snmp_query.host_id is null
+							from snmp_query
 							order by snmp_query.name"),"name","id","","","");?>
 					</td>
 					<td nowrap>Re-Index Method:&nbsp;
