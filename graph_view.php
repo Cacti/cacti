@@ -70,7 +70,7 @@ case 'tree':
 	print "	<table width='98%' align='center'>
 			<tr>
 				<td>
-					<strong><a href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - $tree_name</strong>
+					<strong><a href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong>
 				</td>
 			</tr>
 		</table>
