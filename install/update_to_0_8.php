@@ -619,6 +619,18 @@ function update_database($database_old, $database_username, $database_password) 
 	}
 	}
 	
+	/* Turn Bytes into Bits */
+	$cdef_cache[2] = 2;
+	
+	/* Make Stack Negative */
+	$cdef_cache[3] = 3;
+	
+	/* Make Per 5 Minutes */
+	$cdef_cache[4] = 4;
+	
+	/* Total All Data Sources */
+	$cdef_cache[7] = 12;
+	
 	db_execute("truncate table $database_default.graph_local");
 	db_execute("delete from $database_default.graph_templates_graph where local_graph_id > 0");
 	db_execute("delete from $database_default.graph_templates_item where local_graph_id > 0");
