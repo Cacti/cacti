@@ -796,7 +796,9 @@ function template_edit() {
 	}
 	
 	/* graph item list goes here */
-	item();
+	if (!empty($_GET["id"])) {
+		item();
+	}
 	
 	start_box("<strong>Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>

@@ -969,22 +969,6 @@ function graph_diff() {
 	form_save_button("graphs.php?action=graph_edit&id=" . $_GET["id"]);
 }
 
-function graph_remove() {
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "</strong>?", $_SERVER["HTTP_REFERER"], "graphs.php?action=graph_remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
-		exit;
-	}
-	
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from graph_templates_graph where local_graph_id=" . $_GET["id"]);
-		db_execute("delete from graph_templates_item where local_graph_id=" . $_GET["id"]);
-		db_execute("delete from graph_tree_items where local_graph_id=" . $_GET["id"]);
-		db_execute("delete from graph_local where id=" . $_GET["id"]);
-	}	
-}
-
 function graph_edit() {
 	include_once ("include/rrd_functions.php");
 	
@@ -1010,7 +994,9 @@ function graph_edit() {
 	}
 	
 	/* graph item list goes here */
-	item();
+	if (!empty($_GET["id"])) {
+		item();
+	}
 	
 	/* handle debug mode */
 	if (isset($_GET["debug"])) {
@@ -1054,9 +1040,7 @@ function graph_edit() {
 			Choose a graph template to apply to this graph. Please note that graph data may be lost if you 
 			change the graph template after one is already applied.
 		</td>
-		<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
-			graph_templates.id,graph_templates.name 
-			from graph_templates"),"name","id",(isset($graphs) ? $graphs["graph_template_id"] : "0"),"None","0");?>
+		<?php form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id",(isset($graphs) ? $graphs["graph_template_id"] : "0"),"None","0");?>
 	</tr>
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
