@@ -30,26 +30,116 @@ include_once ("include/form.php");
 if ($form[action]) { $action = $form[action]; } else { $action = $args[action]; }
 if ($form[ID]) { $id = $form[ID]; } else { $id = $args[id]; }
 
-$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+switch ($action) {
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;
+	case 'user_remove':
+		user_remove();
+    
+    		header ("Location: user_auth.php");
+		break;
+	case 'graph_config_edit':
+		include_once ("include/top_header.php");
+		
+		graph_config_edit();
+	
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'graph_perms_edit':
+		include_once ("include/top_header.php");
+	
+		graph_perms_edit();
+	
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'user_edit':
+		include_once ("include/top_header.php");
+		
+		user_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	default:
+		include_once ("include/top_header.php");
+		
+		user();
+	
+		include_once ("include/bottom_footer.php");
+		break;
+}
+
+/* --------------------------
+    Global Form Functions
+   -------------------------- */
 
 function draw_user_form_select() { 
-	global $current_script_name, $colors, $args; ?>
+	global $colors, $args; ?>
 	<tr bgcolor="#<?print $colors[panel];?>">
 		</form>
 		<form name="form_user">
 		<td>
 			<select name="cbo_user" onChange="window.location=document.form_user.cbo_user.options[document.form_user.cbo_user.selectedIndex].value">
-				<option value="<?print $current_script_name;?>?action=edit&id=<?print $args[id];?>"<?if ($args[action] == "edit") {?> selected<?}?>>User Configuration</option>
-				<option value="<?print $current_script_name;?>?action=edit_perms&id=<?print $args[id];?>"<?if ($args[action] == "edit_perms") {?> selected<?}?>>Individual Graph Permissions</option>
-				<option value="<?print $current_script_name;?>?action=edit_graph_config&id=<?print $args[id];?>"<?if ($args[action] == "edit_graph_config") {?> selected<?}?>>User Graph Settings</option>
+				<option value="user_admin.php?action=user_edit&id=<?print $args[id];?>"<?if ($args[action] == "user_edit") {?> selected<?}?>>User Configuration</option>
+				<option value="user_admin.php?action=graph_perms_edit&id=<?print $args[id];?>"<?if ($args[action] == "graph_perms_edit") {?> selected<?}?>>Individual Graph Permissions</option>
+				<option value="user_admin.php?action=graph_config_edit&id=<?print $args[id];?>"<?if ($args[action] == "graph_config_edit") {?> selected<?}?>>User Graph Settings</option>
 			</select>
 		</td>
 		</form>
 	</tr>
 <?}
 
-function edit_perms() {
-	global $colors, $args;
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form, $config;
+	
+	if ((isset($form[save_component_user])) && (isset($form[save_component_graph_perms])) && (isset($form[save_component_graph_config]))) {
+		user_save();
+		graph_perms_save();
+		/* graph_config_save(); */
+		return "user_admin.php?action=user_edit&id=$form[user_id]";
+	}elseif (isset($form[save_component_user])) {
+		user_save();
+		return "user_admin.php";
+	}elseif (isset($form[save_component_graph_perms])) {
+		graph_perms_save();
+		return "user_admin.php";
+	}elseif (isset($form[save_component_graph_config])) {
+		/* graph_config_save(); */
+		return "user_admin.php";
+	}
+}
+
+/* --------------------------
+    Graph Permissions
+   -------------------------- */
+
+function graph_perms_save() {
+	global $form;
+	
+	db_execute ("delete from auth_graph where userid=$form[user_id]");
+    	db_execute ("delete from auth_graph_hierarchy where userid=$form[user_id]");
+	
+	reset($form);
+	
+	while (list($var, $val) = each($form)) {
+		if (eregi("^[graph|tree]", $var)) {
+			if (substr($var, 0, 5) == "graph") {
+			    db_execute ("replace into auth_graph (userid,graphid) values($form[user_id]," . substr($var, 5) . ")");
+			}elseif (substr($var, 0, 4) == "tree") {
+			    db_execute ("replace into auth_graph_hierarchy (userid,hierarchyid) values($form[user_id]," . substr($var, 4) . ")");
+			}
+		}
+	}
+}
+
+function graph_perms_edit() {
+	global $colors, $args, $config;
 	
 	if (isset($args[id])) {
 		$graph_policy = db_fetch_cell("select GraphPolicy from auth_users where id=$args[id]");
@@ -63,35 +153,19 @@ function edit_perms() {
 		unset($user);
 	}
 	
-	start_box("<strong>" . db_fetch_cell("select username from auth_users where id=$args[id]") . "</strong> is Currently is <strong>$graph_policy_text</strong> to View the Following Graphs:", "", "");
+	if ($config[full_view_user_admin][value] == "") {
+		start_box("<strong>User Management [edit]</strong>", "", "");
+		draw_user_form_select();
+		end_box();
+	}
 	
-	?>
-	<form method="post" action="user_admin.php">
-	<?
-	
-	$perm_graphs = db_fetch_assoc("select rrd_graph.Title from
-		auth_graph left join rrd_graph on auth_graph.graphid=rrd_graph.id
-		where auth_graph.userid=$args[id]");
-	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-		<td width="50%" colspan="2" class="textEditTitle">
-			<?
-			if (sizeof($perm_graphs) > 0) {
-				foreach ($perm_graphs as $graph) {
-					print "$graph[Title]<br>";
-				}
-			}else{
-				print "<em>No Graphs</em>";
-			}
-			?>
-		</td>
-	</tr>
-	<?
 	if ($graph_policy == "1") {
 		$graph_policy_text = "Select the graphs you want to <strong>DENY</strong> this user from.";
 	} elseif ($graph_policy == "2") {
 		$graph_policy_text = "Select the graphs you want <strong>ALLOW</strong> this user to view.";
 	}
+	
+	start_box("$graph_policy_text", "", "");
 	
 	$graphs = db_fetch_assoc("select 
 		ag.UserID,
@@ -102,9 +176,7 @@ function edit_perms() {
 	$rows = sizeof($graphs);
 	
 	?>
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C"><?print $graph_policy_text;?></td>
-	</tr>
+	<form method="post" action="user_admin.php">
 	
 	<tr>
 		<td colspan="2" width="100%">
@@ -140,21 +212,30 @@ function edit_perms() {
 	</tr>
 	
     	<?
-	DrawFormItemHiddenIDField("id",$args[id]);
-	?>
-    	
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save_perms", "user_admin.php");?>
-			</form>
-		</td>
-	</tr>
-	
-	<?
 	end_box();
+	
+	DrawFormItemHiddenIDField("user_id",$args[id]);
+	DrawFormItemHiddenTextBox("save_component_graph_perms","1","");
+	
+	if ($config[full_view_user_admin][value] == "") {
+		start_box("", "", "");
+		?>
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right">
+				<?DrawFormSaveButton("save", "user_admin.php");?>
+			</td>
+		</tr>
+		</form>
+		<?
+		end_box();
+	}
 }
 
-function edit_graph_config() {
+/* --------------------------
+    Per-User Graph Config
+   -------------------------- */
+
+function graph_config_edit() {
 	include_once ("include/functions.php");
 	global $colors, $args, $config, $HTTP_SESSION_VARS;
 	
@@ -162,6 +243,12 @@ function edit_graph_config() {
 		$graph_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS["user_id"], $config["guest_user"]["value"]);
 	}else{
 		unset($user);
+	}
+	
+	if ($config[full_view_user_admin][value] == "") {
+		start_box("<strong>User Management [edit]</strong>", "", "");
+		draw_user_form_select();
+		end_box();
 	}
 	
 	start_box("Graph Preview Settings", "", "");
@@ -244,45 +331,31 @@ function edit_graph_config() {
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("ID",$args[id]);
-	?>
+	end_box();
 	
+	DrawFormItemHiddenIDField("user_id",$args[id]);
+	DrawFormItemHiddenTextBox("save_component_graph_config","1","");
+	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
+		 <td colspan="2" align="right">
 			<?DrawFormSaveButton("save", "user_admin.php");?>
-			</form>
 		</td>
 	</tr>
-	
+	</form>
 	<?
-	
 	end_box();
 }
 
-switch ($action) {
- case 'save_perms':
-    	db_execute ("delete from auth_graph where userid=$form[id]");
-    	db_execute ("delete from auth_graph_hierarchy where userid=$form[id]");
+/* --------------------------
+    User Administration
+   -------------------------- */
+
+function user_save() {
+	global $form;
 	
-	while (list($var, $val) = each($form)) {
-		if (eregi("^[graph|tree]", $var)) {
-			if (substr($var, 0, 5) == "graph") {
-			    db_execute ("replace into auth_graph (userid,graphid) values($form[id]," . substr($var, 5) . ")");
-			}elseif (substr($var, 0, 4) == "tree") {
-			    db_execute ("replace into auth_graph_hierarchy (userid,hierarchyid) values($form[id]," . substr($var, 4) . ")");
-			}
-		}
-	}
-	
-	if ($config[full_view_user_admin][value] == "") {
-		header ("Location: user_admin.php");
-	}elseif ($config[full_view_user_admin][value] == "on") {
-		header ("Location: user_admin.php?action=edit&id=$form[id]");
-	}
-	
- 	break;
- case 'save':
-    	/* only change password when user types on */
+	/* only change password when user types one */
 	if ($form[Password] != $form[Confirm]) {
 		$passwords_do_not_match = true;
 	}elseif (($form[Password] == "") && ($form[Confirm] == "")) {
@@ -292,7 +365,7 @@ switch ($action) {
 	}
 	
 	if ($passwords_do_not_match != true) {
-		$save["ID"] = $form["ID"];
+		$save["ID"] = $form["user_id"];
 		$save["Username"] = $form["Username"];
 		$save["FullName"] = $form["FullName"];
 		$save["Password"] = $password;
@@ -306,7 +379,10 @@ switch ($action) {
 		
 		$id = sql_save($save, "auth_users");
 		
+		reset($form);
+		
 		db_execute("delete from auth_acl where userid=$id");
+		
 		while (list($var, $val) = each($form)) {
 			if (eregi("^[section]", $var)) {
 				if (substr($var, 0, 7) == "section") {
@@ -314,19 +390,16 @@ switch ($action) {
 				}
 			}
 		}
-	}
-    
-	if ($config[full_view_user_admin][value] == "") {
-		header ("Location: user_admin.php");
-	}elseif ($config[full_view_user_admin][value] == "on") {
-		header ("Location: user_admin.php?action=edit&id=$id");
-	}
+	}	
+}
+
+function user_remove() {
+	global $config, $args;
 	
-	break;
- case 'remove':
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
-		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", getenv("HTTP_REFERER"), "user_admin.php?action=remove&id=$args[id]");
+		include ('include/top_header.php');
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select Username from auth_users where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=$args[id]");
+		include ('include/bottom_footer.php');
 		exit;
 	}
 	
@@ -340,36 +413,11 @@ switch ($action) {
 	    db_execute("delete from settings_viewing_tree where userid=$args[id]");
 	    db_execute("delete from settings_graph_tree where userid=$args[id]");
 	    db_execute("delete from settings_ds_tree where userid=$args[id]");
-	}
-    
-    	header ("Location: user_auth.php");
-	break;
- case 'edit_graph_config':
-	include_once ("include/top_header.php");
-	
-	start_box("<strong>User Management [edit]</strong>", "", "");
-	draw_user_form_select();
-	end_box();
-	
-	edit_graph_config();
-	
-	include_once ("include/bottom_footer.php");
-	
-	break;
- case 'edit_perms':
-	include_once ("include/top_header.php");
-	
-	start_box("<strong>User Management [edit]</strong>", "", "");
-	draw_user_form_select();
-	end_box();
-	
-	edit_perms();
-	
-	include_once ("include/bottom_footer.php");
-	
-	break;
- case 'edit':
-	include_once ("include/top_header.php");
+	}	
+}
+
+function user_edit() {
+	global $args, $colors, $config;
 	
 	if (isset($args[id])) {
 		$user = db_fetch_row("select * from auth_users where id=$args[id]");
@@ -415,13 +463,6 @@ switch ($action) {
 			<?DrawStrippedFormItemPasswordTextBox("Confirm","","","","40");?>
 		</td>
 	</tr>
-	<?
-   // if ($badpass == "true") {
-//	DrawFormItem("Password","<font color=\"red\">Passwords do not match! Please retype.</font>");
-    //} else{
-//	DrawFormItem("Password","");
-   // }
-   ?>
     
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 		<td width="50%">
@@ -478,6 +519,8 @@ switch ($action) {
 	</tr>
 	
 	<?
+	end_box();
+	start_box("User Permissions", "", "");
 	
 	$sections = db_fetch_assoc("select 
 		auth_acl.UserID,
@@ -486,12 +529,8 @@ switch ($action) {
 		left join auth_acl on (auth_sections.id=auth_acl.sectionid and auth_acl.userid=$args[id]) 
 		order by auth_sections.Section");
 	$rows = sizeof($sections);
+	
 	?>
-	
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">User Permissions</td>
-	</tr>
-	
 	<tr>
 		<td colspan="2" width="100%">
 			<table width="100%">
@@ -526,33 +565,35 @@ switch ($action) {
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("ID",$args[id]);
+	end_box();
+	
+	DrawFormItemHiddenIDField("user_id",$args[id]);
 	DrawFormItemHiddenTextBox("_password",$user[Password],"");
-	?>
+	DrawFormItemHiddenTextBox("save_component_user","1","");
 	
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save", "user_admin.php");?>
-			</form>
-		</td>
-	</tr>
-	
-	<?
-	if ($config[full_view_user_admin][value] == "on") {
-		end_box();
-		edit_perms();
-		edit_graph_config();
-	}else{
+	if ($config[full_view_user_admin][value] == "") {
+		start_box("", "", "");
+		?>
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right">
+				<?DrawFormSaveButton("save", "user_admin.php");?>
+			</td>
+		</tr>
+		</form>
+		<?
 		end_box();
 	}
 	
-	include_once ("include/bottom_footer.php");
+	if ($config[full_view_user_admin][value] == "on") {
+		graph_perms_edit();
+		graph_config_edit();
+	}	
+}
+
+function user() {
+	global $colors;
 	
-	break;
- default:
-	include_once ("include/top_header.php");
-	
-	start_box("<strong>User Management</strong>", "", "user_admin.php?action=edit");
+	start_box("<strong>User Management</strong>", "", "user_admin.php?action=user_edit");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("User Name",$colors[header_text],1);
@@ -567,7 +608,7 @@ switch ($action) {
 		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="<?print $current_script_name;?>?action=edit&id=<?print $user[ID];?>"><?print $user[Username];?></a>
+				<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?print $user[ID];?>"><?print $user[Username];?></a>
 			</td>
 			<td>
 				<?print $user[FullName];?>
@@ -576,17 +617,13 @@ switch ($action) {
 				<?if ($user[GraphPolicy] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
 			</td>
 			<td width="1%" align="right">
-				<a href="<?print $current_script_name;?>?action=remove&id=<?print $user[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="user_admin.php?action=user_remove&id=<?print $user[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
 	$i++;
 	}
 	}
-	end_box();
-	
-	include_once ("include/bottom_footer.php");
-	
-	break;
-} 
+	end_box();	
+}
 ?>
