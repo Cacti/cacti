@@ -553,18 +553,15 @@ function template() {
 
 	html_header_checkbox(array("Template Name", "Data Input Method", "Status"));
 
-	$template_list = db_fetch_assoc("SELECT DISTINCT
+	$template_list = db_fetch_assoc("select
 		data_template.id,
 		data_template.name,
 		data_input.name as data_input_method,
 		data_template_data.active as active
-		FROM (data_template_data
-		INNER JOIN data_template
-		ON (data_template.id = data_template_data.data_template_id)
-			and (data_template_data.data_template_id = data_template.id))
-		INNER JOIN data_input on (data_template_data.data_input_id = data_input.id)
-			and (data_template_data.data_input_id = data_input.id)
-		ORDER BY data_template.name;");
+		from data_template,data_template_data
+		left join data_input on data_template_data.data_input_id = data_input.id
+		where data_template.id = data_template_data.data_template_id
+		order by data_template.name;");
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
@@ -575,10 +572,10 @@ function template() {
 				<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td>
-					<?php print $template["data_input_method"];?>
+				<?php print (empty($template["data_input_method"]) ? "<em>None</em>": $template["data_input_method"]);?>
 			</td>
 			<td>
-					<?php if ($template["active"] == "on") print "Active"; else print "Disabled";?>
+				<?php if ($template["active"] == "on") print "Active"; else print "Disabled";?>
 			</td>
 			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
