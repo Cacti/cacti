@@ -24,7 +24,6 @@
 <?
 $section = "Add/Edit Graphs"; include ('include/auth.php'); 
 include_once ("include/functions.php");
-include_once ("include/cdef_functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
@@ -303,6 +302,11 @@ function ds_save() {
 	$local_data_id = sql_save($save, "data_local");
 	unset($save);
 	
+	/* if no data source path has been entered, generate one */
+	if (empty($_POST["data_source_path"])) {
+		$_POST["data_source_path"] = generate_data_source_path($local_data_id);
+	}
+	
 	$save["id"] = $_POST["data_template_data_id"];
 	$save["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
 	$save["local_data_id"] = $local_data_id;
@@ -314,7 +318,15 @@ function ds_save() {
 	$save["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
 	
 	if (!is_error_message()) {
-		sql_save($save, "data_template_data");
+		$data_template_data_id = sql_save($save, "data_template_data");
+	}
+	
+	/* save entried in 'selected rras' field */
+	db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
+	
+	for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+		db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+			values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
 	}
 	
 	unset($save);
@@ -365,6 +377,8 @@ function ds_save() {
 }
 
 function ds_edit() {
+	include_once ("include/rrd_functions.php");
+	
 	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
 	
 	$use_data_template = true;
@@ -396,6 +410,12 @@ function ds_edit() {
 		end_box();
 	}
 	
+	start_box("", "98%", "aaaaaa", "3", "center", "");
+	print "<tr><td><pre>";
+	print rrdtool_function_create($_GET["local_data_id"], true);
+	print "</pre></td></tr>";
+	end_box();
+	
 	start_box("<strong>Data Sources</strong> [edit] - Data Templation Selection", "98%", $colors["header"], "3", "center", "");
 	
 	print "<form method='post' action='data_sources.php'>\n";
@@ -425,17 +445,21 @@ function ds_edit() {
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		
-		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on")) {
+		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on") || ($field_array["flags"] == "NOTEMPLATE")) {
 			print $field_array["description"];
 		}
 		
 		print "</td>\n";
 		
-		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on")) {
-			draw_nontemplated_item($field_array, $field_name, $data[$field_name]);
+		if ($field_array["type"] == "custom") {
+			$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
+			DrawFormItemMultipleList("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data["id"]), "rra_id");
 		}else{
-			draw_templated_item($field_array, $field_name, $data[$field_name]);
+			if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on") || ($field_array["flags"] == "NOTEMPLATE")) {
+				draw_nontemplated_item($field_array, $field_name, $data[$field_name]);
+			}else{
+				draw_templated_item($field_array, $field_name, $data[$field_name]);
+			}
 		}
 		
 		print "</tr>\n";
