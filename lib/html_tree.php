@@ -81,7 +81,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	if (sizeof($heirarchy) > 0) {
 	foreach ($heirarchy as $leaf) {
 		/* find out how 'deep' this item is */
-		$tier = tree_tier($leaf["order_key"], 2);
+		$tier = tree_tier($leaf["order_key"]);
 		
 		/* find the type of the current branch */
 		if ($leaf["title"] != "") { $current_leaf_type = "heading"; }elseif (!empty($leaf["local_graph_id"])) { $current_leaf_type = "graph"; }else{ $current_leaf_type = "host"; }
@@ -196,7 +196,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	$i = 0;
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
-	    	$tier = tree_tier($leaf["order_key"], 2);
+	    	$tier = tree_tier($leaf["order_key"]);
 	    	$transparent_indent = "<img width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
 		$sort_cache[$tier] = $leaf["sort_children_type"];
 		
@@ -249,7 +249,7 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 	
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
-	    	$tier = tree_tier($leaf["order_key"], 2);
+	    	$tier = tree_tier($leaf["order_key"]);
 	    	$indent = str_repeat("---", ($tier));
 		
 		if ($selected_tree_item_id == $leaf["id"]) {
@@ -324,7 +324,7 @@ function grow_dhtml_trees() {
 		
 		if (sizeof($heirarchy) > 0) {
 		foreach ($heirarchy as $leaf) {
-			$tier = tree_tier($leaf["order_key"], 2);
+			$tier = tree_tier($leaf["order_key"]);
 			
 			if ($leaf["host_id"] > 0) {
 				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";

@@ -24,6 +24,9 @@
  +-------------------------------------------------------------------------+
 */
 
+define("CHARS_PER_TIER", 3);
+define("MAX_TREE_DEPTH", 30);
+
 /* get_tree_item_type - gets the type of tree item
    @arg $tree_item_id - the id of the tree item to fetch the type for
    @returns - a string reprenting the type of the tree item. valid return
@@ -45,20 +48,20 @@ function get_tree_item_type($tree_item_id) {
 /* tree_tier - gets the "depth" of a particular branch of the tree
    @arg $order_key - the order key of the branch to fetch the depth for
    @arg $chars_per_tier - the number of characters dedicated to each branch
-     depth (tier). this is typically '2' in cacti.
+     depth (tier). this is typically '3' in cacti.
    @returns - a number reprenting the depth of the branch, where '0' is the
      base of the tree and the maximum value is:
      length($order_key) / $chars_per_tier */
-function tree_tier($order_key, $chars_per_tier) {
-	$root_test = str_pad('',$chars_per_tier,'0');
+function tree_tier($order_key, $chars_per_tier = CHARS_PER_TIER) {
+	$root_test = str_pad('', $chars_per_tier, '0');
 	
-	if (preg_match("/^$root_test/",$order_key)) {
+	if (preg_match("/^$root_test/", $order_key)) {
 		$tier = 0;
 	}else{
 		$tier = ceil(strlen(preg_replace("/0+$/",'',$order_key)) / $chars_per_tier);
 	}
 	
-	return($tier);
+	return $tier;
 }
 
 /* get_parent_id - returns the tree item id of the parent of this tree item
@@ -71,15 +74,15 @@ function get_parent_id($id, $table, $where = "") {
 	$parent_root = 0;
 	
 	$order_key = db_fetch_cell("select order_key from $table where id=$id and $where");
-	$tier = tree_tier($order_key,'2');
+	$tier = tree_tier($order_key);
 	
     	if ($tier > 1) {
-		$parent_root = substr($order_key,0,(($tier - 1) * 2) );
+		$parent_root = substr($order_key, 0, (($tier-1) * CHARS_PER_TIER));
 	}
 	
-	$parent_id = db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root,60,'0') . "' and $where");
+	$parent_id = db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root, (MAX_TREE_DEPTH * CHARS_PER_TIER), '0') . "' and $where");
 	
-	if (empty($parent_id)) {
+	if ((empty($parent_id)) || (empty($tier))) {
 		return "0";
 	}else{
 		return $parent_id;
@@ -94,20 +97,20 @@ function get_parent_id($id, $table, $where = "") {
    @arg $where - extra sql WHERE queries that must be used to query $table
    @returns - the next available order key in $order_key's branch */
 function get_next_tree_id($order_key, $table, $field, $where) {
-	if (preg_match("/^00/",$order_key)) {
+	if (preg_match("/^" . str_repeat('0', CHARS_PER_TIER) . "/",$order_key)) {
 		$tier = 0;
 		$parent_root = '';
 	}else{
-		$tier = tree_tier($order_key,'2');
-		$parent_root = substr($order_key,0,($tier * 2));
+		$tier = tree_tier($order_key);
+		$parent_root = substr($order_key, 0, ($tier * CHARS_PER_TIER));
 	}
-    	
+	
     	$order_key = db_fetch_cell("SELECT $field FROM $table WHERE $where AND $field LIKE '$parent_root%' ORDER BY $field DESC LIMIT 1");
     	
-	$complete_root = substr($order_key,0,($tier * 2) + 2);
-  	$order_key_suffix = (substr($complete_root, -2) + 1);
-	$order_key_suffix = str_pad($order_key_suffix,2,'0',STR_PAD_LEFT);
-	$order_key_suffix = str_pad($parent_root . $order_key_suffix,60,'0',STR_PAD_RIGHT);
+	$complete_root = substr($order_key, 0, ($tier * CHARS_PER_TIER) + CHARS_PER_TIER);
+  	$order_key_suffix = (substr($complete_root, - CHARS_PER_TIER) + 1);
+	$order_key_suffix = str_pad($order_key_suffix, CHARS_PER_TIER, '0', STR_PAD_LEFT);
+	$order_key_suffix = str_pad($parent_root . $order_key_suffix, (MAX_TREE_DEPTH * CHARS_PER_TIER), '0', STR_PAD_RIGHT);
 	
 	return $order_key_suffix;
 }
@@ -118,7 +121,7 @@ function get_next_tree_id($order_key, $table, $field, $where) {
    @arg $field - the sql field name that contains the order key
    @arg $where - extra sql WHERE queries that must be used to query $table */
 function branch_up($order_key, $table, $field, $where) { 
-	move_branch('up',$order_key, $table, $field, $where); 
+	move_branch('up', $order_key, $table, $field, $where); 
 }
 
 /* branch_down - moves a branch down in the tree
@@ -127,7 +130,7 @@ function branch_up($order_key, $table, $field, $where) {
    @arg $field - the sql field name that contains the order key
    @arg $where - extra sql WHERE queries that must be used to query $table */
 function branch_down($order_key, $table, $field, $where) { 
-	move_branch('down',$order_key, $table, $field, $where); 
+	move_branch('down', $order_key, $table, $field, $where); 
 }
 
 /* move_branch - moves a branch up or down in the tree
@@ -137,29 +140,26 @@ function branch_down($order_key, $table, $field, $where) {
    @arg $field - the sql field name that contains the order key
    @arg $where - extra sql WHERE queries that must be used to query $table */
 function move_branch($dir, $order_key, $table, $field, $where) {
-	$tier = tree_tier($order_key,'2');
+	$tier = tree_tier($order_key);
 	
 	if ($where != '') { $where = " AND $where"; }
 	
 	$arrow = $dir == 'up' ? '<' : '>';
 	$order = $dir == 'up' ? 'DESC' : 'ASC';
 	
-	$sql = "SELECT * FROM $table WHERE $field $arrow $order_key AND $field LIKE '%".substr($order_key,($tier * 2))."' 
-		AND $field NOT LIKE '%00".substr($order_key,($tier * 2))."' $where ORDER BY $field $order";
+	$sql = "SELECT * FROM $table WHERE $field $arrow $order_key AND $field LIKE '%" . substr($order_key, ($tier * CHARS_PER_TIER))."' 
+		AND $field NOT LIKE '%" . str_repeat('0', CHARS_PER_TIER) . substr($order_key, ($tier * CHARS_PER_TIER)) . "' $where ORDER BY $field $order";
 	
 	$displaced_row = db_fetch_row($sql);
 	
 	if (sizeof($displaced_row) > 0) {
-		$old_root = substr($order_key,0,($tier * 2));
-		$new_root = substr($displaced_row[$field],0,($tier * 2));
+		$old_root = substr($order_key, 0, ($tier * CHARS_PER_TIER));
+		$new_root = substr($displaced_row[$field], 0, ($tier * CHARS_PER_TIER));
 		
 		db_execute("LOCK TABLES $table WRITE");
-		$sql = "UPDATE $table SET $field = CONCAT('".str_pad('',($tier * 2),'Z')."',SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$new_root%'$where";
-		db_execute($sql);
-		$sql = "UPDATE $table SET $field = CONCAT('$new_root',SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '$old_root%' $where";
-		db_execute($sql);
-		$sql = "UPDATE $table SET $field = CONCAT('$old_root',SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".str_pad('',($tier * 2),'Z')."%' $where";
-		db_execute($sql);
+		db_execute("UPDATE $table SET $field = CONCAT('" . str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1).")) WHERE $field LIKE '$new_root%'$where");
+		db_execute("UPDATE $table SET $field = CONCAT('$new_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '$old_root%' $where");
+		db_execute("UPDATE $table SET $field = CONCAT('$old_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '".str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "%' $where");
 		db_execute("UNLOCK TABLES $table");
 	}
 }
@@ -180,11 +180,7 @@ function sort_branch($tree_item_id, $sort_style) {
 	
 	$tree_item = db_fetch_row("select order_key,graph_tree_id from graph_tree_items where id=$tree_item_id");
 	
-	$search_key = preg_replace("/0+$/", "", $tree_item["order_key"]);
-		
-	/* the search key should always be divisible by "2" because we are searching AT a
-	branch (__), not PAST it (%%) */
-	if (strlen($search_key) % 2 != 0) { $search_key .= "0"; }
+	$search_key = substr($tree_item["order_key"], 0, (tree_tier($tree_item["order_key"]) * CHARS_PER_TIER));
 	
 	$heirarchy = db_fetch_assoc("select
 		graph_tree_items.id,
@@ -198,7 +194,7 @@ function sort_branch($tree_item_id, $sort_style) {
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		left join host on host.id=graph_tree_items.host_id
 		where graph_tree_items.graph_tree_id=" . $tree_item["graph_tree_id"] . "
-		and graph_tree_items.order_key like '$search_key" . "__" . str_repeat('0',60-(strlen($search_key)+2)) . "'
+		and graph_tree_items.order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'
 		and graph_tree_items.id != $tree_item_id
 		order by graph_tree_items.order_key");
 	
@@ -224,17 +220,17 @@ function sort_branch($tree_item_id, $sort_style) {
 	
 	/* prepend all order keys will 'x' so they don't collide during the REPLACE process */
 	if (sizeof($leaf_sort_array) > 0) {
-		db_execute("update graph_tree_items set order_key = CONCAT('x',order_key) where order_key like '$search_key%%' and id != $tree_item_id");
+		db_execute("update graph_tree_items set order_key = CONCAT('x',order_key) where order_key like '$search_key%%' and id != $tree_item_id and graph_tree_id = " . $tree_item["graph_tree_id"]);
 	}
 	
 	$i = 1;
 	while (list($leaf_order_key, $leaf_title) = each($leaf_sort_array)) {
-		$starting_tier = tree_tier($leaf_order_key, 2);
+		$starting_tier = tree_tier($leaf_order_key);
 		
-		$old_base_tier = substr($leaf_order_key, 0, ($starting_tier*2));
-		$new_base_tier = $search_key . str_pad(strval($i),2,'0',STR_PAD_LEFT);
+		$old_base_tier = substr($leaf_order_key, 0, ($starting_tier * CHARS_PER_TIER));
+		$new_base_tier = $search_key . str_pad(strval($i), CHARS_PER_TIER, '0', STR_PAD_LEFT);
 		
-		db_execute("update graph_tree_items set order_key = REPLACE(order_key, 'x$old_base_tier', '$new_base_tier') where order_key like 'x$old_base_tier%%' and id != $tree_item_id");
+		db_execute("update graph_tree_items set order_key = REPLACE(order_key, 'x$old_base_tier', '$new_base_tier') where order_key like 'x$old_base_tier%%' and id != $tree_item_id and graph_tree_id = " . $tree_item["graph_tree_id"]);
 		
 		$i++;
 	}
@@ -257,33 +253,27 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 	
 	/* get current key so we can do a sql select on it */
 	$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
-	$new_order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=$new_parent_id"),"graph_tree_items","order_key","graph_tree_id=$graph_tree_id");
+	$new_order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=$new_parent_id"), "graph_tree_items", "order_key", "graph_tree_id=$graph_tree_id");
 	
 	/* yeah, this would be really bad */
 	if (empty($old_order_key)) { return 0; }
 	
-	$old_starting_tier = tree_tier($old_order_key, 2);
-	$new_starting_tier = tree_tier($new_order_key, 2);
+	$old_starting_tier = tree_tier($old_order_key);
+	$new_starting_tier = tree_tier($new_order_key);
 	
-	$new_base_tier = substr($new_order_key, 0, ($new_starting_tier*2));
-	$old_base_tier = substr($old_order_key, 0, ($old_starting_tier*2));
+	$new_base_tier = substr($new_order_key, 0, ($new_starting_tier * CHARS_PER_TIER));
+	$old_base_tier = substr($old_order_key, 0, ($old_starting_tier * CHARS_PER_TIER));
 	
-	$padding = "";
+	/* prevent possible collisions */
+	db_execute("update graph_tree_items set order_key = CONCAT('x',order_key) where order_key like '$old_base_tier%%' and graph_tree_id=$graph_tree_id");
 	
-	$tree = db_fetch_assoc("select 
-		graph_tree_items.id, graph_tree_items.order_key
-		from graph_tree_items
-		where graph_tree_items.order_key like '$old_base_tier%%'
-		and graph_tree_items.graph_tree_id=$graph_tree_id
-		order by graph_tree_items.order_key");
-	
-	/* since we are building the order_key based on two unrelated tiers, we must be sure the final product
-	always adds up to 60 characters */
-	if ((($old_starting_tier * 2) + 1) > strlen($new_base_tier)) {
-		$padding = ",'" . str_repeat('0', (($old_starting_tier * 2) + 1) - strlen($new_base_tier)) . "'";
+	/* truncate */
+	if ($new_starting_tier >= $old_starting_tier) {
+		db_execute("update graph_tree_items set order_key = SUBSTRING(REPLACE(order_key, 'x$old_base_tier', '$new_base_tier'), 1, " . (MAX_TREE_DEPTH * CHARS_PER_TIER) . ") where order_key like 'x$old_base_tier%%' and graph_tree_id=$graph_tree_id");
+	/* append */
+	}else{
+		db_execute("update graph_tree_items set order_key = CONCAT(REPLACE(order_key, 'x$old_base_tier', '$new_base_tier'), '" . str_repeat('0', (strlen($old_base_tier) - strlen($new_base_tier))) . "') where order_key like 'x$old_base_tier%%' and graph_tree_id=$graph_tree_id");
 	}
-	
-	db_execute("update graph_tree_items set order_key = CONCAT('$new_base_tier',SUBSTRING(order_key," . (($old_starting_tier * 2) + 1) . ")$padding) where order_key like '$old_base_tier%%' and graph_tree_id=$graph_tree_id");
 }
 
 /* delete_branch - deletes a branch and all of its children
@@ -303,8 +293,8 @@ function delete_branch($tree_item_id) {
 	/* yeah, this would be really bad */
 	if (empty($tree_item["order_key"])) { return 0; }
 	
-	$starting_tier = tree_tier($tree_item["order_key"], 2);
-	$order_key = substr($tree_item["order_key"], 0, (2 * $starting_tier));
+	$starting_tier = tree_tier($tree_item["order_key"]);
+	$order_key = substr($tree_item["order_key"], 0, (CHARS_PER_TIER * $starting_tier));
 	
 	$tree = db_fetch_assoc("select 
 		graph_tree_items.id, graph_tree_items.order_key
@@ -321,7 +311,7 @@ function delete_branch($tree_item_id) {
 	}
 	
 	/* CLEANUP - reorder the tier that this branch lies in */
-	$order_key = substr($order_key, 0, (2 * ($starting_tier-1)));
+	$order_key = substr($order_key, 0, (CHARS_PER_TIER * ($starting_tier-1)));
 	
 	$tree = db_fetch_assoc("select 
 		graph_tree_items.id, graph_tree_items.order_key
@@ -331,10 +321,10 @@ function delete_branch($tree_item_id) {
 		order by graph_tree_items.order_key");
 	
 	if (sizeof($tree) > 0) {
-		$old_key_part = substr($tree[0]["order_key"], strlen($order_key), 2);
+		$old_key_part = substr($tree[0]["order_key"], strlen($order_key), CHARS_PER_TIER);
 		
 		/* we key tier==0 off of '1' and tier>0 off of '0' */
-		if (tree_tier($order_key, 2) == "0") {
+		if (tree_tier($order_key) == 0) {
 			$i = 1;
 		}else{
 			$i = 0;
@@ -342,7 +332,7 @@ function delete_branch($tree_item_id) {
 		
 		foreach ($tree as $tree_item) {
 			/* this is the key column we are going to 'rekey' */
-			$new_key_part = substr($tree_item["order_key"], strlen($order_key), 2);
+			$new_key_part = substr($tree_item["order_key"], strlen($order_key), CHARS_PER_TIER);
 			
 			/* incriment a counter for the new key column */
 			if ($old_key_part != $new_key_part) {
@@ -350,7 +340,7 @@ function delete_branch($tree_item_id) {
 			}
 			
 			/* build the new order key string */
-			$key = $order_key . str_pad(strval($i),2,'0',STR_PAD_LEFT) . substr($tree_item["order_key"], (strlen($order_key) + 2));
+			$key = $order_key . str_pad(strval($i), CHARS_PER_TIER, '0', STR_PAD_LEFT) . substr($tree_item["order_key"], (strlen($order_key) + CHARS_PER_TIER));
 			
 			db_execute("update graph_tree_items set order_key='$key' where id=" . $tree_item["id"]);
 			
