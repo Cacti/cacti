@@ -284,15 +284,18 @@ function sql_save($array_items, $table_name) {
 	/* form the SQL string */
 	$sql_save = "replace into $table_name ($sql_save_fields) values ($sql_save_values)";
 	
+	/* replace all blank entries with NULLs */
+	$sql_save = str_replace('""', "NULL", $sql_save);
+	//print $array_items
 	//print $sql_save . "<br>";
-	db_execute($sql_save);
+	if (!db_execute($sql_save)) { return 0; }
 	
 	/* get the last AUTO_ID and return it */
 	if (db_fetch_cell("select LAST_INSERT_ID()") == "0") {
-		if (!(isset($array_items["id"]))) {
-			return $array_items["ID"];
-		}else{
+		if (isset($array_items["id"])) {
 			return $array_items["id"];
+		}else{
+			return 1;
 		}
 	}else{
 		return db_fetch_cell("select LAST_INSERT_ID()");
