@@ -26,14 +26,7 @@
 
 $guest_account = true;
 include("./include/auth.php");
-
-/* setup timespan settings if being used */
-if (read_graph_config_option("timestamp_sel") == "on") {
-	include("./include/html/inc_timespan_settings.php");
-}else {
-	$_SESSION["custom"] = 0;
-}
-
+include("./include/html/inc_timespan_settings.php");
 include("./include/top_graph_header.php");
 
 if (isset($_GET["hide"])) {
