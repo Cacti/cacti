@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -12,28 +12,78 @@
 
 class ADODB2_oci8 extends ADODB_DataDict {
 	
+	var $databaseType = 'oci8';
 	var $seqField = false;
 	var $seqPrefix = 'SEQ_';
 	var $dropTable = "DROP TABLE %s CASCADE CONSTRAINTS";
+	
+	function MetaType($t,$len=-1)
+	{
+		if (is_object($t)) {
+			$fieldobj = $t;
+			$t = $fieldobj->type;
+			$len = $fieldobj->max_length;
+		}
+		switch (strtoupper($t)) {
+	 	case 'VARCHAR':
+	 	case 'VARCHAR2':
+		case 'CHAR':
+		case 'VARBINARY':
+		case 'BINARY':
+			if (isset($this) && $len <= $this->blobSize) return 'C';
+			return 'X';
+		
+		case 'NCHAR':
+		case 'NVARCHAR2':
+		case 'NVARCHAR':
+			if (isset($this) && $len <= $this->blobSize) return 'C2';
+			return 'X2';
+			
+		case 'NCLOB':
+		case 'CLOB';
+			return 'XL';
+		
+		case 'LONG RAW':
+		case 'LONG VARBINARY':
+		case 'BLOB':
+			return 'B';
+		
+		case 'DATE': 
+			return 'T';
+		
+		case 'INT': 
+		case 'SMALLINT':
+		case 'INTEGER': 
+			return 'I';
+			
+		default:
+			return 'N';
+		}
+	}
 	
  	function ActualType($meta)
 	{
 		switch($meta) {
 		case 'C': return 'VARCHAR';
-		case 'X': return 'CLOB';
+		case 'X': return 'VARCHAR(4000)';
+		case 'XL': return 'CLOB';
 		
 		case 'C2': return 'NVARCHAR';
-		case 'X2': return 'NCLOB';
+		case 'X2': return 'NVARCHAR(2000)';
 		
 		case 'B': return 'BLOB';
 			
 		case 'D': 
 		case 'T': return 'DATE';
-		case 'L': return 'NUMBER(1)';
-		case 'I': return 'NUMBER(16)';  // enough for 9 petabytes!
+		case 'L': return 'DECIMAL(1)';
+		case 'I1': return 'DECIMAL(3)';
+		case 'I2': return 'DECIMAL(5)';
+		case 'I':
+		case 'I4': return 'DECIMAL(10)';
 		
-		case 'F': return 'NUMBER';
-		case 'N': return 'NUMBER';
+		case 'I8': return 'DECIMAL(20)';
+		case 'F': return 'DECIMAL';
+		case 'N': return 'DECIMAL';
 		default:
 			return $meta;
 		}	
@@ -83,8 +133,17 @@ class ADODB2_oci8 extends ADODB_DataDict {
 		return array();
 	}
 	
+	function _DropAutoIncrement($t)
+	{
+		if (strpos($t,'.') !== false) {
+			$tarr = explode('.',$t);
+			return "drop sequence ".$tarr[0].".seq_".$tarr[1];
+		}
+		return "drop sequence seq_".$t;
+	}
+	
 	// return string must begin with space
-	function _CreateSuffix($fname,$ftype,$fnotnull,$fdefault,$fautoinc,$fconstraint)
+	function _CreateSuffix($fname,$ftype,$fnotnull,$fdefault,$fautoinc,$fconstraint,$funsigned)
 	{
 		$suffix = '';
 		
@@ -92,11 +151,10 @@ class ADODB2_oci8 extends ADODB_DataDict {
 			$fnotnull = false;
 			if ($this->debug) ADOConnection::outp("NOT NULL and DEFAULT='' illegal in Oracle");
 		}
-				
+		
 		if (strlen($fdefault)) $suffix .= " DEFAULT $fdefault";
-		if ($fnotnull) {
-			$suffix .= ' NOT NULL';
-		}
+		if ($fnotnull) $suffix .= ' NOT NULL';
+		
 		if ($fautoinc) $this->seqField = $fname;
 		if ($fconstraint) $suffix .= ' '.$fconstraint;
 		
@@ -127,11 +185,7 @@ end;
 		}
 		if (isset($tableoptions['REPLACE'])) $sql[] = "DROP SEQUENCE $seqname";
 		$sql[] = "CREATE SEQUENCE $seqname";
-		$sql[] = "CREATE OR REPLACE TRIGGER $trigname BEFORE insert ON $tabname 
-		FOR EACH ROW
-		BEGIN
-		  select $seqname.nextval into :new.$this->seqField from dual;
-		END";
+		$sql[] = "CREATE OR REPLACE TRIGGER $trigname BEFORE insert ON $tabname FOR EACH ROW BEGIN select $seqname.nextval into :new.$this->seqField from dual; END;";
 		
 		$this->seqField = false;
 		return $sql;
@@ -168,9 +222,23 @@ end;
 		if (is_array($flds)) $flds = implode(', ',$flds);
 		$s = "CREATE$unique INDEX $idxname ON $tabname ($flds)";
 		if (isset($idxoptions[$this->upperName])) $s .= $idxoptions[$this->upperName];
+		if (isset($idxoptions['oci8'])) $s .= $idxoptions['oci8'];
 		$sql[] = $s;
 		
 		return $sql;
+	}
+	
+	function GetCommentSQL($table,$col)
+	{
+		$table = $this->connection->qstr($table);
+		$col = $this->connection->qstr($col);	
+		return "select comments from USER_COL_COMMENTS where TABLE_NAME=$table and COLUMN_NAME=$col";
+	}
+	
+	function SetCommentSQL($table,$col,$cmt)
+	{
+		$cmt = $this->connection->qstr($cmt);
+		return  "COMMENT ON COLUMN $table.$col IS $cmt";
 	}
 }
 ?>

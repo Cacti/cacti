@@ -1,6 +1,6 @@
 <?php
 /*
-V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.  
+V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.  
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -28,14 +28,16 @@ class ADODB_ibase extends ADOConnection {
 	var $databaseType = "ibase";
 	var $dataProvider = "ibase";
 	var $replaceQuote = "''"; // string to use to replace quotes
-	var $ibase_timefmt = '%Y-%m-%d';
+	var $ibase_timefmt = '%Y-%m-%d'; // For hours,mins,secs change to '%Y-%m-%d %H:%M:%S';
 	var $fmtDate = "'Y-m-d'";
 	var $fmtTimeStamp = "'Y-m-d, H:i:s'";
 	var $concat_operator='||';
 	var $_transactionID;
 	var $metaTablesSQL = "select rdb\$relation_name from rdb\$relations where rdb\$relation_name not like 'RDB\$%'";
-	var $metaColumnsSQL = "select a.rdb\$field_name,b.rdb\$field_type,b.rdb\$field_length from rdb\$relation_fields a join rdb\$fields b on a.rdb\$field_source=b.rdb\$field_name where rdb\$relation_name ='%s'";
-	var $ibasetrans = IBASE_DEFAULT;
+	//OPN STUFF start
+	var $metaColumnsSQL = "select a.rdb\$field_name, a.rdb\$null_flag, a.rdb\$default_source, b.rdb\$field_length, b.rdb\$field_scale, b.rdb\$field_sub_type, b.rdb\$field_precision, b.rdb\$field_type from rdb\$relation_fields a, rdb\$fields b where a.rdb\$field_source = b.rdb\$field_name and a.rdb\$relation_name = '%s' order by a.rdb\$field_position asc";
+	//OPN STUFF end
+	var $ibasetrans;
 	var $hasGenID = true;
 	var $_bindInputArray = true;
 	var $buffers = 0;
@@ -49,6 +51,7 @@ class ADODB_ibase extends ADOConnection {
 	
 	function ADODB_ibase() 
 	{
+		 if (defined('IBASE_DEFAULT')) $this->ibasetrans = IBASE_DEFAULT;
   	}
 	
 	function MetaPrimaryKeys($table,$owner_notused=false,$internalKey=false)
@@ -127,52 +130,7 @@ class ADODB_ibase extends ADOConnection {
 		return 1;
 	}
 	
-	/*// use delete and insert instead
-	function Replace($table, $fieldArray, $keyCol,$autoQuote=false)
-	{
-		if (count($fieldArray) == 0) return 0;
-
-		if (!is_array($keyCol)) {
-			$keyCol = array($keyCol);
-		}
-		
-		if ($autoQuote)
-			foreach($fieldArray as $k => $v) {
-				if (!is_numeric($v) and $v[0] != "'" and strcasecmp($v,'null')!=0) {
-					$v = $this->qstr($v);
-					$fieldArray[$k] = $v;
-				}
-			}
-			
-		$first = true;
-		foreach ($keyCol as $v) {
-			if ($first) {
-				$first = false;
-				$where = "$v=$fieldArray[$v]";
-			} else {
-				$where .= " and $v=$fieldArray[$v]";
-			}
-		}
-			
-		$first = true;
-		foreach($fieldArray as $k => $v) {
-			if ($first) {
-				$first = false;			
-				$iCols = "$k";
-				$iVals = "$v";
-			} else {
-				$iCols .= ",$k";
-				$iVals .= ",$v";
-			}				
-		}
-		$this->BeginTrans();
-			$this->Execute("DELETE FROM $table WHERE $where");
-			$ok = $this->Execute("INSERT INTO $table ($iCols) VALUES ($iVals)");
-		$this->CommitTrans();
-		
-		return ($ok) ? 2 : 0;
-	}
-	*/
+	
 	function CreateSequence($seqname,$startID=1)
 	{
 		$ok = $this->Execute(("INSERT INTO RDB\$GENERATORS (RDB\$GENERATOR_NAME) VALUES (UPPER('$seqname'))" ));
@@ -227,6 +185,7 @@ class ADODB_ibase extends ADOConnection {
 	   // returns true or false
 	function _connect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{  
+		if (!function_exists('ibase_pconnect')) return false;
 		if ($argDatabasename) $argHostname .= ':'.$argDatabasename;
 		$this->_connectionID = ibase_connect($argHostname,$argUsername,$argPassword,$this->charSet,$this->buffers,$this->dialect);
 	 	if ($this->dialect != 1) { // http://www.ibphoenix.com/ibp_60_del_id_ds.html
@@ -243,6 +202,7 @@ class ADODB_ibase extends ADOConnection {
 	   // returns true or false
 	function _pconnect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{
+		if (!function_exists('ibase_pconnect')) return false;
 		if ($argDatabasename) $argHostname .= ':'.$argDatabasename;
 		$this->_connectionID = ibase_pconnect($argHostname,$argUsername,$argPassword,$this->charSet,$this->buffers,$this->dialect);
 		if ($this->dialect != 1) { // http://www.ibphoenix.com/ibp_60_del_id_ds.html
@@ -283,7 +243,7 @@ class ADODB_ibase extends ADOConnection {
 			
 			if (is_array($iarr)) {	
 				if (ADODB_PHPVER >= 0x4050) { // actually 4.0.4
-					$fnarr = array_merge( array($sql) , $iarr);
+					$fnarr =& array_merge( array($sql) , $iarr);
 					$ret = call_user_func_array($fn,$fnarr);
 				} else {
 					switch(sizeof($iarr)) {
@@ -304,7 +264,7 @@ class ADODB_ibase extends ADOConnection {
 		
 			if (is_array($iarr)) {	
 				if (ADODB_PHPVER >= 0x4050) { // actually 4.0.4
-					$fnarr = array_merge( array($conn,$sql) , $iarr);
+					$fnarr =& array_merge( array($conn,$sql) , $iarr);
 					$ret = call_user_func_array($fn,$fnarr);
 				} else {
 					switch(sizeof($iarr)) {
@@ -334,6 +294,101 @@ class ADODB_ibase extends ADOConnection {
 		return @ibase_close($this->_connectionID);
 	 }
 	
+	//OPN STUFF start
+	function _ConvertFieldType(&$fld, $ftype, $flen, $fscale, $fsubtype, $fprecision, $isInterbase6)
+	{
+		$fscale = abs($fscale);
+		$fld->max_length = $flen;
+		$fld->scale = null;
+		switch($ftype){
+			case 7: 
+			case 8:
+				if ($isInterbase6) {
+				    switch($fsubtype){
+				    	case 0: 
+				    		$fld->type = ($ftype == 7 ? 'smallint' : 'integer');
+				    		break;
+				    	case 1: 
+				    		$fld->type = 'numeric';
+							$fld->max_length = $fprecision;
+							$fld->scale = $fscale;
+				    		break;
+				    	case 2:
+				    		$fld->type = 'decimal';
+							$fld->max_length = $fprecision;
+							$fld->scale = $fscale;
+				    		break;
+				    } // switch
+				} else {
+					if ($fscale !=0) {
+					    $fld->type = 'decimal';
+						$fld->scale = $fscale;
+						$fld->max_length = ($ftype == 7 ? 4 : 9);
+					} else {
+						$fld->type = ($ftype == 7 ? 'smallint' : 'integer');
+					}
+				}
+				break;
+			case 16: 
+				if ($isInterbase6) {
+				    switch($fsubtype){
+				    	case 0: 
+				    		$fld->type = 'decimal';
+							$fld->max_length = 18;
+							$fld->scale = 0;
+				    		break;
+				    	case 1: 
+				    		$fld->type = 'numeric';
+							$fld->max_length = $fprecision;
+							$fld->scale = $fscale;
+				    		break;
+				    	case 2:
+				    		$fld->type = 'decimal';
+							$fld->max_length = $fprecision;
+							$fld->scale = $fscale;
+				    		break;
+				    } // switch
+				}
+				break;
+			case 10:
+				$fld->type = 'float';
+				break;
+			case 14:
+				$fld->type = 'char';
+				break;
+			case 27:
+				if ($fscale !=0) {
+				    $fld->type = 'decimal';
+					$fld->max_length = 15;
+					$fld->scale = 5;
+				} else {
+					$fld->type = 'double';
+				}
+				break;
+			case 35:
+				if ($isInterbase6) {
+				    $fld->type = 'timestamp';
+				} else {
+					$fld->type = 'date';
+				}
+				break;
+			case 12:
+			case 13:
+				$fld->type = 'date';
+				break;
+			case 37:
+				$fld->type = 'varchar';
+				break;
+			case 40:
+				$fld->type = 'cstring';
+				break;
+			case 261:
+				$fld->type = 'blob';
+				$fld->max_length = -1;
+				break;
+		} // switch
+	}
+	//OPN STUFF end
 		// returns array of ADOFieldObjects for current table
 	function &MetaColumns($table) 
 	{
@@ -350,31 +405,43 @@ class ADODB_ibase extends ADOConnection {
 			if ($rs === false) return false;
 
 			$retarr = array();
+			//OPN STUFF start
+			$isInterbase6 = ($this->dialect==3 ? true : false);
+			//OPN STUFF end
 			while (!$rs->EOF) { //print_r($rs->fields);
 				$fld = new ADOFieldObject();
 				$fld->name = trim($rs->fields[0]);
-				$tt = $rs->fields[1];
-				switch($tt)
-				{
-				case 7:
-				case 8:
-				case 9:$tt = 'INTEGER'; break;
-				case 10:
-				case 27:
-				case 11:$tt = 'FLOAT'; break;
-				default:
-				case 40:
-				case 14:$tt = 'CHAR'; break;
-				case 35:$tt = 'DATE'; break;
-				case 37:$tt = 'VARCHAR'; break;
-				case 261:$tt = 'BLOB'; break;
-				case 14: $tt = 'TEXT'; break;
-				case 13:
-				case 35:$tt = 'TIMESTAMP'; break;
+				//OPN STUFF start
+				$this->_ConvertFieldType($fld, $rs->fields[7], $rs->fields[3], $rs->fields[4], $rs->fields[5], $rs->fields[6], $isInterbase6);
+				if (isset($rs->fields[1]) && $rs->fields[1]) {
+					$fld->not_null = true;
+				}				
+				if (isset($rs->fields[2])) {
+					
+					$fld->has_default = true;
+					$d = substr($rs->fields[2],strlen('default '));
+					switch ($fld->type)
+					{
+					case 'smallint':
+					case 'integer': $fld->default_value = (int) $d; break;
+					case 'char': 
+					case 'blob':
+					case 'text':
+					case 'varchar': $fld->default_value = (string) substr($d,1,strlen($d)-2); break;
+					case 'double':
+					case 'float': $fld->default_value = (float) $d; break;
+					default: $fld->default_value = $d; break;
+					}
+			//	case 35:$tt = 'TIMESTAMP'; break;
 				}
-				$fld->type = $tt;
-				$fld->max_length = $rs->fields[2];
-				$retarr[strtoupper($fld->name)] = $fld;	
+				if ((isset($rs->fields[5])) && ($fld->type == 'blob')) {
+					$fld->sub_type = $rs->fields[5];
+				} else {
+					$fld->sub_type = null;
+				}
+				//OPN STUFF end
+				if ($ADODB_FETCH_MODE == ADODB_FETCH_NUM) $retarr[] = $fld;	
+				else $retarr[strtoupper($fld->name)] = $fld;
 				
 				$rs->MoveNext();
 			}
@@ -398,12 +465,15 @@ class ADODB_ibase extends ADOConnection {
 		return $blob; 
 	}
 	
+	
+	
+	
 	// old blobdecode function
 	// still used to auto-decode all blob's
 	function _BlobDecode( $blob ) 
 	{
 		$blobid = ibase_blob_open( $blob );
-		$realblob = ibase_blob_get( $blobid,MAX_BLOB_SIZE); // 2nd param is max size of blob -- Kevin Boillet <kevinboillet@yahoo.fr>
+		$realblob = ibase_blob_get( $blobid,$this->maxblobsize); // 2nd param is max size of blob -- Kevin Boillet <kevinboillet@yahoo.fr>
 		while($string = ibase_blob_get($blobid, 8192)){ 
 			$realblob .= $string; 
 		}
@@ -420,7 +490,7 @@ class ADODB_ibase extends ADOConnection {
 		
 		/* fill with data */ 
 		
-		while ($val = fread($fd,8192)){ 
+		while ($val = fread($fd,32768)){ 
 			ibase_blob_add($blob_id, $val); 
 		} 
 		
@@ -440,7 +510,41 @@ class ADODB_ibase extends ADOConnection {
 		$conn->Execute('INSERT INTO blobtable (id, blobcol) VALUES (1, null)');
 		$conn->UpdateBlob('blobtable','blobcol',$blob,'id=1');
 	*/
-	function UpdateBlob($table,$column,$val,$where,$blobtype='BLOB')
+	function UpdateBlob($table,$column,$val,$where,$blobtype='BLOB') 
+	{ 
+	$blob_id = ibase_blob_create($this->_connectionID); 
+	
+	// ibase_blob_add($blob_id, $val); 
+	
+	// replacement that solves the problem by which only the first modulus 64K / 
+	// of $val are stored at the blob field //////////////////////////////////// 
+	// Thx Abel Berenstein  aberenstein#afip.gov.ar
+	$len = strlen($val); 
+	$chunk_size = 32768; 
+	$tail_size = $len % $chunk_size; 
+	$n_chunks = ($len - $tail_size) / $chunk_size; 
+	
+	for ($n = 0; $n < $n_chunks; $n++) { 
+		$start = $n * $chunk_size; 
+		$data = substr($val, $start, $chunk_size); 
+		ibase_blob_add($blob_id, $data); 
+	} 
+	
+	if ($tail_size) {
+		$start = $n_chunks * $chunk_size; 
+		$data = substr($val, $start, $tail_size); 
+		ibase_blob_add($blob_id, $data); 
+	}
+	// end replacement ///////////////////////////////////////////////////////// 
+	
+	$blob_id_str = ibase_blob_close($blob_id); 
+	
+	return $this->Execute("UPDATE $table SET $column=(?) WHERE $where",array($blob_id_str)) != false; 
+	
+	} 
+	
+	
+	function OldUpdateBlob($table,$column,$val,$where,$blobtype='BLOB')
 	{
 		$blob_id = ibase_blob_create($this->_connectionID);
 		ibase_blob_add($blob_id, $val);
@@ -477,6 +581,19 @@ class ADODB_ibase extends ADOConnection {
 			case 'd':
 				$s .= "(extract(day from $col))";
 				break;
+			case 'H':
+			case 'h':
+			  $s .= "(extract(hour from $col))";
+			  break;                        
+			case 'I':
+			case 'i':
+			  $s .= "(extract(minute from $col))";
+			  break;                
+			case 'S':
+			case 's':
+			  $s .= "CAST((extract(second from $col)) AS INTEGER)";
+			  break;        
+
 			default:
 				if ($ch == '\\') {
 					$i++;
@@ -542,30 +659,44 @@ class ADORecordset_ibase extends ADORecordSet
 		return false;
 	}
 
+	
+	
 	function _fetch() 
 	{
 		$f = @ibase_fetch_row($this->_queryID); 
-		if ($f === false) return false;
+		if ($f === false) {
+			$this->fields = false;
+			return false;
+		}
 		// OPN stuff start - optimized
 		// fix missing nulls and decode blobs automatically
+	
+		global $ADODB_ANSI_PADDING_OFF;
+		//$ADODB_ANSI_PADDING_OFF=1;
+		$rtrim = !empty($ADODB_ANSI_PADDING_OFF);
+		
 		for ($i=0, $max = $this->_numOfFields; $i < $max; $i++) { 
-			if ($this->_cacheType[$i]=="BLOB") { 
+			if ($this->_cacheType[$i]=="BLOB") {
 				if (isset($f[$i])) { 
-					$f[$i] = ADODB_ibase::_BlobDecode($f[$i]); 
+					$f[$i] = $this->connection->_BlobDecode($f[$i]); 
 				} else { 
 					$f[$i] = null; 
 				} 
 			} else { 
 				if (!isset($f[$i])) { 
 					$f[$i] = null; 
-				} 
+				} else if ($rtrim && is_string($f[$i])) {
+					$f[$i] = rtrim($f[$i]);
+				}
 			} 
 		} 
 		// OPN stuff end 
 		
 		$this->fields = $f;
-		if ($this->fetchMode & ADODB_FETCH_ASSOC) {
-			$this->fields = $this->GetRowAssoc(ADODB_ASSOC_CASE);
+		if ($this->fetchMode == ADODB_FETCH_ASSOC) {
+			$this->fields = &$this->GetRowAssoc(ADODB_ASSOC_CASE);
+		} else if ($this->fetchMode == ADODB_FETCH_BOTH) {
+			$this->fields =& array_merge($this->fields,$this->GetRowAssoc(ADODB_ASSOC_CASE));
 		}
 		return true;
 	}

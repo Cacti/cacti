@@ -1,6 +1,6 @@
 <?php
 /*
-V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -13,11 +13,9 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
   
 */
 
-// select table_name from cat -- MetaTables
-// 
 class ADODB_oracle extends ADOConnection {
 	var $databaseType = "oracle";
-	var $replaceQuote = "\'"; // string to use to replace quotes
+	var $replaceQuote = "''"; // string to use to replace quotes
 	var $concat_operator='||';
 	var $_curs;
 	var $_initdate = true; // init date to YYYY-MM-DD
@@ -25,6 +23,7 @@ class ADODB_oracle extends ADOConnection {
 	var $metaColumnsSQL = "select cname,coltype,width from col where tname='%s' order by colno";
 	var $sysDate = "TO_DATE(TO_CHAR(SYSDATE,'YYYY-MM-DD'),'YYYY-MM-DD')";
 	var $sysTimeStamp = 'SYSDATE';
+	var $connectSID = true;
 	
 	function ADODB_oracle() 
 	{
@@ -34,15 +33,17 @@ class ADODB_oracle extends ADOConnection {
 	function DBDate($d)
 	{
 		if (is_string($d)) $d = ADORecordSet::UnixDate($d);
-		return 'TO_DATE('.date($this->fmtDate,$d).",'YYYY-MM-DD')";
+		return 'TO_DATE('.adodb_date($this->fmtDate,$d).",'YYYY-MM-DD')";
 	}
 	
 	// format and return date string in database timestamp format
 	function DBTimeStamp($ts)
 	{
+
 		if (is_string($ts)) $d = ADORecordSet::UnixTimeStamp($ts);
-		return 'TO_DATE('.date($this->fmtTimeStamp,$ts).",'RRRR-MM-DD, HH:MI:SS AM')";
+		return 'TO_DATE('.adodb_date($this->fmtTimeStamp,$ts).",'RRRR-MM-DD, HH:MI:SS AM')";
 	}
+
 	
 	function BeginTrans()
 	{	  
@@ -50,6 +51,7 @@ class ADODB_oracle extends ADOConnection {
 		 ora_commitoff($this->_connectionID);
 		 return true;
 	}
+
 	
 	function CommitTrans($ok=true) 
 	{ 
@@ -58,6 +60,7 @@ class ADODB_oracle extends ADOConnection {
 		   ora_commiton($this->_connectionID);
 		   return $ret;
 	}
+
 	
 	function RollbackTrans()
 	{
@@ -66,6 +69,7 @@ class ADODB_oracle extends ADOConnection {
 		return $ret;
 	}
 
+
 	/* there seems to be a bug in the oracle extension -- always returns ORA-00000 - no error */
 	function ErrorMsg() 
  	{
@@ -73,45 +77,69 @@ class ADODB_oracle extends ADOConnection {
  		if (!$this->_errorMsg) $this->_errorMsg = @ora_error($this->_connectionID);
 		return $this->_errorMsg;
 	}
+
  
 	function ErrorNo() 
 	{
 		$err = @ora_errorcode($this->_curs);
 		if (!$err) return @ora_errorcode($this->_connectionID);
 	}
+
 	
 
 		// returns true or false
-		function _connect($argHostname, $argUsername, $argPassword, $argDatabasename)
+		function _connect($argHostname, $argUsername, $argPassword, $argDatabasename, $mode=0)
 		{
-			if ($argHostname) putenv("ORACLE_HOME=$argHostname");
+            // G. Giunta 2003/08/13 - This looks danegrously suspicious: why should we want to set
+            // the oracle home to the host name of remote DB?
+//			if ($argHostname) putenv("ORACLE_HOME=$argHostname");
+
+			if($argHostname) { // code copied from version submitted for oci8 by Jorma Tuomainen <jorma.tuomainen@ppoy.fi>
+				if (empty($argDatabasename)) $argDatabasename = $argHostname;
+				else {
+					if(strpos($argHostname,":")) {
+						$argHostinfo=explode(":",$argHostname);
+						$argHostname=$argHostinfo[0];
+						$argHostport=$argHostinfo[1];
+					} else {
+						$argHostport="1521";
+					}
+
+
+					if ($this->connectSID) {
+						$argDatabasename="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=".$argHostname
+						.")(PORT=$argHostport))(CONNECT_DATA=(SID=$argDatabasename)))";
+					} else
+						$argDatabasename="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=".$argHostname
+						.")(PORT=$argHostport))(CONNECT_DATA=(SERVICE_NAME=$argDatabasename)))";
+				}
+
+			}
+
 			if ($argDatabasename) $argUsername .= "@$argDatabasename";
+
 		//if ($argHostname) print "<p>Connect: 1st argument should be left blank for $this->databaseType</p>";
-			$this->_connectionID = ora_logon($argUsername,$argPassword);
+			if ($mode = 1)
+				$this->_connectionID = ora_plogon($argUsername,$argPassword);
+			else
+				$this->_connectionID = ora_logon($argUsername,$argPassword);
 			if ($this->_connectionID === false) return false;
 			if ($this->autoCommit) ora_commiton($this->_connectionID);
 			if ($this->_initdate) {
 				$rs = $this->_query("ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD'");
 				if ($rs) ora_close($rs);
 			}
+
 			return true;
 		}
+
+
 		// returns true or false
 		function _pconnect($argHostname, $argUsername, $argPassword, $argDatabasename)
 		{
-			if ($argHostname) putenv("ORACLE_HOME=$argHostname");
-			if ($argDatabasename) $argUsername .= "@$argDatabasename";
-		//if ($argHostname) print "<p>PConnect: 1st argument should be left blank for $this->databaseType</p>";
-			$this->_connectionID = ora_plogon($argUsername,$argPassword);
-			if ($this->_connectionID === false) return false;
-			if ($this->autoCommit) ora_commiton($this->_connectionID);
-			if ($this->autoRollback) ora_rollback($this->_connectionID);
-			if ($this->_initdate) {
-				$rs = $this->_query("ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD'");
-				if ($rs) ora_close($rs);
-			}
-			return true;
+			return $this->_connect($argHostname, $argUsername, $argPassword, $argDatabasename, 1);
 		}
+
 
 		// returns query ID if successful, otherwise false
 		function _query($sql,$inputarr=false)
@@ -127,14 +155,17 @@ class ADODB_oracle extends ADOConnection {
 			return false;
 		}
 
+
 		// returns true or false
 		function _close()
 		{
-			return @ora_close($this->_connectionID);
+			return @ora_logoff($this->_connectionID);
 		}
 
 
+
 }
+
 
 /*--------------------------------------------------------------------------------------
 		 Class Name: Recordset

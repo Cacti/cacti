@@ -1,7 +1,7 @@
 <?php
 
 /** 
- * @version V3.20 17 Feb 2003 (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+ * @version V4.05 13 Dec 2003 (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
  * Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -35,7 +35,7 @@ $driver = 'mysql';
 $host = 'localhost'; // DSN for odbc
 $uid = 'root';
 $pwd = '';
-$database = 'northwind';
+$database = 'test';
 
 /*============================ DO NOT MODIFY BELOW HERE =================================*/
 // $sep must match csv2rs() in adodb.inc.php
@@ -75,6 +75,7 @@ if (!empty($ACCEPTIP))
 
 
 $conn = &ADONewConnection($driver);
+
 if (!$conn->Connect($host,$uid,$pwd,$database)) err($conn->ErrorNo(). $sep . $conn->ErrorMsg());
 $sql = undomq($HTTP_GET_VARS['sql']);
 

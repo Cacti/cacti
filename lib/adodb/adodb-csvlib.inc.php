@@ -1,7 +1,9 @@
 <?php
+global $ADODB_INCLUDED_CSV;
+$ADODB_INCLUDED_CSV = 1;
 
 /* 
-V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -16,8 +18,6 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
   Format documented at http://php.weblogs.com/ADODB_CSV
   ==============
 */
-
-
 
 	/**
  	 * convert a recordset into special format
@@ -49,7 +49,7 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 		// column definitions
 		for($i=0; $i < $max; $i++) {
 			$o = $rs->FetchField($i);
-			$line .= urlencode($o->name).':'.$rs->MetaType($o->type,$o->max_length).":$o->max_length,";
+			$line .= urlencode($o->name).':'.$rs->MetaType($o->type,$o->max_length,$o).":$o->max_length,";
 		}
 		$text = substr($line,0,strlen($line)-1)."\n";
 		
@@ -86,14 +86,14 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 		$fp = @fopen($url,'r');
 		$err = false;
 		if (!$fp) {
-			$err = $url.'file/URL not found';
+			$err = $url.' file/URL not found';
 			return false;
 		}
 		flock($fp, LOCK_SH);
 		$arr = array();
 		$ttl = 0;
 		
-		if ($meta = fgetcsv($fp, 32000, ",")) { // first read is larger because contains sql
+		if ($meta = fgetcsv ($fp, 32000, ",")) {
 			// check if error message
 			if (substr($meta[0],0,4) === '****') {
 				$err = trim(substr($meta[0],4,1024));
@@ -128,12 +128,9 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 					$rs->insertid = $meta[4];	
 					return $rs;
 				}
-			
-			# If detect timeout here return false, forcing a fresh query and new cache values
-			#
 			# Under high volume loads, we want only 1 thread/process to _write_file
 			# so that we don't have 50 processes queueing to write the same data.
-			# Would require probabilistic blocking write
+			# Would require probabilistic blocking write 
 			#
 			# -2 sec before timeout, give processes 1/16 chance of writing to file with blocking io
 			# -1 sec after timeout give processes 1/4 chance of writing with blocking
@@ -199,16 +196,14 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 		
 		// slurp in the data
 		$MAXSIZE = 128000;
-		$text = fread($fp,$MAXSIZE);
-		$cnt = 1;
-		while (strlen($text) == $MAXSIZE*$cnt) {
-			$text .= fread($fp,$MAXSIZE);
-			$cnt += 1;
+		
+		$text = '';
+		while ($txt = fread($fp,$MAXSIZE)) {
+			$text .= $txt;
 		}
 			
 		fclose($fp);
 		$arr = @unserialize($text);
-		
 		//var_dump($arr);
 		if (!is_array($arr)) {
 			$err = "Recordset had unexpected EOF (in serialized recordset)";
@@ -220,5 +215,4 @@ V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights rese
 		$rs->InitArrayFields($arr,$flds);
 		return $rs;
 	}
-	
 ?>

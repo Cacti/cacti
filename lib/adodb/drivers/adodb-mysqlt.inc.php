@@ -1,7 +1,7 @@
 <?php
 
 /*
-V3.20 17 Feb 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.05 13 Dec 2003  (c) 2000-2003 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -61,18 +61,15 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 	}
 	
 	function MoveNext() 
-	{
-		if (!$this->EOF) {		
-			$this->_currentRow++;
-			// using & below slows things down by 20%!
-			$f = @mysql_fetch_array($this->_queryID,$this->fetchMode);
-			
-			if (is_array($f)) {
-				$this->fields = $f;
-				return true;
-			}
-			$this->EOF = true;
-		}
+	{	
+		if ($this->EOF) return false;
+
+		$this->_currentRow++;
+		// using & below slows things down by 20%!
+		$this->fields =  @mysql_fetch_array($this->_queryID,$this->fetchMode);
+		if ($this->fields) return true;
+		$this->EOF = true;
+		
 		return false;
 	}	
 }
