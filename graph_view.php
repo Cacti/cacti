@@ -242,7 +242,7 @@ case 'preview':
 		<br>
 		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 			<tr bgcolor='#" . $colors["header_panel"] . "'>
-				<td colspan='3'>
+				<td colspan='" . read_graph_config_option("num_columns") . "'>
 					<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 						<tr>
 							<td align='left' class='textHeaderDark'>
