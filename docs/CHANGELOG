@@ -19,11 +19,13 @@ Cacti CHANGELOG
 -bug: Sort host templates when creating a host.
 -bug: Corrected user form edit array problem that didn't show the graph options for an edited user.
 -bug: Access Denied error when user doesn't have console access.
+-bug: Return type bug in cacti_snmp_walk() which could cause extra blank data query rows.
 -feature: Data queries now support indexes that span multiple OIDs (see the manual).
 -feature: Re-apply suggested naming to graphs from the user interface.
 -feature: TreeView-specific feature to speed up rendering the tree for large databases.
 -feature: Added retry logic to the MySQL connect statements.
 -feature: Changed default connect method to a 'pconnect' from a 'connect' to improve performance with large implementations.
+-feature: Add support for Safari on the graph zoom page.
 
 0.8.6b
 -bug#0000318: Only delete the Cacti system user when uninstalling the RPM package rather than during each upgrade.
