@@ -32,33 +32,34 @@
    @returns - (array) an array containing each data source item, and its 95th percentile */
 function ninety_fifth_percentile($local_data_id, $seconds, $resolution) {
 	$fetch_array = rrdtool_function_fetch($local_data_id, $seconds, $resolution);
-	
+
+	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
+		return;
+	}
+
+	$return_array = array();
+
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
 		if (isset($fetch_array["values"][$i])) {
 			$values_array = $fetch_array["values"][$i];
-			
+
 			/* sort the array in descending order */
 			rsort($values_array);
-			
+
 			/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
 			value */
 			$target = ((count($values_array) + 1) * .05);
 			$target = sprintf("%d", $target);
 		}
-		
+
 		if (empty($values_array[$target])) { $values_array[$target] = 0; }
-		
+
 		/* collect 95th percentile values in this array so we can return them */
 		$return_array{$fetch_array["data_source_names"][$i]} = $values_array[$target];
 	}
-	
-	if (isset($return_array)) {
-		return $return_array;
-	}else{
-		print "ERROR: no rrdtool fetch output, you probably forgot to pass a valid data source<br>";
-		return;
-	}
+
+	return $return_array;
 }
 
 /* bandwidth_summation - given a data source, sums all data in the rrd for a given
@@ -72,35 +73,36 @@ function ninety_fifth_percentile($local_data_id, $seconds, $resolution) {
    @returns - (array) an array containing each data source item, and its sum */
 function bandwidth_summation($local_data_id, $seconds, $resolution, $rra_steps, $ds_steps) {
 	$fetch_array = rrdtool_function_fetch($local_data_id, $seconds, $resolution);
-	
+
+	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
+		return;
+	}
+
+	$return_array = array();
+
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
 		$sum = 0;
-		
+
 		if (isset($fetch_array["values"][$i])) {
 			$values_array = $fetch_array["values"][$i];
-			
+
 			for ($j=0;$j<count($fetch_array["values"][$i]);$j++) {
 				$sum += $fetch_array["values"][$i][$j];
 			}
-			
+
 			if (count($fetch_array["values"][$i]) != 0) {
 				$sum = ($sum * $ds_steps * $rra_steps);
 			}else{
 				$sum = 0;
 			}
-			
+
 			/* collect 95th percentile values in this array so we can return them */
 			$return_array{$fetch_array["data_source_names"][$i]} = $sum;
 		}
 	}
-	
-	if (isset($return_array)) {
-		return $return_array;
-	}else{
-		print "ERROR: no rrdtool fetch output, you probably forgot to pass a valid data source<br>";
-		return;
-	}
+
+	return $return_array;
 }
 
 /* this variable is used as a cache to prevent extra calls to ninety_fifth_percentile() */
@@ -124,11 +126,11 @@ $ninety_fifth_cache = array();
    @returns - a string containg the 95th percentile suitable for placing on the graph */
 function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $seconds_between_graph_updates) {
 	global $ninety_fifth_cache, $graph_item_types;
-	
+
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
-	
+
 	if (($regexp_match_array[3] == "current") || ($regexp_match_array[3] == "max")) {
 		if (!isset($ninety_fifth_cache{$graph_item["local_data_id"]})) {
 			$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], abs($graph_start), $seconds_between_graph_updates);
@@ -140,10 +142,10 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 			}
 		}
 	}
-	
+
 	$ninety_fifth = 0;
-	
-	/* format the output according to args passed to the variable */ 
+
+	/* format the output according to args passed to the variable */
 	if ($regexp_match_array[3] == "current") {
 		$ninety_fifth = $ninety_fifth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
 		$ninety_fifth = ($regexp_match_array[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
@@ -154,7 +156,7 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 				$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
 				$local_ninety_fifth = ($regexp_match_array[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
 				$local_ninety_fifth /= pow(10,intval($regexp_match_array[2]));
-				
+
 				$ninety_fifth += $local_ninety_fifth;
 			}
 		}
@@ -163,14 +165,14 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 		$ninety_fifth = ($regexp_match_array[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
 		$ninety_fifth /= pow(10,intval($regexp_match_array[2]));
 	}
-	
+
 	/* determine the floating point precision */
 	if ((isset($regexp_match_array[5])) && (ereg("^[0-9]+$", $regexp_match_array[5]))) {
 		$round_to = $regexp_match_array[5];
 	}else{
 		$round_to = 2;
 	}
-	
+
 	/* return the final result and round off to two decimal digits */
 	return round($ninety_fifth, $round_to);
 }
@@ -193,23 +195,23 @@ $summation_cache = array();
      percentile calculation for
    @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
      varies depending on the RRA in use
-   @arg $rra_step - how many periods each sample in the RRA counts for, values above '1' result in an 
+   @arg $rra_step - how many periods each sample in the RRA counts for, values above '1' result in an
      averaged summation
    @arg $ds_step - how many seconds each period represents
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $seconds_between_graph_updates, $rra_step, $ds_step) {
 	global $summation_cache, $graph_item_types;
-	
+
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
-	
+
 	if (ereg("^[0-9]+$", $regexp_match_array[4])) {
 		$summation_timespan = $regexp_match_array[4];
 	}else{
 		$summation_timespan = abs($graph_start);
 	}
-	
+
 	if ($regexp_match_array[2] == "current") {
 		if (!isset($summation_cache{$graph_item["local_data_id"]})) {
 			$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan, $seconds_between_graph_updates, $rra_step, $ds_step);
@@ -221,9 +223,9 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 			}
 		}
 	}
-	
+
 	$summation = 0;
-	
+
 	/* format the output according to args passed to the variable */
 	if ($regexp_match_array[2] == "current") {
 		$summation = $summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
@@ -231,12 +233,12 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 				$local_summation = $summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
-				
+
 				$summation += $local_summation;
 			}
 		}
 	}
-	
+
 	if (preg_match("/\d+/", $regexp_match_array[1])) {
 		$summation /= pow(10,intval($regexp_match_array[1]));
 	}elseif ($regexp_match_array[1] == "auto") {
@@ -256,14 +258,14 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 			$summation /= 1000000000000;
 		}
 	}
-	
+
 	/* determine the floating point precision */
 	if (ereg("^[0-9]+$", $regexp_match_array[3])) {
 		$round_to = $regexp_match_array[3];
 	}else{
 		$round_to = 2;
 	}
-	
+
 	/* substitute in the final result and round off to two decimal digits */
 	if (isset($summation_label)) {
 		return round($summation, $round_to) . " $summation_label";

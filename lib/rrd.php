@@ -342,6 +342,9 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 		return;
 	}
 
+	$regexps = array();
+	$fetch_array = array();
+
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* build and run the rrdtool fetch command with all of our data */
@@ -399,13 +402,15 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 		}
 	}
 
-	$next_index = count($fetch_array["data_source_names"]);
+	if (isset($fetch_array["data_source_names"])) {
+		$next_index = count($fetch_array["data_source_names"]);
 
-	$fetch_array["data_source_names"][$next_index] = "ninety_fifth_percentile_maximum";
+		$fetch_array["data_source_names"][$next_index] = "ninety_fifth_percentile_maximum";
 
-	/* calculate the max for each row */
-	for ($i=0; $i<count($max_array); $i++) {
-		$fetch_array["values"][$next_index][$i] = max($max_array[$i]);
+		/* calculate the max for each row */
+		for ($i=0; $i<count($max_array); $i++) {
+			$fetch_array["values"][$next_index][$i] = max($max_array[$i]);
+		}
 	}
 
 	return $fetch_array;
