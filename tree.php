@@ -246,7 +246,7 @@ function item_remove() {
 		if (empty($graph_tree_item["local_graph_id"])) {
 			$text = "Are you sure you want to delete the header item <strong>'" . $graph_tree_item["title"] . "'</strong>?";
 		}else{
-			$text = "Are you sure you want to delete the graph item <strong>'" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $graph_tree_item["local_graph_id"]) . "'</strong>?";
+			$text = "Are you sure you want to delete the graph item <strong>'" . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $graph_tree_item["local_graph_id"]) . "'</strong>?";
 		}
 		
 		include ('include/top_header.php');
@@ -258,7 +258,7 @@ function item_remove() {
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		delete_branch($_GET["id"]);
 	}
-
+	
 	header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]); exit;
 }
 
