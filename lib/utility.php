@@ -357,6 +357,9 @@ function change_data_template($local_data_id, $data_template_id) {
 	if ($local_data_template_data_id == "") { $local_data_template_data_id = 0; }
 	db_execute("update data_template_data set local_data_template_data_id=$local_data_template_data_id where local_data_id=$local_data_id");
 	
+	/* if the user turned off the template for this data source; there is nothing more to do here */
+	if ($data_template_id == "0") { return 0; }
+	
 	/* some basic field values that ALL data sources should have */
 	$save["id"] = $data["id"];
 	$save["local_data_template_data_id"] = $template_data["id"];
@@ -511,8 +514,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	if ($local_graph_template_graph_id == "") { $local_graph_template_graph_id = 0; }
 	db_execute("update graph_templates_graph set local_graph_template_graph_id=$local_graph_template_graph_id where local_graph_id=$local_graph_id");
 	
-	/* if the user turned off the template for this graph; there is nothing more
-	to do here */
+	/* if the user turned off the template for this graph; there is nothing more to do here */
 	if ($graph_template_id == "0") { return 0; }
 	
 	/* get information about both the graph and the graph template we're using */
