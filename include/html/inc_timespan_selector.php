@@ -67,7 +67,7 @@
 
 							if (sizeof($graph_timespans) > 0) {
 								for ($value=$start_val; $value < $end_val; $value++) {
-									print "<option value='" . $_SESSION["urlval"] . "&predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+									print "<option value='" . $_SESSION["urlval"] . (strstr($_SESSION["urlval"], "?") ? "&" : "?") . "predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
 								}
 							}
 							?>
