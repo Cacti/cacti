@@ -74,6 +74,7 @@ function form_save() {
 				
 				db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
 				db_execute ("delete from host_template_graph_template where host_template_id=$host_template_id");
+				db_execute ("delete from host_template_snmp_query where host_template_id=$host_template_id");
 				
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^gt_", $var)) {
@@ -84,6 +85,8 @@ function form_save() {
 						}
 						
 						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'$suggested_value')");
+					}elseif (eregi("^sq_", $var)) {
+						db_execute ("replace into host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . substr($var, 3) . ")");
 					}elseif (eregi("^odt_suggested_values_", $var)) {
 						$data_template_id = ereg_replace("^odt_suggested_values_([0-9]+)_[0-9]+$", "\\1", $var);
 						$graph_template_id = ereg_replace("^odt_suggested_values_[0-9]+_([0-9]+)$", "\\1", $var);
@@ -151,7 +154,7 @@ function template_edit() {
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
-			<font class="textEditTitle">Selected Graph Templates</font><br>
+			<font class="textEditTitle">Associated Graph Templates</font><br>
 			Select one or more graph templates to associate with this host template.
 		</td>
 		<td>
@@ -183,6 +186,50 @@ function template_edit() {
 								print "</td><td valign='top' width='50%'>";
 							}
 							form_base_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",$_GET["id"],true);
+							$i++;
+						}
+						}
+						?>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<?php
+	
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Associated SNMP Queries</font><br>
+			Select one or more SNMP queries to associate with this host template.
+		</td>
+		<td>
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td align="top" width="50%">
+						<?php
+						$snmp_queries = db_fetch_assoc("select 
+							host_template_snmp_query.host_template_id,
+							snmp_query.id,
+							snmp_query.name
+							from snmp_query left join host_template_snmp_query
+							on (snmp_query.id=host_template_snmp_query.snmp_query_id and host_template_snmp_query.host_template_id=" . $_GET["id"] . ") 
+							order by snmp_query.name");
+						
+						$i = 0;
+						if (sizeof($snmp_queries) > 0) {
+						foreach($snmp_queries as $snmp_query) {
+							$column1 = floor((sizeof($snmp_queries) / 2) + (sizeof($snmp_queries) % 2));
+							
+							if (empty($snmp_query["host_template_id"])) {
+								$old_value = "";
+							}else{
+								$old_value = "on";
+							}
+							
+							if ($i == $column1) {
+								print "</td><td valign='top' width='50%'>";
+							}
+							form_base_checkbox("sq_".$snmp_query["id"], $old_value, $snmp_query["name"], "",$_GET["id"],true);
 							$i++;
 						}
 						}
