@@ -48,45 +48,34 @@
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="40" class="textHeader">
+					<td class="textHeader" nowrap>
 						Presets:&nbsp;
-					</td>
-					<td width="100">
 						<select name='predefined_timespan' onChange="window.location=document.form_timespan_selector.predefined_timespan.options[document.form_timespan_selector.predefined_timespan.selectedIndex].value">
-						<?php
-						if ($_SESSION["custom"]) {
-							$graph_timespans[GT_CUSTOM] = "Custom";
-							$start_val = 0;
-						} else {
-							$start_val = 1;
-						}
-
-						if (sizeof($graph_timespans) > 0) {
-							for ($value=$start_val; $value < sizeof($graph_timespans); $value++) {
-								print "<option value='" . $_SESSION["urlval"] . "&predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+							<?php
+							if ($_SESSION["custom"]) {
+								$graph_timespans[GT_CUSTOM] = "Custom";
+								$start_val = 0;
+							} else {
+								$start_val = 1;
 							}
-						}
-						?>
+
+							if (sizeof($graph_timespans) > 0) {
+								for ($value=$start_val; $value < sizeof($graph_timespans); $value++) {
+									print "<option value='" . $_SESSION["urlval"] . "&predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+								}
+							}
+							?>
 						</select>
-					</td>
-					<td width="55" class="textHeader">
+
 						<strong>&nbsp;From:&nbsp;</strong>
-					</td>
-					<td width="140" nowrap>
 						<input type='text' name='date1' id='date1' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
-					</td>
-					<td width="30" class="textHeader">
+
 						<strong>To:&nbsp;</strong>
-					</td>
-					<td width="140" nowrap>
 						<input type='text' name='date2' id='date2' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
-					</td>
-					<td width="80" nowrap>
-						<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit' value='refresh'>
-					</td>
-					<td nowrap>
+
+						&nbsp;&nbsp;<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit' value='refresh'>
 						<input type='image' name='button_clear' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
 					</td>
 				</tr>
