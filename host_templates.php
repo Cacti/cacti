@@ -152,105 +152,107 @@ function template_edit() {
 	
 	end_box();
 	
-	start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	$selected_graph_templates = db_fetch_assoc("select 
-		graph_templates.id,
-		graph_templates.name
-		from graph_templates,host_template_graph
-		where graph_templates.id=host_template_graph.graph_template_id
-		and host_template_graph.host_template_id=" . $_GET["id"] . "
-		order by graph_templates.name");
-	
-	$i = 0;
-	if (sizeof($selected_graph_templates) > 0) {
-	foreach ($selected_graph_templates as $item) {
-		$i++;
+	if (!empty($_GET["id"])) {
+		start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		$selected_graph_templates = db_fetch_assoc("select 
+			graph_templates.id,
+			graph_templates.name
+			from graph_templates,host_template_graph
+			where graph_templates.id=host_template_graph.graph_template_id
+			and host_template_graph.host_template_id=" . $_GET["id"] . "
+			order by graph_templates.name");
+		
+		$i = 0;
+		if (sizeof($selected_graph_templates) > 0) {
+		foreach ($selected_graph_templates as $item) {
+			$i++;
+			?>
+			<tr>
+				<td style="padding: 4px;">
+					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+				</td>
+				<td width='1%' align='right'>
+					<a href='host_templates.php?action=item_remove_gt&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+				</td>
+			</tr>
+			<?php
+		}
+		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
+		
 		?>
-		<tr>
-			<td style="padding: 4px;">
-				<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
-			</td>
-			<td width='1%' align='right'>
-				<a href='host_templates.php?action=item_remove_gt&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+			<td colspan="2">
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<td nowrap>Add Graph Template:&nbsp;
+						<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
+							graph_templates.id,
+							graph_templates.name
+							from graph_templates left join host_template_graph
+							on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ")
+							where host_template_graph.host_template_id is null
+							order by graph_templates.name"),"name","id","","","");?>
+					</td>
+					<td align="right">
+						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
+					</td>
+				</table>
 			</td>
 		</tr>
+		
 		<?php
-	}
-	}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
-	
-	?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-		<td colspan="2">
-			<table cellspacing="0" cellpadding="1" width="100%">
-				<td nowrap>Add Graph Template:&nbsp;
-					<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
-						graph_templates.id,
-						graph_templates.name
-						from graph_templates left join host_template_graph
-						on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ")
-						where host_template_graph.host_template_id is null
-						order by graph_templates.name"),"name","id","","","");?>
+		end_box();
+		
+		start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		$selected_data_queries = db_fetch_assoc("select 
+			snmp_query.id,
+			snmp_query.name
+			from snmp_query,host_template_snmp_query
+			where snmp_query.id=host_template_snmp_query.snmp_query_id
+			and host_template_snmp_query.host_template_id=" . $_GET["id"] . "
+			order by snmp_query.name");
+		
+		$i = 0;
+		if (sizeof($selected_data_queries) > 0) {
+		foreach ($selected_data_queries as $item) {
+			$i++;
+			?>
+			<tr>
+				<td style="padding: 4px;">
+					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
-				<td align="right">
-					&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
+				<td width='1%' align='right'>
+					<a href='host_templates.php?action=item_remove_dq&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
 				</td>
-			</table>
-		</td>
-	</tr>
-	
-	<?php
-	end_box();
-	
-	start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	$selected_data_queries = db_fetch_assoc("select 
-		snmp_query.id,
-		snmp_query.name
-		from snmp_query,host_template_snmp_query
-		where snmp_query.id=host_template_snmp_query.snmp_query_id
-		and host_template_snmp_query.host_template_id=" . $_GET["id"] . "
-		order by snmp_query.name");
-	
-	$i = 0;
-	if (sizeof($selected_data_queries) > 0) {
-	foreach ($selected_data_queries as $item) {
-		$i++;
+			</tr>
+			<?php
+		}
+		}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
+		
 		?>
-		<tr>
-			<td style="padding: 4px;">
-				<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
-			</td>
-			<td width='1%' align='right'>
-				<a href='host_templates.php?action=item_remove_dq&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+			<td colspan="2">
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<td nowrap>Add Data Query:&nbsp;
+						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select 
+							snmp_query.id,
+							snmp_query.name
+							from snmp_query left join host_template_snmp_query
+							on (snmp_query.id=host_template_snmp_query.snmp_query_id and host_template_snmp_query.host_template_id=" . $_GET["id"] . ")
+							where host_template_snmp_query.host_template_id is null
+							order by snmp_query.name"),"name","id","","","");?>
+					</td>
+					<td align="right">
+						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
+					</td>
+				</table>
 			</td>
 		</tr>
+		
 		<?php
+		end_box();
 	}
-	}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
-	
-	?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-		<td colspan="2">
-			<table cellspacing="0" cellpadding="1" width="100%">
-				<td nowrap>Add Data Query:&nbsp;
-					<?php form_dropdown("snmp_query_id",db_fetch_assoc("select 
-						snmp_query.id,
-						snmp_query.name
-						from snmp_query left join host_template_snmp_query
-						on (snmp_query.id=host_template_snmp_query.snmp_query_id and host_template_snmp_query.host_template_id=" . $_GET["id"] . ")
-						where host_template_snmp_query.host_template_id is null
-						order by snmp_query.name"),"name","id","","","");?>
-				</td>
-				<td align="right">
-					&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
-				</td>
-			</table>
-		</td>
-	</tr>
-	
-	<?php
-	end_box();
 	
 	form_save_button("host_templates.php");	
 }
