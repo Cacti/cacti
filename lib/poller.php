@@ -76,7 +76,7 @@ function exec_background($filename, $args = "") {
 	global $config;
 
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("POLLER: About to Spawn a Remote Process\n");
+		cacti_log("DEBUG: About to Spawn a Remote Process\n", true, "POLLER");
 	}
 
 	if (file_exists($filename)) {
@@ -206,7 +206,7 @@ function process_poller_output($rrdtool_pipe) {
 					if (preg_match("/^([a-zA-Z0-9_-]+):(\d+(\.\d+)?)$/", $values[$i], $matches)) {
 						if (isset($rrd_field_names{$matches[1]})) {
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . "->" . $rrd_field_names{$matches[1]} . "]" , true);
+								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . "->" . $rrd_field_names{$matches[1]} . "]" , true, "POLLER");
 							}
 
 							$rrd_update_array{$item["rrd_path"]}["items"]{$rrd_field_names{$matches[1]}} = $matches[2];

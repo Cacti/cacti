@@ -178,11 +178,11 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 			if (($start + MAX_POLLER_RUNTIME) < time()) {
 				rrd_close($rrdtool_pipe);
-				cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true);
+				cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true, "POLLER");
 				exit;
 			}
 
-			usleep(500000);
+			usleep(100000);
 			$loop_count++;
 		}
 	}
@@ -202,12 +202,12 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			case POLLER_COMMAND_REINDEX:
 				list($host_id, $data_query_id) = explode(":", $command["command"]);
 
-				cacti_log("Command: Re-cache host #$host_id, data query #$data_query_id", true);
+				cacti_log("Command: Re-cache host #$host_id, data query #$data_query_id", true, "POLLER");
 
 				run_data_query($host_id, $data_query_id);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Command: Re-cache successful.", true);
+					cacti_log("Command: Re-cache successful.", true, "POLLER");
 				}
 			}
 		}
