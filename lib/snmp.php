@@ -26,7 +26,17 @@
 
 define ("REGEXP_SNMP_TRIM", "(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):");
 
-function get_snmp_query_array($snmp_query_id) {
+function data_query($host_id, $snmp_query_id) {
+	$type_id = db_fetch_cell("select data_input.type_id from snmp_query,data_input where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
+	
+	if ($type_id == "3") {
+		return query_snmp_host($host_id, $snmp_query_id);
+	}elseif ($type_id == "4") {
+		return query_script_host($host_id, $snmp_query_id);
+	}
+}
+
+function get_data_query_array($snmp_query_id) {
 	include_once ("xml_functions.php");
 	
 	global $paths;
@@ -42,10 +52,49 @@ function get_snmp_query_array($snmp_query_id) {
 	return xml2array($data);
 }
 
+function query_script_host($host_id, $snmp_query_id) {
+	global $paths;
+	
+	$script_queries = get_data_query_array($snmp_query_id);
+	
+	if (sizeof($script_queries) == 0) {
+		return false;
+	}
+	
+	/* get a complete path for out target script */
+	$script_path = str_replace("|path_cacti|", $paths["cacti"], $script_queries["script_path"]);
+	
+	/* fetch specified index at specified OID */
+	$script_index_array = exec_into_array($script_path . " " . $script_queries["arg_index"]);
+	
+	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
+	
+	while (list($field_name, $field_array) = each($script_queries["fields"][0])) {
+		$field_array = $field_array[0];
+		
+		if (($field_array["method"] == "walk") && ($field_array["direction"] == "input")) {
+			$script_data_array = exec_into_array($script_path . " " . $script_queries["arg_query"] . " " . $field_array["query_name"]);
+			
+			for ($i=0;($i<sizeof($script_data_array));$i++) {
+				if (preg_match("/(.*)" . preg_quote($script_queries["output_delimeter"]) . "(.*)/", $script_data_array[$i], $matches)) {
+					$script_index = $matches[1];
+					$field_value = $matches[2];
+					
+					db_execute("replace into host_snmp_cache 
+						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
+						values ($host_id,$snmp_query_id,'$field_name','$field_value','$script_index','')");
+				}
+			}
+		}
+	}
+	
+	return true;
+}
+
 function query_snmp_host($host_id, $snmp_query_id) {
 	$host = db_fetch_row("select management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
 	
-	$snmp_queries = get_snmp_query_array($snmp_query_id);
+	$snmp_queries = get_data_query_array($snmp_query_id);
 	
 	if ((empty($host["management_ip"])) || (sizeof($snmp_queries) == 0)) {
 		return false;
