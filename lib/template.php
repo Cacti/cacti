@@ -437,7 +437,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
 }
 
-function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array) {
+function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_values) {
 	/* create the graph */
 	$save["id"] = 0;
 	$save["graph_template_id"] = $graph_template_id;
@@ -465,6 +465,25 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				}
 			}
 		}
+		}
+	}
+	
+	/* suggested values: graph */
+	if (isset($suggested_values[$graph_template_id]["graph_template"])) {
+		while (list($field_name, $field_value) = each($suggested_values[$graph_template_id]["graph_template"])) {
+			//print "update graph_templates_graph set $field_name='$field_value' where local_graph_id=" . $cache_array["local_graph_id"] . "<br>";
+			db_execute("update graph_templates_graph set $field_name='$field_value' where local_graph_id=" . $cache_array["local_graph_id"]);
+		}
+	}
+	
+	/* suggested values: graph item */
+	if (isset($suggested_values[$graph_template_id]["graph_template_item"])) {
+		while (list($graph_template_item_id, $field_array) = each($suggested_values[$graph_template_id]["graph_template_item"])) {
+			while (list($field_name, $field_value) = each($field_array)) {
+				$graph_item_id = db_fetch_cell("select id from graph_templates_item where local_graph_template_item_id=$graph_template_item_id and local_graph_id=" . $cache_array["local_graph_id"]);
+				//print "update graph_templates_item set $field_name='$field_value' where id=$graph_item_id<br>";
+				db_execute("update graph_templates_item set $field_name='$field_value' where id=$graph_item_id");
+			}
 		}
 	}
 	
@@ -537,6 +556,25 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			update_data_source_snmp_query_cache($cache_array["local_data_id"]{$data_template["id"]});
 		}
 		
+		/* suggested values: data source */
+		if (isset($suggested_values[$graph_template_id]["data_template"])) {
+			while (list($field_name, $field_value) = each($suggested_values[$graph_template_id]["data_template"])) {
+				//print "update data_template_data set $field_name='$field_value' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]} . "<br>";
+				db_execute("update data_template_data set $field_name='$field_value' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+			}
+		}
+		
+		/* suggested values: data source item */
+		if (isset($suggested_values[$graph_template_id]["data_template_item"])) {
+			while (list($data_template_item_id, $field_array) = each($suggested_values[$graph_template_id]["data_template_item"])) {
+				while (list($field_name, $field_value) = each($field_array)) {
+					$data_source_item_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=$data_template_item_id and local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+					//print "update data_template_rrd set $field_name='$field_value' where id=$data_source_item_id<br>";
+					db_execute("update data_template_rrd set $field_name='$field_value' where id=$data_source_item_id");
+				}
+			}
+		}
+		
 		update_data_source_title_cache($cache_array["local_data_id"]{$data_template["id"]});
 	}
 	}
@@ -565,6 +603,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		}
 	}
 	}
+	
+	return $cache_array;
 }
 
 ?>
