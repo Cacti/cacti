@@ -113,8 +113,8 @@ function form_save() {
 			$save3["id"] = $_POST["data_template_rrd_id"];
 			$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
 			$save3["data_template_id"] = $_POST["data_template_id"];
-			$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^[0-9]+$", false, 3);
-			$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^[0-9]+$", false, 3);
+			$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^-?[0-9]+$", false, 3);
+			$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^-?[0-9]+$", false, 3);
 			$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
 			$save3["data_source_type_id"] = $_POST["data_source_type_id"];
 			$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
@@ -353,7 +353,7 @@ function form_actions() {
 		/* find out what (if any) graphs are using this data source, so we can complain to the user */
 		if (isset($ds_array)) {
 			$graphs = db_fetch_assoc("select
-				graph_templates_graph.title
+				graph_templates_graph.local_graph_id
 				from data_template_rrd
 				left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
 				left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
@@ -373,7 +373,7 @@ function form_actions() {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following graphs are using this data source:</p>\n";
 						
 						foreach ($graphs as $graph) {
-							print "<strong>" . $graph["title"] . "</strong><br>\n";
+							print "<strong>" . get_graph_title($graph["local_graph_id"]) . "</strong><br>\n";
 						}
 						
 						print "<br>";
