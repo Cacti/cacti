@@ -138,6 +138,7 @@ $logfile_options = array(1 =>
 	"Syslog/Eventlog Only");
 
 $logfile_verbosity = array(
+	POLLER_VERBOSITY_NONE => "NONE - Syslog Only if Selected",
 	POLLER_VERBOSITY_LOW => "LOW - Statistics and Errors",
 	POLLER_VERBOSITY_MEDIUM => "MEDIUM - Statistics, Errors and Results",
 	POLLER_VERBOSITY_HIGH => "HIGH - Statistics, Errors, Results and Major I/O Events",

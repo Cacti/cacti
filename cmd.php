@@ -131,6 +131,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			$host_down = false;
 		}
 
+		$host_id = $item["host_id"];
+
 		if ($new_host) {
 			// perform a ping if PHP is greater than 4.3
 			if (phpversion() >= "4.3") {
@@ -141,11 +143,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$host_down = true;
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.",$print_data_to_stdout);
+						cacti_log("Host[$host_id] ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.",$print_data_to_stdout);
 					}
 				} else {
 					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-						cacti_log("ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$print_data_to_stdout);
+						cacti_log("Host[$host_id] ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$print_data_to_stdout);
 					}
 				}
 			} else {
@@ -172,9 +174,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 			if ($host_down) {
 				if ($failure_type == "ICMP")
-					cacti_log(sprintf("ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
+					cacti_log(sprintf("Host[$host_id] ERROR: ICMP Ping failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
 				else
-					cacti_log(sprintf("ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
+					cacti_log(sprintf("Host[$host_id] ERROR: SNMP Query failed for Host: '%s', assumed down.", $current_host),$print_data_to_stdout);
 			} else {
 				/* do the reindex check for this host */
 				$reindex = db_fetch_assoc("select
@@ -188,7 +190,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 				if ((sizeof($reindex) > 0) && (!$host_down)) {
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$print_data_to_stdout);
+						cacti_log("Host[$host_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$print_data_to_stdout);
 					}
 
 					foreach ($reindex as $index_item) {
@@ -227,7 +229,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$host_id] SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
@@ -235,7 +237,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				$output = exec_poll($item["arg1"]);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$host_id] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
@@ -243,7 +245,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				$output = str_replace("\n","",exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp));
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("SERVER: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$host_id] SERVER: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
@@ -268,16 +270,17 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$return_value = proc_close($cactiphp);
 	}
 
-	/* take time and log performance data */
-	list($micro,$seconds) = split(" ", microtime());
-	$end = $seconds + $micro;
+	if (($print_data_to_stdout) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_MEDIUM)) {
+		/* take time and log performance data */
+		list($micro,$seconds) = split(" ", microtime());
+		$end = $seconds + $micro;
 
-	cacti_log(sprintf("STATS: " .
-		"Execution Time: %01.4f s, " .
-		"Method: cmd.php " .
-		"Polled Hosts: %s",
-		round($end-$start,4),
-		$host_count),$print_data_to_stdout);
+		cacti_log(sprintf("Execution Time: %01.4f s, " .
+			"Method: cmd.php " .
+			"Polled Hosts: %s",
+			round($end-$start,4),
+			$host_count),$print_data_to_stdout);
+	}
 
 }else{
 	cacti_log("ERROR: Either there are no items in the cache or polling is disabled",$print_data_to_stdout);

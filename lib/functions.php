@@ -296,8 +296,15 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	$logdestination = read_config_option("log_destination");
 	$logfile = read_config_option("path_cactilog");
 
+	/* format the message */
+	if ($environ != "SYSTEM") {
+		$message = "$date - " . $environ . ": Poller[0] " . $string . "\n";
+	}else {
+		$message = "$date - " . $environ . " " . $string . "\n";
+	}
+
 	/* Log to Logfile */
-	if (($logdestination == 1) || ($logdestination == 2)) {
+	if ((($logdestination == 1) || ($logdestination == 2)) && (read_config_option("log_verbosity") != POLLER_VERBOSITY_NONE)) {
 		if ($logfile == "") {
 			$logfile = $config["base_path"] . "/log/rrd.log";
 		}
@@ -306,23 +313,26 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 		$fp = @fopen($logfile, "a");
 
 		if ($fp) {
-			@fwrite($fp, "$date - " . $environ . ": Poller[0] Host[0] " . $string . "\n");
+			@fwrite($fp, $message);
 			fclose($fp);
 		}
 
 		if ($output == true) {
-			print "$date - " . $environ . ": Poller[0] Host[0] " . $string . "\n";
+			print $message;
 		}
 	}
 
 	/* Log to Syslog/Eventlog */
 	if (($logdestination == 2) || ($logdestination == 3)) {
 		define_syslog_variables();
-		openlog("Cacti Logging", LOG_PERROR | LOG_NDELAY | LOG_PID, LOG_SYSLOG);
+		openlog("Cacti Logging", LOG_PERROR | LOG_PID, LOG_SYSLOG);
 		if (substr_count($string,"ERROR:") <> 0)
-			syslog(LOG_ALERT, $string);
+			syslog(LOG_ALERT, $message);
 		else
-			syslog(LOG_INFO, $string);
+			if ((substr_count($message, "WARNING") <> 0) && (read_config_option("log_verbosity") != POLLER_VERBOSITY_NONE))
+				syslog(LOG_WARNING, $message);
+			else
+				syslog(LOG_INFO, $message);
 		closelog();
 	}
 }

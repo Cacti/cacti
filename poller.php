@@ -183,7 +183,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				$concurrent_processes,
 				$max_threads,
 				sizeof($polling_items),
-				$hosts_per_file));
+				$hosts_per_file),true,"SYSTEM");
 
 			break;
 		}else {

@@ -116,18 +116,18 @@ while (1) {
 						$inc = strtolower($inc);
 						include_once($inc);
 					} else {
-						cacti_log("ERROR: PHP Script File to be included, does not exist", false, "PHPSVR");
+						cacti_log("WARNING: PHP Script File to be included, does not exist", false, "PHPSVR");
 					}
 				}
 			} else {
-				cacti_log("ERROR: PHP Script Server encountered errors parsing the command", false, "PHPSVR");
+				cacti_log("WARNING: PHP Script Server encountered errors parsing the command", false, "PHPSVR");
 			}
 
 			if (function_exists($cmd)) {
 				$result = call_user_func_array($cmd, $parm);
 				if (!is_numeric($result)) {
 					$result = "U";
-					cacti_log("ERROR: Result from PHP Script Server was Invalid", false, "PHPSVR");
+					cacti_log("WARNING: Result from PHP Script Server was Invalid", false, "PHPSVR");
 				}
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
@@ -138,8 +138,8 @@ while (1) {
 					cacti_log("CMD: " . $in_string . " output " . $result, false, "PHPSVR");
 				}
 			} else {
-				cacti_log("ERROR: Function does not exist\n", false, "PHPSVR");
-				fputs(STDOUT, "ERROR: Function does not exist\n");
+				cacti_log("WARNING: Function does not exist\n", false, "PHPSVR");
+				fputs(STDOUT, "WARNING: Function does not exist\n");
 			}
 		}elseif ($in_string == "quit") {
 			fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
@@ -148,11 +148,11 @@ while (1) {
 			}
 			break;
 		}else {
-			cacti_log("ERROR: Problems with input", false, "PHPSVR");
+			cacti_log("WARNING: Problems with input", false, "PHPSVR");
 			fputs(STDOUT, "ERROR: Problems with input\n");
 		}
 	}else {
-		cacti_log("ERROR: Input Expected", false, "PHPSVR");
+		cacti_log("WARNING: Input Expected", false, "PHPSVR");
 		fputs(STDOUT, "ERROR: Input expected\n");
 	}
 }
