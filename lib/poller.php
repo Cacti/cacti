@@ -96,10 +96,12 @@ function update_reindex_cache($host_id, $data_query_id) {
 	global $config;
 
 	include_once($config["library_path"] . "/data_query.php");
+	include_once($config["library_path"] . "/snmp.php");
 
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
+	$host = db_fetch_row("select hostname,snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,snmp_timeout from host where id=$host_id");
 	$data_query = db_fetch_row("select reindex_method,sort_field from host_snmp_query where host_id=$host_id and snmp_query_id=$data_query_id");
 	$data_query_type = db_fetch_cell("select data_input.type_id from data_input,snmp_query where data_input.id=snmp_query.data_input_id and snmp_query.id=$data_query_id");
 	$data_query_xml = get_data_query_array($data_query_id);
@@ -108,14 +110,18 @@ function update_reindex_cache($host_id, $data_query_id) {
 		case DATA_QUERY_AUTOINDEX_NONE:
 			break;
 		case DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME:
-			$assert_value = db_fetch_cell("select assert_value from poller_reindex where host_id=$host_id and data_query_id=$data_query_id and arg1='.1.3.6.1.2.1.1.3.0'");
+			/* the uptime backwards method requires snmp, so make sure snmp is actually enabled
+			 * on this device first */
+			if ($host["snmp_community"] != "") {
+				$assert_value = db_fetch_cell("select assert_value from poller_reindex where host_id=$host_id and data_query_id=$data_query_id and arg1='.1.3.6.1.2.1.1.3.0'");
 
-			/* default uptime */
-			if (empty($assert_value)) {
-				$assert_value = time();
+				/* default uptime */
+				if (empty($assert_value)) {
+					$assert_value = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"]);
+				}
+
+				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'<','$assert_value','.1.3.6.1.2.1.1.3.0')");
 			}
-
-			array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'<','$assert_value','.1.3.6.1.2.1.1.3.0')");
 
 			break;
 		case DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE:
