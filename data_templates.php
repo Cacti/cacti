@@ -207,7 +207,7 @@ function form_save() {
 		}
 		
 		if ((is_error_message()) || (empty($_POST["data_template_id"]))) {
-			header ("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id)) . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id);
+			header ("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id));
 		}else{
 			header ("Location: data_templates.php");
 		}
