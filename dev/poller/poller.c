@@ -24,7 +24,7 @@ void *poller(void *thread_args){
       else current = NULL;
 
       result = snmp_get(entry->host, entry->community, entry->oid, worker->index);
-
+      printf("[%d] got: (%llu)\n",worker->index, result);
       printf("[%d] unlock queue\n", worker->index);
       if (pthread_mutex_unlock(&threads->mutex) != 0) printf("pthread_mutex_unlock error\n");
       if(result!=0) {

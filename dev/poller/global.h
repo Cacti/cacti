@@ -26,7 +26,7 @@ typedef struct threads_struct{
 
 void *poller(void *thread_args);
 void *sig_handler();
-int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who);
+unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who);
 int lock;
 int sighup;
 

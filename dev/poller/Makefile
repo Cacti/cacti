@@ -1,3 +1,5 @@
+#CC=gcc-3.2 -Wall
+
 #MySQL paths
 INC+=-I/usr/include/mysql
 LIB+=-L/usr/lib

@@ -1,6 +1,6 @@
 #include "inc.h"
 
-int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who){
+unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who){
 
   void *sessp = NULL;
   struct snmp_session session;
@@ -36,11 +36,17 @@ int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who){
       snprint_value(result_string, BUFSIZE, anOID, anOID_len, vars);
       printf("[%i] SNMP: %s\n", who, result_string);
       //if counter is 64bit
-      if(vars->val.counter64!=NULL){
-        printf("vars on null\n");
+      if(vars->type == ASN_COUNTER64){
         result = vars->val.counter64->high;
         result = result << 32;
         result = result + vars->val.counter64->low;
+      } else {
+        //if counter is 32bit
+        if(vars->type == ASN_COUNTER) result = (unsigned long) *(vars->val.integer);
+        else {
+          //if counter is not counter
+          printf("[%i] SNMP: This is not counter!\n", who);
+        }
       }
     }
   } else printf("[%i] SNMP: (%s) Bad descriptor.\n",who, session.peername);

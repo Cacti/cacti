@@ -18,12 +18,14 @@ $i=0; $j=0;
 		$rrd=mysql_result($sql_id, $i, "dspath");
 		$rrd = ereg_replace ("<path_rra>","/var/www/cacti/rra" ,$rrd);
 		while($j < $rows_field){
-		if(mysql_result($sql_id_field,$j,"dataname") == "ip") $host=mysql_result($sql_id_field,$j,"value"); 
+		if(mysql_result($sql_id_field,$j,"dataname") == "ip") $host=mysql_result($sql_id_field,$j,"value");
 		if(mysql_result($sql_id_field,$j,"dataname") == "community") $comm=mysql_result($sql_id_field,$j,"value");
 		if(mysql_result($sql_id_field,$j,"dataname") == "ifnum") $int=mysql_result($sql_id_field,$j,"value");
 		if(mysql_result($sql_id_field,$j,"dataname") == "inout") {
-		  if(mysql_result($sql_id_field,$j,"value") == "hcin" || mysql_result($sql_id_field,$j,"value") == "in") $oid=".1.3.6.1.2.1.31.1.1.1.6.";
-		  if(mysql_result($sql_id_field,$j,"value") == "hcout" || mysql_result($sql_id_field,$j,"value") == "out") $oid=".1.3.6.1.2.1.31.1.1.1.10.";
+		  if(mysql_result($sql_id_field,$j,"value") == "in") $oid=".1.3.6.1.2.1.2.2.1.10.";
+                  if(mysql_result($sql_id_field,$j,"value") == "hcin") $oid=".1.3.6.1.2.1.31.1.1.1.6.";
+		  if(mysql_result($sql_id_field,$j,"value") == "out") $oid=".1.3.6.1.2.1.2.2.1.16.";
+                  if(mysql_result($sql_id_field,$j,"value") == "hcout") $oid=".1.3.6.1.2.1.31.1.1.1.10.";
 		}
 
 
