@@ -31,46 +31,60 @@ function escape_command($command) {
 }
 
 function rrd_init() {
-	// startup Cacti rrdtool for processing
+	/* startup Cacti rrdtool for processing */
 	$rrd_des = array(
-   	0 => array("pipe", "r"), // stdin is a pipe that the child will read from
-   	1 => array("pipe", "w"), // stdout is a pipe that the child will write to
-   	2 => array("pipe", "w")  // stderr is a pipe to write to
-	);
+		RRDTOOL_PIPE_CHILD_READ => array("pipe", "r"), // stdin is a pipe that the child will read from
+		RRDTOOL_PIPE_CHILD_WRITE => array("pipe", "w"), // stdout is a pipe that the child will write to
+		RRDTOOL_PIPE_WRITE => array("pipe", "w")  // stderr is a pipe to write to
+		);
 
 	if (function_exists("proc_open")) {
-		$rrd_des = proc_open(read_config_option("path_rrdtool"), $rrd_des, $rrd_pipes);
-		$rrd_using_po_func = True;
+		$rrd_struc["fd"] = proc_open(read_config_option("path_rrdtool") . " -", $rrd_des, $rrd_pipes);
+		$rrd_struc["pipes"] = $rrd_pipes;
 	}else {
-		$rrd_using_po_func = False;
-		if (read_config_option("log_perror") == "on") {
-			log_data("WARNING: PHP version 4.3 or above is recommended for performance considerations.\n");
-		}
+		$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
 	}
 
 	/* set return array */
-	$rrd_struc["fd"] = $rrd_des;
-	$rrd_struc["pipes"] = $rrd_pipes;
-	$rrd_struc["using_proc_open"] = $rrd_using_po_func;
+	$rrd_struc["using_proc_open"] = function_exists("proc_open");
 
 	return $rrd_struc;
 }
 
 function rrd_close($rrd_struc) {
-	// close the rrdtool file descriptor
-	if (function_exists("proc_close")) {
+	/* close the rrdtool file descriptor */
+	if ($rrd_struc["using_proc_open"]) {
+		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ]);
+		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE]);
+		fclose($rrd_struc["pipes"][RRDTOOL_PIPE_WRITE]);
 		proc_close($rrd_struc["fd"]);
+	}else{
+		pclose($rrd_struc["fd"]);
 	}
 }
 
-function rrdtool_execute_batch($rrd_struc, $command_line, $log_command, $output_flag) {
+function rrd_get_fd(&$rrd_struc, $fd_type) {
+	if (sizeof($rrd_struc) == 0) {
+		return 0;
+	}else{
+		if ($rrd_struc["using_proc_open"]) {
+			return $rrd_struc["pipes"][$fd_type];
+		}else{
+			return $rrd_struc["fd"];
+		}
+	}
+}
+
+function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc = array()) {
 	global $config;
 
 	if ($log_command == true) {
 		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
 	}
 
-	if ($output_flag == "") { $output_flag = "1"; }
+	if (!is_numeric($output_flag)) {
+		$output_flag = RRDTOOL_OUTPUT_STDOUT;
+	}
 
 	/* WIN32: before sending this command off to rrdtool, get rid
 	of all of the '\' characters. Unix does not care; win32 does.
@@ -80,115 +94,54 @@ function rrdtool_execute_batch($rrd_struc, $command_line, $log_command, $output_
 	$command_line = str_replace("\\\n", " ", $command_line);
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
-	if (($output_flag == "2") && (!$rrd_struc["using_proc_open"])) {
+	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (empty($rrd_struc["using_proc_open"]))) {
 		$command_line .= " 2>&1";
 	}
 
 	/* use popen to eliminate the zombie issue */
 	if ($config["cacti_server_os"] == "unix") {
-		if ($rrd_struc["using_proc_open"]) {
-			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
-		}else {
+		/* an empty $rrd_struc array means no fp is available */
+		if (sizeof($rrd_struc) == 0) {
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
+		}else{
+			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE), escape_command(" $command_line") . "\r\n");
 		}
 	}elseif ($config["cacti_server_os"] == "win32") {
-		if ($rrd_struc["using_proc_open"]) {
-			fwrite($rrd_struc["pipes"][0], escape_command(" $commandLine") . "\r\n");
-		}else {
+		/* an empty $rrd_struc array means no fp is available */
+		if (sizeof($rrd_struc) == 0) {
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
+		}else{
+			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE), escape_command(" $command_line") . "\r\n");
 		}
 	}
-	/* Return Flag:
-	0: Null
-	1: Pass output back
-	2: Pass error output back */
 
 	switch ($output_flag) {
-		case '0':
-			return;
-			break;
-		case '1':
-			if ($rrd_struc["using_proc_open"]) {
-				return fgets($rrd_struc["pipes"][1], 1024);
-				break;
-			}else {
-				return fgets($fp, 1024);
-				break;
-			}
-		case '2':
-			if ($rrd_struc["using_proc_open"]) {
-				$output = fgets($rrd_struc["pipes"][2], 1000000);
-				break;
-			}else {
-				$output = fgets($fp, 1000000);
-			}
-
-			if (substr($output, 1, 3) == "PNG") {
-				return "OK";
-			}
-
-			if (substr($output, 0, 5) == "GIF87") {
-				return "OK";
-			}
-
-			print $output;
-			break;
-		case '3':
-			$line = "";
-			if ($rrd_struc["using_proc_open"]) {
-				while (!feof($rrd_proc["pipes"][1])) {
-					$line .= fgets($rrd_proc["pipes"][1], 4096);
-				}
-			}else {
+		case RRDTOOL_OUTPUT_NULL:
+			return; break;
+		case RRDTOOL_OUTPUT_STDOUT:
+			/* popen rrdtool pipe; read until feof */
+			if (isset($fp)) {
+				$line = "";
 				while (!feof($fp)) {
 					$line .= fgets($fp, 4096);
 				}
+
+				return $line;
+			/* stdin rrdtool pipe; read 1024 bytes and stop */
+			}else{
+				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ) != 0) {
+					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ);
+				}
+
+				return fgets($fp, 1024);
 			}
 
-			return $line;
 			break;
-	}
-}
+		case RRDTOOL_OUTPUT_STDERR:
+			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ) != 0) {
+				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ);
+			}
 
-function rrdtool_execute($command_line, $log_command, $output_flag) {
-	global $config;
-
-	if ($log_command == true) {
-		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
-	}
-
-	if ($output_flag == "") { $output_flag = "1"; }
-
-	/* WIN32: before sending this command off to rrdtool, get rid
-	of all of the '\' characters. Unix does not care; win32 does.
-	Also make sure to replace all of the fancy \'s at the end of the line,
-	but make sure not to get rid of the "\n"'s that are supposed to be
-	in there (text format) */
-	$command_line = str_replace("\\\n", " ", $command_line);
-
-	/* if we want to see the error output from rrdtool; make sure to specify this */
-	if ($output_flag == "2") {
-		$command_line .= " 2>&1";
-	}
-
-	/* use popen to eliminate the zombie issue */
-	if ($config["cacti_server_os"] == "unix") {
-		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
-	}elseif ($config["cacti_server_os"] == "win32") {
-		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
-	}
-
-	/* Return Flag:
-	0: Null
-	1: Pass output back
-	2: Pass error output back */
-
-	switch ($output_flag) {
-		case '0':
-			return; break;
-		case '1':
-			return fpassthru($fp); break;
-		case '2':
 			$output = fgets($fp, 1000000);
 
 			if (substr($output, 1, 3) == "PNG") {
@@ -201,18 +154,17 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 
 			print $output;
 			break;
-		case '3':
-			$line = "";
-			while (!feof($fp)) {
-				$line .= fgets($fp, 4096);
+		case RRDTOOL_OUTPUT_GRAPH_DATA:
+			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ) != 0) {
+				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ);
 			}
 
-			return $line;
+			return fpassthru($fp);
 			break;
 	}
 }
 
-function rrdtool_function_create($local_data_id, $show_source) {
+function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 	global $config;
 
 	include ($config["include_path"] . "/config_arrays.php");
@@ -295,20 +247,35 @@ function rrdtool_function_create($local_data_id, $show_source) {
 		}else {
 			$log_data = false;
 		}
-		rrdtool_execute("create $data_source_path $create_ds$create_rra",$log_data,1);
+
+		rrdtool_execute("create $data_source_path $create_ds$create_rra", $log_data, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
 	}
 }
 
-function rrdtool_function_update($update_cache_array) {
-	while (list($local_data_id, $update_array) = each($update_cache_array)) {
-		$data_source_path = get_data_source_path($local_data_id, true);
+function rrdtool_function_update($update_cache_array, $rrd_struc) {
+	while (list($rrd_path, $rrd_fields) = each($update_cache_array)) {
+		/* create the rrd if one does not already exist */
+		if (!file_exists($rrd_path)) {
+			rrdtool_function_create($rrd_fields["local_data_id"], false, $rrd_struc);
+		}
 
-		$i = 0; $rrd_update_template = ""; $rrd_update_values = "";
-		while (list($field_name, $field_value) = each($update_array)) {
+		/* default the rrdupdate time to now */
+		if (empty($rrd_fields["time"])) {
+			$rrd_fields["time"] = "N";
+		}
+
+		$i = 0; $rrd_update_template = ""; $rrd_update_values = $rrd_fields["time"] . ":";
+		while (list($field_name, $value) = each($rrd_fields["items"])) {
 			$rrd_update_template .= $field_name;
-			$rrd_update_values .= $field_value;
 
-			if (($i+1) < count($update_array)) {
+			/* if we have "invalid data", give rrdtool an Unknown (U) */
+			if ((!isset($value)) || (!is_numeric($value))) {
+				$value = "U";
+			}
+
+			$rrd_update_values .= $value;
+
+			if (($i+1) < count($rrd_fields["items"])) {
 				$rrd_update_template .= ":";
 				$rrd_update_values .= ":";
 			}
@@ -322,13 +289,8 @@ function rrdtool_function_update($update_cache_array) {
 			$log_data = false;
 		}
 
-		/* if we have "invalid data", give rrdtool an Unknown (U) */
-		if ($rrd_update_values == "") {
-			$rrd_update_values = "U";
-		}
-
-		print "update $data_source_path --template $rrd_update_template N:$rrd_update_values\n";
-		rrdtool_execute("update $data_source_path --template $rrd_update_template N:$rrd_update_values",$log_data,1);
+		print "update $rrd_path --template $rrd_update_template $rrd_update_values\n";
+		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", $log_data, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
 	}
 }
 
@@ -387,7 +349,8 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 
 	/* build and run the rrdtool fetch command with all of our data */
 	$command = "fetch $data_source_path AVERAGE -r $resolution -s -$seconds -e now";
-	$output = rrdtool_execute($command, false, "3");
+
+	$output = rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT);
 
 	/* grab the first line of the output which contains a list of data sources
 	in this .rrd file */
@@ -910,14 +873,22 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items</PRE>";
 	}else{
 		if (isset($graph_data_array["export"])) {
-			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, "0");
+			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL);
 			return 0;
 		}else{
 			$log_data = false;
-			if (read_config_option("log_graph") == "on") { $log_data = true; }
-			if (!isset($graph_data_array["output_flag"])) { $graph_data_array["output_flag"] = 1; }
 
-			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items",$log_data,$graph_data_array["output_flag"]);
+			if (read_config_option("log_graph") == "on") {
+				$log_data = true;
+			}
+
+			if (isset($graph_data_array["output_flag"])) {
+				$output_flag = $graph_data_array["output_flag"];
+			}else{
+				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
+			}
+
+			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", $log_data, $output_flag);
 		}
 	}
 }

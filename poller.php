@@ -126,14 +126,33 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 	$loop_count = 0;
 	while (1) {
-		$polling_items = db_fetch_assoc("select poller_id, end_time from poller_time where poller_id = 0");
+		$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id = 0");
 
 		if (sizeof($polling_items) == $process_file_number) {
-			// write rrdtool output for all result rows
-//			$results = db_fetch_assoc("select local_data_id, rrd_name, rrd_path, output " .
-//								"from poller_item inner join poller_output where local_data_id = local_data_id order by local_data_id");
-//			rrdtool_function_update($results);
-// Ian this one is beyond me for tonight...
+			/* create/update the rrd files */
+			$results = db_fetch_assoc("select
+				poller_output.output,
+				poller_output.time,
+				poller_output.local_data_id,
+				poller_item.rrd_path,
+				poller_item.rrd_name
+				from poller_output,poller_item
+				where (poller_output.local_data_id=poller_item.local_data_id and poller_output.rrd_name=poller_item.rrd_name)");
+
+			if (sizeof($results) > 0) {
+				/* open a pipe to rrdtool for writing */
+				$rrdtool_pipe = rrd_init();
+
+				foreach ($results as $item) {
+					$rrd_update_array{$item["rrd_path"]}["time"] = strtotime($item["time"]);
+					$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
+					$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = $item["output"];
+				}
+
+				rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+
+				rrd_close($rrdtool_pipe);
+			}
 
 			/* take time and log performance data */
 			list($micro,$seconds) = split(" ", microtime());
@@ -154,9 +173,11 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				sizeof($polling_items),
 				$hosts_per_file));
 			}
+
 			break;
 		}else {
-			usleep(50000);
+			print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
+			usleep(200000);
 			$loop_count++;
 		}
 	}

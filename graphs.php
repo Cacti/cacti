@@ -786,7 +786,7 @@ function graph_edit() {
 				</td>
 				<?php
 				if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
-					$graph_data_array["output_flag"] = 2;
+					$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
 					?>
 					<td>
 						<span class="textInfo">RRDTool Says:</span><br>
