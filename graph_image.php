@@ -24,12 +24,9 @@
  +-------------------------------------------------------------------------+
 */
 
-//$guest_account = true; include ('include/auth.php');
-include("include/config.php");
+$guest_account = true; include ('include/auth.php');
 include_once ("include/rrd_functions.php");
 
-header("Cache-Control: no-cache, must-revalidate");
-header("Pragma: no-cache");
 header("Content-type: image/png");
 
 $graph_data_array = array();
