@@ -254,7 +254,7 @@ function graph_perms_edit() {
 								print "</td><td valign='top' width='50%'>";
 							}
 							
-							form_base_checkbox("graph" . $graph["local_graph_id"], $old_value, $graph["title"], "", (!empty($_GET["id"]) ? 1 : 0), true);
+							form_base_checkbox("graph" . $graph["local_graph_id"], $old_value, title_trim($graph["title"], 60), "", (!empty($_GET["id"]) ? 1 : 0), true);
 							$i++;
 						}
 						}

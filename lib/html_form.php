@@ -371,22 +371,22 @@ function create_list($data, $name, $value, $prev) {
         if (empty($name)) {
                 foreach (array_keys($data) as $id) {
                         print '<option value="' . $id . '"';
-
+			
                         if ($prev == $id) {
                                 print " selected";
                         }
-
-                        print ">" . $data[$id] . "</option>\n";
+			
+                        print ">" . title_trim($data[$id], 75) . "</option>\n";
                 }
         }else{
                 foreach ($data as $row) {
                         print "<option value='$row[$value]'";
-
+			
                         if ($prev == $row[$value]) {
                                 print " selected";
                         }
-
-                        print ">$row[$name]</option>\n";
+			
+                        print ">" . title_trim($row[$name], 75) . "</option>\n";
                 }
         }
 }

@@ -30,6 +30,7 @@ include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
 define("ROWS_PER_PAGE", 30);
+define("DATA_SOURCE_MAX_LEN", 45);
 
 $ds_actions = array(
 	1 => "Delete",
@@ -914,7 +915,7 @@ function ds() {
 			<td class='textSubHeaderDark'>Data Input Method</td>
 			<td class='textSubHeaderDark'>Active</td>
 			<td class='textSubHeaderDark'>Template Name</td>
-			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll()'></td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\")'></td>
 		<form name='chk' method='post' action='data_sources.php'>
 		</tr>\n";
 	
@@ -924,7 +925,7 @@ function ds() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source["name"]);?></a>
+				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name"], DATA_SOURCE_MAX_LEN));?></a>
 			</td>
 			<td>
 				<?php print $data_source["data_input_name"];?>

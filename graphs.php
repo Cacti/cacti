@@ -30,6 +30,7 @@ include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 
 define("ROWS_PER_PAGE", 30);
+define("GRAPH_MAX_LEN", 80);
 
 $graph_actions = array(
 	1 => "Delete",
@@ -60,7 +61,14 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		item_remove();
 		
-		header ("Location: graphs.php?action=item&id=" . $_GET["local_graph_id"]);
+		if (read_config_option("full_view_graph_template") == "") {
+			header ("Location: graphs.php?action=item&id=" . $_GET["local_graph_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "on") {
+			header ("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
+			exit;
+		}
+		
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -291,9 +299,8 @@ function form_save() {
 		}
 	}
 	
-	if ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_input"])) || (isset($_POST["save_component_graph_diff"]))) {
+	if ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
 		header ("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id));
-		exit;
 	}else{
 		header ("Location: graphs.php");
 	}
@@ -559,7 +566,7 @@ function item() {
 		if (empty($graph_template_id)) {
 			print "<td><a href='graphs.php?action=item_movedown&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
 					<a href='graphs.php?action=item_moveup&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
+			print "<td width='1%' align='right'><a href='graphs.php?action=item_remove&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
 		}
 		
 		print "</tr>";
@@ -1182,7 +1189,7 @@ function graph() {
 			<td class='textSubHeaderDark'>Graph Title</td>
 			<td class='textSubHeaderDark'>Template Name</td>
 			<td class='textSubHeaderDark'>Size</td>
-			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll()'></td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\")'></td>
 		<form name='chk' method='post' action='graphs.php'>
 		</tr>";
 	
@@ -1192,7 +1199,7 @@ function graph() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title"], GRAPH_MAX_LEN));?></a>
 			</td>
 			<td>
 				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
