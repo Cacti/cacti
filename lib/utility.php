@@ -58,7 +58,8 @@ function update_poller_cache($local_data_id) {
 		host.snmp_version,
 		host.snmp_username,
 		host.snmp_password,
-		host.snmp_port
+		host.snmp_port,
+		host.snmp_timeout
 		from
 		data_local,host
 		where data_local.host_id=host.id
@@ -124,10 +125,10 @@ function update_poller_cache($local_data_id) {
 			
 			if ($action_type) {
 				db_execute("insert into data_input_data_cache (local_data_id,host_id,data_input_id,action,hostname,
-					snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
+					snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
 					command,rrd_num) values ($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . "," . $data_input["id"] . ",$action_type,'" . $host["hostname"] . "',
-					'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
-					'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "'
+					'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
+					'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 					'" . get_data_source_name($data_template_rrd_id) . "',
 					'" . get_data_source_path($local_data_id,true) . "','$command',1)");
 			}
@@ -145,9 +146,9 @@ function update_poller_cache($local_data_id) {
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 			
 			db_execute("insert into data_input_data_cache (local_data_id,host_id,data_input_id,action,hostname,
-				snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
+				snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
 				arg1,rrd_num) values ($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . "," . $data_input["id"]. ",0,'" . $host["hostname"] . "',
-				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
+				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 				'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 				'" . get_data_source_name($data_template_rrd_id) . "',
 				'" . get_data_source_path($local_data_id,true,1) . "','" . $field["snmp_oid"] . "',1)");
@@ -164,10 +165,10 @@ function update_poller_cache($local_data_id) {
 				
 				if (!empty($oid)) {
 					db_execute("insert into data_input_data_cache (local_data_id,host_id,data_input_id,action,hostname,
-						snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
+						snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
 						arg1,rrd_num) values ($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . "," . $data_input["id"]. ",0,'" . $host["hostname"] . "',
-						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
-						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "'
+						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
+						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
 						'" . get_data_source_path($local_data_id,true) . "','$oid'," . sizeof($outputs) . ")");
 				}
@@ -197,9 +198,9 @@ function update_poller_cache($local_data_id) {
 				
 				if (isset($script_path)) {
 					db_execute("insert into data_input_data_cache (local_data_id,host_id,data_input_id,action,hostname,
-						snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,command,rrd_num) values 
+						snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,command,rrd_num) values 
 						($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . "," . $data_input["id"]. ",1,'" . $host["hostname"] . "',
-						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "',
+						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "'
 						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
 						'" . get_data_source_path($local_data_id,true) . "','$script_path'," . sizeof($outputs) . ")");

@@ -725,7 +725,15 @@ $fields_host_edit = array(
 		"description" => "Enter the UDP port number to use for SNMP (default is 161).",
 		"value" => "|arg1:snmp_port|",
 		"max_length" => "5",
-		"size" => "10"
+		"size" => "15"
+		),
+	"snmp_timeout" => array(
+		"method" => "textbox",
+		"friendly_name" => "SNMP Timeout",
+		"description" => "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).",
+		"value" => "|arg1:snmp_timeout|",
+		"max_length" => "8",
+		"size" => "15"
 		),
 	"disabled" => array(
 		"method" => "checkbox",

@@ -31,6 +31,8 @@ function upgrade_to_0_8_4() {
 	update host set hostname=management_ip;
 	ALTER TABLE `data_input_data_cache` CHANGE `management_ip` `hostname` VARCHAR( 250 ) NOT NULL 
 	ALTER TABLE `host` ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password` ;
+	ALTER TABLE `host` ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED DEFAULT '500' NOT NULL AFTER `snmp_port` ;
+	ALTER TABLE `data_input_data_cache` ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `snmp_port` ;
 	*/
 }
 
