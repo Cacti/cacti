@@ -24,10 +24,10 @@
  +-------------------------------------------------------------------------+
 */
 
-
-
 $guest_account = true;
-include_once ("include/auth.php");
+$using_guest_account = false;
+
+include_once ("./include/auth.php");
 include($config["include_path"] . "/config_arrays.php");
 
 session_start();
@@ -36,6 +36,11 @@ if (read_config_option("global_auth") == "on") {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
 	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
+	
+	/* find out if we are logged in as a 'guest user' or not */
+	if (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"]) {
+		$using_guest_account = true;
+	}
 }
 
 /* set default action */
@@ -88,7 +93,7 @@ if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 				</tr>
 			</table>
 		<td bgcolor="#454E53" align="right" nowrap width='99%'>
-			<?php if (isset($_SESSION["sess_user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?php }?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
+			<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?php }?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
 		</td>
 	</tr>
 	<tr>
