@@ -63,8 +63,10 @@ function form_save() {
 				$graph_template_id = preg_replace('/^cg_(\d+)$/', "\\1", $var);
 				
 				$selected_graphs["cg"][$graph_template_id][$graph_template_id] = true;
-			}elseif (preg_match('/^ccg$/', $var)) {
-				$selected_graphs["cg"]{$_POST["cg_g"]}{$_POST["cg_g"]} = true;
+			}elseif (preg_match('/^cg_g$/', $var)) {
+				if ($_POST["cg_g"] > 0) {
+					$selected_graphs["cg"]{$_POST["cg_g"]}{$_POST["cg_g"]} = true;
+				}
 			}elseif (preg_match('/^sg_\d+_\S+$/', $var)) {
 				$snmp_query_id = preg_replace('/^sg_(\d+)_(\S+)$/', "\\1", $var);
 				$snmp_query_graph_id = $_POST{"sgg_" . $snmp_query_id}; 
@@ -437,12 +439,16 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						if ($data_template_item{"t_" . $field_name} == "on") {
 							$row_counter = 1; /* so we have an all 'light' background */
 							
+							/* we do this to help the user identify which data source item they are dealing
+							with */
+							$field_array["friendly_name"] .= " (" . $data_template_item["data_source_name"] . ")";
+							
 							/* SUGGESTED VALUES: we must treat suggested values for snmp queries different because
 							one entry here might might 20 graphs... so we can't automatically fill in the values. 
 							if it is not an snmp query, automatically fill in the values right here. */
 							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
 								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
-								print "<td><strong>" . $struct_data_source_item[$field_name]["friendly_name"] . "</strong></td>";
+								print "<td><strong>" . $struct_data_source_item[$field_name]["friendly_name"] . " (" . $data_template_item["data_source_name"] . ")</strong></td>";
 								print "<td><em>Using Suggested Values</em> (see Data Query)</td>"; 
 								print "</td></tr>\n";
 							}else{
@@ -593,6 +599,14 @@ function graphs() {
 		if ($use_javascript == true) {
 			print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
 		}
+		
+		/* create a row at the bottom that lets the user create any graph they choose */
+		print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
+				<td colspan='2' width='60' nowrap>
+					<strong>Create:</strong>&nbsp;";
+					form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "(Select a graph type to create)", "", "font-size: 10px;");
+		print "		</td>
+			</tr>";
 		
 		end_box();
 	}
