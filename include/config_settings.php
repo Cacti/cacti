@@ -102,6 +102,16 @@ $settings = array(
 				"tab" => "general")
 				)
 			),
+	"smtp_ver" => array(
+                "friendly_name" => "SMTP Version",
+                "description" => "The type of SMTP you have installed.",
+                "method" => "dropdown",
+                "tab" => "general",
+                "items" => array(
+                        "ucd-snmp" => "UCD-SNMP",
+                        "net-snmp" => "NET-SNMP"
+			)
+	),
 	"guest_user" => array(
 		"friendly_name" => "Guest User",
 		"description" => "The name of the guest user for viewing graphs; is \"guest\" by default.",
