@@ -335,7 +335,7 @@ $settings = array(
 			"default" => "400",
 			"max_length" => "10"
 			),
-		"ping_reties" => array(
+		"ping_retries" => array(
 			"friendly_name" => "Ping Retry Count",
 			"description" => "The number of times Cacti will attempt to ping a host before failing.",
 			"method" => "textbox",
