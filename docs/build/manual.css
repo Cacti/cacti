@@ -140,10 +140,9 @@ UL, BODY DIR, BODY MENU {
 }
 
 HTML {
-	margin: 0; 
+	margin: 0;
 	padding: 0;
 }
-
 
 .FILENAME {
 	color: #007a00;
@@ -151,7 +150,7 @@ HTML {
 
 BODY H1, BODY H2, BODY H3, BODY H4, BODY H5, BODY H6 {
 	margin-left: 0
-} 
+}
 
 .GUIMENU, .GUIMENUITEM, .GUISUBMENU,
 .GUILABEL, .INTERFACE, .GUIBUTTON,
@@ -162,7 +161,7 @@ BODY H1, BODY H2, BODY H3, BODY H4, BODY H5, BODY H6 {
 .ACCEL {
 	background-color: #F0F0F0;
 	text-decoration: underline;
-} 
+}
 
 .PROGRAMLISTING, .SCREEN {
 	margin 1px;
@@ -171,6 +170,7 @@ BODY H1, BODY H2, BODY H3, BODY H4, BODY H5, BODY H6 {
 .PROGRAMLISTING {
 	background-color: #e5e5e5;
 	color: black;
+	padding: 3px;
 }
 
 .QUESTION {

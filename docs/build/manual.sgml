@@ -1898,6 +1898,303 @@ $database_password = "cacti";</userinput></screen>
 			</sect2>
 		</sect1>
 	</chapter>
+	<chapter id="php_script_server">
+		<title>PHP Script Server</title>
+		<para>
+			The PHP Script Server is a new feature in Cacti 0.8.6.  This new feature allows for the rapid
+			execution of PHP based Data Queries in Cacti.  The Script Server process is launched by the poller
+			during every polling cycle.  It listens for commands from the poller, executes them, and then waits
+			for an quit signal.
+		</para>
+		<para>
+			The reason that it is so fast is that PHP is started in memory only one time, and for every Data
+			Query called, it's code is interpreted only once.  The resulting Data Query binaries are therefore
+			very efficient.  Using the Script Server process over the traditional POPEN process nets a 20+ fold
+			speed improvement in Cacti.
+		</para>
+		<para>
+			Since PHP scripts are so powerful, this new feature in Cacti, makes it an excellent choice for
+			collecting non-SNMP and SNMP based data.
+		</para>
+		<sect1 id="using_script_server">
+			<title>Using the Script Server</title>
+			<para>
+				Cacti 0.8.6 contains two sample script server routines.  They are for the collection of HostMib CPU
+				and Disk Partition information.  These two examples are based off the traditional POPEN version of
+				the HostMib functions found in earlier versions of Cacti.
+			</para>
+			<para>
+				For new installs, the HostMib functions are defaulted to using the PHP Script Server, therefore,
+				you don't need to do anything to use it.
+			</para>
+			<para>
+				For upgrades, you must make several changes to start using the PHP Script Server for the HostMib
+				CPU and HostMib Partitions Data Queries.  To migrate you must follow the step below.
+			</para>
+		</sect1>
+		<sect1 id="upgrade_using_hostmib_data_queries">
+			<title>Upgrade Steps for the Example HostMib Data Queries</title>
+			<para>
+				If you are using the two built in script queries, "SNMP - Get Mounted Partitions"
+				and "SNMP - Get Processor Information", you can migrate to the PHP Script Server
+				using the steps below:
+			</para>
+			<orderedlist>
+				<listitem>
+					<para>
+						Verify Existance of New Data Input Method - Goto <guilabel>Data Input Methods</guilabel>,
+						verify that you see the "Get Script Server Data (Indexed)" Data Input Method
+						exists and that it is using the "Script Query - Script Server" method.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Disable the Poller - Goto <guilabel>Settings</guilabel>-><guilabel>Poller</guilabel> and
+						uncheck the <guilabel>Poller Enabled</guilabel> checkbox.  Press <guilabel>Save</guilabel>.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Update Your Data Queries - Goto <guilabel>Data Queries</guilabel> and Edit the two Data Queries
+						below.  Change their Data Input Method to "Get Script Server Data (Indexed)":
+					</para>
+					<orderedlist>
+						<listitem>
+							<para>
+								SNMP - Get Mounted Partitions
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								SNMP - Get Processor Information
+							</para>
+						</listitem>
+					</orderedlist>
+				</listitem>
+				<listitem>
+					<para>
+						Update Your Data Query XML Paths - For each of the affected Data Queries, change the XML path
+						to be:
+					</para>
+					<orderedlist>
+						<listitem>
+							<para>
+								<userinput>&lt;path_cacti&gt;/resource/script_server/host_disk.xml</userinput>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<userinput>&lt;path_cacti&gt;/resource/script_server/host_cpu.xml</userinput>
+							</para>
+						</listitem>
+					</orderedlist>
+				</listitem>
+				<listitem>
+					<para>
+						Update Your Data Templates - Goto <guilabel>Data Templates</guilabel>, locate the following two
+						data templates and change their data input method to "Get Script Server Data (Indexed)".
+					</para>
+					<orderedlist>
+						<listitem>
+							<para>
+								Host MIB - Hard Drive Space
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Host MIB - CPU Utilization
+							</para>
+						</listitem>
+					</orderedlist>
+				</listitem>
+			</orderedlist>
+			<para>
+				Following those steps should complete your migration to the new PHP Script Server for the two
+				example HostMIB Data Queries.
+			</para>
+		</sect1>
+		<sect1 id="migration_php_scripts_to_script_server">
+			<title>Migration of Existing PHP Scripts to Script Server</title>
+			<para>
+				If you have other PHP scripts that you wish to migrate, you must follow the steps below to
+				migrate your scripts to the PHP Script Server required format.
+			</para>
+			<sect2 id='script_file_changes'>
+				<title>Script File Changes</title>
+				<para>
+					Each PHP Script file must be changed to the new Script Server format.  The changes are
+					not dramatic, but required for the proper operation of the PHP Script Server.  Follow the
+					steps below to complete.
+				</para>
+				<orderedlist>
+					<listitem>
+						<para>
+							Copy you existing script to a new name.  The name must begin "ss_" followed by your script
+							name.  The "ss_" identifies the script as being a script server variety of the a PHP script.
+							For example, if you previously had a script called "get_mysql_stats.php", it's new name would
+							be "ss_get_mysql_stats.php".
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Edit the new PHP script and add the following required lines to the file, where "ss_myfunction"
+							is the same as your filename.
+						</para>
+						<programlisting>&lt;?php
+$no_http_headers = true;
+
+/* display No errors */
+error_reporting(E_ERROR);
+
+include_once(dirname(__FILE__) . "/../include/config.php");
+include_once(dirname(__FILE__) . "/../lib/snmp.php");
+
+if (!isset($called_by_script_server)) {
+	array_shift($_SERVER["argv"]);
+	print call_user_func_array("ss_myfunction", $_SERVER["argv"]);
+}</programlisting>
+					</listitem>
+					<listitem>
+						<para>
+							What was originally just mainline code, must be replaced with a function name.  For example,
+							if your program previously contained the following three lines of code:
+						</para>
+						<programlisting>&lt;?php
+$a = 100;
+$b = $a / 10;
+print $b;
+?&gt;</programlisting>
+						<para>
+							Would become:
+						</para>
+						<programlisting>function ss_myfunction() {
+	$a = 100;
+	$b = $a / 10;
+	Print $b;
+}</programlisting>
+					</listitem>
+					<listitem>
+						<para>
+							If you have any additional functions declared within your script file, you must prefix them to
+							make then unique amongst all functions.  Our recommendation would be to prefix all functions with
+							the name of the main function.  For example if you have a function called "meme" you would rename
+							it to "ss_myfunction_meme".  This guarantee's correct Script Server functionality.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							The last step is to change the function call that could have traditionally returned the value to the
+							Cacti poller using the PRINT function.  You must change that line  or lines in your code to utilize
+							the RETURN function instead.  However, this does not apply to PRINT statements that are not called
+							from the Poller.
+						</para>
+					</listitem>
+				</orderedlist>
+			</sect2>
+			<sect2 id='xml_file_changes'>
+				<title>XML File Changes</title>
+				<para>
+					If you are using a "Script Query" type function, then you must also change your XML file.  Please reference
+					the XML files in the <filename>&lt;path_cacti&gt;/resource/script_server</filename> directory for the
+					specifics related to your required modifications.  However, you may also follow the instructions below:
+				</para>
+				<orderedlist>
+					<listitem>
+						<para>
+							Modify the &lt;script_path&gt; tag.  Change it from:
+						</para>
+						<programlisting>&lt;script_path&gt;|path_php_binary| -q |path_cacti|/scripts/myfucntion.php&lt;/script_path&gt;</programlisting>
+						<para>
+							to simply the following:
+						</para>
+						<programlisting>&lt;script_path&gt;|path_cacti|/scripts/ss_myfunction.php&lt;/script_path&gt;</programlisting>
+					</listitem>
+					<listitem>
+						<para>
+							Add the following two XML tags below the &lt;script_path&gt; tag.  Replace <emphasis>ss_myfunction</emphasis>
+							with your function name:
+						</para>
+						<programlisting>&lt;script_function&gt;ss_myfunction&lt;/script_function&gt;
+&lt;script_server&gt;php&lt;/script_server&gt;</programlisting>
+					</listitem>
+					<listitem>
+						<para>
+							Save the XML file.
+						</para>
+					</listitem>
+				</orderedlist>
+			</sect2>
+			<sect2 id='data_query_data_template_changes'>
+				<title>Data Query & Data Template Changes</title>
+				<para>
+					Your Data Queries and Data Templates must be also changed.  Although somewhat self explanatory by
+					now, you must make the following changes:
+				</para>
+				<orderedlist>
+					<listitem>
+						<para>
+							Change it's Input Method to "Get Script Server Data" or "Get Script Server Data (Index)" depending
+							on it's type.
+						</para>
+						<para>
+							Change the XML file path to point to the new XML file in the <filename>&lt;path_cacti&gt;/resources/script_server/*.xml</filename> path.
+						</para>
+						<para>
+							For all data templates that use the data query you must change their "Data Input Method" accordingly.
+						</para>
+					</listitem>
+				</orderedlist>
+				<para>
+					Your final step is to go to the <guilabel>System Utilities</guilabel> and <guilabel>Clear
+					Poller Cache</guilabel> to apply the new settings.  If you script is operating correctly,
+					you should now be migrated to the script server.
+				</para>
+			</sect2>
+		</sect1>
+		<sect1 id="testing_script_in_script_server">
+			<title>Testing Your Script in the Script Server</title>
+			<para>
+				To test your script in the script server, simply follow the instructions below.  When you have
+				finished you testing, simply type "quit" &lt;cr&lt; at the Script Server command line to exit the
+				script server.
+			</para>
+			<orderedlist>
+				<listitem>
+					<para>
+						Start the script server - You can do this by typing the following command:
+					</para>
+					<screen><prompt>shell&gt;</prompt> <userinput>php &lt;path_cacti&gt;/script_server.php</userinput></screen>
+					<para>
+						<emphasis>NOTE</emphasis>: Due to a bug in Windows implementation of PHP, you must type the full path name to the <filename>script_server.php</filename> file.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Type in your command - Using the example from above, you would type in the following:
+					</para>
+					<screen><prompt>script server&gt;</prompt> <userinput>&lt;path_myfunction&gt; my_function argument1 argument2 ...</userinput></screen>
+					<para>
+						In the Windows environment, your example could be the following:
+					</para>
+					<screen><prompt>script server&gt;</prompt> <userinput>c:\wwwroot\cacti\scripts\ss_myfunction.php ss_myfunction localhost public 1 get duddle</userinput></screen>
+				</listitem>
+				<listitem>
+					<para>
+						If your function is operating properly, you should get a result.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						To quit the script server, simply type "quit" &lt;cr&gt; at the command line.
+					</para>
+				</listitem>
+			</orderedlist>
+			<para>
+				<emphasis>NOTE</emphasis>: If there are errors in your script, you must restart the script server before
+				your retest your code.
+			</para>
+		</sect1>
+	</chapter>
 </part>
 
 <part id="using_cacti">
