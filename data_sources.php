@@ -40,6 +40,13 @@ switch ($action) {
 		
 		header ("Location: $redirect_location"); exit;
 		break;
+	case 'data_edit':
+		include_once ("include/top_header.php");
+		
+		data_edit();
+		
+		include_once ("include/bottom_footer.php");
+		break;
 	case 'tree':
 		include_once ("include/top_header.php");
 		
@@ -64,8 +71,8 @@ switch ($action) {
 		
 		header ("Location: data_sources.php?action=tree");
 		break;
-	case 'leaf_remove':
-		leaf_remove();
+	case 'tree_remove':
+		tree_remove();
 
 		header ("Location: data_sources.php?action=tree");
 		break;
@@ -106,6 +113,14 @@ function form_save() {
 		}else{
 			return "data_sources.php";
 		}
+	}elseif (isset($form[save_component_data])) {
+		data_save();
+		
+		if ($config[full_view_data_source][value] == "") {
+			return "data_sources.php?action=ds_edit&local_data_id=$form[local_data_id]&view_rrd=$form[current_rrd]";
+		}elseif ($config[full_view_data_source][value] == "on") {
+			return "data_sources.php";
+		}
 	}
 }
 
@@ -120,12 +135,148 @@ function draw_tabs() {
 	<table height="20" cellspacing="0" cellpadding="0" width="98%" align="center">
 		<tr>
 			<td valign="bottom">
-				<?if ($action != "") {?><a href="data_sources.php"><?}?><img src="images/tab_con_data_sources<?if ((strstr($action,"ds") == true) || (empty($action))) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?if ($action != "") {?></a><?}?>
+				<?if ($action != "") {?><a href="data_sources.php"><?}?><img src="images/tab_con_data_sources<?if ((strstr($action,"ds") == true) || (empty($action)) || strstr($action,"data")) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?if ($action != "") {?></a><?}?>
 				<?if ($action != "tree") {?><a href="data_sources.php?action=tree"><?}?><img src="images/tab_con_data_source_tree<?if (strstr($action,"tree") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?if ($action != "tree") {?></a><?}?>
 			</td>
 		</tr>
 	</table>
 	<?
+}
+
+function draw_data_form_select($main_action) { 
+	global $colors, $args; ?>
+	<tr bgcolor="<?print $colors[panel];?>">
+		<form name="form_graph_id">
+		<td colspan="6">
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="1%">
+						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+							<option value="data_sources.php?action=ds_edit&local_data_id=<?print $args[local_data_id];?>"<?if (strstr($args[action],"ds")) {?> selected<?}?>>Data Source Configuration</option>
+							<option value="data_sources.php?action=data_edit&local_data_id=<?print $args[local_data_id];?>"<?if (strstr($args[action],"data")) {?> selected<?}?>>Custom Data Configuration</option>
+						</select>
+					</td>
+					<td>
+						&nbsp;<a href="data_sources.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>
+<?}
+
+/* ----------------------------
+    data - Custom Data
+   ---------------------------- */
+
+function data_save() {
+	global $form;
+	
+	/* ok, first pull out all 'input' values so we know how much to save */
+	$input_fields = db_fetch_assoc("select
+		data_template_data.data_input_id,
+		data_input_fields.id,
+		data_input_fields.input_output,
+		data_input_fields.data_name 
+		from data_template_data
+		left join data_input_fields
+		on data_input_fields.data_input_id=data_template_data.data_input_id
+		where data_template_data.id=$form[data_template_data_id]
+		and data_input_fields.input_output='in'");
+	
+	if (sizeof($input_fields) > 0) {
+	foreach ($input_fields as $input_field) {
+		/* then, check and see if this value already exists */
+		$data_input_data_id = db_fetch_cell("select id from data_input_data where data_input_field_id=$input_field[id] and data_template_data_id=$form[data_template_data_id]");
+		
+		/* use id 0 if it doesn't; previd if it does */
+		if (empty($data_input_data_id)) {
+			$new_id = 0;
+		}else{
+			$new_id = $data_input_data_id;
+		}
+		
+		/* save the data into the 'data_input_data' table */
+		$form_value = "value_" . $input_field[data_name];
+		$form_value = $form[$form_value];
+		
+		db_execute("replace into data_input_data (id,data_input_field_id,data_template_data_id,value) values
+			($new_id,$input_field[id],$form[data_template_data_id],'$form_value')");
+	}
+	}
+}
+
+function data_edit() {
+	global $args, $config, $colors;
+	
+	if ($config[full_view_data_source][value] == "") {
+		draw_tabs();
+		
+		start_box("<strong>Data Sources</strong> [edit]", "", "");
+		draw_data_form_select("?action=data_edit&local_data_id=$args[local_data_id]");
+		end_box();
+	}
+	
+	if (isset($args[local_data_id])) {
+		$template_data = db_fetch_row("select id,data_input_id from data_template_data where local_data_id=$args[local_data_id]");
+	}else{
+		unset($template_data);
+	}
+	
+	print "<form method='post' action='data_sources.php'>\n";
+	
+	$i = 0;
+	if (!empty($template_data[data_input_id])) {
+		/* get each INPUT field for this data input source */
+		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=$template_data[data_input_id] and input_output='in' order by name");
+		
+		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=$template_data[data_input_id]") . "]", "", "");
+		
+		/* loop through each field found */
+		if (sizeof($fields) > 0) {
+		foreach ($fields as $field) {
+			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=$template_data[id] and data_input_field_id=$field[id]");
+			
+			if (sizeof($data_input_data) > 0) {
+				$old_value = $data_input_data[value];
+			}else{
+				$old_value = "";
+			}
+			
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); ?>
+				<td width="50%">
+					<strong><?print $field[name];?></strong>
+				</td>
+				<?DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");?>
+			</tr>
+			<?
+			
+			$i++;
+		}
+		}else{
+			print "<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>";
+		}
+		
+		end_box();
+	}
+	
+	DrawFormItemHiddenIDField("local_data_id",$args[local_data_id]);
+	DrawFormItemHiddenIDField("data_template_data_id",$template_data[id]);
+	DrawFormItemHiddenTextBox("save_component_data","1","");
+	
+	if ($config[full_view_data_source][value] == "") {
+		start_box("", "", "");
+		?>
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right">
+				<?DrawFormSaveButton("save", "data_sources.php");?>
+			</td>
+		</tr>
+		</form>
+		<?
+		end_box();
+	}
 }
 
 /* ----------------------
@@ -237,15 +388,12 @@ function tree_movedown() {
 	if ($order_key > 0) { branch_down($order_key, 'data_tree', 'order_key', ''); }
 }
 
-/* ---------------------
-    Template Functions
-   --------------------- */
-function leaf_remove() {
+function tree_remove() {
 	global $args, $config;
 	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source tree <strong>'" . db_fetch_cell("select title from data_tree where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=leaf_remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source tree <strong>'" . db_fetch_cell("select title from data_tree where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=tree_remove&id=$args[id]");
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -254,6 +402,10 @@ function leaf_remove() {
 		db_execute("delete from data_tree where id=$args[id]");
 	}
 }
+
+/* ------------------------
+    Data Source Functions
+   ------------------------ */
 
 function ds_remove() {
 	global $args, $config;
@@ -296,7 +448,7 @@ function ds_save() {
 	unset($save);
 	
 	/* if this is a new data source and a template has been selected, skip item creation this time
-	otherwise it throws off the templatlate creation because of the NULL data */
+	otherwise it throws off the templatate creation because of the NULL data */
 	if (($form["data_template_id"] == "0") || ($form["data_template_rrd_id"] != "0")) {
 		$save["id"] = $form["data_template_rrd_id"];
 		$save["local_data_template_rrd_id"] = $form["local_data_template_rrd_id"];
@@ -344,11 +496,17 @@ function ds_edit() {
 	
 	$data_template_name = db_fetch_cell("select name from data_template where id=$data[data_template_id]");
 	
-	?>
-	<form method="post" action="data_sources.php">
-	<?
 	draw_tabs();
+	
+	if ($config[full_view_data_source][value] == "") {
+		start_box("<strong>Data Sources</strong> [edit]", "", "");
+		draw_data_form_select("?action=ds_edit&local_data_id=$args[local_data_id]");
+		end_box();
+	}
+	
 	start_box("<strong>Data Sources</strong> [edit] - Data Templation Selection", "", "");	
+	
+	print "<form method='post' action='data_sources.php'>\n";
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
@@ -543,6 +701,10 @@ function ds_edit() {
 	
 	<?
 	end_box();
+	
+	if ($config[full_view_data_source][value] == "on") {
+		data_edit();	
+	}
 	
 	DrawFormItemHiddenIDField("_data_template_id",$data[data_template_id]);
 	DrawFormItemHiddenIDField("data_template_data_id",$data[id]);

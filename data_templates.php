@@ -33,13 +33,6 @@ switch ($action) {
 		
 		header ("Location: $redirect_location"); exit;
 		break;
-	case 'data_edit':
-		include_once ("include/top_header.php");
-		
-		data_edit();
-		
-		include_once ("include/bottom_footer.php");
-		break;
 	case 'template_remove':
 		template_remove();
 		
@@ -62,33 +55,6 @@ switch ($action) {
 }
 
 /* --------------------------
-    Global Form Functions
-   -------------------------- */
-
-function draw_data_form_select($main_action) { 
-	global $colors, $args; ?>
-	<tr bgcolor="<?print $colors[panel];?>">
-		<form name="form_graph_id">
-		<td colspan="6">
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td width="1%">
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_templates.php?action=template_edit&data_template_id=<?print $args[data_template_id];?>"<?if (strstr($args[action],"template")) {?> selected<?}?>>Graph Template Configuration</option>
-							<option value="data_templates.php?action=data_edit&data_template_id=<?print $args[data_template_id];?>"<?if (strstr($args[action],"data")) {?> selected<?}?>>Custom Data Configuration</option>
-						</select>
-					</td>
-					<td>
-						&nbsp;<a href="data_templates.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
-					</td>
-				</tr>
-			</table>
-		</td>
-		</form>
-	</tr>
-<?}
-
-/* --------------------------
     The Save Function
    -------------------------- */
 
@@ -98,127 +64,8 @@ function form_save() {
 	if (isset($form[save_component_template])) {
 		template_save();
 		return "data_templates.php?action=template_edit&data_template_id=$form[data_template_id]&view_rrd=$form[current_rrd]";
-	}elseif (isset($form[save_component_data])) {
-		data_save();
-		
-		if ($config[full_view_graph_template][value] == "") {
-			return "data_templates.php?action=template_edit&data_template_id=$form[data_template_id]&view_rrd=$form[current_rrd]";
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			return "data_templates.php";
-		}
 	}
 }
-
-/* ----------------------------
-    data - Custom Data
-   ---------------------------- */
-
-function data_save() {
-	global $form;
-	
-	/* ok, first pull out all 'input' values so we know how much to save */
-	$input_fields = db_fetch_assoc("select
-		data_template_data.data_input_id,
-		data_input_fields.id,
-		data_input_fields.input_output,
-		data_input_fields.data_name 
-		from data_template_data
-		left join data_input_fields
-		on data_input_fields.data_input_id=data_template_data.data_input_id
-		where data_template_data.id=$form[data_template_data_id]
-		and data_input_fields.input_output='in'");
-	
-	if (sizeof($input_fields) > 0) {
-	foreach ($input_fields as $input_field) {
-		/* then, check and see if this value already exists */
-		$data_input_data_id = db_fetch_cell("select id from data_input_data where data_input_field_id=$input_field[id] and data_template_data_id=$form[data_template_data_id]");
-		
-		/* use id 0 if it doesn't; previd if it does */
-		if (empty($data_input_data_id)) {
-			$new_id = 0;
-		}else{
-			$new_id = $data_input_data_id;
-		}
-		
-		/* save the data into the 'data_input_data' table */
-		$form_value = "value_" . $input_field[data_name];
-		$form_value = $form[$form_value];
-		
-		db_execute("replace into data_input_data (id,data_input_field_id,data_template_data_id,value) values
-			($new_id,$input_field[id],$form[data_template_data_id],'$form_value')");
-	}
-	}
-}
-
-function data_edit() {
-	global $args, $config, $colors;
-	
-	if ($config[full_view_data_template][value] == "") {
-		start_box("<strong>Data Template Management [edit]</strong>", "", "");
-		draw_data_form_select("?action=data_edit&data_template_id=$args[data_template_id]");
-		end_box();
-	}
-	
-	if (isset($args[data_template_id])) {
-		$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=$args[data_template_id]");
-	}else{
-		unset($template_data);
-	}
-	
-	?>
-	<form method="post" action="data_templates.php">
-	<?
-	
-	$i = 0;
-	if (!empty($template_data[data_input_id])) {
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=$template_data[data_input_id] and input_output='in' order by name");
-		
-		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=$template_data[data_input_id]") . "]", "", "");
-		
-		if (sizeof($fields) > 0) {
-		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=$template_data[id] and data_input_field_id=$field[id]");
-			
-			if (sizeof($data_input_data) > 0) {
-				$old_value = $data_input_data[value];
-			}else{
-				$old_value = "";
-			}
-			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); ?>
-				<td width="50%">
-					<strong><?print $field[name];?></strong>
-				</td>
-				<?DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");?>
-			</tr>
-			<?
-			
-			$i++;
-		}
-		}else{
-		}
-		
-		end_box();
-	}
-	
-	DrawFormItemHiddenIDField("data_template_id",$args[data_template_id]);
-	DrawFormItemHiddenIDField("data_template_data_id",$template_data[id]);
-	DrawFormItemHiddenTextBox("save_component_data","1","");
-	
-	if ($config[full_view_data_template][value] == "") {
-		start_box("", "", "");
-		?>
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right">
-				<?DrawFormSaveButton("save", "data_templates.php");?>
-			</td>
-		</tr>
-		</form>
-		<?
-		end_box();
-	}
-}
-
    
 /* ----------------------------
     template - Graph Templates 
@@ -312,12 +159,6 @@ function template_save() {
 
 function template_edit() {
 	global $args, $config, $colors;
-	
-	if ($config[full_view_data_template][value] == "") {
-		start_box("<strong>Data Template Management [edit]</strong>", "", "");
-		draw_data_form_select("?action=template_edit&data_template_id=$args[data_template_id]");
-		end_box();
-	}
 	
 	if (isset($args[data_template_id])) {
 		$template_data = db_fetch_row("select * from data_template_data where data_template_id=$args[data_template_id]");
@@ -484,10 +325,6 @@ function template_edit() {
 	DrawFormItemHiddenIDField("data_template_rrd_id",$template_rrd[id]);
 	DrawFormItemHiddenIDField("current_rrd",$args[view_rrd]);
 	DrawFormItemHiddenTextBox("save_component_template","1","");
-	
-	if ($config[full_view_data_template][value] == "on") {
-		data_edit();	
-	}
 	
 	start_box("", "", "");
 	?>
