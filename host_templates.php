@@ -68,13 +68,56 @@ switch ($action) {
 function form_save() {
 	global $form;
 	
-	if (isset($form[save_component_template])) {
+	if ((isset($form[save_component_template])) && (isset($form[save_component_data]))) {
 		template_save();
+		data_save();
+		
 		return "host_templates.php";
 	}
 }
 
-   
+
+/* ----------------------------
+    data - Custom Data
+   ---------------------------- */
+
+function data_save() {
+	global $form;
+	
+	/* get data_input_id */
+	$data_input_id = db_fetch_cell("select
+		data_input_id
+		from data_template_data
+		where id=$form[data_template_id]");
+	
+	/* ok, first pull out all 'input' values so we know how much to save */
+	$input_fields = db_fetch_assoc("select
+		id,
+		input_output,
+		data_name 
+		from data_input_fields
+		where data_input_id=$data_input_id
+		and input_output='in'");
+	
+	db_execute("delete from host_template_data where data_template_id=$form[data_template_id] and host_template_id=$form[id]");
+	
+	if (sizeof($input_fields) > 0) {
+	foreach ($input_fields as $input_field) {
+		/* save the data into the 'host_template_data' table */
+		$form_value = "value_" . $input_field[data_name];
+		$form_value = $form[$form_value];
+		
+		$form_is_templated_value = "t_value_" . $input_field[data_name];
+		$form_is_templated_value = $form[$form_is_templated_value];
+		
+		if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
+			db_execute("insert into host_template_data (data_input_field_id,data_template_id,host_template_id,t_value,value)
+				values ($input_field[id],$form[data_template_id],$form[id],'$form_is_templated_value','$form_value')");
+		}
+	}
+	}
+}
+
 /* ---------------------
     Template Functions
    --------------------- */
@@ -252,7 +295,7 @@ function template_edit() {
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=$template_data[id] and data_input_field_id=$field[id]");
+			$data_input_data = db_fetch_row("select t_value,value from host_template_data where data_template_id=$args[view_data_template] and host_template_id=$args[id] and data_input_field_id=$field[id]");
 			
 			if (sizeof($data_input_data) > 0) {
 				$old_value = $data_input_data[value];
@@ -263,7 +306,7 @@ function template_edit() {
 			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); ?>
 				<td width="50%">
 					<strong><?print $field[name];?></strong><br>
-					<?DrawStrippedFormItemCheckBox("t_value_" . $field[data_name],$template_rrd[t_rrd_heartbeat],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+					<?DrawStrippedFormItemCheckBox("t_value_" . $field[data_name],$data_input_data[t_value],"Use Per-Data Source Value (Ignore this Value)","",false);?>
 				</td>
 				<?DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");?>
 			</tr>
@@ -278,7 +321,8 @@ function template_edit() {
 		end_box();
 	}
 	
-	
+	DrawFormItemHiddenTextBox("save_component_data","1","");
+	DrawFormItemHiddenIDField("data_template_id",$args[view_data_template]);
 	
 	start_box("", "", "");
 	?>
