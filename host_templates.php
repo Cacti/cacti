@@ -238,10 +238,10 @@ function template_edit() {
 	
 	reset($graph_templates);
 	
-	$i = 0;
 	if (sizeof($graph_templates) > 0) {
 	foreach($graph_templates as $graph_template) {
 		if (!empty($graph_template["host_template_id"])) {
+			$i = 0;
 			start_box("<strong>Graph Template:</strong> " . $graph_template["name"], "98%", "999999", "3", "center", "");
 			
 			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
@@ -297,10 +297,10 @@ function template_edit() {
 	
 	reset($data_templates);
 	
-	$i = 0;
 	if (sizeof($data_templates) > 0) {
 	foreach($data_templates as $data_template) {
 		if (!empty($data_template["host_template_id"])) {
+			$i = 0;
 			start_box("<strong>Data Template:</strong> " . $data_template["name"], "98%", "999999", "3", "center", "");
 			
 			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
