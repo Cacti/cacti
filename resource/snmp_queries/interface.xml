@@ -4,29 +4,36 @@
 	<oid_index>.1.3.6.1.2.1.2.2.1.1</oid_index>
 	
 	<fields>
+		<ifIndex>
+			<name>Index</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.1</oid>
+		</ifIndex>
 		<ifDesc>
-			<name>Interface Description</name>
+			<name>Description</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.2</oid>
 		</ifDesc>
 		<ifType>
-			<name>Interface Type</name>
+			<name>Type</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.3</oid>
 		</ifType>
 		<ifSpeed>
-			<name>Interface Speed</name>
+			<name>Speed</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.5</oid>
 		</ifSpeed>
 		<ifHwAddr>
-			<name>Interface Hardware Address</name>
+			<name>Hardware Address</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
@@ -39,6 +46,13 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.16</oid>
 		</ifInOctets>
+		<ifIP>
+			<name>IP Address</name>
+			<method>walk</method>
+			<source>OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.4.20.1.2</oid>
+		</ifIP>
 		<ifOutOctets>
 			<name>Output Octets</name>
 			<method>walk</method>
@@ -46,12 +60,5 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.16</oid>
 		</ifOutOctets>
-		<ifIP>
-			<name>Interface IP Address</name>
-			<method>walk</method>
-			<source>OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$</source>
-			<direction>input</direction>
-			<oid>.1.3.6.1.2.1.4.20.1.2</oid>
-		</ifIP>
 	</fields>
 </interface>
