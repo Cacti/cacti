@@ -73,7 +73,6 @@ $max_threads = read_config_option("max_threads");
 
 // Initialize poller_time and poller_output tables
 db_execute("truncate table poller_time");
-db_execute("truncate table poller_output");
 
 // Enter Mainline Processing
 if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "on")) {
@@ -137,35 +136,15 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$max_threads = "N/A";
 	}
 
+	/* open a pipe to rrdtool for writing */
+	$rrdtool_pipe = rrd_init();
+
 	$loop_count = 0;
 	while (1) {
 		$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id = 0");
 
 		if (sizeof($polling_items) == $process_file_number) {
-			/* create/update the rrd files */
-			$results = db_fetch_assoc("select
-				poller_output.output,
-				poller_output.time,
-				poller_output.local_data_id,
-				poller_item.rrd_path,
-				poller_item.rrd_name
-				from poller_output,poller_item
-				where (poller_output.local_data_id=poller_item.local_data_id and poller_output.rrd_name=poller_item.rrd_name)");
-
-			if (sizeof($results) > 0) {
-				/* open a pipe to rrdtool for writing */
-				$rrdtool_pipe = rrd_init();
-
-				foreach ($results as $item) {
-					$rrd_update_array{$item["rrd_path"]}["time"] = strtotime($item["time"]);
-					$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
-					$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
-				}
-
-				rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
-
-				rrd_close($rrdtool_pipe);
-			}
+			process_poller_output($rrdtool_pipe);
 
 			/* take time and log performance data */
 			list($micro,$seconds) = split(" ", microtime());
@@ -188,10 +167,15 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			break;
 		}else {
 			print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
+
+			process_poller_output($rrdtool_pipe);
+
 			usleep(200000);
 			$loop_count++;
 		}
 	}
+
+	rrd_close($rrdtool_pipe);
 
 	/* process poller commands */
 	$poller_commands = db_fetch_assoc("select
@@ -214,6 +198,8 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 		db_execute("delete from poller_command where poller_id=0");
 	}
+
+	db_execute("truncate table poller_output");
 }else{
 	print "There are no items in your poller cache or polling is disabled. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
 }
