@@ -397,7 +397,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 		if (sizeof($heirarchy) > 0) {
 		foreach ($heirarchy as $leaf) {
 			form_alternate_row_color("f9f9f9", "ffffff", $i);
-			print "<td align='center'><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all&type=tree'><img src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $leaf["graph_title"] . "'></a></td>";
+			print "<td align='center'><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all&type=tree'><img src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . $leaf["rra_id"] . "' border='0' alt='" . $leaf["graph_title"] . "'></a></td>";
 			print "<tr>\n";
 			
 			$i++;
