@@ -382,12 +382,11 @@ function form_actions() {
 			}
 		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
-				$tree = db_fetch_row("select graph_tree_id,order_key from graph_tree_items where id=" . $_POST["tree_item_id"]);
-				$order_key = get_next_tree_id($tree["order_key"],"graph_tree_items","order_key");
+				$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["tree_item_id"]);
+				$new_order_key = get_next_tree_id($old_order_key,"graph_tree_items","order_key", "graph_tree_id=" . $_POST["tree_id"]);
 				
 				db_execute("insert into graph_tree_items (graph_tree_id,title,order_key,local_graph_id,rra_id)
-					values (" . $tree["graph_tree_id"] . ",'','$order_key'," . $selected_items[$i] . ",
-					1)");
+					values (" . $_POST["tree_id"] . ",'','$new_order_key'," . $selected_items[$i] . ",1)");
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* change host */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -469,6 +468,7 @@ function form_actions() {
 					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 				</td>
 			</tr>\n
+			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 			";
 	}elseif ($_POST["drp_action"] == "5") { /* change host */
 		print "	<tr>
