@@ -102,14 +102,15 @@ a:hover {
 }
 
 .textMenuHeader {
-	background-color: #AEB4B7;
+	color: #ffffff;
+	background-color: #9C9C9C; 
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 }
 
 .textMenuItem {
-	background-color: #E3E3E3;
+	background-color: #F1F1F1;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
