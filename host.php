@@ -77,7 +77,7 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if ((isset($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
+	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
 		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . ")");
 		
 		/* recache snmp data */
@@ -87,7 +87,7 @@ function form_save() {
 		exit;
 	}
 	
-	if ((isset($_POST["save_component_host"])) && (!isset($_POST["add_y"]))) {
+	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_y"]))) {
 		$save["id"] = $_POST["id"];
 		$save["host_template_id"] = $_POST["host_template_id"];
 		$save["description"] = form_input_validate($_POST["description"], "description", "", false, 3);
