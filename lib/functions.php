@@ -346,7 +346,7 @@ function stri_replace($find, $replace, $string) {
 
 function clean_up_name($string) {
     $string = preg_replace("/[\s\.]+/", "_", $string);
-    $string = preg_replace("/[*\/\*&%\"\',:]/", "", $string);
+    $string = preg_replace("/[^a-zA-Z0-9_]+/", "", $string);
     
     return $string;
 }
