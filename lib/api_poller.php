@@ -46,8 +46,8 @@ function api_poller_cache_item_add($host_id, $local_data_id, $poller_action_id, 
 			arg1,arg2,arg3) values ($local_data_id," . $host["id"] . ",$poller_action_id,'" . $host["hostname"] . "',
 			'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
 			'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-			'$data_source_item_name','" . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "
-			','$arg1','$arg2','$arg3')");
+			'$data_source_item_name','" . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
+			'$arg1','$arg2','$arg3')");
 	}
 }
 ?>
