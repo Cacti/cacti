@@ -37,6 +37,11 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
+	case 'query_remove':
+		host_remove_query();
+		
+		header ("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		break;
 	case 'new_graphs':
 		include_once ("include/top_header.php");
 		
@@ -144,6 +149,11 @@ function form_save() {
 /* ---------------------
     Host Functions
    --------------------- */
+
+function host_remove_query() {
+	db_execute("delete from host_snmp_cache where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
+	db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
+}
 
 function host_remove() {
 	global $config;
@@ -815,18 +825,11 @@ function host_edit() {
 		
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
-			print "	<table width='98%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
-					<tr>
-						<td bgcolor='#" . $colors["header"]. "' class='textHeaderDark' colspan='50'>
-							<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]
-						</td>
-					</tr>";
+			
 			
 			$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
 			$xml_array = xml2array($data);
 			$xml_outputs = array();
-			
-			print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			
 			$num_input_fields = 0;
 			
@@ -840,6 +843,17 @@ function host_edit() {
 			reset($xml_array["fields"][0]);
 			$snmp_query_indexes = array();
 			$i = 0;
+			
+			print "	<table width='98%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
+					<tr>
+						<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark' colspan='$num_input_fields'>
+							<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]
+						</td>
+						<td bgcolor='#" . $colors["header"] . "' align='center'>
+							<a href='host.php?action=query_remove&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/delete_icon_large.gif' alt='Delete Associated Query' border='0'></a>
+						</td>
+					</tr>
+					<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			
 			while (list($field_name, $field_array) = each($xml_array["fields"][0])) {
 				$field_array = $field_array[0];
