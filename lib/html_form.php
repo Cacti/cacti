@@ -357,6 +357,31 @@ function form_base_dropdown($form_name, $form_data, $column_display,$column_id, 
 	print "</select>\n";
 }
 
+/* creates the options for the select box */
+function create_list($data, $name, $value, $prev) {
+        if (empty($name)) {
+                foreach (array_keys($data) as $id) {
+                        print '<option value="' . $id . '"';
+
+                        if ($prev == $id) {
+                                print " selected";
+                        }
+
+                        print ">" . $data[$id] . "</option>\n";
+                }
+        }else{
+                foreach ($data as $row) {
+                        print "<option value='$row[$value]'";
+
+                        if ($prev == $row[$value]) {
+                                print " selected";
+                        }
+
+                        print ">$row[$name]</option>\n";
+                }
+        }
+}
+
 /* creates a checkbox */
 function form_base_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $trailing_br) { 
 	if (($form_previous_value == "") && (empty($current_id))) {
