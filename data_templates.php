@@ -276,6 +276,7 @@ function template_save() {
 	$save["local_data_id"] = 0;
 	$save["data_template_id"] = $data_template_id;
 	$save["data_input_id"] = $form["data_input_id"];
+	$save["t_name"] = $form["t_name"];
 	$save["name"] = $form["name"];
 	$save["data_source_path"] = $form["data_source_path"];
 	$save["t_active"] = $form["t_active"];
@@ -348,7 +349,7 @@ function template_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
-			Choose a name for this data source.
+			<?DrawStrippedFormItemCheckBox("t_name",$template_data[t_name],"Use Per-Graph Value (Ignore this Value)","",false);?>
 		</td>
 		<?DrawFormItemTextBox("name",$template_data[name],"","250", "40");?>
 	</tr>
