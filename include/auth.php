@@ -51,7 +51,7 @@ if (read_config_option("global_auth") == "on") {
 	
 	/* don't even bother with the guest code if we're already logged in */
 	if ((isset($guest_account)) && (empty($_SESSION["sess_user_id"]))) {
-		$guest_user_id = db_fetch_cell("select id from user where username='" . read_config_option("guest_user") . "'");
+		$guest_user_id = db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'");
 		
 		/* cannot find guest user */
 		if (empty($guest_user_id) == 0) {

@@ -33,7 +33,7 @@ session_start();
 
 /* at this point this user is good to go... so get some setting about this
 user and put them into variables to save excess SQL in the future */
-$current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
+$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
