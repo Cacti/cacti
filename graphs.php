@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "Add/Edit Graphs"; include ('include/auth.php');
-
+include ('include/auth.php');
 include_once ("include/form.php");
 include_once ("include/config_arrays.php");
 
@@ -996,7 +995,7 @@ function graph() {
 							<strong>&lt;&lt; "; if ($_GET["page"] > 1) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_GET["page"]-1) . "'>"; } print "Previous"; if ($_GET["page"] > 1) { print "</a>"; } print "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . (ROWS_PER_PAGE*($_GET["page"]-1)) . " to " . (($total_rows < ROWS_PER_PAGE) ? $total_rows : (ROWS_PER_PAGE*$_GET["page"])) . " of $total_rows
+							Showing Rows " . ((ROWS_PER_PAGE*($_GET["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_GET["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_GET["page"])) . " of $total_rows
 						</td>\n
 						<td align='right' class='textHeaderDark'>
 							<strong>"; if (($_GET["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_GET["page"]+1) . "'>"; } print "Next"; if (($_GET["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
