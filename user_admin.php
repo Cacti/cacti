@@ -235,6 +235,20 @@ function graph_perms_edit() {
 	?>
 	<form method="post" action="user_admin.php">
 	
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td width="50%">
+			<font class="textEditTitle">Default Policy</font><br>
+			The default allow/deny graph policy for this user.
+		</td>
+		<?php
+		$graph_policy_array = array(
+			1 => "Allow",
+			2 => "Deny");
+		
+		form_dropdown("graph_policy",$graph_policy_array,"","",$graph_policy,"","");
+		?>
+	</tr>
+	
 	<tr>
 		<td colspan="2" width="100%">
 			<table width="100%">
@@ -399,7 +413,7 @@ function user_edit() {
 	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
-	<form method="post" action="user_admin.php">
+	<form method="post" name="chk" action="user_admin.php">
 	<?php
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -455,22 +469,8 @@ function user_edit() {
 		?>
 		</td>
 	</tr>
-    
+    	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Default Policy</font><br>
-			The default allow/deny graph policy for this user.
-		</td>
-		<?php
-		$graph_policy = array(
-			1 => "Allow",
-			2 => "Deny");
-		
-		form_dropdown("graph_policy",$graph_policy,"","",(isset($user) ? $user["graph_policy"] : ""),"","");
-		?>
-	</tr>
-    
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Login Options</font><br>
 			What to do when this user logs in.
@@ -486,7 +486,12 @@ function user_edit() {
 	
 	<?php
 	end_box();
-	start_box("<strong>Realm Permissions</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
+	
+	print "	<tr bgcolor='#" . $colors["header"] . "'>
+			<td class='textHeaderDark'><strong>Realm Permissions</strong></td>
+			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectForce(\"section\")'></td>\n
+		</tr>\n";
 	
 	$realms = db_fetch_assoc("select 
 		user_auth_realm.user_id,
