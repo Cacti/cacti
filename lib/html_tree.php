@@ -354,7 +354,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 		/* get policy information for the sql where clause */
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and $sql_where");
-		$sql_join = "left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+		$sql_join = "
 			left join host on host.id=graph_local.host_id
 			left join graph_templates on graph_templates.id=graph_local.graph_template_id
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
@@ -383,10 +383,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			graph_tree_items.rra_id,
 			graph_tree_items.order_key,
 			graph_templates_graph.title_cache as graph_title
-			from graph_tree_items
+			from graph_tree_items,graph_local
 			left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 			$sql_join
 			where graph_tree_items.graph_tree_id=$tree_id
+			and graph_local.id=graph_templates_graph.local_graph_id
 			and graph_tree_items.order_key like '$search_key" . "__" . str_repeat('0',60-(strlen($search_key)+2)) . "'
 			and graph_tree_items.local_graph_id>0
 			$sql_where
@@ -416,6 +417,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			group by graph_templates.id
 			order by graph_templates.name");
 		
+		/* for graphs without a template */
+		array_push($graph_templates, array(
+			"id" => "0",
+			"name" => "(No Graph Template)"
+			));
+		
 		if (sizeof($graph_templates) > 0) {
 		foreach ($graph_templates as $graph_template) {
 			if (empty($graph_template_id)) {
@@ -425,11 +432,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			$graphs = db_fetch_assoc("select
 				graph_templates_graph.title_cache,
 				graph_templates_graph.local_graph_id
-				from graph_local,graph_templates,graph_templates_graph
+				from graph_local,graph_templates_graph
+				$sql_join
 				where graph_local.id=graph_templates_graph.local_graph_id
-				and graph_templates_graph.graph_template_id=graph_templates.id
 				and graph_local.graph_template_id=" . $graph_template["id"] . "
 				and graph_local.host_id=$host_id
+				$sql_where
 				order by graph_templates_graph.title_cache");
 			
 			$i = 0;
