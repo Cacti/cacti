@@ -101,7 +101,7 @@ function form_save() {
 		ds_save();
 		data_save();
 		
-		if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"])) {
+		if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
 			return $_SERVER["HTTP_REFERER"];
 		}else{
 			return "data_sources.php";
@@ -123,20 +123,6 @@ function form_save() {
 /* --------------------------
     Global Form Functions
    -------------------------- */
-
-function draw_tabs() {
-	global $action;
-	?>
-	<table height="20" cellspacing="0" cellpadding="0" width="98%" align="center">
-		<tr>
-			<td valign="bottom">
-				<?if ($action != "") {?><a href="data_sources.php"><?}?><img src="images/tab_con_data_sources<?if ((strstr($action,"ds") == true) || (empty($action)) || strstr($action,"data")) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?if ($action != "") {?></a><?}?>
-				<?if ($action != "tree") {?><a href="data_sources.php?action=tree"><?}?><img src="images/tab_con_data_source_tree<?if (strstr($action,"tree") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?if ($action != "tree") {?></a><?}?>
-			</td>
-		</tr>
-	</table>
-	<?
-}
 
 function draw_data_form_select($main_action) { 
 	global $colors; ?>
@@ -172,7 +158,8 @@ function data_save() {
 		data_input_fields.id,
 		data_input_fields.input_output,
 		data_input_fields.data_name,
-		data_input_fields.regexp_match 
+		data_input_fields.regexp_match,
+		data_input_fields.allow_nulls 
 		from data_template_data
 		left join data_input_fields
 		on data_input_fields.data_input_id=data_template_data.data_input_id
@@ -186,8 +173,14 @@ function data_save() {
 		$form_value = $_POST[$form_name];
 		
 		if (isset($_POST[$form_name])) {
+			if ($input_field["allow_nulls"] == "on") {
+				$allow_nulls = true;
+			}elseif (empty($input_field["allow_nulls"])) {
+				$allow_nulls = false;
+			}
+			
 			/* run regexp match on input string */
-			$form_value = form_input_validate($form_value, $form_name, $input_field["regexp_match"], true, 3);
+			$form_value = form_input_validate($form_value, $form_name, $input_field["regexp_match"], $allow_nulls, 3);
 			
 			if (!is_error_message()) {
 				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
@@ -204,8 +197,6 @@ function data_edit() {
 	display_output_messages();
 	
 	if ($config["full_view_data_source"]["value"] == "") {
-		draw_tabs();
-		
 		start_box("<strong>Data Sources</strong> [edit]", "", "");
 		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
@@ -281,130 +272,6 @@ function data_edit() {
 	}
 }
 
-/* ----------------------
-    Tree Edit Functions
-   ---------------------- */
-
-function tree() {
-	include_once ('include/tree_view_functions.php');
-	
-	$tree_parameters["edit_mode"] = true;
-	
-	draw_tabs();
-	start_box("<strong>Data Source Tree</strong>", "", "data_sources.php?action=edit");
-    	grow_polling_tree($start_branch, 1, $tree_parameters);
-	
-	end_box();
-}
-
-function tree_edit() {
-	include_once("include/tree_view_functions.php");
-	
-	global $colors;
-	
-	if (isset($_GET["id"])) {
-		$tree_item = db_fetch_row("select * from data_tree where id=" . $_GET["id"]);
-	}else{
-		unset($tree_item);
-	}
-	
-	display_output_messages();
-	
-	?>
-	<form method="post" action="data_sources.php">
-	<?
-	
-	draw_tabs();
-	start_box("<strong>Date Source Tree</strong> [edit] - Tree Item", "", "");
-	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Item Parent</font><br>
-			Choose a parent for this item.
-		</td>
-		<?draw_data_source_dropdown("parent_id", 0);?>
-	</tr>
-	<?
-	end_box();
-	
-	/* bold the active "type" */
-	if ($tree_item["host_id"] > 0) { $title = "<strong>Tree Item [host]</strong>"; }else{ $title = "Tree Item [host]"; }
-	
-	start_box($title, "", "");
-	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Host</font><br>
-			If this item is a host, please select it from the list.
-		</td>
-		<?DrawFormItemDropdownFromSQL("host_id",db_fetch_assoc("select id,hostname from host order by hostname"),"hostname","id",$tree_item["host_id"],"None","1");?>
-	</tr>
-	
-	<?
-	
-	end_box();
-	
-	/* bold the active "type" */
-	if ($tree_item["title"] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
-	
-	start_box($title, "", "");
-	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Header Title</font><br>
-			If this item is a header, enter a title here.
-		</td>
-		<?DrawFormItemTextBox("title",$tree_item["title"],"","100","40");?>
-	</tr>
-	<?
-	
-	end_box();
-	
-	DrawFormItemHiddenIDField("id",$_GET["tree_item_id"]);
-	DrawFormItemHiddenIDField("tree_id",$_GET["tree_id"]);
-	DrawFormItemHiddenTextBox("save_component_tree_item","1","");
-	
-	start_box("", "", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "tree.php?action=edit&id=" . $_GET["tree_id"]);?>
-		</td>
-	</tr>
-	</form>
-	<?
-	end_box();
-}
-
-function tree_moveup() {
-	include_once("include/tree_functions.php");
-	
-	$order_key = db_fetch_cell("SELECT order_key FROM data_tree WHERE id=" . $_GET["branch_id"]);
-	if ($order_key > 0) { branch_up($order_key, 'data_tree', 'order_key', ''); }
-}
-
-function tree_movedown() {
-	include_once("include/tree_functions.php");
-	
-	$order_key = db_fetch_cell("SELECT order_key FROM data_tree WHERE id=" . $_GET["branch_id"]);
-	if ($order_key > 0) { branch_down($order_key, 'data_tree', 'order_key', ''); }
-}
-
-function tree_remove() {
-	global $config;
-	
-	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
-		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source tree <strong>'" . db_fetch_cell("select title from data_tree where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=tree_remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
-		exit;
-	}
-
-	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
-		db_execute("delete from data_tree where id=" . $_GET["id"]);
-	}
-}
-
 /* ------------------------
     Data Source Functions
    ------------------------ */
@@ -427,6 +294,8 @@ function ds_remove() {
 }
 
 function ds_save() {
+	include_once ("include/utility_functions.php");
+	
 	$save["id"] = $_POST["local_data_id"];
 	$save["data_template_id"] = $_POST["data_template_id"];
 	$save["host_id"] = $_POST["host_id"];
@@ -469,16 +338,25 @@ function ds_save() {
 		}
 	}
 	
-	if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
-		/* update all nessesary template information */
-		include_once ("include/utility_functions.php");
-		$return_status = change_data_template($local_data_id, $_POST["data_template_id"], $_POST["_data_template_id"]);
+	if (!is_error_message()) {
+		if ($_POST["host_id"] != $_POST["_host_id"]) {
+			/* push out all nessesary host information */
+			push_out_host($_POST["host_id"]);
+			
+			/* reset current host for display purposes */
+			$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
+		}
+		
+		if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
+			/* update all nessesary template information */
+			$return_status = change_data_template($local_data_id, $_POST["data_template_id"], $_POST["_data_template_id"]);
+		}
 	}
 	
 	if (is_error_message()) {
 		return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=" . $_POST["host_id"] . "&view_rrd=" . $_POST["view_rrd"];
 	}else{
-		if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
+		if (($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
 			return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=" . $_POST["host_id"] . "&view_rrd=" . $_POST["view_rrd"];
 		}else{
 			return "data_sources.php";
@@ -496,6 +374,7 @@ function ds_edit() {
 		
 		$data = db_fetch_row("select * from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		$data_template = db_fetch_row("select * from data_template_data where id=$local_data_template_data_id");
+		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["local_data_id"]);
 	}else{
 		unset($data_template);
 		unset($data);
@@ -510,8 +389,6 @@ function ds_edit() {
 	display_output_messages();
 	
 	$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
-	
-	draw_tabs();
 	
 	if ($config["full_view_data_source"]["value"] == "") {
 		start_box("<strong>Data Sources</strong> [edit]", "", "");
@@ -529,6 +406,14 @@ function ds_edit() {
 			The name given to this data template.
 		</td>
 		<?DrawFormItemDropdownFromSQL("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$data_template["data_template_id"],"None","0");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Host</font><br>
+			Choose the host that this data source belongs to.
+		</td>
+		<?DrawFormItemDropdownFromSQL("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",$host_id,"None",$_GET["host_id"]);?>
 	</tr>
 	
 	<?
@@ -708,12 +593,12 @@ function ds_edit() {
 		</td>
 		<?if (($use_data_template == false) || ($rrd_template["t_rrd_heartbeat"] == "on")) {
 			DrawFormItemTextBox("rrd_heartbeat",$rrd["rrd_heartbeat"],"","20", "30");
-		}else{
-			print "<td><em>" . $rrd["rrd_heartbeat"] . "</em></td>";
-			DrawFormItemHiddenTextBox("rrd_heartbeat",$rrd_template["rrd_heartbeat"],"");
-		}?>
-	</tr>
-	
+			}else{
+				print "<td><em>" . $rrd["rrd_heartbeat"] . "</em></td>";
+				DrawFormItemHiddenTextBox("rrd_heartbeat",$rrd_template["rrd_heartbeat"],"");
+			}?>
+		</tr>
+		
 	<?
 	end_box();
 	
@@ -722,13 +607,13 @@ function ds_edit() {
 	}
 	
 	DrawFormItemHiddenIDField("_data_template_id",$data["data_template_id"]);
+	DrawFormItemHiddenTextBox("_host_id",$host_id,$_GET["host_id"]);
 	DrawFormItemHiddenIDField("data_template_data_id",$data["id"]);
 	DrawFormItemHiddenIDField("data_template_rrd_id",$rrd["id"]);
 	DrawFormItemHiddenIDField("local_data_template_data_id",$data["local_data_template_data_id"]);
 	DrawFormItemHiddenIDField("local_data_template_rrd_id",$rrd["local_data_template_rrd_id"]);
 	DrawFormItemHiddenIDField("local_data_id",$data["local_data_id"]);
 	DrawFormItemHiddenIDField("current_rrd",$_GET["view_rrd"]);
-	DrawFormItemHiddenTextBox("host_id",$_GET["host_id"],db_fetch_cell("select host_id from data_local where id=" . $data["local_data_id"]));
 	DrawFormItemHiddenTextBox("save_component_data_source","1","");
 	
 	start_box("", "", "");
@@ -744,13 +629,85 @@ function ds_edit() {
 }
 
 function ds() {
+	global $colors;
+	
 	include_once ('include/tree_view_functions.php');
+	
+	/* if no host_id is specified, use the session one */
+	if (!isset($_GET["host_id"])) {
+		$_GET["host_id"] = $_SESSION["sess_data_source_current_host_id"];
+	}
+	
+	/* remember the last used host_id */
+	$_SESSION["sess_data_source_current_host_id"] = $_GET["host_id"];
 	
 	display_output_messages();
 	
-	draw_tabs();
-	start_box("<strong>Data Sources</strong>", "", "data_sources.php?action=ds_edit");
-    	grow_polling_tree($start_branch, 1, $tree_parameters);
+	start_box("<strong>Data Sources</strong>", "", "");
+	?>
+	
+	<tr bgcolor="<?print $colors["panel"];?>">
+		<form name="form_graph_id">
+		<td>
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="100">
+						Select a host:&nbsp;
+					</td>
+					<td width="1">
+						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+							<option value="data_sources.php?host_id=0"<?if ($_GET["host_id"] == "0") {?> selected<?}?>>None</option>
+							
+							<?
+							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
+							
+							if (sizeof($hosts) > 0) {
+							foreach ($hosts as $host) {
+								print "<option value='data_sources.php?host_id=" . $host["id"] . "'"; if ($_GET["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+							}
+							}
+							?>
+							
+						</select>
+					</td>
+					<td>
+						&nbsp;<a href="data_sources.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>
+	<?
+	end_box();
+	
+	$host = db_fetch_row("select hostname from host where id=" . $_GET["host_id"]);
+	
+	start_pagebox("Data Sources for '" . $host["hostname"] . "'", "98%", "aaaaaa", "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_GET["host_id"]);
+	
+	$data_sources = db_fetch_assoc("select
+		data_template_data.local_data_id,
+		data_template_data.name,
+		data_input.name as data_input_name
+		from data_local
+		left join data_template_data
+		on data_local.id=data_template_data.local_data_id
+		left join data_input
+		on data_input.id=data_template_data.data_input_id
+		where data_local.host_id=" . $_GET["host_id"]);
+	
+	$i = 0;
+	if (sizeof($data_sources) > 0) {
+	foreach ($data_sources as $data_source) {
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++;
+		print "<td><a href='data_sources.php?action=ds_edit&local_data_id=$data_source[local_data_id]'>$data_source[name]</a></td>";
+		print "<td>$data_source[data_input_name]</td>";
+		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&local_data_id=$data_source[local_data_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
+		print "</tr>";
+	}
+	}else{
+		print "<tr><td><em>No Data Sources</em></td></tr>";
+	}
 	
 	end_box();
 }
