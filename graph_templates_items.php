@@ -43,12 +43,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		item_movedown();
 		
-		header("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 		
-		header("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'item_edit':
 		include_once("./include/top_header.php");

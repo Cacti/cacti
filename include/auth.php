@@ -35,7 +35,7 @@ if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
 if (read_config_option("global_auth") == "on") {
 	/* handle change password dialog */
 	if (isset($_SESSION['sess_change_password'])) {
-		header ("Location: auth_changepassword.php?ref=" . $_SERVER["HTTP_REFERER"]);
+		header ("Location: auth_changepassword.php?ref=" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
 		exit;
 	}
 	

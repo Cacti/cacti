@@ -39,12 +39,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		item_movedown();
 		
-		header("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 		
-		header("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]);
 		break;
 	case 'item_edit':
 		include_once("./include/top_header.php");
@@ -56,7 +56,7 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		item_remove();
 
-		header("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]);
                 break;
     	case 'remove':
 		tree_remove();	
@@ -288,7 +288,7 @@ function item_remove() {
 		}
 		
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", $text, $_SERVER["HTTP_REFERER"], "tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]);
+		form_confirm("Are You Sure?", $text, "tree.php?action=edit&id=" . $_GET["tree_id"], "tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]);
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -308,7 +308,7 @@ function item_remove() {
 function tree_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "tree.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", "tree.php", "tree.php?action=remove&id=" . $_GET["id"]);
 		include("./include/bottom_footer.php");
 		exit;
 	}

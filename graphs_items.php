@@ -50,12 +50,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		item_movedown();
 		
-		header ("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 		
-		header ("Location: " . $_SERVER["HTTP_REFERER"]);
+		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
 		break;
 }
 
