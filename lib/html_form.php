@@ -671,14 +671,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 }
 
 function draw_menu() {
-	global $colors, $config, $user_auth_realm_filenames;
+	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames;
 	
 	include($config["include_path"] . "/config_arrays.php");
 	
 	/* list all realms that this user has access to */
-	$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
-	$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
-	
+	if (read_config_option("global_auth") == "on") {
+		$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
+		$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
+	}else{
+		$user_realms = $user_auth_realms;
+	}
+		
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
 	
 	/* loop through each header */
