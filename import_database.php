@@ -495,8 +495,8 @@ foreach ($_cdef as $item) {
 		print "SUCCESS: CDEF: " . $item["Name"] . "\n";
 		print "new cdef: insert into cdef (id,name) values (0,'" . $item["Name"] . "')\n";
 		
-		$_cdef_items = db_fetch_assoc("select * from $database_old.rrd_ds_cdef_item where CDEFID=$cdef_id");
-		print "get items: select * from $database_old.rrd_ds_cdef_item where CDEFID=$cdef_id\n";
+		$_cdef_items = db_fetch_assoc("select * from $database_old.rrd_ds_cdef_item where CDEFID=" . $item["ID"]);
+		print "get items: select * from $database_old.rrd_ds_cdef_item where CDEFID=" . $item["ID"] . "\n";
 		if ($item["Type"] == "2") {
 			$_cdef_items[0]["CDEFID"] = $item["ID"];
 			$_cdef_items[0]["Type"] = "Total";
