@@ -114,13 +114,14 @@ function rra_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Round Robin Archives [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-	
 	if (isset($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $rra["name"] . "]";
 	}else{
-		unset($rra);
+		$header_label = "[new]";
 	}
+	
+	start_box("<strong>Round Robin Archives</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="rra.php">
