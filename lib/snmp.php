@@ -149,7 +149,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
 	include ('include/config.php');
 	include_once ('include/functions.php');
-	
+	print "walk: host: $hostname, comm: $community: oid: $oid\n";
 	$snmp_array = array();
 	$temp_array = array();
 	
