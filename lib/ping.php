@@ -291,53 +291,28 @@ class Net_Ping
 		/* decimal precision is 0.0000 */
 		$this->precision = 5;
 
-		/* set but don't check yet */
-		if ($avail_method <= AVAIL_SNMP) {
-			$ping_snmp = true;
-		} else {
-			$ping_snmp = false;
-		}
-
-		if (($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_PING)) {
-			$ping_ping = true;
-		} else {
-			$ping_ping = false;
-		}
-
 		/* snmp pinging has been selected at a minimum */
 		$ping_result = false;
 		$snmp_result = false;
 
-		/* snmp pinging has been selected */
-		if ($ping_snmp) {
-			/* ping ICMP/UDP first */
-			if ($ping_ping) {
-				if ($ping_type == 1) {
-					$ping_result = $this->ping_icmp();
-				} else {
-					$ping_result = $this->ping_udp();
-				}
+		/* icmp/udp ping test */
+		if (($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_PING)) {
+			if ($ping_type == PING_ICMP) {
+				$ping_result = $this->ping_icmp();
+			}else if ($ping_type == PING_UDP) {
+				$ping_result = $this->ping_udp();
 			}
+		}
 
-			/* SNMP always goes last */
-			if ($ping_result) {
-				if ($this->host["snmp_community"] != "") {
-					$snmp_result = $this->ping_snmp();
-				} else {
-					$snmp_result = true;
-				}
-			}else {
-				$snmp_result = false;
+		/* snmp test */
+		if (($avail_method <= AVAIL_SNMP) || (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == true))) {
+			if ($this->host["snmp_community"] != "") {
+				$snmp_result = $this->ping_snmp();
+			}else{
+				$snmp_result = true;
 			}
-		} else {
-			/* ping ICMP/UDP only */
-			if ($ping_ping) {
-				if ($ping_type == PING_ICMP) {
-					$ping_result = $this->ping_icmp();
-				} else {
-					$ping_result = $this->ping_udp();
-				}
-			}
+		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
+			$snmp_result = false;
 		}
 
 		switch ($avail_method) {
