@@ -137,6 +137,8 @@ function format_snmp_string($string) {
 		
 		/* copy the final result and make it upper case */
 		$string = strtoupper($octet);
+	}elseif (preg_match("/Timeticks:\s\((\d+)\)\s.+\s\d+:\d+:\d+\.\d+/", $string, $matches)) {
+		$string = $matches[1];
 	}
 	
 	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
