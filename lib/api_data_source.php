@@ -25,6 +25,10 @@
 */
 
 function api_data_source_remove($local_data_id) {
+	if (empty($local_data_id)) {
+		return;
+	}
+
 	$data_template_data_id = db_fetch_cell("select id from data_template_data where local_data_id=$local_data_id");
 
 	if (!empty($data_template_data_id)) {

@@ -25,6 +25,10 @@
 */
 
 function api_graph_remove($local_graph_id) {
+	if (empty($local_graph_id)) {
+		return;
+	}
+
 	db_execute("delete from graph_templates_graph where local_graph_id=$local_graph_id");
 	db_execute("delete from graph_templates_item where local_graph_id=$local_graph_id");
 	db_execute("delete from graph_tree_items where local_graph_id=$local_graph_id");
