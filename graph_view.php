@@ -46,7 +46,7 @@ switch ($_REQUEST["action"]) {
 case 'tree':
 	include_once ('include/tree_view_functions.php');
 	
-	if ($current_user["show_tree"] == "") {
+	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_tree"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
 	}
 	
@@ -97,9 +97,9 @@ case 'tree':
 case 'preview':
 	define("ROWS_PER_PAGE", 10);
 	
-	$sql_or = "";
+	$sql_or = ""; $sql_where = ""; $sql_join = "";
 	
-	if ($current_user["show_preview"] == "") {
+	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_preview"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
 	}
 	
@@ -292,7 +292,7 @@ case 'preview':
 case 'list':
 	include_once("include/form.php");
 	
-	if ($current_user["show_list"] == "") {
+	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_list"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
 	}
 	
