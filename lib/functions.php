@@ -290,7 +290,7 @@ function stri_replace($find, $replace, $string) {
 
 function clean_up_name($string) {
     $string = preg_replace("/[\s\.]+/", "_", $string);
-    $string = preg_replace("/[*\/\*&%\"\',]/", "", $string);
+    $string = preg_replace("/[*\/\*&%\"\',:]/", "", $string);
     
     return $string;
 }
@@ -342,48 +342,148 @@ function generate_graph_def_name($graph_item_id) {
 	return $result;
 }
 
-function get_next_item($tblname, $field, $startid, $lmt_query) {
-	$data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_query");
-	$end_seq = $data1["mymax"];
-	$data2 = db_fetch_row("select $field from $tblname where id=$startid");
-	$start_seq = $data2[$field];
+function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
+	$graph_item = db_fetch_row("select local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
 	
-	$i = $start_seq;
-	if ($end_seq != $start_seq) {
-		while ($i < $end_seq) {
-			$data3 = db_fetch_row("select $field from $tblname where $field=$i+1 and $lmt_query");
-			
-			if (sizeof($data3) > 0) {
-				return $data3[$field];
-			}
-			
-			$i++;
-		}
+	if (empty($graph_item["local_graph_id"])) {
+		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " and local_graph_id=0";
+	}else{
+		$sql_where = "local_graph_id = " . $graph_item["local_graph_id"];
 	}
 	
-	return $start_seq;
+	$graph_items = db_fetch_assoc("select id,sequence from graph_templates_item where $sql_where order by sequence");
+	
+	/* get a list of parent+children of our target group */
+	$target_graph_group_array = get_graph_group($target_id);
+	
+	/* start the sequence at '1' */
+	$sequence_counter = 1;
+	
+	if (sizeof($graph_items) > 0) {
+	foreach ($graph_items as $item) {
+		/* check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on */
+		if ($target_id == $item["id"]) {
+			if ($direction == "next") {
+				$group_array1 = $target_graph_group_array;
+				$group_array2 = $graph_group_array;
+			}elseif ($direction == "previous") {
+				$group_array1 = $graph_group_array;
+				$group_array2 = $target_graph_group_array;
+			}
+			
+			while (list($sequence,$graph_template_item_id) = each($group_array1)) {
+				db_execute("update graph_templates_item set sequence=$sequence_counter where id=$graph_template_item_id");
+				
+				/* propagate to ALL graphs using this template */
+				if (empty($graph_item["local_graph_id"])) {
+					db_execute("update graph_templates_item set sequence=$sequence_counter where local_graph_template_item_id=$graph_template_item_id");
+				}
+				
+				$sequence_counter++;
+			}
+			
+			while (list($sequence,$graph_template_item_id) = each($group_array2)) {
+				db_execute("update graph_templates_item set sequence=$sequence_counter where id=$graph_template_item_id");
+				
+				/* propagate to ALL graphs using this template */
+				if (empty($graph_item["local_graph_id"])) {
+					db_execute("update graph_templates_item set sequence=$sequence_counter where local_graph_template_item_id=$graph_template_item_id");
+				}
+				
+				$sequence_counter++;
+			}
+		}
+		
+		/* make sure to "ignore" the items that we handled above */
+		if ((!isset($graph_group_array{$item["id"]})) && (!isset($target_graph_group_array{$item["id"]}))) {
+			db_execute("update graph_templates_item set sequence=$sequence_counter where id=" . $item["id"]);
+			$sequence_counter++;
+		}
+	}
+	}
 }
 
-function get_last_item($tblname, $field, $startid, $lmt_query) {
-	$data1 = db_fetch_row("select min($field) mymin from $tblname where $lmt_query");
-	$end_seq = $data1["mymin"];
-	$data2 = db_fetch_row("select $field from $tblname where id=$startid");
-	$start_seq = $data2[$field];
+function get_graph_group($graph_template_item_id) {
+	global $graph_item_types;
 	
-	$i = $start_seq;
-	if ($end_seq != $start_seq) {
-		while ($i > $end_seq) {
-			$data3 = db_fetch_row("select $field from $tblname where $field=$i-1 and $lmt_query");
-			
-			if (sizeof($data3) > 0 && $data3[$field] != 0) {
-				return $data3[$field];
-			}
-			
-			$i--;
-		}
+	$graph_item = db_fetch_row("select graph_type_id,sequence,local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
+	
+	if (empty($graph_item["local_graph_id"])) {
+		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " and local_graph_id=0";
+	}else{
+		$sql_where = "local_graph_id = " . $graph_item["local_graph_id"];
 	}
 	
-	return $start_seq;
+	/* a parent must NOT be the following graph item types */
+	if (ereg("(GPRINT|VRULE|HRULE|COMMENT)", $graph_item_types{$graph_item["graph_type_id"]})) {
+		return 0;
+	}
+	
+	$graph_item_children_array = array();
+	
+	/* put the parent item in the array as well */
+	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
+	
+	$graph_items = db_fetch_assoc("select id,graph_type_id from graph_templates_item where sequence > " . $graph_item["sequence"] . " and $sql_where order by sequence");
+	
+	if (sizeof($graph_items) > 0) {
+	foreach ($graph_items as $item) {
+		if ($graph_item_types{$item["graph_type_id"]} == "GPRINT") {
+			/* a child must be a GPRINT */
+			$graph_item_children_array{$item["id"]} = $item["id"];
+		}else{
+			/* if not a GPRINT then get out */
+			return $graph_item_children_array;
+		}
+	}
+	}
+	
+	return $graph_item_children_array;
+}
+
+function get_graph_parent($graph_template_item_id, $direction) {
+	$graph_item = db_fetch_row("select sequence,local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
+	
+	if (empty($graph_item["local_graph_id"])) {
+		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " and local_graph_id=0";
+	}else{
+		$sql_where = "local_graph_id = " . $graph_item["local_graph_id"];
+	}
+	
+	if ($direction == "next") {
+		$sql_operator = ">";
+		$sql_order = "ASC";
+	}elseif ($direction == "previous") {
+		$sql_operator = "<";
+		$sql_order = "DESC";
+	}
+	
+	$next_parent_id = db_fetch_cell("select id from graph_templates_item where sequence $sql_operator " . $graph_item["sequence"] . " and graph_type_id != 9 and $sql_where order by sequence $sql_order limit 1");
+	
+	if (empty($next_parent_id)) {
+		return 0;
+	}else{
+		return $next_parent_id;
+	}
+}
+
+function get_item($tblname, $field, $startid, $lmt_query, $direction) {
+	if ($direction == "next") {
+		$sql_operator = ">";
+		$sql_order = "ASC";
+	}elseif ($direction == "previous") {
+		$sql_operator = "<";
+		$sql_order = "DESC";
+	}
+	
+	$current_sequence = db_fetch_cell("select $field from $tblname where id=$startid");
+	$new_item_id = db_fetch_cell("select id from $tblname where $field $sql_operator $current_sequence and $lmt_query order by $field $sql_order limit 1");
+	
+	if (empty($new_item_id)) {
+		return $startid;
+	}else{
+		return $new_item_id;
+	}
 }
 
 function get_sequence($id, $field, $table_name, $group_query) {
@@ -402,21 +502,21 @@ function get_sequence($id, $field, $table_name, $group_query) {
 }
 
 function move_item_down($table_name, $current_id, $group_query) {
-	$next_item = get_next_item($table_name, "sequence", $current_id, $group_query);
+	$next_item = get_item($table_name, "sequence", $current_id, $group_query, "next");
 	
-	$id = db_fetch_cell("select id from $table_name where sequence=$next_item and $group_query");
 	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
-	db_execute("update $table_name set sequence=$next_item where id=$current_id");
-	db_execute("update $table_name set sequence=$sequence where id=$id");
+	$sequence_next = db_fetch_cell("select sequence from $table_name where id=$next_item");
+	db_execute("update $table_name set sequence=$sequence_next where id=$current_id");
+	db_execute("update $table_name set sequence=$sequence where id=$next_item");
 }
 
 function move_item_up($table_name, $current_id, $group_query) {
-	$last_item = get_last_item($table_name, "sequence", $current_id, $group_query);
+	$last_item = get_item($table_name, "sequence", $current_id, $group_query, "previous");
 	
-	$id = db_fetch_cell("select id from $table_name where sequence=$last_item and $group_query");
 	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
-	db_execute("update $table_name set sequence=$last_item where id=$current_id");
-	db_execute("update $table_name set sequence=$sequence where id=$id");
+	$sequence_last = db_fetch_cell("select sequence from $table_name where id=$last_item");
+	db_execute("update $table_name set sequence=$sequence_last where id=$current_id");
+	db_execute("update $table_name set sequence=$sequence where id=$last_item");
 }
 
 function exec_into_array($command_line) {

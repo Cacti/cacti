@@ -26,6 +26,7 @@
 
 include ('include/auth.php');
 include_once ("include/form.php");
+include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 
 define("ROWS_PER_PAGE", 30);
@@ -393,9 +394,12 @@ function item() {
 		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
 		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-		print "<td><a href='graphs.php?action=item_movedown&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-		       	   <a href='graphs.php?action=item_moveup&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-		print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
+		
+		if (empty($graph_template_id)) {
+			print "<td><a href='graphs.php?action=item_movedown&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+					<a href='graphs.php?action=item_moveup&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+			print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
+		}
 		
 		print "</tr>";
 		
@@ -454,15 +458,25 @@ function item() {
 }
 
 function item_movedown() {
-	include_once ("include/functions.php");
+	$arr = get_graph_group($_GET["graph_template_item_id"]);
+	$next_id = get_graph_parent($_GET["graph_template_item_id"], "next");
 	
-	move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);	
+	if ((!empty($next_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
+		move_graph_group($_GET["graph_template_item_id"], $arr, $next_id, "next");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
+		move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);
+	}
 }
 
 function item_moveup() {
-	include_once ("include/functions.php");
+	$arr = get_graph_group($_GET["graph_template_item_id"]);
+	$previous_id = get_graph_parent($_GET["graph_template_item_id"], "previous");
 	
-	move_item_up("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);	
+	if ((!empty($previous_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
+		move_graph_group($_GET["graph_template_item_id"], $arr, $previous_id, "previous");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
+		move_item_up("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);
+	}
 }
 
 function item_remove() {
@@ -531,7 +545,7 @@ function item_edit() {
 
 function graph_diff() {
 	global $colors;
-	include("include/config_arrays.php");
+	include ("include/config_arrays.php");
 	
 	$template_query = "select
 		graph_templates_item.id,

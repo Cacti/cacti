@@ -449,30 +449,40 @@ function gprint_presets() {
 
 function item_movedown() {
 	include_once ("include/functions.php");
-	include_once ("include/utility_functions.php");
 	
-	/* this is so we know the "other" graph item to propagate the changes to */
-	$next_item = get_next_item("graph_templates_item", "sequence", $_GET["graph_template_item_id"], "id=" . $_GET["id"] . " and local_graph_id=0");
+	$arr = get_graph_group($_GET["graph_template_item_id"]);
+	$next_id = get_graph_parent($_GET["graph_template_item_id"], "next");
 	
-	move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "id=" . $_GET["id"] . " and local_graph_id=0");	
-	
-	/* propagate sequence changes to child graphs */
-	push_out_graph_item($_GET["graph_template_item_id"]);
-	push_out_graph_item($next_item);
+	if ((!empty($next_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
+		move_graph_group($_GET["graph_template_item_id"], $arr, $next_id, "next");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
+		/* this is so we know the "other" graph item to propagate the changes to */
+		$next_item = get_item("graph_templates_item", "sequence", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0", "next");
+		
+		move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
+		
+		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["graph_template_item_id"]) . " where local_graph_template_item_id=" . $_GET["graph_template_item_id"]);
+		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $next_item). " where local_graph_template_item_id=" . $next_item);
+	}
 }
 
 function item_moveup() {
 	include_once ("include/functions.php");
-	include_once ("include/utility_functions.php");
 	
-	/* this is so we know the "other" graph item to propagate the changes to */
-	$last_item = get_last_item("graph_templates_item", "sequence", $_GET["graph_template_item_id"], "id=" . $_GET["id"] . " and local_graph_id=0");
+	$arr = get_graph_group($_GET["graph_template_item_id"]);
+	$next_id = get_graph_parent($_GET["graph_template_item_id"], "previous");
 	
-	move_item_up("graph_templates_item", $_GET["graph_template_item_id"], "id=" . $_GET["id"] . " and local_graph_id=0");	
-	
-	/* propagate sequence changes to child graphs */
-	push_out_graph_item($_GET["graph_template_item_id"]);
-	push_out_graph_item($last_item);
+	if ((!empty($next_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
+		move_graph_group($_GET["graph_template_item_id"], $arr, $next_id, "previous");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
+		/* this is so we know the "other" graph item to propagate the changes to */
+		$last_item = get_item("graph_templates_item", "sequence", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0", "previous");
+		
+		move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
+		
+		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["graph_template_item_id"]) . " where local_graph_template_item_id=" . $_GET["graph_template_item_id"]);
+		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $last_item). " where local_graph_template_item_id=" . $last_item);
+	}
 }
 
 function item() {
