@@ -50,6 +50,7 @@ ini_set("max_execution_time", "0");
 
 /* Get number of polling items from the database */
 $polling_items = db_fetch_assoc("select id from host where disabled = '' order by id");
+$total_hosts = sizeof($polling_items);
 
 /* Retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
@@ -162,7 +163,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				$method,
 				$concurrent_processes,
 				$max_threads,
-				sizeof($polling_items),
+				$total_hosts,
 				$hosts_per_file),true,"SYSTEM");
 
 			break;
@@ -178,7 +179,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				exit;
 			}
 
-			usleep(500000);
+			usleep(50000);
 			$loop_count++;
 		}
 	}
