@@ -195,7 +195,7 @@ function rrdtool_function_update($dsid, $multi_data_source, $show_source) {
     }else{
 		/* single DS: This string joins on the src_data->src_fields table to get 
 		the field name */
-		$data = "select 
+		$data = db_fetch_assoc("select 
 			d.DSName,
 			a.Value
 			from rrd_ds d left join src_data a on d.id=a.dsid
@@ -203,7 +203,7 @@ function rrdtool_function_update($dsid, $multi_data_source, $show_source) {
 			where d.id=$dsid
 			and f.inputoutput=\"out\"
 			and f.updaterra=\"on\"
-			order by d.id";
+			order by d.id");
     }
     
     /* setup the counter */
