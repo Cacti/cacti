@@ -225,6 +225,7 @@ switch ($action) {
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save", "user_admin.php");?>
+			</form>
 		</td>
 	</tr>
 	
@@ -339,6 +340,7 @@ switch ($action) {
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save_perms", "user_admin.php");?>
+			</form>
 		</td>
 	</tr>
 	
@@ -514,6 +516,7 @@ switch ($action) {
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save", "user_admin.php");?>
+			</form>
 		</td>
 	</tr>
 	

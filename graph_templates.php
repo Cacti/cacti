@@ -58,6 +58,7 @@
 			<td colspan="6" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Item Configuration</td>
 			<td class="textHeaderDark" align="right" bgcolor="#00438C"><strong><a class="linkOverDark" href="graph_templates.php?action=item_edit&graph_template_id=<?print $args[graph_template_id];?>">Add</a>&nbsp;</strong></td>
 		</tr>
+		
 		<?
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
@@ -67,8 +68,6 @@
 			DrawMatrixHeaderItem("CF Type",$colors[header_text],1);
 			DrawMatrixHeaderItem("Item Color",$colors[header_text],3);
 		print "</tr>";
-		
-		$allow_grouping = db_fetch_cell("select grouping from graph_templates_graph where graph_template_id=$args[graph_template_id]");
 		
 		$template_item_list = db_fetch_assoc("select
 			graph_templates_item.id,
@@ -456,6 +455,7 @@ switch ($action) {
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("input_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
+				</form>
 			</td>
 		</tr>
 		<?
@@ -517,6 +517,7 @@ switch ($action) {
 			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
 			left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
 			where graph_templates_item.graph_template_id=$args[graph_template_id]
+			and graph_templates_item.local_graph_id=0
 			and (def_graph_type.name = 'AREA' or def_graph_type.name = 'STACK' or def_graph_type.name = 'LINE1'
 			or def_graph_type.name = 'LINE2' or def_graph_type.name = 'LINE3') order by graph_templates_item.sequence_parent");
 		
@@ -620,6 +621,7 @@ switch ($action) {
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("item_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
+				</form>
 			</td>
 		</tr>
 		<?
@@ -674,6 +676,13 @@ switch ($action) {
 				The name given to this graph template.
 			</td>
 			<?DrawFormItemTextBox("name",$template[name],"","50", "40");?>
+		</tr>
+		
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right" background="images/blue_line.gif">
+				<?DrawFormSaveButton("template_save", "graph_templates.php");?>
+				</form>
+			</td>
 		</tr>
 		
 		<?
@@ -840,6 +849,7 @@ switch ($action) {
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("template_save", "graph_templates.php");?>
+				</form>
 			</td>
 		</tr>
 		<?

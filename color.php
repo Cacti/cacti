@@ -72,6 +72,7 @@ switch ($action) {
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right" background="images/blue_line.gif">
 			<?DrawFormSaveButton("save", "color.php");?>
+			</form>
 		</td>
 	</tr>
 	<?

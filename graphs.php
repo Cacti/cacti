@@ -198,6 +198,12 @@
 		<?
 		$i++;
 		}
+		}else{
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+				<td colspan="7">
+					<em>No Items</em>
+				</td>
+			</tr><?
 		}
 		
 		/* only display the "inputs" area if we are using a graph template for this graph */
@@ -269,16 +275,23 @@
 					
 					?>
 				</tr>
-			<?
+				<?
 			}
-			DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
-			?>
-			<tr bgcolor="#FFFFFF">
-				 <td colspan="2" align="right" background="images/blue_line.gif">
-					<?DrawFormSaveButton("input_save", "graphs.php");?>
-				</td>
-			</tr>
-			<?
+				DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
+				?>
+				<tr bgcolor="#FFFFFF">
+					 <td colspan="2" align="right" background="images/blue_line.gif">
+						<?DrawFormSaveButton("input_save", "graphs.php");?>
+						</form>
+					</td>
+				</tr>
+				<?
+			}else{
+				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+					<td colspan="1">
+						<em>No Inputs</em>
+					</td>
+				</tr><?
 			}
 		}
 	}
@@ -468,6 +481,7 @@ switch ($action) {
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("item_save", "graphs.php?action=graph_edit&local_graph_id=$args[local_graph_id]");?>
+				</form>
 			</td>
 		</tr>
 		<?
@@ -507,7 +521,12 @@ switch ($action) {
 		}
 		}
 		
-		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		if ($config[full_view_graph][value] == "") {
+			header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		}elseif ($config[full_view_graph][value] == "on") {
+			header ("Location: graphs.php?action=graph_edit&local_graph_id=$form[local_graph_id]");
+		}
+		
 		break;
 	case 'graph_duplicate':
 		include_once ('include/utility_functions.php');
@@ -622,13 +641,18 @@ switch ($action) {
 		}
 		
 		$graph_template_name = db_fetch_cell("select  name from graph_templates where id=$graphs[graph_template_id]");
+		
+		if ($config[full_view_graph][value] == "on") {
+			item();	
+			new_table();
+		}
 		?>
 		
-		<form method="post" action="graphs.php">
-		
 		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Selection</td>
+			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Selection<?if ($graph_template_name != "") { print " <strong>[Template: $graph_template_name]</strong>"; }?></td>
 		</tr>
+		
+		<form method="post" action="graphs.php">
 		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
@@ -640,19 +664,15 @@ switch ($action) {
 		</tr>
 		
 		<?
-		new_table();
-		
-		if ($config[full_view_graph][value] == "on") {
-			item();	
+		if ($config[full_view_graph][value] == "") {
 			new_table();
 		}
 		?>
 		
 		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Custom Graph Configuration<?if ($graph_template_name != "") { print " <strong>[Template: $graph_template_name]</strong>"; }?></td>
+			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Custom Graph Configuration</td>
 		</tr>
-		
-		
+				
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Title</font><br>
@@ -897,6 +917,7 @@ switch ($action) {
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("graph_save", "graphs.php");?>
+				</form>
 			</td>
 		</tr>
 		<?
@@ -942,6 +963,7 @@ switch ($action) {
 		<tr bgcolor="#<?print $colors[form_alternate2];?>">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
 				<?DrawFormSaveButton("save", "graphs.php?action=tree");?>
+				</form>
 			</td>
 		</tr>
 		<?
