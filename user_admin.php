@@ -67,7 +67,9 @@ switch ($action) {
 	    db_execute("delete from auth_graph where userid=$id");
 	    db_execute("delete from auth_graph_hierarchy where userid=$id");
 	    db_execute("delete from settings_graphs where userid=$id");
-	    db_execute("delete from settings_tree where userid=$id");
+	    db_execute("delete from settings_viewing_tree where userid=$id");
+	    db_execute("delete from settings_graph_tree where userid=$id");
+	    db_execute("delete from settings_ds_tree where userid=$id");
 	}
     
     header("Location: $PHP_SELF"); exit;

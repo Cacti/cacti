@@ -35,7 +35,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			ag.graphid as aggraphid, ag.userid as aguserid 
 			from graph_tree_view_items h 
 			left join rrd_graph g on h.graph_id=g.id 
-			left join settings_tree st on (h.id=st.treeitemid and st.userid=$user_id)
+			left join settings_viewing_tree st on (h.id=st.treeitemid and st.userid=$user_id)
 			left join auth_graph ag on (g.id=ag.graphid and ag.userid=$user_id) 
 			where h.tree_id=$tree_id
 			and h.order_key like '$search_key%'
@@ -50,7 +50,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			from graph_tree_view_items h 
 			left join rrd_graph g on h.graph_id=g.id 
 			left join rrd_rra r on h.rraid=r.id 
-			left join settings_tree st on (h.id=st.treeitemid and st.userid=$user_id) 
+			left join settings_viewing_tree st on (h.id=st.treeitemid and st.userid=$user_id) 
 			where h.tree_id=$tree_id 
 			and h.order_key like '$search_key%'
 			order by h.order_key";
@@ -66,7 +66,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
     for ($i = (sizeof($heirarchy) - 1); $i > 0; --$i) {
 	$leaf = $heirarchy[$i];
 	
-	## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_tree == 1)
+	## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_viewing_tree == 1)
 	if ($set[status] == 1) {
 	    $hide[preg_replace("/0+$/","",$set[order_key])] = 1; 
 #		print "Adding Hide for '".preg_replace("/0+$/","",$set[order_key])."'<BR>\n";

@@ -38,8 +38,8 @@ if (isset($hide) == true) {
 	
 	/* only update expand/contract info is this user has writes to keep their own settings */
 	if ($graph_settings == "on") {
-		db_execute("delete from settings_tree where treeitemid=$branch_id and userid=$user_id");
-		db_execute("insert into settings_tree (treeitemid,userid,status) values ($branch_id,$user_id,$hide)");
+		db_execute("delete from settings_viewing_tree where treeitemid=$branch_id and userid=$user_id");
+		db_execute("insert into settings_viewing_tree (treeitemid,userid,status) values ($branch_id,$user_id,$hide)");
 	}
 }
 
