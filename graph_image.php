@@ -39,6 +39,6 @@ if ($graph_nolegend != "") {
 }
 
 $graph_data_array["print_source"] = $_GET["showsource"];
-print rrdtool_function_graph($_GET["graphid"], $_GET["rraid"], $graph_data_array);
+print rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array);
 
 ?>
