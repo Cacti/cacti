@@ -1,5 +1,3 @@
-<form method="post" action="<?print basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);?>">
-
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td>
