@@ -49,8 +49,14 @@ function read_default_graph_config_option($config_name) {
 	include ($config["include_path"] . "/config_settings.php");
 
 	while (list($tab_name, $tab_array) = each($settings_graphs)) {
-		if (isset($tab_array[$config_name])) {
+		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]["default"]))) {
 			return $tab_array[$config_name]["default"];
+		}else{
+			while (list($field_name, $field_array) = each($tab_array)) {
+				if ((isset($field_array["items"])) && (isset($field_array["items"][$config_name])) && (isset($field_array["items"][$config_name]["default"]))) {
+					return $field_array["items"][$config_name]["default"];
+				}
+			}
 		}
 	}
 }
@@ -110,8 +116,14 @@ function read_default_config_option($config_name) {
 	include ($config["include_path"] . "/config_settings.php");
 
 	while (list($tab_name, $tab_array) = each($settings)) {
-		if (isset($tab_array[$config_name]["default"])) {
+		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]["default"]))) {
 			return $tab_array[$config_name]["default"];
+		}else{
+			while (list($field_name, $field_array) = each($tab_array)) {
+				if ((isset($field_array["items"])) && (isset($field_array["items"][$config_name])) && (isset($field_array["items"][$config_name]["default"]))) {
+					return $field_array["items"][$config_name]["default"];
+				}
+			}
 		}
 	}
 }
