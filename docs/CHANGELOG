@@ -1,5 +1,12 @@
 raXnet - cacti
 
+0.8.6b
+-bug#0000318: Only delete the Cacti system user when uninstalling the RPM package
+rather than during each upgrade.
+-bug: Problems with the 95th percentile and bandwidth summation graph variables.
+-bug: Problem with random gaps in some or all graphs caused by staggered RRDTool
+update times.
+
 0.8.6a
 -bug#0000287: Non-host based scripts failing to populate the poller cache (0.8.6).
 -bug#0000285: Data query variables on graphs should reflect the data source of
