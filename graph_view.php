@@ -94,7 +94,7 @@ case 'tree':
 	
 	break;
 case 'preview':
-	define("ROWS_PER_PAGE", read_graph_config_option("num_columns")*read_graph_config_option("num_rows"));
+	define("ROWS_PER_PAGE", read_graph_config_option("num_graphs_per_page");
 	
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
 	
