@@ -136,6 +136,7 @@ $menu = array(
 	"Graph Setup" => array(
 		"graphs.php" => "Graph Management",
 		"gprint_presets.php" => "GPRINT Presets",
+		"cdef.php" => "CDEFs",
 		"tree.php" => "Graph Trees",
 		"color.php" => "Colors"
 		),
@@ -149,8 +150,7 @@ $menu = array(
 		"host.php" => 'Polling Hosts',
 		"rra.php" => "Available RRA's",
 		"data_input.php" => "Data Input Methods",
-		"snmp.php" => "Data Queries",
-		"cdef.php" => "CDEF's"
+		"snmp.php" => "Data Queries"
 		),
 	"Configuration"  => array(
 		"utilities.php" => "Utilities",
