@@ -216,7 +216,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 		return 0;
 	}
 
-	if (ereg("^[0-9]+$", $regexp_match_array[4])) {
+	if (is_numeric($regexp_match_array[4])) {
 		$summation_timespan_start = -$regexp_match_array[4];
 	}else{
 		$summation_timespan_start = $graph_start;
@@ -270,7 +270,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}
 
 	/* determine the floating point precision */
-	if (ereg("^[0-9]+$", $regexp_match_array[3])) {
+	if (is_numeric($regexp_match_array[3])) {
 		$round_to = $regexp_match_array[3];
 	}else{
 		$round_to = 2;
