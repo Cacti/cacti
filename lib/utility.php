@@ -159,8 +159,8 @@ function update_poller_cache($local_data_id) {
 			
 			if (sizeof($outputs) > 0) {
 			foreach ($outputs as $output) {
-				if (isset($snmp_queries["fields"][0]{$output["snmp_field_name"]}[0]["oid"])) {
-					$oid = $snmp_queries["fields"][0]{$output["snmp_field_name"]}[0]["oid"] . "." . $query["snmp_index"];
+				if (isset($snmp_queries["fields"]{$output["snmp_field_name"]}["oid"])) {
+					$oid = $snmp_queries["fields"]{$output["snmp_field_name"]}["oid"] . "." . $query["snmp_index"];
 				}
 				
 				if (!empty($oid)) {
@@ -181,8 +181,8 @@ function update_poller_cache($local_data_id) {
 			
 			if (sizeof($outputs) > 0) {
 			foreach ($outputs as $output) {
-				if (isset($script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"])) {
-					$identifier = $script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"];
+				if (isset($script_queries["fields"]{$output["snmp_field_name"]}["query_name"])) {
+					$identifier = $script_queries["fields"]{$output["snmp_field_name"]}["query_name"];
 					
 					/* get any extra arguments that need to be passed to the script */
 					if (!empty($script_queries["arg_prepend"])) {
