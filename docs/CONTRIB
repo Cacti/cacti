@@ -1,5 +1,26 @@
 Documentation of user-contributed code:
 
+2004-08-23: moonman [nitzan_tz@co.zahav.net.il] based on patch by SR [sbalukoff@cardomain.com]
+  The attached patch against cacti 0.8.5a adds the 'SIMILAR_DATA_SOURCES_NODUPS' special
+  data souce as a possible CDEF input for graph template items. This makes it possible to
+  graph several different types of data on the same graph (eg. traffic_in and traffic_out),
+  and have totals for each type of data without having to write one-shot CDEFs to handle each
+  and every total. This really speeds up the generation of aggregate graphs where more than
+  one data type is being graphed. (Check out the attached graph to see what I mean.)
+
+  To use:
+
+    1. Define a CDEF that uses the SIMILAR_DATA_SOURCES_NODUPS special data source.
+    2. Create a graph template with a couple data sources of similar type (and associated
+       graph template items.)
+    3. Create a graph template item with the above CDEF, and with the same data source type
+       as above and it will be the sum of the above.
+    4. Add any different data source type you want and it won't affect the above sum.
+
+  (And yes, you can interchange steps 3 and 4 above.)
+
+  [source: http://www.raxnet.net/board/viewtopic.php?t=4080]
+
 2004-08-02: branix [branix@osmcluj.ro]
   Cacti's export function was buggy in cacti 0.8.5a, and lacked extra functionality.
   The patches presented here allow extra graph export options.
@@ -18,7 +39,8 @@ Documentation of user-contributed code:
 
     * Classic - graph exporting will be done localy, on the host computer
     * FTP using the PHP built-in funtions - only available to users that built PHP with FTP support
-    * FTP using the ncftpput client - for users which don't want to use PHP's built-in FTP support, and have the ncftpput binary installed.
+    * FTP using the ncftpput client - for users which don't want to use PHP's built-in FTP support,
+      and have the ncftpput binary installed.
 
 2004-05-17: Eric Steffen [eric.steffen@gmx.net]
   Bonsai is very similar to Cactistoric developed by Bruno Prigent, with a little bit
