@@ -601,7 +601,7 @@ $settings_graphs = array(
 			"friendly_name" => "Default Graph Tree",
 			"description" => "The default graph tree to use when displaying graphs in tree mode.",
 			"method" => "drop_sql",
-			"sql" => "select id,name from graph_tree where user_id=0 order by name",
+			"sql" => "select id,name from graph_tree order by name",
 			"default" => "0"
 			),
 		"default_tree_view_mode" => array(
