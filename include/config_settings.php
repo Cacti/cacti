@@ -147,6 +147,13 @@ $settings = array(
 			"default" => "15",
 			"max_length" => "10"
 			),
+		"max_data_query_javascript_rows" => array(
+			"friendly_name" => "Data Queries - Maximum JavaScript Rows",
+			"description" => "The maximum number of data query rows to display with JavaScript on the 'New Graphs' page.",
+			"method" => "textbox",
+			"default" => "96",
+			"max_length" => "10"
+			),
 		"num_rows_data_source" => array(
 			"friendly_name" => "Data Sources - Rows Per Page",
 			"description" => "The number of rows to display on a single page for data sources.",

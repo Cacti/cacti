@@ -601,6 +601,8 @@ function graphs() {
 	
 	if (sizeof($snmp_queries) > 0) {
 	foreach ($snmp_queries as $snmp_query) {
+		unset($total_rows);
+		
 		$xml_array = get_data_query_array($snmp_query["id"]);
 		$xml_outputs = array();
 		
@@ -611,18 +613,29 @@ function graphs() {
 			while (list($field_name, $field_array) = each($xml_array["fields"])) {
 				if ($field_array["direction"] == "input") {
 					$num_input_fields++;
+					
+					if (!isset($total_rows)) {
+						$total_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $host["id"] . " and snmp_query_id=" . $snmp_query["id"] . " and field_name='$field_name'"));
+					}
 				}
 			}
 			
 			reset($xml_array["fields"]);
 			$snmp_query_indexes = array();
-			$num_visible_fields{$snmp_query["id"]} = 0;
+			$num_visible_fields = 0;
 			$i = 0;
+		}
+		
+		/* we give users the option to turn off the javascript features for data queries with lots of rows */
+		if (read_config_option("max_data_query_javascript_rows") >= $total_rows) {
+			$use_javascript = true;
+		}else{
+			$use_javascript = false;
 		}
 		
 		$snmp_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
 		
-		if (sizeof($snmp_query_graphs) > 0) {
+		if ((sizeof($snmp_query_graphs) > 0) && ($use_javascript == true)) {
 			print "<script type='text/javascript'>\n<!--\n";
 			
 			foreach ($snmp_query_graphs as $snmp_query_graph) {
@@ -635,7 +648,6 @@ function graphs() {
 					and data_input_fields.type_code='output_type'
 					and data_input_data.value='" . $snmp_query_graph["id"] . "'
 					and data_local.host_id=" . $host["id"]);
-				
 				
 				print "created_graphs[" . $snmp_query_graph["id"] . "] = new Array(";
 				
@@ -690,7 +702,7 @@ function graphs() {
 							$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
 						}
 						
-						$num_visible_fields{$snmp_query["id"]}++;
+						$num_visible_fields++;
 					}elseif (sizeof($raw_data) == 0) {
 						/* we are choosing to not display this column, so unset the associated
 						field in the xml array so it is not drawn */
@@ -699,14 +711,14 @@ function graphs() {
 				}
 			}
 			
-			if ($num_visible_fields{$snmp_query["id"]} == 0) {
+			if ($num_visible_fields == 0) {
 				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td>This data query returned 0 rows, perhaps there was a problem executing this
 					data query. You can <a href='host.php?action=query_verbose&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'>run this data 
 					query in debug mode</a> to get more information.</td></tr>\n";
 			}else{
 				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 						$html_dq_header
-						<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\");dq_update_selection_indicators();'></td>\n
+						<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\");" . (($use_javascript == true) ? "dq_update_selection_indicators();" : "") . "'></td>\n
 					</tr>\n";
 				
 			}
@@ -723,9 +735,9 @@ function graphs() {
 				while (list($field_name, $field_array) = each($xml_array["fields"])) {
 					if ($field_array["direction"] == "input") {
 						if (isset($snmp_query_data[$field_name][$snmp_index])) {
-							print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
+							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'" : "")  ."><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
 						}else{
-							print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'" : "") . "><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
 						}
 						
 						$column_counter++;
@@ -733,7 +745,7 @@ function graphs() {
 				}
 				
 				print "<td align='right'>";
-				print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row' onClick='dq_update_selection_indicators();'>";
+				print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row' " . (($use_javascript == true) ? "onClick='dq_update_selection_indicators();'" : "") . ">";
 				print "</td>";
 				print "</tr>\n";
 				
@@ -759,7 +771,7 @@ function graphs() {
 						</td>
 						<td align='right'>
 							<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
-							<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields{$snmp_query["id"]} . ");'>
+							<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' " . (($use_javascript == true) ? "onChange='dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields . ");'" : "") . ">
 								"; create_list($data_query_graphs,"name","id","0"); print "
 							</select>
 						</td>
@@ -768,6 +780,10 @@ function graphs() {
 		}
 		
 		print "<br>";
+		
+		if ($use_javascript == true) {
+			print "<script type='text/javascript'>dq_update_deps(" . $snmp_query["id"] . "," . ($num_visible_fields) . ");</script>\n";
+		}
 	}
 	}
 	
@@ -779,15 +795,5 @@ function graphs() {
 	
 	print "<script type='text/javascript'>dq_update_selection_indicators();</script>\n";
 	print "<script type='text/javascript'>gt_update_selection_indicators();</script>\n";
-	
-	reset($snmp_queries);
-	
-	if (sizeof($snmp_queries) > 0) {
-	foreach ($snmp_queries as $snmp_query) {
-		$num_input_fields = $num_visible_fields{$snmp_query["id"]};
-		
-		print "<script type='text/javascript'>dq_update_deps(" . $snmp_query["id"] . "," . ($num_input_fields) . ");</script>\n";
-	}
-	}
 }
 ?>
