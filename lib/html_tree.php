@@ -425,10 +425,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 		
 		if (sizeof($graph_templates) > 0) {
 		foreach ($graph_templates as $graph_template) {
-			if (empty($graph_template_id)) {
-				print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>";
-			}
-			
 			$graphs = db_fetch_assoc("select
 				graph_templates_graph.title_cache,
 				graph_templates_graph.local_graph_id
@@ -442,13 +438,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 			
 			$i = 0;
 			if (sizeof($graphs) > 0) {
-			foreach ($graphs as $graph) {
-				form_alternate_row_color("f9f9f9", "ffffff", $i);
-				print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all&type=tree'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
-				print "<tr>\n";
+				if (empty($graph_template_id)) {
+					print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>";
+				}
 				
-				$i++;
-			}
+				foreach ($graphs as $graph) {
+					form_alternate_row_color("f9f9f9", "ffffff", $i);
+					print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all&type=tree'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
+					print "<tr>\n";
+					
+					$i++;
+				}
 			}
 		}
 		}
