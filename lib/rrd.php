@@ -35,7 +35,7 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 	include_once ("functions.php");
 	
 	if ($log_command == true) {
-		LogData("CMD: " . read_config_option("path_rrdtool") . " $command_line");
+		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
 	}
 	
 	if ($output_flag == "") { $output_flag = "1"; }
@@ -118,12 +118,13 @@ function rrdtool_function_create($local_data_id, $show_source) {
 		left join rra on data_template_data_rra.rra_id=rra.id
 		left join rra_cf on rra.id=rra_cf.rra_id
 		where data_template_data.local_data_id=$local_data_id
+		and (rra.steps is not null or rra.rows is not null)
 		order by rra_cf.consolidation_function_id,rra_order");
 	
 	/* if we find that this DS has no RRA associated; get out */
 	if (sizeof($rras) <= 0) {
-		LogData("There are no RRA's assigned to local_data_id: $local_data_id!");
-		return -1;
+		log_data("ERROR: There are no RRA's assigned to local_data_id: $local_data_id.", true);
+		return false;
 	}
 	
 	/* create the "--step" line */
@@ -234,7 +235,7 @@ function rrdtool_function_tune($rrd_tune_array) {
 			$fp = popen(read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune", "r");
 			pclose($fp);
 			
-			LogData("CMD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
+			log_data("CMD: " . read_config_option("path_rrdtool") . " tune $data_source_path $rrd_tune");
 		}
 	}
 }
@@ -246,7 +247,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
-	if (read_config_option("global_auth") == "on") {
+	if ((read_config_option("global_auth") == "on") && (isset($_SESSION["sess_user_id"]))) {
 		$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=$local_graph_id and user_id=" . $_SESSION["sess_user_id"]);
 		$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 		
@@ -538,7 +539,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			how fun! */
 			
 			$pad_number = ($greatest_text_format - $text_format_lengths{$graph_item["data_template_rrd_id"]});
-			//LogData("MAX: $greatest_text_format, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
+			//log_data("MAX: $greatest_text_format, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
 			$text_padding = str_pad("", $pad_number);
 			
 			/* two GPRINT's in a row screws up the padding, lets not do that */
@@ -669,7 +670,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items</PRE>";
 	}else{
 		if (isset($graph_data_array["export"])) {
-			rrdtool_execute("graph $graph_opts$graph_defs$graph_items", false, "0");
+			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, "0");
 			return 0;
 		}else{
 			$log_data = false;

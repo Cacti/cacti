@@ -221,14 +221,18 @@ function draw_menu() {
 	print '</table></td></tr>';
 }
 
-function LogData($string) {
-    global $config,$colors,$paths;
-    
-    /* fill in the current date for printing in the log */
-    $date = date("m/d/Y g:i A");
-    
-    /* echo the data to the log (append) */
-    exec("echo '$date - $string' >> " . read_config_option("path_webroot") . read_config_option("path_webcacti") . "/log/rrd.log");
+function log_data($string, $output = false) {
+	/* fill in the current date for printing in the log */
+	$date = date("m/d/Y g:i A");
+	
+	/* echo the data to the log (append) */
+	$fp = fopen(read_config_option("path_webroot") . read_config_option("path_webcacti") . "/log/rrd.log", "a");
+	fwrite($fp, "$date - $string\n");
+	fclose($fp);
+	
+	if ($output == true) {
+		print "$string\n";
+	}
 }
 
 function get_full_script_path($local_data_id) {
