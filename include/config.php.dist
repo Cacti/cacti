@@ -42,25 +42,9 @@ $config["php_snmp_support"] = function_exists("snmpget");
 /* used for includes */
 $config["base_path"] = ereg_replace("(.*)[\/\\]include", "\\1", dirname(__FILE__));
 $config["library_path"] = ereg_replace("(.*[\/\\])include", "\\1lib", dirname(__FILE__));
+$config["images_path"] = ereg_replace("(.*[\/\\])include", "\\1images", dirname(__FILE__));
+$config["themes_path"] = ereg_replace("(.*[\/\\])include", "\\1themes", dirname(__FILE__));
 $config["include_path"] = dirname(__FILE__);
-
-/* colors */
-$colors["dark_outline"] = "454E53";
-$colors["dark_bar"] = "AEB4B7";
-$colors["panel"] = "E5E5E5";
-$colors["panel_text"] = "000000";
-$colors["panel_link"] = "000000";
-$colors["light"] = "F5F5F5";
-$colors["alternate"] = "E7E9F2";
-$colors["panel_dark"] = "C5C5C5";
-
-$colors["header"] = "00438C";
-$colors["header_panel"] = "6d88ad";
-$colors["header_text"] = "ffffff";
-$colors["form_background_dark"] = "E1E1E1";
-
-$colors["form_alternate1"] = "F5F5F5";
-$colors["form_alternate2"] = "E5E5E5";
 
 if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 	/* we don't want these pages cached */
@@ -99,23 +83,36 @@ if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 /* display ALL errors */
 error_reporting(E_ALL);
 
-/* connect to the database server */
+/* includes for database operation and logging */
 include($config["library_path"] . "/adodb/adodb.inc.php");
+include($config["library_path"] . "/functions.php");
 include($config["library_path"] . "/database.php");
+
+/* connect to the database server */
 db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type);
 
-include_once($config["library_path"] . "/functions.php");
-include_once($config["include_path"] . "/config_constants.php");
-include_once($config["include_path"] . "/config_arrays.php");
-include_once($config["include_path"] . "/config_settings.php");
-include_once($config["include_path"] . "/config_form.php");
-include_once($config["library_path"] . "/html.php");
-include_once($config["library_path"] . "/html_form.php");
-include_once($config["library_path"] . "/html_utility.php");
-include_once($config["library_path"] . "/variables.php");
-include_once($config["library_path"] . "/auth.php");
+/* global functions include */
+include($config["library_path"] . "/html.php");
+include($config["library_path"] . "/html_form.php");
+include($config["library_path"] . "/html_utility.php");
+include($config["library_path"] . "/variables.php");
+include($config["library_path"] . "/api_syslog.php");
+
+/* Contants and Variable includes */
+include($config["include_path"] . "/config_constants.php");
+include($config["include_path"] . "/config_arrays.php");
+include($config["include_path"] . "/config_settings.php");
+include($config["include_path"] . "/config_form.php");
+
+/* User and auth include */
+include($config["library_path"] . "/auth.php");
+include($config["library_path"] . "/user/user_info.php");
+
+/* load color scheme from theme file.  Load the default first and then overwrite as required with theme */
+include($config["include_path"] . "/config_colors.php");
+include(html_theme_color_scheme());
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.6c";
+$config["cacti_version"] = "0.8.7";
 
 ?>
