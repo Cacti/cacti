@@ -20,6 +20,9 @@ LIB+=-L/usr/lib
 #LIB+=-L/usr/lib
 #DEF+=-DRRD
 
+#For FreeBSD 4.X
+#DEF+=-DFREEBSD4
+
 #PThread path
 INC+=-I/usr/include
 LIB+=-L/usr/lib

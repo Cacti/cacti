@@ -22,3 +22,8 @@ int is_number (char *string){
   return(1);
 }
 
+#ifdef FREEBSD4
+long long int atoll(char *string){
+ return strtoll(string, (char **)NULL, 10);
+}
+#endif
