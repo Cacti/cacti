@@ -28,6 +28,7 @@ function upgrade_to_0_8_6() {
 	include("../lib/data_query.php");
 	include("../lib/tree.php");
 	include("../lib/import.php");
+	include("../lib/poller.php");
 
 	db_install_execute("0.8.6", "DROP TABLE `snmp_query_field`;");
 	db_install_execute("0.8.6", "DROP TABLE `data_input_data_cache`;");
@@ -53,12 +54,12 @@ function upgrade_to_0_8_6() {
 	if (sizeof($host_snmp_query) > 0) {
 		foreach ($host_snmp_query as $item) {
 			update_data_query_sort_cache($item["host_id"], $item["snmp_query_id"]);
+			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
 		}
 	}
 
 	/* script query data input methods */
-	import_xml_data("
-		<cacti>
+	$xml_data = "<cacti>
 			<hash_030003332111d8b54ac8ce939af87a7eac0c06>
 				<name>Get Script Server Data (Indexed)</name>
 				<type_id>6</type_id>
@@ -102,7 +103,9 @@ function upgrade_to_0_8_6() {
 					</hash_0700035be8fa85472d89c621790b43510b5043>
 				</fields>
 			</hash_030003332111d8b54ac8ce939af87a7eac0c06>
-		</cacti>");
+		</cacti>";
+
+	import_xml_data($xml_data);
 
 	/* update trees to three characters per tier */
 	$trees = db_fetch_assoc("select id from graph_tree");
@@ -118,6 +121,11 @@ function upgrade_to_0_8_6() {
 
 			if (sizeof($tree_items) > 0) {
 				$_tier = 0;
+
+				/* only do the upgrade once */
+				if ($tree_items[0]["order_key"] == "001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") {
+					return;
+				}
 
 				foreach ($tree_items as $tree_item) {
 					$tier = tree_tier($tree_item["order_key"], 2);
