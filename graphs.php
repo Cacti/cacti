@@ -34,7 +34,8 @@ define("ROWS_PER_PAGE", 30);
 $graph_actions = array(
 	1 => "Delete",
 	2 => "Change Graph Template",
-	3 => "Duplicate"
+	3 => "Duplicate",
+	4 => "Convert to Graph Template"
 	);
 	
 /* set default action */
@@ -192,7 +193,7 @@ function form_save() {
 				/* if template information chanegd, update all nessesary template information */
 				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
-					if ((!empty($_POST["graph_template_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
+					if ((!empty($_POST["graph_template_id"])) && (!empty($_POST["local_graph_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
 						/* set the template back, since the user may choose not to go through with the change
 						at this point */
 						db_execute("update graph_local set graph_template_id=" . $_POST["_graph_template_id"] . " where id=$local_graph_id");
@@ -287,6 +288,7 @@ function form_save() {
 	
 	if ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_input"])) || (isset($_POST["save_component_graph_diff"]))) {
 		header ("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id));
+		exit;
 	}else{
 		header ("Location: graphs.php");
 	}
@@ -319,6 +321,10 @@ function form_actions() {
 		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				duplicate_graph($selected_items[$i], $_POST["title_format"]);
+			}
+		}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
+			for ($i=0;($i<count($selected_items));$i++) {
+				graph_to_graph_template($selected_items[$i], $_POST["title_format"]);
 			}
 		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -383,6 +389,16 @@ function form_actions() {
 					optionally change the title format for the new graphs.</p>
 					<p>$graph_list</p>
 					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<graph_title> (1)", "", "255", "30", "textbox"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following graphs will be converted into graph templates. 
+					You can optionally change the title format for the new graph templates.</p>
+					<p>$graph_list</p>
+					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<graph_title> Template", "", "255", "30", "textbox"); print "</p>
 				</td>
 			</tr>\n
 			";
