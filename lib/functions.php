@@ -39,7 +39,7 @@ function read_graph_config_option($config_name) {
 	
 	/* users must have cacti user auth turned on to use this */
 	if (read_config_option("global_auth") != "on") {
-		return;
+		return $settings_graphs[$config_name]["default"];
 	}
 	
 	if (isset($_SESSION["sess_graph_config_array"])) {

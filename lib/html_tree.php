@@ -36,6 +36,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	$already_open = false;
 	$hide_until_tier = false;
 	$graph_ct = 0;
+	$sql_where = "";
+	$sql_join = "";
 	
 	/* get the "starting leaf" if the user clicked on a specific branch */
 	if (($start_branch != "") && ($start_branch != "0")) {
