@@ -223,17 +223,7 @@ function template_edit() {
 		DrawStrippedFormItemCheckBox("t_" . $field_name,$template{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
-		switch ($field_array["type"]) {
-		case 'text':
-			DrawFormItemTextBox($field_name,$template[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-			break;
-		case 'drop_sql':
-			DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
-			break;
-		case 'check':
-			DrawFormItemCheckBox($field_name,$template[$field_name],$field_array["check_caption"],$field_array["default"]);
-			break;
-		}
+		draw_nontemplated_item($field_array, $field_name, $template[$field_name]);
 		
 		print "</tr>\n";
 	}
@@ -289,14 +279,7 @@ function template_edit() {
 		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_rrd{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
-		switch ($field_array["type"]) {
-		case 'text':
-			DrawFormItemTextBox($field_name,$template_rrd[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-			break;
-		case 'drop_array':
-			DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_rrd_rrd[$field_name],$field_array["null_item"],$field_array["default"]);
-			break;
-		}
+		draw_nontemplated_item($field_array, $field_name, $template_rrd[$field_name]);
 		
 		print "</tr>\n";
 	}

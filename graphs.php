@@ -160,7 +160,7 @@ function form_save() {
    ----------------------- */
 
 function item() {
-	global $colors, $consolidation_functions, $graph_item_types;
+	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
@@ -322,9 +322,7 @@ function item() {
 	if ($graph_template_id != "0") {
 		start_box("Graph Item Inputs", "98%", $colors["header"], "3", "center", "");
 		
-		?>
-		<form method="post" action="graphs.php">
-		<?
+		print "<form method='post' action='graphs.php'>\n";
 		
 		$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id order by name");
 		
@@ -339,56 +337,19 @@ function item() {
 				and graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
 				limit 0,1");
 			
-			$column_name = $item["column_name"];
+			$field_name = $item["column_name"];
 			
-			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-				<td width="50%">
-					<font class="textEditTitle"><?print $item["name"];?></font>
-					<?if ($item["description"] != "") { print "<br>" . $item["description"]; }?>
-				</td>
-				<?
-				switch ($item["column_name"]) {
-				case 'task_item_id':
-					DrawFormItemDropdownFromSQL($item["id"],db_fetch_assoc("select
-						CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
-						data_template_rrd.id 
-						from data_template_data,data_template_rrd,data_local 
-						left join host on data_local.host_id=host.id
-						where data_template_rrd.local_data_id=data_local.id 
-						and data_template_data.local_data_id=data_local.id"),"name","id",$current_def_value[$column_name],"None","");
-					break;
-				case 'color_id':
-					DrawFormItemColorSelect($item["id"],$current_def_value[$column_name],"None","0");
-					break;
-				case 'graph_type_id':
-					DrawFormItemDropdownFromSQL($item["id"],db_fetch_assoc("select id,name from def_graph_type order by name"),"name","id",$current_def_value[$column_name],"","");
-					break;
-				case 'consolidation_function_id':
-					DrawFormItemDropdownFromSQL($item["id"],db_fetch_assoc("select id,name from def_cf order by name"),"name","id",$current_def_value[$column_name],"","");
-					break;
-				case 'cdef_id':
-					DrawFormItemDropdownFromSQL($item["id"],db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id","None",$current_def_value[$column_name],"");
-					break;
-				case 'value':
-					DrawFormItemTextBox($item["id"],$current_def_value[$column_name],"","");
-					break;
-				case 'gprint_opts':
-					DrawFormItemDropdownFromSQL("gprint_id",db_fetch_assoc("select id,name from graph_templates_gprint order by name"),"name","id",$template_item["gprint_id"],"Default","");
-					break;
-				case 'text_format':
-					DrawFormItemTextBox($item["id"],$current_def_value[$column_name],"","","40");
-					break;
-				case 'hard_return':
-					DrawFormItemCheckBox($item["id"],$current_def_value[$column_name],"Insert Hard Return","");
-					break;
-				}
-				
-				?>
-			</tr>
-			<?
+			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			
+			print "	<td width='50%'>
+					<font class='textEditTitle'>" . $item["name"] . "</font>";
+					if (!empty($item["description"])) { print "<br>" . $item["description"]; }
+			print "	</td>\n";
+			
+			draw_nontemplated_item($struct_graph_item{$item["column_name"]}, $field_name, $current_def_value[$field_name]);
+			
+			print "</tr>\n";
 		}
-			DrawFormItemHiddenIDField("local_graph_id",$_GET["local_graph_id"]);
-			DrawFormItemHiddenTextBox("save_component_input","1","");
 		}else{
 			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 				<td colspan="1">
@@ -399,6 +360,9 @@ function item() {
 		
 		end_box();
 	}
+	
+	DrawFormItemHiddenIDField("local_graph_id",$_GET["local_graph_id"]);
+	DrawFormItemHiddenTextBox("save_component_input","1","");
 	
 	if ((read_config_option("full_view_graph") == "") && (sizeof($input_item_list) > 0)) {
 		start_box("", "98%", $colors["header"], "3", "center", "");
@@ -488,26 +452,7 @@ function item_edit() {
 		
 		print "</td>\n";
 		
-		switch ($field_array["type"]) {
-		case 'text':
-			DrawFormItemTextBox($field_name,$template_item[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-			break;
-		case 'drop_array':
-			DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
-			break;
-		case 'drop_sql':
-			DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
-			break;
-		case 'drop_color':
-			DrawFormItemColorSelect($field_name,$template_item[$field_name],"None",$field_array["default"]);
-			break;
-		case 'check':
-			DrawFormItemCheckBox($field_name,$template_item[$field_name],$field_array["check_caption"],$field_array["default"]);
-			break;
-		case 'view':
-			print "<td>$template_item[$field_name]</td>\n";
-			break;
-		}
+		draw_nontemplated_item($field_array, $field_name, $template_item[$field_name]);
 		
 		print "</tr>\n";
 	}
@@ -590,7 +535,6 @@ function graph_save() {
 	$save["local_graph_template_graph_id"] = $_POST["local_graph_template_graph_id"];
 	$save["local_graph_id"] = $local_graph_id;
 	$save["graph_template_id"] = $_POST["graph_template_id"];
-	$save["order_key"] = $_POST["order_key"];
 	$save["image_format_id"] = $_POST["image_format_id"];
 	$save["title"] = $_POST["title"];
 	$save["height"] = $_POST["height"];
@@ -970,37 +914,9 @@ function graph_edit() {
 		print "</td>\n";
 		
 		if (($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on")) {
-			switch ($field_array["type"]) {
-			case 'text':
-				DrawFormItemTextBox($field_name,$graphs[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-				break;
-			case 'drop_array':
-				DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$graphs[$field_name],"",$field_array["default"]);
-				break;
-			case 'check':
-				DrawFormItemCheckBox($field_name,$graphs[$field_name],$field_array["check_caption"],$field_array["default"]);
-				break;
-			case 'radio':
-				print "<td>";
-				
-				while (list($radio_index, $radio_array) = each($field_array["items"])) {
-					DrawStrippedFormItemRadioButton($field_name, $graphs[$field_name], $radio_array["radio_value"], $radio_array["radio_caption"],$field_array["default"],true);
-				}
-				
-				print "</td>";
-			}
-			
+			draw_nontemplated_item($field_array, $field_name, $graphs[$field_name]);
 		}else{
-			switch ($field_array["type"]) {
-			case 'check':
-				print "<td><em>" . html_boolean_friendly($graphs[$field_name]) . "</em></td>";
-				break;
-			default:
-				print "<td><em>" . $graphs[$field_name] . "</em></td>";
-				break;
-			}
-			
-			DrawFormItemHiddenTextBox($field_name,$graphs[$field_name],"");
+			draw_templated_item($field_array, $field_name, $graphs[$field_name]);
 		}
 		
 		print "</tr>\n";

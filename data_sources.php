@@ -426,36 +426,16 @@ function ds_edit() {
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
 		
-		if (($use_graph_template == false) || ($data_template{"t_" . $field_name} == "on")) {
+		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on")) {
 			print $field_array["description"];
 		}
 		
 		print "</td>\n";
 		
 		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on")) {
-			switch ($field_array["type"]) {
-			case 'text':
-				DrawFormItemTextBox($field_name,$data[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-				break;
-			case 'drop_sql':
-				DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$data[$field_name],$field_array["null_item"],$field_array["default"]);
-				break;
-			case 'check':
-				DrawFormItemCheckBox($field_name,$data[$field_name],$field_array["check_caption"],$field_array["default"]);
-				break;
-			}
-			
+			draw_nontemplated_item($field_array, $field_name, $data[$field_name]);
 		}else{
-			switch ($field_array["type"]) {
-			case 'check':
-				print "<td><em>" . html_boolean_friendly($data[$field_name]) . "</em></td>";
-				break;
-			default:
-				print "<td><em>" . $data[$field_name] . "</em></td>";
-				break;
-			}
-			
-			DrawFormItemHiddenTextBox($field_name,$data[$field_name],"");
+			draw_templated_item($field_array, $field_name, $data[$field_name]);
 		}
 		
 		print "</tr>\n";
@@ -531,23 +511,9 @@ function ds_edit() {
 		print "</td>\n";
 		
 		if (($use_graph_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
-			switch ($field_array["type"]) {
-			case 'text':
-				DrawFormItemTextBox($field_name,$rrd[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-				break;
-			case 'drop_array':
-				DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_rrd[$field_name],$field_array["null_item"],$field_array["default"]);
-				break;
-			}
-			
+			draw_nontemplated_item($field_array, $field_name, $rrd[$field_name]);
 		}else{
-			switch ($field_array["type"]) {
-			default:
-				print "<td><em>" . $rrd[$field_name] . "</em></td>";
-				break;
-			}
-			
-			DrawFormItemHiddenTextBox($field_name,$rrd[$field_name],"");
+			draw_templated_item($field_array, $field_name, $rrd[$field_name]);
 		}
 		
 		print "</tr>\n";

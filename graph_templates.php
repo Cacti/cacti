@@ -389,26 +389,7 @@ function draw_item_edit() {
 		
 		print "</td>\n";
 		
-		switch ($field_array["type"]) {
-		case 'text':
-			DrawFormItemTextBox($field_name,$template_item[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-			break;
-		case 'drop_array':
-			DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
-			break;
-		case 'drop_sql':
-			DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
-			break;
-		case 'drop_color':
-			DrawFormItemColorSelect($field_name,$template_item[$field_name],"None",$field_array["default"]);
-			break;
-		case 'check':
-			DrawFormItemCheckBox($field_name,$template_item[$field_name],$field_array["check_caption"],$field_array["default"]);
-			break;
-		case 'view':
-			print "<td>$template_item[$field_name]</td>\n";
-			break;
-		}
+		draw_nontemplated_item($field_array, $field_name, $template_item[$field_name]);
 		
 		print "</tr>\n";
 	}
@@ -952,25 +933,7 @@ function template_edit() {
 		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_graph{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
 		print "</td>\n";
 		
-		switch ($field_array["type"]) {
-		case 'text':
-			DrawFormItemTextBox($field_name,$template_graph[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
-			break;
-		case 'drop_array':
-			DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_graph[$field_name],"",$field_array["default"]);
-			break;
-		case 'check':
-			DrawFormItemCheckBox($field_name,$template_graph[$field_name],$field_array["check_caption"],$field_array["default"]);
-			break;
-		case 'radio':
-			print "<td>";
-			
-			while (list($radio_index, $radio_array) = each($field_array["items"])) {
-				DrawStrippedFormItemRadioButton($field_name, $template_graph[$field_name], $radio_array["radio_value"], $radio_array["radio_caption"],$field_array["default"],true);
-			}
-			
-			print "</td>";
-		}
+		draw_nontemplated_item($field_array, $field_name, $template_graph[$field_name]);
 		
 		print "</tr>\n";
 	}

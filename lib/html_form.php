@@ -627,4 +627,66 @@ function GetFilterSearchSQL($search_fields) {
 	return $sql_where;
 }
 
+function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
+	include ("config_arrays.php");
+	
+	switch ($array_struct["type"]) {
+	case 'text':
+		DrawFormItemTextBox($field_name,$previous_value,$array_struct["default"],$array_struct["text_maxlen"], $array_struct["text_size"]);
+		break;
+	case 'drop_array':
+		DrawFormItemDropdownFromSQL($field_name,${$array_struct["array_name"]},"","",$previous_value,"",$array_struct["default"]);
+		break;
+	case 'drop_sql':
+		DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($array_struct["sql"]),"name","id",$previous_value,$array_struct["null_item"],$array_struct["default"]);
+		break;
+	case 'drop_color':
+		DrawFormItemColorSelect($field_name,$previous_value,"None",$array_struct["default"]);
+		break;
+	case 'check':
+		DrawFormItemCheckBox($field_name,$previous_value,$array_struct["check_caption"],$array_struct["default"]);
+		break;
+	case 'radio':
+		print "<td>";
+		
+		while (list($radio_index, $radio_array) = each($array_struct["items"])) {
+			DrawStrippedFormItemRadioButton($field_name, $previous_value, $radio_array["radio_value"], $radio_array["radio_caption"],$array_struct["default"],true);
+		}
+		
+		print "</td>";
+	case 'view':
+		print "<td>$previous_value</td>\n";
+		break;
+	}
+}
+
+function draw_templated_item($array_struct, $field_name, $previous_value) {
+	include ("config_arrays.php");
+	
+	switch ($array_struct["type"]) {
+	case 'check':
+		print "<td><em>" . html_boolean_friendly($previous_value) . "</em></td>";
+		break;
+	default:
+		print "<td><em>" . $previous_value . "</em></td>";
+		break;
+	}
+	
+	DrawFormItemHiddenTextBox($field_name,$previous_value,"");
+}
+
+function draw_templated_row($array_struct, $field_name, $previous_value) {
+	global $colors, $row_counter;
+	
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$row_counter); $row_counter++;
+	
+	print "<td width='50%'><font class='textEditTitle'>" . $array_struct["title"] . "</font><br>\n";
+	print $array_struct["description"];
+	print "</td>\n";
+	
+	draw_nontemplated_item($array_struct, $field_name, $previous_value);
+	
+	print "</tr>\n";
+}
+
 ?>
