@@ -388,6 +388,13 @@ function graphs() {
 			<td class="textInfo" colspan="2">
 				<?php print $host["description"];?> (<?php print $host["hostname"];?>)
 			</td>
+			<td align="right" class="textInfo" style="color: #aaaaaa;">
+				<?php
+				if (!empty($host["host_template_id"])) {
+					print db_fetch_cell("select name from host_template where id=" . $host["host_template_id"]);
+				}
+				?>
+			</td>
 		</tr>
 		<tr>
 			<td>
@@ -425,80 +432,78 @@ function graphs() {
 	<?php
 	$total_rows = sizeof(db_fetch_assoc("select graph_template_id from host_graph where host_id=" . $_REQUEST["host_id"]));
 	
-	if ($total_rows > 0) {
-		/* we give users the option to turn off the javascript features for data queries with lots of rows */
-		if (read_config_option("max_data_query_javascript_rows") >= $total_rows) {
-			$use_javascript = true;
-		}else{
-			$use_javascript = false;
-		}
-		
-		start_box("<strong>Host Template</strong> [" . (empty($host["host_template_id"]) ? "None" : db_fetch_cell("select name from host_template where id=" . $host["host_template_id"])) . "]", "98%", $colors["header"], "3", "center", "");
-		
-		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-				<td class='textSubHeaderDark'>Graph Template Name</td>
-				<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\");gt_update_selection_indicators();'></td>\n
-			</tr>\n";
-		
-		$graph_templates = db_fetch_assoc("select
-			graph_templates.id as graph_template_id,
-			graph_templates.name as graph_template_name
-			from host_graph,graph_templates
-			where host_graph.graph_template_id=graph_templates.id
-			and host_graph.host_id=" . $_REQUEST["host_id"] . "
-			order by graph_templates.name");
-		
-		$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_graph where graph_local.graph_template_id=host_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
-		
-		print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
-		
-		if ((sizeof($template_graphs) > 0) && ($use_javascript == true)) {
-			print "<script type='text/javascript'>\n<!--\n";
-			print "var gt_created_graphs = new Array(";
-			
-			$cg_ctr = 0;
-			foreach ($template_graphs as $template_graph) {
-				print (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'"; 
-				
-				$cg_ctr++;
-			}
-			
-			print ")\n";
-			print "//-->\n</script>\n";
-		}
-		
-		/* create a row for each graph template associated with the host template */
-		$i = 0;
-		if (sizeof($graph_templates) > 0) {
-		foreach ($graph_templates as $graph_template) {
-			$query_row = $graph_template["graph_template_id"];
-			
-			print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
-			
-			print "		<td" . (($use_javascript == true) ? " onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'" : "") . "><span id='gt_text$query_row" . "_0'>
-						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
-					</td>
-					<td align='right'>
-						<input type='checkbox' name='cg_$query_row' id='cg_$query_row'" . (($use_javascript == true) ? " onClick='gt_update_selection_indicators();'" : "") . ">
-					</td>
-				</tr>";
-		}
-		}
-		
-		if ($use_javascript == true) {
-			print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
-		}
-		
-		/* create a row at the bottom that lets the user create any graph they choose */
-		print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
-				<td colspan='2' width='60' nowrap>
-					<strong>Create:</strong>&nbsp;";
-					form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "(Select a graph type to create)", "", "font-size: 10px;");
-		print "		</td>
-			</tr>";
-		
-		end_box();
+	/* we give users the option to turn off the javascript features for data queries with lots of rows */
+	if (read_config_option("max_data_query_javascript_rows") >= $total_rows) {
+		$use_javascript = true;
+	}else{
+		$use_javascript = false;
 	}
+	
+	start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+	
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Graph Template Name</td>
+			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\");gt_update_selection_indicators();'></td>\n
+		</tr>\n";
+	
+	$graph_templates = db_fetch_assoc("select
+		graph_templates.id as graph_template_id,
+		graph_templates.name as graph_template_name
+		from host_graph,graph_templates
+		where host_graph.graph_template_id=graph_templates.id
+		and host_graph.host_id=" . $_REQUEST["host_id"] . "
+		order by graph_templates.name");
+	
+	$template_graphs = db_fetch_assoc("select graph_local.graph_template_id from graph_local,host_graph where graph_local.graph_template_id=host_graph.graph_template_id and graph_local.host_id=" . $host["id"] . " group by graph_local.graph_template_id");
+	
+	print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
+	
+	if ((sizeof($template_graphs) > 0) && ($use_javascript == true)) {
+		print "<script type='text/javascript'>\n<!--\n";
+		print "var gt_created_graphs = new Array(";
+		
+		$cg_ctr = 0;
+		foreach ($template_graphs as $template_graph) {
+			print (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'"; 
+			
+			$cg_ctr++;
+		}
+		
+		print ")\n";
+		print "//-->\n</script>\n";
+	}
+	
+	/* create a row for each graph template associated with the host template */
+	$i = 0;
+	if (sizeof($graph_templates) > 0) {
+	foreach ($graph_templates as $graph_template) {
+		$query_row = $graph_template["graph_template_id"];
+		
+		print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
+		
+		print "		<td" . (($use_javascript == true) ? " onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'" : "") . "><span id='gt_text$query_row" . "_0'>
+					<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
+				</td>
+				<td align='right'>
+					<input type='checkbox' name='cg_$query_row' id='cg_$query_row'" . (($use_javascript == true) ? " onClick='gt_update_selection_indicators();'" : "") . ">
+				</td>
+			</tr>";
+	}
+	}
+	
+	if ($use_javascript == true) {
+		print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
+	}
+	
+	/* create a row at the bottom that lets the user create any graph they choose */
+	print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
+			<td colspan='2' width='60' nowrap>
+				<strong>Create:</strong>&nbsp;";
+				form_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "(Select a graph type to create)", "", "font-size: 10px;");
+	print "		</td>
+		</tr>";
+	
+	end_box();
 	
 	$snmp_queries = db_fetch_assoc("select
 		snmp_query.id,
@@ -518,7 +523,9 @@ function graphs() {
 		$xml_array = get_data_query_array($snmp_query["id"]);
 		$xml_outputs = array();
 		
+		$total_rows = 0;
 		$num_input_fields = 0;
+		$num_visible_fields = 0;
 		
 		if ($xml_array != false) {
 			/* loop through once so we can find out how many input fields there are */
@@ -531,11 +538,6 @@ function graphs() {
 					}
 				}
 			}
-			
-			reset($xml_array["fields"]);
-			$snmp_query_indexes = array();
-			$num_visible_fields = 0;
-			$i = 0;
 		}
 		
 		/* we give users the option to turn off the javascript features for data queries with lots of rows */
@@ -597,11 +599,11 @@ function graphs() {
 		
 		if ($xml_array != false) {
 			$html_dq_header = "";
+			$snmp_query_indexes = array();
 			
+			reset($xml_array["fields"]);
 			while (list($field_name, $field_array) = each($xml_array["fields"])) {
 				if ($field_array["direction"] == "input") {
-					$i++;
-					
 					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $host["id"] . " and field_name='$field_name' and snmp_query_id=" . $snmp_query["id"]);
 					
 					/* don't even both to display the column if it has no data */
@@ -632,15 +634,14 @@ function graphs() {
 						$html_dq_header
 						<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\");" . (($use_javascript == true) ? "dq_update_selection_indicators();" : "") . "'></td>\n
 					</tr>\n";
-				
 			}
 			
-			 $row_counter = 0;
+			$row_counter = 0;
 			if (sizeof($snmp_query_indexes) > 0) {
 			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
 				$query_row = $snmp_query["id"] . "_" . $snmp_index;
 				
-				print "<tr id='line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
+				print "<tr id='line$query_row' bgcolor='#" . (($row_counter % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 				
 				$column_counter = 0;
 				reset($xml_array["fields"]);
