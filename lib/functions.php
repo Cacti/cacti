@@ -24,6 +24,14 @@
 <?
 
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
+	if (($allow_nulls == true) && ($field_value == "")) {
+		$array_field_names = unserialize($_SESSION["sess_field_values"]);
+		$array_field_names[$field_name] = $field_value;
+		$_SESSION["sess_field_values"] = serialize($array_field_names);
+		
+		return $field_value;
+	}
+	
 	if ((!ereg($regexp_match, $field_value) || (($allow_nulls == false) && ($field_value == "")))) {
 		raise_message($custom_message);
 		
