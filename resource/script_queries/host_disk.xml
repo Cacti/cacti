@@ -1,0 +1,43 @@
+<interface>
+	<name>Get Host MIB Partitions</name>
+	<script_path>|path_php_binary| -q |path_cacti|/scripts/query_host_partitions.php</script_path>
+	<arg_prepend>|host_management_ip| |host_snmp_community|</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>!</output_delimeter>
+	
+	<fields>
+		<hrStorageIndex>
+			<name>Index</name>
+			<direction>input</direction>
+			<query_name>index</query_name>
+		</hrStorageIndex>
+		<hrStorageDescr>
+			<name>Description</name>
+			<direction>input</direction>
+			<query_name>description</query_name>
+		</hrStorageDescr>
+		<hrStorageAllocationUnits>
+			<name>Storage Allocation Units</name>
+			<direction>input</direction>
+			<query_name>sau</query_name>
+		</hrStorageAllocationUnits>
+		
+		<hrStorageSize>
+			<name>Total Size</name>
+			<direction>output</direction>
+			<query_name>total</query_name>
+		</hrStorageSize>
+		<hrStorageUsed>
+			<name>Total Used</name>
+			<direction>output</direction>
+			<query_name>used</query_name>
+		</hrStorageUsed>
+		<hrStorageAllocationFailures>
+			<name>Allocation Failures</name>
+			<direction>output</direction>
+			<query_name>failures</query_name>
+		</hrStorageAllocationFailures>
+	</fields>
+</interface>
