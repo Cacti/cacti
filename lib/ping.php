@@ -2,7 +2,7 @@
 
 class Net_Ping
 {
-	var $icmp_socket;
+	var $udp_socket;
 	var $request;
 	var $request_len;
 	var $reply;
@@ -12,13 +12,13 @@ class Net_Ping
 
 	function Net_Ping()
 	{
-		$this->icmp_socket = socket_create(AF_INET, SOCK_RAW, 1);
-		socket_set_block($this->icmp_socket);
+		$this->udp_socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+		socket_set_block($this->udp_socket);
 	}
 
 	function close_socket()
 	{
-		socket_close($this->icmp_socket);
+		socket_close($this->udp_socket);
 	}
 
 	function start_time()
@@ -39,15 +39,10 @@ class Net_Ping
 
 	function build_packet()
 	{
-		$data = "cacti-monitoring-system"; // the actual test data
-		$type = "\x08"; // 8 echo message; 0 echo reply message
-		$code = "\x00"; // always 0 for this program
-		$chksm = "\xCE\x96"; // generate checksum for icmp request
-		$id = "\x40\x00"; // we will have to work with this later
-		$sqn = "\x00\x00"; // we will have to work with this later
+		$data  = "cacti-monitoring-system"; // the actual test data
 
 		// now lets build the actual icmp packet
-		$this->request = $type.$code.$chksm.$id.$sqn.$data;
+		$this->request = chr(0) . chr(1) . chr(0) . $data . chr(0);
 		$this->request_len = strlen($this->request);
 	}
 
@@ -58,35 +53,41 @@ class Net_Ping
 		if ((int)$percision <= 0) $percision=3;
 
 		// set the timeout
-		socket_set_option($this->icmp_socket,
+		socket_set_option($this->udp_socket,
 			SOL_SOCKET,  // socket level
 			SO_RCVTIMEO, // timeout option
 			array(
 				"sec"=>$timeout, // Timeout in seconds
 				"usec"=>0  // I assume timeout in microseconds
-			)
-		);
+			));
 
 		if ($dst_addr) {
-			if (@socket_connect($this->icmp_socket, $dst_addr, NULL)) {
+			if (@socket_connect($this->udp_socket, $dst_addr, 2336)) {
 				// do nothing
-			} else {
+			}else {
 				$this->errstr = "Cannot connect to $dst_addr";
 				return FALSE;
 			}
 
 			$this->build_packet();
 			$this->start_time();
-			socket_write($this->icmp_socket, $this->request, $this->request_len);
 
-			if (@socket_recv($this->icmp_socket, &$this->reply, 256, 0)) {
+			socket_connect($this->udp_socket, $dst_addr, 33439);
+			socket_write($this->udp_socket, $this->request, $this->request_len);
+
+			$code = @socket_recv($this->udp_socket, &$this->reply, 256, 0);
+
+			if (($code) || (empty($code))) {
 				$this->time = $this->get_time($percision);
-				return $this->time;
+				if (($this->time*1000) <= $timeout)
+					return $this->time;
+				else
+					return FALSE;
 			} else {
 				$this->errstr = "Timed out";
 				return FALSE;
 			}
-		} else {
+		}else {
 			$this->errstr = "Destination address not specified";
 			return FALSE;
 		}
@@ -97,7 +98,9 @@ class Net_Ping
 //$i = 0;
 //$j = 0;
 //while (1) {
-//	$ping->ping("192.168.0.1", 5, 4);
+//	$ping->ping("66.165.156.173", 5, 4);
+//	$ping->ping("192.168.0.2", 5000, 4);
+//
 //	$i++;
 //	if ($i == 100) {
 //		$j++;

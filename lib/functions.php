@@ -323,17 +323,23 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	}
 
 	/* Log to Syslog/Eventlog */
+	/* Syslog is currently Unstable in Win32 */
 	if (($logdestination == 2) || ($logdestination == 3)) {
-		define_syslog_variables();
-		openlog("Cacti Logging", LOG_PERROR | LOG_PID, LOG_SYSLOG);
-		if (substr_count($string,"ERROR:") <> 0)
-			syslog(LOG_ALERT, $message);
-		else
-			if ((substr_count($message, "WARNING") <> 0) && (read_config_option("log_verbosity") != POLLER_VERBOSITY_NONE))
-				syslog(LOG_WARNING, $message);
-			else
-				syslog(LOG_INFO, $message);
-		closelog();
+		if ($config["cacti_server_os"] != "win32") {
+			define_syslog_variables();
+
+			openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
+
+			if (substr_count($string,"ERROR:")) {
+				syslog(LOG_ALERT, $message);
+			}
+
+			if ((substr_count($message, "WARNING:")) && (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM)) {
+				syslog(LOG_NOTICE, $message);
+			}
+
+			closelog();
+		}
 	}
 }
 
