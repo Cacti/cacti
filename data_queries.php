@@ -48,7 +48,7 @@ switch ($action) {
 		$sql_id = db_execute("replace into snmp_hosts (id,hostname,community) values 
 			($id,\"$hostname\",\"$community\")");
 		
-		$hostid = db_fetch_cell"select LAST_INSERT_ID()");
+		$hostid = db_fetch_cell("select LAST_INSERT_ID()");
 		
 		get_snmp_interfaces($hostname,$community,$hostid);
 		
