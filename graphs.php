@@ -704,7 +704,9 @@ function item_edit() {
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["local_graph_id"]);
 	}
 	
-	start_box("Template Item Configuration", "98%", $colors["header"], "3", "center", "");
+	$header_label = "[edit graph: " . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "]";
+	
+	start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>
 	<form method="post" action="graphs.php">
 	
