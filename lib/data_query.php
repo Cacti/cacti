@@ -179,7 +179,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$snmp_index = $snmp_data[$i]["value"];
 					$oid = $field_array["oid"] .  "." . $value;
 					
-					debug_log_insert("data_query", "Found item [$field_name='$value'] index: $snmp_index [from regexp parse]");
+					debug_log_insert("data_query", "Found item [$field_name='$value'] index: $snmp_index [from regexp oid parse]");
+					
+					db_execute("replace into host_snmp_cache 
+						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
+						values ($host_id,$snmp_query_id,'$field_name','$value',$snmp_index,'$oid')");
+				}
+			}elseif (ereg("^VALUE/REGEXP:", $field_array["source"])) {
+				for ($i=0;($i<sizeof($snmp_data));$i++) {
+					$value = ereg_replace(ereg_replace("^VALUE/REGEXP:", "", $field_array["source"]), "\\1", $snmp_data[$i]["value"]);
+					$snmp_index = ereg_replace('.*\.([0-9]+)$', "\\1", $snmp_data[$i]["oid"]);
+					$oid = $field_array["oid"] .  "." . $value;
+					
+					debug_log_insert("data_query", "Found item [$field_name='$value'] index: $snmp_index [from regexp value parse]");
 					
 					db_execute("replace into host_snmp_cache 
 						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
