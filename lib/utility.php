@@ -29,6 +29,12 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 	db_execute("update graph_templates_item set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
 	db_execute("update graph_local set graph_template_id=$graph_template_id where id=$local_graph_id");
 	
+	/* make sure the 'local_graph_template_graph_id' column is set */
+	$local_graph_template_graph_id = db_fetch_cell("select id from graph_templates_graph where graph_template_id=3 and graph_template_id=id");
+	//print "select local_graph_template_graph_id from graph_templates_graph where graph_template_id=$graph_template_id<br>";
+	if ($local_graph_template_graph_id == "") { $local_graph_template_graph_id = 0; }
+	db_execute("update graph_templates_graph set local_graph_template_graph_id=$local_graph_template_graph_id where local_graph_id=$local_graph_id");
+	//print "update graph_templates_graph set local_graph_template_graph_id=$local_graph_template_graph_id where local_graph_id=$local_graph_id<br>";
 	/* if the user turned off the template for this graph; there is nothing more
 	to do here */
 	if ($graph_template_id == "0") { return 0; }
@@ -120,7 +126,7 @@ function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 		
 		if ($graph_type_name != "GPRINT") {
 			/* if item is not a GPRINT and the user changed the PARENT field... please ignore */
-			if (($_graph_type_name != "GPRINT") && ($graph_items[parent] != $_parent)) {
+			if (($_graph_type_name != "GPRINT") && ($graph_items[parent] != $_parent) && ($_id != 0)) {
 				//print "EXCEPTION!";
 				db_execute("update graph_templates_item set parent=$_parent where id=$new_id");
 				return 0;
@@ -138,10 +144,10 @@ function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 			//print "update graph_templates_item set parent=$new_id where id=$new_id<br>";
 			
 			/* if this is a GPRINT->PARENT convert; reset the sequence field */
-			if ($_graph_type_name == "GPRINT") {
+			//if ($_graph_type_name == "GPRINT") {
 				//print "update graph_templates_item set sequence=1 where id=$new_id<br>";
 				db_execute("update graph_templates_item set sequence=1 where id=$new_id");
-			}
+			//}
 			
 			/* this is a save on a parent item: if this parent has children with all of the same
 			data source, then update the data source change in the parent to the children as 
