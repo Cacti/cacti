@@ -31,7 +31,7 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -214,27 +214,37 @@ if ($_REQUEST["step"] == "4") {
 	
 	$status_array = update_database($_REQUEST["db_name"], $_REQUEST["db_user"], $_REQUEST["db_pass"]);
 }elseif (($_REQUEST["step"] == "3") && ($_REQUEST["install_type"] == "3")) {
-	/* upgrade from 0.8.x install, update db here */
-	for ($i=array_search($old_cacti_version,$cacti_versions); $i<count($cacti_versions);$i++) {
-		$version = $cacti_versions[$i];
-		
-		if ($cacti_versions[$i] == "0.8") {
-			/* nothing here... base version */
-		}elseif ($cacti_versions[$i] == "0.8.1") {
+	/* try to find current (old) version in the array */
+	$version_index = array_search($old_cacti_version, $cacti_versions);
+	
+	/* if the version is not found, die */
+	if (!is_int(array_search($old_cacti_version, $cacti_versions))) {
+		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
+			<p style='font-family: Verdana, Arial; font-size: 12px;'>Invalid Cacti version 
+			<strong>$old_cacti_version</strong>, cannot upgrade to <strong>" . $config["cacti_version"] . "
+			</strong></p>";
+		exit;
+	}
+	
+	/* loop from the old version to the current, performing updates for each version in between */
+	for ($i=($version_index+1); $i<count($cacti_versions); $i++) {
+		if ($cacti_versions[$i] == "0.8.1") {
 			db_execute("alter table user_log add user_id mediumint(8) not null after username");
 			db_execute("alter table user_log change time time datetime not null");
 			db_execute("alter table user_log drop primary key");
 			db_execute("alter table user_log add primary key (username, user_id, time)");
 			db_execute("alter table user_auth add realm mediumint(8) not null after password");
 			db_execute("update user_auth set realm = 1 where full_name='ldap user'");
-
+			
 		        $_src = db_fetch_assoc("select id, username from user_auth");
-
+			
 		        if (sizeof($_src) > 0) {
 			        foreach ($_src as $item) {
                 			db_execute("update user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "'");
 				}
 			}
+		}elseif ($cacti_versions[$i] == "0.8.2") {
+			
 		}
 	}
 }
