@@ -385,8 +385,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		}
 	}
 	
+	$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
+	
 	/* define the time span, which decides which rra to use */
-	$timespan = -(db_fetch_cell("select timespan from rra where id=$rra_id"));
+	$timespan = -($rra["timespan"]);
+	
+	/* find the step and how often this graph is updated with new data */
+	$rrd_step = db_fetch_cell("select
+		data_template_data.rrd_step
+		from data_template_data,data_template_rrd,graph_templates_item
+		where graph_templates_item.task_item_id=data_template_rrd.id
+		and data_template_rrd.local_data_id=data_template_data.local_data_id
+		and graph_templates_item.local_graph_id=$local_graph_id
+		limit 0,1");
+	$rrd_step = empty($rrd_step) ? 300 : $rrd_step;
+	$seconds_between_graph_updates = ($rrd_step * $rra["steps"]);
 	
 	$graph = db_fetch_row("select
 		graph_templates_graph.title_cache,
@@ -508,6 +521,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$graph_opts .= 
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL . 
 		"--start=$graph_start" . RRD_NL .
+		"--end=" . -($seconds_between_graph_updates) . RRD_NL .
 		"--title=\"" . $graph["title_cache"] . "\"" . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .
@@ -769,7 +783,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_total_ds .= "$def_name,UN,0,$def_name,IF,"; /* convert unknowns to '0' first */
+							$cdef_total_ds .= "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF,"; /* convert unknowns to '0' first */
 							$item_count++;
 						}
 					}
