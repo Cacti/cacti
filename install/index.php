@@ -84,7 +84,7 @@ $input["path_rrdtool"]["check"] = "";
 $input["path_rrdtool"]["type"] = "textbox";
 
 if ($config["cacti_server_os"] == "unix") {
-	$which_rrdtool = trim(shell_exec("which rrdtool"));
+	$which_rrdtool = trim(exec("which rrdtool"));
 	
 	if (!empty($which_rrdtool)) {
 		$input["path_rrdtool"]["default"] = $which_rrdtool;
@@ -102,7 +102,7 @@ $input["path_php_binary"]["check"] = "";
 $input["path_php_binary"]["type"] = "textbox";
 
 if ($config["cacti_server_os"] == "unix") {
-	$which_php = trim(shell_exec("which php"));
+	$which_php = trim(exec("which php"));
 	
 	if (!empty($which_php)) {
 		$input["path_php_binary"]["default"] = $which_php;
@@ -120,7 +120,7 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpwalk"]["check"] = "";
 	$input["path_snmpwalk"]["type"] = "textbox";
 	
-	$which_snmpwalk = trim(shell_exec("which snmpwalk"));
+	$which_snmpwalk = trim(exec("which snmpwalk"));
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
@@ -136,7 +136,7 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpget"]["check"] = "";
 	$input["path_snmpget"]["type"] = "textbox";
 	
-	$which_snmpwalk = trim(shell_exec("which snmpget"));
+	$which_snmpwalk = trim(exec("which snmpget"));
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpget"]["default"] = $which_snmpwalk;
@@ -150,6 +150,13 @@ if ($config["cacti_server_os"] == "unix") {
 /* default value for this variable */
 if (!isset($_REQUEST["install_type"])) {
 	$_REQUEST["install_type"] = 0;
+}
+
+/* defaults for the install type dropdown */
+if ($old_cacti_version == "new_install") {
+	$default_install_type = "1";
+}else{
+	$default_install_type = "3";
 }
 
 /* pre-processing that needs to be done for each step */
@@ -305,9 +312,9 @@ if ($_REQUEST["step"] == "4") {
 						
 						<p>
 						<select name="install_type">
-							<option value="1" selected>New Install</option>
-							<option value="2">Upgrade from cacti 0.6.8</option>
-							<option value="3">Upgrade from cacti 0.8.x</option>
+							<option value="1"<?php print ($default_install_type == "1") ? " selected" : "";?>>New Install</option>
+							<option value="2"<?php print ($default_install_type == "2") ? " selected" : "";?>>Upgrade from cacti 0.6.8</option>
+							<option value="3"<?php print ($default_install_type == "3") ? " selected" : "";?>>Upgrade from cacti 0.8.x</option>
 						</select>
 						</p>
 						
