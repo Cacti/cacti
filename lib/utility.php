@@ -23,6 +23,93 @@
    */?>
 <?
 
+function push_out_data_source_item($data_template_rrd_id) {
+	include ("config_arrays.php");
+	include_once ("functions.php");
+	
+	/* get information about this data template */
+	$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=$data_template_rrd_id");
+	
+	/* must be a data template */
+	if ($data_template_rrd[data_template_id] == 0) { return 0; }
+	
+	/* loop through each data source column name (from the above array) */
+	for ($i=0; ($i < count($struct_data_source_item)); $i++) {
+		$current_name = str_replace("FORCE:", "", $struct_data_source_item[$i]);
+		$value_type = "t_$current_name";
+		
+		/* are we allowed to push out the column? */
+		if (($data_template_rrd[$value_type] == "") || (ereg("FORCE:", $struct_data_source_item[$i]))) {
+			db_execute("update data_template_rrd set $current_name='$data_template_rrd[$current_name]' where local_data_template_rrd_id=$data_template_rrd[id]"); 
+		}
+	}
+}
+
+function push_out_data_source($data_template_data_id) {
+	include ("config_arrays.php");
+	include_once ("functions.php");
+	
+	/* get information about this data template */
+	$data_template_data = db_fetch_row("select * from data_template_data where id=$data_template_data_id");
+	
+	/* must be a data template */
+	if ($data_template_data[data_template_id] == 0) { return 0; }
+	
+	/* loop through each data source column name (from the above array) */
+	for ($i=0; ($i < count($struct_data_source)); $i++) {
+		$current_name = str_replace("FORCE:", "", $struct_data_source[$i]);
+		$value_type = "t_$current_name";
+		
+		/* are we allowed to push out the column? */
+		if (($data_template_data[$value_type] == "") || (ereg("FORCE:", $struct_data_source[$i]))) {
+			db_execute("update data_template_data set $current_name='$data_template_data[$current_name]' where local_data_template_data_id=$data_template_data[id]"); 
+		}
+	}
+}
+
+function push_out_host($host_id) {
+	/* ok here's the deal: first we need to find every data source that uses this host.
+	then we go through each of those data sources, finding each one using a data input method
+	with "special fields". if we find one, fill it will the data here from this host */
+	
+	if (empty($host_id)) { return 0; }
+	
+	$data_sources = db_fetch_assoc("select
+		data_template_data.id,
+		data_template_data.data_input_id
+		from data_local,data_template_data
+		where data_local.host_id=$host_id
+		and data_local.id=data_template_data.local_data_id
+		and data_template_data.data_input_id>0");
+	
+	/* loop through each matching data source */
+	if (sizeof($data_sources) > 0) {
+	foreach ($data_sources as $data_source) {
+		$input_fields = db_fetch_assoc("select
+			data_input_fields.id,
+			data_input_fields.type_code
+			from data_input_fields
+			where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
+			and data_input_fields.input_output='in'
+			and data_input_fields.type_code!=''");
+		
+		/* loop through each matching field (must be special field) */
+		if (sizeof($input_fields) > 0) {
+		foreach ($input_fields as $input_field) {
+			/* fetch the appropriate data from this host based on the 'type_code'
+			  -- note: the type code name comes straight from the column names of the 'host'
+			           table, just fyi */
+			
+			/* make sure it is HOST related type code */
+			if (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password)$', $input_field["type_code"])) {
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . db_fetch_cell("select " . $input_field["type_code"] . " from host where id=$host_id") . "')");
+			}
+		}
+		}
+	}
+	}
+}
+
 function change_data_template($local_data_id, $data_template_id, $_data_template_id) {
 	/* always update tables to new data template (or no data template) */
 	db_execute("update data_template_data set data_template_id=$data_template_id where local_data_id=$local_data_id");
@@ -106,7 +193,7 @@ function push_out_graph($graph_template_graph_id) {
 		
 		/* are we allowed to push out the column? */
 		if ($graph_template_graph[$value_type] == "") {
-			db_execute("update graph_templates_graph set $struct='$graph_template_graph[$current_name]' where local_graph_template_graph_id=$graph_template_graph[id]"); 
+			db_execute("update graph_templates_graph set $current_name='$graph_template_graph[$current_name]' where local_graph_template_graph_id=$graph_template_graph[id]"); 
 		}
 	}
 }
@@ -355,70 +442,6 @@ function DuplicateDataSource($datasource_id) {
 	
 	return $last_id;
     }
-}
-
-function group_graph_items($graph_id) {
-    
-    $graph_items = db_fetch_assoc("select 
-				    i.ConsolidationFunction,i.Sequence,i.ID,i.DSID,
-				    t.Name 
-				    from rrd_graph_item i left join 
-				    def_graph_type t on 
-				    i.graphtypeid=t.id 
-				    where i.graphid=$graph_id 
-				    order by i.sequenceparent, i.sequence");
-    
-    if (sizeof($graph_items) > 0) {
-	foreach ($graph_items as $item) {
-	    $child_counter[$item[DSID]]++;
-	    
-	    if (($item[Name] == "AREA") || ($item[Name] == "STACK") || ($item[Name] == "LINE1") || ($item[Name] == "LINE2") || ($item[Name] == "LINE3")) {
-		if (isset($has_been_used[$item[DSID]][$item[ConsolidationFunction]]) == false) {
-		    $parent_counter++;
-		}
-		
-		$current_parent_id = $item[ID];
-		$current_sequence = 0;
-		
-		$has_been_used[$item[DSID]][$item[ConsolidationFunction]] = true;
-	    } else {
-		$current_sequence = $child_counter[$item[DSID]];
-	    }
-	    
-	    db_execute("update rrd_graph_item set sequence=$current_sequence
-			 , sequenceparent=$parent_counter, parent=$current_parent_id
-			 where id=$item[ID]");
-	}
-    }
-}
-
-function ungroup_graph_items($graph_id) {
-	$graphs = db_fetch_assoc("select graph_template_id,local_graph_id from graph_templates_graph");
-	
-	foreach ($graphs as $graph) {
-		unset($data);
-		
-		if ($graph[local_graph_id] != "0") {
-			$data = db_fetch_assoc("select id from graph_templates_item where local_graph_id=$graph[local_graph_id] order by sequence_parent,sequence");
-			//print "select id from graph_templates_item where local_graph_id=$graph[local_graph_id] order by sequence_parent,sequence<br>";
-		}else{
-			$data = db_fetch_assoc("select id from graph_templates_item where graph_template_id=$graph[graph_template_id] and local_graph_id=0 order by sequence_parent,sequence");
-			//print "select id from graph_templates_item where graph_template_id=$graph[graph_template_id] local_graph_id=0 order by sequence_parent,sequence<br>";
-		}
-		
-		$rows = sizeof($data);
-		
-		$i=0;
-    		while ($i < $rows) {
-			db_execute("update graph_templates_item set sequence=" . ($i+1) . " where id=" . $data[$i][id]);
-			//print "update graph_templates_item set sequence=" . ($i+1) . " where id=" . $data[$i][id] . "<br>";
-			$i++;
-		}
-	}
-    //db_execute("update rrd_graph_item set sequenceparent=0 where graphid=$graph_id");
-    //db_execute("update rrd_graph_item set parent=0 where graphid=$graph_id");
-    
-    //$i++;
 }
 
 function CreateGraphDataFromSNMPData($graph_parameters) {
