@@ -519,7 +519,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 			
 			/* go back a second time and fill in the INPUT values from the graph */
 			for ($j=0; ($j < count($graph_template_inputs)); $j++) {
-				if ($graph_template_inputs[$j]["graph_template_item_id"] == $template_items_list[$i]["id"]) {
+				if ($graph_template_inputs[$j]["graph_template_item_id"] == $template_items_list[$k]["id"]) {
 					/* if we find out that there is an "input" covering this field/item, use the 
 					value from the graph, not the template */
 					$graph_item_field_name = $graph_template_inputs[$j]["column_name"];
@@ -543,7 +543,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		}
 		
 		//print "<pre>";print_r($save);print "</pre>";
-		
 		if (isset($save)) {
 			sql_save($save, "graph_templates_item");
 		}
