@@ -1,0 +1,139 @@
+<html>
+<head>
+	<title>cacti Installation Instructions</title>
+	<style>
+	<!--
+		BODY
+		{
+			font-size: 10pt;
+			font-family: Arial, sans-serif;
+		}
+		
+		P.code
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: bold;
+			margin: 5px;
+			padding: 5px;
+			color: #000066;
+			background-color: #EEEEEE;
+		}
+		
+		TT.shell
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #999999;
+		}
+		
+		P.php
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #000000;
+			margin: 5px;
+			padding: 5px;
+			background-color: #EEEEEE;
+		}
+		
+		TT.php-var
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #008080;
+		}
+	-->
+	</style>
+</head>
+
+<body>
+
+<h2>Cacti Installation</h2><p>
+
+<h3>Dependencies</h3><p>
+
+Cacti requires:
+<ul>
+	<li>rrdtool:<br>
+		<tt><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/</a> <b><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.35.tar.gz">rrdtool-1.0.35.tar.gz</a></b></tt><p>
+	<li>net-snmp (for SNMP support):<br>
+		<tt><a href="http://sourceforge.net/project/showfiles.php?group_id=12694">http://sourceforge.net/project/showfiles.php?group_id=12694</a> <b><a href="http://prdownloads.sourceforge.net/net-snmp/ucd-snmp-4.2.3.tar.gz">ucd-snmp-4.2.3.tar.gz</a></b></tt><p>
+		
+	<li><a href="http://www.php.net/">PHP 4</a> or newer.
+	<li><a href="http://www.mysql.com/">MySQL 3.23</a> or newer.
+</ul><p>
+
+<h3>Installation Instructions</h3><p>
+
+<ol>
+	<li>Extract the distribution tarball.<p>
+	
+		<p class="code"><tt class="shell">shell&gt;</tt> <b>tar xzvf cacti-<i>version</i>.tar.gz</b></p><br>
+
+	<li>Create the MySQL database:<p>
+	
+		<p class="code"><tt class="shell">shell&gt;</tt> <b>mysqladmin create cacti</b></p><br>
+		
+	<li>Import the default cacti database:<p>
+	
+		<p class="code"><tt class="shell">shell&gt;</tt> <b>mysql cacti &lt; cacti.sql</b></p><br>
+
+	<li><b>Optional:</b> Create a MySQL username and password for cacti.<p>
+	
+		<p class="code"><tt class="shell">shell&gt;</tt> <b>mysql --user=root mysql</b><br>
+		<tt class="shell">mysql&gt;</tt> <b>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY '<i>somepassword</i>';</b><br>
+		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br></p><br>
+
+	<li>Edit <b>include/config.php</b>.<p>
+
+	<ul>
+		<li><p>Specify the MySQL user, password and database for your cacti configuration.</p></li>
+		
+		<p class="php"><b>$database_default</b> = <tt class="php-var">"cacti"</tt>;<br>
+		<b>$database_hostname</b> = <tt class="php-var">"localhost"</tt>;<br>
+		<b>$database_username</b> = <tt class="php-var">"cactiuser"</tt>;<br>
+		<b>$database_password</b> = <tt class="php-var">"cacti"</tt>;<br>
+		</p><br>
+	</ul>
+
+	<li>Edit <b>php.ini</b>.<p>
+
+	<ul>
+		<li><p>Make sure you have the following options set in your php.ini file:</p></li>
+		
+		<p class="php">
+		register_globals = On<br>
+		register_argc_argv = On</p><br>
+	</ul>
+
+	<li>Set the appropriate permissions on cacti's directories for graph/log generation. You should execute these commands from inside cacti's directory to change the permissions.<p>
+		
+		<p class="code"><tt class="shell">shell&gt;</tt> <b>chown <em>cactiuser</em> rra/ log/</b></p><br>
+		
+		<p>(Enter a valid username for <em>cactiuser</em>, this user will also be used in the next step for 
+		data gathering.)</p>
+		
+	<li>Add a line to your <strong>/etc/crontab</strong> file similar to:<p>
+		
+		<p class="php">*/5 * * * * <em>cactiuser</em> php <em>/var/www/html/cacti/</em>cmd.php > /dev/null 2>&amp;1</p><br>
+	
+		<p><ul>
+		<li>Replace <em>cactiuser</em> with the valid user specified in the previous step.</li>
+		<li>Replace <em>/var/www/html/cacti/</em> with your <strong>full</strong> cacti path.</li>
+		</ul></p>
+	
+	<li>Point your web browser to:<p>
+	
+		<blockquote>http://your-server/cacti/</blockquote>
+		
+		<p>Log in the with a username/password of <strong>admin</strong>. You will be required to
+		change this password immediatly. Make sure to fill in all of the path variables carefully
+		and correctly on the following screen.</p>
+</ol>
+
+</body>
+</html>

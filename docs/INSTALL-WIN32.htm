@@ -1,0 +1,229 @@
+<html>
+<head>
+	<title>cacti Installation Instruction for Windowss</title>
+	<style>
+	<!--
+		BODY
+		{
+			font-size: 10pt;
+			font-family: Arial, sans-serif;
+		}
+		
+		P.code
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: bold;
+			margin: 5px;
+			padding: 5px;
+			color: #000066;
+			background-color: #EEEEEE;
+		}
+		
+		TT.shell
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #999999;
+		}
+		
+		P.php
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #000000;
+			margin: 5px;
+			padding: 5px;
+			background-color: #EEEEEE;
+		}
+		
+		TT.php-var
+		{
+			font-size: 10pt;
+			font-family: Courier New, Courier;
+			font-weight: normal;
+			color: #008080;
+		}
+	-->
+	</style>
+</head>
+
+<body>
+
+<h2>Cacti Installation (Windows)</h2><p>
+
+<h3>Dependencies</h3><p>
+
+Cacti requires:
+<ul>
+	<li>rrdtool:<br>
+		<tt><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/</a> <b><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.35.x86distr.zip">rrdtool-1.0.35.x86distr.zip</a></b></tt><p></li>
+		
+	<li><a href="http://www.php.net/">PHP 4</a> or newer (with SNMP support):<br>
+		<tt><a href="http://www.php.net/downloads.php">http://www.php.net/downloads.php</a> <b><a href="http://www.php.net/do_download.php?download_file=php-4.1.2-Win32.zip">php-4.1.2-Win32.zip</a></b></tt><p></li>
+	
+	<li><p><a href="http://www.mysql.com/">MySQL 3.23</a> or newer.</p></li>
+	
+	<li><a href="http://www.apache.org/">Apache</a> 1.3.20/IIS 5.x or higher</li>
+</ul><p>
+
+<h3>Install PHP (With Apache)</h3><p>
+
+<ol>
+	<li>Install the Apache web server. (I installed it in <strong>C:\Apache</strong>)<p>
+	
+	<li>Extract PHP somewhere and rename the folder to "PHP". (I installed it in <strong>C:\PHP</strong>)<p>
+
+	<li>Move the <strong>php4ts.dll</strong> file to your system directory (winnt/system32).<p>
+	
+	<li>Rename the <em>php.ini-dist</em> file to <em>php.ini</em>, copy it to your <em>winnt/</em> directory 
+	and make the following changes to the file:<p>
+	
+		<p class="php">extension_dir = c:/php/extensions<br>
+		extension=php_snmp.dll<br>
+		include_path=c:/apache/htdocs/cacti<br>
+		register_globals = On<br>
+		register_argc_argv = On<p>
+	
+	Make sure to replace <em>c:/apache/htdocs/cacti</em> with your <strong>full</strong> path to cacti.<p>
+	
+	<li>Add the following lines to Apache's <strong>httpd.conf</strong> file:<p>
+	
+		<p class="php">LoadModule php4_module c:/php/sapi/php4apache.dll<br>
+		AddModule mod_php4.c<br>
+		AddType application/x-httpd-php .php<br>
+		DirectoryIndex index.html index.htm index.php<p>
+	
+	Make sure to replace <em>c:/php/sapi/php4apache.dll</em> with your <strong>full</strong> path to the php4apache.dll file.<p>
+</ol>
+
+<h3>Install PHP (With IIS)</h3><p>
+
+<ol>
+	<li>Extract PHP somewhere and rename the folder to "PHP". (I installed it in <strong>C:\PHP</strong>)<p>
+	
+	<li>Rename the <em>php.ini-dist</em> file to <em>php.ini</em>, copy it to your <em>winnt/</em> directory 
+	and make the following changes to the file:<p>
+	
+		<p class="php">extension_dir = c:/php/extensions<br>
+		extension=php_snmp.dll<br>
+		include_path=c:/inetpub/wwwroot/cacti<br>
+		register_globals = On<br>
+		register_argc_argv = On<p>
+	
+	Make sure to replace <em>c:/inetpub/wwwroot/cacti</em> with your <strong>full</strong> path to cacti.<p>
+	
+	<li>Start the Microsoft Management Console, right click on <em>Default Web Server</em> (in most cases) and
+	select <strong>Properties</strong>.<p>
+	
+	<li>Under the <em>Home Directory</em> tab, select <em>Configuration</em> and click <em>Add</em>.
+	Browse to the path of <em>php4isapi.dll</em>, and type in .php as the extension.<p>
+	
+	<li>Under the <em>ISAPI Filters</em> tab, click add and browse to the <em>php4isapi.dll</em> file. Name the
+	filter "php" and click OK.<p>
+	
+	<li>Under the <em>Documents</em> tab, add <strong>index.php</strong> to the list.<p>
+	
+	<li>Completely stop and start the IIS service using the following commands:<p>
+	
+		<p class="php">net stop iisadmin<br>
+		net start w3svc<p>
+		
+</ol>
+
+<h3>Installation Instructions</h3><p>
+
+<ol>
+	<li>Extract the distribution archive. You can use a program like <a href="http://www.winzip.com/">WinZip</a> to 
+		open .tar.gz files. These instructions will assume that the archive has been 
+		extracted to <em>C:\Apache\htdocs\cacti</em>, although you can use a different path if you wish. 
+		Make sure you extract with "Use folder names" enabled, so that the necessary sub-folders 
+		will be used.<p>
+	
+	<li>Unzip rrdtool and copy <strong>rrdtool.exe</strong> from the <em>src/tool_release</em> directory to somewhere such as 
+		C:\rrdtool<p>
+	
+	<li>Install MySQL (I installed it in <strong>C:\mysql</strong>) and start the MySQL service.<p>
+	
+	<li>Create the MySQL database:<p>
+	
+		<p class="code"><tt class="shell">C:\&gt;</tt> <b>cd Apache\htdocs\cacti</b><br>
+		<tt class="shell">C:\Apache\htdocs\cacti&gt;</tt> <b>mysqladmin create cacti</b></p><br>
+		
+		<b>Note</b> These examples assume that the MySQL executables directory (commonly C:\mysql\Bin) is in your %PATH%.<p>
+		
+	<li>Import the default cacti database:<p>
+	
+		<p class="code"><tt class="shell">C:\Apache\htdocs\cacti&gt;</tt> <b>mysql cacti &lt; cacti.sql</b></p><br>
+
+	<li><b>Optional:</b> Create a MySQL username and password for cacti.<p>
+	
+		<p class="code"><tt class="shell">C:\Apache\htdocs\cacti&gt;</tt> <b>mysql --user=root mysql</b><br>
+		<tt class="shell">mysql&gt;</tt> <b>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY '<i>somepassword</i>';</b><br>
+		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br>
+		
+	<li>Edit <b>include/config.php</b>.<p>
+
+	<ul>
+		<li><p>Specify the MySQL user, password and database for your cacti configuration.</p></li>
+		
+		<p class="php"><b>$database_default</b> = <tt class="php-var">"cacti"</tt>;<br>
+		<b>$database_hostname</b> = <tt class="php-var">"localhost"</tt>;<br>
+		<b>$database_username</b> = <tt class="php-var">"cactiuser"</tt>;<br>
+		<b>$database_password</b> = <tt class="php-var">"cacti"</tt>;<br>
+		</p><br>
+		
+		<li><p>Change the operating system variable to "win32":</p></li>
+		
+		<p class="php"><b>$cacti_server_os</b> = <tt class="php-var">"win32"</tt>;<br></p><br>
+		
+	</ul>
+	
+	<li>If you are using NTFS security, make sure the <em>I_USR_</em> user has write access to both the
+	<strong>log/</strong> and <strong>rra/</strong> sub-directories.<p>
+	
+	<li>You are going to need to schedule a task, so <em>cmd.php</em> can run every 5 minutes. Make sure the
+	<em>Task Scheduler</em> service is started and open up the <strong>Scheduled Tasks</strong> control panel item.
+	Add a new task, browse to your <em>php.exe</em> file and click <em>Next</em>. Have the task run daily (for now) and
+	click <em>Next</em> twice until you are at the username/password screen. You must enter a user that has 
+	read/write permissions to cacti rra/ and log/ directories here. Click <em>Next</em>, check the box to open
+	Advanced Properties and click <em>Finish</em>.<p>
+	
+	You are going to have to enter the full command line in the <em>Run</em> textbox. Using default paths,
+	your command line should look something like:<p>
+	
+	<p class="php">c:\php\php.exe c:\apache\htdocs\cacti\cmd.php</p>
+	
+	<p>Select the <em>Schedule</em> tab and click <em>Advanced</em>. Check the <em>Repeat task</em> checkbox
+	and change it to every 5 minutes, then change the <em>Duration</em> to 24 hours. That should
+	schedule <em>cmd.php</em> to run every 5 minutes.</p>
+	
+	<li>Point your web browser to:<p>
+	
+		<blockquote>http://your-server/cacti/</blockquote>
+		
+		<p>Log in the with a username/password of <strong>admin</strong>. You will be required to
+		change this password immediatly. Using the default paths described in this document, your
+		paths should look something like:</p>
+		
+		<p><strong>PHP Binary Path:</strong></p>
+		
+		<p class="php">c:/php/php.exe</p>
+		
+		<p><strong>rrdtool Binary Path:</strong></p>
+		
+		<p class="php">c:/rrdtool/rrdtool.exe</p>
+		
+		<p><strong>cacti Web Root:</strong></p>
+		
+		<p class="php">/cacti</p>
+		
+		<p><strong>Apache Web Root:</strong></p>
+		
+		<p class="php">c:/apache/htdocs</p>
+</ol>
+
+</body>
+</html>

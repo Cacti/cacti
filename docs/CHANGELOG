@@ -1,0 +1,148 @@
+raXnet - cacti
+
+0.6.7
+-feature: Added a "none" option for a data source when creating a CDEF.
+This can be used if you check the "Use the current data source being 
+used on the graph instead of a preset one" box.
+-feature: Each user has a default graph policy: ALLOW or DENY for their
+graph permissions.
+-bug: Unique .rrd filename/data source name issues for SNMP "Make Graph"
+have been fixed.
+-feature: Changing the data source for a graph group parent will change
+the data sources for each of the child items.
+-bug: Logging has been fixed so errors do not show up in the Apache 
+error_log any more.
+-bug: VRULE's work correctly now. Enter a time in the "value" field to use
+them, such as "00:00" or "14:00".
+-feature: If you select a graph to be added to the graph hierarchy, the
+"This Item is a Graph" checkbox is automatically selected.
+-docs: Install docs have been updated for Unix/Win32, documentation on 
+upgrading cacti has been added. See the 'docs/' directory for more 
+information.
+-bug: SNMP can function on win32/unix without snmpwalk/snmpget binaries.
+This will only work if you have php-snmp support compiled into both your
+php binary and web server modules. This is already the case for win32.
+-bug: A bug when more than one data source was created using the same
+data input source with multiple outputs has been fixed.
+-feature: The default install/upgrade screen has been revised.
+
+0.6.6
+-feature: Multiple data sources per .rrd is supported. To use this
+feature, simply create a data input source with multiple outputs that
+'Update RRA'.
+-feature: Graph item grouping, which enables you to delete/reorder
+groups of similair graph items.
+-feature: Graph preview and output preview in the console, which allows
+you to preview what a graph will look like/what rrdtool's output is.
+-feature: Graph-based permissions have added, you can also show/hide
+certain hierarchies per user.
+-feature: Multiple data source per .rrd file support, read the docs
+for more information.
+-feature: You can now export graphs to static png's/html's every n 
+times.
+-feature: By default, SNMP data source names come from <IP>_<IFNUM>,
+instead of just <IFDESC> which is more unique.
+-feature: More options for users such as where to go when the user logs
+in and whether the user can have their own settings or not.
+
+0.6.5
+-bug: Fixed some of the data source naming issues. You can now 
+use any data source name you want; cacti will take care of making
+the name "rrdtool friendly".
+-feature: Cacti will use PHP's builtin SNMP support if detected,
+SNMP is overall faster now too. NOTE: PHP's SNMP support may not
+work with all of your MIB names, you may have to use the OID 
+instead!
+-feature: Basic high speed counter support has been added, use
+'hcin'/'hcout' to use it. Also may not work with PHP's builtin SNMP 
+support yet.
+-bug: Using the MAX consolidation function with graph data works 
+better now. You can make graphs that look like the MRTG ones (5
+minute maximum). This code still needs a little work though.
+
+0.6.4
+-bug: You can now add the same CDEF to multiple data sources in the
+same graph.
+-feature: Ability to "sync" changes with the .rrd file with rrdtool's
+TUNE function. Cacti also tries to fill in internal data source path
+and name information to keep graphs from "breaking" when possible.
+-settings: You can now change the PHP Binary path from within cacti.
+-feature: Cacti can now export static images/html files when it gathers
+data like MRTG did.
+-feature: Multiple graph hierarchies are supported.
+-feature: You can now "zoom in" on any portion of the graph hierarchy
+by clicking on a header item.
+-bug: Some changes were made to make cacti more win32 complaint; a tutorial
+on how to setup cacti on win32 can be found on the raXnet page.
+-feature: You can now create all graphs for an SNMP host with one click.
+-feature: You can customize the graph title when creating graphs using
+the 'Make Graph' or 'Make All Graphs' link.
+-feature: Data sources in cacti are no longer limited to 19 characters.
+If you create a data source name that rrdtool will not like, cacti will
+automatically modify the name and save it internally for rrdtool-only use.
+
+0.6.3
+-feature: Put limits (HTML 'maxlength') on fields that have a
+maximum length.
+-feature: Added 'cacti Settings' and 'User Administration' to the
+cacti menu.
+-feature: Added a 'Step' field for Data Sources to graph data at
+non-300 second intervals.
+-feature: Added a '--rigid' on/off option, plus the ability to choose
+between '--alt-autoscale' and '--alt-autoscale-max' when using
+auto scale.
+-feature: Added a 'Base Value' field to the graphs to adjust how the
+vertical axis is displayed.
+-feature: Updated the menu/header graphics for a smoother look and
+easier navigation.
+-feature: cacti now stores its settings in the database instead of 
+config.php, so they can be manipulated under 'cacti Settings'. 
+Database credentials are still located in config.php however.
+-feature: Added a preview of the rrdtool source when creating data 
+sources.
+-feature: Added a "data source duplicate" function and moved "graph
+duplicate" to "Graphs" on the cacti menu.
+-settings: You can now turn on/off cacti's builtin authentication.
+-settings: You can control what is logged (create, graph, snmp, update).
+-feature: Added a "Total All Data Sources" CDEF, which can be used
+to represent the total of all of the data on a graph.
+-bug: Fixed a few add/edit/delete form-related bugs.
+-docs: Added some more content to the documentation and made it more
+visible from within cacti.
+
+0.6.2
+-bug: Fixed some bugs when creating CDEF's using multiple
+data sources.
+-bug: Fixed more SNMP parsing bugs with some versions
+of net-snmp.
+-feature: added an "auto-refresh" feature to the graphs (thanks Nossie).
+-bug: HRULE's and VRULE's acually work now.
+-docs: the beginnings of some real documentation.
+-bug: you can select the color black now.
+
+0.6.1
+-bug: Fixed a parsing bug with snmp, more parsing is done
+in cacti's code and not via arguments passed to 
+snmpget.
+-auth: Updated the function used to hash passwords 
+(more compatible with older MySQL versions), more 
+strict on document caching.
+-feature: Easier installation: cacti now checks for common
+problems and gives suggestions. Database updates are
+also done at this time.
+-bug: Fixed a problem with adding new data input sources.
+-bug: Problem saving the wrong numbers for 'Round Robin
+Archives'.
+-feature: Ability to preview the output of the cron script
+from a web browser under 'Cron Printout'.
+-feature: Added 'Logout User' to the menu.
+-bug: Removed some occurances of /var/www/html and replaced
+them with more dynamic variables.
+
+0.6
+-new tree code
+-some html table issues in graph view mode
+-fixed the settings code for saved graph-view data
+
+0.5
+-initial release

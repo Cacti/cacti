@@ -1,0 +1,61 @@
+A
+{
+	TEXT-DECORATION: none;
+	color : Blue;
+}
+
+A:active
+{
+	TEXT-DECORATION: none
+}
+
+A:hover
+{
+	TEXT-DECORATION: underline
+	color: #333333
+}
+
+A:active
+{
+}
+
+A:visited
+{
+	color : Blue;
+}
+
+BODY
+
+{
+	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+	FONT-SIZE: 12px;
+	background-color : #F5F5F5;
+}
+
+TABLE, TR, TD
+{
+	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+	FONT-SIZE: 12px;
+	LETTER-SPACING: 0px;
+}
+
+TABLE H4
+{
+	TEXT-ALIGN: center
+}
+
+.header
+{
+	FONT-SIZE: 14px;
+	font-weight : bold;
+}
+
+.cell1
+{
+	background-color: #FFFFFF
+}
+
+.cell2
+{
+	background-color: #E7E9F2
+}

@@ -1,0 +1,692 @@
+<?/* 
++-------------------------------------------------------------------------+
+| Copyright (C) 2002 Ian Berry                                            |
+|                                                                         |
+| This program is free software; you can redistribute it and/or           |
+| modify it under the terms of the GNU General Public License             |
+| as published by the Free Software Foundation; either version 2          |
+| of the License, or (at your option) any later version.                  |
+|                                                                         |
+| This program is distributed in the hope that it will be useful,         |
+| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+| GNU General Public License for more details.                            |
++-------------------------------------------------------------------------+
+| cacti: the rrdtool frontend [php-auth, php-tree, php-form]              |
++-------------------------------------------------------------------------+
+| This code is currently maintained and debugged by Ian Berry, any        |
+| questions or comments regarding this code should be directed to:        |
+| - iberry@raxnet.net                                                     |
++-------------------------------------------------------------------------+
+| - raXnet - http://www.raxnet.net/                                       |
++-------------------------------------------------------------------------+
+*/?>
+<?
+$current_path = dirname(__FILE__);
+
+/* ------------------ Header/Footer Data ---------------------- */
+
+/* draws <BODY> tag and CSS data */
+function DrawBodyHeader($page_title, $page_css_path, $page_start_table) { 
+	if ($page_css_path == "") {
+		$page_css_path = "css/main.css";
+	} ?>
+<html>
+<head>
+	<title><?print $page_title;?></title>
+	<link href="<?print $page_css_path;?>" rel="stylesheet" TYPE="text/css">
+</head>
+
+<body>
+
+<?if ($page_start_table == true) {?><table><?}
+}
+
+/* draws </BODY> */
+function DrawBodyFooter($page_end_table) { ?>
+<?if ($page_end_table == true) {?></table><?}?>
+</body>
+</html>
+
+<?}
+
+/* draws header and html form tag */
+function DrawFormHeader($form_top_title, $form_encoding_upload, $form_left_column) { 
+	global $current_path; include ("$current_path/config.php"); ?>
+<table border="0" width="96%">
+	<?if ($form_left_column == true) {?><td bgcolor="#<?print $color_light;?>" width="1%" rowspan="99999"></td><?}?>
+	<tr>
+		<td colspan="2" bgcolor="#<?print $color_dark_bar;?>">
+			<font class="header"><?print $form_top_title;?></font>
+		</td>
+	</tr>
+	
+	<form method="post"<?if ($form_encoding_upload==true) {?> enctype="multipart/form-data"<?}?>>
+<?}
+
+/* draws a plain dark header w/o form info */
+function DrawPlainFormHeader($title_text, $background_color, $column_span, $bold_text) { ?>
+							<tr>
+								<td colspan="<?print $column_span;?>" bgcolor="#<?print $background_color;?>" style="color: white;"><?if ($bold_text==true){?><strong><?}?><?print $title_text;?><?if ($bold_text==true){?></strong><?}?></td>
+							</tr>
+<?}
+
+/* draws a vertical space and a save button */
+function DrawFormSaveButton($action) { ?>
+	<input type="hidden" name="action" value="<?print $action;?>">
+	<input type="image" src="images/button_save.gif" alt="Save" align="absmiddle">
+<?}
+
+/* draw the ending form tag */
+function DrawFormFooter() {?>
+<input type="hidden" name="action" value="save">
+</form>
+</table>
+</body>
+</html>
+<?}
+
+/* ------------------ Form Objects Data ---------------------- */
+
+/* creates a new form item with a title and description */
+function DrawFormItem($form_title, $form_description) { 
+	global $current_path; include ("$current_path/config.php");?>
+		<td width="50%">
+			<?if ($form_title != "") {?><font class="textEditTitle"><?print $form_title;?></font><br><?}?><font class="textEditComment"><?print $form_description;?></font>
+		
+		</td>
+<?}
+
+/* creates a standard html textbox */
+function DrawFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td>
+			<input type="text" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+		</td>
+<?}
+
+/* creates a standard html password textbox */
+function DrawFormItemPasswordTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td>
+			<input type="password" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+		</td>
+<?}
+
+/* creates a standard hidden html textbox */
+function DrawFormItemHiddenTextBox($form_name, $form_previous_value, $form_default_value) { 
+	if (substr($form_name, 0, 1) == "_") {
+		$form_db_name = substr($form_name, 1, strlen($form_name));
+	}else{
+		$form_db_name = $form_name;
+	}
+	
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_db_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}
+	?>
+		<input type="hidden" name="<?print $form_name;?>"<?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+<?}
+
+/* creates a dropdown box from a sql string */
+function DrawFormItemDropdownFromSQL($form_name, $database_conn_id, $sql_string, $column_display,
+	$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
+	global $current_path; include_once ("$current_path/functions.php");
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td>
+			<select name="<?print $form_name;?>">
+				<?if ($form_none_entry!="") {?><option value="0"><?print $form_none_entry;?></option><?}?>
+				<?CreateList($sql_string,$column_display,$column_id,$form_previous_value);?>
+			</select>
+		</td>
+<?}
+
+/* creates a checkbox */
+function DrawFormItemCheckBox($form_name, $form_previous_value, $form_caption, $form_default_value) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td>
+			<input type="checkbox" name="<?print $form_name;?>"<?if ($form_previous_value=="on"){?> checked<?}?>> <?print $form_caption;?>
+		</td>
+<?}
+
+/* creates a radio */
+function DrawFormItemRadioButton($form_name, $form_previous_value, $form_current_value, $form_caption, 
+	$form_default_value) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td>
+			<input type="radio" name="<?print $form_name;?>" value="<?print $form_current_value;?>"<?if ($form_previous_value==$form_current_value){?> checked<?}?>> <?print $form_caption;?>
+		</td>
+<?}
+
+/* creates a text area with a user defined rows and cols */
+function DrawFormItemTextArea($form_name, $form_previous_value, $form_rows, $form_columns,
+	$form_default_value) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td>
+			<textarea cols="<?print $form_columns;?>" rows="<?print $form_rows;?>" name="<?print $form_name;?>"><?print $form_previous_value;?></textarea>
+		</td>
+<?}
+
+
+/* creates a user defined drop down box header */
+function DrawFormItemDropDownCustomHeader($form_name) { ?>
+		<td>
+			;<select name="<?print $form_name;?>">
+<?}
+
+/* creates a user defined drop down box item */
+function DrawFormItemDropDownCustomItem($form_name, $form_item_value, $form_item_display, $form_previous_value) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+			<option value="<?print $form_item_value;?>"<?if ($form_item_value==$form_previous_value) {?> selected<?}?>><?print $form_item_display;?></option>
+<?}
+
+/* creates a user defined drop down box footer */
+function DrawFormItemDropDownCustomFooter() { ?>
+			</select>
+		</td>
+<?}
+
+/* creates a hidden text box containing the ID */
+function DrawFormItemHiddenIDField($form_name, $form_id) { 
+	if (substr($form_id,0,13)=="Resource id #") {
+		$form_id = mysql_result($form_id, 0, $form_name);
+	}else{
+		if ($form_id=="") {
+			$form_id = 0;
+		}
+	} ?>
+		<input type="hidden" name="<?print $form_name;?>" value="<?print $form_id;?>">
+<?}
+
+/* creates an HR object */
+function DrawHR($width, $size) { ?>
+	<tr><td><hr width="<?print $width;?>" size="<?print $size;?>" noshade></td></tr>
+<?}
+
+/* creates a file upload box */
+function DrawFormItemFileBox($form_name) { ?>
+		<td>
+			&nbsp;<input type=file name="<?print $form_name;?>">
+		</td>
+<?}
+
+/* creates a dropdown box from a sql string */
+function DrawFormItemColorSelect($form_name, $database_conn_id,
+	$form_previous_value, $form_none_entry, $form_default_value) { 
+	global $current_path; include_once ("$current_path/functions.php");
+	
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<td bgcolor="#DEE3E7">
+		<?if ($form_none_entry != "") {?>
+			<input type="radio" name="<?print $form_name;?>" value="0"<?if ($form_previous_value==0){?> checked<?}?>> <?print $form_none_entry;?>
+		<?}?>
+		<table width="100%" border="0">
+		<?	$sql_id = mysql_query("select * from def_colors order by hex",$database_conn_id);
+			$rows = mysql_num_rows($sql_id); $i = 0;
+		
+		$row_style = "color"; $k = 0; $o = 0;
+		while ($i < $rows) {
+			
+			/* we reached the end, wrap up row and continue on next. there will be no 
+			more database pulls from this point in the loop */
+			if ($o == $rows) {
+				$row_style = "radio";
+				
+				/* only fill in td's if there we are NOT at the end of a row */
+				if ($k != 0) {
+					for ($p = 1; $p < (15-$k); $p++) {
+						print "<td></td>";
+					}
+					
+					//print "</tr><tr height=\"10\"><td>&nbsp;</td></tr><tr>";
+					print "</tr><tr>";
+				}
+				
+				$k = 0; $o = 0;
+			}
+			
+			/* draw either a picture or label */
+			if ($row_style == "color") {
+				?><td height="15" bgcolor="#<?print mysql_result($sql_id, $o, "hex");?>">
+					&nbsp;
+				</td><?
+				$row_array_id[$k] = mysql_result($sql_id, $o, "id");
+				
+				$o++;
+			}else{
+			?><td align="center">
+				<input type="radio" name="<?print $form_name;?>" value="<?print $row_array_id[$k];?>"<?if ($form_previous_value==$row_array_id[$k]){?> checked<?}?>>
+			</td><?
+			}
+			
+			/* every second time, incriment sql counter */
+			$j++;
+			if ($j == 2) {
+				$j = 0;
+				$i++;
+			}
+			
+			$k++;
+			 /* every fourth time, write a new row */
+			if ($k == 15) {
+				$k = 0;
+				if ($row_style == "color") {
+					$row_style = "radio";
+					//print "</tr><tr height=\"5\"><td></td></tr><tr>";
+					print "</tr><tr>";
+				}else{
+					$row_style = "color";
+					//print "</tr><tr height=\"5\"><td>&nbsp;</td></tr><tr>";
+					print "</tr><tr>";
+				}
+				
+			}
+		}?>
+		</table>
+		</td>
+<?}
+
+/* create a multiselect listbox */
+function DrawFormItemMultipleList($form_name, $database_conn_id, $sql_string_display, $sql_display_name,
+	$sql_display_value, $sql_string_previous_values, $sql_previous_value) {
+	global $current_path; include_once ("$current_path/functions.php");?>
+		<td bgcolor="#DEE3E7">
+			&nbsp;<select name="<?print $form_name;?>[]" multiple>
+				<?CreateMultipleList($database_conn_id,$sql_string_display,$sql_display_name,$sql_display_value,$sql_string_previous_values,$sql_previous_value);?>
+			</select>
+		</td>
+<?}
+
+/* create a date select */
+function DrawFormDateSelect($form_month_name, $form_day_name, $form_year_name, $database_conn_id,
+	$sql_previous_value, $sql_month_string) { ?>
+		<td bgcolor="#DEE3E7">
+		&nbsp;
+		<?DrawStrippedFormItemDropdownFromSQL($form_month_name,$database_conn_id,$sql_month_string,"name","id",$sql_previous_value,"",date('n'));?>
+		 / 
+		<?DrawStrippedFormItemDropdownFromNumberList($form_day_name,31,$sql_previous_value);?>
+		 / 
+		<?DrawStrippedFormItemDropdownFromYearList($form_year_name,date('Y'),10,10,$sql_previous_value);?>
+		</td>
+<?}
+
+function DrawFormPreformatedText($form_background_color, $text) { ?>
+<tr><td<?if ($form_background_color != "") {?> colspan="2" bgcolor="#<?print $form_background_color;?>"<?}?>>
+	<pre><?print $text;?></pre>
+	</tr></td>
+<?}
+
+function DrawFormArea($text) { ?>
+	<tr>
+		<td bgcolor="#E1E1E1" class="textArea">
+			<?print $text;?>
+		</td>
+	</tr>
+<?}
+
+function DrawConfirmForm($title_text, $body_text, $current_script_name, $action_url) { ?>
+
+		<br>
+		<table align="center" cellpadding=1 cellspacing=0 border=0 bgcolor="#B61D22" width="60%">
+			<tr>
+				<td bgcolor="#B61D22" colspan="10">
+					<table width="100%" cellpadding="3" cellspacing="0">
+						<tr>
+							<td bgcolor="#B61D22" class="textHeaderDark"><?print $title_text;?></td>
+						</tr>
+						<?
+						DrawFormArea($body_text);
+						DrawConfirmButtons($action_url, $current_script_name);
+						?>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+<?}
+
+function DrawConfirmButtons($action_url, $script_name) { ?>
+	<tr>
+		<td bgcolor="#E1E1E1">
+			<a href="<?print $script_name;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
+			<a href="<?print $script_name . $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
+		</td>
+	</tr>
+<?}
+
+/* ------------------ Stripped Form Objects Data ---------------------- */
+
+/* creates a standard html textbox */
+function DrawStrippedFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+			<input type="text" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+<?}
+
+/* creates a standard html password textbox */
+function DrawStrippedFormItemPasswordTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+			<input type="password" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+<?}
+
+/* creates a dropdown box from a sql string */
+function DrawStrippedFormItemDropdownFromSQL($form_name, $database_conn_id, $sql_string, $column_display,
+	$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
+	global $current_path; include_once ("$current_path/functions.php");
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<select name="<?print $form_name;?>">
+			<?if ($form_none_entry!="") {?><option value="0"><?print $form_none_entry;?></option><?}?>
+			<?CreateList($database_conn_id,$sql_string,$column_display,$column_id,$form_previous_value);?>
+		</select>
+<?}
+
+function DrawStrippedFormItemDropdownFromNumberList($form_name,$form_numbers,$form_previous_value) {
+	global $current_path; include_once ("$current_path/functions.php");
+	$form_default_value = date('j'); /* today */
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<select name="<?print $form_name;?>">
+			<?DrawNumberList($form_numbers,$form_previous_value);?>
+		</select>
+<?}
+
+function DrawStrippedFormItemDropdownFromYearList($form_name,$form_year,$form_year_before,$form_year_after,
+	$form_previous_value) {
+	global $current_path; include_once ("$current_path/functions.php");
+	$form_default_value = date('Y'); /* today */
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+		<select name="<?print $form_name;?>">
+			<?DrawYearList($form_year,$form_year_before,$form_year_after,$form_previous_value);?>
+		</select>
+<?}
+
+/* creates a checkbox */
+function DrawStrippedFormItemCheckBox($form_name, $form_previous_value, $form_caption, $form_default_value, $hard_return) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+			<input type="checkbox" name="<?print $form_name;?>"<?if ($form_previous_value=="on"){?> checked<?}?>> <?print $form_caption;?><?if ($hard_return==true){?><br><?}?>
+<?}
+
+/* creates a radio */
+function DrawStrippedFormItemRadioButton($form_name, $form_previous_value, $form_current_value, $form_caption, 
+	$form_default_value, $hard_return) { 
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+			<input type="radio" name="<?print $form_name;?>" value="<?print $form_current_value;?>"<?if ($form_previous_value==$form_current_value){?> checked<?}?>> <?print $form_caption;?><?if ($hard_return==true){?><br><?}?>
+<?}
+
+/* ------------------ Data Matrix ---------------------- */
+
+function DrawMatrixRowBegin() { ?>
+	<tr>
+<?}
+
+function DrawMatrixRowEnd() { ?>
+	</tr>
+<?}
+
+function DrawMatrixRowAlternateColorBegin($row_color1, $row_color2, $row_value) {
+	if (($row_value % 2) == 1) {
+		$current_color = $row_color1;
+	}else{
+		$current_color = $row_color2;
+	}
+	?>
+	<tr bgcolor="#<?print $current_color;?>">
+	<?return $current_color;
+}
+
+function DrawMatrixTableBegin($table_width) {
+	if ($table_width == true) {
+		$table_width = " width=\"$table_width\"";
+	}
+	
+	?>
+<table border="0"<?print $table_width;?>>
+<?
+}
+
+function DrawMatrixTableEnd() { ?>
+</table>
+<?}
+
+function DrawMatrixHeaderTop($matrix_name, $matrix_background_color, $matrix_text_color, 
+	$matrix_colspan) { ?>
+	<td colspan="<?print $matrix_colspan;?>" bgcolor="#<?print $matrix_background_color;?>" height="1">
+			<font color="#<?print $matrix_text_color;?>" class="header"><?print $matrix_name;?></font>
+	</td>
+<?}
+
+function DrawMatrixHeaderAdd($matrix_background_color, $matrix_text_color, $matrix_custom_url) { 
+	if ($matrix_custom_url == "") {
+		global $SCRIPT_FILENAME;
+		$matrix_custom_url = basename($SCRIPT_FILENAME) . "?action=edit";
+	}
+	 ?>
+	<td bgcolor="#<?print $matrix_background_color;?>" height="1" align="center" width="1%">
+		<font class="header"><a href="<?print $matrix_custom_url;?>"><?if ($matrix_text_color != ""){?><font color="#<?print $matrix_text_color;?>"><?}?>Add<?if ($matrix_text_color != ""){?></font><?}?></a></font>
+	</td>
+<?}
+
+function DrawMatrixRemove($matrix_custom_url, $counter, $color1, $color2) {
+	if (($counter % 2) == 1) {
+		$color = $color1;
+	}else{
+		$color = $color2;
+	}  ?>
+	<td align="center" width=1% bgcolor="#<?print $color;?>"><a href="<?print $matrix_custom_url;?>"><img src="images/delete.gif" border="0" alt="Delete"></a></td>
+<?}
+
+function DrawMatrixHeaderItem($matrix_name, $matrix_background_color, $matrix_text_color) { 
+	global $SCRIPT_FILENAME;
+	if ($matrix_custom_url == "") {
+		$matrix_custom_url = $SCRIPT_FILENAME . "?action=edit";
+	} ?>
+		<td bgcolor="#<?print $matrix_background_color;?>" height="1">
+			<font color="#<?print $matrix_text_color;?>"><?print $matrix_name;?></font>
+		
+		</td>
+<?}
+
+function DrawMatrixLoopItem($matrix_name, $matrix_db_column_name, $matrix_db_row, $matrix_format_bold, 
+	$matrix_custom_url) { 
+	if (substr($matrix_name,0,13)=="Resource id #") {
+		$matrix_name = mysql_result($matrix_name, $matrix_db_row, $matrix_db_column_name);
+	}else{
+		if ($matrix_name=="") {
+			$matrix_name = $form_default_value;
+		}
+	}
+	
+	if ($matrix_custom_url == "") {
+		$matrix_custom_url = $matrix_name;
+	}else{
+		$matrix_custom_url = "<a href=\"$matrix_custom_url\">$matrix_name</a>";
+	}
+	?>
+		
+		<td>
+			<?if ($matrix_format_bold==true){?><strong><?}?><?print $matrix_custom_url;?><?if ($matrix_format_bold==true){?></strong><?}?>
+		
+		</td>
+<?}
+
+function DrawMatrixLoopItemAction($matrix_name, $matrix_background_color, $matrix_text_color, $matrix_format_bold, 
+	$matrix_custom_url) { ?>
+		
+		<td align="center" <?if ($matrix_background_color != ""){?>bgcolor="#<?print $matrix_background_color;?>"<?}?> height="1">
+			<?if ($matrix_format_bold==true){?><strong><?}?><?if ($matrix_custom_url != ""){?><a href="<?print $matrix_custom_url;?>"><?}?><?if ($matrix_text_color != ""){?><font color="#<?print $matrix_text_color;?>"><?}?><?print $matrix_name;?><?if ($matrix_text_color != ""){?></font><?}?><?if ($matrix_custom_url != ""){?></a><?}?><?if ($matrix_format_bold==true){?></strong><?}?>
+		
+		</td>
+<?}
+
+function DrawMatrixCustom($custom_item) {
+	print $custom_item;
+}
+
+/* ------------------ Useful Functions ---------------------- */
+
+function html_boolean($html_boolean) {
+	if ($html_boolean == "on") {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+
+/* ------------------ Header Search ---------------------- */
+
+function DrawFilterTextBox($form_name, $form_previous_value, $form_default_value, $form_size) {
+	if (substr($form_previous_value,0,13)=="Resource id #") {
+		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
+	}else{
+		if ($form_previous_value=="") {
+			$form_previous_value = $form_default_value;
+		}
+	}?>
+<td>
+		<input type="text" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+	</td>
+<?}
+
+function DrawFilterBlank() { ?>
+<td>&nbsp;</td>
+<?}
+
+function DrawFilterSubmit() { 
+	global $current_page;?>
+<td align="right">
+		<input type="submit" value="Filter">
+		<input type="hidden" name="current_page" value="1">
+	</td></form>
+<?}
+
+function DrawFilterRowBegin() { ?>
+<form><tr><td colspan="2"><table width="100%"><tr>
+<?}
+
+function DrawFilterRowEnd() { ?>
+</tr></table></td></tr>
+<?}
+
+function DrawFilterNavigation($total_rows, $current_page, $filter_amount, $background_color, $column_span, $script_filename, $additional_variables) { 
+	global $current_path; include_once ("$current_path/config.php");
+?>
+<td bgcolor="#<?print $background_color;?>" colspan="<?print $column_span;?>">
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class="textHeaderBar" align="left"><strong><< <?if ($current_page >= 2){?><a href="<?print $script_filename;?>?current_page=<?print $current_page-1;?><?print $additional_variables;?>"><?}?>Previous<?if ($current_page >= 2){?></a><?}?></strong></td>
+			<td class="textHeaderBar" align="center">Showing Row<?if ($total_rows != 1){?>s<?}?> <?print (($current_page-1)*$filter_amount);?> to <?if (($current_page*$filter_amount) > $total_rows){ print $total_rows; }else{ print ($current_page*$filter_amount); }?> of <?print $total_rows;?></td>
+			<td class="textHeaderBar" align="right"><strong><?if (($current_page*$filter_amount) <= $total_rows){?><a href="<?print $script_filename;?>?current_page=<?print $current_page+1;?><?print $additional_variables;?>"><?}?>Next<?if (($current_page*$filter_amount) <= $total_rows){?></a><?}?> >></strong></td>
+		</tr>
+	</table>
+</td>
+<?}
+
+function GetFilterSearchSQL($search_fields) {
+	$first = " WHERE"; $i = 0;
+	
+	while ($i < count($search_fields)) {
+		if ($search_fields[$i]["db_value"] != "") {
+			$sql_where = $sql_where . "$first " . $search_fields[$i]["db_name"] . " like \"%%" . $search_fields[$i]["db_value"] . "%%\"";
+			$first = " AND";
+		}
+		
+		$i++;
+	}
+	
+	return $sql_where;
+}
+
+?>

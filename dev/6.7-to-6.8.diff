@@ -1,0 +1,1729 @@
+diff -r cacti-0.6.7/about.php cacti-0.6.8/about.php
+24c24
+< <?	$section = "Console Access"; include ('auth/include/auth.php');
+---
+> <?	$section = "Console Access"; include ('include/auth.php');
+Only in cacti-0.6.7: auth
+Only in cacti-0.6.8: auth_changepassword.php
+Only in cacti-0.6.8: auth_login.php
+Only in cacti-0.6.8: auth_noauth.php
+diff -r cacti-0.6.7/cacti.sql cacti-0.6.8/cacti.sql
+100d99
+<   AttemptedPass char(255) default NULL,
+161,162c160,161
+< INSERT INTO auth_users VALUES (1, 'admin', '43e9a4ab75570f5b', 'Administrator', 'on', 'on', 'on', 'on', 'on', '1', '1');
+< INSERT INTO auth_users VALUES (3, 'guest', '43e9a4ab75570f5b', 'Guest Account', 'on', 'on', 'on', 'on', '', '3', '2');
+---
+> INSERT INTO auth_users VALUES (1, 'admin', '43e9a4ab75570f5b', 'Administrator', 'on', 'on', 'on', 'on', 'on', 1, 1);
+> INSERT INTO auth_users VALUES (3, 'guest', '43e9a4ab75570f5b', 'Guest Account', 'on', 'on', 'on', 'on', '', 3, 1);
+500,503d498
+< INSERT INTO lnk_ds_rra VALUES (375, 4);
+< INSERT INTO lnk_ds_rra VALUES (375, 3);
+< INSERT INTO lnk_ds_rra VALUES (375, 2);
+< INSERT INTO lnk_ds_rra VALUES (375, 1);
+523a519,522
+> INSERT INTO lnk_ds_rra VALUES (375, 4);
+> INSERT INTO lnk_ds_rra VALUES (375, 3);
+> INSERT INTO lnk_ds_rra VALUES (375, 2);
+> INSERT INTO lnk_ds_rra VALUES (375, 1);
+587c586
+< INSERT INTO menu VALUES (1, 'cacti Menu', '2');
+---
+> INSERT INTO menu VALUES (1, 'cacti Menu', 2);
+677,692c676,691
+< INSERT INTO rrd_ds VALUES (31, 0, 0, 'system_users', 1, 600, 0, 20, 6, 'on', 'system_users', '<path_rra>/system_users.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (35, 0, 0, 'ping_uunet_phi', 1, 600, 0, 2000, 1, 'on', 'ping_uunet_phi', '<path_rra>/ping_uunet_phi.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (38, 0, 0, 'server_mysql', 2, 600, 0, 5000, 8, 'on', 'server_mysql', '<path_rra>/server_mysql.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (378, 375, 85, 'system_loadavg_5min', 1, 600, 0, 200, 0, 'on', '5min', '<path_rra>/system_loadavg.rrd', 0, '0');
+< INSERT INTO rrd_ds VALUES (377, 375, 86, 'system_loadavg_10min', 1, 600, 0, 200, 0, 'on', '10min', '<path_rra>/system_loadavg.rrd', 0, '0');
+< INSERT INTO rrd_ds VALUES (126, 0, 0, 'system_samba', 1, 600, 0, 10000, 22, 'on', 'system_samba', '<path_rra>/system_samba.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (130, 0, 0, 'system_mem_cached', 1, 600, 0, 1000000, 24, 'on', 'system_mem_cached', '<path_rra>/system_mem_cached.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (131, 0, 0, 'system_mem_swap', 1, 600, 0, 1000000, 24, 'on', 'system_mem_swap', '<path_rra>/system_mem_swap.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (132, 0, 0, 'system_mem_total', 1, 600, 0, 1000000, 24, 'on', 'system_mem_total', '<path_rra>/system_mem_total.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (375, 0, 0, 'system_loadavg', 1, 600, 0, 200, 9, 'on', 'system_loadavg', '<path_rra>/system_loadavg.rrd', 300, '1');
+< INSERT INTO rrd_ds VALUES (376, 375, 84, 'system_loadavg_1min', 1, 600, 0, 200, 0, 'on', '1min', '<path_rra>/system_loadavg.rrd', 0, '0');
+< INSERT INTO rrd_ds VALUES (30, 0, 0, 'system_proc', 1, 600, 0, 500, 5, 'on', 'system_proc', '<path_rra>/system_proc.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (245, 0, 0, 'system_mem_buffers', 1, 600, 0, 10000000, 24, 'on', 'system_mem_buffers', '<path_rra>/system_mem_buffers.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (127, 0, 0, 'system_webhits', 2, 600, 0, 100000, 23, 'on', 'system_webhits', '<path_rra>/system_webhits.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (128, 0, 0, 'system_mem_free', 1, 600, 0, 10000000, 24, 'on', 'system_mem_free', '<path_rra>/system_mem_free.rrd', 300, '0');
+< INSERT INTO rrd_ds VALUES (36, 0, 0, 'system_tcp', 1, 600, 0, 200, 7, 'on', 'system_tcp', '<path_rra>/system_tcp.rrd', 300, '0');
+---
+> INSERT INTO rrd_ds VALUES (31, 0, 0, 'system_users', 1, 600, 0, 20, 6, 'on', 'system_users', '<path_rra>/system_users.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (35, 0, 0, 'ping_uunet_phi', 1, 600, 0, 2000, 1, 'on', 'ping_uunet_phi', '<path_rra>/ping_uunet_phi.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (38, 0, 0, 'server_mysql', 2, 600, 0, 5000, 8, 'on', 'server_mysql', '<path_rra>/server_mysql.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (126, 0, 0, 'system_samba', 1, 600, 0, 10000, 22, 'on', 'system_samba', '<path_rra>/system_samba.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (130, 0, 0, 'system_mem_cached', 1, 600, 0, 1000000, 24, 'on', 'system_mem_cached', '<path_rra>/system_mem_cached.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (131, 0, 0, 'system_mem_swap', 1, 600, 0, 1000000, 24, 'on', 'system_mem_swap', '<path_rra>/system_mem_swap.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (132, 0, 0, 'system_mem_total', 1, 600, 0, 1000000, 24, 'on', 'system_mem_total', '<path_rra>/system_mem_total.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (30, 0, 0, 'system_proc', 1, 600, 0, 500, 5, 'on', 'system_proc', '<path_rra>/system_proc.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (245, 0, 0, 'system_mem_buffers', 1, 600, 0, 10000000, 24, 'on', 'system_mem_buffers', '<path_rra>/system_mem_buffers.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (127, 0, 0, 'system_webhits', 2, 600, 0, 100000, 23, 'on', 'system_webhits', '<path_rra>/system_webhits.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (128, 0, 0, 'system_mem_free', 1, 600, 0, 10000000, 24, 'on', 'system_mem_free', '<path_rra>/system_mem_free.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (36, 0, 0, 'system_tcp', 1, 600, 0, 200, 7, 'on', 'system_tcp', '<path_rra>/system_tcp.rrd', 300, 0);
+> INSERT INTO rrd_ds VALUES (378, 375, 85, 'system_loadavg_5min', 1, 600, 0, 200, 0, 'on', '5min', '<path_rra>/system_loadavg.rrd', 0, 0);
+> INSERT INTO rrd_ds VALUES (375, 0, 0, 'system_loadavg', 1, 600, 0, 200, 9, 'on', 'system_loadavg', '<path_rra>/system_loadavg.rrd', 300, 1);
+> INSERT INTO rrd_ds VALUES (376, 375, 84, 'system_loadavg_1min', 1, 600, 0, 200, 0, 'on', '1min', '<path_rra>/system_loadavg.rrd', 0, 0);
+> INSERT INTO rrd_ds VALUES (377, 375, 86, 'system_loadavg_10min', 1, 600, 0, 200, 0, 'on', '10min', '<path_rra>/system_loadavg.rrd', 0, 0);
+711,717c710,716
+< INSERT INTO rrd_ds_cdef VALUES (2, 'Turn Bytes into Bits', '1');
+< INSERT INTO rrd_ds_cdef VALUES (3, 'Make Stack Negative', '1');
+< INSERT INTO rrd_ds_cdef VALUES (4, 'Make Per 5 Minutes', '1');
+< INSERT INTO rrd_ds_cdef VALUES (7, 'Total All Data Sources', '2');
+< INSERT INTO rrd_ds_cdef VALUES (11, 'Staggered Total of Data Sources on a Graph', '3');
+< INSERT INTO rrd_ds_cdef VALUES (12, 'Average of All Data Sources on a Graph', '4');
+< INSERT INTO rrd_ds_cdef VALUES (13, 'Staggered Average of Data Sources on a Graph', '5');
+---
+> INSERT INTO rrd_ds_cdef VALUES (2, 'Turn Bytes into Bits', 1);
+> INSERT INTO rrd_ds_cdef VALUES (3, 'Make Stack Negative', 1);
+> INSERT INTO rrd_ds_cdef VALUES (4, 'Make Per 5 Minutes', 1);
+> INSERT INTO rrd_ds_cdef VALUES (7, 'Total All Data Sources', 2);
+> INSERT INTO rrd_ds_cdef VALUES (11, 'Staggered Total of Data Sources on a Graph', 3);
+> INSERT INTO rrd_ds_cdef VALUES (12, 'Average of All Data Sources on a Graph', 4);
+> INSERT INTO rrd_ds_cdef VALUES (13, 'Staggered Average of Data Sources on a Graph', 5);
+771a771,773
+>   UnitValue varchar(20) default NULL,
+>   UnitExponentValue smallint(5) NOT NULL default '0',
+>   AutoScaleLog char(2) default NULL,
+780,788c782,790
+< INSERT INTO rrd_graph VALUES (6, 1, 'System Processes', 150, 500, 100, 0, 'Active Processes', '', 'on', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (7, 1, 'Logged In Users', 150, 500, 5, 0, 'Users Logged In', 'on', '', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (10, 1, 'MySQL Usage', 150, 500, 300, 0, 'SQL Questions', 'on', '', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (13, 1, 'Load Average', 150, 500, 4, 0, 'Average Load', 'on', '', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (8, 1, 'WAN Links (Ping Times)', 150, 500, 1000, 0, 'Milliseconds', 'on', 'on', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (56, 1, 'Memory Usage #2', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (53, 1, 'Apache/Samba/MySQL', 120, 500, 0, 0, 'Connections', 'on', 'on', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (55, 1, 'Memory Usage #1', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
+< INSERT INTO rrd_graph VALUES (57, 1, 'Apache Web Hits', 150, 500, 0, 0, 'Hits', 'on', '', '1', 'on', 1000, 'on', 'on');
+---
+> INSERT INTO rrd_graph VALUES (6, 1, 'System Processes', 150, 500, 100, 0, 'Active Processes', '', 'on', 2, 'on', 1000, 'on', 'on', NULL, 0, NULL);
+> INSERT INTO rrd_graph VALUES (7, 1, 'Logged In Users', 150, 500, 5, 0, 'Users Logged In', 'on', '', 2, 'on', 1000, 'on', 'on', NULL, 0, NULL);
+> INSERT INTO rrd_graph VALUES (10, 1, 'MySQL Usage', 150, 500, 300, 0, 'SQL Questions', 'on', '', 2, 'on', 1000, 'on', 'on', NULL, 0, NULL);
+> INSERT INTO rrd_graph VALUES (13, 1, 'Load Average', 150, 500, 4, 0, 'Average Load', 'on', '', 2, 'on', 1000, 'on', 'on', '', 1, NULL);
+> INSERT INTO rrd_graph VALUES (8, 1, 'WAN Links (Ping Times)', 150, 500, 1000, 0, 'Milliseconds', 'on', 'on', 2, 'on', 1000, 'on', 'on', NULL, 0, NULL);
+> INSERT INTO rrd_graph VALUES (56, 1, 'Memory Usage #2', 150, 500, 0, 0, 'Memory (kB)', 'on', '', 2, 'on', 1000, 'on', 'on', NULL, 0, NULL);
+> INSERT INTO rrd_graph VALUES (53, 1, 'Apache/Samba/MySQL', 120, 500, 0, 0, 'Connections', 'on', 'on', 2, 'on', 1000, 'on', 'on', NULL, 0, NULL);
+> INSERT INTO rrd_graph VALUES (57, 1, 'Apache Web Hits', 150, 500, 0, 0, 'Hits', 'on', '', 1, 'on', 1000, 'on', 'on', '', 0, '');
+> INSERT INTO rrd_graph VALUES (55, 1, 'Memory Usage #1', 150, 500, 0, 0, 'Memory (kB)', 'on', '', 2, 'on', 1000, 'on', 'on', '', 0, '');
+808a811,812
+>   GprintOpts tinyint(1) NOT NULL default '1',
+>   GprintCustom varchar(100) default NULL,
+819,853c823,857
+< INSERT INTO rrd_graph_item VALUES (417, 127, 0, 'Maximum:', '', 4, 57, 9, 3, 'on', 4, 1, 414);
+< INSERT INTO rrd_graph_item VALUES (416, 127, 0, 'Average:', '', 3, 57, 9, 1, '', 4, 1, 414);
+< INSERT INTO rrd_graph_item VALUES (414, 127, 95, 'Web Hits', '', 0, 57, 7, 1, '', 4, 1, 414);
+< INSERT INTO rrd_graph_item VALUES (407, 245, 35, 'Memory Buffers: <mem> kB', '', 0, 55, 8, 1, 'on', 0, 2, 407);
+< INSERT INTO rrd_graph_item VALUES (411, 131, 28, 'Total Swap Memory: <mem> kB',  NULL, 0, 56, 7, 1, 'on', 0, 1, 411);
+< INSERT INTO rrd_graph_item VALUES (412, 130, 46, 'Total Memory Cache: <mem> kB',  NULL, 0, 56, 8, 1, 'on', 0, 2, 412);
+< INSERT INTO rrd_graph_item VALUES (48, 31, 10, 'Users Logged In', '', 0, 7, 7, 1, '', 0, 1, 48);
+< INSERT INTO rrd_graph_item VALUES (55, 38, 16, 'MySQL Questions/sec', '', 0, 10, 7, 1, '', 0, 1, 55);
+< INSERT INTO rrd_graph_item VALUES (69, 376, 9, '1 Minute: <1min>', '', 0, 13, 8, 1, 'on', 0, 3, 69);
+< INSERT INTO rrd_graph_item VALUES (67, 377, 15, '10 Minute: <10min>', '', 0, 13, 7, 1, 'on', 0, 1, 67);
+< INSERT INTO rrd_graph_item VALUES (68, 378, 8, '5 Minute: <5min>', '', 0, 13, 8, 1, 'on', 0, 2, 68);
+< INSERT INTO rrd_graph_item VALUES (89, 35, 90, '<ip>', '', 0, 8, 7, 1, '', 0, 1, 89);
+< INSERT INTO rrd_graph_item VALUES (609, 0, 1, 'Total', '', 0, 13, 4, 1, '', 7, 4, 609);
+< INSERT INTO rrd_graph_item VALUES (406, 128, 52, 'Memory Free: <mem> kB',  NULL, 0, 55, 7, 1, 'on', 0, 1, 406);
+< INSERT INTO rrd_graph_item VALUES (405, 127, 0, 'Maximum:',  NULL, 4, 53, 9, 3, 'on', 0, 3, 402);
+< INSERT INTO rrd_graph_item VALUES (404, 127, 0, 'Average:',  NULL, 3, 53, 9, 1, '', 0, 3, 402);
+< INSERT INTO rrd_graph_item VALUES (403, 127, 0, 'Current:', '', 2, 53, 9, 4, '', 0, 3, 402);
+< INSERT INTO rrd_graph_item VALUES (402, 127, 75, 'Web Hits',  NULL, 0, 53, 8, 1, '', 4, 3, 402);
+< INSERT INTO rrd_graph_item VALUES (401, 38, 0, 'Maximum:',  NULL, 4, 53, 9, 3, 'on', 0, 2, 398);
+< INSERT INTO rrd_graph_item VALUES (400, 38, 0, 'Average:',  NULL, 3, 53, 9, 1, '', 0, 2, 398);
+< INSERT INTO rrd_graph_item VALUES (399, 38, 0, 'Current:',  NULL, 2, 53, 9, 4, '', 0, 2, 398);
+< INSERT INTO rrd_graph_item VALUES (398, 38, 74, 'MySQL Queries',  NULL, 0, 53, 8, 1, '', 0, 2, 398);
+< INSERT INTO rrd_graph_item VALUES (393, 35, 0, 'Maximum:',  NULL, 4, 8, 9, 3, 'on', 0, 1, 89);
+< INSERT INTO rrd_graph_item VALUES (392, 35, 0, 'Average:',  NULL, 3, 8, 9, 1, '', 0, 1, 89);
+< INSERT INTO rrd_graph_item VALUES (391, 35, 0, 'Current:',  NULL, 2, 8, 9, 4, '', 0, 1, 89);
+< INSERT INTO rrd_graph_item VALUES (381, 126, 73, 'Samba Files Opened',  NULL, 0, 53, 7, 1, '', 0, 1, 381);
+< INSERT INTO rrd_graph_item VALUES (395, 126, 0, 'Current:', '', 2, 53, 9, 4, '', 0, 1, 381);
+< INSERT INTO rrd_graph_item VALUES (396, 126, 0, 'Average:',  NULL, 3, 53, 9, 1, '', 0, 1, 381);
+< INSERT INTO rrd_graph_item VALUES (397, 126, 0, 'Maximum:',  NULL, 4, 53, 9, 3, 'on', 0, 1, 381);
+< INSERT INTO rrd_graph_item VALUES (413, 132, 69, 'Total Physical Memory: <mem> kB', '<mem>', 1, 56, 2, 1, 'on', 0, 2, 412);
+< INSERT INTO rrd_graph_item VALUES (415, 127, 0, 'Current:', '', 2, 57, 9, 4, '', 4, 1, 414);
+< INSERT INTO rrd_graph_item VALUES (870, 38, 0, 'Current:', '', 2, 10, 9, 4, '', 0, 1, 55);
+< INSERT INTO rrd_graph_item VALUES (871, 38, 0, 'Average:', '', 3, 10, 9, 1, '', 0, 1, 55);
+< INSERT INTO rrd_graph_item VALUES (872, 38, 0, 'Maximum:', '', 4, 10, 9, 3, 'on', 0, 1, 55);
+< INSERT INTO rrd_graph_item VALUES (1125, 30, 9, 'Processes', '', 0, 6, 7, 1, '', 0, 1, 1125);
+---
+> INSERT INTO rrd_graph_item VALUES (416, 127, 0, 'Average:', '', 3, 57, 9, 1, '', 4, 1, 414, 2, '');
+> INSERT INTO rrd_graph_item VALUES (414, 127, 95, 'Web Hits', '', 0, 57, 7, 1, '', 4, 1, 414, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (407, 245, 35, 'Memory Buffers: <mem> kB', '', 0, 55, 8, 1, 'on', 0, 2, 407, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (411, 131, 28, 'Total Swap Memory: <mem> kB', NULL, 0, 56, 7, 1, 'on', 0, 1, 411, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (412, 130, 46, 'Total Memory Cache: <mem> kB', NULL, 0, 56, 8, 1, 'on', 0, 2, 412, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (48, 31, 10, 'Users Logged In', '', 0, 7, 7, 1, '', 0, 1, 48, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (55, 38, 16, 'MySQL Questions/sec', '', 0, 10, 7, 1, '', 0, 1, 55, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (69, 376, 9, '1 Minute: <1min>', '', 0, 13, 8, 1, 'on', 0, 3, 69, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (67, 377, 15, '10 Minute: <10min>', '', 0, 13, 7, 1, 'on', 0, 1, 67, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (68, 378, 8, '5 Minute: <5min>', '', 0, 13, 8, 1, 'on', 0, 2, 68, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (89, 35, 90, '<ip>', '', 0, 8, 7, 1, '', 0, 1, 89, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (609, 0, 1, 'Total', '', 0, 13, 4, 1, '', 7, 4, 609, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (406, 128, 52, 'Memory Free: <mem> kB', NULL, 0, 55, 7, 1, 'on', 0, 1, 406, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (405, 127, 0, 'Maximum:', NULL, 4, 53, 9, 3, 'on', 0, 3, 402, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (404, 127, 0, 'Average:', NULL, 3, 53, 9, 1, '', 0, 3, 402, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (403, 127, 0, 'Current:', '', 2, 53, 9, 4, '', 0, 3, 402, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (402, 127, 75, 'Web Hits', NULL, 0, 53, 8, 1, '', 4, 3, 402, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (401, 38, 0, 'Maximum:', NULL, 4, 53, 9, 3, 'on', 0, 2, 398, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (400, 38, 0, 'Average:', NULL, 3, 53, 9, 1, '', 0, 2, 398, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (399, 38, 0, 'Current:', NULL, 2, 53, 9, 4, '', 0, 2, 398, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (398, 38, 74, 'MySQL Queries', NULL, 0, 53, 8, 1, '', 0, 2, 398, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (393, 35, 0, 'Maximum:', NULL, 4, 8, 9, 3, 'on', 0, 1, 89, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (392, 35, 0, 'Average:', NULL, 3, 8, 9, 1, '', 0, 1, 89, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (391, 35, 0, 'Current:', NULL, 2, 8, 9, 4, '', 0, 1, 89, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (381, 126, 73, 'Samba Files Opened', NULL, 0, 53, 7, 1, '', 0, 1, 381, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (395, 126, 0, 'Current:', '', 2, 53, 9, 4, '', 0, 1, 381, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (396, 126, 0, 'Average:', NULL, 3, 53, 9, 1, '', 0, 1, 381, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (397, 126, 0, 'Maximum:', NULL, 4, 53, 9, 3, 'on', 0, 1, 381, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (413, 132, 69, 'Total Physical Memory: <mem> kB', '<mem>', 1, 56, 2, 1, 'on', 0, 2, 412, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (415, 127, 0, 'Current:', '', 2, 57, 9, 4, '', 4, 1, 414, 2, '');
+> INSERT INTO rrd_graph_item VALUES (870, 38, 0, 'Current:', '', 2, 10, 9, 4, '', 0, 1, 55, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (871, 38, 0, 'Average:', '', 3, 10, 9, 1, '', 0, 1, 55, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (872, 38, 0, 'Maximum:', '', 4, 10, 9, 3, 'on', 0, 1, 55, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (1125, 30, 9, 'Processes', '', 0, 6, 7, 1, '', 0, 1, 1125, 1, NULL);
+> INSERT INTO rrd_graph_item VALUES (417, 127, 0, 'Maximum:', '', 4, 57, 9, 3, 'on', 4, 1, 414, 2, '');
+898,900c902,904
+< INSERT INTO settings VALUES ('path_webcacti', '', 'cacti Web Root', 'the path, under your webroot where cacti lyes, would be \'/cacti\'  in most cases if you are accessing cacti by: http://yourhost.com/cacti/.', 'textbox');
+< INSERT INTO settings VALUES ('path_webroot', '', 'Apache Web Root', 'Your apache web root, is \'/var/www/html\' or \'/home/httpd/html\' in most cases.', 'textbox');
+< INSERT INTO settings VALUES ('path_snmpwalk', '', 'snmpwalk Path', 'The path to your snmpwalk binary.', 'textbox');
+---
+> INSERT INTO settings VALUES ('path_webcacti', '', 'cacti Web Root', 'the path, under your webroot where cacti lies, would be \'/cacti\'  in most cases if you are accessing cacti by: http://yourhost.com/cacti/.', 'textbox');
+> INSERT INTO settings VALUES ('path_webroot', '', 'Web Server Document Root', 'Your webserver document root, is \'/var/www/html\' or \'/home/httpd/html\' in most cases.', 'textbox');
+> INSERT INTO settings VALUES ('path_snmpwalk', '', 'snmpwalk Binary Path', 'The path to your snmpwalk binary.', 'textbox');
+910c914
+< INSERT INTO settings VALUES ('global', '', 'Global Settings', 'Settings that control how cacti works', 'group:global_auth');
+---
+> INSERT INTO settings VALUES ('global', '', 'Global Settings', 'Settings that control how cacti works', 'group:global_auth:remove_verification');
+912c916
+< INSERT INTO settings VALUES ('path_snmpget', '', 'snmpget Path', 'The path to your snmpget binary.', 'textbox');
+---
+> INSERT INTO settings VALUES ('path_snmpget', '', 'snmpget Binary Path', 'The path to your snmpget binary.', 'textbox');
+916a921
+> INSERT INTO settings VALUES ('remove_verification', 'on', 'Remove Verification', 'Confirm Before the User Removes an Item', 'checkbox:group');
+934a940
+>   DefaultViewMode tinyint(1) NOT NULL default '1',
+1021,1022c1027,1028
+< INSERT INTO src VALUES (6, 'Get Logged In Users', 'perl <path_cacti>/scripts/users.pl <username>', '<users>',  NULL);
+< INSERT INTO src VALUES (7, 'Get TCP Connections', 'perl <path_cacti>/scripts/tcp.pl <mode>', '<connections>',  NULL);
+---
+> INSERT INTO src VALUES (6, 'Get Logged In Users', 'perl <path_cacti>/scripts/users.pl <username>', '<users>', NULL);
+> INSERT INTO src VALUES (7, 'Get TCP Connections', 'perl <path_cacti>/scripts/tcp.pl <mode>', '<connections>', NULL);
+1024,1025c1030,1031
+< INSERT INTO src VALUES (5, 'Get System Processes', 'perl <path_cacti>/scripts/proc.pl', '<proc>',  NULL);
+< INSERT INTO src VALUES (1, 'Ping Host', 'perl <path_cacti>/scripts/ping.pl <num> <ip>', '<out_ms>',  NULL);
+---
+> INSERT INTO src VALUES (5, 'Get System Processes', 'perl <path_cacti>/scripts/proc.pl', '<proc>', NULL);
+> INSERT INTO src VALUES (1, 'Ping Host', 'perl <path_cacti>/scripts/ping.pl <num> <ip>', '<out_ms>', NULL);
+1029,1030c1035,1036
+< INSERT INTO src VALUES (27, 'Get TCP Connections (SNMP)', 'perl <path_cacti>/scripts/tcp_custom_snmp.pl <ip> <community> <mode>', '<connections>',  NULL);
+< INSERT INTO src VALUES (22, 'Get Number of Open Samba Files', '/usr/bin/smbstatus | grep -c "_"', '<openfiles>',  NULL);
+---
+> INSERT INTO src VALUES (27, 'Get TCP Connections (SNMP)', 'perl <path_cacti>/scripts/tcp_custom_snmp.pl <ip> <community> <mode>', '<connections>', NULL);
+> INSERT INTO src VALUES (22, 'Get Number of Open Samba Files', '/usr/bin/smbstatus | grep -c "_"', '<openfiles>', NULL);
+1032,1033c1038,1039
+< INSERT INTO src VALUES (24, 'Get Memory Usage', 'perl <path_cacti>/scripts/memfree.pl <grepstr>', '<mem>',  NULL);
+< INSERT INTO src VALUES (8, 'Get SQL Connections', '<path_php_binary> -q <path_cacti>/scripts/sql.php', '<sql_connections>',  NULL);
+---
+> INSERT INTO src VALUES (24, 'Get Memory Usage', 'perl <path_cacti>/scripts/memfree.pl <grepstr>', '<mem>', NULL);
+> INSERT INTO src VALUES (8, 'Get SQL Connections', '<path_php_binary> -q <path_cacti>/scripts/sql.php', '<sql_connections>', NULL);
+1034a1041
+> INSERT INTO src VALUES (32, 'Get Load Average (Remote SSH)', 'ssh <username>@<hostname> perl load.pl', '<1min> <5min> <10min>', '');
+1066,1067c1073,1074
+< INSERT INTO src_data VALUES (100, 86, 377, '0.11');
+< INSERT INTO src_data VALUES (101, 85, 378, '0.13');
+---
+> INSERT INTO src_data VALUES (100, 86, 377, '0.00');
+> INSERT INTO src_data VALUES (101, 85, 378, '0.02');
+1070c1077
+< INSERT INTO src_data VALUES (105, 60, 128, '4576');
+---
+> INSERT INTO src_data VALUES (105, 60, 128, '1824');
+1072,1080c1079,1086
+< INSERT INTO src_data VALUES (103, 60, 245, '55712');
+< INSERT INTO src_data VALUES (104, 59, 127, '2651');
+< INSERT INTO src_data VALUES (99, 84, 376, '0.06');
+< INSERT INTO src_data VALUES (97, 60, 131, '264992');
+< INSERT INTO src_data VALUES (92, 13, 31, '2');
+< INSERT INTO src_data VALUES (93, 3, 35, '29.933');
+< INSERT INTO src_data VALUES (94, 16, 38, '11885');
+< INSERT INTO src_data VALUES (95, 57, 126, '1\n');
+< INSERT INTO src_data VALUES (96, 60, 130, '80332');
+---
+> INSERT INTO src_data VALUES (103, 60, 245, '2888');
+> INSERT INTO src_data VALUES (104, 59, 127, '4274');
+> INSERT INTO src_data VALUES (99, 84, 376, '0.02');
+> INSERT INTO src_data VALUES (97, 60, 131, '252100');
+> INSERT INTO src_data VALUES (92, 13, 31, '1');
+> INSERT INTO src_data VALUES (93, 3, 35, '19.946');
+> INSERT INTO src_data VALUES (95, 57, 126, '2\n');
+> INSERT INTO src_data VALUES (96, 60, 130, '139956');
+1083a1090,1093
+> INSERT INTO src_data VALUES (94, 16, 38, '3981618');
+> INSERT INTO src_data VALUES (381, 93, 428, '0.00');
+> INSERT INTO src_data VALUES (382, 94, 429, '0.01');
+> INSERT INTO src_data VALUES (383, 95, 430, '0.00');
+1155a1166,1170
+> INSERT INTO src_fields VALUES (91, 32, 'User Name', 'username', 'in', '');
+> INSERT INTO src_fields VALUES (92, 32, 'Hostname', 'hostname', 'in', '');
+> INSERT INTO src_fields VALUES (93, 32, '1 Minute', '1min', 'out', 'on');
+> INSERT INTO src_fields VALUES (94, 32, '5 Minute', '5min', 'out', 'on');
+> INSERT INTO src_fields VALUES (95, 32, '10 Minute', '10min', 'out', 'on');
+diff -r cacti-0.6.7/cdef.php cacti-0.6.8/cdef.php
+23,31d22
+< | - 2/8/2002 - Dave Neitz, Sprint E|Solutionns                            |
+< |   Added 3 new CDEF special types to the CDEF drop down list box:        |
+< |                                                                         |
+< |   Type  Description                                                     |
+< |   ----  -----------                                                     |
+< |    3    Staggered Total of Data Sources on a Graph                      |
+< |    4    Average of All Data Sources on a Graph                          |
+< |    5    Staggered Average of Data Sources on a Graph                    |
+< +-------------------------------------------------------------------------+
+33c24
+< <? 	$section = "Add/Edit Data Sources"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Data Sources"; include ('include/auth.php');
+38c29,31
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+46,47c39,48
+< 		mysql_query("delete from rrd_ds_cdef where id=$id",$cnn_id);
+< 		mysql_query("delete from rrd_ds_cdef_item where cdefid=$id",$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this CDEF?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+> 		
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			mysql_query("delete from rrd_ds_cdef where id=$id",$cnn_id);
+> 			mysql_query("delete from rrd_ds_cdef_item where cdefid=$id",$cnn_id);
+> 		}
+diff -r cacti-0.6.7/cdef_items.php cacti-0.6.8/cdef_items.php
+24c24
+< <? 	$section = "Add/Edit Data Sources"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Data Sources"; include ('include/auth.php');
+diff -r cacti-0.6.7/color.php cacti-0.6.8/color.php
+24c24
+< <? 	$section = "Add/Edit Graphs"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Graphs"; include ('include/auth.php');
+diff -r cacti-0.6.7/cron.php cacti-0.6.8/cron.php
+24c24
+< <?	$section = "Data Input"; include ('auth/include/auth.php');
+---
+> <?	$section = "Data Input"; include ('include/auth.php');
+Only in cacti-0.6.7: css
+diff -r cacti-0.6.7/data.php cacti-0.6.8/data.php
+24c24
+< <? 	$section = "Data Input"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Data Input"; include ('include/auth.php');
+28,29c28,32
+< 	include_once ('include/form.php'); ?>
+< <?switch ($action) {
+---
+> 	include_once ('include/form.php');
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+> switch ($action) {
+44,49c47,50
+< 		$sql_id = mysql_query("select d.id from src s left join src_fields f on s.id=f.srcid left join src_data d on f.id=d.fieldid where s.id=$id",$cnn_id);
+< 		
+< 		$i = 0;
+< 		while ($i < mysql_num_rows($sql_id)) {
+< 			mysql_query("delete from src_data where id=" . mysql_result($sql_id, $i, "id"),$cnn_id);
+< 			$i++;
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this data input source?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+52,53c53,64
+< 		mysql_query("delete from src_fields where srcid=$id",$cnn_id);
+< 		mysql_query("delete from src where id=$id",$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			$sql_id = mysql_query("select d.id from src s left join src_fields f on s.id=f.srcid left join src_data d on f.id=d.fieldid where s.id=$id",$cnn_id);
+> 			
+> 			$i = 0;
+> 			while ($i < mysql_num_rows($sql_id)) {
+> 				mysql_query("delete from src_data where id=" . mysql_result($sql_id, $i, "id"),$cnn_id);
+> 				$i++;
+> 			}
+> 			
+> 			mysql_query("delete from src_fields where srcid=$id",$cnn_id);
+> 			mysql_query("delete from src where id=$id",$cnn_id);
+> 		}
+diff -r cacti-0.6.7/data_fields.php cacti-0.6.8/data_fields.php
+24c24
+< <? 	$section = "Data Input"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Data Input"; include ('include/auth.php');
+diff -r cacti-0.6.7/docs/CHANGELOG cacti-0.6.8/docs/CHANGELOG
+2a3,22
+> 0.6.8
+> -feature: Added the following new rrdtool graph options: --units-exponent value,
+>  --unit, and --logarithmic.
+> -feature: Added the ability to show exact numbers in GPRINT, users can now
+> specify a custom GPRINT string on a per-graph item basis.
+> -bug: Any data input source with more than one output would be added as a
+> multi-data source .rrd file.
+> -bug: Some data source file name issues.
+> -bug: Cacti now checks to see if a host exists when adding it to be graphed.
+> -feature: There is now an optional "remove verification" for most of cacti's
+> dialogs.
+> -feature: There is a "logout" button when viewing graphs (not for the guest user).
+> -docs: Updated the Win32 docs (thanks Larry).
+> -bug: Fixed some rare HTML "multipart/form" bugs with PHP.
+> -feature: Added a "Default View Mode" for each user when viewing graphs.
+> -bug: Fixed some bugs where you would change a parent graph item to a child
+> or a child graph item to a parent when graph grouping was turned on.
+> -bug: Fixed some potential security bugs by eliminating cacti's use
+> of cookies.
+> 
+diff -r cacti-0.6.7/docs/CONTRIB cacti-0.6.8/docs/CONTRIB
+2a3,7
+> [docs/INSTALL-WIN32.htm]
+> - 5/8/2002 - Larry Adams
+> 
+> Updated the Windows install documentation
+> 
+diff -r cacti-0.6.7/docs/INSTALL-WIN32.htm cacti-0.6.8/docs/INSTALL-WIN32.htm
+88c88,89
+< 		register_argc_argv = On<p>
+---
+> 		register_argc_argv = On<br>
+> 		max_execution_time = 200<p>
+114c115,116
+< 		register_argc_argv = On<p>
+---
+> 		register_argc_argv = On<br>
+> 		max_execution_time = 200<p>
+185c187,189
+< 	<strong>log/</strong> and <strong>rra/</strong> sub-directories.<p>
+---
+> 	<strong>log/</strong> and <strong>rra/</strong> sub-directories. Also, please insure that the I_
+> 	USR_&lt;hostname&gt; user has execute permissions to the C:\PHP and C:\PHP\SAPI directories. 
+> 	If you do not do this, the ISAPI process will fail.<p>
+201c205,207
+< 	schedule <em>cmd.php</em> to run every 5 minutes.</p>
+---
+> 	schedule <em>cmd.php</em> to run every 5 minutes. <strong>Note:</strong> If you do not want the annoying 
+> 	DOS boxes showing up on your screen, schedule the event using an NT service ID such as "cacti_service".  
+> 	Doing this will remove those messages from your screen during the execution of the scheduled event.</p>
+223c229,231
+< 		<p><strong>Apache Web Root:</strong></p>
+---
+> 		<p><strong>Web Server Document Root:</strong></p>
+> 		
+> 		<p><em>(Apache Default)</em></p>
+225a234,237
+> 		
+> 		<p><em>(IIS Default)</em></p>
+> 		
+> 		<p class="php">c:/inetpub/wwwroot</p>
+diff -r cacti-0.6.7/docs/MANUAL.htm cacti-0.6.8/docs/MANUAL.htm
+47c47
+< 		<font class="header">cacti Documentation Outline</font>
+---
+> 		<font class="textHeader">cacti Documentation Outline</font>
+93c93
+< 		<font class="header">1. Installation</font><a name="1"></a>
+---
+> 		<font class="textHeader">1. Installation</font><a name="1"></a>
+98,157c98,99
+< 		<p><b>1)</b> Extract the cacti tarball, like 'tar -xvzf cacti-0.3.tar.gz',
+< 		and cd to the new directory.</p>
+< 
+< 		<p><b>2)</b> Create a database for cacti using syntax like:
+< 		mysqladmin -u root -p create cacti</p>
+< 
+< 		<p><b>3)</b> Then import the cacti database:
+< 		mysql -u root -p cacti &lt; SQL</p>
+< 
+< 		<p><b>4)</b> Edit config.php in 'include/', make sure to give a valid SQL
+< 		user name, password, and database.</p>
+< 
+< 		<p>NOTE: Be sure the MySQL user you give cacti has at least:</p>
+< 
+< 		<p>SELECT<br>
+< 		INSERT<br>
+< 		UPDATE<br>
+< 		DELETE<br>
+< 		CREATE<br>
+< 		ALTER<br></p>
+< 
+< 		<p>Privileges to cacti's database!</p>
+< 		
+< 		<p><b>5)</b> For cacti to run correctly, you must have the following settings
+< 		set accordingly in your php.ini file:</p>
+< 		
+< 		<p><em>register_globals = On<br> 
+< 		register_argc_argv = On</em></p>
+< 		
+< 		<p><b>6)</b> Become root, and add a line to your /etc/crontab similar to:<br>
+< 		*/5 * * * * apache php PATH_TO_CMD.PHP/cmd.php > /dev/null 2>&1</p>
+< 
+< 		<p>Make sure to fill in the correct path to cacti on your system.</p>
+< 
+< 		<p>IMPORTANT!<br>
+< 		Also, make sure you replace 'apache' with your web server user,
+< 		this user MUST have write access to the following directories in order
+< 		to log data and create the rrdtool RRA files.</p>
+< 
+< 		<p>log/*<br>
+< 		rra/*</p>
+< 
+< 		<p>If files do not start appearing in the 'rra/' directory after 5 minutes of
+< 		adding your crontab entry, check your permissions.</p>
+< 
+< 		<p><b>7)</b> Point your browser to http://servername/cacti/, or where ever else
+< 		you put it.</p>
+< 
+< 		<p><b>8)</b> For each new install/upgrade, cacti will check the variables in config.php
+< 		to make sure everything is valid. If everything looks ok, then cacti will
+< 		update the database if it finds a previous version and give you any last
+< 		minute information.</p>
+< 
+< 		<p><b>9)</b> Go to http://servername/cacti/ again to use cacti.
+< 		For new installs, you must login in with the account name of admin with
+< 		a password of admin you will be forced to change this password once
+< 		you successfully login for the first time.</p>
+< 
+< 		<p><b>10)</b> Sample graphs have already been created, yet data will not begin to
+< 		be gathered until the entry in crontab has been successfully setup.</p>
+---
+> 			For Unix-based installation instructions, go <a href="INSTALL.htm">here</a>. Or for Windows-based installation
+> 			instructions, go <a href="INSTALL-WIN32.htm">here</a>.
+164c106
+< 		<font class="header">2. Permissions/User Management</font><a name="2"></a>
+---
+> 		<font class="textHeader">2. Permissions/User Management</font><a name="2"></a>
+169c111
+< 		<font class="header">2.1. Default Users</font><a name="2.1"></a>
+---
+> 		<font class="textHeader">2.1. Default Users</font><a name="2.1"></a>
+184c126
+< 		<font class="header">2.2. How to Access User Management</font><a name="2.3"></a>
+---
+> 		<font class="textHeader">2.2. How to Access User Management</font><a name="2.3"></a>
+195c137
+< 		<font class="header">2.3. Adding a New User</font><a name="2.3"></a>
+---
+> 		<font class="textHeader">2.3. Adding a New User</font><a name="2.3"></a>
+230c172
+< 		<font class="header">2.4. Graph Permissions</font><a name="2.4"></a>
+---
+> 		<font class="textHeader">2.4. Graph Permissions</font><a name="2.4"></a>
+255c197
+< 		<font class="header">3. Creating a Graph</font><a name="3"></a>
+---
+> 		<font class="textHeader">3. Creating a Graph</font><a name="3"></a>
+260c202
+< 		<font class="header">3.1. Overview</font><a name="3.1"></a>
+---
+> 		<font class="textHeader">3.1. Overview</font><a name="3.1"></a>
+278c220
+< 		<font class="header">3.2. Data Input Sources</font><a name="3.2"></a>
+---
+> 		<font class="textHeader">3.2. Data Input Sources</font><a name="3.2"></a>
+283c225
+< 		<font class="header">3.2.1. Data Input Overview</font><a name="3.2.1"></a>
+---
+> 		<font class="textHeader">3.2.1. Data Input Overview</font><a name="3.2.1"></a>
+299c241
+< 		<font class="header">3.2.2. Pre-Installed Data Input Sources</font><a name="3.2.2"></a>
+---
+> 		<font class="textHeader">3.2.2. Pre-Installed Data Input Sources</font><a name="3.2.2"></a>
+331c273
+< 		<font class="header">3.2.3. How to Add/Remove Data Input Sources</font><a name="3.2.3"></a>
+---
+> 		<font class="textHeader">3.2.3. How to Add/Remove Data Input Sources</font><a name="3.2.3"></a>
+388c330
+< 		<font class="header">3.3. Data Sources</font><a name="3.3"></a>
+---
+> 		<font class="textHeader">3.3. Data Sources</font><a name="3.3"></a>
+393c335
+< 		<font class="header">3.3.1. Data Source Overview</font><a name="3.3.1"></a>
+---
+> 		<font class="textHeader">3.3.1. Data Source Overview</font><a name="3.3.1"></a>
+406c348
+< 		<font class="header">3.3.2. How to Add/Remove Data Sources</font><a name="3.3.2"></a>
+---
+> 		<font class="textHeader">3.3.2. How to Add/Remove Data Sources</font><a name="3.3.2"></a>
+471c413
+< 		<font class="header">3.3.3. Round Robin Archives</font><a name="3.3.3"></a>
+---
+> 		<font class="textHeader">3.3.3. Round Robin Archives</font><a name="3.3.3"></a>
+485c427
+< 		<font class="header">3.4. CDEF's</font><a name="3.4"></a>
+---
+> 		<font class="textHeader">3.4. CDEF's</font><a name="3.4"></a>
+490c432
+< 		<font class="header">3.4.1. CDEF's in cacti/Overview</font><a name="3.4.1"></a>
+---
+> 		<font class="textHeader">3.4.1. CDEF's in cacti/Overview</font><a name="3.4.1"></a>
+509c451
+< 		<font class="header">3.4.2. How to Create a CDEF in cacti</font><a name="3.4.2"></a>
+---
+> 		<font class="textHeader">3.4.2. How to Create a CDEF in cacti</font><a name="3.4.2"></a>
+544c486
+< 		<font class="header">3.5. Graphs</font><a name="3.5"></a>
+---
+> 		<font class="textHeader">3.5. Graphs</font><a name="3.5"></a>
+549c491
+< 		<font class="header">3.5.1. How to Add/Remove Graphs</font><a name="3.5"></a>
+---
+> 		<font class="textHeader">3.5.1. How to Add/Remove Graphs</font><a name="3.5"></a>
+620c562
+< 		<font class="header">3.5.2. How to Add/Remove Graph Items</font><a name="3.5.2"></a>
+---
+> 		<font class="textHeader">3.5.2. How to Add/Remove Graph Items</font><a name="3.5.2"></a>
+diff -r cacti-0.6.7/ds.php cacti-0.6.8/ds.php
+24c24
+< <? 	$section = "Add/Edit Data Sources"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Data Sources"; include ('include/auth.php');
+30c30,32
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+99a102
+> 			
+102,105d104
+< 			mysql_query("delete from rrd_ds where subdsid=$id",$cnn_id);
+< 			
+< 			/* ... same goes for the items in src_data */
+< 			mysql_query("delete from src_data where dsid=$id",$cnn_id);
+107,111c106,119
+< 			/* we have to make sure to kill the children's DS's in src_data */
+< 			$sql_id = mysql_query("select id from rrd_ds where subdsid=$id", $cnn_id);
+< 			
+< 			for ($i = 0; $i < mysql_num_rows($sql_id); $i++) {
+< 				mysql_query("delete from src_data where dsid=" . mysql_result($sql_id, $i, "id"),$cnn_id);
+---
+> 			if ($id != "0") {
+> 				/* this check prevents any rogue 0 ID's from screwing up data */
+> 				
+> 				mysql_query("delete from rrd_ds where subdsid=$id",$cnn_id);
+> 				
+> 				/* ... same goes for the items in src_data */
+> 				mysql_query("delete from src_data where dsid=$id",$cnn_id);
+> 				
+> 				/* we have to make sure to kill the children's DS's in src_data */
+> 				$sql_id = mysql_query("select id from rrd_ds where subdsid=$id", $cnn_id);
+> 				
+> 				for ($i = 0; $i < mysql_num_rows($sql_id); $i++) {
+> 					mysql_query("delete from src_data where dsid=" . mysql_result($sql_id, $i, "id"),$cnn_id);
+> 				}
+120a129
+> 				and updaterra=\"on\"
+155,161c164,168
+< 		mysql_query("delete from rrd_ds where id=$id",$cnn_id);
+< 		mysql_query("delete from rrd_ds where subdsid=$id",$cnn_id);
+< 		mysql_query("delete from lnk_ds_rra where dsid=$id",$cnn_id);
+< 		mysql_query("delete from src_data where dsid=$id",$cnn_id);
+< 		
+< 		/* we have to make sure to kill the children's DS's in src_data */
+< 		$sql_id = mysql_query("select id from rrd_ds where subdsid=$id", $cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this data source?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+163,164c170,183
+< 		for ($i = 0; $i < mysql_num_rows($sql_id); $i++) {
+< 			mysql_query("delete from src_data where dsid=" . mysql_result($sql_id, $i, "id"),$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			if ($id != "0") {
+> 				mysql_query("delete from rrd_ds where id=$id",$cnn_id);
+> 				mysql_query("delete from rrd_ds where subdsid=$id",$cnn_id);
+> 				mysql_query("delete from lnk_ds_rra where dsid=$id",$cnn_id);
+> 				mysql_query("delete from src_data where dsid=$id",$cnn_id);
+> 				
+> 				/* we have to make sure to kill the children's DS's in src_data */
+> 				$sql_id = mysql_query("select id from rrd_ds where subdsid=$id", $cnn_id);
+> 				
+> 				for ($i = 0; $i < mysql_num_rows($sql_id); $i++) {
+> 					mysql_query("delete from src_data where dsid=" . mysql_result($sql_id, $i, "id"),$cnn_id);
+> 				}
+> 			}
+diff -r cacti-0.6.7/ds_data_config.php cacti-0.6.8/ds_data_config.php
+24c24
+< <?	$section = "Add/Edit Data Sources"; include ('auth/include/auth.php');
+---
+> <?	$section = "Add/Edit Data Sources"; include ('include/auth.php');
+diff -r cacti-0.6.7/export.php cacti-0.6.8/export.php
+33d32
+< 	copy("$path_cacti/css/main.css", $config["path_html_export"]["value"] . "/main.css");
+diff -r cacti-0.6.7/export_header.php cacti-0.6.8/export_header.php
+28d27
+< 	<link href="main.css" rel="stylesheet">
+34a34,46
+> 	<STYLE TYPE="text/css">
+> 	<!--	
+> 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
+> 		BODY {background-color: #F5F5F5;}
+> 		A {text-decoration: none;}
+> 		A:active { text-decoration: none;}
+> 		A:hover {text-decoration: underline; color: #333333;}
+> 		A:visited {color: Blue;}
+> 		.textHeader {font-size: 12px; font-weight: bold;}
+> 		.textHeaderDark {font-size: 12px; font-weight: bold; color: #ffffff;}
+> 		.textArea {font-size: 12px;}
+> 	-->
+> 	</style>
+diff -r cacti-0.6.7/graph.php cacti-0.6.8/graph.php
+24c24,27
+< <?	$section = "View Graphs"; $guest_account = true; include ('auth/include/auth.php');
+---
+> <?	
+> 	header ("Cache-Control: no-cache, must-revalidate");
+> 	header ("Pragma: no-cache");
+> 	
+43c46
+< 	$sql_id = mysql_query("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],$config["guest_user"]["value"]),$cnn_id);
+---
+> 	$sql_id = mysql_query("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'],$config["guest_user"]["value"]),$cnn_id);
+diff -r cacti-0.6.7/graph_image.php cacti-0.6.8/graph_image.php
+25c25
+< $section = "View Graphs"; $guest_account = true; include ('auth/include/auth.php');
+---
+> 
+27a28,29
+> header ("Cache-Control: no-cache, must-revalidate");
+> header ("Pragma: no-cache");
+diff -r cacti-0.6.7/graph_settings.php cacti-0.6.8/graph_settings.php
+24c24,25
+< <? 	$section = "View Graphs"; $guest_account = true; include ('auth/include/auth.php');
+---
+> <?	session_start();
+> 	
+32c33
+< 	$user_id = GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"], $config["guest_user"]["value"]);
+---
+> 	$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
+37,38c38,39
+< 			height,width,timespan,columnnumber,viewtype,listviewtype,pagerefresh) values ($id,$user_id
+< 			,$rraid,$treeid,$height,$width,$timespan,$columnnumber,$viewtype,$listviewtype,$pagerefresh)",$cnn_id);
+---
+> 			height,width,timespan,columnnumber,viewtype,listviewtype,pagerefresh,defaultviewmode) values ($id,$user_id
+> 			,$rraid,$treeid,$height,$width,$timespan,$columnnumber,$viewtype,$listviewtype,$pagerefresh,$defaultviewmode)",$cnn_id);
+68c69,78
+< 		DrawFormHeader("Graph Preview Settings","",false);
+---
+> 		DrawFormHeader("Overall Graph Settings","",false);
+> 		
+> 		DrawFormItem("Default View Mode","What mode you wanted displayed when you visit 'graph_view.php'");
+> 		DrawFormItemDropDownCustomHeader("defaultviewmode");
+> 		DrawFormItemDropDownCustomItem("defaultviewmode","1","Tree View",$sql_id);
+> 		DrawFormItemDropDownCustomItem("defaultviewmode","2","List View",$sql_id);
+> 		DrawFormItemDropDownCustomItem("defaultviewmode","3","Preview View",$sql_id);
+> 		DrawFormItemDropDownCustomFooter();
+> 		
+> 		DrawPlainFormHeader("Graph Preview Settings");
+diff -r cacti-0.6.7/graph_view.php cacti-0.6.8/graph_view.php
+24c24,28
+< <?	$section = "View Graphs"; $guest_account = true; include ('auth/include/auth.php');
+---
+> <?	header ("Cache-Control: no-cache, must-revalidate");
+> 	header ("Pragma: no-cache");
+> 	
+> 	session_start();
+> 	
+31c35
+< $user_id = GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"], $config["guest_user"]["value"]);
+---
+> $user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
+87c91
+< 			$sql_id = mysql_query("select userid from auth_graph_hierarchy where hierarchyid=$tree_id and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],$config["guest_user"]["value"]),$cnn_id);
+---
+> 			$sql_id = mysql_query("select userid from auth_graph_hierarchy where hierarchyid=$tree_id and userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'],$config["guest_user"]["value"]),$cnn_id);
+101a106
+> 			
+103c108
+< 				$sql_where = "where ag.userid is null";
+---
+> 				$sql_where = "and ag.userid is null";
+105c110
+< 				$sql_where = "where (ag.userid is not null or h.type=\\\"Heading\\\")";
+---
+> 				$sql_where = "and (ag.userid is not null or h.type=\\\"Heading\\\")";
+117,118c122
+< 				' . $sql_where . '
+< 				and h.parent=$branch
+---
+> 				where h.parent=$branch
+119a124
+> 				' . $sql_where . '
+diff -r cacti-0.6.7/graphs.php cacti-0.6.8/graphs.php
+24c24
+< <? 	$section = "Add/Edit Graphs"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Graphs"; include ('include/auth.php');
+29c29,31
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+40a43
+> 		if ($unitexponentvalue==""){$unitexponentvalue=0;} /* no nulls; zeros */
+58,60c61,64
+< 			basevalue,grouping,export) values ($id,$imageformatid,\"$title\",$height,$width,
+< 			$upperlimit,$lowerlimit,\"$verticallabel\",\"$autoscale\",\"$autopadding\",
+< 			$autoscaleopts,\"$rigid\",$basevalue,\"$grouping\",\"$export\")",$cnn_id);
+---
+> 			basevalue,grouping,export,unitvalue,unitexponentvalue,autoscalelog) values ($id,$imageformatid,
+> 			\"$title\",$height,$width,$upperlimit,$lowerlimit,\"$verticallabel\",\"$autoscale\",
+> 			\"$autopadding\",$autoscaleopts,\"$rigid\",$basevalue,\"$grouping\",\"$export\",
+> 			\"$unitvalue\",$unitexponentvalue,\"$autoscalelog\")",$cnn_id);
+74,77c78,89
+< 		mysql_query("delete from rrd_graph where id=$id",$cnn_id);
+< 		mysql_query("delete from rrd_graph_item where graphid=$id",$cnn_id);
+< 		mysql_query("delete from graph_hierarchy_items where graphid=$id",$cnn_id);
+< 		mysql_query("delete from auth_graph where graphid=$id",$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this graph?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+> 		
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			mysql_query("delete from rrd_graph where id=$id",$cnn_id);
+> 			mysql_query("delete from rrd_graph_item where graphid=$id",$cnn_id);
+> 			mysql_query("delete from graph_hierarchy_items where graphid=$id",$cnn_id);
+> 			mysql_query("delete from auth_graph where graphid=$id",$cnn_id);
+> 		}
+108a121
+> 		DrawFormItemCheckBox("autoscalelog",$sql_id,"Logarithmic Auto Scaling (--logarithmic)","");
+133a147,154
+> 		
+> 		DrawFormItem("Unit Value","(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option
+> 			was recently added in rrdtool 1.0.36.");
+> 		DrawFormItemTextBox("unitvalue",$sql_id,"","");
+> 		
+> 		DrawFormItem("Unit Exponent Value","What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or
+> 			-6 to display everything in 'u' (micro).");
+> 		DrawFormItemTextBox("unitexponentvalue",$sql_id,"0","");
+diff -r cacti-0.6.7/graphs_items.php cacti-0.6.8/graphs_items.php
+24c24
+< <? 	$section = "Add/Edit Graphs"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Graphs"; include ('include/auth.php');
+62c62,63
+< 			header ("Set-Cookie: graph_preview=on; path=/;");
+---
+> 			$graph_preview = "on";
+> 			session_register("graph_preview");
+65c66,67
+< 			header ("Set-Cookie: graph_preview=off; path=/;");
+---
+> 			$graph_preview = "off";
+> 			session_register("graph_preview");
+75c77,78
+< 			header ("Set-Cookie: graph_output_preview=on; path=/;");
+---
+> 			$graph_output_preview = "on";
+> 			session_register("graph_output_preview");
+78c81,82
+< 			header ("Set-Cookie: graph_output_preview=off; path=/;");
+---
+> 			$graph_output_preview = "off";
+> 			session_register("graph_output_preview");
+85,86c89,90
+< $graph_preview = $HTTP_COOKIE_VARS["graph_preview"];
+< $graph_output_preview = $HTTP_COOKIE_VARS["graph_output_preview"];
+---
+> $graph_preview = $HTTP_SESSION_VARS["graph_preview"];
+> $graph_output_preview = $HTTP_SESSION_VARS["graph_output_preview"];
+94,95c98,100
+< 			parent) values ($id,$dsid,$colorid,\"$textformat\",$sequence,$gid,$graphtypeid,
+< 			$consolidationfunction,\"$hardreturn\",$cdefid,\"$value\",$sequenceparent,$parent)",$cnn_id);
+---
+> 			parent,gprintopts,gprintcustom) values ($id,$dsid,$colorid,\"$textformat\",$sequence,$gid,
+> 			$graphtypeid,$consolidationfunction,\"$hardreturn\",$cdefid,\"$value\",$sequenceparent,
+> 			$parent,$gprintopts,\"$gprintcustom\")",$cnn_id);
+115a121,126
+> 			if ($old_graphtypeid != "0") {
+> 				/* get the name of the LAST graph item type */
+> 				$sql_id = mysql_query("select name from def_graph_type where id=$old_graphtypeid", $cnn_id);
+> 				$old_graphtype = mysql_result($sql_id, 0, "name");
+> 			}
+> 			
+116a128,130
+> 				/* graph type changed; force a new sequence id */
+> 				if ($old_graphtype == "GPRINT") { $id = 0; }
+> 				
+134a149,174
+> 				if ($old_graphtype != "GPRINT") {
+> 					/* graph type changed; force a new sequence id */
+> 					$id = 0;
+> 					
+> 					/* if the old item was a parent and now it is a child (GPRINT), we must find
+> 					a new parent for this child. cacti says... go with the last available parent... */
+> 					$sql_id_parents = mysql_query("select sequenceparent,parent from rrd_graph_item i left join def_graph_type t 
+> 						on i.graphtypeid=t.id where i.graphid=$gid and (t.name = 'AREA' or t.name = 
+> 						'STACK' or t.name = 'LINE1' or t.name = 'LINE2' or t.name = 'LINE3')
+> 						order by i.sequenceparent desc", $cnn_id);
+> 					if (mysql_num_rows($sql_id_parents) != "0") { $parent = mysql_result($sql_id_parents, 0, "parent"); }
+> 					
+> 					/* also... what if that old parent had children... orfans need homes as well */
+> 					$sql_id = mysql_query("select id from rrd_graph_item where parent=$new_id", $cnn_id);
+> 					
+> 					for ($i=0; ($i < mysql_num_rows($sql_id)); $i++) {
+> 						$sequenceparent = mysql_result($sql_id_parents, 0, "sequenceparent");
+> 						$max_sequence = GetSequence(0, "sequence", "rrd_graph_item", "graphid", "$gid and parent=$parent");
+> 						
+> 						mysql_query("update rrd_graph_item set sequence=$max_sequence,
+> 							sequenceparent=$sequenceparent,
+> 							parent=$parent
+> 							where id=" . mysql_result($sql_id, $i, "id"), $cnn_id);
+> 					}
+> 				}
+> 				
+251a292
+> 			$old_graphtypeid = mysql_result($sql_id, 0, "graphtypeid");
+283c324
+< 				DrawFormItemDropdownFromSQL("parent",$cnn_id,"select CONCAT_WS('',t.name,': ',d.name) as name,
+---
+> 				DrawFormItemDropdownFromSQL("parent",$cnn_id,"select CONCAT_WS('',t.name,': ',d.name,' (',c.name,')') as name,
+285c326
+< 					rrd_ds d on i.dsid=d.id where graphid=$gid and (t.name = 'AREA' or t.name = 'STACK' or t.name = 'LINE1'
+---
+> 					rrd_ds d on i.dsid=d.id left join def_cf c on i.consolidationfunction=c.id where graphid=$gid and (t.name = 'AREA' or t.name = 'STACK' or t.name = 'LINE1'
+307c348
+< 		DrawFormItem("Value","For use with VRULE and HRULE, <i>numbers only</i>, and<br> staggered CDEF Calculations, format start=<<i>Data Source Position</i>>&skip<<i>Skip Count</i>>.");
+---
+> 		DrawFormItem("Value","For use with VRULE and HRULE, <i>numbers only</i>.");
+309a351,356
+> 		DrawFormItem("GPRINT Options","These options only apply to the GPRINT function. Choose an option or enter a custom
+> 			GPRINT string in the textbox (overides checkboxes).");
+> 		DrawFormItemRadioButton("gprintopts", $sql_id, "1", "Normal","1");
+> 		DrawFormItemRadioButton("gprintopts", $sql_id, "2", "Exact Numbers","1");
+> 		DrawFormItemTextBox("gprintcustom",$sql_id,"","");
+> 		
+318a366
+> 		DrawFormItemHiddenIDField("old_graphtypeid",$old_graphtypeid);
+Only in cacti-0.6.7/images: .thumbnails
+Only in cacti-0.6.8/images: auth_deny.gif
+Only in cacti-0.6.8/images: auth_login.gif
+Only in cacti-0.6.8/images: button_cancel.gif
+Only in cacti-0.6.8/images: button_delete.gif
+Only in cacti-0.6.8/images: top_tabs_logout.gif
+Only in cacti-0.6.8/include: auth.php
+Only in cacti-0.6.8/include: auth_functions.php
+diff -r cacti-0.6.7/include/config.php cacti-0.6.8/include/config.php
+82c82
+< $cacti_version = "0.6.7";
+---
+> $cacti_version = "0.6.8";
+diff -r cacti-0.6.7/include/form.php cacti-0.6.8/include/form.php
+60c60
+< 			<font class="header"><?print $form_top_title;?></font>
+---
+> 			<font class="textHeader"><?print $form_top_title;?></font>
+72c72
+< 			<font class="header"><?print $form_top_title;?></font>
+---
+> 			<font class="textHeader"><?print $form_top_title;?></font>
+370a371,409
+> function DrawConfirmForm($title_text, $body_text, $current_script_name, $action_url) { ?>
+> 
+> 		<br>
+> 		<table align="center" cellpadding=1 cellspacing=0 border=0 bgcolor="#B61D22" width="60%">
+> 			<tr>
+> 				<td bgcolor="#B61D22" colspan="10">
+> 					<table width="100%" cellpadding="3" cellspacing="0">
+> 						<tr>
+> 							<td bgcolor="#B61D22" class="textHeaderDark"><?print $title_text;?></td>
+> 						</tr>
+> 						<?
+> 						DrawFormArea($body_text);
+> 						DrawConfirmButtons($action_url, $current_script_name);
+> 						?>
+> 					</table>
+> 				</td>
+> 			</tr>
+> 		</table>
+> 
+> <?}
+> 
+> function DrawFormArea($text) { ?>
+> 	<tr>
+> 		<td bgcolor="#E1E1E1" class="textArea">
+> 			<?print $text;?>
+> 		</td>
+> 	</tr>
+> <?}
+> 
+> function DrawConfirmButtons($action_url, $script_name) { ?>
+> 	<tr>
+> 		<td bgcolor="#E1E1E1">
+> 			<a href="<?print $script_name;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
+> 			<a href="<?print $script_name . $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
+> 		</td>
+> 	</tr>
+> <?}
+> 
+> 
+480c519
+< 			<font color="#<?print $matrix_text_color;?>" class="header"><?print $matrix_name;?></font>
+---
+> 			<font color="#<?print $matrix_text_color;?>" class="textHeader"><?print $matrix_name;?></font>
+491c530
+< 		<font class="header"><a href="<?print $matrix_custom_url;?>"><?if ($matrix_text_color != ""){?><font color="#<?print $matrix_text_color;?>"><?}?>Add<?if ($matrix_text_color != ""){?></font><?}?></a></font>
+---
+> 		<font class="textHeader"><a href="<?print $matrix_custom_url;?>"><?if ($matrix_text_color != ""){?><font color="#<?print $matrix_text_color;?>"><?}?>Add<?if ($matrix_text_color != ""){?></font><?}?></a></font>
+diff -r cacti-0.6.7/include/functions.php cacti-0.6.8/include/functions.php
+140c140
+< 	$new_data_source_name = str_replace(" ","_",$data_source_name);
+---
+> 	$new_data_source_name = ereg_replace("[ ]|[.]|[)]|[(]","_",$data_source_name);
+148,149c148,149
+< 	$new_string = ereg_replace("[ ]|[.]","_",$string);
+< 	$new_string = ereg_replace("[*]|[/]|[\]|[*]|[&]|[%]|[\"]|[\']|[,]","",$new_string);
+---
+> 	$new_string = ereg_replace("[ ]|[.]|[)]|[(]","_",$string);
+> 	$new_string = ereg_replace("[*]|[/]|[\]|[*]|[&]|[%]|[\"]|[\']|[,]|[)]|[(]","",$new_string);
+347a348
+> 		$array_settings["global"]["defaultviewmode"] = 1;
+357a359
+> 		$array_settings["global"]["defaultviewmode"] = mysql_result($sql_id, 0, "defaultviewmode");
+diff -r cacti-0.6.7/include/rrd_functions.php cacti-0.6.8/include/rrd_functions.php
+298c298
+< 		global $HTTP_COOKIE_VARS;
+---
+> 		global $HTTP_SESSION_VARS;
+300c300
+< 		$sql_id = mysql_query("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],$config["guest_user"]["value"]),$cnn_id);
+---
+> 		$sql_id = mysql_query("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'],$config["guest_user"]["value"]),$cnn_id);
+332c332
+< 		i.id as iid, i.cdefid, i.textformat, i.value, i.hardreturn, i.consolidationfunction, i.parent,
+---
+> 		i.id as iid, i.cdefid, i.textformat, i.value, i.hardreturn, i.consolidationfunction, i.parent, i.gprintopts, i.gprintcustom,
+357c357
+< 				$scale = "--alt-autoscale" . " \\\n";
+---
+> 				$scale .= "--alt-autoscale" . " \\\n";
+360c360
+< 				$scale = "--alt-autoscale-max" . " \\\n";
+---
+> 				$scale .= "--alt-autoscale-max" . " \\\n";
+362a363,366
+> 		
+> 		if (mysql_result($sql_id, 0, "autoscalelog") == "on") {
+> 			$scale .= "--logarithmic" . " \\\n";
+> 		}
+371a376,383
+> 	if (mysql_result($sql_id, 0, "unitvalue") != "") {
+> 		$unit_value = "--unit=" . mysql_result($sql_id, 0, "unitvalue") . " \\\n";
+> 	}
+> 	
+> 	if (mysql_result($sql_id, 0, "unitexponentvalue") != "0") {
+> 		$unit_exponent_value = "--units-exponent=" . mysql_result($sql_id, 0, "unitexponentvalue") . " \\\n";
+> 	}
+> 	
+415a428,429
+> 		"$unit_value" .
+> 		"$unit_exponent_value" .
+835,839c849,861
+< 					$gprint_text = "%8.2lf %s";
+< 				}
+< 				
+< 				$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+< 				$graph_items .= mysql_result($sql_id_item, $i, "tname") . ":" .
+---
+> 					if (mysql_result($sql_id_item, $i, "gprintcustom") == "") {
+> 						switch (mysql_result($sql_id_item, $i, "gprintopts")) {
+> 							case "1":
+> 							$gprint_text = "%8.2lf %s"; break;
+> 							case "2":
+> 							$gprint_text = "%8.0lf"; break;
+> 						}
+> 					}else{
+> 						$gprint_text = mysql_result($sql_id_item, $i, "gprintcustom");
+> 					}
+> 					
+> 					$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
+> 					$graph_items .= mysql_result($sql_id_item, $i, "tname") . ":" .
+841c863,864
+< 					":\"$text_padding$text_format[$i]$gprint_text$hardreturn[$i]\" ";
+---
+> 						":\"$text_padding$text_format[$i]$gprint_text$hardreturn[$i]\" ";
+> 				}
+diff -r cacti-0.6.7/include/snmp_functions.php cacti-0.6.8/include/snmp_functions.php
+54c54
+< 		$snmp_value = exec($config["path_snmpget"]["value"] . " $hostname $community $oid");
+---
+> 		$snmp_value = exec($config["path_snmpget"]["value"] . " $force_version $hostname '$community' $oid");
+77c77
+< 		$temp_array = exec_into_array($config["path_snmpwalk"]["value"] . " $hostname \"$community\" $oid");
+---
+> 		$temp_array = exec_into_array($config["path_snmpwalk"]["value"] . " $force_version $hostname '$community' $oid");
+diff -r cacti-0.6.7/include/top_graph_header.php cacti-0.6.8/include/top_graph_header.php
+25c25,50
+< 	$array_settings = LoadSettingsIntoArray($HTTP_COOKIE_VARS["cactilogin"],"guest"); 
+---
+> 	
+> 	session_start();
+> 	
+> 	$tree_id = $HTTP_GET_VARS["tree_id"];
+> 	
+> 	$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
+> 	
+> 	/* at this point this user is good to go... so get some setting about this
+> 	user and put them into variables to save excess SQL in the future */
+> 	$sql_id_auth = mysql_query("select graphpolicy from auth_users where id=$user_id", $cnn_id);
+> 	$config["graph_policy"]["auth"] = mysql_result($sql_id_auth, 0, "graphpolicy");
+> 	
+> 	/* load all of the custom per-user graph settings */
+> 	$array_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]); 
+> 	
+> 	/* set the default action if none has been set */
+> 	if (($action != "tree") && ($action != "list") && ($action != "preview")) {
+> 		switch ($array_settings["global"]["defaultviewmode"]) {
+> 			case '1':
+> 				$action = "tree"; break;
+> 			case '2':
+> 				$action = "list"; break;
+> 			case '3':
+> 				$action = "preview"; break;
+> 		}
+> 	}
+29,30c54,55
+< 		if (isset($HTTP_COOKIE_VARS["current_tree"]) == true) {
+< 			$tree_id = $HTTP_COOKIE_VARS["current_tree"];
+---
+> 		if (isset($HTTP_SESSION_VARS["tree_id"]) == true) {
+> 			$tree_id = $HTTP_SESSION_VARS["tree_id"];
+33c58
+< 		header ("Set-Cookie: current_tree=$tree_id; path=/;");
+---
+> 		$HTTP_SESSION_VARS["tree_id"] = $tree_id;
+35a61
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+40d65
+< 	<link href="css/main.css" rel="stylesheet">
+43c68
+< 	echo "<meta http-equiv=refresh content=\"$page_refresh\"; url=\"$PHP_SELF?$QUERY_STRING\">\r\n";
+---
+> 	echo "<meta http-equiv=refresh content=\"$page_refresh\"; url=\"$current_script_name?$QUERY_STRING\">\r\n";
+44a70,82
+> 	<STYLE TYPE="text/css">
+> 	<!--	
+> 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
+> 		BODY {background-color: #F5F5F5;}
+> 		A {text-decoration: none;}
+> 		A:active { text-decoration: none;}
+> 		A:hover {text-decoration: underline; color: #333333;}
+> 		A:visited {color: Blue;}
+> 		.textHeader {font-size: 12px; font-weight: bold;}
+> 		.textHeaderDark {font-size: 12px; font-weight: bold; color: #ffffff;}
+> 		.textArea {font-size: 12px;}
+> 	-->
+> 	</style>
+61c99
+< 			<a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?if (basename($SCRIPT_FILENAME) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?if ($action == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?if ($action == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?if ($action == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
+---
+> 			<?if (isset($HTTP_SESSION_VARS["user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?}?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?if (basename($SCRIPT_FILENAME) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?if ($action == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?if ($action == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?if ($action == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
+84c122
+< 					left join auth_graph_hierarchy agh on (gh.id=agh.hierarchyid and agh.userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"], $config["guest_user"]["value"]) . ") 
+---
+> 					left join auth_graph_hierarchy agh on (gh.id=agh.hierarchyid and agh.userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]) . ") 
+93d130
+< 			
+103d139
+< 				
+diff -r cacti-0.6.7/include/top_header.php cacti-0.6.8/include/top_header.php
+24c24
+< <?	include_once ('auth/include/auth_functions.php');
+---
+> <?	include_once ('include/auth_functions.php');
+29c29,41
+< 	<link href="css/main.css" rel="stylesheet">
+---
+> 	<STYLE TYPE="text/css">
+> 	<!--	
+> 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
+> 		BODY {background-color: #F5F5F5;}
+> 		A {text-decoration: none;}
+> 		A:active { text-decoration: none;}
+> 		A:hover {text-decoration: underline; color: #333333;}
+> 		A:visited {color: Blue;}
+> 		.textHeader {font-size: 12px; font-weight: bold;}
+> 		.textHeaderDark {font-size: 12px; font-weight: bold; color: #ffffff;}
+> 		.textArea {font-size: 12px;}
+> 	-->
+> 	</style>
+65c77
+< 			<?DrawMenu($HTTP_COOKIE_VARS["cactilogin"],1,false);?>
+---
+> 			<?DrawMenu($HTTP_SESSION_VARS['user_id'],1,false);?>
+diff -r cacti-0.6.7/include/version_functions.php cacti-0.6.8/include/version_functions.php
+218a219,227
+> 	if ($old_version <= "0.6.7") {
+> 		mysql_query("ALTER TABLE `rrd_graph` ADD `UnitValue` VARCHAR(20), ADD `UnitExponentValue` SMALLINT(5) DEFAULT '0' NOT NULL, ADD `AutoScaleLog` CHAR(2)",$database_connection_id);
+> 		mysql_query("ALTER TABLE `rrd_graph_item` ADD `GprintOpts` TINYINT(1) DEFAULT '1' NOT NULL, ADD `GprintCustom` VARCHAR(100)",$database_connection_id);
+> 		mysql_query("ALTER TABLE `auth_log` DROP `AttemptedPass`",$database_connection_id);
+> 		mysql_query("ALTER TABLE `settings_graphs` ADD `DefaultViewMode` TINYINT(1) DEFAULT '1' NOT NULL",$database_connection_id);
+> 		mysql_query("INSERT INTO settings VALUES ('remove_verification', 'on', 'Remove Verification', 'Confirm Before the User Removes an Item', 'checkbox:group')",$database_connection_id);
+> 		mysql_query("UPDATE settings set method='group:global_auth:remove_verification' where name='global'",$database_connection_id);
+> 	}
+> 	
+diff -r cacti-0.6.7/index.php cacti-0.6.8/index.php
+24c24
+< <?	$section = "Console Access"; include ('auth/include/auth.php');
+---
+> <?	$section = "Console Access"; include ('include/auth.php');
+diff -r cacti-0.6.7/install.php cacti-0.6.8/install.php
+279c279
+< 						<p><strong><font color="#FF0000">NOTE:</font></strong> Once you click "Next",
+---
+> 						<p><strong><font color="#FF0000">NOTE:</font></strong> Once you click "Finish",
+diff -r cacti-0.6.7/logout.php cacti-0.6.8/logout.php
+25,26c25,26
+< include ("auth/include/config.php");
+< header("Set-Cookie: cactilogin=; path=/;");
+---
+> 
+> setcookie(session_name(),"","","/");
+28a29
+> 
+diff -r cacti-0.6.7/rra.php cacti-0.6.8/rra.php
+24c24
+< <? 	$section = "Add/Edit Round Robin Archives"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Round Robin Archives"; include ('include/auth.php');
+29c29,31
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+54,55c56,65
+< 		mysql_query("delete from rrd_rra where id=$id",$cnn_id);
+< 		mysql_query("delete from lnk_ds_rra where rraid=$id",$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+> 		
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			mysql_query("delete from rrd_rra where id=$id",$cnn_id);
+> 			mysql_query("delete from lnk_ds_rra where rraid=$id",$cnn_id);
+> 		}
+diff -r cacti-0.6.7/scripts/diskfree.pl cacti-0.6.8/scripts/diskfree.pl
+1,5c1,5
+< #!/usr/bin/perl
+< 
+< $ret = `df --block-size=1024 $ARGV[0] | grep -v Filesystem`;
+< $ret =~ s/($ARGV[0])(.* )(.*[0-9])(.* )(.*[0-9])(.* )(.*[0-9])(.* )(.*[0-9]%)(.* )//;
+< 
+---
+> #!/usr/bin/perl
+> 
+> $ret = `df --block-size=1024 $ARGV[0] | grep -v Filesystem`;
+> $ret =~ s/($ARGV[0])(.* )(.*[0-9])(.* )(.*[0-9])(.* )(.*[0-9])(.* )(.*[0-9]%)(.* )//;
+> 
+diff -r cacti-0.6.7/scripts/loadavg.pl cacti-0.6.8/scripts/loadavg.pl
+1,21c1,21
+< #!/usr/bin/perl
+< 
+< #get load avg for 5;15;30 min
+< $avg = `uptime`;
+< $avg =~ s/.*://;
+< 
+< if ($ARGV[0] eq "5") {
+< 	$avg = `echo "$avg" | awk '\{print \$1 \}'`;
+< }
+< 
+< if ($ARGV[0] eq "15") {
+< 	$avg = `echo "$avg" | awk '\{print \$2 \}'`;
+< }
+< 
+< if ($ARGV[0] eq "30") {
+< 	$avg = `echo "$avg" | awk '\{print \$3 \}'`;
+< }
+< 
+< chomp $avg;
+< $avg =~ s/,//;
+< 
+---
+> #!/usr/bin/perl
+> 
+> #get load avg for 5;15;30 min
+> $avg = `uptime`;
+> $avg =~ s/.*://;
+> 
+> if ($ARGV[0] eq "5") {
+> 	$avg = `echo "$avg" | awk '\{print \$1 \}'`;
+> }
+> 
+> if ($ARGV[0] eq "15") {
+> 	$avg = `echo "$avg" | awk '\{print \$2 \}'`;
+> }
+> 
+> if ($ARGV[0] eq "30") {
+> 	$avg = `echo "$avg" | awk '\{print \$3 \}'`;
+> }
+> 
+> chomp $avg;
+> $avg =~ s/,//;
+> 
+diff -r cacti-0.6.7/scripts/loadavg_multi.pl cacti-0.6.8/scripts/loadavg_multi.pl
+1,10c1,10
+< #!/usr/bin/perl
+< 
+< # get load avg for 1;5;10 min
+< 
+< $uptime = `uptime`;
+< $uptime =~ s/.*://;
+< $uptime =~ s/,//gi;
+< $uptime =~ s/^ //;
+< 
+< chomp $uptime;
+---
+> #!/usr/bin/perl
+> 
+> # get load avg for 1;5;10 min
+> 
+> $uptime = `uptime`;
+> $uptime =~ s/.*://;
+> $uptime =~ s/,//gi;
+> $uptime =~ s/^ //;
+> 
+> chomp $uptime;
+diff -r cacti-0.6.7/scripts/memfree.pl cacti-0.6.8/scripts/memfree.pl
+1,5c1,5
+< #!/usr/bin/perl
+< 
+< $mem = `cat /proc/meminfo | grep -w "$ARGV[0]"`;
+< $mem =~ s/($ARGV[0].*\s)(.*[0-9])( kB)//;
+< 
+---
+> #!/usr/bin/perl
+> 
+> $mem = `cat /proc/meminfo | grep -w "$ARGV[0]"`;
+> $mem =~ s/($ARGV[0].*\s)(.*[0-9])( kB)//;
+> 
+diff -r cacti-0.6.7/scripts/ping.pl cacti-0.6.8/scripts/ping.pl
+1,11c1,11
+< #!/usr/bin/perl
+< 
+< if ($ARGV[0]=="x") {
+< 	$db = ":0";
+< 	$ARGV[0] = 2;
+< }
+< 
+< $response = `ping $ARGV[1] -c $ARGV[0] |grep round-trip| awk '\{print \$4 \}' | awk -F / '\{print \$1 \}' | grep -v "Warning"`;
+< chomp $response;
+< $response = $response;
+< print "$response$db";
+---
+> #!/usr/bin/perl
+> 
+> if ($ARGV[0]=="x") {
+> 	$db = ":0";
+> 	$ARGV[0] = 2;
+> }
+> 
+> $response = `ping $ARGV[1] -c $ARGV[0] |grep round-trip| awk '\{print \$4 \}' | awk -F / '\{print \$1 \}' | grep -v "Warning"`;
+> chomp $response;
+> $response = $response;
+> print "$response$db";
+diff -r cacti-0.6.7/scripts/proc.pl cacti-0.6.8/scripts/proc.pl
+1,9c1,9
+< #!/usr/bin/perl
+< 
+< $outbound = `ps ax | wc -l`;
+< $outbound =~ s/ +//;
+< 
+< chop($outbound);
+< 
+< $outbound--;
+< 
+---
+> #!/usr/bin/perl
+> 
+> $outbound = `ps ax | wc -l`;
+> $outbound =~ s/ +//;
+> 
+> chop($outbound);
+> 
+> $outbound--;
+> 
+diff -r cacti-0.6.7/scripts/snmp.pl cacti-0.6.8/scripts/snmp.pl
+1,5c1,5
+< #!/usr/bin/perl
+< 
+< $ret = `snmpget -O neEXbqfsStv $ARGV[0] $ARGV[1] $ARGV[2]`;
+< chomp $ret;
+< 
+---
+> #!/usr/bin/perl
+> 
+> $ret = `snmpget -O neEXbqfsStv $ARGV[0] $ARGV[1] $ARGV[2]`;
+> chomp $ret;
+> 
+diff -r cacti-0.6.7/scripts/sql.php cacti-0.6.8/scripts/sql.php
+1,13c1,13
+< <?
+< 
+< $do_not_read_config = true;
+< include ("../include/config.php");
+< 
+< if ($database_password == "") {
+< 	$sql = `mysqladmin -h $database_hostname -u $database_username status | awk '{print $6 }'`;
+< }else{
+< 	$sql = `mysqladmin -h $database_hostname -u $database_username -p$database_password status | awk '{print $6 }'`;
+< }
+< 
+< print trim($sql);
+< 
+---
+> <?
+> 
+> $do_not_read_config = true;
+> include ("../include/config.php");
+> 
+> if ($database_password == "") {
+> 	$sql = `mysqladmin -h $database_hostname -u $database_username status | awk '{print $6 }'`;
+> }else{
+> 	$sql = `mysqladmin -h $database_hostname -u $database_username -p$database_password status | awk '{print $6 }'`;
+> }
+> 
+> print trim($sql);
+> 
+diff -r cacti-0.6.7/scripts/tcp.pl cacti-0.6.8/scripts/tcp.pl
+1,13c1,13
+< #!/usr/bin/perl
+< 
+< #gets inbound and outbound tcp connections
+< 
+< if ($ARGV[0] eq "tcp") {
+< 	$conn = `netstat -n | grep -c \":\"`;
+< 	chomp $conn;
+< }else{
+< 	$conn = `netstat -na | grep -c LISTEN`;
+< }
+< 
+< $conn =~ s/ //;
+< 
+---
+> #!/usr/bin/perl
+> 
+> #gets inbound and outbound tcp connections
+> 
+> if ($ARGV[0] eq "tcp") {
+> 	$conn = `netstat -n | grep -c \":\"`;
+> 	chomp $conn;
+> }else{
+> 	$conn = `netstat -na | grep -c LISTEN`;
+> }
+> 
+> $conn =~ s/ //;
+> 
+diff -r cacti-0.6.7/scripts/tcp_custom.pl cacti-0.6.8/scripts/tcp_custom.pl
+1,6c1,6
+< #!/usr/bin/perl
+< 
+< #gets inbound and outbound tcp connections
+< $conn = `netstat -n | grep -c \"$ARGV[0]\"`;
+< 
+< chomp $conn;
+---
+> #!/usr/bin/perl
+> 
+> #gets inbound and outbound tcp connections
+> $conn = `netstat -n | grep -c \"$ARGV[0]\"`;
+> 
+> chomp $conn;
+diff -r cacti-0.6.7/scripts/tcp_custom_snmp.pl cacti-0.6.8/scripts/tcp_custom_snmp.pl
+1,6c1,6
+< #!/usr/bin/perl
+< 
+< #gets inbound and outbound tcp connections
+< $conn = `snmpnetstat -c \"$ARGV[1]\" -n \"$ARGV[0]\" | grep -c \"$ARGV[2]\"`;
+< 
+< print $conn;
+---
+> #!/usr/bin/perl
+> 
+> #gets inbound and outbound tcp connections
+> $conn = `snmpnetstat -c \"$ARGV[1]\" -n \"$ARGV[0]\" | grep -c \"$ARGV[2]\"`;
+> 
+> print $conn;
+diff -r cacti-0.6.7/scripts/users.pl cacti-0.6.8/scripts/users.pl
+1,12c1,12
+< #!/usr/bin/perl
+< 
+< if ($ARGV[0] eq "") {
+< 	$inbound = `w | wc -l`;
+< 	$inbound =~ s/ +//;
+< 	$inbound = $inbound - 2;
+< }else{
+< 	$inbound = `w | grep -c $ARGV[0]`;
+< }
+< 
+< chomp $inbound;
+< print $inbound;
+---
+> #!/usr/bin/perl
+> 
+> if ($ARGV[0] eq "") {
+> 	$inbound = `w | wc -l`;
+> 	$inbound =~ s/ +//;
+> 	$inbound = $inbound - 2;
+> }else{
+> 	$inbound = `w | grep -c $ARGV[0]`;
+> }
+> 
+> chomp $inbound;
+> print $inbound;
+diff -r cacti-0.6.7/scripts/weatherbug.pl cacti-0.6.8/scripts/weatherbug.pl
+1,26c1,26
+< #!/usr/bin/perl
+< 
+< $output = `/bin/bash -c 'wget --quiet -O - \"http:\/\/wisapidata.weatherbug.com\/WxDataISAPI\/WxDataISAPI.dll?Magic=10991&RegNum=3647055&ZipCode=17241&StationID=NWVLL&Units=0&Version=2.7&Fore=1&t=1015084854\/"'`;
+< 
+< $output =~ s/[%]|[°]|[n]|[s]|[r]|[f]//gi;
+< 
+< @weather = split(/\|/, $output);
+< 
+< # docs
+< # [0] - ID?
+< # [1] - Current Time
+< # [2] - Current Date
+< # [3] - Current Temperature
+< # [5] - Wind Speed (MPH)
+< # [7] - Gust Wind Speed (MPH)
+< # [10] - Barometer (Moisture)
+< # [11] - Humidity (%)
+< # [12] - High Tempurature
+< # [13] - Low Temperature
+< # [14] - Dew Point
+< # [15] - Wind Chill
+< 
+< print $weather[3] . ":" . $weather[5] . ":" . $weather[10] . ":" . 
+< 	$weather[11] . ":" . $weather[12] . ":" . $weather[13] . ":" . 
+< 	$weather[14] . ":" . $weather[15];
+< 
+---
+> #!/usr/bin/perl
+> 
+> $output = `/bin/bash -c 'wget --quiet -O - \"http:\/\/wisapidata.weatherbug.com\/WxDataISAPI\/WxDataISAPI.dll?Magic=10991&RegNum=3647055&ZipCode=17241&StationID=NWVLL&Units=0&Version=2.7&Fore=1&t=1015084854\/"'`;
+> 
+> $output =~ s/[%]|[°]|[n]|[s]|[r]|[f]//gi;
+> 
+> @weather = split(/\|/, $output);
+> 
+> # docs
+> # [0] - ID?
+> # [1] - Current Time
+> # [2] - Current Date
+> # [3] - Current Temperature
+> # [5] - Wind Speed (MPH)
+> # [7] - Gust Wind Speed (MPH)
+> # [10] - Barometer (Moisture)
+> # [11] - Humidity (%)
+> # [12] - High Tempurature
+> # [13] - Low Temperature
+> # [14] - Dew Point
+> # [15] - Wind Chill
+> 
+> print $weather[3] . ":" . $weather[5] . ":" . $weather[10] . ":" . 
+> 	$weather[11] . ":" . $weather[12] . ":" . $weather[13] . ":" . 
+> 	$weather[14] . ":" . $weather[15];
+> 
+diff -r cacti-0.6.7/scripts/webhits.pl cacti-0.6.8/scripts/webhits.pl
+1,11c1,11
+< #!/usr/bin/perl
+< 
+< if ($ARGV[0] eq "") {
+< 	$log_path = "/var/log/httpd/access_log";
+< }else{
+< 	$log_path = $ARGV[0];
+< }
+< 
+< $webhits = `wc -l $log_path`;
+< $webhits =~ s/.*\s(.*[0-9])//;
+< 
+---
+> #!/usr/bin/perl
+> 
+> if ($ARGV[0] eq "") {
+> 	$log_path = "/var/log/httpd/access_log";
+> }else{
+> 	$log_path = $ARGV[0];
+> }
+> 
+> $webhits = `wc -l $log_path`;
+> $webhits =~ s/.*\s(.*[0-9])//;
+> 
+diff -r cacti-0.6.7/settings.php cacti-0.6.8/settings.php
+24c24
+< <? 	$section = "User Administration"; include ('auth/include/auth.php');
+---
+> <? 	$section = "User Administration"; include ('include/auth.php');
+diff -r cacti-0.6.7/snmp.php cacti-0.6.8/snmp.php
+24c24
+< <? 	$section = "Add/Edit Data Sources"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Data Sources"; include ('include/auth.php');
+29c29,31
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+32,33c34,43
+< 		mysql_query("delete from snmp_hosts where id=$id",$cnn_id);
+< 		mysql_query("delete from snmp_hosts_interfaces where hostid=$id",$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this SNMP host?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+> 		
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			mysql_query("delete from snmp_hosts where id=$id",$cnn_id);
+> 			mysql_query("delete from snmp_hosts_interfaces where hostid=$id",$cnn_id);
+> 		}
+40c50,57
+< 		$sql_id = mysql_query("replace into snmp_hosts (id,hostname,community) values 
+---
+> 		/* check to see if host exists first */
+> 		$sql_id = mysql_query("select id from snmp_hosts where hostname=\"$hostname\"",$cnn_id);
+> 		
+> 		if (mysql_num_rows($sql_id) > 0) {
+> 			print "<strong><font size=\"+1\" color=\"FF0000\">HOST ALREADY EXISTS!</font></strong>"; exit;
+> 		}
+> 		
+> 		mysql_query("replace into snmp_hosts (id,hostname,community) values 
+diff -r cacti-0.6.7/snmp_interfaces.php cacti-0.6.8/snmp_interfaces.php
+24c24
+< <? 	$section = "Add/Edit Data Sources"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Data Sources"; include ('include/auth.php');
+67c67
+< 			$snmp_description = substr(mysql_result($sql_id, 0, "description"),0,10) . "_" . mysql_result($sql_id, 0, "interfacenumber");
+---
+> 			$snmp_description = mysql_result($sql_id, 0, "description") . "_" . mysql_result($sql_id, 0, "interfacenumber");
+116c116
+< 				$snmp_description = substr(mysql_result($sql_id, $i, "description"),0,10) . "_" . mysql_result($sql_id, $i, "interfacenumber");
+---
+> 				$snmp_description = mysql_result($sql_id, $i, "description") . "_" . mysql_result($sql_id, $i, "interfacenumber");
+diff -r cacti-0.6.7/tree.php cacti-0.6.8/tree.php
+24c24
+< <? 	$section = "Add/Edit Graphs"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Graphs"; include ('include/auth.php');
+29c29,31
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+37,39c39,49
+< 		mysql_query("delete from graph_hierarchy where id=$id",$cnn_id);
+< 		mysql_query("delete from graph_hierarchy_items where treeid=$id",$cnn_id);
+< 		mysql_query("delete from auth_graph_hierarchy where hierarchyid=$id",$cnn_id);
+---
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this graph hierarchy?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+> 		
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			mysql_query("delete from graph_hierarchy where id=$id",$cnn_id);
+> 			mysql_query("delete from graph_hierarchy_items where treeid=$id",$cnn_id);
+> 			mysql_query("delete from auth_graph_hierarchy where hierarchyid=$id",$cnn_id);
+> 		}
+diff -r cacti-0.6.7/tree_items.php cacti-0.6.8/tree_items.php
+24c24
+< <? 	$section = "Add/Edit Graphs"; include ('auth/include/auth.php');
+---
+> <? 	$section = "Add/Edit Graphs"; include ('include/auth.php');
+95c95
+< 		DrawFormHeader("Graph Hierarchy Item Configuration: $tree_title",true,"");
+---
+> 		DrawFormHeader("Graph Hierarchy Item Configuration: $tree_title","",false);
+diff -r cacti-0.6.7/user_admin.php cacti-0.6.8/user_admin.php
+26c26
+< 	$section = "User Administration"; include ('auth/include/auth.php');
+---
+> 	$section = "User Administration"; include ('include/auth.php');
+29c29,31
+< 
+---
+> 	
+> 	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+> 	
+50,57c52,67
+< 	case 'delete':
+< 		mysql_query("delete from auth_users where id=$id",$cnn_id);
+< 		mysql_query("delete from auth_acl where userid=$id",$cnn_id);
+< 		mysql_query("delete from auth_hosts where userid=$id",$cnn_id);
+< 		mysql_query("delete from auth_graph where userid=$id",$cnn_id);
+< 		mysql_query("delete from auth_graph_hierarchy where userid=$id",$cnn_id);
+< 		mysql_query("delete from settings_graphs where userid=$id",$cnn_id);
+< 		mysql_query("delete from settings_tree where userid=$id",$cnn_id);
+---
+> 	case 'remove':
+> 		if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+> 			include_once ('include/top_header.php');
+> 			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", $current_script_name, "?action=remove&id=$id");
+> 			exit;
+> 		}
+> 		
+> 		if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
+> 			mysql_query("delete from auth_users where id=$id",$cnn_id);
+> 			mysql_query("delete from auth_acl where userid=$id",$cnn_id);
+> 			mysql_query("delete from auth_hosts where userid=$id",$cnn_id);
+> 			mysql_query("delete from auth_graph where userid=$id",$cnn_id);
+> 			mysql_query("delete from auth_graph_hierarchy where userid=$id",$cnn_id);
+> 			mysql_query("delete from settings_graphs where userid=$id",$cnn_id);
+> 			mysql_query("delete from settings_tree where userid=$id",$cnn_id);
+> 		}
+115c125
+< 		DrawMatrixRowBegin();
+---
+> 		DrawMatrixTableBegin("97%");
+139c149
+< 				DrawMatrixLoopItemAction("Remove",$color_panel,"",false,"user_admin.php?action=delete&id=" . mysql_result($sql_id, $i, "id"));
+---
+> 				DrawMatrixLoopItemAction("Remove",$color_panel,"",false,"user_admin.php?action=remove&id=" . mysql_result($sql_id, $i, "id"));
+diff -r cacti-0.6.7/user_admin_graphs.php cacti-0.6.8/user_admin_graphs.php
+26c26
+< 	$section = "User Administration"; include ('auth/include/auth.php');
+---
+> 	$section = "User Administration"; include ('include/auth.php');
+diff -r cacti-0.6.7/user_admin_ip.php cacti-0.6.8/user_admin_ip.php
+26c26
+< 	$section = "User Administration"; include ('auth/include/auth.php');
+---
+> 	$section = "User Administration"; include ('include/auth.php');
+63c63
+< 		DrawMatrixTableBegin(false);
+---
+> 		DrawMatrixTableBegin("97%");
+diff -r cacti-0.6.7/user_admin_permissions.php cacti-0.6.8/user_admin_permissions.php
+26c26
+< 	$section = "User Administration"; include ('auth/include/auth.php');
+---
+> 	$section = "User Administration"; include ('include/auth.php');

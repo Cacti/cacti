@@ -1,0 +1,20 @@
+Documentation of user-contributed code:
+
+[include/rrd_functions.php]
+- 2/8/2002 - Dave Neitz, Sprint E|Solutionns 
+  Added 3 new CDEF special types: 
+
+  Type  Description
+  ----  ----------- 
+   3    Total staggered datasources.
+   4    Average all datasources.
+   5    Average staggered datasources.
+
+  Staggered datasources are determined by parsing graph item value
+  column in the following manner:
+
+  start=<starting position in datasource>&skip=<skip count>
+  
+[graphs_items.php]
+- 2/8/2002 - Dave Neitz, Sprint E|Solutionns
+Added additional screen help text to support value expanded usage. 
