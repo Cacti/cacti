@@ -57,33 +57,13 @@
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form method="post">
-		<td colspan='<?php print read_graph_config_option("num_columns");?>'>
-			<table width="100%" cellpadding="0" cellspacing="0">
+		<td>
+			<table>
 				<tr>
-					<td width="1" class="textHeader">
-						<strong>&nbsp;From:&nbsp;</strong>
-					</td>
-					<td width="1">
-						<input type='text' name='date1' id='date1' size='16'>
-					</td>
-					<td width="25">
-						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absm iddle' onclick="return showCalendar('date1');">&nbsp;
-					</td>
-					<td width="5"></td>
-					<td width="1" class="textHeader">
-						<strong>&nbsp;To:&nbsp;</strong>
-					</td>
-					<td width="1">
-						<input type='text' name='date2' id='date2' size='16'>
-					</td>
-					<td width="25">
-						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absm iddle' onclick="return showCalendar('date2');">
-					</td>
-					<td width="5"></td>
-					<td width="50" class="textHeader">
+					<td width="15" class="textHeader">
 						Presets:&nbsp;
 					</td>
-					<td width="1">
+					<td width="30">
 						<select name='predefined_timespan'>
 							<option value='No Preset' selected>No Preset
 							<option value='Default'>Default
@@ -108,9 +88,20 @@
 							<option value='Last 2 Years'>Last 2 Years
 						</select>
 					</td>
-					<td width="1"></td>
+					<td class="textHeader">
+						<strong>&nbsp;From:&nbsp;</strong>
+					</td>
 					<td>
-						&nbsp;<input type='image' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absm iddle' action='submit'>
+						<input type='text' name='date1' id='date1' size='16'>
+						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
+					</td>
+					<td class="textHeader">
+						<strong>&nbsp;To:&nbsp;</strong>
+						<input type='text' name='date2' id='date2' size='16'>
+						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
+					</td>
+					<td>
+						&nbsp;<input type='image' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit'>
 					</td>
 				</tr>
 			</table>
