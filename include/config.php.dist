@@ -84,6 +84,6 @@ include_once($config["library_path"] . "/form.php");
 include_once($config["library_path"] . "/database.php");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.4";
+$config["cacti_version"] = "0.8.5";
 
 ?>
