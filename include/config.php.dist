@@ -61,12 +61,6 @@ error_reporting(E_ALL);
 include_once("functions.php");
 include_once("database.php");
 
-/* path variables */
-$paths["cacti"] = read_config_option("path_webroot") . read_config_option("path_webcacti");
-$paths["images"] = $paths["cacti"] . "/graphs";
-$paths["rra"] = $paths["cacti"] . "/rra";
-$paths["log"] = $paths["cacti"] . "/log/rrd.log";
-
 /* current cacti version */
 $config["cacti_version"] = "0.8";
 

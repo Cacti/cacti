@@ -179,7 +179,7 @@ function update_poller_cache($local_data_id) {
 					$identifier = $script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"];
 					
 					/* get a complete path for out target script */
-					$script_path = str_replace("|path_cacti|", $paths["cacti"], $script_queries["script_path"]) . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
+					$script_path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $script_queries["script_path"]) . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
 				}
 				
 				if (isset($script_path)) {

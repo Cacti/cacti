@@ -41,7 +41,7 @@ function get_data_query_array($snmp_query_id) {
 	include ("config.php");
 	
 	$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
-	$xml_file_path = str_replace("<path_cacti>", $paths["cacti"], $xml_file_path);
+	$xml_file_path = str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $xml_file_path);
 	
 	if (!file_exists($xml_file_path)) {
 		return false;
@@ -61,7 +61,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	}
 	
 	/* get a complete path for out target script */
-	$script_path = str_replace("|path_cacti|", $paths["cacti"], $script_queries["script_path"]);
+	$script_path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $script_queries["script_path"]);
 	
 	/* fetch specified index at specified OID */
 	$script_index_array = exec_into_array($script_path . " " . $script_queries["arg_index"]);

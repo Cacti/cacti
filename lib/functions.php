@@ -228,7 +228,7 @@ function LogData($string) {
     $date = date("m/d/Y g:i A");
     
     /* echo the data to the log (append) */
-    exec("echo '$date - $string' >> $paths[log]");
+    exec("echo '$date - $string' >> " . read_config_option("path_webroot") . read_config_option("path_webcacti") . "/log/rrd.log");
 }
 
 function get_full_script_path($local_data_id) {
@@ -266,7 +266,7 @@ function get_full_script_path($local_data_id) {
 	}
 	}
 	
-	$full_path = str_replace("<path_cacti>", $paths["cacti"], $full_path);
+	$full_path = str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $full_path);
 	$full_path = str_replace("<path_snmpget>", read_config_option("path_snmpget"), $full_path);
 	$full_path = str_replace("<path_php_binary>", read_config_option("path_php_binary"), $full_path);
 	
@@ -320,7 +320,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-			$data_source_path = str_replace("<path_rra>", $paths["rra"], $data_source_path);
+			$data_source_path = str_replace("<path_rra>", read_config_option("path_webroot") . read_config_option("path_webcacti") . "/rra", $data_source_path);
 		}
 		
 		return $data_source_path;

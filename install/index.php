@@ -165,7 +165,7 @@ if ($_REQUEST["step"] == "4") {
 		}
 	}
 	
-	kill_session_var("sess_config_array");
+	setcookie(session_name(),"",time() - 3600,"/");
 	
 	/* just in case we have hard drive graphs to deal with */
 	data_query(db_fetch_cell("select id from host where management_ip='127.0.0.1'"), 6);
