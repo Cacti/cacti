@@ -66,9 +66,9 @@
 				<area alt="Graphs" coords="166,5,241,32" href="graph_view.php?action=tree" shape="RECT">
 				<area alt="Documentation" coords="88,5,165,32" href="docs/MANUAL.htm">
 			</map>
-			
-			<img src="images/top_tabs_main.gif" border="0" usemap="#tabs"><br>
-		</td>
+	<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36><a href='about.php'><img
+	src="images/cactus.png" border=0 height=54 width=36></a></td><td width=250 valign=bottom><img
+	src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td><td align=right><img src="images/cacti_raxnet.gif" border=0></td></tr></table></td>
 	</tr>
 	<tr>
 		<td colspan="3" bgcolor="#<?print $colors[panel];?>">
