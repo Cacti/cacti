@@ -252,7 +252,7 @@ function cmp($a, $b) {
 	return ($a > $b) ? -1 : 1;
 }
 
-function ninety_fifth_percentile($local_data_id, $seconds) {
+function rrdtool_function_fetch($local_data_id, $seconds) {
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -269,21 +269,21 @@ function ninety_fifth_percentile($local_data_id, $seconds) {
 	
 	/* loop through each data source in this .rrd file ... */
 	if (preg_match_all("/\w+/", $line_one, $data_source_names)) {
-		$data_source_names = $data_source_names[0];
+		$fetch_array["data_source_names"] = $data_source_names[0];
 		
 		/* build a unique regexp to match each data source individually when
 		passed to preg_match_all() */
-		for ($i=0;$i<count($data_source_names);$i++) {
+		for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
 			$regexps[$i] = '/[0-9]+:\s+';
 			
-			for ($j=0;$j<count($data_source_names);$j++) {
+			for ($j=0;$j<count($fetch_array["data_source_names"]);$j++) {
 				if ($j == $i) {
 					$regexps[$i] .= '([0-9]{1}\.[0-9]+)e([\+-][0-9]{2})';
 				}else{
 					$regexps[$i] .= '[0-9]{1}\.[0-9]+e[\+-][0-9]{2}';
 				}
 				
-				if ($j < count($data_source_names)) {
+				if ($j < count($fetch_array["data_source_names"])) {
 					$regexps[$i] .= '\s+';
 				}
 			}
@@ -294,29 +294,62 @@ function ninety_fifth_percentile($local_data_id, $seconds) {
 	
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0;$i<count($regexps);$i++) {
-		$values_array = array();
+		$fetch_array["values"][$i] = array();
 		
 		/* match the regexp against the rrdtool fetch output to get a mantisa and
 		exponent for each line */
 		if (preg_match_all($regexps[$i], $output, $matches)) {
 			for ($j=0; ($j < count($matches[1])); $j++) {
 				$line = ($matches[1][$j] * (pow(10,$matches[2][$j])));
-				array_push($values_array, ($line * 1));
+				array_push($fetch_array["values"][$i], ($line * 1));
 			}
 		}
+	}
+	
+	return $fetch_array;
+}
+
+function ninety_fifth_percentile($local_data_id, $seconds) {
+	$fetch_array = rrdtool_function_fetch($local_data_id, $seconds);
+	
+	/* loop through each regexp determined above (or each data source) */
+	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
+		$values_array = $fetch_array["values"][$i];
 		
 		/* sort the array in descending order */
 		usort($values_array, "cmp");
 		
 		/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
 		value */
-		$target = ((count($matches[1]) + 1) * .05);
+		$target = ((count($values_array) + 1) * .05);
 		$target = sprintf("%d", $target);
 		
 		if (empty($values_array[$target])) { $values_array[$target] = 0; }
 		
 		/* collect 95th percentile values in this array so we can return them */
-		$return_array{$data_source_names[$i]} = $values_array[$target];
+		$return_array{$fetch_array["data_source_names"][$i]} = $values_array[$target];
+	}
+	
+	return $return_array;
+}
+
+function bandwidth_summation($local_data_id, $seconds) {
+	$fetch_array = rrdtool_function_fetch($local_data_id, $seconds);
+	
+	/* loop through each regexp determined above (or each data source) */
+	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
+		$values_array = $fetch_array["values"][$i];
+		
+		$sum = 0;
+		
+		for ($j=0;$j<count($fetch_array["values"][$i]);$j++) {
+			$sum += $fetch_array["values"][$i][$j];
+		}
+		
+		$sum = ($seconds * ($sum/count($fetch_array["values"][$i])));
+		
+		/* collect 95th percentile values in this array so we can return them */
+		$return_array{$fetch_array["data_source_names"][$i]} = $sum;
 	}
 	
 	return $return_array;
@@ -331,16 +364,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
 	if ((read_config_option("global_auth") == "on") && (isset($_SESSION["sess_user_id"]))) {
-		$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=$local_graph_id and user_id=" . $_SESSION["sess_user_id"]);
-		$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
-		
-		$access_denied = false;
-		
-		if ($current_user["graph_policy"] == "1") {
-			if (sizeof($user_auth) > 0) { $access_denied = true; }
-		}elseif ($current_user["graph_policy"] == "2") {
-			if (sizeof($user_auth) == 0) { $access_denied = true; }
-		}
+		$access_denied = !(is_graph_allowed($local_graph_id));
 		
 		if ($access_denied == true) {
 			return "GRAPH ACCESS DENIED";
@@ -396,6 +420,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	/* define some variables */
 	$scale = "";
 	$rigid = "";
+	$unit_exponent_value = "";
 	$graph_legend = "";
 	$graph_defs = "";
 	$txt_graph_items = "";
@@ -474,6 +499,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		"--height=$graph_height" . RRD_NL .
 		"--width=$graph_width" . RRD_NL .
 		"$scale" .
+		"$unit_exponent_value" . 
 		"$graph_legend" .
 		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
     	
@@ -487,19 +513,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			/* use a user-specified ds path if one is entered */
 			$data_source_path = get_data_source_path($graph_item["local_data_id"], true);
 			
-			/* FOR WIN32: Ecsape all colon for drive letters (ex. D\:/path/to/rra) */
+			/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 			$data_source_path = str_replace(":", "\:", $data_source_path);
 			
-			/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
-			to a function that matches the digits with letters. rrdtool likes letters instead
-			of numbers in DEF names; especially with CDEF's. cdef's are created
-			the same way, except a 'cdef' is put on the beginning of the hash */
-			$graph_defs .= "DEF:" . generate_graph_def_name(("$i")) . "=\"$data_source_path\":$data_source_name:" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
+			if (!empty($data_source_path)) {
+			       /* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
+			       to a function that matches the digits with letters. rrdtool likes letters instead
+			       of numbers in DEF names; especially with CDEF's. cdef's are created
+			       the same way, except a 'cdef' is put on the beginning of the hash */
+			       $graph_defs .= "DEF:" . generate_graph_def_name(("$i")) . "=\"$data_source_path\":$data_source_name:" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
 			
-			//print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
-			$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
+			       //print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
+			       $cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
 			
-			$i++;
+			       $i++;
+			}
 		}
 		
 		/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
@@ -570,6 +598,66 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$current_field = str_replace($match[0], round($ninety_fifth,2), $current_field);
 			}
 			
+			/* bandwidth summation */
+			if (preg_match_all("/\|sum:(\d|auto):(current|total)\|/", $current_field, $matches, PREG_SET_ORDER)) {
+				/* loop through each match and find the 95th percentile for each */
+				foreach ($matches as $match) {
+					if ($match[2] == "current") {
+						if (!isset($summation_cache{$graph_item["local_data_id"]})) {
+							$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], abs($graph_start));
+						}
+					}elseif ($match[2] == "total") {
+						for ($t=0;($t<count($graph_items));$t++) {
+							if ((!isset($summation_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
+								$summation_cache{$graph_items[$t]["local_data_id"]} = bandwidth_summation($graph_items[$t]["local_data_id"], abs($graph_start));
+							}
+						}
+					}
+				}
+				
+				$summation = 0;
+				
+				/* format the output according to args passed to the variable */
+				if ($match[2] == "current") {
+					$summation = $summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+				}elseif ($match[2] == "total") {
+					for ($t=0;($t<count($graph_items));$t++) {
+						if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+							$local_summation = $summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+							
+							$summation += $local_summation;
+						}
+					}
+				}
+				
+				if (preg_match("/\d+/", $match[1])) {
+					$summation /= pow(10,intval($match[1]));
+				}elseif ($match[1] == "auto") {
+					if ($summation < 1000) {
+						$summation_label = "bytes";
+					}elseif ($summation < 1000000) {
+						$summation_label = "KB";
+						$summation /= 1000;
+					}elseif ($summation < 1000000000) {
+						$summation_label = "MB";
+						$summation /= 1000000;
+					}elseif ($summation < 1000000000000) {
+						$summation_label = "GB";
+						$summation /= 1000000000;
+					}else{
+						$summation_label = "TB";
+						$summation /= 1000000000000;
+					}
+				}
+				
+				/* subsitute in the final result and round off to two decimal digits */
+				if (isset($summation_label)) {
+					$current_field = str_replace($match[0], round($summation,2) . " $summation_label", $current_field);
+				}else{
+					$current_field = str_replace($match[0], round($summation,2), $current_field);
+				}
+			}
+			
 			if ($s == 0) {
 				$text_format[$graph_item_id] = $current_field;
 			}elseif ($s == 1) {
@@ -638,9 +726,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$cdef_total_ds .= generate_graph_def_name($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) . ",";
+							$item_count++;
 						}
-						
-						$item_count++;
 					}
 				}
 				
@@ -753,8 +840,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			"#" . $graph_item["hex"] . ":" . "\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'COMMENT':
-			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
-			
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
 			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
