@@ -449,12 +449,6 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Copy the *.rrd files from the old cacti directory.
-				</para>
-				<screen><prompt>shell&gt;</prompt> <userinput>cp cacti_old/rra/* cacti/rra/</userinput></screen>
-			</listitem>
-			<listitem>
-				<para>
 					Edit <filename>include/config.php</filename> and specify the MySQL user, password and database for your Cacti configuration.
 				</para>
 				<screen><userinput>$database_default = "cacti";
@@ -464,10 +458,16 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
+					Copy the *.rrd files from the old cacti directory.
+				</para>
+				<screen><prompt>shell&gt;</prompt> <userinput>cp cacti_old/rra/* cacti/rra/</userinput></screen>
+			</listitem>
+			<listitem>
+				<para>
 					Set the appropriate permissions on Cacti's directories for graph/log generation. You 
 					should execute these commands from inside Cacti's directory to change the permissions.
 				</para>
-				<screen><prompt>shell&gt;</prompt> <userinput>chown cactiuser rra/ log/</userinput></screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>chown -R cactiuser rra/ log/</userinput></screen>
 				<para>
 					(Enter a valid username for cactiuser, this user will also be used in the next step for data 
 					gathering.)
