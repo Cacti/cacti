@@ -137,10 +137,23 @@ function form_actions() {
 		if ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
 				db_execute("update host set disabled='' where id='" . $selected_items[$i] . "'");
+
+				/* update poller cache */
+				$data_sources = db_fetch_assoc("select id from data_local where host_id='" . $selected_items[$i] . "'");
+
+				if (sizeof($data_sources) > 0) {
+					foreach ($data_sources as $data_source) {
+						update_poller_cache($data_source["id"]);
+					}
+				}
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* Disable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
 				db_execute("update host set disabled='on' where id='" . $selected_items[$i] . "'");
+
+				/* update poller cache */
+				db_execute("delete from poller_item where host_id='" . $selected_items[$i] . "'");
+				db_execute("delete from poller_reindex where host_id='" . $selected_items[$i] . "'");
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
 			for ($i=0;($i<count($selected_items));$i++) {
