@@ -24,27 +24,20 @@
  +-------------------------------------------------------------------------+
 */
 
+include('adodb/adodb.inc.php');
 db_connect();
 
 function db_connect() {
-	global $database_hostname,$database_username,$database_password,$database_default;
-	db_connect_real($database_hostname,$database_username,$database_password,$database_default); 
+	global $database_hostname,$database_username,$database_password,$database_default, $database_type;
+	db_connect_real($database_hostname,$database_username,$database_password,$database_default, $database_type); 
 }
 
-function db_connect_real($host,$user,$pass,$db_name) {
+function db_connect_real($host,$user,$pass,$db_name,$db_type) {
 	global $cnn_id;
 	
-	$cnn_id = mysql_connect($host,$user,$pass);
-	
-	if ($cnn_id) {
-		if (mysql_selectdb($db_name)) {
-			return(1);
-		}else{
-			die("<br>Cannot find the database '$db_name'. Please make sure you have specified a valid MySQL 
-			server hostname in 'include/config.php'.");
-			
-			return(0);
-		}
+	$cnn_id = NewADOConnection($db_type);
+	if ($cnn_id->Connect($host,$user,$pass,$db_name)) {
+		return(1);
 	}else{
 		die("<br>Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL 
 		database name in 'include/config.php'.");
@@ -59,7 +52,7 @@ function db_execute($sql) {
 	
 	if (!$cnn_id) { db_connect(); }
 	
-	$query = mysql_query($sql);
+	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
 		return(1); 
@@ -74,18 +67,16 @@ function db_fetch_cell($sql,$col_name = '') {
 	
 	if (!$cnn_id) { db_connect(); }
 	
-	$row = array();
-	$query = mysql_query($sql);
+	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
-		$rows = mysql_numrows($query);
-		
-		if ($rows > 0) {
+		if (!$query->EOF) {
 			if ($col_name != '') {
-				$row = mysql_fetch_assoc($query);
-				return($row[$col_name]);
+				$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+				return($query->fields[$col_name]);
 			}else{
-				return(mysql_result($query,0,0));
+				$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
+				return($query->fields[0]);
 			}
 		}
 	}
@@ -96,14 +87,12 @@ function db_fetch_row($sql) {
 	
 	if (!$cnn_id) { db_connect(); }
 	
-	$row = array();
-	$query = mysql_query($sql);
+	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
-		$rows = mysql_numrows($query);
-		
-		if ($rows > 0) {
-			return(mysql_fetch_assoc($query));
+		if (!$query->EOF) {
+			$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+			return($query->fields);
 		}
 	}
 }
@@ -114,18 +103,15 @@ function db_fetch_assoc($sql) {
 	if (!$cnn_id) { db_connect(); }
 	
 	$data = array();
-	$query = mysql_query($sql);
+	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
-		$rows = mysql_numrows($query);
-		
-		if ($rows > 0) {
-			while($row = mysql_fetch_assoc($query)) {
-				$data{sizeof($data)} = $row;
-			}
-			
-			return($data);
+		while ((!$query->EOF) && ($query)) {
+			$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+			$data{sizeof($data)} = $query->fields;
+			$query->MoveNext();
 		}
+		return($data);
 	}
 }
 
@@ -180,14 +166,14 @@ function sql_save($array_items, $table_name) {
 	if (!db_execute($sql_save)) { return 0; }
 	
 	/* get the last AUTO_ID and return it */
-	if (db_fetch_cell("select LAST_INSERT_ID()") == "0") {
+	if ($cnn_id->Insert_ID() == "0") {
 		if (isset($array_items["id"])) {
 			return $array_items["id"];
 		}else{
 			return 1;
 		}
 	}else{
-		return db_fetch_cell("select LAST_INSERT_ID()");
+		return $cnn_id->Insert_ID();
 	}
 }
 
