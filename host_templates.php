@@ -61,8 +61,8 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if ((isset($_POST["save_component_template"])) && (isset($_POST["save_component_data"]))) {
-		template_save();
 		data_save();
+		template_save();
 		
 		return "host_templates.php";
 	}
@@ -102,7 +102,7 @@ function data_save() {
 		
 		if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
 			db_execute("insert into host_template_data (data_input_field_id,data_template_id,host_template_id,t_value,value)
-				values (" . $input_field["id"] . "," . $_POST["data_template_id"] . "," . $_POST["id"] . ",'$_POST_is_templated_value','$form_value')");
+				values (" . $input_field["id"] . "," . $_POST["data_template_id"] . "," . $_POST["id"] . ",'$form_is_templated_value','$form_value')");
 		}
 	}
 	}
