@@ -139,7 +139,7 @@ switch ($_REQUEST["action"]) {
 	}
 	}
 	
-	print "</table>";
+	end_box();
 	
 	form_hidden_id("tab",$current_tab);
 	
