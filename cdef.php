@@ -20,18 +20,9 @@
    +-------------------------------------------------------------------------+
    | - raXnet - http://www.raxnet.net/                                       |
    +-------------------------------------------------------------------------+
-   | - 2/8/2002 - Dave Neitz, Sprint E|Solutionns                            |
-   |   Added 3 new CDEF special types to the CDEF drop down list box:        |
-   |                                                                         |
-   |   Type  Description                                                     |
-   |   ----  -----------                                                     |
-   |    3    Staggered Total of Data Sources on a Graph                      |
-   |    4    Average of All Data Sources on a Graph                          |
-   |    5    Staggered Average of Data Sources on a Graph                    |
-   +-------------------------------------------------------------------------+
    */?>
-<? 
-$section = "Add/Edit Data Sources"; 
+<?
+$section = "Add/Edit Graphs"; 
 include ('include/auth.php');
 header("Cache-control: no-cache");
 include_once ('include/form.php');
@@ -39,92 +30,116 @@ include_once ('include/form.php');
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
+$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
+
 switch ($action) {
  case 'save':
-    $sql_id = db_execute("replace into rrd_ds_cdef (id,name,type) values ($id,\"$form[Name]\",$form[Type])");
+ 	$save["ID"] = $form["ID"];
+	$save["Hex"] = $form["Hex"];
 	
-    header ("Location: cdef.php");
-    break;
+	sql_save($save, "def_colors");
+
+	header ("Location: cdef.php");
+	break;
  case 'remove':
-	if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
-		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this CDEF?", $current_script_name, "?action=remove&id=$id");
-		exit;
-	}
-	
-	if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
-	    db_execute("delete from rrd_ds_cdef where id=$id");
-	    db_execute("delete from rrd_ds_cdef_item where cdefid=$id");
-    }
-	
-    header ("Location: cdef.php");
-    break;
+    	db_execute("delete from def_colors where id=$args[id]");
+    
+    	header ("Location: cdef.php");
+	break;
  case 'edit':
-    include_once ('include/top_header.php');
-    
-    if ($id != "") {
-	$row = db_fetch_assoc("select * from rrd_ds_cdef where id=$id");
-	$cdef = $row[0];
-    }
-    
-    DrawFormHeader("rrdtool Data Source Configuration","",false);
-    
-    DrawFormItem("Name","The name of this CDEF function, only used for internal purposes.");
-    DrawFormItemTextBox("Name",$cdef[Name],"","");
-    
-    DrawFormItem("CDEF Type","Always select \"Normal\", unless you want to create a special CDEF.");
-    DrawFormItemDropDownCustomHeader("Type");
-    DrawFormItemDropDownCustomItem("Type","1","Normal",$cdef[Type]);
-    DrawFormItemDropDownCustomItem("Type","2","Total of All Data Sources on a Graph",$cdef[Type]);
-    DrawFormItemDropDownCustomItem("Type","3","Staggered Total of Data Sources on a Graph",$cdef[Type]);
-    DrawFormItemDropDownCustomItem("Type","4","Average of All Data Sources on a Graph",$cdef[Type]);
-    DrawFormItemDropDownCustomItem("Type","5","Staggered Average of Data Sources on a Graph",$cdef[Type]);
-    DrawFormItemDropDownCustomFooter();
-    
-    DrawFormSaveButton();
-    DrawFormItemHiddenIDField("ID",$id);
-    DrawFormFooter();
-    
-    include_once ("include/bottom_footer.php");
-    
-    break;
- default:
-    include_once ('include/top_header.php');
-    
-    DrawMatrixTableBegin("97%");
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderTop("Current CDEF Functions",$colors[dark_bar],"","2");
-    DrawMatrixHeaderAdd($colors[dark_bar],"","cdef.php?action=edit");
-    DrawMatrixRowEnd();
-    
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderItem("Name",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("Edit CDEF",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("",$colors[panel],$colors[panel_text]);
-    DrawMatrixRowEnd();
-    
-    $rows = db_fetch_assoc("select * from rrd_ds_cdef", $cnn_id);
-    $numrows = sizeof($rows);
-    
-    foreach ($rows as $cdef) {
-	++$i;
-	DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-	DrawMatrixLoopItem($cdef[Name],html_boolean($config["vis_main_column_bold"]["value"]),"cdef.php?action=edit&id=$cdef[ID]");
+	include_once ("include/top_header.php");
 	
-	if ($cdef[Type] == "1") { /* normal cdef */
-	    $matrix_url = "cdef_items.php?id=$cdef[ID]";
+	start_box("CDEF's [edit]", "", "");
+	
+	if (isset($args[id])) {
+		$cdef = db_fetch_row("select * from cdef where id=$args[id]");
 	}else{
-	    $matrix_url = "";
+		unset($cdef);
 	}
+    
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Name</font><br>
+			A useful name for this CDEF.
+		</td>
+		<?DrawFormItemTextBox("name",$cdef[name],"","255", "40");?>
+	</tr>
 	
-	DrawMatrixLoopItem("Edit Current CDEF",false,$matrix_url);
-	DrawMatrixLoopItemAction("Remove",$colors[panel],"",false,"cdef.php?action=remove&id=$cdef[ID]");
-	DrawMatrixRowEnd();
-    }
+	<?
+	DrawFormItemHiddenIDField("id",$args[id]);
+	
+	?>
+	
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right" background="images/blue_line.gif">
+			<?DrawFormSaveButton("save", "color.php");?>
+			</form>
+		</td>
+	</tr>
+	<?
+	
+	end_box();
+	start_box("", "", "");
+	
+	print "<tr bgcolor='#$colors[header_panel]'>";
+		DrawMatrixHeaderItem("Item",$colors[header_text],1);
+		DrawMatrixHeaderItem("Item Value",$colors[header_text],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+	print "</tr>";
     
-    DrawMatrixTableEnd();
-    include_once ("include/bottom_footer.php");
+	$cdef_items = db_fetch_assoc("select * from cdef_items where order by sequence");
+	
+	if (sizeof($cdef_items) > 0) {
+	foreach ($cdef_items as $cdef_item) {
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+			?>
+			<td>
+				<a class="linkEditMain" href="cdef.php?action=edit_item&id=<?print $cdef_item[id];?>">Item #<?print $i;?></a>
+			</td>
+			<td>
+				Value
+			</td>
+			<td width="1%" align="right">
+				<a href="cdef.php?action=remove_item&id=<?print $cdef_item[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+	<?
+	}
+	}
+	end_box();
+	
+	include_once ("include/bottom_footer.php");
+	
+    	break;
+ default:
+	include_once ("include/top_header.php");
+	
+	start_box("CDEF's", "", "cdef.php?action=edit");
+	                         
+	print "<tr bgcolor='#$colors[header_panel]'>";
+		DrawMatrixHeaderItem("Name",$colors[header_text],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+	print "</tr>";
     
-    break;
+	$cdefs = db_fetch_assoc("select * from cdef order by name");
+	
+	if (sizeof($cdefs) > 0) {
+	foreach ($cdefs as $cdef) {
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+			?>
+			<td>
+				<a class="linkEditMain" href="cdef.php?action=edit&id=<?print $cdef[id];?>"><?print $cdef[name];?></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="cdef.php?action=remove&id=<?print $cdef[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			</td>
+		</tr>
+	<?
+	}
+	}
+	end_box();
+	
+	include_once ("include/bottom_footer.php");
+	
+   	break;
 } ?>
-	
