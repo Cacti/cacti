@@ -99,7 +99,7 @@ function settings() {
 		$settings_graphs["default_tree_id"]["sql"] = get_graph_tree_array(true);
 	}
 	
-	print "<form method='post' action='graph_settings.php'>\n";
+	print "<br><form method='post' action='graph_settings.php'>\n";
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
@@ -153,7 +153,7 @@ function settings() {
 	
 	form_hidden_box("referer",$_SERVER["HTTP_REFERER"],"");
 	form_hidden_box("save_component_graph_config","1","");
-	form_save_button("graph_settings.php");
+	form_save_button("graph_settings.php", "save");
 }
 
 ?>
