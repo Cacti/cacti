@@ -24,6 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include ('include/config.php');
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -163,7 +165,7 @@ case 'login':
 
 <!-- apparently IIS 5/4 have a bug (Q176113) where setting a cookie and calling the header via
 'Location' does not work. This seems to fix the bug for me at least... -->
-<form name="login" method="post" action="<?php print $_SERVER["SCRIPT_NAME"];?>">
+<form name="login" method="post" action="<?php print $_SERVER["PHP_SELF"];?>">
 
 <table align="center">
 	<tr>
