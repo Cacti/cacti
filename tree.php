@@ -227,14 +227,14 @@ function item_moveup() {
 	include_once('include/tree_functions.php');
 	
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["tree_item_id"]);
-	if ($order_key > 0) { branch_up($order_key, 'graph_tree_items', 'order_key', ''); }
+	if ($order_key > 0) { branch_up($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
 }
 
 function item_movedown() {
 	include_once('include/tree_functions.php');
 	
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["tree_item_id"]);
-	if ($order_key > 0) { branch_down($order_key, 'graph_tree_items', 'order_key', ''); }
+	if ($order_key > 0) { branch_down($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
 }
 
 function item_remove() {
