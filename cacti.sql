@@ -192,7 +192,6 @@ CREATE TABLE data_input (
   hash varchar(32) NOT NULL default '',
   name varchar(200) NOT NULL default '',
   input_string varchar(255) default NULL,
-  output_string varchar(255) default NULL,
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -203,17 +202,17 @@ CREATE TABLE data_input (
 -- Dumping data for table `data_input`
 --
 
-INSERT INTO data_input VALUES (1,'','Get SNMP Data','','',2);
-INSERT INTO data_input VALUES (2,'','Get SNMP Data (Indexed)','','',3);
-INSERT INTO data_input VALUES (3,'','Unix - Get Free Disk Space','perl <path_cacti>/scripts/diskfree.pl <partition>','',1);
-INSERT INTO data_input VALUES (4,'','Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl','',1);
-INSERT INTO data_input VALUES (5,'','Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>','',1);
-INSERT INTO data_input VALUES (6,'','Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>','',1);
-INSERT INTO data_input VALUES (7,'','Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl','',1);
-INSERT INTO data_input VALUES (8,'','Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>','',1);
-INSERT INTO data_input VALUES (9,'','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>','',1);
-INSERT INTO data_input VALUES (10,'','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>','',1);
-INSERT INTO data_input VALUES (11,'','Get Script Data (Indexed)','','',4);
+INSERT INTO data_input VALUES (1,'','Get SNMP Data','',2);
+INSERT INTO data_input VALUES (2,'','Get SNMP Data (Indexed)','',3);
+INSERT INTO data_input VALUES (3,'','Unix - Get Free Disk Space','perl <path_cacti>/scripts/diskfree.pl <partition>',1);
+INSERT INTO data_input VALUES (4,'','Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl',1);
+INSERT INTO data_input VALUES (5,'','Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>',1);
+INSERT INTO data_input VALUES (6,'','Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>',1);
+INSERT INTO data_input VALUES (7,'','Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl',1);
+INSERT INTO data_input VALUES (8,'','Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>',1);
+INSERT INTO data_input VALUES (9,'','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>',1);
+INSERT INTO data_input VALUES (10,'','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1);
+INSERT INTO data_input VALUES (11,'','Get Script Data (Indexed)','',4);
 
 --
 -- Table structure for table `data_input_data`
@@ -1960,6 +1959,7 @@ INSERT INTO host_template_snmp_query VALUES (8,6);
 
 CREATE TABLE rra (
   id mediumint(8) unsigned NOT NULL auto_increment,
+  hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   x_files_factor double NOT NULL default '0.1',
   steps mediumint(8) default '1',
@@ -1974,10 +1974,10 @@ CREATE TABLE rra (
 -- Dumping data for table `rra`
 --
 
-INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600,86400);
-INSERT INTO rra VALUES (2,'Weekly (30 Minute Average)',0.5,6,700,604800);
-INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797,33053184);
-INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775,2678400);
+INSERT INTO rra VALUES (1,'','Daily (5 Minute Average)',0.5,1,600,86400);
+INSERT INTO rra VALUES (2,'','Weekly (30 Minute Average)',0.5,6,700,604800);
+INSERT INTO rra VALUES (4,'','Yearly (1 Day Average)',0.5,288,797,33053184);
+INSERT INTO rra VALUES (3,'','Monthly (2 Hour Average)',0.5,24,775,2678400);
 
 --
 -- Table structure for table `rra_cf`
@@ -2534,5 +2534,5 @@ CREATE TABLE version (
 -- Dumping data for table `version`
 --
 
-INSERT INTO version VALUES ('0.8.3a');
+INSERT INTO version VALUES ('0.8.4');
 
