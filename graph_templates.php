@@ -124,7 +124,7 @@ function form_save() {
 		$save2["t_unit_value"] = form_input_validate((isset($_POST["t_unit_value"]) ? $_POST["t_unit_value"] : ""), "t_unit_value", "", true, 3);
 		$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
 		$save2["t_unit_exponent_value"] = form_input_validate((isset($_POST["t_unit_exponent_value"]) ? $_POST["t_unit_exponent_value"] : ""), "t_unit_exponent_value", "", true, 3);
-		$save2["unit_exponent_value"] = form_input_validate((($_POST["unit_exponent_value"] == "") ? "NULL" : $_POST["unit_exponent_value"]), "unit_exponent_value", (($_POST["unit_exponent_value"] == "") ? "" : "^-?[0-9]+$"), true, 3);
+		$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^-?[0-9]+$", true, 3);
 		
 		if (!is_error_message()) {
 			$graph_template_id = sql_save($save1, "graph_templates");

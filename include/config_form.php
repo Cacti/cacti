@@ -451,7 +451,7 @@ $struct_graph = array(
 		"friendly_name" => "Unit Exponent Value",
 		"method" => "textbox",
 		"max_length" => "50",
-		"default" => "0",
+		"default" => "",
 		"description" => "What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or -6 
 			to display everything in 'u' (micro)."
 		),
