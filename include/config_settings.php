@@ -443,7 +443,7 @@ $settings = array(
 			"friendly_name" => "Downed Host Detection",
 			"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
 			"method" => "drop_array",
-			"default" => AVAIL_SNMP_AND_PING,
+			"default" => AVAIL_SNMP,
 			"array" => $availability_options,
 			),
 		"ping_method" => array(
