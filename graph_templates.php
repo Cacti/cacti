@@ -240,9 +240,10 @@ switch ($action) {
 			left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
 			left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
 			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
-			where graph_templates_item.local_graph_id=0");
+			where graph_templates_item.local_graph_id=0
+			order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
 		
-		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Associated Graph Items</font><br>
 				Select the graph items that you want to accept user input for.
@@ -387,7 +388,7 @@ switch ($action) {
 				<font class="textEditTitle">CDEF Function</font><br>
 				A CDEF Function to apply to this item on the graph.
 			</td>
-			<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id","None",$template_item[cdef_id],"");?>
+			<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from rrd_ds_cdef order by name"),"name","id",$template_item[cdef_id],"None","");?>
 		</tr>
 		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
