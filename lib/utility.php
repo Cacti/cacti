@@ -139,7 +139,7 @@ function update_poller_cache($local_data_id) {
 						/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
 						if (($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists("proc_open"))) {
 							$action = POLLER_ACTION_SCRIPT_PHP;
-							$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
+							$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"] . " " . $script_queries["script_function"], $host_id);
 						}else if (($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists("proc_open"))) {
 							$action = POLLER_ACTION_SCRIPT;
 							$script_path = read_config_option("path_php_binary") . " -q " . get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
