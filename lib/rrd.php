@@ -471,6 +471,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		colors.hex,
 		data_template_rrd.id as data_template_rrd_id,
 		data_template_rrd.local_data_id,
+		data_template_rrd.rrd_minimum,
+		data_template_rrd.rrd_maximum,
 		data_template_rrd.data_source_name
 		from graph_templates_item
 		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
@@ -846,6 +848,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
 			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
+			
+			/* data source item variables */
+			$cdef_string = str_replace("CURRENT_MINIMUM_VALUE", $graph_item["rrd_minimum"], $cdef_string);
+			$cdef_string = str_replace("CURRENT_MAXIMUM_VALUE", $graph_item["rrd_maximum"], $cdef_string);
 			
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
 			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";

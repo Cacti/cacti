@@ -157,7 +157,9 @@ $cdef_item_types = array(
 $custom_data_source_types = array(
 	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
 	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
-	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)");
+	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)",
+	"CURRENT_MINIMUM_VALUE" => "Current Item: Minimum Value",
+	"CURRENT_MAXIMUM_VALUE" => "Current Item: Maximum Value");
 
 $menu = array(
 	"Create" => array(
