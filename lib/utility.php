@@ -24,8 +24,6 @@
 <?
 
 function push_out_host_template($host_template_id, $data_template_id) {
-	global $form;
-	
 	/* get data_input_id */
 	$data_input_id = db_fetch_cell("select
 		data_input_id
@@ -47,12 +45,16 @@ function push_out_host_template($host_template_id, $data_template_id) {
 	
 	/* pull out all 'input' values so we know how much to save */
 	$input_fields = db_fetch_assoc("select
-		id,
-		input_output,
-		data_name 
-		from data_input_fields
-		where data_input_id=$data_input_id
-		and input_output='in'");
+		data_input_fields.id,
+		data_input_fields.input_output,
+		data_input_fields.data_name,
+		host_template_data.t_value,
+		host_template_data.value
+		from data_input_fields left join host_template_data
+		on (data_input_fields.id=host_template_data.data_input_field_id and host_template_data.data_template_id=$data_template_id and host_template_data.host_template_id=$host_template_id)
+		where data_input_fields.data_input_id=$data_input_id
+		and data_input_fields.input_output='in'
+		and (data_input_fields.type_code = '' or data_input_fields.type_code is null)");
 	
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
@@ -60,17 +62,10 @@ function push_out_host_template($host_template_id, $data_template_id) {
 		
 		if (sizeof($input_fields) > 0) {
 		foreach ($input_fields as $input_field) {
-			/* save the data into the 'host_template_data' table */
-			$form_value = "value_" . $input_field[data_name];
-			$form_value = $form[$form_value];
-			
-			$form_is_templated_value = "t_value_" . $input_field[data_name];
-			$form_is_templated_value = $form[$form_is_templated_value];
-			
-			if (empty($form_is_templated_value)) { /* template this value */
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($input_field[id],$data_source[id],'','$form_value')");
+			if (empty($input_field["t_value"])) { /* template this value */
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'','" . $input_field["value"] . "')");
 			}else{
-				db_execute("update data_input_data set t_value='on' where data_input_field_id=$input_field[id] and data_template_data_id=$data_source[id]");
+				db_execute("update data_input_data set t_value='on' where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $data_source["id"]);
 			}
 		}
 		}
@@ -171,18 +166,18 @@ function change_data_template($local_data_id, $data_template_id, $_data_template
 	db_execute("update data_template_rrd set data_template_id=$data_template_id where local_data_id=$local_data_id");
 	db_execute("update data_local set data_template_id=$data_template_id where id=$local_data_id");
 	
+	/* get data about the template and the data source */
+	$data = db_fetch_row("select * from data_template_data where local_data_id=$local_data_id");
+	$template_data = db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id");
+	
 	/* make sure the 'local_data_template_data_id' column is set */
 	$local_data_template_data_id = db_fetch_cell("select id from data_template_data where data_template_id=$data_template_id and data_template_id=id");
 	
 	if ($local_data_template_data_id == "") { $local_data_template_data_id = 0; }
 	db_execute("update data_template_data set local_data_template_data_id=$local_data_template_data_id where local_data_id=$local_data_id");
 	
-	/* if the user turned off the template for this data source; there is nothing more
-	to do here */
-	if ($data_template_id == "0") { return 0; }
-	
-	/* we are going from no template -> a template */
-	if ($_data_template_id == "0") {
+	if (($_data_template_id == "0") && ($data_template_id != "0")) {
+		/* we are going from no template -> a template */
 		$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
 		$template_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id");
 		
@@ -208,26 +203,40 @@ function change_data_template($local_data_id, $data_template_id, $_data_template
 			}
 			}
 		}
+	}elseif (($_data_template_id != "0") && ($data_template_id == "0")) {
+		/* we are going from no a template -> no template */
+		
+		db_execute("update data_input_data set t_value='on' where data_template_data_id=" . $data["id"]);
 	}
 	
-	/* "merge" 'data_template_data' table stuff */
-	$data = db_fetch_row("select * from data_template_data where local_data_id=$local_data_id");
-	$template_data = db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id");
-	
-	unset($save);
-	
-	$save["id"] = $data["id"];
-	$save["local_data_template_data_id"] = $template_data["id"];
-	$save["local_data_id"] = $local_data_id;
-	$save["data_template_id"] = $data_template_id;
-	$save["data_input_id"] = $template_data["data_input_id"];
-	$save["data_source_path"] = $data["data_source_path"]; /* NEVER overright */
-	
-	if ($template_data[t_name] == "on") { $save["name"] = $data["name"]; }else{ $save["name"] = $template_data["name"]; }
-	if ($template_data[t_active] == "on") { $save["active"] = $data["active"]; }else{ $save["active"] = $template_data["active"]; }
-	if ($template_data[t_rrd_step] == "on") { $save["rrd_step"] = $data["rrd_step"]; }else{ $save["rrd_step"] = $template_data["rrd_step"]; }
-	
-	sql_save($save, "data_template_data");
+	/* if there is a template and the template changed, propagate template changes to the data source */
+	if (($data_template_id != $_data_template_id) && ($data_template_id != "0")) {
+		unset($save);
+		
+		$save["id"] = $data["id"];
+		$save["local_data_template_data_id"] = $template_data["id"];
+		$save["local_data_id"] = $local_data_id;
+		$save["data_template_id"] = $data_template_id;
+		$save["data_input_id"] = $template_data["data_input_id"];
+		$save["data_source_path"] = $data["data_source_path"]; /* NEVER overright */
+		
+		if ($template_data["t_name"] == "on") { $save["name"] = $data["name"]; }else{ $save["name"] = $template_data["name"]; }
+		if ($template_data["t_active"] == "on") { $save["active"] = $data["active"]; }else{ $save["active"] = $template_data["active"]; }
+		if ($template_data["t_rrd_step"] == "on") { $save["rrd_step"] = $data["rrd_step"]; }else{ $save["rrd_step"] = $template_data["rrd_step"]; }
+		
+		sql_save($save, "data_template_data");
+		
+		/* find out if there is a host and a host template involved, if there is... push out the 
+		host template's settings */
+		$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
+		if ($host_id != "0") {
+			$host_template_id = db_fetch_cell("select host_template_id from host where id=$host_id");
+			if ($host_template_id != "0") {
+				
+				push_out_host_template($host_template_id, $data_template_id);
+			}
+		}
+	}
 }
 
 /* propagates values from the graph template out to each graph using that template */
