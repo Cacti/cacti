@@ -851,12 +851,14 @@ function ds() {
 	$sql_where = "where data_template_data.name like '%%" . $_REQUEST["filter"] . "%%'";
 	
 	if (!empty($_REQUEST["host_id"])) {
-		$sql_where .= "and data_local.host_id=" . $_REQUEST["host_id"];
+		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];
 	}
 	
 	$total_rows = sizeof(db_fetch_assoc("select
 		data_local.id
 		from data_local
+		left join data_template_data
+		on data_local.id=data_template_data.local_data_id
 		$sql_where"));
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
