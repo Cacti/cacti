@@ -130,6 +130,16 @@ $settings = array(
 					)
 				),
 			),
+		"poller_header" => array(
+			"friendly_name" => "Poller Specific Logging",
+			"method" => "spacer",
+			),
+		"log_verbosity" => array(
+			"friendly_name" => "Poller Logging Level",
+			"description" => "What level of detail do you want sent to the log file.",
+			"method" => "drop_array",
+			"array" => $logfile_verbosity,
+			),
 		"poller_log" => array(
 			"friendly_name" => "Poller Events",
 			"description" => "What Cacti poller messages should be placed in the log.",
