@@ -32,7 +32,8 @@ void *poller(){
           cmd_stdout=popen(entry->command, "r");
           if(cmd_stdout != NULL) fgets(cmd_result, 64, cmd_stdout);
           if(is_number(cmd_result)) result = atoll(cmd_result);
-        break;
+          pclose(cmd_stdout);
+	break;
         default:
           printf("Unknown Action!\n");
           result=0;
