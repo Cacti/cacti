@@ -264,7 +264,8 @@ function push_out_host($host_id, $local_data_id = 0) {
 	
 	$data_sources = db_fetch_assoc("select
 		data_template_data.id,
-		data_template_data.data_input_id
+		data_template_data.data_input_id,
+		data_template_data.local_data_id
 		from data_local,data_template_data
 		where " . (empty($local_data_id) ? "data_local.host_id=$host_id" : "data_local.id=$local_data_id") . "
 		and data_local.id=data_template_data.local_data_id
@@ -294,6 +295,9 @@ function push_out_host($host_id, $local_data_id = 0) {
 			}
 		}
 		}
+		
+		/* make sure to update the poller cache as well */
+		update_poller_cache($data_source["local_data_id"]);
 	}
 	}
 }
