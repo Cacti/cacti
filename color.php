@@ -142,8 +142,8 @@ function color() {
 						<a class="linkEditMain" href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="1%">&nbsp;</td>
-					<td width="1%" align="right">
-						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<td align="right">
+						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=1;
 			} else { ?>
@@ -152,8 +152,8 @@ function color() {
 						<a class="linkEditMain" href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="1%">&nbsp;</td>
-					<td width="1%" align="right">
-						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<td align="right">
+						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 			<?php

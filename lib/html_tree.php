@@ -216,8 +216,8 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			<a href='tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
 			</td>\n";
 		
-		print 	"<td bgcolor='#$row_color' width='1%' align='right'>\n
-			<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;\n
+		print 	"<td bgcolor='#$row_color' align='right'>\n
+			<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
 			</td></tr>\n";
 	}
 	}else{ print "<tr><td><em>No Graph Tree Items</em></td></tr>";
