@@ -251,8 +251,10 @@ if ($_REQUEST["step"] == "4") {
 			include ("0_8_4_to_0_8_5.php");
 			upgrade_to_0_8_5();
 		}elseif ($cacti_versions[$i] == "0.8.5a") {
-			/* no database upgrades for 0.8.5a */
-			$_REQUEST["step"] = "3";
+			if ($old_cacti_version == "0.8.5") {
+				/* no database upgrades for 0.8.5 -> 0.8.5a */
+				$_REQUEST["step"] = "3";
+			}
 		}
 	}
 }
