@@ -202,15 +202,15 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
-							print "Assert '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n", $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] <= trim($output))) {
-							print "Assert '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n", $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] >= trim($output))) {
-							print "Assert '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n", $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}
@@ -280,12 +280,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$return_value = proc_close($cactiphp);
 	}
 
-	if (($print_data_to_stdout) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_MEDIUM)) {
+	if (($print_data_to_stdout) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM)) {
 		/* take time and log performance data */
 		list($micro,$seconds) = split(" ", microtime());
 		$end = $seconds + $micro;
 
 		cacti_log(sprintf("Time: %01.4f s, " .
+			"Theads: N/A, " . 
 			"Hosts: %s",
 			round($end-$start,4),
 			$host_count),$print_data_to_stdout);
