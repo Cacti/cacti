@@ -101,7 +101,7 @@ if (isset($update_cache_array)) {
 
 
 /* dump static images/html file if user wants it */
-if (read_config_option("path_html_export") != "") {
+/*if (read_config_option("path_html_export") != "") {
 	if (read_config_option("path_html_export_skip") == "1") {
 		include("export.php");
 	}else{
@@ -116,6 +116,6 @@ if (read_config_option("path_html_export") != "") {
 			}
 		}
 	}
-}
+}*/
 
 ?>
