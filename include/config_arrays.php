@@ -211,12 +211,12 @@ $menu = array(
 		"data_input.php" => "Data Input Methods",
 		"data_queries.php" => "Data Queries"
 		),
-	"Event Management" => array(
-		"smtp_servers.php" => "Mail Servers",
-		"email_templates.php" => "Email Templates",
-		"event_queue.php" => "Event Queue",
-		"smtp_queue.php" => "Mail Queue"
-		),
+	//"Event Management" => array(
+	//	"smtp_servers.php" => "Mail Servers",
+	//	"email_templates.php" => "Email Templates",
+	//	"event_queue.php" => "Event Queue",
+	//	"smtp_queue.php" => "Mail Queue"
+	//	),
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
 		"host_templates.php" => "Host Templates",
