@@ -220,6 +220,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;\n
 			</td></tr>\n";
 	}
+	}else{ print "<tr><td><em>No Graph Tree Items</em></td></tr>";
 	}
 }
 
