@@ -544,7 +544,7 @@ function template_edit() {
 function template() {
 	global $colors, $ds_actions;
 
-	html_start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "5", "center", "data_templates.php?action=template_edit");
+	html_start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 
 	html_header_checkbox(array("Template Name", "Data Input Method", "Status"));
 

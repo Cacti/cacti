@@ -579,15 +579,13 @@ function data_query_edit() {
 function data_query() {
 	global $colors;
 
-	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "4", "center", "data_queries.php?action=edit");
+	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Data Input Method",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
-
-//	$snmp_queries = db_fetch_assoc("select id,name,data_input_id from snmp_query order by name");
 
 	$snmp_queries = db_fetch_assoc("SELECT
 			snmp_query.id,
