@@ -62,10 +62,10 @@ function update_database($database_old, $database_username, $database_password) 
 	if (sizeof($_users) > 0) {
 	foreach ($_users as $item) {
 		if (db_execute("insert into $database_default.user_auth (id,username,password,must_change_password,show_tree,show_list,
-			show_preview,login_opts,graph_policy,full_name) values ('" . $item["ID"] . "','" . $item["Username"] . "',
+			show_preview,login_opts,graph_policy,full_name,graph_settings) values ('" . $item["ID"] . "','" . $item["Username"] . "',
 			'" . $item["Password"] . "','" . $item["MustChangePassword"] . "','" . $item["ShowTree"] . "',
 			'" . $item["ShowList"] . "','" . $item["ShowPreview"] . "','" . $item["LoginOpts"] . "',
-			'" . $item["GraphPolicy"] . "','" . $item["FullName"] . "')")) {
+			'" . $item["GraphPolicy"] . "','" . $item["FullName"] . "','" . $item["GraphSettings"] . "')")) {
 			$user_cache{$item["ID"]} = db_fetch_insert_id();
 			
 			$status_array{count($status_array)}["user"][1] = $item["Username"];
