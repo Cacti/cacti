@@ -37,6 +37,14 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
+	case 'rrd_add':
+		ds_rrd_add();
+		
+		break;
+	case 'rrd_remove':
+		ds_rrd_remove();
+		
+		break;
 	case 'data_edit':
 		include_once ("include/top_header.php");
 		
@@ -80,21 +88,26 @@ function form_save() {
 		
 		$save2["id"] = $_POST["data_template_data_id"];
 		$save2["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
-		$save2["data_template_id"] = form_input_validate($_POST["data_template_id"], "data_template_id", "", true, 3);
+		$save2["data_template_id"] = $_POST["data_template_id"];
 		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
 		$save2["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save2["data_source_path"] = form_input_validate($_POST["data_source_path"], "data_source_path", "", true, 3);
 		$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
 		$save2["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
 		
-		$save3["id"] = $_POST["data_template_rrd_id"];
-		$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
-		$save3["data_template_id"] = form_input_validate($_POST["data_template_id"], "data_template_id", "", true, 3);
-		$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^[0-9]+$", false, 3);
-		$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^[0-9]+$", false, 3);
-		$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
-		$save3["data_source_type_id"] = $_POST["data_source_type_id"];
-		$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_]{1,19}$", false, 3);
+		/* if this is a new data source and a template has been selected, skip item creation this time
+		otherwise it throws off the templatate creation because of the NULL data */
+		if ($_POST["data_template_id"] == $_POST["_data_template_id"]) {
+			$save3["id"] = $_POST["data_template_rrd_id"];
+			$save3["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
+			$save3["data_template_id"] = $_POST["data_template_id"];
+			$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^[0-9]+$", false, 3);
+			$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^[0-9]+$", false, 3);
+			$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
+			$save3["data_source_type_id"] = $_POST["data_source_type_id"];
+			$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_]{1,19}$", false, 3);
+			$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
+		}
 		
 		if (!is_error_message()) {
 			$local_data_id = sql_save($save1, "data_local");
@@ -127,8 +140,6 @@ function form_save() {
 		}
 		
 		if (!is_error_message()) {
-			update_poller_cache($local_data_id);
-			
 			if ($_POST["host_id"] != $_POST["_host_id"]) {
 				/* push out all nessesary host information */
 				push_out_host($_POST["host_id"]);
@@ -146,6 +157,8 @@ function form_save() {
 			if (empty($_POST["data_source_path"])) {
 				generate_data_source_path($local_data_id);
 			}
+			
+			update_poller_cache($local_data_id);
 			
 			/* save entried in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
@@ -327,6 +340,20 @@ function data_edit() {
     Data Source Functions
    ------------------------ */
 
+function ds_rrd_remove() {
+	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
+	
+	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["local_data_id"]);
+}
+
+function ds_rrd_add() {
+	db_execute("insert into data_template_rrd (local_data_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
+		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
+	$data_template_rrd_id = db_fetch_cell("select LAST_INSERT_ID()");
+	
+	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
+}
+
 function ds_remove() {
 	global $config;
 	
@@ -409,8 +436,6 @@ function ds_edit() {
 		$use_data_template = false;
 	}
 	
-	
-	
 	if (read_config_option("full_view_data_source") == "") {
 		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_data_form_select("?action=ds_edit&id=" . $_GET["id"]);
@@ -491,9 +516,22 @@ function ds_edit() {
 		
 		$rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
 		$rrd_template = db_fetch_row("select * from data_template_rrd where id=$local_data_template_rrd_id");
+		
+		$header_label = "[edit: " . $rrd["data_source_name"] . "]";
+	}else{
+		$header_label = "";
 	}
 	
-	start_box("<strong>Data Source Item</strong> [edit: " . (isset($rrd) ? $rrd["data_source_name"] : "") . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
+	
+	print "	<tr>
+			<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark'>
+				<strong>Data Source Item</strong> $header_label
+			</td>
+			<td class='textHeaderDark' align='right' bgcolor='" . $colors["header"] . "'>
+				" . ((!empty($_GET["id"]) && (empty($data_template["data_template_id"]))) ? "<strong><a class='linkOverDark' href='data_sources.php?action=rrd_add&id=" . $_GET["id"] . "'>New</a>&nbsp;</strong>" : "") . "
+			</td>
+		</tr>\n";
 	
 	$i = 0;
 	if (isset($template_data_rrds)) {
@@ -508,7 +546,7 @@ function ds_edit() {
 							$i++;
 							?>
 							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a>&nbsp;<a href="data_sources.php?action=rrd_remove&id=<?php print $template_data_rrd["id"];?>&local_data_id=<?php print $_GET["id"];?>"><img src="images/delete_icon_dark_back.gif" width="10" height="12" border="0" alt="Delete" align="middle"></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 							</td>
 							<?php
 							}
@@ -523,9 +561,16 @@ function ds_edit() {
 		}
 	}
 	
+	/* data input fields list */
+	if ((empty($data["data_input_id"])) || (db_fetch_cell("select type_id from data_input where id=" . $data["data_input_id"]) > "1")) {
+		unset($struct_data_source_item["data_input_field_id"]);
+	}else{
+		$struct_data_source_item["data_input_field_id"]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='out' and update_rra='on' order by data_name,name";
+	}
+	
 	print "<form method='post' action='data_sources.php'>";
 	
-	$i = 0;
+	$i = 1;
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
@@ -623,12 +668,14 @@ function ds() {
 	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td class='textSubHeaderDark'>Name</td>
 			<td class='textSubHeaderDark'>Data Input Method</td>
+			<td class='textSubHeaderDark'>Active</td>
 			<td class='textSubHeaderDark' colspan='2'>Template Name</td>
 		</tr>\n";
 	
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
 		data_template_data.name,
+		data_template_data.active,
 		data_input.name as data_input_name,
 		data_template.name as data_template_name
 		from data_local
@@ -647,6 +694,7 @@ function ds() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "'>" . $data_source["name"] . "</a></td>";
 		print "<td>" . $data_source["data_input_name"] . "</td>";
+		print "<td>" . (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>") . "</td>";
 		print "<td>" . ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]) . "</td>";
 		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&id=" . $data_source["local_data_id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
 		print "</tr>";
