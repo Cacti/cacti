@@ -547,7 +547,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (empty($data_query_id)) {
 				array_push($data_queries, array(
 					"id" => "0",
-					"name" => "(No Data Query)"
+					"name" => "(Non Indexed)"
 					));
 			}
 
