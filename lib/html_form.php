@@ -486,7 +486,7 @@ function get_checkbox_style() {
 	}
 }
 
-function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
+function draw_nontemplated_item($array_struct, $field_name, $previous_value, $extra_id_1 = 0) {
 	global $config;
 	
 	include ($config["include_path"] . "/config_arrays.php");
@@ -524,10 +524,14 @@ function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
 	case 'view':
 		print "<td>$previous_value</td>\n";
 		break;
+	case 'drop_multi_rra':
+		$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
+		form_multi_dropdown($field_name,$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=$extra_id_1"), $field_name);
+		break;
 	}
 }
 
-function draw_templated_item($array_struct, $field_name, $previous_value) {
+function draw_templated_item($array_struct, $field_name, $previous_value, $extra_id_1 = 0) {
 	global $config;
 	
 	include ($config["include_path"] . "/config_arrays.php");
@@ -538,6 +542,17 @@ function draw_templated_item($array_struct, $field_name, $previous_value) {
 		break;
 	case 'drop_array':
 		print "<td><em>" . ${$array_struct["array_name"]}[$previous_value] . "</em></td>";
+		break;
+	case 'drop_multi_rra':
+		$rras = db_fetch_assoc("select rra.name from data_template_data_rra,rra where data_template_data_rra.rra_id=rra.id and data_template_data_rra.data_template_data_id=$extra_id_1");
+		
+		print "<td>";
+		if (sizeof($rras) > 0) {
+		foreach ($rras as $rra) {
+			print $rra["name"] . "<br>";
+		}
+		}
+		print "</td>";
 		break;
 	default:
 		print "<td><em>" . $previous_value . "</em></td>";
