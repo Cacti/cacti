@@ -39,7 +39,7 @@ function ninety_fifth_percentile($local_data_id, $seconds, $resolution) {
 			$values_array = $fetch_array["values"][$i];
 			
 			/* sort the array in descending order */
-			usort($values_array, "cmp");
+			rsort($values_array);
 			
 			/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
 			value */
