@@ -35,16 +35,7 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
-	case 'query_remove':
-		host_remove_query();
-		
-		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
-		break;
-	case 'query_reload':
-		host_reload_query();
-		
-		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
-		break;
+	
 	case 'new_graphs':
 		include_once("./include/top_header.php");
 		
@@ -146,15 +137,6 @@ function form_save() {
 /* ---------------------
     Host Functions
    --------------------- */
-
-function host_reload_query() {
-	data_query($_GET["host_id"], $_GET["id"]);
-}
-
-function host_remove_query() {
-	db_execute("delete from host_snmp_cache where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
-	db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
-}
 
 function host_remove() {
 	global $config;
