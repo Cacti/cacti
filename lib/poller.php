@@ -211,7 +211,7 @@ function process_poller_output($rrdtool_pipe) {
 					and data_template_rrd.local_data_id=" . $item["local_data_id"]), "data_name", "data_source_name");
 
 				for ($i=0; $i<count($values); $i++) {
-					if (preg_match("/^([a-zA-Z0-9_-]+):([+-0123456789Ee.]+)$/", $values[$i], $matches)) {
+					if (preg_match("/^([a-zA-Z0-9_.-]+):([+-0-9Ee.]+)$/", $values[$i], $matches)) {
 						if (isset($rrd_field_names{$matches[1]})) {
 							if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . "->" . $rrd_field_names{$matches[1]} . "]" , true, "POLLER");
