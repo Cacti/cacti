@@ -59,9 +59,11 @@ function GetCronPath($dsid) {
 		
 		/* loop through each input field we find in the database and do a replace on
 		 each one accordingly. */
-		foreach ($fields as $field) {
-		    $str = ereg_replace ("<$field[DataName]>","$field[Value]",$str);
-		}
+	if (sizeof($fields) > 0) {
+	    foreach ($fields as $field) {
+		$str = ereg_replace ("<$field[DataName]>","$field[Value]",$str);
+	    }
+	}
 		
 		/* do a little path subsitution */
 		$str = ereg_replace ("<path_cacti>", $paths[cacti],$str);
