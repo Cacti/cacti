@@ -125,6 +125,7 @@ function field_save() {
 	$save["sequence"] = $_POST["sequence"];
 	$save["type_code"] = $_POST["type_code"];
 	$save["regexp_match"] = $_POST["regexp_match"];
+	$save["allow_nulls"] = $_POST["allow_nulls"];
 	
 	$data_input_field_id = sql_save($save, "data_input_fields");
 	
@@ -214,6 +215,17 @@ function field_edit() {
 			If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).
 		</td>
 		<?DrawFormItemTextBox("regexp_match",$field["regexp_match"],"","200", "40");?>
+	</tr>
+	<?
+	}
+	
+	if ($current_field_type == "in") {
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+		<td width="50%">
+			<font class="textEditTitle">Allow Empty Input</font><br>
+			Check here if you want to allow NULL input in this field from the user.
+		</td>
+		<?DrawFormItemCheckBox("allow_nulls",$field["allow_nulls"],"Allow NULL's","",false);?>
 	</tr>
 	<?
 	}
@@ -376,6 +388,8 @@ function data_edit() {
 			</tr>
 		<?
 		}
+		}else{
+			print "<tr><td><em>No Input Fields</em></td></tr>";
 		}
 		end_box();
 		
@@ -411,6 +425,8 @@ function data_edit() {
 			</tr>
 		<?
 		}
+		}else{
+			print "<tr><td><em>No Output Fields</em></td></tr>";
 		}
 		end_box();
 	}
