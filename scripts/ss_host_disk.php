@@ -12,7 +12,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array("ss_host_disk", $_SERVER["argv"]);
 }
 
-function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd, $arg1, $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
+function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd, $arg1 = "", $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
 	$oids = array(
 		"total" => ".1.3.6.1.2.1.25.2.3.1.5",
 		"used" => ".1.3.6.1.2.1.25.2.3.1.6",
@@ -22,7 +22,7 @@ function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd,
 		"sau" => ".1.3.6.1.2.1.25.2.3.1.4"
 		);
 
-	if ((func_num_args() == "10") || (func_num_args() == "7") || (func_num_args() == "6")) {
+	if ((func_num_args() == "9") || (func_num_args() == "7") || (func_num_args() == "6") || (func_num_args() == "5")) {
 		if ($cmd == "index") {
 			$return_arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, "", "", $snmp_port, $snmp_timeout, SNMP_POLLER));
 

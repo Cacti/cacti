@@ -12,7 +12,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array("ss_host_cpu", $_SERVER["argv"]);
 }
 
-function ss_host_cpu($hostname, $snmp_community, $snmp_version, $cmd, $arg1, $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
+function ss_host_cpu($hostname, $snmp_community, $snmp_version, $cmd, $arg1 = "", $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
 	$oids = array(
 		"index" => ".1.3.6.1.2.1.25.3.3.1",
 		"usage" => ".1.3.6.1.2.1.25.3.3.1"
