@@ -104,22 +104,12 @@ switch ($action) {
 	case 'input_remove':
 		input_remove();
 		
-		if ($config[full_view_graph_template][value] == "") {
-			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
-		}
-		
+		header ("Location: " . getenv("HTTP_REFERER"));
 		break;
 	case 'item_remove':
 		item_remove();
 		
-		if ($config[full_view_graph_template][value] == "") {
-			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
-		}
-		
+		header ("Location: " . getenv("HTTP_REFERER"));
 		break;
 	case 'input_edit':
 		include_once ("include/top_header.php");
@@ -131,22 +121,12 @@ switch ($action) {
 	case 'item_movedown':
 		item_movedown();
 		
-		if ($config[full_view_graph_template][value] == "") {
-			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
-		}
-		
+		header ("Location: " . getenv("HTTP_REFERER"));
 		break;
 	case 'item_moveup':
 		item_moveup();
 		
-		if ($config[full_view_graph_template][value] == "") {
-			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
-		}
-		
+		header ("Location: " . getenv("HTTP_REFERER"));
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -718,7 +698,7 @@ function item_presets_edit() {
 		left join def_graph_type on graph_type_id=def_graph_type.id
 		where graph_templates_item.graph_template_id=$args[graph_template_id]
 		and graph_templates_item.local_graph_id=0
-		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
+		order by graph_templates_item.sequence");
 	
 	start_box("<strong>Graph Item Presets Configuration</strong>", "", "graph_templates.php?action=item_presets_item_edit&graph_template_id=$args[graph_template_id]");
 	draw_graph_items($template_item_list, "item_presets_item");
