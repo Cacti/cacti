@@ -7,10 +7,9 @@ error_reporting(E_ERROR);
 include_once(dirname(__FILE__) . "/../include/config.php");
 include_once(dirname(__FILE__) . "/../lib/snmp.php");
 
-if ( $_SERVER["argc"] > 1 ) {
-	$args = $_SERVER["argv"];
-	array_shift($args);
-	print call_user_func_array("ss_host_disk", $args);
+if (!isset($called_by_script_server)) {
+	array_shift($_SERVER["argv"]);
+	print call_user_func_array("ss_host_disk", $_SERVER["argv"]);
 }
 
 function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd, $arg1, $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {

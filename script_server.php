@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -118,6 +117,11 @@ while (1) {
 						/* quirk in php R5.0RC3, believe it or not.... */
 						/* path must be lower case */
 						$inc = strtolower($inc);
+
+						/* set this variable so the calling script can determine if it was called
+						 * by the script server or stand-alone */
+						$called_by_script_server = true;
+
 						include_once($inc);
 					} else {
 						cacti_log("WARNING: PHP Script File to be included, does not exist", false, "PHPSVR");
