@@ -8,7 +8,7 @@ $order_key_array = array(); /* for graph trees */
 /* defaults */
 $database_hostname = "localhost";
 $database_username = "root";
-$database_password = "xixxix";
+$database_password = "";
 $database_old = "rrdtool";
 $database = "dev_cacti_3";
 
@@ -63,6 +63,7 @@ print "\n";
 include_once("include/database.php");
 include_once("include/snmp_functions.php");
 include_once("include/functions.php");
+include_once("include/utility_functions.php");
 
 $paths["cacti"] = read_config_option("path_webroot") . read_config_option("path_webcacti");
 
@@ -131,10 +132,10 @@ print " + User Login Log.\n";
 
 print "\n+++++++++++++++++++++++ Importing Data Input Sources +++++++++++++++++++++++\n";
 
-db_execute("delete from data_input_fields where data_input_id != 33");
-db_execute("delete from data_input where id != 33");
+db_execute("delete from data_input_fields where data_input_id > 2");
+db_execute("delete from data_input where id > 2");
 
-$_src = db_fetch_assoc("select * from $database_old.src where id != 11 or id != 13");
+$_src = db_fetch_assoc("select * from $database_old.src where id != 11 and id != 13");
 
 if (sizeof($_src) > 0) {
 foreach ($_src as $item) {
@@ -167,6 +168,10 @@ foreach ($_src as $item) {
 }
 }
 
+/* snmp data input sources */
+$data_input_cache[13] = 1;
+$data_input_cache[11] = 2;
+
 print "\n+++++++++++++++++++++++ Importing SNMP Hosts +++++++++++++++++++++++\n";
 
 db_execute("truncate table $database.host");
@@ -182,12 +187,14 @@ foreach ($_hosts as $item) {
 		'" . $item["Hostname"] . "','" . gethostbyname($item["Hostname"]) . "','" . $item["Community"] . "',
 		1,'','')")) {
 		$host_id = db_fetch_cell("select LAST_INSERT_ID()");
+		$ip_to_host_cache{gethostbyname($item["Hostname"])} = $host_id;
+		
 		db_execute("insert into host_snmp_query (host_id,snmp_query_id) values ($host_id,1)");
 		
 		print "SUCCESS: Host: " . $item["Hostname"] . "\n";
 		
 		print "   Re-caching interface data for host: " . $item["Hostname"] . "\n";
-		//query_snmp_host($host_id, 1);
+		query_snmp_host($host_id, 1);
 	}else{
 		print "FAIL: Host: " . $item["Hostname"] . "\n";
 	}
@@ -213,20 +220,40 @@ $_ds = db_fetch_assoc("select * from $database_old.rrd_ds where subdsid=0");
 
 if (sizeof($_ds) > 0) {
 foreach ($_ds as $item) {
-	$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=21");
 	$host_id = 0;
+	$hostname = "";
+	$data_template_id = 0; $local_data_template_data_id = 0; $local_data_template_rrd_id = 0;
 	
-	if (!empty($hostname)) {
-		$host_id = db_fetch_cell("select id from host where hostname='$hostname'");
+	if ($item["SrcID"] == "11") {
+		$inout = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=28");
+		$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=21");
+		
+		if ($inout == "in") {
+			$data_template_id = "2";
+			$local_data_template_data_id = "3";
+			$local_data_template_rrd_id = "3";
+		}elseif ($inout == "out") {
+			$data_template_id = "8";
+			$local_data_template_data_id = "139";
+			$local_data_template_rrd_id = "258";
+		}
+	}elseif ($item["SrcID"] == "13") {
+		$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=41");
+	}elseif ($item["SrcID"] == "1") {
+		$hostname = db_fetch_cell("select value from $database_old.src_data where dsid=" . $item["ID"] . " and fieldid=1");
 	}
 	
-	if (db_execute("insert into data_local (id,data_template_id,host_id) values (0,0,$host_id)")) {
+	if (!empty($hostname)) {
+		$host_id = $ip_to_host_cache{gethostbyname($hostname)};
+	}
+	
+	if (db_execute("insert into data_local (id,data_template_id,host_id) values (0,$data_template_id,$host_id)")) {
 		$local_data_id = db_fetch_cell("select LAST_INSERT_ID()");
 		print "SUCCESS: Local Data Entry: " . $item["Name"] . "\n";
 		
 		if (db_execute("insert into data_template_data (id,local_data_template_data_id,local_data_id,
-			data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,0,$local_data_id,
-			0," . $data_input_cache{$item["SrcID"]} . ",'" . $item["Name"] . "','" . $item["DSPath"] . "',
+			data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,$local_data_template_data_id,$local_data_id,
+			$data_template_id," . $data_input_cache{$item["SrcID"]} . ",'" . $item["Name"] . "','" . $item["DSPath"] . "',
 			'" . $item["Active"] . "','" . $item["Step"] . "')")) {
 			$data_template_data_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
 			print "   SUCCESS: Data Source: " . $item["Name"] . "\n";
@@ -234,7 +261,7 @@ foreach ($_ds as $item) {
 			if ($item["IsParent"] == "0") {
 				if (db_execute("insert into data_template_rrd (id,local_data_template_rrd_id,
 					local_data_id,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,
-					data_source_type_id,data_source_name,data_input_field_id) values (0,0,$local_data_id,0,
+					data_source_type_id,data_source_name,data_input_field_id) values (0,$local_data_template_rrd_id,$local_data_id,$data_template_id,
 					" . $item["MaxValue"] . "," . $item["MinValue"] . "," . $item["Heartbeat"] . ",
 					" . $item["DataSourceTypeID"] . ",'" . $item["DSName"] . "',0)")) {
 					$data_template_rrd_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
@@ -249,7 +276,7 @@ foreach ($_ds as $item) {
 				foreach ($_sub_ds as $item2) {
 					if (db_execute("insert into data_template_rrd (id,local_data_template_rrd_id,
 						local_data_id,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,
-						data_source_type_id,data_source_name,data_input_field_id) values (0,0,$local_data_id,0,
+						data_source_type_id,data_source_name,data_input_field_id) values (0,$local_data_template_rrd_id,$local_data_id,$data_template_id,
 						" . $item2["MaxValue"] . "," . $item2["MinValue"] . "," . $item2["Heartbeat"] . ",
 						" . $item2["DataSourceTypeID"] . ",'" . $item2["DSName"] . "',
 						" . $data_input_field_cache{$item2["SubFieldID"]} . ")")) {
@@ -267,12 +294,132 @@ foreach ($_ds as $item) {
 			
 			if (sizeof($_ds_data) > 0) {
 			foreach ($_ds_data as $item2) {
-				if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
-					t_value,value) values (" . $data_input_field_cache{$item2["FieldID"]} . ",
-					" . $data_template_data_cache{$item2["DSID"]} . ",'','" . $item2["Value"] . "')")) {
-					print "   SUCCESS: Data Source Data: " . $item2["Value"] . "\n";
+				/*
+				-- 0.6.8: --
+				ID 13: Get SNMP Data
+				41: IP Address
+				42: SNMP Community
+				43: SNMP OID
+				
+				ID 11: Get SNMP Network Data
+				21: IP Address
+				22: SNMP Community
+				23: Interface Description (Optional)
+				24: Interface Number (Optional)
+				25: Octets
+				28: In/Out Data (in or out)
+				53: Interface MAC Address (Optional)
+				56: Interface IP Address (Optional)
+				
+				-- 0.8: --
+				ID 1: Get SNMP Data
+				01: SNMP IP Address
+				02: SNMP Community
+				03: SNMP Username
+				04: SNMP Password
+				05: SNMP Version (1, 2, or 3)
+				06: OID
+				
+				ID 2: Get SNMP Data (Indexed)
+				07: SNMP IP Address
+				08: SNMP Community
+				09: SNMP Username (v3)
+				10: SNMP Password (v3)
+				11: SNMP Version (1, 2, or 3)
+				12: Index Type
+				13: Index Value
+				*/
+				$field_name = "";
+				$field_value = "";
+				
+				if ($item["SrcID"] == "11") {
+					if ((!empty($item2["Value"])) && ($item2["FieldID"] == "23")) {
+						$field_name = "ifdesc";
+						$field_name_id = "12";
+						$field_value = $item2["Value"];
+						$field_value_id = "13";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "24")) {
+						$field_name = "ifindex";
+						$field_name_id = "12";
+						$field_value = $item2["Value"];
+						$field_value_id = "13";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "53")) {
+						$field_name = "ifhwaddr";
+						$field_name_id = "12";
+						$field_value = $item2["Value"];
+						$field_value_id = "13";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "56")) {
+						$field_name = "ifip";
+						$field_name_id = "12";
+						$field_value = $item2["Value"];
+						$field_value_id = "13";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "21")) {
+						$field_value = $item2["Value"];
+						$field_value_id = "7";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "22")) {
+						$field_value = $item2["Value"];
+						$field_value_id = "8";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "28")) {
+						$field_value = "1";
+						$field_value_id = "11";
+					}
+					
+					if (!empty($field_value)) {
+						if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+							t_value,value) values ($field_value_id," . $data_template_data_cache{$item2["DSID"]} . ",'','$field_value')")) {
+							print "   SUCCESS: Data Source Data: $field_value\n";
+							if (!empty($field_name)) {
+								if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+									t_value,value) values ($field_name_id," . $data_template_data_cache{$item2["DSID"]} . ",'','$field_name')")) {
+									print "   SUCCESS: Data Source Data: $field_name\n";
+								}else{
+									print "   FAIL: Data Source Data: $field_name\n";
+								}
+							}
+						}else{
+							print "   FAIL: Data Source Data: $field_value\n";
+						}
+					}
+				}elseif ($item["SrcID"] == "13") {
+					if ((!empty($item2["Value"])) && ($item2["FieldID"] == "41")) {
+						$field_value = $item2["Value"];
+						$field_value_id = "1";
+						$field_name = "1";
+						$field_name_id = "5";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "42")) {
+						$field_value = $item2["Value"];
+						$field_value_id = "2";
+					}elseif ((!empty($item2["Value"])) && ($item2["FieldID"] == "43")) {
+						$field_value = $item2["Value"];
+						$field_value_id = "6";
+					}
+					
+					if (!empty($field_value)) {
+						if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+							t_value,value) values ($field_value_id," . $data_template_data_cache{$item2["DSID"]} . ",'','$field_value')")) {
+							print "   SUCCESS: Data Source Data: $field_value\n";
+							if (!empty($field_name)) {
+								if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+									t_value,value) values ($field_name_id," . $data_template_data_cache{$item2["DSID"]} . ",'','$field_name')")) {
+									print "   SUCCESS: Data Source Data: $field_name\n";
+								}else{
+									print "   FAIL: Data Source Data: $field_name\n";
+								}
+							}
+						}else{
+							print "   FAIL: Data Source Data: $field_value\n";
+						}
+					}
 				}else{
-					print "   FAIL: Data Source Data: " . $item2["Value"] . "\n";
+					if (!empty($item2["Value"])) {
+						if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
+							t_value,value) values (" . $data_input_field_cache{$item2["FieldID"]} . ",
+							" . $data_template_data_cache{$item2["DSID"]} . ",'','" . $item2["Value"] . "')")) {
+							print "   SUCCESS: Data Source Data: " . $item2["Value"] . "\n";
+						}else{
+							print "   FAIL: Data Source Data: " . $item2["Value"] . "\n";
+						}
+					}
 				}
 			}
 			}
@@ -501,7 +648,7 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 	return $branch;
 }
 
-
+repopulate_poller_cache();
 
 
 
