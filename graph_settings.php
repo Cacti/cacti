@@ -82,6 +82,13 @@ function settings() {
 		return;
 	}
 	
+	/* Find out whether this user has right here */
+	if($current_user["graph_settings"] == "") {
+		print "<strong><font size='+1' color='#FF0000'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
+		include_once ("include/bottom_footer.php");
+		exit;
+	} 
+	
 	if (read_config_option("global_auth") == "on") {
 		if ($current_user["graph_policy"] == "1") {
 			$sql_where = "where user_auth_tree.user_id is null";
