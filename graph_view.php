@@ -165,27 +165,15 @@ case 'preview':
 		}
 	}
 	
-	if (empty($_REQUEST["host_id"])) {
-		$sql_base = "from graph_templates_graph 
-			$sql_join
-			$sql_where
-			" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
-			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
-			$sql_or";
-	}else{
-		$sql_base = "from graph_templates_graph 
-			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
-			left join graph_templates_item on graph_local.id=graph_templates_item.local_graph_id
-			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-			left join data_local on data_template_rrd.local_data_id=data_local.id
-			$sql_join
-			$sql_where
-			" . (empty($sql_where) ? "where" : "and") . " data_local.host_id=" . $_REQUEST["host_id"] . "
-			and graph_templates_graph.local_graph_id>0
-			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
-			group by graph_templates_graph.id";
-	}
+	
+	$sql_base = "from graph_templates_graph 
+		$sql_join
+		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+		$sql_where
+		" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
+		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
+		$sql_or";
 	
 	$total_rows = count(db_fetch_assoc("select 
 		graph_templates_graph.local_graph_id
