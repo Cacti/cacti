@@ -140,8 +140,7 @@ $logfile_options = array(1 =>
 $logfile_verbosity = array(1 =>
 	"LOW - Statistics and Errors",
 	"HIGH - Statistics, Errors and Major I/O Events",
-	"DEBUG - Statistics, Errors, I/O and Program Flow",
-	"DEVELOPER - No tree's grow here. For developers only!");
+	"DEBUG - Statistics, Errors, I/O and Program Flow");
 
 $poller_options = array(1 =>
 	"cmd.php",
