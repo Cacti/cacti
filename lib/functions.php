@@ -1409,7 +1409,7 @@ function get_associated_rras($local_graph_id) {
 /* get_browser_query_string - returns the full url, including args requested by the browser
    @returns - the url requested by the browser */
 function get_browser_query_string() {
-	if (isset($_SERVER["REQUEST_URI"])) {
+	if (!empty($_SERVER["REQUEST_URI"])) {
 		return basename($_SERVER["REQUEST_URI"]);
 	}else{
 		return basename($_SERVER["PHP_SELF"]) . (empty($_SERVER["QUERY_STRING"]) ? "" : "?" . $_SERVER["QUERY_STRING"]);

@@ -315,7 +315,7 @@ function rrdtool_function_tune($rrd_tune_array) {
    @returns - (array) an array containing all data in this data source broken down
 	 by each data source item. the maximum of all data source items is included in
 	 an item called 'ninety_fifth_percentile_maximum' */
-function &rrdtool_function_fetch($local_data_id, $start_time, $end_time) {
+function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0) {
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -326,14 +326,18 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time) {
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* build and run the rrdtool fetch command with all of our data */
-	$output = rrdtool_execute("fetch $data_source_path AVERAGE -s $start_time -e $end_time", false, RRDTOOL_OUTPUT_STDOUT);
+	$cmd_line = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
+	if ($resolution > 0) {
+		$cmd_line .= " -r $resolution";
+	}
+	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
 
 	/* grab the first line of the output which contains a list of data sources
 	in this .rrd file */
 	$line_one = substr($output, 0, strpos($output, "\n"));
 
 	/* loop through each data source in this .rrd file ... */
-	if (preg_match_all("/\w+/", $line_one, $data_source_names)) {
+	if (preg_match_all("/\S+/", $line_one, $data_source_names)) {
 		/* version 1.0.49 changed the output slightly */
 		if (preg_match("/^timestamp/", $line_one)) {
 			array_shift($data_source_names[0]);
@@ -732,7 +736,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			/* bandwidth summation */
-			if (preg_match_all("/\|sum:(\d|auto):(current|total):(\d):(\d+|auto)\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
+			if (preg_match_all("/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
 				}
@@ -769,7 +773,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 	}
 
-		/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
+	/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
 
 	$i = 0;
 	reset($graph_items);
@@ -798,7 +802,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_total = ""; $cdef_similar_ds = ""; $cdef_similar = "";
+		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = "";
 
 		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
 			$cdef_string = get_cdef($graph_item["cdef_id"]);
@@ -811,7 +815,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_total_ds .= "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF,"; /* convert unknowns to '0' first */
+							$cdef_total_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 							$item_count++;
 						}
 					}
@@ -819,10 +823,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				/* if there is only one item to total, don't even bother with the summation. otherwise
 				cdef=a,b,c,+,+ is fine. */
-				if ($item_count == 1) {
-					$cdef_total = str_replace(",", "", $cdef_total_ds);
-				}else{
-					$cdef_total = $cdef_total_ds . str_repeat("+,", max(0, ($item_count - 2))) . "+";
+				if ($item_count > 1) {
+					$cdef_total_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
 				}
 			}
 
@@ -836,7 +838,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) && (!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]}))) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_similar_ds .= "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF,"; /* convert unknowns to '0' first */
+							$cdef_similar_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 							$sources_seen{$graph_items[$t]["data_template_rrd_id"]} = 1;
 							$item_count++;
 						}
@@ -845,16 +847,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				/* if there is only one item to total, don't even bother with the summation. otherwise
 				cdef=a,b,c,+,+ is fine. */
-				if ($item_count == 1) {
-					$cdef_similar = str_replace(",", "", $cdef_similar_ds);
-				}else{
-					$cdef_similar = $cdef_similar_ds . str_repeat("+,", ($item_count - 2)) . "+";
+				if ($item_count > 1) {
+					$cdef_similar_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
 				}
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar, $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds, $cdef_string);
+			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds, $cdef_string);
 
 			/* data source item variables */
 			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($graph_item["rrd_minimum"]) ? "0" : $graph_item["rrd_minimum"]), $cdef_string);

@@ -821,7 +821,7 @@ function check_hash_type($hash_type) {
 	}
 
 	if (!isset($current_type)) {
-		// error: cannot find type
+		raise_message(18); /* error: cannot find type */
 		return false;
 	}
 
@@ -848,13 +848,13 @@ function check_hash_version($hash_version) {
 	}
 
 	if (!isset($current_version_index)) {
-		// error: current cacti version does not exist!
+		raise_message(15); /* error: current cacti version does not exist! */
 		return false;
 	}elseif (!isset($hash_version_index)) {
-		// error: hash version does not exist!
+		raise_message(16); /* error: hash version does not exist! */
 		return false;
 	}elseif ($hash_version_index > $current_version_index) {
-		// error: hash made with a newer version of cacti
+		raise_message(17); /* error: hash made with a newer version of cacti */
 		return false;
 	}
 

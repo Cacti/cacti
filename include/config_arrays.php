@@ -45,6 +45,18 @@ $messages = array(
 		"type" => "error"),
 	7  => array(
 		"message" => 'XML parse error.',
+		"type" => "error"),
+	15 => array(
+		"message" => 'XML: Cacti version does not exist.',
+		"type" => "error"),
+	16 => array(
+		"message" => 'XML: Hash version does not exist.',
+		"type" => "error"),
+	17 => array(
+		"message" => 'XML: Generated with a newer version of Cacti.',
+		"type" => "error"),
+	18 => array(
+		"message" => 'XML: Cannot locate type code.',
 		"type" => "error")
 		);
 

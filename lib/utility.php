@@ -36,6 +36,16 @@ function repopulate_poller_cache() {
 	}
 }
 
+function update_poller_cache_from_query($host_id, $data_query_id) {
+	$poller_data = db_fetch_assoc("select id from data_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+
+	if (sizeof($poller_data) > 0) {
+		foreach ($poller_data as $data) {
+			update_poller_cache($data["id"]);
+		}
+	}
+}
+
 function update_poller_cache($local_data_id, $truncate_performed = false) {
 	global $config;
 

@@ -164,9 +164,16 @@ function form_save() {
 			}elseif (isset($_POST["save_component_graph_settings"])) {
 				while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 					while (list($field_name, $field_array) = each($tab_fields)) {
-						db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+						if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
+							while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+								db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
+							}
+						}else{
+							db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+						}
 					}
 				}
+
 				/* reset local settings cache so the user sees the new settings */
 				kill_session_var("sess_graph_config_array");
 			}elseif (isset($_POST["save_component_graph_perms"])) {
