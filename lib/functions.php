@@ -80,12 +80,12 @@ function display_output_messages() {
 			
 			switch ($messages[$current_message_id]["type"]) {
 			case 'info':
-				start_pagebox("", "98%", "00438C", "3", "center", "");
+				start_box("", "98%", "00438C", "3", "center", "");
 				print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
 				end_box();
 				break;
 			case 'error':
-				start_pagebox("", "98%", "ff0000", "3", "center", "");
+				start_box("", "98%", "ff0000", "3", "center", "");
 				print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
 				end_box();
 				break;
