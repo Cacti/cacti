@@ -742,7 +742,7 @@ function host_edit() {
 			<font class="textEditTitle">SNMP Community</font><br>
 			Fill in the SNMP read community for this device.
 		</td>
-		<?php form_text_box("snmp_community",(isset($host) ? $host["snmp_community"] : ""),"","15", "40");?>
+		<?php form_text_box("snmp_community",(isset($host) ? $host["snmp_community"] : ""),"","100", "40");?>
 	</tr>
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -755,7 +755,7 @@ function host_edit() {
 	
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
-			<font class="textEditTitle">SNMP Community</font><br>
+			<font class="textEditTitle">SNMP Password</font><br>
 			Fill in the SNMP password for this device (v3).
 		</td>
 		<?php form_text_box("snmp_password",(isset($host) ? $host["snmp_password"] : ""),"","50", "40");?>
