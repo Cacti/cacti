@@ -439,7 +439,7 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 			++$heading_ct;
 		}
 		
-		print "<td bgcolor='#$colors[panel]' align='center' width='1' valign='top'><a
+		print "<td bgcolor='#$colors[panel]' align='center' width='1%' valign='top'><a
 			href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
 			src='images/$ec_icon.gif' border='0'></a></td>\n";
 		
