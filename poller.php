@@ -196,23 +196,52 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		from poller_command
 		where poller_command.poller_id=0");
 
+	$last_host_id = 0;
+	$first_host = true;
+	$recached_hosts = 0;
+
 	if (sizeof($poller_commands) > 0) {
 		foreach ($poller_commands as $command) {
 			switch ($command["action"]) {
 			case POLLER_COMMAND_REINDEX:
 				list($host_id, $data_query_id) = explode(":", $command["command"]);
 
-				cacti_log("Command: Re-cache host #$host_id, data query #$data_query_id", true, "POLLER");
+				if ($last_host_id != $host_id) {
+					$last_host_id = $host_id;
+					$first_host = true;
+					$recached_hosts = $recached_hosts + 1;
+				} else {
+					$first_host = false;
+				}
+
+				if ($first_host) {
+					cacti_log("Host[$host_id] WARNING: Recache Event Detected for Host", true, "POLLER");
+				}
+
+				if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+					cacti_log("Host[$host_id] RECACHE: Re-cache for Host, data query #$data_query_id", true, "POLLER");
+				}
 
 				run_data_query($host_id, $data_query_id);
 
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Command: Re-cache successful.", true, "POLLER");
+				if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+					cacti_log("Host[$host_id] RECACHE: Re-cache successful.", true, "POLLER");
 				}
 			}
 		}
 
 		db_execute("delete from poller_command where poller_id=0");
+
+		/* take time and log performance data */
+		list($micro,$seconds) = split(" ", microtime());
+		$recache = $seconds + $micro;
+
+		cacti_log(sprintf("STATS: " .
+			"Time: %01.4f s, " .
+			"Hosts Recached: %s",
+			round($recache - $end,4),
+			$recached_hosts),
+			true,"RECACHE");
 	}
 
 	/* graph export */
