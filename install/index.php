@@ -31,7 +31,7 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -250,6 +250,8 @@ if ($_REQUEST["step"] == "4") {
 			db_execute("update snmp_query_graph_rrd_sv set text=REPLACE(text,'ifAlias','ifName') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4)");
 			db_execute("update snmp_query_graph_sv set text=REPLACE(text,'ifAlias','ifName') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4)");
 			db_execute("update host set disabled=''");
+		}elseif ($cacti_versions[$i] == "0.8.2a") {
+			db_execute("ALTER TABLE `data_input_data_cache` ADD `rrd_num` TINYINT( 2 ) UNSIGNED NOT NULL AFTER `rrd_path`");
 		}
 	}
 }
