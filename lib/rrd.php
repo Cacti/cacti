@@ -350,7 +350,8 @@ function rrdtool_function_graph($graphid, $rra, $graph_data_array) {
 				break;
 	 		case "2":
 	    		$scale .= "--alt-autoscale-max" . " \\\n";
-	    		break;
+	    		$scale .= "--lower-limit=" . mysql_result($sql_id, 0, "lowerlimit") . " \\\n"; 
+			break;
 		}
 		
 		if ($graph[AutoScaleLog] == "on") {
