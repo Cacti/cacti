@@ -2242,7 +2242,7 @@ INSERT INTO settings VALUES ('poller_enabled','on');
 INSERT INTO settings VALUES ('poller_type','1');
 INSERT INTO settings VALUES ('concurrent_processes','1');
 INSERT INTO settings VALUES ('max_threads','1');
-INSERT INTO settings VALUES ('availability_method','1');
+INSERT INTO settings VALUES ('availability_method','2');
 INSERT INTO settings VALUES ('ping_method','2');
 INSERT INTO settings VALUES ('ping_timeout','400');
 INSERT INTO settings VALUES ('ping_retries','1');
