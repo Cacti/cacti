@@ -1794,7 +1794,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','public',1,'','',161,500,'',0);
+INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','',1,'','',161,500,'',0);
 
 --
 -- Table structure for table `host_snmp_cache`
@@ -1832,7 +1832,6 @@ CREATE TABLE host_snmp_query (
 -- Dumping data for table `host_snmp_query`
 --
 
-INSERT INTO host_snmp_query VALUES (1,1);
 INSERT INTO host_snmp_query VALUES (1,6);
 
 --
@@ -2036,6 +2035,8 @@ CREATE TABLE settings_graphs (
 -- Dumping data for table `settings_graphs`
 --
 
+INSERT INTO settings_graphs VALUES (1,'general','');
+INSERT INTO settings_graphs VALUES (1,'tree','');
 
 --
 -- Table structure for table `settings_tree`
@@ -2394,7 +2395,7 @@ CREATE TABLE user_auth (
 -- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on',1,1,1,1,1);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1);
 INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1);
 
 --
@@ -2432,6 +2433,7 @@ CREATE TABLE user_auth_realm (
 INSERT INTO user_auth_realm VALUES (1,1);
 INSERT INTO user_auth_realm VALUES (2,1);
 INSERT INTO user_auth_realm VALUES (3,1);
+INSERT INTO user_auth_realm VALUES (4,1);
 INSERT INTO user_auth_realm VALUES (5,1);
 INSERT INTO user_auth_realm VALUES (7,1);
 INSERT INTO user_auth_realm VALUES (7,3);
@@ -2443,6 +2445,8 @@ INSERT INTO user_auth_realm VALUES (12,1);
 INSERT INTO user_auth_realm VALUES (13,1);
 INSERT INTO user_auth_realm VALUES (14,1);
 INSERT INTO user_auth_realm VALUES (15,1);
+INSERT INTO user_auth_realm VALUES (16,1);
+INSERT INTO user_auth_realm VALUES (17,1);
 
 --
 -- Table structure for table `user_log`
