@@ -117,6 +117,13 @@ switch ($_REQUEST["action"]) {
 					form_checkbox($setting,$current_value,$settings[$setting]["friendly_name"],"");
 					print "</tr>\n";
 					break;
+				case 'dropdown':
+                                        /* loop through the resultset and draw each item in the group */
+                                        if (sizeof($settings[$setting]["items"]) > 0) {
+                                        	form_dropdown($setting,$settings[$setting]["items"],"","",$current_value,"","net-snmp");
+					}
+
+					break;
 				case 'group':
 					print "<td>\n";
 					
