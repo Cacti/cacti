@@ -376,7 +376,7 @@ function snmp_item_edit() {
 					<td>
 						<table cellspacing="0" cellpadding="0" border="0" width="100%">
 							<tr>
-								<td width="80">
+								<td width="120">
 									<strong><?php print $suggested_value["field_name"];?></strong>
 								</td>
 								<td>
@@ -440,7 +440,7 @@ function snmp_item_edit() {
 				<td>
 					<table cellspacing="0" cellpadding="0" border="0" width="100%">
 						<tr>
-							<td width="80">
+							<td width="120">
 								<strong><?php print $suggested_value["field_name"];?></strong>
 							</td>
 							<td>
@@ -645,7 +645,8 @@ function snmp_edit() {
 			snmp_query_graph.name
 			from snmp_query_graph
 			left join graph_templates on snmp_query_graph.graph_template_id=graph_templates.id
-			where snmp_query_graph.snmp_query_id=" . $snmp_query["id"]);
+			where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . "
+			order by snmp_query_graph.name");
 		
 		$i = 0;
 		if (sizeof($snmp_query_graphs) > 0) {
