@@ -26,18 +26,38 @@
 */
 $no_http_headers = true;
 
+/* do NOT run this script through a web browser */
+if (!isset($_SERVER["argv"][0])) {
+	die("<br><strong>This script is only meant to run at the command line.</strong>");
+	exit(-1);
+}
+
 /* display No errors */
-error_reporting(E_ERROR);
+//error_reporting(E_ERROR);
+error_reporting(E_ALL);
 
 /* used for includes */
 include_once(dirname(__FILE__) . "/include/config.php");
 
-// don't ask me why, ask the developers of php...
+/* PHP Bug.  Not yet logged */
+if ($config["cacti_server_os"] == "win32") {
+	$guess = substr(__FILE__,0,2);
+	if ($guess == strtoupper($guess)) {
+		$response = "\nERROR: The PHP Script Server MUST be started using the full path to the file and in lower case.  This is a PHP Bug!!!\n";
+		log_data($response, true, "PHPSVR");
+		exit(-1);
+	}
+}
+
+/* Record the calling environment */
 if ($_SERVER["argc"] >= 2) {
 	if ($_SERVER["argv"][1] == "cactid")
 		$environ = "cactid";
 	else
-		$environ = "other";
+		if (($_SERVER["argv"][1] == "cmd.php") || ($_SERVER["argv"][1] == "cmd"))
+			$environ = "cmd";
+		else
+			$environ = "other";
 
 	if ($_SERVER["argc"] == 3)
 		$poller_id = $_SERVER[argv][2];
@@ -48,11 +68,18 @@ if ($_SERVER["argc"] >= 2) {
 	$poller_id = 0;
 }
 
+if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+	log_data("SERVER is->" . $environ, false, "PHPSVR");
+	log_data("GETCWD is->" . strtolower(strtr(getcwd(),"\\","/")) . "\n", false, "PHPSVR");
+	log_data("DIRNAM is->" . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
+	log_data("FILENM is->" . __FILE__, false, "PHPSVR");
+}
+
 // send status back to the server
 if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-	log_data("PHPSERVER: Script Server has Started - Parent is " . $environ . "\n");
+	log_data("PHP Script Server has Started - Parent is " . $environ . "\n", false, "PHPSVR");
 }
-fputs(STDOUT, "PHPSERVER: PHP Script Server has Started - Parent is " . $environ . "\n");
+fputs(STDOUT, "PHP Script Server has Started - Parent is " . $environ . "\n");
 
 // process waits for input and then calls functions as required
 while (1) {
@@ -73,34 +100,33 @@ while (1) {
 			$parm = explode(" ",$preparm);
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				log_data("Include->".$inc."<-\n");
-				log_data("Command->".$cmd."<-\n");
-				log_data("Arguments->".$preparm."<-\n");
-				log_data("ArgV->".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3]."<-\n");
+				log_data("DEBUG: Include->".$inc."<-\n", false, "PHPSVR");
+				log_data("DEBUG: Command->".$cmd."<-\n", false, "PHPSVR");
+				log_data("DEBUG: Arguments->".$preparm."<-\n", false, "PHPSVR");
+				log_data("DEBUG: ArgV->".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3]."<-\n", false, "PHPSVR");
 			}
 
 			// check for existance of function.  If exists call it
 			if ($cmd != "") {
 				if (!function_exists($cmd)) {
 					if (file_exists($inc)) {
-						// quirk in php R5.0RC3, believe it or not....
-//						if (($environ == "cactid") || (getcwd() == dirname(__FILE__))) {
-							$inc = strtolower($inc);
-//						}
+						/* quirk in php R5.0RC3, believe it or not.... */
+						/* path must be lower case */
+						$inc = strtolower($inc);
 						include_once($inc);
 					} else {
-						log_data("ERROR: PHP Script File to be included, does not exist\n");
+						log_data("ERROR: PHP Script File to be included, does not exist\n", false, "PHPSVR");
 					}
 				}
 			} else {
-				log_data("ERROR: PHP Script Server encountered errors parsing the command\n");
+				log_data("ERROR: PHP Script Server encountered errors parsing the command\n", false, "PHPSVR");
 			}
 
 			if (function_exists($cmd)) {
 				$result = call_user_func_array($cmd, $parm);
 				if (!is_numeric($result)) {
 					$result = "U";
-					log_data("ERROR: Result from PHP Script Server was Invalid\n");
+					log_data("ERROR: Result from PHP Script Server was Invalid\n", false, "PHPSVR");
 				}
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
@@ -108,24 +134,24 @@ while (1) {
 					fputs(STDOUT, $result . "\n");
 				}
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					log_data("PHPSERVER: CMD:" . $in_string . " output " . $result . "\n");
+					log_data("CMD: " . $in_string . " output " . $result . "\n", false, "PHPSVR");
 				}
 			} else {
-				log_data("ERROR: Function does not exist\n");
+				log_data("ERROR: Function does not exist\n", false, "PHPSVR");
 				fputs(STDOUT, "ERROR: Function does not exist\n");
 			}
 		}elseif ($in_string == "quit") {
-			fputs(STDOUT, "PHPSERVER: PHP Script Server Shutdown request received, exiting\n");
+			fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-				log_data("PHPSERVER: PHP Script Server Shutdown request received, exiting\n");
+				log_data("PHP Script Server Shutdown request received, exiting\n", false, "PHPSVR");
 			}
 			break;
 		}else {
-			log_data("ERROR: Problems with input\n");
+			log_data("ERROR: Problems with input\n", false, "PHPSVR");
 			fputs(STDOUT, "ERROR: Problems with input\n");
 		}
 	}else {
-		log_data("ERROR: Input Expected\n");
+		log_data("ERROR: Input Expected\n", false, "PHPSVR");
 		fputs(STDOUT, "ERROR: Input expected\n");
 	}
 }
