@@ -137,6 +137,15 @@ $logfile_options = array(1 =>
 	"Logfile and Syslog/Eventlog",
 	"Syslog/Eventlog Only");
 
+$availability_options = array(1 =>
+	"Ping and SNMP - Most Recommended",
+	"SNMP - Reliable",
+	"Ping - Faster Option with Risk");
+
+$ping_methods = array(1 =>
+	"ICMP Ping",
+	"UDP Ping");
+
 $logfile_verbosity = array(
 	POLLER_VERBOSITY_NONE => "NONE - Syslog Only if Selected",
 	POLLER_VERBOSITY_LOW => "LOW - Statistics and Errors",

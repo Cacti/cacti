@@ -179,7 +179,7 @@ $settings = array(
 			),
 		"snmp_retries" => array(
 			"friendly_name" => "SNMP Retries",
-			"description" => "Default SNMP retries.",
+			"description" => "The number of SNMP retries for host polling.",
 			"method" => "textbox",
 			"default" => "3",
 			"max_length" => "100",
@@ -278,20 +278,50 @@ $settings = array(
 			"method" => "drop_array",
 			"array" => $poller_options,
 			),
+		"availability_header" => array(
+			"friendly_name" => "Poller Host Availability Settings",
+			"method" => "spacer",
+			),
+		"availability_method" => array(
+			"friendly_name" => "Downed Host Detection",
+			"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
+			"method" => "drop_array",
+			"array" => $availability_options,
+			),
+		"ping_method" => array(
+			"friendly_name" => "Ping Type",
+			"description" => "The type of ping packet to sent.  NOTE: ICMP requirs that the Cacti Service ID have root privilages in Unix.",
+			"method" => "drop_array",
+			"array" => $ping_methods,
+			),
+		"ping_timeout" => array(
+			"friendly_name" => "Ping Timeout Value",
+			"description" => "The timeout value to use for host pinging.  This setting overrides the host SNMP timeout value.",
+			"method" => "textbox",
+			"default" => "400",
+			"max_length" => "10"
+			),
+		"ping_reties" => array(
+			"friendly_name" => "Ping Retry Count",
+			"description" => "The number of times Cacti will attempt to ping a host before failing.",
+			"method" => "textbox",
+			"default" => "1",
+			"max_length" => "10"
+			),
 		"methods_header" => array(
-			"friendly_name" => "Execution Methods",
+			"friendly_name" => "Poller Execution Parameters",
 			"method" => "spacer",
 			),
 		"concurrent_processes" => array(
-			"friendly_name" => "Maximum Concurrent Cmd or Cactid Processes",
+			"friendly_name" => "Maximum Concurrent Poller Processes",
 			"description" => "The number of concurrent processes to execute.",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
 			),
 		"max_threads" => array(
-			"friendly_name" => "Maximum Cactid Threads per Process",
-			"description" => "The maximum number of concurrent Cactid threads allowed per process.",
+			"friendly_name" => "Maximum Threads per Process",
+			"description" => "The maximum threads allowed per process.  NOTE Applies only to CACTID!",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
@@ -301,7 +331,7 @@ $settings = array(
 			"method" => "spacer",
 			),
 		"path_cactid" => array(
-			"friendly_name" => "Location of Cactid Program",
+			"friendly_name" => "Cactid Poller File Path",
 			"description" => "Full path to Cactid binary.",
 			"method" => "textbox",
 			"max_length" => "255"
