@@ -12,7 +12,45 @@
     }	
   print "  }\n";
 ?>
-	
+
+function get_abs_x(obj) {
+  var curleft = 0;
+  if (document.getElementById || document.all) {
+    while (obj.offsetParent) {
+      curleft += obj.offsetLeft
+      obj = obj.offsetParent;
+    }
+  }
+  return curleft;			
+}
+
+function get_abs_y(obj) {
+  var curtop = 0;
+  if (document.getElementById || document.all) {
+    while (obj.offsetParent) {
+      curtop += obj.offsetTop
+      obj = obj.offsetParent;
+    }
+  }
+  return curtop;			
+}
+
+function pop_dragger(handle,target) {
+//alert("Calling pop_dragger");
+  popup(handle,"1");
+
+  if (typeof handle == "string") { handle = document.all ? document.all[handle] : document.getElementById(handle); }
+  if (typeof target == "string") { target = document.all ? document.all[target] : document.getElementById(target); }
+
+  var tmp_x = get_abs_x(handle) - get_abs_x(target);
+  var tmp_y = get_abs_y(handle) - get_abs_y(target);
+
+//alert(tmp_x+" , "+tmp_y);
+
+  target.style.left = (parseInt(target.style.left) + tmp_x) + "px";
+  target.style.top  = (parseInt(target.style.top)  + tmp_y) + "px";
+}
+
 <?
 #print "<P>Browser = '".$browser->BROWSER."'</P>\n";
 
@@ -20,74 +58,39 @@ if ($browser->BROWSER == 'Netscape') {
 ## Netscape Support Starts Here
   
 ?>
-
-  function scroll_tasklist() {
-    var arg = "tasklist";
-    var tl = arg;
-      if (typeof arg == "string") {
-<?
-	
-  if ($browser->MAJORVER > 4) {
-    print "        tl = document.getElementById(arg).style;\n";
-  } else {
-    if ($browser->MINORVER > 76) {
-      print "      tl = eval(\"document.\"+arg);\n";
-    } else {
-      print "      tl = document.getElementById(arg).style;\n";
-    }
-  }
-print "
-      }
-
-      tl.left  = window.pageXOffset + 3;
-	
-  }	
-		
-
-  function popup(arg,vis) {
+  function popup(arg,newvis) {
     if (loaded == 1 && arg) {
       var theobj = arg;
-      if (typeof arg == \"string\") {
-";
-  if ($browser->MAJORVER > 4) {
-    print "        theobj = document.getElementById(arg).style;\n";
-  } else {
-    if ($browser->MINORVER > 76) {
-      print "      theobj = eval(\"document.\"+arg);\n";
-    } else {
-      print "      theobj = document.getElementById(arg).style;\n";
-    }
-  }
-  print "      }
+      if (typeof arg == "string") {
+         theobj = document.getElementById(arg).style;
+      }
 
-      theobj.top  = window.pageYOffset + 100;
-      theobj.left = window.pageXOffset + 100;
       var vis = theobj.visibility;
 //      alert(vis);
-      if (vis == 'hidden' || vis == \"hide\") {
+      if (newvis == "1") {
         theobj.visibility = 'visible';
       } else {
         theobj.visibility = 'hidden';
       }
     } else {
-      if (loaded != 1) { alert(\"Page not loaded yet.\"); }
+      if (loaded != 1) { alert("Page not loaded yet."); }
     }
   }
 	
   function color_row(arg,row_state) {
     if (loaded == 1 && arg) {
-      while (arg.tagName!=\"TR\") {
+      while (arg.tagName!="TR") {
 	{arg=arg.parentNode;}
       }
-      if (row_state == \"on\") {
-	arg.className = \"H\";
+      if (row_state == "on") {
+	arg.className = "H";
       } else {
 	arg.className = '';
       }
     }
   }
 			   
-";
+<?
   
 } elseif ($browser->BROWSER == 'MSIE' || $browser->BROWSER == 'IE') {
 ## MSIE Support Starts Here
@@ -103,7 +106,7 @@ function scroll_tasklist() {
   tl.left = document.body.scrollLeft + 3;
 }	
 	
-function popup(arg,vis) {
+function popup(arg,newvis) {
 if (loaded == 1 && arg) {
   if (typeof arg == "string") {
     theobj = eval("document.all."+ arg +".style");
@@ -113,7 +116,7 @@ if (loaded == 1 && arg) {
   theobj.top  = document.body.scrollTop  + 50;
   theobj.left = document.body.scrollLeft + 100;
   var vis = theobj.visibility;
-  if (vis == 1 || vis == "hidden") {
+  if (newvis == 1) {
     theobj.visibility = 'visible';
   } else {
     theobj.visibility = 'hidden';
@@ -157,7 +160,7 @@ function scroll_tasklist() {
   tl.left = document.body.scrollLeft + 3;
 }	
 	
-  function popup(arg,vis) {
+  function popup(arg,newvis) {
     if (loaded == 1 && arg) {
       var theobj = arg;
       if (typeof arg == "string") {
@@ -177,7 +180,7 @@ function scroll_tasklist() {
       theobj.left = window.pageXOffset + 100;
       var vis = theobj.visibility;
 //      alert(vis);
-      if (vis == 'hidden' || vis == "hide") {
+      if (newvis == \"1\") {
         theobj.visibility = 'visible';
       } else {
         theobj.visibility = 'hidden';
