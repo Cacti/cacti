@@ -87,7 +87,7 @@
 						<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit' value='refresh'>
 					</td>
 					<td nowrap>
-						<input type='image' name='button_default' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
+						<input type='image' name='button_clear' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
 					</td>
 				</tr>
 			</table>
