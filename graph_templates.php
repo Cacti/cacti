@@ -87,6 +87,7 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if (isset($_POST["save_component_template"])) {
 		$save1["id"] = $_POST["graph_template_id"];
+		$save1["hash"] = get_hash_graph_template($_POST["graph_template_id"]);
 		$save1["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		
 		$save2["id"] = $_POST["graph_template_graph_id"];
@@ -182,8 +183,6 @@ function form_actions() {
 			db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
 			db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
 			db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("delete from host_template_graph_sv where " . array_to_sql_or($selected_items, "graph_template_id"));
-			/* snmp_query_graph */
 			
 			/* "undo" any graph that is currently using this template */
 			db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));

@@ -105,6 +105,7 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if (isset($_POST["save_component_snmp_query"])) {
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_data_query($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
 		$save["xml_path"] = form_input_validate($_POST["xml_path"], "xml_path", "", false, 3);
@@ -139,6 +140,7 @@ function form_save() {
 		$redirect_back = false;
 		
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_data_query($_POST["id"], "data_query_graph");
 		$save["snmp_query_id"] = $_POST["snmp_query_id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["graph_template_id"] = $_POST["graph_template_id"];
@@ -152,12 +154,12 @@ function form_save() {
 				/* if the user changed the graph template, go through and delete everything that
 				was associated with the old graph template */
 				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
-					db_execute ("delete from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id");
-					db_execute ("delete from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id");
+					db_execute("delete from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id");
+					db_execute("delete from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id");
 					$redirect_back = true;
 				}
 				
-				db_execute ("delete from snmp_query_graph_rrd where snmp_query_graph_id=$snmp_query_graph_id");
+				db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=$snmp_query_graph_id");
 				
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^dsdt_([0-9]+)_([0-9]+)_check", $var)) {
@@ -168,14 +170,16 @@ function form_save() {
 					}elseif ((eregi("^svds_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svds_" . $matches[1] . "_text"})) && (!empty($_POST{"svds_" . $matches[1] . "_field"}))) {
 						/* suggested values -- data templates */
 						$sequence = get_sequence(0, "sequence", "snmp_query_graph_rrd_sv", "snmp_query_graph_id=" . $_POST["id"]  . " and data_template_id=" . $matches[1] . " and field_name='" . $_POST{"svds_" . $matches[1] . "_field"} . "'");
-						db_execute("insert into snmp_query_graph_rrd_sv (snmp_query_graph_id,data_template_id,sequence,field_name,text) values (" . $_POST["id"] . "," . $matches[1] . ",$sequence,'" . $_POST{"svds_" . $matches[1] . "_field"} . "','" . $_POST{"svds_" . $matches[1] . "_text"} . "')"); 
+						$hash = get_hash_data_query(0, "data_query_sv_data_source");
+						db_execute("insert into snmp_query_graph_rrd_sv (hash,snmp_query_graph_id,data_template_id,sequence,field_name,text) values ('$hash'," . $_POST["id"] . "," . $matches[1] . ",$sequence,'" . $_POST{"svds_" . $matches[1] . "_field"} . "','" . $_POST{"svds_" . $matches[1] . "_text"} . "')"); 
 						
 						$redirect_back = true;
 						clear_messages();
 					}elseif ((eregi("^svg_x", $var)) && (!empty($_POST{"svg_text"})) && (!empty($_POST{"svg_field"}))) {
 						/* suggested values -- graph templates */
 						$sequence = get_sequence(0, "sequence", "snmp_query_graph_sv", "snmp_query_graph_id=" . $_POST["id"] . " and field_name='" . $_POST{"svg_field"} . "'");
-						db_execute("insert into snmp_query_graph_sv (snmp_query_graph_id,sequence,field_name,text) values (" . $_POST["id"] . ",$sequence,'" . $_POST{"svg_field"} . "','" . $_POST{"svg_text"} . "')"); 
+						$hash = get_hash_data_query(0, "data_query_sv_graph");
+						db_execute("insert into snmp_query_graph_sv (hash,snmp_query_graph_id,sequence,field_name,text) values ('$hash'," . $_POST["id"] . ",$sequence,'" . $_POST{"svg_field"} . "','" . $_POST{"svg_text"} . "')"); 
 						
 						$redirect_back = true;
 						clear_messages();
@@ -315,9 +319,7 @@ function snmp_item_edit() {
 									$snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
 									$xml_outputs = array();
 									
-									while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
-										$field_array = $field_array[0];
-										
+									while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
 										if ($field_array["direction"] == "output") {
 											$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;	
 										}

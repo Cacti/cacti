@@ -84,6 +84,7 @@ function form_save() {
 	if (isset($_POST["save_component_template"])) {
 		/* save: data_template */
 		$save1["id"] = $_POST["data_template_id"];
+		$save1["hash"] = get_hash_data_template($_POST["data_template_id"]);
 		$save1["name"] = form_input_validate($_POST["template_name"], "template_name", "", false, 3);
 		
 		/* save: data_template_data */
@@ -102,6 +103,7 @@ function form_save() {
 		
 		/* save: data_template_rrd */
 		$save3["id"] = $_POST["data_template_rrd_id"];
+		$save3["hash"] = get_hash_data_input($_POST["data_template_rrd_id"], "data_template_item");
 		$save3["local_data_template_rrd_id"] = 0;
 		$save3["local_data_id"] = 0;
 		
@@ -236,7 +238,6 @@ function form_actions() {
 			
 			db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
 			db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
-			db_execute("delete from host_template_data_sv where " . array_to_sql_or($selected_items, "data_template_id"));
 			db_execute("delete from snmp_query_graph_rrd where " . array_to_sql_or($selected_items, "data_template_id"));
 			db_execute("delete from snmp_query_graph_rrd_sv where " . array_to_sql_or($selected_items, "data_template_id"));
 			db_execute("delete from data_template where " . array_to_sql_or($selected_items, "id"));
@@ -318,7 +319,7 @@ function form_actions() {
 }
  
 /* ----------------------------
-    template - Graph Templates 
+    template - Data Templates 
    ---------------------------- */
 
 function template_rrd_remove() {
@@ -336,10 +337,13 @@ function template_rrd_remove() {
 }
 
 function template_rrd_add() {
-	db_execute("insert into data_template_rrd (data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
-		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
+	$hash = get_hash_data_template(0, "data_template_item");
+	
+	db_execute("insert into data_template_rrd (hash,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
+		data_source_name) values ('$hash'," . $_GET["id"] . ",100,0,600,1,'ds')");
 	$data_template_rrd_id = db_fetch_insert_id();
 	
+	/* add this data template item to each data source using this data template */
 	$children = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id>0"); 
 	
 	if (sizeof($children) > 0) {

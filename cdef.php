@@ -99,6 +99,7 @@ function draw_cdef_preview($cdef_id) {
 function form_save() {
 	if (isset($_POST["save_component_cdef"])) {
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_cdef($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		
 		if (!is_error_message()) {
@@ -132,6 +133,7 @@ function form_save() {
 		$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
 		
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_cdef($_POST["id"], "cdef_item");
 		$save["cdef_id"] = $_POST["cdef_id"];
 		$save["sequence"] = $sequence;
 		$save["type"] = $current_type;

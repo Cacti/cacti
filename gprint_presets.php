@@ -62,6 +62,7 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if (isset($_POST["save_component_gprint_presets"])) {
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_gprint($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["gprint_text"] = form_input_validate($_POST["gprint_text"], "gprint_text", "", false, 3);
 		

@@ -76,6 +76,7 @@ function form_save() {
 	
 	if (isset($_POST["save_component_data_input"])) {
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_data_input($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["input_string"] = form_input_validate($_POST["input_string"], "input_string", "", true, 3);
 		$save["output_string"] = form_input_validate($_POST["output_string"], "output_string", "", true, 3);
@@ -106,6 +107,7 @@ function form_save() {
 		}
 	}elseif (isset($_POST["save_component_field"])) {
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_data_input($_POST["id"], "data_input_field");
 		$save["data_input_id"] = $_POST["data_input_id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["data_name"] = form_input_validate($_POST["data_name"], "data_name", "", true, 3);

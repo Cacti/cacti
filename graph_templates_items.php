@@ -110,6 +110,7 @@ function form_save() {
 			}
 			
 			$save["id"] = $_POST["graph_template_item_id"];
+			$save["hash"] = get_hash_graph_template($_POST["graph_template_item_id"], "graph_template_item");
 			$save["graph_template_id"] = $_POST["graph_template_id"];
 			$save["local_graph_id"] = 0;
 			$save["task_item_id"] = form_input_validate($_POST["task_item_id"], "task_item_id", "", true, 3);
