@@ -60,10 +60,10 @@
 		<td>
 			<table>
 				<tr>
-					<td width="15" class="textHeader">
+					<td class="textHeader">
 						Presets:&nbsp;
 					</td>
-					<td width="30">
+					<td>
 						<select name='predefined_timespan'>
 							<option value='No Preset' selected>No Preset
 							<option value='Default'>Default

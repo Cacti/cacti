@@ -141,8 +141,6 @@ case 'preview':
 				$_REQUEST["filter"] = "";
 				$_REQUEST["host_id"] = "0";
 
-				$set_rra_id = $_GET["rra_id"];
-
 				/* Fix to avoid error in 'preview' after selection in 'list' : Notice: Undefined index: rra_id in C:\apache2\htdocs\cacti\graph_view.php on line 142 */
 				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : $_GET["rra_id"];
 			}
@@ -172,7 +170,7 @@ case 'preview':
 	/* Include time span selector */
 	html_graph_start_box(3, true);
 	include("./include/html/inc_timespan_selector.php");
-	establish_timespan($param_graph_start, $param_graph_end);
+	format_timespan($param_graph_start, $param_graph_end);
 
 	html_graph_start_box(3, true);
 
@@ -193,10 +191,8 @@ case 'preview':
 	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), $_REQUEST["page"], ROWS_PER_PAGE, $total_rows, $nav_url);
 
 	if (read_graph_config_option("thumbnail_section_preview") == "on") {
-		html_graph_thumbnail_area($graphs, "");
 		html_graph_thumbnail_area($graphs, "","graph_start=$param_graph_start&graph_end=$param_graph_end");
 	}else{
-		html_graph_area($graphs, "");
 		html_graph_area($graphs, "", "graph_start=$param_graph_start&graph_end=$param_graph_end");
 	}
 

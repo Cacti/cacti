@@ -172,7 +172,7 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
-function establish_timespan(&$param_graph_start, &$param_graph_end) {
+function format_timespan(&$param_graph_start, &$param_graph_end) {
 	/* Compute the time start and end */
 	/* When a span time preselection has been defined update the span time fields */
 	if (isset($_POST["predefined_timespan"]) and ($_POST["predefined_timespan"]!="") and ($_POST["predefined_timespan"]!="No Preset"))  {

@@ -29,7 +29,7 @@ $show_console_tab = true;
 
 include_once($config["library_path"] . "/html_tree.php");
 include_once($config["library_path"] . "/rrd.php");
-require_once($config["include_path"] . "/jscalendar/calendar.php");
+include_once($config["include_path"] . "/jscalendar/calendar.php");
 
 /* Include time span selector javascript */
 //include($config["include_path"]."/html/inc_timespan_selector.php");

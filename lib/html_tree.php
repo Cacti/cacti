@@ -456,7 +456,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	/* Include time span selector */
 	include_once($config["include_path"] . "/html/inc_timespan_selector.php");
-	establish_timespan($param_graph_start, $param_graph_end);
+	format_timespan($param_graph_start, $param_graph_end);
 
 	if ($leaf_type == "header") {
 		$heirarchy = db_fetch_assoc("select
