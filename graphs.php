@@ -737,13 +737,11 @@ function graph_diff() {
 		
 		/* go back through each graph field and find out which ones haven't been covered by the 
 		"inputs" above. for each one, use the value from the template */
-		for ($j=0; ($j < count($struct_graph_item)); $j++) {
-			$graph_item_field_name = $struct_graph_item[$j];
-			
+		while (list($field_name, $field_array) = each($struct_graph_item)) {
 			if ($mode == "delete") {
-				$graph_preview_item_values[$graph_item_field_name] = $graph_items[$i][$graph_item_field_name];
-			}elseif (!isset($graph_preview_item_values[$graph_item_field_name])) {
-				$graph_preview_item_values[$graph_item_field_name] = $graph_template_items[$i][$graph_item_field_name];
+				$graph_preview_item_values[$field_name] = $graph_items[$i][$field_name];
+			}elseif (!isset($graph_preview_item_values[$field_name])) {
+				$graph_preview_item_values[$field_name] = $graph_template_items[$i][$field_name];
 			}
 		}
 		
