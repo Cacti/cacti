@@ -1,4 +1,3 @@
-#ifdef RRD
 #include "inc.h"
 
 char** string_to_argv(char *argstring, int *argc){
@@ -39,20 +38,3 @@ char** string_to_argv(char *argstring, int *argc){
     return NULL;
   }
 }
-
-
-void free_argv(char** argv){
-  free(argv[0]);
-  free(argv);
-}
-
-int wrap_rrd_update(char *argstr){
-  char **argv;
-  int i, argc;
-  if((argv = string_to_argv(argstr, &argc)) != NULL){
-    i = rrd_update(argc, argv);
-    free_argv(argv);
-    return i;
-  } else return (-1);
-}
-#endif

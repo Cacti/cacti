@@ -8,6 +8,8 @@ void *poller(void *thread_args){
   threads_t *threads = worker->threads;
   target_t *entry = NULL;
   char rrdcmd[512];
+  char **rrdargv;
+  int rrdargc;
   unsigned long long result = 0;
   while(1){
     printf("[%d] wait lock\n", worker->index);
@@ -36,7 +38,8 @@ void *poller(void *thread_args){
 	  //internal rrd_update
           sprintf(rrdcmd,"update %s N:%llu", entry->rrd, result);
           printf("RRD: wrap_rrd_update(%s)\n",rrdcmd);
-          wrap_rrd_update(rrdcmd);
+          rrdargv = string_to_argv(rrdcmd, &rrdargc);
+          rrd_update(rrdargc, rrdargv);
 	#else
 	  //external rrdtool command
           sprintf(rrdcmd,"rrdtool update %s N:%llu", entry->rrd, result);
