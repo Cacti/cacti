@@ -146,6 +146,7 @@ function format_snmp_string($string) {
 	$string = str_replace("'", "", $string);
 	$string = str_replace(">", "", $string);
 	$string = str_replace("<", "", $string);
+	$string = str_replace("\\", "", $string);
 
 	if (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
 		$octet = "";
