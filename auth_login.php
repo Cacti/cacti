@@ -60,29 +60,37 @@ case 'login':
 						/* acl */
 						$user_auth_realm = db_fetch_assoc("SELECT realm_id FROM `user_auth_realm` WHERE user_id = $user_id");
 
-						foreach ($user_auth_realm as $item) {
-							db_execute("INSERT INTO user_auth_realm (realm_id, user_id) VALUES (" . $item["realm_id"] . ", $user_id)");
+						if isset($user_auth_realm) {
+							foreach ($user_auth_realm as $item) {
+								db_execute("INSERT INTO user_auth_realm (realm_id, user_id) VALUES (" . $item["realm_id"] . ", $user_id)");
+							}
 						}
 
 						/* graph */
 						$user_auth_graph = db_fetch_assoc("SELECT local_graph_id FROM `user_auth_graph` WHERE user_id = $user_id");
 
-						foreach ($user_auth_graph as $item) {
-							db_execute("INSERT INTO user_auth_graph (local_graph_id, user_id) VALUES (" . $item["local_graph_id"] . ", $user_id)");
+						if isset($user_auth_graph) {
+							foreach ($user_auth_graph as $item) {
+								db_execute("INSERT INTO user_auth_graph (local_graph_id, user_id) VALUES (" . $item["local_graph_id"] . ", $user_id)");
+							}
 						}
 
 						/* hierarchy */
 						$user_auth_tree = db_fetch_assoc("SELECT tree_id FROM `user_auth_tree` WHERE UserID = $user_id");
 
-						foreach ($user_auth_tree as $item) {
-							db_execute("INSERT INTO user_auth_tree (tree_id, user_id) VALUES (" . $item["tree_id"] . ", $user_id)");
+						if isset($user_auth_tree) {
+							foreach ($user_auth_tree as $item) {
+								db_execute("INSERT INTO user_auth_tree (tree_id, user_id) VALUES (" . $item["tree_id"] . ", $user_id)");
+							}
 						}
 
 						/* hosts */
 						$user_auth_hosts = db_fetch_assoc("SELECT hostname, user_id, policy FROM `user_auth_hosts` WHERE user_id = $user_id");
 
-						foreach ($user_auth_hosts as $item) {
-							db_execute("INSERT INTO user_auth_hosts (hostname, user_id, policy) VALUES ('" . $item["hostname"] . "', $user_id, " . $item["policy"] . ")");
+						if isset($user_auth_hosts) {
+							foreach ($user_auth_hosts as $item) {
+								db_execute("INSERT INTO user_auth_hosts (hostname, user_id, policy) VALUES ('" . $item["hostname"] . "', $user_id, " . $item["policy"] . ")");
+							}
 						}
 					}
 				}
