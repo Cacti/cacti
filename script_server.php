@@ -162,8 +162,9 @@ while (1) {
 			fputs(STDOUT, "ERROR: Problems with input\n");
 		}
 	}else {
-		cacti_log("WARNING: Input Expected", false, "PHPSVR");
-		fputs(STDOUT, "ERROR: Input expected\n");
+		cacti_log("ERROR: Input Expected, Script Server Terminating", false, "PHPSVR");
+		fputs(STDOUT, "ERROR: Input Expected, Script Server Terminating\n");
+		exit (-1);
 	}
 }
 ?>
