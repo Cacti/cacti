@@ -813,9 +813,6 @@ function preLoadIcons() {
 	auxImg.src = ICONPATH + "ftv2blank.gif";
 	auxImg.src = ICONPATH + "ftv2lastnode.gif";
 	auxImg.src = ICONPATH + "ftv2node.gif";
-	auxImg.src = ICONPATH + "";
-	auxImg.src = ICONPATH + "";
-	auxImg.src = ICONPATH + "";
 }
 
 //Open some folders for initial layout, if necessary
