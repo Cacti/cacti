@@ -77,7 +77,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
 		$using_proc_function = True;
 		// step below calls the include function with the script file
-	   fwrite($pipes[0], "include " . dirname(__FILE__) . "/scripts/script_functions.php\r\n");
+	   fwrite($pipes[0], "include_once " . dirname(__FILE__) . "/scripts/script_functions.php\r\n");
 	}else {
 		$using_proc_function = False;
 		if (read_config_option("log_perror") == "on") {
