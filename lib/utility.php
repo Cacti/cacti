@@ -633,132 +633,185 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
 }
 
-function duplicate_graph($_local_graph_id, $graph_title) {
-	$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
-	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where local_graph_id=$_local_graph_id");
-	$graph_template_items = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$_local_graph_id");
+function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
+	include ("config_arrays.php");
 	
-	/* create new entry: graph_local */
-	$save["id"] = 0;
-	$save["graph_template_id"] = $graph_local["graph_template_id"];
-	
-	$local_graph_id = sql_save($save, "graph_local");
+	if (!empty($_local_graph_id)) {
+		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
+		$graph_template_graph = db_fetch_row("select * from graph_templates_graph where local_graph_id=$_local_graph_id");
+		$graph_template_items = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$_local_graph_id");
+		
+		/* create new entry: graph_local */
+		$save["id"] = 0;
+		$save["graph_template_id"] = $graph_local["graph_template_id"];
+		$save["host_id"] = $graph_local["host_id"];
+		
+		$local_graph_id = sql_save($save, "graph_local");
+	}elseif (!empty($_graph_template_id)) {
+		$graph_template = db_fetch_row("select * from graph_templates where id=$_graph_template_id");
+		$graph_template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=$_graph_template_id and local_graph_id=0");
+		$graph_template_items = db_fetch_assoc("select * from graph_templates_item where graph_template_id=$_graph_template_id and local_graph_id=0");
+		$graph_template_inputs = db_fetch_assoc("select * from graph_template_input where graph_template_id=$_graph_template_id");
+		
+		/* create new entry: graph_templates */
+		$save["id"] = 0;
+		$save["name"] = str_replace("<template_title>", $graph_template["name"], $graph_title);
+		
+		$graph_template_id = sql_save($save, "graph_templates");
+	}
 	
 	unset($save);
+	reset($struct_graph);
 	
 	/* create new entry: graph_templates_graph */
 	$save["id"] = 0;
-	$save["local_graph_id"] = $local_graph_id;
-	$save["local_graph_template_graph_id"] = $graph_template_graph["local_graph_template_graph_id"];
-	$save["graph_template_id"] = $graph_template_graph["graph_template_id"];
-	$save["image_format_id"] = $graph_template_graph["image_format_id"];
-	$save["title"] = str_replace("<graph_title>", $graph_template_graph["title"], $graph_title);
-	$save["height"] = $graph_template_graph["height"];
-	$save["width"] = $graph_template_graph["width"];
-	$save["upper_limit"] = $graph_template_graph["upper_limit"];
-	$save["lower_limit"] = $graph_template_graph["lower_limit"];
-	$save["vertical_label"] = $graph_template_graph["vertical_label"];
-	$save["auto_scale"] = $graph_template_graph["auto_scale"];
-	$save["auto_scale_opts"] = $graph_template_graph["auto_scale_opts"];
-	$save["auto_scale_log"] = $graph_template_graph["auto_scale_log"];
-	$save["auto_scale_rigid"] = $graph_template_graph["auto_scale_rigid"];
-	$save["auto_padding"] = $graph_template_graph["auto_padding"];
-	$save["base_value"] = $graph_template_graph["base_value"];
-	$save["export"] = $graph_template_graph["export"];
-	$save["unit_value"] = $graph_template_graph["unit_value"];
-	$save["unit_exponent_value"] = $graph_template_graph["unit_exponent_value"];
-
-	$graph_templates_graph_id = sql_save($save, "graph_templates_graph");
+	$save["local_graph_id"] = (isset($local_graph_id) ? $local_graph_id : 0);
+	$save["local_graph_template_graph_id"] = (isset($graph_template_graph["local_graph_template_graph_id"]) ? $graph_template_graph["local_graph_template_graph_id"] : 0);
+	$save["graph_template_id"] = (!empty($_local_graph_id) ? $graph_template_graph["graph_template_id"] : $graph_template_id);
 	
-	unset($save);
+	$graph_template_graph["title"] = str_replace("<graph_title>", $graph_template_graph["title"], $graph_title);
+	
+	while (list($field, $array) = each($struct_graph)) {
+		$save{$field} = $graph_template_graph{$field};
+		$save{"t_" . $field} = $graph_template_graph{"t_" . $field};
+	}
+	
+	$graph_templates_graph_id = sql_save($save, "graph_templates_graph");
 	
 	/* create new entry(s): graph_templates_item */
 	if (sizeof($graph_template_items) > 0) {
 	foreach ($graph_template_items as $graph_template_item) {
-		$save["id"] = 0;
-		$save["local_graph_id"] = $local_graph_id;
-		$save["graph_template_id"] = $graph_template_item["graph_template_id"];
-		$save["local_graph_template_item_id"] = $graph_template_item["local_graph_template_item_id"];
-		$save["task_item_id"] = $graph_template_item["task_item_id"];
-		$save["color_id"] = $graph_template_item["color_id"];
-		$save["graph_type_id"] = $graph_template_item["graph_type_id"];
-		$save["cdef_id"] = $graph_template_item["cdef_id"];
-		$save["consolidation_function_id"] = $graph_template_item["consolidation_function_id"];
-		$save["text_format"] = $graph_template_item["text_format"];
-		$save["value"] = $graph_template_item["value"];
-		$save["hard_return"] = $graph_template_item["hard_return"];
-		$save["gprint_id"] = $graph_template_item["gprint_id"];
-		$save["sequence"] = $graph_template_item["sequence"];
+		unset($save);
+		reset($struct_graph_item);
 		
-		$graph_template_item_id = sql_save($save, "graph_templates_item");
+		$save["id"] = 0;
+		$save["local_graph_id"] = (isset($local_graph_id) ? $local_graph_id : 0);
+		$save["graph_template_id"] = (!empty($_local_graph_id) ? $graph_template_item["graph_template_id"] : $graph_template_id);
+		$save["local_graph_template_item_id"] = (isset($graph_template_item["local_graph_template_item_id"]) ? $graph_template_item["local_graph_template_item_id"] : 0);
+		
+		while (list($field, $array) = each($struct_graph_item)) {
+			$save{$field} = $graph_template_item{$field};
+		}
+		
+		$graph_item_mappings{$graph_template_item["id"]} = sql_save($save, "graph_templates_item");
 	}
+	}
+	
+	if (!empty($_graph_template_id)) {
+		/* create new entry(s): graph_template_input (graph template only) */
+		if (sizeof($graph_template_inputs) > 0) {
+		foreach ($graph_template_inputs as $graph_template_input) {
+			unset($save);
+			
+			$save["id"] = 0;
+			$save["graph_template_id"] = $graph_template_id;
+			$save["name"] = $graph_template_input["name"];
+			$save["description"] = $graph_template_input["description"];
+			$save["column_name"] = $graph_template_input["column_name"];
+			
+			$graph_template_input_id = sql_save($save, "graph_template_input");
+			
+			$graph_template_input_defs = db_fetch_assoc("select * from graph_template_input_defs where graph_template_input_id=" . $graph_template_input["id"]);
+			
+			/* create new entry(s): graph_template_input_defs (graph template only) */
+			if (sizeof($graph_template_input_defs) > 0) {
+			foreach ($graph_template_input_defs as $graph_template_input_def) {
+				db_execute("insert into graph_template_input_defs (graph_template_input_id,graph_template_item_id)
+					values ($graph_template_input_id," . $graph_item_mappings{$graph_template_input_def["graph_template_item_id"]} . ")");
+			}
+			}
+		}
+		}
 	}
 }
 
-function duplicate_data_source($_local_data_id, $data_source_title) {
-	$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");
-	$data_template_data = db_fetch_row("select * from data_template_data where local_data_id=$_local_data_id");
-	$data_template_rrds = db_fetch_assoc("select * from data_template_rrd where local_data_id=$_local_data_id");
+function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
+	include ("config_arrays.php");
 	
-	$data_input_datas = db_fetch_assoc("select * from data_input_data where data_template_data_id=" . $data_template_data["id"]);
-	$data_template_data_rras = db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
-	
-	/* create new entry: data_local */
-	$save["id"] = 0;
-	$save["data_template_id"] = $data_local["data_template_id"];
-	$save["host_id"] = $data_local["host_id"];
-	
-	$local_data_id = sql_save($save, "data_local");
+	if (!empty($_local_data_id)) {
+		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");
+		$data_template_data = db_fetch_row("select * from data_template_data where local_data_id=$_local_data_id");
+		$data_template_rrds = db_fetch_assoc("select * from data_template_rrd where local_data_id=$_local_data_id");
+		
+		$data_input_datas = db_fetch_assoc("select * from data_input_data where data_template_data_id=" . $data_template_data["id"]);
+		$data_template_data_rras = db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+		
+		/* create new entry: data_local */
+		$save["id"] = 0;
+		$save["data_template_id"] = $data_local["data_template_id"];
+		$save["host_id"] = $data_local["host_id"];
+		
+		$local_data_id = sql_save($save, "data_local");
+	}elseif (!empty($_data_template_id)) {
+		$data_template = db_fetch_row("select * from data_template where id=$_data_template_id");
+		$data_template_data = db_fetch_row("select * from data_template_data where data_template_id=$_data_template_id and local_data_id=0");
+		$data_template_rrds = db_fetch_assoc("select * from data_template_rrd where data_template_id=$_data_template_id and local_data_id=0");
+		
+		$data_input_datas = db_fetch_assoc("select * from data_input_data where data_template_data_id=" . $data_template_data["id"]);
+		$data_template_data_rras = db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+		
+		/* create new entry: data_template */
+		$save["id"] = 0;
+		$save["name"] = str_replace("<template_title>", $data_template_data["name"], $data_source_title);
+		
+		$data_template_id = sql_save($save, "data_template");
+	}
 	
 	unset($save);
+	unset($struct_data_source["rra_id"]);
+	unset($struct_data_source["data_source_path"]);
+	reset($struct_data_source);
 	
 	/* create new entry: data_template_data */
 	$save["id"] = 0;
-	$save["local_data_id"] = $local_data_id;
-	$save["local_data_template_data_id"] = $data_template_data["local_data_template_data_id"];
-	$save["data_template_id"] = $data_template_data["data_template_id"];
-	$save["data_input_id"] = $data_template_data["data_input_id"];
-	$save["name"] = str_replace("<ds_title>", $data_template_data["name"], $data_source_title);
-	$save["data_source_path"] = $data_template_data["data_source_path"];
-	$save["active"] = $data_template_data["active"];
-	$save["rrd_step"] = $data_template_data["rrd_step"];
+	$save["local_data_id"] = (isset($local_data_id) ? $local_data_id : 0);
+	$save["local_data_template_data_id"] = (isset($data_template_data["local_data_template_data_id"]) ? $data_template_data["local_data_template_data_id"] : 0);
+	$save["data_template_id"] = (!empty($_local_data_id) ? $data_template_data["data_template_id"] : $data_template_id);
+	
+	$data_template_data["name"] = str_replace("<ds_title>", $data_template_data["name"], $data_source_title);
+	
+	while (list($field, $array) = each($struct_data_source)) {
+		$save{$field} = $data_template_data{$field};
+		
+		if ($array["flags"] != "ALWAYSTEMPLATE") {
+			$save{"t_" . $field} = $data_template_data{"t_" . $field};
+		}
+	}
 	
 	$data_template_data_id = sql_save($save, "data_template_data");
-	
-	unset($save);
 	
 	/* create new entry(s): data_template_rrd */
 	if (sizeof($data_template_rrds) > 0) {
 	foreach ($data_template_rrds as $data_template_rrd) {
+		unset($save);
+		reset($struct_data_source_item);
+		
 		$save["id"] = 0;
-		$save["local_data_id"] = $local_data_id;
-		$save["local_data_template_rrd_id"] = $data_template_rrd["local_data_template_rrd_id"];
-		$save["data_template_id"] = $data_template_rrd["data_template_id"];
-		$save["rrd_maximum"] = $data_template_rrd["rrd_maximum"];
-		$save["rrd_minimum"] = $data_template_rrd["rrd_minimum"];
-		$save["rrd_heartbeat"] = $data_template_rrd["rrd_heartbeat"];
-		$save["data_source_type_id"] = $data_template_rrd["data_source_type_id"];
-		$save["data_source_name"] = $data_template_rrd["data_source_name"];
-		$save["data_input_field_id"] = $data_template_rrd["data_input_field_id"];
+		$save["local_data_id"] = (isset($local_data_id) ? $local_data_id : 0);
+		$save["local_data_template_rrd_id"] = (isset($data_template_rrd["local_data_template_rrd_id"]) ? $data_template_rrd["local_data_template_rrd_id"] : 0);
+		$save["data_template_id"] = (!empty($_local_data_id) ? $data_template_rrd["data_template_id"] : $data_template_id);
+		
+		while (list($field, $array) = each($struct_data_source_item)) {
+			$save{$field} = $data_template_rrd{$field};
+		}
 		
 		$data_template_rrd_id = sql_save($save, "data_template_rrd");
 	}
 	}
-	
-	unset($save);
 	
 	/* create new entry(s): data_input_data */
 	if (sizeof($data_input_datas) > 0) {
 	foreach ($data_input_datas as $data_input_data) {
 		$save["data_input_field_id"] = $data_input_data["data_input_field_id"];
 		$save["data_template_data_id"] = $data_template_data_id;
+		$save["t_value"] = $data_input_data["t_value"];
 		$save["value"] = $data_input_data["value"];
 		
-		sql_save($save, "data_input_data");
+		db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
+			(" . $data_input_data["data_input_field_id"] . ",$data_template_data_id,'" . $data_input_data["t_value"] . 
+			"','" . $data_input_data["value"] . "')");
 	}
 	}
-	
-	unset($save);
 	
 	/* create new entry(s): data_template_data_rra */
 	if (sizeof($data_template_data_rras) > 0) {
@@ -766,7 +819,8 @@ function duplicate_data_source($_local_data_id, $data_source_title) {
 		$save["data_template_data_id"] = $data_template_data_id;
 		$save["rra_id"] = $data_template_data_rra["rra_id"];
 		
-		sql_save($save, "data_template_data_rra");
+		db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id,
+			" . $data_template_data_rra["rra_id"] . ")");
 	}
 	}
 }
