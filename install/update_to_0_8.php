@@ -342,6 +342,7 @@ function update_database($database_old, $database_username, $database_password) 
 		if (db_execute("insert into data_local (id,data_template_id,host_id) values (0,$data_template_id,$host_id)")) {
 			$local_data_id = db_fetch_insert_id();
 			$status_array{count($status_array)}["data_local"][1] = $item["Name"];
+			$data_local_to_host{$local_data_id} = $host_id;
 			
 			if (db_execute("insert into data_template_data (id,local_data_template_data_id,local_data_id,
 				data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,$local_data_template_data_id,$local_data_id,
@@ -562,6 +563,9 @@ function update_database($database_old, $database_username, $database_password) 
 			}else{
 				$status_array{count($status_array)}["data_source"][0] = $item["Name"];
 			}
+			
+			update_data_source_snmp_query_cache($local_data_id);
+			update_data_source_title_cache($local_data_id);
 		}else{
 			$status_array{count($status_array)}["data_local"][0] = $item["Name"];
 		}
@@ -693,6 +697,11 @@ function update_database($database_old, $database_username, $database_password) 
 					/* this is a traffic graph */
 					if ((isset($traffic_graphs{$item2["DSID"]})) && (sizeof($_graph_items) == 8) && ($is_traffic_graph != false)) {
 						$is_traffic_graph = true;
+						
+						/* find a host for this graph, it's required */
+						$local_data_id = db_fetch_cell("select local_data_id from data_template_rrd where id=" . $data_template_rrd_cache{$item2["DSID"]});
+						$host_id = $data_local_to_host[$local_data_id];
+						db_execute("update graph_local set host_id=$host_id where id=" . $local_graph_id_cache{$item["ID"]});
 					}else{
 						$is_traffic_graph = false;
 					}
@@ -714,10 +723,13 @@ function update_database($database_old, $database_username, $database_password) 
 				/* if we've determined that this graph is a 'traffic graph', then switch to that template */
 				if ($is_traffic_graph == true) {
 					change_graph_template($local_graph_id_cache{$item["ID"]}, 1, true);
+					update_graph_snmp_query_cache($local_graph_id_cache{$item["ID"]});
 				}
 			}else{
 				$status_array{count($status_array)}["graph"][0] = $item["Title"];
 			}
+			
+			update_graph_title_cache($local_graph_id_cache{$item["ID"]});
 		}else{
 			$status_array{count($status_array)}["graph_local"][0] = $item["Title"];
 		}
