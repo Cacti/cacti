@@ -35,7 +35,7 @@ case 'save':
 	while (list($field_name, $field_array) = each($settings{$_POST["tab"]})) {
 		if (($field_array["method"] == "header") || ($field_array["method"] == "spacer" )){
 				/* do nothing */
-		}elseif ($field_array["method"] == "checkbox_group") {
+		}elseif ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
 				db_execute("replace into settings (name,value) values ('$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
 			}
@@ -84,7 +84,7 @@ default:
 	while (list($field_name, $field_array) = each($settings[$current_tab])) {
 		$form_array += array($field_name => $field_array);
 
-		if ($field_array["method"] == "checkbox_group") {
+		if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
 				$current_value = db_fetch_cell("select value from settings where name='$sub_field_name'");
 				$form_array[$field_name]["items"][$sub_field_name]["value"] = $current_value;
