@@ -24,6 +24,8 @@
  +-------------------------------------------------------------------------+
 */
 
+define ("REGEXP_SNMP_TRIM", "(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):");
+
 function query_snmp_host($host_id, $snmp_query_id) {
 	include_once ("xml_functions.php");
 	
@@ -42,7 +44,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$snmp_queries = xml2array($data);
 	
 	/* fetch specified index at specified OID */
-	$snmp_index = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $snmp_queries["oid_index"]);
+	$snmp_index = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $snmp_queries["oid_index"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"]);
 	
 	/* no data found; get out */
 	if (!$snmp_index) {
@@ -59,7 +61,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				for ($i=0;($i<sizeof($snmp_index));$i++) {
 					$oid = $field_array["oid"] .  "." . $snmp_index[$i]["value"];
 					
-					$value = cacti_snmp_get($host["management_ip"], $host["snmp_community"], $oid, "", "");
+					$value = cacti_snmp_get($host["management_ip"], $host["snmp_community"], $oid, $host["snmp_version"], $host["snmp_username"], $host["snmp_password"]);
 					
 					db_execute("replace into host_snmp_cache 
 						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
@@ -67,7 +69,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 			}
 		}elseif ($field_array["method"] == "walk") {
-			$snmp_data = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $field_array["oid"]);
+			$snmp_data = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $field_array["oid"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"]);
 			
 			if ($field_array["source"] == "value") {
 				for ($i=0;($i<sizeof($snmp_data));$i++) {
@@ -93,7 +95,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	}
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $force_type, $force_version) {
+function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password) {
 	include ('include/config.php');
 	include_once ('include/functions.php');
 	
@@ -121,18 +123,35 @@ function cacti_snmp_get($hostname, $community, $oid, $force_type, $force_version
 		/* remove ALL quotes */
 		$snmp_value = str_replace("\"", "", $snmp_value);
 	}else{
-		$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $community $oid");
+		if ($version == "1") {
+			$snmp_auth = "-c \"$community\""; /* v1/v2 - community string */
+		}elseif ($version == "2") {
+			$snmp_auth = "-c \"$community\""; /* v1/v2 - community string */
+			$version = "2c"; /* ucd/net snmp prefers this over '2' */
+		}elseif ($version == "3") {
+			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
+		}
+		
+		if (read_config_option("smnp_version") == "ucd-snmp") {
+			$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $snmp_auth -v $version $oid");
+		}elseif (read_config_option("smnp_version") == "net-snmp") {
+			$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $snmp_auth -v $version $oid");
+		}
+		
 		$snmp_value = trim(ereg_replace("(.*=)", "", $snmp_value));
 	}
 	
-	$snmp_value = trim(eregi_replace("(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress):", "", $snmp_value));
+	$snmp_value = trim(eregi_replace(REGEXP_SNMP_TRIM, "", $snmp_value));
 	
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
 	include ('include/config.php');
 	include_once ('include/functions.php');
+	
+	$snmp_array = array();
+	$temp_array = array();
 	
 	if ($config["php_snmp_support"] == true) {
 		$temp_array = snmpwalkoid($hostname, $community, $oid);
@@ -141,10 +160,24 @@ function cacti_snmp_walk($hostname, $community, $oid) {
 		for (reset($temp_array); $i = key($temp_array); next($temp_array)) {
 			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i); 
 			$snmp_array[$o]["value"] = $temp_array[$i];
+			$snmp_array[$o]["value"] = trim(eregi_replace(REGEXP_SNMP_TRIM, "", $snmp_array[$o]["value"]));
 			$o++;
 		}
 	}else{
-		$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname \"$community\" $oid");
+		if ($version == "1") {
+			$snmp_auth = "-c \"$community\""; /* v1/v2 - community string */
+		}elseif ($version == "2") {
+			$snmp_auth = "-c \"$community\""; /* v1/v2 - community string */
+			$version = "2c"; /* ucd/net snmp prefers this over '2' */
+		}elseif ($version == "3") {
+			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
+		}
+		
+		if (read_config_option("smnp_version") == "ucd-snmp") {
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname $snmp_auth -v $version $oid");
+		}elseif (read_config_option("smnp_version") == "net-snmp") {
+			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $hostname $snmp_auth -v $version $oid");
+		}
 		
 		if (sizeof($temp_array) == 0) {
 			return 0;
@@ -153,7 +186,7 @@ function cacti_snmp_walk($hostname, $community, $oid) {
 		for ($i=0; $i < count($temp_array); $i++) {
 			$snmp_array[$i]["oid"] = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
 			$snmp_array[$i]["value"] = trim(ereg_replace(".*= ?", "", $temp_array[$i]));
-			$snmp_array[$i]["value"] = trim(eregi_replace("(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress):", "", $snmp_array[$i]["value"]));
+			$snmp_array[$i]["value"] = trim(eregi_replace(REGEXP_SNMP_TRIM, "", $snmp_array[$i]["value"]));
 		}
 	}
 	
