@@ -90,7 +90,12 @@ foreach ($polling_items as $item) {
 }
 }
 
-rrdtool_function_update($update_cache_array);
+if (isset($update_cache_array)) {
+	rrdtool_function_update($update_cache_array);
+}else{
+	print "There are no items in your poller cache. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
+}
+
 //print_r($update_cache_array);
 
 
