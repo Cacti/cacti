@@ -125,32 +125,41 @@ function form_save() {
 			$save["sequence"] = $_POST["sequence"];
 
 			if (!is_error_message()) {
+				/* Before we save the item, let's get a look at task_item_id <-> input associations */
+				$orig_data_source_graph_inputs = db_fetch_assoc("select
+					graph_template_input.id,
+					graph_template_input.name,
+					graph_templates_item.task_item_id
+					from graph_template_input,graph_template_input_defs,graph_templates_item
+					where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+					and graph_template_input_defs.graph_template_item_id=graph_templates_item.id
+					and graph_template_input.graph_template_id=" . $save["graph_template_id"] . "
+					and graph_template_input.column_name='task_item_id'
+					group by graph_templates_item.task_item_id");
+
+				$orig_data_source_to_input = array_rekey($orig_data_source_graph_inputs, "task_item_id", "id");
+
 				$graph_template_item_id = sql_save($save, "graph_templates_item");
 
 				if ($graph_template_item_id) {
 					raise_message(1);
 
 					if (!empty($save["task_item_id"])) {
-						$data_source_graph_inputs = db_fetch_assoc("select
-							graph_template_input.id,
-							graph_template_input.name,
-							graph_templates_item.task_item_id
-							from graph_template_input,graph_template_input_defs,graph_templates_item
-							where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-							and graph_template_input_defs.graph_template_item_id=graph_templates_item.id
-							and graph_template_input.graph_template_id=" . $save["graph_template_id"] . "
-							and graph_template_input.column_name='task_item_id'
-							group by graph_template_input.id");
+						/* old item clean-up.  Don't delete anything if the item <-> task_item_id association remains the same. */
+						if ($_POST["_task_item_id"] != $_POST["task_item_id"]) {
+							/* It changed.  Delete any old associations */
+							db_execute("delete from graph_template_input_defs where graph_template_item_id=$graph_template_item_id");
 
-						$data_source_to_input = array_rekey($data_source_graph_inputs, "task_item_id", "id");
-
-						/* old item clean-up */
-						if (isset($data_source_to_input{$_POST["_task_item_id"]})) {
-							db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $data_source_to_input{$_POST["_task_item_id"]} . " and graph_template_item_id=$graph_template_item_id");
+							/* Input for current data source exists and has changed.  Update the association */
+							if (isset($orig_data_source_to_input{$save["task_item_id"]})) {
+								db_execute("replace into graph_template_input_defs (graph_template_input_id,
+								graph_template_item_id) values (" . $orig_data_source_to_input{$save["task_item_id"]}
+								. ",$graph_template_item_id)");
+							}
 						}
 
 						/* an input for the current data source does NOT currently exist, let's create one */
-						if (!isset($data_source_to_input{$_POST["task_item_id"]})) {
+						if (!isset($orig_data_source_to_input{$save["task_item_id"]})) {
 							$ds_name = db_fetch_cell("select data_source_name from data_template_rrd where id=" . $_POST["task_item_id"]);
 
 							db_execute("replace into graph_template_input (hash,graph_template_id,name,column_name) values (
@@ -166,16 +175,14 @@ function form_save() {
 								db_execute("replace into graph_template_input_defs (graph_template_input_id,graph_template_item_id) values ($graph_template_input_id," . $graph_item["id"] . ")");
 							}
 							}
-						}else{
-							db_execute("replace into graph_template_input_defs (graph_template_input_id,graph_template_item_id) values (" . $data_source_to_input{$_POST["task_item_id"]} . ",$graph_template_item_id)");
 						}
 					}
 
 					push_out_graph_item($graph_template_item_id);
 
-					if (isset($data_source_to_input{$_POST["task_item_id"]})) {
+					if (isset($orig_data_source_to_input{$_POST["task_item_id"]})) {
 						/* make sure all current graphs using this graph input are aware of this change */
-						push_out_graph_input($data_source_to_input{$_POST["task_item_id"]}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
+						push_out_graph_input($orig_data_source_to_input{$_POST["task_item_id"]}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
 					}
 				}else{
 					raise_message(2);
