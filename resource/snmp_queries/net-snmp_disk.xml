@@ -1,0 +1,57 @@
+<interface>
+	<name>Get Monitored Partitions</name>
+	<oid_index>.1.3.6.1.4.1.2021.9.1.1</oid_index>
+	
+	<fields>
+		<dskIndex>
+			<name>Index</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.1</oid>
+		</dskIndex>
+		<dskPath>
+			<name>Mount Point</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.2</oid>
+		</dskPath>
+		<dskDevice>
+			<name>Device Name</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.3</oid>
+		</dskDevice>
+		
+		<dskTotal>
+			<name>Total Space</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.6</oid>
+		</dskTotal>
+		<dskAvail>
+			<name>Available Space</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.7</oid>
+		</dskAvail>
+		<dskUsed>
+			<name>Used Space</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.8</oid>
+		</dskUsed>
+		<dskPercent>
+			<name>Percent Available</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.4.1.2021.9.1.9</oid>
+		</dskPercent>
+	</fields>
+</interface>
