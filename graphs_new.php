@@ -518,12 +518,12 @@ function graphs() {
 		$xml_array = get_data_query_array($snmp_query["id"]);
 		$xml_outputs = array();
 		
-		$total_rows = 0;
 		$num_input_fields = 0;
 		$num_visible_fields = 0;
 		
 		if ($xml_array != false) {
 			/* loop through once so we can find out how many input fields there are */
+			reset($xml_array["fields"]);
 			while (list($field_name, $field_array) = each($xml_array["fields"])) {
 				if ($field_array["direction"] == "input") {
 					$num_input_fields++;
@@ -533,6 +533,10 @@ function graphs() {
 					}
 				}
 			}
+		}
+		
+		if (!isset($total_rows)) {
+			$total_rows = 0;
 		}
 		
 		/* we give users the option to turn off the javascript features for data queries with lots of rows */
