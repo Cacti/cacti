@@ -136,7 +136,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
     
     print "<!-- <P>Building Heirarchy w/ ".sizeof($heirarchy)." leaves</P>  -->\n";
     
-    DrawMatrixTableBegin();
+    print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
     
     $already_open = false;
     
