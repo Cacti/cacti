@@ -159,7 +159,7 @@ function form_save() {
 			single page */
 			$_POST[$setting] = (isset($_POST[$setting]) ? $_POST[$setting] : "");
 			
-			db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["user_id"]) . ",'$setting', '" . $_POST[$setting] . "')");
+			db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$setting', '" . $_POST[$setting] . "')");
 		}
 		}
 		
@@ -534,7 +534,7 @@ function user_edit() {
 	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("form_name" => "chk"),
 		"fields" => inject_form_variables($fields_user_user_edit_host, (isset($user) ? $user : array()))
 		));
 	
