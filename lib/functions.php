@@ -24,6 +24,14 @@
  +-------------------------------------------------------------------------+
 */
 
+function title_trim($text, $max_length) {
+	if (strlen($text) > $max_length) {
+		return substr($text, 0, $max_length) . "...";
+	}else{
+		return $text;
+	}
+}
+
 function read_graph_config_option($config_name) {
 	include ("config_settings.php");
 	
