@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -80,7 +80,7 @@ global $HTTP_SERVER_VARS;
 			if (isset($HTTP_SERVER_VARS['PHP_SELF'])) $tracer .= '<br>'.$HTTP_SERVER_VARS['PHP_SELF'];
 		//$tracer .= (string) adodb_backtrace(false);
 		
-		$tracer = substr($tracer,0,500);
+		$tracer = (string) substr($tracer,0,500);
 		
 		if (is_array($inputarr)) {
 			if (is_array(reset($inputarr))) $params = 'Array sizeof='.sizeof($inputarr);
@@ -100,8 +100,10 @@ global $HTTP_SERVER_VARS;
 		$saved = $conn->debug;
 		$conn->debug = 0;
 		
+		$d = $conn->sysTimeStamp;
+		if (empty($d)) $d = date("'Y-m-d H:i:s'");
 		if ($conn->dataProvider == 'oci8' && $dbT != 'oci8po') {
-			$isql = "insert into $perf_table values($conn->sysTimeStamp,:b,:c,:d,:e,:f)";
+			$isql = "insert into $perf_table values($d,:b,:c,:d,:e,:f)";
 		} else if ($dbT == 'odbc_mssql' || $dbT == 'informix') {
 			$timer = $arr['f'];
 			if ($dbT == 'informix') $sql2 = substr($sql2,0,230);
@@ -111,12 +113,13 @@ global $HTTP_SERVER_VARS;
 			$params = $conn->qstr($arr['d']);
 			$tracer = $conn->qstr($arr['e']);
 			
-			$isql = "insert into $perf_table (created,sql0,sql1,params,tracer,timer) values($conn->sysTimeStamp,$sql1,$sql2,$params,$tracer,$timer)";
+			$isql = "insert into $perf_table (created,sql0,sql1,params,tracer,timer) values($d,$sql1,$sql2,$params,$tracer,$timer)";
 			if ($dbT == 'informix') $isql = str_replace(chr(10),' ',$isql);
 			$arr = false;
 		} else {
-			$isql = "insert into $perf_table (created,sql0,sql1,params,tracer,timer) values( $conn->sysTimeStamp,?,?,?,?,?)";
+			$isql = "insert into $perf_table (created,sql0,sql1,params,tracer,timer) values( $d,?,?,?,?,?)";
 		}
+
 		$ok = $conn->Execute($isql,$arr);
 		$conn->debug = $saved;
 		
@@ -138,7 +141,7 @@ global $HTTP_SERVER_VARS;
 				timer decimal(16,6))");
 			}
 			if (!$ok) {
-				ADOConnection::outp( "<b>LOGSQL Insert Failed</b>: $isql<br>$err2</br>");
+				ADOConnection::outp( "<p><b>LOGSQL Insert Failed</b>: $isql<br>$err2</p>");
 				$conn->_logsql = false;
 			}
 		}
@@ -622,7 +625,7 @@ Committed_AS:   348732 kB
 	
 	if  (empty($HTTP_GET_VARS['hidem']))
 	echo "<table border=1 width=100% bgcolor=lightyellow><tr><td colspan=2>
-	<b><a href=http://php.weblogs.com/adodb?perf=1>ADOdb</a> Performance Monitor</b> <font size=1>for $app</font></tr><tr><td>
+	<b><a href=http://adodb.sourceforge.net/?perf=1>ADOdb</a> Performance Monitor</b> <font size=1>for $app</font></tr><tr><td>
 	<a href=?do=stats><b>Performance Stats</b></a> &nbsp; <a href=?do=viewsql><b>View SQL</b></a>
 	 &nbsp; <a href=?do=tables><b>View Tables</b></a> &nbsp; <a href=?do=poll><b>Poll Stats</b></a>",
 	 $allowsql ? ' &nbsp; <a href=?do=dosql><b>Run SQL</b></a>' : '',
@@ -679,6 +682,7 @@ Committed_AS:   348732 kB
 		set_time_limit(0);
 		sleep($secs);
 		while (1) {
+
 			$arr =& $this->PollParameters();
 			
 			$hits   = sprintf('%2.2f',$arr[0]);
@@ -698,6 +702,8 @@ Committed_AS:   348732 kB
 			$cnt += 1;
 			echo date('H:i:s').'  '.$osval."$hits  $sess $reads $writes\n";
 			flush();
+			
+			if (connection_aborted()|| connection_timeout()) return;
 			
 			sleep($secs);
 			$arro = $arr;

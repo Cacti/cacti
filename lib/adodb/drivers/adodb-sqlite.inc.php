@@ -1,6 +1,6 @@
 <?php
 /*
-V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -109,7 +109,10 @@ class ADODB_sqlite extends ADOConnection {
 	global $ADODB_FETCH_MODE;
 	
 		$rs = $this->Execute("select * from $tab limit 1");
-		if (!$rs) return false;
+		if (!$rs) {
+			$false = false;
+			return $false;
+		}
 		$arr = array();
 		for ($i=0,$max=$rs->_numOfFields; $i < $max; $i++) {
 			$fld =& $rs->FetchField($i);
@@ -187,7 +190,7 @@ class ADODB_sqlite extends ADOConnection {
 		$MAXLOOPS = 100;
 		//$this->debug=1;
 		while (--$MAXLOOPS>=0) {
-			$num = $this->GetOne("select id from $seq");
+			@($num = $this->GetOne("select id from $seq"));
 			if ($num === false) {
 				$this->Execute(sprintf($this->_genSeqSQL ,$seq));	
 				$start -= 1;
@@ -255,6 +258,7 @@ class ADORecordset_sqlite extends ADORecordSet {
 		case ADODB_FETCH_ASSOC: $this->fetchMode = SQLITE_ASSOC; break;
 		default: $this->fetchMode = SQLITE_BOTH; break;
 		}
+		$this->adodbFetchMode = $mode;
 		
 		$this->_queryID = $queryID;
 	

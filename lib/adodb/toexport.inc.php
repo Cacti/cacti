@@ -1,7 +1,7 @@
 <?php
 
 /** 
- * @version V4.23 16 June 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+ * @version V4.54 5 Nov 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
  * Released under both BSD license and Lesser GPL library license. 
  * Whenever there is any discrepancy between the two licenses, 
  * the BSD license will take precedence. 
@@ -57,7 +57,7 @@ function rs2tabout(&$rs,$addtitles=true)
 {
 	$fp = fopen('php://stdout','wb');
 	_adodb_export($rs,"\t",' ',true,$addtitles);
-	fclose($fp);
+	if ($fp) fclose($fp);
 }
 
 function _adodb_export(&$rs,$sep,$sepreplace,$fp=false,$addtitles=true,$quote = '"',$escquote = '"',$replaceNewLine = ' ')
@@ -94,7 +94,9 @@ function _adodb_export(&$rs,$sep,$sepreplace,$fp=false,$addtitles=true,$quote = 
 		
 		if ($hasNumIndex) {
 			for ($j=0; $j < $max; $j++) {
-				$v = trim($rs->fields[$j]);
+				$v = $rs->fields[$j];
+				if (!is_object($v)) $v = trim($v);
+				else $v = 'Object';
 				if ($escquote) $v = str_replace($quote,$escquotequote,$v);
 				$v = strip_tags(str_replace("\n",$replaceNewLine,str_replace($sep,$sepreplace,$v)));
 				

@@ -1,7 +1,7 @@
 <?php
 /*
 
-  version V4.23 16 June 2004 (c) 2000-2004 John Lim. All rights reserved.
+  version V4.54 5 Nov 2004 (c) 2000-2004 John Lim. All rights reserved.
 
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
@@ -91,6 +91,7 @@ class ADODB_oci8 extends ADOConnection {
 	function ADODB_oci8() 
 	{
 		$this->_hasOCIFetchStatement = ADODB_PHPVER >= 0x4200;
+		if (defined('ADODB_EXTENSION')) $this->rsPrefix .= 'ext_';
 	}
 	
 	/*  Function &MetaColumns($table) added by smondino@users.sourceforge.net*/
@@ -106,7 +107,10 @@ class ADODB_oci8 extends ADOConnection {
 		
 		if (isset($savem)) $this->SetFetchMode($savem);
 		$ADODB_FETCH_MODE = $save;
-		if (!$rs) return false;
+		if (!$rs) {
+			$false = false;
+			return $false;
+		}
 		$retarr = array();
 		while (!$rs->EOF) { //print_r($rs->fields);
 			$fld = new ADOFieldObject();
@@ -202,12 +206,23 @@ NATSOFT.DOMAIN =
 				
  		//if ($argHostname) print "<p>Connect: 1st argument should be left blank for $this->databaseType</p>";
 		if ($mode==1) {
-			$this->_connectionID = OCIPLogon($argUsername,$argPassword, $argDatabasename);
+			$this->_connectionID = ($this->charSet) ? 
+				OCIPLogon($argUsername,$argPassword, $argDatabasename)
+				:
+				OCIPLogon($argUsername,$argPassword, $argDatabasename, $this->charSet)
+				;
 			if ($this->_connectionID && $this->autoRollback)  OCIrollback($this->_connectionID);
 		} else if ($mode==2) {
-			$this->_connectionID = OCINLogon($argUsername,$argPassword, $argDatabasename);
+			$this->_connectionID = ($this->charSet) ? 
+				OCINLogon($argUsername,$argPassword, $argDatabasename)
+				:
+				OCINLogon($argUsername,$argPassword, $argDatabasename, $this->charSet);
+				
 		} else {
-			$this->_connectionID = OCILogon($argUsername,$argPassword, $argDatabasename);
+			$this->_connectionID = ($this->charSet) ? 
+				OCILogon($argUsername,$argPassword, $argDatabasename)
+				:
+				OCILogon($argUsername,$argPassword, $argDatabasename,$this->charSet);
 		}
 		if ($this->_connectionID === false) return false;
 		if ($this->_initdate) {
@@ -233,8 +248,6 @@ NATSOFT.DOMAIN =
 	{
 		return $this->_connect($argHostname, $argUsername, $argPassword, $argDatabasename,1);
 	}
-	
-	
 	
 	// returns true or false
 	function _nconnect($argHostname, $argUsername, $argPassword, $argDatabasename)
@@ -458,9 +471,9 @@ NATSOFT.DOMAIN =
 				if ($offset > 0) $nrows += $offset;
 				//$inputarr['adodb_rownum'] = $nrows;
 				if ($this->databaseType == 'oci8po') {
-					$sql = "select * from ($sql) where rownum <= ?";
+					$sql = "select * from (".$sql.") where rownum <= ?";
 				} else {
-					$sql = "select * from ($sql) where rownum <= :adodb_offset";
+					$sql = "select * from (".$sql.") where rownum <= :adodb_offset";
 				} 
 				$inputarr['adodb_offset'] = $nrows;
 				$nrows = -1;
@@ -474,10 +487,13 @@ NATSOFT.DOMAIN =
 			 // Algorithm by Tomas V V Cox, from PEAR DB oci8.php
 			
 			 // Let Oracle return the name of the columns
-			 $q_fields = "SELECT * FROM ($sql) WHERE NULL = NULL";
-			 if (!$stmt = OCIParse($this->_connectionID, $q_fields)) {
-				 return false;
-			 }
+			$q_fields = "SELECT * FROM (".$sql.") WHERE NULL = NULL";
+			 
+			$false = false;
+			if (! $stmt_arr = $this->Prepare($q_fields)) {
+				return $false;
+			}
+			$stmt = $stmt_arr[1];
 			 
 			 if (is_array($inputarr)) {
 			 	foreach($inputarr as $k => $v) {
@@ -500,7 +516,7 @@ NATSOFT.DOMAIN =
 			
 			 if (!OCIExecute($stmt, OCI_DEFAULT)) {
 				 OCIFreeStatement($stmt); 
-				 return false;
+				 return $false;
 			 }
 			 
 			 $ncols = OCINumCols($stmt);
@@ -576,7 +592,7 @@ NATSOFT.DOMAIN =
 		if ($this->session_sharing_force_blob) $this->Execute('ALTER SESSION SET CURSOR_SHARING=EXACT');
 		$commit = $this->autoCommit;
 		if ($commit) $this->BeginTrans();
-		$rs = ADODB_oci8::Execute($sql,$arr);
+		$rs = $this->Execute($sql,$arr);
 		if ($rez = !empty($rs)) $desc->save($val);
 		$desc->free();
 		if ($commit) $this->CommitTrans();
@@ -631,10 +647,10 @@ NATSOFT.DOMAIN =
 
 		$BINDNUM += 1;
 		
-		if (@OCIStatementType($stmt) == 'BEGIN') {
+		$sttype = @OCIStatementType($stmt);
+		if ($sttype == 'BEGIN' || $sttype == 'DECLARE') {
 			return array($sql,$stmt,0,$BINDNUM, ($cursor) ? OCINewCursor($this->_connectionID) : false);
-		} 
-		
+		}
 		return array($sql,$stmt,0,$BINDNUM);
 	}
 	
@@ -655,7 +671,8 @@ NATSOFT.DOMAIN =
 	*/
 	function &ExecuteCursor($sql,$cursorName='rs',$params=false)
 	{
-		$stmt = ADODB_oci8::Prepare($sql,true); # true to allocate OCINewCursor
+		if (is_array($sql)) $stmt = $sql;
+		else $stmt = ADODB_oci8::Prepare($sql,true); # true to allocate OCINewCursor
 			
 		if (is_array($stmt) && sizeof($stmt) >= 5) {
 			$this->Parameter($stmt, $ignoreCur, $cursorName, false, -1, OCI_B_CURSOR);
@@ -748,7 +765,7 @@ NATSOFT.DOMAIN =
 		return $rez;
 	}
 	
-	function Param($name)
+	function Param($name,$type=false)
 	{
 		return ':'.$name;
 	}
@@ -791,7 +808,7 @@ NATSOFT.DOMAIN =
 	   3. $db->execute('insert into table (a,b,c) values (:a,:b,:c)',array('a'=>1,'b'=>2,'c'=>3));
 	   
 	   4. $db->prepare('insert into table (a,b,c) values (:0,:1,:2)');
-		  $db->$bind($stmt,1); $db->bind($stmt,2); $db->bind($stmt,3); 
+		  $db->bind($stmt,1); $db->bind($stmt,2); $db->bind($stmt,3); 
 		  $db->execute($stmt);
 	*/ 
 	function _query($sql,$inputarr)
@@ -870,7 +887,8 @@ NATSOFT.DOMAIN =
             switch (@OCIStatementType($stmt)) {
                 case "SELECT":
 					return $stmt;
-					
+				
+				case 'DECLARE':
                 case "BEGIN":
                     if (is_array($sql) && !empty($sql[4])) {
 						$cursor = $sql[4];
@@ -898,6 +916,8 @@ NATSOFT.DOMAIN =
 	// returns true or false
 	function _close()
 	{
+		if (!$this->_connectionID) return;
+		
 		if (!$this->autoCommit) OCIRollback($this->_connectionID);
 		if (count($this -> _refLOBs) > 0) {
 			foreach ($this -> _refLOBs as $key => $value) {
@@ -906,6 +926,7 @@ NATSOFT.DOMAIN =
 			}
 		}
 		OCILogoff($this->_connectionID);
+		
 		$this->_stmt = false;
 		$this->_connectionID = false;
 	}
@@ -1052,7 +1073,8 @@ class ADORecordset_oci8 extends ADORecordSet {
 		case ADODB_FETCH_DEFAULT:
 		case ADODB_FETCH_BOTH:$this->fetchMode = OCI_NUM+OCI_ASSOC+OCI_RETURN_NULLS+OCI_RETURN_LOBS; break;
 		}
-
+		
+		$this->adodbFetchMode = $mode;
 		$this->_queryID = $queryID;
 	}
 
@@ -1126,8 +1148,9 @@ class ADORecordset_oci8 extends ADORecordSet {
 	}
 	
 	
+	/*
 	// 10% speedup to move MoveNext to child class
-	function MoveNext() 
+	function _MoveNext() 
 	{
 	//global $ADODB_EXTENSION;if ($ADODB_EXTENSION) return @adodb_movenext($this);
 		
@@ -1139,7 +1162,22 @@ class ADORecordset_oci8 extends ADORecordSet {
 		$this->EOF = true;
 		
 		return false;
-	}	
+	}	*/
+	
+	
+	function MoveNext()
+	{
+		if (@OCIfetchinto($this->_queryID,$this->fields,$this->fetchMode)) {
+			$this->_currentRow += 1;
+			return true;
+		}
+		if (!$this->EOF) {
+			$this->_currentRow += 1;
+			$this->EOF = true;
+		}
+		return false;
+	}
+	
 	
 	/* Optimize SelectLimit() by using OCIFetch() instead of OCIFetchInto() */
 	function &GetArrayLimit($nrows,$offset=-1) 
@@ -1195,7 +1233,7 @@ class ADORecordset_oci8 extends ADORecordSet {
 	function _close() 
 	{
 		if ($this->connection->_stmt === $this->_queryID) $this->connection->_stmt = false;
-		OCIFreeStatement($this->_queryID);
+		@OCIFreeStatement($this->_queryID);
  		$this->_queryID = false;
 		
 	}
@@ -1242,6 +1280,31 @@ class ADORecordset_oci8 extends ADORecordSet {
 			
 		default: return 'N';
 		}
+	}
+}
+
+class ADORecordSet_ext_oci8 extends ADORecordSet_oci8 {	
+	function ADORecordSet_ext_oci8($queryID,$mode=false) 
+	{
+		if ($mode === false) { 
+			global $ADODB_FETCH_MODE;
+			$mode = $ADODB_FETCH_MODE;
+		}
+		switch ($mode)
+		{
+		default:
+		case ADODB_FETCH_NUM: $this->fetchMode = OCI_NUM+OCI_RETURN_NULLS+OCI_RETURN_LOBS; break;
+		case ADODB_FETCH_ASSOC:$this->fetchMode = OCI_ASSOC+OCI_RETURN_NULLS+OCI_RETURN_LOBS; break;
+		case ADODB_FETCH_DEFAULT:
+		case ADODB_FETCH_BOTH:$this->fetchMode = OCI_NUM+OCI_ASSOC+OCI_RETURN_NULLS+OCI_RETURN_LOBS; break;
+		}
+		$this->adodbFetchMode = $mode;
+		$this->_queryID = $queryID;
+	}
+	
+	function MoveNext()
+	{
+		return adodb_movenext($this);
 	}
 }
 ?>

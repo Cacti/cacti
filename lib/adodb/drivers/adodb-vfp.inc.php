@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -27,13 +27,12 @@ class ADODB_vfp extends ADODB_odbc {
 	var $true = '.T.';
 	var $false = '.F.';
 	var $hasTop = 'top';		// support mssql SELECT TOP 10 * FROM TABLE
-	var $upperCase = 'upper';
 	var $_bindInputArray = false; // strangely enough, setting to true does not work reliably
 	var $sysTimeStamp = 'datetime()';
 	var $sysDate = 'date()';
 	var $ansiOuter = true;
 	var $hasTransactions = false;
-	var $curmode = SQL_CUR_USE_ODBC ; // See sqlext.h, SQL_CUR_DEFAULT == SQL_CUR_USE_DRIVER == 2L
+	var $curmode = false ; // See sqlext.h, SQL_CUR_DEFAULT == SQL_CUR_USE_DRIVER == 2L
 	
 	function ADODB_vfp()
 	{
@@ -44,7 +43,6 @@ class ADODB_vfp extends ADODB_odbc {
 	{
 		return time();
 	}
-	
 	
 	function BeginTrans() { return false;}
 	

@@ -60,6 +60,7 @@ class ADODB_ado extends ADOConnection {
 	// $DB->Connect('USER ID=sa;PASSWORD=pwd;SERVER=mangrove;DATABASE=ai',false,false,'SQLOLEDB');
 	function _connect($argHostname, $argUsername, $argPassword, $argProvider= 'MSDASQL')
 	{
+		try {
 		$u = 'UID';
 		$p = 'PWD';
 	
@@ -97,6 +98,10 @@ class ADODB_ado extends ADOConnection {
 		
 		$dbc->CursorLocation = $this->_cursor_location;
 		return  $dbc->State > 0;
+		} catch (exception $e) {
+		}
+		
+		return false;
 	}
 	
 	// returns true or false
@@ -172,7 +177,7 @@ class ADODB_ado extends ADOConnection {
 	function &MetaColumns($table)
 	{
 		$table = strtoupper($table);
-		$arr = array();
+		$arr= array();
 		$dbc = $this->_connectionID;
 		
 		$adors=@$dbc->OpenSchema(4);//tables
@@ -196,8 +201,8 @@ class ADODB_ado extends ADOConnection {
 			}
 			$adors->Close();
 		}
-		$false = false;
-		return empty($arr) ? $false : $arr;
+		
+		return $arr;
 	}
 	
 
@@ -206,9 +211,9 @@ class ADODB_ado extends ADOConnection {
 	/* returns queryID or false */
 	function &_query($sql,$inputarr=false) 
 	{
+		try { // In PHP5, all COM errors are exceptions, so to maintain old behaviour...
 		
 		$dbc = $this->_connectionID;
-		$false = false;
 		
 	//	return rs	
 		if ($inputarr) {
@@ -231,20 +236,22 @@ class ADODB_ado extends ADOConnection {
 			$p = false;
 			$rs = $oCmd->Execute();
 			$e = $dbc->Errors;
-			if ($dbc->Errors->Count > 0) return $false;
+			if ($dbc->Errors->Count > 0) return false;
 			return $rs;
 		}
 		
 		$rs = @$dbc->Execute($sql,$this->_affectedRows, $this->_execute_option);
-
-		if ($dbc->Errors->Count > 0) return $false;
-		if (! $rs) return $false;
+			
+		if ($dbc->Errors->Count > 0) return false;
+		if (! $rs) return false;
 		
-		if ($rs->State == 0) {
-			$true = true;
-			return $true; // 0 = adStateClosed means no records returned
-		}
+		if ($rs->State == 0) return true; // 0 = adStateClosed means no records returned
 		return $rs;
+		
+		} catch (exception $e) {
+			
+		}
+		return false;
 	}
 
 	

@@ -1,6 +1,6 @@
 <?php
 /*
- V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+ V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -25,6 +25,9 @@ class ADODB_postgres7 extends ADODB_postgres64 {
 	function ADODB_postgres7() 
 	{
 		$this->ADODB_postgres64();
+		if (ADODB_ASSOC_CASE !== 2) {
+			$this->rsPrefix .= 'assoc_';
+		}
 	}
 
 	
@@ -188,5 +191,75 @@ class ADORecordSet_postgres7 extends ADORecordSet_postgres64{
 		return false;
 	}		
 
+}
+
+class ADORecordSet_assoc_postgres7 extends ADORecordSet_postgres64{
+
+	var $databaseType = "postgres7";
+	
+	
+	function ADORecordSet_assoc_postgres7($queryID,$mode=false) 
+	{
+		$this->ADORecordSet_postgres64($queryID,$mode);
+	}
+	
+	function _fetch()
+	{
+		if ($this->_currentRow >= $this->_numOfRows && $this->_numOfRows >= 0)
+        	return false;
+
+		$this->fields = @pg_fetch_array($this->_queryID,$this->_currentRow,$this->fetchMode);
+		
+		if ($this->fields) {
+			if (isset($this->_blobArr)) $this->_fixblobs();
+			$this->_updatefields();
+		}
+			
+		return (is_array($this->fields));
+	}
+	
+		// Create associative array
+	function _updatefields()
+	{
+		if (ADODB_ASSOC_CASE == 2) return; // native
+	
+		$arr = array();
+		$lowercase = (ADODB_ASSOC_CASE == 0);
+		
+		foreach($this->fields as $k => $v) {
+			if (is_integer($k)) $arr[$k] = $v;
+			else {
+				if ($lowercase)
+					$arr[strtolower($k)] = $v;
+				else
+					$arr[strtoupper($k)] = $v;
+			}
+		}
+		$this->fields = $arr;
+	}
+	
+	function MoveNext() 
+	{
+		if (!$this->EOF) {
+			$this->_currentRow++;
+			if ($this->_numOfRows < 0 || $this->_numOfRows > $this->_currentRow) {
+				$this->fields = @pg_fetch_array($this->_queryID,$this->_currentRow,$this->fetchMode);
+			
+				if (is_array($this->fields)) {
+					if ($this->fields) {
+						if (isset($this->_blobArr)) $this->_fixblobs();
+					
+						$this->_updatefields();
+					}
+					return true;
+				}
+			}
+			
+			
+			$this->fields = false;
+			$this->EOF = true;
+		}
+		return false;
+	}
 }
 ?>

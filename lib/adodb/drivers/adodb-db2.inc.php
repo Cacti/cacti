@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -101,9 +101,8 @@ class ADODB_DB2 extends ADODB_odbc {
 	var $fmtTimeStamp = "'Y-m-d-H.i.s'";
 	var $ansiOuter = true;
 	var $identitySQL = 'values IDENTITY_VAL_LOCAL()';
-	var $_bindInputArray = false;
-	var $upperCase = 'upper';
-	
+	var $_bindInputArray = true;
+	 var $hasInsertID = true;
 	
 	function ADODB_DB2()
 	{
@@ -135,19 +134,21 @@ class ADODB_DB2 extends ADODB_odbc {
 		return $this->GetOne("select 1 as ignore from $tables where $where for update");
 	}
 	
-	function &MetaTables($ttype=false,$showSchema=false)
+	function &MetaTables($ttype=false,$showSchema=false, $qtable="%", $qschema="%")
 	{
 	global $ADODB_FETCH_MODE;
 	
 		$savem = $ADODB_FETCH_MODE;
 		$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
-		$qid = odbc_tables($this->_connectionID);
+		$qid = odbc_tables($this->_connectionID, "", $qschema, $qtable, "");
 		
 		$rs = new ADORecordSet_odbc($qid);
 		
 		$ADODB_FETCH_MODE = $savem;
-		if (!$rs) return false;
-		
+		if (!$rs) {
+			$false = false;
+			return $false;
+		}
 		$rs->_has_stupid_odbc_fetch_api_change = $this->_has_stupid_odbc_fetch_api_change;
 		
 		$arr =& $rs->GetArray();
@@ -176,6 +177,7 @@ class ADODB_DB2 extends ADODB_odbc {
 		}
 		return $arr2;
 	}
+	
 	
 	// Format date column in sql string given an input format that understands Y M D
 	function SQLDate($fmt, $col=false)
@@ -274,12 +276,14 @@ class  ADORecordSet_db2 extends ADORecordSet_odbc {
 		case 'VARCHAR':
 		case 'CHAR':
 		case 'CHARACTER':
+		case 'C':
 			if ($len <= $this->blobSize) return 'C';
 		
 		case 'LONGCHAR':
 		case 'TEXT':
 		case 'CLOB':
 		case 'DBCLOB': // double-byte
+		case 'X':
 			return 'X';
 		
 		case 'BLOB':
@@ -288,10 +292,12 @@ class  ADORecordSet_db2 extends ADORecordSet_odbc {
 			return 'B';
 			
 		case 'DATE':
+		case 'D':
 			return 'D';
 		
 		case 'TIME':
 		case 'TIMESTAMP':
+		case 'T':
 			return 'T';
 		
 		//case 'BOOLEAN': 
@@ -305,6 +311,7 @@ class  ADORecordSet_db2 extends ADORecordSet_odbc {
 		case 'INTEGER':
 		case 'BIGINT':
 		case 'SMALLINT':
+		case 'I':
 			return 'I';
 			
 		default: return 'N';

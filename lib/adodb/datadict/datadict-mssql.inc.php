@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V4.23 16 June 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -15,8 +15,10 @@ if (!defined('ADODB_DIR')) die();
 
 class ADODB2_mssql extends ADODB_DataDict {
 	var $databaseType = 'mssql';
-	
 	var $dropIndex = 'DROP INDEX %2$s.%1$s';
+	var $renameTable = "EXEC sp_rename '%s','%s'";
+	var $renameColumn = "EXEC sp_rename '%s.%s','%s'";
+	//var $alterCol = ' ALTER COLUMN ';
 	
 	function MetaType($t,$len=-1,$fieldobj=false)
 	{
@@ -81,7 +83,7 @@ class ADODB2_mssql extends ADODB_DataDict {
 		foreach($lines as $v) {
 			$f[] = "\n $v";
 		}
-		$s .= implode(',',$f);
+		$s .= implode(', ',$f);
 		$sql[] = $s;
 		return $sql;
 	}
@@ -108,9 +110,9 @@ class ADODB2_mssql extends ADODB_DataDict {
 		$f = array();
 		$s = 'ALTER TABLE ' . $tabname;
 		foreach($flds as $v) {
-			$f[] = "\n$this->dropCol $v";
+			$f[] = "\n$this->dropCol ".$this->NameQuote($v);
 		}
-		$s .= implode(',',$f);
+		$s .= implode(', ',$f);
 		$sql[] = $s;
 		return $sql;
 	}

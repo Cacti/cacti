@@ -1,6 +1,6 @@
 <?php
 /** 
- * @version V4.23 16 June 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+ * @version V4.54 5 Nov 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
  * Released under both BSD license and Lesser GPL library license. 
  * Whenever there is any discrepancy between the two licenses, 
  * the BSD license will take precedence. 
@@ -160,6 +160,7 @@ class DB
 		if (is_array($options)) {
 			foreach($options as $k => $v) {
 				switch(strtolower($k)) {
+				case 'persist':
 				case 'persistent': 	$persist = $v; break;
 				#ibase
 				case 'dialect': 	$obj->dialect = $v; break;
@@ -204,9 +205,10 @@ class DB
 	 */
 	function isError($value)
 	{
-		return (is_object($value) &&
-				(get_class($value) == 'db_error' ||
-				 is_subclass_of($value, 'db_error')));
+		if (!is_object($value)) return false;
+		$class = get_class($value);
+		return $class == 'pear_error' || is_subclass_of($value, 'pear_error') || 
+				$class == 'db_error' || is_subclass_of($value, 'db_error');
 	}
 
 
@@ -221,9 +223,11 @@ class DB
 	 */
 	function isWarning($value)
 	{
+		return false;
+		/*
 		return is_object($value) &&
 			(get_class( $value ) == "db_warning" ||
-			 is_subclass_of($value, "db_warning"));
+			 is_subclass_of($value, "db_warning"));*/
 	}
 
 	/**

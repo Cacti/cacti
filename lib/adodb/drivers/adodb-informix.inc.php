@@ -1,6 +1,6 @@
 <?php
 /**
-* @version V4.23 16 June 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+* @version V4.54 5 Nov 2004 (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
 * Released under both BSD license and Lesser GPL library license.
 * Whenever there is any discrepancy between the two licenses,
 * the BSD license will take precedence.
@@ -26,6 +26,7 @@ class ADODB_informix extends ADODB_informix72 {
 
 class ADORecordset_informix extends ADORecordset_informix72 {
 	var $databaseType = "informix";
+	
 	function ADORecordset_informix($id,$mode=false)
 	{
 		$this->ADORecordset_informix72($id,$mode);

@@ -1,6 +1,6 @@
 <?php
 /* 
-version V4.23 16 June 2004 (c) 2000-2004  John Lim (jlim@natsoft.com.my). All rights
+version V4.54 5 Nov 2004 (c) 2000-2004  John Lim (jlim@natsoft.com.my).  All rights
 reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
