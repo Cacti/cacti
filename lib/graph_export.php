@@ -26,10 +26,6 @@
 
 function graph_export() {
 	if (read_config_option("export_timing") != "disabled") {
-		if (!file_exists(read_config_option("path_html_export"))) {
-			export_fatal("Export path does not exist!");
-		}
-
 		switch (read_config_option("export_timing")) {
 			case "classic":
 				if (read_config_option("path_html_export_ctr") >= read_config_option("path_html_export_skip")) {
@@ -106,12 +102,12 @@ function export_fatal($stMessage) {
 };
 
 function export_log($stMessage) {
-	if (read_config_option("log_export") == "on") {
+	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 		cacti_log($stMessage, true, "EXPORT");
 	};
 };
 
-function export_pre_ftp_upload ($stExportDir) {
+function export_pre_ftp_upload($stExportDir) {
 	global $aFtpExport;
 	// export variable as global
 	$_SESSION["sess_config_array"]["path_html_export"] = $stExportDir;
@@ -244,7 +240,7 @@ function export_ftp_ncftpput_execute($stExportDir) {
 	};
 };
 
-function export_post_ftp_upload ($stExportDir) {
+function export_post_ftp_upload($stExportDir) {
 	// clean-up after ftp-put
 	if ($dh = opendir($stExportDir)) {
 		while (($file = readdir($dh)) !== false) {
@@ -260,6 +256,10 @@ function export_post_ftp_upload ($stExportDir) {
 
 function export() {
 	global $config;
+
+	if (!file_exists(read_config_option("path_html_export"))) {
+		export_fatal("Export path does not exist!");
+	}
 
 	export_log("Running graph export");
 
