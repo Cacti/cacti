@@ -926,22 +926,24 @@ $fields_user_user_edit_host = array(
 	"grp2" => array(
 		"friendly_name" => "Graph Options",
 		"method" => "checkbox_group",
-		"form_id" => "|arg1:id|",
 		"description" => "Set any graph-specific options here.",
 		"items" => array(
 			"show_tree" => array(
 				"value" => "|arg1:show_tree|",
 				"friendly_name" => "User Has Rights to Tree View",
+				"form_id" => "|arg1:id|",
 				"default" => "on"
 				),
 			"show_list" => array(
 				"value" => "|arg1:show_list|",
 				"friendly_name" => "User Has Rights to List View",
+				"form_id" => "|arg1:id|",
 				"default" => "on"
 				),
 			"show_preview" => array(
 				"value" => "|arg1:show_preview|",
 				"friendly_name" => "User Has Rights to Preview View",
+				"form_id" => "|arg1:id|",
 				"default" => "on"
 				)
 			)
