@@ -50,7 +50,7 @@ if (read_config_option("global_auth") == "on") {
 	
 	/* don't even bother with the guest code if we're already logged in */
 	if (($guest_account == true) && (empty($_SESSION["sess_user_id"]))) {
-		$guest_user_id = db_fetch_cell("select ID from user where username='" . read_config_option("guest_user") . "'");
+		$guest_user_id = db_fetch_cell("select id from user where username='" . read_config_option("guest_user") . "'");
 		
 		/* cannot find guest user */
 		if (empty($guest_user_id) == 0) {
@@ -64,15 +64,18 @@ if (read_config_option("global_auth") == "on") {
 		include ("auth_login.php");
 		exit;
 	}else{
+		$realm_id = db_fetch_cell("select realm_id from user_realm_filename where filename='" . basename($_SERVER["SCRIPT_NAME"]) . "'");
+		
 		if (!db_fetch_assoc("select
-			user_realm.id
+			user_auth_realm.realm_id
 			from
-			user_realm,user_auth_realm
-			where user_realm.id=user_auth_realm.realm_id
-			and user_realm.name='$section'
-			and user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'")) {
+			user_auth_realm
+			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
+			and user_auth_realm.realm_id='$realm_id'")) {
 			
+			include ("top_header.php");
 			include ("auth_noauth.php");
+			include ("bottom_footer.php");
 			exit;
 		}
 	}
