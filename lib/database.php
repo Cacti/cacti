@@ -126,7 +126,7 @@ function db_fetch_insert_id() {
 
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
-	if (empty($array{count($array)-1})) {
+	if ((empty($array{count($array)-1})) && (sizeof($array) > 1)) {
 		array_pop($array);
 	}
 	
