@@ -26,9 +26,9 @@
 
 function draw_edit_form($array) {
 	global $colors;
-	
+
 	//print "<pre>";print_r($array);print "</pre>";
-	
+
 	if (sizeof($array) > 0) {
 		while (list($top_branch, $top_children) = each($array)) {
 			if ($top_branch == "config") {
@@ -38,7 +38,7 @@ function draw_edit_form($array) {
 			}
 		}
 	}
-	
+
 	$i = 0;
 	if (sizeof($fields_array) > 0) {
 		while (list($field_name, $field_array) = each($fields_array)) {
@@ -47,7 +47,7 @@ function draw_edit_form($array) {
 					print "<form method='post' action='" . ((isset($config_array["post_to"])) ? $config_array["post_to"] : basename($_SERVER["PHP_SELF"])) . "'" . ((isset($config_array["form_name"])) ? " name='" . $config_array["form_name"] . "'" : "") . ">\n";
 				}
 			}
-			
+
 			if ($field_array["method"] == "hidden") {
 				form_hidden_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
 			}elseif ($field_array["method"] == "hidden_zero") {
@@ -58,26 +58,21 @@ function draw_edit_form($array) {
 				if (isset($config_array["force_row_color"])) {
 					print "<tr bgcolor='#" . $config_array["force_row_color"] . "'>";
 				}elseif ($field_array["method"] == "header") {
-					print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["value"] . "</td></tr>\n";
-					print "<tr bgcolor='#" . $colors["header"] . "'>";
+					print "<tr bgcolor='#" . $colors["header_panel"] . "' class='textSubHeaderDark'>";
 				}else{
 					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 				}
-				
-				if ($field_array["method"] <> "header") {
-					print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
-				}else {
-					print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textHeaderDark'>" . $field_array["friendly_name"] . "</font><br>\n";
-				}
-				
+
+				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
+
 				if (isset($field_array["sub_checkbox"])) {
 					form_checkbox($field_array["sub_checkbox"]["name"], $field_array["sub_checkbox"]["value"], $field_array["sub_checkbox"]["friendly_name"], "", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
 				}
-				
+
 				print ((isset($field_array["description"])) ? $field_array["description"] : "") . "</td>\n";
-				
+
 				print "<td>";
-				
+
 				switch ($field_array["method"]) {
 				case 'textbox':
 					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
@@ -136,7 +131,7 @@ function draw_edit_form($array) {
 					break;
 				case 'template_drop_multi_rra':
 					$items = db_fetch_assoc($field_array["sql_print"]);
-					
+
 					if (sizeof($items) > 0) {
 					foreach ($items as $item) {
 						print $item["name"] . "<br>";
@@ -144,19 +139,19 @@ function draw_edit_form($array) {
 					}
 					break;
 				case 'header':
-					print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["value"] . "</td></tr>\n";
+					/* placeholder */
 					break;
 				default:
 					print "<em>" . $field_array["value"] . "</em>";
 					form_hidden_box($field_name, $field_array["value"], "");
 					break;
 				}
-				
+
 				print "</td>\n</tr>\n";
-				
+
 				$i++;
 			}
-			
+
 			if ($i == sizeof($fields_array)) {
 				//print "</form>";
 			}
@@ -169,158 +164,158 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	print "<input type='$type'";
-	
+
 	if (isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
 			print "class='txtErrorTextBox'";
 			unset($_SESSION["sess_error_fields"][$form_name]);
 		}
 	}
-	
+
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
-	
+
 	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
 }
 
 /* creates a standard hidden html textbox */
-function form_hidden_box($form_name, $form_previous_value, $form_default_value) { 
+function form_hidden_box($form_name, $form_previous_value, $form_default_value) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	print "<input type='hidden' name='$form_name' value='$form_previous_value'>\n";
 }
 
 /* creates a dropdown box from a sql string */
-function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value, $css_style = "") { 
+function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value, $css_style = "") {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
-	
+
 	print "<select name='$form_name' style='$css_style'>";
-	
+
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? " selected" : "") . ">$form_none_entry</option>\n";
 	}
-	
+
 	create_list($form_data,$column_display,$column_id,htmlspecialchars($form_previous_value, ENT_QUOTES));
-	
+
 	print "</select>\n";
 }
 
 /* creates a checkbox */
-function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0) { 
+function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0) {
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
-	
+
 	print "<input type='checkbox' name='$form_name' id='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
 }
 
 /* creates a radio */
-function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value) { 
+function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
-	
+
 	print "<input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption\n";
 }
 
 /* creates a text area with a user defined rows and cols */
-function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value) { 
+function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}
 	}
-	
+
 	print "<textarea cols='$form_columns' rows='$form_rows' name='$form_name'>" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
 /* creates a hidden text box containing the ID */
-function form_hidden_id($form_name, $form_id) { 
+function form_hidden_id($form_name, $form_id) {
 	if ($form_id == "") {
 		$form_id = 0;
 	}
-	
+
 	print "<input type='hidden' name='$form_name' value='$form_id'>\n";
 }
 
 /* creates a dropdown box from a sql string */
-function form_color_dropdown($form_name, $form_previous_value, $form_none_entry, $form_default_value) { 
+function form_color_dropdown($form_name, $form_previous_value, $form_none_entry, $form_default_value) {
 	if ($form_previous_value=="") {
 		$form_previous_value = $form_default_value;
 	}
-	
+
 	$colors_list = db_fetch_assoc("select id,hex from colors order by hex desc");
-	
+
 	print "<select name='$form_name'>\n";
-	
+
 	if ($form_none_entry != "") {
 		print "<option value='0'>$form_none_entry</option>\n";
 	}
-	
+
 	if (sizeof($colors_list) > 0) {
 		foreach ($colors_list as $color) {
 			print "<option style='background: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
-			
+
 			if ($form_previous_value == $color["id"]) {
 				print " selected";
 			}
-			
+
 			print ">" . $color["hex"] . "</option>\n";
 		}
 	}
-	
+
 	print "</select>\n";
 }
-    
-    
+
+
 /* create a multiselect listbox */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id) {
 	print "<select name='$form_name" . "[]' multiple>\n";
-	
+
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
-		
+
 		for ($i=0; ($i < count($sql_previous_values)); $i++) {
 			if ($sql_previous_values[$i][$column_id] == $id) {
 				print " selected";
 			}
 		}
-		
+
 		print ">". $array_display[$id];
 		print "</option>\n";
 	}
-	
+
 	print "</select>\n";
 }
 
@@ -408,7 +403,7 @@ function form_save_button($cancel_url, $force_type = "") {
 	<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
 			 <td bgcolor="#f5f5f5" align="right">
-			 	<input type='hidden' name='action' value='save'>
+				<input type='hidden' name='action' value='save'>
 				<a href='<?php print $cancel_url;?>'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				<input type='image' src='images/<?php print $img;?>' alt='<?php print $alt;?>' align='absmiddle'>
 			</td>
@@ -434,9 +429,9 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value) {
 	}else{
 		$current_color = $row_color2;
 	}
-	
+
 	print "<tr bgcolor='#$current_color'>\n";
-	
+
 	return $current_color;
 }
 
@@ -468,38 +463,38 @@ function get_checkbox_style() {
 
 /* creates the options for the select box */
 function create_list($data, $name, $value, $prev) {
-        if (empty($name)) {
-                foreach (array_keys($data) as $id) {
-                        print '<option value="' . $id . '"';
-			
-                        if ($prev == $id) {
-                                print " selected";
-                        }
-			
+	   if (empty($name)) {
+			 foreach (array_keys($data) as $id) {
+				    print '<option value="' . $id . '"';
+
+				    if ($prev == $id) {
+						  print " selected";
+				    }
+
 			print ">" . title_trim(null_out_substitutions($data[$id]), 75) . "</option>\n";
-                }
-        }else{
+			 }
+	   }else{
 		if (sizeof($data) > 0) {
-                foreach ($data as $row) {
-                        print "<option value='$row[$value]'";
-			
-                        if ($prev == $row[$value]) {
-                                print " selected";
-                        }
-			
+			 foreach ($data as $row) {
+				    print "<option value='$row[$value]'";
+
+				    if ($prev == $row[$value]) {
+						  print " selected";
+				    }
+
 			if (isset($row["host_id"])) {
 				print ">" . title_trim($row[$name], 75) . "</option>\n";
 			}else{
 				print ">" . title_trim(null_out_substitutions($row[$name]), 75) . "</option>\n";
 			}
-                }
+			 }
 		}
-        }
+	   }
 }
 
 function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
 	$field = db_fetch_row("select data_name,type_code from data_input_fields where id=$data_input_field_id");
-	
+
 	if (($field["type_code"] == "index_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
 		$index_type = db_fetch_assoc("select
 			host_snmp_cache.field_name
@@ -508,7 +503,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			and data_local.snmp_query_id=host_snmp_cache.snmp_query_id
 			and data_template_data.id=$data_template_data_id
 			group by host_snmp_cache.field_name");
-		
+
 		if (sizeof($index_type) == 0) {
 			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
 		}else{
@@ -523,7 +518,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			and data_local.snmp_query_id=snmp_query_graph.snmp_query_id
 			and data_template_data.id=$data_template_data_id
 			group by snmp_query_graph.id");
-		
+
 		if (sizeof($output_type) == 0) {
 			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
 		}else{
@@ -536,20 +531,20 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 
 function draw_tree_dropdown($current_tree_id) {
 	global $colors;
-	
+
 	$html = "";
-	
+
 	$tree_list = get_graph_tree_array();
-	
+
 	if (isset($_GET["tree_id"])) {
 		$_SESSION["sess_view_tree_id"] = $current_tree_id;
 	}
-	
+
 	/* if there is a current tree, make sure it still exists before going on */
 	if ((!empty($_SESSION["sess_view_tree_id"])) && (db_fetch_cell("select id from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) == "")) {
 		$_SESSION["sess_view_tree_id"] = 0;
 	}
-	
+
 	/* set a default tree if none is already selected */
 	if (empty($_SESSION["sess_view_tree_id"])) {
 		if (db_fetch_cell("select id from graph_tree where id=" . read_graph_config_option("default_tree_id")) > 0) {
@@ -560,7 +555,7 @@ function draw_tree_dropdown($current_tree_id) {
 			}
 		}
 	}
-	
+
 	/* make the dropdown list of trees */
 	if (sizeof($tree_list) > 1) {
 		$html ="<form name='form_tree_id'>
@@ -572,28 +567,28 @@ function draw_tree_dropdown($current_tree_id) {
 						</td>\n
 						<td bgcolor='#" . $colors["panel"] . "'>\n
 							<select name='cbo_tree_id' onChange='window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value'>\n";
-		
+
 		foreach ($tree_list as $tree) {
 			$html .= "<option value='graph_view.php?action=tree&tree_id=" . $tree["id"] . "'";
 				if ($_SESSION["sess_view_tree_id"] == $tree["id"]) { $html .= " selected"; }
 				$html .= ">" . $tree["name"] . "</option>\n";
 			}
-		
+
 		$html .= "</select>\n";
-		$html .= "</td></tr></table></td></form>\n";	
+		$html .= "</td></tr></table></td></form>\n";
 	}elseif (sizeof($tree_list) == 1) {
 		/* there is only one tree; use it */
 		//print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
 	}
-	
+
 	return $html;
 }
 
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $colors, $config;
-	
+
 	include($config["include_path"] . "/config_arrays.php");
-	
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
@@ -601,18 +596,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
 	print "</tr>";
-	
+
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
 	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
-	
+
 	if (sizeof($item_list) > 0) {
 	foreach ($item_list as $item) {
 		/* graph grouping display logic */
 		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
-		
+
 		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
 			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
-			
+
 			if ($group_counter % 2 == 0) {
 				$alternate_color_1 = "EEEEEE";
 				$alternate_color_2 = "EEEEEE";
@@ -622,27 +617,27 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$alternate_color_2 = $colors["alternate"];
 				$custom_row_color = "D2D6E7";
 			}
-			
+
 			$group_counter++;
 		}
-		
+
 		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
-		
+
 		/* alternating row color */
 		if ($use_custom_row_color == false) {
 			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
 		}else{
 			print "<tr bgcolor='#$custom_row_color'>";
 		}
-		
+
 		print "<td>";
 		if ($disable_controls == false) { print "<a href='$filename?action=item_edit&id=" . $item["id"] . "&$url_data'>"; }
 		print "<strong>Item # " . ($i+1) . "</strong>";
 		if ($disable_controls == false) { print "</a>"; }
 		print "</td>\n";
-		
+
 		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
-		
+
 		switch (true) {
 		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
 			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
@@ -654,25 +649,25 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$matrix_title = "COMMENT: " . $item["text_format"];
 			break;
 		}
-		
+
 		if ($item["hard_return"] == "on") {
 			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
 		}
-		
+
 		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
 		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
 		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-		
+
 		if ($disable_controls == false) {
 			print "<td><a href='$filename?action=item_movedown&id=" . $item["id"] . "&$url_data'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
 					<a href='$filename?action=item_moveup&id=" . $item["id"] . "&$url_data'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
 			print "<td width='1%' align='right'><a href='$filename?action=item_remove&id=" . $item["id"] . "&$url_data'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
 		}
-		
+
 		print "</tr>";
-		
+
 		$i++;
 	}
 	}else{
@@ -682,9 +677,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 function draw_menu() {
 	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames;
-	
+
 	include($config["include_path"] . "/config_arrays.php");
-	
+
 	/* list all realms that this user has access to */
 	if (read_config_option("global_auth") == "on") {
 		$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
@@ -692,36 +687,36 @@ function draw_menu() {
 	}else{
 		$user_realms = $user_auth_realms;
 	}
-		
+
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
-	
+
 	/* loop through each header */
 	while (list($header_name, $header_array) = each($menu)) {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
 		while (list($item_url, $item_title) = each($header_array)) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
-			
+
 			if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 				$show_header_items = true;
 			}
 		}
-		
+
 		reset($header_array);
-		
+
 		if ($show_header_items == true) {
 			print "<tr><td class='textMenuHeader'>$header_name</td></tr>\n";
 		}
-		
+
 		/* pass 2: loop through each top level item and render it */
 		while (list($item_url, $item_title) = each($header_array)) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
-			
+
 			/* if this item is an array, then it contains sub-items. if not, is just
 			the title string and needs to be displayed */
 			if (is_array($item_title)) {
 				$i = 0;
-				
+
 				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* if the current page exists in the sub-items array, draw each sub-item */
 					if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
@@ -729,7 +724,7 @@ function draw_menu() {
 					}else{
 						$draw_sub_items = false;
 					}
-					
+
 					while (list($item_sub_url, $item_sub_title) = each($item_title)) {
 						/* indent sub-items */
 						if ($i > 0) {
@@ -737,14 +732,14 @@ function draw_menu() {
 						}else{
 							$prepend_string = "";
 						}
-						
+
 						/* do not put a line between each sub-item */
 						if (($i == 0) || ($draw_sub_items == false)) {
 							$background = "images/menu_line.gif";
 						}else{
 							$background = "";
 						}
-						
+
 						/* draw all of the sub-items as selected for ui grouping reasons. we can use the 'bold'
 						or 'not bold' to distinguish which sub-item is actually selected */
 						if ((basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) || ($draw_sub_items)) {
@@ -752,7 +747,7 @@ function draw_menu() {
 						}else{
 							$td_class = "textMenuItem";
 						}
-						
+
 						/* always draw the first item (parent), only draw the children if we are viewing a page
 						that is contained in the sub-items array */
 						if (($i == 0) || ($draw_sub_items)) {
@@ -762,7 +757,7 @@ function draw_menu() {
 								print "<tr><td class='$td_class' background='$background'>$prepend_string<a href='$item_sub_url'>$item_sub_title</a></td></tr>\n";
 							}
 						}
-						
+
 						$i++;
 					}
 				}
@@ -778,15 +773,15 @@ function draw_menu() {
 			}
 		}
 	}
-	
+
 	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
-	
+
 	print '</table></td></tr>';
 }
 
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
 	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items");
-	
+
 	/* loop through each available field */
 	while (list($field_name, $field_array) = each($form_array)) {
 		/* loop through each sub-field that we are going to check for variables */
@@ -811,7 +806,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 			}
 		}
 	}
-	
+
 	return $form_array;
 }
 
@@ -831,7 +826,7 @@ function draw_actions_dropdown($actions_array) {
 			</td>
 		</tr>
 	</table>
-	
+
 	<input type='hidden' name='action' value='actions'>
 	<?php
 }
