@@ -452,7 +452,7 @@ function update_data_source_title_cache_from_template($data_template_id) {
    @arg $snmp_query_id - (int) the ID of the data query to match
    @arg $snmp_index - the index within the data query to match */
 function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
+	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
 	
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
@@ -498,7 +498,7 @@ function update_graph_title_cache_from_template($graph_template_id) {
    @arg $snmp_query_id - (int) the ID of the data query to match
    @arg $snmp_index - the index within the data query to match */
 function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$graphs = db_fetch_assoc("select id from graph_local where snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
+	$graphs = db_fetch_assoc("select id from graph_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
 	
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $item) {
