@@ -42,6 +42,11 @@ if (read_config_option("global_auth") == "on") {
 	}
 }
 
+/* use cached url if available and applicable */
+if ((isset($_SESSION["sess_graph_view_url_cache"])) && (empty($_REQUEST["action"])) && (basename($_SERVER["PHP_SELF"]) == "graph_view.php")) {
+	header ("Location: " . $_SESSION["sess_graph_view_url_cache"]);
+}
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 

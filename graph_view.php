@@ -38,6 +38,10 @@ if (isset($_GET["hide"])) {
 	}
 }
 
+if (!empty($_REQUEST["action"])) {
+	$_SESSION["sess_graph_view_url_cache"] = $_SERVER["REQUEST_URI"];
+}
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
