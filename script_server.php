@@ -102,6 +102,7 @@ while (1) {
 			if (!strpos($remainder," ")) {
 				$cmd = $remainder;
 				$parm = "";
+				$preparm = "";
 			} else {
 				$cmd = substr($remainder,0,strpos($remainder," "));
 
@@ -111,10 +112,7 @@ while (1) {
 			}
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				cacti_log("DEBUG: INCLUDE: ".$inc, false, "PHPSVR");
-				cacti_log("DEBUG: SCRIPT: ".$cmd, false, "PHPSVR");
-				cacti_log("DEBUG: CMD: ".$preparm, false, "PHPSVR");
-				cacti_log("DEBUG: ARGS: ".$parm[0]."-".$parm[1]."-".$parm[2]."-".$parm[3], false, "PHPSVR");
+				cacti_log("DEBUG: INCLUDE: '". $inc . "' SCRIPT: '" .$cmd . "' CMD: '" . $preparm . "'", false, "PHPSVR");
 			}
 
 			// check for existance of function.  If exists call it
