@@ -24,14 +24,14 @@
  +-------------------------------------------------------------------------+
 */
 
-/* initilize php session */
-session_start();
-
 /* we don't want these pages cached */
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 
 include("config.php");
+
+/* initilize php session */
+session_start();
 
 /* check to see if this is a new installation */
 include_once ("include/version_functions.php");
