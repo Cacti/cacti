@@ -146,7 +146,8 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 
 				/* Prepare the read array */
 				$read_fd = array($fp);
-				$except_fd = array(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_STDERR_WRITE));
+				$efp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_STDERR_WRITE);
+				$except_fd = array($efp);
 
 				/* turn off warnings for now in case an error occurs */
 				error_reporting(E_ERROR);
@@ -157,7 +158,6 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 						cacti_log("RRD2CACTI: ERROR: RRD Did not Respond to RRDTool Command", $log_to_stdout, "POLLER");
 					}
 				} elseif ($num_changed_streams > 0) {
-print "The number of changed fd's is " . $num_changed_streams . "\n";
 					/* turn off warnings for now in case an error occurs */
 					error_reporting(E_ALL);
 
@@ -169,12 +169,14 @@ print "The number of changed fd's is " . $num_changed_streams . "\n";
 		            $line .= fgets($file, 4096);
 					}
 
-					foreach ($except_fd as $file) {
-						$error .= fgets($file, 4096);
+					if ($config["cacti_server_os"] == "unix") {
+						foreach ($except_fd as $file) {
+							$error .= fgets($file, 4096);
+						}
 					}
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-						cacti_log("RRD2CACTI: " . strip_newlines($line), $log_to_stdout, "POLLER");
+						cacti_log("RRD2CACTI: " . strip_newlines($line . $error), $log_to_stdout, "POLLER");
 					}
 
 					return $line;
