@@ -11,7 +11,7 @@ double snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int w
   struct variable_list *vars = NULL;
   int status=0;
   char result_string[BUFSIZE];
-  unsigned long long int result;
+  unsigned long long int result=0;
   double dresult;
 
   //snmp query
@@ -37,18 +37,25 @@ double snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int w
       vars = response->variables;
       snprintf(result_string, BUFSIZE, anOID, anOID_len, vars);
       printf("[%i] SNMP: %s\n", who, result_string);
-      //if counter is 64bit
-      if(vars->type == ASN_COUNTER64){
-        result = vars->val.counter64->high;
-        result = result << 32;
-        result = result + vars->val.counter64->low;
-      } else {
-        //if counter is 32bit
-        if(vars->type == ASN_COUNTER) result = (unsigned long) *(vars->val.integer);
-        else {
-          //if counter is not counter
-          printf("[%i] SNMP: This is not counter!\n", who);
-        }
+      switch(vars->type){
+        case ASN_COUNTER64:
+          result = vars->val.counter64->high;
+          result = result << 32;
+          result = result + vars->val.counter64->low;
+          dresult = result;
+        break;
+        case ASN_COUNTER:
+          dresult = (double) *(vars->val.integer);
+        break;
+        case ASN_OCTET_STR:
+          dresult = atof(vars->val.string);
+        break;
+        case ASN_INTEGER:
+          dresult = (double) *(vars->val.integer);
+        break;
+        default:
+          printf("SNMP: This(%i) is not supported result type!\n", vars->type);
+        break;
       }
     }
   } else printf("[%i] SNMP: (%s) Bad descriptor.\n",who, session.peername);
@@ -56,7 +63,8 @@ double snmp_get(char *snmp_host, char *snmp_comm, int ver, char *snmp_oid, int w
   //free
   if (response) snmp_free_pdu(response);
   if (sessp != NULL) snmp_sess_close(sessp);
-  return result;
+  printf("dresult: %f\nresult: %lli\n", dresult, result);
+  return dresult;
 }
 
 snmpasync_get(){

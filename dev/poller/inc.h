@@ -5,6 +5,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 //For Net-SNMP (ver5)
 #ifdef NETSNMP
