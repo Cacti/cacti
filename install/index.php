@@ -227,6 +227,9 @@ if ($_REQUEST["step"] == "4") {
 		exit;
 	}
 
+	/* allow the upgrade script to run for as long as it needs to */
+	ini_set("max_execution_time", "0");
+
 	/* loop from the old version to the current, performing updates for each version in between */
 	for ($i=($old_version_index+1); $i<count($cacti_versions); $i++) {
 		if ($cacti_versions[$i] == "0.8.1") {
