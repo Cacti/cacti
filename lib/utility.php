@@ -41,6 +41,7 @@ function update_poller_cache($local_data_id) {
 	global $config;
 
 	include_once($config["library_path"] . "/data_query.php");
+	include_once($config["library_path"] . "/api_poller.php");
 
 	$data_input = db_fetch_row("select
 		data_input.id,
@@ -52,29 +53,11 @@ function update_poller_cache($local_data_id) {
 		where data_template_data.data_input_id=data_input.id
 		and data_template_data.local_data_id=$local_data_id");
 
-	$host = db_fetch_row("select
-		host.id,
-		host.hostname,
-		host.snmp_community,
-		host.snmp_version,
-		host.snmp_username,
-		host.snmp_password,
-		host.snmp_port,
-		host.snmp_timeout,
-		host.disabled
-		from
-		data_local,host
-		where data_local.host_id=host.id
-		and data_local.id=$local_data_id");
+	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
 
 	/* clear cache for this local_data_id */
 	db_execute("delete from poller_item where local_data_id=$local_data_id");
 	db_execute("delete from poller_field where local_data_id=$local_data_id");
-
-	/* check to see if this data source's host is disabled */
-	if ((!empty($host["id"])) && ($host["disabled"] == "on")) {
-		return;
-	}
 
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == "3") || ($data_input["type_id"] == "4")) {
@@ -82,7 +65,7 @@ function update_poller_cache($local_data_id) {
 
 		if (empty($field)) { return; }
 
-		$query = data_query_index($field["index_type"], $field["index_value"], $host["id"]);
+		$query = data_query_index($field["index_type"], $field["index_value"], $host_id);
 
 		$outputs = db_fetch_assoc("select
 			snmp_query_graph_rrd.snmp_field_name,
@@ -112,31 +95,16 @@ function update_poller_cache($local_data_id) {
 
 		switch ($data_input["type_id"]) {
 		case '1': /* script */
-			$action_type = 0;
-			$data_template_rrd_id = 0;
-
-			$command = get_full_script_path($local_data_id);
-
 			$num_output_fields = sizeof(db_fetch_assoc("select id from data_input_fields where data_input_id=" . $data_input["id"] . " and input_output='out'"));
 
 			if ($num_output_fields == 1) {
-				$action_type = 1; /* one ds */
-
-				$data_template_rrd = db_fetch_assoc("select id from data_template_rrd where local_data_id=$local_data_id");
-				$data_template_rrd_id = $data_template_rrd[0]["id"];
-			}elseif ($num_output_fields > 1) {
-				$action_type = 2; /* >= two ds */
+				$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
+				$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
+			}else{
+				$data_source_item_name = "";
 			}
 
-			if ($action_type) {
-				db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
-					snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
-					arg1,rrd_num) values ($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . ",$action_type,'" . $host["hostname"] . "',
-					'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-					'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-					'" . get_data_source_name($data_template_rrd_id) . "',
-					'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true))) . "','" . addslashes($command) . "',1)");
-			}
+			api_poller_cache_item_add($host_id, $local_data_id, 1, $data_source_item_name, addslashes(get_full_script_path($local_data_id)));
 
 			break;
 		case '2': /* snmp */
@@ -150,13 +118,7 @@ function update_poller_cache($local_data_id) {
 
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 
-			db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
-				snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
-				arg1,rrd_num) values ($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . ",0,'" . $host["hostname"] . "',
-				'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-				'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-				'" . get_data_source_name($data_template_rrd_id) . "',
-				'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true,1))) . "','" . $field["snmp_oid"] . "',1)");
+			api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), $field["snmp_oid"]);
 
 			break;
 		case '3': /* snmp query */
@@ -169,13 +131,7 @@ function update_poller_cache($local_data_id) {
 				}
 
 				if (!empty($oid)) {
-					db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
-						snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
-						arg1,rrd_num) values ($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . ",0,'" . $host["hostname"] . "',
-						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
-						'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true))) . "','$oid'," . sizeof($outputs) . ")");
+					api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), $oid);
 				}
 			}
 			}
@@ -202,13 +158,7 @@ function update_poller_cache($local_data_id) {
 				}
 
 				if (isset($script_path)) {
-					db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
-						snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,arg1,rrd_num) values
-						($local_data_id," . (empty($host["id"]) ? 0 : $host["id"]) . ",1,'" . $host["hostname"] . "',
-						'" . $host["snmp_community"] . "','" . $host["snmp_version"] . "','" . $host["snmp_timeout"] . "',
-						'" . $host["snmp_username"] . "','" . $host["snmp_password"] . "','" . $host["snmp_port"] . "',
-						'" . get_data_source_name($output["data_template_rrd_id"]) . "',
-						'" . addslashes(clean_up_path(get_data_source_path($local_data_id,true))) . "','" . addslashes($script_path) . "'," . sizeof($outputs) . ")");
+					api_poller_cache_item_add($host_id, $local_data_id, 1, get_data_source_item_name($output["data_template_rrd_id"]), addslashes($script_path));
 				}
 			}
 			}

@@ -141,21 +141,14 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$item["arg1"] .
 					", value: $output\n";
 				break;
-			case '1': /* one output script */
+			case '1': /* script (popen) */
 				$command = $item["arg1"];
 				$output = `$command`;
 
 				print "CMD: $command, output: $output\n";
 
 				break;
-			case '2': /* multi output script */
-				$command = $item["arg1"];
-				$output = `$command`;
-
-				print "CMD: $command, output: $output\n";
-
-				break;
-			case '3': /* one output script */
+			case '2': /* script (php script server) */
 				$command = $item["arg1"];
 
 				// execute using php process
@@ -183,36 +176,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				}
 
 				print "CMD: $command, output: $output";
-
-				break;
-			case '4': /* multi output script */
-				$command = $item["arg1"];
-
-				// execute using php process
-				if ($using_proc_function == 1) {
-				   if (is_resource($cactiphp)) {
-					   // $pipes now looks like this:
-					   // 0 => writeable handle connected to child stdin
-					   // 1 => readable handle connected to child stdout
-					   // 2 => any error output will be sent to child stderr
-
-						// send command to the php server
-					   fwrite($pipes[0], $command . "\r\n");
-
-						// get result from server
-						$output = fgets($pipes[1], 1024);
-
-						if (substr_count($output, "ERROR") > 0) {
-							$output = "";
-						}
-				   }
-				// execute the old fashion way
-				} else {
-					$command = read_config_option("path_php_binary") - " " . $command;
-					$output = `$command`;
-				}
-
-				print "CMD: $command, output: $output\n";
 
 				break;
 			} /* End Switch */
