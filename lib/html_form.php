@@ -616,4 +616,27 @@ function draw_tree_dropdown($current_tree_id) {
 	return $html;
 }
 
+function draw_menu() {
+	global $colors, $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
+	
+	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
+	
+	foreach (array_keys($menu) as $header) {
+		print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
+		if (sizeof($menu[$header]) > 0) {
+			foreach (array_keys($menu[$header]) as $url) {
+				if (basename($_SERVER["PHP_SELF"]) == basename($url)) {
+					print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+				}else{
+					print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+				}
+			}
+		}
+	}
+	
+	print '</table></td></tr>';
+}
+
 ?>
