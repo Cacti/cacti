@@ -37,4 +37,7 @@
 this way we can restore the field's previous values. we reset it here, because
 they only need to be stored for a single page */
 kill_session_var("sess_field_values");
+
+/* make sure the debug log doesn't get too big */
+debug_log_clear();
 ?>

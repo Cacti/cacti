@@ -1470,4 +1470,41 @@ function generate_hash() {
 	return md5(session_id() . microtime() . rand(0,1000));
 }
 
+/* debug_log_insert - inserts a line of text into the debug log
+   @arg $type - the 'category' or type of debug message
+   @arg $text - the actual debug message */
+function debug_log_insert($type, $text) {
+	if (!isset($_SESSION["debug_log"][$type])) {
+		$_SESSION["debug_log"][$type] = array();
+	}
+	
+	array_push($_SESSION["debug_log"][$type], $text);
+}
+
+/* debug_log_clear - clears the debug log for a particular category
+   @arg $type - the 'category' to clear the debug log for. omitting this argument
+     implies all categories */
+function debug_log_clear($type = "") {
+	if ($type == "") {
+		kill_session_var("debug_log");
+	}else{
+		unset($_SESSION["debug_log"][$type]);
+	}
+}
+
+/* debug_log_return - returns the debug log for a particular category
+   @arg $type - the 'category' to return the debug log for.
+   @returns - the full debug log for a particular category */
+function debug_log_return($type) {
+	$log_text = "";
+	
+	if (isset($_SESSION["debug_log"][$type])) {
+		for ($i=0; $i<count($_SESSION["debug_log"][$type]); $i++) {
+			$log_text .= "+ " . $_SESSION["debug_log"][$type][$i] . "<br>";
+		}
+	}
+	
+	return $log_text;
+}
+
 ?>
