@@ -219,7 +219,7 @@ foreach ($_hosts as $item) {
 		print "SUCCESS: Host: " . $item["Hostname"] . "\n";
 		
 		print "   Re-caching interface data for host: " . $item["Hostname"] . "\n";
-		//query_snmp_host($host_id, 1);
+		query_snmp_host($host_id, 1);
 	}else{
 		print "FAIL: Host: " . $item["Hostname"] . "\n";
 	}
