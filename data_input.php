@@ -124,6 +124,7 @@ function field_save() {
 	$save["update_rra"] = $_POST["update_rra"];
 	$save["sequence"] = $_POST["sequence"];
 	$save["type_code"] = $_POST["type_code"];
+	$save["regexp_match"] = $_POST["regexp_match"];
 	
 	$data_input_field_id = sql_save($save, "data_input_fields");
 	
@@ -206,6 +207,18 @@ function field_edit() {
 	<?
 	}
 	
+	if ($current_field_type == "in") {
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+		<td width="50%">
+			<font class="textEditTitle">Regular Expression Match</font><br>
+			If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).
+		</td>
+		<?DrawFormItemTextBox("regexp_match",$field["regexp_match"],"","200", "40");?>
+	</tr>
+	<?
+	}
+	
+	if ($current_field_type == "in") {
 	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Special Type Code</font><br>
@@ -214,6 +227,7 @@ function field_edit() {
 		<?DrawFormItemTextBox("type_code",$field["type_code"],"","40", "40");?>
 	</tr>
 	<?
+	}
 	
 	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("input_output",$current_field_type,"");
