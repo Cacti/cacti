@@ -255,6 +255,9 @@ function form_save() {
 	}
 	
 	if ((isset($_POST["save_component_input"])) && (!is_error_message())) {
+		$graph_input_values = array();
+		$selected_graph_items = array();
+		
 		$save["id"] = $_POST["graph_template_input_id"];
 		$save["graph_template_id"] = $_POST["graph_template_id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
@@ -264,16 +267,45 @@ function form_save() {
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, "graph_template_input");
 			
+			/* list all select graph items for use down below */
+			$i = 0;
+			while (list($var, $val) = each($_POST)) {
+				if (eregi("^i_", $var)) {
+					$selected_graph_items[$i] = str_replace("i_", "", $var);
+					$i++;
+				}
+			}
+			
+			if (!empty($_POST["any_selected_item"])) {
+				/* list each graph using this graph template and find the "current" value for this input */
+				$graphs = db_fetch_assoc("select " . $save["column_name"] . ",local_graph_id from graph_templates_item where graph_template_id=" . $save["graph_template_id"] . " and local_graph_id>0 and local_graph_template_item_id=" . $_POST["any_selected_item"]);
+				
+				if (sizeof($graphs) > 0) {
+				foreach ($graphs as $graph) {
+					$graph_input_values{$graph["local_graph_id"]} = $graph{$save["column_name"]};
+				}
+				}
+			}
+			
 			if ($graph_template_input_id) {
 				raise_message(1);
 				
 				db_execute("delete from graph_template_input_defs where graph_template_input_id=$graph_template_input_id");
 				
-				while (list($var, $val) = each($_POST)) {
-					if (eregi("^i_", $var)) {
-						db_execute ("insert into graph_template_input_defs (graph_template_input_id,graph_template_item_id)
-							values ($graph_template_input_id," . str_replace("i_", "", $var) . ")");
-					}
+				if (sizeof($selected_graph_items) > 0) {
+				foreach ($selected_graph_items as $graph_template_item_id) {
+					db_execute("insert into graph_template_input_defs (graph_template_input_id,graph_template_item_id)
+						values ($graph_template_input_id,$graph_template_item_id)");
+					
+				}
+				}
+				
+				/* loop through each graph attached to this graph template and re-apply the current value for this
+				input */
+				if (sizeof($graph_input_values) > 0) {
+				while (list($local_graph_id, $value) = each($graph_input_values)) {
+					db_execute("update graph_templates_item set " . $save["column_name"] . "='$value' where graph_template_id=" . $save["graph_template_id"] . " and local_graph_id>0 and " . array_to_sql_or($selected_graph_items, "local_graph_template_item_id"));
+				}
 				}
 			}else{
 				raise_message(2);
@@ -748,13 +780,14 @@ function input_edit() {
 		</td>
 		<td>
 		<?php
-		$i = 0;
+		$i = 0; $any_selected_item = "";
 		if (sizeof($item_list) > 0) {
 		foreach ($item_list as $item) {
 			if ($item["graph_template_input_id"] == "") {
 				$old_value = "";
 			}else{
 				$old_value = "on";
+				$any_selected_item = $item["graph_templates_item_id"];
 			}
 			
 			if ($graph_item_types{$item["graph_type_id"]} == "GPRINT") {
@@ -780,9 +813,10 @@ function input_edit() {
 	<?php
 	end_box();
 	
-	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
-	form_hidden_id("graph_template_input_id",$_GET["id"]);
-	form_hidden_box("save_component_input","1","");
+	form_hidden_id("graph_template_id", $_GET["graph_template_id"]);
+	form_hidden_id("graph_template_input_id", $_GET["id"]);
+	form_hidden_box("any_selected_item", $any_selected_item, "");
+	form_hidden_box("save_component_input", "1", "");
 	
 	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 }
