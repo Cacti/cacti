@@ -23,8 +23,6 @@
  | - raXnet - http://www.raxnet.net/                                       |
  +-------------------------------------------------------------------------+
 */
-// load script information to handle script request
-include(dirname(__FILE__) . "/scripts/script_functions.php" );
 
 // process waits for input and then calls functions as required
 while (1) {
@@ -41,7 +39,9 @@ while (1) {
 			$parm = explode(" ",$preparm);
 
 			// check for existance of function.  If exists call it
-			if (function_exists($cmd)) {
+			if ($cmd == "include") {
+				eval("include(\"" . $preparm . "\");");
+			} elseif (function_exists($cmd)) {
 				// print output of function arguments
 
 				$result = call_user_func_array($cmd, $parm);
