@@ -54,12 +54,13 @@ if ($new_cacti_version == $config["cacti_version"]) {
 }
 
 $current_document_root = "";
+$current_document = str_replace("/install", "", dirname($_SERVER["PHP_SELF"]));
 
 /* find the current document root depending on if we're using apache or iis */
-if (isset($_SERVER["DOCUMENT_ROOT"])) {
+if ((stristr($_SERVER["SERVER_SOFTWARE"], "IIS")) && (isset($_SERVER["PATH_TRANSLATED"]))) {
+	$current_document_root = str_replace($_SERVER["SCRIPT_NAME"], "", str_replace("\\", "/", $_SERVER["PATH_TRANSLATED"]));
+}elseif (isset($_SERVER["DOCUMENT_ROOT"])) {
 	$current_document_root = $_SERVER["DOCUMENT_ROOT"];
-}elseif ((isset($_SERVER["PATH_TRANSLATED"])) && (isset($_SERVER["PATH_INFO"]))) {
-	$current_document_root = str_replace($_SERVER["PATH_INFO"], "", $_SERVER["PATH_TRANSLATED"]);
 }
 
 /* Here, we define each name, default value, type, and path check for each value
