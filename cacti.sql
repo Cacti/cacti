@@ -314,54 +314,6 @@ INSERT INTO data_input_data VALUES (6,69,'on','');
 INSERT INTO data_input_data VALUES (6,68,'','.1.3.6.1.4.1.2021.4.15.0');
 
 --
--- Table structure for table `data_input_data_cache`
---
-
-CREATE TABLE data_input_data_cache (
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
-  host_id mediumint(8) NOT NULL default '0',
-  data_input_id mediumint(8) unsigned NOT NULL default '0',
-  action tinyint(2) NOT NULL default '1',
-  command varchar(255) NOT NULL default '',
-  hostname varchar(250) NOT NULL default '',
-  snmp_community varchar(100) NOT NULL default '',
-  snmp_version tinyint(1) NOT NULL default '0',
-  snmp_username varchar(50) NOT NULL default '',
-  snmp_password varchar(50) NOT NULL default '',
-  snmp_port mediumint(5) unsigned NOT NULL default '161',
-  snmp_timeout mediumint(8) unsigned NOT NULL default '0',
-  rrd_name varchar(19) NOT NULL default '',
-  rrd_path varchar(255) NOT NULL default '',
-  rrd_num tinyint(2) unsigned NOT NULL default '0',
-  arg1 varchar(255) default NULL,
-  arg2 varchar(255) default NULL,
-  arg3 varchar(255) default NULL,
-  PRIMARY KEY  (local_data_id,rrd_name),
-  KEY local_data_id (local_data_id)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `data_input_data_cache`
---
-
-
---
--- Table structure for table `data_input_data_fcache`
---
-
-CREATE TABLE data_input_data_fcache (
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
-  data_input_field_name varchar(100) NOT NULL default '',
-  rrd_data_source_name varchar(19) NOT NULL default '',
-  PRIMARY KEY  (local_data_id,rrd_data_source_name)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `data_input_data_fcache`
---
-
-
---
 -- Table structure for table `data_input_fields`
 --
 
@@ -1783,7 +1735,9 @@ CREATE TABLE graph_tree_items (
   rra_id smallint(8) unsigned NOT NULL default '0',
   title varchar(255) default NULL,
   host_id mediumint(8) unsigned NOT NULL default '0',
-  order_key varchar(60) NOT NULL default '0',
+  order_key varchar(100) NOT NULL default '0',
+  host_grouping_type tinyint(3) unsigned NOT NULL default '1',
+  sort_children_type tinyint(3) unsigned NOT NULL default '1',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
   KEY id_2 (id),
@@ -1794,7 +1748,7 @@ CREATE TABLE graph_tree_items (
 -- Dumping data for table `graph_tree_items`
 --
 
-INSERT INTO graph_tree_items VALUES (6,1,0,1,'',1,'010000000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (7,1,0,0,'',1,'001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',1,1);
 
 --
 -- Table structure for table `host`
@@ -1823,7 +1777,7 @@ CREATE TABLE host (
   avg_time decimal(7,5) default '0.00000',
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
-  availability decimal(7,5) default '100.00',
+  availability decimal(7,5) NOT NULL default '100.00000',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -1833,7 +1787,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','',1,'','',161,500,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','','9.99999','0.00000','0.00000','0.00000','0','0','100.00');
+INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','',1,'','',161,500,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,100.00000);
 
 --
 -- Table structure for table `host_graph`
@@ -1882,6 +1836,9 @@ CREATE TABLE host_snmp_cache (
 CREATE TABLE host_snmp_query (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
+  sort_field varchar(50) NOT NULL default '',
+  title_format varchar(50) NOT NULL default '',
+  reindex_method tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_id,snmp_query_id),
   KEY host_id (host_id)
 ) TYPE=MyISAM;
@@ -1890,7 +1847,7 @@ CREATE TABLE host_snmp_query (
 -- Dumping data for table `host_snmp_query`
 --
 
-INSERT INTO host_snmp_query VALUES (1,6);
+INSERT INTO host_snmp_query VALUES (1,6,'dskDevice','|query_dskDevice|',0);
 
 --
 -- Table structure for table `host_template`
@@ -1975,6 +1932,124 @@ INSERT INTO host_template_snmp_query VALUES (7,1);
 INSERT INTO host_template_snmp_query VALUES (7,8);
 INSERT INTO host_template_snmp_query VALUES (7,9);
 INSERT INTO host_template_snmp_query VALUES (8,6);
+
+--
+-- Table structure for table `poller`
+--
+
+CREATE TABLE poller (
+  id smallint(5) unsigned NOT NULL auto_increment,
+  hostname varchar(250) NOT NULL default '',
+  ip_address int(11) unsigned NOT NULL default '0',
+  last_update datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `poller`
+--
+
+
+--
+-- Table structure for table `poller_command`
+--
+
+CREATE TABLE poller_command (
+  poller_id smallint(5) unsigned NOT NULL default '0',
+  time datetime NOT NULL default '0000-00-00 00:00:00',
+  action tinyint(3) unsigned NOT NULL default '0',
+  command varchar(200) NOT NULL default '',
+  PRIMARY KEY  (poller_id,action,command)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `poller_command`
+--
+
+
+--
+-- Table structure for table `poller_item`
+--
+
+CREATE TABLE poller_item (
+  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  poller_id smallint(5) unsigned NOT NULL default '0',
+  host_id mediumint(8) NOT NULL default '0',
+  action tinyint(2) unsigned NOT NULL default '1',
+  hostname varchar(250) NOT NULL default '',
+  snmp_community varchar(100) NOT NULL default '',
+  snmp_version tinyint(1) unsigned NOT NULL default '0',
+  snmp_username varchar(50) NOT NULL default '',
+  snmp_password varchar(50) NOT NULL default '',
+  snmp_port mediumint(5) unsigned NOT NULL default '161',
+  snmp_timeout mediumint(8) unsigned NOT NULL default '0',
+  rrd_name varchar(19) NOT NULL default '',
+  rrd_path varchar(255) NOT NULL default '',
+  rrd_num tinyint(2) unsigned NOT NULL default '0',
+  arg1 varchar(255) default NULL,
+  arg2 varchar(255) default NULL,
+  arg3 varchar(255) default NULL,
+  PRIMARY KEY  (local_data_id,rrd_name),
+  KEY local_data_id (local_data_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `poller_item`
+--
+
+
+--
+-- Table structure for table `poller_output`
+--
+
+CREATE TABLE poller_output (
+  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  rrd_name varchar(19) NOT NULL default '',
+  time datetime NOT NULL default '0000-00-00 00:00:00',
+  output text NOT NULL,
+  PRIMARY KEY  (local_data_id,rrd_name,time)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `poller_output`
+--
+
+
+--
+-- Table structure for table `poller_reindex`
+--
+
+CREATE TABLE poller_reindex (
+  host_id mediumint(8) unsigned NOT NULL default '0',
+  data_query_id mediumint(8) unsigned NOT NULL default '0',
+  action tinyint(3) unsigned NOT NULL default '0',
+  op char(1) NOT NULL default '',
+  assert_value varchar(100) NOT NULL default '',
+  arg1 varchar(100) NOT NULL default '',
+  PRIMARY KEY  (host_id,data_query_id,arg1)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `poller_reindex`
+--
+
+
+--
+-- Table structure for table `poller_time`
+--
+
+CREATE TABLE poller_time (
+  id mediumint(8) unsigned NOT NULL auto_increment,
+  poller_id smallint(5) unsigned NOT NULL default '0',
+  start_time datetime NOT NULL default '0000-00-00 00:00:00',
+  end_time datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `poller_time`
+--
+
 
 --
 -- Table structure for table `rra`
@@ -2140,48 +2215,6 @@ INSERT INTO snmp_query VALUES (8,'9343eab1f4d88b0e61ffc9d020f35414','<path_cacti
 INSERT INTO snmp_query VALUES (9,'0d1ab53fe37487a5d0b9e1d3ee8c1d0d','<path_cacti>/resource/script_queries/host_cpu.xml','SNMP - Get Processor Information','Gets usage for each processor in the system using the host MIB.',0,11);
 
 --
--- Table structure for table `snmp_query_field`
---
-
-CREATE TABLE snmp_query_field (
-  snmp_query_id mediumint(8) unsigned NOT NULL default '0',
-  data_input_field_id mediumint(8) unsigned NOT NULL default '0',
-  action_id tinyint(2) NOT NULL default '0',
-  PRIMARY KEY  (snmp_query_id,data_input_field_id),
-  KEY snmp_query_id (snmp_query_id),
-  KEY data_input_field_id (data_input_field_id)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `snmp_query_field`
---
-
-INSERT INTO snmp_query_field VALUES (1,14,3);
-INSERT INTO snmp_query_field VALUES (1,13,2);
-INSERT INTO snmp_query_field VALUES (1,12,1);
-INSERT INTO snmp_query_field VALUES (2,14,3);
-INSERT INTO snmp_query_field VALUES (2,13,2);
-INSERT INTO snmp_query_field VALUES (2,12,1);
-INSERT INTO snmp_query_field VALUES (3,14,3);
-INSERT INTO snmp_query_field VALUES (3,13,2);
-INSERT INTO snmp_query_field VALUES (3,12,1);
-INSERT INTO snmp_query_field VALUES (4,14,3);
-INSERT INTO snmp_query_field VALUES (4,13,2);
-INSERT INTO snmp_query_field VALUES (4,12,1);
-INSERT INTO snmp_query_field VALUES (6,33,3);
-INSERT INTO snmp_query_field VALUES (6,32,2);
-INSERT INTO snmp_query_field VALUES (6,31,1);
-INSERT INTO snmp_query_field VALUES (7,12,1);
-INSERT INTO snmp_query_field VALUES (7,13,2);
-INSERT INTO snmp_query_field VALUES (7,14,3);
-INSERT INTO snmp_query_field VALUES (8,31,1);
-INSERT INTO snmp_query_field VALUES (8,32,2);
-INSERT INTO snmp_query_field VALUES (8,33,3);
-INSERT INTO snmp_query_field VALUES (9,31,1);
-INSERT INTO snmp_query_field VALUES (9,32,2);
-INSERT INTO snmp_query_field VALUES (9,33,3);
-
---
 -- Table structure for table `snmp_query_graph`
 --
 
@@ -2323,10 +2356,10 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (75,'7e093c535fa3d810fa76fc3d8c80c94b
 INSERT INTO snmp_query_graph_rrd_sv VALUES (74,'084efd82bbddb69fb2ac9bd0b0f16ac6',13,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (72,'14aa2dead86bbad0f992f1514722c95e',13,41,2,'name','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (73,'70390712158c3c5052a7d830fb456489',13,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (49,'6537b3209e0697fbec278e94e7317b52',2,38,1,'name','|host_description| - Errors - |query_ifIP| - |query_ifName| (In)');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (50,'6d3f612051016f48c951af8901720a1c',2,38,2,'name','|host_description| - Errors - |query_ifName| (In)');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (51,'62bc981690576d0b2bd0041ec2e4aa6f',2,38,3,'name','|host_description| - Errors - |query_ifIP|/|query_ifDescr| (In)');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (52,'adb270d55ba521d205eac6a21478804a',2,38,4,'name','|host_description| - Errors - |query_ifDescr| (In)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (49,'6537b3209e0697fbec278e94e7317b52',2,38,1,'name','|host_description| - Errors - |query_ifIP| - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (50,'6d3f612051016f48c951af8901720a1c',2,38,2,'name','|host_description| - Errors - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (51,'62bc981690576d0b2bd0041ec2e4aa6f',2,38,3,'name','|host_description| - Errors - |query_ifIP|/|query_ifDescr|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (52,'adb270d55ba521d205eac6a21478804a',2,38,4,'name','|host_description| - Errors - |query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (54,'77065435f3bbb2ff99bc3b43b81de8fe',3,40,1,'name','|host_description| - Non-Unicast Packets - |query_ifIP| - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (55,'240d8893092619c97a54265e8d0b86a1',3,40,2,'name','|host_description| - Non-Unicast Packets - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (56,'4b200ecf445bdeb4c84975b74991df34',3,40,3,'name','|host_description| - Non-Unicast Packets - |query_ifIP|/|query_ifDescr|');
@@ -2533,5 +2566,5 @@ CREATE TABLE version (
 -- Dumping data for table `version`
 --
 
-INSERT INTO version VALUES ('0.8.5a');
+INSERT INTO version VALUES ('0.8.6');
 
