@@ -27,8 +27,8 @@
 
 /* tab information */
 $tabs = array(	"general" => "General Settings",
-		"path" => "Path Settings",
-		"visual" => "Visual Settings");
+		"path"    => "Path Settings",
+		"visual"  => "Visual Settings");
 
 /* setting information */
 $settings = 	array(
@@ -81,7 +81,7 @@ $settings = 	array(
 													"method" => "checkbox",
 													"tab" => "general"),
 									"log_snmp" => 			array("friendly_name" => "",
-													"description" => "Update",
+													"description" => "SNMP",
 													"method" => "checkbox",
 													"tab" => "general")
 													)),
