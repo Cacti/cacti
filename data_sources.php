@@ -832,7 +832,7 @@ function ds_edit() {
 			<tr>
 				<td>
 					<span class="textInfo">Data Source Debug</span><br>
-					<pre><?php print rrdtool_function_create($_GET["id"], true);?></pre>
+					<pre><?php print rrdtool_function_create($_GET["id"], true, array());?></pre>
 				</td>
 			</tr>
 		</table>
