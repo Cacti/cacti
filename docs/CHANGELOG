@@ -1,5 +1,33 @@
 raXnet - cacti
 
+0.8.1
+-bug#40: Fixed OIDs in serveral Netware data templates.
+-bug#41: Data source and graph names are lost when created from a  template.
+-bug#44: Fixed Host MIB logged in users OID in data template.
+-bug#46: Fixed an RRDTool/PHP binary variable mixup on the install page
+for win32 users.
+-bug#48: Changed the "Create" button on the settings page to "Save".
+-bug#52: Make sure the data source/graph names are pulled down after clicking
+"Create", so the user can press cancel.
+-bug: Changed references from $_SERVER["SCRIPT_NAME"] to $_SERVER["PHP_SELF"]
+because of strange behavior on PHP 4.3.2 under Windows.
+-bug: Make sure to filter on the "cached title" for on both the data sources
+and graph management pages.
+-bug: Fixed error when debug mode was on and the user tried to add a new graph
+or data source.
+-bug: Take tree permissions into account when displaying the "Default Tree"
+dropdown on the graph settings page.
+-bug: Incorrect graph title was displayed on graph tree delete confirmation.
+-bug: Win32: Graphs were being exported even when the graph export path was left
+blank.
+-bug: Exported graphs were displayed in the incorrect order.
+-bug: Legends were not displayed on exported graphs.
+-bug: HRULE items caused graphs to break.
+-feature: You can now use negative VRULE items, such as '-12:00' to display a
+line 12 hours ago.
+-bug: Data queries that had a non-integer index would not render graph/data
+source titles properly.
+
 0.8
 -feature: Added support for graph, data source, and host templates.
 -feature: Added a stricter concept of hosts which enables better 
