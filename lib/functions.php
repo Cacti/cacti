@@ -256,11 +256,13 @@ function array_rekey($array, $key, $key_value) {
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using pring() or not */
 function log_data($string, $output = false) {
+	global $config;
+	
 	/* fill in the current date for printing in the log */
 	$date = date("m/d/Y g:i A");
 	
 	/* echo the data to the log (append) */
-	$fp = fopen(read_config_option("path_webroot") . read_config_option("path_webcacti") . "/log/rrd.log", "a");
+	$fp = fopen($config["base_path"] . "/log/rrd.log", "a");
 	@fwrite($fp, "$date - $string\n");
 	fclose($fp);
 	
@@ -274,6 +276,8 @@ function log_data($string, $output = false) {
    @arg $local_data_id - (int) the ID of the data source
    @returns - the full script path or (bool) false for an error */
 function get_full_script_path($local_data_id) {
+	global $config;
+	
 	$data_source = db_fetch_row("select
 		data_template_data.id,
 		data_template_data.data_input_id,
@@ -306,7 +310,7 @@ function get_full_script_path($local_data_id) {
 	}
 	}
 	
-	$full_path = str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $full_path);
+	$full_path = str_replace("<path_cacti>", $config["base_path"], $full_path);
 	$full_path = str_replace("<path_snmpget>", read_config_option("path_snmpget"), $full_path);
 	$full_path = str_replace("<path_php_binary>", read_config_option("path_php_binary"), $full_path);
 	
@@ -348,6 +352,8 @@ function get_data_source_name($data_template_rrd_id) {
    @arg $expand_paths - (bool) whether to expand the <path_rra> variable into its full path or not
    @returns - the full path to the data source or an empty string for an error */
 function get_data_source_path($local_data_id, $expand_paths) {
+	global $config;
+	
     	if (empty($local_data_id)) { return ""; }
     	
     	$data_source = db_fetch_row("select name,data_source_path from data_template_data where local_data_id=$local_data_id");
@@ -366,7 +372,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-			$data_source_path = str_replace("<path_rra>", read_config_option("path_webroot") . read_config_option("path_webcacti") . "/rra", $data_source_path);
+			$data_source_path = str_replace("<path_rra>", $config["base_path"] . "/rra", $data_source_path);
 		}
 		
 		return $data_source_path;
@@ -565,7 +571,9 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
    @arg $path - the string to make path variable subsitutions on
    @returns - the original string with all of the variable subsitutions made */
 function subsitute_data_query_path($path) {
-	$path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $path);
+	global $config;
+	
+	$path = str_replace("|path_cacti|", $config["base_path"], $path);
 	$path = str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path);
 	
 	return $path;

@@ -510,7 +510,7 @@ function snmp_remove() {
 }
 
 function snmp_edit() {
-	global $colors, $snmp_query_field_actions, $paths, $fields_data_query_edit;
+	global $colors, $snmp_query_field_actions, $paths, $fields_data_query_edit, $config;
 	
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
@@ -530,7 +530,7 @@ function snmp_edit() {
 	
 	if (!empty($snmp_query["id"])) {
 		start_box("", "98%", "aaaaaa", "3", "center", "");
-		print "<tr bgcolor='#f5f5f5'><td>" . (file_exists(str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $snmp_query["xml_path"])) ? "<font color='#0d7c09'><strong>XML File Exists</strong></font>" : "<font color='#ff0000'><strong>XML File Does Not Exist</strong></font>") . "</td></tr>";
+		print "<tr bgcolor='#f5f5f5'><td>" . (file_exists(str_replace("<path_cacti>", $config["base_path"], $snmp_query["xml_path"])) ? "<font color='#0d7c09'><strong>XML File Exists</strong></font>" : "<font color='#ff0000'><strong>XML File Does Not Exist</strong></font>") . "</td></tr>";
 		end_box();
 		
 		start_box("<strong>Data Input Method</strong> [" . db_fetch_cell("select name from data_input where id=" . $snmp_query["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");

@@ -43,17 +43,6 @@ $tabs_graphs = array(
 /* setting information */
 $settings = array(
 	"path" => array(
-		"path_webcacti" => array(
-			"friendly_name" => "cacti Web Root",
-			"description" => "The path under your webroot where cacti lies, would be '/cacti'  in most cases if you are accessing cacti by: http://yourhost.com/cacti/.",
-			"method" => "textbox",
-			"max_length" => "255"
-			),
-		"path_webroot" => array("friendly_name" => "Web Server Document Root",
-			"description" => "Your webserver document root, is '/var/www/html' or '/home/httpd/html' in most cases.",
-			"method" => "textbox",
-			"max_length" => "255"
-			),
 		"path_snmpwalk" => array(
 			"friendly_name" => "snmpwalk Binary Path",
 			"description" => "The path to your snmpwalk binary.",

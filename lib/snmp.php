@@ -42,7 +42,7 @@ function get_data_query_array($snmp_query_id) {
 	include_once($config["library_path"] . "/xml.php");
 	
 	$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
-	$xml_file_path = str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $xml_file_path);
+	$xml_file_path = str_replace("<path_cacti>", $config["base_path"], $xml_file_path);
 	
 	if (!file_exists($xml_file_path)) {
 		return false;

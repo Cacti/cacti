@@ -43,9 +43,11 @@ function graph_export() {
 }
 
 function export() {
+	global $config;
+	
 	print "export: running graph export\n";
 	
-	$cacti_root_path = read_config_option("path_webroot") . read_config_option("path_webcacti");
+	$cacti_root_path = $config["base_path"];
 	$cacti_export_path = read_config_option("path_html_export");
 	
 	/* copy the css/images on the first time */
