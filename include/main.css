@@ -78,8 +78,9 @@ a:hover {
 }
 
 .textSubHeaderDark {
-	font-size: 12px;
+	font-size: 10px;
 	color: #ffffff;
+	font-weight: bold;
 }
 
 .textArea {
