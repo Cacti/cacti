@@ -1,7 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl 
 
-$ping = `/bin/ping -c $ARGV[0] -w 300 -n -q $ARGV[1]`;
-($packet_loss) = ($ping =~ /received, (\d+)% loss/);
-($round_trip) = ($ping =~ /rtt min\/avg\/max\/mdev = \d+\.\d+\/(\d+\.\d+)\/.* ms/);
+$ping = `ping -c 1 $ARGV[0] -w 1 | grep icmp_seq`; 
+$ping =~ s/(.*time=)(.*) (ms|usec)//; 
 
-print "$round_trip"; 
+print $2; 
