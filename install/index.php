@@ -249,6 +249,7 @@ if ($_REQUEST["step"] == "4") {
 			db_execute("update host_snmp_cache set field_name='ifName' where field_name='ifAlias' and snmp_query_id=1");
 			db_execute("update snmp_query_graph_rrd_sv set text=REPLACE(text,'ifAlias','ifName') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4)");
 			db_execute("update snmp_query_graph_sv set text=REPLACE(text,'ifAlias','ifName') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4)");
+			db_execute("update host set disabled=''");
 		}
 	}
 }
