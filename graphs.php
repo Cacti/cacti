@@ -31,7 +31,7 @@ switch ($_REQUEST["action"]) {
 		
 		header ("Location: $redirect_location"); exit;
 		break;
-	case 'save_diff':
+	case 'graph_diff':
 		include_once ("include/top_header.php");
 		
 		graph_diff();
@@ -140,6 +140,9 @@ function form_save() {
 	}elseif (isset($_POST["save_component_input"])) {
 		input_save();
 		return "graphs.php?action=item&local_graph_id=" . $_POST["local_graph_id"];
+	}elseif (isset($_POST["save_component_graph_diff"])) {
+		graph_diff_save();
+		return "graphs.php?action=graph_edit&local_graph_id=" . $_POST["local_graph_id"];
 	}elseif (isset($_POST["save_component_item"])) {
 		item_save();
 		
@@ -346,7 +349,13 @@ function item() {
 				<?
 				switch ($item["column_name"]) {
 				case 'task_item_id':
-					DrawFormItemDropdownFromSQL($item["id"],db_fetch_assoc("select item_id,descrip from polling_items order by descrip"),"descrip","item_id",$current_def_value[$column_name],"None","");
+					DrawFormItemDropdownFromSQL($item["id"],db_fetch_assoc("select
+						CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+						data_template_rrd.id 
+						from data_template_data,data_template_rrd,data_local 
+						left join host on data_local.host_id=host.id
+						where data_template_rrd.local_data_id=data_local.id 
+						and data_template_data.local_data_id=data_local.id"),"name","id",$current_def_value[$column_name],"None","");
 					break;
 				case 'color_id':
 					DrawFormItemColorSelect($item["id"],$current_def_value[$column_name],"None","0");
@@ -364,11 +373,7 @@ function item() {
 					DrawFormItemTextBox($item["id"],$current_def_value[$column_name],"","");
 					break;
 				case 'gprint_opts':
-					print "<td>";
-					DrawStrippedFormItemRadioButton($item["id"], $current_def_value[$column_name], "1", "Normal","1",true);
-					DrawStrippedFormItemRadioButton($item["id"], $current_def_value[$column_name], "2", "Exact Numbers","1",true);
-					//DrawStrippedFormItemTextBox("gprint_custom",$template_item["gprint_custom"],"","", "40");
-					print "</td>";
+					DrawFormItemDropdownFromSQL("gprint_id",db_fetch_assoc("select id,name from graph_templates_gprint order by name"),"name","id",$template_item["gprint_id"],"Default","");
 					break;
 				case 'text_format':
 					DrawFormItemTextBox($item["id"],$current_def_value[$column_name],"","","40");
@@ -477,10 +482,11 @@ function item_edit() {
 			<font class="textEditTitle">Task Item</font><br>
 			The task to use for this graph item; not used for COMMENT fields.
 		</td>
-		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select 
-			CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as name,
+		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
 			data_template_rrd.id 
 			from data_template_data,data_template_rrd,data_local 
+			left join host on data_local.host_id=host.id
 			where data_template_rrd.local_data_id=data_local.id 
 			and data_template_data.local_data_id=data_local.id"),"name","id",$template_item["task_item_id"],"None",$default_item);?>
 	</tr>
@@ -561,7 +567,7 @@ function item_edit() {
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "graphs.php");?>
+			<?DrawFormSaveButton("save", $_SERVER["HTTP_REFERER"]);?>
 		</td>
 	</tr>
 	</form>
@@ -610,6 +616,8 @@ function input_save() {
    ------------------------------------ */
 
 function graph_save() {
+	include_once ("include/utility_functions.php");
+	
 	if ($_POST["lower_limit"] == "") { $_POST["lower_limit"] = 0; }
 	if ($_POST["upper_limit"] == "") { $_POST["upper_limit"] = 0; }
 	if ($_POST["unit_exponent_value"] == "") { $_POST["unit_exponent_value"] = 0; }
@@ -648,22 +656,38 @@ function graph_save() {
 	/* if template information chanegd, update all nessesary template information */
 	if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
 		/* check to see if the number of graph items differs, if it does; we need user input */
-		if ((!empty($_POST["graph_template_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) > 0)) {
-			header("Location: graphs.php?action=save_diff&local_graph_id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
+		if ((!empty($_POST["graph_template_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
+			/* set the template back, since the user may choose not to go through with the change
+			at this point */
+			db_execute("update graph_local set graph_template_id=" . $_POST["_graph_template_id"] . " where id=$local_graph_id");
+			db_execute("update graph_templates_graph set graph_template_id=" . $_POST["_graph_template_id"] . " where local_graph_id=$local_graph_id");
+			
+			header("Location: graphs.php?action=graph_diff&local_graph_id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 			exit;
 		}
-		print "GAH!!!";exit;
-		include_once ("include/utility_functions.php");
-		$return_status = change_graph_template($local_graph_id, $_POST["graph_template_id"], $_POST["_graph_template_id"]);
+		
+		change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
 	}
+	
+	/* so we get redirected to the correct page, not '&local_graph_id=0' */
+	$_POST["local_graph_id"] = $local_graph_id;
+}
+
+function graph_diff_save() {
+	include_once ("include/utility_functions.php");
+	
+	if ($_POST["type"] == "1") {
+		$intrusive = true;
+	}elseif ($_POST["type"] == "2") {
+		$intrusive = false;
+	}
+	
+	change_graph_template($_POST["local_graph_id"], $_POST["graph_template_id"], $intrusive);
 }
 
 function graph_diff() {
 	global $colors;
-	
-	
 	include("include/config_arrays.php");
-	
 	
 	$template_query = "select
 		graph_templates_item.id,
@@ -710,16 +734,20 @@ function graph_diff() {
 		$items = $graph_items;
 	}
 	
+	?>
+	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
+		<tr>          
+			<td class="textArea">
+				The template you have selected requires some changes to be made to the structure of
+				your graph. Below is a preview of your graph along with changes that need to be completed
+				as shown in the left-hand column.
+			</td>
+		</tr>
+	</table>
+	<br>
+	<?
 	
 	start_box("<strong>Graph Preview</strong>", "", "");
-	
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],2);
-		DrawMatrixHeaderItem("Task Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
-	print "</tr>";
 	
 	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
 	
@@ -731,17 +759,17 @@ function graph_diff() {
 		
 		if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
 			$mode = "add";
+			$user_message = "When you click save, the items marked with a '<strong>+</strong>' will be added <strong>(Recommended)</strong>.";
 		}elseif ((sizeof($graph_template_items) < sizeof($graph_items)) && ($i >= sizeof($graph_template_items))) {
 			$mode = "delete";
+			$user_message = "When you click save, the items marked with a '<strong>-</strong>' will be removed <strong>(Recommended)</strong>.";
 		}
-		
-
 		
 		/* here is the fun meshing part. first we check the graph template to see if there is an input
 		for each field of this row. if there is, we revert to the value stored in the graph, if not
 		we revert to the value stored in the template. got that? ;) */
 		for ($j=0; ($j < count($graph_template_inputs)); $j++) {
-			if ($graph_template_inputs[$j]["graph_template_item_id"] == $item["id"]) {
+			if ($graph_template_inputs[$j]["graph_template_item_id"] == $graph_template_items[$i]["id"]) {
 				/* if we find out that there is an "input" covering this field/item, use the 
 				value from the graph, not the template */
 				$graph_item_field_name = $graph_template_inputs[$j]["column_name"];
@@ -754,14 +782,18 @@ function graph_diff() {
 		for ($j=0; ($j < count($struct_graph_item)); $j++) {
 			$graph_item_field_name = $struct_graph_item[$j];
 			
-			if (!isset($graph_preview_item_values[$graph_item_field_name])) {
+			if ($mode == "delete") {
+				$graph_preview_item_values[$graph_item_field_name] = $graph_items[$i][$graph_item_field_name];
+			}elseif (!isset($graph_preview_item_values[$graph_item_field_name])) {
 				$graph_preview_item_values[$graph_item_field_name] = $graph_template_items[$i][$graph_item_field_name];
 			}
 		}
 		
+		/* "prepare" array values */
 		$consolidation_function_id = $graph_preview_item_values["consolidation_function_id"];
 		$graph_type_id = $graph_preview_item_values["graph_type_id"];
 		
+		/* color logic */
 		if (($graph_item_types[$graph_type_id] != "GPRINT") && ($graph_item_types[$graph_type_id] != $_graph_type_name)) {
 			$bold_this_row = true; $use_custom_row_color = true;
 			
@@ -780,23 +812,35 @@ function graph_diff() {
 		
 		$_graph_type_name = $graph_item_types[$graph_type_id];
 		
-		/* alternating row color */
-		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; } $i++;
+		/* alternating row colors */
+		if ($use_custom_row_color == false) {
+			if ($i % 2 == 0) {
+				$action_column_color = $alternate_color_1;
+			}else{
+				$action_column_color = $alternate_color_2;
+			}
+		}else{
+			$action_column_color = $custom_row_color;
+		}
+		
+		print "<tr bgcolor='#$action_column_color'>"; $i++;
+		
+		/* make the left-hand column blue or red depending on if "add"/"remove" mode is set */
+		if ($mode == "add") {
+			$action_column_color = $colors["header"];
+			$action_css = "";
+		}elseif ($mode == "delete") {
+			$action_column_color = "C63636";
+			$action_css = "text-decoration: line-through;";
+		}
 		
 		/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
-		print "<td width='1%' bgcolor='#" . $colors["header"] . "' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
-		
-		print "<td" . ($graph_template_id ? "class='linkEditMain'" : "class='textEditTitle'") . ">";
-		
-		print "<td>";
-		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&graph_template_item_id=" . $graph_preview_item_values["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'>"; }
-		print "<strong>Item # " . ($i) . "</strong>";
-		if (empty($graph_template_id)) { print "</a>"; }
-		print "</td>\n";
+		print "<td width='1%' bgcolor='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
+		print "<td style='$action_css'><strong>Item # " . $i . "</strong></td>\n";
 		
 		if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
 			
-		switch ($graph_preview_item_values["graph_type_name"]) {
+		switch ($graph_item_types[$graph_type_id]) {
 		case 'AREA':
 			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
 			break;
@@ -834,13 +878,13 @@ function graph_diff() {
 		}
 		
 		?>
-		<td>
+		<td style="<?print $action_css;?>">
 			<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
 		</td>
-		<td>
+		<td style="<?print $action_css;?>">
 			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $graph_item_types[$graph_type_id];?><?if ($bold_this_row == true) { print "</strong>"; }?>
 		</td>
-		<td>
+		<td style="<?print $action_css;?>">
 			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $consolidation_functions[$consolidation_function_id];?><?if ($bold_this_row == true) { print "</strong>"; }?>
 		</td>
 		<td<?if ($graph_preview_item_values["color_id"] != "") { print ' bgcolor="#' .  $graph_preview_item_values["color_id"] . '"'; }?> width="1%">
@@ -862,14 +906,31 @@ function graph_diff() {
 	}
 	end_box();	
 	
+	?>
+	<form action="graphs.php" method="post">
+	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
+		<tr>          
+			<td class="textArea">
+				<input type='radio' name='type' value='1' checked>&nbsp;<?print $user_message;?><br>
+				<input type='radio' name='type' value='2'>&nbsp;When you click save, the graph items will remain untouched (could cause inconsistencies).
+			</td>
+		</tr>
+	</table>
 	
-	/* loop through each graph template and 
-	
-	/* 	Item # 1 (pepper_cpu - cpu1): sdfsssss   	AREA   AVERAGE   FF897C
-		Item # 2 (pepper_cpu1 - cpu1): fhfg 		GPRINT AVERAGE
-	--------Item # 3 (fsddfsdfs - cpu1): Current: 		GPRINT AVERAGE
-	++++++++""
-	*/
+	<br>
+	<table style="background-color: #ffffff; border: 1px solid #aaaaaa;" width="98%" align="center">
+		<tr>
+			 <td colspan="2" align="right">
+				<?DrawFormSaveButton("save", "graphs.php?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);?>
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="action" value="save">
+	<input type="hidden" name="save_component_graph_diff" value="1">
+	<input type="hidden" name="local_graph_id" value="<?print $_GET["local_graph_id"];?>">
+	<input type="hidden" name="graph_template_id" value="<?print $_GET["graph_template_id"];?>">
+	</form>
+	<?
 }
 
 function graph_remove() {
@@ -918,7 +979,7 @@ function graph_edit() {
 	
 	$graph_template_name = db_fetch_cell("select  name from graph_templates where id=" . $graphs["graph_template_id"]);
 	
-	if ($config["full_view_graph"]["value"] == "on") {
+	if (($config["full_view_graph"]["value"] == "on") && ($_GET["local_graph_id"] > 0)) {
 		item();
 	}
 	
@@ -1204,42 +1265,51 @@ function graph() {
 	start_box("<strong>Graph Management</strong>", "", "graphs.php?action=graph_edit");
 	
 	?>
-		<tr height="33">
-			<td valign="bottom" colspan="3" background="images/tab_back.gif">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle">Core Routers <img src="images/delete_icon_dark_back.gif" border="0" alt="Remove this Tree's Tab" align="absmiddle"><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle">Catalyst Fabric <img src="images/delete_icon_dark_back.gif" border="0" alt="Remove this Tree's Tab" align="absmiddle"><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle">Server Farm (1) <img src="images/delete_icon_dark_back.gif" border="0" alt="Remove this Tree's Tab" align="absmiddle"><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle">Web Server <img src="images/delete_icon_dark_back.gif" border="0" alt="Remove this Tree's Tab" align="absmiddle"><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-					</tr>
-				</table>
-			</td>
-			<form name="form_graph_tree">
-			<td align="right" valign="middle" background="images/tab_back.gif">
-				<select class="cboSmall" name="cbo_graph_tree" onChange="window.location=document.form_graph_tree.cbo_graph_tree.options[document.form_graph_tree.cbo_graph_tree.selectedIndex].value">
-					<option value="graphs.php" selected>Core Routers</option>
-					<option value="graphs.php">Catalyst Fabric</option>
-					<option value="graphs.php">Server Farm (1)</option>
-					<option value="graphs.php">Web Server</option>
-				</select>
-			</td>
-			</form>
-		</tr>
+	<tr bgcolor="<?print $colors["panel"];?>">
+		<form name="form_graph_id">
+		<td>
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="100">
+						Filter by host:&nbsp;
+					</td>
+					<td width="1">
+						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+							<option value="data_sources.php?host_id=0"<?if ($_GET["host_id"] == "0") {?> selected<?}?>>None</option>
+							
+							<?
+							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
+							
+							if (sizeof($hosts) > 0) {
+							foreach ($hosts as $host) {
+								print "<option value='data_sources.php?host_id=" . $host["id"] . "'"; if ($_GET["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td width="5"></td>
+					<td width="1">
+						<input type="text" name="filter" size="20">
+					</td>
+					<td>
+						&nbsp;<a href="data_sources.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>	
 	<?
 	
-	print "<tr bgcolor='#" . $colors["panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Title",$colors["panel_text"],1);
-		DrawMatrixHeaderItem("Template Name",$colors["panel_text"],1);
-		DrawMatrixHeaderItem("Size",$$colors["panel_text"],2);
+	end_box();
+	
+	start_box("", "", "");
+	
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		DrawMatrixHeaderItem("Graph Title",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Template Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Size",$colors["header_text"],2);
 	print "</tr>";
 	
 	$graph_list = db_fetch_assoc("select 
