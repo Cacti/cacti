@@ -643,7 +643,7 @@ function ds() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Sources</strong>", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit");
 	?>
 	
 	<tr bgcolor="<?print $colors["panel"];?>">
@@ -683,7 +683,12 @@ function ds() {
 	
 	$host = db_fetch_row("select hostname from host where id=" . $_GET["host_id"]);
 	
-	start_pagebox("Data Sources for '" . $host["hostname"] . "'", "98%", "aaaaaa", "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_GET["host_id"]);
+	start_box("Data Sources for '" . $host["hostname"] . "'", "98%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_GET["host_id"]);
+	
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Name</td>
+			<td class='textSubHeaderDark' colspan='2'>Data Input Method</td>
+		</tr>\n";
 	
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
@@ -699,8 +704,8 @@ function ds() {
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
-		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++;
-		print "<td><a href='data_sources.php?action=ds_edit&local_data_id=$data_source[local_data_id]'>$data_source[name]</a></td>";
+		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
+		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&local_data_id=$data_source[local_data_id]'>$data_source[name]</a></td>";
 		print "<td>$data_source[data_input_name]</td>";
 		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&local_data_id=$data_source[local_data_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
 		print "</tr>";
