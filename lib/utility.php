@@ -31,12 +31,12 @@ function repopulate_poller_cache() {
 
 	if (sizeof($poller_data) > 0) {
 	foreach ($poller_data as $data) {
-		update_poller_cache($data["id"]);
+		update_poller_cache($data["id"], true);
 	}
 	}
 }
 
-function update_poller_cache($local_data_id) {
+function update_poller_cache($local_data_id, $truncate_performed = false) {
 	global $config;
 
 	include_once($config["library_path"] . "/data_query.php");
@@ -55,7 +55,9 @@ function update_poller_cache($local_data_id) {
 	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
 
 	/* clear cache for this local_data_id */
-	db_execute("delete from poller_item where local_data_id=$local_data_id");
+	if (!$truncate_performed) {
+		db_execute("delete from poller_item where local_data_id=$local_data_id");
+	}
 
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -227,7 +229,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 
 		/* make sure to update the poller cache as well */
-		update_poller_cache($data_source["local_data_id"]);
+		update_poller_cache($data_source["local_data_id"], false);
 	}
 	}
 }

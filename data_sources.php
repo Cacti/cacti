@@ -264,7 +264,7 @@ function form_save() {
 
 	/* update the poller cache last to make sure everything is fresh */
 	if ((!is_error_message()) && (!empty($local_data_id))) {
-		update_poller_cache($local_data_id);
+		update_poller_cache($local_data_id, false);
 	}
 
 	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {

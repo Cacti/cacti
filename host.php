@@ -143,7 +143,7 @@ function form_actions() {
 
 				if (sizeof($data_sources) > 0) {
 					foreach ($data_sources as $data_source) {
-						update_poller_cache($data_source["id"]);
+						update_poller_cache($data_source["id"], false);
 					}
 				}
 			}
