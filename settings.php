@@ -39,7 +39,7 @@ switch ($_REQUEST["action"]) {
 			if ($settings[$setting]["method"] == "group") {
 				if (sizeof($settings[$setting]["items"]) > 0) {
 				foreach (array_keys($settings[$setting]["items"]) as $item) {
-					db_execute("replace into settings (name,value) values ('$item', '$_POST[$item]')");
+					db_execute("replace into settings (name,value) values ('$item', '" . (isset($_POST[$item]) ? $_POST[$item] : "") . "')");
 				}
 				}
 			}else{
