@@ -706,10 +706,6 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 			</sect2>
 		</sect1>
-		<sect1 id="graph_viewing_modes">
-			<title>Graph Viewing Modes</title>
-			<para></para>
-		</sect1>
 	</chapter>
 	<chapter id="user_management">
 		<title>User Management</title>
@@ -846,11 +842,6 @@ $database_password = "cacti";</userinput></screen>
 				when this box is checked.
 			</para>
 		</sect1>
-		<sect1 id="ldap_authentication">
-			<title>LDAP Authentication</title>
-			<para></para>
-		</sect1>
-		
 	</chapter>
 </part>
 
@@ -964,7 +955,58 @@ $database_password = "cacti";</userinput></screen>
 		</sect1>
 		<sect1 id="making_scripts_work_with_cacti">
 			<title>Making Your Scripts Work With Cacti</title>
-			<para></para>
+			<para>
+				The simplest way to extend Cacti's data gathering functionality is through external scripts. Cacti comes 
+				with a number of scripts out of the box which are located in the <filename>scripts/</filename> directory. 
+				These scripts are used by the data input methods that are present in a new installation of Cacti.
+			</para>
+			<para>
+				To have Cacti call an external script to gather data you must create a new data input method, making sure 
+				to specify <guilabel>Script/Command</guilabel> for the <guilabel>Input Type</guilabel> field. See the 
+				previous section, <ulink url="data_input_methods.html">Creating a Data Input Method</ulink> for more 
+				information about how to create a data input method. To gather data using your data input method, Cacti 
+				simply executes the shell command specified in the <guilabel>Input String</guilabel> field. Because of 
+				this, you can have Cacti run any shell command or call any script which can be written in almost any 
+				language.
+			</para>
+			<para>
+				What Cacti is concerned with is the output of the script. When you define your data input method, you are 
+				required to define one or more output fields. The number of output fields that you define here is important 
+				to your script's output. For a data input method with only one output field, your script should output its 
+				value in the following format:
+			</para>
+			<screen><userinput>&lt;value_1&gt;</userinput></screen>
+			<para>
+				So if I wrote a script that outputs the number of running processes, its output might look like the 
+				following:
+			</para>
+			<example>
+				<title>Example script output using 1 field</title>
+				<para>
+					<userinput>67</userinput>
+				</para>
+			</example>
+			<para>
+				Data input methods with more than one output field are handled a bit differently when writing scripts. 
+				Scripts that output more than one value should be formatted like the following:
+			</para>
+			<screen><userinput>&lt;fieldname_1&gt;:&lt;value_1&gt; &lt;fieldname_2&gt;:&lt;value_2&gt; ... &lt;fieldname_n&gt;:&lt;value_n&gt;</userinput></screen>
+			<para>
+				Lets say that I write a script that outputs the 1, 5, and 10 minute load average of a Unix machine. In Cacti, 
+				I name the output fields '1min', '5min', and '10min', respectively. Based on these two things, the output of 
+				the script should look like the following:
+			</para>
+			<example>
+				<title>Example script output using 3 fields</title>
+				<para>
+					<userinput>1min:0.40 5min:0.32 10min:0.01</userinput>
+				</para>
+			</example>
+			<para>
+				One last thing to keep in mind when writing scripts for Cacti is that they will be executed as the user the 
+				data gatherer runs as. Sometimes a script may work correctly when executed as root, but fails due to permissions 
+				problems when executed as a less privileged user.
+			</para>
 		</sect1>
 	</chapter>
 	<chapter id="data_queries">
@@ -1732,10 +1774,6 @@ $database_password = "cacti";</userinput></screen>
 				</figure>
 			</sect2>
 		</sect1>
-		<sect1 id="import_export_templates">
-			<title>Importing/Exporting Templates Using XML</title>
-			<para></para>
-		</sect1>
 	</chapter>
 </part>
 
@@ -1744,13 +1782,78 @@ $database_password = "cacti";</userinput></screen>
 	
 	<chapter id="how_to">
 		<title>How To</title>
-		<sect1 id="third_party_scripts">
-			<title>Add 3rd Party Scripts</title>
-			<para></para>
-		</sect1>
 		<sect1 id="graph_snmp_oid">
 			<title>Graph a Single SNMP OID</title>
-			<para></para>
+			<para>
+				When dealing with SNMP-enabled devices, there are often times when you want to graph the value of a single 
+				OID. This tutorial explains how to do this in Cacti. It also assumes that you have the "SNMP - Generic OID 
+				Template" graph template, which is now included in Cacti as of version 0.8.5. If you do not see this 
+				template listed under <guilabel>Graph Templates</guilabel>, download the template from the Cacti website 
+				in XML form and import it using the <guilabel>Import Templates</guilabel> menu item.
+			</para>
+			<para>
+				To start the process of creating a new graph for your OID, click the <guilabel>New Graphs</guilabel> menu 
+				item and select the host that contains the target OID from the dropdown. Under the <guilabel>Graph 
+				Templates</guilabel> box, you will see a dropdown on the last line that reads <guilabel>(Select a graph 
+				type to create)</guilabel>. From this dropdown, choose "SNMP - Generic OID Template" and click the 
+				<guilabel>Create</guilabel> button at the bottom of the page.
+			</para>
+			<para>
+				You will be presented with several fields that will require input before the new graph can be created. 
+				They are described in more detail below.
+			</para>
+			<table frame='all'>
+				<title>Field Description: SNMP - Generic OID Template</title>
+				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+					<colspec colnum="1">
+					<colspec colwidth="3*" colnum="2">
+					<thead>
+						<row>
+							<entry align="center">Name</entry>
+							<entry align="center">Description</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>(Graph) Title</entry>
+							<entry>The title that is to be used for the new graph. It is generally a good idea to keep |host_description| in the title, as to make the graph easier to identify later.</entry>
+						</row>
+						<row>
+							<entry>(Graph) Vertical Label</entry>
+							<entry>The text that will be printed along the y-axis of the graph. It is generally used to describe units, such as 'bytes' of 'percent'.</entry>
+						</row>
+						<row>
+							<entry>(Graph Items) Legend Color</entry>
+							<entry>The color that will be used to reprent the data on the graph.</entry>
+						</row>
+						<row>
+							<entry>(Graph Items) Legend Text</entry>
+							<entry>The text that will be used to describe the data on the graph legend.</entry>
+						</row>
+						<row>
+							<entry>(Data Source) Name</entry>
+							<entry>The title that is to be used for the new data source. It is generally a good idea to keep |host_description| in the title, as to make the data source easier to identify later.</entry>
+						</row>
+						<row>
+							<entry>(Data Source) Maximum Value [snmp_oid]</entry>
+							<entry>The maximum value that will be accepted from the OID. Make sure you choose a value that is reasonable for the data you are trying to graph because anything larger than the maximum will be ignored. If you are graphing a percentage, you should use '100' as the value should never exceed this.</entry>
+						</row>
+						<row>
+							<entry>(Data Source) Data Source Type [snmp_oid]</entry>
+							<entry>How the data from the OID should be stored by RRDTool and interpreted on the graph. If the value of the OID represents the actual data, you should use <guilabel>GAUGE</guilabel> for this field. If the OID value is a constantly incrimenting number, you should use <guilabel>COUNTER</guilabel> for this field. The two remaining field values, <guilabel>DERIVE</guilabel> and <guilabel>ABSOLUTE</guilabel> can be ignored in most situations.</entry>
+						</row>
+						<row>
+							<entry>(Custom Data) OID</entry>
+							<entry>The actual SNMP OID to graph. It is typically a good idea to enter the number OID here as opposed to using MIB names. For instance, to get the number of open files on a Netware server, you would use ".1.3.6.1.4.1.23.2.28.2.7.0" as the OID.</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+			<para>
+				When finished filling in values for these fields, click the <guilabel>Create</guilabel> button. Your new graph can 
+				now be accessed through the <guilabel>Graph Management</guilabel> page or the <guilabel>Graphs</guilabel> tab 
+				inside of Cacti.
+			</para>
 		</sect1>
 	</chapter>
 	<chapter id="faq">
