@@ -27,9 +27,10 @@
 include("./include/auth.php");
 include_once("./lib/utility.php");
 include_once("./lib/api_graph.php");
+include_once("./lib/api_tree.php");
 include_once("./lib/api_data_source.php");
 include_once("./lib/template.php");
-include_once("./lib/tree.php");
+include_once("./lib/html_tree.php");
 include_once("./lib/html_form_template.php");
 include_once("./lib/rrd.php");
 include_once("./lib/data_query.php");
@@ -289,11 +290,7 @@ function form_actions() {
 			}
 		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
-				$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["tree_item_id"]);
-				$new_order_key = get_next_tree_id($old_order_key,"graph_tree_items","order_key", "graph_tree_id=" . $_POST["tree_id"]);
-
-				db_execute("insert into graph_tree_items (graph_tree_id,title,order_key,local_graph_id,rra_id)
-					values (" . $_POST["tree_id"] . ",'','$new_order_key'," . $selected_items[$i] . ",1)");
+				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_GRAPH, $_POST["tree_item_id"], "", $selected_items[$i], read_graph_config_option("default_rra_id"), 0, 0, 0, false);
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* change host */
 			for ($i=0;($i<count($selected_items));$i++) {

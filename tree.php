@@ -25,6 +25,7 @@
 */
 
 include("./include/auth.php");
+include_once('./lib/api_tree.php');
 include_once('./lib/tree.php');
 include_once('./lib/html_tree.php');
 
@@ -57,8 +58,8 @@ switch ($_REQUEST["action"]) {
 		item_remove();
 
 		header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]);
-                break;
-    	case 'remove':
+		break;
+	case 'remove':
 		tree_remove();
 
 		header("Location: tree.php");
@@ -103,72 +104,11 @@ function form_save() {
 			header("Location: tree.php");
 		}
 	}elseif (isset($_POST["save_component_tree_item"])) {
-		if (empty($_POST["id"])) {
-			/* new/save - generate new order key */
-			$order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["parent_item_id"]),"graph_tree_items","order_key","graph_tree_id=" . $_POST["graph_tree_id"]);
-		}else{
-			/* edit/save - use old order_key */
-			$order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["id"]);
-		}
-
-		$save["id"] = $_POST["id"];
-		$save["graph_tree_id"] = $_POST["graph_tree_id"];
-		$save["title"] = form_input_validate((isset($_POST["title"]) ? $_POST["title"] : ""), "title", "", ($_POST["type"] == "1" ? false : true), 3);
-		$save["order_key"] = $order_key;
-		$save["local_graph_id"] = form_input_validate((isset($_POST["local_graph_id"]) ? $_POST["local_graph_id"] : "0"), "local_graph_id", "", true, 3);
-		$save["rra_id"]	= form_input_validate((isset($_POST["rra_id"]) ? $_POST["rra_id"] : "0"), "rra_id", "", true, 3);
-		$save["host_id"] = form_input_validate((isset($_POST["host_id"]) ? $_POST["host_id"] : "0"), "host_id", "", true, 3);
-		$save["host_grouping_type"] = form_input_validate((isset($_POST["host_grouping_type"]) ? $_POST["host_grouping_type"] : "1"), "host_grouping_type", "", true, 3);
-		$save["sort_children_type"] = form_input_validate((isset($_POST["sort_children_type"]) ? $_POST["sort_children_type"] : "1"), "sort_children_type", "", true, 3);
-
-		if (!is_error_message()) {
-			$tree_item_id = sql_save($save, "graph_tree_items");
-
-			if ($tree_item_id) {
-				raise_message(1);
-
-				/* only re-parent headings */
-				if (isset($_POST["title"])) {
-					reparent_branch($_POST["parent_item_id"], $_POST["id"]);
-				}
-
-				/* sort all children if this branch is to be sorted */
-				if ((isset($_POST["sort_children_type"])) && ($_POST["sort_children_type"] != TREE_ORDERING_NONE)) {
-					sort_branch($_POST["id"], $_POST["sort_children_type"]);
-				}
-
-				/* keep the children in line */
-				$parent_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=" . $_POST["parent_item_id"]);
-				if ((!empty($_POST["parent_item_id"])) && ($parent_sorting_type != TREE_ORDERING_NONE)) {
-					sort_branch($_POST["parent_item_id"], $parent_sorting_type);
-				}
-
-				/* if the user checked the 'Propagate Changes' box */
-				if (isset($_POST["propagate_changes"])) {
-					$search_key = preg_replace("/0+$/", "", $order_key);
-
-					$tree_items = db_fetch_assoc("select
-						graph_tree_items.id
-						from graph_tree_items
-						where graph_tree_items.host_id = 0
-						and graph_tree_items.local_graph_id = 0
-						and graph_tree_items.title != ''
-						and graph_tree_items.order_key like '$search_key%%'");
-
-					if (sizeof($tree_items) > 0) {
-						foreach ($tree_items as $item) {
-							db_execute("update graph_tree_items set sort_children_type = '" . $_POST["sort_children_type"] . "' where id = '" . $item["id"] . "'");
-
-							if ($_POST["sort_children_type"] != TREE_ORDERING_NONE) {
-								sort_branch($item["id"], $_POST["sort_children_type"]);
-							}
-						}
-					}
-				}
-			}else{
-				raise_message(2);
-			}
-		}
+		$tree_item_id = api_tree_item_save($_POST["id"], $_POST["graph_tree_id"], $_POST["type"], $_POST["parent_item_id"],
+			(isset($_POST["title"]) ? $_POST["title"] : ""), (isset($_POST["local_graph_id"]) ? $_POST["local_graph_id"] : "0"),
+			(isset($_POST["rra_id"]) ? $_POST["rra_id"] : "0"), (isset($_POST["host_id"]) ? $_POST["host_id"] : "0"),
+			(isset($_POST["host_grouping_type"]) ? $_POST["host_grouping_type"] : "1"), (isset($_POST["sort_children_type"]) ? $_POST["sort_children_type"] : "1"),
+			(isset($_POST["propagate_changes"]) ? true : false));
 
 		if (is_error_message()) {
 			header("Location: tree.php?action=item_edit&tree_item_id=" . (empty($tree_item_id) ? $_POST["id"] : $tree_item_id) . "&tree_id=" . $_POST["graph_tree_id"] . "&parent_id=" . $_POST["parent_item_id"]);
@@ -186,9 +126,9 @@ function item_edit() {
 	global $colors;
 
 	$tree_item_types = array(
-		1 => "Header",
-		2 => "Graph",
-		3 => "Host"
+		TREE_ITEM_TYPE_HEADER => "Header",
+		TREE_ITEM_TYPE_GRAPH => "Graph",
+		TREE_ITEM_TYPE_HOST => "Host"
 		);
 
 	$host_group_types = array(
