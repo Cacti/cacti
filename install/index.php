@@ -31,7 +31,7 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -173,12 +173,6 @@ if (empty($_REQUEST["step"])) {
 		$_REQUEST["step"] = "3";
 	}elseif ($_REQUEST["step"] == "3") {
 		$_REQUEST["step"] = "4";
-	}elseif ($_REQUEST["step"] == "9") {
-		$_REQUEST["step"] = "10";
-	}elseif ($_REQUEST["step"] == "10") {
-		$_REQUEST["step"] = "11";
-	}elseif ($_REQUEST["step"] == "11") {
-		$_REQUEST["step"] = "3";
 	}
 }
 
@@ -209,10 +203,6 @@ if ($_REQUEST["step"] == "4") {
 	
 	header ("Location: ../index.php");
 	exit;
-}elseif ($_REQUEST["step"] == "11") {
-	include ("update_to_0_8.php");
-	
-	$status_array = update_database($_REQUEST["db_name"], $_REQUEST["db_user"], $_REQUEST["db_pass"]);
 }elseif (($_REQUEST["step"] == "3") && ($_REQUEST["install_type"] == "3")) {
 	/* try to find current (old) version in the array */
 	$version_index = array_search($old_cacti_version, $cacti_versions);
@@ -252,6 +242,43 @@ if ($_REQUEST["step"] == "4") {
 			db_execute("update host set disabled=''");
 		}elseif ($cacti_versions[$i] == "0.8.2a") {
 			db_execute("ALTER TABLE `data_input_data_cache` ADD `rrd_num` TINYINT( 2 ) UNSIGNED NOT NULL AFTER `rrd_path`");
+		}elseif ($cacti_versions[$i] == "0.8.3") {
+			db_execute("ALTER TABLE `user_auth` CHANGE `graph_policy` `policy_graphs` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL");
+			db_execute("ALTER TABLE `user_auth` ADD `policy_trees` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `policy_hosts` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `policy_graph_templates` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL");
+			db_execute("ALTER TABLE `graph_tree_items` ADD `host_id` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `title`");
+			db_execute("ALTER TABLE `rra` ADD `timespan` INT( 12 ) UNSIGNED NOT NULL");
+			db_execute("update rra set timespan=(rows*steps*144)");
+			
+			$auth_graph = db_fetch_assoc("select user_id,local_graph_id from user_auth_graph");
+			
+			if (sizeof($auth_graph) > 0) {
+			foreach ($auth_graph as $item) {
+				db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["local_graph_id"] . ",1)");
+			}
+			}
+			
+			$auth_tree = db_fetch_assoc("select user_id,tree_id from user_auth_tree");
+			
+			if (sizeof($auth_graph) > 0) {
+			foreach ($auth_graph as $item) {
+				db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["tree_id"] . ",2)");
+			}
+			}
+			
+			db_execute("DROP TABLE `user_auth_graph`");
+			db_execute("DROP TABLE `user_auth_tree`");
+			db_execute("DROP TABLE `user_auth_hosts`");
+			
+			/* bug#72 */
+			db_execute("update graph_templates_item set cdef_id=15 where id=25");
+			db_execute("update graph_templates_item set cdef_id=15 where id=26");
+			db_execute("update graph_templates_item set cdef_id=15 where id=27");
+			db_execute("update graph_templates_item set cdef_id=15 where id=28");
+			
+			push_out_graph_item(25);
+			push_out_graph_item(26);
+			push_out_graph_item(27);
+			push_out_graph_item(28);
 		}
 	}
 }
@@ -330,7 +357,6 @@ if ($_REQUEST["step"] == "4") {
 						<p>
 						<select name="install_type">
 							<option value="1"<?php print ($default_install_type == "1") ? " selected" : "";?>>New Install</option>
-							<option value="2"<?php print ($default_install_type == "2") ? " selected" : "";?>>Upgrade from cacti 0.6.8</option>
 							<option value="3"<?php print ($default_install_type == "3") ? " selected" : "";?>>Upgrade from cacti 0.8.x</option>
 						</select>
 						</p>
@@ -396,188 +422,7 @@ if ($_REQUEST["step"] == "4") {
 						<p><strong><font color="#FF0000">NOTE:</font></strong> Once you click "Finish",
 						all of your settings will be saved and your database will be upgraded if this
 						is an upgrade. You can change any of the settings on this screen at a later
-						time by going to "cacti Settings" from within cacti.</p>
-						
-						<?php }elseif ($_REQUEST["step"] == "9") { ?>
-						
-						<p style='color: red; font-weight: bold;'>Make sure to read important upgrade notes below before continuing!</p>
-						
-						<p><strong>Script Output Syntax</strong></p>
-				
-						<p>The output syntax for scripts with multiple outputs has been changed! For instance, the following
-						syntax was acceptable in 0.6.x:</p>
-						
-						<p><pre>0.12:0.05:0.01</pre></p>
-						
-						<p>Because of changes in the poller architecture, the following syntax is now <strong>required</strong>:</p>
-						
-						<p><pre>1min:0.12 5min:0.05 10min:0.01</pre></p>
-						
-						<p>The field names <em>1min</em>, <em>5min</em>, and <em>10min</em> derive directly from the
-						output field names under "Data Input Methods". The output field names specified in cacti and the
-						field names used in the output strings must match <strong>exactly</strong>, or your data will 
-						not end up in the RRD file. Please note that none of this is required for a script that 
-						only outputs one value.
-						
-						<p><strong>New Permissions</strong></p>
-						
-						<p>Because new permissions have been added in 0.8, you may find that 0.6.8 users such 
-						as 'admin' get "Access Denied" messages to certain areas. As a precautionary measure, you
-						must go into "User Administration" and manually give trusted users rights to the new areas.</p>
-						
-						<p><strong>Required PHP Version</strong></p>
-						
-						<p>Cacti 0.8 now requires PHP 4.1 or higher. This is because cacti makes use of PHP's super-global
-						arrays.</p>
-						
-						<?php }elseif ($_REQUEST["step"] == "10") { ?>
-						
-						<p>You have chosen to upgrade from an old 0.6.8 installation to 0.8. Since 0.8 has
-						a new database structure, your old data must be ported to the new table format. For
-						the most part, everything from your previous installation should be ported. Keep in
-						mind however that some things may need to be ported manually if the script does not
-						import it correctly.</p>
-						
-						<p>To begin the import, you must specify the database hostname, username, password,
-						and name of your old 0.6.8 database. The database user <strong>must</strong> have
-						permissions to the old and new Cacti databases. The data will be copied from the old 
-						database to the new leaving the old database completely unchanged.</p>
-						
-						<p><strong>As always, make sure you have database backups!</strong></p>
-						
-						<table>
-							<tr>
-								<td>
-									Database Username:&nbsp;
-								</td>
-								<td>
-									<input type="text" name="db_user" size="25" value="root">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Database Password:&nbsp;
-								</td>
-								<td>
-									<input type="text" name="db_pass" size="25" value="">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Database Name:&nbsp;
-								</td>
-								<td>
-									<input type="text" name="db_name" size="25" value="cacti_old">
-								</td>
-							</tr>
-						</table>
-						
-						<p>The import process will begin when you click "Next". Please be patient as all of your
-						current SNMP devices will be recached during this process. The results of the import will
-						be displayed on the following screen.</p>
-						
-						<?php }elseif ($_REQUEST["step"] == "11") { ?>
-						
-						<p>Below is the status of your 0.6.8 -> 0.8 database import. Please make sure to take note
-						of any errors, as those items might have to be individually imported.</p>
-						
-						<?php
-						for ($i=0;($i<count($status_array));$i++) {
-							while (list($type, $arr) = each($status_array[$i])) {
-								$spew = false;
-								
-								if (isset($arr[0])) {
-									$current_status = 0;
-									$status_text = "... <span style='font-weight: bold; color: red;'>Fail</span><br>\n";
-								}else{
-									$current_status = 1;
-									$status_text = "... <span style='color: navy;'>Success</span><br>\n";
-								}
-								
-								if ($type == "user") {
-									$spew = true;
-									$current_message = "<strong>User</strong>: " . $arr[$current_status];
-								}elseif ($type == "version") {
-									$spew = true;
-									$current_message = "<strong>Version Check</strong>";
-								}elseif ($type == "user_acl") {
-									$spew = true;
-									$current_message = "<strong>User Permissions</strong>";
-								}elseif ($type == "user_host") {
-									$spew = true;
-									$current_message = "<strong>Host Permissions</strong>";
-								}elseif ($type == "user_log") {
-									$spew = true;
-									$current_message = "<strong>User Login Log</strong>";
-								}elseif ($type == "data_input") {
-									$spew = true;
-									$current_message = "<strong>Data Input Source</strong>: " . $arr[$current_status];
-								}elseif ($type == "data_input_field") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Field</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "host") {
-									$spew = true;
-									$current_message = "<strong>Host</strong>: " . $arr[$current_status];
-								}elseif ($type == "host_recache") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Re-Cache SNMP Data</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "data_local") {
-									$spew = true;
-									$current_message = "<strong>Data Source</strong>: " . $arr[$current_status];
-								}elseif ($type == "data_source") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Data Source Entry</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "data_source_item") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Data Source Item</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "data_source_data") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Data Source Data</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "data_source_rra") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Data Source -> RRA Mapping</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "cdef") {
-									$spew = true;
-									$current_message = "<strong>CDEF</strong>: " . $arr[$current_status];
-								}elseif ($type == "cdef_item") {
-									$error_spew_array{count($error_spew_array)} = "<strong>CDEF Item</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "graph_local") {
-									$spew = true;
-									$current_message = "<strong>Graph</strong>: " . $arr[$current_status];
-								}elseif ($type == "graph") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Graph Entry</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "graph_item") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Graph Item</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}elseif ($type == "tree") {
-									$spew = true;
-									$current_message = "<strong>Graph Tree</strong>: " . $arr[$current_status];
-								}elseif ($type == "tree_item") {
-									$error_spew_array{count($error_spew_array)} = "<strong>Item</strong>: " . $arr[$current_status] . $status_text;
-									if ($current_status == 0) { $spew_errors = true; }
-								}
-								
-								if ($spew == true) {
-									if ((count($error_spew_array) > 0) && ($spew_errors == true)) {
-										for ($j=0;($j<count($error_spew_array));$j++) {
-											print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $error_spew_array[$j];
-										}
-									}
-									
-									$error_spew_array = array();
-									$spew_errors = false;
-									
-									print $current_message . $status_text;
-								}
-							}
-						}
-						
-						?>
-						
-						<p>When you are finished examining your import results, click "Next" to proceed with the
-						installation procedure.</p>
+						time by going to "Cacti Settings" from within Cacti.</p>
 						
 						<?php }?>
 						
