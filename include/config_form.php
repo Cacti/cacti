@@ -45,61 +45,6 @@ $fields_cdef_edit = array(
 		)
 	);
 
-/* file: cdef.php, action: item_edit */
-$fields_cdef_item_edit = array(
-	"" => array(
-		"method" => "custom",
-		"value" => "",
-		"friendly_name" => "<span class='textArea'>Choose any one of these items:</span>"
-		),
-	"value_function" => array(
-		"method" => "drop_array",
-		"friendly_name" => "Function",
-		"value" => "|arg1:1|",
-		"none_value" => "None",
-		"array" => $cdef_functions,
-		),
-	"value_operator" => array(
-		"method" => "drop_array",
-		"friendly_name" => "Operator",
-		"value" => "|arg1:2|",
-		"none_value" => "None",
-		"array" => $cdef_operators,
-		),
-	"value_special_data_source" => array(
-		"method" => "drop_array",
-		"friendly_name" => "Special Data Source",
-		"value" => "|arg1:4|",
-		"none_value" => "None",
-		"array" => $custom_data_source_types,
-		),
-	"value_cdef" => array(
-		"method" => "drop_sql",
-		"friendly_name" => "Another CDEF",
-		"value" => "|arg1:5|",
-		"none_value" => "None",
-		"sql" => "select name,id from cdef",
-		),
-	"value_custom" => array(
-		"method" => "textbox",
-		"friendly_name" => "Custom String",
-		"value" => "|arg1:6|",
-		"max_length" => "150",
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg2:id|"
-		),
-	"cdef_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg3:cdef_id|"
-		),
-	"save_component_item" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
-
 /* file: color.php, action: edit */
 $fields_color_edit = array(
 	"hex" => array(
@@ -281,7 +226,7 @@ $struct_data_source = array(
 		"flags" => "NOTEMPLATE"
 		),
 	"data_input_id" => array(
-		"friendly_name" => "Data Input Source",
+		"friendly_name" => "Data Input Method",
 		"method" => "drop_sql",
 		"sql" => "select id,name from data_input order by name",
 		"default" => "",
@@ -668,6 +613,13 @@ $fields_host_edit = array(
 		"value" => "|arg1:description|",
 		"max_length" => "250",
 		),
+	"hostname" => array(
+		"method" => "textbox",
+		"friendly_name" => "Hostname",
+		"description" => "Fill in the fully qualified hostname for this device.",
+		"value" => "|arg1:hostname|",
+		"max_length" => "250",
+		),
 	"host_template_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => "Host Template",
@@ -676,12 +628,17 @@ $fields_host_edit = array(
 		"none_value" => "None",
 		"sql" => "select id,name from host_template",
 		),
-	"hostname" => array(
-		"method" => "textbox",
-		"friendly_name" => "Hostname",
-		"description" => "Fill in the fully qualified hostname for this device.",
-		"value" => "|arg1:hostname|",
-		"max_length" => "250",
+	"disabled" => array(
+		"method" => "checkbox",
+		"friendly_name" => "Disable Host",
+		"description" => "Check this box to disable all checks for this host.",
+		"value" => "|arg1:disabled|",
+		"default" => "",
+		"form_id" => false
+		),
+	"spacer1" => array(
+		"method" => "spacer",
+		"value" => "SNMP Options"
 		),
 	"snmp_community" => array(
 		"method" => "textbox",
@@ -730,14 +687,6 @@ $fields_host_edit = array(
 		"default" => "500",
 		"max_length" => "8",
 		"size" => "15"
-		),
-	"disabled" => array(
-		"method" => "checkbox",
-		"friendly_name" => "Disable Host",
-		"description" => "Check this box to disable all checks for this host.",
-		"value" => "|arg1:disabled|",
-		"default" => "",
-		"form_id" => false
 		),
 	"id" => array(
 		"method" => "hidden_zero",
@@ -915,62 +864,6 @@ $fields_tree_edit = array(
 		"value" => "|arg1:id|"
 		),
 	"save_component_tree" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
-
-/* file: tree.php, action: item_edit (header) */
-$fields_tree_item_edit_header = array(
-	"title" => array(
-		"method" => "textbox",
-		"friendly_name" => "Header Title",
-		"description" => "If this item is a header, enter a title here.",
-		"value" => "|arg1:title|",
-		"max_length" => "255",
-		)
-	);
-
-/* file: tree.php, action: item_edit (graph) */
-$fields_tree_item_edit_graph = array(
-	"local_graph_id" => array(
-		"method" => "drop_sql",
-		"friendly_name" => "Graph",
-		"description" => "Choose a graph from this list to add it to the tree.",
-		"value" => "|arg1:local_graph_id|",
-		"none_value" => "None",
-		"sql" => "select graph_templates_graph.local_graph_id as id,graph_templates_graph.title_cache as name from graph_templates_graph,graph_local where graph_local.id=graph_templates_graph.local_graph_id and local_graph_id != 0 order by title_cache"
-		),
-	"rra_id" => array(
-		"method" => "drop_sql",
-		"friendly_name" => "Round Robin Archive",
-		"description" => "Choose a round robin archive to control how this graph is displayed.",
-		"value" => "|arg1:rra_id|",
-		"default" => "1",
-		"none_value" => "None",
-		"sql" => "select id,name from rra"
-		)
-	);
-
-/* file: tree.php, action: item_edit (host) */
-$fields_tree_item_edit_host = array(
-	"host_id" => array(
-		"method" => "drop_sql",
-		"friendly_name" => "Host",
-		"description" => "Choose a host here to add it to the tree.",
-		"value" => "|arg1:host_id|",
-		"none_value" => "None",
-		"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"graph_tree_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg2:tree_id|"
-		),
-	"save_component_tree_item" => array(
 		"method" => "hidden",
 		"value" => "1"
 		)

@@ -118,26 +118,14 @@ function form_save() {
 			header("Location: cdef.php");
 		}
 	}elseif (isset($_POST["save_component_item"])) {
-		$current_type = 0; $current_value = "";
-		
-		if ($_POST["value_function"] != "0") { $current_type = 1; $current_value = $_POST["value_function"]; }
-		if ($_POST["value_operator"] != "0") { $current_type = 2; $current_value = $_POST["value_operator"]; }
-		if ($_POST["value_special_data_source"] != "0") { $current_type = 4; $current_value = $_POST["value_special_data_source"]; }
-		if ($_POST["value_cdef"] != "0") { $current_type = 5; $current_value = $_POST["value_cdef"]; }
-		if ($_POST["value_custom"] != "") { $current_type = 6; $current_value = $_POST["value_custom"]; }
-		
-		if (empty($current_type)) {
-			raise_message(5);
-		}
-		
 		$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
 		
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_cdef($_POST["id"], "cdef_item");
 		$save["cdef_id"] = $_POST["cdef_id"];
 		$save["sequence"] = $sequence;
-		$save["type"] = $current_type;
-		$save["value"] = $current_value;
+		$save["type"] = $_POST["type"];
+		$save["value"] = $_POST["value"];
 		
 		if (!is_error_message()) {
 			$cdef_item_id = sql_save($save, "cdef_items");
@@ -174,7 +162,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $fields_cdef_item_edit;
+	global $colors, $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 	
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef_items where id=" . $_GET["id"]);
@@ -188,10 +176,64 @@ function item_edit() {
 	
 	start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(array(
-		"config" => array(),
-		"fields" => inject_form_variables($fields_cdef_item_edit, (isset($values) ? $values : array()), (isset($cdef) ? $cdef : array()), $_GET)
-		));
+	if (isset($_GET["type_select"])) {
+		$current_type = $_GET["type_select"];
+	}elseif (isset($cdef["type"])) {
+		$current_type = $cdef["type"];
+	}else{
+		$current_type = "1";
+	}
+	
+	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
+	
+	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">CDEF Item Type</font><br>
+			Choose what type of CDEF item this is.
+		</td>
+		<td>
+			<select name="type_select" onChange="window.location=document.form_cdef.type_select.options[document.form_cdef.type_select.selectedIndex].value">
+				<?php
+				while (list($var, $val) = each($cdef_item_types)) {
+					print "<option value='cdef.php?action=item_edit" . (isset($_GET["id"]) ? "&id=" . $_GET["id"] : "") . "&cdef_id=" . $_GET["cdef_id"] . "&type_select=$var'"; if ($var == $current_type) { print " selected"; } print ">$val</option>\n";
+				}
+				?>
+			</select>
+		</td>
+	</tr>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">CDEF Item Value</font><br>
+			Enter a value for this CDEF item.
+		</td>
+		<td>
+			<?php
+			switch ($current_type) {
+			case '1':
+				form_dropdown("value", $cdef_functions, "", "", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
+				break;
+			case '2':
+				form_dropdown("value", $cdef_operators, "", "", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
+				break;
+			case '4':
+				form_dropdown("value", $custom_data_source_types, "", "", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
+				break;
+			case '5':
+				form_dropdown("value", db_fetch_assoc("select name,id from cdef"), "name", "id", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
+				break;
+			case '6':
+				form_text_box("value", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "255", 30, "text", (isset($_GET["id"]) ? $_GET["id"] : "0"));
+				break;
+			}
+			?>
+		</td>
+	</tr>
+	<?php
+	
+	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
+	form_hidden_box("type", $current_type, "");
+	form_hidden_box("cdef_id", $_GET["cdef_id"], "");
+	form_hidden_box("save_component_item", "1", "");
 	
 	end_box();
 	
