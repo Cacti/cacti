@@ -617,11 +617,29 @@ function ds_edit() {
 		end_box();
 	}
 	
-	//start_box("", "98%", "aaaaaa", "3", "center", "");
-	//print "<tr><td><pre>";
-	//print rrdtool_function_create($_GET["local_data_id"], true);
-	//print "</pre></td></tr>";
-	//end_box();
+	/* handle debug mode */
+	if (isset($_GET["debug"])) {
+		if ($_GET["debug"] == "0") {
+			kill_session_var("ds_debug_mode");
+		}elseif ($_GET["debug"] == "1") {
+			$_SESSION["ds_debug_mode"] = true;
+		}
+	}
+	
+	/* display the debug mode box if the user wants it */
+	if (isset($_SESSION["ds_debug_mode"])) {
+		start_box("<strong>Data Source Debug</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		?>
+		<tr>
+			<td>
+				<pre><?php print rrdtool_function_create($_GET["id"], true);?></pre>
+			</td>
+		</tr>
+		<?php
+		
+		end_box();
+	}
 	
 	start_box("<strong>Data Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
@@ -641,6 +659,16 @@ function ds_edit() {
 			Choose the host that this data source belongs to.
 		</td>
 		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",$host_id,"None",(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));?>
+	</tr>
+	
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Debug</font><br>
+			Turn on/off data source debugging.
+		</td>
+		<td>
+			<a href="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>&debug=<?php print isset($_SESSION["ds_debug_mode"]) ? "0" : "1";?>">Turn <strong><?php print isset($_SESSION["ds_debug_mode"]) ? "Off" : "On";?></strong> Data Source Debug Mode.</a>
+		</td>
 	</tr>
 	
 	<?php

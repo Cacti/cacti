@@ -557,7 +557,7 @@ function item() {
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Task Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
 		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
@@ -1039,6 +1039,8 @@ function graph_remove() {
 }
 
 function graph_edit() {
+	include_once ("include/rrd_functions.php");
+	
 	global $colors, $struct_graph, $image_types;
 	
 	if (read_config_option("full_view_graph") == "") {
@@ -1070,6 +1072,37 @@ function graph_edit() {
 		item();
 	}
 	
+	/* handle debug mode */
+	if (isset($_GET["debug"])) {
+		if ($_GET["debug"] == "0") {
+			kill_session_var("graph_debug_mode");
+		}elseif ($_GET["debug"] == "1") {
+			$_SESSION["graph_debug_mode"] = true;
+		}
+	}
+	
+	/* display the debug mode box if the user wants it */
+	if (isset($_SESSION["graph_debug_mode"])) {
+		start_box("<strong>Graph Debug</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		$graph_data_array["output_flag"] = 2;
+		
+		?>
+		<tr>
+			<td>
+				<img src="graph_image.php?local_graph_id=<?php print $_GET["id"];?>&rra_id=1&graph_start=-86400&graph_height=100&graph_width=350" alt="">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
+			</td>
+		</tr>
+		<?php
+		
+		end_box();
+	}
+	
 	start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>
 	
@@ -1088,9 +1121,18 @@ function graph_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Host</font><br>
-			Choose the host that this data source belongs to.
+			Choose the host that this graph belongs to.
 		</td>
 		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",(isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),"None","0");?>
+	</tr>
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Debug</font><br>
+			Turn on/off graph debugging.
+		</td>
+		<td>
+			<a href="graphs.php?action=graph_edit&id=<?php print $_GET["id"];?>&debug=<?php print isset($_SESSION["graph_debug_mode"]) ? "0" : "1";?>">Turn <strong><?php print isset($_SESSION["graph_debug_mode"]) ? "Off" : "On";?></strong> Graph Debug Mode.</a>
+		</td>
 	</tr>
 	
 	<?php
