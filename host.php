@@ -938,13 +938,13 @@ function host_edit() {
 			print "	</table>
 				<table align='center' width='98%'>
 					<tr>
-						<td width='1'>
+						<td width='1' valign='top'>
 							<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
 						</td>
-						<td width='1'>";
+						<td align='right'>";
 							form_base_dropdown("sgg_" . $snmp_query["id"],db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name"),"name","id","0","","");
 			print "			</td>
-						<td>
+						<td width='1' align='right'>
 							<input type='image' src='images/button_create.gif' alt='Create Graphs'>
 						</td>
 					</tr>
