@@ -58,13 +58,16 @@
 
 Cacti requires:
 <ul>
-	<li>rrdtool:<br>
-		<tt><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/</a> <b><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.35.tar.gz">rrdtool-1.0.35.tar.gz</a></b></tt><p>
-	<li>net-snmp (for SNMP support):<br>
-		<tt><a href="http://sourceforge.net/project/showfiles.php?group_id=12694">http://sourceforge.net/project/showfiles.php?group_id=12694</a> <b><a href="http://prdownloads.sourceforge.net/net-snmp/ucd-snmp-4.2.3.tar.gz">ucd-snmp-4.2.3.tar.gz</a></b></tt><p>
-		
-	<li><a href="http://www.php.net/">PHP 4</a> or newer.
-	<li><a href="http://www.mysql.com/">MySQL 3.23</a> or newer.
+	<li><a href="http://www.rrdtool.org/">RRDtool</a>:<br>
+		<tt><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/</a> <b><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.42.tar.gz">rrdtool-1.0.42.tar.gz</a></b></tt><p>
+	<li><a href="http://net-snmp.sf.net/">net-snmp</a> (for SNMP support):<br>
+		<tt><a href="http://sourceforge.net/project/showfiles.php?group_id=12694">http://sourceforge.net/project/showfiles.php?group_id=12694</a> <b><a href="http://prdownloads.sourceforge.net/net-snmp/net-snmp-5.0.8.tar.gz?download">net-snmp-5.0.8.tar.gz</a></b></tt><p>
+	
+	<li><a href="http://www.php.net/">PHP 4.1</a> or newer.<br>
+		<tt><a href="http://www.php.net/downloads.php">http://www.php.net/downloads.php</a> <b><a href="http://www.php.net/get/php-4.3.1.tar.gz/from/a/mirror">php-4.3.1.tar.gz</a></b></tt><p>
+	
+	<li><a href="http://www.mysql.com/">MySQL 3.23</a> or newer.<br>
+		<tt><a href="http://www.mysql.com/downloads/mysql-3.23.html">http://www.mysql.com/downloads/mysql-3.23.html</a> <b><a href="http://www.mysql.com/downloads/download.php?file=Downloads%2FMySQL-3.23%2Fmysql-3.23.56.tar.gz&pick=mirror">mysql-3.23.56.tar.gz</a></b></tt><p>
 </ul><p>
 
 <h3>Installation Instructions</h3><p>
@@ -76,7 +79,7 @@ Cacti requires:
 
 	<li>Create the MySQL database:<p>
 	
-		<p class="code"><tt class="shell">shell&gt;</tt> <b>mysqladmin create cacti</b></p><br>
+		<p class="code"><tt class="shell">shell&gt;</tt> <b>mysqladmin --user=root create cacti</b></p><br>
 		
 	<li>Import the default cacti database:<p>
 	

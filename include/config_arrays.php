@@ -198,14 +198,16 @@ $struct_graph = array(
 		"type" => "check",
 		"check_caption" => "Auto Scale",
 		"default" => "on",
-		"description" => "",
+		"description" => "Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the 
+			Upper and Lower limit will be ignored.",
 		"check_id" => "id"
 		),
 	"auto_scale_opts" => array(
 		"title" => "Auto Scale Options",
 		"type" => "radio",
 		"default" => "2",
-		"description" => "",
+		"description" => "Use --alt-autoscale-max to scale to the maximum value, or --alt-autoscale to scale to the absolute 
+			minimum and maximum.",
 		"items" => array(
 			0 => array(
 				"radio_value" => "1",
@@ -222,7 +224,7 @@ $struct_graph = array(
 		"type" => "check",
 		"check_caption" => "Logarithmic Auto Scaling (--logarithmic)",
 		"default" => "",
-		"description" => "",
+		"description" => "Use Logarithmic y-axis scaling",
 		"check_id" => "id"
 		),
 	"auto_scale_rigid" => array(
@@ -230,7 +232,7 @@ $struct_graph = array(
 		"type" => "check",
 		"check_caption" => "Use Rigid Boundaries Mode (--rigid)",
 		"default" => "",
-		"description" => "",
+		"description" => "Do not expand the lower and upper limit if the graph contains a value outside the valid range.",
 		"check_id" => "id"
 		),
 	"auto_padding" => array(

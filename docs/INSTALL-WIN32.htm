@@ -58,15 +58,17 @@
 
 Cacti requires:
 <ul>
-	<li>rrdtool:<br>
-		<tt><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/</a> <b><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.35.x86distr.zip">rrdtool-1.0.35.x86distr.zip</a></b></tt><p></li>
+	<li><a href="http://www.rrdtool.org/">RRDtool</a>:<br>
+		<tt><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/</a> <b><a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.40.x86distr.zip-5.8.zip">rrdtool-1.0.40.x86distr.zip-5.8.zip</a></b></tt><p></li>
 		
-	<li><a href="http://www.php.net/">PHP 4</a> or newer (with SNMP support):<br>
-		<tt><a href="http://www.php.net/downloads.php">http://www.php.net/downloads.php</a> <b><a href="http://www.php.net/do_download.php?download_file=php-4.1.2-Win32.zip">php-4.1.2-Win32.zip</a></b></tt><p></li>
+	<li><a href="http://www.php.net/">PHP 4.1</a> or newer (with SNMP support):<br>
+		<tt><a href="http://www.php.net/downloads.php">http://www.php.net/downloads.php</a> <b><a href="http://www.php.net/get/php-4.3.1-Win32.zip/from/a/mirror">php-4.3.1-Win32.zip</a></b></tt><p></li>
 	
-	<li><p><a href="http://www.mysql.com/">MySQL 3.23</a> or newer.</p></li>
+	<li><p><a href="http://www.mysql.com/">MySQL 3.23</a> or newer.<br>
+		<tt><a href="http://www.mysql.com/downloads/mysql-3.23.html">http://www.mysql.com/downloads/mysql-3.23.html</a> <b><a href="http://www.mysql.com/downloads/download.php?file=Downloads%2FMySQL-3.23%2Fmysql-3.23.56-win.zip&pick=mirror">mysql-3.23.56-win.zip</a></b></tt><p></li>
 	
-	<li><a href="http://www.apache.org/">Apache</a> 1.3.20/IIS 5.x or higher</li>
+	<li><a href="http://www.apache.org/">Apache</a> 1.3.20/IIS 5.x or higher<br>
+		<tt><a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a> <b><a href="http://www.ibiblio.org/pub/packages/infosystems/WWW/servers/apache/httpd/binaries/win32/apache_2.0.45-win32-x86-no_ssl.msi">apache_2.0.45-win32-x86-no_ssl.msi</a></b></tt><p></li>
 </ul><p>
 
 <h3>Install PHP</h3><p>
@@ -178,7 +180,7 @@ Cacti requires:
 		C:\rrdtool<p>
 	
 	<li>Edit the <b>cacti\include\config.php</b> file.<p>
-
+	
 	<ul>
 		<li><p>Specify the MySQL user, password and database for your cacti configuration.</p></li>
 		
@@ -188,9 +190,9 @@ Cacti requires:
 		<b>$database_password</b> = <tt class="php-var">"cacti"</tt>;
 		</p>
 		
-		<li><p>Change the operating system variable to "win32":</p></li>
+		<li><p>Change the operating system variable to "win32" (already done for win32 distribution):</p></li>
 		
-		<p class="php"><b>$cacti_server_os</b> = <tt class="php-var">"win32"</tt>;<br></p><br>
+		<p class="php"><b>$config[<tt class="php-var">"cacti_server_os"</tt>]</b> = <tt class="php-var">"win32"</tt>;<br></p><br>
 		
 	</ul>
 	
