@@ -166,7 +166,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		}
 		
 		/* if we are supposed to hide this branch, flag it */
-		if ($leaf["status"] == "1") {
+		if (($leaf["status"] == "1") && ($hide_until_tier == false)) {
 			$hide_until_tier = $tier;
 		}
 		
