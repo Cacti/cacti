@@ -41,10 +41,10 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	/* the $host_field_override array can be used to override certain host fields in the poller cache */
 	$host = array_merge($host, $host_field_override);
 
-	if ($host["disabled"] == "on") {
-		return true;
-	}else{
-		if (isset($host["id"])) {
+	if (isset($host["id"])) {
+		if ($host["disabled"] == "on") {
+			return true;
+		}else{
 			return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
 				snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,
 				rrd_num,arg1,arg2,arg3) values ($local_data_id," . $host["id"] . ",$poller_action_id,'" . $host["hostname"] . "',
