@@ -157,24 +157,31 @@ $custom_data_source_types = array(
 	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)");
 
 $menu = array(
-	"Graph Setup" => array(
-		"graphs.php" => "Graph Management",
-		"gprint_presets.php" => "GPRINT Presets",
-		"cdef.php" => "CDEFs",
+	"Create" => array(
+		"graphs_new.php" => "New Graphs",
+		"ss" => "Import Graphs"
+		),
+	"Management" => array(
+		"graphs.php" => array(
+			"graphs.php" => "Graph Management",
+			"cdef.php" => "CDEFs",
+			"color.php" => "Colors",
+			"gprint_presets.php" => "GPRINT Presets"
+			),
 		"tree.php" => "Graph Trees",
-		"color.php" => "Colors"
+		"data_sources.php" => array(
+			"data_sources.php" => "Data Sources",
+			"rra.php" => "RRAs"
+			),
+		"host.php" => 'Polling Hosts',
+		"data_input.php" => "Data Input Methods",
+		"snmp.php" => "Data Queries"
 		),
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
 		"host_templates.php" => "Host Templates",
-		"data_templates.php" => "Data Templates"
-		),
-	"Data Gathering" => array(
-		"data_sources.php" => "Data Sources",
-		"host.php" => 'Polling Hosts',
-		"rra.php" => "Available RRA's",
-		"data_input.php" => "Data Input Methods",
-		"snmp.php" => "Data Queries"
+		"data_templates.php" => "Data Templates",
+		"seffs.php" => "Import Templates"
 		),
 	"Configuration"  => array(
 		"utilities.php" => "Utilities",
@@ -184,5 +191,50 @@ $menu = array(
 		"user_admin.php" => "User Management",
 		"logout.php" => "Logout User"
 	));
+
+$user_auth_realms = array(
+	1 => "User Administration",
+	2 => "Data Input",
+	3 => "Update Data Sources",
+	5 => "Update Graphs",
+	7 => "View Graphs",
+	8 => "Console Access",
+	9 => "Update Round Robin Archives",
+	10 => "Update Graph Templates",
+	11 => "Update Data Templates",
+	12 => "Update Host Templates",
+	13 => "SNMP Queries",
+	14 => "Update CDEF's",
+	15 => "Global Settings"
+	);
+
+$user_auth_realm_filenames = array(
+	"about.php" => 8,
+	"cdef.php" => 14,
+	"color.php" => 5,
+	"data_input.php" => 2,
+	"data_sources.php" => 3,
+	"data_templates.php" => 11,
+	"gprint_presets.php" => 5,
+	"graph.php" => 7,
+	"graph_image.php" => 7,
+	"graph_settings.php" => 7,
+	"graph_templates.php" => 10,
+	"graph_templates_inputs.php" => 10,
+	"graph_templates_items.php" => 10,
+	"graph_view.php" => 7,
+	"graphs.php" => 5,
+	"graphs_items.php" => 5,
+	"graphs_new.php" => 5,
+	"host.php" => 3,
+	"host_templates.php" => 12,
+	"index.php" => 8,
+	"rra.php" => 9,
+	"settings.php" => 15,
+	"snmp.php" => 13,
+	"tree.php" => 5,
+	"user_admin.php" => 1,
+	"utilities.php" => 15
+	);
 
 ?>

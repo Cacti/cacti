@@ -62,16 +62,20 @@ if (read_config_option("global_auth") == "on") {
 		include("./auth_login.php");
 		exit;
 	}elseif (!empty($_SESSION["sess_user_id"])) {
-		$realm_id = db_fetch_cell("select realm_id from user_realm_filename where filename='" . basename($_SERVER["PHP_SELF"]) . "'");
+		$realm_id = 0;
 		
-		if (!db_fetch_assoc("select
+		if (isset($user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])})) {
+			$realm_id = $user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])};
+		}
+		
+		if ((!db_fetch_assoc("select
 			user_auth_realm.realm_id
 			from
 			user_auth_realm
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
-			and user_auth_realm.realm_id='$realm_id'")) {
+			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id))) {
 			
-			include_once($config["include_path"] . "/form.php");
+			include_once($config["library_path"] . "/form.php");
 			include($config["include_path"] . "/top_header.php");
 			
 			print "	<table width='98%' align='center'>\n

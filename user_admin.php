@@ -517,7 +517,7 @@ function user_remove() {
 }
 
 function user_edit() {
-	global $colors, $tabs_graphs, $settings_graphs, $graph_views, $graph_tree_views, $fields_user_user_edit_host;
+	global $colors, $tabs_graphs, $settings_graphs, $graph_views, $graph_tree_views, $fields_user_user_edit_host, $user_auth_realms;
 	
 	if (!empty($_GET["id"])) {
 		$user = db_fetch_row("select * from user_auth where id=" . $_GET["id"]);
@@ -564,24 +564,22 @@ function user_edit() {
 					<td align="top" width="50%">
 						<?php
 						$i = 0;
-						if (sizeof($realms) > 0) {
-						foreach ($realms as $realm) {
-							if ($realm["user_id"] == "") {
-								$old_value = "";
-							}else{
+						while (list($realm_id, $realm_name) = each($user_auth_realms)) {
+							if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . " and realm_id=$realm_id")) > 0) {
 								$old_value = "on";
+							}else{
+								$old_value = "";
 							}
 							
-							$column1 = floor((sizeof($realms) / 2) + (sizeof($realms) % 2));
+							$column1 = floor((sizeof($user_auth_realms) / 2) + (sizeof($user_auth_realms) % 2));
 							
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
 							
-							form_checkbox("section" . $realm["id"], $old_value, $realm["name"], "", (!empty($_GET["id"]) ? 1 : 0)); print "<br>";
+							form_checkbox("section" . $realm_id, $old_value, $realm_name, "", (!empty($_GET["id"]) ? 1 : 0)); print "<br>";
 							
 							$i++;
-						}
 						}
 						?>
 					</td>
