@@ -243,4 +243,18 @@ $user_auth_realm_filenames = array(
 	"utilities.php" => 15
 	);
 
+$hash_type_codes = array(
+	"graph_template" => "00",
+	"data_template" => "01",
+	"host_template" => "02",
+	"data_input_method" => "03",
+	"data_query" => "04",
+	"cdef" => "05",
+	"gprint_preset" => "06"
+	);
+
+$hash_version_codes = array(
+	"0.8.4" => "0000"
+	);
+
 ?>
