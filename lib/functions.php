@@ -423,7 +423,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	} else {
 		/* update total polls and availability */
 		$hosts[$host_id]["total_polls"]++;
-		$hosts[$host_id]["availability"] = ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
+		$hosts[$host_id]["availability"] = 100 * ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
 		/* determine the ping statistic to set and do so */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
