@@ -14,6 +14,7 @@ raXnet - cacti
 -bug: Added more verbose error handling with template importing
 -bug#0000355: Allow scientific and negative numbers to be returned from a script
 -bug#0000347: Change Order of Graph Templates and Data Queries in Host
+-bug: Sort host templates when creating a host.
 
 0.8.6b
 
