@@ -21,25 +21,28 @@
 | - raXnet - http://www.raxnet.net/                                       |
 +-------------------------------------------------------------------------+
 */?>
-<?	header ("Cache-Control: no-cache, must-revalidate");
+<?
+$section = "View Graphs";
+header ("Cache-Control: no-cache, must-revalidate");
 	header ("Pragma: no-cache");
 	
 	session_start();
 	
+	include_once ("include/auth.php");
 	include_once ("include/rrd_functions.php");
 	include_once ("include/functions.php");
 	include ("include/top_graph_header.php");
 	
 $user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
 
-if (isset($hide) == true) {
+if (isset($args[hide]) == true) {
 	/* find out if the current user has rights here */
 	$graph_settings = db_fetch_cell("select GraphSettings from auth_users where id=$user_id");
 	
 	/* only update expand/contract info is this user has writes to keep their own settings */
 	if ($graph_settings == "on") {
-		db_execute("delete from settings_viewing_tree where treeitemid=$branch_id and userid=$user_id");
-		db_execute("insert into settings_viewing_tree (treeitemid,userid,status) values ($branch_id,$user_id,$hide)");
+		db_execute("delete from settings_viewing_tree where treeitemid=$args[branch_id] and userid=$user_id");
+		db_execute("insert into settings_viewing_tree (treeitemid,userid,status) values ($args[branch_id],$user_id,$args[hide])");
 	}
 }
 
