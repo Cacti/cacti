@@ -86,7 +86,7 @@ case 'tree':
 		if (read_graph_config_option("default_tree_view_mode") == "1") {
 			grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), isset($_SESSION["sess_user_id"]) ? $_SESSION["sess_user_id"] : 0, $tree_parameters);
 		}elseif (read_graph_config_option("default_tree_view_mode") == "2") {
-			grow_right_pane_tree((isset($_GET["tree_id"]) ? $_GET["tree_id"] : 0), (isset($_GET["leaf_id"]) ? $_GET["leaf_id"] : 0), (isset($_GET["graph_template_id"]) ? $_GET["graph_template_id"] : 0));
+			grow_right_pane_tree((isset($_GET["tree_id"]) ? $_GET["tree_id"] : 0), (isset($_GET["leaf_id"]) ? $_GET["leaf_id"] : 0), (isset($_GET["host_group_data"]) ? urldecode($_GET["host_group_data"]) : 0));
 		}
 	}
 	

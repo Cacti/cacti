@@ -180,6 +180,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		graph_tree_items.local_graph_id,
 		graph_tree_items.host_id,
 		graph_tree_items.order_key,
+		graph_tree_items.sort_children_type,
 		graph_templates_graph.title_cache as graph_title,
 		CONCAT_WS('',description,' (',hostname,')') as hostname
 		from graph_tree_items
@@ -197,6 +198,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	foreach ($tree as $leaf) {
 	    	$tier = tree_tier($leaf["order_key"], 2);
 	    	$transparent_indent = "<img width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
+		$sort_cache[$tier] = $leaf["sort_children_type"];
 		
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
 		
@@ -211,10 +213,14 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
 		}
 		
-		print 	"<td bgcolor='#$row_color' width='80' align='center'>\n
-			<a href='tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
-			<a href='tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
-			</td>\n";
+		if ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != TREE_ORDERING_NONE)) {
+			print "<td bgcolor='#$row_color' width='80'></td>\n";
+		}else{
+			print 	"<td bgcolor='#$row_color' width='80' align='center'>\n
+				<a href='tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
+				<a href='tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
+				</td>\n";
+		}
 		
 		print 	"<td bgcolor='#$row_color' align='right'>\n
 			<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
@@ -263,6 +269,8 @@ function grow_dhtml_trees() {
 	global $colors, $config;
 	
 	include_once($config["library_path"] . "/tree.php");
+	include_once($config["library_path"] . "/data_query.php");
+	
 	?>
 	<script type="text/javascript">
 	<!--
@@ -302,6 +310,7 @@ function grow_dhtml_trees() {
 			graph_tree_items.title,
 			graph_tree_items.order_key,
 			graph_tree_items.host_id,
+			graph_tree_items.host_grouping_type,
 			host.description as hostname
 			from graph_tree_items
 			left join host on host.id=graph_tree_items.host_id
@@ -321,20 +330,44 @@ function grow_dhtml_trees() {
 				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
 				
 				if (read_graph_config_option("expand_hosts") == "on") {
-					$graph_templates = db_fetch_assoc("select
-						graph_templates.id,
-						graph_templates.name
-						from graph_local,graph_templates,graph_templates_graph
-						where graph_local.id=graph_templates_graph.local_graph_id
-						and graph_templates_graph.graph_template_id=graph_templates.id
-						and graph_local.host_id=" . $leaf["host_id"] . "
-						group by graph_templates.id
-						order by graph_templates.name");
-					
-					if (sizeof($graph_templates) > 0) {
-					foreach ($graph_templates as $graph_template) {
-						print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&graph_template_id=" . $graph_template["id"] . "\"))\n";
-					}
+					if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+						$graph_templates = db_fetch_assoc("select
+							graph_templates.id,
+							graph_templates.name
+							from graph_local,graph_templates,graph_templates_graph
+							where graph_local.id=graph_templates_graph.local_graph_id
+							and graph_templates_graph.graph_template_id=graph_templates.id
+							and graph_local.host_id=" . $leaf["host_id"] . "
+							group by graph_templates.id
+							order by graph_templates.name");
+						
+						if (sizeof($graph_templates) > 0) {
+						foreach ($graph_templates as $graph_template) {
+							print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=graph_template:" . $graph_template["id"] . "\"))\n";
+						}
+						}
+					}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+						$data_queries = db_fetch_assoc("select
+							snmp_query.id,
+							snmp_query.name
+							from graph_local,snmp_query
+							where graph_local.snmp_query_id=snmp_query.id
+							and graph_local.host_id=" . $leaf["host_id"] . "
+							group by snmp_query.id
+							order by snmp_query.name");
+						
+						if (sizeof($data_queries) > 0) {
+						foreach ($data_queries as $data_query) {
+							print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
+							
+							/* fetch a list of field names that are sorted by the preferred sort field */
+							$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
+							
+							while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+								print "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
+							}
+						}
+						}
 					}
 				}
 			}else{
@@ -352,8 +385,10 @@ function grow_dhtml_trees() {
 	<?php
 }
 
-function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
-	global $current_user, $colors;
+function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
+	global $current_user, $colors, $config;
+	
+	include_once($config["library_path"] . "/data_query.php");
 	
 	if (empty($tree_id)) { return; }
 	
@@ -363,11 +398,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	$title_delimeter = "";
 	$search_key = "";
 	
+	$leaf = db_fetch_row("select order_key,title,host_id,host_grouping_type from graph_tree_items where id=$leaf_id");
+	$leaf_type = get_tree_item_type($leaf_id);
+	
 	/* get the "starting leaf" if the user clicked on a specific branch */
 	if (!empty($leaf_id)) {
-		$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_items where id=$leaf_id"));
+		$search_key = preg_replace("/0+$/", "", $leaf["order_key"]);
 		
-		/* we the search key should always be divisible by "2" because we are searching AT a
+		/* the search key should always be divisible by "2" because we are searching AT a
 		branch (__), not PAST it (%%) */
 		if (strlen($search_key) % 2 != 0) { $search_key .= "0"; }
 	}
@@ -385,20 +423,32 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	
 	/* get information for the headers */
 	if (!empty($tree_id)) { $tree_name = db_fetch_cell("select name from graph_tree where id=$tree_id"); }
-	if (!empty($leaf_id)) { $leaf_name = db_fetch_cell("select title from graph_tree_items where id=$leaf_id"); }
+	if (!empty($leaf_id)) { $leaf_name = $leaf["title"]; }
 	if (!empty($leaf_id)) { $host_name = db_fetch_cell("select host.description from graph_tree_items,host where graph_tree_items.host_id=host.id and graph_tree_items.id=$leaf_id"); }
-	if (!empty($leaf_id)) { $host_id = db_fetch_cell("select host_id from graph_tree_items where id=$leaf_id"); }
-	if (!empty($graph_template_id)) { $graph_template_name = db_fetch_cell("select name from graph_templates where id=$graph_template_id"); }
+	
+	$host_group_data_array = explode(":", $host_group_data);
+	
+	if ($host_group_data_array[0] == "graph_template") {
+		$host_group_data_name = "<strong>Graph Template:</strong> " . db_fetch_cell("select name from graph_templates where id=" . $host_group_data_array[1]);
+		$graph_template_id = $host_group_data_array[1];
+	}elseif ($host_group_data_array[0] == "data_query") {
+		$host_group_data_name = "<strong>Data Query:</strong> " . db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]);
+		$data_query_id = $host_group_data_array[1];
+	}elseif ($host_group_data_array[0] == "data_query_index") {
+		$host_group_data_name = "<strong>Data Query:</strong> " . db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]) . "-> " . get_formatted_data_query_index($leaf["host_id"], $host_group_data_array[1], $host_group_data_array[2]);
+		$data_query_id = $host_group_data_array[1];
+		$data_query_index = $host_group_data_array[2];
+	}
 	
 	if (!empty($tree_name)) { $title .= $title_delimeter . "<strong>Tree:</strong> $tree_name"; $title_delimeter = "-> "; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; $title_delimeter = ", "; }
-	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = ", "; }
-	if (!empty($graph_template_name)) { $title .= $title_delimeter . "<strong>Graph Template:</strong> $graph_template_name"; $title_delimeter = "-> "; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; $title_delimeter = "-> "; }
+	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = "-> "; }
+	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = "-> "; }
 	
 	print "<table width='98%' align='center' cellpadding='3'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='3' class='textHeaderDark'>$title</td></tr>";
 	
-	if (empty($host_id)) {
+	if ($leaf_type == "header") {
 		$heirarchy = db_fetch_assoc("select
 			graph_tree_items.id,
 			graph_tree_items.title,
@@ -429,52 +479,124 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 		}else{
 			print "<tr><td><em>No graphs at this branch.</em></td></tr>";
 		}
-	}else{
-		$graph_templates = db_fetch_assoc("select
-			graph_templates.id,
-			graph_templates.name
-			from graph_local,graph_templates,graph_templates_graph
-			where graph_local.id=graph_templates_graph.local_graph_id
-			and graph_templates_graph.graph_template_id=graph_templates.id
-			and graph_local.host_id=$host_id
-			" . (empty($graph_template_id) ? "" : "and graph_templates.id=$graph_template_id") . "
-			group by graph_templates.id
-			order by graph_templates.name");
-		
-		/* for graphs without a template */
-		array_push($graph_templates, array(
-			"id" => "0",
-			"name" => "(No Graph Template)"
-			));
-		
-		if (sizeof($graph_templates) > 0) {
-		foreach ($graph_templates as $graph_template) {
-			$graphs = db_fetch_assoc("select
-				graph_templates_graph.title_cache,
-				graph_templates_graph.local_graph_id
-				from graph_local,graph_templates_graph
-				$sql_join
+	}elseif ($leaf_type == "host") {
+		/* graph template grouping */
+		if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+			$graph_templates = db_fetch_assoc("select
+				graph_templates.id,
+				graph_templates.name
+				from graph_local,graph_templates,graph_templates_graph
 				where graph_local.id=graph_templates_graph.local_graph_id
-				and graph_local.graph_template_id=" . $graph_template["id"] . "
-				and graph_local.host_id=$host_id
-				$sql_where
-				order by graph_templates_graph.title_cache");
+				and graph_templates_graph.graph_template_id=graph_templates.id
+				and graph_local.host_id=" . $leaf["host_id"] . "
+				" . (empty($graph_template_id) ? "" : "and graph_templates.id=$graph_template_id") . "
+				group by graph_templates.id
+				order by graph_templates.name");
 			
-			$i = 0;
-			if (sizeof($graphs) > 0) {
-				if (empty($graph_template_id)) {
-					print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>";
-				}
+			/* for graphs without a template */
+			array_push($graph_templates, array(
+				"id" => "0",
+				"name" => "(No Graph Template)"
+				));
+			
+			if (sizeof($graph_templates) > 0) {
+			foreach ($graph_templates as $graph_template) {
+				$graphs = db_fetch_assoc("select
+					graph_templates_graph.title_cache,
+					graph_templates_graph.local_graph_id
+					from graph_local,graph_templates_graph
+					$sql_join
+					where graph_local.id=graph_templates_graph.local_graph_id
+					and graph_local.graph_template_id=" . $graph_template["id"] . "
+					and graph_local.host_id=" . $leaf["host_id"] . "
+					$sql_where
+					order by graph_templates_graph.title_cache");
 				
-				foreach ($graphs as $graph) {
-					form_alternate_row_color("f9f9f9", "ffffff", $i);
-					print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all&view_type=tree'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
-					print "<tr>\n";
+				$i = 0;
+				if (sizeof($graphs) > 0) {
+					if (empty($graph_template_id)) {
+						print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>";
+					}
 					
-					$i++;
+					foreach ($graphs as $graph) {
+						form_alternate_row_color("f9f9f9", "ffffff", $i);
+						print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all&view_type=tree'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
+						print "<tr>\n";
+						
+						$i++;
+					}
 				}
 			}
-		}
+			}
+		/* data query index grouping */
+		}elseif ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+			$data_queries = db_fetch_assoc("select
+				snmp_query.id,
+				snmp_query.name
+				from graph_local,snmp_query
+				where graph_local.snmp_query_id=snmp_query.id
+				and graph_local.host_id=" . $leaf["host_id"] . "
+				" . (empty($data_query_id) ? "" : "and snmp_query.id=$data_query_id") . "
+				group by snmp_query.id
+				order by snmp_query.name");
+			
+			/* for graphs without a data query */
+			array_push($data_queries, array(
+				"id" => "0",
+				"name" => "(No Data Query)"
+				));
+			
+			if (sizeof($data_queries) > 0) {
+			foreach ($data_queries as $data_query) {
+				/* fetch a list of field names that are sorted by the preferred sort field */
+				$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
+				
+				/* grab a list of all graphs for this host/data query combination */
+				$graphs = db_fetch_assoc("select
+					graph_templates_graph.title_cache,
+					graph_templates_graph.local_graph_id,
+					graph_local.snmp_index
+					from graph_local,graph_templates_graph
+					$sql_join
+					where graph_local.id=graph_templates_graph.local_graph_id
+					and graph_local.snmp_query_id=" . $data_query["id"] . "
+					and graph_local.host_id=" . $leaf["host_id"] . "
+					" . (empty($data_query_index) ? "" : "and graph_local.snmp_index='$data_query_index'") . "
+					$sql_where
+					group by graph_templates_graph.local_graph_id
+					order by graph_templates_graph.title_cache");
+				
+				/* re-key the results on data query index */
+				if (sizeof($graphs) > 0) {
+					if (empty($data_query_id)) {
+						print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query:</strong> " . $data_query["name"] . "</td></tr>";
+					}
+					
+					foreach ($graphs as $graph) {
+						$snmp_index_to_graph{$graph["snmp_index"]}{$graph["local_graph_id"]} = $graph["title_cache"];
+					}
+				}
+				
+				/* using the sorted data as they key; grab each snmp index from the master list */
+				while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+					$i = 0;
+					/* render each graph for the current data query index */
+					if (isset($snmp_index_to_graph[$snmp_index])) {
+						if (empty($data_query_index)) {
+							print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>";
+						}
+						
+						while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
+							form_alternate_row_color("f9f9f9", "ffffff", $i);
+							print "<td align='center'><a href='graph.php?local_graph_id=" . $local_graph_id . "&rra_id=all&view_type=tree'><img src='graph_image.php?local_graph_id=" . $local_graph_id . "&rra_id=" . read_graph_config_option("default_rra_id") . "' border='0' alt='" . $graph_title . "'></a></td>";
+							print "<tr>\n";
+							
+							$i++;
+						}
+					}
+				}
+			}
+			}
 		}
 	}
 	
