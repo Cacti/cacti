@@ -151,7 +151,7 @@ case 'preview':
 				}
 			}
 			
-			if (sizeof($graph_array) > 0) {
+			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
 				/* build sql string including each graph the user checked */
 				$sql_or = "and " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
 				
