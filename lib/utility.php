@@ -196,8 +196,16 @@ function update_poller_cache($local_data_id) {
 				if (isset($script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"])) {
 					$identifier = $script_queries["fields"][0]{$output["snmp_field_name"]}[0]["query_name"];
 					
+					/* get any extra arguments that need to be passed to the script */
+					if (!empty($script_queries["arg_prepend"])) {
+						$extra_arguments = subsitute_host_data($script_queries["arg_prepend"], "|", "|", $host["id"]);
+					}else{
+						$extra_arguments = "";
+					}
+					
 					/* get a complete path for out target script */
-					$script_path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $script_queries["script_path"]) . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
+					$script_path = subsitute_data_query_path($script_queries["script_path"]);
+					$script_path .= " $extra_arguments " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"];
 				}
 				
 				if (isset($script_path)) {
@@ -219,13 +227,15 @@ function update_poller_cache($local_data_id) {
 
 function push_out_data_template($data_template_id) {
 	/* get data_input_id */
-	$data_input_id = db_fetch_cell("select
+	$data_template = db_fetch_row("select
+		id,
 		data_input_id
 		from data_template_data
-		where id=$data_template_id");
+		where data_template_id=$data_template_id
+		and local_data_id=0");
 	
 	/* must be a data template */
-	if ((empty($data_template_id)) || (empty($data_input_id))) { return 0; }
+	if ((empty($data_template_id)) || (empty($data_template["data_input_id"]))) { return 0; }
 	
 	/* get a list of data sources using this template */
 	$data_sources = db_fetch_assoc("select
@@ -237,13 +247,13 @@ function push_out_data_template($data_template_id) {
 	/* pull out all 'input' values so we know how much to save */
 	$input_fields = db_fetch_assoc("select
 		data_input_fields.id,
+		data_input_fields.type_code,
 		data_input_data.value,
 		data_input_data.t_value
 		from data_input_fields left join data_input_data
 		on data_input_fields.id=data_input_data.data_input_field_id
-		where data_input_data.data_template_data_id=$data_template_id
-		and data_input_fields.input_output='in'
-		and (data_input_fields.type_code = '' or data_input_fields.type_code is null)");
+		where data_input_data.data_template_data_id=" . $data_template["id"] . "
+		and data_input_fields.input_output='in'");
 	
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
@@ -251,10 +261,13 @@ function push_out_data_template($data_template_id) {
 		
 		if (sizeof($input_fields) > 0) {
 		foreach ($input_fields as $input_field) {
-			if (empty($input_field["t_value"])) { /* template this value */
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'','" . $input_field["value"] . "')");
-			}else{
-				db_execute("update data_input_data set t_value='on' where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $data_source["id"]);
+			/* do not push out "host fields" */
+			if (!eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password|snmp_version)$', $input_field["type_code"])) {
+				if (empty($input_field["t_value"])) { /* template this value */
+					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'','" . $input_field["value"] . "')");
+				}else{
+					db_execute("update data_input_data set t_value='on' where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $data_source["id"]);
+				}
 			}
 		}
 		}
