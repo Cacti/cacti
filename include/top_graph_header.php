@@ -47,7 +47,7 @@ if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 		$_REQUEST["action"] = "tree";
 	}elseif (read_graph_config_option("default_view_mode") == "2") {
 		$_REQUEST["action"] = "list";
-	}elseif (read_graph_config_option("default_view_mode") == "2") {
+	}elseif (read_graph_config_option("default_view_mode") == "3") {
 		$_REQUEST["action"] = "preview";
 	}
 }
@@ -62,15 +62,31 @@ if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
-<map name="tabs">
-	<area alt="Console" coords="7,5,87,35" href="index.php">
-	<area alt="Graphs" coords="88,5,165,32" href="graph_view.php?action=tree" shape="RECT">
-</map>
-
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td bgcolor="#454E53" nowrap>
-			<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36></td><td width=250 valign=bottom><img src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td></tr></table></td>
+			<table border="0" cellpadding="0" cellspacing="0" width='100%'>
+				<tr>
+					<td valign="bottom" nowrap>
+						&nbsp;
+						<?php
+						$no_console = false;
+						
+						if (read_config_option("global_auth") == "on") {
+							if ((sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"])) == 1) && (db_fetch_cell("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]) == "7")) {
+								$no_console = true;
+							}
+						}
+						
+						if ($no_console == false) {
+							print "<a href='index.php'><img src='images/top_tabs_console.gif' border='0' width='79' height='32' align='absmiddle'></a>";
+						}
+						
+						print "<a href='graph_view.php'><img src='images/top_tabs_graphs.gif' border='0' width='79' height='32' align='absmiddle'></a>";
+						?>
+					</td>
+				</tr>
+			</table>
 		<td bgcolor="#454E53" align="right" nowrap width='99%'>
 			<?php if (isset($_SESSION["sess_user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?php }?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
 		</td>

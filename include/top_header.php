@@ -36,18 +36,28 @@ include ("config.php");
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
-<map name="tabs">
-	<area alt="Console" coords="7,5,87,35" href="index.php">
-	<area alt="Graphs" coords="88,5,165,32" href="graph_view.php?action=tree" shape="RECT">
-</map>
-
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td colspan="3" bgcolor="#454E53">
-			<table border=0 cellpadding=0 cellspacing=0 width='100%'>
+			<table border="0" cellpadding="0" cellspacing="0" width='100%'>
 				<tr>
-					<td valign=bottom width=36>
-						<img src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td><td align=right>
+					<td valign="bottom">
+						&nbsp;
+						<?php
+						$no_console = false;
+						
+						if (read_config_option("global_auth") == "on") {
+							if ((sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"])) == 1) && (db_fetch_cell("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]) == "7")) {
+								$no_console = true;
+							}
+						}
+						
+						if ($no_console == false) {
+							print "<a href='index.php'><img src='images/top_tabs_console.gif' border='0' width='79' height='32' align='absmiddle'></a>";
+						}
+						
+						print "<a href='graph_view.php'><img src='images/top_tabs_graphs.gif' border='0' width='79' height='32' align='absmiddle'></a>";
+						?>
 					</td>
 				</tr>
 			</table>
