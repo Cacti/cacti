@@ -95,18 +95,24 @@ function DrawFormItem($form_title, $form_description) {
 	global $current_path; include ("$current_path/config.php");?>
 		<td width="50%">
 			<?if ($form_title != "") {?><font class="textEditTitle"><?print $form_title;?></font><br><?}?><font class="textEditComment"><?print $form_description;?></font>
-		
 		</td>
 <?}
 
 /* creates a standard html textbox */
 function DrawFormItemTextBox($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30) {
-    if ($form_previous_value=="") {
-	$form_previous_value = $form_default_value;
+    if ($form_previous_value == "") {
+	    $form_previous_value = $form_default_value;
+    }
+    
+    $array_field_values = unserialize($_SESSION["sess_field_values"]);
+    $array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+    
+    if (!empty($array_field_values[$form_name])) {
+	   $form_previous_value = $array_field_values[$form_name];
     }
 ?>
 		<td>
-			<input type="text" name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
+			<input type="text"<?if (!empty($array_error_fields[$form_name])) { print "class='txtErrorTextBox'"; unset($array_error_fields[$form_name]); $_SESSION["sess_error_fields"] = serialize($array_error_fields);}?> name="<?print $form_name;?>" size="<?print $form_size;?>"<?if ($form_max_length!=""){?> maxlength="<?print $form_max_length;?>"<?}?><?if ($form_previous_value!=""){?> value="<?print $form_previous_value;?>"<?}?>>
 		</td>
 <?}
 
@@ -241,7 +247,6 @@ function DrawFormItemColorSelect($form_name, $form_previous_value, $form_none_en
     $colors_list = db_fetch_assoc("select id,hex from def_colors order by hex desc");
 
     ?>
-    
 		<td>
 			<select name="<?print $form_name;?>">
 				<?if ($form_none_entry != "") {?><option value="0"><?print $form_none_entry;?></option><?}?>
@@ -264,12 +269,23 @@ function DrawFormItemColorSelect($form_name, $form_previous_value, $form_none_en
     
     
 /* create a multiselect listbox */
-function DrawFormItemMultipleList($form_name,  $sql_string_display, $sql_display_name,
-	$sql_display_value, $sql_string_previous_values, $sql_previous_value) {
-	global $current_path; include_once ("$current_path/functions.php");?>
+function DrawFormItemMultipleList($form_name, $array_display, $sql_previous_values, $column_id) { ?>
 		<td>
 			<select name="<?print $form_name;?>[]" multiple>
-				<?CreateMultipleList($sql_string_display,$sql_display_name,$sql_display_value,$sql_string_previous_values,$sql_previous_value);?>
+				<?
+				foreach (array_keys($array_display) as $id) {
+					print "<option value='" . $id . "'";
+					
+					for ($i=0; ($i < count($sql_previous_values)); $i++) {
+						if ($sql_previous_values[$i][$column_id] == $id) {
+							print " selected";
+						}
+					}
+					
+					print ">". $array_display[$id];
+					print "</option>\n";
+				}
+				?>
 			</select>
 		</td>
 <?}
