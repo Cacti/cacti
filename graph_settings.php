@@ -24,83 +24,79 @@
  +-------------------------------------------------------------------------+
 */
  
-$section = "View Graphs";  include ('include/auth.php');
-
-header("Cache-control: no-cache");
+include ('include/auth.php');
+include ("include/config_settings.php");
+include ("include/config_arrays.php");
+include_once ("include/form.php");
 include_once ("include/functions.php");
-include_once ('include/form.php');
 
-if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
-if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
+include_once ("include/top_graph_header.php");
 
-/* get current user */
-$current_user_id = GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"], read_config_option("guest_user"));
+print "<form method='post' action='user_admin.php'>\n";
 
-switch ($action) {
- case 'save':
-    $sql_id = db_execute("replace into settings_graphs (id,userid,rraid,treeid, height,width,timespan,columnnumber,viewtype,listviewtype,pagerefresh) 
-      values ($id,$current_user_id,$form[RRAID],$form[TreeID],$form[Height],$form[Width],$form[TimeSpan],$form[ColumnNumber],$form[ViewType],$form[ListViewType],$form[PageRefresh])");
-    
-    header ("Location: $referer");
-    break;
- default:
-    include_once ('include/top_graph_header.php');
-    
-    /* find out if the current user has right s here */
-    $gs = db_fetch_cell("select graph_settings from user where id=$current_user_id");
-    
-    if (! $gs) {
-	print "<strong><font size=\"+1\" color=\"FF0000\">YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>"; exit;
-    }
-    
-    $settings = db_fetch_assoc("select * from settings_graphs where userid=$current_user_id");
-    
-    if (getenv("HTTP_REFERER") == "") {
-	$referer = $HTTP_REFERER;
-    }else{
-	$referer = getenv("HTTP_REFERER");
-    }
-    
-    DrawFormHeader("Graph Preview Settings","",false);
-    
-    form_item_label("Height","The height of graphs created in preview mode.");
-    form_text_box("Height",$settings[Height],"100","");
-    
-    form_item_label("Width","The width of graphs created in preview mode.");
-    form_text_box("Width",$settings[Width],"300","");
-    
-    form_item_label("Timespan","The amount of time to represent on a graph created in preview mode (0 uses auto).");
-    form_text_box("TimeSpan",$settings[TimeSpan],"60000","");
-    
-    form_item_label("Default RRA","The default RRA to use when displaying graphs in preview mode.");
-    form_dropdown("RRAID",db_fetch_assoc("select * from rrd_rra order by name"),"Name","ID",$settings[RRAID],"","");
-    
-    form_item_label("Columns","The number of columns to display graphs in using preview mode.");
-    form_text_box("ColumnNumber",$settings[ColumnNumber],"2","");
-    
-    form_item_label("Page Refresh","The number of seconds between automatic page refreshes.");
-    form_text_box("PageRefresh",$settings[PageRefresh],"300","");
-    
-    DrawPlainFormHeader("List Settings");
-    
-    form_item_label("View Settings","Options that govern how the graphs are displayed.");
-    form_radio_button("ListViewType", $settings[ListViewType], "1", "Show a 4 column list of each graph and its RRA.", "1");
-    form_radio_button("ListViewType", $settings[ListViewType], "2", "Show a 1 column list of each graph.", "1");
-    
-    DrawPlainFormHeader("Hierarchical Settings");
-    
-    form_item_label("Default Graph Hierarchy ","The default graph hierarchy to use when displaying graphs in tree mode.");
-    form_dropdown("TreeID",db_fetch_assoc("select * from viewing_trees order by Title"),"Title","ID",$settings[TreeID],"","");
-    
-    form_item_label("View Settings","Options that govern how the graphs are displayed.");
-    form_radio_button("ViewType", $settings[ViewType], "1", "Show a preview of the graph.", "1");
-    form_radio_button("ViewType", $settings[ViewType], "2", "Show a text-based listing of the graph.", "1");
-    
-    form_save_button();
-    form_hidden_id("ID",$settings[ID]);
-    form_hidden_id("referer", $referer);
-    DrawFormFooter();
-    
-    include_once ("include/bottom_footer.php");
-    break;
-} ?>
+start_box("", "98%", $colors["header"], "3", "center", "");
+
+if (sizeof($tabs_graphs) > 0) {
+foreach (array_keys($tabs_graphs) as $tab_short_name) {
+	?>
+	<tr>
+		<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
+			<span class="textHeaderDark"><strong><?php print $tabs_graphs[$tab_short_name];?></strong> [user: <?php print $current_user["username"];?>]</span>
+		</td>
+	</tr>
+	<?php
+	
+	reset($settings_graphs);
+	
+	if (sizeof($settings_graphs) > 0) {
+	foreach (array_keys($settings_graphs) as $setting) {
+		/* make sure to skip group members here; only parents are allowed */
+		if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
+			++$i;
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			
+			/* draw the acual header and textbox on the form */
+			form_item_label($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
+			
+			$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . $_GET["id"]);
+			
+			/* choose what kind of item this is */
+			switch ($settings_graphs[$setting]["method"]) {
+				case 'textbox':
+					form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
+					break;
+				case 'drop_sql':
+					form_dropdown($setting,db_fetch_assoc($settings_graphs[$setting]["sql"]),"name","id",$current_value,"",$settings_graphs[$setting]["default"]);
+					break;
+				case 'drop_array':
+					form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
+					break;
+			}
+			
+			print "</tr>\n";
+		}
+	}
+	}
+
+}
+}
+
+end_box();
+
+form_hidden_id("user_id",$_GET["id"]);
+form_hidden_box("save_component_graph_config","1","");
+
+start_box("", "98%", $colors["header"], "3", "center", "");
+?>
+<tr bgcolor="#FFFFFF">
+	 <td colspan="2" align="right">
+		<?php form_save_button("save", "user_admin.php");?>
+	</td>
+</tr>
+</form>
+<?php
+end_box();
+
+include_once ("include/bottom_footer.php");
+
+?>
