@@ -141,7 +141,7 @@
 		<td>
 		<?if ($conf_drop_down_user_list==true) {?>
 		<select name="username">
-		<? CreateList($cnn_id,"select username from auth_users","username","username", ""); ?>
+		<? CreateList(db_fetch_assoc("select username from auth_users","username","username"), ""); ?>
 		</select>
 		<?}else{?>
 		<input type="text" name="username" size="40"><?}?></td>
