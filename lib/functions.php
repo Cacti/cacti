@@ -1234,6 +1234,7 @@ function draw_navigation_text() {
 		"about.php:" => array("title" => "About Cacti", "mapping" => "index.php:", "url" => "about.php", "level" => "1"),
 		"templates_export.php:" => array("title" => "Export Templates", "mapping" => "index.php:", "url" => "templates_export.php", "level" => "1"),
 		"templates_export.php:save" => array("title" => "Export Results", "mapping" => "index.php:,templates_export.php:", "url" => "templates_export.php", "level" => "2"),
+		"templates_import.php:" => array("title" => "Import Templates", "mapping" => "index.php:", "url" => "templates_import.php", "level" => "1"),
 		);
 	
 	$current_page = basename($_SERVER["PHP_SELF"]);
@@ -1330,9 +1331,16 @@ function get_browser_query_string() {
 
 /* get_hash_graph_template - returns the current unique hash for a graph template
    @arg $graph_template_id - (int) the ID of the graph template to return a hash for
+   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
-function get_hash_graph_template($graph_template_id) {
-	$hash = db_fetch_cell("select hash from graph_template where id=$graph_template_id");
+function get_hash_graph_template($graph_template_id, $sub_type = "graph_template") {
+	if ($sub_type == "graph_template") {
+		$hash = db_fetch_cell("select hash from graph_templates where id=$graph_template_id");
+	}elseif ($sub_type == "graph_template_item") {
+		$hash = db_fetch_cell("select hash from graph_templates_item where id=$graph_template_id");
+	}elseif ($sub_type == "graph_template_input") {
+		$hash = db_fetch_cell("select hash from graph_template_input where id=$graph_template_id");
+	}
 	
 	if (ereg("[a-fA-F0-9]{32}", $hash)) {
 		return $hash;
@@ -1343,9 +1351,14 @@ function get_hash_graph_template($graph_template_id) {
 
 /* get_hash_data_template - returns the current unique hash for a data template
    @arg $graph_template_id - (int) the ID of the data template to return a hash for
+   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
-function get_hash_data_template($data_template_id) {
-	$hash = db_fetch_cell("select hash from data_template where id=$data_template_id");
+function get_hash_data_template($data_template_id, $sub_type = "data_template") {
+	if ($sub_type == "data_template") {
+		$hash = db_fetch_cell("select hash from data_template where id=$data_template_id");
+	}elseif ($sub_type == "data_template_item") {
+		$hash = db_fetch_cell("select hash from data_template_rrd where id=$data_template_id");
+	}
 	
 	if (ereg("[a-fA-F0-9]{32}", $hash)) {
 		return $hash;
@@ -1356,9 +1369,14 @@ function get_hash_data_template($data_template_id) {
 
 /* get_hash_data_input - returns the current unique hash for a data input method
    @arg $graph_template_id - (int) the ID of the data input method to return a hash for
+   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
-function get_hash_data_input($data_input_id) {
-	$hash = db_fetch_cell("select hash from data_input where id=$data_input_id");
+function get_hash_data_input($data_input_id, $sub_type = "data_input_method") {
+	if ($sub_type == "data_input_method") {
+		$hash = db_fetch_cell("select hash from data_input where id=$data_input_id");
+	}elseif ($sub_type == "data_input_field") {
+		$hash = db_fetch_cell("select hash from data_input_fields where id=$data_input_id");
+	}
 	
 	if (ereg("[a-fA-F0-9]{32}", $hash)) {
 		return $hash;
@@ -1369,9 +1387,14 @@ function get_hash_data_input($data_input_id) {
 
 /* get_hash_cdef - returns the current unique hash for a cdef
    @arg $graph_template_id - (int) the ID of the cdef to return a hash for
+   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
-function get_hash_cdef($cdef_id) {
-	$hash = db_fetch_cell("select hash from cdef where id=$cdef_id");
+function get_hash_cdef($cdef_id, $sub_type = "cdef") {
+	if ($sub_type == "cdef") {
+		$hash = db_fetch_cell("select hash from cdef where id=$cdef_id");
+	}elseif ($sub_type == "cdef_item") {
+		$hash = db_fetch_cell("select hash from cdef_items where id=$cdef_id");
+	}
 	
 	if (ereg("[a-fA-F0-9]{32}", $hash)) {
 		return $hash;
@@ -1393,11 +1416,33 @@ function get_hash_gprint($gprint_id) {
 	}
 }
 
+/* get_hash_host_template - returns the current unique hash for a gprint preset
+   @arg $host_template_id - (int) the ID of the host template to return a hash for
+   @returns - a 128-bit, hexadecimal hash */
+function get_hash_host_template($host_template_id) {
+	$hash = db_fetch_cell("select hash from host_template where id=$host_template_id");
+	
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
 /* get_hash_data_query - returns the current unique hash for a data query
    @arg $graph_template_id - (int) the ID of the data query to return a hash for
+   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
-function get_hash_data_query($data_query_id) {
-	$hash = db_fetch_cell("select hash from snmp_query where id=$data_query_id");
+function get_hash_data_query($data_query_id, $sub_type = "data_query") {
+	if ($sub_type == "data_query") {
+		$hash = db_fetch_cell("select hash from snmp_query where id=$data_query_id");
+	}elseif ($sub_type == "data_query_graph") {
+		$hash = db_fetch_cell("select hash from snmp_query_graph where id=$data_query_id");
+	}elseif ($sub_type == "data_query_sv_data_source") {
+		$hash = db_fetch_cell("select hash from snmp_query_graph_rrd_sv where id=$data_query_id");
+	}elseif ($sub_type == "data_query_sv_graph") {
+		$hash = db_fetch_cell("select hash from snmp_query_graph_sv where id=$data_query_id");
+	}
 	
 	if (ereg("[a-fA-F0-9]{32}", $hash)) {
 		return $hash;
