@@ -43,6 +43,15 @@ function update_database($database_old, $database_username, $database_password) 
 	
 	db_connect_real($database_hostname,$database_username,$database_password,$database_default,"mysql");
 	
+	$old_cacti_version = db_fetch_cell("select cacti from $database_old.version");
+	
+	if ($old_cacti_version == "0.6.8") {
+		$status_array{count($status_array)}["version"][1] = $old_cacti_version;
+	}else{
+		$status_array{count($status_array)}["version"][0] = $old_cacti_version;
+		return $status_array;
+	}
+		
 	db_execute("truncate table $database_default.user_auth");
 	db_execute("truncate table $database_default.user_auth_realm");
 	db_execute("truncate table $database_default.user_auth_hosts");

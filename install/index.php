@@ -379,6 +379,9 @@ if ($_REQUEST["step"] == "4") {
 								if ($type == "user") {
 									$spew = true;
 									$current_message = "<strong>User</strong>: " . $arr[$current_status];
+								}elseif ($type == "version") {
+									$spew = true;
+									$current_message = "<strong>Version Check</strong>";
 								}elseif ($type == "user_acl") {
 									$spew = true;
 									$current_message = "<strong>User Permissions</strong>";
