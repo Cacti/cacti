@@ -31,7 +31,6 @@ $no_http_headers = true;
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/snmp.php");
 include_once($config["base_path"] . "/lib/rrd.php");
-include_once($config["base_path"] . "/lib/functions.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 
 if ( $_SERVER["argc"] == 1 ) {
@@ -62,22 +61,23 @@ if ( $_SERVER["argc"] == 1 ) {
 }
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on")) {
-	$host_down = False;
-	$new_host  = True;
+	$host_down = false;
+	$new_host  = true;
 	$last_host = $current_host = "";
 
 	// startup Cacti php polling server and include the include file for script processing
 	$cactides = array(
-   	0 => array("pipe", "r"), // stdin is a pipe that the child will read from
-   	1 => array("pipe", "w"), // stdout is a pipe that the child will write to
-   	2 => array("pipe", "w")  // stderr is a pipe to write to
-	);
+		0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+		1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+		2 => array("pipe", "w")  // stderr is a pipe to write to
+		);
 
 	if (function_exists("proc_open")) {
 		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
-		$using_proc_function = True;
+		$using_proc_function = true;
+
 		// step below calls the include function with the script file
-	   fwrite($pipes[0], "include_once " . dirname(__FILE__) . "/scripts/script_functions.php\r\n");
+		fwrite($pipes[0], "include_once " . dirname(__FILE__) . "/scripts/script_functions.php\r\n");
 	}else {
 		$using_proc_function = False;
 		if (read_config_option("log_perror") == "on") {
@@ -89,8 +89,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$current_host = $item["hostname"];
 
 		if ($current_host != $last_host) {
-			$new_host = True;
-			$host_down = False;
+			$new_host = true;
+			$host_down = false;
 		}
 
 		if ($new_host) {
@@ -114,7 +114,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					log_data(sprintf("ERROR: host '%s' is not responding to SNMP query, assumed down.", $current_host));
 				}
 
-				$new_host = False;
+				$new_host = false;
 			}
 		}
 
@@ -129,6 +129,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$item["snmp_password"],
 					$item["snmp_port"],
 					$item["snmp_timeout"]);
+
 				print "SNMP: " .
 					$item["hostname"] . ":" .
 					$item["snmp_port"] .
@@ -139,70 +140,21 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					", value: $output\n";
 				break;
 			case '1': /* one output script */
-				$command = $item["command"];
+				$command = $item["arg1"];
 				$output = `$command`;
 
 				print "CMD: $command, output: $output\n";
-
-				$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
-
-				if ($data_input_field["update_rra"] == "") {
-					/* DO NOT write data to rrd; put it in the db instead */
-					db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,value)
-						values (" . $data_input_field["id"] .
-						"," . db_fetch_cell("SELECT id from data_template_data" .
-						"where local_data_id=" .
-						$item["local_data_id"]) .
-						",'$output')");
-						$item["rrd_name"] = ""; /* no rrd action here */
-				}
 
 				break;
 			case '2': /* multi output script */
-				$command = $item["command"];
+				$command = $item["arg1"];
 				$output = `$command`;
 
 				print "CMD: $command, output: $output\n";
 
-				$output_array = split(" ", $output);
-
-				for ($i=0;($i<count($output_array));$i++) {
-					$data_input_field = db_fetch_row("select id,update_rra from data_input_fields" .
-						"where data_name='" .
-						ereg_replace("^([a-zA-Z0-9_-]+):.*$", "\\1",
-						$output_array[$i]) .
-						"' and data_input_id=" .
-						$item["data_input_id"] .
-						" and input_output='out'");
-						$rrd_name = db_fetch_cell("select data_source_name " .
-						"from data_template_rrd where local_data_id=" .
-						$item["local_data_id"] .
-						" and data_input_field_id=" .
-						$data_input_field["id"]);
-
-					if ($data_input_field["update_rra"] == "on") {
-						print "MULTI expansion: found fieldid: " .
-						$data_input_field["id"] .
-						", found rrdname: $rrd_name, value: " .
-						trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1",
-						$output_array[$i])) . "\n";
-						$update_cache_array{$item["local_data_id"]}{$rrd_name} =
-						trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1", $output_array[$i]));
-					}else{
-						/* DO NOT write data to rrd; put it in the db instead */
-						db_execute("insert into data_input_data " .
-							"(data_input_field_id,data_template_data_id,value)
-							values (" . $data_input_field["id"] . "," .
-						db_fetch_cell("select id from data_template_data
-							where local_data_id=" . $item["local_data_id"]) .
-							",'" . trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1",
-							$output_array[$i])) . "')");
-					}
-				}
-
 				break;
 			case '3': /* one output script */
-				$command = $item["command"];
+				$command = $item["arg1"];
 
 				// execute using php process
 				if ($using_proc_function == 1) {
@@ -230,22 +182,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 				print "CMD: $command, output: $output";
 
-				$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
-
-				if ($data_input_field["update_rra"] == "") {
-					/* DO NOT write data to rrd; put it in the db instead */
-					db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,value)
-						values (" . $data_input_field["id"] .
-						"," . db_fetch_cell("SELECT id from data_template_data" .
-						"where local_data_id=" .
-						$item["local_data_id"]) .
-						",'$output')");
-						$item["rrd_name"] = ""; /* no rrd action here */
-				}
-
 				break;
 			case '4': /* multi output script */
-				$command = $item["command"];
+				$command = $item["arg1"];
 
 				// execute using php process
 				if ($using_proc_function == 1) {
@@ -273,51 +212,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 				print "CMD: $command, output: $output\n";
 
-				$output_array = split(" ", $output);
-
-				for ($i=0;($i<count($output_array));$i++) {
-					$data_input_field = db_fetch_row("select id,update_rra from data_input_fields" .
-						"where data_name='" .
-						ereg_replace("^([a-zA-Z0-9_-]+):.*$", "\\1",
-						$output_array[$i]) .
-						"' and data_input_id=" .
-						$item["data_input_id"] .
-						" and input_output='out'");
-						$rrd_name = db_fetch_cell("select data_source_name " .
-						"from data_template_rrd where local_data_id=" .
-						$item["local_data_id"] .
-						" and data_input_field_id=" .
-						$data_input_field["id"]);
-
-					if ($data_input_field["update_rra"] == "on") {
-						print "MULTI expansion: found fieldid: " .
-						$data_input_field["id"] .
-						", found rrdname: $rrd_name, value: " .
-						trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1",
-						$output_array[$i])) . "\n";
-						$update_cache_array{$item["local_data_id"]}{$rrd_name} =
-						trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1", $output_array[$i]));
-					}else{
-						/* DO NOT write data to rrd; put it in the db instead */
-						db_execute("insert into data_input_data " .
-							"(data_input_field_id,data_template_data_id,value)
-							values (" . $data_input_field["id"] . "," .
-						db_fetch_cell("select id from data_template_data
-							where local_data_id=" . $item["local_data_id"]) .
-							",'" . trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1",
-							$output_array[$i])) . "')");
-					}
-				}
-
 				break;
 			} /* End Switch */
 
-			if (!empty($item["rrd_name"])) {
-				$update_cache_array{$item["local_data_id"]}{$item["rrd_name"]} = trim($output);
+			if (isset($result)) {
+				db_execute("insert into poller_output (local_data_id,time,output) values (" . $item["local_data_id"] . ",NOW(),'" . addslashes($output) . "')");
 			}
-
-			rrdtool_function_create($item["local_data_id"], false);
-
 		} /* Next Cache Item */
 	} /* End foreach */
 
@@ -326,19 +226,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	fclose($pipes[0]);
 	fclose($pipes[1]);
 	fclose($pipes[2]);
-   $return_value = proc_close($cactiphp);
 
-	if (isset($update_cache_array)) {
-		rrdtool_function_update($update_cache_array);
-	}
+	$return_value = proc_close($cactiphp);
 }else{
 	print "Either there are no items in the cache or polling is disabled\n";
 }
-
-/* insert the current date/time for graphs */
-db_execute("replace into settings (name,value) values ('date',NOW())");
-
-/* dump static images/html file if user wants it */
-graph_export();
 
 ?>
