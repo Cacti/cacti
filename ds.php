@@ -23,12 +23,25 @@
    */?>
 <? 	$section = "Add/Edit Data Sources"; 
 include ('include/auth.php');
-header("Cache-control: no-cache");
 include_once ('include/functions.php');
 include_once ('include/form.php');
 
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
+
+$user_id = GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]);
+
+if (isset($args[hide]) == true) {
+    /* find out if the current user has rights here */
+    $graph_settings = db_fetch_cell("select GraphSettings from auth_users where id=$user_id");
+    
+    /* only update expand/contract info is this user has writes to keep their own settings */
+    if ($graph_settings == "on") {
+	db_execute("delete from settings_ds_tree where treeitemid=$args[branch_id] and userid=$user_id");
+	db_execute("insert into settings_ds_tree (treeitemid,userid,status) values ($args[branch_id],$user_id,$args[hide])");
+    }
+}
+
 
 switch ($action) {
  case 'duplicate':
@@ -305,82 +318,12 @@ switch ($action) {
     break;
  default:
     include_once ('include/top_header.php');
+
+include_once ('include/form.php');
+    include_once ('include/tree_view_functions.php');
     
-    DrawMatrixTableBegin("97%");
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderTop("Current Data Sources",$colors[dark_bar],"","4");
-    DrawMatrixHeaderAdd($colors[dark_bar],"","$PHP_SELF?action=edit");
-    DrawMatrixRowEnd();
+    grow_polling_tree($start_branch, $user_id, $tree_parameters);
     
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderItem("Name",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("Data Input Type",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("Duplicate",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("Active",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("",$colors[panel],$colors[panel_text]);
-    DrawMatrixRowEnd();
-    
-    $ds_list = db_fetch_assoc("select 
-				d.ID,d.Name,d.DataSourceTypeID,d.SrcID,d.Active,d.SubDSID,d.IsParent,
-				(d.id=d.subdsid) as sortstr,
-				s.id as SID,s.name as SName 
-				from rrd_ds d left join src s on (d.srcid=s.id)
-				  order by sortstr,name");
-    $rows = sizeof($ds_list);
-    if (sizeof($ds_list) > 0) {
-	foreach ($ds_list as $ds) {
-	    DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-	    if ($ds[SubDSID] != 0) {
-		$matrix_title = "<img src=\"images/gray_line.gif\" width=\"7\" height=\"1\" border=\"0\"> " . $ds[Name];
-	    } else {  
-		$matrix_title = $ds[Name];
-	    }
-	    
-	    DrawMatrixLoopItem($matrix_title,html_boolean($config["vis_main_column_bold"]["value"]),"$PHP_SELF?action=edit&id=$ds[ID]");
-	    
-	    if ($ds[SrcID] == 0) {
-		$matrix_title = "None";
-	    } else {
-		$matrix_title = "$ds[SName] [<a href=\"ds_data_config.php?id=$ds[ID]&did=$ds[SrcID]\">Edit Data</a>]";
-	    }
-	    
-	    DrawMatrixLoopItem($matrix_title,false,"");
-	    
-	    if ($ds[SubDSID] != 0) {
-		$matrix_title = "N/A";
-	    } else {
-		if ($ds[Active] == "on") {
-		    $matrix_title = "Currently Active";
-		} else {
-		    $matrix_title = "<font color=\"#FF0000\">Not Active</font>";
-		}
-	    }
-	    
-	    if ($ds[SubDSID] != 0) {
-		$matrix_url = "";
-	    } else {
-		if ($ds[IsParent] != 0) {
-		    $matrix_url = "";
-		} else {
-		    $matrix_url = "$PHP_SELF?id=$ds[ID]&action=duplicate";
-		}
-	    }
-	    
-	    DrawMatrixLoopItem("Duplicate",false,$matrix_url);
-	    DrawMatrixLoopItem($matrix_title,false,"");
-	    
-	    if ($ds[SubDSID]!= 0) {
-		$matrix_url = "";
-	    }else{
-		$matrix_url = "$PHP_SELF?action=remove&id=$ds[ID]";
-	    }
-	    
-	    DrawMatrixLoopItemAction("Remove",$colors[panel],"",false,$matrix_url);
-	    DrawMatrixRowEnd();
-	    $i++;
-	}
-    }
-    DrawMatrixTableEnd();
     include_once ("include/bottom_footer.php");
     
     break;
