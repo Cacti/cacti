@@ -49,7 +49,7 @@ function get_parent_id($id, $table, $where = "") {
 	return db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root,60,'0') . "' and $where");
 }
 
-function get_next_tree_id($order_key, $table, $field) {
+function get_next_tree_id($order_key, $table, $field, $where) {
 	if (preg_match("/^00/",$order_key)) {
 		$tier = 0;
 		$parent_root = '';
@@ -57,8 +57,8 @@ function get_next_tree_id($order_key, $table, $field) {
 		$tier = tree_tier($order_key,'2');
 		$parent_root = substr($order_key,0,($tier * 2));
 	}
-    
-    	$order_key = db_fetch_cell("SELECT $field FROM $table WHERE $field LIKE '$parent_root%' ORDER BY $field DESC LIMIT 1");
+    	
+    	$order_key = db_fetch_cell("SELECT $field FROM $table WHERE $where AND $field LIKE '$parent_root%' ORDER BY $field DESC LIMIT 1");
     	
 	$complete_root = substr($order_key,0,($tier * 2) + 2);
   	$order_key_suffix = (substr($complete_root, -2) + 1);
@@ -108,12 +108,12 @@ function move_branch($dir,$order_key, $table, $field, $where) {
 function reparent_branch($new_parent_id, $tree_item_id) {
 	if (empty($tree_item_id)) { return 0; }
 	
+	/* get the current tree_id */
+	$graph_tree_id = db_fetch_cell("select graph_tree_id from graph_tree_items where id=$tree_item_id");
+	
 	/* get current key so we can do a sql select on it */
 	$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
-	$new_order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=$new_parent_id"),"graph_tree_items","order_key");
-	
-	/* get the current tree_id */
-	$graph_tree_id = db_fetch_cell("select graph_tree_id from grahp_tree_items where id=$tree_item_id");
+	$new_order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=$new_parent_id"),"graph_tree_items","order_key","graph_tree_id=$graph_tree_id");
 	
 	/* yeah, this would be really bad */
 	if (empty($old_order_key)) { return 0; }
@@ -123,6 +123,8 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 	
 	$new_base_tier = substr($new_order_key, 0, ($new_starting_tier*2));
 	$old_base_tier = substr($old_order_key, 0, ($old_starting_tier*2));
+	
+	$padding = "";
 	
 	$tree = db_fetch_assoc("select 
 		graph_tree_items.id, graph_tree_items.order_key

@@ -108,7 +108,7 @@ function form_save() {
 	}elseif (isset($_POST["save_component_tree_item"])) {
 		if (empty($_POST["id"])) {
 			/* new/save - generate new order key */
-			$order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["parent_item_id"]),"graph_tree_items","order_key");
+			$order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["parent_item_id"]),"graph_tree_items","order_key","graph_tree_id=" . $_POST["graph_tree_id"]);
 		}else{
 			/* edit/save - use old order_key */
 			$order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["id"]);
