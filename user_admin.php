@@ -198,8 +198,7 @@ function graph_perms_edit() {
 				print "</td><td valign='top' width='50%'>";
 			    }
 					
-			    form_base_checkbox("graph".$graph["id"], $old_value, $graph["title"],"",true);
-			    
+			    form_base_checkbox("graph" . $graph["id"], $old_value, $graph["title"], "", $_GET["id"], true);
 			    $i++;
 			}
 		}
@@ -422,8 +421,8 @@ function user_edit() {
 		</td>
 		<td>
 		<?php
-			form_base_checkbox("must_change_password",$user["must_change_password"],"User Must Change Password at Next Login","",true);
-			form_base_checkbox("graph_settings",$user["graph_settings"],"Allow this User to Keep Custom Graph Settings","on",true);
+			form_base_checkbox("must_change_password", $user["must_change_password"], "User Must Change Password at Next Login", "", $_GET["id"], true);
+			form_base_checkbox("graph_settings", $user["graph_settings"], "Allow this User to Keep Custom Graph Settings", "on", $_GET["id"], true);
 		?>
 		</td>
 	</tr>
@@ -435,9 +434,9 @@ function user_edit() {
 		</td>
 		<td>
 		<?php
-			form_base_checkbox("show_tree",$user["show_tree"],"User Has Rights to View Tree Mode","on",true);
-			form_base_checkbox("show_list",$user["show_list"],"User Has Rights to View List Mode","on",true);
-			form_base_checkbox("show_preview",$user["show_preview"],"User Has Rights to View Preview Mode","on",true);
+			form_base_checkbox("show_tree", $user["show_tree"], "User Has Rights to View Tree Mode", "on", $_GET["id"], true);
+			form_base_checkbox("show_list", $user["show_list"], "User Has Rights to View List Mode", "on", $_GET["id"], true);
+			form_base_checkbox("show_preview", $user["show_preview"], "User Has Rights to View Tree Mode", "on", $_GET["id"], true);
 		?>
 		</td>
 	</tr>
@@ -505,7 +504,7 @@ function user_edit() {
 				print "</td><td valign='top' width='50%'>";
 			}
 			
-			form_base_checkbox("section".$realm["id"], $old_value, $realm["name"],"",true);
+			form_base_checkbox("section" . $realm["id"], $old_value, $realm["name"], "", $_GET["id"], true);
 			
 			$i++;
 		}

@@ -722,7 +722,7 @@ function template_edit() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,$template_graph{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		form_base_checkbox("t_" . $field_name,$template_graph{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",$_GET["graph_template_id"],false);
 		print "</td>\n";
 		
 		draw_nontemplated_item($field_array, $field_name, $template_graph[$field_name]);
@@ -923,7 +923,7 @@ function input_edit() {
 			}
 			
 			$name = "$start_bold Item #" . ($i+1) . ": " . $graph_item_types{$item["graph_type_id"]} . " (" . $consolidation_functions{$item["consolidation_function_id"]} . ")$end_bold";
-			form_base_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",true);
+			form_base_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",$_GET["graph_template_id"],true);
 			
 			$i++;
 		}

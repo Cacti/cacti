@@ -123,13 +123,15 @@ function template_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>Host Templates [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-	
 	if (isset($_GET["id"])) {
 		$host_template = db_fetch_row("select * from host_template where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $host_template["name"] . "]";
 	}else{
-		unset($host_template);
+		$header_label = "[new]";
+		$_GET["id"] = 0;
 	}
+	
+	start_box("<strong>Host Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="host_templates.php">
@@ -175,7 +177,7 @@ function template_edit() {
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
-							form_base_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",true);
+							form_base_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",$_GET["id"],true);
 							$i++;
 						}
 						}

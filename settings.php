@@ -125,7 +125,7 @@ switch ($_REQUEST["action"]) {
 								DrawtrippedFormItemTextBox($item,$current_value,"","");
 								break;
 							case 'checkbox':
-								form_base_checkbox($item,$current_value,$settings[$setting]["items"][$item]["description"],"",true);
+								form_base_checkbox($item,$current_value,$settings[$setting]["items"][$item]["description"],"",0,true);
 								break;
 						}
 			    
