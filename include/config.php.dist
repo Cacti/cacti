@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* make sure these values refect your acual database/host/user/password */
+/* make sure these values refect your actual database/host/user/password */
 $database_type = "mysql";
 $database_default = "cacti";
 $database_hostname = "localhost";
