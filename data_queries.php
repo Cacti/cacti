@@ -264,9 +264,9 @@ function snmp_item_edit() {
 	<?php
 	end_box();
 	
-	start_box("<strong>Associated Data Templates</strong>", "98%", $colors["header"], "3", "center", "");
-	
 	if (!empty($snmp_query_item["id"])) {
+		start_box("<strong>Associated Data Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
 			data_template.name
