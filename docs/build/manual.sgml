@@ -1855,6 +1855,637 @@ $database_password = "cacti";</userinput></screen>
 				inside of Cacti.
 			</para>
 		</sect1>
+		<sect1 id="script_to_graph">
+			<title>Simplest Method of Going from Script to Graph (Walkthrough)</title>
+			<authorblurb>
+				<para>
+					<emphasis>Written by Kevin der Kinderen, <ulink url="http://kdeuja.com/~kevin/">http://kdeuja.com/~kevin/</ulink></emphasis>
+				</para>
+			</authorblurb>
+			<para>
+				This HOWTO walks you through the simplest steps of graphing the output of a single value from a script. 
+				As a new user of cacti, I had a difficult time understanding how to graph anything that wasn't canned with 
+				the original load. After a lot of playing around, I came up with these procedures which can be built upon for 
+				more sophisticated collections and graphs.
+			</para>
+			<para>
+				I do not use templates in this HOWTO. Templates provide a significant advantage if you are graphing the output 
+				for multiple instances or creating graphs for multiple hosts. They help to maintain consistency and simplify 
+				setup.
+			</para>
+			<para>
+				The example here is not realistic, but can be used and expanded upon as a model for creating your own graphs.
+			</para>
+			<para>
+				I've not put a lot of explanations in the procedures. Refer to the Cacti manual for more details.
+			</para>
+			<para>
+				Have a tested script ready to go. I used the following script located in <filename>/home/cactiuser/bin</filename> 
+				called <filename>random2.pl</filename>:
+			</para>
+			<programlisting>#!/usr/bin/perl -w
+ 
+print int(rand(10));</programlisting>
+			<para>
+				This script simply prints out a random integer between 0 and 9 every time it's called.
+			</para>
+			<orderedlist>
+				<title>The minimal steps to create a graph from a script are simply:</title>
+				<listitem>
+					<para>
+						Create a Data Input Method to tell Cacti how to call the script and what to expect from it.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Create a Data Source to tell cacti how and where the data will be stored.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Create a Graph to tell cacti how the data will be presented in graph form.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Add Graph to Graph View so you can view the graph.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						View the Graph
+					</para>
+				</listitem>
+			</orderedlist>
+			<orderedlist>
+				<title>The details are below:</title>
+				<listitem>
+					<para>
+						Create Data Input Method
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>
+								Click the <guilabel>Console</guilabel> tab at the top
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Data Input Methods</guilabel> under <guilabel>Management</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Name: Random 2 Input
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Input Type: Script/Command
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Input String: /home/cactiuser/bin/random2.pl
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." at the top of the page.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel> by Output Fields (there are no input fields for this example)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Field [Output]: random_number
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Friendly Name: Random Number
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Update RRD File: checked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." and random_number listed under <guilabel>Output Fields</guilabel>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Save</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." and Random Input listed in <guilabel>Data Input Methods</guilabel>.
+							</para>
+						</listitem>
+					</itemizedlist>
+				</listitem>
+				<listitem>
+					<para>
+						Create a Data Source
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>
+								Click <guilabel>Data Sources</guilabel> under <guilabel>Management</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel> in the top right
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								The <guilabel>Data Template</guilabel> Section should be None and None, we're not using templates for this example.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Name: random2ds
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Data Source Path: blank (Cacti will fill this in)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Data Input Source: Random 2 Input (this is the data input method you created in step 1)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Highlight each of the Associated RRA's using control-click
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Step: 300 (300 seconds = 5 minutes)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Data Source Active: checked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Describe the Data Source Item inside the RRA by...
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Internal Data Source Name: random_number
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Minimum Value: 0
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Maximum Value: 0
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Data Source Type: GAUGE
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Heartbeat: 600
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." at the top and the Data Source Path should now have a value (my example &lt;path_rra&gt;/random_number_286.rrd)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click Turn On Data Source Debugging Mode to see the results of this step.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Save</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful" and your new Data Source listed.
+							</para>
+						</listitem>
+					</itemizedlist>
+				</listitem>
+				<listitem>
+					<para>
+						Create Graph
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>
+								Select <guilabel>Graph Management</guilabel> under <guilabel>Management</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Selected Graph Template: None
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Host: None
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Title: RANDOM NUMBERS
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Image Format: PNG
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Height: 120
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Width: 500
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Auto Scale: checked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Auto Scale Options: Use --alt-autoscale-max
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Logarithmic Auto Scaling: unchecked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Rigid Boundaries: unchecked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Auto Padding: checked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Allow Graph Export: checked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Upper Limit: 100
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Lower Limit: 0
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Base Value: 1000
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Unit Value: blank
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Unit Exponent Value: 0
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Vertical Label: Random Number
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful."
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								If you click "Turn On Graph Debug Mode." now you will see: "Error: can't make a graph without contents." We need to add Graph Items:
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel> by <guilabel>Graph Items</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Data Source: (from list) No Host - random2ds (random_number)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Color: 0000FF (Blue)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Graph Item Type: LINE2
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Consolidation Function: AVERAGE
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								CDEF Function: None
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Value: blank
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								GPRINT Type: Normal
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Text Format: blank
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Insert Hard Return: unchecked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful.", Item #1 listed and a graph under debug (probably with nothing in it yet)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								To add a legend, click <guilabel>Add</guilabel> by <guilabel>Graph Items</guilabel> again
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Data Source: No Host - random2ds (random_number)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Color: None
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Graph Item Type: GPRINT
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Consolidation Function: LAST
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								CDEF Function: None
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Value: blank
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								GPRINT Type: Normal
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Text Format: Cur:
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Insert Hard Return: unchecked
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." and the graph will have a legend showing the current value. Note: your integer random number has been averaged over the past 5 minutes. At the bottom of the page, click save.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								At the bottom of the page, click <guilabel>Save</guilabel>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." and your graph listed.
+							</para>
+						</listitem>
+					</itemizedlist>
+				</listitem>
+				<listitem>
+					<para>
+						Add graph to the graph view
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>
+								Click <guilabel>Graph Trees</guilabel> under <guilabel>Management</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								We'll create a tree called "test" to place our graph
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Name: test
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful"
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Add</guilabel> beside <guilabel>Tree Items</guilabel> (to add our graph to this tree)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Under Tree Items [graph]...
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Graph: RANDOM NUMBERS (we named this in step 3)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Round Robin Archive: Daily (5 Minute Average)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Create</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." and RANDOM NUMBERS listed under <guilabel>Tree Items</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click <guilabel>Save</guilabel>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Should see "Save Successful." and test listed under <guilabel>Graph Trees</guilabel>
+							</para>
+						</listitem>
+					</itemizedlist>
+				</listitem>
+				<listitem>
+					<para>
+						View Graph
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>
+								Select <guilabel>Graphs</guilabel> tab
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Select tree view (Tree beside settings tab)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Select test tree on left
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								You may see "Random Graph" but no graph. It takes two or three polls (10 - 15 minutes) to see a graph. I believe poll 1 to create the rrd, poll 2 to get the first data point and poll 3 to have graphable points.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								While waiting, you can click the RANDOM NUMBERS graph. You'll see	place holders for 4 graphs. Select [source] under Daily (5 Minute Average). You'll see the source for the call to rrdtool graph. Give it a sanity check.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Now be patient. Hit your refresh button every few minutes. After the first poll I got a few empty graphs.	A few minutes later data started showing up.
+							</para>
+						</listitem>
+					</itemizedlist>
+				</listitem>
+			</orderedlist>
+		</sect1>
 	</chapter>
 	<chapter id="faq">
 		<title>Frequently Asked Questions</title>
