@@ -196,6 +196,7 @@ $user_auth_realms = array(
 	1 => "User Administration",
 	2 => "Data Input",
 	3 => "Update Data Sources",
+	4 => "Update Graph Trees",
 	5 => "Update Graphs",
 	7 => "View Graphs",
 	8 => "Console Access",
@@ -232,7 +233,7 @@ $user_auth_realm_filenames = array(
 	"rra.php" => 9,
 	"settings.php" => 15,
 	"snmp.php" => 13,
-	"tree.php" => 5,
+	"tree.php" => 4,
 	"user_admin.php" => 1,
 	"utilities.php" => 15
 	);
