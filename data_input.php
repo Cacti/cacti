@@ -104,12 +104,12 @@ function draw_cdef_preview($cdef_id) {
 function form_save() {
 	global $form;
 	
-	if (isset($form[save_component_cdef])) {
-		cdef_save();
-		return "cdef.php";
+	if (isset($form[save_component_data_input])) {
+		data_save();
+		return "data_input.php";
 	}elseif (isset($form[save_component_item])) {
 		item_save();
-		return "cdef.php?action=edit&id=$form[cdef_id]";
+		return "data_input.php?action=edit&id=$form[data_input_id]";
 	}
 }
 
@@ -244,24 +244,153 @@ function data_remove() {
 	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "cdef.php?action=remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=remove&id=$args[id]");
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-		db_execute("delete from cdef where id=$args[id]");
-		db_execute("delete from cdef_items where cdef_id=$args[id]");
+		db_execute("delete from data_input where id=$args[id]");
+		db_execute("delete from data_input_fields where data_input_id=$args[id]");
+		db_execute("delete from data_input_data where data_input_id=$args[id]");
 	}
 }
 
 function data_save() {
+	include("include/config_arrays.php");
+	
 	global $form;
+	
+	
+	/* first, find out if any fields have been added -- get a list from POST and compare it to
+	what we've got from the database
+	
+	-- new in 0.8: field names must match [_a-zA-Z], so users *could* include gt's and lt's
+	in their input/output strings by escaping them (ie. \< \>) */
+	
+	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $form["input_string"] . $form["output_string"], $matches)) {
+		for ($i=0; ($i < count($matches[1])); $i++) {
+			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+				if (!db_fetch_cell("select id from data_input_fields where data_name='" . $matches[1][$i] . "' and data_input_id=$form[id]")) {
+					/* new field -- not found in db */
+					if (!$drew_field) {
+						include_once ("include/top_header.php");
+						print "<form method='post' action='data_input.php'>";
+						
+						start_pagebox("", "98%", "00438C", "3", "center", "");
+						print "<tr><td bgcolor='#00438C' style='color: white;'><font style='color: white;' class='textInfo'>New Fields Detected</font><br>\n";
+						print "Cacti has found additional fields for this data input method. Before cacti
+						can use use fields you must fill in additional information about them below.\n";
+						print "</td></tr>\n";
+						end_box();
+						
+						$drew_field = true;
+					}
+					
+					$j = 0;
+					
+					start_box("", "", "");
+					DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+						print "<td width='50%'><font class='textEditTitle'>Field Name</font><br></td>\n";
+						print "<td>" . $matches[1][$i] . "</td>\n";
+					print "</tr>\n";
+					
+					DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+						print "<td width='50%'><font class='textEditTitle'>Field Type</font><br></td>\n";
+						if (strstr($form["input_string"], "<" . $matches[1][$i] . ">") != false) {  print "<td>Input</td>\n"; }else{ print "<td>Output</td>\n"; }
+					print "</tr>\n";
+					
+					if (strstr($form["input_string"], "<" . $matches[1][$i] . ">") == false) {
+						DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+							print "<td width='50%'>\n";
+								print "<font class='textEditTitle'>Update RRD File</font><br>\n";
+								print "Whether data from this output field is to be entered into the rrd file.";
+							print "</td>\n";
+							DrawFormItemCheckBox("active",$data[active],"Update RRD File","on",$args[local_data_id]);
+						print "</tr>\n";
+					}
+					
+					DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+						print "<td width='50%'>\n";
+							print "<font class='textEditTitle'>Name</font><br>\n";
+							print "Enter a meaningful name for this data input method.";
+						print "</td>\n";
+						DrawFormItemTextBox("name",$data_input[name],"","200", "30");
+					print "</tr>\n";
+					end_box();
+				}
+			}
+		}
+	}
+	
+	$fields = db_fetch_assoc("select id,data_name,name,input_output from data_input_fields where data_input_id=$form[id] order by input_output,data_name");
+	
+	$j = 0;
+	
+	if (sizeof($fields) > 0) {
+	foreach ($fields as $field) {
+		if ((strstr($form["input_string"], "<" . $field["data_name"] . ">") == false) && (strstr($form["output_string"], "<" . $field["data_name"] . ">") == false)) {
+			/* nothing has been drawn yet, do the header */
+			if (!$drew_field) {
+				include_once ("include/top_header.php");
+				
+				$drew_field = true;
+			}
+			
+			if ($j == 0) {
+				/* at least do the header for the deletion */
+				
+				start_pagebox("", "98%", "00438C", "3", "center", "");
+				print "<tr><td bgcolor='#00438C' style='color: white;'><font style='color: white;' class='textInfo'>Old (Deleted) Fields Detected</font><br>\n";
+				print "Cacti has detected that the following fields have been removed from this data input method. 
+				Once you click \"Save\", they will be removed from the database.\n";
+				print "</td></tr>\n";
+				end_box();
+			}
+			
+			start_box("", "", "");
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+				print "<td width='50%'><font class='textEditTitle'>Field Name</font><br></td>\n";
+				print "<td>" . $field["data_name"] . "</td>\n";
+			print "</tr>\n";
+			
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+				print "<td width='50%'><font class='textEditTitle'>Friendly Field Name</font><br></td>\n";
+				print "<td>" . $field["name"] . "</td>\n";
+			print "</tr>\n";
+			
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j); $j++;
+				print "<td width='50%'><font class='textEditTitle'>Field Type</font><br></td>\n";
+				print "<td>"; print $field["input_output"] ? "Output" : "Input"; print "</td>\n";
+			print "</tr>\n";
+			end_box();
+		}
+	
+	}
+	}
+	
+	if ($drew_field == true) {
+		/* if we started a page; finish it */
+		start_box("", "", "");
+		?>
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right">
+				<?DrawFormSaveButton("save", "data_input.php");?>
+			</td>
+		</tr>
+		</form>
+		<?
+		end_box();
+		
+		include_once("include/bottom_footer.php");
+	}
 	
 	$save["id"] = $form["id"];
 	$save["name"] = $form["name"];
+	$save["input_string"] = $form["input_string"];
+	$save["output_string"] = $form["output_string"];
 	
-	sql_save($save, "cdef");	
+	//sql_save($save, "data_input");
 }
 
 function data_edit() {
@@ -291,7 +420,7 @@ function data_edit() {
 			<font class="textEditTitle">Input String</font><br>
 			The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.
 		</td>
-		<?DrawFormItemTextBox("name",$data_input[input_string],"","255", "40");?>
+		<?DrawFormItemTextBox("input_string",$data_input[input_string],"","255", "40");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
@@ -299,14 +428,14 @@ function data_edit() {
 			<font class="textEditTitle">Output String</font><br>
 			The data that is expected back from the input script; defined as &lt;&gt; brackets.
 		</td>
-		<?DrawFormItemTextBox("name",$data_input[output_string],"","255", "40");?>
+		<?DrawFormItemTextBox("output_string",$data_input[output_string],"","255", "40");?>
 	</tr>
 	
 	<?
 	DrawFormItemHiddenIDField("id",$args[id]);
 	end_box();
 	
-	start_box("Fields [input]", "", "");
+	start_box("Input Fields", "", "");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Name",$colors[header_text],1);
