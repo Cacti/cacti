@@ -610,6 +610,8 @@ function update_database($database_old, $database_username, $database_password) 
 	}
 	}
 	
+	repopulate_poller_cache();
+	
 	return $status_array;
 }
 
@@ -640,7 +642,5 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 	
 	return $branch;
 }
-
-repopulate_poller_cache();
 
 ?>
