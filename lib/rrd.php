@@ -96,24 +96,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 		case RRDTOOL_OUTPUT_NULL:
 			return; break;
 		case RRDTOOL_OUTPUT_STDOUT:
-			/* popen rrdtool pipe; read until feof */
-			if (isset($fp)) {
-				$line = "";
-				while (!feof($fp)) {
-					$line .= fgets($fp, 4096);
-				}
-
-				return $line;
-			/* stdin rrdtool pipe (popen); read 1024 bytes and stop */
-			}else {
-				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
-					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
-				}
-
-				return fgets($fp, 1024);
-			}
-
-			break;
+			return; break;
 		case RRDTOOL_OUTPUT_STDERR:
 			if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
 				$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
