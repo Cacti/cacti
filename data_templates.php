@@ -199,12 +199,13 @@ function template_edit() {
 	if (isset($_GET["data_template_id"])) {
 		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["data_template_id"] . " and local_data_id=0");
 		$template = db_fetch_row("select * from data_template where id=" . $_GET["data_template_id"]);
+		
+		$header_label = "[edit: " . $template["name"] . "]";
 	}else{
-		unset($template_data);
-		unset($template);
+		$header_label = "[new]";
 	}
 	
-	start_box("Template Configuration", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<form method="post" action="data_templates.php">
@@ -220,7 +221,7 @@ function template_edit() {
 	<?php
 	end_box();
 	
-	start_box("Data Template Configuration", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source["data_source_path"]);
@@ -229,7 +230,7 @@ function template_edit() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,$template_data{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		form_base_checkbox("t_" . $field_name,$template_data{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",$_GET["data_template_id"],false);
 		print "</td>\n";
 		
 		if ($field_array["type"] == "custom") {
@@ -259,7 +260,7 @@ function template_edit() {
 		$template_rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
 	}
 	
-	start_box("Data Source Configuration [" . $template_rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Source Item</strong> [" . $template_rrd["data_source_name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
 	$i = 0;
 	if (sizeof($template_data_rrds) > 1) {
@@ -291,7 +292,7 @@ function template_edit() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,$template_rrd{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		form_base_checkbox("t_" . $field_name,$template_rrd{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",$_GET["data_template_id"],false);
 		print "</td>\n";
 		
 		draw_nontemplated_item($field_array, $field_name, $template_rrd[$field_name]);
@@ -305,7 +306,7 @@ function template_edit() {
 	if (!empty($_GET["data_template_id"])) {
 	/* get each INPUT field for this data input source */
 	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
-		start_box("Custom Data", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Custom Data</strong> [data input: " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 		
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -321,7 +322,7 @@ function template_edit() {
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
 				<td width="50%">
 					<strong><?php print $field["name"];?></strong><br>
-					<?php form_base_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+					<?php form_base_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",$_GET["data_template_id"],false);?>
 				</td>
 				<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>
 			</tr>

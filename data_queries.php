@@ -138,13 +138,14 @@ function snmp_edit() {
 	
 	display_output_messages();
 	
-	start_box("<strong>SNMP Queries</strong> [edit]", "98%", $colors["header"], "3", "center", "");
-	
 	if (isset($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $snmp_query["name"] . "]";
 	}else{
-		unset($snmp_query);
+		$header_label = "[new]";
 	}
+	
+	start_box("<strong>SNMP Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="snmp.php">
@@ -252,7 +253,7 @@ function snmp_edit() {
 								<?php form_base_dropdown("mdt_" . $data_template["id"] . "_" . $field["id"] . "_action_id",$snmp_query_field_actions,"","",$field["action_id"],"","");?>
 							</td>
 							<td align="right">
-								<?php form_base_checkbox("mdt_" . $data_template["id"] . "_" . $field["id"] . "_check", $old_value, "", "",true);?>
+								<?php form_base_checkbox("mdt_" . $data_template["id"] . "_" . $field["id"] . "_check", $old_value, "", "",$_GET["id"],true);?>
 							</td>
 						</tr>
 					</table>
@@ -314,7 +315,7 @@ function snmp_edit() {
 									form_base_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
 								</td>
 								<td align="right">
-									<?php form_base_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "",true);?>
+									<?php form_base_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "",$_GET["id"],true);?>
 								</td>
 							</tr>
 						</table>
