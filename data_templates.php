@@ -28,12 +28,21 @@ include ('include/auth.php');
 include_once ('include/form.php');
 include_once ("include/config_arrays.php");
 
+$ds_actions = array(
+	1 => "Delete",
+	2 => "Duplicate"
+	);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
+		
+		break;
+	case 'actions':
+		form_actions();
 		
 		break;
 	case 'rrd_add':
@@ -199,30 +208,114 @@ function form_save() {
 		}
 	}
 }
-   
-/* ----------------------------
-    template - Graph Templates 
-   ---------------------------- */
 
-function template_remove() {
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", $_SERVER["HTTP_REFERER"], "data_templates.php?action=template_remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
+/* ------------------------
+    The "actions" function 
+   ------------------------ */
+
+function form_actions() {
+	include_once ("include/tree_functions.php");
+	include_once ("include/tree_view_functions.php");
+	include_once ("include/utility_functions.php");
+	
+	global $colors, $ds_actions;
+	
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		
+		if ($_POST["drp_action"] == "1") { /* delete */
+			$data_template_datas = db_fetch_assoc("select id from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+			
+			if (sizeof($data_template_datas) > 0) {
+			foreach ($data_template_datas as $data_template_data) {
+				db_execute("delete from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+			}
+			}
+			
+			db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+			db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+			db_execute("delete from data_template where " . array_to_sql_or($selected_items, "id"));
+			
+			/* "undo" any graph that is currently using this template */
+			db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
+		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				duplicate_data_source(0, $selected_items[$i], $_POST["title_format"]);
+			}
+		}
+		
+		header("Location: data_templates.php");
 		exit;
 	}
 	
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where data_template_id=" . $_GET["id"]));
-		db_execute("delete from data_template_data where data_template_id=" . $_GET["id"] . " and local_graph_id=0");
-		db_execute("delete from data_template_rrd where data_template_id=" . $_GET["id"] . " and local_graph_id=0");
-		db_execute("delete from data_template where id=" . $_GET["id"]);
+	/* setup some variables */
+	$ds_list = ""; $i = 0;
+	
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			$ds_list .= "<li>" . db_fetch_cell("select name from data_template where id=" . $matches[1]) . "<br>";
+			$ds_array[$i] = $matches[1];
+		}
 		
-		/* "undo" any graph that is currently using this template */
-		db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where data_template_id=" . $_GET["id"]);
-		db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where data_template_id=" . $_GET["id"]);
-	}	
+		$i++;
+	}
+	
+	include_once ("include/top_header.php");
+	
+	start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	
+	print "<form action='data_templates.php' method='post'>\n";
+	
+	if ($_POST["drp_action"] == "1") { /* delete */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following data templates? Any data sources attached
+					to these templates will become individual data sources.</p>
+					<p>$ds_list</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following data templates will be duplicated. You can
+					optionally change the title format for the new data templates.</p>
+					<p>$ds_list</p>
+					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<template_title> (1)", "", "255", "30", "textbox"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}
+	
+	if (!isset($ds_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data template.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>";
+	}
+	
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='data_templates.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";	
+	
+	end_box();
+	
+	include_once ("include/bottom_footer.php");
 }
+ 
+/* ----------------------------
+    template - Graph Templates 
+   ---------------------------- */
 
 function template_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
@@ -412,13 +505,15 @@ function template_edit() {
 }
 
 function template() {
-	global $colors;
+	global $colors, $ds_actions;
 	
 	start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 	
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Template Title",$colors["header_text"],2);
-	print "</tr>";
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Template Title</td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\")'></td>
+		<form name='chk' method='post' action='data_templates.php'>
+		</tr>";
 	
 	$template_list = db_fetch_assoc("select 
 		data_template.id,
@@ -434,8 +529,8 @@ function template() {
 			<td>
 				<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
-			<td width="1%" align="right">
-				<a href="data_templates.php?action=template_remove&id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
 			</td>
 		</tr>
 		<?php
@@ -444,7 +539,26 @@ function template() {
 	}else{
 		print "<tr><td><em>No Data Templates</em></td></tr>\n";
 	}
-	end_box();
+	end_box(false);
+	
+	?>
+	<table align='center' width='98%'>
+		<tr>
+			<td width='1' valign='top'>
+				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+			</td>
+			<td align='right'>
+				<?php form_base_dropdown("drp_action",$ds_actions,"","","1","","");?>
+			</td>
+			<td width='1' align='right'>
+				<input type='image' src='images/button_go.gif' alt='Go'>
+			</td>
+		</tr>
+	</table>
+	
+	<input type='hidden' name='action' value='actions'>
+	</form>
+	<?php
 }
 
 ?>

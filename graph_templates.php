@@ -28,12 +28,21 @@ include ('include/auth.php');
 include_once ("include/form.php");
 include_once ("include/config_arrays.php");
 
+$graph_actions = array(
+	1 => "Delete",
+	2 => "Duplicate"
+	);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
+		
+		break;
+	case 'actions':
+		form_actions();
 		
 		break;
 	case 'template_remove':
@@ -44,26 +53,12 @@ switch ($_REQUEST["action"]) {
 	case 'input_remove':
 		input_remove();
 		
-		if (read_config_option("full_view_graph_template") == "") {
-			header ("Location: graph_templates.php?action=item&id=" . $_GET["graph_template_id"]);
-			exit;
-		}elseif (read_config_option("full_view_graph_template") == "on") {
-			header ("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
-			exit;
-		}
-		
+		header ("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'item_remove':
 		item_remove();
 		
-		if (read_config_option("full_view_graph_template") == "") {
-			header ("Location: graph_templates.php?action=item&id=" . $_GET["graph_template_id"]);
-			exit;
-		}elseif (read_config_option("full_view_graph_template") == "on") {
-			header ("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
-			exit;
-		}
-		
+		header ("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'input_edit':
 		include_once ("include/top_header.php");
@@ -111,33 +106,6 @@ switch ($_REQUEST["action"]) {
 		include_once ("include/bottom_footer.php");
 		break;
 }
-
-/* --------------------------
-    Global Form Functions
-   -------------------------- */
-
-function draw_graph_form_select($main_action) { 
-	global $colors; ?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_id">
-		<td colspan="6">
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td width="1%">
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graph_templates.php?action=template_edit&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"template")) {?> selected<?php }?>>Graph Template Configuration</option>
-							<option value="graph_templates.php?action=item&id=<?php print $_GET["id"];?>"<?php if ((strstr($_GET["action"],"item")) || (strstr($_GET["action"],"input"))) {?> selected<?php }?>>Graph Item Template Configuration</option>
-						</select>
-					</td>
-					<td>
-						&nbsp;<a href="graph_templates.php<?php print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
-					</td>
-				</tr>
-			</table>
-		</td>
-		</form>
-	</tr>
-<?php }
 
 /* --------------------------
     The Save Function
@@ -280,10 +248,7 @@ function form_save() {
 		if (is_error_message()) {
 			header ("Location: graph_templates.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&id=" . $_POST["graph_template_id"]);
 			exit;
-		}elseif (read_config_option("full_view_graph_template") == "") {
-			header ("Location: graph_templates.php?action=item&id=" . $_POST["graph_template_id"]);
-			exit;
-		}elseif (read_config_option("full_view_graph_template") == "on") {
+		}else{
 			header ("Location: graph_templates.php?action=template_edit&id=" . $_POST["graph_template_id"]);
 			exit;
 		}
@@ -318,10 +283,7 @@ function form_save() {
 		if (is_error_message()) {
 			header ("Location: graph_templates.php?action=input_edit&graph_template_input_id=" . (empty($graph_template_input_id) ? $_POST["graph_template_input_id"] : $graph_template_input_id) . "&id=" . $_POST["graph_template_id"]);
 			exit;
-		}elseif (read_config_option("full_view_graph_template") == "") {
-			header ("Location: graph_templates.php?action=item&id=" . $_POST["graph_template_id"]);
-			exit;
-		}elseif (read_config_option("full_view_graph_template") == "on") {
+		}else{
 			header ("Location: graph_templates.php?action=template_edit&id=" . $_POST["graph_template_id"]);
 			exit;
 		}
@@ -332,6 +294,112 @@ function form_save() {
 	}else{
 		header ("Location: graph_templates.php");
 	}
+}
+
+/* ------------------------
+    The "actions" function 
+   ------------------------ */
+
+function form_actions() {
+	include_once ("include/tree_functions.php");
+	include_once ("include/tree_view_functions.php");
+	include_once ("include/utility_functions.php");
+	
+	global $colors, $graph_actions;
+	
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		
+		if ($_POST["drp_action"] == "1") { /* delete */
+			db_execute("delete from graph_templates where " . array_to_sql_or($selected_items, "id"));
+		
+			$graph_template_input = db_fetch_assoc("select id from graph_template_input where " . array_to_sql_or($selected_items, "graph_template_id"));
+			
+			if (sizeof($graph_template_input) > 0) {
+			foreach ($graph_template_input as $item) {
+				db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
+			}
+			}
+			
+			db_execute("delete from graph_template_input where " . array_to_sql_or($selected_items, "graph_template_id"));
+			db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
+			db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
+			
+			/* "undo" any graph that is currently using this template */
+			db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
+			db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
+		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				duplicate_graph(0, $selected_items[$i], $_POST["title_format"]);
+			}
+		}
+		
+		header("Location: graph_templates.php");
+		exit;
+	}
+	
+	/* setup some variables */
+	$graph_list = ""; $i = 0;
+	
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			$graph_list .= "<li>" . db_fetch_cell("select name from graph_templates where id=" . $matches[1]) . "<br>";
+			$graph_array[$i] = $matches[1];
+		}
+		
+		$i++;
+	}
+	
+	include_once ("include/top_header.php");
+	
+	start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	
+	print "<form action='graph_templates.php' method='post'>\n";
+	
+	if ($_POST["drp_action"] == "1") { /* delete */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following graph templates? Any graphs attached
+					to these templates will become individual graphs.</p>
+					<p>$graph_list</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following graph templates will be duplicated. You can
+					optionally change the title format for the new graph templates.</p>
+					<p>$graph_list</p>
+					<p><strong>Title Format:</strong><br>"; form_base_text_box("title_format", "<template_title> (1)", "", "255", "30", "textbox"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}
+	
+	if (!isset($graph_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>";
+	}
+	
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='graph_templates.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";	
+	
+	end_box();
+	
+	include_once ("include/bottom_footer.php");
 }
 
 /* -----------------------
@@ -405,12 +473,6 @@ function item() {
 			order by graph_templates_item.sequence");
 		
 		$header_label = "[edit: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "]";
-	}
-	
-	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&id=" . $_GET["id"]);
-		end_box();
 	}
 	
 	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["id"]);
@@ -531,12 +593,6 @@ function item_edit() {
 	
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 	
-	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&id=" . $_GET["id"]);
-		end_box();
-	}
-	
 	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	if (!empty($_GET["id"])) {
@@ -617,12 +673,6 @@ function input_edit() {
 	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
 	
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
-	
-	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&id=" . $_GET["graph_template_id"]);
-		end_box();
-	}
 	
 	/* get a list of all graph item field names and populate an array for user display */
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
@@ -733,43 +783,8 @@ function input_edit() {
     template - Graph Templates 
    ---------------------------- */
 
-function template_remove() {
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", $_SERVER["HTTP_REFERER"], "graph_templates.php?action=template_remove&id=" . $_GET["id"]);
-		include ('include/bottom_footer.php');
-		exit;
-	}
-	
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from graph_templates where id=" . $_GET["id"]);
-		
-		$graph_template_input = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $_GET["id"]);
-		
-		if (sizeof($graph_template_input) > 0) {
-		foreach ($graph_template_input as $item) {
-			db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
-		}
-		}
-		
-		db_execute("delete from graph_template_input where graph_template_id=" . $_GET["id"]);
-		db_execute("delete from graph_templates_graph where graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
-		db_execute("delete from graph_templates_item where graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
-		
-		/* "undo" any graph that is currently using this template */
-		db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where graph_template_id=" . $_GET["id"]);
-		db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where graph_template_id=" . $_GET["id"]);
-	}	
-}
-
 function template_edit() {
 	global $colors, $struct_graph, $image_types;
-	
-	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=template_edit&id=" . $_GET["id"]);
-		end_box();
-	}
 	
 	if (!empty($_GET["id"])) {
 		$template = db_fetch_row("select * from graph_templates where id=" . $_GET["id"]);
@@ -780,9 +795,8 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 	
-	if ((read_config_option("full_view_graph_template") == "on") && (!empty($_GET["id"]))) {
-		item();	
-	}
+	/* graph item list goes here */
+	item();
 	
 	start_box("<strong>Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>
@@ -824,12 +838,14 @@ function template_edit() {
 }
 
 function template() {
-	global $colors;
+	global $colors, $graph_actions;
 	
 	start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
 	
 	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td colspan='2' class='textSubHeaderDark'>Template Title</td>
+			<td class='textSubHeaderDark'>Template Title</td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\")'></td>
+		<form name='chk' method='post' action='graph_templates.php'>
 		</tr>";
 	
 	$template_list = db_fetch_assoc("select 
@@ -845,8 +861,8 @@ function template() {
 			<td>
 				<a class="linkEditMain" href="graph_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
-			<td width="1%" align="right">
-				<a href="graph_templates.php?action=template_remove&id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
 			</td>
 		</tr>
 		<?php
@@ -855,7 +871,26 @@ function template() {
 	}else{
 		print "<tr><td><em>No Graph Templates</em></td></tr>\n";
 	}
-	end_box();
+	end_box(false);
+	
+	?>
+	<table align='center' width='98%'>
+		<tr>
+			<td width='1' valign='top'>
+				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+			</td>
+			<td align='right'>
+				<?php form_base_dropdown("drp_action",$graph_actions,"","","1","","");?>
+			</td>
+			<td width='1' align='right'>
+				<input type='image' src='images/button_go.gif' alt='Go'>
+			</td>
+		</tr>
+	</table>
+	
+	<input type='hidden' name='action' value='actions'>
+	</form>
+	<?php
 }
 
 ?>
