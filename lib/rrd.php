@@ -535,7 +535,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			       to a function that matches the digits with letters. rrdtool likes letters instead
 			       of numbers in DEF names; especially with CDEF's. cdef's are created
 			       the same way, except a 'cdef' is put on the beginning of the hash */
-			       $graph_defs .= "DEF:" . generate_graph_def_name(("$i")) . "=\"$data_source_path\":$data_source_name:" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
+			       $graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":$data_source_name:" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
 			
 			       //print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
 			       $cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
@@ -767,7 +767,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
-							$def_name = generate_graph_def_name($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]);
+							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
 							$cdef_total_ds .= "$def_name,UN,0,$def_name,IF,"; /* convert unknowns to '0' first */
 							$item_count++;
 						}
@@ -783,11 +783,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				}
 			}
 			
-			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0")), $cdef_string);
+			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
 			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
 			
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
-			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name("$i") . "=";
+			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
 			$cdef_graph_defs .= $cdef_string;
 			$cdef_graph_defs .= " \\\n";
 			
@@ -829,12 +829,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		to this graph item */
 		if ($graph_item["cdef_id"] == "0") {
 			if (isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id])) {
-				$data_source_name = generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]);
+				$data_source_name = generate_graph_def_name(strval($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]));
 			}else{
 				$data_source_name = "";
 			}
 		}else{
-			$data_source_name = "cdef" . generate_graph_def_name($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]});
+			$data_source_name = "cdef" . generate_graph_def_name(strval($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}));
 		}
 		
 		/* to make things easier... if there is no text format set; set blank text */
