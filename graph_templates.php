@@ -417,7 +417,7 @@ function item() {
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Task Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
 		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
