@@ -218,7 +218,7 @@ function snmp_item_remove_dssv() {
 function snmp_item_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the SNMP Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "snmp.php?action=remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the SNMP Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -498,7 +498,7 @@ function snmp_item_edit() {
 function snmp_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the SNMP Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "snmp.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the SNMP Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}

@@ -31,7 +31,7 @@ include ("include/config.php");
 
 $user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
 
-$ip = trim(getenv("REMOTE_ADDR"));
+$ip = trim($_SERVER["REMOTE_ADDR"]);
 
 switch ($action) {
 case 'changepassword':

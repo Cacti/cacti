@@ -249,7 +249,7 @@ function item_edit() {
 function cdef_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "cdef.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "cdef.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}

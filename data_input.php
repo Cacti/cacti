@@ -175,7 +175,7 @@ function field_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -327,7 +327,7 @@ function data_remove() {
 	
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_input.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "data_input.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}

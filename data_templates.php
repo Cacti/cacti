@@ -203,7 +203,7 @@ function form_save() {
 function template_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", $_SERVER["HTTP_REFERER"], "data_templates.php?action=template_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
