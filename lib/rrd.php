@@ -299,6 +299,8 @@ function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 		}
 	}
 	
+	$max_array = array();
+	
 	/* loop through each regexp determined above (or each data source) */
 	for ($i=0;$i<count($regexps);$i++) {
 		$fetch_array["values"][$i] = array();
