@@ -27,8 +27,12 @@
 $section = "View Graphs"; $guest_account = true; include ('include/auth.php');
 include_once ("include/rrd_functions.php");
 
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Content-type: image/png");
+
 /* check to see if there are user specified vars */
-if ($graph_start != "") {
+if (!empty($_GET["graph_start"])) {
 	$graph_data_array["use"] = true;
 	$graph_data_array["graph_start"] = $_GET["graph_start"];
 	$graph_data_array["graph_height"] = $_GET["graph_height"];
@@ -36,7 +40,7 @@ if ($graph_start != "") {
 }
 
 /* treat the legend separatly */
-if ($graph_nolegend != "") {
+if (!empty($_GET["graph_nolegend"])) {
 	$graph_data_array["graph_nolegend"] = $_GET["graph_nolegend"];
 }
 
