@@ -56,7 +56,7 @@ $settings = array(
 			"max_length" => "255"
 			),
 		"path_rrdtool" => array(
-			"friendly_name" => "rrdtool Binary Path",
+			"friendly_name" => "RRDTool Binary Path",
 			"description" => "Path to the rrdtool binary.",
 			"method" => "textbox",
 			"max_length" => "255"
