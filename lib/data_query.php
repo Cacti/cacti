@@ -354,9 +354,8 @@ function update_graph_data_query_cache($local_graph_id) {
 	if (($data_query_id != "0") && ($index != "")) {
 		db_execute("update graph_local set snmp_query_id='$data_query_id',snmp_index='$index' where id=$local_graph_id");
 
-		/* update data source/graph title cache */
-		update_data_source_title_cache_from_query($data_query_id, $index);
-		update_graph_title_cache_from_query($data_query_id, $index);
+		/* update graph title cache */
+		update_graph_title_cache($local_graph_id);
 	}
 }
 
@@ -380,8 +379,8 @@ function update_data_source_data_query_cache($local_data_id) {
 	if (($data_query_id != "0") && ($index != "")) {
 		db_execute("update data_local set snmp_query_id='$data_query_id',snmp_index='$index' where id='$local_data_id'");
 
-		/* update graph title cache */
-		update_graph_title_cache_from_query($data_query_id, $index);
+		/* update data source title cache */
+		update_data_source_title_cache($local_data_id);
 	}
 }
 
