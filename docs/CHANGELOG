@@ -12,6 +12,8 @@ raXnet - cacti
 -bug: Fixed an issue where the poller cache was not being updated properly for some host types upon change
 -bug: Hope it’s final this time 95th percentile and bandwidth fixes
 -bug: Added more verbose error handling with template importing
+-bug#0000355: Allow scientific and negative numbers to be returned from a script
+-bug#0000347: Change Order of Graph Templates and Data Queries in Host
 
 0.8.6b
 

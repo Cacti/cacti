@@ -431,6 +431,65 @@ function host_edit() {
 	}
 
 	if (!empty($host["id"])) {
+		html_start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+
+		html_header(array("Graph Template Name", "Status"), 2);
+
+		$selected_graph_templates = db_fetch_assoc("select
+			graph_templates.id,
+			graph_templates.name
+			from graph_templates,host_graph
+			where graph_templates.id=host_graph.graph_template_id
+			and host_graph.host_id=" . $_GET["id"] . "
+			order by graph_templates.name");
+
+		$i = 0;
+		if (sizeof($selected_graph_templates) > 0) {
+		foreach ($selected_graph_templates as $item) {
+			$i++;
+
+			/* get status information for this graph template */
+			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
+
+			?>
+			<tr>
+				<td style="padding: 4px;">
+					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+				</td>
+				<td>
+					<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1") . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+				</td>
+				<td align='right' nowrap>
+					<a href='host.php?action=gt_remove&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>'><img src='images/delete_icon_large.gif' alt='Delete Graph Template Association' border='0' align='absmiddle'></a>
+				</td>
+			</tr>
+			<?php
+		}
+		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
+
+		?>
+		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+			<td colspan="4">
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<td nowrap>Add Graph Template:&nbsp;
+						<?php form_dropdown("graph_template_id",db_fetch_assoc("select
+							graph_templates.id,
+							graph_templates.name
+							from graph_templates left join host_graph
+							on (graph_templates.id=host_graph.graph_template_id and host_graph.host_id=" . $_GET["id"] . ")
+							where host_graph.host_id is null
+							order by graph_templates.name"),"name","id","","","");?>
+					</td>
+					<td align="right">
+						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
+					</td>
+				</table>
+			</td>
+		</tr>
+
+		<?php
+		html_end_box();
+
 		html_start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
 
 		html_header(array("Data Query Name", "Debugging", "Re-Index Method", "Status"), 2);
@@ -494,65 +553,6 @@ function host_edit() {
 					</td>
 					<td align="right">
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
-					</td>
-				</table>
-			</td>
-		</tr>
-
-		<?php
-		html_end_box();
-
-		html_start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
-
-		html_header(array("Graph Template Name", "Status"), 2);
-
-		$selected_graph_templates = db_fetch_assoc("select
-			graph_templates.id,
-			graph_templates.name
-			from graph_templates,host_graph
-			where graph_templates.id=host_graph.graph_template_id
-			and host_graph.host_id=" . $_GET["id"] . "
-			order by graph_templates.name");
-
-		$i = 0;
-		if (sizeof($selected_graph_templates) > 0) {
-		foreach ($selected_graph_templates as $item) {
-			$i++;
-
-			/* get status information for this graph template */
-			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
-
-			?>
-			<tr>
-				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
-				</td>
-				<td>
-					<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1") . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
-				</td>
-				<td align='right' nowrap>
-					<a href='host.php?action=gt_remove&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>'><img src='images/delete_icon_large.gif' alt='Delete Graph Template Association' border='0' align='absmiddle'></a>
-				</td>
-			</tr>
-			<?php
-		}
-		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
-
-		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-			<td colspan="4">
-				<table cellspacing="0" cellpadding="1" width="100%">
-					<td nowrap>Add Graph Template:&nbsp;
-						<?php form_dropdown("graph_template_id",db_fetch_assoc("select
-							graph_templates.id,
-							graph_templates.name
-							from graph_templates left join host_graph
-							on (graph_templates.id=host_graph.graph_template_id and host_graph.host_id=" . $_GET["id"] . ")
-							where host_graph.host_id is null
-							order by graph_templates.name"),"name","id","","","");?>
-					</td>
-					<td align="right">
-						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
 					</td>
 				</table>
 			</td>
