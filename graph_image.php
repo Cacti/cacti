@@ -37,6 +37,8 @@ header("Content-type: image/png");
 /* flush the headers now */
 ob_end_flush();
 
+session_write_close();
+
 $graph_data_array = array();
 
 /* check to see if there are user specified vars */
