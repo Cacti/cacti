@@ -1167,47 +1167,6 @@ $database_password = "cacti";</userinput></screen>
 				information to fill in. If you receive a red warning that says 'XML File Does Not Exist', correct
 				the value specified in the 'XML Path' field.
 			</para>
-			<para>
-				Under the <guilabel>Data Input Method</guilabel> box, you need to specify mappings that tell
-				Cacti where to send data it recieves from the data query. There are three data source fields that
-				Cacti cares about when referring to a data query; index type, index value, and output type ID.
-				Index type refers to the name of the input field to search in, while the index value contains the
-				value to search for in that field. Lastly, output type ID specifies the ID of the "Associated
-				Graph Template" to use. You do not have to worry about filling in values for these fields when
-				creating data sources, Cacti will do that for you. Below are the default mappings that will work
-				in almost all cases:
-			</para>
-			<table frame='all'>
-				<title>Data Input Method Mappings</title>
-				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-					<colspec colwidth="150" colnum="1">
-					<colspec colwidth="280" colnum="2">
-					<thead>
-						<row>
-							<entry align="center">Name</entry>
-							<entry align="center">Value</entry>
-						</row>
-					</thead>
-					<tbody>
-						<row>
-							<entry>Index Type:</entry>
-							<entry>SNMP Field Name (Dropdown)</entry>
-						</row>
-						<row>
-							<entry>Index Value:</entry>
-							<entry>SNMP Field Value (From User)</entry>
-						</row>
-						<row>
-							<entry>Output Type ID:</entry>
-							<entry>SNMP Output Type (Dropdown)</entry>
-						</row>
-					</tbody>
-				</tgroup>
-			</table>
-			<para>
-				<emphasis>Make sure to check the checkboxes to the right of these three fields, or the mappings will
-				not be saved.</emphasis>
-			</para>
 			<sect2 id="data_queries_associated_graph_templates">
 				<title>Associated Graph Templates</title>
 				<para>
