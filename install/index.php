@@ -24,11 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-session_start();
-
-header ("Cache-Control: no-cache, must-revalidate");
-header ("Pragma: no-cache");
-
 include_once("../lib/form.php");
 include("../include/config.php");
 include("../include/config_settings.php");
