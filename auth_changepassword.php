@@ -45,7 +45,17 @@ case 'changepassword':
 		
 		kill_session_var("sess_change_password");
 		
-		header("Location: " . $_POST["ref"]);
+		/* ok, at the point the user has been sucessfully authenticated; so we must
+		decide what to do next */
+		switch ($user["login_opts"]) {
+			case '1': /* referer */
+				header("Location: " . $_POST["ref"]); break;
+			case '2': /* default console page */
+				header("Location: index.php"); break;
+			case '3': /* default graph page */
+				header("Location: graph_view.php"); break;
+		}
+		
 		exit;
 	}else{
 		$bad_password = true;
