@@ -211,7 +211,7 @@ if ($_REQUEST["step"] == "4") {
 	/* get all items on the form and write values for them  */
 	while (list($name, $array) = each($input)) {
 		if (isset($_POST[$name])) {
-			db_execute("update settings set value='" . $_POST[$name] . "' where name='$name'");
+			db_execute("replace into settings (name,value) values ('$name','" . $_POST[$name] . "')");
 		}
 	}
 
