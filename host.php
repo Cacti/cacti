@@ -139,6 +139,8 @@ function form_save() {
 					$graph_template_id = preg_replace('/^cg_(\d+)$/', "\\1", $var);
 					
 					$selected_graphs["cg"][$graph_template_id][$graph_template_id] = true;
+				}elseif (preg_match('/^ccg$/', $var)) {
+					$selected_graphs["cg"]{$_POST["cg_g"]}{$_POST["cg_g"]} = true;
 				}elseif (preg_match('/^sg_\d+_\S+$/', $var)) {
 					$snmp_query_id = preg_replace('/^sg_(\d+)_(\S+)$/', "\\1", $var);
 					$snmp_query_graph_id = $_POST{"sgg_" . $snmp_query_id}; 
@@ -513,6 +515,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					
 					print "</tr>\n";
 				}
+				}else{ print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td colspan='2' style='font-weight: bold; color: red;'>There appears to be a problem with your data query. Please make sure you have made at least one data template association.</td></tr>";
 				}
 			}
 			
@@ -570,7 +573,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						$subs_string = db_fetch_cell("select text from host_template_graph_sv where host_template_id=$host_template_id and graph_template_id=$graph_template_id and field_name='$field_name'");
 						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $subs_string);
 					}else{
-						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($data_template[$field_name]) ? $data_template[$field_name] : ""));
+						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($graph_template[$field_name]) ? $graph_template[$field_name] : ""));
 					}
 					
 					$drew_items = true;
@@ -813,40 +816,49 @@ function host_edit() {
 	form_hidden_id("_host_template_id",(isset($host) ? $host["host_template_id"] : "0"));
 	form_hidden_box("save_component_host","1","");
 	
+	start_box("<strong>Create Graphs + Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
+	
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td class='textSubHeaderDark'>Graph Template Name</td>
+			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\")'></td>\n
+		</tr>\n";
+	
+	$graph_templates = db_fetch_assoc("select
+		graph_templates.id as graph_template_id,
+		graph_templates.name as graph_template_name
+		from host_template_graph, graph_templates
+		where host_template_graph.graph_template_id=graph_templates.id
+		and host_template_graph.host_template_id=" . $host["host_template_id"] . "
+		order by graph_templates.name");
+	
 	$i = 0;
-	if (!empty($host["host_template_id"])) {
-		$graph_templates = db_fetch_assoc("select
-			graph_templates.id as graph_template_id,
-			graph_templates.name as graph_template_name
-			from host_template_graph, graph_templates
-			where host_template_graph.graph_template_id=graph_templates.id
-			and host_template_graph.host_template_id=" . $host["host_template_id"] . "
-			order by graph_templates.name");
-		
-		$j = 0; $_graph_template_id = "";
-		
-		if (sizeof($graph_templates) > 0) {
-			start_box("<strong>Create Associated Graphs + Data Sources</strong>", "98%", $colors["header"], "3", "center", "");
-			
-			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-					<td class='textSubHeaderDark'>Graph Template Name</td>
-					<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\")'></td>\n
-				</tr>\n";
-			
-			foreach ($graph_templates as $graph_template) {
-				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				print "<td><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</td>";
-				
-				print "<td align='right'>";
-				form_base_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0,false);
-				print "</td>";
-				
-				print "</tr>";
-			}
-			
-			end_box();
-		}
+	
+	/* create a row for each graph template associated with the host template */
+	if (sizeof($graph_templates) > 0) {
+	foreach ($graph_templates as $graph_template) {
+		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+		print "		<td>
+					<strong>Create:</strong> " . $graph_template["graph_template_name"] . "
+				</td>
+				<td align='right'>";
+					form_base_checkbox("cg_" . $graph_template["graph_template_id"],"","","",0,false);
+		print "		</td>
+			</tr>";
 	}
+	}
+	
+	/* create a row at the bottom that lets the user create any graph they choose */
+	form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+	print "		<td width='60'>
+				<strong>Create:</strong>&nbsp;";
+				form_base_dropdown("cg_g", db_fetch_assoc("select id,name from graph_templates order by name"), "name", "id", "", "", "");
+	print "		</td>
+			<td align='right'>";
+				form_base_checkbox("ccg","","","",0,false);
+	print "		</td>
+		</tr>";
+	
+	end_box();
 	
 	if (isset($host["id"])) {
 		$snmp_queries = db_fetch_assoc("select
