@@ -334,6 +334,7 @@ function new_table() { ?>
 					</td>
 				</tr>
 			</table>
+			<br>
 			<table align="center" width="98%" cellpadding=1 cellspacing=0 border=0 bgcolor="#00438C">
 				<tr>
 					<td>
