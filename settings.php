@@ -149,7 +149,6 @@ switch ($_REQUEST["action"]) {
 					break;
 			}
 		}
-	
 	}
 	}
 	
@@ -157,7 +156,7 @@ switch ($_REQUEST["action"]) {
 	
 	form_hidden_id("tab",$current_tab);
 	
-	form_save_button("settings.php?tab=$current_tab");
+	form_save_button("settings.php?tab=$current_tab", "save");
 	
 	include_once ("include/bottom_footer.php");
 	

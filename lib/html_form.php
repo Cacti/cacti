@@ -286,14 +286,29 @@ function end_box($trailing_br = true) { ?>
 	<?php if ($trailing_br == true) { print "<br>"; } ?>
 <?php }
 
-function form_save_button($cancel_url) {
+function form_save_button($cancel_url, $force_type = "") {
+	if (empty($force_type)) {
+		if (empty($_GET["id"])) {
+			$img = "button_create.gif";
+			$alt = "Create";
+		}else{
+			$img = "button_save.gif";
+			$alt = "Save";
+		}
+	}elseif ($force_type == "save") {
+		$img = "button_save.gif";
+		$alt = "Save";
+	}elseif ($force_type == "save") {
+		$img = "button_create.gif";
+		$alt = "Create";
+	}
 	?>
 	<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
 			 <td bgcolor="#f5f5f5" align="right">
 			 	<input type='hidden' name='action' value='save'>
 				<a href='<?php print $cancel_url;?>'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
-				<input type='image' src='images/button_<?php if (empty($_GET["id"])) { print "create"; }else{ print "save"; } ?>.gif' alt='Save' align='absmiddle'>
+				<input type='image' src='images/<?php print $img;?>' alt='<?php print $alt;?>' align='absmiddle'>
 			</td>
 		</tr>
 	</table>
