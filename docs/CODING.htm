@@ -42,25 +42,50 @@
 	receive an error.</li>
 	<li>Update the 'dev/sql/changes.sql' file with any database schema changes you make.</li>
 	<li>Feel free to keep your complete database schema in 'dev/sql/complete_db-name'.</li>
+	<li>DO NOT use native mysql_*() calls.  If we need to extend the database functions, we will.</li>
 </ul>
 
 <h3>Common Sense Stuff</h3><p>
 
 <ul>
 	<li>When in doubt... indent! (loops, if/case/function statements, etc)</li>
-	<li>Comment where ever possible, there is no such thing as too many comments. Use the c-style /* */ 
-	for comments.</li>
+	<li>Please comment your code whenever and where ever possible.</li>
 	<li>Your code should look clean. Make sure to space things out appropriatly and not run lots of lines
 	together one one line.</li>
 	<li>Use descriptive variables that show what the variable is for. $i is generally the only exception
 	to this rule.</li>
-	<li>If you are storing an "old variable" (previous value), name it like: $_graph_type_name, the current
-	version would be named: $graph_type_name</li>
 	<li>Only select the columns you need in your SQL select statements.</li>
 	<li>Use the print() function, not the echo() function.</li>
 	<li>Use print() when displaying small portions of HTML (1 or 2 lines), break out of PHP (?&gt; &lt;?)
-	when displaying a bunch of HTML at once.</li>
+	when displaying a bunch of HTML at once. Also, I would still recommend using print() anytime the HTML
+	code is going to contain a lot of PHP.</li>
+	<li>Use single quotes in HTML instead of double to prevent problems when using copy/paste or converting 
+	blocks of HTML to print()'s.</li>
+	<li>If you use CSS/DHTML/Javascript, make sure it's *very* cross-browser.  Compatability with IE 5+ 
+	for PC and NS 6+ for PC, Mac, and Unix should be mandatory with support for Opera, Konqueror, and others also 
+	a plus.</li>
+	<li>Try to keep your interfaces consistant with the rest of the project. Don't use wacky font sizes, colors, 
+	or graphics.</li>
+	
 </ul>
-  
+
+<h3>Good Developer Practices</h3><p>
+
+<ul>
+	<li>Always add a comment when doing a CVS checkin.  Make sure it's clear to someone not intimately familiar
+	with that section of code what you were working on.</li>
+	<li>Don't check in code you know is broken (as in parse errors - incomplete or non-fuctional code is ok but 
+	working code is better :) )</li>
+	<li>If you're thinking of working on a different section of the code, email the list to make sure there's 
+	not already somebody working with it.  There's no sense having two people working on two solutions to the same 
+	problem.</li>
+	<li>Ping the list with ideas or general plans.  The other developers might see reasons to take another approach.  
+	Even if you're the only one working on that particular section of code, this is still a group project and decisions
+	about they system as a whole should be made as a group.</li>
+	<li>If you've got issues with another developer on the project, mail the list. Try to be polite and not flame 
+	but if there are conflicts, be they personal or technical, the group as a whole should know.</li>
+</ul>
+
+
 </body>
 </html>
