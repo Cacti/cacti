@@ -112,6 +112,7 @@ $settings = array(
 			"friendly_name" => "Log File Destination",
 			"description" => "How will Cacti handle event logging.",
 			"method" => "drop_array",
+			"default" => 1,
 			"array" => $logfile_options,
 			),
 		"web_log" => array(
@@ -138,6 +139,7 @@ $settings = array(
 			"friendly_name" => "Poller Logging Level",
 			"description" => "What level of detail do you want sent to the log file.",
 			"method" => "drop_array",
+			"default" => POLLER_VERBOSITY_LOW,
 			"array" => $logfile_verbosity,
 			),
 		"poller_log" => array(
@@ -270,12 +272,14 @@ $settings = array(
 			"friendly_name" => "Poller Enabled",
 			"description" => "If you wish to stop the polling process, uncheck this box.",
 			"method" => "checkbox",
+			"default" => "on",
 			"tab" => "poller"
 			),
 		"poller_type" => array(
 			"friendly_name" => "Poller Type",
 			"description" => "The Cacti poller to use.  This Setting will take effect at next polling interval.",
 			"method" => "drop_array",
+			"default" => 1,
 			"array" => $poller_options,
 			),
 		"availability_header" => array(
@@ -286,12 +290,14 @@ $settings = array(
 			"friendly_name" => "Downed Host Detection",
 			"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
 			"method" => "drop_array",
+			"default" => AVAIL_SNMP_AND_PING,
 			"array" => $availability_options,
 			),
 		"ping_method" => array(
 			"friendly_name" => "Ping Type",
 			"description" => "The type of ping packet to sent.  NOTE: ICMP requirs that the Cacti Service ID have root privilages in Unix.",
 			"method" => "drop_array",
+			"default" => PING_UDP,
 			"array" => $ping_methods,
 			),
 		"ping_timeout" => array(
