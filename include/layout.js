@@ -191,18 +191,10 @@ function dq_reset_deps(snmp_query_id, num_columns) {
 	}
 }
 
-function SelectAll(prefix) {
+function SelectAll(prefix, checkbox_state) {
 	for (var i = 0; i < document.chk.elements.length; i++) {
 		if ((document.chk.elements[i].name.substr(0, prefix.length) == prefix) && (document.chk.elements[i].style.visibility != 'hidden')) {
-			document.chk.elements[i].checked = !(document.chk.elements[i].checked);
-		}
-	}
-}
-
-function SelectForce(prefix) {
-	for (var i = 0; i < document.chk.elements.length; i++) {
-		if ((document.chk.elements[i].name.substr(0, prefix.length) == prefix) && (document.chk.elements[i].style.visibility != 'hidden')) {
-			document.chk.elements[i].checked = document.chk.all.checked;
+			document.chk.elements[i].checked = checkbox_state;
 		}
 	}
 }

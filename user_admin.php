@@ -489,7 +489,7 @@ function user_realms_edit() {
 	
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong></td>
-			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectForce(\"section\")'></td>\n
+			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"section\",this.checked)'></td>\n
 		</tr>\n";
 	
 	$realms = db_fetch_assoc("select 

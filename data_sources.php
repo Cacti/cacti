@@ -1018,7 +1018,7 @@ function ds() {
 			<td class='textSubHeaderDark'>Data Input Method</td>
 			<td class='textSubHeaderDark'>Active</td>
 			<td class='textSubHeaderDark'>Template Name</td>
-			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\")'></td>
+			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>
 		<form name='chk' method='post' action='data_sources.php'>
 		</tr>\n";
 	

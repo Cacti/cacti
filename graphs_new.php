@@ -438,7 +438,7 @@ function graphs() {
 	
 	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td class='textSubHeaderDark'>Graph Template Name</td>
-			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"cg\");gt_update_selection_indicators();'></td>\n
+			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='Select All' onClick='SelectAll(\"cg\",this.checked);gt_update_selection_indicators();'></td>\n
 		</tr>\n";
 	
 	$graph_templates = db_fetch_assoc("select
@@ -630,7 +630,7 @@ function graphs() {
 			}else{
 				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 						$html_dq_header
-						<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\");" . (($use_javascript == true) ? "dq_update_selection_indicators();" : "") . "'></td>\n
+						<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\",this.checked);" . (($use_javascript == true) ? "dq_update_selection_indicators();" : "") . "'></td>\n
 					</tr>\n";
 			}
 			
