@@ -573,6 +573,17 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		where hostname = '" . $hosts[$host_id]["hostname"] . "'");
 }
 
+/* strip_quotes - Strip single and double quotes from a string
+	@arg $result - (string) the result from the poll
+	@returns - (string) the string with quotes stripped */
+function strip_quotes($result) {
+  	/* first strip all single and double quotes from the string */
+	$result = strtr($result,"'","");
+	$result = strtr($result,'"','');
+
+	return($result);
+}
+
 /* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
    @arg $result - (string) the result from the poll
    @returns - (int) either to result is valid or not */
