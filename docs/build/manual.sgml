@@ -1920,16 +1920,15 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="upgrade_using_hostmib_data_queries">
 			<title>Upgrade Steps for the Example HostMib Data Queries</title>
 			<para>
-				If you are using the two built in script queries, "SNMP - Get Mounted Partitions"
-				and "SNMP - Get Processor Information", you can migrate to the PHP Script Server
-				using the steps below:
+				If you are using the two built in script queries, "SNMP - Get Mounted Partitions" and "SNMP - Get
+				Processor Information", you can migrate to the PHP Script Server using the steps below:
 			</para>
 			<orderedlist>
 				<listitem>
 					<para>
-						Verify Existance of New Data Input Method - Goto <guilabel>Data Input Methods</guilabel>,
-						verify that you see the "Get Script Server Data (Indexed)" Data Input Method
-						exists and that it is using the "Script Query - Script Server" method.
+						Verify the existence of New Data Input Method - Go to <guilabel>Data Input Methods</guilabel>,
+						verify that you see the "Get Script Server Data (Indexed)" Data Input Method exists and that
+						it is using the "Script Query - Script Server" method.
 					</para>
 				</listitem>
 				<listitem>
@@ -1940,34 +1939,23 @@ $database_password = "cacti";</userinput></screen>
 				</listitem>
 				<listitem>
 					<para>
-						Update Your Data Queries - Goto <guilabel>Data Queries</guilabel> and Edit the two Data Queries
-						below.  Change their Data Input Method to "Get Script Server Data (Indexed)":
+						Update Your Data Queries - Go to <guilabel>Data Queries</guilabel> and Edit the two Data
+						Queries below. Change both their Data Input Method to "Get Script Server Data (Indexed)"
+						and in the XML path replace "script_query" with "script_server" as shown below:
 					</para>
 					<orderedlist>
 						<listitem>
 							<para>
 								SNMP - Get Mounted Partitions
 							</para>
-						</listitem>
-						<listitem>
-							<para>
-								SNMP - Get Processor Information
-							</para>
-						</listitem>
-					</orderedlist>
-				</listitem>
-				<listitem>
-					<para>
-						Update Your Data Query XML Paths - For each of the affected Data Queries, change the XML path
-						to be:
-					</para>
-					<orderedlist>
-						<listitem>
 							<para>
 								<userinput>&lt;path_cacti&gt;/resource/script_server/host_disk.xml</userinput>
 							</para>
 						</listitem>
 						<listitem>
+							<para>
+								SNMP - Get Processor Information
+							</para>
 							<para>
 								<userinput>&lt;path_cacti&gt;/resource/script_server/host_cpu.xml</userinput>
 							</para>
@@ -1991,6 +1979,12 @@ $database_password = "cacti";</userinput></screen>
 							</para>
 						</listitem>
 					</orderedlist>
+				</listitem>
+				<listitem>
+					<para>
+						Re Enable the Poller - Go to <guilabel>Settings</guilabel>-><guilabel>Poller</guilabel>
+						and check the <guilabel>Poller Enabled</guilabel> checkbox.  Press <guilabel>Save</guilabel>.
+					</para>
 				</listitem>
 			</orderedlist>
 			<para>
