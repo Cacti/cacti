@@ -39,7 +39,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		debug_log_insert("data_query", "Found type = '4 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
-		debug_log_insert("data_query", "Found type = '7 '[script query].");
+		debug_log_insert("data_query", "Found type = '6 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}else{
 		debug_log_insert("data_query", "Unknown type = '$type_id'");
@@ -176,7 +176,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			if ($field_array["source"] == "value") {
 				for ($i=0;($i<sizeof($snmp_data));$i++) {
-					$snmp_index = ereg_replace('.*\.([0-9]+)$', "\\1", $snmp_data[$i]["oid"]);
+					if ($field_array["oid"] == ".1.3.6.1.4.1.9.5.1.4.1.1.4") {
+						$snmp_index = $i+1;
+					}else{
+						$snmp_index = ereg_replace('.*\.([0-9]+)$', "\\1", $snmp_data[$i]["oid"]);
+					}
+
 					$oid = $field_array["oid"] . ".$snmp_index";
 
 					debug_log_insert("data_query", "Found item [$field_name='" . $snmp_data[$i]["value"] . "'] index: $snmp_index [from value]");

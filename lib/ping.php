@@ -137,7 +137,7 @@ class Net_Ping
 				$this->time = $this->get_time($this->precision);
 
 				if ($code) {
-					$this->ping_status = $this->time;
+					$this->ping_status = $this->time * 1000;
 					$this->ping_response = "Host is alive";
 					return true;
 				}
@@ -185,8 +185,7 @@ class Net_Ping
 			/* check result for uptime */
 			if (!empty($output)) {
 				/* calculte total time */
-				$this->time*1000;
-				$this->snmp_status = $this->time;
+				$this->snmp_status = $this->time*1000;
 				$this->snmp_response = "Host responded to SNMP";
 				return true;
 			}
@@ -249,7 +248,7 @@ class Net_Ping
 				if (($code) || (empty($code))) {
 					if (($this->time*1000) <= $this->timeout) {
 						$this->ping_response = "Host is Alive";
-						$this->ping_status   = $this->time;
+						$this->ping_status   = $this->time*1000;
 						return true;
 					}
 				}

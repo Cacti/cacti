@@ -645,16 +645,16 @@ function host() {
 					<?php print $host["hostname"];?>
 				</td>
 				<td>
-					<?php print round(($host["min_time"])*1000, 2);?>
+					<?php print round(($host["min_time"]), 2);?>
 				</td>
 				<td>
-					<?php print round(($host["max_time"])*1000, 2);?>
+					<?php print round(($host["max_time"]), 2);?>
 				</td>
 				<td>
-					<?php print round(($host["cur_time"])*1000, 2);?>
+					<?php print round(($host["cur_time"]), 2);?>
 				</td>
 				<td>
-					<?php print round(($host["avg_time"])*1000, 2);?>
+					<?php print round(($host["avg_time"]), 2);?>
 				</td>
 				<td>
 					<?php print round($host["availability"], 2);?>%

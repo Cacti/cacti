@@ -88,7 +88,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$method = "cactid";
 	}else if ($config["cacti_server_os"] == "unix") {
 		$command_string = read_config_option("path_php_binary");
-		$extra_args = $config["base_path"] . "/cmd.php";
+		$extra_args = "-q " . $config["base_path"] . "/cmd.php";
 		$method = "cmd.php";
 	}else if ($poller == "2") {
 		$command_string = read_config_option("path_cactid");
@@ -96,7 +96,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$method = "cactid";
 	}else{
 		$command_string = read_config_option("path_php_binary");
-		$extra_args = strtolower($config["base_path"] . "/cmd.php");
+		$extra_args = "-q " . strtolower($config["base_path"] . "/cmd.php");
 		$method = "cmd.php";
 	}
 
