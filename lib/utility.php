@@ -38,11 +38,14 @@ function push_out_graph($graph_template_graph_id) {
 	/* must be a graph template */
 	if ($graph_template_graph[graph_template_id] == 0) { return 0; }
 	
-	foreach ($struct_graph as $struct) {
-		$value_type = "t_$struct";
+	/* loop through each graph column name (from the above array) */
+	for ($i=0; ($i < count($struct_graph)); $i++) {
+		$current_name = $struct_graph[$i];
+		$value_type = "t_$current_name";
 		
+		/* are we allowed to push out the column? */
 		if ($graph_template_graph[$value_type] == "") {
-			db_execute("update graph_templates_graph set $struct='$graph_template_graph[$struct]' where graph_template_id=$graph_template_graph[id]"); 
+			db_execute("update graph_templates_graph set $struct='$graph_template_graph[$current_name]' where graph_template_id=$graph_template_graph[id]"); 
 		}
 	}
 }
