@@ -31,7 +31,64 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 case 'login':
+	/* --- UPDATE old password with new md5 password value */
 	db_execute("update user_auth set password = '" . md5($_POST["password"]) . "' where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
+
+	/* --- start ldap section --- */
+	if (read_config_option("ldap_enabled") == "on"){
+		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
+
+		if ($ldap_conn) {
+			$ldap_dn = str_replace("<username>",$_POST["username"],read_config_option("ldap_dn"));
+			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$password);
+
+			if ($ldap_response) {
+				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and full_name='ldap user'")) == 0) {
+					/* get information about the template user */
+					$template_user = db_fetch_assoc("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = " . read_config_option("ldap_template"));
+
+					/* write out that information to the new ldap user */
+					db_execute("INSERT INTO user_auth (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
+					$ldap_new = true;
+
+					/* get the newly created user_id */
+					$user_id = db_fetch_insert_id();
+
+					if ($ldap_new == true) {
+						/* acl */
+						$user_auth_realm = db_fetch_assoc("SELECT realm_id FROM `user_auth_realm` WHERE user_id = $user_id");
+
+						foreach ($user_auth_realm as $item) {
+							db_execute("INSERT INTO user_auth_realm (realm_id, user_id) VALUES (" . $item["realm_id"] . ", $user_id)");
+						}
+
+						/* graph */
+						$user_auth_graph = db_fetch_assoc("SELECT local_graph_id FROM `user_auth_graph` WHERE user_id = $user_id");
+
+						foreach ($user_auth_graph as $item) {
+							db_execute("INSERT INTO user_auth_graph (local_graph_id, user_id) VALUES (" . $item["local_graph_id"] . ", $user_id)");
+						}
+
+						/* hierarchy */
+						$user_auth_tree = db_fetch_assoc("SELECT tree_id FROM `user_auth_tree` WHERE UserID = $user_id");
+
+						foreach ($user_auth_tree as $item) {
+							db_execute("INSERT INTO user_auth_tree (tree_id, user_id) VALUES (" . $item["tree_id"] . ", $user_id)");
+						}
+
+						/* hosts */
+						$user_auth_hosts = db_fetch_assoc("SELECT hostname, user_id, policy FROM `user_auth_hosts` WHERE user_id = $user_id");
+
+						foreach ($user_auth_hosts as $item) {
+							db_execute("INSERT INTO user_auth_hosts (hostname, user_id, policy) VALUES ('" . $item["hostname"] . "', $user_id, " . $item["policy"] . ")");
+						}
+					}
+				}
+			}
+		}
+	}
+	/* --- end ldap section --- */
+
 	$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "'");
 	
 	if (sizeof($user)) {
@@ -61,61 +118,6 @@ case 'login':
 			include ("noauth.php");
 			exit;
 		}
-		
-		/* --- start ldap section --- */
-		if (read_config_option("ldap_enabled") == "on"){
-			$ldap_conn = ldap_connect(read_config_option("ldap_server")); 
-			
-			if ($ldap_conn) {
-				$ldap_dn = str_replace("<username>",$username,read_config_option("ldap_dn"));
-				$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$password);
-				
-				if ($ldap_response) {
-					if (sizeof(db_fetch_assoc("select * from user_auth where username='$username' and full_name='ldap user'")) == 0) {
-						/* get information about the template user */
-						$template_user = db_fetch_assoc("SELECT '$username' as username, 'ldap user' as full_name, '' as must_change_password, password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = " . read_config_option("ldap_template"));
-						
-						/* write out that information to the new ldap user */
-						db_execute("INSERT INTO user_auth (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
-						$ldap_new = true;
-						
-						/* get the newly created user_id */
-						$user_id = db_fetch_insert_id();
-						
-						if ($ldap_new == true) {
-							/* acl */
-							$user_auth_realm = db_fetch_assoc("SELECT realm_id FROM `user_auth_realm` WHERE user_id = $user_id");
-							
-							foreach ($user_auth_realm as $item) {
-								db_execute("INSERT INTO user_auth_realm (realm_id, user_id) VALUES (" . $item["realm_id"] . ", $user_id)");
-							}
-							
-							/* graph */
-							$user_auth_graph = db_fetch_assoc("SELECT local_graph_id FROM `user_auth_graph` WHERE user_id = $user_id");
-							
-							foreach ($user_auth_graph as $item) {
-								db_execute("INSERT INTO user_auth_graph (local_graph_id, user_id) VALUES (" . $item["local_graph_id"] . ", $user_id)");
-							}
-							
-							/* hierarchy */
-							$user_auth_tree = db_fetch_assoc("SELECT tree_id FROM `user_auth_tree` WHERE UserID = $user_id");
-							
-							foreach ($user_auth_tree as $item) {
-								db_execute("INSERT INTO user_auth_tree (tree_id, user_id) VALUES (" . $item["tree_id"] . ", $user_id)");
-							}
-							
-							/* hosts */
-							$user_auth_hosts = db_fetch_assoc("SELECT hostname, user_id, policy FROM `user_auth_hosts` WHERE user_id = $user_id");
-							
-							foreach ($user_auth_hosts as $item) {
-								db_execute("INSERT INTO user_auth_hosts (hostname, user_id, policy) VALUES ('" . $item["hostname"] . "', $user_id, " . $item["policy"] . ")");
-							}
-						}
-					}
-				}
-			}
-		}
-		/* --- end ldap section --- */
 		
 		/* make entry in the transactions log */
 		db_execute("insert into user_log (username,result,ip) values('" . $_POST["username"] . "',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
