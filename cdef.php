@@ -86,7 +86,7 @@ function draw_cdef_preview($cdef_id) {
 	global $colors; ?>
 	<tr bgcolor="#<?print $colors["panel"];?>">
 		<td>
-			<pre><?print get_cdef($cdef_id);?></pre>
+			<pre>cdef=<?print get_cdef($cdef_id, true);?></pre>
 		</td>
 	</tr>	
 <?}
@@ -157,11 +157,11 @@ function item_edit() {
 		unset($cdef);
 	}
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
+	start_box("", "98%", "aaaaaa", "3", "center", "");
 	draw_cdef_preview($_GET["cdef_id"]);
 	end_box();
 	
-	start_box("<strong>CDEF Items [edit]</strong> (" . db_fetch_cell("select name from cdef where id=$cdef_id") . ")", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="cdef.php">
@@ -190,7 +190,13 @@ function item_edit() {
 		<td width="50%">
 			<font class="textEditTitle">Data Source</font>
 		</td>
-		<?DrawFormItemDropdownFromSQL("value_data_source",db_fetch_assoc("select descrip,item_id from polling_items"),"descrip","item_id",$values[3],"None","");?>
+		<?DrawFormItemDropdownFromSQL("value_data_source",db_fetch_assoc("select
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			data_template_rrd.id 
+			from data_template_data,data_template_rrd,data_local 
+			left join host on data_local.host_id=host.id
+			where data_template_rrd.local_data_id=data_local.id 
+			and data_template_data.local_data_id=data_local.id"),"name","id",$values[3],"None","");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
@@ -262,13 +268,14 @@ function cdef_save() {
 function cdef_edit() {
 	global $colors, $cdef_item_types;
 	
-	start_box("<strong>CDEF's [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-	
 	if (isset($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $cdef["name"] . "]";
 	}else{
-		unset($cdef);
+		$header_label = "[new]";
 	}
+	
+	start_box("<strong>CDEF's</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="cdef.php">
@@ -285,11 +292,11 @@ function cdef_edit() {
 	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	end_box();
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
+	start_box("", "98%", "aaaaaa", "3", "center", "");
 	draw_cdef_preview($_GET["id"]);
 	end_box();
 	
-	start_box("CDEF Items", "98%", $colors["header"], "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
+	start_box("<strong>CDEF Items</strong>", "98%", $colors["header"], "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Item",$colors["header_text"],1);

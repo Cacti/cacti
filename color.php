@@ -87,7 +87,7 @@ function color_edit() {
 		unset($color);
 	}
 	
-	start_box("<strong>Color Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Colors [edit]</strong>", "98%", $colors["header"], "3", "center", "");
     	
 	?>
 	<form method="post" action="color.php">
@@ -118,7 +118,7 @@ function color_edit() {
 function color() {
 	global $colors;
 	
-	start_box("<strong>Color Management</strong>", "98%", $colors["header"], "3", "center", "color.php?action=edit");
+	start_box("<strong>Colors</strong>", "98%", $colors["header"], "3", "center", "color.php?action=edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);

@@ -170,8 +170,7 @@ function form_save() {
 	global $config;
 	
 	if (isset($_POST["save_component_template"])) {
-		template_save();
-		return "graph_templates.php";
+		return template_save();
 	}elseif (isset($_POST["save_component_item"])) {
 		item_save();
 
@@ -438,7 +437,7 @@ function item() {
 		$i++;
 	}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td><td colspan='2'>No Items</em></td></tr>";
+		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='7'><em>No Items</em></td></tr>";
 	}
 	
 	end_box();
@@ -466,7 +465,7 @@ function item() {
 	$i++;
 	}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td><td colspan='2'>No Inputs</em></td></tr>";
+		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='2'><em>No Inputs</em></td></tr>";
 	}
 	
 	end_box();
@@ -478,6 +477,11 @@ function item_remove() {
 
 function item_save() {
 	include_once ("include/utility_functions.php");
+	
+	/* generate a new sequence if needed */
+	if (empty($_POST["sequence"])) {
+		$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "graph_template_id=" . $_POST["graph_template_id"] . " and local_graph_id=0");
+	}
 	
 	$save["id"] = $_POST["graph_template_item_id"];
 	$save["graph_template_id"] = $_POST["graph_template_id"];
@@ -503,18 +507,18 @@ function item_edit() {
 	
 	draw_tabs();
 	
+	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
+	
 	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
 	
-	start_box("Template Item Configuration", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Template Item</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["graph_template_item_id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["graph_template_item_id"]);
-	}else{
-		unset($template_item);
 	}
 	
 	print "<form method='post' action='graph_templates.php'>\n";
@@ -664,6 +668,12 @@ function template_save() {
 	$graph_template_graph_id = sql_save($save, "graph_templates_graph");
 	
 	push_out_graph($graph_template_graph_id);
+	
+	if (empty($_POST["graph_template_id"])) {
+		return "graph_templates.php?action=template_edit&graph_template_id=$graph_template_id";
+	}else{
+		return "graph_templates.php";
+	}
 }
 
 function template_edit() {
@@ -686,7 +696,7 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 	
-	if (read_config_option("full_view_graph_template") == "on") {
+	if ((read_config_option("full_view_graph_template") == "on") && (isset($_GET["graph_template_id"]))) {
 		item();	
 	}
 	
@@ -815,35 +825,32 @@ function input_save() {
 }
 
 function input_edit() {
-	global $colors, $consolidation_functions, $graph_item_types;
+	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
 	
 	draw_tabs();
 	
+	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
+	
 	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=item&graph_template_id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
 	
-	$graph_template_items = array(
-		"color_id" => "Item Color",
-		"task_item_id" => "Item Task (Data Source)",
-		"graph_type_id" => "Graph Item Type",
-		"cdef_id" => "CDEF",
-		"consolidation_function_id" => "Consolidation Function",
-		"text_format" => "Text Format",
-		"value" => "Value",
-		"hard_return" => "Hard Return",
-		"gprint" => "GPRINT Options",
-		"custom" => "Custom Field");
-	
+	/* get a list of all graph item field names and populate an array for user display */
+	while (list($field_name, $field_array) = each($struct_graph_item)) {
+		if ($field_array["type"] != "view") {
+			$graph_template_items[$field_name] = $field_array["title"];
+		}
+	}
+			
 	if (isset($_GET["graph_template_input_id"])) {
 		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["graph_template_input_id"]);
 	}else{
 		unset($graph_template_input);
 	}
 	
-	start_box("Graph Item Input Configuration", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Graph Item Input</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -897,27 +904,30 @@ function input_edit() {
 			Select the graph items that you want to accept user input for.
 		</td>
 		<td>
-		<?if (sizeof($item_list) > 0) {
-			foreach ($item_list as $item) {
-			    if ($item["graph_template_input_id"] == "") {
+		<?
+		if (sizeof($item_list) > 0) {
+		foreach ($item_list as $item) {
+			if ($item["graph_template_input_id"] == "") {
 				$old_value = "";
-			    }else{
+			}else{
 				$old_value = "on";
-			    }
-			    
-			    if ($graph_item_types{$item["graph_type_id"]} == "GPRINT") {
-				    $start_bold = "";
-				    $end_bold = "";
-			    }else{
-				    $start_bold = "<strong>";
-				    $end_bold = "</strong>";
-			    }
-			    
-			    $name = "$start_bold Item #" . ($i+1) . ": " . $graph_item_types{$item["graph_type_id"]} . " (" . $consolidation_functions{$item["consolidation_function_id"]} . ")$end_bold";
-			    DrawStrippedFormItemCheckBox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",true);
-			    
-			    $i++;
 			}
+			
+			if ($graph_item_types{$item["graph_type_id"]} == "GPRINT") {
+				$start_bold = "";
+				$end_bold = "";
+			}else{
+				$start_bold = "<strong>";
+				$end_bold = "</strong>";
+			}
+			
+			$name = "$start_bold Item #" . ($i+1) . ": " . $graph_item_types{$item["graph_type_id"]} . " (" . $consolidation_functions{$item["consolidation_function_id"]} . ")$end_bold";
+			DrawStrippedFormItemCheckBox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",true);
+			
+			$i++;
+		}
+		}else{
+			print "<em>No Items</em>";
 		}
 		?>
 		</td>
