@@ -850,8 +850,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total, $cdef_string);
 			
 			/* data source item variables */
-			$cdef_string = str_replace("CURRENT_MINIMUM_VALUE", $graph_item["rrd_minimum"], $cdef_string);
-			$cdef_string = str_replace("CURRENT_MAXIMUM_VALUE", $graph_item["rrd_maximum"], $cdef_string);
+			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($graph_item["rrd_minimum"]) ? "0" : $graph_item["rrd_minimum"]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_DS_MAXIMUM_VALUE", (empty($graph_item["rrd_maximum"]) ? "0" : $graph_item["rrd_maximum"]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_GRAPH_MINIMUM_VALUE", (empty($graph["lower_limit"]) ? "0" : $graph["lower_limit"]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_GRAPH_MAXIMUM_VALUE", (empty($graph["upper_limit"]) ? "0" : $graph["upper_limit"]), $cdef_string);
 			
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
 			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";

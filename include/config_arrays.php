@@ -158,8 +158,10 @@ $custom_data_source_types = array(
 	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
 	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
 	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)",
-	"CURRENT_MINIMUM_VALUE" => "Current Item: Minimum Value",
-	"CURRENT_MAXIMUM_VALUE" => "Current Item: Maximum Value");
+	"CURRENT_DS_MINIMUM_VALUE" => "Current Data Source Item: Minimum Value",
+	"CURRENT_DS_MAXIMUM_VALUE" => "Current Data Source Item: Maximum Value",
+	"CURRENT_GRAPH_MINIMUM_VALUE" => "Graph: Lower Limit",
+	"CURRENT_GRAPH_MAXIMUM_VALUE" => "Graph: Upper Limit");
 
 $menu = array(
 	"Create" => array(
