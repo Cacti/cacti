@@ -162,7 +162,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password) {
 	global $config;
 	
-	if ($config["php_snmp_support"] == true) {
+	if (($config["php_snmp_support"] == true) && ($version == "1")) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -199,7 +199,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$snmp_array = array();
 	$temp_array = array();
 	
-	if ($config["php_snmp_support"] == true) {
+	if (($config["php_snmp_support"] == true) && ($version == "1")) {
 		$temp_array = @snmpwalkoid($hostname, $community, $oid);
 		
 		$o = 0;
