@@ -23,7 +23,8 @@
  | - raXnet - http://www.raxnet.net/                                       |
  +-------------------------------------------------------------------------+
 */
- 
+
+include ("include/auth.php");
 include ("include/config_settings.php");
 include ("include/config_arrays.php");
 include_once ("include/form.php");
@@ -60,7 +61,7 @@ function form_save() {
 	}
 	
 	/* reset local settings cache so the user sees the new settings */
-	session_unregister("sess_graph_config_array");
+	kill_session_var("sess_graph_config_array");
 	
 	header ("Location: " . $_POST["referer"]);
 }

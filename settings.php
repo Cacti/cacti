@@ -52,7 +52,7 @@ switch ($_REQUEST["action"]) {
 	raise_message(1);
 	
 	/* reset local settings cache so the user sees the new settings */
-	session_unregister("sess_config_array");
+	kill_session_var("sess_config_array");
 
 	header ("Location: settings.php?tab=" . $_POST["tab"]);
 	break;

@@ -58,5 +58,5 @@ function SelectForce(prefix) {
 /* we use this session var to store field values for when a save fails,
 this way we can restore the field's previous values. we reset it here, because
 they only need to be stored for a single page */
-session_unregister("sess_field_values");
+kill_session_var("sess_field_values");
 ?>

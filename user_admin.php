@@ -181,7 +181,7 @@ function form_save() {
 		}
 		
 		/* reset local settings cache so the user sees the new settings */
-		session_unregister("sess_graph_config_array");
+		kill_session_var("sess_graph_config_array");
 	}
 	
 	/* redirect to the appropriate page */

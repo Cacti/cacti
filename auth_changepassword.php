@@ -39,7 +39,7 @@ case 'changepassword':
 		db_execute("insert into user_log (username,result,ip) values('" . $user["username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
 		db_execute("update user_auth set must_change_password='',password='" . md5($_POST["password"]) . "' where id=" . $_SESSION["sess_user_id"]);
 		
-		session_unregister("sess_change_password");
+		kill_session_var("sess_change_password");
 		
 		header("Location: " . $_POST["ref"]);
 		exit;

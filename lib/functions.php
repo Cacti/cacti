@@ -157,16 +157,16 @@ function display_output_messages() {
 		}
 	}
 	
-	session_unregister("sess_messages");
+	kill_session_var("sess_messages");
 }
 
 function clear_messages() {
-	session_unregister("sess_messages");
+	kill_session_var("sess_messages");
 }
 
 function kill_session_var($var_name) {
 	/* register_global = off: reset local settings cache so the user sees the new settings */
-	session_register($var_name);
+	session_unregister($var_name);
 	
 	/* register_global = on: reset local settings cache so the user sees the new settings */
 	unset($_SESSION[$var_name]);
