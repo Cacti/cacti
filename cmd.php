@@ -73,7 +73,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
    	2 => array("pipe", "w")  // stderr is a pipe to write to
 	);
 
-	$cactiphp = proc_open(read_config_option("php_path"), $cactides, $pipes);
+//	$cactiphp = proc_open("c:/php/php-win.exe -q c:/wwwroot/cacti/script_server.php", $cactides, $pipes);
+	$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
 
 	foreach ($polling_items as $item) {
 		$current_host = $item["hostname"];
@@ -200,15 +201,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				   // 2 => any error output will be sent to child stderr
 
 					// send command to the php server
-				   fwrite($pipes[0], $command);
+				   fwrite($pipes[0], $command . "\r\n");
 
 					// get result from server
 					$output = fgets($pipes[1], 1024);
+
 					if (substr_count($output, "ERROR") > 0) {
-						$output = "U";
+						$output = "";
 					}
 			   }
-				print "CMD: $command, output: $output\n";
+				print "CMD: $command, output: $output";
 
 				$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
 
@@ -233,7 +235,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				   // 2 => any error output will be sent to child stderr
 
 					// send command to the php server
-				   fwrite($pipes[0], $command);
+				   fwrite($pipes[0], $command . "\r\n");
 
 					// get result from server
 					$output = fgets($pipes[1], 1024);
@@ -292,10 +294,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	} /* End foreach */
 
 	// close php server process
+	fwrite($pipes[0], "quit\r\n");
 	fclose($pipes[0]);
 	fclose($pipes[1]);
 	fclose($pipes[2]);
-   $return_value = proc_close($process);
+   $return_value = proc_close($cactiphp);
 
 	if (isset($update_cache_array)) {
 		rrdtool_function_update($update_cache_array);
