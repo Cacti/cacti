@@ -196,7 +196,7 @@ function form_save() {
 }
 
 /* ----------------------------
-    SNMP Query Graph Functions
+    Data Query Graph Functions
    ---------------------------- */
 
 function snmp_item_movedown_gsv() {
@@ -226,7 +226,7 @@ function snmp_item_remove_dssv() {
 function snmp_item_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the SNMP Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -327,7 +327,7 @@ function snmp_item_edit() {
 								</td>
 								<td width="1">
 									<?php
-									$snmp_queries = get_snmp_query_array($snmp_query["id"]);
+									$snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
 									$xml_outputs = array();
 									
 									while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
@@ -500,13 +500,13 @@ function snmp_item_edit() {
 }
 
 /* ---------------------
-    SNMP Query Functions
+    Data Query Functions
    --------------------- */
 
 function snmp_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the SNMP Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -530,7 +530,7 @@ function snmp_remove() {
 }
 
 function snmp_edit() {
-	global $colors, $snmp_query_field_actions;
+	global $colors, $snmp_query_field_actions, $paths;
 	
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
@@ -539,7 +539,7 @@ function snmp_edit() {
 		$header_label = "[new]";
 	}
 	
-	start_box("<strong>SNMP Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="snmp.php">
@@ -686,7 +686,7 @@ function snmp_edit() {
 function snmp() {
 	global $colors;
 	
-	start_box("<strong>SNMP Queries</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=edit");
+	start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);

@@ -199,7 +199,7 @@ function draw_menu() {
 			"host.php" => 'Polling Hosts',
 			"rra.php" => "Available RRA's",
 			"data_input.php" => "Data Input Methods",
-			"snmp.php" => "SNMP Queries",
+			"snmp.php" => "Data Queries",
 			"cdef.php" => "CDEF's"
 			),
 		"Configuration"  => array(
@@ -367,7 +367,7 @@ function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_
 }
 
 function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
-	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
+	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
 	
 	if (sizeof($snmp_cache_data) > 0) {
 	foreach ($snmp_cache_data as $data) {
