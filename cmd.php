@@ -24,7 +24,9 @@
  | - raXnet - http://www.raxnet.net/                                       |
  +-------------------------------------------------------------------------+
 */
-$start = time();
+
+$start = date("Y-n-d H:i:s");
+print $start . "\n";
 ini_set("max_execution_time", "0");
 $no_http_headers = true;
 
@@ -228,6 +230,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	fclose($pipes[2]);
 
 	$return_value = proc_close($cactiphp);
+
+	db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
 }else{
 	print "Either there are no items in the cache or polling is disabled\n";
 }
