@@ -15,6 +15,7 @@ raXnet - cacti
 -bug#0000355: Allow scientific and negative numbers to be returned from a script
 -bug#0000347: Change Order of Graph Templates and Data Queries in Host
 -bug: Sort host templates when creating a host.
+-bug#0000339: LDAP description mispell allow
 
 0.8.6b
 
