@@ -253,6 +253,10 @@ function cmp($a, $b) {
 }
 
 function ninety_fifth_percentile($local_data_id, $seconds) {
+	if (empty($local_data_id)) {
+		return;
+	}
+	
 	$data_source_path = get_data_source_path($local_data_id, true);
 	
 	/* build and run the rrdtool fetch command with all of our data */
@@ -536,7 +540,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 						}
 					}elseif ($match[3] == "total") {
 						for ($t=0;($t<count($graph_items));$t++) {
-							if (!isset($ninety_fifth_cache{$graph_items[$t]["local_data_id"]})) {
+							if ((!isset($ninety_fifth_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
 								$ninety_fifth_cache{$graph_items[$t]["local_data_id"]} = ninety_fifth_percentile($graph_items[$t]["local_data_id"], abs($graph_start));
 							}
 						}
@@ -549,13 +553,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				if ($match[3] == "current") {
 					$ninety_fifth = $ninety_fifth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
 					$ninety_fifth = ($match[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
-					$ninety_fifth /= pow(10,$match[2]);
+					$ninety_fifth /= pow(10,intval($match[2]));
 				}elseif ($match[3] == "total") {
 					for ($t=0;($t<count($graph_items));$t++) {
 						if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 							$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
 							$local_ninety_fifth = ($match[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
-							$local_ninety_fifth /= pow(10,$match[2]);
+							$local_ninety_fifth /= pow(10,intval($match[2]));
 							
 							$ninety_fifth += $local_ninety_fifth;
 						}
