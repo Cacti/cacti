@@ -42,7 +42,6 @@ include_once($config["base_path"] . "/lib/rrd.php");
 /* Record Start Time */
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
-//$start = date("Y-n-d H:i:s");
 
 /* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");
@@ -66,7 +65,7 @@ $last_host = 0;
 
 /* Update web paths for the poller */
 db_execute("replace into settings (name,value) values ('path_webroot','" . dirname(__FILE__) . "')");
-db_execute("replace into settings (name,value) values ('path_php_server','" . dirname(__FILE__) . PATH_DELIMITER . "script_server.php')");
+//db_execute("replace into settings (name,value) values ('path_php_server','" . dirname(__FILE__) . "/script_server.php')");
 
 // Obtain some defaults from the database
 $poller = read_config_option("poller_type");
@@ -96,7 +95,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$method = "cactid";
 	}else{
 		$command_string = read_config_option("path_php_binary");
-		$extra_args = $config["base_path"] . "\\cmd.php";
+		$extra_args = strtolower($config["base_path"] . "/cmd.php");
 		$method = "cmd.php";
 	}
 
@@ -172,8 +171,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			list($micro,$seconds) = split(" ", microtime());
 			$end = $seconds + $micro;
 
-			if (read_config_option("log_pstats") == "on") {
-				log_data(sprintf("STATS: " .
+			cacti_log(sprintf("STATS: " .
 				"Execution Time: %01.4f s, " .
 				"Method: %s, " .
 				"Max Processes: %s, " .
@@ -186,7 +184,6 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				$max_threads,
 				sizeof($polling_items),
 				$hosts_per_file));
-			}
 
 			break;
 		}else {
