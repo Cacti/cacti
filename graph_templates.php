@@ -44,12 +44,26 @@ switch ($_REQUEST["action"]) {
 	case 'input_remove':
 		input_remove();
 		
-		header ("Location: " . $_SERVER["HTTP_REFERER"]);
+		if (read_config_option("full_view_graph_template") == "") {
+			header ("Location: graph_templates.php?action=item&id=" . $_GET["graph_template_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "on") {
+			header ("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
+			exit;
+		}
+		
 		break;
 	case 'item_remove':
 		item_remove();
 		
-		header ("Location: " . $_SERVER["HTTP_REFERER"]);
+		if (read_config_option("full_view_graph_template") == "") {
+			header ("Location: graph_templates.php?action=item&id=" . $_GET["graph_template_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "on") {
+			header ("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
+			exit;
+		}
+		
 		break;
 	case 'input_edit':
 		include_once ("include/top_header.php");
@@ -257,13 +271,8 @@ function form_save() {
 				
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^i_", $var)) {
-						$var = str_replace("i_", "", $var);
-						
-						unset($save);
-						$save["graph_template_input_id"] = $graph_template_input_id;
-						$save["graph_template_item_id"] = $var;
-						
-						sql_save($save, "graph_template_input_defs");
+						db_execute ("insert into graph_template_input_defs (graph_template_input_id,graph_template_item_id)
+							values ($graph_template_input_id," . str_replace("i_", "", $var) . ")");
 					}
 				}
 			}else{
@@ -380,12 +389,13 @@ function item() {
 	print "</tr>";
 	
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
+	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
 	
 	if (sizeof($template_item_list) > 0) {
 	foreach ($template_item_list as $item) {
 		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
 		
-		if (($graph_item_types{$item["graph_type_id"]} != "GPRINT") && ($graph_item_types{$item["graph_type_id"]} != $_graph_type_name)) {
+		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
 			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
 			
 			if ($group_counter % 2 == 0) {
@@ -448,7 +458,7 @@ function item() {
 	
 	end_box();
 	
-	start_box("<strong>Graph Item Inputs</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=input_edit&id=" . $_GET["id"]);
+	start_box("<strong>Graph Item Inputs</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=input_edit&graph_template_id=" . $_GET["id"]);
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],2);
@@ -461,10 +471,10 @@ function item() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 	?>
 			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=input_edit&graph_template_input_id=<?php print $item["id"];?>&id=<?php print $_GET["id"];?>"><?php print $item["name"];?></a>
+				<a class="linkEditMain" href="graph_templates.php?action=input_edit&id=<?php print $item["id"];?>&graph_template_id=<?php print $_GET["id"];?>"><?php print $item["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="graph_templates.php?action=input_remove&graph_template_input_id=<?php print $item["id"];?>&id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graph_templates.php?action=input_remove&id=<?php print $item["id"];?>&graph_template_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?php
@@ -557,25 +567,25 @@ function item_edit() {
 function input_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", $_SERVER["HTTP_REFERER"], "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", $_SERVER["HTTP_REFERER"], "graph_templates.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from graph_template_input where id=" . $_GET["graph_template_input_id"]);
-		db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $_GET["graph_template_input_id"]);
+		db_execute("delete from graph_template_input where id=" . $_GET["id"]);
+		db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $_GET["id"]);
 	}
 }
 
 function input_edit() {
 	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
 	
-	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "]";
+	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 	
 	if (read_config_option("full_view_graph_template") == "") {
 		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&id=" . $_GET["id"]);
+		draw_graph_form_select("?action=item&id=" . $_GET["graph_template_id"]);
 		end_box();
 	}
 	
@@ -586,8 +596,8 @@ function input_edit() {
 		}
 	}
 			
-	if (!empty($_GET["graph_template_input_id"])) {
-		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["graph_template_input_id"]);
+	if (!empty($_GET["id"])) {
+		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["id"]);
 	}
 	
 	start_box("<strong>Graph Item Inputs</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -630,12 +640,12 @@ function input_edit() {
 		graph_templates_item.consolidation_function_id,
 		graph_template_input_defs.graph_template_input_id
 		from graph_templates_item
-		left join graph_template_input_defs on (graph_template_input_defs.graph_template_item_id=graph_templates_item.id and graph_template_input_defs.graph_template_input_id=" . $_GET["graph_template_input_id"] . ")
+		left join graph_template_input_defs on (graph_template_input_defs.graph_template_item_id=graph_templates_item.id and graph_template_input_defs.graph_template_input_id=" . $_GET["id"] . ")
 		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join data_local on data_template_rrd.local_data_id=data_local.id
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		where graph_templates_item.local_graph_id=0
-		and graph_templates_item.graph_template_id=" . $_GET["id"] . "
+		and graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		order by graph_templates_item.sequence");
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
@@ -663,7 +673,7 @@ function input_edit() {
 			}
 			
 			$name = "$start_bold Item #" . ($i+1) . ": " . $graph_item_types{$item["graph_type_id"]} . " (" . $consolidation_functions{$item["consolidation_function_id"]} . ")$end_bold";
-			form_base_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",$_GET["id"],true);
+			form_base_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",$_GET["graph_template_id"],true);
 			
 			$i++;
 		}
@@ -677,11 +687,11 @@ function input_edit() {
 	<?php
 	end_box();
 	
-	form_hidden_id("graph_template_id",$_GET["id"]);
-	form_hidden_id("graph_template_input_id",$_GET["graph_template_input_id"]);
+	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
+	form_hidden_id("graph_template_input_id",$_GET["id"]);
 	form_hidden_box("save_component_input","1","");
 	
-	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["id"]);
+	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 }
 
 /* ----------------------------
