@@ -1308,7 +1308,7 @@ INSERT INTO graph_templates_item VALUES (17,0,0,3,4,48,7,0,1,'Used','','',2,1);
 INSERT INTO graph_templates_item VALUES (18,0,0,3,4,0,9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (19,0,0,3,4,0,9,0,1,'Average:','','',2,3);
 INSERT INTO graph_templates_item VALUES (20,0,0,3,4,0,9,0,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (21,0,0,3,3,20,8,0,4,'Available','','',2,5);
+INSERT INTO graph_templates_item VALUES (21,0,0,3,3,20,8,0,1,'Available','','',2,5);
 INSERT INTO graph_templates_item VALUES (22,0,0,3,3,0,9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (23,0,0,3,3,0,9,0,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (24,0,0,3,3,0,9,0,3,'Maximum','','on',2,8);
