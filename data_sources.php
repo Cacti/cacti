@@ -302,6 +302,7 @@ function ds_remove() {
 		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["local_data_id"]));
 		db_execute("delete from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["local_data_id"]);
+		db_execute("delete from data_input_data_cache where local_data_id=" . $_GET["local_data_id"]);
 		db_execute("delete from data_local where id=" . $_GET["local_data_id"]);
 	}
 }
@@ -332,7 +333,7 @@ function ds_save() {
 	
 	/* if no data source path has been entered, generate one */
 	if (empty($_POST["data_source_path"])) {
-		db_execute("update data_template_data set data_source_path='" . generate_data_source_path($local_data_id) . "' where id=$data_template_data_id");
+		generate_data_source_path($local_data_id);
 	}
 	
 	/* save entried in 'selected rras' field */
