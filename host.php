@@ -140,22 +140,27 @@ function host_new_graphs_save() {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
 					$local_graph_id = sql_save($save, "graph_local");
 					change_graph_template($local_graph_id, $graph_template_id, true);
+					
+					/* cache arrays; used down below */
 					$new_graph_templates["sg"][$snmp_query_id][$graph_template_id] .= $local_graph_id . ":";
 					$new_graph_snmp_indexes[$snmp_query_id][$local_graph_id] = $snmp_index;
+					$new_graph_index_to_local[$snmp_query_id][$snmp_index] = $local_graph_id;
+					
+					reset($snmp_query_array["suggested_values"][0]["graph"][0]);
 					
 					/* suggested values for snmp query code */
 					if (isset($snmp_query_array["suggested_values"][0]["graph"])) {
 						while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]["graph"][0])) {
 							while (list($sv_name, $sv_value) = each($sv_array[0])) {
 								/* once we find a match; don't try to find more */
-								if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $sv_field_name})) {
+								if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $sv_field_name})) {
 									$subs_string = subsitute_host_data($sv_value, "|", "|", $_POST["host_id"]);
 									$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
-								}
-								
-								/* if there are no '|' characters, all of the subsitutions were successful */
-								if (!strstr($subs_string, "|")) {
-									$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $sv_field_name} = $subs_string;
+									
+									/* if there are no '|' characters, all of the subsitutions were successful */
+									if (!strstr($subs_string, "|")) {
+										$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $sv_field_name} = $subs_string;
+									}
 								}
 							}
 						}
@@ -165,7 +170,8 @@ function host_new_graphs_save() {
 			
 			$data_templates = db_fetch_assoc("select
 				data_template.id,
-				data_template.name
+				data_template.name,
+				data_template_rrd.data_source_name
 				from data_template, data_template_rrd, graph_templates_item
 				where graph_templates_item.task_item_id=data_template_rrd.id
 				and data_template_rrd.data_template_id=data_template.id
@@ -194,22 +200,27 @@ function host_new_graphs_save() {
 					while (list($snmp_index, $true) = each($snmp_index_array)) {
 						$local_data_id = sql_save($save, "data_local");
 						change_data_template($local_data_id, $data_template["id"]);
+						
+						/* cache arrays; used down below */
 						$new_data_templates["sg"][$snmp_query_id]{$data_template["id"]} .= $local_data_id . ":";
 						$new_data_snmp_indexes[$snmp_query_id][$local_data_id] = $snmp_index;
+						$new_data_index_to_local[$snmp_query_id]{$data_template["id"]}[$snmp_index] = $local_data_id;
+						
+						reset($snmp_query_array["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0]);
 						
 						/* suggested values for snmp query code */
-						if (isset($snmp_query_array["suggested_values"][0]["ds"])) {
-							while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]["ds"][0])) {
+						if (isset($snmp_query_array["suggested_values"][0]{"ds_" . $data_template["data_source_name"]})) {
+							while (list($sv_field_name, $sv_array) = each($snmp_query_array["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0])) {
 								while (list($sv_name, $sv_value) = each($sv_array[0])) {
 									/* once we find a match; don't try to find more */
-									if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $sv_field_name})) {
+									if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $sv_field_name})) {
 										$subs_string = subsitute_host_data($sv_value, "|", "|", $_POST["host_id"]);
 										$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
-									}
-									
-									/* if there are no '|' characters, all of the subsitutions were successful */
-									if (!strstr($subs_string, "|")) {
-										$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $sv_field_name} = $subs_string;
+										
+										/* if there are no '|' characters, all of the subsitutions were successful */
+										if (!strstr($subs_string, "|")) {
+											$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $sv_field_name} = $subs_string;
+										}
 									}
 								}
 							}
@@ -240,13 +251,14 @@ function host_new_graphs_save() {
 					db_execute("update graph_templates_item set task_item_id='$data_template_rrd_id' where id=$graph_template_item_id");
 				}elseif (($current_form_type == "sg") && (isset($new_graph_snmp_indexes[$snmp_query_id])) && (isset($new_data_snmp_indexes[$snmp_query_id]))) {
 					reset($new_graph_snmp_indexes[$snmp_query_id]);
-					reset($new_data_snmp_indexes[$snmp_query_id]);
 					
 					while (list($local_graph_id, $snmp_index) = each($new_graph_snmp_indexes[$snmp_query_id])) {
-						while (list($local_data_id, $snmp_index) = each($new_data_snmp_indexes[$snmp_query_id])) {
-							$graph_template_item_id = db_fetch_cell("select id from graph_templates_item where local_graph_template_item_id=" . $template_item["id"] . " and local_graph_id=$local_graph_id");
-							$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=" . $template_item["data_template_rrd_id"] . " and local_data_id=$local_data_id");
-							
+						$local_data_id = $new_data_index_to_local[$snmp_query_id]{$template_item["data_template_id"]}[$snmp_index];
+						
+						$graph_template_item_id = db_fetch_cell("select id from graph_templates_item where local_graph_template_item_id=" . $template_item["id"] . " and local_graph_id=$local_graph_id");
+						$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=" . $template_item["data_template_rrd_id"] . " and local_data_id=$local_data_id");
+						
+						if (!empty($data_template_rrd_id)) {
 							db_execute("update graph_templates_item set task_item_id='$data_template_rrd_id' where id=$graph_template_item_id");
 						}
 					}
@@ -259,8 +271,12 @@ function host_new_graphs_save() {
 	/* go ahead and write out values from the POST form to our new data */
 	
 	while (list($var, $val) = each($_POST)) {
-		if (preg_match("/^g_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: field_name */
-			db_execute("update graph_templates_graph set " . $matches[3] . "='$val' where " . (empty($matches[1]) ? "local_graph_id=" . $new_graph_templates["cg"]{$matches[2]} : array_to_sql_or(split(":", $new_graph_templates["sg"]{$matches[1]}{$matches[2]}),"local_graph_id")));
+		if (preg_match("/^g_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: (opt) snmp index, 4: field_name */
+			if (empty($matches[4])) { /* ALL new graphs */
+				db_execute("update graph_templates_graph set " . $matches[4] . "='$val' where " . (empty($matches[1]) ? "local_graph_id=" . $new_graph_templates["cg"]{$matches[2]} : array_to_sql_or(split(":", $new_graph_templates["sg"]{$matches[1]}{$matches[2]}),"local_graph_id")));
+			}else{ /* only new graphs for this snmp_index */
+				db_execute("update graph_templates_graph set " . $matches[4] . "='$val' where local_graph_id=" . $new_graph_index_to_local{$matches[1]}{$matches[3]});
+			}
 		}elseif (preg_match("/^gi_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name */
 			/* we need to find out which graph items will be affected by saving this particular item */
 			$item_list = db_fetch_assoc("select
@@ -276,8 +292,12 @@ function host_new_graphs_save() {
 				db_execute("update graph_templates_item set " . $matches[4] . "='$val' where id=" . $item["id"]);
 			}
 			}
-		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name */
-			db_execute("update data_template_data set " . $matches[4] . "='$val' where " . (empty($matches[1]) ? "local_data_id=" . $new_data_templates["cg"]{$matches[2]}{$matches[3]} : array_to_sql_or(split(":", $new_data_templates["sg"]{$matches[1]}{$matches[3]}),"local_data_id")));
+		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4: (opt) snmp_index, 5:field_name */
+			if (empty($matches[4])) { /* ALL new graphs */
+				db_execute("update data_template_data set " . $matches[5] . "='$val' where " . (empty($matches[1]) ? "local_data_id=" . $new_data_templates["cg"]{$matches[2]}{$matches[3]} : array_to_sql_or(split(":", $new_data_templates["sg"]{$matches[1]}{$matches[3]}),"local_data_id")));
+			}else{ /* only new data sources for this snmp_index */
+				db_execute("update data_template_data set " . $matches[5] . "='$val' where local_data_id=" . $new_data_index_to_local{$matches[1]}{$matches[3]}{$matches[4]});
+			}
 		}elseif (preg_match("/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name */
 			db_execute("update data_template_rrd set " . $matches[5] . "='$val' where " . (empty($matches[1]) ? "local_data_id=" . $new_data_templates["cg"]{$matches[2]}{$matches[3]} : array_to_sql_or(split(":", $new_data_templates["sg"]{$matches[1]}{$matches[3]}),"local_data_id")) . " and local_data_template_rrd_id=" . $matches[4]);
 		}elseif ((preg_match("/^sg_(\d+)_(\d+)_(\d+)/", $var, $matches)) && (isset($new_data_snmp_indexes{$matches[1]}))) { /* 1: snmp_query_id, 2: data_template_id, 3: data_input_field_id */
@@ -436,12 +456,14 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			
 			$data_templates = db_fetch_assoc("select
 				data_template.name as data_template_name,
+				data_template_rrd.data_source_name,
 				data_template_data.*
 				from data_template, data_template_rrd, data_template_data, graph_templates_item
 				where graph_templates_item.task_item_id=data_template_rrd.id
 				and data_template_rrd.data_template_id=data_template.id
 				and data_template_data.data_template_id=data_template.id
 				and data_template_rrd.local_data_id=0
+				and data_template_data.local_data_id=0
 				and graph_templates_item.local_graph_id=0
 				and graph_templates_item.graph_template_id=" . $graph_template_id . "
 				group by data_template.id
@@ -481,7 +503,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
 						print "</td></tr>\n";
 					}else{
-						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $field_name, $data_template[$field_name]);
+						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, $data_template[$field_name]);
 					}
 					
 					$row_counter = 0; $drew_items = true;
@@ -535,13 +557,14 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						/* we must treat suggested values for snmp queries different because one
 						entry here might might 20 graphs... so we can't automatically fill in the 
 						values */
-						if ((!empty($snmp_query_id)) && ($snmp_queries["suggested_values"][0]["ds"][0][$field_name])) {
+						
+						if ((!empty($snmp_query_id)) && (isset($snmp_queries["suggested_values"][0]{"ds_" . $data_template["data_source_name"]}[0][$field_name]))) {
 							print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>";
 							print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
 							print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
 							print "</td></tr>\n";
 						}else{
-							draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_" . $field_name, $data_template[$field_name]);
+							draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
 						}
 						
 						$row_counter = 0; $drew_items = true;
@@ -583,6 +606,11 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	DrawFormItemHiddenIDField("host_id",$host_id);
 	DrawFormItemHiddenTextBox("save_component_new_graphs","1","");
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
+	
+	if (isset($snmp_queries["suggested_values"][0]["ds_draffic_in"][0]["name"])) {
+		print "INNN";
+	}
+	
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	?>
