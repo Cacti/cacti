@@ -330,7 +330,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				db_execute("update data_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
 				push_out_host($_POST["host_id"], $selected_items[$i]);
-				update_data_source_title_cache_from_host($_POST["host_id"]);
+				update_data_source_title_cache($selected_items[$i]);
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -695,13 +695,6 @@ function ds_edit() {
 			$form_array[$field_name]["value"] = (isset($data[$field_name]) ? $data[$field_name] : "");
 			$form_array[$field_name]["form_id"] = (empty($data["id"]) ? "0" : $data["id"]);
 			
-			/* "hack" for rra multi_select */
-			if ($field_name == "rra_id") {
-				$form_array[$field_name]["array"] = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
-				$form_array[$field_name]["sql"] = "select data_template_data_id,rra_id as id from data_template_data_rra where data_template_data_id=" . (empty($data["id"]) ? "0" : $data["id"]);
-				$form_array[$field_name]["sql_print"] = "select rra.name from data_template_data_rra,rra where data_template_data_rra.rra_id=rra.id and data_template_data_rra.data_template_data_id=" . (empty($data["id"]) ? "0" : $data["id"]);
-			}
-			
 			if (!(($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
 				$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
 			}
@@ -712,7 +705,7 @@ function ds_edit() {
 				"config" => array(
 					"no_form_tag" => true
 					),
-				"fields" => $form_array
+				"fields" => inject_form_variables($form_array, (isset($data) ? $data : array()))
 				)
 			);
 		

@@ -399,12 +399,6 @@ function template_edit() {
 				);
 		}
 		
-		/* "hack" for rra multi_select */
-		if ($field_name == "rra_id") {
-			$form_array[$field_name]["array"] = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
-			$form_array[$field_name]["sql"] = "select rra_id as id,data_template_data_id from data_template_data_rra where data_template_data_id=" . (isset($template_data) ? $template_data["id"] : "0");
-		}
-		
 		$form_array[$field_name]["value"] = (isset($template_data[$field_name]) ? $template_data[$field_name] : "");
 		$form_array[$field_name]["form_id"] = (isset($template_data) ? $template_data["data_template_id"] : "0");
 	}
@@ -413,7 +407,7 @@ function template_edit() {
 		array(
 			"config" => array(
 				),
-			"fields" => $form_array
+			"fields" => inject_form_variables($form_array, (isset($template_data) ? $template_data : array()))
 			)
 		);
 	
