@@ -189,7 +189,7 @@ function form_save() {
 		/* ok, first pull out all 'input' values so we know how much to save */
 		$input_fields = db_fetch_assoc("select
 			data_template_data.data_input_id,
-			data_local.host_id
+			data_local.host_id,
 			data_input_fields.id,
 			data_input_fields.input_output,
 			data_input_fields.data_name,
@@ -204,11 +204,11 @@ function form_save() {
 		
 		if (sizeof($input_fields) > 0) {
 		foreach ($input_fields as $input_field) {
-			/* save the data into the 'data_input_data' table */
-			$form_name = "value_" . $input_field["data_name"];
-			$form_value = $_POST[$form_name];
-			
-			if (isset($_POST[$form_name])) {
+			if (isset($_POST{"value_" . $input_field["data_name"]})) {
+				/* save the data into the 'data_input_data' table */
+				$form_name = "value_" . $input_field["data_name"];
+				$form_value = $_POST[$form_name];
+				
 				if ($input_field["allow_nulls"] == "on") {
 					$allow_nulls = true;
 				}elseif (empty($input_field["allow_nulls"])) {
@@ -218,8 +218,7 @@ function form_save() {
 				/* run regexp match on input string */
 				$form_value = form_input_validate($form_value, $form_name, $input_field["regexp_match"], $allow_nulls, 3);
 				
-				/* make sure we don't overwrite 'host fields' */ 
-				if ((!is_error_message()) && ((empty($input_field["host_id"]) || (empty($input_field["type_code"]))))) {
+				if (!is_error_message()) {
 					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
 						(" . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'" . db_fetch_cell("select t_value from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $_POST["data_template_data_id"]) . "','$form_value')");
 				}
