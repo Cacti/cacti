@@ -1,5 +1,10 @@
 raXnet - cacti
 
+0.8.3a
+-bug#81: Partial/complete poller cache rebuild failure after an upgrade.
+-bug#82: Undefined variable error messages under win32/IIS.
+-bug: Problems with overlapping graph permissions with multiple users. 
+
 0.8.3
 -bug#50: When viewing a graph, only display it for the RRAs used on the graph.
 -bug#66: Users can see a list of all hosts in graph preview mode.
