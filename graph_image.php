@@ -25,6 +25,7 @@
 */
 
 //$guest_account = true; include ('include/auth.php');
+include("include/config.php");
 include_once ("include/rrd_functions.php");
 
 header("Cache-Control: no-cache, must-revalidate");
