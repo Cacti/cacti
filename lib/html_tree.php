@@ -459,4 +459,24 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	
 }
 
+function find_first_folder_url() {
+	$tree_list = get_graph_tree_array();
+	
+	if (sizeof($tree_list) > 0) {
+		$heirarchy = db_fetch_assoc("select
+			graph_tree_items.id,
+			graph_tree_items.host_id
+			from graph_tree_items
+			where graph_tree_items.graph_tree_id=" . $tree_list[0]["id"] . "
+			and graph_tree_items.local_graph_id = 0
+			order by graph_tree_items.order_key");
+		
+		if (sizeof($heirarchy) > 0) {
+			return "graph_view.php?action=tree&tree_id=" . $tree_list[0]["id"] . "&leaf_id=" . $heirarchy[0]["id"] . "&select_first=true";
+		}
+	}
+	
+	return;
+}
+
 ?>
