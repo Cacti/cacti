@@ -188,21 +188,61 @@ function GetCronPath($dsid) {
     }
 }
 
-function get_data_source_name($local_data_id) {    
-	if (empty($local_data_id)) { return ""; }
+function get_full_script_path($local_data_id) {
+	global $paths;
+	
+	$data_source = db_fetch_row("select
+		data_template_data.id,
+		data_template_data.data_input_id,
+		data_input.type_id,
+		data_input.input_string
+		from data_template_data,data_input
+		where data_template_data.data_input_id=data_input.id
+		and data_template_data.local_data_id=$local_data_id");
+	
+	if ($data_source["type_id"] > 1) {
+		return 0;
+	}
+	
+	$data = db_fetch_assoc("select
+		data_input_fields.data_name,
+		data_input_data.value
+		from data_input_fields
+		left join data_input_data
+		on data_input_fields.id=data_input_data.data_input_field_id
+		where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
+		and data_input_fields.input_output='in'");
+	
+	$full_path = $data_source["input_string"];
+	
+	if (sizeof($data) > 0) {
+	foreach ($data as $item) {
+		$full_path = str_replace("<" . $data["data_name"] . ">", $data["value"], $full_path);
+	}
+	}
+	
+	$full_path = str_replace("<path_cacti>", $paths["cacti"], $full_path);
+	$full_path = str_replace("<path_snmpget>", read_config_option("path_snmpget"), $full_path);
+	$full_path = str_replace("<path_php_binary>", read_config_option("path_php_binary"), $full_path);
+	
+	return $full_path;
+}
+
+function get_data_source_name($data_template_rrd_id) {    
+	if (empty($data_template_rrd_id)) { return ""; }
 	
 	$data_source = db_fetch_row("select
 		data_template_rrd.data_source_name,
 		data_template_data.name
 		from data_template_rrd,data_template_data
 		where data_template_rrd.local_data_id=data_template_data.local_data_id
-		and data_template_rrd.local_data_id=$local_data_id");
+		and data_template_rrd.id=$data_template_rrd_id");
 	
 	/* use the cacti ds name by default or the user defined one, if entered */
 	if (empty($data_source["data_source_name"])) {
 		/* limit input to 19 characters */
 		$data_source_name = clean_up_name($data_source["name"]);
-		$data_source_name = substr(strtolower($data_source_name),0,(19-strlen($local_data_id))) . $local_data_id;
+		$data_source_name = substr(strtolower($data_source_name),0,(19-strlen($data_template_rrd_id))) . $data_template_rrd_id;
 		
 		return $data_source_name;
 	}else{
