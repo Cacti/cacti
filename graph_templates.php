@@ -211,35 +211,70 @@ function form_save() {
 	}
 	
 	if (isset($_POST["save_component_item"])) {
-		/* generate a new sequence if needed */
-		if (empty($_POST["sequence"])) {
-			$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "graph_template_id=" . $_POST["graph_template_id"] . " and local_graph_id=0");
+		global $graph_item_types;
+		
+		$items[0] = array();
+		
+		if ($graph_item_types{$_POST["graph_type_id"]} == "LEGEND") {
+			/* this can be a major time saver when creating lots of graphs with the typical
+			GPRINT LAST/AVERAGE/MAX legends */
+			$items = array(
+				0 => array(
+					"color_id" => "0",
+					"graph_type_id" => "9",
+					"consolidation_function_id" => "4",
+					"text_format" => "Current:",
+					"hard_return" => ""
+					),
+				1 => array(
+					"color_id" => "0",
+					"graph_type_id" => "9",
+					"consolidation_function_id" => "1",
+					"text_format" => "Average:",
+					"hard_return" => ""
+					),
+				2 => array(
+					"color_id" => "0",
+					"graph_type_id" => "9",
+					"consolidation_function_id" => "3",
+					"text_format" => "Maximum:",
+					"hard_return" => "on"
+					));
 		}
 		
-		$save["id"] = $_POST["graph_template_item_id"];
-		$save["graph_template_id"] = $_POST["graph_template_id"];
-		$save["local_graph_id"] = 0;
-		$save["task_item_id"] = form_input_validate($_POST["task_item_id"], "task_item_id", "", true, 3);
-		$save["color_id"] = form_input_validate($_POST["color_id"], "color_id", "", true, 3);
-		$save["graph_type_id"] = form_input_validate($_POST["graph_type_id"], "graph_type_id", "", true, 3);
-		$save["cdef_id"] = form_input_validate($_POST["cdef_id"], "cdef_id", "", true, 3);
-		$save["consolidation_function_id"] = form_input_validate($_POST["consolidation_function_id"], "consolidation_function_id", "", true, 3);
-		$save["text_format"] = form_input_validate($_POST["text_format"], "text_format", "", true, 3);
-		$save["value"] = form_input_validate($_POST["value"], "value", "", true, 3);
-		$save["hard_return"] = form_input_validate((isset($_POST["hard_return"]) ? $_POST["hard_return"] : ""), "hard_return", "", true, 3);
-		$save["gprint_id"] = form_input_validate($_POST["gprint_id"], "gprint_id", "", true, 3);
-		$save["sequence"] = $_POST["sequence"];
-		
-		if (!is_error_message()) {
-			$graph_template_item_id = sql_save($save, "graph_templates_item");
-			
-			if ($graph_template_item_id) {
-				raise_message(1);
-				
-				push_out_graph_item($graph_template_item_id);
-			}else{
-				raise_message(2);
+		foreach ($items as $item) {			
+			/* generate a new sequence if needed */
+			if (empty($_POST["sequence"])) {
+				$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "graph_template_id=" . $_POST["graph_template_id"] . " and local_graph_id=0");
 			}
+			
+			$save["id"] = $_POST["graph_template_item_id"];
+			$save["graph_template_id"] = $_POST["graph_template_id"];
+			$save["local_graph_id"] = 0;
+			$save["task_item_id"] = form_input_validate($_POST["task_item_id"], "task_item_id", "", true, 3);
+			$save["color_id"] = form_input_validate((isset($item["color_id"]) ? $item["color_id"] : $_POST["color_id"]), "color_id", "", true, 3);
+			$save["graph_type_id"] = form_input_validate((isset($item["graph_type_id"]) ? $item["graph_type_id"] : $_POST["graph_type_id"]), "graph_type_id", "", true, 3);
+			$save["cdef_id"] = form_input_validate($_POST["cdef_id"], "cdef_id", "", true, 3);
+			$save["consolidation_function_id"] = form_input_validate((isset($item["consolidation_function_id"]) ? $item["consolidation_function_id"] : $_POST["consolidation_function_id"]), "consolidation_function_id", "", true, 3);
+			$save["text_format"] = form_input_validate((isset($item["text_format"]) ? $item["text_format"] : $_POST["text_format"]), "text_format", "", true, 3);
+			$save["value"] = form_input_validate($_POST["value"], "value", "", true, 3);
+			$save["hard_return"] = form_input_validate(((isset($item["hard_return"]) ? $item["hard_return"] : (isset($_POST["hard_return"]) ? $_POST["hard_return"] : ""))), "hard_return", "", true, 3);
+			$save["gprint_id"] = form_input_validate($_POST["gprint_id"], "gprint_id", "", true, 3);
+			$save["sequence"] = $_POST["sequence"];
+			
+			if (!is_error_message()) {
+				$graph_template_item_id = sql_save($save, "graph_templates_item");
+				
+				if ($graph_template_item_id) {
+					raise_message(1);
+					
+					push_out_graph_item($graph_template_item_id);
+				}else{
+					raise_message(2);
+				}
+			}
+			
+			$_POST["sequence"] = 0;
 		}
 		
 		if (is_error_message()) {

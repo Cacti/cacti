@@ -80,7 +80,8 @@ $cdef_functions = array(1 =>
 $input_types = array(1 =>
 	"Script/Command",
 	"SNMP",
-	"SNMP Query");
+	"SNMP Query",
+	"Script Query");
 
 $snmp_query_field_actions = array(1 =>
 	"SNMP Field Name (Dropdown)",
@@ -108,7 +109,8 @@ $graph_item_types = array(1 =>
 	"LINE3",
 	"AREA",
 	"STACK",
-	"GPRINT");
+	"GPRINT",
+	"LEGEND");
 
 $image_types = array(1 =>
 	"PNG",
