@@ -4,8 +4,23 @@ target_t *targets = NULL;
 target_t *current = NULL;
 conf_t conf;
 int entries;
+int conf_changed;
+
+void sighup(){
+  extern int conf_changed;
+  signal(SIGHUP,sighup); /* reset signal */
+  printf("SIGHUP\n");
+  conf_changed=1;
+}
 
 int main(void){
+  FILE *fp;
+  fp=fopen("/tmp/cactid.pid", "w");
+  fprintf(fp, "%i",getpid());
+  fclose(fp);
+
+  signal(SIGHUP,sighup);
+
   printf("INIT: reading conf\n");
   read_conf();
 
@@ -22,6 +37,12 @@ int main(void){
     current=targets;
     poller();
     sleep(conf.interval);
+    if(conf_changed==1){
+      printf("conf changed\n");
+      entries=get_targets();
+      conf_changed=0;
+    }
+
   }
 }
 

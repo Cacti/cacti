@@ -28,8 +28,11 @@ void *poller(){
 
     switch(entry->action) {
       case 0:
+        #ifdef TEST
+        entry->result=1;
+        #else
         entry->result=snmp_get(entry->management_ip, entry->snmp_community, entry->snmp_version, entry->arg1,0);
-        //entry->result=1;
+        #endif
       break;
       case 1:
         cmd_stdout=popen(entry->command, "r");
