@@ -26,6 +26,7 @@
 
 function repopulate_poller_cache() {
 	db_execute("truncate table data_input_data_cache");
+	db_execute("truncate table data_input_data_fcache");
 	
 	$poller_data = db_fetch_assoc("select id from data_local");
 	

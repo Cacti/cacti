@@ -339,6 +339,7 @@ function form_actions() {
 				db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "local_data_id"));
 				db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id"));
 				db_execute("delete from data_input_data_cache where " . array_to_sql_or($selected_items, "local_data_id"));
+				db_execute("delete from data_input_data_fcache where " . array_to_sql_or($selected_items, "local_data_id"));
 				db_execute("delete from data_local where " . array_to_sql_or($selected_items, "id"));
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -910,8 +911,9 @@ function ds() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?host_id=0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							
+							<option value="data_sources.php?host_id=-1"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
+							<option value="data_sources.php?host_id=0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
@@ -946,7 +948,11 @@ function ds() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "where data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'";
 	
-	if (!empty($_REQUEST["host_id"])) {
+	if ($_REQUEST["host_id"] == -1) {
+		/* Show all items */
+	} elseif ($_REQUEST["host_id"] == 0) {
+		$sql_where .= " and data_local.host_id=0";
+	} elseif (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];
 	}
 	
