@@ -236,7 +236,7 @@ function data_edit() {
 				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host: " . $host["hostname"] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
 			}elseif (empty($data_input_data["t_value"])) {
-				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host Template)</td>\n";
+				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Data Template)</td>\n";
 				print "<td><em>" . (empty($old_value) ? "Nothing Entered" : $old_value) . "</em></td>\n";
 			}else{
 				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
