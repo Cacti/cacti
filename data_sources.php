@@ -327,6 +327,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				db_execute("update data_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
 				push_out_host($_POST["host_id"], $selected_items[$i]);
+				update_data_source_title_cache_from_host($_POST["host_id"]);
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -334,7 +335,7 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
 			for ($i=0;($i<count($selected_items));$i++) {
-				data_source_to_data_template($selected_items[$i], 0, $_POST["title_format"]);
+				data_source_to_data_template($selected_items[$i], $_POST["title_format"]);
 			}
 		}
 		
