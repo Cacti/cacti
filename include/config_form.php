@@ -534,27 +534,27 @@ $struct_graph_item = array(
 			order by name",
 		"default" => "0",
 		"none_value" => "None",
-		"description" => "The task to use for this graph item; not used for COMMENT fields."
+		"description" => "The data source to use for this graph item."
 		),
 	"color_id" => array(
 		"friendly_name" => "Color",
 		"method" => "drop_color",
 		"default" => "0",
-		"description" => "The task to use for this graph item; not used for COMMENT fields."
+		"description" => "The color to use for the legend."
 		),
 	"graph_type_id" => array(
 		"friendly_name" => "Graph Item Type",
 		"method" => "drop_array",
 		"array" => $graph_item_types,
 		"default" => "0",
-		"description" => "How data for this item is displayed."
+		"description" => "How data for this item is represented visually on the graph."
 		),
 	"consolidation_function_id" => array(
 		"friendly_name" => "Consolidation Function",
 		"method" => "drop_array",
 		"array" => $consolidation_functions,
 		"default" => "0",
-		"description" => "How data is to be represented on the graph."
+		"description" => "How data for this item is represented statistically on the graph."
 		),
 	"cdef_id" => array(
 		"friendly_name" => "CDEF Function",
@@ -562,14 +562,14 @@ $struct_graph_item = array(
 		"sql" => "select id,name from cdef order by name",
 		"default" => "0",
 		"none_value" => "None",
-		"description" => "A CDEF Function to apply to this item on the graph."
+		"description" => "A CDEF (math) function to apply to this item on the graph."
 		),
 	"value" => array(
 		"friendly_name" => "Value",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "",
-		"description" => "For use with VRULE and HRULE, <em>numbers</em> only."
+		"description" => "The value of an HRULE or VRULE graph item."
 		),
 	"gprint_id" => array(
 		"friendly_name" => "GPRINT Type",
@@ -577,20 +577,20 @@ $struct_graph_item = array(
 		"sql" => "select id,name from graph_templates_gprint order by name",
 		"default" => "2",
 		"description" => "If this graph item is a GPRINT, you can optionally choose another format 
-			here. You can define additional types under \"Graph Templates\"."
+			here. You can define additional types under \"GPRINT Presets\"."
 		),
 	"text_format" => array(
 		"friendly_name" => "Text Format",
 		"method" => "textbox",
 		"max_length" => "255",
 		"default" => "",
-		"description" => "The text of the comment or legend, input and output keywords are allowed."
+		"description" => "Text that will be displayed on the legend for this graph item."
 		),
 	"hard_return" => array(
 		"friendly_name" => "Insert Hard Return",
 		"method" => "checkbox",
 		"default" => "",
-		"description" => ""
+		"description" => "Forces the legend to the next line after this item."
 		),
 	"sequence" => array(
 		"friendly_name" => "Sequence",
