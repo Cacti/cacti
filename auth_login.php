@@ -42,7 +42,7 @@ case 'login':
 		if ($ldap_conn) {
 			$ldap_auth = true;
 			$ldap_dn = str_replace("<username>",$_POST["username"],read_config_option("ldap_dn"));
-			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$password);
+			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$_POST["password"]);
 
 			if ($ldap_response) {
 				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and full_name='ldap user'")) == 0) {
