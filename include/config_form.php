@@ -24,7 +24,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include($config["include_path"] . "/config_arrays.php");
+include_once($config["include_path"] . "/config_arrays.php");
+include_once($config["base_path"] . "/lib/database.php");
+include_once($config["base_path"] . "/lib/functions.php");
 
 if (!defined("VALID_HOST_FIELDS")) {
 	define("VALID_HOST_FIELDS", "(hostname|snmp_community|snmp_username|snmp_password|snmp_version|snmp_port|snmp_timeout)");
@@ -688,7 +690,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Timeout",
 		"description" => "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).",
 		"value" => "|arg1:snmp_timeout|",
-		"default" => "500",
+		"default" => read_config_option("snmp_timeout"),
 		"max_length" => "8",
 		"size" => "15"
 		),
