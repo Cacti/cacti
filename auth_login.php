@@ -77,7 +77,7 @@ case 'login':
 						$ldap_new = true;
 						
 						/* get the newly created user_id */
-						$user_id = db_fetch_cell("select LAST_INSERT_ID()");
+						$user_id = db_fetch_insert_id();
 						
 						if ($ldap_new == true) {
 							/* acl */

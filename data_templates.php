@@ -76,7 +76,6 @@ function form_save() {
 		/* save: data_template */
 		$save1["id"] = $_POST["data_template_id"];
 		$save1["name"] = form_input_validate($_POST["template_name"], "template_name", "", false, 3);
-		$save1["graph_template_id"] = 0;
 		
 		/* save: data_template_data */
 		$save2["id"] = $_POST["data_template_data_id"];
@@ -230,7 +229,7 @@ function template_rrd_remove() {
 function template_rrd_add() {
 	db_execute("insert into data_template_rrd (data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
 		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
-	$data_template_rrd_id = db_fetch_cell("select LAST_INSERT_ID()");
+	$data_template_rrd_id = db_fetch_insert_id();
 	
 	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 }

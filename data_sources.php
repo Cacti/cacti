@@ -552,7 +552,7 @@ function ds_rrd_remove() {
 function ds_rrd_add() {
 	db_execute("insert into data_template_rrd (local_data_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
 		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
-	$data_template_rrd_id = db_fetch_cell("select LAST_INSERT_ID()");
+	$data_template_rrd_id = db_fetch_insert_id();
 	
 	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 }

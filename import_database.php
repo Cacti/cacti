@@ -169,7 +169,7 @@ foreach ($_src as $item) {
 	if (db_execute("insert into $database_default.data_input (id,name,input_string,output_string,type_id) values (0,
 		'" . $item["Name"] . "','" . $item["FormatStrIn"] . "','" . $item["FormatStrOut"] . "',
 		1)")) {
-		$data_input_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+		$data_input_cache{$item["ID"]} = db_fetch_insert_id();
 		print "SUCCESS: Data Input Source: " . $item["Name"] . "\n";
 		
 		$_src_fields = db_fetch_assoc("select * from $database_old.src_fields where srcid=" . $item["ID"]);
@@ -180,7 +180,7 @@ foreach ($_src as $item) {
 				update_rra,sequence,type_code,regexp_match,allow_nulls) values (0,
 				'" . $data_input_cache{$item["ID"]} . "','" . $item2["Name"] . "','" . $item2["DataName"] . "',
 				'" . $item2["InputOutput"] . "','" . $item2["UpdateRRA"] . "',0,'','','')")) {
-				$data_input_field_cache{$item2["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+				$data_input_field_cache{$item2["ID"]} = db_fetch_insert_id();
 				print "   SUCCESS: Data Input Field: " . $item2["Name"] . "\n";
 			}else{
 				print "   FAIL: Data Input Field: " . $item2["Name"] . "\n";
@@ -213,7 +213,7 @@ foreach ($_hosts as $item) {
 		snmp_version,snmp_username,snmp_password) values (0,0,'" . $item["Hostname"] . "',
 		'" . $item["Hostname"] . "','" . gethostbyname($item["Hostname"]) . "','" . $item["Community"] . "',
 		1,'','')")) {
-		$host_id = db_fetch_cell("select LAST_INSERT_ID()");
+		$host_id = db_fetch_insert_id();
 		$ip_to_host_cache{gethostbyname($item["Hostname"])} = $host_id;
 		
 		db_execute("insert into host_snmp_query (host_id,snmp_query_id) values ($host_id,1)");
@@ -279,14 +279,14 @@ foreach ($_ds as $item) {
 	}
 	
 	if (db_execute("insert into data_local (id,data_template_id,host_id) values (0,$data_template_id,$host_id)")) {
-		$local_data_id = db_fetch_cell("select LAST_INSERT_ID()");
+		$local_data_id = db_fetch_insert_id();
 		print "SUCCESS: Local Data Entry: " . $item["Name"] . "\n";
 		
 		if (db_execute("insert into data_template_data (id,local_data_template_data_id,local_data_id,
 			data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,$local_data_template_data_id,$local_data_id,
 			$data_template_id," . $data_input_cache{$item["SrcID"]} . ",'" . $item["Name"] . "','" . $item["DSPath"] . "',
 			'" . $item["Active"] . "','" . $item["Step"] . "')")) {
-			$data_template_data_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+			$data_template_data_cache{$item["ID"]} = db_fetch_insert_id();
 			print "   SUCCESS: Data Source: " . $item["Name"] . "\n";
 			
 			if ($item["IsParent"] == "0") {
@@ -297,7 +297,7 @@ foreach ($_ds as $item) {
 					data_source_type_id,data_source_name,data_input_field_id) values (0,$local_data_template_rrd_id,$local_data_id,$data_template_id,
 					" . $item["MaxValue"] . "," . $item["MinValue"] . "," . $item["Heartbeat"] . ",
 					" . $item["DataSourceTypeID"] . ",'" . $item["DSName"] . "'," . (empty($data_input_field_cache[$old_output_field_id]) ? "0" : $data_input_field_cache{$old_output_field_id}) . ")")) {
-					$data_template_rrd_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+					$data_template_rrd_cache{$item["ID"]} = db_fetch_insert_id();
 					print "   SUCCESS: Data Source Item: " . $item["DSName"] . "\n";
 				}else{
 					print "   FAIL: Data Source Item: " . $item["DSName"] . "\n";
@@ -313,7 +313,7 @@ foreach ($_ds as $item) {
 						" . $item2["MaxValue"] . "," . $item2["MinValue"] . "," . $item2["Heartbeat"] . ",
 						" . $item2["DataSourceTypeID"] . ",'" . $item2["DSName"] . "',
 						" . $data_input_field_cache{$item2["SubFieldID"]} . ")")) {
-						$data_template_rrd_cache{$item2["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+						$data_template_rrd_cache{$item2["ID"]} = db_fetch_insert_id();
 						print "   SUCCESS: Data Source Item (sub): " . $item2["DSName"] . "\n";
 					}else{
 						print "   FAIL: Data Source Item (sub): " . $item2["DSName"] . "\n";
@@ -496,7 +496,7 @@ $_cdef = db_fetch_assoc("select * from $database_old.rrd_ds_cdef");
 if (sizeof($_cdef) > 0) {
 foreach ($_cdef as $item) {
 	if (db_execute("insert into cdef (id,name) values (0,'" . $item["Name"] . "')")) {
-		$cdef_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+		$cdef_cache{$item["ID"]} = db_fetch_insert_id();
 		print "SUCCESS: CDEF: " . $item["Name"] . "\n";
 		
 		$_cdef_items = db_fetch_assoc("select * from $database_old.rrd_ds_cdef_item where CDEFID=" . $item["ID"]);
@@ -568,7 +568,7 @@ $_graphs = db_fetch_assoc("select * from $database_old.rrd_graph");
 if (sizeof($_graphs) > 0) {
 foreach ($_graphs as $item) {
 	if (db_execute("insert into graph_local (id,graph_template_id) values (0,0)")) {
-		$local_graph_id_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
+		$local_graph_id_cache{$item["ID"]} = db_fetch_insert_id();
 		print "SUCCESS: Local Graph Entry: " . $item["Title"] . "\n";
 		
 		if (db_execute("insert into graph_templates_graph (id,local_graph_template_graph_id,local_graph_id,graph_template_id,image_format_id,title,
@@ -648,7 +648,7 @@ $_tree = db_fetch_assoc("select * from $database_old.graph_hierarchy");
 if (sizeof($_tree) > 0) {
 foreach ($_tree as $item) {
 	if (db_execute("insert into graph_tree (id,user_id,name) values (0,0,'" . $item["Name"] . "')")) {
-		$graph_tree_id = db_fetch_cell("select LAST_INSERT_ID()");
+		$graph_tree_id = db_fetch_insert_id();
 		print "SUCCESS: Graph Tree: " . $item["Name"] . "\n";
 		climb_tree(0, $item["ID"], 0, "", "");
 		
