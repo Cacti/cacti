@@ -98,6 +98,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 }
 
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password) {
+	include ("config.php");
 	include_once ("functions.php");
 	
 	if ($config["php_snmp_support"] == true) {
@@ -129,6 +130,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
+	include ("config.php");
 	include_once ("functions.php");
 	
 	$snmp_array = array();
