@@ -145,6 +145,13 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 function delete_branch($tree_item_id) {
 	if (empty($tree_item_id)) { return 0; }
 	
+	/* if this item is a graph, it will have NO children, so we can just delete the
+	graph and exit. */
+	if (db_fetch_cell("select local_graph_id from graph_tree_items where id=$tree_item_id") > 0) {
+		db_execute("delete from graph_tree_items where id=$tree_item_id");
+		return 0;
+	}
+	
 	/* get current key so we can do a sql select on it */
 	$order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
 	
