@@ -27,12 +27,13 @@
 function upgrade_to_0_8_6() {
 	include("../lib/data_query.php");
 	include("../lib/tree.php");
+	include("../lib/import.php");
 
 	db_install_execute("0.8.6", "DROP TABLE `snmp_query_field`;");
 	db_install_execute("0.8.6", "DROP TABLE `data_input_data_cache`;");
 	db_install_execute("0.8.6", "DROP TABLE `data_input_data_fcache`;");
 
-	/*distributed poller support*/
+	/* distributed poller support */
 	db_install_execute("0.8.6", "CREATE TABLE `poller` (`id` smallint(5) unsigned NOT NULL auto_increment, `hostname` varchar(250) NOT NULL default '', `ip_address` int(11) unsigned NOT NULL default '0', `last_update` datetime NOT NULL default '0000-00-00 00:00:00', PRIMARY KEY  (`id`)) TYPE=MyISAM;");
 	db_install_execute("0.8.6", "CREATE TABLE `poller_command` (`poller_id` smallint(5) unsigned NOT NULL default '0', `time` datetime NOT NULL default '0000-00-00 00:00:00', `action` tinyint(3) unsigned NOT NULL default '0', `command` varchar(200) NOT NULL default '', PRIMARY KEY  (`poller_id`,`action`,`command`)) TYPE=MyISAM;");
 	db_install_execute("0.8.6", "CREATE TABLE `poller_item` (`local_data_id` mediumint(8) unsigned NOT NULL default '0', `poller_id` smallint(5) unsigned NOT NULL default '0', `host_id` mediumint(8) NOT NULL default '0', `action` tinyint(2) unsigned NOT NULL default '1', `hostname` varchar(250) NOT NULL default '', `snmp_community` varchar(100) NOT NULL default '', `snmp_version` tinyint(1) unsigned NOT NULL default '0', `snmp_username` varchar(50) NOT NULL default '', `snmp_password` varchar(50) NOT NULL default '', `snmp_port` mediumint(5) unsigned NOT NULL default '161', `snmp_timeout` mediumint(8) unsigned NOT NULL default '0', `rrd_name` varchar(19) NOT NULL default '', `rrd_path` varchar(255) NOT NULL default '', `rrd_num` tinyint(2) unsigned NOT NULL default '0', `arg1` varchar(255) default NULL, `arg2` varchar(255) default NULL, `arg3` varchar(255) default NULL, PRIMARY KEY  (`local_data_id`,`rrd_name`), KEY `local_data_id` (`local_data_id`)) TYPE=MyISAM;");
@@ -41,7 +42,7 @@ function upgrade_to_0_8_6() {
 	db_install_execute("0.8.6", "CREATE TABLE `poller_time` (`id` mediumint(8) unsigned NOT NULL auto_increment, `poller_id` smallint(5) unsigned NOT NULL default '0', `start_time` datetime NOT NULL default '0000-00-00 00:00:00', `end_time` datetime NOT NULL default '0000-00-00 00:00:00', PRIMARY KEY  (`id`)) TYPE=MyISAM;");
 
 	db_install_execute("0.8.6", "ALTER TABLE `graph_tree_items` ADD `host_grouping_type` TINYINT( 3 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `sort_children_type` TINYINT( 3 ) UNSIGNED DEFAULT '1' NOT NULL;");
-	db_install_execute("0.8.6", "ALTER TABLE `host_snmp_query` ADD `sort_field` VARCHAR( 50 ) NOT NULL, ADD `title_format` VARCHAR( 50 ) NOT NULL, ADD `reindex_method` TINYINT( 3 ) UNSIGNED NOT NULL;");
+	db_install_execute("0.8.6", "ALTER TABLE `host_snmp_query` ADD `sort_field` VARCHAR( 50 ) NOT NULL, ADD `title_format` VARCHAR( 50 ) NOT NULL, ADD `reindex_method` TINYINT( 3 ) UNSIGNED DEFAULT '1' NOT NULL;");
 	db_install_execute("0.8.6", "ALTER TABLE `graph_tree_items` CHANGE `order_key` `order_key` VARCHAR( 100 ) DEFAULT '0' NOT NULL;");
 	db_install_execute("0.8.6", "ALTER TABLE `host` ADD `status_event_count` mediumint(8) unsigned NOT NULL default '0', ADD `status_fail_date` datetime NOT NULL default '0000-00-00 00:00:00', ADD `status_rec_date` datetime NOT NULL default '0000-00-00 00:00:00', ADD `status_last_error` varchar(50) default '', ADD `min_time` decimal(7,5) default '9.99999', ADD `max_time` decimal(7,5) default '0.00000', ADD `cur_time` decimal(7,5) default '0.00000', ADD `avg_time` decimal(7,5) default '0.00000', ADD `total_polls` int(12) unsigned default '0', ADD `failed_polls` int(12) unsigned default '0', ADD `availability` decimal(7,5) default '100.000' NOT NULL;");
 	db_install_execute("0.8.6", "UPDATE snmp_query_graph_rrd_sv set text = REPLACE(text,' (In)','') where snmp_query_graph_id = 2;");
@@ -54,6 +55,54 @@ function upgrade_to_0_8_6() {
 			update_data_query_sort_cache($item["host_id"], $item["snmp_query_id"]);
 		}
 	}
+
+	/* script query data input methods */
+	import_xml_data("
+		<cacti>
+			<hash_030003332111d8b54ac8ce939af87a7eac0c06>
+				<name>Get Script Server Data (Indexed)</name>
+				<type_id>6</type_id>
+				<input_string></input_string>
+				<fields>
+					<hash_070003172b4b0eacee4948c6479f587b62e512>
+						<name>Index Type</name>
+						<update_rra></update_rra>
+						<regexp_match></regexp_match>
+						<allow_nulls></allow_nulls>
+						<type_code>index_type</type_code>
+						<input_output>in</input_output>
+						<data_name>index_type</data_name>
+					</hash_070003172b4b0eacee4948c6479f587b62e512>
+					<hash_07000330fb5d5bcf3d66bb5abe88596f357c26>
+						<name>Index Value</name>
+						<update_rra></update_rra>
+						<regexp_match></regexp_match>
+						<allow_nulls></allow_nulls>
+						<type_code>index_value</type_code>
+						<input_output>in</input_output>
+						<data_name>index_value</data_name>
+					</hash_07000330fb5d5bcf3d66bb5abe88596f357c26>
+					<hash_07000331112c85ae4ff821d3b288336288818c>
+						<name>Output Type ID</name>
+						<update_rra></update_rra>
+						<regexp_match></regexp_match>
+						<allow_nulls></allow_nulls>
+						<type_code>output_type</type_code>
+						<input_output>in</input_output>
+						<data_name>output_type</data_name>
+					</hash_07000331112c85ae4ff821d3b288336288818c>
+					<hash_0700035be8fa85472d89c621790b43510b5043>
+						<name>Output Value</name>
+						<update_rra>on</update_rra>
+						<regexp_match></regexp_match>
+						<allow_nulls></allow_nulls>
+						<type_code></type_code>
+						<input_output>out</input_output>
+						<data_name>output</data_name>
+					</hash_0700035be8fa85472d89c621790b43510b5043>
+				</fields>
+			</hash_030003332111d8b54ac8ce939af87a7eac0c06>
+		</cacti>");
 
 	/* update trees to three characters per tier */
 	$trees = db_fetch_assoc("select id from graph_tree");
@@ -76,7 +125,6 @@ function upgrade_to_0_8_6() {
 					/* back off */
 					if ($tier < $_tier) {
 						for ($i=$_tier; $i>$tier; $i--) {
-							print "reset ctr = $i\n";
 							$tier_counter[$i] = 0;
 						}
 					}
