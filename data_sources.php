@@ -313,7 +313,7 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
-				duplicate_data_source($selected_items[$i], $_POST["title_format"]);
+				duplicate_data_source($selected_items[$i], 0, $_POST["title_format"]);
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
 			for ($i=0;($i<count($selected_items));$i++) {
