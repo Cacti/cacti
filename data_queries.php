@@ -176,7 +176,7 @@ function snmp_edit() {
 			<font class="textEditTitle">Graph Template</font><br>
 			Choose a graph template to associate with this SNMP query.
 		</td>
-		<?DrawFormItemDropdownFromSQL("graph_template_id",db_fetch_assoc("select id,name from graph_templates where type='template' order by name"),"name","id",$snmp_query["graph_template_id"],"","");?>
+		<?DrawFormItemDropdownFromSQL("graph_template_id",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id",$snmp_query["graph_template_id"],"","");?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>

@@ -610,12 +610,13 @@ function template_remove() {
 }
 
 function template_save() {
+	include_once ("include/utility_functions.php");
+	
 	if ($_POST["upper_limit"] == "") { $_POST["upper_limit"] = 0; }
 	if ($_POST["lower_limit"] == "") { $_POST["lower_limit"] = 0; }
 	if ($_POST["unit_exponent_value"] == "") { $_POST["unit_exponent_value"] = 0; }
 	
 	$save["id"] = $_POST["graph_template_id"];
-	$save["type"] = "template";
 	$save["name"] = $_POST["name"];
 	
 	$graph_template_id = sql_save($save, "graph_templates");
@@ -662,7 +663,6 @@ function template_save() {
 	
 	$graph_template_graph_id = sql_save($save, "graph_templates_graph");
 	
-	include_once ("include/utility_functions.php");
 	push_out_graph($graph_template_graph_id);
 }
 
