@@ -330,7 +330,12 @@ function ninety_fifth_percentile($local_data_id, $seconds) {
 		$return_array{$fetch_array["data_source_names"][$i]} = $values_array[$target];
 	}
 	
-	return $return_array;
+	if (isset($return_array)) {
+		return $return_array;
+	}else{
+		print "ERROR: no rrdtool fetch output, you probably forgot to pass a valid data source<br>";
+		return;
+	}
 }
 
 function bandwidth_summation($local_data_id, $seconds) {
@@ -352,7 +357,12 @@ function bandwidth_summation($local_data_id, $seconds) {
 		$return_array{$fetch_array["data_source_names"][$i]} = $sum;
 	}
 	
-	return $return_array;
+	if (isset($return_array)) {
+		return $return_array;
+	}else{
+		print "ERROR: no rrdtool fetch output, you probably forgot to pass a valid data source<br>";
+		return;
+	}
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
@@ -559,7 +569,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			}
 			
 			/* 95th percentile */
-			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total)\|/", $current_field, $matches, PREG_SET_ORDER)) {
+			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total)(:(\d))?\|/", $current_field, $matches, PREG_SET_ORDER)) {
 				/* loop through each match and find the 95th percentile for each */
 				foreach ($matches as $match) {
 					if ($match[3] == "current") {
@@ -575,86 +585,114 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 					}
 				}
 				
-				$ninety_fifth = 0;
+				reset($matches);
 				
-				/* format the output according to args passed to the variable */ 
-				if ($match[3] == "current") {
-					$ninety_fifth = $ninety_fifth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
-					$ninety_fifth = ($match[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
-					$ninety_fifth /= pow(10,intval($match[2]));
-				}elseif ($match[3] == "total") {
-					for ($t=0;($t<count($graph_items));$t++) {
-						if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-							$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
-							$local_ninety_fifth = ($match[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
-							$local_ninety_fifth /= pow(10,intval($match[2]));
-							
-							$ninety_fifth += $local_ninety_fifth;
+				foreach ($matches as $match) {
+					$ninety_fifth = 0;
+					
+					/* format the output according to args passed to the variable */ 
+					if ($match[3] == "current") {
+						$ninety_fifth = $ninety_fifth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+						$ninety_fifth = ($match[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
+						$ninety_fifth /= pow(10,intval($match[2]));
+					}elseif ($match[3] == "total") {
+						for ($t=0;($t<count($graph_items));$t++) {
+							if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+								$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+								$local_ninety_fifth = ($match[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
+								$local_ninety_fifth /= pow(10,intval($match[2]));
+								
+								$ninety_fifth += $local_ninety_fifth;
+							}
 						}
 					}
+					
+					/* determine the floating point precision */
+					if ((isset($match[5])) && (ereg("^[0-9]+$", $match[5]))) {
+						$round_to = $match[5];
+					}else{
+						$round_to = 2;
+					}
+					
+					/* subsitute in the final result and round off to two decimal digits */
+					$current_field = str_replace($match[0], round($ninety_fifth,$round_to), $current_field);
 				}
-				
-				/* subsitute in the final result and round off to two decimal digits */
-				$current_field = str_replace($match[0], round($ninety_fifth,2), $current_field);
 			}
 			
 			/* bandwidth summation */
-			if (preg_match_all("/\|sum:(\d|auto):(current|total)\|/", $current_field, $matches, PREG_SET_ORDER)) {
+			if (preg_match_all("/\|sum:(\d|auto):(current|total):(\d):(\d+|auto)\|/", $current_field, $matches, PREG_SET_ORDER)) {
 				/* loop through each match and find the 95th percentile for each */
 				foreach ($matches as $match) {
+					if (ereg("^[0-9]+$", $match[4])) {
+						$summation_timespan = $match[4];
+					}else{
+						$summation_timespan = abs($graph_start);
+					}
+					
 					if ($match[2] == "current") {
 						if (!isset($summation_cache{$graph_item["local_data_id"]})) {
-							$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], abs($graph_start));
+							$summation_cache{$graph_item["local_data_id"]} = bandwidth_summation($graph_item["local_data_id"], $summation_timespan);
 						}
 					}elseif ($match[2] == "total") {
 						for ($t=0;($t<count($graph_items));$t++) {
 							if ((!isset($summation_cache{$graph_items[$t]["local_data_id"]})) && (!empty($graph_items[$t]["local_data_id"]))) {
-								$summation_cache{$graph_items[$t]["local_data_id"]} = bandwidth_summation($graph_items[$t]["local_data_id"], abs($graph_start));
+								$summation_cache{$graph_items[$t]["local_data_id"]} = bandwidth_summation($graph_items[$t]["local_data_id"], $summation_timespan);
 							}
 						}
 					}
 				}
 				
-				$summation = 0;
+				reset($matches);
 				
-				/* format the output according to args passed to the variable */
-				if ($match[2] == "current") {
-					$summation = $summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
-				}elseif ($match[2] == "total") {
-					for ($t=0;($t<count($graph_items));$t++) {
-						if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-							$local_summation = $summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
-							
-							$summation += $local_summation;
+				foreach ($matches as $match) {
+					$summation = 0;
+					
+					/* format the output according to args passed to the variable */
+					if ($match[2] == "current") {
+						$summation = $summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+					}elseif ($match[2] == "total") {
+						for ($t=0;($t<count($graph_items));$t++) {
+							if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+								$local_summation = $summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+								
+								$summation += $local_summation;
+							}
 						}
 					}
-				}
-				
-				if (preg_match("/\d+/", $match[1])) {
-					$summation /= pow(10,intval($match[1]));
-				}elseif ($match[1] == "auto") {
-					if ($summation < 1000) {
-						$summation_label = "bytes";
-					}elseif ($summation < 1000000) {
-						$summation_label = "KB";
-						$summation /= 1000;
-					}elseif ($summation < 1000000000) {
-						$summation_label = "MB";
-						$summation /= 1000000;
-					}elseif ($summation < 1000000000000) {
-						$summation_label = "GB";
-						$summation /= 1000000000;
-					}else{
-						$summation_label = "TB";
-						$summation /= 1000000000000;
+					
+					if (preg_match("/\d+/", $match[1])) {
+						$summation /= pow(10,intval($match[1]));
+					}elseif ($match[1] == "auto") {
+						if ($summation < 1000) {
+							$summation_label = "bytes";
+						}elseif ($summation < 1000000) {
+							$summation_label = "KB";
+							$summation /= 1000;
+						}elseif ($summation < 1000000000) {
+							$summation_label = "MB";
+							$summation /= 1000000;
+						}elseif ($summation < 1000000000000) {
+							$summation_label = "GB";
+							$summation /= 1000000000;
+						}else{
+							$summation_label = "TB";
+							$summation /= 1000000000000;
+						}
 					}
-				}
-				
-				/* subsitute in the final result and round off to two decimal digits */
-				if (isset($summation_label)) {
-					$current_field = str_replace($match[0], round($summation,2) . " $summation_label", $current_field);
-				}else{
-					$current_field = str_replace($match[0], round($summation,2), $current_field);
+					
+					/* determine the floating point precision */
+					if (ereg("^[0-9]+$", $match[3])) {
+						$round_to = $match[3];
+					}else{
+						$round_to = 2;
+					}
+					
+					/* subsitute in the final result and round off to two decimal digits */
+					if (isset($summation_label)) {
+						$current_field = str_replace($match[0], round($summation,$round_to) . " $summation_label", $current_field);
+					}else{
+						$current_field = str_replace($match[0], round($summation,$round_to), $current_field);
+					}
 				}
 			}
 			
