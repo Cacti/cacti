@@ -10,38 +10,32 @@
 	<fields>
 		<dskDevice>
 			<name>Device Name</name>
-			<method>walk</method>
 			<direction>input</direction>
 			<query_name>device</query_name>
 		</dskDevice>
 		<dskMount>
 			<name>Mount Point</name>
-			<method>walk</method>
 			<direction>input</direction>
 			<query_name>mount</query_name>
 		</dskMount>
 		
 		<dskTotal>
 			<name>Total Blocks</name>
-			<method>walk</method>
 			<direction>output</direction>
 			<query_name>total</query_name>
 		</dskTotal>
 		<dskUsed>
 			<name>Used Blocks</name>
-			<method>walk</method>
 			<direction>output</direction>
 			<query_name>used</query_name>
 		</dskUsed>
 		<dskAvailable>
 			<name>Available Blocks</name>
-			<method>walk</method>
 			<direction>output</direction>
 			<query_name>available</query_name>
 		</dskAvailable>
 		<dskPercentUsed>
 			<name>Percent Used</name>
-			<method>walk</method>
 			<direction>output</direction>
 			<query_name>percent</query_name>
 		</dskPercentUsed>

@@ -70,7 +70,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	while (list($field_name, $field_array) = each($script_queries["fields"][0])) {
 		$field_array = $field_array[0];
 		
-		if (($field_array["method"] == "walk") && ($field_array["direction"] == "input")) {
+		if ($field_array["direction"] == "input") {
 			$script_data_array = exec_into_array($script_path . " " . $script_queries["arg_query"] . " " . $field_array["query_name"]);
 			
 			for ($i=0;($i<sizeof($script_data_array));$i++) {
