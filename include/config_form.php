@@ -252,13 +252,9 @@ $fields_data_template_template_edit = array(
 		"method" => "hidden_zero",
 		"value" => "|arg2:id|"
 		),
-	"data_template_rrd_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg3:id|"
-		),
 	"current_rrd" => array(
 		"method" => "hidden_zero",
-		"value" => "|arg4:view_rrd|"
+		"value" => "|arg3:view_rrd|"
 		),
 	"save_component_template" => array(
 		"method" => "hidden",
@@ -1062,23 +1058,27 @@ $fields_user_user_edit_host = array(
 			)
 		),
 	"id" => array(
-		"method" => "hidden",
+		"method" => "hidden_zero",
 		"value" => "|arg1:id|"
 		),
 	"_policy_graphs" => array(
-		"method" => "hidden_zero",
+		"method" => "hidden",
+		"default" => "2",
 		"value" => "|arg1:policy_graphs|"
 		),
 	"_policy_trees" => array(
-		"method" => "hidden_zero",
+		"method" => "hidden",
+		"default" => "2",
 		"value" => "|arg1:policy_trees|"
 		),
 	"_policy_hosts" => array(
-		"method" => "hidden_zero",
+		"method" => "hidden",
+		"default" => "2",
 		"value" => "|arg1:policy_hosts|"
 		),
 	"_policy_graph_templates" => array(
-		"method" => "hidden_zero",
+		"method" => "hidden",
+		"default" => "2",
 		"value" => "|arg1:policy_graph_templates|"
 		),
 	"save_component_user" => array(
