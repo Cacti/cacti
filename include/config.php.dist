@@ -62,18 +62,20 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
+if ($no_http_headers != true) {
+	/* we don't want these pages cached */
+	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+	header("Cache-Control: no-store, no-cache, must-revalidate");
+	header("Cache-Control: post-check=0, pre-check=0", false);
+	header("Pragma: no-cache");
+	
+	/* initilize php session */
+	session_start();
+}
+
 /* display ALL errors */
 error_reporting(E_ALL);
-
-/* we don't want these pages cached */
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
-/* initilize php session */
-session_start();
 
 include_once($config["include_path"] . "/config_arrays.php");
 include_once($config["include_path"] . "/config_form.php");
