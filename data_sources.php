@@ -883,7 +883,7 @@ function ds() {
 		left join data_template
 		on data_local.data_template_id=data_template.id
 		$sql_where
-		order by data_template_data.name
+		order by data_template_data.name, data_local.host_id
 		limit " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");

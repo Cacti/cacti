@@ -1215,7 +1215,7 @@ function graph() {
 		where graph_templates_graph.local_graph_id!=0
 		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
-		order by graph_templates_graph.title
+		order by graph_templates_graph.title,graph_local.host_id
 		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
 	
 	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
