@@ -582,7 +582,7 @@ function ds_edit() {
 
 		if (!empty($data_local["data_template_id"])) {
 			$data_template = db_fetch_row("select id,name from data_template where id='" . $data_local["data_template_id"] . "'");
-			$data_template_data = db_fetch_row("select * from data_template_data where data_template_id='" . $data_local["data_template_id"] . "'");
+			$data_template_data = db_fetch_row("select * from data_template_data where data_template_id='" . $data_local["data_template_id"] . "' and local_data_id=0");
 		}
 
 		$header_label = "[edit: " . get_data_source_title($_GET["id"]) . "]";
