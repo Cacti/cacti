@@ -252,10 +252,19 @@ function item_edit() {
    --------------------- */
 
 function cdef_remove() {
-	global $args;
+	global $args, $config;
 	
-    	db_execute("delete from cdef where id=$args[id]");
-	db_execute("delete from cdef_items where cdef_id=$args[id]");
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+		include ('include/top_header.php');
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "cdef.php?action=remove&id=$args[id]");
+		include ('include/bottom_footer.php');
+		exit;
+	}
+	
+	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+		db_execute("delete from cdef where id=$args[id]");
+		db_execute("delete from cdef_items where cdef_id=$args[id]");
+	}
 }
 
 function cdef_save() {
