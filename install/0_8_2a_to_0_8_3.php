@@ -25,6 +25,8 @@
 */
 
 function upgrade_to_0_8_3() {
+	include("../lib/template.php");
+	
 	db_install_execute("0.8.3", "ALTER TABLE `user_auth` CHANGE `graph_policy` `policy_graphs` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL;");
 	db_install_execute("0.8.3", "ALTER TABLE `user_auth` ADD `policy_trees` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `policy_hosts` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL, ADD `policy_graph_templates` TINYINT( 1 ) UNSIGNED DEFAULT '1' NOT NULL;");
 	db_install_execute("0.8.3", "ALTER TABLE `graph_tree_items` ADD `host_id` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `title`;");

@@ -24,7 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once("../lib/form.php");
 include("../include/config.php");
 include("../include/config_settings.php");
 
@@ -35,7 +34,6 @@ $old_cacti_version = db_fetch_cell("select cacti from version");
 /* do a version check */
 if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>You can only run this for new installs and 
 		upgrades, this installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
 	exit;
 }elseif (ereg("^0\.6", $old_cacti_version)) {
