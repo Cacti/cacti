@@ -103,8 +103,8 @@ $settings = array(
 				)
 			),
 	"smtp_ver" => array(
-                "friendly_name" => "SMTP Version",
-                "description" => "The type of SMTP you have installed.",
+                "friendly_name" => "SNMP Version",
+                "description" => "The type of SNMP you have installed.",
                 "method" => "dropdown",
                 "tab" => "general",
                 "items" => array(
