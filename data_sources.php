@@ -35,7 +35,7 @@ if (isset($form[action])) { $action = $form[action]; } else { $action = $args[ac
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
 switch ($action) {
-	case 'save':
+	case 'ds_save':
 		$redirect_location = form_save();
 		
 		header ("Location: $redirect_location"); exit;
@@ -44,6 +44,13 @@ switch ($action) {
 		include_once ("include/top_header.php");
 		
 		tree();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+	case 'tree_edit':
+		include_once ("include/top_header.php");
+		
+		tree_edit();
 		
 		include_once ("include/bottom_footer.php");
 		break;
@@ -62,12 +69,12 @@ switch ($action) {
 
 		header ("Location: data_sources.php?action=tree");
 		break;
-	case 'remove':
+	case 'ds_remove':
 		ds_remove();
 		
 		header ("Location: data_sources.php");
 		break;
-	case 'edit':
+	case 'ds_edit':
 		include_once ("include/top_header.php");
 		
 		ds_edit();
@@ -95,7 +102,7 @@ function form_save() {
 		$local_data_id = ds_save();
 		
 		if ($form[data_template_id] != $form[_data_template_id]) {
-			return "data_sources.php?action=edit&local_data_id=$local_data_id&host_id=$form[host_id]&view_rrd=$form[view_rrd]";
+			return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=$form[host_id]&view_rrd=$form[view_rrd]";
 		}else{
 			return "data_sources.php";
 		}
@@ -108,22 +115,17 @@ function form_save() {
    -------------------------- */
 
 function draw_tabs() {
-?>
-		<tr height="33">
-			<td valign="bottom" colspan="30" background="images/tab_back.gif">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php">Data Sources</a><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=tree">Data Source Tree</a><img src="images/tab_right.gif" border="0" align="absmiddle">
-						</td>
-					</tr>
-				</table>
+	global $action;
+	?>
+	<table height="20" cellspacing="0" cellpadding="0" width="98%" align="center">
+		<tr>
+			<td valign="bottom">
+				<?if ($action != "") {?><a href="data_sources.php"><?}?><img src="images/tab_con_data_sources<?if ((strstr($action,"ds") == true) || (empty($action))) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?if ($action != "") {?></a><?}?>
+				<?if ($action != "tree") {?><a href="data_sources.php?action=tree"><?}?><img src="images/tab_con_data_source_tree<?if (strstr($action,"tree") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?if ($action != "tree") {?></a><?}?>
 			</td>
 		</tr>
-<?	
+	</table>
+	<?
 }
 
 /* ----------------------
@@ -133,13 +135,89 @@ function draw_tabs() {
 function tree() {
 	include_once ('include/tree_view_functions.php');
 	
-	start_box("<strong>Data Source Tree</strong>", "", "data_sources.php?action=edit");
-	
 	$tree_parameters[edit_mode] = true;
 	
 	draw_tabs();
+	start_box("<strong>Data Source Tree</strong>", "", "data_sources.php?action=edit");
     	grow_polling_tree($start_branch, 1, $tree_parameters);
 	
+	end_box();
+}
+
+function tree_edit() {
+	include_once("include/tree_view_functions.php");
+	
+	global $args, $colors;
+	
+	if (isset($args[id])) {
+		$tree_item = db_fetch_row("select * from data_tree where id=$args[id]");
+	}else{
+		unset($tree_item);
+	}
+	
+	?>
+	<form method="post" action="data_sources.php">
+	<?
+	
+	draw_tabs();
+	start_box("<strong>Date Source Tree</strong> [edit] - Tree Item", "", "");
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Item Parent</font><br>
+			Choose a parent for this item.
+		</td>
+		<?draw_data_source_dropdown("parent_id", 0);?>
+	</tr>
+	<?
+	end_box();
+	
+	/* bold the active "type" */
+	if ($tree_item[host_id] > 0) { $title = "<strong>Tree Item [host]</strong>"; }else{ $title = "Tree Item [host]"; }
+	
+	start_box($title, "", "");
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Host</font><br>
+			If this item is a host, please select it from the list.
+		</td>
+		<?DrawFormItemDropdownFromSQL("host_id",db_fetch_assoc("select id,hostname from host order by hostname"),"hostname","id",$tree_item[host_id],"None","1");?>
+	</tr>
+	
+	<?
+	
+	end_box();
+	
+	/* bold the active "type" */
+	if ($tree_item[title] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
+	
+	start_box($title, "", "");
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Header Title</font><br>
+			If this item is a header, enter a title here.
+		</td>
+		<?DrawFormItemTextBox("title",$tree_item[title],"","100","40");?>
+	</tr>
+	<?
+	
+	end_box();
+	
+	DrawFormItemHiddenIDField("id",$args[tree_item_id]);
+	DrawFormItemHiddenIDField("tree_id",$args[tree_id]);
+	DrawFormItemHiddenTextBox("save_component_tree_item","1","");
+	
+	start_box("", "", "");
+	?>
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "tree.php?action=edit&id=$args[tree_id]");?>
+		</td>
+	</tr>
+	</form>
+	<?
 	end_box();
 }
 
@@ -182,7 +260,7 @@ function ds_remove() {
 	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=$args[local_data_id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=remove&local_data_id=$args[local_data_id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=$args[local_data_id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=ds_remove&local_data_id=$args[local_data_id]");
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -269,7 +347,8 @@ function ds_edit() {
 	?>
 	<form method="post" action="data_sources.php">
 	<?
-	start_box("Data Templation Selection", "", "");	
+	draw_tabs();
+	start_box("<strong>Data Sources</strong> [edit] - Data Templation Selection", "", "");	
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
@@ -490,9 +569,8 @@ function ds_edit() {
 function ds() {
 	include_once ('include/tree_view_functions.php');
 	
-	start_box("<strong>Data Sources</strong>", "", "data_sources.php?action=edit");
-	
 	draw_tabs();
+	start_box("<strong>Data Sources</strong>", "", "data_sources.php?action=edit");
     	grow_polling_tree($start_branch, 1, $tree_parameters);
 	
 	end_box();
