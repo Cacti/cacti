@@ -95,10 +95,11 @@
 			</map>
 			<table border=0 cellpadding=0 cellspacing=0 width='100%'><tr><td valign=bottom width=36><a href='about.php'><img
 	        src="images/cactus.png" border=0 height=54 width=36></a></td><td width=250 valign=bottom><img
-	        src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td><td align=right><img src="images/cacti_raxnet.gif" border=0></td></tr></table></td>
-		<td bgcolor="#454E53" align="right" nowrap>
+	        src="images/top_tabs_main.gif" border="0" width=250 height=32 usemap="#tabs"></td></tr></table></td>
+		<td bgcolor="#454E53" align="right" nowrap width='99%'>
 			<?if (isset($HTTP_SESSION_VARS["user_id"])){?><a href="logout.php"><img src="images/top_tabs_logout.gif" border="0" alt="Logout"></a><?}?><a href="graph_settings.php"><img src="images/top_tabs_graph_settings<?if (basename($SCRIPT_FILENAME) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings"></a><a href="graph_view.php?action=tree"><img src="images/top_tabs_graph_tree<?if ($action == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View"></a><a href="graph_view.php?action=list"><img src="images/top_tabs_graph_list<?if ($action == "list") { print "_down"; }?>.gif" border="0" alt="List View"></a><a href="graph_view.php?action=preview"><img src="images/top_tabs_graph_preview<?if ($action == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View"></a><br>
 		</td>
+<!--	<td bgcolor="#454E53" align=right width=288><img src="images/cacti_raxnet.gif" border=0></td>-->
 	</tr>
 	<tr>
 		<td colspan="3" bgcolor="#<?print $colors[panel];?>">
