@@ -130,10 +130,9 @@ function form_save() {
 		
 		if (sizeof($input_fields) > 0) {
 		foreach ($input_fields as $input_field) {
-			if (isset($_POST{"value_" . $input_field["data_name"]})) {
+			if (isset($_POST{"value_" . $input_field["id"]})) {
 				/* save the data into the 'data_input_data' table */
-				$form_name = "value_" . $input_field["data_name"];
-				$form_value = $_POST[$form_name];
+				$form_value = $_POST{"value_" . $input_field["id"]};
 				
 				if ($input_field["allow_nulls"] == "on") {
 					$allow_nulls = true;
@@ -142,7 +141,7 @@ function form_save() {
 				}
 				
 				/* run regexp match on input string */
-				$form_value = form_input_validate($form_value, $form_name, $input_field["regexp_match"], $allow_nulls, 3);
+				$form_value = form_input_validate($form_value, "value_" . $input_field["id"], $input_field["regexp_match"], $allow_nulls, 3);
 				
 				if (!is_error_message()) {
 					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
@@ -544,7 +543,9 @@ function data_edit() {
 			}else{
 				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
 				print "<td>";
-				form_text_box("value_" . $field["data_name"],$old_value,"","");
+				
+				draw_custom_data_row("value_" . $field["id"], $field["id"], $data["id"], $old_value);
+				
 				print "</td>";
 			}
 			
@@ -618,19 +619,20 @@ function ds_edit() {
 		}
 	}
 	
-	/* display the debug mode box if the user wants it */
-	if ((isset($_SESSION["ds_debug_mode"])) && (isset($_GET["id"]))) {
-		start_box("<strong>Data Source Debug</strong>", "98%", $colors["header"], "3", "center", "");
-		
+	if (!empty($_GET["id"])) {
 		?>
-		<tr>
-			<td>
-				<pre><?php print rrdtool_function_create($_GET["id"], true);?></pre>
-			</td>
-		</tr>
+		<table width="98%" align="center">
+			<tr>
+				<td class="textInfo" colspan="2" valign="top">
+					<?php print get_data_source_title($_GET["id"]);?>
+				</td>
+				<td class="textInfo" align="right" valign="top">
+					<span style="color: #c16921;">*<a href='data_sources.php?action=ds_edit&id=<?php print (isset($_GET["id"]) ? $_GET["id"] : 0);?>&debug=<?php print (isset($_SESSION["ds_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On");?></strong> Data Source Debug Mode.</a>
+				</td>
+			</tr>
+		</table>
+		<br>
 		<?php
-		
-		end_box();
 	}
 	
 	start_box("<strong>Data Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -651,12 +653,6 @@ function ds_edit() {
 			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
 			"none_value" => "None",
 			"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
-			),
-		"debug" => array(
-			"method" => "custom",
-			"friendly_name" => "Debug",
-			"description" => "Turn on/off data source debugging.",
-			"value" => "<a href='data_sources.php?action=ds_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : 0) . "&debug=" . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1") . "'>Turn <strong>" . (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On") . "</strong> Data Source Debug Mode.</a>"
 			),
 		"_data_template_id" => array(
 			"method" => "hidden",
@@ -684,11 +680,6 @@ function ds_edit() {
 			),
 		);
 	
-	/* don't display the "debug field" for a new form */
-	if (empty($_GET["id"])) {
-		unset($form_array["debug"]);
-	}
-	
 	draw_edit_form(
 		array(
 			"config" => array(),
@@ -706,7 +697,9 @@ function ds_edit() {
 		
 		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], &$data, "|field|", "<strong>Data Source Fields</strong>", true, true, 0);
 		draw_nontemplated_fields_data_source_item($data["data_template_id"], $template_data_rrds, "|field|_|id|", "<strong>Data Source Item Fields</strong>", true, true, true, 0);
-		draw_nontemplated_fields_custom_data($data["id"], "value_|field|", "<strong>Custom Data</strong>", true, true);
+		draw_nontemplated_fields_custom_data($data["id"], "value_|id|", "<strong>Custom Data</strong>", true, true, 0);
+		
+		form_hidden_box("save_component_data","1","");
 		
 		end_box();
 	}
@@ -848,6 +841,20 @@ function ds_edit() {
 		data_edit();
 		
 		form_hidden_id("current_rrd", $_GET["view_rrd"]);
+	}
+	
+	/* display the debug mode box if the user wants it */
+	if ((isset($_SESSION["ds_debug_mode"])) && (isset($_GET["id"]))) {
+		?>
+		<table width="98%" align="center">
+			<tr>
+				<td>
+					<span class="textInfo">Data Source Debug</span><br>
+					<pre><?php print rrdtool_function_create($_GET["id"], true);?></pre>
+				</td>
+			</tr>
+		</table>
+		<?php
 	}
 	
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
