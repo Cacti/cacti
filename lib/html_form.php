@@ -71,7 +71,7 @@ function draw_edit_form($array) {
 				
 				switch ($field_array["method"]) {
 				case 'textbox':
-					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text");
+					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
 					break;
 				case 'textbox_password':
 					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
@@ -150,8 +150,8 @@ function draw_edit_form($array) {
 }
 
 /* creates a standard html textbox */
-function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text") {
-	if ($form_previous_value == "") {
+function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = htmlspecialchars($form_default_value);
 	}
 	
