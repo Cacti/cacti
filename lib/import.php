@@ -117,6 +117,9 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("select graph_templates_graph.id from graph_templates,graph_templates_graph where graph_templates.id=graph_templates_graph.graph_template_id and graph_templates.id=$graph_template_id and graph_templates_graph.local_graph_id=0"));
 	$save["graph_template_id"] = $graph_template_id;
 	
+	/* parse information from the hash */
+	$parsed_hash = parse_xml_hash($hash);
+	
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* make sure this field exists in the xml array first */
@@ -126,7 +129,11 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 		
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array["graph"][$field_name])) {
-			$save[$field_name] = addslashes($xml_array["graph"][$field_name]);
+			if (($field_name == "unit_exponent_value") && (get_version_index($parsed_hash["version"]) < get_version_index("0.8.5")) && ($xml_array["graph"][$field_name] == "0")) { /* backwards compatability */
+				$save[$field_name] = "";
+			}else{
+				$save[$field_name] = addslashes($xml_array["graph"][$field_name]);
+			}
 		}
 	}
 	
