@@ -220,14 +220,14 @@ function item_edit() {
 	
 	/* modifications to the default graph items array */
 	$struct_graph_item["task_item_id"]["sql"] = "select
-		CONCAT_WS('',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
-		data_template_rrd.id 
+		CONCAT_WS('',data_template.name,' - ',' (',data_template_rrd.data_source_name,')') as name,
+		data_template_rrd.id
 		from data_template_data,data_template_rrd,data_template 
 		where data_template_rrd.data_template_id=data_template.id 
 		and data_template_data.data_template_id=data_template.id
 		and data_template_data.local_data_id=0
 		and data_template_rrd.local_data_id=0
-		order by data_template.name,data_template_data.name,data_template_rrd.data_source_name";
+		order by data_template.name,data_template_rrd.data_source_name";
 	
 	$form_array = array();
 	
