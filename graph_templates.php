@@ -282,28 +282,16 @@ function draw_graph_items($template_item_list, $action_prefix) {
 			<?
 			if ($item["data_source_name"] == "") { $item["data_source_name"] = "No Task"; }
 			
-			switch ($graph_item_types{$item["graph_type_id"]}) {
-			 case 'AREA':
-			    $matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			    break;
-			 case 'STACK':
-			    $matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			    break;
-			 case 'COMMENT':
-			    $matrix_title = "COMMENT: " . $item["text_format"];
-			    break;
-			 case 'GPRINT':
-			    $matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			    break;
-			 case 'HRULE':
-			    $matrix_title = "HRULE: " . $item["value"];
-			    break;
-			 case 'VRULE':
-			    $matrix_title = "VRULE: " . $item["value"];
-			    break;
-			 default:
-			    $matrix_title = $item["data_source_name"];
-			    break;
+			switch (true) {
+			case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
+				$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+				break;
+			case ereg("(HRULE|VRULE)", $_graph_type_name):
+				$matrix_title = "HRULE: " . $item["value"];
+				break;
+			case ereg("(COMMENT)", $_graph_type_name):
+				$matrix_title = "COMMENT: " . $item["text_format"];
+				break;
 			}
 			
 			/* use the cdef name (if in use) if all else fails */
@@ -377,6 +365,16 @@ function draw_item_edit() {
 	}else{
 		$default_item = 0;
 	}
+	
+	/* modifications to the default graph items array */
+	$struct_graph_item["task_item_id"]["sql"] = "select
+		CONCAT_WS('',data_template.name,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+		data_template_rrd.id 
+		from data_template_data,data_template_rrd,data_template 
+		where data_template_rrd.data_template_id=data_template.id 
+		and data_template_data.data_template_id=data_template.id
+		and data_template_data.local_data_id=0
+		and data_template_rrd.local_data_id=0";
 	
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
@@ -702,7 +700,7 @@ function item() {
 		and graph_templates_item.local_graph_id=0
 		order by graph_templates_item.sequence");
 	
-	start_box("Graph Template Item Configuration", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["graph_template_id"]);
+	start_box("<strong>Graph Template Item Configuration</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["graph_template_id"]);
 	draw_graph_items($template_item_list, "item");
 	end_box();
 	
