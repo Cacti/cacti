@@ -45,13 +45,46 @@ foreach ($polling_items as $item) {
 		$output = `$command`;
 		print "command: $command, output: $output\n";
 		
+		$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
+		
+		if ($data_input_field["update_rra"] == "") {
+			/* DO NOT write data to rrd; put it in the db instead */
+			db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,value)
+				values (" . $data_input_field["id"] . "," . db_fetch_cell("select id from data_template_data 
+				where local_data_id=" . $item["local_data_id"]) . ",'$output')");
+			$item["rrd_name"] = ""; /* no rrd action here */
+		}
+		
 		break;
 	case '2': /* multi output script */
+		$command = get_full_script_path($item["local_data_id"]);
+		$output = `$command`;
+		print "MUTLI command: $command, output: $output\n";
+		
+		$output_array = split(" ", $output);
+		
+		for ($i=0;($i<count($output_array));$i++) {
+			$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_name='" . ereg_replace("^([a-zA-Z0-9_]+):.*$", "\\1", $output_array[$i]) . "' and data_input_id=" . $item["data_input_id"]);
+			$rrd_name = db_fetch_cell("select data_source_name from data_template_rrd where local_data_id=" . $item["local_data_id"] . " and data_input_field_id=" . $data_input_field["id"]);
+			
+			if ($data_input_field["update_rra"] == "on") {
+				print "MULTI expansion: found fieldid: " . $data_input_field["id"] . ", found rrdname: $rrd_name, value: " . trim(ereg_replace("^[a-zA-Z0-9_]+:(.*)$", "\\1", $output_array[$i])) . "\n";
+				$update_cache_array{$item["local_data_id"]}{$rrd_name} = trim(ereg_replace("^[a-zA-Z0-9_]+:(.*)$", "\\1", $output_array[$i]));
+			}else{
+				/* DO NOT write data to rrd; put it in the db instead */
+				db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,value)
+					values (" . $data_input_field["id"] . "," . db_fetch_cell("select id from data_template_data 
+					where local_data_id=" . $item["local_data_id"]) . ",'" . trim(ereg_replace("^[a-zA-Z0-9_]+:(.*)$", "\\1", $output_array[$i])) . "')");
+			}
+		}
 		
 		break;
 	}
 	
-	$update_cache_array{$item["local_data_id"]}{$item["rrd_name"]} = trim($output);
+	
+	if (!empty($item["rrd_name"])) {
+		$update_cache_array{$item["local_data_id"]}{$item["rrd_name"]} = trim($output);
+	}
 	
 	rrdtool_function_create($item["local_data_id"], false);
 }
