@@ -287,7 +287,7 @@ switch ($action) {
 		ag.UserID,
 		g.ID, g.Title 
 		from rrd_graph g
-		left join auth_graph ag on (g.id=ag.graphid and ag.userid=$id) 
+		left join auth_graph ag on (g.id=ag.graphid and ag.userid=$args[id]) 
 		order by g.title");
 	$rows = sizeof($graphs);
 	
@@ -348,7 +348,7 @@ switch ($action) {
 	include_once ("include/top_table_header.php");
 	
 	if (isset($args[id])) {
-		$user = db_fetch_row("select * from auth_users where id=$id");
+		$user = db_fetch_row("select * from auth_users where id=$args[id]");
 	}else{
 		unset($user);
 	}
