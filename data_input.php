@@ -94,23 +94,8 @@ function form_save() {
 				if (!empty($_POST["id"])) {
 					db_execute("update data_input_fields set sequence=0 where data_input_id=" . $_POST["id"]);
 					
-					if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $_POST["input_string"], $matches)) {
-						$j = 0;
-						for ($i=0; ($i < count($matches[1])); $i++) {
-							if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-								$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["id"] . " and input_output='in' and data_name='" . $matches[1][$i] . "'");
-							}
-						}
-					}
-					
-					if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $_POST["output_string"], $matches)) {
-						$j = 0;
-						for ($i=0; ($i < count($matches[1])); $i++) {
-							if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-								$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["id"] . " and input_output='out' and data_name='" . $matches[1][$i] . "'");
-							}
-						}
-					}
+					generate_data_input_field_sequences($_POST["input_string"], $_POST["id"], "in");
+					generate_data_input_field_sequences($_POST["output_string"], $_POST["id"], "out");
 				}
 			}else{
 				raise_message(2);
@@ -141,17 +126,7 @@ function form_save() {
 				raise_message(1);
 				
 				if (!empty($data_input_field_id)) {
-					if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select " . $_POST["input_output"] . "put_string from data_input where id=" . $_POST["data_input_id"]), $matches)) {
-						$j = 0;
-						for ($i=0; ($i < count($matches[1])); $i++) {
-							if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-								$j++;
-								if ($matches[1][$i] == $_POST["data_name"]) {
-									db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["data_input_id"] . " and input_output='" .  $_POST["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
-								}
-							}
-						}
-					}
+					generate_data_input_field_sequences(db_fetch_cell("select " . $_POST["input_output"] . "put_string from data_input where id=" . $_POST["data_input_id"]), $_POST["data_input_id"], $_POST["input_output"]);
 				}
 			}else{
 				raise_message(2);

@@ -446,6 +446,19 @@ function generate_graph_def_name($graph_item_id) {
 	return $result;
 }
 
+function generate_data_input_field_sequences($string, $data_input_id, $inout) {
+	include ("config_arrays.php");
+	
+	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $string, $matches)) {
+		$j = 0;
+		for ($i=0; ($i < count($matches[1])); $i++) {
+			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+				$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=$data_input_id and input_output='$inout' and data_name='" . $matches[1][$i] . "'");
+			}
+		}
+	}	
+}
+
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
 	$graph_item = db_fetch_row("select local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
 	
