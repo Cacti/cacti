@@ -347,38 +347,39 @@ function template_edit() {
 	<?
 	end_box();
 	
+	if (!empty($_GET["data_template_id"])) {
 	/* get each INPUT field for this data input source */
 	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
-	
-	start_box("Custom Data", "98%", $colors["header"], "3", "center", "");
-	
-	/* loop through each field found */
-	if (sizeof($fields) > 0) {
-	foreach ($fields as $field) {
-		$data_input_data = db_fetch_row("select t_value,value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
+		start_box("Custom Data", "98%", $colors["header"], "3", "center", "");
 		
-		if (sizeof($data_input_data) > 0) {
-			$old_value = $data_input_data["value"];
+		/* loop through each field found */
+		if (sizeof($fields) > 0) {
+		foreach ($fields as $field) {
+			$data_input_data = db_fetch_row("select t_value,value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
+			
+			if (sizeof($data_input_data) > 0) {
+				$old_value = $data_input_data["value"];
+			}else{
+				$old_value = "";
+			}
+			
+			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
+				<td width="50%">
+					<strong><?print $field["name"];?></strong><br>
+					<?DrawStrippedFormItemCheckBox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+				</td>
+				<?DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");?>
+			</tr>
+			<?
+			
+			$i++;
+		}
 		}else{
-			$old_value = "";
+			print "<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>";
 		}
 		
-		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
-			<td width="50%">
-				<strong><?print $field["name"];?></strong><br>
-				<?DrawStrippedFormItemCheckBox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
-			</td>
-			<?DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");?>
-		</tr>
-		<?
-		
-		$i++;
+		end_box();
 	}
-	}else{
-		print "<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>";
-	}
-	
-	end_box();
 	
 	DrawFormItemHiddenIDField("data_template_id",$_GET["data_template_id"]);
 	DrawFormItemHiddenIDField("host_id",$_GET["host_id"]);
