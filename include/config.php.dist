@@ -62,7 +62,7 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
-if ($no_http_headers != true) {
+if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 	/* we don't want these pages cached */
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
