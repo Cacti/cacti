@@ -1,11 +1,11 @@
--- MySQL dump 9.08
+-- MySQL dump 9.09
 --
 -- Host: localhost    Database: dev_cacti_2
 ---------------------------------------------------------
--- Server version	4.0.14-standard
+-- Server version	4.0.15-standard
 
 --
--- Table structure for table 'cdef'
+-- Table structure for table `cdef`
 --
 
 CREATE TABLE cdef (
@@ -17,7 +17,7 @@ CREATE TABLE cdef (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'cdef'
+-- Dumping data for table `cdef`
 --
 
 INSERT INTO cdef VALUES (3,'Make Stack Negative');
@@ -28,7 +28,7 @@ INSERT INTO cdef VALUES (14,'Multiply by 1024');
 INSERT INTO cdef VALUES (15,'Total All Data Sources, Multiply by 1024');
 
 --
--- Table structure for table 'cdef_items'
+-- Table structure for table `cdef_items`
 --
 
 CREATE TABLE cdef_items (
@@ -43,7 +43,7 @@ CREATE TABLE cdef_items (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'cdef_items'
+-- Dumping data for table `cdef_items`
 --
 
 INSERT INTO cdef_items VALUES (7,2,1,4,'CURRENT_DATA_SOURCE');
@@ -64,7 +64,7 @@ INSERT INTO cdef_items VALUES (22,15,2,6,'1024');
 INSERT INTO cdef_items VALUES (23,15,3,2,'3');
 
 --
--- Table structure for table 'colors'
+-- Table structure for table `colors`
 --
 
 CREATE TABLE colors (
@@ -76,7 +76,7 @@ CREATE TABLE colors (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'colors'
+-- Dumping data for table `colors`
 --
 
 INSERT INTO colors VALUES (1,'000000');
@@ -182,7 +182,7 @@ INSERT INTO colors VALUES (103,'797C6E');
 INSERT INTO colors VALUES (104,'2E3127');
 
 --
--- Table structure for table 'data_input'
+-- Table structure for table `data_input`
 --
 
 CREATE TABLE data_input (
@@ -197,7 +197,7 @@ CREATE TABLE data_input (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_input'
+-- Dumping data for table `data_input`
 --
 
 INSERT INTO data_input VALUES (1,'Get SNMP Data','','',2);
@@ -213,7 +213,7 @@ INSERT INTO data_input VALUES (10,'Unix - Ping Host','perl <path_cacti>/scripts/
 INSERT INTO data_input VALUES (11,'Get Script Data (Indexed)','','',4);
 
 --
--- Table structure for table 'data_input_data'
+-- Table structure for table `data_input_data`
 --
 
 CREATE TABLE data_input_data (
@@ -226,7 +226,7 @@ CREATE TABLE data_input_data (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_input_data'
+-- Dumping data for table `data_input_data`
 --
 
 INSERT INTO data_input_data VALUES (14,1,'on','');
@@ -310,7 +310,7 @@ INSERT INTO data_input_data VALUES (22,62,'','MemFree:');
 INSERT INTO data_input_data VALUES (22,63,'','SwapFree:');
 
 --
--- Table structure for table 'data_input_data_cache'
+-- Table structure for table `data_input_data_cache`
 --
 
 CREATE TABLE data_input_data_cache (
@@ -319,11 +319,13 @@ CREATE TABLE data_input_data_cache (
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(2) NOT NULL default '1',
   command varchar(255) NOT NULL default '',
-  management_ip varchar(15) NOT NULL default '',
+  hostname varchar(250) NOT NULL default '',
   snmp_community varchar(100) NOT NULL default '',
   snmp_version tinyint(1) NOT NULL default '0',
   snmp_username varchar(50) NOT NULL default '',
   snmp_password varchar(50) NOT NULL default '',
+  snmp_port mediumint(5) unsigned NOT NULL default '161',
+  snmp_timeout mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   rrd_path varchar(255) NOT NULL default '',
   rrd_num tinyint(2) unsigned NOT NULL default '0',
@@ -335,12 +337,12 @@ CREATE TABLE data_input_data_cache (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_input_data_cache'
+-- Dumping data for table `data_input_data_cache`
 --
 
 
 --
--- Table structure for table 'data_input_data_fcache'
+-- Table structure for table `data_input_data_fcache`
 --
 
 CREATE TABLE data_input_data_fcache (
@@ -351,15 +353,12 @@ CREATE TABLE data_input_data_fcache (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_input_data_fcache'
+-- Dumping data for table `data_input_data_fcache`
 --
 
-INSERT INTO data_input_data_fcache VALUES (5,'1min','load_1min');
-INSERT INTO data_input_data_fcache VALUES (5,'5min','load_5min');
-INSERT INTO data_input_data_fcache VALUES (5,'10min','load_15min');
 
 --
--- Table structure for table 'data_input_fields'
+-- Table structure for table `data_input_fields`
 --
 
 CREATE TABLE data_input_fields (
@@ -380,7 +379,7 @@ CREATE TABLE data_input_fields (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_input_fields'
+-- Dumping data for table `data_input_fields`
 --
 
 INSERT INTO data_input_fields VALUES (1,1,'SNMP IP Address','management_ip','in','',0,'management_ip','','');
@@ -419,7 +418,7 @@ INSERT INTO data_input_fields VALUES (33,11,'Output Type ID','output_type','in',
 INSERT INTO data_input_fields VALUES (34,11,'Output Value','output','out','on',0,'','','');
 
 --
--- Table structure for table 'data_local'
+-- Table structure for table `data_local`
 --
 
 CREATE TABLE data_local (
@@ -434,7 +433,7 @@ CREATE TABLE data_local (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_local'
+-- Dumping data for table `data_local`
 --
 
 INSERT INTO data_local VALUES (3,13,1,0,'');
@@ -444,7 +443,7 @@ INSERT INTO data_local VALUES (6,17,1,0,'');
 INSERT INTO data_local VALUES (7,16,1,0,'');
 
 --
--- Table structure for table 'data_template'
+-- Table structure for table `data_template`
 --
 
 CREATE TABLE data_template (
@@ -456,7 +455,7 @@ CREATE TABLE data_template (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_template'
+-- Dumping data for table `data_template`
 --
 
 INSERT INTO data_template VALUES (1,'Interface - Traffic - In');
@@ -504,7 +503,7 @@ INSERT INTO data_template VALUES (44,'Host MIB - CPU Utilization');
 INSERT INTO data_template VALUES (46,'Host MIB - Logged in Users');
 
 --
--- Table structure for table 'data_template_data'
+-- Table structure for table `data_template_data`
 --
 
 CREATE TABLE data_template_data (
@@ -530,7 +529,7 @@ CREATE TABLE data_template_data (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_template_data'
+-- Dumping data for table `data_template_data`
 --
 
 INSERT INTO data_template_data VALUES (1,0,0,1,2,'on','|host_description| - Traffic - In','',NULL,'','on','',300,'');
@@ -583,7 +582,7 @@ INSERT INTO data_template_data VALUES (65,17,6,17,5,NULL,'|host_description| - L
 INSERT INTO data_template_data VALUES (66,16,7,16,7,NULL,'|host_description| - Processes','Localhost - Processes','<path_rra>/localhost_proc_7.rrd',NULL,'on',NULL,300,NULL);
 
 --
--- Table structure for table 'data_template_data_rra'
+-- Table structure for table `data_template_data_rra`
 --
 
 CREATE TABLE data_template_data_rra (
@@ -594,7 +593,7 @@ CREATE TABLE data_template_data_rra (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_template_data_rra'
+-- Dumping data for table `data_template_data_rra`
 --
 
 INSERT INTO data_template_data_rra VALUES (1,1);
@@ -791,7 +790,7 @@ INSERT INTO data_template_data_rra VALUES (66,3);
 INSERT INTO data_template_data_rra VALUES (66,4);
 
 --
--- Table structure for table 'data_template_rrd'
+-- Table structure for table `data_template_rrd`
 --
 
 CREATE TABLE data_template_rrd (
@@ -819,7 +818,7 @@ CREATE TABLE data_template_rrd (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'data_template_rrd'
+-- Dumping data for table `data_template_rrd`
 --
 
 INSERT INTO data_template_rrd VALUES (1,0,0,1,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
@@ -836,8 +835,8 @@ INSERT INTO data_template_rrd VALUES (11,0,0,10,'',1000000,'',0,'',600,'',2,'','
 INSERT INTO data_template_rrd VALUES (12,0,0,11,'',500,'',0,'',600,'',1,'','load_1min','',17);
 INSERT INTO data_template_rrd VALUES (13,0,0,11,'',500,'',0,'',600,'',1,'','load_5min','',18);
 INSERT INTO data_template_rrd VALUES (14,0,0,11,'',500,'',0,'',600,'',1,'','load_15min','',19);
-INSERT INTO data_template_rrd VALUES (16,0,0,13,'',10000000,'',0,'',600,'',1,'','mem_buffers','',23);
-INSERT INTO data_template_rrd VALUES (18,0,0,15,'',1000000,'',0,'',600,'',1,'','mem_swap','',23);
+INSERT INTO data_template_rrd VALUES (16,0,0,13,'',0,'',0,'',600,'',1,'','mem_buffers','',23);
+INSERT INTO data_template_rrd VALUES (18,0,0,15,'',0,'',0,'',600,'',1,'','mem_swap','',23);
 INSERT INTO data_template_rrd VALUES (19,0,0,16,'',1000,'',0,'',600,'',1,'','proc','',24);
 INSERT INTO data_template_rrd VALUES (20,0,0,17,'',500,'',0,'',600,'',1,'','users','',21);
 INSERT INTO data_template_rrd VALUES (21,0,0,18,'',5000,'',0,'',600,'',1,'','ping','',30);
@@ -875,12 +874,12 @@ INSERT INTO data_template_rrd VALUES (53,0,0,40,'',1000000000,'',0,'',600,'',2,'
 INSERT INTO data_template_rrd VALUES (55,0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
 INSERT INTO data_template_rrd VALUES (56,0,0,37,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (76,0,0,42,'',100,'',0,'',600,'',1,'','cpu','',0);
-INSERT INTO data_template_rrd VALUES (77,0,0,43,'',0,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (92,0,0,43,'',0,'',0,'',600,'',1,'','hdd_total','',0);
 INSERT INTO data_template_rrd VALUES (78,0,0,43,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (79,0,0,44,'',100,'',0,'',600,'',1,'','cpu','',0);
 INSERT INTO data_template_rrd VALUES (81,0,0,46,'',5000,'',0,'',600,'',1,'','users','',0);
-INSERT INTO data_template_rrd VALUES (84,16,3,13,NULL,10000000,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
-INSERT INTO data_template_rrd VALUES (85,18,4,15,NULL,1000000,NULL,0,NULL,600,NULL,1,NULL,'mem_swap',NULL,23);
+INSERT INTO data_template_rrd VALUES (84,16,3,13,NULL,0,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
+INSERT INTO data_template_rrd VALUES (85,18,4,15,NULL,0,NULL,0,NULL,600,NULL,1,NULL,'mem_swap',NULL,23);
 INSERT INTO data_template_rrd VALUES (86,12,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_1min',NULL,17);
 INSERT INTO data_template_rrd VALUES (87,13,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_5min',NULL,18);
 INSERT INTO data_template_rrd VALUES (88,14,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_15min',NULL,19);
@@ -888,7 +887,7 @@ INSERT INTO data_template_rrd VALUES (89,20,6,17,NULL,500,NULL,0,NULL,600,NULL,1
 INSERT INTO data_template_rrd VALUES (90,19,7,16,NULL,1000,NULL,0,NULL,600,NULL,1,NULL,'proc',NULL,24);
 
 --
--- Table structure for table 'graph_local'
+-- Table structure for table `graph_local`
 --
 
 CREATE TABLE graph_local (
@@ -903,16 +902,16 @@ CREATE TABLE graph_local (
 ) TYPE=MyISAM COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
--- Dumping data for table 'graph_local'
+-- Dumping data for table `graph_local`
 --
 
 INSERT INTO graph_local VALUES (1,12,1,0,'');
 INSERT INTO graph_local VALUES (2,9,1,0,'');
 INSERT INTO graph_local VALUES (3,10,1,0,'');
-INSERT INTO graph_local VALUES (4,8,1,0,'');
+INSERT INTO graph_local VALUES (4,0,1,0,'');
 
 --
--- Table structure for table 'graph_template_input'
+-- Table structure for table `graph_template_input`
 --
 
 CREATE TABLE graph_template_input (
@@ -928,7 +927,7 @@ CREATE TABLE graph_template_input (
 ) TYPE=MyISAM COMMENT='Stores the names for graph item input groups.';
 
 --
--- Dumping data for table 'graph_template_input'
+-- Dumping data for table `graph_template_input`
 --
 
 INSERT INTO graph_template_input VALUES (1,1,'Inbound Data Source','','task_item_id');
@@ -1008,7 +1007,7 @@ INSERT INTO graph_template_input VALUES (78,33,'Outbound Data Source','','task_i
 INSERT INTO graph_template_input VALUES (79,33,'Inbound Data Source','','task_item_id');
 
 --
--- Table structure for table 'graph_template_input_defs'
+-- Table structure for table `graph_template_input_defs`
 --
 
 CREATE TABLE graph_template_input_defs (
@@ -1019,7 +1018,7 @@ CREATE TABLE graph_template_input_defs (
 ) TYPE=MyISAM COMMENT='Stores the relationship for what graph iitems are associated';
 
 --
--- Dumping data for table 'graph_template_input_defs'
+-- Dumping data for table `graph_template_input_defs`
 --
 
 INSERT INTO graph_template_input_defs VALUES (1,1);
@@ -1277,7 +1276,7 @@ INSERT INTO graph_template_input_defs VALUES (79,392);
 INSERT INTO graph_template_input_defs VALUES (79,394);
 
 --
--- Table structure for table 'graph_templates'
+-- Table structure for table `graph_templates`
 --
 
 CREATE TABLE graph_templates (
@@ -1289,7 +1288,7 @@ CREATE TABLE graph_templates (
 ) TYPE=MyISAM COMMENT='Contains each graph template name.';
 
 --
--- Dumping data for table 'graph_templates'
+-- Dumping data for table `graph_templates`
 --
 
 INSERT INTO graph_templates VALUES (1,'Interface - Traffic (bytes/sec) - 0.6.x');
@@ -1327,7 +1326,7 @@ INSERT INTO graph_templates VALUES (32,'Interface - Traffic (bits/sec, Total Ban
 INSERT INTO graph_templates VALUES (33,'Interface - Traffic (bytes/sec, Total Bandwidth)');
 
 --
--- Table structure for table 'graph_templates_gprint'
+-- Table structure for table `graph_templates_gprint`
 --
 
 CREATE TABLE graph_templates_gprint (
@@ -1340,7 +1339,7 @@ CREATE TABLE graph_templates_gprint (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'graph_templates_gprint'
+-- Dumping data for table `graph_templates_gprint`
 --
 
 INSERT INTO graph_templates_gprint VALUES (2,'Normal','%8.2lf %s');
@@ -1348,7 +1347,7 @@ INSERT INTO graph_templates_gprint VALUES (3,'Exact Numbers','%8.0lf');
 INSERT INTO graph_templates_gprint VALUES (4,'Load Average','%8.2lf');
 
 --
--- Table structure for table 'graph_templates_graph'
+-- Table structure for table `graph_templates_graph`
 --
 
 CREATE TABLE graph_templates_graph (
@@ -1399,7 +1398,7 @@ CREATE TABLE graph_templates_graph (
 ) TYPE=MyISAM COMMENT='Stores the actual graph data.';
 
 --
--- Dumping data for table 'graph_templates_graph'
+-- Dumping data for table `graph_templates_graph`
 --
 
 INSERT INTO graph_templates_graph VALUES (1,0,0,1,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
@@ -1434,14 +1433,14 @@ INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'on','|host_description
 INSERT INTO graph_templates_graph VALUES (38,12,1,12,'0',1,'0','|host_description| - Memory Usage','Localhost - Memory Usage','0',120,'0',500,'0',100,'0',0,'0','kilobytes','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0',0);
 INSERT INTO graph_templates_graph VALUES (39,9,2,9,'0',1,'0','|host_description| - Load Average','Localhost - Load Average','0',120,'0',500,'0',100,'0',0,'0','processes in the run queue','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0',0);
 INSERT INTO graph_templates_graph VALUES (40,10,3,10,'0',1,'0','|host_description| - Logged in Users','Localhost - Logged in Users','0',120,'0',500,'0',100,'0',0,'0','users','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0',0);
-INSERT INTO graph_templates_graph VALUES (41,8,4,8,'0',1,'0','|host_description| - Processes','Localhost - Processes','0',120,'0',500,'0',100,'0',0,'0','processes','0','on','0',2,'0','','0','','0','on','0',1000,'0','','0','on','0','','0',0);
+INSERT INTO graph_templates_graph VALUES (41,41,4,0,'0',1,'0','|host_description| - Processes','Localhost - Processes','0',120,'0',500,'0',100,'0',0,'0','processes','0','on','0',2,'0','','0','','0','on','0',1000,'0','','0','on','0','','0',0);
 INSERT INTO graph_templates_graph VALUES (42,0,0,30,'',1,'on','|host_description| - Open Files','','',120,'',500,'',100,'',0,'','files','','on','',2,'','','','','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 
 --
--- Table structure for table 'graph_templates_item'
+-- Table structure for table `graph_templates_item`
 --
 
 CREATE TABLE graph_templates_item (
@@ -1467,7 +1466,7 @@ CREATE TABLE graph_templates_item (
 ) TYPE=MyISAM COMMENT='Stores the actual graph item data.';
 
 --
--- Dumping data for table 'graph_templates_item'
+-- Dumping data for table `graph_templates_item`
 --
 
 INSERT INTO graph_templates_item VALUES (1,0,0,1,1,22,7,0,1,'Inbound','','',2,1);
@@ -1686,10 +1685,10 @@ INSERT INTO graph_templates_item VALUES (303,0,0,26,78,0,9,0,3,'Maximum:','','on
 INSERT INTO graph_templates_item VALUES (304,0,0,26,78,0,9,0,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (305,0,0,26,78,0,9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (306,0,0,26,78,48,7,0,1,'Used','','',2,5);
-INSERT INTO graph_templates_item VALUES (307,0,0,26,77,20,7,0,1,'Total','','',2,1);
-INSERT INTO graph_templates_item VALUES (308,0,0,26,77,0,9,0,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (309,0,0,26,77,0,9,0,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (310,0,0,26,77,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (307,0,0,26,0,20,7,0,1,'Total','','',2,1);
+INSERT INTO graph_templates_item VALUES (308,0,0,26,0,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (309,0,0,26,0,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (310,0,0,26,0,0,9,0,3,'Maximum:','','on',2,4);
 INSERT INTO graph_templates_item VALUES (317,0,0,27,79,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (316,0,0,27,79,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (315,0,0,27,79,9,7,0,1,'CPU Utilization','','',2,1);
@@ -1722,10 +1721,10 @@ INSERT INTO graph_templates_item VALUES (350,76,3,10,89,67,7,0,1,'Users','','',2
 INSERT INTO graph_templates_item VALUES (351,77,3,10,89,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (352,78,3,10,89,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (353,79,3,10,89,0,9,0,3,'Maximum:','','',3,4);
-INSERT INTO graph_templates_item VALUES (354,65,4,8,90,48,7,0,1,'Running Processes','','',2,1);
-INSERT INTO graph_templates_item VALUES (355,66,4,8,90,0,9,0,4,'Current:','','',3,2);
-INSERT INTO graph_templates_item VALUES (356,67,4,8,90,0,9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (357,68,4,8,90,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (354,354,4,8,90,48,7,0,1,'Running Processes','','',2,1);
+INSERT INTO graph_templates_item VALUES (355,355,4,8,90,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (356,356,4,8,90,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (357,357,4,8,90,0,9,0,3,'Maximum:','','',3,4);
 INSERT INTO graph_templates_item VALUES (361,0,0,30,29,0,9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (362,0,0,31,54,22,7,2,1,'Inbound','','',2,1);
 INSERT INTO graph_templates_item VALUES (363,0,0,31,54,0,9,2,4,'Current:','','',2,2);
@@ -1752,7 +1751,7 @@ INSERT INTO graph_templates_item VALUES (393,0,0,33,55,0,1,0,1,'Total Out: |sum:
 INSERT INTO graph_templates_item VALUES (394,0,0,33,54,0,1,0,1,'Total In:  |sum:auto:current:2:auto|','','on',2,5);
 
 --
--- Table structure for table 'graph_tree'
+-- Table structure for table `graph_tree`
 --
 
 CREATE TABLE graph_tree (
@@ -1765,13 +1764,13 @@ CREATE TABLE graph_tree (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'graph_tree'
+-- Dumping data for table `graph_tree`
 --
 
 INSERT INTO graph_tree VALUES (1,0,'Default Tree');
 
 --
--- Table structure for table 'graph_tree_items'
+-- Table structure for table `graph_tree_items`
 --
 
 CREATE TABLE graph_tree_items (
@@ -1789,13 +1788,13 @@ CREATE TABLE graph_tree_items (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'graph_tree_items'
+-- Dumping data for table `graph_tree_items`
 --
 
 INSERT INTO graph_tree_items VALUES (6,1,0,1,'',1,'010000000000000000000000000000000000000000000000000000000000');
 
 --
--- Table structure for table 'host'
+-- Table structure for table `host`
 --
 
 CREATE TABLE host (
@@ -1803,11 +1802,12 @@ CREATE TABLE host (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(250) default NULL,
-  management_ip varchar(15) default NULL,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
   snmp_username varchar(50) default NULL,
   snmp_password varchar(50) default NULL,
+  snmp_port mediumint(5) unsigned NOT NULL default '161',
+  snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   disabled char(2) default NULL,
   status tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (id),
@@ -1816,13 +1816,13 @@ CREATE TABLE host (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host'
+-- Dumping data for table `host`
 --
 
-INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','127.0.0.1','public',1,'','','',0);
+INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','public',1,'','',161,500,'',0);
 
 --
--- Table structure for table 'host_snmp_cache'
+-- Table structure for table `host_snmp_cache`
 --
 
 CREATE TABLE host_snmp_cache (
@@ -1838,12 +1838,12 @@ CREATE TABLE host_snmp_cache (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_snmp_cache'
+-- Dumping data for table `host_snmp_cache`
 --
 
 
 --
--- Table structure for table 'host_snmp_query'
+-- Table structure for table `host_snmp_query`
 --
 
 CREATE TABLE host_snmp_query (
@@ -1854,13 +1854,14 @@ CREATE TABLE host_snmp_query (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_snmp_query'
+-- Dumping data for table `host_snmp_query`
 --
 
+INSERT INTO host_snmp_query VALUES (1,1);
 INSERT INTO host_snmp_query VALUES (1,6);
 
 --
--- Table structure for table 'host_template'
+-- Table structure for table `host_template`
 --
 
 CREATE TABLE host_template (
@@ -1872,7 +1873,7 @@ CREATE TABLE host_template (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_template'
+-- Dumping data for table `host_template`
 --
 
 INSERT INTO host_template VALUES (1,'Generic SNMP-enabled Host');
@@ -1884,7 +1885,7 @@ INSERT INTO host_template VALUES (7,'Windows 2000/XP Host');
 INSERT INTO host_template VALUES (8,'Local Linux Machine');
 
 --
--- Table structure for table 'host_template_data_sv'
+-- Table structure for table `host_template_data_sv`
 --
 
 CREATE TABLE host_template_data_sv (
@@ -1898,7 +1899,7 @@ CREATE TABLE host_template_data_sv (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_template_data_sv'
+-- Dumping data for table `host_template_data_sv`
 --
 
 INSERT INTO host_template_data_sv VALUES (6,22,16,'name','|host_description| - File System Reads');
@@ -1918,7 +1919,7 @@ INSERT INTO host_template_data_sv VALUES (3,34,13,'name','|host_description| - M
 INSERT INTO host_template_data_sv VALUES (3,5,4,'name','|host_description| - CPU Usage - User');
 
 --
--- Table structure for table 'host_template_graph'
+-- Table structure for table `host_template_graph`
 --
 
 CREATE TABLE host_template_graph (
@@ -1929,7 +1930,7 @@ CREATE TABLE host_template_graph (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_template_graph'
+-- Dumping data for table `host_template_graph`
 --
 
 INSERT INTO host_template_graph VALUES (3,4);
@@ -1948,7 +1949,7 @@ INSERT INTO host_template_graph VALUES (8,10);
 INSERT INTO host_template_graph VALUES (8,12);
 
 --
--- Table structure for table 'host_template_graph_sv'
+-- Table structure for table `host_template_graph_sv`
 --
 
 CREATE TABLE host_template_graph_sv (
@@ -1960,7 +1961,7 @@ CREATE TABLE host_template_graph_sv (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_template_graph_sv'
+-- Dumping data for table `host_template_graph_sv`
 --
 
 INSERT INTO host_template_graph_sv VALUES (5,18,'title','|host_description| - CPU Usage');
@@ -1972,7 +1973,7 @@ INSERT INTO host_template_graph_sv VALUES (3,11,'title','|host_description| - Lo
 INSERT INTO host_template_graph_sv VALUES (3,13,'title','|host_description| - Memory Usage');
 
 --
--- Table structure for table 'host_template_snmp_query'
+-- Table structure for table `host_template_snmp_query`
 --
 
 CREATE TABLE host_template_snmp_query (
@@ -1983,7 +1984,7 @@ CREATE TABLE host_template_snmp_query (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'host_template_snmp_query'
+-- Dumping data for table `host_template_snmp_query`
 --
 
 INSERT INTO host_template_snmp_query VALUES (1,1);
@@ -1995,12 +1996,13 @@ INSERT INTO host_template_snmp_query VALUES (5,1);
 INSERT INTO host_template_snmp_query VALUES (6,1);
 INSERT INTO host_template_snmp_query VALUES (6,4);
 INSERT INTO host_template_snmp_query VALUES (6,7);
+INSERT INTO host_template_snmp_query VALUES (7,1);
 INSERT INTO host_template_snmp_query VALUES (7,8);
 INSERT INTO host_template_snmp_query VALUES (7,9);
 INSERT INTO host_template_snmp_query VALUES (8,6);
 
 --
--- Table structure for table 'rra'
+-- Table structure for table `rra`
 --
 
 CREATE TABLE rra (
@@ -2016,7 +2018,7 @@ CREATE TABLE rra (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'rra'
+-- Dumping data for table `rra`
 --
 
 INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600,86400);
@@ -2025,7 +2027,7 @@ INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797,33053184);
 INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775,2678400);
 
 --
--- Table structure for table 'rra_cf'
+-- Table structure for table `rra_cf`
 --
 
 CREATE TABLE rra_cf (
@@ -2036,7 +2038,7 @@ CREATE TABLE rra_cf (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'rra_cf'
+-- Dumping data for table `rra_cf`
 --
 
 INSERT INTO rra_cf VALUES (1,1);
@@ -2049,7 +2051,7 @@ INSERT INTO rra_cf VALUES (4,1);
 INSERT INTO rra_cf VALUES (4,3);
 
 --
--- Table structure for table 'settings'
+-- Table structure for table `settings`
 --
 
 CREATE TABLE settings (
@@ -2061,7 +2063,7 @@ CREATE TABLE settings (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'settings'
+-- Dumping data for table `settings`
 --
 
 INSERT INTO settings VALUES ('path_webcacti','/cacti/cacti-0.8');
@@ -2100,7 +2102,7 @@ INSERT INTO settings VALUES ('num_rows_data_source','30');
 INSERT INTO settings VALUES ('max_title_data_source','45');
 
 --
--- Table structure for table 'settings_graphs'
+-- Table structure for table `settings_graphs`
 --
 
 CREATE TABLE settings_graphs (
@@ -2112,12 +2114,12 @@ CREATE TABLE settings_graphs (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'settings_graphs'
+-- Dumping data for table `settings_graphs`
 --
 
 
 --
--- Table structure for table 'settings_tree'
+-- Table structure for table `settings_tree`
 --
 
 CREATE TABLE settings_tree (
@@ -2128,12 +2130,12 @@ CREATE TABLE settings_tree (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'settings_tree'
+-- Dumping data for table `settings_tree`
 --
 
 
 --
--- Table structure for table 'snmp_query'
+-- Table structure for table `snmp_query`
 --
 
 CREATE TABLE snmp_query (
@@ -2149,7 +2151,7 @@ CREATE TABLE snmp_query (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'snmp_query'
+-- Dumping data for table `snmp_query`
 --
 
 INSERT INTO snmp_query VALUES (1,'<path_cacti>/resource/snmp_queries/interface.xml','SNMP - Interface Statistics','Queries a host for a list of monitorable interfaces',0,2);
@@ -2162,7 +2164,7 @@ INSERT INTO snmp_query VALUES (8,'<path_cacti>/resource/script_queries/host_disk
 INSERT INTO snmp_query VALUES (9,'<path_cacti>/resource/script_queries/host_cpu.xml','SNMP - Get Processor Information','Gets usage for each processor in the system using the host MIB.',0,11);
 
 --
--- Table structure for table 'snmp_query_field'
+-- Table structure for table `snmp_query_field`
 --
 
 CREATE TABLE snmp_query_field (
@@ -2175,7 +2177,7 @@ CREATE TABLE snmp_query_field (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'snmp_query_field'
+-- Dumping data for table `snmp_query_field`
 --
 
 INSERT INTO snmp_query_field VALUES (1,14,3);
@@ -2204,7 +2206,7 @@ INSERT INTO snmp_query_field VALUES (9,32,2);
 INSERT INTO snmp_query_field VALUES (9,33,3);
 
 --
--- Table structure for table 'snmp_query_graph'
+-- Table structure for table `snmp_query_graph`
 --
 
 CREATE TABLE snmp_query_graph (
@@ -2218,7 +2220,7 @@ CREATE TABLE snmp_query_graph (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'snmp_query_graph'
+-- Dumping data for table `snmp_query_graph`
 --
 
 INSERT INTO snmp_query_graph VALUES (1,1,'In/Out Bytes (0.6.x Style)',1);
@@ -2243,7 +2245,7 @@ INSERT INTO snmp_query_graph VALUES (21,1,'In/Out Bits with Total Bandwidth',32)
 INSERT INTO snmp_query_graph VALUES (22,1,'In/Out Bytes with Total Bandwidth',33);
 
 --
--- Table structure for table 'snmp_query_graph_rrd'
+-- Table structure for table `snmp_query_graph_rrd`
 --
 
 CREATE TABLE snmp_query_graph_rrd (
@@ -2256,7 +2258,7 @@ CREATE TABLE snmp_query_graph_rrd (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'snmp_query_graph_rrd'
+-- Dumping data for table `snmp_query_graph_rrd`
 --
 
 INSERT INTO snmp_query_graph_rrd VALUES (1,2,2,'ifOutOctets');
@@ -2291,8 +2293,8 @@ INSERT INTO snmp_query_graph_rrd VALUES (16,41,54,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (16,41,55,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (15,37,56,'dskUsed');
 INSERT INTO snmp_query_graph_rrd VALUES (17,42,76,'nwhrProcessorUtilization');
-INSERT INTO snmp_query_graph_rrd VALUES (18,43,77,'hrStorageSize');
 INSERT INTO snmp_query_graph_rrd VALUES (18,43,78,'hrStorageUsed');
+INSERT INTO snmp_query_graph_rrd VALUES (18,43,92,'hrStorageSize');
 INSERT INTO snmp_query_graph_rrd VALUES (19,44,79,'hrProcessorLoad');
 INSERT INTO snmp_query_graph_rrd VALUES (20,41,55,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (20,41,54,'ifInOctets');
@@ -2302,7 +2304,7 @@ INSERT INTO snmp_query_graph_rrd VALUES (22,41,55,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (22,41,54,'ifInOctets');
 
 --
--- Table structure for table 'snmp_query_graph_rrd_sv'
+-- Table structure for table `snmp_query_graph_rrd_sv`
 --
 
 CREATE TABLE snmp_query_graph_rrd_sv (
@@ -2319,7 +2321,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'snmp_query_graph_rrd_sv'
+-- Dumping data for table `snmp_query_graph_rrd_sv`
 --
 
 INSERT INTO snmp_query_graph_rrd_sv VALUES (1,1,1,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName| (In)');
@@ -2403,7 +2405,7 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (108,22,41,4,'name','|host_descriptio
 INSERT INTO snmp_query_graph_rrd_sv VALUES (109,22,41,1,'rrd_maximum','|query_ifSpeed|');
 
 --
--- Table structure for table 'snmp_query_graph_sv'
+-- Table structure for table `snmp_query_graph_sv`
 --
 
 CREATE TABLE snmp_query_graph_sv (
@@ -2419,7 +2421,7 @@ CREATE TABLE snmp_query_graph_sv (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'snmp_query_graph_sv'
+-- Dumping data for table `snmp_query_graph_sv`
 --
 
 INSERT INTO snmp_query_graph_sv VALUES (1,1,1,'title','|host_description| - Traffic - |query_ifName|');
@@ -2467,7 +2469,7 @@ INSERT INTO snmp_query_graph_sv VALUES (48,22,2,'title','|host_description| - Tr
 INSERT INTO snmp_query_graph_sv VALUES (49,22,3,'title','|host_description| - Traffic - |query_ifDesc|/|query_ifIndex|');
 
 --
--- Table structure for table 'user_auth'
+-- Table structure for table `user_auth`
 --
 
 CREATE TABLE user_auth (
@@ -2492,14 +2494,14 @@ CREATE TABLE user_auth (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'user_auth'
+-- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on',1,1,1,1,1);
 INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1);
 
 --
--- Table structure for table 'user_auth_perms'
+-- Table structure for table `user_auth_perms`
 --
 
 CREATE TABLE user_auth_perms (
@@ -2511,12 +2513,12 @@ CREATE TABLE user_auth_perms (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'user_auth_perms'
+-- Dumping data for table `user_auth_perms`
 --
 
 
 --
--- Table structure for table 'user_auth_realm'
+-- Table structure for table `user_auth_realm`
 --
 
 CREATE TABLE user_auth_realm (
@@ -2527,7 +2529,7 @@ CREATE TABLE user_auth_realm (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'user_auth_realm'
+-- Dumping data for table `user_auth_realm`
 --
 
 INSERT INTO user_auth_realm VALUES (1,1);
@@ -2546,7 +2548,7 @@ INSERT INTO user_auth_realm VALUES (14,1);
 INSERT INTO user_auth_realm VALUES (15,1);
 
 --
--- Table structure for table 'user_log'
+-- Table structure for table `user_log`
 --
 
 CREATE TABLE user_log (
@@ -2559,80 +2561,12 @@ CREATE TABLE user_log (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'user_log'
+-- Dumping data for table `user_log`
 --
 
 
 --
--- Table structure for table 'user_realm'
---
-
-CREATE TABLE user_realm (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
-) TYPE=MyISAM;
-
---
--- Dumping data for table 'user_realm'
---
-
-INSERT INTO user_realm VALUES (1,'User Administration');
-INSERT INTO user_realm VALUES (2,'Data Input');
-INSERT INTO user_realm VALUES (3,'Update Data Sources');
-INSERT INTO user_realm VALUES (5,'Update Graphs');
-INSERT INTO user_realm VALUES (7,'View Graphs');
-INSERT INTO user_realm VALUES (8,'Console Access');
-INSERT INTO user_realm VALUES (9,'Update Round Robin Archives');
-INSERT INTO user_realm VALUES (10,'Update Graph Templates');
-INSERT INTO user_realm VALUES (11,'Update Data Templates');
-INSERT INTO user_realm VALUES (12,'Update Host Templates');
-INSERT INTO user_realm VALUES (13,'SNMP Queries');
-INSERT INTO user_realm VALUES (14,'Update CDEF\'s');
-INSERT INTO user_realm VALUES (15,'Global Settings');
-
---
--- Table structure for table 'user_realm_filename'
---
-
-CREATE TABLE user_realm_filename (
-  realm_id smallint(5) unsigned NOT NULL default '0',
-  filename varchar(100) NOT NULL default '',
-  PRIMARY KEY  (realm_id,filename),
-  KEY realm_id (realm_id)
-) TYPE=MyISAM;
-
---
--- Dumping data for table 'user_realm_filename'
---
-
-INSERT INTO user_realm_filename VALUES (1,'user_admin.php');
-INSERT INTO user_realm_filename VALUES (2,'data_input.php');
-INSERT INTO user_realm_filename VALUES (3,'data_sources.php');
-INSERT INTO user_realm_filename VALUES (3,'host.php');
-INSERT INTO user_realm_filename VALUES (5,'color.php');
-INSERT INTO user_realm_filename VALUES (5,'gprint_presets.php');
-INSERT INTO user_realm_filename VALUES (5,'graphs.php');
-INSERT INTO user_realm_filename VALUES (5,'tree.php');
-INSERT INTO user_realm_filename VALUES (7,'graph.php');
-INSERT INTO user_realm_filename VALUES (7,'graph_image.php');
-INSERT INTO user_realm_filename VALUES (7,'graph_settings.php');
-INSERT INTO user_realm_filename VALUES (7,'graph_view.php');
-INSERT INTO user_realm_filename VALUES (8,'about.php');
-INSERT INTO user_realm_filename VALUES (8,'index.php');
-INSERT INTO user_realm_filename VALUES (9,'rra.php');
-INSERT INTO user_realm_filename VALUES (10,'graph_templates.php');
-INSERT INTO user_realm_filename VALUES (11,'data_templates.php');
-INSERT INTO user_realm_filename VALUES (12,'host_templates.php');
-INSERT INTO user_realm_filename VALUES (13,'snmp.php');
-INSERT INTO user_realm_filename VALUES (14,'cdef.php');
-INSERT INTO user_realm_filename VALUES (15,'settings.php');
-INSERT INTO user_realm_filename VALUES (15,'utilities.php');
-
---
--- Table structure for table 'version'
+-- Table structure for table `version`
 --
 
 CREATE TABLE version (
@@ -2640,8 +2574,8 @@ CREATE TABLE version (
 ) TYPE=MyISAM;
 
 --
--- Dumping data for table 'version'
+-- Dumping data for table `version`
 --
 
-INSERT INTO version VALUES ('0.8.3');
+INSERT INTO version VALUES ('0.8.3a');
 
