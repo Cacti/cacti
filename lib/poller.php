@@ -227,7 +227,7 @@ function process_poller_output($rrdtool_pipe) {
 			if ((!isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) && ($item["rrd_name"] != "")) {
 				$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$item["rrd_name"]} = "U";
 			}else if ((!isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) && ($item["rrd_name"] == "")) {
-				unset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time]);
+				unset($rrd_update_array{$item["rrd_path"]});
 			}
 		}
 
