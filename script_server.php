@@ -63,7 +63,7 @@ if ($_SERVER["argc"] >= 2) {
 			$environ = "other";
 
 	if ($_SERVER["argc"] == 3)
-		$poller_id = $_SERVER[argv][2];
+		$poller_id = $_SERVER["argv"][2];
 	else
 		$poller_id = 0;
 } else {
@@ -82,7 +82,9 @@ if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 	cacti_log("PHP Script Server has Started - Parent is " . $environ, false, "PHPSVR");
 }
+
 fputs(STDOUT, "PHP Script Server has Started - Parent is " . $environ . "\n");
+fflush(STDOUT);
 
 // process waits for input and then calls functions as required
 while (1) {
@@ -133,8 +135,10 @@ while (1) {
 				}
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
+					fflush(STDOUT);
 				} else {
 					fputs(STDOUT, $result . "\n");
+					fflush(STDOUT);
 				}
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 					cacti_log("CMD: " . $in_string . " output " . $result, false, "PHPSVR");
