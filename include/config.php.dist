@@ -84,6 +84,16 @@ if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 		$_GET = array_map('addslashes_deep', $_GET);
 		$_COOKIE = array_map('addslashes_deep', $_COOKIE);
 	}
+
+	/* make sure to start only only Cacti session at a time */
+	if (!isset($_SESSION["cacti_cwd"])) {
+		$_SESSION["cacti_cwd"] = $config["base_path"];
+	}else{
+		if ($_SESSION["cacti_cwd"] != $config["base_path"]) {
+			session_unset();
+			session_destroy();
+		}
+	}
 }
 
 /* display ALL errors */
