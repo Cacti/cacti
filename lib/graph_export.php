@@ -92,6 +92,8 @@ function config_graph_export() {
 			export_ftp_ncftpput_execute($stExportDir);
 			export_post_ftp_upload($stExportDir);
 			break;
+		case "disabled":
+			break;
 		default:
 			export_log("Export method not specified. Updated config to use local exporting.");
 			db_execute("insert into settings (name,value) values ('export_type','local')");
