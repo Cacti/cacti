@@ -185,7 +185,6 @@ $menu = array(
 		"data_templates.php" => "Data Templates"
 		),
 	"Import/Export" => array(
-		"graphs_import.php" => "Import Graphs",
 		"templates_import.php" => "Import Templates",
 		"templates_export.php" => "Export Templates"
 		),
