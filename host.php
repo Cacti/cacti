@@ -26,14 +26,15 @@
 
 include("./include/auth.php");
 include_once("./lib/utility.php");
+include_once("./lib/api_data_source.php");
+include_once("./lib/api_graph.php");
 include_once("./lib/snmp.php");
 include_once("./lib/data_query.php");
 include_once("./lib/api_device.php");
 
 $device_actions = array(
 	1 => "Delete",
-	2 => "Change SNMP Options",
-	3 => "Duplicate"
+	2 => "Change SNMP Options"
 	);
 
 /* set default action */
@@ -124,7 +125,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $device_actions;
+	global $colors, $device_actions, $fields_host_edit;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -132,11 +133,47 @@ function form_actions() {
 
 		if ($_POST["drp_action"] == "1") { /* delete */
 			for ($i=0; $i<count($selected_items); $i++) {
+				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
+
+				switch ($_POST["delete_type"]) {
+					case '2': /* delete graphs/data sources tied to this device */
+						$data_sources = db_fetch_assoc("select
+							data_local.id as local_data_id
+							from data_local
+							where " . array_to_sql_or($selected_items, "data_local.host_id"));
+
+						if (sizeof($data_sources) > 0) {
+							foreach ($data_sources as $data_source) {
+								api_data_source_remove($data_source["local_data_id"]);
+							}
+						}
+
+						$graphs = db_fetch_assoc("select
+							graph_local.id as local_graph_id
+							from graph_local
+							where " . array_to_sql_or($selected_items, "graph_local.host_id"));
+
+						if (sizeof($graphs) > 0) {
+							foreach ($graphs as $graph) {
+								api_graph_remove($graph["local_graph_id"]);
+							}
+						}
+
+						break;
+				}
+
 				api_device_remove($selected_items[$i]);
 			}
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		}elseif ($_POST["drp_action"] == "2") { /* change snmp options */
 			for ($i=0;($i<count($selected_items));$i++) {
-				duplicate_host_template($selected_items[$i], $_POST["title_format"]);
+				reset($fields_host_edit);
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (isset($_POST["t_$field_name"])) {
+						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+					}
+				}
+
+				push_out_host($selected_items[$i]);
 			}
 		}
 
@@ -167,20 +204,44 @@ function form_actions() {
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Are you sure you want to delete the following devices?</p>
-					<p>$host_list</p>
+					<p>$host_list</p>";
+					form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.", "1"); print "<br>";
+					form_radio_button("delete_type", "2", "2", "Delete all associated <strong>graphs</strong> and <strong>data sources</strong>.", "1"); print "<br>";
+					print "</td></tr>
 				</td>
 			</tr>\n
 			";
-	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+	}elseif ($_POST["drp_action"] == "2") { /* change snmp options */
 		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following host templates will be duplicated. You can
-					optionally change the title format for the new host templates.</p>
+				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>To change SNMP parameters for the following devices, check the box next to the fields
+					you want to update, fill in the new value, and click Save.</p>
 					<p>$host_list</p>
-					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 				</td>
-			</tr>\n
-			";
+				</tr>";
+				$form_array = array();
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (ereg("^snmp_", $field_name)) {
+						$form_array += array($field_name => $fields_host_edit[$field_name]);
+
+						$form_array[$field_name]["value"] = "";
+						$form_array[$field_name]["description"] = "";
+						$form_array[$field_name]["form_id"] = 0;
+						$form_array[$field_name]["sub_checkbox"] = array(
+							"name" => "t_" . $field_name,
+							"friendly_name" => "Update this Field",
+							"value" => ""
+							);
+					}
+				}
+
+				draw_edit_form(
+					array(
+						"config" => array("no_form_tag" => true),
+						"fields" => $form_array
+						)
+					);
+
 	}
 
 	if (!isset($host_array)) {
@@ -191,7 +252,7 @@ function form_actions() {
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td colspan='2' align='right' bgcolor='#eaeaea'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>

@@ -79,76 +79,7 @@ function draw_edit_form($array) {
 
 				print "<td>";
 
-				switch ($field_array["method"]) {
-				case 'textbox':
-					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
-					break;
-				case 'textbox_password':
-					form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
-					print "<br>";
-					form_text_box($field_name . "_confirm", $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
-					break;
-				case 'textarea':
-					form_text_area($field_name, $field_array["value"], $field_array["textarea_rows"], $field_array["textarea_cols"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
-					break;
-				case 'drop_array':
-					form_dropdown($field_name, $field_array["array"], "", "", $field_array["value"], ((isset($field_array["none_value"])) ? $field_array["none_value"] : ""), ((isset($field_array["default"])) ? $field_array["default"] : ""));
-					break;
-				case 'drop_sql':
-					form_dropdown($field_name, db_fetch_assoc($field_array["sql"]), "name", "id", $field_array["value"], ((isset($field_array["none_value"])) ? $field_array["none_value"] : ""), ((isset($field_array["default"])) ? $field_array["default"] : ""));
-					break;
-				case 'drop_multi':
-					form_multi_dropdown($field_name, $field_array["array"], db_fetch_assoc($field_array["sql"]), "id");
-					break;
-				case 'drop_multi_rra':
-					form_multi_dropdown($field_name, array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name"), (empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), "id");
-					break;
-				case 'drop_tree':
-					grow_dropdown_tree($field_array["tree_id"], $field_name, $field_array["value"]);
-					break;
-				case 'drop_color':
-					form_color_dropdown($field_name, $field_array["value"], "None", ((isset($field_array["default"])) ? $field_array["default"] : ""));
-					break;
-				case 'checkbox':
-					form_checkbox($field_name, $field_array["value"], $field_array["friendly_name"], ((isset($field_array["default"])) ? $field_array["default"] : ""), ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
-					break;
-				case 'checkbox_group':
-					while (list($check_name, $check_array) = each($field_array["items"])) {
-						form_checkbox($check_name, $check_array["value"], $check_array["friendly_name"], ((isset($check_array["default"])) ? $check_array["default"] : ""), ((isset($check_array["form_id"])) ? $check_array["form_id"] : ""));
-						print "<br>";
-					}
-					break;
-				case 'radio':
-					while (list($radio_index, $radio_array) = each($field_array["items"])) {
-						form_radio_button($field_name, $field_array["value"], $radio_array["radio_value"], $radio_array["radio_caption"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
-						print "<br>";
-					}
-					break;
-				case 'custom':
-					print $field_array["value"];
-					break;
-				case 'template_checkbox':
-					print "<em>" . html_boolean_friendly($field_array["value"]) . "</em>";
-					form_hidden_box($field_name, $field_array["value"], "");
-					break;
-				case 'template_drop_array':
-					print "<em>" . $field_array["array"]{$field_array["value"]} . "</em>";
-					form_hidden_box($field_name, $field_array["value"], "");
-					break;
-				case 'template_drop_multi_rra':
-					$items = db_fetch_assoc($field_array["sql_print"]);
-
-					if (sizeof($items) > 0) {
-					foreach ($items as $item) {
-						print $item["name"] . "<br>";
-					}
-					}
-					break;
-				default:
-					print "<em>" . $field_array["value"] . "</em>";
-					form_hidden_box($field_name, $field_array["value"], "");
-					break;
-				}
+				draw_edit_control($field_name, $field_array);
 
 				print "</td>\n</tr>\n";
 
@@ -159,6 +90,83 @@ function draw_edit_form($array) {
 				//print "</form>";
 			}
 		}
+	}
+}
+
+/* draw_edit_control - draws a single control to be used on an html edit form
+   @arg $field_name - the name of the control
+   @arg $field_array - an array containing data for this control. see include/config_form.php
+     for more specific syntax */
+function draw_edit_control($field_name, &$field_array) {
+	switch ($field_array["method"]) {
+	case 'textbox':
+		form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+		break;
+	case 'textbox_password':
+		form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
+		print "<br>";
+		form_text_box($field_name . "_confirm", $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
+		break;
+	case 'textarea':
+		form_text_area($field_name, $field_array["value"], $field_array["textarea_rows"], $field_array["textarea_cols"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
+		break;
+	case 'drop_array':
+		form_dropdown($field_name, $field_array["array"], "", "", $field_array["value"], ((isset($field_array["none_value"])) ? $field_array["none_value"] : ""), ((isset($field_array["default"])) ? $field_array["default"] : ""));
+		break;
+	case 'drop_sql':
+		form_dropdown($field_name, db_fetch_assoc($field_array["sql"]), "name", "id", $field_array["value"], ((isset($field_array["none_value"])) ? $field_array["none_value"] : ""), ((isset($field_array["default"])) ? $field_array["default"] : ""));
+		break;
+	case 'drop_multi':
+		form_multi_dropdown($field_name, $field_array["array"], db_fetch_assoc($field_array["sql"]), "id");
+		break;
+	case 'drop_multi_rra':
+		form_multi_dropdown($field_name, array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name"), (empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), "id");
+		break;
+	case 'drop_tree':
+		grow_dropdown_tree($field_array["tree_id"], $field_name, $field_array["value"]);
+		break;
+	case 'drop_color':
+		form_color_dropdown($field_name, $field_array["value"], "None", ((isset($field_array["default"])) ? $field_array["default"] : ""));
+		break;
+	case 'checkbox':
+		form_checkbox($field_name, $field_array["value"], $field_array["friendly_name"], ((isset($field_array["default"])) ? $field_array["default"] : ""), ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+		break;
+	case 'checkbox_group':
+		while (list($check_name, $check_array) = each($field_array["items"])) {
+			form_checkbox($check_name, $check_array["value"], $check_array["friendly_name"], ((isset($check_array["default"])) ? $check_array["default"] : ""), ((isset($check_array["form_id"])) ? $check_array["form_id"] : ""));
+			print "<br>";
+		}
+		break;
+	case 'radio':
+		while (list($radio_index, $radio_array) = each($field_array["items"])) {
+			form_radio_button($field_name, $field_array["value"], $radio_array["radio_value"], $radio_array["radio_caption"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
+			print "<br>";
+		}
+		break;
+	case 'custom':
+		print $field_array["value"];
+		break;
+	case 'template_checkbox':
+		print "<em>" . html_boolean_friendly($field_array["value"]) . "</em>";
+		form_hidden_box($field_name, $field_array["value"], "");
+		break;
+	case 'template_drop_array':
+		print "<em>" . $field_array["array"]{$field_array["value"]} . "</em>";
+		form_hidden_box($field_name, $field_array["value"], "");
+		break;
+	case 'template_drop_multi_rra':
+		$items = db_fetch_assoc($field_array["sql_print"]);
+
+		if (sizeof($items) > 0) {
+		foreach ($items as $item) {
+			print $item["name"] . "<br>";
+		}
+		}
+		break;
+	default:
+		print "<em>" . $field_array["value"] . "</em>";
+		form_hidden_box($field_name, $field_array["value"], "");
+		break;
 	}
 }
 
