@@ -1,5 +1,39 @@
 raXnet - cacti
 
+0.8.2
+-bug#47: The 'cacti_server_os' variable is now auto-detected.
+-bug#56: Possible endless loop for non 0.8 users in version upgrade loop.
+-bug#57: Cacti does not take the 'graph_tree_id' column into account when
+re-ordering trees which can cause unexpected results.
+-bug#59: Regular expression bug that caused 'query_unix_partitions.pl' not
+to function on FreeBSD.
+-bug#60: Incorrect index OID in the (currently unused) 'host_disk.xml' SNMP
+query.
+-bug#61: Problems adding additional graph items to an input after the template 
+is in use by graphs.
+-bug#64: Cactid now checks for the RRDTool path in the 'settings' table.
+-bug: Problems deleting GPRINT presets.
+-bug: Undefined variable errors on the graph settings page if built in user
+authentication was turned off.
+-bug: Kill cached field value when messages are displayed.
+-bug: Graph trees now honor the RRA selected when creating the tree 
+(andy@fud.org.nz)
+-bug: Graph and data source titles are now properly updated when making changes
+to graph or data templates.
+-bug: Unexpected results when trying to delete top level branches from a graph 
+tree.
+-bug: Problems expanding/contracting trees when two or more nested branches had 
+the hidden flag set.
+-feature: Added ability to turn off checks for an entire host.
+-feature: Added SNMP and operating system variable printout to the about page.
+-cactid: Added downed host detection.
+-cactid: Code cleanup: formatting, compiler warnings, and removal of unused 
+functions.
+-cactid: Daemon support has been removed from cactid for the time being, it must
+be run out of CRON.
+-cactid: Have autoconf detect net-snmp before trying ucd-snmp to prevent failure
+on default Redhat installs.
+
 0.8.1
 -bug#40: Fixed OIDs in serveral Netware data templates.
 -bug#41: Data source and graph names are lost when created from a  template.
