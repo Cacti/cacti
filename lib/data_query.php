@@ -250,7 +250,7 @@ function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
 		host_snmp_cache.snmp_index
 		from host_snmp_cache
 		where host_snmp_cache.field_name='$index_type'
-		and host_snmp_cache.field_value='$index_value'
+		and host_snmp_cache.field_value='" . addslashes($index_value) . "'
 		and host_snmp_cache.host_id='$host_id'
 		and host_snmp_cache.snmp_query_id='$data_query_id'");
 }

@@ -657,7 +657,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_index_on"] . "')");
 
 			/* save the actual value (ie. 3, 192.168.1.101, etc) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_value"] . ",$data_template_data_id,'','$snmp_cache_value')");
+			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_value"] . ",$data_template_data_id,'','" . addslashes($snmp_cache_value) . "')");
 
 			/* set the expected output type (ie. bytes, errors, packets) */
 			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["output_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
