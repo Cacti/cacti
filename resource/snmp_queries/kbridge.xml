@@ -24,13 +24,13 @@
 			<direction>input</direction>
 			<oid>.1.3.6.1.4.1.762.2.5.2.1.11</oid>
 		</kbWirelessStationMACAddress>
-		<kbWirelessStationMACAddress>
+		<kbWirelessStationIPAddress>
 			<name>Station IP Address</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.4.1.762.2.5.2.1.15</oid>
-		</kbWirelessStationMACAddress>
+		</kbWirelessStationIPAddress>
 		
 		<kbWirelessStationExclHellos>
 			<name>Excellent Hellos Received</name>
