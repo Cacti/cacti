@@ -85,6 +85,20 @@ case 'preview':
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
 	}
 	
+	/* if no host_id is specified, use the session one */
+	if (!isset($_REQUEST["host_id"])) {
+		$_REQUEST["host_id"] = $_SESSION["sess_graph_view_host"];
+	}
+	
+	/* if no filter is specified, use the session one */
+	if (!isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = $_SESSION["sess_graph_view_filter"];
+	}
+	
+	/* remember the last used vars */
+	$_SESSION["sess_graph_view_host"] = $_REQUEST["host_id"];
+	$_SESSION["sess_graph_view_filter"] = $_REQUEST["filter"];
+	
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
 		if ($current_user["graph_policy"] == "1") {
@@ -93,42 +107,103 @@ case 'preview':
 			$sql_where = "where user_auth_graph.user_id is not null";
 		}
 		
+		$sql_join = "left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ")";
+	}
+	
+	if (empty($_REQUEST["host_id"])) {
 		$graphs = db_fetch_assoc("select 
 			graph_templates_graph.local_graph_id,
 			graph_templates_graph.title
 			from graph_templates_graph 
-			left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ") 
+			$sql_join
 			$sql_where
-			and graph_templates_graph.local_graph_id > 0
+			" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
+			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
 			order by graph_templates_graph.title");
 	}else{
 		$graphs = db_fetch_assoc("select 
-			local_graph_id,title 
+			graph_templates_graph.local_graph_id,
+			graph_templates_graph.title
 			from graph_templates_graph 
-			where local_graph_id > 0
-			order by title");
+			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
+			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+			left join graph_templates_item on graph_local.id=graph_templates_item.local_graph_id
+			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
+			left join data_local on data_template_rrd.local_data_id=data_local.id
+			$sql_join
+			$sql_where
+			" . (empty($sql_where) ? "where" : "and") . " data_local.host_id=" . $_REQUEST["host_id"] . "
+			and graph_templates_graph.local_graph_id>0
+			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+			group by graph_templates_graph.id
+			order by graph_templates_graph.title");
 	}
+			
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 	
-	print "<table width='98%' align='center'><tr>";
+	?>
+	<tr bgcolor="<?php print $colors["panel"];?>">
+		<form name="form_graph_id" method="post">
+		<td colspan='<?php print read_graph_config_option("num_columns");?>'>
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="100">
+						Filter by host:&nbsp;
+					</td>
+					<td width="1">
+						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+							<option value="graph_view.php?action=preview&host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
+							
+							<?php
+							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
+							
+							if (sizeof($hosts) > 0) {
+							foreach ($hosts as $host) {
+								print "<option value='graph_view.php?action=preview&host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td width="5"></td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+					</td>
+					<td>
+						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>	
+	<?php
+	
+	
+	print "<tr>";
 	
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
-		print "<td><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
+		print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title"] . "'></a></td>\n";
 		
 		$i++;
 		$k++;
 		
 		if (($i == read_graph_config_option("num_columns")) && ($k < sizeof($graphs))) {
 			$i = 0;
-			print "</tr><tr height='10'><td>&nbsp;</td></tr>\n<tr>";
+			print "</tr><tr>";
 		}
 	}
+	}else{
+		print "<td><em>No Graphs Found.</em></td>";
 	}
 	
 	print "</tr></table>";
 	
 	break;
 case 'list':
+	include_once("include/form.php");
+	
 	if ($current_user["show_list"] == "") {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
 	}
@@ -143,7 +218,9 @@ case 'list':
 		
 		$graphs = db_fetch_assoc("select 
 			graph_templates_graph.local_graph_id,
-			graph_templates_graph.title
+			graph_templates_graph.title,
+			graph_templates_graph.height,
+			graph_templates_graph.width
 			from graph_templates_graph 
 			left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ") 
 			$sql_where
@@ -151,21 +228,46 @@ case 'list':
 			order by graph_templates_graph.title");
 	}else{
 		$graphs = db_fetch_assoc("select 
-			local_graph_id,title 
+			local_graph_id,title,height,width
 			from graph_templates_graph 
 			where local_graph_id > 0
 			order by title");
 	}
 	
-	print "<table width='98%' align='center'>";
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
 	
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
-		print "<tr><td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title"] . "</a></strong></td></tr>\n";
+		form_alternate_row_color("f5f5f5", "ffffff", $i);
+		
+		print "<td width='1%'>";
+		form_base_checkbox("graph_" . $graph["local_graph_id"], "", "", "", 0, false);
+		print "</td>";
+		
+		print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title"] . "</a></strong></td>\n";
+		print "<td>" . $graph["height"] . "x" . $graph["width"] . "</td>\n";
+		print "</tr>";
+		
+		$i++;
 	}
 	}
 	
 	print "</table>";
+	
+	print "	<table align='center' width='98%'>
+			<tr>
+				<td width='1'>
+					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+				</td>
+				<td width='1'>";
+					form_base_dropdown("rra_id", db_fetch_assoc("select id,name from rra order by name"), "name", "id", "1", "", "");
+	print "			</td>
+				<td>	
+					<input type='image' src='images/button_view.gif' alt='View'>
+				</td>
+			</tr>
+		</table><br><br>\n";
+	
 	
 	break;
 }
