@@ -26,7 +26,7 @@ $section = "Add/Edit Graphs";
 include ('include/auth.php');
 header("Cache-control: no-cache");
 include_once ('include/form.php');
-
+print $config["path_rrdtool"]["value"];
 if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 

@@ -27,6 +27,7 @@
 	$form = $HTTP_POST_VARS;
 	parse_str(getenv('QUERY_STRING'),$args);
 	include("config.php");
+	include("config_vars.php");
 	include_once("database.php");
 	
 	include_once("browser_detect.inc");
