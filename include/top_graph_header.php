@@ -30,8 +30,8 @@
 	
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
-	$current_user = db_fetch_cell("select * from user where id=" . $_SESSION["sess_user_id"]);
-		
+	$current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
+	
 	/* set the default action if none has been set */
 	if (!ereg('^(tree|list|preview)$', $_GET["action"])) {
 		if (read_graph_config_option("default_view_mode") == "1") {
@@ -96,15 +96,15 @@
 			}
 			
 			$tree_list = db_fetch_assoc("select
-				graph_tree_view.id,
-				graph_tree_view.name,
+				graph_tree.id,
+				graph_tree.name,
 				user_auth_tree.user_id
-				from graph_tree_view
-				left join user_auth_tree on (graph_tree_view.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
+				from graph_tree
+				left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
 				$sql_where
-				order by graph_tree_view.name");
+				order by graph_tree.name");
 		}else{
-			$tree_list = db_fetch_assoc("select * from graph_tree_view order by name");
+			$tree_list = db_fetch_assoc("select * from graph_tree order by name");
 		}
 		
 		if (isset($_GET["tree_id"])) {
