@@ -26,7 +26,7 @@ unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char 
   read_objid(snmp_oid, anOID, &anOID_len);
 
   snmp_add_null_var(pdu, anOID, anOID_len);
-  printf("[%i] SNMP: query done",who);
+  printf("[%i] SNMP: query done\n",who);
   if(sessp != NULL){
     status = snmp_sess_synch_response(sessp, pdu, &response);
     if (status == STAT_TIMEOUT) printf("[%i] SNMP: Timeout (%s@%s).\n",who, session.peername, snmp_oid);

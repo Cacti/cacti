@@ -1,5 +1,3 @@
-#include <pthread.h>
-#include <signal.h>
 #include <time.h>
 #include <sys/time.h>
 #include <mysql.h>
