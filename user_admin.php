@@ -105,7 +105,7 @@ switch ($action) {
  case 'remove':
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", $current_script_name, "?action=remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this user?", getenv("HTTP_REFERER"), "user_admin.php?action=remove&id=$args[id]");
 		exit;
 	}
 	

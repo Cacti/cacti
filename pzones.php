@@ -41,7 +41,7 @@ switch ($action) {
  case 'remove':
 	if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this polling zone?", $current_script_name, "?action=remove&id=$id");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this polling zone?", getenv("HTTP_REFERER"), "pzones.php?action=remove&id=$id");
 		exit;
 	}
 	

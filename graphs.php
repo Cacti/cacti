@@ -605,7 +605,7 @@ switch ($action) {
 	case 'graph_remove':
 		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 			include_once ('include/top_header.php');
-			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=$args[local_graph_id]") . "</strong>?", "graphs.php", "?action=graph_remove&local_graph_id=$args[local_graph_id]");
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=$args[local_graph_id]") . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=$args[local_graph_id]");
 			exit;
 		}
 		

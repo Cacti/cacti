@@ -227,7 +227,7 @@ switch ($action) {
 	case 'template_remove':
 		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 			include_once ('include/top_header.php');
-			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", "graph_templates.php", "?action=template_remove&graph_template_id=$args[graph_template_id]");
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=$args[graph_template_id]");
 			exit;
 		}
 		
@@ -256,7 +256,7 @@ switch ($action) {
 	case 'input_remove':
 		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 			include_once ('include/top_header.php');
-			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=$args[graph_template_input_id]") . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", "graph_templates.php", "?action=input_remove&graph_template_input_id=$args[graph_template_input_id]&graph_template_id=$args[graph_template_id]");
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=$args[graph_template_input_id]") . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=$args[graph_template_input_id]&graph_template_id=$args[graph_template_id]");
 			exit;
 		}
 		

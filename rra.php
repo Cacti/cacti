@@ -54,7 +54,7 @@ switch ($action) {
  case 'remove':
 	if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", $current_script_name, "?action=remove&id=$id");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=$id");
 		exit;
 	}
 	

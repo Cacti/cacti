@@ -301,7 +301,7 @@ function DrawFormArea($text) { ?>
 	</tr>
 <?}
 
-function DrawConfirmForm($title_text, $body_text, $current_script_name, $action_url) { ?>
+function DrawConfirmForm($title_text, $body_text, $cancel_url, $action_url) { ?>
 		<br>
 		<table align="center" cellpadding=1 cellspacing=0 border=0 bgcolor="#B61D22" width="60%">
 			<tr>
@@ -312,7 +312,7 @@ function DrawConfirmForm($title_text, $body_text, $current_script_name, $action_
 						</tr>
 						<?
 						DrawFormArea($body_text);
-						DrawConfirmButtons($action_url, $current_script_name);
+						DrawConfirmButtons($action_url, $cancel_url);
 						?>
 					</table>
 				</td>
@@ -321,11 +321,11 @@ function DrawConfirmForm($title_text, $body_text, $current_script_name, $action_
 
 <?}
 
-function DrawConfirmButtons($action_url, $script_name) { ?>
+function DrawConfirmButtons($action_url, $cancel_url) { ?>
 	<tr>
 		<td bgcolor="#E1E1E1">
-			<a href="<?print $script_name;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
-			<a href="<?print $script_name . $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
+			<a href="<?print $cancel_url;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
+			<a href="<?print $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
 		</td>
 	</tr>
 <?}
