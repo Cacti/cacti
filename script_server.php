@@ -23,8 +23,6 @@
  | - raXnet - http://www.raxnet.net/                                       |
  +-------------------------------------------------------------------------+
 */
-// print "Cacti PHP Script Handler Service Starting\n";
-
 // load script information to handle script request
 include(dirname(__FILE__) . "/scripts/script_functions.php" );
 
@@ -59,8 +57,9 @@ while (1) {
 			break;
 		}else {
 			fputs(STDOUT, "ERROR: Problems with input\n");
-			break;
 		}
+	}else {
+		fputs(STDOUT, "ERROR: Input expected\n");
 	}
 }
 ?>
