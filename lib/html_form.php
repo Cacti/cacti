@@ -26,8 +26,6 @@
 
 /* creates a new form item with a title and description */
 function form_item_label($form_title, $form_description) { 
-	include ("config.php");
-	
 	print "<td width='50%'>";
 	if ($form_title != "") { print "<font class='textEditTitle'>$form_title</font><br>\n"; }
 	print "<font class='textEditComment'>$form_description</font>\n</td>\n";
@@ -73,8 +71,6 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 
 /* creates a dropdown box from a sql string */
 function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
-	include_once ("functions.php");
-	
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
@@ -164,8 +160,6 @@ function form_hidden_id($form_name, $form_id) {
 
 /* creates a dropdown box from a sql string */
 function form_color_dropdown($form_name, $form_previous_value, $form_none_entry, $form_default_value) { 
-	include_once ("functions.php");
-	
 	if ($form_previous_value=="") {
 		$form_previous_value = $form_default_value;
 	}
@@ -340,8 +334,6 @@ function form_base_text_box($form_name, $form_previous_value, $form_default_valu
 
 /* creates a dropdown box from a sql string */
 function form_base_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
-	include_once ("functions.php");
-	
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
@@ -480,7 +472,9 @@ function get_checkbox_style() {
 }
 
 function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
-	include ("config_arrays.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	switch ($array_struct["type"]) {
 	case 'text':
@@ -519,7 +513,9 @@ function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
 }
 
 function draw_templated_item($array_struct, $field_name, $previous_value) {
-	include ("config_arrays.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	switch ($array_struct["type"]) {
 	case 'check':
@@ -551,8 +547,6 @@ function draw_templated_row($array_struct, $field_name, $previous_value) {
 }
 
 function draw_tree_dropdown($current_tree_id) {
-	include_once ("functions.php");
-	
 	global $colors;
 	
 	$html = "";

@@ -37,7 +37,9 @@ $custom_data_source_types = array(
 	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)");
 		      
 function get_cdef_item_name($cdef_item_id) {
-	include("config_arrays.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	$cdef_item = db_fetch_row("select type,value from cdef_items where id=$cdef_item_id");
 	$current_cdef_value = $cdef_item["value"];

@@ -28,12 +28,10 @@
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 
-include("config.php");
+include("./include/config.php");
 
 /* initilize php session */
 session_start();
-
-include_once ("functions.php");
 
 /* check to see if this is a new installation */
 if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
@@ -80,9 +78,9 @@ if (read_config_option("global_auth") == "on") {
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
 			and user_auth_realm.realm_id='$realm_id'")) {
 			
-			include ("top_header.php");
-			include ("auth_noauth.php");
-			include ("bottom_footer.php");
+			include($config["include_path"] . "/top_header.php");
+			include($config["include_path"] . "/auth_noauth.php");
+			include($config["include_path"] . "/bottom_footer.php");
 			exit;
 		}
 	}

@@ -24,11 +24,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('include/config.php');
-include ('include/config_arrays.php');
+
 
 $guest_account = true;
 include_once ("include/auth.php");
+include($config["include_path"] . "/config_arrays.php");
 
 session_start();
 

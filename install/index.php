@@ -292,7 +292,7 @@ if ($_REQUEST["step"] == "4") {
 								$form_check_string = "";
 								
 								if (isset($array["check"])) {
-									if (file_exists($current_value . $array["check"])) {
+									if (@file_exists($current_value . $array["check"])) {
 										$form_check_string = "<font color='#008000'>[FOUND]</font> ";
 									}else{
 										$form_check_string = "<font color='#FF0000'>[NOT FOUND]</font> ";

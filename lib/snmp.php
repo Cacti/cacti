@@ -37,8 +37,9 @@ function data_query($host_id, $snmp_query_id) {
 }
 
 function get_data_query_array($snmp_query_id) {
-	include_once ("xml_functions.php");
-	include ("config.php");
+	global $config;
+	
+	include_once ($config["include_path"] . "/xml_functions.php");
 	
 	$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
 	$xml_file_path = str_replace("<path_cacti>", read_config_option("path_webroot") . read_config_option("path_webcacti"), $xml_file_path);
@@ -52,8 +53,6 @@ function get_data_query_array($snmp_query_id) {
 }
 
 function query_script_host($host_id, $snmp_query_id) {
-	include ("config.php");
-	
 	$script_queries = get_data_query_array($snmp_query_id);
 	
 	if ($script_queries == false) {
@@ -154,8 +153,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 }
 
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password) {
-	include ("config.php");
-	include_once ("functions.php");
+	global $config;
 	
 	if ($config["php_snmp_support"] == true) {
 		/* make sure snmp* is verbose so we can see what types of data
@@ -189,8 +187,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password) {
-	include ("config.php");
-	include_once ("functions.php");
+	global $config;
 	
 	$snmp_array = array();
 	$temp_array = array();

@@ -37,6 +37,9 @@ $config["cacti_server_os"] = "unix";
 /* built-in snmp support */
 $config["php_snmp_support"] = function_exists("snmpget");
 
+/* used for includes */
+$config["include_path"] = dirname(__FILE__);
+
 /* colors */
 $colors["dark_outline"] = "454E53";
 $colors["dark_bar"] = "AEB4B7";
@@ -58,8 +61,8 @@ $colors["form_alternate2"] = "E5E5E5";
 /* display ALL errors */
 error_reporting(E_ALL);
 
-include_once("functions.php");
-include_once("database.php");
+include_once($config["include_path"] . "/functions.php");
+include_once($config["include_path"] . "/database.php");
 
 /* current cacti version */
 $config["cacti_version"] = "0.8";

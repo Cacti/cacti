@@ -33,7 +33,9 @@ function title_trim($text, $max_length) {
 }
 
 function read_graph_config_option($config_name) {
-	include ("config_settings.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_settings.php");
 	
 	/* users must have cacti user auth turned on to use this */
 	if (read_config_option("global_auth") != "on") {
@@ -58,7 +60,9 @@ function read_graph_config_option($config_name) {
 }
 
 function read_config_option($config_name) {
-	include ("config_settings.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_settings.php");
 	
 	if (isset($_SESSION["sess_config_array"])) {
 		$config_array = unserialize($_SESSION["sess_config_array"]);
@@ -114,7 +118,9 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 }
 
 function is_error_message() {
-	include("config_arrays.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	if (isset($_SESSION["sess_messages"])) {
 		$array_messages = unserialize($_SESSION["sess_messages"]);
@@ -139,8 +145,10 @@ function raise_message($message_id) {
 }
 
 function display_output_messages() {
-	include("config_arrays.php");
-	include_once("form.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
+	include_once($config["include_path"] . "/form.php");
 	
 	if (isset($_SESSION["sess_messages"])) {
 		$error_message = is_error_message();
@@ -199,9 +207,9 @@ function array_rekey($array, $key, $key_value) {
 }
 
 function draw_menu() {
-	include ("config_arrays.php");
+	global $colors, $config;
 	
-	global $colors;
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
 	
@@ -236,8 +244,6 @@ function log_data($string, $output = false) {
 }
 
 function get_full_script_path($local_data_id) {
-	global $paths;
-	
 	$data_source = db_fetch_row("select
 		data_template_data.id,
 		data_template_data.data_input_id,
@@ -304,8 +310,6 @@ function get_data_source_name($data_template_rrd_id) {
 }
 
 function get_data_source_path($local_data_id, $expand_paths) {
-	global $paths;
-	
     	if (empty($local_data_id)) { return ""; }
     	
     	$data_source = db_fetch_row("select name,data_source_path from data_template_data where local_data_id=$local_data_id");
@@ -451,7 +455,9 @@ function generate_graph_def_name($graph_item_id) {
 }
 
 function generate_data_input_field_sequences($string, $data_input_id, $inout) {
-	include ("config_arrays.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $string, $matches)) {
 		$j = 0;

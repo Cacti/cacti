@@ -37,8 +37,9 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache($local_data_id) {
-	include_once ("snmp_functions.php");
-	include ("config.php");
+	global $config;
+	
+	include_once($config["include_path"] . "/snmp_functions.php");
 	
 	$data_input = db_fetch_row("select
 		data_input.id,
@@ -115,6 +116,23 @@ function update_poller_cache($local_data_id) {
 				$data_template_rrd_id = $data_template_rrd[0]["id"];
 			}elseif ($num_output_fields > 1) {
 				$action_type = 2; /* >= two ds */
+				
+				db_execute("delete from data_input_data_fcache where local_data_id=$local_data_id");
+				
+				/* update the field cache (fcache) */
+				$names = db_fetch_assoc("select
+					data_template_rrd.data_source_name,
+					data_input_fields.data_name
+					from data_template_rrd,data_input_fields
+					where data_template_rrd.data_input_field_id=data_input_fields.id
+					and data_template_rrd.local_data_id=$local_data_id");
+				
+				if (sizeof($names) > 0) {
+				foreach ($names as $name) {
+					db_execute("insert into data_input_data_fcache (local_data_id,data_input_field_name,rrd_data_source_name)
+						values ($local_data_id,'" . $name["data_name"] . "','" . $name["data_source_name"] . "')");
+				}
+				}
 			}
 			
 			if ($action_type) {
@@ -245,8 +263,9 @@ function push_out_data_template($data_template_id) {
 }
 
 function push_out_data_source_item($data_template_rrd_id) {
-	include ("config_arrays.php");
-	include_once ("functions.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	/* get information about this data template */
 	$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=$data_template_rrd_id");
@@ -264,8 +283,9 @@ function push_out_data_source_item($data_template_rrd_id) {
 }
 
 function push_out_data_source($data_template_data_id) {
-	include ("config_arrays.php");
-	include_once ("functions.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	/* get information about this data template */
 	$data_template_data = db_fetch_row("select * from data_template_data where id=$data_template_data_id");
@@ -333,7 +353,9 @@ function push_out_host($host_id, $local_data_id = 0) {
 }
 
 function change_data_template($local_data_id, $data_template_id) {
-	include("config_arrays.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	/* always update tables to new data template (or no data template) */
 	db_execute("update data_template_data set data_template_id=$data_template_id where local_data_id=$local_data_id");
@@ -450,8 +472,9 @@ function change_data_template($local_data_id, $data_template_id) {
 
 /* propagates values from the graph template out to each graph using that template */
 function push_out_graph($graph_template_graph_id) {
-	include ("config_arrays.php");
-	include_once ("functions.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	/* get information about this graph template */
 	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where id=$graph_template_graph_id");
@@ -470,8 +493,9 @@ function push_out_graph($graph_template_graph_id) {
 
 /* propagates values from the graph template item out to each graph item using that template */
 function push_out_graph_item($graph_template_item_id) {
-	include ("config_arrays.php");
-	include_once ("functions.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	/* get information about this graph template */
 	$graph_template_item = db_fetch_row("select * from graph_templates_item where id=$graph_template_item_id");
@@ -502,7 +526,9 @@ function push_out_graph_item($graph_template_item_id) {
 }
 
 function change_graph_template($local_graph_id, $graph_template_id, $intrusive) {
-	include("config_arrays.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	/* always update tables to new graph template (or no graph template) */
 	db_execute("update graph_templates_graph set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
@@ -652,7 +678,9 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 }
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
-	include ("config_arrays.php");
+	global $config;
+	
+	include($config["include_path"] . "/config_arrays.php");
 	
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
@@ -744,7 +772,9 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 }
 
 function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
-	include ("config_arrays.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	if (!empty($_local_data_id)) {
 		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");

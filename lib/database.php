@@ -24,7 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('adodb/adodb.inc.php');
+include($config["include_path"] . "/adodb/adodb.inc.php");
 db_connect();
 
 function db_connect() {

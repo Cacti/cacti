@@ -35,9 +35,6 @@ error_reporting(E_ALL & ~E_NOTICE);
 $status_array = array();
 $order_key_array = array(); /* for graph trees */
 
-//$paths["cacti"] = str_replace("/install", "", dirname(__FILE__));
-//$paths["rra"] = str_replace("/install", "", dirname(__FILE__)) . "/rra";
-
 function update_database($database_old, $database_username, $database_password) {
 	global $database_hostname, $database_default, $paths, $order_key_array;
 	

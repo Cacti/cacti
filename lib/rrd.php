@@ -31,8 +31,7 @@ function escape_command($command) {
 }
 
 function rrdtool_execute($command_line, $log_command, $output_flag) {
-	include ("config.php");
-	include_once ("functions.php");
+	global $config;
 	
 	if ($log_command == true) {
 		log_data("CMD: " . read_config_option("path_rrdtool") . " $command_line");
@@ -86,8 +85,9 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 }
 
 function rrdtool_function_create($local_data_id, $show_source) {
-	include_once ("functions.php");
-	include ("config_arrays.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	$data_source_path = get_data_source_path($local_data_id, true);
 	
@@ -168,8 +168,6 @@ function rrdtool_function_create($local_data_id, $show_source) {
 }
 
 function rrdtool_function_update($update_cache_array) {
-	include_once ("functions.php");
-	
 	while (list($local_data_id, $update_array) = each($update_cache_array)) {
 		$data_source_path = get_data_source_path($local_data_id, true);
 		
@@ -203,8 +201,9 @@ function rrdtool_function_update($update_cache_array) {
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
-	include_once ("functions.php");
-	include ("config_arrays.php");
+	global $config;
+	
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	$data_source_name = get_data_source_name($rrd_tune_array["data_source_id"]);
 	$data_source_type = $data_source_types{$rrd_tune_array["data-source-type"]};
@@ -241,9 +240,10 @@ function rrdtool_function_tune($rrd_tune_array) {
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
-	include_once ("functions.php");
-	include_once ("cdef_functions.php");
-	include ("config_arrays.php");
+	global $config;
+	
+	include_once ($config["include_path"] . "/cdef_functions.php");
+	include ($config["include_path"] . "/config_arrays.php");
 	
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
