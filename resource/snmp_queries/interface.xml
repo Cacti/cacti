@@ -1,0 +1,57 @@
+<interface>
+	<name>Get SNMP Interfaces</name>
+	<description>Queries a host for a list of monitorable interfaces</description>
+	<oid_index>.1.3.6.1.2.1.2.2.1.1</oid_index>
+	
+	<fields>
+		<ifDesc>
+			<name>Interface Description</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.2</oid>
+		</ifDesc>
+		<ifType>
+			<name>Interface Type</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.3</oid>
+		</ifType>
+		<ifSpeed>
+			<name>Interface Speed</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.5</oid>
+		</ifSpeed>
+		<ifHwAddr>
+			<name>Interface Hardware Address</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.6</oid>
+		</ifHwAddr>
+		<ifInOctets>
+			<name>Input Octets</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.16</oid>
+		</ifInOctets>
+		<ifOutOctets>
+			<name>Output Octets</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.2.2.1.16</oid>
+		</ifOutOctets>
+		<ifIP>
+			<name>Interface IP Address</name>
+			<method>walk</method>
+			<source>OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.2.1.4.20.1.2</oid>
+		</ifIP>
+	</fields>
+</interface>
