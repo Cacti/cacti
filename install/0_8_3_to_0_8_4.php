@@ -37,6 +37,9 @@ function upgrade_to_0_8_4() {
 	db_install_execute("0.8.4", "ALTER TABLE `host` ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED DEFAULT '500' NOT NULL AFTER `snmp_port`, DROP `management_ip`;");
 	db_install_execute("0.8.4", "ALTER TABLE `data_input` DROP `output_string`;");
 	
+	db_install_execute("0.8.4", "ALTER TABLE `host_snmp_cache` DROP PRIMARY KEY;");
+	db_install_execute("0.8.4", "ALTER TABLE `host_snmp_cache` ADD PRIMARY KEY ( `host_id` , `snmp_query_id` , `field_name` , `snmp_index` );");
+	
 	/* hash columns for xml export/import code */
 	db_install_execute("0.8.4", "ALTER TABLE `data_input_fields` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
 	db_install_execute("0.8.4", "ALTER TABLE `data_template_rrd` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
