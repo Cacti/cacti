@@ -74,7 +74,7 @@ switch ($action) {
 						foreach (array_keys($tabs) as $tab_short_name) {
 						?>
 							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a href="settings.php?tab=<?print $tab_short_name;?>"><?print $tabs[$tab_short_name];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="settings.php?tab=<?print $tab_short_name;?>"><?print $tabs[$tab_short_name];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 							</td>
 						<?
 						}

@@ -51,6 +51,10 @@
 	.linkOverDark:visited {color: #ffffff; text-decoration: none;}
 	.linkOverDark:active {color: #ffffff; text-decoration: none;}
 	.linkOverDark:hover {color: #ffffff; text-decoration: underline;}
+	.linkTabs {color: #cd0000; text-decoration: none;}
+	.linkTabs:visited {color: #cd0000; text-decoration: none;}
+	.linkTabs:active {color: #ee2c2c; text-decoration: none;}
+	.linkTabs:hover {color: #ee2c2c; text-decoration: none;}
 	-->
 </style>
 	<?include_once("include/js_popup.inc");?>
