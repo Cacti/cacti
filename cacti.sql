@@ -1,1284 +1,2124 @@
-#
-# Table structure for table `auth_acl`
-#
+-- MySQL dump 8.22
+--
+-- Host: localhost    Database: dev_cacti_2
+---------------------------------------------------------
+-- Server version	3.23.54
 
-CREATE TABLE auth_acl (
-  SectionID smallint(4) NOT NULL default '0',
-  UserID smallint(4) NOT NULL default '0'
+--
+-- Table structure for table 'cdef'
+--
+
+CREATE TABLE cdef (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(255) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_acl`
-#
+--
+-- Dumping data for table 'cdef'
+--
 
-INSERT INTO auth_acl VALUES (7, 1);
-INSERT INTO auth_acl VALUES (1, 1);
-INSERT INTO auth_acl VALUES (2, 1);
-INSERT INTO auth_acl VALUES (8, 1);
-INSERT INTO auth_acl VALUES (9, 1);
-INSERT INTO auth_acl VALUES (5, 1);
-INSERT INTO auth_acl VALUES (3, 1);
-INSERT INTO auth_acl VALUES (7, 3);
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_areas`
-#
+INSERT INTO cdef VALUES (3,'Make Stack Negative');
+INSERT INTO cdef VALUES (4,'Make Per 5 Minutes');
+INSERT INTO cdef VALUES (12,'Total All Data Sources');
+INSERT INTO cdef VALUES (2,'Turn Bytes into Bits');
+INSERT INTO cdef VALUES (14,'Multiply by 1024');
 
-CREATE TABLE auth_areas (
-  ID smallint(4) NOT NULL auto_increment,
-  Name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'cdef_items'
+--
+
+CREATE TABLE cdef_items (
+  id mediumint(8) NOT NULL auto_increment,
+  cdef_id mediumint(8) NOT NULL default '0',
+  sequence mediumint(8) NOT NULL default '0',
+  type tinyint(2) NOT NULL default '0',
+  value char(150) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY cdef_id (cdef_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_areas`
-#
+--
+-- Dumping data for table 'cdef_items'
+--
 
-INSERT INTO auth_areas VALUES (1, 'cacti');
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_graph`
-#
+INSERT INTO cdef_items VALUES (7,2,1,4,'CURRENT_DATA_SOURCE');
+INSERT INTO cdef_items VALUES (9,2,3,6,'8');
+INSERT INTO cdef_items VALUES (8,2,2,2,'3');
+INSERT INTO cdef_items VALUES (10,3,1,4,'CURRENT_DATA_SOURCE');
+INSERT INTO cdef_items VALUES (11,3,2,2,'3');
+INSERT INTO cdef_items VALUES (12,3,3,6,'-1');
+INSERT INTO cdef_items VALUES (13,4,1,4,'CURRENT_DATA_SOURCE');
+INSERT INTO cdef_items VALUES (14,4,3,2,'3');
+INSERT INTO cdef_items VALUES (15,4,2,6,'300');
+INSERT INTO cdef_items VALUES (16,12,1,4,'ALL_DATA_SOURCES_NODUPS');
+INSERT INTO cdef_items VALUES (18,14,1,4,'CURRENT_DATA_SOURCE');
+INSERT INTO cdef_items VALUES (19,14,2,6,'1024');
+INSERT INTO cdef_items VALUES (20,14,3,2,'3');
 
-CREATE TABLE auth_graph (
-  UserID smallint(5) NOT NULL default '0',
-  GraphID smallint(5) NOT NULL default '0'
+--
+-- Table structure for table 'colors'
+--
+
+CREATE TABLE colors (
+  id mediumint(8) NOT NULL auto_increment,
+  hex varchar(6) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_graph`
-#
+--
+-- Dumping data for table 'colors'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_graph_hierarchy`
-#
+INSERT INTO colors VALUES (1,'000000');
+INSERT INTO colors VALUES (2,'FFFFFF');
+INSERT INTO colors VALUES (4,'FAFD9E');
+INSERT INTO colors VALUES (5,'C0C0C0');
+INSERT INTO colors VALUES (6,'74C366');
+INSERT INTO colors VALUES (7,'6DC8FE');
+INSERT INTO colors VALUES (8,'EA8F00');
+INSERT INTO colors VALUES (9,'FF0000');
+INSERT INTO colors VALUES (10,'4444FF');
+INSERT INTO colors VALUES (11,'FF00FF');
+INSERT INTO colors VALUES (12,'00FF00');
+INSERT INTO colors VALUES (13,'8D85F3');
+INSERT INTO colors VALUES (14,'AD3B6E');
+INSERT INTO colors VALUES (15,'EACC00');
+INSERT INTO colors VALUES (16,'12B3B5');
+INSERT INTO colors VALUES (17,'157419');
+INSERT INTO colors VALUES (18,'C4FD3D');
+INSERT INTO colors VALUES (19,'817C4E');
+INSERT INTO colors VALUES (20,'002A97');
+INSERT INTO colors VALUES (21,'0000FF');
+INSERT INTO colors VALUES (22,'00CF00');
+INSERT INTO colors VALUES (24,'F9FD5F');
+INSERT INTO colors VALUES (25,'FFF200');
+INSERT INTO colors VALUES (26,'CCBB00');
+INSERT INTO colors VALUES (27,'837C04');
+INSERT INTO colors VALUES (28,'EAAF00');
+INSERT INTO colors VALUES (29,'FFD660');
+INSERT INTO colors VALUES (30,'FFC73B');
+INSERT INTO colors VALUES (31,'FFAB00');
+INSERT INTO colors VALUES (33,'FF7D00');
+INSERT INTO colors VALUES (34,'ED7600');
+INSERT INTO colors VALUES (35,'FF5700');
+INSERT INTO colors VALUES (36,'EE5019');
+INSERT INTO colors VALUES (37,'B1441E');
+INSERT INTO colors VALUES (38,'FFC3C0');
+INSERT INTO colors VALUES (39,'FF897C');
+INSERT INTO colors VALUES (40,'FF6044');
+INSERT INTO colors VALUES (41,'FF4105');
+INSERT INTO colors VALUES (42,'DA4725');
+INSERT INTO colors VALUES (43,'942D0C');
+INSERT INTO colors VALUES (44,'FF3932');
+INSERT INTO colors VALUES (45,'862F2F');
+INSERT INTO colors VALUES (46,'FF5576');
+INSERT INTO colors VALUES (47,'562B29');
+INSERT INTO colors VALUES (48,'F51D30');
+INSERT INTO colors VALUES (49,'DE0056');
+INSERT INTO colors VALUES (50,'ED5394');
+INSERT INTO colors VALUES (51,'B90054');
+INSERT INTO colors VALUES (52,'8F005C');
+INSERT INTO colors VALUES (53,'F24AC8');
+INSERT INTO colors VALUES (54,'E8CDEF');
+INSERT INTO colors VALUES (55,'D8ACE0');
+INSERT INTO colors VALUES (56,'A150AA');
+INSERT INTO colors VALUES (57,'750F7D');
+INSERT INTO colors VALUES (58,'8D00BA');
+INSERT INTO colors VALUES (59,'623465');
+INSERT INTO colors VALUES (60,'55009D');
+INSERT INTO colors VALUES (61,'3D168B');
+INSERT INTO colors VALUES (62,'311F4E');
+INSERT INTO colors VALUES (63,'D2D8F9');
+INSERT INTO colors VALUES (64,'9FA4EE');
+INSERT INTO colors VALUES (65,'6557D0');
+INSERT INTO colors VALUES (66,'4123A1');
+INSERT INTO colors VALUES (67,'4668E4');
+INSERT INTO colors VALUES (68,'0D006A');
+INSERT INTO colors VALUES (69,'00004D');
+INSERT INTO colors VALUES (70,'001D61');
+INSERT INTO colors VALUES (71,'00234B');
+INSERT INTO colors VALUES (72,'002A8F');
+INSERT INTO colors VALUES (73,'2175D9');
+INSERT INTO colors VALUES (74,'7CB3F1');
+INSERT INTO colors VALUES (75,'005199');
+INSERT INTO colors VALUES (76,'004359');
+INSERT INTO colors VALUES (77,'00A0C1');
+INSERT INTO colors VALUES (78,'007283');
+INSERT INTO colors VALUES (79,'00BED9');
+INSERT INTO colors VALUES (80,'AFECED');
+INSERT INTO colors VALUES (81,'55D6D3');
+INSERT INTO colors VALUES (82,'00BBB4');
+INSERT INTO colors VALUES (83,'009485');
+INSERT INTO colors VALUES (84,'005D57');
+INSERT INTO colors VALUES (85,'008A77');
+INSERT INTO colors VALUES (86,'008A6D');
+INSERT INTO colors VALUES (87,'00B99B');
+INSERT INTO colors VALUES (88,'009F67');
+INSERT INTO colors VALUES (89,'00694A');
+INSERT INTO colors VALUES (90,'00A348');
+INSERT INTO colors VALUES (91,'00BF47');
+INSERT INTO colors VALUES (92,'96E78A');
+INSERT INTO colors VALUES (93,'00BD27');
+INSERT INTO colors VALUES (94,'35962B');
+INSERT INTO colors VALUES (95,'7EE600');
+INSERT INTO colors VALUES (96,'6EA100');
+INSERT INTO colors VALUES (97,'CAF100');
+INSERT INTO colors VALUES (98,'F5F800');
+INSERT INTO colors VALUES (99,'CDCFC4');
+INSERT INTO colors VALUES (100,'BCBEB3');
+INSERT INTO colors VALUES (101,'AAABA1');
+INSERT INTO colors VALUES (102,'8F9286');
+INSERT INTO colors VALUES (103,'797C6E');
+INSERT INTO colors VALUES (104,'2E3127');
 
-CREATE TABLE auth_graph_hierarchy (
-  UserID smallint(5) NOT NULL default '0',
-  HierarchyID smallint(5) NOT NULL default '0'
+--
+-- Table structure for table 'data_input'
+--
+
+CREATE TABLE data_input (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(200) NOT NULL default '',
+  input_string varchar(255) default NULL,
+  output_string varchar(255) default NULL,
+  type_id tinyint(2) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_graph_hierarchy`
-#
+--
+-- Dumping data for table 'data_input'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_hosts`
-#
+INSERT INTO data_input VALUES (1,'Get SNMP Data','','',2);
+INSERT INTO data_input VALUES (2,'Get SNMP Data (Indexed)','','',3);
+INSERT INTO data_input VALUES (3,'Unix - Get Free Disk Space','perl <path_cacti>/scripts/diskfree.pl <partition>','',1);
+INSERT INTO data_input VALUES (4,'Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl','',1);
+INSERT INTO data_input VALUES (5,'Unix - Get Logged In Users','perl <path_cacti>/scripts/users.pl <username>','',1);
+INSERT INTO data_input VALUES (6,'Linux - Get Memory Usage','perl <path_cacti>/scripts/memfree.pl <grepstr>','',1);
+INSERT INTO data_input VALUES (7,'Unix - Get System Processes','perl <path_cacti>/scripts/proc.pl','',1);
+INSERT INTO data_input VALUES (8,'Unix - Get TCP Connections','perl <path_cacti>/scripts/tcp_custom.pl <grepstr>','',1);
+INSERT INTO data_input VALUES (9,'Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>','',1);
+INSERT INTO data_input VALUES (10,'Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>','',1);
 
-CREATE TABLE auth_hosts (
-  ID tinyint(4) NOT NULL auto_increment,
-  Hostname char(50) default NULL,
-  UserID smallint(4) NOT NULL default '0',
-  Type tinyint(1) default NULL,
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_input_data'
+--
+
+CREATE TABLE data_input_data (
+  data_input_field_id mediumint(8) NOT NULL default '0',
+  data_template_data_id mediumint(8) NOT NULL default '0',
+  t_value char(2) default NULL,
+  value text,
+  PRIMARY KEY  (data_input_field_id,data_template_data_id),
+  KEY data_input_field_id (data_input_field_id,data_template_data_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_hosts`
-#
+--
+-- Dumping data for table 'data_input_data'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_log`
-#
+INSERT INTO data_input_data VALUES (14,1,'on','');
+INSERT INTO data_input_data VALUES (13,1,'on','');
+INSERT INTO data_input_data VALUES (12,1,'on','');
+INSERT INTO data_input_data VALUES (14,2,'on','');
+INSERT INTO data_input_data VALUES (13,2,'on','');
+INSERT INTO data_input_data VALUES (12,2,'on','');
+INSERT INTO data_input_data VALUES (14,3,'on','');
+INSERT INTO data_input_data VALUES (13,3,'on','');
+INSERT INTO data_input_data VALUES (12,3,'on','');
+INSERT INTO data_input_data VALUES (6,4,'','.1.3.6.1.4.1.2021.11.52.0');
+INSERT INTO data_input_data VALUES (6,5,'','.1.3.6.1.4.1.2021.11.50.0');
+INSERT INTO data_input_data VALUES (6,6,'','.1.3.6.1.4.1.2021.11.51.0');
+INSERT INTO data_input_data VALUES (14,7,'on','');
+INSERT INTO data_input_data VALUES (13,7,'on','');
+INSERT INTO data_input_data VALUES (12,7,'on','');
+INSERT INTO data_input_data VALUES (14,8,'on','');
+INSERT INTO data_input_data VALUES (13,8,'on','');
+INSERT INTO data_input_data VALUES (12,8,'on','');
+INSERT INTO data_input_data VALUES (14,9,'on','');
+INSERT INTO data_input_data VALUES (13,9,'on','');
+INSERT INTO data_input_data VALUES (12,9,'on','');
+INSERT INTO data_input_data VALUES (14,10,'on','');
+INSERT INTO data_input_data VALUES (13,10,'on','');
+INSERT INTO data_input_data VALUES (12,10,'on','');
+INSERT INTO data_input_data VALUES (22,12,'','Buffers:');
+INSERT INTO data_input_data VALUES (22,13,'','MemFree:');
+INSERT INTO data_input_data VALUES (22,14,'','^Cached:');
+INSERT INTO data_input_data VALUES (22,15,'','SwapFree:');
+INSERT INTO data_input_data VALUES (29,18,'on','');
+INSERT INTO data_input_data VALUES (6,19,'','.1.3.6.1.4.1.23.2.28.3.1');
+INSERT INTO data_input_data VALUES (6,20,'','.1.3.6.1.4.1.23.2.28.3.2');
+INSERT INTO data_input_data VALUES (6,21,'','.1.3.6.1.2.1.25.3.3.1.2.1');
+INSERT INTO data_input_data VALUES (6,22,'','.1.3.6.1.4.1.23.2.28.2.1.0');
+INSERT INTO data_input_data VALUES (6,23,'','.1.3.6.1.4.1.23.2.28.2.2.0');
+INSERT INTO data_input_data VALUES (6,24,'','.1.3.6.1.4.1.23.2.28.2.5.0');
+INSERT INTO data_input_data VALUES (6,25,'','.1.3.6.1.4.1.23.2.28.2.6.0');
+INSERT INTO data_input_data VALUES (6,26,'','.1.3.6.1.4.1.23.2.28.2.7.0');
+INSERT INTO data_input_data VALUES (6,27,'','.1.3.6.1.4.1.9.9.109.1.1.1.1.5.1');
+INSERT INTO data_input_data VALUES (6,28,'','.1.3.6.1.4.1.9.9.109.1.1.1.1.3.1');
+INSERT INTO data_input_data VALUES (6,29,'','.1.3.6.1.4.1.9.9.109.1.1.1.1.4.1');
+INSERT INTO data_input_data VALUES (6,30,'','.1.3.6.1.4.1.2021.10.1.3.1');
+INSERT INTO data_input_data VALUES (6,31,'','.1.3.6.1.4.1.2021.10.1.3.2');
+INSERT INTO data_input_data VALUES (6,32,'','.1.3.6.1.4.1.2021.10.1.3.3');
+INSERT INTO data_input_data VALUES (6,33,'','.1.3.6.1.4.1.2021.4.14.0');
+INSERT INTO data_input_data VALUES (6,34,'','.1.3.6.1.4.1.2021.4.6.0');
+INSERT INTO data_input_data VALUES (14,35,'on','');
+INSERT INTO data_input_data VALUES (13,35,'on','');
+INSERT INTO data_input_data VALUES (12,35,'on','');
+INSERT INTO data_input_data VALUES (14,36,'on','');
+INSERT INTO data_input_data VALUES (13,36,'on','');
+INSERT INTO data_input_data VALUES (12,36,'on','');
 
-CREATE TABLE auth_log (
-  ID smallint(5) NOT NULL auto_increment,
-  Username char(50) NOT NULL default '0',
-  Time timestamp(14) NOT NULL,
-  Success tinyint(4) NOT NULL default '0',
-  AttemptedPass char(255) default NULL,
-  IP char(50) default NULL,
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_input_data_cache'
+--
+
+CREATE TABLE data_input_data_cache (
+  local_data_id mediumint(8) NOT NULL default '0',
+  data_input_id mediumint(8) NOT NULL default '0',
+  action tinyint(2) NOT NULL default '1',
+  command varchar(255) NOT NULL default '',
+  management_ip varchar(15) NOT NULL default '',
+  snmp_community varchar(100) NOT NULL default '',
+  snmp_version tinyint(1) NOT NULL default '0',
+  snmp_username varchar(50) NOT NULL default '',
+  snmp_password varchar(50) NOT NULL default '',
+  rrd_name varchar(19) NOT NULL default '',
+  rrd_path varchar(255) NOT NULL default '',
+  arg1 varchar(255) default NULL,
+  arg2 varchar(255) default NULL,
+  arg3 varchar(255) default NULL,
+  PRIMARY KEY  (local_data_id,rrd_name),
+  KEY local_data_id (local_data_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_log`
-#
+--
+-- Dumping data for table 'data_input_data_cache'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_sections`
-#
 
-CREATE TABLE auth_sections (
-  ID smallint(4) NOT NULL auto_increment,
-  Section char(50) NOT NULL default '',
-  AreaID smallint(4) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_input_fields'
+--
+
+CREATE TABLE data_input_fields (
+  id mediumint(8) NOT NULL auto_increment,
+  data_input_id mediumint(8) NOT NULL default '0',
+  name varchar(200) NOT NULL default '',
+  data_name varchar(50) NOT NULL default '',
+  input_output char(3) NOT NULL default '',
+  update_rra char(2) default '0',
+  sequence smallint(5) NOT NULL default '0',
+  type_code varchar(40) default NULL,
+  regexp_match varchar(200) default NULL,
+  allow_nulls char(2) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id),
+  KEY data_input_id (data_input_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_sections`
-#
+--
+-- Dumping data for table 'data_input_fields'
+--
 
-INSERT INTO auth_sections VALUES (1, 'User Administration', 1);
-INSERT INTO auth_sections VALUES (2, 'Data Input Methods', 1);
-INSERT INTO auth_sections VALUES (3, 'Add/Edit Data Sources', 1);
-INSERT INTO auth_sections VALUES (5, 'Add/Edit Graphs', 1);
-INSERT INTO auth_sections VALUES (7, 'View Graphs', 1);
-INSERT INTO auth_sections VALUES (8, 'Console Access', 1);
-INSERT INTO auth_sections VALUES (9, 'Add/Edit Round Robin Archives', 1);
-# --------------------------------------------------------
 
-#
-# Table structure for table `auth_users`
-#
+INSERT INTO data_input_fields VALUES (1,1,'SNMP IP Address','management_ip','in','',0,'management_ip','','');
+INSERT INTO data_input_fields VALUES (2,1,'SNMP Community','snmp_community','in','',0,'snmp_community','','');
+INSERT INTO data_input_fields VALUES (3,1,'SNMP Username','snmp_username','in','',0,'snmp_username','','on');
+INSERT INTO data_input_fields VALUES (4,1,'SNMP Password','snmp_password','in','',0,'snmp_password','','on');
+INSERT INTO data_input_fields VALUES (5,1,'SNMP Version (1, 2, or 3)','snmp_version','in','',0,'snmp_version','','on');
+INSERT INTO data_input_fields VALUES (6,1,'OID','oid','in','',0,'snmp_oid','','');
+INSERT INTO data_input_fields VALUES (7,2,'SNMP IP Address','management_ip','in','',0,'management_ip','','');
+INSERT INTO data_input_fields VALUES (8,2,'SNMP Community','snmp_community','in','',0,'snmp_community','','');
+INSERT INTO data_input_fields VALUES (9,2,'SNMP Username (v3)','snmp_username','in','',0,'snmp_username','','on');
+INSERT INTO data_input_fields VALUES (10,2,'SNMP Password (v3)','snmp_password','in','',0,'snmp_password','','on');
+INSERT INTO data_input_fields VALUES (11,2,'SNMP Version (1, 2, or 3)','snmp_version','in','',0,'snmp_version','','');
+INSERT INTO data_input_fields VALUES (12,2,'Index Type','index_type','in','',0,'index_type','','');
+INSERT INTO data_input_fields VALUES (13,2,'Index Value','index_value','in','',0,'index_value','','');
+INSERT INTO data_input_fields VALUES (14,2,'Output Type ID','output_type','in','',0,'output_type','','');
+INSERT INTO data_input_fields VALUES (15,3,'Disk Partition','partition','in','',1,'','','');
+INSERT INTO data_input_fields VALUES (16,3,'Kilobytes Free','kilobytes','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (17,4,'1 Minute Average','1min','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (18,4,'5 Minute Average','5min','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (19,4,'10 Minute Average','10min','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (20,5,'Username (Optional)','username','in','',1,'','','on');
+INSERT INTO data_input_fields VALUES (21,5,'Logged In Users','users','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (22,6,'Grep String','grepstr','in','',1,'','','');
+INSERT INTO data_input_fields VALUES (23,6,'Result (in Kilobytes)','kilobytes','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (24,7,'Number of Processes','proc','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (25,8,'Grep String','grepstr','in','',1,'','','on');
+INSERT INTO data_input_fields VALUES (26,8,'Connections','connections','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (27,9,'(Optional) Log Path','log_path','in','',1,'','','on');
+INSERT INTO data_input_fields VALUES (28,9,'Web Hits','webhits','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (29,10,'IP Address','ip','in','',1,'','','');
+INSERT INTO data_input_fields VALUES (30,10,'Milliseconds','out_ms','out','on',0,'','','');
 
-CREATE TABLE auth_users (
-  ID smallint(4) NOT NULL auto_increment,
-  Username char(50) NOT NULL default '0',
-  Password char(50) NOT NULL default '0',
-  FullName char(100) default '0',
-  MustChangePassword char(2) default NULL,
-  ShowTree char(2) default 'on',
-  ShowList char(2) default 'on',
-  ShowPreview char(2) NOT NULL default 'on',
-  GraphSettings char(2) default NULL,
-  LoginOpts tinyint(1) NOT NULL default '1',
-  GraphPolicy tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_local'
+--
+
+CREATE TABLE data_local (
+  id mediumint(8) NOT NULL auto_increment,
+  data_template_id mediumint(8) NOT NULL default '0',
+  host_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `auth_users`
-#
+--
+-- Dumping data for table 'data_local'
+--
 
-INSERT INTO auth_users VALUES (1, 'admin', '43e9a4ab75570f5b', 'Administrator', 'on', 'on', 'on', 'on', 'on', '1', '1');
-INSERT INTO auth_users VALUES (3, 'guest', '43e9a4ab75570f5b', 'Guest Account', 'on', 'on', 'on', 'on', '', '3', '2');
-# --------------------------------------------------------
 
-#
-# Table structure for table `def_cdef`
-#
 
-CREATE TABLE def_cdef (
-  ID smallint(5) NOT NULL auto_increment,
-  Name char(100) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_template'
+--
+
+CREATE TABLE data_template (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(150) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `def_cdef`
-#
+--
+-- Dumping data for table 'data_template'
+--
 
-INSERT INTO def_cdef VALUES (1, 'SIN');
-INSERT INTO def_cdef VALUES (2, 'COS');
-INSERT INTO def_cdef VALUES (3, 'LOG');
-INSERT INTO def_cdef VALUES (4, 'EXP');
-INSERT INTO def_cdef VALUES (5, 'FLOOR');
-INSERT INTO def_cdef VALUES (6, 'CEIL');
-INSERT INTO def_cdef VALUES (7, 'LT');
-INSERT INTO def_cdef VALUES (8, 'LE');
-INSERT INTO def_cdef VALUES (9, 'GT');
-INSERT INTO def_cdef VALUES (10, 'GE');
-INSERT INTO def_cdef VALUES (11, 'EQ');
-INSERT INTO def_cdef VALUES (12, 'IF');
-INSERT INTO def_cdef VALUES (13, 'MIN');
-INSERT INTO def_cdef VALUES (14, 'MAX');
-INSERT INTO def_cdef VALUES (15, 'LIMIT');
-INSERT INTO def_cdef VALUES (16, 'DUP');
-INSERT INTO def_cdef VALUES (17, 'EXC');
-INSERT INTO def_cdef VALUES (18, 'POP');
-INSERT INTO def_cdef VALUES (19, 'UN');
-INSERT INTO def_cdef VALUES (20, 'UNKN');
-INSERT INTO def_cdef VALUES (21, 'PREV');
-INSERT INTO def_cdef VALUES (22, 'INF');
-INSERT INTO def_cdef VALUES (23, 'NEGINF');
-INSERT INTO def_cdef VALUES (24, 'NOW');
-INSERT INTO def_cdef VALUES (25, 'TIME');
-INSERT INTO def_cdef VALUES (26, 'LTIME');
-INSERT INTO def_cdef VALUES (27, '+');
-INSERT INTO def_cdef VALUES (28, '-');
-INSERT INTO def_cdef VALUES (29, '*');
-INSERT INTO def_cdef VALUES (30, '/');
-INSERT INTO def_cdef VALUES (31, '%');
-# --------------------------------------------------------
 
-#
-# Table structure for table `def_cf`
-#
+INSERT INTO data_template VALUES (1,'SNMP - Traffic - In');
+INSERT INTO data_template VALUES (2,'SNMP - Traffic - Out');
+INSERT INTO data_template VALUES (3,'SNMP - Hard Drive Space');
+INSERT INTO data_template VALUES (4,'ucd/net - CPU Usage - System');
+INSERT INTO data_template VALUES (5,'ucd/net - CPU Usage - User');
+INSERT INTO data_template VALUES (6,'ucd/net - CPU Usage - Nice');
+INSERT INTO data_template VALUES (7,'Karlnet - Noise Level');
+INSERT INTO data_template VALUES (8,'Karlnet - Signal Level');
+INSERT INTO data_template VALUES (9,'Karlnet - Wireless Transmits');
+INSERT INTO data_template VALUES (10,'Karlnet - Wireless Re-Transmits');
+INSERT INTO data_template VALUES (11,'Unix - Load Average');
+INSERT INTO data_template VALUES (12,'Linux - Memory - Buffers');
+INSERT INTO data_template VALUES (13,'Linux - Memory - Free');
+INSERT INTO data_template VALUES (14,'Linux - Memory - Cache');
+INSERT INTO data_template VALUES (15,'Linux - Memory - Free Swap');
+INSERT INTO data_template VALUES (16,'Unix - Processes');
+INSERT INTO data_template VALUES (17,'Unix - Logged in Users');
+INSERT INTO data_template VALUES (18,'Unix - Ping Host');
+INSERT INTO data_template VALUES (19,'Netware - Total Users');
+INSERT INTO data_template VALUES (20,'Netware - Total Logins');
+INSERT INTO data_template VALUES (21,'Netware - CPU Usage');
+INSERT INTO data_template VALUES (22,'Netware - File System Reads');
+INSERT INTO data_template VALUES (23,'Netware - File System Writes');
+INSERT INTO data_template VALUES (24,'Netware - Cache Checks');
+INSERT INTO data_template VALUES (25,'Netware - Cache Hits');
+INSERT INTO data_template VALUES (26,'Netware - Open Files');
+INSERT INTO data_template VALUES (27,'Cisco Router - 5 Minute CPU');
+INSERT INTO data_template VALUES (28,'Cisco Router - 5 Second CPU');
+INSERT INTO data_template VALUES (29,'Cisco Router - 1 Minute CPU');
+INSERT INTO data_template VALUES (35,'Netware - Volumes');
+INSERT INTO data_template VALUES (30,'ucd/net - Load Average - 1 Minute');
+INSERT INTO data_template VALUES (31,'ucd/net - Load Average - 5 Minute');
+INSERT INTO data_template VALUES (32,'ucd/net - Load Average - 15 Minute');
+INSERT INTO data_template VALUES (33,'ucd/net - Memory - Buffers');
+INSERT INTO data_template VALUES (34,'ucd/net - Memory - Free');
+INSERT INTO data_template VALUES (36,'Netware - Directory Entries');
 
-CREATE TABLE def_cf (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_template_data'
+--
+
+CREATE TABLE data_template_data (
+  id mediumint(8) NOT NULL auto_increment,
+  local_data_template_data_id mediumint(8) NOT NULL default '0',
+  local_data_id mediumint(8) NOT NULL default '0',
+  data_template_id mediumint(8) NOT NULL default '0',
+  data_input_id mediumint(8) NOT NULL default '0',
+  t_name char(2) default NULL,
+  name varchar(250) NOT NULL default '',
+  data_source_path varchar(255) default NULL,
+  t_active char(2) default NULL,
+  active char(2) default NULL,
+  t_rrd_step char(2) default NULL,
+  rrd_step smallint(5) NOT NULL default '0',
+  t_rra_id char(2) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id),
+  KEY local_data_id (local_data_id),
+  KEY data_template_id (data_template_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `def_cf`
-#
+--
+-- Dumping data for table 'data_template_data'
+--
 
-INSERT INTO def_cf VALUES (1, 'AVERAGE');
-INSERT INTO def_cf VALUES (2, 'MIN');
-INSERT INTO def_cf VALUES (3, 'MAX');
-INSERT INTO def_cf VALUES (4, 'LAST');
-# --------------------------------------------------------
 
-#
-# Table structure for table `def_colors`
-#
+INSERT INTO data_template_data VALUES (1,0,0,1,2,'on','SNMP - Traffic - In',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (2,0,0,2,2,'on','SNMP - Traffic - Out',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (3,0,0,3,2,'on','SNMP - Hard Drive Space',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (4,0,0,4,1,'on','ucd/net - CPU Usage - System',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (5,0,0,5,1,'on','ucd/net - CPU Usage - User',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (6,0,0,6,1,'on','ucd/net - CPU Usage - Nice',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (7,0,0,7,2,'on','Karlnet - Noise Level',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (8,0,0,8,2,'on','Karlnet - Signal Level',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (9,0,0,9,2,'on','Karlnet - Wireless Transmits',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (10,0,0,10,2,'on','Karlnet - Wireless Re-Transmits',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (11,0,0,11,4,'on','Unix - Load Average',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (12,0,0,12,6,'on','Linux - Memory - Buffers',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (13,0,0,13,6,'on','Linux - Memory - Free',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (14,0,0,14,6,'on','Linux - Memory - Cache',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (15,0,0,15,6,'on','Linux - Memory - Free Swap',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (16,0,0,16,7,'on','Unix - Processes',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (17,0,0,17,5,'on','Unix - Logged in Users',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (18,0,0,18,10,'on','Unix - Ping Host',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (19,0,0,19,1,'on','Netware - Total Users',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (20,0,0,20,1,'on','Netware - Total Logins',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (21,0,0,21,1,'on','Netware - CPU Usage',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (22,0,0,22,1,'on','Netware - File System Reads',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (23,0,0,23,1,'on','Netware - File System Writes',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (24,0,0,24,1,'on','Netware - Cache Checks',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (25,0,0,25,1,'on','Netware - Cache Hits',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (26,0,0,26,1,'on','Netware - Open Files',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (27,0,0,27,1,'on','Cisco Router - 5 Minute CPU',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (28,0,0,28,1,'on','Cisco Router - 5 Second CPU',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (29,0,0,29,1,'on','Cisco Router - 1 Minute CPU',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (30,0,0,30,1,'on','ucd/net - Load Average - 1 Minute',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (31,0,0,31,1,'on','ucd/net - Load Average - 5 Minute',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (32,0,0,32,1,'on','ucd/net - Load Average - 15 Minute',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (33,0,0,33,1,'on','ucd/net - Memory - Buffers',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (34,0,0,34,1,'on','ucd/net - Memory - Free',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (35,0,0,35,2,'','Netware - Volumes',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (36,0,0,36,2,'','Netware - Directory Entries',NULL,'','on','',300,'');
 
-CREATE TABLE def_colors (
-  ID smallint(5) NOT NULL auto_increment,
-  Hex varchar(6) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_template_data_rra'
+--
+
+CREATE TABLE data_template_data_rra (
+  data_template_data_id mediumint(8) NOT NULL default '0',
+  rra_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (data_template_data_id,rra_id),
+  KEY data_template_data_id (data_template_data_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `def_colors`
-#
+--
+-- Dumping data for table 'data_template_data_rra'
+--
 
-INSERT INTO def_colors VALUES (1, '000000');
-INSERT INTO def_colors VALUES (2, 'FFFFFF');
-INSERT INTO def_colors VALUES (4, 'FAFD9E');
-INSERT INTO def_colors VALUES (5, 'C0C0C0');
-INSERT INTO def_colors VALUES (6, '74C366');
-INSERT INTO def_colors VALUES (7, '6DC8FE');
-INSERT INTO def_colors VALUES (8, 'EA8F00');
-INSERT INTO def_colors VALUES (9, 'FF0000');
-INSERT INTO def_colors VALUES (10, '4444FF');
-INSERT INTO def_colors VALUES (11, 'FF00FF');
-INSERT INTO def_colors VALUES (12, '00FF00');
-INSERT INTO def_colors VALUES (13, '8D85F3');
-INSERT INTO def_colors VALUES (14, 'AD3B6E');
-INSERT INTO def_colors VALUES (15, 'EACC00');
-INSERT INTO def_colors VALUES (16, '12B3B5');
-INSERT INTO def_colors VALUES (17, '157419');
-INSERT INTO def_colors VALUES (18, 'C4FD3D');
-INSERT INTO def_colors VALUES (19, '817C4E');
-INSERT INTO def_colors VALUES (20, '002A97');
-INSERT INTO def_colors VALUES (21, '0000FF');
-INSERT INTO def_colors VALUES (22, '00CF00');
-INSERT INTO def_colors VALUES (24, 'F9FD5F');
-INSERT INTO def_colors VALUES (25, 'FFF200');
-INSERT INTO def_colors VALUES (26, 'CCBB00');
-INSERT INTO def_colors VALUES (27, '837C04');
-INSERT INTO def_colors VALUES (28, 'EAAF00');
-INSERT INTO def_colors VALUES (29, 'FFD660');
-INSERT INTO def_colors VALUES (30, 'FFC73B');
-INSERT INTO def_colors VALUES (31, 'FFAB00');
-INSERT INTO def_colors VALUES (33, 'FF7D00');
-INSERT INTO def_colors VALUES (34, 'ED7600');
-INSERT INTO def_colors VALUES (35, 'FF5700');
-INSERT INTO def_colors VALUES (36, 'EE5019');
-INSERT INTO def_colors VALUES (37, 'B1441E');
-INSERT INTO def_colors VALUES (38, 'FFC3C0');
-INSERT INTO def_colors VALUES (39, 'FF897C');
-INSERT INTO def_colors VALUES (40, 'FF6044');
-INSERT INTO def_colors VALUES (41, 'FF4105');
-INSERT INTO def_colors VALUES (42, 'DA4725');
-INSERT INTO def_colors VALUES (43, '942D0C');
-INSERT INTO def_colors VALUES (44, 'FF3932');
-INSERT INTO def_colors VALUES (45, '862F2F');
-INSERT INTO def_colors VALUES (46, 'FF5576');
-INSERT INTO def_colors VALUES (47, '562B29');
-INSERT INTO def_colors VALUES (48, 'F51D30');
-INSERT INTO def_colors VALUES (49, 'DE0056');
-INSERT INTO def_colors VALUES (50, 'ED5394');
-INSERT INTO def_colors VALUES (51, 'B90054');
-INSERT INTO def_colors VALUES (52, '8F005C');
-INSERT INTO def_colors VALUES (53, 'F24AC8');
-INSERT INTO def_colors VALUES (54, 'E8CDEF');
-INSERT INTO def_colors VALUES (55, 'D8ACE0');
-INSERT INTO def_colors VALUES (56, 'A150AA');
-INSERT INTO def_colors VALUES (57, '750F7D');
-INSERT INTO def_colors VALUES (58, '8D00BA');
-INSERT INTO def_colors VALUES (59, '623465');
-INSERT INTO def_colors VALUES (60, '55009D');
-INSERT INTO def_colors VALUES (61, '3D168B');
-INSERT INTO def_colors VALUES (62, '311F4E');
-INSERT INTO def_colors VALUES (63, 'D2D8F9');
-INSERT INTO def_colors VALUES (64, '9FA4EE');
-INSERT INTO def_colors VALUES (65, '6557D0');
-INSERT INTO def_colors VALUES (66, '4123A1');
-INSERT INTO def_colors VALUES (67, '4668E4');
-INSERT INTO def_colors VALUES (68, '0D006A');
-INSERT INTO def_colors VALUES (69, '00004D');
-INSERT INTO def_colors VALUES (70, '001D61');
-INSERT INTO def_colors VALUES (71, '00234B');
-INSERT INTO def_colors VALUES (72, '002A8F');
-INSERT INTO def_colors VALUES (73, '2175D9');
-INSERT INTO def_colors VALUES (74, '7CB3F1');
-INSERT INTO def_colors VALUES (75, '005199');
-INSERT INTO def_colors VALUES (76, '004359');
-INSERT INTO def_colors VALUES (77, '00A0C1');
-INSERT INTO def_colors VALUES (78, '007283');
-INSERT INTO def_colors VALUES (79, '00BED9');
-INSERT INTO def_colors VALUES (80, 'AFECED');
-INSERT INTO def_colors VALUES (81, '55D6D3');
-INSERT INTO def_colors VALUES (82, '00BBB4');
-INSERT INTO def_colors VALUES (83, '009485');
-INSERT INTO def_colors VALUES (84, '005D57');
-INSERT INTO def_colors VALUES (85, '008A77');
-INSERT INTO def_colors VALUES (86, '008A6D');
-INSERT INTO def_colors VALUES (87, '00B99B');
-INSERT INTO def_colors VALUES (88, '009F67');
-INSERT INTO def_colors VALUES (89, '00694A');
-INSERT INTO def_colors VALUES (90, '00A348');
-INSERT INTO def_colors VALUES (91, '00BF47');
-INSERT INTO def_colors VALUES (92, '96E78A');
-INSERT INTO def_colors VALUES (93, '00BD27');
-INSERT INTO def_colors VALUES (94, '35962B');
-INSERT INTO def_colors VALUES (95, '7EE600');
-INSERT INTO def_colors VALUES (96, '6EA100');
-INSERT INTO def_colors VALUES (97, 'CAF100');
-INSERT INTO def_colors VALUES (98, 'F5F800');
-INSERT INTO def_colors VALUES (99, 'CDCFC4');
-INSERT INTO def_colors VALUES (100, 'BCBEB3');
-INSERT INTO def_colors VALUES (101, 'AAABA1');
-INSERT INTO def_colors VALUES (102, '8F9286');
-INSERT INTO def_colors VALUES (103, '797C6E');
-INSERT INTO def_colors VALUES (104, '2E3127');
-# --------------------------------------------------------
 
-#
-# Table structure for table `def_ds`
-#
+INSERT INTO data_template_data_rra VALUES (1,1);
+INSERT INTO data_template_data_rra VALUES (1,2);
+INSERT INTO data_template_data_rra VALUES (1,3);
+INSERT INTO data_template_data_rra VALUES (1,4);
+INSERT INTO data_template_data_rra VALUES (2,1);
+INSERT INTO data_template_data_rra VALUES (2,2);
+INSERT INTO data_template_data_rra VALUES (2,3);
+INSERT INTO data_template_data_rra VALUES (2,4);
+INSERT INTO data_template_data_rra VALUES (3,1);
+INSERT INTO data_template_data_rra VALUES (3,2);
+INSERT INTO data_template_data_rra VALUES (3,3);
+INSERT INTO data_template_data_rra VALUES (3,4);
+INSERT INTO data_template_data_rra VALUES (4,1);
+INSERT INTO data_template_data_rra VALUES (4,2);
+INSERT INTO data_template_data_rra VALUES (4,3);
+INSERT INTO data_template_data_rra VALUES (4,4);
+INSERT INTO data_template_data_rra VALUES (5,1);
+INSERT INTO data_template_data_rra VALUES (5,2);
+INSERT INTO data_template_data_rra VALUES (5,3);
+INSERT INTO data_template_data_rra VALUES (5,4);
+INSERT INTO data_template_data_rra VALUES (6,1);
+INSERT INTO data_template_data_rra VALUES (6,2);
+INSERT INTO data_template_data_rra VALUES (6,3);
+INSERT INTO data_template_data_rra VALUES (6,4);
+INSERT INTO data_template_data_rra VALUES (7,1);
+INSERT INTO data_template_data_rra VALUES (7,2);
+INSERT INTO data_template_data_rra VALUES (7,3);
+INSERT INTO data_template_data_rra VALUES (7,4);
+INSERT INTO data_template_data_rra VALUES (8,1);
+INSERT INTO data_template_data_rra VALUES (8,2);
+INSERT INTO data_template_data_rra VALUES (8,3);
+INSERT INTO data_template_data_rra VALUES (8,4);
+INSERT INTO data_template_data_rra VALUES (9,1);
+INSERT INTO data_template_data_rra VALUES (9,2);
+INSERT INTO data_template_data_rra VALUES (9,3);
+INSERT INTO data_template_data_rra VALUES (9,4);
+INSERT INTO data_template_data_rra VALUES (10,1);
+INSERT INTO data_template_data_rra VALUES (10,2);
+INSERT INTO data_template_data_rra VALUES (10,3);
+INSERT INTO data_template_data_rra VALUES (10,4);
+INSERT INTO data_template_data_rra VALUES (11,1);
+INSERT INTO data_template_data_rra VALUES (11,2);
+INSERT INTO data_template_data_rra VALUES (11,3);
+INSERT INTO data_template_data_rra VALUES (11,4);
+INSERT INTO data_template_data_rra VALUES (12,1);
+INSERT INTO data_template_data_rra VALUES (12,2);
+INSERT INTO data_template_data_rra VALUES (12,3);
+INSERT INTO data_template_data_rra VALUES (12,4);
+INSERT INTO data_template_data_rra VALUES (13,1);
+INSERT INTO data_template_data_rra VALUES (13,2);
+INSERT INTO data_template_data_rra VALUES (13,3);
+INSERT INTO data_template_data_rra VALUES (13,4);
+INSERT INTO data_template_data_rra VALUES (14,1);
+INSERT INTO data_template_data_rra VALUES (14,2);
+INSERT INTO data_template_data_rra VALUES (14,3);
+INSERT INTO data_template_data_rra VALUES (14,4);
+INSERT INTO data_template_data_rra VALUES (15,1);
+INSERT INTO data_template_data_rra VALUES (15,2);
+INSERT INTO data_template_data_rra VALUES (15,3);
+INSERT INTO data_template_data_rra VALUES (15,4);
+INSERT INTO data_template_data_rra VALUES (16,1);
+INSERT INTO data_template_data_rra VALUES (16,2);
+INSERT INTO data_template_data_rra VALUES (16,3);
+INSERT INTO data_template_data_rra VALUES (16,4);
+INSERT INTO data_template_data_rra VALUES (17,1);
+INSERT INTO data_template_data_rra VALUES (17,2);
+INSERT INTO data_template_data_rra VALUES (17,3);
+INSERT INTO data_template_data_rra VALUES (17,4);
+INSERT INTO data_template_data_rra VALUES (18,1);
+INSERT INTO data_template_data_rra VALUES (18,2);
+INSERT INTO data_template_data_rra VALUES (18,3);
+INSERT INTO data_template_data_rra VALUES (18,4);
+INSERT INTO data_template_data_rra VALUES (19,1);
+INSERT INTO data_template_data_rra VALUES (19,2);
+INSERT INTO data_template_data_rra VALUES (19,3);
+INSERT INTO data_template_data_rra VALUES (19,4);
+INSERT INTO data_template_data_rra VALUES (20,1);
+INSERT INTO data_template_data_rra VALUES (20,2);
+INSERT INTO data_template_data_rra VALUES (20,3);
+INSERT INTO data_template_data_rra VALUES (20,4);
+INSERT INTO data_template_data_rra VALUES (21,1);
+INSERT INTO data_template_data_rra VALUES (21,2);
+INSERT INTO data_template_data_rra VALUES (21,3);
+INSERT INTO data_template_data_rra VALUES (21,4);
+INSERT INTO data_template_data_rra VALUES (22,1);
+INSERT INTO data_template_data_rra VALUES (22,2);
+INSERT INTO data_template_data_rra VALUES (22,3);
+INSERT INTO data_template_data_rra VALUES (22,4);
+INSERT INTO data_template_data_rra VALUES (23,1);
+INSERT INTO data_template_data_rra VALUES (23,2);
+INSERT INTO data_template_data_rra VALUES (23,3);
+INSERT INTO data_template_data_rra VALUES (23,4);
+INSERT INTO data_template_data_rra VALUES (24,1);
+INSERT INTO data_template_data_rra VALUES (24,2);
+INSERT INTO data_template_data_rra VALUES (24,3);
+INSERT INTO data_template_data_rra VALUES (24,4);
+INSERT INTO data_template_data_rra VALUES (25,1);
+INSERT INTO data_template_data_rra VALUES (25,2);
+INSERT INTO data_template_data_rra VALUES (25,3);
+INSERT INTO data_template_data_rra VALUES (25,4);
+INSERT INTO data_template_data_rra VALUES (26,1);
+INSERT INTO data_template_data_rra VALUES (26,2);
+INSERT INTO data_template_data_rra VALUES (26,3);
+INSERT INTO data_template_data_rra VALUES (26,4);
+INSERT INTO data_template_data_rra VALUES (27,1);
+INSERT INTO data_template_data_rra VALUES (27,2);
+INSERT INTO data_template_data_rra VALUES (27,3);
+INSERT INTO data_template_data_rra VALUES (27,4);
+INSERT INTO data_template_data_rra VALUES (28,1);
+INSERT INTO data_template_data_rra VALUES (28,2);
+INSERT INTO data_template_data_rra VALUES (28,3);
+INSERT INTO data_template_data_rra VALUES (28,4);
+INSERT INTO data_template_data_rra VALUES (29,1);
+INSERT INTO data_template_data_rra VALUES (29,2);
+INSERT INTO data_template_data_rra VALUES (29,3);
+INSERT INTO data_template_data_rra VALUES (29,4);
+INSERT INTO data_template_data_rra VALUES (30,1);
+INSERT INTO data_template_data_rra VALUES (30,2);
+INSERT INTO data_template_data_rra VALUES (30,3);
+INSERT INTO data_template_data_rra VALUES (30,4);
+INSERT INTO data_template_data_rra VALUES (31,1);
+INSERT INTO data_template_data_rra VALUES (31,2);
+INSERT INTO data_template_data_rra VALUES (31,3);
+INSERT INTO data_template_data_rra VALUES (31,4);
+INSERT INTO data_template_data_rra VALUES (32,1);
+INSERT INTO data_template_data_rra VALUES (32,2);
+INSERT INTO data_template_data_rra VALUES (32,3);
+INSERT INTO data_template_data_rra VALUES (32,4);
+INSERT INTO data_template_data_rra VALUES (33,1);
+INSERT INTO data_template_data_rra VALUES (33,2);
+INSERT INTO data_template_data_rra VALUES (33,3);
+INSERT INTO data_template_data_rra VALUES (33,4);
+INSERT INTO data_template_data_rra VALUES (34,1);
+INSERT INTO data_template_data_rra VALUES (34,2);
+INSERT INTO data_template_data_rra VALUES (34,3);
+INSERT INTO data_template_data_rra VALUES (34,4);
+INSERT INTO data_template_data_rra VALUES (35,1);
+INSERT INTO data_template_data_rra VALUES (35,2);
+INSERT INTO data_template_data_rra VALUES (35,3);
+INSERT INTO data_template_data_rra VALUES (35,4);
+INSERT INTO data_template_data_rra VALUES (36,1);
+INSERT INTO data_template_data_rra VALUES (36,2);
+INSERT INTO data_template_data_rra VALUES (36,3);
+INSERT INTO data_template_data_rra VALUES (36,4);
 
-CREATE TABLE def_ds (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'data_template_rrd'
+--
+
+CREATE TABLE data_template_rrd (
+  id mediumint(8) NOT NULL auto_increment,
+  local_data_template_rrd_id mediumint(8) NOT NULL default '0',
+  local_data_id mediumint(8) NOT NULL default '0',
+  data_template_id mediumint(8) NOT NULL default '0',
+  t_rrd_maximum char(2) default NULL,
+  rrd_maximum bigint(20) NOT NULL default '0',
+  t_rrd_minimum char(2) default NULL,
+  rrd_minimum bigint(20) NOT NULL default '0',
+  t_rrd_heartbeat char(2) default NULL,
+  rrd_heartbeat mediumint(6) NOT NULL default '0',
+  t_data_source_type_id char(2) default NULL,
+  data_source_type_id smallint(5) NOT NULL default '0',
+  t_data_source_name char(2) default NULL,
+  data_source_name varchar(19) NOT NULL default '',
+  t_data_input_field_id char(2) default NULL,
+  data_input_field_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id),
+  KEY local_data_id (local_data_id),
+  KEY data_template_id (data_template_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `def_ds`
-#
+--
+-- Dumping data for table 'data_template_rrd'
+--
 
-INSERT INTO def_ds VALUES (1, 'GAUGE');
-INSERT INTO def_ds VALUES (2, 'COUNTER');
-INSERT INTO def_ds VALUES (3, 'DERIVE');
-INSERT INTO def_ds VALUES (4, 'ABSOLUTE');
-# --------------------------------------------------------
 
-#
-# Table structure for table `def_graph_type`
-#
+INSERT INTO data_template_rrd VALUES (1,0,0,1,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
+INSERT INTO data_template_rrd VALUES (2,0,0,2,'',100000000,'',0,'',600,'',2,'','traffic_out','',0);
+INSERT INTO data_template_rrd VALUES (3,0,0,3,'',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (4,0,0,3,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (5,0,0,4,'',100,'',0,'',600,'',2,'','cpu_system','',0);
+INSERT INTO data_template_rrd VALUES (6,0,0,5,'',100,'',0,'',600,'',2,'','cpu_user','',0);
+INSERT INTO data_template_rrd VALUES (7,0,0,6,'',100,'',0,'',600,'',2,'','cpu_nice','',0);
+INSERT INTO data_template_rrd VALUES (8,0,0,7,'',100,'',0,'',600,'',1,'','wrls_noise','',0);
+INSERT INTO data_template_rrd VALUES (9,0,0,8,'',100,'',0,'',600,'',1,'','wrls_signal','',0);
+INSERT INTO data_template_rrd VALUES (10,0,0,9,'',1000000,'',0,'',600,'',2,'','wrls_transmits','',0);
+INSERT INTO data_template_rrd VALUES (11,0,0,10,'',1000000,'',0,'',600,'',2,'','wrls_retransmits','',0);
+INSERT INTO data_template_rrd VALUES (12,0,0,11,'',500,'',0,'',600,'',1,'','load_1min','',17);
+INSERT INTO data_template_rrd VALUES (13,0,0,11,'',500,'',0,'',600,'',1,'','load_5min','',18);
+INSERT INTO data_template_rrd VALUES (14,0,0,11,'',500,'',0,'',600,'',1,'','load_15min','',19);
+INSERT INTO data_template_rrd VALUES (15,0,0,12,'',10000000,'',0,'',600,'',1,'','mem_buffers','',23);
+INSERT INTO data_template_rrd VALUES (16,0,0,13,'',10000000,'',0,'',600,'',1,'','mem_buffers','',23);
+INSERT INTO data_template_rrd VALUES (17,0,0,14,'',1000000,'',0,'',600,'',1,'','mem_cache','',23);
+INSERT INTO data_template_rrd VALUES (18,0,0,15,'',1000000,'',0,'',600,'',1,'','mem_swap','',23);
+INSERT INTO data_template_rrd VALUES (19,0,0,16,'',1000,'',0,'',600,'',1,'','proc','',24);
+INSERT INTO data_template_rrd VALUES (20,0,0,17,'',500,'',0,'',600,'',1,'','users','',21);
+INSERT INTO data_template_rrd VALUES (21,0,0,18,'',5000,'',0,'',600,'',1,'','ping','',30);
+INSERT INTO data_template_rrd VALUES (22,0,0,19,'',100000,'',0,'',600,'',1,'','total_users','',0);
+INSERT INTO data_template_rrd VALUES (23,0,0,20,'',100000,'',0,'',600,'',1,'','total_logins','',0);
+INSERT INTO data_template_rrd VALUES (24,0,0,21,'',100,'',0,'',600,'',1,'','cpu','',0);
+INSERT INTO data_template_rrd VALUES (25,0,0,22,'',10000000,'',0,'',600,'',2,'','fs_reads','',0);
+INSERT INTO data_template_rrd VALUES (26,0,0,23,'',10000000,'',0,'',600,'',2,'','fs_writes','',0);
+INSERT INTO data_template_rrd VALUES (27,0,0,24,'',10000000,'',0,'',600,'',2,'','cache_checks','',0);
+INSERT INTO data_template_rrd VALUES (28,0,0,25,'',1000000,'',0,'',600,'',2,'','cache_hits','',0);
+INSERT INTO data_template_rrd VALUES (29,0,0,26,'',100000,'',0,'',600,'',1,'','open_files','',0);
+INSERT INTO data_template_rrd VALUES (30,0,0,27,'',100,'',0,'',600,'',1,'','5min_cpu','',0);
+INSERT INTO data_template_rrd VALUES (31,0,0,28,'',100,'',0,'',600,'',1,'','5sec_cpu','',0);
+INSERT INTO data_template_rrd VALUES (32,0,0,29,'',100,'',0,'',600,'',1,'','1min_cpu','',0);
+INSERT INTO data_template_rrd VALUES (33,0,0,30,'',500,'',0,'',600,'',1,'','load_1min','',0);
+INSERT INTO data_template_rrd VALUES (34,0,0,31,'',500,'',0,'',600,'',1,'','load_5min','',0);
+INSERT INTO data_template_rrd VALUES (35,0,0,32,'',500,'',0,'',600,'',1,'','load_15min','',0);
+INSERT INTO data_template_rrd VALUES (36,0,0,33,'',10000000,'',0,'',600,'',1,'','mem_buffers','',0);
+INSERT INTO data_template_rrd VALUES (37,0,0,34,'',10000000,'',0,'',600,'',1,'','mem_free','',0);
+INSERT INTO data_template_rrd VALUES (38,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_total','',0);
+INSERT INTO data_template_rrd VALUES (39,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_free','',0);
+INSERT INTO data_template_rrd VALUES (40,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_freeable','',0);
+INSERT INTO data_template_rrd VALUES (42,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
+INSERT INTO data_template_rrd VALUES (43,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
 
-CREATE TABLE def_graph_type (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'graph_local'
+--
+
+CREATE TABLE graph_local (
+  id mediumint(8) NOT NULL auto_increment,
+  graph_template_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
+) TYPE=MyISAM COMMENT='Creates a relationship for each item in a custom graph.';
+
+--
+-- Dumping data for table 'graph_local'
+--
+
+
+
+--
+-- Table structure for table 'graph_template_input'
+--
+
+CREATE TABLE graph_template_input (
+  id mediumint(8) NOT NULL auto_increment,
+  graph_template_id mediumint(8) NOT NULL default '0',
+  name varchar(255) NOT NULL default '',
+  description text,
+  column_name varchar(50) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id),
+  KEY id_3 (id)
+) TYPE=MyISAM COMMENT='Stores the names for graph item input groups.';
+
+--
+-- Dumping data for table 'graph_template_input'
+--
+
+
+INSERT INTO graph_template_input VALUES (1,1,'Inbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (2,1,'Outbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (3,2,'Inbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (4,2,'Outbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (5,3,'Available Disk Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (6,3,'Used Disk Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (7,5,'Signal Level Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (8,5,'Noise Level Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (9,5,'Signal Level Color','','color_id');
+INSERT INTO graph_template_input VALUES (10,5,'Noise Level Color','','color_id');
+INSERT INTO graph_template_input VALUES (11,6,'Transmissions Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (12,6,'Re-Transmissions Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (13,6,'Transmissions Color','','color_id');
+INSERT INTO graph_template_input VALUES (14,6,'Re-Transmissions Color','','color_id');
+INSERT INTO graph_template_input VALUES (15,7,'Ping Host Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (16,7,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (17,7,'Legend Text','','text_format');
+INSERT INTO graph_template_input VALUES (18,8,'Processes Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (19,8,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (20,9,'1 Minute Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (21,9,'5 Minute Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (22,9,'15 Minute Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (23,10,'Logged in Users Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (24,10,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (25,11,'1 Minute Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (26,11,'5 Minute Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (27,11,'15 Minute Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (28,12,'Buffers Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (29,12,'Cache Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (30,12,'Free Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (31,12,'Swap Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (32,4,'System CPU Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (33,4,'User CPU Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (34,4,'Nice CPU Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (35,13,'Memory Free Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (36,13,'Memory Buffers Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (37,14,'Cache Hits Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (38,14,'Cache Checks Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (39,15,'CPU Usage Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (40,16,'File System Reads Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (41,16,'File System Writes Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (42,17,'Current Logins Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (43,17,'Open Files Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (44,15,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (45,18,'CPU Usage Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (46,18,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (47,19,'Free Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (48,19,'Total Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (49,19,'Freeable Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (51,20,'Used Directory Entries Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (52,20,'Available Directory Entries Data Source','','task_item_id');
+
+--
+-- Table structure for table 'graph_template_input_defs'
+--
+
+CREATE TABLE graph_template_input_defs (
+  graph_template_input_id mediumint(8) NOT NULL default '0',
+  graph_template_item_id int(12) NOT NULL default '0',
+  PRIMARY KEY  (graph_template_input_id,graph_template_item_id),
+  KEY graph_template_input_id (graph_template_input_id)
+) TYPE=MyISAM COMMENT='Stores the relationship for what graph iitems are associated';
+
+--
+-- Dumping data for table 'graph_template_input_defs'
+--
+
+
+INSERT INTO graph_template_input_defs VALUES (1,1);
+INSERT INTO graph_template_input_defs VALUES (1,2);
+INSERT INTO graph_template_input_defs VALUES (1,3);
+INSERT INTO graph_template_input_defs VALUES (1,4);
+INSERT INTO graph_template_input_defs VALUES (2,5);
+INSERT INTO graph_template_input_defs VALUES (2,6);
+INSERT INTO graph_template_input_defs VALUES (2,7);
+INSERT INTO graph_template_input_defs VALUES (2,8);
+INSERT INTO graph_template_input_defs VALUES (3,9);
+INSERT INTO graph_template_input_defs VALUES (3,10);
+INSERT INTO graph_template_input_defs VALUES (3,11);
+INSERT INTO graph_template_input_defs VALUES (3,12);
+INSERT INTO graph_template_input_defs VALUES (4,13);
+INSERT INTO graph_template_input_defs VALUES (4,14);
+INSERT INTO graph_template_input_defs VALUES (4,15);
+INSERT INTO graph_template_input_defs VALUES (4,16);
+INSERT INTO graph_template_input_defs VALUES (5,21);
+INSERT INTO graph_template_input_defs VALUES (5,22);
+INSERT INTO graph_template_input_defs VALUES (5,23);
+INSERT INTO graph_template_input_defs VALUES (5,24);
+INSERT INTO graph_template_input_defs VALUES (6,17);
+INSERT INTO graph_template_input_defs VALUES (6,18);
+INSERT INTO graph_template_input_defs VALUES (6,19);
+INSERT INTO graph_template_input_defs VALUES (6,20);
+INSERT INTO graph_template_input_defs VALUES (7,45);
+INSERT INTO graph_template_input_defs VALUES (7,46);
+INSERT INTO graph_template_input_defs VALUES (7,47);
+INSERT INTO graph_template_input_defs VALUES (7,48);
+INSERT INTO graph_template_input_defs VALUES (8,49);
+INSERT INTO graph_template_input_defs VALUES (8,50);
+INSERT INTO graph_template_input_defs VALUES (8,51);
+INSERT INTO graph_template_input_defs VALUES (8,52);
+INSERT INTO graph_template_input_defs VALUES (9,45);
+INSERT INTO graph_template_input_defs VALUES (10,49);
+INSERT INTO graph_template_input_defs VALUES (11,53);
+INSERT INTO graph_template_input_defs VALUES (11,54);
+INSERT INTO graph_template_input_defs VALUES (11,55);
+INSERT INTO graph_template_input_defs VALUES (11,56);
+INSERT INTO graph_template_input_defs VALUES (12,57);
+INSERT INTO graph_template_input_defs VALUES (12,58);
+INSERT INTO graph_template_input_defs VALUES (12,59);
+INSERT INTO graph_template_input_defs VALUES (12,60);
+INSERT INTO graph_template_input_defs VALUES (13,53);
+INSERT INTO graph_template_input_defs VALUES (14,57);
+INSERT INTO graph_template_input_defs VALUES (15,61);
+INSERT INTO graph_template_input_defs VALUES (15,62);
+INSERT INTO graph_template_input_defs VALUES (15,63);
+INSERT INTO graph_template_input_defs VALUES (15,64);
+INSERT INTO graph_template_input_defs VALUES (16,61);
+INSERT INTO graph_template_input_defs VALUES (17,61);
+INSERT INTO graph_template_input_defs VALUES (18,65);
+INSERT INTO graph_template_input_defs VALUES (18,66);
+INSERT INTO graph_template_input_defs VALUES (18,67);
+INSERT INTO graph_template_input_defs VALUES (18,68);
+INSERT INTO graph_template_input_defs VALUES (19,65);
+INSERT INTO graph_template_input_defs VALUES (20,69);
+INSERT INTO graph_template_input_defs VALUES (20,70);
+INSERT INTO graph_template_input_defs VALUES (21,71);
+INSERT INTO graph_template_input_defs VALUES (21,72);
+INSERT INTO graph_template_input_defs VALUES (22,73);
+INSERT INTO graph_template_input_defs VALUES (22,74);
+INSERT INTO graph_template_input_defs VALUES (23,76);
+INSERT INTO graph_template_input_defs VALUES (23,77);
+INSERT INTO graph_template_input_defs VALUES (23,78);
+INSERT INTO graph_template_input_defs VALUES (23,79);
+INSERT INTO graph_template_input_defs VALUES (24,76);
+INSERT INTO graph_template_input_defs VALUES (25,80);
+INSERT INTO graph_template_input_defs VALUES (25,81);
+INSERT INTO graph_template_input_defs VALUES (26,82);
+INSERT INTO graph_template_input_defs VALUES (26,83);
+INSERT INTO graph_template_input_defs VALUES (27,84);
+INSERT INTO graph_template_input_defs VALUES (27,85);
+INSERT INTO graph_template_input_defs VALUES (28,87);
+INSERT INTO graph_template_input_defs VALUES (28,88);
+INSERT INTO graph_template_input_defs VALUES (28,89);
+INSERT INTO graph_template_input_defs VALUES (28,90);
+INSERT INTO graph_template_input_defs VALUES (29,91);
+INSERT INTO graph_template_input_defs VALUES (29,92);
+INSERT INTO graph_template_input_defs VALUES (29,93);
+INSERT INTO graph_template_input_defs VALUES (29,94);
+INSERT INTO graph_template_input_defs VALUES (30,95);
+INSERT INTO graph_template_input_defs VALUES (30,96);
+INSERT INTO graph_template_input_defs VALUES (30,97);
+INSERT INTO graph_template_input_defs VALUES (30,98);
+INSERT INTO graph_template_input_defs VALUES (31,99);
+INSERT INTO graph_template_input_defs VALUES (31,100);
+INSERT INTO graph_template_input_defs VALUES (31,101);
+INSERT INTO graph_template_input_defs VALUES (31,102);
+INSERT INTO graph_template_input_defs VALUES (32,29);
+INSERT INTO graph_template_input_defs VALUES (32,30);
+INSERT INTO graph_template_input_defs VALUES (32,31);
+INSERT INTO graph_template_input_defs VALUES (32,32);
+INSERT INTO graph_template_input_defs VALUES (33,33);
+INSERT INTO graph_template_input_defs VALUES (33,34);
+INSERT INTO graph_template_input_defs VALUES (33,35);
+INSERT INTO graph_template_input_defs VALUES (33,36);
+INSERT INTO graph_template_input_defs VALUES (34,37);
+INSERT INTO graph_template_input_defs VALUES (34,38);
+INSERT INTO graph_template_input_defs VALUES (34,39);
+INSERT INTO graph_template_input_defs VALUES (34,40);
+INSERT INTO graph_template_input_defs VALUES (35,103);
+INSERT INTO graph_template_input_defs VALUES (35,104);
+INSERT INTO graph_template_input_defs VALUES (35,105);
+INSERT INTO graph_template_input_defs VALUES (35,106);
+INSERT INTO graph_template_input_defs VALUES (36,107);
+INSERT INTO graph_template_input_defs VALUES (36,108);
+INSERT INTO graph_template_input_defs VALUES (36,109);
+INSERT INTO graph_template_input_defs VALUES (36,110);
+INSERT INTO graph_template_input_defs VALUES (37,111);
+INSERT INTO graph_template_input_defs VALUES (37,112);
+INSERT INTO graph_template_input_defs VALUES (37,113);
+INSERT INTO graph_template_input_defs VALUES (37,114);
+INSERT INTO graph_template_input_defs VALUES (38,115);
+INSERT INTO graph_template_input_defs VALUES (38,116);
+INSERT INTO graph_template_input_defs VALUES (38,117);
+INSERT INTO graph_template_input_defs VALUES (38,118);
+INSERT INTO graph_template_input_defs VALUES (39,119);
+INSERT INTO graph_template_input_defs VALUES (39,120);
+INSERT INTO graph_template_input_defs VALUES (39,121);
+INSERT INTO graph_template_input_defs VALUES (39,122);
+INSERT INTO graph_template_input_defs VALUES (40,123);
+INSERT INTO graph_template_input_defs VALUES (40,124);
+INSERT INTO graph_template_input_defs VALUES (40,125);
+INSERT INTO graph_template_input_defs VALUES (40,126);
+INSERT INTO graph_template_input_defs VALUES (41,127);
+INSERT INTO graph_template_input_defs VALUES (41,128);
+INSERT INTO graph_template_input_defs VALUES (41,129);
+INSERT INTO graph_template_input_defs VALUES (41,130);
+INSERT INTO graph_template_input_defs VALUES (42,131);
+INSERT INTO graph_template_input_defs VALUES (42,132);
+INSERT INTO graph_template_input_defs VALUES (42,133);
+INSERT INTO graph_template_input_defs VALUES (42,134);
+INSERT INTO graph_template_input_defs VALUES (43,135);
+INSERT INTO graph_template_input_defs VALUES (43,136);
+INSERT INTO graph_template_input_defs VALUES (43,137);
+INSERT INTO graph_template_input_defs VALUES (43,138);
+INSERT INTO graph_template_input_defs VALUES (44,119);
+INSERT INTO graph_template_input_defs VALUES (45,139);
+INSERT INTO graph_template_input_defs VALUES (45,140);
+INSERT INTO graph_template_input_defs VALUES (45,141);
+INSERT INTO graph_template_input_defs VALUES (45,142);
+INSERT INTO graph_template_input_defs VALUES (46,139);
+INSERT INTO graph_template_input_defs VALUES (47,143);
+INSERT INTO graph_template_input_defs VALUES (47,144);
+INSERT INTO graph_template_input_defs VALUES (47,145);
+INSERT INTO graph_template_input_defs VALUES (47,146);
+INSERT INTO graph_template_input_defs VALUES (48,147);
+INSERT INTO graph_template_input_defs VALUES (48,148);
+INSERT INTO graph_template_input_defs VALUES (48,149);
+INSERT INTO graph_template_input_defs VALUES (48,150);
+INSERT INTO graph_template_input_defs VALUES (49,151);
+INSERT INTO graph_template_input_defs VALUES (49,152);
+INSERT INTO graph_template_input_defs VALUES (49,153);
+INSERT INTO graph_template_input_defs VALUES (49,154);
+INSERT INTO graph_template_input_defs VALUES (51,159);
+INSERT INTO graph_template_input_defs VALUES (51,160);
+INSERT INTO graph_template_input_defs VALUES (51,161);
+INSERT INTO graph_template_input_defs VALUES (51,162);
+INSERT INTO graph_template_input_defs VALUES (52,163);
+INSERT INTO graph_template_input_defs VALUES (52,164);
+INSERT INTO graph_template_input_defs VALUES (52,165);
+INSERT INTO graph_template_input_defs VALUES (52,166);
+
+--
+-- Table structure for table 'graph_templates'
+--
+
+CREATE TABLE graph_templates (
+  id mediumint(8) NOT NULL auto_increment,
+  name char(255) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
+) TYPE=MyISAM COMMENT='Contains each graph template name.';
+
+--
+-- Dumping data for table 'graph_templates'
+--
+
+
+INSERT INTO graph_templates VALUES (1,'SNMP - Traffic Graph (bytes/sec)');
+INSERT INTO graph_templates VALUES (2,'SNMP - Traffic Graph (bits/sec)');
+INSERT INTO graph_templates VALUES (3,'ucd/net - Available Disk Space');
+INSERT INTO graph_templates VALUES (4,'ucd/net - CPU Usage');
+INSERT INTO graph_templates VALUES (5,'Karlnet - Wireless Levels');
+INSERT INTO graph_templates VALUES (6,'Karlnet - Wireless Transmissions');
+INSERT INTO graph_templates VALUES (7,'Unix - Ping Latency');
+INSERT INTO graph_templates VALUES (8,'Unix - Processes');
+INSERT INTO graph_templates VALUES (9,'Unix - Load Average');
+INSERT INTO graph_templates VALUES (10,'Unix - Logged in Users');
+INSERT INTO graph_templates VALUES (11,'ucd/net - Load Average');
+INSERT INTO graph_templates VALUES (12,'Linux - Memory Usage');
+INSERT INTO graph_templates VALUES (13,'ucd/net - Memory Usage');
+INSERT INTO graph_templates VALUES (14,'Netware - File System Cache');
+INSERT INTO graph_templates VALUES (15,'Netware - CPU Usage');
+INSERT INTO graph_templates VALUES (16,'Netware - File System Activity');
+INSERT INTO graph_templates VALUES (17,'Netware - User Processes');
+INSERT INTO graph_templates VALUES (18,'Cisco - CPU Usage');
+INSERT INTO graph_templates VALUES (19,'Netware - Volume Information');
+INSERT INTO graph_templates VALUES (20,'Netware - Directory Information');
+
+--
+-- Table structure for table 'graph_templates_gprint'
+--
+
+CREATE TABLE graph_templates_gprint (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(100) NOT NULL default '',
+  gprint_text varchar(255) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `def_graph_type`
-#
+--
+-- Dumping data for table 'graph_templates_gprint'
+--
 
-INSERT INTO def_graph_type VALUES (1, 'COMMENT');
-INSERT INTO def_graph_type VALUES (2, 'HRULE');
-INSERT INTO def_graph_type VALUES (3, 'VRULE');
-INSERT INTO def_graph_type VALUES (4, 'LINE1');
-INSERT INTO def_graph_type VALUES (5, 'LINE2');
-INSERT INTO def_graph_type VALUES (6, 'LINE3');
-INSERT INTO def_graph_type VALUES (7, 'AREA');
-INSERT INTO def_graph_type VALUES (8, 'STACK');
-INSERT INTO def_graph_type VALUES (9, 'GPRINT');
-# --------------------------------------------------------
 
-#
-# Table structure for table `def_image_type`
-#
+INSERT INTO graph_templates_gprint VALUES (2,'Normal','%8.2lf %s');
+INSERT INTO graph_templates_gprint VALUES (3,'Exact Numbers','%8.0lf');
 
-CREATE TABLE def_image_type (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(10) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'graph_templates_graph'
+--
+
+CREATE TABLE graph_templates_graph (
+  id mediumint(8) NOT NULL auto_increment,
+  local_graph_template_graph_id mediumint(8) NOT NULL default '0',
+  local_graph_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) NOT NULL default '0',
+  t_image_format_id char(2) default '0',
+  image_format_id tinyint(1) NOT NULL default '0',
+  t_title char(2) default '0',
+  title varchar(255) NOT NULL default '',
+  t_height char(2) default '0',
+  height mediumint(8) NOT NULL default '0',
+  t_width char(2) default '0',
+  width mediumint(8) NOT NULL default '0',
+  t_upper_limit char(2) default '0',
+  upper_limit bigint(12) NOT NULL default '0',
+  t_lower_limit char(2) default '0',
+  lower_limit bigint(12) NOT NULL default '0',
+  t_vertical_label char(2) default '0',
+  vertical_label varchar(200) default NULL,
+  t_auto_scale char(2) default '0',
+  auto_scale char(2) default NULL,
+  t_auto_scale_opts char(2) default '0',
+  auto_scale_opts tinyint(1) NOT NULL default '0',
+  t_auto_scale_log char(2) default '0',
+  auto_scale_log char(2) default NULL,
+  t_auto_scale_rigid char(2) default '0',
+  auto_scale_rigid char(2) default NULL,
+  t_auto_padding char(2) default '0',
+  auto_padding char(2) default NULL,
+  t_base_value char(2) default '0',
+  base_value mediumint(8) NOT NULL default '0',
+  t_grouping char(2) default '0',
+  grouping char(2) NOT NULL default '',
+  t_export char(2) default '0',
+  export char(2) default NULL,
+  t_unit_value char(2) default '0',
+  unit_value varchar(20) default NULL,
+  t_unit_exponent_value char(2) default '0',
+  unit_exponent_value smallint(5) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY local_graph_id (local_graph_id),
+  KEY id_2 (id),
+  KEY graph_template_id (graph_template_id)
+) TYPE=MyISAM COMMENT='Stores the actual graph data.';
+
+--
+-- Dumping data for table 'graph_templates_graph'
+--
+
+
+INSERT INTO graph_templates_graph VALUES (1,0,0,1,'',1,'on','Traffic','',120,'',500,'',100,'',0,'','bytes per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (2,0,0,2,'',1,'on','Traffic','',120,'',500,'',100,'',0,'','bits per second','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (3,0,0,3,'',1,'on','Hard Drive Space','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1024,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (4,0,0,4,'',1,'on','CPU Usage','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (5,0,0,5,'',1,'on','Wireless Levels','',120,'',500,'',100,'',0,'','percent','','','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (6,0,0,6,'',1,'on','Wireless Transmissions','',120,'',500,'',100,'',0,'','transmissions','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (7,0,0,7,'',1,'on','Ping Latency','',120,'',500,'',100,'',0,'','milliseconds','','on','',2,'','','','','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (8,0,0,8,'',1,'on','Processes','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (9,0,0,9,'',1,'on','Load Average','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (10,0,0,10,'',1,'on','Logged in Users','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (11,0,0,11,'',1,'on','Load Average','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (12,0,0,12,'',1,'on','Memory Usage','',120,'',500,'',100,'',0,'','kilobytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'on','Memory Usage','',120,'',500,'',100,'',0,'','kilobytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (14,0,0,14,'',1,'on','File System Cache','',120,'',500,'',100,'',0,'','cache checks/hits','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (15,0,0,15,'',1,'on','CPU Usage','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (16,0,0,16,'',1,'on','File System Activity','',120,'',500,'',100,'',0,'','reads/writes per sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (17,0,0,17,'',1,'on','User Processes','',120,'',500,'',100,'',0,'','users/files open','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (18,0,0,18,'',1,'on','CPU Usage','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (19,0,0,19,'',1,'on','Netware - Volume Information','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (20,0,0,20,'',1,'on','Netware - Directory Information','',120,'',500,'',100,'',0,'','directory entries','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+
+--
+-- Table structure for table 'graph_templates_item'
+--
+
+CREATE TABLE graph_templates_item (
+  id int(12) NOT NULL auto_increment,
+  local_graph_template_item_id int(12) NOT NULL default '0',
+  local_graph_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) NOT NULL default '0',
+  task_item_id mediumint(8) NOT NULL default '0',
+  color_id mediumint(8) NOT NULL default '0',
+  graph_type_id tinyint(3) NOT NULL default '0',
+  cdef_id mediumint(8) NOT NULL default '0',
+  consolidation_function_id tinyint(2) NOT NULL default '0',
+  text_format varchar(255) default NULL,
+  value varchar(255) default NULL,
+  hard_return char(2) default NULL,
+  gprint_id mediumint(8) NOT NULL default '0',
+  sequence mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY graph_template_id (graph_template_id),
+  KEY id_2 (id),
+  KEY local_graph_id (local_graph_id)
+) TYPE=MyISAM COMMENT='Stores the actual graph item data.';
+
+--
+-- Dumping data for table 'graph_templates_item'
+--
+
+
+INSERT INTO graph_templates_item VALUES (1,0,0,1,1,22,7,0,1,'Inbound','','',2,1);
+INSERT INTO graph_templates_item VALUES (2,0,0,1,1,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (3,0,0,1,1,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (4,0,0,1,1,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (5,0,0,1,2,20,4,0,1,'Outbound','','',2,5);
+INSERT INTO graph_templates_item VALUES (6,0,0,1,2,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (7,0,0,1,2,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (8,0,0,1,2,0,9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (9,0,0,2,1,22,7,2,1,'Inbound','','',2,1);
+INSERT INTO graph_templates_item VALUES (10,0,0,2,1,0,9,2,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (11,0,0,2,1,0,9,2,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (12,0,0,2,1,0,9,2,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (13,0,0,2,2,20,4,2,1,'Outbound','','',2,5);
+INSERT INTO graph_templates_item VALUES (14,0,0,2,2,0,9,2,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (15,0,0,2,2,0,9,2,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (16,0,0,2,2,0,9,2,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (17,0,0,3,4,48,7,0,1,'Used','','',2,1);
+INSERT INTO graph_templates_item VALUES (18,0,0,3,4,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (19,0,0,3,4,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (20,0,0,3,4,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (21,0,0,3,3,20,8,0,4,'Available','','',2,5);
+INSERT INTO graph_templates_item VALUES (22,0,0,3,3,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (23,0,0,3,3,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (24,0,0,3,3,0,9,0,3,'Maximum','','on',2,8);
+INSERT INTO graph_templates_item VALUES (25,0,0,3,0,1,5,12,1,'Total','','',2,9);
+INSERT INTO graph_templates_item VALUES (26,0,0,3,0,0,9,12,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (27,0,0,3,0,0,9,12,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (28,0,0,3,0,0,9,12,3,'Maximum:','','',2,12);
+INSERT INTO graph_templates_item VALUES (29,0,0,4,5,9,7,0,1,'System','','',2,1);
+INSERT INTO graph_templates_item VALUES (30,0,0,4,5,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (31,0,0,4,5,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (32,0,0,4,5,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (33,0,0,4,6,21,8,0,1,'User','','',2,5);
+INSERT INTO graph_templates_item VALUES (34,0,0,4,6,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (35,0,0,4,6,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (36,0,0,4,6,0,9,0,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (37,0,0,4,7,12,8,0,1,'Nice','','',2,9);
+INSERT INTO graph_templates_item VALUES (38,0,0,4,7,0,9,0,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (39,0,0,4,7,0,9,0,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (40,0,0,4,7,0,9,0,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (41,0,0,4,0,1,4,12,1,'Total','','',2,13);
+INSERT INTO graph_templates_item VALUES (42,0,0,4,0,0,9,12,4,'Current:','','',2,14);
+INSERT INTO graph_templates_item VALUES (43,0,0,4,0,0,9,12,1,'Average:','','',2,15);
+INSERT INTO graph_templates_item VALUES (44,0,0,4,0,0,9,12,3,'Maximum:','','',2,16);
+INSERT INTO graph_templates_item VALUES (45,0,0,5,9,48,7,0,1,'Signal Level','','',2,1);
+INSERT INTO graph_templates_item VALUES (46,0,0,5,9,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (47,0,0,5,9,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (48,0,0,5,9,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (49,0,0,5,8,25,5,0,1,'Noise Level','','',2,5);
+INSERT INTO graph_templates_item VALUES (50,0,0,5,8,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (51,0,0,5,8,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (52,0,0,5,8,0,9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (53,0,0,6,10,48,7,0,1,'Transmissions','','',2,1);
+INSERT INTO graph_templates_item VALUES (54,0,0,6,10,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (55,0,0,6,10,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (56,0,0,6,10,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (57,0,0,6,11,25,5,0,1,'Re-Transmissions','','',2,5);
+INSERT INTO graph_templates_item VALUES (58,0,0,6,11,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (59,0,0,6,11,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (60,0,0,6,11,0,9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (61,0,0,7,21,25,7,0,1,'','','',2,1);
+INSERT INTO graph_templates_item VALUES (62,0,0,7,21,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (63,0,0,7,21,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (64,0,0,7,21,0,9,0,3,'Maximum:','','',2,4);
+INSERT INTO graph_templates_item VALUES (65,0,0,8,19,48,1,0,1,'Running Processes','','',2,1);
+INSERT INTO graph_templates_item VALUES (66,0,0,8,19,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (67,0,0,8,19,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (68,0,0,8,19,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (69,0,0,9,12,15,7,0,1,'1 Minute Average','','',2,1);
+INSERT INTO graph_templates_item VALUES (70,0,0,9,12,0,9,0,4,'Current:','','on',3,2);
+INSERT INTO graph_templates_item VALUES (71,0,0,9,13,8,8,0,1,'5 Minute Average','','',2,3);
+INSERT INTO graph_templates_item VALUES (72,0,0,9,13,0,9,0,4,'Current:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (73,0,0,9,14,9,8,0,1,'15 Minute Average','','',2,5);
+INSERT INTO graph_templates_item VALUES (74,0,0,9,14,0,9,0,4,'Current:','','on',3,6);
+INSERT INTO graph_templates_item VALUES (75,0,0,9,0,1,4,12,1,'','','',2,7);
+INSERT INTO graph_templates_item VALUES (76,0,0,10,20,67,7,0,1,'Users','','',2,1);
+INSERT INTO graph_templates_item VALUES (77,0,0,10,20,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (78,0,0,10,20,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (79,0,0,10,20,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (80,0,0,11,33,15,7,0,1,'1 Minute Average','','',2,1);
+INSERT INTO graph_templates_item VALUES (81,0,0,11,33,0,9,0,4,'Current:','','on',3,2);
+INSERT INTO graph_templates_item VALUES (82,0,0,11,34,8,8,0,1,'5 Minute Average','','',2,3);
+INSERT INTO graph_templates_item VALUES (83,0,0,11,34,0,9,0,4,'Current:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (84,0,0,11,35,9,8,0,1,'15 Minute Average','','',2,5);
+INSERT INTO graph_templates_item VALUES (85,0,0,11,35,0,9,0,4,'Current:','','on',3,6);
+INSERT INTO graph_templates_item VALUES (86,0,0,11,0,1,4,12,1,'Total','','',2,7);
+INSERT INTO graph_templates_item VALUES (87,0,0,12,15,34,7,0,1,'Buffers','','',2,1);
+INSERT INTO graph_templates_item VALUES (88,0,0,12,15,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (89,0,0,12,15,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (90,0,0,12,15,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (91,0,0,12,17,42,8,0,1,'Cache','','',2,5);
+INSERT INTO graph_templates_item VALUES (92,0,0,12,17,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (93,0,0,12,17,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (94,0,0,12,17,0,9,0,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (95,0,0,12,16,41,8,0,1,'Free','','',2,9);
+INSERT INTO graph_templates_item VALUES (96,0,0,12,16,0,9,0,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (97,0,0,12,16,0,9,0,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (98,0,0,12,16,0,9,0,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (99,0,0,12,18,30,8,0,1,'Swap','','',2,13);
+INSERT INTO graph_templates_item VALUES (100,0,0,12,18,0,9,0,4,'Current:','','',2,14);
+INSERT INTO graph_templates_item VALUES (101,0,0,12,18,0,9,0,1,'Average:','','',2,15);
+INSERT INTO graph_templates_item VALUES (102,0,0,12,18,0,9,0,3,'Maximum:','','',2,16);
+INSERT INTO graph_templates_item VALUES (103,0,0,13,37,52,7,0,1,'Memory Free','','',2,1);
+INSERT INTO graph_templates_item VALUES (104,0,0,13,37,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (105,0,0,13,37,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (106,0,0,13,37,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (107,0,0,13,36,35,8,0,1,'Memory Buffers','','',2,5);
+INSERT INTO graph_templates_item VALUES (108,0,0,13,36,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (109,0,0,13,36,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (110,0,0,13,36,0,9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (111,0,0,14,28,41,7,0,1,'Cache Hits','','',2,1);
+INSERT INTO graph_templates_item VALUES (112,0,0,14,28,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (113,0,0,14,28,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (114,0,0,14,28,0,9,0,3,'Maximum:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (115,0,0,14,27,66,8,0,1,'Cache Checks','','',2,5);
+INSERT INTO graph_templates_item VALUES (116,0,0,14,27,0,9,0,4,'Current:','','',3,6);
+INSERT INTO graph_templates_item VALUES (117,0,0,14,27,0,9,0,1,'Average:','','',3,7);
+INSERT INTO graph_templates_item VALUES (118,0,0,14,27,0,9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (119,0,0,15,24,9,7,0,1,'CPU Usage','','',2,1);
+INSERT INTO graph_templates_item VALUES (120,0,0,15,24,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (121,0,0,15,24,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (122,0,0,15,24,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (123,0,0,16,25,67,7,0,1,'File System Reads','','',2,1);
+INSERT INTO graph_templates_item VALUES (124,0,0,16,25,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (125,0,0,16,25,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (126,0,0,16,25,0,9,0,3,'Maximum:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (127,0,0,16,26,93,8,0,1,'File System Writes','','',2,5);
+INSERT INTO graph_templates_item VALUES (128,0,0,16,26,0,9,0,4,'Current:','','',3,6);
+INSERT INTO graph_templates_item VALUES (129,0,0,16,26,0,9,0,1,'Average:','','',3,7);
+INSERT INTO graph_templates_item VALUES (130,0,0,16,26,0,9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (131,0,0,17,23,30,7,0,1,'Current Logins','','',2,1);
+INSERT INTO graph_templates_item VALUES (132,0,0,17,23,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (133,0,0,17,23,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (134,0,0,17,23,0,9,0,3,'Maximum:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (135,0,0,17,29,89,8,0,1,'Open Files','','',2,5);
+INSERT INTO graph_templates_item VALUES (136,0,0,17,29,0,9,0,4,'Current:','','',3,6);
+INSERT INTO graph_templates_item VALUES (137,0,0,17,29,0,9,0,1,'Average:','','',3,7);
+INSERT INTO graph_templates_item VALUES (138,0,0,17,29,0,9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (139,0,0,18,30,9,7,0,1,'CPU Usage','','',2,1);
+INSERT INTO graph_templates_item VALUES (140,0,0,18,30,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (141,0,0,18,30,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (142,0,0,18,30,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (143,0,0,19,39,25,7,14,1,'Free Space','','',2,1);
+INSERT INTO graph_templates_item VALUES (144,0,0,19,39,0,9,14,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (145,0,0,19,39,0,9,14,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (146,0,0,19,39,0,9,14,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (147,0,0,19,38,69,7,14,1,'Total Space','','',2,5);
+INSERT INTO graph_templates_item VALUES (148,0,0,19,38,0,9,14,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (149,0,0,19,38,0,9,14,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (150,0,0,19,38,0,9,14,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (151,0,0,19,40,95,5,14,1,'Freeable Space','','',2,9);
+INSERT INTO graph_templates_item VALUES (152,0,0,19,40,0,9,14,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (153,0,0,19,40,0,9,14,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (154,0,0,19,40,0,9,14,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (159,0,0,20,43,77,7,0,1,'Used Directory Entries','','',2,1);
+INSERT INTO graph_templates_item VALUES (160,0,0,20,43,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (161,0,0,20,43,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (162,0,0,20,43,0,9,0,3,'Maximum:','','on',3,4);
+INSERT INTO graph_templates_item VALUES (163,0,0,20,42,1,5,0,1,'Available Directory Entries','','',2,5);
+INSERT INTO graph_templates_item VALUES (164,0,0,20,42,0,9,0,4,'Current:','','',3,6);
+INSERT INTO graph_templates_item VALUES (165,0,0,20,42,0,9,0,1,'Average:','','',3,7);
+INSERT INTO graph_templates_item VALUES (166,0,0,20,42,0,9,0,3,'Maximum:','','',3,8);
+
+--
+-- Table structure for table 'graph_tree'
+--
+
+CREATE TABLE graph_tree (
+  id smallint(5) NOT NULL auto_increment,
+  user_id tinyint(4) NOT NULL default '0',
+  name varchar(255) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `def_image_type`
-#
+--
+-- Dumping data for table 'graph_tree'
+--
 
-INSERT INTO def_image_type VALUES (1, 'PNG');
-INSERT INTO def_image_type VALUES (2, 'GIF');
-# --------------------------------------------------------
 
-#
-# Table structure for table `graph_hierarchy`
-#
 
-CREATE TABLE graph_hierarchy (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(255) NOT NULL default '',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'graph_tree_items'
+--
+
+CREATE TABLE graph_tree_items (
+  id smallint(5) NOT NULL auto_increment,
+  graph_tree_id smallint(5) NOT NULL default '0',
+  local_graph_id mediumint(8) NOT NULL default '0',
+  rra_id smallint(5) NOT NULL default '0',
+  title varchar(255) default NULL,
+  order_key varchar(60) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id),
+  KEY graph_tree_id (graph_tree_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `graph_hierarchy`
-#
+--
+-- Dumping data for table 'graph_tree_items'
+--
 
-INSERT INTO graph_hierarchy VALUES (3, 'Default Tree');
-# --------------------------------------------------------
 
-#
-# Table structure for table `graph_hierarchy_items`
-#
 
-CREATE TABLE graph_hierarchy_items (
-  ID smallint(5) NOT NULL auto_increment,
-  TreeID smallint(5) NOT NULL default '0',
-  GraphID smallint(5) default NULL,
-  RRAID smallint(5) default NULL,
-  Title varchar(255) default NULL,
-  Type varchar(10) NOT NULL default '0',
-  Parent smallint(5) NOT NULL default '0',
-  Sequence smallint(5) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'host'
+--
+
+CREATE TABLE host (
+  id mediumint(8) NOT NULL auto_increment,
+  host_template_id mediumint(8) NOT NULL default '0',
+  description varchar(150) NOT NULL default '',
+  hostname varchar(250) default NULL,
+  management_ip varchar(15) default NULL,
+  snmp_community varchar(100) default NULL,
+  snmp_version tinyint(1) NOT NULL default '1',
+  snmp_username varchar(50) default NULL,
+  snmp_password varchar(50) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `graph_hierarchy_items`
-#
+--
+-- Dumping data for table 'host'
+--
 
-INSERT INTO graph_hierarchy_items VALUES (99, 3, 0, 1, 'Network Graphs', 'Heading', 0, 2);
-INSERT INTO graph_hierarchy_items VALUES (97, 3, 6, 1, '', 'Graph', 89, 8);
-INSERT INTO graph_hierarchy_items VALUES (96, 3, 10, 1, '', 'Graph', 89, 7);
-INSERT INTO graph_hierarchy_items VALUES (95, 3, 56, 1, '', 'Graph', 89, 6);
-INSERT INTO graph_hierarchy_items VALUES (94, 3, 55, 1, '', 'Graph', 89, 5);
-INSERT INTO graph_hierarchy_items VALUES (93, 3, 7, 1, '', 'Graph', 89, 4);
-INSERT INTO graph_hierarchy_items VALUES (92, 3, 13, 1, '', 'Graph', 89, 3);
-INSERT INTO graph_hierarchy_items VALUES (91, 3, 53, 1, '', 'Graph', 89, 2);
-INSERT INTO graph_hierarchy_items VALUES (90, 3, 57, 1, '', 'Graph', 89, 1);
-INSERT INTO graph_hierarchy_items VALUES (89, 3, 0, 1, 'System Graphs', 'Heading', 0, 1);
-INSERT INTO graph_hierarchy_items VALUES (100, 3, 0, 1, 'Ping Graphs', 'Heading', 99, 1);
-INSERT INTO graph_hierarchy_items VALUES (101, 3, 8, 1, '', 'Graph', 100, 1);
-# --------------------------------------------------------
 
-#
-# Table structure for table `lnk_ds_rra`
-#
 
-CREATE TABLE lnk_ds_rra (
-  DSID smallint(5) NOT NULL default '0',
-  RRAID smallint(5) NOT NULL default '0'
+--
+-- Table structure for table 'host_snmp_cache'
+--
+
+CREATE TABLE host_snmp_cache (
+  host_id mediumint(8) NOT NULL default '0',
+  snmp_query_id mediumint(8) NOT NULL default '0',
+  field_name varchar(50) NOT NULL default '',
+  field_value varchar(255) default NULL,
+  snmp_index int(20) NOT NULL default '0',
+  oid varchar(255) NOT NULL default '',
+  PRIMARY KEY  (host_id,field_name,snmp_index),
+  KEY host_id (host_id,field_name),
+  KEY snmp_index (snmp_index)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `lnk_ds_rra`
-#
+--
+-- Dumping data for table 'host_snmp_cache'
+--
 
-INSERT INTO lnk_ds_rra VALUES (30, 4);
-INSERT INTO lnk_ds_rra VALUES (30, 3);
-INSERT INTO lnk_ds_rra VALUES (30, 2);
-INSERT INTO lnk_ds_rra VALUES (30, 1);
-INSERT INTO lnk_ds_rra VALUES (31, 4);
-INSERT INTO lnk_ds_rra VALUES (31, 3);
-INSERT INTO lnk_ds_rra VALUES (31, 2);
-INSERT INTO lnk_ds_rra VALUES (31, 1);
-INSERT INTO lnk_ds_rra VALUES (36, 4);
-INSERT INTO lnk_ds_rra VALUES (36, 3);
-INSERT INTO lnk_ds_rra VALUES (36, 2);
-INSERT INTO lnk_ds_rra VALUES (36, 1);
-INSERT INTO lnk_ds_rra VALUES (38, 4);
-INSERT INTO lnk_ds_rra VALUES (38, 3);
-INSERT INTO lnk_ds_rra VALUES (38, 2);
-INSERT INTO lnk_ds_rra VALUES (38, 1);
-INSERT INTO lnk_ds_rra VALUES (375, 4);
-INSERT INTO lnk_ds_rra VALUES (375, 3);
-INSERT INTO lnk_ds_rra VALUES (375, 2);
-INSERT INTO lnk_ds_rra VALUES (375, 1);
-INSERT INTO lnk_ds_rra VALUES (127, 4);
-INSERT INTO lnk_ds_rra VALUES (127, 3);
-INSERT INTO lnk_ds_rra VALUES (127, 2);
-INSERT INTO lnk_ds_rra VALUES (127, 1);
-INSERT INTO lnk_ds_rra VALUES (35, 4);
-INSERT INTO lnk_ds_rra VALUES (35, 3);
-INSERT INTO lnk_ds_rra VALUES (35, 2);
-INSERT INTO lnk_ds_rra VALUES (35, 1);
-INSERT INTO lnk_ds_rra VALUES (0, 4);
-INSERT INTO lnk_ds_rra VALUES (0, 3);
-INSERT INTO lnk_ds_rra VALUES (0, 2);
-INSERT INTO lnk_ds_rra VALUES (0, 1);
-INSERT INTO lnk_ds_rra VALUES (126, 4);
-INSERT INTO lnk_ds_rra VALUES (126, 3);
-INSERT INTO lnk_ds_rra VALUES (126, 2);
-INSERT INTO lnk_ds_rra VALUES (126, 1);
-INSERT INTO lnk_ds_rra VALUES (128, 4);
-INSERT INTO lnk_ds_rra VALUES (128, 3);
-INSERT INTO lnk_ds_rra VALUES (128, 2);
-INSERT INTO lnk_ds_rra VALUES (128, 1);
-INSERT INTO lnk_ds_rra VALUES (132, 4);
-INSERT INTO lnk_ds_rra VALUES (132, 3);
-INSERT INTO lnk_ds_rra VALUES (132, 2);
-INSERT INTO lnk_ds_rra VALUES (132, 1);
-INSERT INTO lnk_ds_rra VALUES (131, 4);
-INSERT INTO lnk_ds_rra VALUES (131, 3);
-INSERT INTO lnk_ds_rra VALUES (131, 2);
-INSERT INTO lnk_ds_rra VALUES (131, 1);
-INSERT INTO lnk_ds_rra VALUES (130, 4);
-INSERT INTO lnk_ds_rra VALUES (130, 3);
-INSERT INTO lnk_ds_rra VALUES (130, 2);
-INSERT INTO lnk_ds_rra VALUES (130, 1);
-INSERT INTO lnk_ds_rra VALUES (245, 4);
-INSERT INTO lnk_ds_rra VALUES (245, 3);
-INSERT INTO lnk_ds_rra VALUES (245, 2);
-INSERT INTO lnk_ds_rra VALUES (245, 1);
-# --------------------------------------------------------
 
-#
-# Table structure for table `lnk_rra_cf`
-#
 
-CREATE TABLE lnk_rra_cf (
-  RRAID smallint(5) NOT NULL default '0',
-  ConsolidationFunctionID smallint(5) NOT NULL default '0'
+--
+-- Table structure for table 'host_snmp_query'
+--
+
+CREATE TABLE host_snmp_query (
+  host_id mediumint(8) NOT NULL default '0',
+  snmp_query_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (host_id,snmp_query_id),
+  KEY host_id (host_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `lnk_rra_cf`
-#
+--
+-- Dumping data for table 'host_snmp_query'
+--
 
-INSERT INTO lnk_rra_cf VALUES (1, 3);
-INSERT INTO lnk_rra_cf VALUES (1, 1);
-INSERT INTO lnk_rra_cf VALUES (2, 3);
-INSERT INTO lnk_rra_cf VALUES (4, 3);
-INSERT INTO lnk_rra_cf VALUES (4, 1);
-INSERT INTO lnk_rra_cf VALUES (3, 3);
-INSERT INTO lnk_rra_cf VALUES (3, 1);
-INSERT INTO lnk_rra_cf VALUES (2, 1);
-INSERT INTO lnk_rra_cf VALUES (6, 2);
-INSERT INTO lnk_rra_cf VALUES (6, 3);
-INSERT INTO lnk_rra_cf VALUES (7, 1);
-INSERT INTO lnk_rra_cf VALUES (7, 2);
-INSERT INTO lnk_rra_cf VALUES (7, 3);
-INSERT INTO lnk_rra_cf VALUES (7, 4);
-# --------------------------------------------------------
 
-#
-# Table structure for table `menu`
-#
 
-CREATE TABLE menu (
-  ID smallint(4) NOT NULL auto_increment,
-  Name varchar(50) NOT NULL default '',
-  ItemOrder tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'host_template'
+--
+
+CREATE TABLE host_template (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(100) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `menu`
-#
+--
+-- Dumping data for table 'host_template'
+--
 
-INSERT INTO menu VALUES (1, 'cacti Menu', '2');
-# --------------------------------------------------------
 
-#
-# Table structure for table `menu_category`
-#
+INSERT INTO host_template VALUES (1,'Generic SNMP-enabled Host');
+INSERT INTO host_template VALUES (3,'ucd/net SNMP Host');
+INSERT INTO host_template VALUES (4,'Karlnet Wireless Bridge');
+INSERT INTO host_template VALUES (5,'Cisco Router');
+INSERT INTO host_template VALUES (6,'Netware 4/5 Server');
 
-CREATE TABLE menu_category (
-  ID smallint(4) NOT NULL auto_increment,
-  MenuID smallint(4) NOT NULL default '0',
-  Name varchar(50) NOT NULL default '',
-  ImagePath varchar(255) default NULL,
-  Sequence smallint(5) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'host_template_data_sv'
+--
+
+CREATE TABLE host_template_data_sv (
+  host_template_id mediumint(8) NOT NULL default '0',
+  data_template_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) NOT NULL default '0',
+  field_name varchar(100) NOT NULL default '',
+  text varchar(255) NOT NULL default '',
+  PRIMARY KEY  (host_template_id,data_template_id,graph_template_id,field_name),
+  KEY host_template_id (host_template_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `menu_category`
-#
+--
+-- Dumping data for table 'host_template_data_sv'
+--
 
-INSERT INTO menu_category VALUES (1, 1, 'Graph Setup', 'images/menu_header_graph_setup.gif', 1);
-INSERT INTO menu_category VALUES (2, 1, 'Data Gathering', 'images/menu_header_data_gathering.gif', 2);
-INSERT INTO menu_category VALUES (3, 1, 'Configuration', 'images/menu_header_configuration.gif', 3);
-INSERT INTO menu_category VALUES (4, 1, 'Utilities', 'images/menu_header_utilities.gif', 4);
-# --------------------------------------------------------
 
-#
-# Table structure for table `menu_items`
-#
+INSERT INTO host_template_data_sv VALUES (6,21,15,'name','|host_description| - CPU Usage');
+INSERT INTO host_template_data_sv VALUES (6,22,16,'name','|host_description| - File System Reads');
+INSERT INTO host_template_data_sv VALUES (6,23,16,'name','|host_description| - File System Writes');
+INSERT INTO host_template_data_sv VALUES (6,24,14,'name','|host_description| - Cache Checks');
+INSERT INTO host_template_data_sv VALUES (6,25,14,'name','|host_description| - Cache Hits');
+INSERT INTO host_template_data_sv VALUES (6,26,17,'name','|host_description| - Open Files');
+INSERT INTO host_template_data_sv VALUES (6,20,17,'name','|host_description| - Total Logins');
+INSERT INTO host_template_data_sv VALUES (5,27,18,'name','|host_description| - 5 Minute CPU');
+INSERT INTO host_template_data_sv VALUES (3,6,4,'name','|host_description| - CPU Usage - Nice');
+INSERT INTO host_template_data_sv VALUES (3,4,4,'name','|host_description| - CPU Usage - System');
+INSERT INTO host_template_data_sv VALUES (3,30,11,'name','|host_description| - Load Average - 1 Minute');
+INSERT INTO host_template_data_sv VALUES (3,32,11,'name','|host_description| - Load Average - 15 Minute');
+INSERT INTO host_template_data_sv VALUES (3,31,11,'name','|host_description| - Load Average - 5 Minute');
+INSERT INTO host_template_data_sv VALUES (3,33,13,'name','|host_description| - Memory - Buffers');
+INSERT INTO host_template_data_sv VALUES (3,34,13,'name','|host_description| - Memory - Free');
+INSERT INTO host_template_data_sv VALUES (3,5,4,'name','|host_description| - CPU Usage - User');
 
-CREATE TABLE menu_items (
-  ID smallint(4) NOT NULL auto_increment,
-  CategoryID smallint(4) NOT NULL default '0',
-  Name varchar(50) NOT NULL default '',
-  URL varchar(200) default NULL,
-  SectionID smallint(4) NOT NULL default '0',
-  MenuID smallint(4) NOT NULL default '0',
-  Parent varchar(30) default NULL,
-  ImagePath varchar(255) default NULL,
-  Sequence smallint(5) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'host_template_graph'
+--
+
+CREATE TABLE host_template_graph (
+  host_template_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (host_template_id,graph_template_id),
+  KEY host_template_id (host_template_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `menu_items`
-#
-
-INSERT INTO menu_items VALUES (3, 2, 'Data Sources', 'ds.php', 3, 1, '', 'images/menu_item_data_sources.gif', 1);
-INSERT INTO menu_items VALUES (4, 1, 'Available RRA\'s', 'rra.php', 9, 1, '', 'images/menu_item_round_robin_archives.gif', 3);
-INSERT INTO menu_items VALUES (6, 2, 'SNMP Interfaces', 'snmp.php', 3, 1, '', 'images/menu_item_snmp_interfaces.gif', 5);
-INSERT INTO menu_items VALUES (7, 3, 'Cron Printout', 'cron.php', 2, 1, '', 'images/menu_item_cron_printout.gif', 1);
-INSERT INTO menu_items VALUES (2, 1, 'Colors', 'color.php', 5, 1, '', 'images/menu_item_colors.gif', 3);
-INSERT INTO menu_items VALUES (5, 2, 'Data Input Methods', 'data.php', 2, 1, '', 'images/menu_item_data_input.gif', 4);
-INSERT INTO menu_items VALUES (16, 4, 'Logout User', 'logout.php', 8, 1, '', 'images/menu_item_logout_user.gif', 4);
-INSERT INTO menu_items VALUES (12, 1, 'Graph Hierarchy', 'tree.php', 5, 1, '', 'images/menu_item_graph_hierarchy.gif', 2);
-INSERT INTO menu_items VALUES (18, 3, 'cacti Settings', 'settings.php', 1, 1, '', 'images/menu_item_cacti_settings.gif', 2);
-INSERT INTO menu_items VALUES (17, 4, 'User Administration', 'user_admin.php', 1, 1, '', 'images/menu_item_user_administration.gif', 3);
-INSERT INTO menu_items VALUES (14, 2, 'CDEF\'s', 'cdef.php', 3, 1, '', 'images/menu_item_cdef.gif', 2);
-INSERT INTO menu_items VALUES (1, 1, 'Graphs', 'graphs.php', 5, 1, '', 'images/menu_item_graphs.gif', 1);
-# --------------------------------------------------------
-
-#
-# Table structure for table 'polling_zones'
-#
-CREATE TABLE polling_zones (				  
-  pz_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  zone_name VARCHAR(100) NOT NULL
-) TYPE=MyISAM;
- 
-INSERT INTO polling_zones (pz_id, zone_name) VALUES ('0', 'Default Polling Zone');
+--
+-- Dumping data for table 'host_template_graph'
+--
 
 
-#
-# Table structure for table polling_profiles
-#
+INSERT INTO host_template_graph VALUES (3,4);
+INSERT INTO host_template_graph VALUES (3,11);
+INSERT INTO host_template_graph VALUES (3,13);
+INSERT INTO host_template_graph VALUES (5,18);
+INSERT INTO host_template_graph VALUES (6,14);
+INSERT INTO host_template_graph VALUES (6,15);
+INSERT INTO host_template_graph VALUES (6,16);
+INSERT INTO host_template_graph VALUES (6,17);
 
-CREATE TABLE polling_profiles (
-  profile_id int(11) NOT NULL auto_increment,
-  profile_name varchar(100) NOT NULL default '',
-  PRIMARY KEY  (profile_id)
+--
+-- Table structure for table 'host_template_graph_sv'
+--
+
+CREATE TABLE host_template_graph_sv (
+  host_template_id mediumint(8) NOT NULL default '0',
+  graph_template_id mediumint(8) NOT NULL default '0',
+  field_name varchar(100) NOT NULL default '',
+  text varchar(255) NOT NULL default '',
+  PRIMARY KEY  (host_template_id,graph_template_id,field_name)
 ) TYPE=MyISAM;
 
-
-#
-# Table structure for table 'polling_tree'
-
-CREATE TABLE polling_tree (
-  ptree_id bigint(20) NOT NULL auto_increment,
-  order_key varchar(60) NOT NULL default '',
-  host_id bigint(20) NOT NULL default '0',
-  title varchar(30) default NULL,
-  PRIMARY KEY  (ptree_id)
-) TYPE=MyISAM;
-	  
-	      	      
-#
-# Table structure for table 'polling_hosts'
-
-CREATE TABLE polling_hosts (
-  host_id bigint(20) NOT NULL auto_increment,
-  hostname varchar(50) NOT NULL default '',
-  domain varchar(250) NOT NULL default '',
-  descrip varchar(255) default NULL,
-  mgmt_ip varchar(15) NOT NULL default '',
-  snmp_ver tinyint(1) NOT NULL default '0',
-  snmp_string varchar(255) default NULL,
-  snmp_user varchar(50) default NULL,
-  snmp_pass varchar(50) default NULL,
-  profile_id int(11),
-  PRIMARY KEY  (host_id)
-) TYPE=MyISAM COMMENT='Hosts that we''ll present data for.';
+--
+-- Dumping data for table 'host_template_graph_sv'
+--
 
 
-#
-# Table structure for table 'polling_tasks'
+INSERT INTO host_template_graph_sv VALUES (5,18,'title','|host_description| - CPU Usage');
+INSERT INTO host_template_graph_sv VALUES (6,15,'title','|host_description| - CPU Usage');
+INSERT INTO host_template_graph_sv VALUES (6,16,'title','|host_description| - File System Activity');
+INSERT INTO host_template_graph_sv VALUES (6,14,'title','|host_description| - File System Cache');
+INSERT INTO host_template_graph_sv VALUES (6,17,'title','|host_description| - User Processes');
+INSERT INTO host_template_graph_sv VALUES (3,4,'title','|host_description| - CPU Usage');
+INSERT INTO host_template_graph_sv VALUES (3,11,'title','|host_description| - Load Average');
+INSERT INTO host_template_graph_sv VALUES (3,13,'title','|host_description| - Memory Usage');
 
-CREATE TABLE polling_tasks (
-  task_id bigint(20) NOT NULL auto_increment,
-  host_id bigint(20) NOT NULL default '0',
-  name varchar(50) NOT NULL default '',
-  descrip varchar(200) NOT NULL default '',
-  polling_interval int(10) unsigned NOT NULL default '0',
-  to_be_polled tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY  (task_id) 
-) TYPE=MyISAM;
-	      	          
-		  
-#
-# Table structure for table 'polling_items'
+--
+-- Table structure for table 'host_template_snmp_query'
+--
 
-CREATE TABLE polling_items (
-  item_id bigint(20) unsigned NOT NULL auto_increment,
-  task_id bigint(20) unsigned NOT NULL default '0',
-  descrip varchar(150) NOT NULL default '',
-  heartbeat int(10) unsigned NOT NULL default '0',
-  min_value bigint(20) NOT NULL default '0',
-  max_value bigint(20) NOT NULL default '0',
-  snmp_oid varchar(100) NOT NULL default '',
-  script_arg_num tinyint(3) NOT NULL default '0',
-  PRIMARY KEY  (item_id)
-) TYPE=MyISAM COMMENT='The actual pieces of data that each polling task will gather';
-
-    
-    
-    
-			
-
-#
-# Table structure for table `rrd_ds`
-#
-
-CREATE TABLE rrd_ds (
-  ID smallint(5) NOT NULL auto_increment,
-  SubDSID smallint(5) NOT NULL default '0',
-  SubFieldID smallint(5) NOT NULL default '0',
-  Name varchar(50) NOT NULL default '',
-  DataSourceTypeID smallint(5) NOT NULL default '0',
-  Heartbeat mediumint(8) default '600',
-  MinValue mediumint(8) default '0',
-  MaxValue bigint(12) default '1',
-  SrcID smallint(5) NOT NULL default '0',
-  Active char(3) default '1',
-  DSName varchar(19) default NULL,
-  DSPath varchar(150) default NULL,
-  Step smallint(5) NOT NULL default '300',
-  IsParent tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+CREATE TABLE host_template_snmp_query (
+  host_template_id mediumint(8) NOT NULL default '0',
+  snmp_query_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (host_template_id,snmp_query_id),
+  KEY host_template_id (host_template_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `rrd_ds`
-#
+--
+-- Dumping data for table 'host_template_snmp_query'
+--
 
-INSERT INTO rrd_ds VALUES (31, 0, 0, 'system_users', 1, 600, 0, 20, 6, 'on', 'system_users', '<path_rra>/system_users.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (35, 0, 0, 'ping_uunet_phi', 1, 600, 0, 2000, 1, 'on', 'ping_uunet_phi', '<path_rra>/ping_uunet_phi.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (38, 0, 0, 'server_mysql', 2, 600, 0, 5000, 8, 'on', 'server_mysql', '<path_rra>/server_mysql.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (378, 375, 85, 'system_loadavg_5min', 1, 600, 0, 200, 0, 'on', '5min', '<path_rra>/system_loadavg.rrd', 0, '0');
-INSERT INTO rrd_ds VALUES (377, 375, 86, 'system_loadavg_10min', 1, 600, 0, 200, 0, 'on', '10min', '<path_rra>/system_loadavg.rrd', 0, '0');
-INSERT INTO rrd_ds VALUES (126, 0, 0, 'system_samba', 1, 600, 0, 10000, 22, 'on', 'system_samba', '<path_rra>/system_samba.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (130, 0, 0, 'system_mem_cached', 1, 600, 0, 1000000, 24, 'on', 'system_mem_cached', '<path_rra>/system_mem_cached.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (131, 0, 0, 'system_mem_swap', 1, 600, 0, 1000000, 24, 'on', 'system_mem_swap', '<path_rra>/system_mem_swap.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (132, 0, 0, 'system_mem_total', 1, 600, 0, 1000000, 24, 'on', 'system_mem_total', '<path_rra>/system_mem_total.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (375, 0, 0, 'system_loadavg', 1, 600, 0, 200, 9, 'on', 'system_loadavg', '<path_rra>/system_loadavg.rrd', 300, '1');
-INSERT INTO rrd_ds VALUES (376, 375, 84, 'system_loadavg_1min', 1, 600, 0, 200, 0, 'on', '1min', '<path_rra>/system_loadavg.rrd', 0, '0');
-INSERT INTO rrd_ds VALUES (30, 0, 0, 'system_proc', 1, 600, 0, 500, 5, 'on', 'system_proc', '<path_rra>/system_proc.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (245, 0, 0, 'system_mem_buffers', 1, 600, 0, 10000000, 24, 'on', 'system_mem_buffers', '<path_rra>/system_mem_buffers.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (127, 0, 0, 'system_webhits', 2, 600, 0, 100000, 23, 'on', 'system_webhits', '<path_rra>/system_webhits.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (128, 0, 0, 'system_mem_free', 1, 600, 0, 10000000, 24, 'on', 'system_mem_free', '<path_rra>/system_mem_free.rrd', 300, '0');
-INSERT INTO rrd_ds VALUES (36, 0, 0, 'system_tcp', 1, 600, 0, 200, 7, 'on', 'system_tcp', '<path_rra>/system_tcp.rrd', 300, '0');
-# --------------------------------------------------------
 
-#
-# Table structure for table `rrd_ds_cdef`
-#
+INSERT INTO host_template_snmp_query VALUES (1,1);
+INSERT INTO host_template_snmp_query VALUES (3,1);
+INSERT INTO host_template_snmp_query VALUES (3,2);
+INSERT INTO host_template_snmp_query VALUES (4,1);
+INSERT INTO host_template_snmp_query VALUES (4,3);
+INSERT INTO host_template_snmp_query VALUES (5,1);
+INSERT INTO host_template_snmp_query VALUES (6,1);
+INSERT INTO host_template_snmp_query VALUES (6,4);
 
-CREATE TABLE rrd_ds_cdef (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(255) NOT NULL default '',
-  Type tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'rra'
+--
+
+CREATE TABLE rra (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(100) NOT NULL default '',
+  x_files_factor double NOT NULL default '0.1',
+  steps mediumint(8) default '1',
+  rows int(12) NOT NULL default '600',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `rrd_ds_cdef`
-#
+--
+-- Dumping data for table 'rra'
+--
 
-INSERT INTO rrd_ds_cdef VALUES (2, 'Turn Bytes into Bits', '1');
-INSERT INTO rrd_ds_cdef VALUES (3, 'Make Stack Negative', '1');
-INSERT INTO rrd_ds_cdef VALUES (4, 'Make Per 5 Minutes', '1');
-INSERT INTO rrd_ds_cdef VALUES (7, 'Total All Data Sources', '2');
-INSERT INTO rrd_ds_cdef VALUES (11, 'Staggered Total of Data Sources on a Graph', '3');
-INSERT INTO rrd_ds_cdef VALUES (12, 'Average of All Data Sources on a Graph', '4');
-INSERT INTO rrd_ds_cdef VALUES (13, 'Staggered Average of Data Sources on a Graph', '5');
-# --------------------------------------------------------
 
-#
-# Table structure for table `rrd_ds_cdef_item`
-#
+INSERT INTO rra VALUES (1,'Daily (5 Minute Average)',0.5,1,600);
+INSERT INTO rra VALUES (2,'Weekly (30 Minute Average)',0.5,6,700);
+INSERT INTO rra VALUES (4,'Yearly (1 Day Average)',0.5,288,797);
+INSERT INTO rra VALUES (3,'Monthly (2 Hour Average)',0.5,24,775);
 
-CREATE TABLE rrd_ds_cdef_item (
-  ID smallint(5) NOT NULL auto_increment,
-  DSID smallint(5) default NULL,
-  CDEFID smallint(5) default NULL,
-  Custom varchar(255) default NULL,
-  CurrentDS char(2) default NULL,
-  CDEFFunctionID smallint(5) default NULL,
-  Type varchar(30) NOT NULL default '0',
-  Sequence smallint(5) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'rra_cf'
+--
+
+CREATE TABLE rra_cf (
+  rra_id mediumint(8) NOT NULL default '0',
+  consolidation_function_id smallint(5) NOT NULL default '0',
+  PRIMARY KEY  (rra_id,consolidation_function_id),
+  KEY rra_id (rra_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `rrd_ds_cdef_item`
-#
+--
+-- Dumping data for table 'rra_cf'
+--
 
-INSERT INTO rrd_ds_cdef_item VALUES (8, 54, 2, '8', '', 23, 'Custom Entry', 2);
-INSERT INTO rrd_ds_cdef_item VALUES (7, 54, 2, '', 'on', 31, 'Data Source', 1);
-INSERT INTO rrd_ds_cdef_item VALUES (9, 54, 2, '', '', 29, 'CDEF Function', 3);
-INSERT INTO rrd_ds_cdef_item VALUES (10, 54, 4, '', 'on', 31, 'Data Source', 1);
-INSERT INTO rrd_ds_cdef_item VALUES (11, 54, 4, '300', '', 31, 'Custom Entry', 2);
-INSERT INTO rrd_ds_cdef_item VALUES (12, 54, 4, '', '', 29, 'CDEF Function', 3);
-INSERT INTO rrd_ds_cdef_item VALUES (13, 54, 3, '', 'on', 31, 'Data Source', 1);
-INSERT INTO rrd_ds_cdef_item VALUES (14, 54, 3, '-1', '', 31, 'Custom Entry', 2);
-INSERT INTO rrd_ds_cdef_item VALUES (15, 54, 3, '', '', 29, 'CDEF Function', 3);
-# --------------------------------------------------------
 
-#
-# Table structure for table `rrd_graph`
-#
+INSERT INTO rra_cf VALUES (1,1);
+INSERT INTO rra_cf VALUES (1,3);
+INSERT INTO rra_cf VALUES (2,1);
+INSERT INTO rra_cf VALUES (2,3);
+INSERT INTO rra_cf VALUES (3,1);
+INSERT INTO rra_cf VALUES (3,3);
+INSERT INTO rra_cf VALUES (4,1);
+INSERT INTO rra_cf VALUES (4,3);
 
-CREATE TABLE rrd_graph (
-  ID smallint(5) NOT NULL auto_increment,
-  order_key varchar(60) NOT NULL,
-  ImageFormatID smallint(4) NOT NULL default '0',
-  Title varchar(200) default NULL,
-  Height smallint(5) NOT NULL default '0',
-  Width smallint(5) NOT NULL default '0',
-  UpperLimit bigint(12) default NULL,
-  LowerLimit bigint(12) default NULL,
-  VerticalLabel varchar(200) default NULL,
-  AutoScale char(2) default NULL,
-  AutoPadding char(2) default NULL,
-  AutoScaleOpts tinyint(1) default '2',
-  Rigid char(2) default 'on',
-  BaseValue mediumint(8) NOT NULL default '1000',
-  Grouping char(2) default NULL,
-  Export char(2) default 'on',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID),
-  UNIQUE KEY order_key (order_key)
-) TYPE=MyISAM;
-
-#
-# Dumping data for table `rrd_graph`
-#
-
-INSERT INTO rrd_graph VALUES (1, '01000000000000000000000000000000000000000000000000000000000', 1, 'Localhost', 0, 0, 0, 0, '', '', '', '', '', 0, 'on', '');
-INSERT INTO rrd_graph VALUES (2, '01010000000000000000000000000000000000000000000000000000000', 1, 'Vitals', 0, 0, 0, 0, '', '', '', '', '', 0, 'on', '');
-INSERT INTO rrd_graph VALUES (6, '01010100000000000000000000000000000000000000000000000000000', 1, 'System Processes', 150, 500, 100, 0, 'Active Processes', '', 'on', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (7, '01010200000000000000000000000000000000000000000000000000000', 1, 'Logged In Users', 150, 500, 5, 0, 'Users Logged In', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (55,'01010300000000000000000000000000000000000000000000000000000', 1, 'Memory Usage #1', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (56,'01010400000000000000000000000000000000000000000000000000000', 1, 'Memory Usage #2', 150, 500, 0, 0, 'Memory (kB)', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (13,'01010500000000000000000000000000000000000000000000000000000', 1, 'Load Average', 150, 500, 4, 0, 'Average Load', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (3, '01020000000000000000000000000000000000000000000000000000000', 1, 'Services', 0, 0, 0, 0, '', '', '', '', '', 0, 'on', '');
-INSERT INTO rrd_graph VALUES (10,'01020100000000000000000000000000000000000000000000000000000', 1, 'MySQL Usage', 150, 500, 300, 0, 'SQL Questions', 'on', '', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (53,'01020200000000000000000000000000000000000000000000000000000', 1, 'Apache/Samba/MySQL', 120, 500, 0, 0, 'Connections', 'on', 'on', '2', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (57,'01020300000000000000000000000000000000000000000000000000000', 1, 'Apache Web Hits', 150, 500, 0, 0, 'Hits', 'on', '', '1', 'on', 1000, 'on', 'on');
-INSERT INTO rrd_graph VALUES (8, '01030000000000000000000000000000000000000000000000000000000', 1, 'WAN Links (Ping Times)', 150, 500, 1000, 0, 'Milliseconds', 'on', 'on', '2', 'on', 1000, 'on', 'on');
-# --------------------------------------------------------
-
-#
-# Table structure for table `rrd_graph_item`
-#
-
-CREATE TABLE rrd_graph_item (
-  ID smallint(5) NOT NULL auto_increment,
-  DSID smallint(5) NOT NULL default '0',
-  ColorID smallint(5) default '0',
-  TextFormat mediumblob,
-  Value varchar(50) default NULL,
-  Sequence smallint(5) NOT NULL default '0',
-  GraphID smallint(5) NOT NULL default '0',
-  GraphTypeID smallint(5) NOT NULL default '0',
-  ConsolidationFunction smallint(5) NOT NULL default '1',
-  HardReturn char(2) default NULL,
-  CDEFID smallint(5) default '0',
-  SequenceParent smallint(5) NOT NULL default '0',
-  Parent smallint(5) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID),
-  KEY DSID (DSID),
-  KEY GraphID (GraphID)
-) TYPE=MyISAM;
-
-#
-# Dumping data for table `rrd_graph_item`
-#
-
-INSERT INTO rrd_graph_item VALUES (417, 127, 0, 'Maximum:', '', 4, 57, 9, 3, 'on', 4, 1, 414);
-INSERT INTO rrd_graph_item VALUES (416, 127, 0, 'Average:', '', 3, 57, 9, 1, '', 4, 1, 414);
-INSERT INTO rrd_graph_item VALUES (414, 127, 95, 'Web Hits', '', 0, 57, 7, 1, '', 4, 1, 414);
-INSERT INTO rrd_graph_item VALUES (407, 245, 35, 'Memory Buffers: <mem> kB', '', 0, 55, 8, 1, 'on', 0, 2, 407);
-INSERT INTO rrd_graph_item VALUES (411, 131, 28, 'Total Swap Memory: <mem> kB',  NULL, 0, 56, 7, 1, 'on', 0, 1, 411);
-INSERT INTO rrd_graph_item VALUES (412, 130, 46, 'Total Memory Cache: <mem> kB',  NULL, 0, 56, 8, 1, 'on', 0, 2, 412);
-INSERT INTO rrd_graph_item VALUES (48, 31, 10, 'Users Logged In', '', 0, 7, 7, 1, '', 0, 1, 48);
-INSERT INTO rrd_graph_item VALUES (55, 38, 16, 'MySQL Questions/sec', '', 0, 10, 7, 1, '', 0, 1, 55);
-INSERT INTO rrd_graph_item VALUES (69, 376, 9, '1 Minute: <1min>', '', 0, 13, 8, 1, 'on', 0, 3, 69);
-INSERT INTO rrd_graph_item VALUES (67, 377, 15, '10 Minute: <10min>', '', 0, 13, 7, 1, 'on', 0, 1, 67);
-INSERT INTO rrd_graph_item VALUES (68, 378, 8, '5 Minute: <5min>', '', 0, 13, 8, 1, 'on', 0, 2, 68);
-INSERT INTO rrd_graph_item VALUES (89, 35, 90, '<ip>', '', 0, 8, 7, 1, '', 0, 1, 89);
-INSERT INTO rrd_graph_item VALUES (609, 0, 1, 'Total', '', 0, 13, 4, 1, '', 7, 4, 609);
-INSERT INTO rrd_graph_item VALUES (406, 128, 52, 'Memory Free: <mem> kB',  NULL, 0, 55, 7, 1, 'on', 0, 1, 406);
-INSERT INTO rrd_graph_item VALUES (405, 127, 0, 'Maximum:',  NULL, 4, 53, 9, 3, 'on', 0, 3, 402);
-INSERT INTO rrd_graph_item VALUES (404, 127, 0, 'Average:',  NULL, 3, 53, 9, 1, '', 0, 3, 402);
-INSERT INTO rrd_graph_item VALUES (403, 127, 0, 'Current:', '', 2, 53, 9, 4, '', 0, 3, 402);
-INSERT INTO rrd_graph_item VALUES (402, 127, 75, 'Web Hits',  NULL, 0, 53, 8, 1, '', 4, 3, 402);
-INSERT INTO rrd_graph_item VALUES (401, 38, 0, 'Maximum:',  NULL, 4, 53, 9, 3, 'on', 0, 2, 398);
-INSERT INTO rrd_graph_item VALUES (400, 38, 0, 'Average:',  NULL, 3, 53, 9, 1, '', 0, 2, 398);
-INSERT INTO rrd_graph_item VALUES (399, 38, 0, 'Current:',  NULL, 2, 53, 9, 4, '', 0, 2, 398);
-INSERT INTO rrd_graph_item VALUES (398, 38, 74, 'MySQL Queries',  NULL, 0, 53, 8, 1, '', 0, 2, 398);
-INSERT INTO rrd_graph_item VALUES (393, 35, 0, 'Maximum:',  NULL, 4, 8, 9, 3, 'on', 0, 1, 89);
-INSERT INTO rrd_graph_item VALUES (392, 35, 0, 'Average:',  NULL, 3, 8, 9, 1, '', 0, 1, 89);
-INSERT INTO rrd_graph_item VALUES (391, 35, 0, 'Current:',  NULL, 2, 8, 9, 4, '', 0, 1, 89);
-INSERT INTO rrd_graph_item VALUES (381, 126, 73, 'Samba Files Opened',  NULL, 0, 53, 7, 1, '', 0, 1, 381);
-INSERT INTO rrd_graph_item VALUES (395, 126, 0, 'Current:', '', 2, 53, 9, 4, '', 0, 1, 381);
-INSERT INTO rrd_graph_item VALUES (396, 126, 0, 'Average:',  NULL, 3, 53, 9, 1, '', 0, 1, 381);
-INSERT INTO rrd_graph_item VALUES (397, 126, 0, 'Maximum:',  NULL, 4, 53, 9, 3, 'on', 0, 1, 381);
-INSERT INTO rrd_graph_item VALUES (413, 132, 69, 'Total Physical Memory: <mem> kB', '<mem>', 1, 56, 2, 1, 'on', 0, 2, 412);
-INSERT INTO rrd_graph_item VALUES (415, 127, 0, 'Current:', '', 2, 57, 9, 4, '', 4, 1, 414);
-INSERT INTO rrd_graph_item VALUES (870, 38, 0, 'Current:', '', 2, 10, 9, 4, '', 0, 1, 55);
-INSERT INTO rrd_graph_item VALUES (871, 38, 0, 'Average:', '', 3, 10, 9, 1, '', 0, 1, 55);
-INSERT INTO rrd_graph_item VALUES (872, 38, 0, 'Maximum:', '', 4, 10, 9, 3, 'on', 0, 1, 55);
-INSERT INTO rrd_graph_item VALUES (1125, 30, 9, 'Processes', '', 0, 6, 7, 1, '', 0, 1, 1125);
-# --------------------------------------------------------
-
-#
-# Table structure for table `rrd_rra`
-#
-
-CREATE TABLE rrd_rra (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(200) NOT NULL default '',
-  XFilesFactor double default NULL,
-  Steps mediumint(8) default '1',
-  Rows mediumint(8) default '600',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
-) TYPE=MyISAM;
-
-#
-# Dumping data for table `rrd_rra`
-#
-
-INSERT INTO rrd_rra VALUES (1, 'Daily (5 Minute Average)', '0.5', 1, 600);
-INSERT INTO rrd_rra VALUES (2, 'Weekly (30 Minute Average)', '0.5', 6, 700);
-INSERT INTO rrd_rra VALUES (4, 'Yearly (1 Day Average)', '0.5', 288, 797);
-INSERT INTO rrd_rra VALUES (3, 'Monthly (2 Hour Average)', '0.5', 24, 775);
-# --------------------------------------------------------
-
-#
-# Table structure for table `settings`
-#
+--
+-- Table structure for table 'settings'
+--
 
 CREATE TABLE settings (
-  Name varchar(50) NOT NULL default '',
-  Value varchar(255) NOT NULL default '',
-  FriendlyName varchar(100) NOT NULL default '',
-  Description varchar(255) NOT NULL default '',
-  Method varchar(255) default NULL,
-  PRIMARY KEY  (Name),
-  UNIQUE KEY Name (Name)
+  name varchar(50) NOT NULL default '',
+  value varchar(255) NOT NULL default '',
+  PRIMARY KEY  (name),
+  UNIQUE KEY Name (name),
+  KEY name_2 (name)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `settings`
-#
+--
+-- Dumping data for table 'settings'
+--
 
-INSERT INTO settings VALUES ('path_webcacti', '', 'cacti Web Root', 'the path, under your webroot where cacti lyes, would be \'/cacti\'  in most cases if you are accessing cacti by: http://yourhost.com/cacti/.', 'textbox');
-INSERT INTO settings VALUES ('path_webroot', '', 'Apache Web Root', 'Your apache web root, is \'/var/www/html\' or \'/home/httpd/html\' in most cases.', 'textbox');
-INSERT INTO settings VALUES ('path_snmpwalk', '', 'snmpwalk Path', 'The path to your snmpwalk binary.', 'textbox');
-INSERT INTO settings VALUES ('path_rrdtool', '', 'rrdtool Binary Path', 'Path to the rrdtool binary', 'textbox');
-INSERT INTO settings VALUES ('log', '', 'Log File', 'What cacti should put in its log.', 'group:log_graph:log_create:log_update:log_snmp');
-INSERT INTO settings VALUES ('log_graph', '', '', 'Graph', 'checkbox:group');
-INSERT INTO settings VALUES ('log_create', 'on', '', 'Create', 'checkbox:group');
-INSERT INTO settings VALUES ('log_update', '', '', 'Update', 'checkbox:group');
-INSERT INTO settings VALUES ('log_snmp', 'on', '', 'SNMP', 'checkbox:group');
-INSERT INTO settings VALUES ('vis_main_column_bold', 'on', '', 'Make the Main Column in Forms Bold', 'checkbox:group');
-INSERT INTO settings VALUES ('vis', '', 'Visual', 'Various visual settings in cacti', 'group:vis_main_column_bold');
-INSERT INTO settings VALUES ('global_auth', 'on', '', 'Use cacti\'s Builtin Authentication', 'checkbox:group');
-INSERT INTO settings VALUES ('global', '', 'Global Settings', 'Settings that control how cacti works', 'group:global_auth');
-INSERT INTO settings VALUES ('path_php_binary', '', 'PHP Binary Path', 'The path to your PHP binary file (may require a php recompile to get this file).', 'textbox');
-INSERT INTO settings VALUES ('path_snmpget', '', 'snmpget Path', 'The path to your snmpget binary.', 'textbox');
-INSERT INTO settings VALUES ('path_html_export', '', 'HTML Export Path', 'If you want cacti to write static png\'s and html files a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way. Leave this field blank to disable this feature.', 'textbox');
-INSERT INTO settings VALUES ('guest_user', 'guest', 'Guest User', 'The name of the guest user for viewing graphs; is "guest" by default.', 'textbox');
-INSERT INTO settings VALUES ('path_html_export_skip', '1', 'Export Every x Times', 'If you don\'t want cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.', 'textbox');
-INSERT INTO settings VALUES ('path_html_export_ctr', '', '', '', 'internal');
-INSERT INTO settings VALUES ('use_polling_zones', 'off', 'Use Polling Zones', 'If you want to do distributed polling you can set up \'polling zones\' which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.', 'cehckbox');
-# --------------------------------------------------------
 
-#
-# Table structure for table `settings_graphs`
-#
+INSERT INTO settings VALUES ('path_webcacti','/cacti/cacti-0.8');
+INSERT INTO settings VALUES ('path_webroot','/var/www/html/users/iberry');
+INSERT INTO settings VALUES ('path_snmpwalk','/usr/local/bin/snmpwalk');
+INSERT INTO settings VALUES ('path_rrdtool','/usr/local/rrdtool/bin/rrdtool');
+INSERT INTO settings VALUES ('log','');
+INSERT INTO settings VALUES ('log_graph','');
+INSERT INTO settings VALUES ('log_create','on');
+INSERT INTO settings VALUES ('log_update','on');
+INSERT INTO settings VALUES ('log_snmp','on');
+INSERT INTO settings VALUES ('full_view_data_source','on');
+INSERT INTO settings VALUES ('global_auth','on');
+INSERT INTO settings VALUES ('path_php_binary','/usr/bin/php');
+INSERT INTO settings VALUES ('path_snmpget','/usr/local/bin/snmpget');
+INSERT INTO settings VALUES ('path_html_export','');
+INSERT INTO settings VALUES ('guest_user','guest');
+INSERT INTO settings VALUES ('path_html_export_skip','1');
+INSERT INTO settings VALUES ('path_html_export_ctr','');
+INSERT INTO settings VALUES ('remove_verification','on');
+INSERT INTO settings VALUES ('use_polling_zones','on');
+INSERT INTO settings VALUES ('full_view_graph_template','on');
+INSERT INTO settings VALUES ('full_view_graph','on');
+INSERT INTO settings VALUES ('full_view_user_admin','on');
+INSERT INTO settings VALUES ('full_view_data_template','on');
+INSERT INTO settings VALUES ('smnp_version','ucd-snmp');
+
+--
+-- Table structure for table 'settings_graphs'
+--
 
 CREATE TABLE settings_graphs (
-  ID smallint(5) NOT NULL auto_increment,
-  UserID smallint(5) default NULL,
-  RRAID smallint(5) NOT NULL default '0',
-  TreeID smallint(5) NOT NULL default '0',
-  Height smallint(8) NOT NULL default '100',
-  Width smallint(8) NOT NULL default '300',
-  Timespan mediumint(12) NOT NULL default '60000',
-  ColumnNumber tinyint(3) NOT NULL default '2',
-  ViewType tinyint(1) NOT NULL default '0',
-  ListViewType tinyint(1) NOT NULL default '0',
-  PageRefresh smallint(5) default '300',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+  user_id smallint(8) NOT NULL default '0',
+  name varchar(50) NOT NULL default '',
+  value varchar(255) NOT NULL default '',
+  PRIMARY KEY  (user_id,name),
+  KEY user_id (user_id,name)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `settings_graphs`
-#
+--
+-- Dumping data for table 'settings_graphs'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `settings_viewing_tree`
-#
 
-CREATE TABLE settings_viewing_tree (
-  UserID smallint(5) NOT NULL default '0',
-  TreeItemID smallint(5) NOT NULL default '0',
-  Status tinyint(1) NOT NULL default '0'
+--
+-- Table structure for table 'snmp_query'
+--
+
+CREATE TABLE snmp_query (
+  id mediumint(8) NOT NULL auto_increment,
+  xml_path varchar(255) NOT NULL default '',
+  name varchar(100) NOT NULL default '',
+  description varchar(255) default NULL,
+  graph_template_id mediumint(8) NOT NULL default '0',
+  data_input_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-# --------------------------------------------------------
-# --------------------------------------------------------
+--
+-- Dumping data for table 'snmp_query'
+--
 
-#
-# Table structure for table `settings_graph_tree`
-#
 
-CREATE TABLE settings_graph_tree (
-  UserID smallint(5) NOT NULL default '0',
-  TreeItemID smallint(5) NOT NULL default '0',
-  Status tinyint(1) NOT NULL default '0'
+INSERT INTO snmp_query VALUES (1,'<path_cacti>/resource/snmp_queries/interface.xml','Get SNMP Interfaces','Queries a host for a list of monitorable interfaces',0,2);
+INSERT INTO snmp_query VALUES (2,'<path_cacti>/resource/snmp_queries/net-snmp_disk.xml','Get net-snmp Partitions','Retrieves a list of monitored partitions/disks from a net-snmp enabled host.',0,2);
+INSERT INTO snmp_query VALUES (3,'<path_cacti>/resource/snmp_queries/kbridge.xml','Get Karlnet Wireless Bridge Statistics','Gets information about the wireless connectivity of each station from a Karlnet bridge.',0,2);
+INSERT INTO snmp_query VALUES (4,'<path_cacti>/resource/snmp_queries/netware_disk.xml','Get Netware Volumes','Retrieves a list of volumes from a Netware server.',0,2);
+
+--
+-- Table structure for table 'snmp_query_field'
+--
+
+CREATE TABLE snmp_query_field (
+  snmp_query_id mediumint(8) NOT NULL default '0',
+  data_input_field_id mediumint(8) NOT NULL default '0',
+  action_id tinyint(2) NOT NULL default '0',
+  PRIMARY KEY  (snmp_query_id,data_input_field_id),
+  KEY snmp_query_id (snmp_query_id),
+  KEY data_input_field_id (data_input_field_id)
 ) TYPE=MyISAM;
 
-# --------------------------------------------------------
-# --------------------------------------------------------
+--
+-- Dumping data for table 'snmp_query_field'
+--
 
-#
-# Table structure for table `settings_ds_tree`
-#
 
-CREATE TABLE settings_ds_tree (
-  UserID smallint(5) NOT NULL default '0',
-  TreeItemID smallint(5) NOT NULL default '0',
-  Status tinyint(1) NOT NULL default '0'
+INSERT INTO snmp_query_field VALUES (1,13,2);
+INSERT INTO snmp_query_field VALUES (1,12,1);
+INSERT INTO snmp_query_field VALUES (1,14,3);
+INSERT INTO snmp_query_field VALUES (2,12,1);
+INSERT INTO snmp_query_field VALUES (2,13,2);
+INSERT INTO snmp_query_field VALUES (2,14,3);
+INSERT INTO snmp_query_field VALUES (3,12,1);
+INSERT INTO snmp_query_field VALUES (3,13,2);
+INSERT INTO snmp_query_field VALUES (3,14,3);
+INSERT INTO snmp_query_field VALUES (4,14,3);
+INSERT INTO snmp_query_field VALUES (4,13,2);
+INSERT INTO snmp_query_field VALUES (4,12,1);
+
+--
+-- Table structure for table 'snmp_query_graph'
+--
+
+CREATE TABLE snmp_query_graph (
+  id mediumint(8) NOT NULL auto_increment,
+  snmp_query_id mediumint(8) NOT NULL default '0',
+  name varchar(100) NOT NULL default '',
+  graph_template_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-# --------------------------------------------------------
+--
+-- Dumping data for table 'snmp_query_graph'
+--
 
-#
-# Table structure for table `snmp_hosts`
-#
 
-CREATE TABLE snmp_hosts (
-  ID smallint(5) NOT NULL auto_increment,
-  Hostname varchar(100) NOT NULL default '',
-  Community varchar(100) default 'public',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+INSERT INTO snmp_query_graph VALUES (1,1,'In/Out Bytes',1);
+INSERT INTO snmp_query_graph VALUES (2,1,'In/Out Discarded Packets',1);
+INSERT INTO snmp_query_graph VALUES (3,1,'In/Out Non-Unicast Packets',1);
+INSERT INTO snmp_query_graph VALUES (4,1,'In/Out Unicast Packets',1);
+INSERT INTO snmp_query_graph VALUES (5,1,'In/Out Errors',1);
+INSERT INTO snmp_query_graph VALUES (6,2,'Available/Used Disk Space',3);
+INSERT INTO snmp_query_graph VALUES (7,3,'Wireless Levels',5);
+INSERT INTO snmp_query_graph VALUES (8,3,'Wireless Transmissions',6);
+INSERT INTO snmp_query_graph VALUES (9,1,'In/Out Bytes (64-bit Counters)',1);
+INSERT INTO snmp_query_graph VALUES (10,4,'Volume Information (free, freeable space)',19);
+INSERT INTO snmp_query_graph VALUES (11,4,'Directory Information (total/available entries)',20);
+
+--
+-- Table structure for table 'snmp_query_graph_rrd'
+--
+
+CREATE TABLE snmp_query_graph_rrd (
+  snmp_query_graph_id mediumint(8) NOT NULL default '0',
+  data_template_id mediumint(8) NOT NULL default '0',
+  data_template_rrd_id mediumint(8) NOT NULL default '0',
+  snmp_field_name varchar(50) NOT NULL default '0',
+  PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
+  KEY snmp_query_graph_id (snmp_query_graph_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `snmp_hosts`
-#
+--
+-- Dumping data for table 'snmp_query_graph_rrd'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `snmp_hosts_interfaces`
-#
+INSERT INTO snmp_query_graph_rrd VALUES (1,2,2,'ifInOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (2,2,3,'ifindiscards');
+INSERT INTO snmp_query_graph_rrd VALUES (2,8,258,'ifoutdiscards');
+INSERT INTO snmp_query_graph_rrd VALUES (3,2,3,'ifinnucastpkts');
+INSERT INTO snmp_query_graph_rrd VALUES (3,8,258,'ifoutnucastpkts');
+INSERT INTO snmp_query_graph_rrd VALUES (4,2,3,'ifinucastpkts');
+INSERT INTO snmp_query_graph_rrd VALUES (4,8,258,'ifoutucastpkts');
+INSERT INTO snmp_query_graph_rrd VALUES (5,2,3,'ifinerrors');
+INSERT INTO snmp_query_graph_rrd VALUES (5,8,258,'ifouterrors');
+INSERT INTO snmp_query_graph_rrd VALUES (6,3,4,'dskused');
+INSERT INTO snmp_query_graph_rrd VALUES (1,1,1,'ifInOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (6,3,3,'dskavail');
+INSERT INTO snmp_query_graph_rrd VALUES (7,7,8,'kbWirelessStationExclHellos');
+INSERT INTO snmp_query_graph_rrd VALUES (7,8,9,'kbWirelessStationExclHellos');
+INSERT INTO snmp_query_graph_rrd VALUES (8,10,11,'kbWirelessStationExclHellos');
+INSERT INTO snmp_query_graph_rrd VALUES (8,9,10,'kbWirelessStationExclHellos');
+INSERT INTO snmp_query_graph_rrd VALUES (9,2,2,'ifHCOutOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (9,1,1,'ifHCInOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (10,35,38,'nwVolSize');
+INSERT INTO snmp_query_graph_rrd VALUES (10,35,40,'nwVolFreeable');
+INSERT INTO snmp_query_graph_rrd VALUES (10,35,39,'nwVolFree');
+INSERT INTO snmp_query_graph_rrd VALUES (11,36,42,'nwVolTotalDirEntries');
+INSERT INTO snmp_query_graph_rrd VALUES (11,36,43,'nwVolUsedDirEntries');
 
-CREATE TABLE snmp_hosts_interfaces (
-  ID smallint(5) NOT NULL auto_increment,
-  Description char(255) default NULL,
-  Type char(50) NOT NULL default '',
-  Speed bigint(15) NOT NULL default '0',
-  InterfaceNumber bigint(12) NOT NULL default '0',
-  HostID smallint(5) NOT NULL default '0',
-  HardwareAddress char(50) default NULL,
-  AdminStatus char(10) default NULL,
-  IPAddress char(50) default NULL,
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'snmp_query_graph_rrd_sv'
+--
+
+CREATE TABLE snmp_query_graph_rrd_sv (
+  id mediumint(8) NOT NULL auto_increment,
+  snmp_query_graph_id mediumint(8) NOT NULL default '0',
+  data_template_id mediumint(8) NOT NULL default '0',
+  sequence mediumint(8) NOT NULL default '0',
+  field_name varchar(100) NOT NULL default '',
+  text varchar(255) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id),
+  KEY snmp_query_graph_id (snmp_query_graph_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `snmp_hosts_interfaces`
-#
+--
+-- Dumping data for table 'snmp_query_graph_rrd_sv'
+--
 
-# --------------------------------------------------------
 
-#
-# Table structure for table `src`
-#
+INSERT INTO snmp_query_graph_rrd_sv VALUES (1,1,1,1,'name','|host_description| - Traffic - |squery_ifIP| - |squery_ifAlias| (In)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (2,1,1,2,'name','|host_description| - Traffic - |squery_ifAlias| (In)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (3,1,1,3,'name','|host_description| - Traffic - |squery_ifIP|/|squery_ifDesc| (In)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (4,1,1,4,'name','|host_description| - Traffic - |squery_ifDesc| (In)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (5,1,2,1,'name','|host_description| - Traffic - |squery_ifIP| - |squery_ifAlias| (Out)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (6,1,2,2,'name','|host_description| - Traffic - |squery_ifAlias| (Out)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (7,1,2,3,'name','|host_description| - Traffic - |squery_ifIP|/|squery_ifDesc| (Out)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (8,1,2,4,'name','|host_description| - Traffic - |squery_ifDesc| (In)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (10,6,3,1,'name','|host_description| - Partition - |squery_dskDevice|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (11,7,7,1,'name','|host_description| - Wireless Noise Level - |squery_kbWirelessStationName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (12,7,8,1,'name','|host_description| - Wireless Signal Level - |squery_kbWirelessStationName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (13,8,10,1,'name','|host_description| - Wireless Re-Transmissions - |squery_kbWirelessStationName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (14,8,9,1,'name','|host_description| - Wireless Transmissions - |squery_kbWirelessStationName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (15,9,1,1,'name','|host_description| - Traffic - |squery_ifIP| - |squery_ifAlias| (In-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (16,9,1,2,'name','|host_description| - Traffic - |squery_ifAlias| (In-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (17,9,1,3,'name','|host_description| - Traffic - |squery_ifIP|/|squery_ifDesc| (In-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (18,9,1,4,'name','|host_description| - Traffic - |squery_ifDesc| (In-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (19,9,2,1,'name','|host_description| - Traffic - |squery_ifIP| - |squery_ifAlias| (Out-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (20,9,2,2,'name','|host_description| - Traffic - |squery_ifAlias| (Out-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (21,9,2,3,'name','|host_description| - Traffic - |squery_ifIP|/|squery_ifDesc| (Out-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (22,9,2,4,'name','|host_description| - Traffic - |squery_ifDesc| (In-64)');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (23,1,1,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (24,1,2,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (25,9,1,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (26,9,2,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (30,11,36,1,'name','|host_description| - Directories - |squery_nwVolPhysicalName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (29,10,35,1,'name','|host_description| - Volumes - |squery_nwVolPhysicalName|');
 
-CREATE TABLE src (
-  ID smallint(5) NOT NULL auto_increment,
-  Name varchar(200) NOT NULL default '',
-  FormatStrIn mediumblob,
-  FormatStrOut mediumblob,
-  Type varchar(20) default NULL,
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID)
+--
+-- Table structure for table 'snmp_query_graph_sv'
+--
+
+CREATE TABLE snmp_query_graph_sv (
+  id mediumint(8) NOT NULL auto_increment,
+  snmp_query_graph_id mediumint(8) NOT NULL default '0',
+  sequence mediumint(8) NOT NULL default '0',
+  field_name varchar(100) NOT NULL default '',
+  text varchar(255) NOT NULL default '',
+  PRIMARY KEY  (id),
+  KEY id (id),
+  KEY snmp_query_graph_id (snmp_query_graph_id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `src`
-#
+--
+-- Dumping data for table 'snmp_query_graph_sv'
+--
 
-INSERT INTO src VALUES (6, 'Get Logged In Users', 'perl <path_cacti>/scripts/users.pl <username>', '<users>',  NULL);
-INSERT INTO src VALUES (7, 'Get TCP Connections', 'perl <path_cacti>/scripts/tcp.pl <mode>', '<connections>',  NULL);
-INSERT INTO src VALUES (9, 'Get Load Average', 'perl <path_cacti>/scripts/loadavg_multi.pl', '<1min> <5min> <10min>', '');
-INSERT INTO src VALUES (5, 'Get System Processes', 'perl <path_cacti>/scripts/proc.pl', '<proc>',  NULL);
-INSERT INTO src VALUES (1, 'Ping Host', 'perl <path_cacti>/scripts/ping.pl <num> <ip>', '<out_ms>',  NULL);
-INSERT INTO src VALUES (11, 'Get SNMP Network Data', 'INTERNAL: [<ip>/<community>] Interface: [<ifnum>]', '<octets>', 'snmp_net');
-INSERT INTO src VALUES (31, 'Get Free Disk Space', 'perl <path_cacti>/scripts/diskfree.pl <partition>', '<megabytes>:<percent>', '');
-INSERT INTO src VALUES (19, 'Get Custom TCP Connections', 'perl <path_cacti>/scripts/tcp_custom.pl <grepstr>', '<connections>', '');
-INSERT INTO src VALUES (27, 'Get TCP Connections (SNMP)', 'perl <path_cacti>/scripts/tcp_custom_snmp.pl <ip> <community> <mode>', '<connections>',  NULL);
-INSERT INTO src VALUES (22, 'Get Number of Open Samba Files', '/usr/bin/smbstatus | grep -c "_"', '<openfiles>',  NULL);
-INSERT INTO src VALUES (23, 'Get Web Hits', 'perl <path_cacti>/scripts/webhits.pl <log_path>', '<webhits>', '');
-INSERT INTO src VALUES (24, 'Get Memory Usage', 'perl <path_cacti>/scripts/memfree.pl <grepstr>', '<mem>',  NULL);
-INSERT INTO src VALUES (8, 'Get SQL Connections', '<path_php_binary> -q <path_cacti>/scripts/sql.php', '<sql_connections>',  NULL);
-INSERT INTO src VALUES (13, 'Get SNMP Data', 'INTERNAL: [<ip>/<community>] OID: [<oid>]', '<octets>', 'snmp');
-# --------------------------------------------------------
 
-#
-# Table structure for table `src_data`
-#
+INSERT INTO snmp_query_graph_sv VALUES (1,1,1,'title','|host_description| - Traffic - |squery_ifAlias|');
+INSERT INTO snmp_query_graph_sv VALUES (2,1,2,'title','|host_description| - Traffic - |squery_ifIP| (|squery_ifDesc|)');
+INSERT INTO snmp_query_graph_sv VALUES (3,1,3,'title','|host_description| - Traffic - |squery_ifDesc|/|squery_ifIndex|');
+INSERT INTO snmp_query_graph_sv VALUES (7,6,1,'title','|host_description| - Disk Space - |squery_dskPath|');
+INSERT INTO snmp_query_graph_sv VALUES (5,7,1,'title','|host_description| - Wireless Levels (|squery_kbWirelessStationName|)');
+INSERT INTO snmp_query_graph_sv VALUES (6,8,1,'title','|host_description| - Wireless Transmissions (|squery_kbWirelessStationName|)');
+INSERT INTO snmp_query_graph_sv VALUES (8,9,1,'title','|host_description| - Traffic - |squery_ifAlias|');
+INSERT INTO snmp_query_graph_sv VALUES (9,9,2,'title','|host_description| - Traffic - |squery_ifIP| (|squery_ifDesc|)');
+INSERT INTO snmp_query_graph_sv VALUES (10,9,3,'title','|host_description| - Traffic - |squery_ifDesc|/|squery_ifIndex|');
+INSERT INTO snmp_query_graph_sv VALUES (11,10,1,'title','|host_description| - Volume Information - |squery_nwVolPhysicalName|');
+INSERT INTO snmp_query_graph_sv VALUES (12,11,1,'title','|host_description| - Directory Information - |squery_nwVolPhysicalName|');
 
-CREATE TABLE src_data (
-  ID smallint(5) NOT NULL auto_increment,
-  FieldID smallint(5) NOT NULL default '0',
-  DSID smallint(5) NOT NULL default '0',
-  Value mediumblob,
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID),
-  KEY DSID (DSID),
-  KEY FieldID (FieldID)
+--
+-- Table structure for table 'user_auth'
+--
+
+CREATE TABLE user_auth (
+  id mediumint(8) NOT NULL auto_increment,
+  username varchar(50) NOT NULL default '0',
+  password varchar(50) NOT NULL default '0',
+  full_name varchar(100) default '0',
+  must_change_password char(2) default NULL,
+  show_tree char(2) default 'on',
+  show_list char(2) default 'on',
+  show_preview char(2) NOT NULL default 'on',
+  graph_settings char(2) default NULL,
+  login_opts tinyint(1) NOT NULL default '1',
+  graph_policy tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `src_data`
-#
+--
+-- Dumping data for table 'user_auth'
+--
 
-INSERT INTO src_data VALUES (1, 1, 35, 'loopback0.gw4.phl1.alter.net');
-INSERT INTO src_data VALUES (2, 2, 35, '2');
-INSERT INTO src_data VALUES (98, 60, 132, '191136');
-INSERT INTO src_data VALUES (6, 61, 245, 'Buffers:');
-INSERT INTO src_data VALUES (7, 61, 130, '^Cached:');
-INSERT INTO src_data VALUES (8, 61, 128, 'MemFree:');
-INSERT INTO src_data VALUES (9, 61, 131, 'SwapFree:');
-INSERT INTO src_data VALUES (10, 61, 132, 'MemTotal:');
-INSERT INTO src_data VALUES (11, 14, 36, 'tcp');
-INSERT INTO src_data VALUES (12, 58, 31, '');
-INSERT INTO src_data VALUES (100, 86, 377, '0.11');
-INSERT INTO src_data VALUES (101, 85, 378, '0.13');
-INSERT INTO src_data VALUES (107, 87, 127, '/var/log/httpd/access_log');
-INSERT INTO src_data VALUES (106, 15, 36, '7');
-INSERT INTO src_data VALUES (105, 60, 128, '4576');
-INSERT INTO src_data VALUES (102, 12, 30, '80\n');
-INSERT INTO src_data VALUES (103, 60, 245, '55712');
-INSERT INTO src_data VALUES (104, 59, 127, '2651');
-INSERT INTO src_data VALUES (99, 84, 376, '0.06');
-INSERT INTO src_data VALUES (97, 60, 131, '264992');
-INSERT INTO src_data VALUES (92, 13, 31, '2');
-INSERT INTO src_data VALUES (93, 3, 35, '29.933');
-INSERT INTO src_data VALUES (94, 16, 38, '11885');
-INSERT INTO src_data VALUES (95, 57, 126, '1\n');
-INSERT INTO src_data VALUES (96, 60, 130, '80332');
-INSERT INTO src_data VALUES (288, 84, 412, '0.28');
-INSERT INTO src_data VALUES (289, 85, 413, '0.13');
-INSERT INTO src_data VALUES (290, 86, 414, '0.03');
-# --------------------------------------------------------
 
-#
-# Table structure for table `src_fields`
-#
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','','on','on','on','on',1,1);
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b','Guest Account','on','on','on','on','on',3,1);
 
-CREATE TABLE src_fields (
-  ID smallint(5) NOT NULL auto_increment,
-  SrcID smallint(5) NOT NULL default '0',
-  Name varchar(200) NOT NULL default '',
-  DataName varchar(50) NOT NULL default '',
-  InputOutput char(3) NOT NULL default '',
-  UpdateRRA char(2) NOT NULL default '0',
-  PRIMARY KEY  (ID),
-  UNIQUE KEY ID (ID),
-  KEY SrcID (SrcID)
+--
+-- Table structure for table 'user_auth_graph'
+--
+
+CREATE TABLE user_auth_graph (
+  user_id mediumint(8) NOT NULL default '0',
+  local_graph_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (user_id,local_graph_id),
+  KEY user_id (user_id,local_graph_id)
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `src_fields`
-#
+--
+-- Dumping data for table 'user_auth_graph'
+--
 
-INSERT INTO src_fields VALUES (1, 1, 'IP', 'ip', 'in', '');
-INSERT INTO src_fields VALUES (2, 1, 'Times', 'num', 'in', '');
-INSERT INTO src_fields VALUES (3, 1, 'Ping Time', 'out_ms', 'out', 'on');
-INSERT INTO src_fields VALUES (65, 27, 'IP Address', 'ip', 'in', '');
-INSERT INTO src_fields VALUES (46, 19, 'Connections', 'connections', 'out', 'on');
-INSERT INTO src_fields VALUES (64, 27, 'SNMP Community', 'community', 'in', '');
-INSERT INTO src_fields VALUES (13, 6, 'Logged In Users', 'users', 'out', 'on');
-INSERT INTO src_fields VALUES (14, 7, 'Type of Connection', 'mode', 'in', '');
-INSERT INTO src_fields VALUES (15, 7, 'TCP Connections', 'connections', 'out', 'on');
-INSERT INTO src_fields VALUES (16, 8, 'Total Connections', 'sql_connections', 'out', 'on');
-INSERT INTO src_fields VALUES (84, 9, '1 Minute Average', '1min', 'out', 'on');
-INSERT INTO src_fields VALUES (45, 19, 'Grep String', 'grepstr', 'in', '');
-INSERT INTO src_fields VALUES (21, 11, 'IP Address', 'ip', 'in', '');
-INSERT INTO src_fields VALUES (22, 11, 'SNMP Community', 'community', 'in', '');
-INSERT INTO src_fields VALUES (23, 11, 'Interface Description (Optional)', 'ifdesc', 'in', '');
-INSERT INTO src_fields VALUES (24, 11, 'Interface Number (Optional)', 'ifnum', 'in', '');
-INSERT INTO src_fields VALUES (25, 11, 'Octets', 'octets', 'out', 'on');
-INSERT INTO src_fields VALUES (56, 11, 'Interface IP Address (Optional)', 'ifip', 'in', '');
-INSERT INTO src_fields VALUES (44, 13, 'Octets', 'octets', 'out', 'on');
-INSERT INTO src_fields VALUES (28, 11, 'In/Out Data (in or out)', 'inout', 'in', '');
-INSERT INTO src_fields VALUES (43, 13, 'SNMP OID', 'oid', 'in', '');
-INSERT INTO src_fields VALUES (42, 13, 'SNMP Community', 'community', 'in', '');
-INSERT INTO src_fields VALUES (41, 13, 'IP Address', 'ip', 'in', '');
-INSERT INTO src_fields VALUES (66, 27, 'TCP Connections', 'connections', 'out', 'on');
-INSERT INTO src_fields VALUES (12, 5, 'Processes', 'proc', 'out', 'on');
-INSERT INTO src_fields VALUES (53, 11, 'Interface MAC Address (Optional)', 'ifmac', 'in', '');
-INSERT INTO src_fields VALUES (57, 22, 'Open Samba Files', 'openfiles', 'out', 'on');
-INSERT INTO src_fields VALUES (58, 6, 'Username (Optional)', 'username', 'in', '');
-INSERT INTO src_fields VALUES (59, 23, 'Web Hits', 'webhits', 'out', 'on');
-INSERT INTO src_fields VALUES (60, 24, 'Memory Free (MB)', 'mem', 'out', 'on');
-INSERT INTO src_fields VALUES (61, 24, 'Grep String', 'grepstr', 'in', '');
-INSERT INTO src_fields VALUES (67, 27, 'Grep String', 'mode', 'in', '');
-INSERT INTO src_fields VALUES (68, 28, 'IP Address', 'ip', 'in', '');
-INSERT INTO src_fields VALUES (69, 28, 'Octets', 'octets', 'out', 'on');
-INSERT INTO src_fields VALUES (70, 28, 'SNMP Community', 'community', 'in', '');
-INSERT INTO src_fields VALUES (71, 28, 'SNMP OID', 'oid', 'in', '');
-INSERT INTO src_fields VALUES (72, 29, 'In/Out Data (in or out)', 'inout', 'in', '');
-INSERT INTO src_fields VALUES (73, 29, 'Interface Description (Optional)', 'ifdesc', 'in', '');
-INSERT INTO src_fields VALUES (74, 29, 'Interface IP Address (Optional)', 'ifip', 'in', '');
-INSERT INTO src_fields VALUES (75, 29, 'Interface MAC Address (Optional)', 'ifmac', 'in', '');
-INSERT INTO src_fields VALUES (76, 29, 'Interface Number (Optional)', 'ifnum', 'in', '');
-INSERT INTO src_fields VALUES (78, 29, 'Octets', 'octets', 'out', 'on');
-INSERT INTO src_fields VALUES (77, 29, 'SNMP IP Address', 'ip', 'in', '');
-INSERT INTO src_fields VALUES (79, 29, 'SNMP Community', 'community', 'in', '');
-INSERT INTO src_fields VALUES (86, 9, '10 Minute Average', '10min', 'out', 'on');
-INSERT INTO src_fields VALUES (85, 9, '5 Minute Average', '5min', 'out', 'on');
-INSERT INTO src_fields VALUES (87, 23, '(Optional) Log Path', 'log_path', 'in', '');
-INSERT INTO src_fields VALUES (88, 31, 'Disk Partition', 'partition', 'in', '');
-INSERT INTO src_fields VALUES (89, 31, 'Megabytes Free', 'megabytes', 'out', 'on');
-INSERT INTO src_fields VALUES (90, 31, 'Percent Free', 'percent', 'out', '');
-# --------------------------------------------------------
 
-#
-# Table structure for table `version`
-#
+
+--
+-- Table structure for table 'user_auth_hosts'
+--
+
+CREATE TABLE user_auth_hosts (
+  user_id mediumint(8) NOT NULL default '0',
+  hostname varchar(100) NOT NULL default '',
+  policy tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (user_id,hostname),
+  KEY user_id (user_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'user_auth_hosts'
+--
+
+
+
+--
+-- Table structure for table 'user_auth_realm'
+--
+
+CREATE TABLE user_auth_realm (
+  realm_id mediumint(8) NOT NULL default '0',
+  user_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (realm_id,user_id),
+  KEY user_id (user_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'user_auth_realm'
+--
+
+
+INSERT INTO user_auth_realm VALUES (1,1);
+INSERT INTO user_auth_realm VALUES (1,3);
+INSERT INTO user_auth_realm VALUES (2,1);
+INSERT INTO user_auth_realm VALUES (3,1);
+INSERT INTO user_auth_realm VALUES (5,1);
+INSERT INTO user_auth_realm VALUES (7,1);
+INSERT INTO user_auth_realm VALUES (7,3);
+INSERT INTO user_auth_realm VALUES (8,1);
+INSERT INTO user_auth_realm VALUES (9,1);
+INSERT INTO user_auth_realm VALUES (10,1);
+INSERT INTO user_auth_realm VALUES (11,1);
+INSERT INTO user_auth_realm VALUES (12,1);
+INSERT INTO user_auth_realm VALUES (13,1);
+INSERT INTO user_auth_realm VALUES (14,1);
+INSERT INTO user_auth_realm VALUES (15,1);
+
+--
+-- Table structure for table 'user_auth_tree'
+--
+
+CREATE TABLE user_auth_tree (
+  user_id mediumint(8) NOT NULL default '0',
+  tree_id mediumint(8) NOT NULL default '0',
+  PRIMARY KEY  (user_id,tree_id),
+  KEY user_id (user_id,tree_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'user_auth_tree'
+--
+
+
+
+--
+-- Table structure for table 'user_log'
+--
+
+CREATE TABLE user_log (
+  username varchar(50) NOT NULL default '0',
+  time timestamp(14) NOT NULL,
+  result tinyint(1) NOT NULL default '0',
+  ip varchar(15) NOT NULL default '',
+  PRIMARY KEY  (username,time)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'user_log'
+--
+
+
+
+--
+-- Table structure for table 'user_realm'
+--
+
+CREATE TABLE user_realm (
+  id mediumint(8) NOT NULL auto_increment,
+  name varchar(50) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY ID (id),
+  KEY id_2 (id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'user_realm'
+--
+
+
+INSERT INTO user_realm VALUES (1,'User Administration');
+INSERT INTO user_realm VALUES (2,'Data Input');
+INSERT INTO user_realm VALUES (3,'Update Data Sources');
+INSERT INTO user_realm VALUES (5,'Update Graphs');
+INSERT INTO user_realm VALUES (7,'View Graphs');
+INSERT INTO user_realm VALUES (8,'Console Access');
+INSERT INTO user_realm VALUES (9,'Update Round Robin Archives');
+INSERT INTO user_realm VALUES (10,'Update Graph Templates');
+INSERT INTO user_realm VALUES (11,'Update Data Templates');
+INSERT INTO user_realm VALUES (12,'Update Host Templates');
+INSERT INTO user_realm VALUES (13,'SNMP Queries');
+INSERT INTO user_realm VALUES (14,'Update CDEF\'s');
+INSERT INTO user_realm VALUES (15,'Global Settings');
+
+--
+-- Table structure for table 'user_realm_filename'
+--
+
+CREATE TABLE user_realm_filename (
+  realm_id smallint(5) NOT NULL default '0',
+  filename varchar(255) NOT NULL default '',
+  PRIMARY KEY  (realm_id,filename),
+  KEY realm_id (realm_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'user_realm_filename'
+--
+
+
+INSERT INTO user_realm_filename VALUES (1,'user_admin.php');
+INSERT INTO user_realm_filename VALUES (2,'data_input.php');
+INSERT INTO user_realm_filename VALUES (3,'data_sources.php');
+INSERT INTO user_realm_filename VALUES (3,'host.php');
+INSERT INTO user_realm_filename VALUES (5,'color.php');
+INSERT INTO user_realm_filename VALUES (5,'graphs.php');
+INSERT INTO user_realm_filename VALUES (5,'tree.php');
+INSERT INTO user_realm_filename VALUES (7,'gprint_presets.php');
+INSERT INTO user_realm_filename VALUES (7,'graph.php');
+INSERT INTO user_realm_filename VALUES (7,'graph_image.php');
+INSERT INTO user_realm_filename VALUES (7,'graph_settings.php');
+INSERT INTO user_realm_filename VALUES (7,'graph_view.php');
+INSERT INTO user_realm_filename VALUES (8,'about.php');
+INSERT INTO user_realm_filename VALUES (8,'index.php');
+INSERT INTO user_realm_filename VALUES (9,'rra.php');
+INSERT INTO user_realm_filename VALUES (10,'graph_templates.php');
+INSERT INTO user_realm_filename VALUES (11,'data_templates.php');
+INSERT INTO user_realm_filename VALUES (12,'host_templates.php');
+INSERT INTO user_realm_filename VALUES (13,'snmp.php');
+INSERT INTO user_realm_filename VALUES (14,'cdef.php');
+INSERT INTO user_realm_filename VALUES (15,'settings.php');
+INSERT INTO user_realm_filename VALUES (15,'utilities.php');
+
+--
+-- Table structure for table 'version'
+--
 
 CREATE TABLE version (
   cacti char(15) default NULL
 ) TYPE=MyISAM;
 
-#
-# Dumping data for table `version`
-#
+--
+-- Dumping data for table 'version'
+--
 
-INSERT INTO version VALUES ('new_install');
+
+INSERT INTO version VALUES ('0.8');
