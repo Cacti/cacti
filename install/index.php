@@ -26,7 +26,10 @@
 
 include("../include/config.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6");
+/* allow the upgrade script to run for as long as it needs to */
+ini_set("max_execution_time", "0");
+
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -227,9 +230,6 @@ if ($_REQUEST["step"] == "4") {
 		exit;
 	}
 
-	/* allow the upgrade script to run for as long as it needs to */
-	ini_set("max_execution_time", "0");
-
 	/* loop from the old version to the current, performing updates for each version in between */
 	for ($i=($old_version_index+1); $i<count($cacti_versions); $i++) {
 		if ($cacti_versions[$i] == "0.8.1") {
@@ -259,6 +259,11 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.6") {
 			include ("0_8_5a_to_0_8_6.php");
 			upgrade_to_0_8_6();
+		}elseif ($cacti_versions[$i] == "0.8.6a") {
+			if ($old_cacti_version == "0.8.6") {
+				/* no database upgrades for 0.8.6 -> 0.8.6a */
+				$_REQUEST["step"] = "3";
+			}
 		}
 	}
 }
