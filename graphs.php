@@ -29,20 +29,15 @@
 	if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 	
 switch ($action) {
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;
 	case 'item_remove':
 		item_remove();
 		
 		header ("Location: graphs.php?action=item&local_graph_id=$args[local_graph_id]");
-		break;
-	case 'item_save':
-		item_save();
-		
-		if ($config[full_view_graph][value] == "") {
-			header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
-		}elseif ($config[full_view_graph][value] == "on") {
-			header ("Location: graphs.php?action=graph_edit&local_graph_id=$form[local_graph_id]");
-		}
-		
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -50,17 +45,6 @@ switch ($action) {
 		item_edit();
 		
 		include_once ("include/bottom_footer.php");
-		
-		break;
-	case 'input_save':
-		input_save();
-		
-		if ($config[full_view_graph][value] == "") {
-			header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
-		}elseif ($config[full_view_graph][value] == "on") {
-			header ("Location: graphs.php?action=graph_edit&local_graph_id=$form[local_graph_id]");
-		}
-		
 		break;
 	case 'graph_duplicate':
 		include_once ('include/utility_functions.php');
@@ -75,20 +59,6 @@ switch ($action) {
 		item();
 		
 		include_once ("include/bottom_footer.php");
-		break;
-	case 'graph_save':
-		graph_save();
-		
-		if ($form[graph_template_id] == $form[_graph_template_id]) {
-			header ("Location: graphs.php");
-		}else{
-			/* update all nessesary template information */
-			include_once ("include/utility_functions.php");
-			$return_status = change_graph_template($local_graph_id, $form[graph_template_id], $form[_graph_template_id]);
-			
-			header ("Location: graphs.php?action=graph_edit&local_graph_id=$local_graph_id");
-		}
-		
 		break;
 	case 'graph_remove':
 		graph_remove();
@@ -137,6 +107,29 @@ function draw_graph_form_select($main_action) {
 		</form>
 	</tr>
 <?
+}
+
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form, $config;
+	
+	if ((isset($form[save_component_input])) && (isset($form[save_component_graph]))) {
+		graph_save();
+		input_save();
+		return "graphs.php?action=graph_edit&local_graph_id=$form[local_graph_id]";
+	}elseif (isset($form[save_component_graph])) {
+		graph_save();
+		return "graphs.php?action=graph_edit&local_graph_id=$form[local_graph_id]";
+	}elseif (isset($form[save_component_input])) {
+		input_save();
+		return "graphs.php?action=item&local_graph_id=$form[local_graph_id]";
+	}elseif (isset($form[save_component_item])) {
+		item_save();
+		return "graphs.php?action=item&local_graph_id=$form[local_graph_id]";
+	}
 }
    
 /* -----------------------
@@ -358,14 +351,7 @@ function item() {
 			<?
 		}
 			DrawFormItemHiddenIDField("local_graph_id",$args[local_graph_id]);
-			?>
-			<tr bgcolor="#FFFFFF">
-				 <td colspan="2" align="right" background="images/blue_line.gif">
-					<?DrawFormSaveButton("input_save", "graphs.php");?>
-					</form>
-				</td>
-			</tr>
-			<?
+			DrawFormItemHiddenTextBox("save_component_input","1","");
 		}else{
 			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 				<td colspan="1">
@@ -376,6 +362,19 @@ function item() {
 	}
 	
 	end_box();
+	
+	if (($config[full_view_graph][value] == "") && (sizeof($input_item_list) > 0)) {
+		start_box("", "", "");
+		?>
+		<tr bgcolor="#FFFFFF">
+			 <td colspan="2" align="right">
+				<?DrawFormSaveButton("save", "graphs.php");?>
+			</td>
+		</tr>
+		</form>
+		<?
+		end_box();
+	}
 }
 
 function item_remove() {
@@ -556,16 +555,20 @@ function item_edit() {
 	DrawFormItemHiddenIDField("sequence_parent",$template_item[sequence_parent]);
 	DrawFormItemHiddenIDField("_parent",$template_item[parent]);
 	DrawFormItemHiddenIDField("_graph_type_id",$template_item[graph_type_id]);
-	?>
+	DrawFormItemHiddenTextBox("save_component_item","1","");
 	
+	end_box();
+	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("item_save", "graphs.php?action=graph_edit&local_graph_id=$args[local_graph_id]");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "graphs.php");?>
 		</td>
 	</tr>
+	</form>
 	<?
-	end_box();	
+	end_box();
 }
 
 /* ------------------------------------
@@ -647,14 +650,21 @@ function graph_save() {
 	$save["unit_exponent_value"] = $form["unit_exponent_value"];
 	
 	sql_save($save, "graph_templates_graph");
+	
+	if ($form[graph_template_id] != $form[_graph_template_id]) {
+		/* update all nessesary template information */
+		include_once ("include/utility_functions.php");
+		$return_status = change_graph_template($local_graph_id, $form[graph_template_id], $form[_graph_template_id]);
+	}
 }
 
 function graph_remove() {
 	global $args, $config;
 	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
-		include_once ('include/top_header.php');
+		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=$args[local_graph_id]") . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=$args[local_graph_id]");
+		include ('include/bottom_footer.php');
 		exit;
 	}
 	
@@ -698,12 +708,12 @@ function graph_edit() {
 		item();
 	}
 	
-	start_box("Graph Configuration", "", "");
+	start_box("Graph Template Selection", "", "");
 	?>
 	
 	<form method="post" action="graphs.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Graph Template</font><br>
 			Choose a graph template to apply to this graph. Please note that graph data may be lost if you 
@@ -716,10 +726,8 @@ function graph_edit() {
 	</tr>
 	
 	<?
-	if ($config[full_view_graph][value] == "") {
-		end_box();
-		start_box("Custom Graph Configuration", "", "");
-	}
+	end_box();
+	start_box("Custom Graph Configuration", "", "");
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
@@ -960,14 +968,18 @@ function graph_edit() {
 	DrawFormItemHiddenIDField("order_key",$graphs[order_key]);
 	DrawFormItemHiddenIDField("local_graph_template_graph_id",$graphs[local_graph_template_graph_id]);
 	DrawFormItemHiddenIDField("_graph_template_id",$graphs[graph_template_id]);
-	?>
+	DrawFormItemHiddenTextBox("save_component_graph","1","");
 	
+	end_box();
+	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("graph_save", "graphs.php");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "graphs.php");?>
 		</td>
 	</tr>
+	</form>
 	<?
 	end_box();
 }

@@ -29,6 +29,11 @@
 	if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 
 switch ($action) {
+	case 'save':
+		$redirect_location = form_save();
+		
+		header ("Location: $redirect_location"); exit;
+		break;
 	case 'gprint_presets_remove':
 		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 			include_once ('include/top_header.php');
@@ -37,11 +42,6 @@ switch ($action) {
 		}
 		
 		gprint_presets_remove();
-		
-		header ("Location: graph_templates.php?action=gprint_presets");
-		break;
-	case 'gprint_presets_save':
-		gprint_presets_save();
 		
 		header ("Location: graph_templates.php?action=gprint_presets");
 		break;
@@ -64,11 +64,6 @@ switch ($action) {
 		
 		header ("Location: graph_templates.php?action=item_presets_edit&graph_template_id=$args[graph_template_id]");
 		break;
-	case 'item_presets_item_save':
-		item_save(); /* from graph items */
-		
-		header ("Location: graph_templates.php?action=item_presets_edit&graph_template_id=$form[graph_template_id]");
-		break;
 	case 'item_presets_item_edit':
 		include_once ("include/top_header.php");
 		
@@ -87,11 +82,6 @@ switch ($action) {
 		
 		header ("Location: graph_templates.php?action=item_presets");
 		break;
-	case 'item_presets_save':
-		item_presets_save();
-		
-		header ("Location: graph_templates.php?action=item_presets");
-		break;
 	case 'item_presets_edit':
 		include_once ("include/top_header.php");
 		
@@ -107,12 +97,6 @@ switch ($action) {
 		include_once ("include/bottom_footer.php");
 		break;
 	case 'template_remove':
-		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
-			include_once ('include/top_header.php');
-			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=$args[graph_template_id]");
-			exit;
-		}
-		
 		template_remove();
 		
 		header ("Location: graph_templates.php");
@@ -136,31 +120,6 @@ switch ($action) {
 			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
 		}
 		
-		break;
-	case 'input_save':
-		input_save();
-		
-		if ($config[full_view_graph_template][value] == "") {
-			header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$form[graph_template_id]");
-		}
-		
-		break;
-	case 'item_save':
-		item_save();
-		
-		if ($config[full_view_graph_template][value] == "") {
-			header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
-		}elseif ($config[full_view_graph_template][value] == "on") {
-			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$form[graph_template_id]");
-		}
-		
-		break;
-	case 'template_save':
-		template_save();
-		
-		header ("Location: graph_templates.php");
 		break;
 	case 'input_edit':
 		include_once ("include/top_header.php");
@@ -247,6 +206,48 @@ function draw_tabs() {
 		</tr>
 <?	
 }
+
+/* --------------------------
+    The Save Function
+   -------------------------- */
+
+function form_save() {
+	global $form, $config;
+	
+	if (isset($form[save_component_template])) {
+		template_save();
+		return "graph_templates.php";
+	}elseif (isset($form[save_component_item])) {
+		item_save();
+
+		if ($config[full_view_graph_template][value] == "") {
+			return "graph_templates.php?action=item&graph_template_id=$form[graph_template_id]";
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			return "graph_templates.php?action=template_edit&graph_template_id=$form[graph_template_id]";
+		}
+	}elseif (isset($form[save_component_input])) {
+		input_save();
+		
+		if ($config[full_view_graph_template][value] == "") {
+			return "graph_templates.php?action=item&graph_template_id=$form[graph_template_id]";
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			return "graph_templates.php?action=template_edit&graph_template_id=$form[graph_template_id]";
+		}
+	}elseif (isset($form[save_component_item_presets])) {
+		item_presets_save();
+		return "graph_templates.php?action=item_presets";
+	}elseif (isset($form[save_component_item_presets_item])) {
+		item_save(); /* from graph items */
+		return "graph_templates.php?action=item_presets_edit&graph_template_id=$form[graph_template_id]";
+	}elseif (isset($form[save_component_gprint_presets])) {
+		gprint_presets_save();
+		return "graph_templates.php?action=gprint_presets";
+	}
+}
+
+/* ------------------------------
+    Shared Graph Item Functions
+   ------------------------------ */
 
 function draw_graph_items($template_item_list, $action_prefix) {
 	global $colors, $args;
@@ -550,15 +551,19 @@ function gprint_presets_edit() {
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("gprint_preset_id",$gprint_preset[id]);
-	?>
+	end_box();
 	
+	DrawFormItemHiddenIDField("gprint_preset_id",$gprint_preset[id]);
+	DrawFormItemHiddenTextBox("save_component_gprint_presets","1","");
+	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("gprint_presets_save", "graph_templates.php?action=gprint_presets");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "graph_templates.php?action=gprint_presets");?>
 		</td>
 	</tr>
+	</form>
 	<?
 	end_box();
 }
@@ -702,12 +707,13 @@ function item_presets_edit() {
 	end_box();
 	
 	DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
+	DrawFormItemHiddenTextBox("save_component_item_presets","1","");
 	
 	start_box("", "", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("item_presets_save", "graph_templates.php?action=item_presets");?>
+			<?DrawFormSaveButton("save", "graph_templates.php?action=item_presets");?>
 		</td>
 	</tr>
 	</form>
@@ -722,11 +728,13 @@ function item_presets_item_edit() {
 	draw_item_edit();
 	end_box();
 	
+	DrawFormItemHiddenTextBox("save_component_item_presets_item","1","");
+	
 	start_box("", "", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("item_presets_item_save", "graph_templates.php?action=item_presets_edit&graph_template_id=$args[graph_template_id]");?>
+			<?DrawFormSaveButton("save", "graph_templates.php?action=item_presets_edit&graph_template_id=$args[graph_template_id]");?>
 		</td>
 	</tr>
 	</form>
@@ -848,16 +856,19 @@ function item_edit() {
 	
 	start_box("Template Item Configuration", "", "");
 	draw_item_edit();
+	end_box();
 	
+	DrawFormItemHiddenTextBox("save_component_item","1","");
+	
+	start_box("", "", "");
 	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("item_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
 		</td>
 	</tr>
+	</form>
 	<?
-	
 	end_box();
 }
 
@@ -867,6 +878,13 @@ function item_edit() {
 
 function template_remove() {
 	global $args, $config;
+	
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+		include ('include/top_header.php');
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&graph_template_id=$args[graph_template_id]");
+		include ('include/bottom_footer.php');
+		exit;
+	}
 	
 	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
 		db_execute("delete from graph_templates where id=$args[graph_template_id]");
@@ -892,13 +910,12 @@ function template_remove() {
 function template_save() {
 	global $form;
 	
-	include_once ("include/utility_functions.php");
-	
 	if ($form[upper_limit] == "") { $form[upper_limit] = 0; }
 	if ($form[lower_limit] == "") { $form[lower_limit] = 0; }
 	if ($form[unit_exponent_value] == "") { $form[unit_exponent_value] = 0; }
 	
 	$save["id"] = $form["graph_template_id"];
+	$save["type"] = "template";
 	$save["name"] = $form["name"];
 	
 	$graph_template_id = sql_save($save, "graph_templates");
@@ -907,7 +924,6 @@ function template_save() {
 	$save["id"] = $form["graph_template_graph_id"];
 	$save["local_graph_template_graph_id"] = 0;
 	$save["local_graph_id"] = 0;
-	$save["type"] = "template";
 	$save["graph_template_id"] = $graph_template_id;
 	$save["t_image_format_id"] = $form["t_image_format_id"];
 	$save["image_format_id"] = $form["image_format_id"];
@@ -946,7 +962,8 @@ function template_save() {
 	
 	$graph_template_graph_id = sql_save($save, "graph_templates_graph");
 	
-	push_out_graph($graph_template_graph_id);	
+	include_once ("include/utility_functions.php");
+	push_out_graph($graph_template_graph_id);
 }
 
 function template_edit() {
@@ -983,9 +1000,10 @@ function template_edit() {
 		<?DrawFormItemTextBox("name",$template[name],"","50", "40");?>
 	</tr>
 	
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Configuration</td>
-	</tr>
+	<?
+	end_box();
+	start_box("Graph Template Configuration", "", "");
+	?>
 	
 	<form method="post" action="graph_templates.php">
 	
@@ -1131,16 +1149,20 @@ function template_edit() {
 	</tr>
 	
 	<?
+	end_box();
+	
 	DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
 	DrawFormItemHiddenIDField("graph_template_graph_id",$template_graph[id]);
-	?>
+	DrawFormItemHiddenTextBox("save_component_template","1","");
 	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("template_save", "graph_templates.php");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "graph_templates.php");?>
 		</td>
 	</tr>
+	</form>
 	<?
 	end_box();
 }
@@ -1186,8 +1208,9 @@ function input_remove() {
 	global $args, $config;
 	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
-		include_once ('include/top_header.php');
+		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=$args[graph_template_input_id]") . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=$args[graph_template_input_id]&graph_template_id=$args[graph_template_id]");
+		include ('include/bottom_footer.php');
 		exit;
 	}
 	
@@ -1331,16 +1354,20 @@ function input_edit() {
 	</tr>
 	
 	<?
+	end_box();
+	
 	DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
 	DrawFormItemHiddenIDField("graph_template_input_id",$args[graph_template_input_id]);
-	?>
+	DrawFormItemHiddenTextBox("save_component_input","1","");
 	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("input_save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");?>
 		</td>
 	</tr>
+	</form>
 	<?
 	end_box();
 }
