@@ -72,7 +72,9 @@ function DrawMenu($userid, $menuid) {
 	print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
 	if (sizeof($menu[$header]) > 0) {
 	    foreach (array_keys($menu[$header]) as $url) {
-		print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+		if ($url != 'pzones.php' || $config[use_polling_zones][value] == 'on') {
+		    print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
+		}
 	    }
 	}
     }
