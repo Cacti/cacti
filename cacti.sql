@@ -783,8 +783,7 @@ INSERT INTO data_template_rrd VALUES (39,0,0,35,'',1000000000000,'',0,'',600,'',
 INSERT INTO data_template_rrd VALUES (40,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_freeable','',0);
 INSERT INTO data_template_rrd VALUES (42,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
 INSERT INTO data_template_rrd VALUES (43,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
-INSERT INTO data_template_rrd VALUES (44,0,0,37,'',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
-INSERT INTO data_template_rrd VALUES (45,0,0,37,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (44,0,0,37,'on',10000000000,'',0,'',600,'',1,'on','hdd_free','',0);
 INSERT INTO data_template_rrd VALUES (46,0,0,38,'',10000000,'',0,'',600,'',2,'','errors_in','',0);
 INSERT INTO data_template_rrd VALUES (47,0,0,38,'',10000000,'',0,'',600,'',2,'','discards_in','',0);
 INSERT INTO data_template_rrd VALUES (48,0,0,39,'',1000000000,'',0,'',600,'',2,'','unicast_in','',0);
@@ -1848,13 +1847,6 @@ CREATE TABLE settings_graphs (
 --
 
 
-INSERT INTO settings_graphs VALUES (3,'default_rra_id','1');
-INSERT INTO settings_graphs VALUES (3,'default_height','100');
-INSERT INTO settings_graphs VALUES (3,'default_width','300');
-INSERT INTO settings_graphs VALUES (3,'default_view_mode','1');
-INSERT INTO settings_graphs VALUES (3,'timespan','60000');
-INSERT INTO settings_graphs VALUES (3,'num_columns','2');
-INSERT INTO settings_graphs VALUES (3,'page_refresh','300');
 
 --
 -- Table structure for table 'snmp_query'
@@ -1940,7 +1932,7 @@ INSERT INTO snmp_query_graph VALUES (1,1,'In/Out Bytes',1);
 INSERT INTO snmp_query_graph VALUES (2,1,'In/Out Errors/Discarded Packets',22);
 INSERT INTO snmp_query_graph VALUES (3,1,'In/Out Non-Unicast Packets',24);
 INSERT INTO snmp_query_graph VALUES (4,1,'In/Out Unicast Packets',23);
-INSERT INTO snmp_query_graph VALUES (15,6,'Available/Used Disk Space',21);
+INSERT INTO snmp_query_graph VALUES (15,6,'Available Disk Space',21);
 INSERT INTO snmp_query_graph VALUES (6,2,'Available/Used Disk Space',3);
 INSERT INTO snmp_query_graph VALUES (7,3,'Wireless Levels',5);
 INSERT INTO snmp_query_graph VALUES (8,3,'Wireless Transmissions',6);
@@ -1995,7 +1987,6 @@ INSERT INTO snmp_query_graph_rrd VALUES (14,2,2,'ifHCOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (14,1,1,'ifHCInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (13,1,1,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (4,39,49,'ifOutUcastPkts');
-INSERT INTO snmp_query_graph_rrd VALUES (15,37,45,'dskUsed');
 INSERT INTO snmp_query_graph_rrd VALUES (15,37,44,'dskAvailable');
 
 --
@@ -2080,7 +2071,7 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (63,13,1,1,'rrd_maximum','|squery_ifS
 INSERT INTO snmp_query_graph_rrd_sv VALUES (64,13,2,1,'rrd_maximum','|squery_ifSpeed|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (65,14,1,1,'rrd_maximum','|squery_ifSpeed|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (66,14,2,1,'rrd_maximum','|squery_ifSpeed|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (67,15,37,1,'name','|host_description| - Partition - |squery_dskDevice|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (69,15,37,1,'name','|host_description| - Free Space - |squery_dskDevice|');
 
 --
 -- Table structure for table 'snmp_query_graph_sv'
