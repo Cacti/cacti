@@ -3,6 +3,7 @@
 typedef struct target_struct{
   int target_id;
   unsigned long long result;
+  char stringresult[255];
   int local_data_id;
   int action;
   char command[256];
@@ -22,10 +23,14 @@ typedef struct target_struct{
 }target_t;
 
 typedef struct rrd_struct{
+  char rrdcmd[512];
+}rrd_t;
+
+typedef struct multi_rrd_struct{
   char rrd_name[19];
   char rrd_path[255];
-  unsigned long long int result;
-}rrd_t;
+  long long int result;
+}multi_rrd_t;
 
 typedef struct conf_struct{
   char sqluser[80];

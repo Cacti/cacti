@@ -1,6 +1,8 @@
 #include <time.h>
 #include <sys/time.h>
 #include <mysql.h>
+#include <string.h>
+
 
 //For Net-SNMP (ver5)
 #ifdef NETSNMP

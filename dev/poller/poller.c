@@ -6,7 +6,7 @@ extern int entries;
 void *poller(){
   target_t *entry = NULL;
   rrd_t *rrd_targets = (rrd_t *)malloc(entries * sizeof(rrd_t));
-  rrd_t *rrd_multids;
+  multi_rrd_t *rrd_multids;
   unsigned long long result = 0;
   FILE *cmd_stdout;
   char cmd_result[64];
@@ -28,8 +28,8 @@ void *poller(){
 
     switch(entry->action) {
       case 0:
-        entry->result=snmp_get(entry->management_ip, entry->snmp_community, entry->snmp_version, entry->arg1,0);
-        //entry->result=1;
+        //entry->result=snmp_get(entry->management_ip, entry->snmp_community, entry->snmp_version, entry->arg1,0);
+        entry->result=1;
       break;
       case 1:
         cmd_stdout=popen(entry->command, "r");
@@ -37,9 +37,18 @@ void *poller(){
         if(is_number(cmd_result)) entry->result = atoll(cmd_result);
         pclose(cmd_stdout);
       break;
+      //Action 2
+      case 2:
+        cmd_stdout=popen(entry->command, "r");
+        if(cmd_stdout != NULL) fgets(cmd_result, 64, cmd_stdout);
+        printf("cmd_result: %s\n", cmd_result);
+        pclose(cmd_stdout);
+        sprintf(entry->stringresult, "%s", cmd_result);
+        entry->result=0;
+      break;
       default:
-        printf("Unknown Action!\n");
-        result=0;
+        printf("Unknown Action(%i)!\n",entry->action);
+        entry->result=0;
       break;
     }
   }
@@ -85,11 +94,13 @@ void *poller(){
       update_multirrd(rrd_multids,rrd_multids_counter);
       free(rrd_multids);
       current_local_data_id=0;
+    } else if(entry->action==2){
+      printf("String result\n");
+      sprintf(rrd_targets[rrd_target_counter].rrdcmd, "%s", rrdcmd_string(entry->rrd_path, entry->stringresult));
+      rrd_target_counter++;
     } else {
       printf("Single DS RRA\n");
-      sprintf(rrd_targets[rrd_target_counter].rrd_name, "%s", entry->rrd_name);
-      sprintf(rrd_targets[rrd_target_counter].rrd_path, "%s", entry->rrd_path);
-      rrd_targets[rrd_target_counter].result = entry->result;
+      sprintf(rrd_targets[rrd_target_counter].rrdcmd, "%s", rrdcmd_lli(entry->rrd_name, entry->rrd_path, entry->result));
       rrd_target_counter++;
     }
   }
