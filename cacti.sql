@@ -1777,6 +1777,7 @@ CREATE TABLE graph_tree (
 --
 
 
+INSERT INTO graph_tree VALUES (1,0,'Default Tree');
 
 --
 -- Table structure for table 'graph_tree_items'
@@ -1800,6 +1801,11 @@ CREATE TABLE graph_tree_items (
 --
 
 
+INSERT INTO graph_tree_items VALUES (1,1,0,1,'System Graphs','010000000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (2,1,2,1,'','010100000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (3,1,3,1,'','010200000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (4,1,1,1,'','010300000000000000000000000000000000000000000000000000000000');
+INSERT INTO graph_tree_items VALUES (5,1,4,1,'','010400000000000000000000000000000000000000000000000000000000');
 
 --
 -- Table structure for table 'host'
@@ -2125,6 +2131,15 @@ CREATE TABLE settings_graphs (
 --
 
 
+INSERT INTO settings_graphs VALUES (1,'timespan','60000');
+INSERT INTO settings_graphs VALUES (1,'default_view_mode','1');
+INSERT INTO settings_graphs VALUES (1,'default_width','300');
+INSERT INTO settings_graphs VALUES (1,'default_height','100');
+INSERT INTO settings_graphs VALUES (1,'default_tree_id','1');
+INSERT INTO settings_graphs VALUES (1,'default_rra_id','1');
+INSERT INTO settings_graphs VALUES (1,'num_columns','2');
+INSERT INTO settings_graphs VALUES (1,'num_graphs_per_page','10');
+INSERT INTO settings_graphs VALUES (1,'page_refresh','300');
 
 --
 -- Table structure for table 'settings_tree'
@@ -2476,7 +2491,7 @@ CREATE TABLE user_auth (
 --
 
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','','on','on','on','on',1,1);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','on','on','on','on','on',1,1);
 INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b','Guest Account','on','on','on','on','on',3,1);
 
 --
