@@ -64,23 +64,25 @@ case 'tree':
 	
 	print "<br>";
 	
-	if (read_config_option("global_auth") == "on") {
-		/* take tree permissions into account here, if the user does not have permission
-		give an "access denied" message */
-		$user_auth = db_fetch_row("select user_id from user_auth_tree where tree_id=" . $_SESSION["sess_view_tree_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
-		
-		if ($current_user["graph_policy"] == "1") {
-			if (sizeof($user_auth) > 0) { $access_denied = true; }
-		}elseif ($current_user["graph_policy"] == "2") {
-			if (sizeof($user_auth) == 0) { $access_denied = true; }
+	if (isset($_SESSION["sess_view_tree_id"])) {
+		if (read_config_option("global_auth") == "on") {
+			/* take tree permissions into account here, if the user does not have permission
+			give an "access denied" message */
+			$user_auth = db_fetch_row("select user_id from user_auth_tree where tree_id=" . $_SESSION["sess_view_tree_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
+			
+			if ($current_user["graph_policy"] == "1") {
+				if (sizeof($user_auth) > 0) { $access_denied = true; }
+			}elseif ($current_user["graph_policy"] == "2") {
+				if (sizeof($user_auth) == 0) { $access_denied = true; }
+			}
+			
+			if ($access_denied == true) {
+				print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
+			}
 		}
 		
-		if ($access_denied == true) {
-			print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
-		}
+		grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), $_SESSION["sess_user_id"], $tree_parameters);
 	}
-	
-	grow_graph_tree($_SESSION["sess_view_tree_id"], (!empty($start_branch) ? $start_branch : 0), $_SESSION["sess_user_id"], $tree_parameters);
 	
 	print "<br><br>";
 	
