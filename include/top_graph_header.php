@@ -150,6 +150,17 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 		<td valign="top" height="1" colspan="3" bgcolor="#efefef">
 			<?php
 			$graph_data_array["print_source"] = true;
+
+			/* override: graph start time (unix time) */
+			if (!empty($_GET["graph_start"])) {
+				$graph_data_array["graph_start"] = $_GET["graph_start"];
+			}
+
+			/* override: graph end time (unix time) */
+			if (!empty($_GET["graph_end"])) {
+				$graph_data_array["graph_end"] = $_GET["graph_end"];
+			}
+
 			print trim(rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array));
 			?>
 		</td>

@@ -455,6 +455,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if ((empty($graph_data_array["graph_start"])) || (empty($graph_data_array["graph_end"]))) {
 			$rra["rows"] = 600;
 			$rra["steps"] = 1;
+			$rra["timespan"] = 86400;
 		}else{
 			/* get a list of RRAs related to this graph */
 			$rras = get_associated_rras($local_graph_id);
