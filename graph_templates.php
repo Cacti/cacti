@@ -177,6 +177,12 @@
 		<?
 		$i++;
 		}
+		}else{
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+				<td colspan="7">
+					<em>No Items</em>
+				</td>
+			</tr><?
 		}
 		
 		new_table();
@@ -202,20 +208,79 @@
 					<a href="graph_templates.php?action=input_edit&graph_template_input_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><?print $item[name];?></a>
 				</td>
 				<td width="1%" align="right">
-					<a href="graph_templates.php?action=item_remove&graph_template_id_graph=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+					<a href="graph_templates.php?action=input_remove&graph_template_input_id=<?print $item[id];?>&graph_template_id=<?print $args[graph_template_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 				</td>
 			</tr>
 		<?
 		$i++;
 		}
+		}else{
+			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+				<td colspan="2">
+					<em>No Inputs</em>
+				</td>
+			</tr><?
 		}	
 	}
 	
 switch ($action) {
+	case 'template_remove':
+		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+			include_once ('include/top_header.php');
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=$args[graph_template_id]") . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", "graph_templates.php", "?action=template_remove&graph_template_id=$args[graph_template_id]");
+			exit;
+		}
+		
+		if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+			db_execute("delete from graph_templates where id=$args[graph_template_id]");
+			
+			$graph_template_input = db_fetch_assoc("select id from graph_template_input where graph_template_id=$args[graph_template_id]");
+			
+			if (sizeof($graph_template_input) > 0) {
+			foreach ($graph_template_input as $item) {
+				db_execute("delete from graph_template_input_defs where graph_template_input_id=$item[id]");
+			}
+			}
+			
+			db_execute("delete from graph_template_input where graph_template_id=$args[graph_template_id]");
+			db_execute("delete from graph_templates_graph where graph_template_id=$args[graph_template_id] and local_graph_id=0");
+			db_execute("delete from graph_templates_item where graph_template_id=$args[graph_template_id] and local_graph_id=0");
+			
+			/* "undo" any graph that is currently using this template */
+			db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where graph_template_id=$args[graph_template_id]");
+			db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where graph_template_id=$args[graph_template_id]");
+		}
+		
+		header ("Location: graph_templates.php");
+		break;
+	case 'input_remove':
+		if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+			include_once ('include/top_header.php');
+			DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=$args[graph_template_input_id]") . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", "graph_templates.php", "?action=input_remove&graph_template_input_id=$args[graph_template_input_id]&graph_template_id=$args[graph_template_id]");
+			exit;
+		}
+		
+		if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+			db_execute("delete from graph_template_input where id=$args[graph_template_input_id]");
+			db_execute("delete from graph_template_input_defs where graph_template_input_id=$args[graph_template_input_id]");
+		}
+		
+		if ($config[full_view_graph_template][value] == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
+		}
+		
+		break;
 	case 'item_remove':
 		db_execute("delete from graph_templates_item where id=$args[graph_template_item_id]");
 		
-		header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
+		if ($config[full_view_graph_template][value] == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=$args[graph_template_id]");
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$args[graph_template_id]");
+		}
+		
 		break;
 	case 'input_save':
 		$save["id"] = $form["graph_template_input_id"];
@@ -241,7 +306,12 @@ switch ($action) {
 			}
 		}
 		
-		header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
+		if ($config[full_view_graph_template][value] == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$form[graph_template_id]");
+		}
+		
 		break;
 	case 'item_save':
 		$save["id"] = $form["graph_template_item_id"];
@@ -267,7 +337,12 @@ switch ($action) {
 		include_once ("include/utility_functions.php");
 		update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
 		
-		header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
+		if ($config[full_view_graph_template][value] == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
+		}elseif ($config[full_view_graph_template][value] == "on") {
+			header ("Location: graph_templates.php?action=template_edit&graph_template_id=$form[graph_template_id]");
+		}
+		
 		break;
 	case 'template_save':
 		include_once ("include/utility_functions.php");
@@ -663,7 +738,12 @@ switch ($action) {
 			unset($template_graph);
 		}
 		
+		if ($config[full_view_graph_template][value] == "on") {
+			item();	
+			new_table();
+		}
 		?>
+		
 		<tr>
 			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Template Configuration</td>
 		</tr>
@@ -677,22 +757,6 @@ switch ($action) {
 			</td>
 			<?DrawFormItemTextBox("name",$template[name],"","50", "40");?>
 		</tr>
-		
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("template_save", "graph_templates.php");?>
-				</form>
-			</td>
-		</tr>
-		
-		<?
-		new_table();
-		
-		if ($config[full_view_graph_template][value] == "on") {
-			item();	
-			new_table();
-		}
-		?>
 		
 		<tr>
 			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Configuration</td>

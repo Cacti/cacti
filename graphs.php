@@ -326,7 +326,12 @@ switch ($action) {
 		include_once ("include/utility_functions.php");
 		update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
 		
-		header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		if ($config[full_view_graph][value] == "") {
+			header ("Location: graphs.php?action=item&local_graph_id=$form[local_graph_id]");
+		}elseif ($config[full_view_graph][value] == "on") {
+			header ("Location: graphs.php?action=graph_edit&local_graph_id=$form[local_graph_id]");
+		}
+		
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
