@@ -298,7 +298,7 @@ function form_save() {
 		foreach ($items as $item) {			
 			/* generate a new sequence if needed */
 			if (empty($_POST["sequence"])) {
-				$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "graph_template_id=" . $_POST["graph_template_id"] . " and local_graph_id=0");
+				$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "local_graph_id=" . $_POST["local_graph_id"]);
 			}
 			
 			$save["id"] = $_POST["graph_template_item_id"];
