@@ -30,6 +30,29 @@ include_once("./lib/export.php");
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
+$export_types = array(
+	"graph_template" => array(
+		"name" => "Graph Template",
+		"title_sql" => "select name from graph_templates where id=|id|",
+		"dropdown_sql" => "select id,name from graph_templates order by name"
+		),
+	"data_template" => array(
+		"name" => "Data Template",
+		"title_sql" => "select name from data_template where id=|id|",
+		"dropdown_sql" => "select id,name from data_template order by name"
+		),
+	"host_template" => array(
+		"name" => "Host Template",
+		"title_sql" => "select name from host_template where id=|id|",
+		"dropdown_sql" => "select id,name from host_template order by name"
+		),
+	"data_query" => array(
+		"name" => "Data Query",
+		"title_sql" => "select name from snmp_query where id=|id|",
+		"dropdown_sql" => "select id,name from snmp_query order by name"
+		)
+	);
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -49,20 +72,21 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
+	global $export_types;
+	
 	if (isset($_POST["save_component_export"])) {
 		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
 		
 		if ($_POST["output_format"] == "1") {
 			include_once("./include/top_header.php");
-			start_box("<strong>Template Export Output</strong>", "98%", $colors["header"], "3", "center", "");
-			print "<tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr>";
-			end_box();
+			print "<table width='98%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
 			include_once("./include/bottom_footer.php");
 		}elseif ($_POST["output_format"] == "2") {
 			header("Content-type: application/xml");
 			print $xml_data;
 		}elseif ($_POST["output_format"] == "3") {
-			header("Content-type: text/plain");
+			header("Content-type: application/xml");
+			header("Content-Disposition: attachment; filename=cacti_" . $_POST["export_type"] . "_" . strtolower(clean_up_name(db_fetch_cell(str_replace("|id|", $_POST["export_item_id"], $export_types{$_POST["export_type"]}["title_sql"])))) . ".xml");
 			print $xml_data;
 		}
 	}
@@ -73,26 +97,7 @@ function form_save() {
    --------------------------- */
 
 function export() {
-	global $colors;
-	
-	$export_types = array(
-		"graph_template" => array(
-			"name" => "Graph Template",
-			"dropdown_sql" => "select id,name from graph_templates order by name"
-			),
-		"data_template" => array(
-			"name" => "Data Template",
-			"dropdown_sql" => "select id,name from data_template order by name"
-			),
-		"host_template" => array(
-			"name" => "Host Template",
-			"dropdown_sql" => "select id,name from host_template order by name"
-			),
-		"data_query" => array(
-			"name" => "Data Query",
-			"dropdown_sql" => "select id,name from snmp_query order by name"
-			)
-		);
+	global $colors, $export_types;
 	
 	/* 'graph_template' should be the default */
 	if (!isset($_REQUEST["export_type"])) {
@@ -150,9 +155,9 @@ function export() {
 		</td>
 		<td>
 			<?php
-			form_radio_button("output_format", "1", "1", "Output to the Browser (within Cacti)","1",true); print "<br>";
-			form_radio_button("output_format", "1", "2", "Output to the Browser (raw XML)","1",true); print "<br>";
-			form_radio_button("output_format", "1", "3", "Save File Locally","1",true);
+			form_radio_button("output_format", "3", "1", "Output to the Browser (within Cacti)","1",true); print "<br>";
+			form_radio_button("output_format", "3", "2", "Output to the Browser (raw XML)","1",true); print "<br>";
+			form_radio_button("output_format", "3", "3", "Save File Locally","1",true);
 			?>
 		</td>
 	</tr>
