@@ -569,14 +569,14 @@ function graph_settings_edit() {
 
 			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-					if (graph_config_value_exists($sub_field_name)) {
+					if (graph_config_value_exists($sub_field_name, $_GET["id"])) {
 						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
 					}
 
 					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_GET["id"]);
 				}
 			}else{
-				if (graph_config_value_exists($field_name)) {
+				if (graph_config_value_exists($field_name, $_GET["id"])) {
 					$form_array[$field_name]["form_id"] = 1;
 				}
 
