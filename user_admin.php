@@ -422,8 +422,8 @@ function user_edit() {
 			Enter the password for this user twice. Remember that passwords are case sensitive!
 		</td>
 		<td>
-			<?php form_base_password_box("password","","","","40");?><br>
-			<?php form_base_password_box("password_confirm","","","","40");?>
+			<?php form_base_text_box("password","","","","40","password");?><br>
+			<?php form_base_text_box("password_confirm","","","","40","password");?>
 		</td>
 	</tr>
     
