@@ -203,6 +203,9 @@ function host_new_graphs_save() {
 					$snmp_query_id = $form_id1;
 					$snmp_query_graph_id = $form_id2;
 					$snmp_index_array = $form_array3;
+					
+					/* we will use this at the very end when saving */
+					$snmp_query_to_snmp_query_graphs_array[$snmp_query_id] = $snmp_query_graph_id;
 				}
 				
 				$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=$snmp_query_graph_id");
@@ -290,6 +293,7 @@ function host_new_graphs_save() {
 					while (list($snmp_index, $true) = each($snmp_index_array)) {
 						$local_data_id = sql_save($save, "data_local");
 						change_data_template($local_data_id, $data_template["id"]);
+						generate_data_source_path($local_data_id);
 						
 						/* cache arrays; used down below */
 						if (isset($new_data_templates["sg"][$snmp_query_id]{$data_template["id"]})) {
@@ -303,7 +307,7 @@ function host_new_graphs_save() {
 						
 						/* suggested values for snmp query code */
 						$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["id"] . " order by sequence");
-					
+						
 						if (sizeof($suggested_values) > 0) {
 						foreach ($suggested_values as $suggested_value) {
 							/* once we find a match; don't try to find more */
@@ -409,7 +413,7 @@ function host_new_graphs_save() {
 				
 				/* set the expected output type (ie. bytes, errors, packets) */
 				$data_input_field_id = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $matches[1] . " and action_id=3");
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id,$data_template_data_id,'','$snmp_query_graph_id')");
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id,$data_template_data_id,'','" . $snmp_query_to_snmp_query_graphs_array{$matches[1]} . "')");
 			}
 		}
 	}
