@@ -190,10 +190,44 @@ function ds_remove() {
 function ds_save() {
 	global $form;
 	
-	$save["id"] = $form["id"];
-	$save["name"] = $form["name"];
+	$save["id"] = $form["local_data_id"];
+	$save["data_template_id"] = $form["data_template_id"];
+	$save["host_id"] = $form["host_id"];
 	
-	sql_save($save, "host_template");
+	$local_data_id = sql_save($save, "data_local");
+	unset($save);
+	
+	$save["id"] = $form["data_template_data_id"];
+	$save["local_data_template_data_id"] = $form["local_data_template_data_id"];
+	$save["local_data_id"] = $local_data_id;
+	$save["data_template_id"] = $form["data_template_id"];
+	$save["data_input_id"] = $form["data_input_id"];
+	$save["name"] = $form["name"];
+	$save["data_source_path"] = $form["data_source_path"];
+	$save["active"] = $form["active"];
+	$save["rrd_step"] = $form["rrd_step"];
+	
+	sql_save($save, "data_template_data");
+	unset($save);
+	
+	$save["id"] = $form["data_template_rrd_id"];
+	$save["local_data_template_rrd_id"] = $form["local_data_template_rrd_id"];
+	$save["local_data_id"] = $local_data_id;
+	$save["data_template_id"] = $form["data_template_id"];
+	$save["rrd_maximum"] = $form["rrd_maximum"];
+	$save["rrd_minimum"] = $form["rrd_minimum"];
+	$save["rrd_heartbeat"] = $form["rrd_heartbeat"];
+	$save["data_source_type_id"] = $form["data_source_type_id"];
+	$save["data_source_name"] = $form["data_source_name"];
+	$save["script_output_argument"] = $form["script_output_argument"];
+	
+	sql_save($save, "data_template_rrd");
+	
+	if ($form[data_template_id] != $form[_data_template_id]) {
+		/* update all nessesary template information */
+		include_once ("include/utility_functions.php");
+		$return_status = change_data_template($local_data_id, $form[data_template_id], $form[_data_template_id]);
+	}
 }
 
 function ds_edit() {
@@ -241,9 +275,14 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
-			Choose a name for this data source.
+			<?if (($use_data_template == false) || ($data_template[t_name] == "on")) { print "Choose a name for this data source."; }?>
 		</td>
-		<?DrawFormItemTextBox("name",$data[name],"","250", "40");?>
+		<?if (($use_data_template == false) || ($data_template[t_name] == "on")) {
+			DrawFormItemTextBox("name",$data[name],"","50", "40");
+		}else{
+			print "<td><em>$data_template[name]</em></td>";
+			DrawFormItemHiddenTextBox("name",$data_template[name],"");
+		}?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
@@ -408,16 +447,15 @@ function ds_edit() {
 	<?
 	end_box();
 	
-	DrawFormItemHiddenIDField("data_template_id",$args[data_template_id]);
-	DrawFormItemHiddenIDField("host_id",$args[host_id]);
-	DrawFormItemHiddenIDField("data_template_data_id",$template_data[id]);
-	DrawFormItemHiddenIDField("data_template_rrd_id",$template_rrd[id]);
+	DrawFormItemHiddenIDField("_data_template_id",$data[data_template_id]);
+	DrawFormItemHiddenIDField("data_template_data_id",$data[id]);
+	DrawFormItemHiddenIDField("data_template_rrd_id",$rrd[id]);
+	DrawFormItemHiddenIDField("local_data_template_data_id",$data[local_data_template_data_id]);
+	DrawFormItemHiddenIDField("local_data_template_rrd_id",$rrd[local_data_template_rrd_id]);
+	DrawFormItemHiddenIDField("local_data_id",$data[local_data_id]);
 	DrawFormItemHiddenIDField("current_rrd",$args[view_rrd]);
-	DrawFormItemHiddenTextBox("save_component_template","1","");
-	
-	if ($config[full_view_data_template][value] == "on") {
-	//	data_edit();	
-	}
+	DrawFormItemHiddenTextBox("host_id",$args[host_id],db_fetch_cell("select host_id from data_local where id=$data[local_data_id]"));
+	DrawFormItemHiddenTextBox("save_component_data_source","1","");
 	
 	start_box("", "", "");
 	?>
