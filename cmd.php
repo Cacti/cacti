@@ -187,6 +187,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					}
 
 					foreach ($reindex as $index_item) {
+						$assert_fail = false;
+
 						/* do the check */
 						switch ($index_item["action"]) {
 						case POLLER_ACTION_SNMP: /* snmp */
@@ -201,12 +203,23 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
 							print "Assert '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+							$assert_fail = true;
 						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] <= trim($output))) {
 							print "Assert '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+							$assert_fail = true;
 						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] >= trim($output))) {
 							print "Assert '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+							$assert_fail = true;
+						}
+
+						/* update 'poller_reindex' with the correct information if:
+						 * 1) the assert fails
+						 * 2) the OP code is > or < meaning the current value could have changed without causing
+						 *     the assert to fail */
+						if (($assert_fail == true) || ($index_item["op"] == ">") || ($index_item["op"] == "<")) {
+							db_execute("update poller_reindex set assert_value='$output' where host_id='$host_id' and data_query_id='" . $index_item["data_query_id"] . "' and arg1='" . $index_item["arg1"] . "'");
 						}
 					}
 				}
