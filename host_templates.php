@@ -123,6 +123,9 @@ function template_remove() {
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from host_template where id=" . $_GET["id"]);
+		db_execute("delete from host_template_snmp_query where host_template_id=" . $_GET["id"]);
+		db_execute("delete from host_template_graph_template where host_template_id=" . $_GET["id"]);
+		db_execute("delete from host_template_data_template where host_template_id=" . $_GET["id"]);
 	}
 }
 
@@ -307,7 +310,7 @@ function template() {
 	start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Template Title",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
     
@@ -327,6 +330,8 @@ function template() {
 		</tr>
 	<?php
 	}
+	}else{
+		print "<tr><td><em>No Host Templates</em></td></tr>\n";
 	}
 	end_box();	
 }
