@@ -91,9 +91,14 @@ switch ($action) {
 function form_save() {
 	global $form;
 	
-	if (isset($form[save_component_template])) {
-		template_save();
-		return "host_templates.php";
+	if (isset($form[save_component_data_source])) {
+		$local_data_id = ds_save();
+		
+		if ($form[data_template_id] != $form[_data_template_id]) {
+			return "data_sources.php?action=edit&local_data_id=$local_data_id&host_id=$form[host_id]&view_rrd=$form[view_rrd]";
+		}else{
+			return "data_sources.php";
+		}
 	}
 }
 
@@ -177,13 +182,15 @@ function ds_remove() {
 	
 	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "host_templates.php?action=remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=$args[local_data_id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=remove&local_data_id=$args[local_data_id]");
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-		db_execute("delete from host_template where id=$args[id]");
+		db_execute("delete from data_template_data where local_data_id=$args[local_data_id]");
+		db_execute("delete from data_template_rrd where local_data_id=$args[local_data_id]");
+		db_execute("delete from data_local where id=$args[local_data_id]");
 	}
 }
 
@@ -210,24 +217,30 @@ function ds_save() {
 	sql_save($save, "data_template_data");
 	unset($save);
 	
-	$save["id"] = $form["data_template_rrd_id"];
-	$save["local_data_template_rrd_id"] = $form["local_data_template_rrd_id"];
-	$save["local_data_id"] = $local_data_id;
-	$save["data_template_id"] = $form["data_template_id"];
-	$save["rrd_maximum"] = $form["rrd_maximum"];
-	$save["rrd_minimum"] = $form["rrd_minimum"];
-	$save["rrd_heartbeat"] = $form["rrd_heartbeat"];
-	$save["data_source_type_id"] = $form["data_source_type_id"];
-	$save["data_source_name"] = $form["data_source_name"];
-	$save["script_output_argument"] = $form["script_output_argument"];
-	
-	sql_save($save, "data_template_rrd");
+	/* if this is a new data source and a template has been selected, skip item creation this time
+	otherwise it throws off the templatlate creation because of the NULL data */
+	if (($form["data_template_id"] == "0") || ($form["data_template_rrd_id"] != "0")) {
+		$save["id"] = $form["data_template_rrd_id"];
+		$save["local_data_template_rrd_id"] = $form["local_data_template_rrd_id"];
+		$save["local_data_id"] = $local_data_id;
+		$save["data_template_id"] = $form["data_template_id"];
+		$save["rrd_maximum"] = $form["rrd_maximum"];
+		$save["rrd_minimum"] = $form["rrd_minimum"];
+		$save["rrd_heartbeat"] = $form["rrd_heartbeat"];
+		$save["data_source_type_id"] = $form["data_source_type_id"];
+		$save["data_source_name"] = $form["data_source_name"];
+		$save["script_output_argument"] = $form["script_output_argument"];
+		
+		sql_save($save, "data_template_rrd");
+	}
 	
 	if ($form[data_template_id] != $form[_data_template_id]) {
 		/* update all nessesary template information */
 		include_once ("include/utility_functions.php");
 		$return_status = change_data_template($local_data_id, $form[data_template_id], $form[_data_template_id]);
 	}
+	
+	return $local_data_id;
 }
 
 function ds_edit() {
@@ -263,7 +276,7 @@ function ds_edit() {
 			<font class="textEditTitle">Selected Data Template</font><br>
 			The name given to this data template.
 		</td>
-		<?DrawFormItemDropdownFromSQL("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$template_data[data_template_id],"None","1");?>
+		<?DrawFormItemDropdownFromSQL("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$data_template[data_template_id],"None","0");?>
 	</tr>
 	
 	<?
@@ -296,15 +309,20 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Input Source</font><br>
+			<?if (($use_data_template == false) || ($data_template[t_data_input_id] == "on")) { print "The method used to gather for this data source."; }?>
 		</td>
-		<td><em><?print db_fetch_cell("select name from data_input where id=$data_template[data_input_id]");?></em></td>
-		<?DrawFormItemHiddenTextBox("rrd_step",$data_template[rrd_step],"");?>
+		<?if ($use_data_template == false) {
+			DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$data[data_input_id],"None","1");
+		}else{
+			print "<td><em>" . db_fetch_cell("select name from data_input where id=$data_template[data_input_id]") . "</em></td>";
+			DrawFormItemHiddenTextBox("data_input_id",$data_template[data_input_id],"");
+		}?>
 	</tr>
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Step</font><br>
-			<?if (($use_data_template == false) || ($data_template[t_rrd_step] == "on")) { print "The amount of time in seconds between updates."; }?>
+			<?if (($use_data_template == false) || ($data_template[t_rrd_step] == "on")) { print "The amount of time in seconds between expected updates."; }?>
 		</td>
 		<?if (($use_data_template == false) || ($data_template[t_rrd_step] == "on")) {
 			DrawFormItemTextBox("rrd_step",$data[rrd_step],"","50", "40");
@@ -382,7 +400,7 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Internal Data Source Name</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_data_source_name] == "on")) { print " Choose unique name to represent this piece of data inside of the rrd file."; }?>
+			<?if (($use_data_template == false) || ($rrd_template[t_data_source_name] == "on")) { print "Choose unique name to represent this piece of data inside of the rrd file."; }?>
 		</td>
 		<?if (($use_data_template == false) || ($rrd_template[t_data_source_name] == "on")) {
 			DrawFormItemTextBox("data_source_name",$rrd[data_source_name],"","19", "40");
@@ -395,7 +413,7 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Maximum Value</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_rrd_maximum] == "on")) { print " Choose unique name to represent this piece of data inside of the rrd file."; }?>
+			<?if (($use_data_template == false) || ($rrd_template[t_rrd_maximum] == "on")) { print "The maximum value of data that is allowed to be collected."; }?>
 		</td>
 		<?if (($use_data_template == false) || ($rrd_template[t_rrd_maximum] == "on")) {
 			DrawFormItemTextBox("rrd_maximum",$rrd[rrd_maximum],"","20", "30");
@@ -408,7 +426,7 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Minimum Value</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_rrd_minimum] == "on")) { print " Choose unique name to represent this piece of data inside of the rrd file."; }?>
+			<?if (($use_data_template == false) || ($rrd_template[t_rrd_minimum] == "on")) { print "The minimum value of data that is allowed to be collected."; }?>
 		</td>
 		<?if (($use_data_template == false) || ($rrd_template[t_rrd_minimum] == "on")) {
 			DrawFormItemTextBox("rrd_minimum",$rrd[rrd_minimum],"","20", "30");
@@ -421,7 +439,7 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Source Type</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_data_source_type_id] == "on")) { print " Choose unique name to represent this piece of data inside of the rrd file."; }?>
+			<?if (($use_data_template == false) || ($rrd_template[t_data_source_type_id] == "on")) { print "How data is represented in the RRA."; }?>
 		</td>
 		<?if (($use_data_template == false) || ($rrd_template[t_data_source_type_id] == "on")) {
 			DrawFormItemDropdownFromSQL("data_source_type_id",db_fetch_assoc("select * from def_ds order by Name"),"Name","ID",$rrd[data_source_type_id],"","1");
@@ -434,7 +452,7 @@ function ds_edit() {
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Heartbeat</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_rrd_heartbeat] == "on")) { print " Choose unique name to represent this piece of data inside of the rrd file."; }?>
+			<?if (($use_data_template == false) || ($rrd_template[t_rrd_heartbeat] == "on")) { print "The maximum amount of time that can pass before data is entered as \"unknown\". (Usually 2x300=600)"; }?>
 		</td>
 		<?if (($use_data_template == false) || ($rrd_template[t_rrd_heartbeat] == "on")) {
 			DrawFormItemTextBox("rrd_heartbeat",$rrd[rrd_heartbeat],"","20", "30");
@@ -461,7 +479,7 @@ function ds_edit() {
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "data_templates.php");?>
+			<?DrawFormSaveButton("save", "data_sources.php");?>
 		</td>
 	</tr>
 	</form>
