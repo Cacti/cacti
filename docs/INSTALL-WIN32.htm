@@ -74,12 +74,16 @@ Cacti requires:
 <ol>
 	<li>Extract PHP to c:\ and rename the new directory to 'php'.<p>
 	
+	<li>Copy the files in c:\php\dlls to c:\winnt\system32<p>
+	
+	<li>Copy the file c:\php\php4ts.dll to c:\winnt\system32<p>
+	
 	<li>Move all MIB files from c:\php\mibs to c:\usr\mibs<p>
 	
 	<li>Create the directory <em>c:\tmp</em><p>
 	
-	<li>In the c:\php directory, rename the <em>php.ini-dist</em> file to <em>php.ini</em> and make the following 
-	changes to the file:<p>
+	<li>In the c:\php directory, rename the <em>php.ini-dist</em> file to <em>php.ini</em>, copy it to c:\winnt, 
+	and make the following changes to the file:<p>
 	
 		<p class="php">extension_dir = c:/php/extensions<br>
 		extension=php_snmp.dll<br>
@@ -138,17 +142,27 @@ Cacti requires:
 	
 	<li>Install MySQL to the c:\mysql directory.<p>
 	
-	<li>Run c:\mysql\bin\winmysqladmin.exe<p>
+	<li>Start MySQL by running c:\mysql\bin\winmysqladmin.exe<p>
 	
-	When entering a username and password make sure the user has read and write access to the following directories:<p>
+	<li>Set a password for the root user<p>
 	
-	c:\apache2\htdocs\cacti\rra<br>
-	c:\apache2\htdocs\cacti\log
+		<p class="code"><tt class="shell">C:\&gt;</tt> <b>cd mysql\bin</b><br>
+		<tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysqladmin password '<em>password</em>'</b><br>
+		<tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysqladmin --user=root --password reload</b><br></p><br>
 	
-	<p>and execute, read and write access to the following directories</p>
+	<li>Create the MySQL database:<p>
 	
-	c:\php<br>
-	c:\php\sapi
+		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysqladmin --user=root --password create cacti</b></p><br>
+		
+	<li>Import the default cacti database:<p>
+	
+		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b> mysql --user=root --password cacti &lt; c:\apache2\htdocs\cacti\cacti.sql</b></p><br>
+
+	<li><b>Optional:</b> Create a MySQL username and password for cacti.<p>
+	
+		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysql --user=root --password mysql</b><br>
+		<tt class="shell">mysql&gt;</tt> <b>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY '<i>somepassword</i>';</b><br>
+		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br>
 </ol>
 
 <h3>Installation Instructions</h3><p>
@@ -163,23 +177,6 @@ Cacti requires:
 	<li>Unzip rrdtool and copy <strong>rrdtool.exe</strong> from the <em>src/tool_release</em> directory to somewhere such as 
 		C:\rrdtool<p>
 	
-	<li>Install MySQL (I installed it in <strong>C:\mysql</strong>) and start the MySQL service.<p>
-	
-	<li>Create the MySQL database:<p>
-	
-		<p class="code"><tt class="shell">C:\&gt;</tt> <b>cd mysql\bin</b><br>
-		<tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysqladmin create cacti</b></p><br>
-		
-	<li>Import the default cacti database:<p>
-	
-		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b> mysql cacti &lt; c:\apache2\htdocs\cacti\cacti.sql</b></p><br>
-
-	<li><b>Optional:</b> Create a MySQL username and password for cacti.<p>
-	
-		<p class="code"><tt class="shell">C:\MySQL\bin&gt;</tt> <b>mysql --user=root mysql</b><br>
-		<tt class="shell">mysql&gt;</tt> <b>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY '<i>somepassword</i>';</b><br>
-		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br>
-		
 	<li>Edit the <b>cacti\include\config.php</b> file.<p>
 
 	<ul>
