@@ -149,16 +149,16 @@ if ($_REQUEST["step"] == "4") {
 		}
 	}
 	
-	print "<pre>";print_r($_SESSION);print "</pre>";
 	/* reset local settings cache so the user sees the new settings */
+	session_register("sess_config_array");
 	unset($_SESSION["sess_config_array"]);
-	print "<pre>";print_r($_SESSION);print "</pre>";
+	
 	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
 	up-to-date */
 	repopulate_poller_cache();
 	
-	//db_execute("delete from version");
-	//db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
+	db_execute("delete from version");
+	db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
 	
 	header ("Location: ../index.php");
 	exit;

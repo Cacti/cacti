@@ -39,10 +39,10 @@ function data_query($host_id, $snmp_query_id) {
 function get_data_query_array($snmp_query_id) {
 	include_once ("xml_functions.php");
 	include ("config.php");
-	print "<pre>";print_r($_SESSION);print "</pre>";
+	
 	$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
 	$xml_file_path = str_replace("<path_cacti>", $paths["cacti"], $xml_file_path);
-	print "!!!!!!!!!!!!!!XML PARSE: $xml_file_path!!!!!!!!!!!!!!!!<br>";
+	
 	if (!file_exists($xml_file_path)) {
 		return false;
 	}
