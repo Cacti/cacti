@@ -49,7 +49,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
 		$field_array = $field_array[0];
 		
-		if (($field_array["method"] == "get") && ($field_array["direction"] == "input")) {
+		if ($field_array["method"] == "get") {
 			if ($field_array["source"] == "value") {
 				for ($i=0;($i<sizeof($snmp_index));$i++) {
 					$oid = $field_array["oid"] .  "." . $snmp_index[$i]["value"];
@@ -57,11 +57,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$value = cacti_snmp_get($host["management_ip"], $host["snmp_community"], $oid, "", "");
 					
 					db_execute("replace into host_snmp_cache 
-						(host_id,field_name,field_value,snmp_index,oid)
-						values ($host_id,'$field_name','$value'," . $snmp_index[$i]["value"] . ",'$oid')");
+						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
+						values ($host_id,$snmp_query_id,'$field_name','$value'," . $snmp_index[$i]["value"] . ",'$oid')");
 				}
 			}
-		}elseif (($field_array["method"] == "walk") && ($field_array["direction"] == "input")) {
+		}elseif ($field_array["method"] == "walk") {
 			$snmp_data = cacti_snmp_walk($host["management_ip"], $host["snmp_community"], $field_array["oid"]);
 			
 			if ($field_array["source"] == "value") {
@@ -70,8 +70,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$oid = $field_array["oid"] . ".$snmp_index";
 					
 					db_execute("replace into host_snmp_cache 
-						(host_id,field_name,field_value,snmp_index,oid)
-						values ($host_id,'$field_name','" . $snmp_data[$i]["value"] . "',$snmp_index,'$oid')");
+						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
+						values ($host_id,$snmp_query_id,'$field_name','" . $snmp_data[$i]["value"] . "',$snmp_index,'$oid')");
 				}
 			}elseif (ereg("^OID/REGEXP:", $field_array["source"])) {
 				for ($i=0;($i<sizeof($snmp_data));$i++) {
@@ -80,8 +80,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$oid = $field_array["oid"] .  "." . $value;
 					
 					db_execute("replace into host_snmp_cache 
-						(host_id,field_name,field_value,snmp_index,oid)
-						values ($host_id,'$field_name','$value',$snmp_index,'$oid')");
+						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
+						values ($host_id,$snmp_query_id,'$field_name','$value',$snmp_index,'$oid')");
 				}
 			}
 			
