@@ -366,7 +366,6 @@ $host_struc = array(
 	);
 
 $graph_timespans = array(
-	GT_CUSTOM  => "Custom",
 	GT_LAST_HALF_HOUR => "Last Half Hour",
 	GT_LAST_HOUR => "Last Hour",
 	GT_LAST_2_HOURS => "Last 2 Hours",

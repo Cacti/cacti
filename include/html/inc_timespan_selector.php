@@ -202,6 +202,8 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 					<td>
 						<select name='predefined_timespan' onChange="window.location=document.form_timespan_selector.predefined_timespan.options[document.form_timespan_selector.predefined_timespan.selectedIndex].value">
 						<?php
+						$graph_timespans[GT_CUSTOM] = "Custom";
+
 						if (sizeof($graph_timespans) > 0) {
 							$value = 0;
 							for ($value=0; $value < sizeof($graph_timespans); $value++) {
