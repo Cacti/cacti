@@ -172,6 +172,9 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
+/* get_current_graph_start - determine the correct graph start time selected using
+     the timespan selector
+   @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
 	if (isset($_SESSION["sess_current_timespan_begin_now"])) {
 		return $_SESSION["sess_current_timespan_begin_now"];
@@ -180,6 +183,9 @@ function get_current_graph_start() {
 	}
 }
 
+/* get_current_graph_end - determine the correct graph end time selected using
+     the timespan selector
+   @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
 	if (isset($_SESSION["sess_current_timespan_end_now"])) {
 		return $_SESSION["sess_current_timespan_end_now"];
