@@ -570,7 +570,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			
 			/* date/time subsitution */
 			if (strstr($current_field, "|date_time|")) {
-				$current_field = str_replace("|date_time|", date('D M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $current_field);
+				$current_field = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $current_field);
 			}
 			
 			/* 95th percentile */
