@@ -351,7 +351,7 @@ if ($_REQUEST["step"] == "4") {
 						
 						<?php }elseif ($_REQUEST["step"] == "9") { ?>
 						
-						<p>Make sure to read important upgrade notes below before continuing!</p>
+						<p style='color: red; font-weight: bold;'>Make sure to read important upgrade notes below before continuing!</p>
 						
 						<p><strong>Script Output Syntax</strong></p>
 				
