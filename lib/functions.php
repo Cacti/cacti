@@ -545,8 +545,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
    @returns - the original string with all of the variable subsitutions made */
 function subsitute_data_query_path($path) {
 	$path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $path);
-	$path = str_replace("|path_php_binary
-	|", read_config_option("path_php_binary"), $path);
+	$path = str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path);
 	
 	return $path;
 }
