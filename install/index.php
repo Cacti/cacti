@@ -31,6 +31,9 @@ $cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
+/* try to find current (old) version in the array */
+$old_version_index = array_search($old_cacti_version, $cacti_versions);
+
 /* do a version check */
 if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
@@ -70,16 +73,6 @@ function find_best_path($binary_name) {
 			return $search_paths[$i] . "/" . $binary_name;
 		}
 	}
-}
-
-$current_document_root = "";
-$current_document = str_replace("/install", "", dirname($_SERVER["PHP_SELF"]));
-
-/* find the current document root depending on if we're using apache or iis */
-if ((stristr($_SERVER["SERVER_SOFTWARE"], "IIS")) && (isset($_SERVER["PATH_TRANSLATED"]))) {
-	$current_document_root = str_replace($_SERVER["PHP_SELF"], "", str_replace("\\", "/", $_SERVER["PATH_TRANSLATED"]));
-}elseif (isset($_SERVER["DOCUMENT_ROOT"])) {
-	$current_document_root = $_SERVER["DOCUMENT_ROOT"];
 }
 
 /* Here, we define each name, default value, type, and path check for each value
@@ -179,7 +172,11 @@ if (empty($_REQUEST["step"])) {
 		$_REQUEST["step"] = "3";
 	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "3")) {
 		$_REQUEST["step"] = "8";
+	}elseif (($_REQUEST["step"] == "8") && ($old_version_index <= array_search("0.8.5a", $cacti_versions))) {
+		$_REQUEST["step"] = "9";
 	}elseif ($_REQUEST["step"] == "8") {
+		$_REQUEST["step"] = "3";
+	}elseif ($_REQUEST["step"] == "9") {
 		$_REQUEST["step"] = "3";
 	}elseif ($_REQUEST["step"] == "3") {
 		$_REQUEST["step"] = "4";
@@ -217,11 +214,8 @@ if ($_REQUEST["step"] == "4") {
 	header ("Location: ../index.php");
 	exit;
 }elseif (($_REQUEST["step"] == "8") && ($_REQUEST["install_type"] == "3")) {
-	/* try to find current (old) version in the array */
-	$version_index = array_search($old_cacti_version, $cacti_versions);
-
 	/* if the version is not found, die */
-	if (!is_int(array_search($old_cacti_version, $cacti_versions))) {
+	if (!is_int($old_version_index)) {
 		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 			<p style='font-family: Verdana, Arial; font-size: 12px;'>Invalid Cacti version
 			<strong>$old_cacti_version</strong>, cannot upgrade to <strong>" . $config["cacti_version"] . "
@@ -230,7 +224,7 @@ if ($_REQUEST["step"] == "4") {
 	}
 
 	/* loop from the old version to the current, performing updates for each version in between */
-	for ($i=($version_index+1); $i<count($cacti_versions); $i++) {
+	for ($i=($old_version_index+1); $i<count($cacti_versions); $i++) {
 		if ($cacti_versions[$i] == "0.8.1") {
 			include ("0_8_to_0_8_1.php");
 			upgrade_to_0_8_1();
@@ -340,7 +334,7 @@ if ($_REQUEST["step"] == "4") {
 						</select>
 						</p>
 
-						<p>The following information has been determined from cacti's configuration file.
+						<p>The following information has been determined from Cacti's configuration file.
 						If it is not correct, please edit 'include/config.php' before continuing.</p>
 
 						<p class="code">
@@ -453,6 +447,18 @@ if ($_REQUEST["step"] == "4") {
 
 						print $upgrade_results;
 						?>
+
+						<?php }elseif ($_REQUEST["step"] == "9") { ?>
+
+						<p style='font-size: 16px; font-weight: bold; color: red;'>Important Upgrade Notice</p>
+
+						<p>Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>.</p>
+
+						<p>See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup.</p>
+
+						<p><tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span style='font-weight: bold; color: red;'>poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt></p>
+
+						<p>Once you have made this change, please click Next to continue.</p>
 
 						<?php }?>
 
