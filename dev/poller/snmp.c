@@ -34,7 +34,7 @@ unsigned long long int snmp_get(char *snmp_host, char *snmp_comm, int ver, char 
     else if (status == STAT_SUCCESS && response->errstat != SNMP_ERR_NOERROR) printf("[%i] SNMP: Error (%s@%s) %s\n",who, session.peername,snmp_oid, snmp_errstring(response->errstat));
     if (status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR){
       vars = response->variables;
-      snprint_value(result_string, BUFSIZE, anOID, anOID_len, vars);
+      snprintf(result_string, BUFSIZE, anOID, anOID_len, vars);
       printf("[%i] SNMP: %s\n", who, result_string);
       //if counter is 64bit
       if(vars->type == ASN_COUNTER64){

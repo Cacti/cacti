@@ -2,6 +2,7 @@
 #define BUFSIZE 512
 
 typedef struct target_struct{
+  int local_data_id;
   int action;
   char command[256];
   char management_ip[15];
