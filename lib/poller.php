@@ -213,7 +213,7 @@ function process_poller_output($rrdtool_pipe) {
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match("/^([a-zA-Z0-9_-]+):(\d+(\.\d+)?)$/", $values[$i], $matches)) {
 						if (isset($rrd_field_names{$matches[1]})) {
-							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+							if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . "->" . $rrd_field_names{$matches[1]} . "]" , true, "POLLER");
 							}
 
