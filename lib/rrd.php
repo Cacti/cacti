@@ -31,8 +31,8 @@ function escape_command($command) {
 }
 
 function rrdtool_execute($command_line, $log_command, $output_flag) {
-	include ('config.php');
-	include_once ('functions.php');
+	include ("config.php");
+	include_once ("functions.php");
 	
 	if ($log_command == true) {
 		LogData("CMD: " . read_config_option("path_rrdtool") . " $command_line");
@@ -202,8 +202,8 @@ function rrdtool_function_update($update_cache_array) {
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
-	include_once ('functions.php');
-	include ('config_arrays.php');
+	include_once ("functions.php");
+	include ("config_arrays.php");
 	
 	$data_source_name = get_data_source_name($rrd_tune_array["data_source_id"]);
 	$data_source_type = $data_source_types{$rrd_tune_array["data-source-type"]};
