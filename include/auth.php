@@ -47,6 +47,10 @@
 	/* SESSION DATA */
 	session_start();
 	
+        if (isset($_SESSION)) { $HTTP_SESSION_VARS = $_SESSION; }
+
+#if (isset($_SESSION)) { print "Got _SESSION.<BR>\n";foreach (array_keys($_SESSION) as $key) { print "key of '$key', val of '$_SESSION[$key]'<BR>\n"; }  } else { print "No session.<BR>\n";}
+
 	if ($config["global_auth"]["value"] == "on") {
 		$user_id = $HTTP_SESSION_VARS['user_id'];
 		$user_hash = $HTTP_SESSION_VARS['user_hash'];
@@ -89,8 +93,8 @@
 		}
 		
 		if ($au != 1 && $user_id != 1) {
-			$res_id = db_fetch_assoc("select a.SectionID, a.UserID, s.ID, s.Section  from 
-				auth_acl a left join auth_sections s on a.sectionid=s.id where s.section=\"$section\" 
+			$res_id = db_fetch_assoc("select a.SectionID, a.UserID, s.ID, s.Section  from
+				auth_acl a left join auth_sections s on a.sectionid=s.id where s.section=\"$section\"
 		 		and a.userid=\"$user_id\"");
 			$rows = sizeof($res_id);
 			
