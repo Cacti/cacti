@@ -1244,7 +1244,7 @@ INSERT INTO graph_templates_graph VALUES (9,0,0,9,'',1,'on','Load Average','',12
 INSERT INTO graph_templates_graph VALUES (10,0,0,10,'',1,'on','Logged in Users','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (11,0,0,11,'',1,'on','Load Average','',120,'',500,'',100,'',0,'','processes in the run queue','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (12,0,0,12,'',1,'on','Memory Usage','',120,'',500,'',100,'',0,'','kilobytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
-INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'on','Memory Usage','',120,'',500,'',100,'',0,'','kilobytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'on','Memory Usage','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (14,0,0,14,'',1,'on','File System Cache','',120,'',500,'',100,'',0,'','cache checks/hits','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (15,0,0,15,'',1,'on','CPU Usage','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (16,0,0,16,'',1,'on','File System Activity','',120,'',500,'',100,'',0,'','reads/writes per sec','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
@@ -1390,14 +1390,14 @@ INSERT INTO graph_templates_item VALUES (99,0,0,12,18,30,8,0,1,'Swap','','',2,13
 INSERT INTO graph_templates_item VALUES (100,0,0,12,18,0,9,0,4,'Current:','','',2,14);
 INSERT INTO graph_templates_item VALUES (101,0,0,12,18,0,9,0,1,'Average:','','',2,15);
 INSERT INTO graph_templates_item VALUES (102,0,0,12,18,0,9,0,3,'Maximum:','','',2,16);
-INSERT INTO graph_templates_item VALUES (103,0,0,13,37,52,7,0,1,'Memory Free','','',2,1);
-INSERT INTO graph_templates_item VALUES (104,0,0,13,37,0,9,0,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (105,0,0,13,37,0,9,0,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (106,0,0,13,37,0,9,0,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (107,0,0,13,36,35,8,0,1,'Memory Buffers','','',2,5);
-INSERT INTO graph_templates_item VALUES (108,0,0,13,36,0,9,0,4,'Current:','','',2,6);
-INSERT INTO graph_templates_item VALUES (109,0,0,13,36,0,9,0,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (110,0,0,13,36,0,9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (103,0,0,13,37,52,7,14,1,'Memory Free','','',2,1);
+INSERT INTO graph_templates_item VALUES (104,0,0,13,37,0,9,14,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (105,0,0,13,37,0,9,14,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (106,0,0,13,37,0,9,14,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (107,0,0,13,36,35,8,14,1,'Memory Buffers','','',2,5);
+INSERT INTO graph_templates_item VALUES (108,0,0,13,36,0,9,14,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (109,0,0,13,36,0,9,14,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (110,0,0,13,36,0,9,14,3,'Maximum:','','',2,8);
 INSERT INTO graph_templates_item VALUES (111,0,0,14,28,41,7,0,1,'Cache Hits','','',2,1);
 INSERT INTO graph_templates_item VALUES (112,0,0,14,28,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (113,0,0,14,28,0,9,0,1,'Average:','','',3,3);
@@ -2308,7 +2308,7 @@ INSERT INTO user_realm VALUES (15,'Global Settings');
 
 CREATE TABLE user_realm_filename (
   realm_id smallint(5) NOT NULL default '0',
-  filename varchar(255) NOT NULL default '',
+  filename varchar(100) NOT NULL default '',
   PRIMARY KEY  (realm_id,filename),
   KEY realm_id (realm_id)
 ) TYPE=MyISAM;
