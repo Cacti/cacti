@@ -600,19 +600,19 @@ function host() {
 					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
 				</td>
 				<td>
-					<?php print get_colored_device_status($host["disabled"], $host["status"]);?>
+					<?php print get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]);?>
 				</td>
 				<td>
 					<?php print $host["hostname"];?>
 				</td>
 				<td>
-					<?php print $host["cur_time"];?>
+					<?php print round(($host["cur_time"]), 2);?>
 				</td>
 				<td>
-					<?php print $host["avg_time"];?>
+					<?php print round(($host["avg_time"]), 2);?>
 				</td>
 				<td>
-					<?php print $host["availability"];?>
+					<?php print round($host["availability"], 0);?>%
 				</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">
