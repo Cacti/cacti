@@ -248,6 +248,7 @@ $user_auth_realm_filenames = array(
 	);
 
 $hash_type_codes = array(
+	"round_robin_archive" => "15",
 	"cdef" => "05",
 	"cdef_item" => "14",
 	"gprint_preset" => "06",
@@ -281,6 +282,7 @@ $hash_type_names = array(
 	"graph_template_item" => "Graph Template Item",
 	"graph_template_input" => "Graph Template Input",
 	"data_query" => "Data Query",
-	"host_template" => "Host Template"
+	"host_template" => "Host Template",
+	"round_robin_archive" => "Round Robin Archive"
 	);
 ?>
