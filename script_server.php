@@ -35,6 +35,8 @@ if (!isset($_SERVER["argv"][0])) {
 if (php_sapi_name() != "cli") {
 	define("STDIN", fopen('php://stdin', 'r'));
 	define("STDOUT", fopen('php://stdout', 'w'));
+
+	ini_set("max_execution_time", "0");
 }
 
 /* used for includes */
