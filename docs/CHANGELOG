@@ -1,5 +1,36 @@
 raXnet - cacti
 
+0.8.6
+-bug#0000123: Several UI fixes on the tree item edit page (0.8.5).
+-bug#0000051: HTTP header caching problems (0.8.5).
+-bug#0000118: Data source screen UI enhancements (0.8.5).
+-bug#0000120: Deleting a tree header should delete all child items (0.8.4).
+-bug#0000124: Select all check boxes would actually invert the selection.
+-bug#0000128: Graph template item corruption issues (0.8.5a).
+-bug#0000139: Graph tree deletion corruption issue (0.8.5a).
+-bug#0000140: Replaced the 'None' option in several host dropdowns with 'Any' 
+and redefined 'None' to mean host = 0 (0.8.5a).
+-bug#0000149: Error using the 'total' type for 95th percentile or bandwidth
+summation.
+-bug#0000151: Added the ability to duplicate a host template.
+-bug#0000155: Allow hosts on the graph tree to be grouped by data query index (ie.
+switch port, partition, etc) instead of only graph template.
+-bug#0000156: Added the ability to sort a graph tree branch alphabetically or
+numerically.
+-bug#0000160: A change in Mozilla 1.5+ caused extra vertical space to appear on
+many table rows throughout the console.
+-bug: Broken thumbnail graphs that contained a 95th percentile HRULE item.
+-bug: A hash was not being generated for duplicated graph and data templates which
+would cause import/export for those templates to fail.
+-bug: A user's graph permissions may fail to delete properly after removing that
+user.
+-bug: The "Export Every x Times" feature did not work correctly.
+-feature: Data query index types are now automatically selected which eliminates
+the need to prompt the user for this information at graph creation time.
+-feature: Better message handling on the "New Graphs" page.
+-feature: Get rid of the "Data Input Method" box from the data query edit screen
+as this data can be automatically derived.
+
 0.8.5a
 -bug#84: Updated internal CDEF caching to take CFs into account.
 -bug#86: Updated the LDAP code to correctly copy template users.
