@@ -68,6 +68,21 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 			}
 			}
 		}
+		
+		/* make sure to "correct" parent column for graph items */
+		unset($graph_items_list);
+		$graph_items_list = db_fetch_assoc("select
+			id,
+			parent
+			from graph_templates_item
+			where local_graph_template_item_id=parent
+			and local_graph_id=$local_graph_id");
+		
+		if (sizeof($graph_items_list) > 0) {
+		foreach ($graph_items_list as $graph_item) {
+			db_execute("update graph_templates_item set parent=$graph_item[id] where parent=$graph_item[parent] and local_graph_id=$local_graph_id");
+		}
+		}
 	}
 }
 
