@@ -31,8 +31,6 @@ include_once ("./include/auth.php");
 include($config["include_path"] . "/config_arrays.php");
 include_once($config["include_path"] . "/tree_view_functions.php");
 
-session_start();
-
 if (read_config_option("global_auth") == "on") {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
@@ -121,7 +119,7 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 	
 	<?php if (!empty($_GET["show_source"])) {?>
 	<tr>
-		<td valign="top" height="1" colspan="3" bgcolor="#<?php print $colors["panel"];?>">
+		<td valign="top" height="1" colspan="3" bgcolor="#efefef">
 			<?php
 			$graph_data_array["print_source"] = true;
 			print trim(rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array));
