@@ -26,7 +26,7 @@
 
 
 function graph_export() {
-	if (file_exists(read_config_option("path_html_export"))) {
+	if ((file_exists(read_config_option("path_html_export"))) && (read_config_option("path_html_export") != "")) {
 		if (read_config_option("path_html_export_skip") == read_config_option("path_html_export_ctr")) {
 			db_execute("update settings set value='1' where name='path_html_export_ctr'");
 			export();
@@ -80,7 +80,8 @@ function export() {
 	$rras = db_fetch_assoc("select
 		rra.id,
 		rra.name
-		from rra");
+		from rra
+		order by steps");
 	
 	/* write the html header data to the index file */
 	fwrite($fp_index, HTML_HEADER);
@@ -120,7 +121,6 @@ function export() {
 		
 		/* generate graphs for each rra */
 		foreach ($rras as $rra) {
-			$graph_data_array["graph_nolegend"] = false;
 			$graph_data_array["export"] = true;
 			$graph_data_array["export_filename"] = "graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 			
