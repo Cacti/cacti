@@ -125,7 +125,6 @@ function item_remove() {
 function item_save() {
 	if ($_POST["value_function"] != "0") { $current_type = 1; $current_value = $_POST["value_function"]; }
 	if ($_POST["value_operator"] != "0") { $current_type = 2; $current_value = $_POST["value_operator"]; }
-	if ($_POST["value_data_source"] != "0") { $current_type = 3; $current_value = $_POST["value_data_source"]; }
 	if ($_POST["value_special_data_source"] != "0") { $current_type = 4; $current_value = $_POST["value_special_data_source"]; }
 	if ($_POST["value_cdef"] != "0") { $current_type = 5; $current_value = $_POST["value_cdef"]; }
 	if ($_POST["value_custom"] != "") { $current_type = 6; $current_value = $_POST["value_custom"]; }
@@ -188,32 +187,19 @@ function item_edit() {
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
-			<font class="textEditTitle">Data Source</font>
-		</td>
-		<?DrawFormItemDropdownFromSQL("value_data_source",db_fetch_assoc("select
-			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
-			data_template_rrd.id 
-			from data_template_data,data_template_rrd,data_local 
-			left join host on data_local.host_id=host.id
-			where data_template_rrd.local_data_id=data_local.id 
-			and data_template_data.local_data_id=data_local.id"),"name","id",$values[3],"None","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
 			<font class="textEditTitle">Special Data Source</font>
 		</td>
 		<?DrawFormItemDropdownFromSQL("value_special_data_source",$custom_data_source_types,"","",$values[4],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Another CDEF</font>
 		</td>
 		<?DrawFormItemDropdownFromSQL("value_cdef",db_fetch_assoc("select name,id from cdef"),"name","id",$values[5],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Custom String</font>
 		</td>

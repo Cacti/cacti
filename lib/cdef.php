@@ -23,13 +23,12 @@
 */?>
 <?
 
-$cdef_item_types = array(1 =>
-	"Function",
-	"Operator",
-	"Data Source",
-	"Special Data Source",
-	"Another CDEF",
-	"Custom String");
+$cdef_item_types = array(
+	1 => "Function",
+	2 => "Operator",
+	4 => "Special Data Source",
+	5 => "Another CDEF",
+	6 => "Custom String");
 			      
 $custom_data_source_types = array(
 	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
@@ -45,7 +44,6 @@ function get_cdef_item_name($cdef_item_id) {
 	switch ($cdef_item[type]) {
 		case '1': return $cdef_functions[$current_cdef_value]; break;
 		case '2': return $cdef_operators[$current_cdef_value]; break;
-		case '3': return db_fetch_cell("select descrip from polling_items where item_id=$current_cdef_value"); break;
 		case '4': return $current_cdef_value; break;
 		case '5': return db_fetch_cell("select name from cdef where id=$current_cdef_value"); break;
 		case '6': return $current_cdef_value; break;
