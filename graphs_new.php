@@ -296,7 +296,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 	/* no fields were actually drawn on the form; just save without prompting the user */
 	if (array_sum($num_output_fields) == 0) {
-		ob_clean();
+		ob_end_clean();
 
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
@@ -312,7 +312,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	}
 
 	/* flush the current output buffer to the browser */
-	ob_flush();
+	ob_end_flush();
 
 	form_hidden_box("host_template_id", $host_template_id, "0");
 	form_hidden_box("host_id", $host_id, "0");
