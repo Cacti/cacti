@@ -70,6 +70,14 @@ $cdef_functions = array(1 =>
 	"TIME",
 	"LTIME");
 
+$input_types = array(1 =>
+	"Script/Command",
+	"SNMP");
+
+$snmp_query_field_actions = array(1 =>
+	"SNMP Field Name (Dropdown)",
+	"SNMP Field Value (From User)");
+
 $consolidation_functions = array(1 =>
 	"AVERAGE",
 	"MIN",
