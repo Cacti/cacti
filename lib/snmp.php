@@ -26,6 +26,9 @@
 
 define("REGEXP_SNMP_TRIM", "(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):");
 
+define("SNMP_METHOD_PHP", 1);
+define("SNMP_METHOD_BINARY", 2);
+
 /* we must use an apostrophe to escape community names under Unix in case the user uses
 characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 you do this, but are perfectly happy with a quotation mark. */
