@@ -366,7 +366,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 		  $host_id - (int) the host ID for the results
 	     $hosts - (array) a memory resident host table for speed
 		  $ping - (class array) results of the ping command			*/
-function update_host_status($status, $host_id, $hosts, $ping, $ping_availability, $print_data_to_stdout) {
+function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availability, $print_data_to_stdout) {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option("ping_failure_count");
 	$ping_recovery_count = read_config_option("ping_recovery_count");
@@ -403,7 +403,7 @@ function update_host_status($status, $host_id, $hosts, $ping, $ping_availability
 					$hosts[$host_id]["status_fail_date"] = date("Y-m-d h:i:s");
 				}
 			/* host is down, but not ready to issue log message */
-   		} else {
+		} else {
 				/* host down for the first time, set event date */
 				if ($hosts[$host_id]["status_event_count"] == 1) {
 					$hosts[$host_id]["status_fail_date"] = date("Y-m-d h:i:s");
@@ -470,7 +470,7 @@ function update_host_status($status, $host_id, $hosts, $ping, $ping_availability
 					$hosts[$host_id]["status_rec_date"] = date("Y-m-d h:i:s");
 				}
 			/* host is recovering, but not ready to issue log message */
-   		} else {
+		} else {
 				/* host recovering for the first time, set event date */
 				if ($hosts[$host_id]["status_event_count"] == 1) {
 					$hosts[$host_id]["status_rec_date"] = date("Y-m-d h:i:s");
@@ -507,23 +507,20 @@ function update_host_status($status, $host_id, $hosts, $ping, $ping_availability
 		}
 	}
 
-	db_execute("update table host
-						(status, status_event_count, status_fail_date, status_rec_date,
-						 status_last_error, min_time, max_time, cur_time, avg_time,
-						 total_polls, failed_polls, availability)
-						values ('" . $hosts[$host_id]["status"] . "','" .
-								 $hosts[$host_id]["status_event_count"] . "','" .
-								 $hosts[$host_id]["status_fail_date"] . "','" .
-								 $hosts[$host_id]["status_rec_date"] . "','" .
-								 $hosts[$host_id]["status_last_error"] . "','" .
-								 $hosts[$host_id]["min_time"] . "','" .
-								 $hosts[$host_id]["max_time"] . "','" .
-								 $hosts[$host_id]["cur_time"] . "','" .
-								 $hosts[$host_id]["avg_time"] . "','" .
-								 $hosts[$host_id]["total_polls"] . "','" .
-								 $hosts[$host_id]["failed_polls"] . "','" .
-								 $hosts[$host_id]["availability"] . "' where id = '" . $host_id . "')");
-
+	db_execute("update host set
+		status = '" . $hosts[$host_id]["status"] . "',
+		status_event_count = '" . $hosts[$host_id]["status_event_count"] . "',
+		status_fail_date = '" . $hosts[$host_id]["status_fail_date"] . "',
+		status_rec_date = '" . $hosts[$host_id]["status_rec_date"] . "',
+		status_last_error = '" . $hosts[$host_id]["status_last_error"] . "',
+		min_time = '" . $hosts[$host_id]["min_time"] . "',
+		max_time = '" . $hosts[$host_id]["max_time"] . "',
+		cur_time = '" . $hosts[$host_id]["cur_time"] . "',
+		avg_time = '" . $hosts[$host_id]["avg_time"] . "',
+		total_polls = '" . $hosts[$host_id]["total_polls"] . "',
+		failed_polls = '" . $hosts[$host_id]["failed_polls"] . "',
+		availability = '" . $hosts[$host_id]["availability"] . "'
+		where id = '$host_id'");
 }
 
 /* get_full_script_path - gets the full path to the script to execute to obtain data for a
