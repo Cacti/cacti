@@ -4,10 +4,11 @@ $no_http_headers = true;
 /* display No errors */
 error_reporting(E_ERROR);
 
-include_once(dirname(__FILE__) . "/../include/config.php");
 include_once(dirname(__FILE__) . "/../lib/snmp.php");
 
 if (!isset($called_by_script_server)) {
+	include_once(dirname(__FILE__) . "/../include/config.php");
+
 	array_shift($_SERVER["argv"]);
 	print call_user_func_array("ss_host_cpu", $_SERVER["argv"]);
 }

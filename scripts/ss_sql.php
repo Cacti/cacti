@@ -5,10 +5,9 @@ $no_http_headers = true;
 /* display ALL errors */
 error_reporting(E_ALL);
 
-include_once(dirname(__FILE__) . "/../include/config.php");
-include_once(dirname(__FILE__) . "/../lib/snmp.php");
-
 if (!isset($called_by_script_server)) {
+	include_once(dirname(__FILE__) . "/../include/config.php");
+
 	print call_user_func("ss_sql");
 }
 
@@ -18,7 +17,7 @@ function ss_sql() {
 	global $database_hostname;
 
 	if ($database_password != "") {
-   	$result = `mysqladmin --host=$database_hostname --user=$database_username --password=$database_password status`;
+		$result = `mysqladmin --host=$database_hostname --user=$database_username --password=$database_password status`;
 	}else{
 		$result = `mysqladmin --host=$database_hostname --user=$database_username status`;
 	}
