@@ -147,47 +147,6 @@ function LogData($string) {
     exec("echo '$date - $string' >> $paths[log]");
 }
 
-function GetCronPath($dsid) {
-    global $cnn_id,$config,$paths;
-	
-    $data = db_fetch_row("select d.ID, d.SrcID,
-		s.FormatStrIn, s.FormatStrOut
-	    from rrd_ds d 
-	    left join src s 
-	    on d.srcid=s.id 
-	    where d.id=$dsid");
-	
-    if (sizeof($data) > 0) {
-		/* make the input string */
-		$fields = db_fetch_assoc("select d.FieldID, d.DSID, d.Value,
-					   f.SrcID, f.DataName
-					   from src_data d
-					   left join src_fields f
-					   on d.fieldid=f.id
-					   where d.dsid=$data[ID]
-					   and f.srcid=$data[SrcID]");
-		$rows_fields = sizeof($fields);
-		
-		/* put the input string into a variable for easy access (r) */
-		$str = $data[FormatStrIn];
-		
-		/* loop through each input field we find in the database and do a replace on
-		 each one accordingly. */
-	if (sizeof($fields) > 0) {
-	    foreach ($fields as $field) {
-		$str = ereg_replace ("<$field[DataName]>","$field[Value]",$str);
-	    }
-	}
-		
-		/* do a little path subsitution */
-		$str = ereg_replace ("<path_cacti>", $paths[cacti],$str);
-		$str = ereg_replace ("<path_snmpget>", read_config_option("path_snmpget"),$str);
-		$str = ereg_replace ("<path_php_binary>", read_config_option("path_php_binary"),$str);
-		
-		return $str;
-    }
-}
-
 function get_full_script_path($local_data_id) {
 	global $paths;
 	
@@ -295,8 +254,11 @@ function clean_up_name($string) {
 
 function generate_data_source_path($local_data_id) {
 	$data_source_name = db_fetch_cell("select name from data_template_data where local_data_id=$local_data_id");
+	$new_path = "<path_rra>/" . substr(strtolower(clean_up_name($data_source_name)), 0, 15) . "_" . $local_data_id . ".rrd";
 	
-	return "<path_rra>/" . substr(strtolower(clean_up_name($data_source_name)), 0, 15) . "_" . $local_data_id . ".rrd";
+	db_execute("update data_template_data set data_source_path='$new_path' where local_data_id=$local_data_id");
+	
+	return $new_path;
 }
 
 function generate_graph_def_name($graph_item_id) {
@@ -308,19 +270,6 @@ function generate_graph_def_name($graph_item_id) {
     }
     
     return $result;
-}
-
-function GetMultiCdefID($type, $value) {
-    /* 	Type codes:
-     3 - Total	 staggered datasources.
-     5 - Average staggered datasources. */
-    
-    if ($type == 3 || $type == 5) {
-		parse_str($value);
-		return $start;
-    }
-    
-    return "";
 }
 
 function GetGraphDefID($graph_item_id, $def_items) {
