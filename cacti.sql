@@ -126,7 +126,7 @@ CREATE TABLE auth_sections (
 #
 
 INSERT INTO auth_sections VALUES (1, 'User Administration', 1);
-INSERT INTO auth_sections VALUES (2, 'Data Input', 1);
+INSERT INTO auth_sections VALUES (2, 'Data Input Methods', 1);
 INSERT INTO auth_sections VALUES (3, 'Add/Edit Data Sources', 1);
 INSERT INTO auth_sections VALUES (5, 'Add/Edit Graphs', 1);
 INSERT INTO auth_sections VALUES (7, 'View Graphs', 1);
@@ -638,7 +638,7 @@ INSERT INTO menu_items VALUES (4, 2, 'Round Robin Archives', 'rra.php', 9, 1, ''
 INSERT INTO menu_items VALUES (6, 2, 'SNMP Interfaces', 'snmp.php', 3, 1, '', 'images/menu_item_snmp_interfaces.gif', 5);
 INSERT INTO menu_items VALUES (7, 3, 'Cron Printout', 'cron.php', 2, 1, '', 'images/menu_item_cron_printout.gif', 1);
 INSERT INTO menu_items VALUES (2, 1, 'Colors', 'color.php', 5, 1, '', 'images/menu_item_colors.gif', 3);
-INSERT INTO menu_items VALUES (5, 2, 'Data Input', 'data.php', 2, 1, '', 'images/menu_item_data_input.gif', 4);
+INSERT INTO menu_items VALUES (5, 2, 'Data Input Methods', 'data.php', 2, 1, '', 'images/menu_item_data_input.gif', 4);
 INSERT INTO menu_items VALUES (16, 4, 'Logout User', 'logout.php', 8, 1, '', 'images/menu_item_logout_user.gif', 4);
 INSERT INTO menu_items VALUES (12, 1, 'Graph Hierarchy', 'tree.php', 5, 1, '', 'images/menu_item_graph_hierarchy.gif', 2);
 INSERT INTO menu_items VALUES (18, 3, 'cacti Settings', 'settings.php', 1, 1, '', 'images/menu_item_cacti_settings.gif', 2);
