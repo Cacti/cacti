@@ -72,14 +72,16 @@ function upgrade_to_0_8_6a() {
 			if (sizeof($graph_template_items) > 0) {
 				foreach ($graph_template_items as $graph_template_item) {
 					if (!isset($non_templated_items{$graph_template_item["id"]})) {
-						$dest_dti = db_fetch_row("select local_data_id from data_template_rrd where id = '" . $graph_template_item["task_item_id"] . "'");
+						if ($graph_template_item["task_item_id"] > 0) {
+							$dest_dti = db_fetch_row("select local_data_id from data_template_rrd where id = '" . $graph_template_item["task_item_id"] . "'");
 
-						/* it's an orphan! */
-						if ((!isset($dest_dti["local_data_id"])) || ($dest_dti["local_data_id"] > 0)) {
-							/* clean graph template */
-							db_execute("update graph_templates_item set task_item_id = 0 where id = '" . $graph_template_item["id"] . "' and local_graph_id = 0 and graph_template_id = '" . $graph_template["id"] . "'");
-							/* clean attached graphs */
-							db_execute("update graph_templates_item set task_item_id = 0 where local_graph_template_item_id = '" . $graph_template_item["id"] . "' and local_graph_id > 0 and graph_template_id = '" . $graph_template["id"] . "'");
+							/* it's an orphan! */
+							if ((!isset($dest_dti["local_data_id"])) || ($dest_dti["local_data_id"] > 0)) {
+								/* clean graph template */
+								db_execute("update graph_templates_item set task_item_id = 0 where id = '" . $graph_template_item["id"] . "' and local_graph_id = 0 and graph_template_id = '" . $graph_template["id"] . "'");
+								/* clean attached graphs */
+								db_execute("update graph_templates_item set task_item_id = 0 where local_graph_template_item_id = '" . $graph_template_item["id"] . "' and local_graph_id > 0 and graph_template_id = '" . $graph_template["id"] . "'");
+							}
 						}
 					}
 				}
