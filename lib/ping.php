@@ -218,7 +218,7 @@ class Net_Ping
 					// do nothing
 			} else {
 				$this->ping_status = "down";
-				$this->ping_result = "Cannot connect to host";
+				$this->ping_response = "Cannot connect to host";
 				return false;
 			}
 
