@@ -31,7 +31,7 @@
 </style>
 </head>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="startup();">
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
 <map name="tabs">
 	<area alt="Console" coords="7,5,87,35" href="index.php">
