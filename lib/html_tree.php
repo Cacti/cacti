@@ -471,7 +471,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	html_graph_start_box(3, false);
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='3' class='textHeaderDark'>$title</td></tr>";
 
-	if ($leaf_type == "header") {
+	if (($leaf_type == "header") || (empty($leaf_id))) {
 		$heirarchy = db_fetch_assoc("select
 			graph_tree_items.id,
 			graph_tree_items.title,
