@@ -585,7 +585,7 @@ function validate_result($result) {
 
 	/* check the easy cases first */
 	/* it has no delimiters, and no space, therefore, must be numeric */
-	if ((strstr($result, ":") == 0) && (strstr($result, "!") == 0) && (strstr($result, " ") == 0)) {
+	if ((substr_count($result, ":") == 0) && (substr_count($result, "!") == 0) && (substr_count($result, " ") == 0)) {
 		$checked = true;
 		if (is_numeric($result)) {
 			$valid_result = true;
@@ -595,18 +595,17 @@ function validate_result($result) {
 			$valid_result = false;
 		}
 	}
-
 	/* it has delimiters and has no space */
 	if (!$checked) {
-		if (((strstr($result, ":")) || (strstr($result, "!")))) {
-			if (strstr($result, " ") == 0) {
+		if (((substr_count($result, ":")) || (substr_count($result, "!")))) {
+			if (substr_count($result, " ") == 0) {
 				$valid_result = true;
 				$checked = true;
 			}
 
-			if (strstr($result, " ") != 0) {
+			if (substr_count($result, " ") != 0) {
 				$checked = true;
-				if (strstr($result, ":")) {
+				if (substr_count($result, ":")) {
 					$delim_cnt = substr_count($result, ":");
 				} else if (strstr($result, "!")) {
 					$delim_cnt = substr_count($result, "!");

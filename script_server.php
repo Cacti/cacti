@@ -99,11 +99,16 @@ while (1) {
 			$remainder = substr($in_string,strpos($in_string," ")+1);
 
 			// parse function from command
-			$cmd = substr($remainder,0,strpos($remainder," "));
+			if (!strpos($remainder," ")) {
+				$cmd = $remainder;
+				$parm = "";
+			} else {
+				$cmd = substr($remainder,0,strpos($remainder," "));
 
-			// parse parameters from remainder of command
-			$preparm = substr($remainder,strpos($remainder," ")+1);
-			$parm = explode(" ",$preparm);
+				// parse parameters from remainder of command
+				$preparm = substr($remainder,strpos($remainder," ")+1);
+				$parm = explode(" ",$preparm);
+			}
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 				cacti_log("DEBUG: INCLUDE: ".$inc, false, "PHPSVR");
@@ -134,11 +139,16 @@ while (1) {
 			}
 
 			if (function_exists($cmd)) {
-				$result = call_user_func_array($cmd, $parm);
-				if (!is_numeric($result)) {
-					$result = "U";
-					cacti_log("WARNING: Result from PHP Script Server was Invalid", false, "PHPSVR");
+				if ($parm == "") {
+					$result = call_user_func($cmd);
+				} else {
+					$result = call_user_func_array($cmd, $parm);
 				}
+
+				if (!validate_result($result)) {
+					$result = "U";
+				}
+
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
 					fflush(STDOUT);
@@ -146,6 +156,7 @@ while (1) {
 					fputs(STDOUT, $result . "\n");
 					fflush(STDOUT);
 				}
+
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 					cacti_log("SERVER: " . $in_string . " output " . $result, false, "PHPSVR");
 				}
