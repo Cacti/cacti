@@ -1,33 +1,34 @@
-raXnet - cacti
-
+Cacti CHANGELOG
 
 0.8.6c
--bug: Fixed max runtime issues with the script server
--bug: Fixed a problem where a user could select a data query graph type from Graph Templates, causing duplicate data source values
--feature: Added feature to parse multiple OID indexes
--feature: Added a feature to re-apply suggested naming to graphs from the user interface
--bug: Fixed an issue that was causing recache to fail and the poller to crash in specific circumstances
--feature: Added TreeView feature to speed up rendering the tree with large databases
--bug: Fixed an issue where you could not save a users customizations from the user admin page
--feature: Added retry logic to the mysql connect statements
--feature: Changed default connect method to a pconnect from a connect to improve performance with large implementations.
--bug: Fixed an issue where the poller cache was not being updated properly for some host types upon change
--bug: Hope it’s final this time 95th percentile and bandwidth fixes
--bug: Added more verbose error handling with template importing
--bug#0000355: Allow scientific and negative numbers to be returned from a script
--bug#0000347: Change Order of Graph Templates and Data Queries in Host
+-bug#0000354: User Name field always displays "admin" in Mozilla web browser.
+-bug#0000293: JavaScript selection bug on the "New Graphs" page.
+-bug#0000352: Problem with the current data source item when using the "Similar Data Sources" special data source.
+-bug#0000348: Scale problems with the "ucd/net - Memory Usage" graph template.
+-bug#0000358: Problems adding the same graph to more than one graph tree.
+-bug#0000355: Allow scientific and negative numbers to be returned from a script.
+-bug#0000347: Change Order of Graph Templates and Data Queries in Host.
+-bug#0000339: LDAP description misspell 'allow'.
+-bug: Maximum runtime issues with the script server.
+-bug: User could select a data query graph type from "Graph Templates", causing duplicate data source items.
+-bug: Auto-recache failed and caused the poller to crash under specific circumstances.
+-bug: Problems saving a user's graph settings from the user admin page.
+-bug: Poller cache not being updated properly for some host types upon change.
+-bug: Hope it's final this time: 95th percentile and bandwidth summation fixes.
+-bug: Added more verbose error handling with template XML importing.
 -bug: Sort host templates when creating a host.
--bug#0000339: LDAP description mispell allow
--bug: Corrected user form edit array problem that didn't show the graph options for an edited user
--bug: Fixed access denied problem when user doesn't have console access
--bug#0000354: User Name field always displays "admin" in mozilla web browser
+-bug: Corrected user form edit array problem that didn't show the graph options for an edited user.
+-bug: Access Denied error when user doesn't have console access.
+-feature: Data queries now support indexes that span multiple OIDs (see the manual).
+-feature: Re-apply suggested naming to graphs from the user interface.
+-feature: TreeView-specific feature to speed up rendering the tree for large databases.
+-feature: Added retry logic to the MySQL connect statements.
+-feature: Changed default connect method to a 'pconnect' from a 'connect' to improve performance with large implementations.
 
 0.8.6b
 -bug#0000318: Only delete the Cacti system user when uninstalling the RPM package rather than during each upgrade.
 -bug: Problems with the 95th percentile and bandwidth summation graph variables.
 -bug: Problem with random gaps in some or all graphs caused by staggered RRDTool update times.
-
-
 
 0.8.6a
 -bug#0000287: Non-host based scripts failing to populate the poller cache (0.8.6).
@@ -50,8 +51,6 @@ raXnet - cacti
 -bug: Revert back to older RRDTool update method as to correct several poller related issues with 0.8.6.
 -bug: Fix PHP-SNMP support in cmd.php.
 -bug: Fix multiple graph/data template corruption issues when converting from graphs or data sources.
-
-
 
 0.8.6
 -bug#0000051: HTTP header caching problems (0.8.5).
@@ -88,67 +87,41 @@ raXnet - cacti
 -feature/bug#0000118: Data source screen UI enhancements (0.8.5).
 -feature/bug#0000120: Deleting a tree header should delete all child items (0.8.4).
 -feature/bug#0000125: A forced sort type can be specified for data query indexes which will be used to sort data query results in the UI.
--feature/bug#0000152: Added filter/search/pagination capabilities to the Devices
-page.
--feature/bug#0000155: Allow hosts on the graph tree to be grouped by data query
-index (ie. switch port, partition, etc) instead of only graph template.
--feature/bug#0000156: Added the ability to sort a graph tree branch
-alphabetically or numerically.
--feature/bug#0000161: Removing a graph now gives the user the option to remove
-all associated data sources.
--feature/bug#0000172: Added the ability to control which graph viewing areas
-should display thumbnail graphs and which ones should display full sized graphs.
--feature/bug#0000185: Deleting a device gives the user the option of deleting
-all associated graphs and data sources.
--feature/bug#0000187: Add host availability and device enabled/disable controls
-to the main devices page.
--feature/bug#0000189: Add a system-wide defaults for SNMP community, version,
-port, timeout and retries configurable under 'Cacti Settings'.
+-feature/bug#0000152: Added filter/search/pagination capabilities to the Devices page.
+-feature/bug#0000155: Allow hosts on the graph tree to be grouped by data query index (ie. switch port, partition, etc) instead of only graph template.
+-feature/bug#0000156: Added the ability to sort a graph tree branch alphabetically or numerically.
+-feature/bug#0000161: Removing a graph now gives the user the option to remove all associated data sources.
+-feature/bug#0000172: Added the ability to control which graph viewing areas should display thumbnail graphs and which ones should display full sized graphs.
+-feature/bug#0000185: Deleting a device gives the user the option of deleting all associated graphs and data sources.
+-feature/bug#0000187: Add host availability and device enabled/disable controls to the main devices page.
+-feature/bug#0000189: Add a system-wide defaults for SNMP community, version, port, timeout and retries configurable under 'Cacti Settings'.
 -feature/bug#0000192: Add the ability to log poller runtime statistics to the log.
--feature/bug#0000194: Add host availability capability which allows Cacti to
-track of downed devices as well as a device's uptime history.
--feature/bug#0000200: Implement three different auto re-index methods which
-allow Cacti to automatically 'refresh' a data query when an indexes changes.
--feature/bug#0000213: Add a 'Clear' button to all filter forms which resets the
-form to its default state.
+-feature/bug#0000194: Add host availability capability which allows Cacti to track of downed devices as well as a device's uptime history.
+-feature/bug#0000200: Implement three different auto re-index methods which allow Cacti to automatically 'refresh' a data query when an indexes changes.
+-feature/bug#0000213: Add a 'Clear' button to all filter forms which resets the form to its default state.
 -feature/bug#0000240: Add moonman's SIMILAR_DATA_SOURCES_NODUPS CDEF patch.
 -feature/bug#0000250: Allow host/graph tree items to change parents.
--feature: Data query index types are now automatically selected which eliminates
-the need to prompt the user for this information at graph creation time.
+-feature: Data query index types are now automatically selected which eliminates the need to prompt the user for this information at graph creation time.
 -feature: Better message handling on the "New Graphs" page.
--feature: Get rid of the "Data Input Method" box from the data query edit screen
-as this data can be automatically derived.
+-feature: Get rid of the "Data Input Method" box from the data query edit screen as this data can be automatically derived.
 -feature: Customizable log levels.
--feature: Ability to log to syslog (Unix) and event log (Windows) in addition to
-the log file.
+-feature: Ability to log to syslog (Unix) and event log (Windows) in addition to the log file.
 -feature: UDP/ICMP/SNMP ping support used to determine a host's availability status.
--feature: A PHP script server which enables PHP script to be interpreted by the poller
-without spawning a separate PHP process for each item. See the manual for more
-details.
--feature: Ability to choose the type of poller (cmd.php, cactid) and number of
-threads (cactid only) from the UI.
--feature: Ability to spawn multiple simultaneous cmd.php/cactid processes to speed
-up the polling process.
--feature: Allow data templates and data sources that use SNMP to override host
-fields (hostname, snmp port, etc) in the poller cache.
--feature: Added Eric Steffen's Bonsai patch which enables users to zoom a graph by
-dragging a box around the area of interest.
--feature: Added branix's graph export enhancements patch which adds many more graph
-export configuration options including remote FTP support.
+-feature: A PHP script server which enables PHP script to be interpreted by the poller without spawning a separate PHP process for each item. See the manual for more details.
+-feature: Ability to choose the type of poller (cmd.php, cactid) and number of threads (cactid only) from the UI.
+-feature: Ability to spawn multiple simultaneous cmd.php/cactid processes to speed up the polling process.
+-feature: Allow data templates and data sources that use SNMP to override host fields (hostname, snmp port, etc) in the poller cache.
+-feature: Added Eric Steffen's Bonsai patch which enables users to zoom a graph by dragging a box around the area of interest.
+-feature: Added branix's graph export enhancements patch which adds many more graph export configuration options including remote FTP support.
 -feature: Ability to view/clear the log file from the console.
--feature: Use a single RRDTool stdin pipe for all update, create, and graph export
-actions.
--feature: Advanced timespan selector which provides a large number of presets and a
-calendar control for custom timespans.
+-feature: Use a single RRDTool stdin pipe for all update, create, and graph export actions.
+-feature: Advanced timespan selector which provides a large number of presets and a calendar control for custom timespans.
 -feature: Better support for SNMP v2 from UI.  Speed up some UI queries.
 -feature: Enable/Disable Poller from UI.
 -feature: Added ifOperStatus to Graph Creation page to show either Up or Down.
--feature: Rearchitected poller subsystem to prepare for multiple poller architecture
-in future releases.
+-feature: Rearchitected poller subsystem to prepare for multiple poller architecture in future releases.
 -feature: Added validation logic in the pollers to prevent system and log anomalies.
 -feature: Removed SNMP v3 options until SNMP v3 is supported.
-
-
 
 0.8.5a
 -bug#84: Updated internal CDEF caching to take CFs into account.
@@ -156,8 +129,7 @@ in future releases.
 -bug#136: Inaccurate total bandwidth readings for RRAs with a step > 1.
 -bug#138: Typo on install/index.php
 -bug#141: Incorrect pre-requisite file check when doing a graph export.
--bug#142: Added the '-t' option when calling ucd-snmp or net-snmp to support numeric
-timeticks.
+-bug#142: Added the '-t' option when calling ucd-snmp or net-snmp to support numeric timeticks.
 -bug#145: phpMyAdmin was choking on the import of cacti.sql.
 -bug#146: Minor HTML fix in lib/form.php
 -bug: Fixed potential graph item input corruption when saving a graph template item.
@@ -174,8 +146,6 @@ timeticks.
 -cactid: Fix segfault problems on all platforms when performing SNMP queries.
 -cactid: Fix deadlock issues on Windows and Solaris when making popen calls.
 
-
-
 0.8.5
 -bug#102: Fix problem with SNMP community strings that contain certain variable shell characters.
 -bug#103: Under "New Graphs", make sure to highlight the host template line when the right-hand checkbox is selected.
@@ -191,7 +161,7 @@ timeticks.
 -bug#119: Added a "Search:" label to the filter textboxes on the "Graph Management" and "Data Sources" pages.
 -bug#127: Added an HTML "title" tag to the three graph mode images.
 -bug#129: Added support for correctly parsing timeticks in both cmd.php and cactid.
--bug#130: Users are sometimes redirected to the incorrect host when selecting the "Create Graphs for this Host" link under "Polling Hosts". 
+-bug#130: Users are sometimes redirected to the incorrect host when selecting the "Create Graphs for this Host" link under "Polling Hosts".
 -bug#131: Load averages above '10' were not being returned correctly from the loadavg_multi.pl script.
 -bug#133: Non-SNMP data sources were not being removed from the poller cache when a host became 'disabled'.
 -bug#134: Make sure to delete associated 'host' tree items when deleting a host.
@@ -220,8 +190,6 @@ timeticks.
 -feature: Users will only see tabs for the graph viewing modes that they have access to.
 -doc: Completely re-written manual in SGML/Docbook so HTML, PDF, and ASCII versions of the manual are now possible. The new manual also includes a better introduction to Cacti for new users and makes use of screen shots to illustrate various portions of the user interface.
 -cactid: Fixed segfault problems using cactid on Solaris platforms.
-
-
 
 0.8.4
 -bug#87: Deleting top level branches without children on the tree caused ordering problems.
@@ -259,14 +227,10 @@ timeticks.
 -cactid: Fixed some potential segfaults on FreeBSD when reading information from the targets table.
 -cactid: The snmp_get() function now respects the SNMP version chosen under "Polling Hosts", so 64-bit counters should work.
 
-
-
 0.8.3a
 -bug#81: Partial/complete poller cache rebuild failure after an upgrade.
 -bug#82: Undefined variable error messages under win32/IIS.
 -bug: Problems with overlapping graph permissions with multiple users.
-
-
 
 0.8.3
 -bug#50: When viewing a graph, only display it for the RRAs used on the graph.
@@ -297,14 +261,10 @@ timeticks.
 -cactid: Created header files for each source file and moved precasts out of cactid.h.
 -cactid: A bunch of autoconf updates.
 
-
-
 0.8.2a
 -bug: Fixed various problems updating the poller cache.
 -bug: Fixed the Weatherbug script to work under Redhat 9.
 -cactid: Updated poller to use detached threads based on each host.
-
-
 
 0.8.2
 -bug#47: The 'cacti_server_os' variable is now auto-detected.
@@ -331,8 +291,6 @@ timeticks.
 -cactid: Daemon support has been removed from cactid for the time being, it must be run out of CRON.
 -cactid: Have autoconf detect net-snmp before trying ucd-snmp to prevent failure on default Redhat installs.
 
-
-
 0.8.1
 -bug#40: Fixed OIDs in serveral Netware data templates.
 -bug#41: Data source and graph names are lost when created from a  template.
@@ -353,8 +311,6 @@ timeticks.
 -bug: Data queries that had a non-integer index would not render graph/data source titles properly.
 -auth: LDAP authentication updates
 
-
-
 0.8
 -feature: Added support for graph, data source, and host templates.
 -feature: Added a stricter concept of hosts which enables better organization and easier graph creation.
@@ -366,15 +322,11 @@ timeticks.
 -feature: The beginnings of a threaded c-based poller (cactid), which is not completely function at this point.
 -feature: And much much more...
 
-
-
 0.6.8a
 -bug: Unchecked string being passed to rrdtool caused a potential security problem.
 -bug: The logout funtionality was broken for some users because of a missing fourth argument.
 -bug: Fixed some SNMP parsing problems.
 -bug: Fixed a problem with using quotes for data source input.
-
-
 
 0.6.8
 -feature: Added the following new rrdtool graph options: --units-exponent value, --unit, and --logarithmic.
@@ -390,8 +342,6 @@ timeticks.
 -bug: Fixed some bugs where you would change a parent graph item to a child or a child graph item to a parent when graph grouping was turned on.
 -bug: Fixed some potential security bugs by eliminating cacti's use of cookies.
 
-
-
 0.6.7
 -feature: Added a "none" option for a data source when creating a CDEF. This can be used if you check the "Use the current data source being used on the graph instead of a preset one" box.
 -feature: Each user has a default graph policy: ALLOW or DENY for their graph permissions.
@@ -405,8 +355,6 @@ timeticks.
 -bug: A bug when more than one data source was created using the same data input source with multiple outputs has been fixed.
 -feature: The default install/upgrade screen has been revised.
 
-
-
 0.6.6
 -feature: Multiple data sources per .rrd is supported. To use this feature, simply create a data input source with multiple outputs that 'Update RRA'.
 -feature: Graph item grouping, which enables you to delete/reorder groups of similair graph items.
@@ -417,15 +365,11 @@ timeticks.
 -feature: By default, SNMP data source names come from <IP>_<IFNUM>, instead of just <IFDESC> which is more unique.
 -feature: More options for users such as where to go when the user logs in and whether the user can have their own settings or not.
 
-
-
 0.6.5
 -bug: Fixed some of the data source naming issues. You can now use any data source name you want; cacti will take care of making the name "rrdtool friendly".
 -feature: Cacti will use PHP's builtin SNMP support if detected, SNMP is overall faster now too. NOTE: PHP's SNMP support may not work with all of your MIB names, you may have to use the OID instead!
 -feature: Basic high speed counter support has been added, use 'hcin'/'hcout' to use it. Also may not work with PHP's builtin SNMP support yet.
 -bug: Using the MAX consolidation function with graph data works better now. You can make graphs that look like the MRTG ones (5 minute maximum). This code still needs a little work though.
-
-
 
 0.6.4
 -bug: You can now add the same CDEF to multiple data sources in the same graph.
@@ -438,8 +382,6 @@ timeticks.
 -feature: You can now create all graphs for an SNMP host with one click.
 -feature: You can customize the graph title when creating graphs using the 'Make Graph' or 'Make All Graphs' link.
 -feature: Data sources in cacti are no longer limited to 19 characters. If you create a data source name that rrdtool will not like, cacti will automatically modify the name and save it internally for rrdtool-only use.
-
-
 
 0.6.3
 -feature: Put limits (HTML 'maxlength') on fields that have a maximum length.
@@ -457,8 +399,6 @@ timeticks.
 -bug: Fixed a few add/edit/delete form-related bugs.
 -docs: Added some more content to the documentation and made it more visible from within cacti.
 
-
-
 0.6.2
 -bug: Fixed some bugs when creating CDEF's using multiple data sources.
 -bug: Fixed more SNMP parsing bugs with some versions of net-snmp.
@@ -466,8 +406,6 @@ timeticks.
 -bug: HRULE's and VRULE's acually work now.
 -docs: the beginnings of some real documentation.
 -bug: you can select the color black now.
-
-
 
 0.6.1
 -bug: Fixed a parsing bug with snmp, more parsing is done in cacti's code and not via arguments passed to snmpget.
@@ -479,17 +417,10 @@ timeticks.
 -feature: Added 'Logout User' to the menu.
 -bug: Removed some occurances of /var/www/html and replaced them with more dynamic variables.
 
-
-
 0.6
 -new tree code
 -some html table issues in graph view mode
 -fixed the settings code for saved graph-view data
 
-
-
 0.5
 -initial release
-
-
-
