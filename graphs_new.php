@@ -538,7 +538,7 @@ function graphs() {
 			print "<script type='text/javascript'>\n<!--\n";
 
 			foreach ($snmp_query_graphs as $snmp_query_graph) {
-				$created_graphs = db_fetch_assoc("select
+				$created_graphs = db_fetch_assoc("select distinct
 					data_local.snmp_index
 					from data_local,data_template_data
 					left join data_input_data on data_template_data.id=data_input_data.data_template_data_id
