@@ -338,6 +338,8 @@ function tree() {
 		</tr>
 	<?php
 	}
+	}else{
+		print "<tr><td><em>No Graphs Trees</em></td></tr>\n";
 	}
 	end_box();	
 }

@@ -630,7 +630,7 @@ function input_edit() {
 	</tr>
 	
 	<?php
-	if (!(isset($_GET["graph_template_input_id"]))) { $_GET["graph_template_input_id"] = 0; }
+	if (!(isset($_GET["id"]))) { $_GET["id"] = 0; }
 	
 	$item_list = db_fetch_assoc("select
 		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
@@ -816,6 +816,8 @@ function template() {
 		<?php
 		$i++;
 	}
+	}else{
+		print "<tr><td><em>No Graph Templates</em></td></tr>\n";
 	}
 	end_box();
 }
