@@ -70,6 +70,8 @@ if ($config["cacti_server_os"] == "unix") {
 	
 	if (!empty($which_rrdtool)) {
 		$input["path_rrdtool"]["default"] = $which_rrdtool;
+	}elseif (read_config_option("path_rrdtool") != "<DEFAULT>") {
+		$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");
 	}else{
 		$input["path_rrdtool"]["default"] = "/usr/local/bin/rrdtool";
 	}
@@ -86,6 +88,8 @@ if ($config["cacti_server_os"] == "unix") {
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
+	}elseif (read_config_option("path_snmpwalk") != "<DEFAULT>") {
+		$input["path_snmpwalk"]["default"] = read_config_option("path_snmpwalk");
 	}else{
 		$input["path_snmpwalk"]["default"] = "/usr/local/bin/snmpwalk";
 	}
@@ -100,6 +104,8 @@ if ($config["cacti_server_os"] == "unix") {
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpget"]["default"] = $which_snmpwalk;
+	}elseif (read_config_option("path_snmpget") != "<DEFAULT>") {
+		$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
 	}else{
 		$input["path_snmpget"]["default"] = "/usr/local/bin/snmpget";
 	}
@@ -257,13 +263,7 @@ if ($_REQUEST["step"] == "4") {
 						or a default for fall back */
 						while (list($name, $array) = each($input)) {
 							if (isset($input[$name])) {
-								if (empty($array["value"])) {
-									/* 3. use the default values */
-									$current_value = $array["default"];
-								}else{
-									/* 2. use the values in the 'settings' table */
-									$current_value = read_config_option($name);
-								}
+								$current_value = $array["default"];
 								
 								/* run a check on the path specified only if specified above, then fill a string with
 								the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
