@@ -229,7 +229,7 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 	     left join polling_hosts on polling_tree.host_id = polling_hosts.host_id
 	     left join settings_ds_tree on ( polling_tree.ptree_id = settings_ds_tree.TreeItemID AND settings_ds_tree.userid = $user_id)
 	     where polling_tree.order_key like '$search_key%'
-	     and (polling_hosts.is_profile = 0 OR polling_hosts.is_profile IS NULL)
+	     and (polling_hosts.profile_id = 0 OR polling_hosts.profile_id IS NULL)
 	     order by polling_tree.order_key";
     
     
