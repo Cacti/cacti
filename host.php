@@ -293,7 +293,6 @@ function host_new_graphs_save() {
 					while (list($snmp_index, $true) = each($snmp_index_array)) {
 						$local_data_id = sql_save($save, "data_local");
 						change_data_template($local_data_id, $data_template["id"]);
-						generate_data_source_path($local_data_id);
 						
 						/* cache arrays; used down below */
 						if (isset($new_data_templates["sg"][$snmp_query_id]{$data_template["id"]})) {
