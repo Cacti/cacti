@@ -83,7 +83,17 @@ function form_save() {
 	include_once ("include/utility_functions.php");
 	include_once ("include/snmp_functions.php");
 	
-	if (isset($_POST["save_component_host"])) {
+	if ((isset($_POST["add_y"])) && (!empty($_POST["snmp_query_id"]))) {
+		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . ")");
+		
+		/* recache snmp data */
+		data_query($_POST["id"], $_POST["snmp_query_id"]);
+		
+		header ("Location: host.php?action=edit&id=" . $_POST["id"]);
+		exit;
+	}
+	
+	if ((isset($_POST["save_component_host"])) && (!isset($_POST["add_y"]))) {
 		$save["id"] = $_POST["id"];
 		$save["host_template_id"] = $_POST["host_template_id"];
 		$save["description"] = form_input_validate($_POST["description"], "description", "", false, 3);
@@ -107,16 +117,6 @@ function form_save() {
 				kill_session_var("sess_host_cache_array");
 			}else{
 				raise_message(2);
-			}
-			
-			if ((isset($_POST["add_y"])) && (!empty($_POST["snmp_query_id"]))) {
-				db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $_POST["snmp_query_id"] . ")");
-				
-				/* recache snmp data */
-				data_query($host_id, $_POST["snmp_query_id"]);
-				
-				header ("Location: host.php?action=edit&id=" . $host_id);
-				exit;
 			}
 			
 			/* if the user changes the host template, add each snmp query associated with it */
