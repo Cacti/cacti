@@ -330,6 +330,25 @@ function DrawConfirmButtons($action_url, $cancel_url) { ?>
 	</tr>
 <?}
 
+function start_pagebox($title, $width, $background_color, $cell_padding, $align, $add_text) {
+	global $colors; ?>
+	<table align="<?print $align;?>" width="<?print $width;?>" cellpadding=1 cellspacing=0 border=0 bgcolor="#<?print $background_color;?>">
+		<tr>
+			<td>
+				<table cellpadding=<?print $cell_padding;?> cellspacing=0 border=0 bgcolor="#<?print $colors["form_background_dark"];?>" width="100%">
+					<?if ($title != "") {?><tr>
+						<td bgcolor="#<?print $background_color;?>" colspan="10">
+							<table width="100%" cellpadding="0" cellspacing="0">
+								<tr>
+									<td bgcolor="#<?print $background_color;?>" class="textHeaderBar"><?print $title;?></td>
+										<?if ($add_text != "") {?><td align="right" bgcolor="#<?print $background_color;?>"><strong><a href="<?print $add_text;?>">Add</a>&nbsp;</strong></td><?}?>
+								</tr>
+							</table>
+						</td>
+					</tr><?}?>
+
+<?}
+
 function start_box($title, $style, $add_text) {
 	global $colors; ?>
 	<table align="center" <?if ($style == "dialog") {?>width="60%"<?}else{?>width="98%"<?}?> cellpadding=1 cellspacing=0 border=0 bgcolor="#<?print $colors["header"];?>">
