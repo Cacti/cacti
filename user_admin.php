@@ -125,8 +125,8 @@ function form_save() {
 			raise_message(4);
 		}
 		
-		form_input_validate($_POST["password"], "password", "" . $_POST["password_confirm"] . "", true, 4);
-		form_input_validate($_POST["password_confirm"], "password_confirm", "" . $_POST["password"] . "", true, 4);
+		form_input_validate($_POST["password"], "password", "" . preg_quote($_POST["password_confirm"]) . "", true, 4);
+		form_input_validate($_POST["password_confirm"], "password_confirm", "" . preg_quote($_POST["password"]) . "", true, 4);
 		
 		$save["id"] = $_POST["id"];
 		$save["username"] = form_input_validate($_POST["username"], "username", "^[A-Za-z_0-9]+$", false, 3);
