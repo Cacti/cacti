@@ -696,6 +696,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Community",
 		"description" => "Fill in the SNMP read community for this device.",
 		"value" => "|arg1:snmp_community|",
+		"default" => "public",
 		"max_length" => "100",
 		),
 	"snmp_username" => array(
@@ -724,6 +725,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Port",
 		"description" => "Enter the UDP port number to use for SNMP (default is 161).",
 		"value" => "|arg1:snmp_port|",
+		"default" => "161",
 		"max_length" => "5",
 		"size" => "15"
 		),
@@ -732,6 +734,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Timeout",
 		"description" => "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).",
 		"value" => "|arg1:snmp_timeout|",
+		"default" => "500",
 		"max_length" => "8",
 		"size" => "15"
 		),
