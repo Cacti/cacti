@@ -47,7 +47,7 @@ include ("config.php");
 						$no_console = false;
 						
 						if (read_config_option("global_auth") == "on") {
-							if ((sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"])) == 1) && (db_fetch_cell("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]) == "7")) {
+							if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"] . " and realm_id=8")) == 0) {
 								$no_console = true;
 							}
 						}
