@@ -51,7 +51,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		return 0;
 	}
 	
-	db_execute("delete from host_snmp_cache where host_id=$host_id");
+	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
 	
 	while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
 		$field_array = $field_array[0];
