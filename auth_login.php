@@ -31,18 +31,18 @@ switch ($_REQUEST["action"]) {
 case 'login':
 	/* --- start ldap section --- */
 	$ldap_auth = false;
-	if ((read_config_option("ldap_enabled") == "on") && ($_POST["realm"] == "ldap") && (strlen($_POST["password"]))){
+	if ((read_config_option("ldap_enabled") == "on") && ($_POST["realm"] == "ldap") && (strlen($_POST["login_password"]))){
 		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
 
 		if ($ldap_conn) {
-			$ldap_dn = str_replace("<username>",$_POST["username"],read_config_option("ldap_dn"));
-			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$_POST["password"]);
+			$ldap_dn = str_replace("<username>",$_POST["login_username"],read_config_option("ldap_dn"));
+			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$_POST["login_password"]);
 
 			if ($ldap_response) {
 				$ldap_auth = true;
-				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1")) == 0) {
+				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["login_username"] . "' and realm = 1")) == 0) {
 					/* copy template user's settings */
-					user_copy(read_config_option("ldap_template"), $_POST["username"], 1);
+					user_copy(read_config_option("ldap_template"), $_POST["login_username"], 1);
 				}
 			}
 		}
@@ -50,14 +50,14 @@ case 'login':
 	/* --- end ldap section --- */
 
 	if ($ldap_auth) {
-		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1");
+		$user = db_fetch_row("select * from user_auth where username='" . $_POST["login_username"] . "' and realm = 1");
 	} else {
-		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "' and realm = 0");
+		$user = db_fetch_row("select * from user_auth where username='" . $_POST["login_username"] . "' and password = '" . md5($_POST["login_password"]) . "' and realm = 0");
 	}
 
 	if (sizeof($user)) {
 		/* make entry in the transactions log */
-		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"] ."'," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
+		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["login_username"] ."'," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 
 		/* set the php session */
 		$_SESSION["sess_user_id"] = $user["id"];
@@ -86,7 +86,7 @@ case 'login':
 		exit;
 	}else{
 		/* --- BAD username/password --- */
-		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"] . "',0,0,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
+		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["login_username"] . "',0,0,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 	}
 }
 
@@ -129,11 +129,11 @@ case 'login':
 	<tr height="10"><td></td></tr>
 	<tr>
 		<td>User Name:</td>
-		<td><input type="text" name="username" size="40" style="width: 295px;"></td>
+		<td><input type="text" name="login_username" size="40" style="width: 295px;"></td>
 	</tr>
 	<tr>
 		<td>Password:</td>
-		<td><input type="password" name="password" size="40" style="width: 295px;"></td>
+		<td><input type="password" name="login_password" size="40" style="width: 295px;"></td>
 	</tr>
 	<?php
 	if (read_config_option("ldap_enabled") == "on") {?>
