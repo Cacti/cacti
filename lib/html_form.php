@@ -256,6 +256,15 @@ function form_confirm_buttons($action_url, $cancel_url) { ?>
 	</tr>
 <?php }
 
+function form_post_confirm_buttons($cancel_url) { ?>
+	<tr>
+		<td bgcolor="#E1E1E1">
+			<a href="<?php print $cancel_url;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
+			<input type='image' src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle">
+		</td>
+	</tr>
+<?php }
+
 function start_box($title, $width, $background_color, $cell_padding, $align, $add_text) {
 	global $colors; ?>
 	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=1 cellspacing=0 border=0 bgcolor="#<?php print $background_color;?>">
@@ -301,12 +310,12 @@ function form_save_button($cancel_url) {
 /* ------------------ Stripped Form Objects Data ---------------------- */
 
 /* creates a standard html password textbox */
-function form_base_password_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size) { 
+function form_base_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size, $type) { 
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
 	
-	print "<input type='password'";
+	print "<input type='$type'";
 	
 	if (isset($_SESSION["sess_error_fields"])) {
 		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
