@@ -42,7 +42,7 @@ foreach ($polling_items as $item) {
 		
 		break;
 	case '1': /* one output script */
-		$command = get_full_script_path($item["local_data_id"]);
+		$command = $item["command"];
 		$output = `$command`;
 		print "command: $command, output: $output\n";
 		
@@ -58,7 +58,7 @@ foreach ($polling_items as $item) {
 		
 		break;
 	case '2': /* multi output script */
-		$command = get_full_script_path($item["local_data_id"]);
+		$command = $item["command"];
 		$output = `$command`;
 		print "MUTLI command: $command, output: $output\n";
 		
