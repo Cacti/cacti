@@ -246,7 +246,7 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 	
-	start_box("<strong>Data Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	?>
 	
 	<form method="post" action="data_templates.php">
@@ -411,7 +411,7 @@ function template_edit() {
 function template() {
 	global $colors;
 	
-	start_box("<strong>Data Template Management</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
+	start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Template Title",$colors["header_text"],2);
