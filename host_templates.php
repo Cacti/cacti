@@ -84,13 +84,28 @@ function form_save() {
 			if ($host_template_id) {
 				raise_message(1);
 				
-				db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
-				db_execute ("delete from host_template_graph_template where host_template_id=$host_template_id");
+				db_execute ("delete from host_template_graph where host_template_id=$host_template_id");
 				db_execute ("delete from host_template_snmp_query where host_template_id=$host_template_id");
+				
+				/* stale entries check -- walk through each graph template in the the db, and make sure that
+				there is a cooresponding POST entry for it */
+				$graph_templates = db_fetch_assoc("select id from graph_templates");
+				
+				if (sizeof($graph_templates) > 0) {
+				foreach ($graph_templates as $graph_template) {
+					if (!isset($_POST{"gt_" . $graph_template["id"]})) {
+						/* this graph template does not exist as a POST var, therefore it is
+						a stale entry. get rid of it. */
+						db_execute("delete from host_template_graph where graph_template_id=" . $graph_template["id"] . " and host_template_id=$host_template_id");
+						db_execute("delete from host_template_graph_sv where graph_template_id=" . $graph_template["id"] . " and host_template_id=$host_template_id");
+						db_execute("delete from host_template_data_sv where graph_template_id=" . $graph_template["id"] . " and host_template_id=$host_template_id");
+					}
+				}
+				}
 				
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^gt_", $var)) {
-						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id) values($host_template_id," . substr($var, 3) . ")");
+						db_execute ("replace into host_template_graph (host_template_id,graph_template_id) values($host_template_id," . substr($var, 3) . ")");
 					}elseif (eregi("^sq_", $var)) {
 						db_execute ("replace into host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . substr($var, 3) . ")");
 					}elseif ((eregi("^svds_([0-9]+)_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_text"})) && (!empty($_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_field"}))) {
@@ -185,12 +200,11 @@ function template_edit() {
 					<td align="top" width="50%">
 						<?php
 						$graph_templates = db_fetch_assoc("select 
-							host_template_graph_template.host_template_id,
-							host_template_graph_template.suggested_values,
+							host_template_graph.host_template_id,
 							graph_templates.id,
 							graph_templates.name
-							from graph_templates left join host_template_graph_template
-							on (graph_templates.id=host_template_graph_template.graph_template_id and host_template_graph_template.host_template_id=" . $_GET["id"] . ") 
+							from graph_templates left join host_template_graph
+							on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ") 
 							order by graph_templates.name");
 						
 						$i = 0;
@@ -271,15 +285,11 @@ function template_edit() {
 		if (!empty($graph_template["host_template_id"])) {
 			$data_templates = db_fetch_assoc("select
 				data_template.id,
-				data_template.name,
-				host_template_data_template.suggested_values
-				from data_template left join data_template_rrd
-				on data_template_rrd.data_template_id=data_template.id
-				left join graph_templates_item
-				on graph_templates_item.task_item_id=data_template_rrd.id
-				left join host_template_data_template
-				on (data_template_rrd.data_template_id=host_template_data_template.data_template_id and host_template_data_template.host_template_id=" . $_GET["id"] . " and host_template_data_template.graph_template_id=" . $graph_template["id"] . ")
-				where data_template_rrd.local_data_id=0
+				data_template.name
+				from data_template, data_template_rrd, graph_templates_item
+				where graph_templates_item.task_item_id=data_template_rrd.id
+				and data_template_rrd.data_template_id=data_template.id
+				and data_template_rrd.local_data_id=0
 				and graph_templates_item.local_graph_id=0
 				and graph_templates_item.graph_template_id=" . $graph_template["id"] . "
 				group by data_template.id

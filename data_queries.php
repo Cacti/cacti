@@ -150,6 +150,14 @@ function form_save() {
 			if ($snmp_query_graph_id) {
 				raise_message(1);
 				
+				/* if the user changed the graph template, go through and delete everything that
+				was associated with the old graph template */
+				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
+					db_execute ("delete from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id");
+					db_execute ("delete from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id");
+					$redirect_back = true;
+				}
+				
 				db_execute ("delete from snmp_query_graph_rrd where snmp_query_graph_id=$snmp_query_graph_id");
 				
 				while (list($var, $val) = each($_POST)) {
@@ -486,6 +494,7 @@ function snmp_item_edit() {
 	
 	form_hidden_id("id",(isset($snmp_query_item) ? $snmp_query_item["id"] : "0"));
 	form_hidden_id("snmp_query_id",$_GET["snmp_query_id"]);
+	form_hidden_id("_graph_template_id",(isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0"));
 	form_hidden_box("save_component_snmp_query_item","1","");
 	
 	form_save_button("snmp.php?action=edit&id=" . $_GET["snmp_query_id"]);
