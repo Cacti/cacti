@@ -416,6 +416,8 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			$hosts[$host_id]["status_event_count"] = 1;
 			$hosts[$host_id]["status"] = HOST_DOWN;
 		/* host is already down, just update stats */
+		} elseif ($hosts[$host_id]["status"] == HOST_UNKNOWN) {
+			$hosts[$host_id]["status_event_count"]++;
 		} else {
 			$hosts[$host_id]["status_event_count"]++;
 		}
@@ -475,12 +477,16 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				/* reset the event counter */
 				$hosts[$host_id]["status_event_count"] = 0;
 			/* host is recovering, but not ready to issue log message */
-		} else {
+			} else {
 				/* host recovering for the first time, set event date */
 				if ($hosts[$host_id]["status_event_count"] == 1) {
 					$hosts[$host_id]["status_rec_date"] = date("Y-m-d h:i:s");
 				}
 			}
+		} else {
+		/* host was unknown and now is up */
+			$hosts[$host_id]["status"] = HOST_UP;
+			$hosts[$host_id]["status_event_count"] = 0;
 		}
 	}
 	/* if the user wants a flood of information then flood them */
@@ -529,7 +535,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		total_polls = '" . $hosts[$host_id]["total_polls"] . "',
 		failed_polls = '" . $hosts[$host_id]["failed_polls"] . "',
 		availability = '" . $hosts[$host_id]["availability"] . "'
-		where id = '$host_id'");
+		where hostname = '" . $hosts[$host_id]["hostname"] . "'");
 }
 
 /* get_full_script_path - gets the full path to the script to execute to obtain data for a

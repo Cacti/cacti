@@ -30,6 +30,7 @@
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
+						&nbsp;<input type="image" src="images/button_clear.gif" alt="Clear Device Filter" border="0" align="absmiddle">
 					</td>
 				</tr>
 			</table>

@@ -33,8 +33,11 @@ include_once("./lib/data_query.php");
 include_once("./lib/api_device.php");
 
 $device_actions = array(
-	1 => "Delete",
-	2 => "Change SNMP Options"
+	1 => "Enable Devices",
+	2 => "Disable Devices",
+	3 => "Change SNMP Options",
+	4 => "Clear Device Statistics",
+	5 => "Delete Selected Devices"
 	);
 
 /* set default action */
@@ -131,7 +134,37 @@ function form_actions() {
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
-		if ($_POST["drp_action"] == "1") { /* delete */
+		if ($_POST["drp_action"] == "1") { /* Enable Selected Devices */
+			for ($i=0;($i<count($selected_items));$i++) {
+				db_execute("update host set disabled='' where id='" . $selected_items[$i] . "'");
+
+				push_out_host($selected_items[$i]);
+			}
+		}elseif ($_POST["drp_action"] == "2") { /* Disable Selected Devices */
+			for ($i=0;($i<count($selected_items));$i++) {
+				db_execute("update host set disabled='on' where id='" . $selected_items[$i] . "'");
+
+				push_out_host($selected_items[$i]);
+			}
+		}elseif ($_POST["drp_action"] == "3") { /* change snmp options */
+			for ($i=0;($i<count($selected_items));$i++) {
+				reset($fields_host_edit);
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (isset($_POST["t_$field_name"])) {
+						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+					}
+				}
+
+				push_out_host($selected_items[$i]);
+			}
+		}elseif ($_POST["drp_action"] == "4") { /* Clear Statisitics for Selected Devices */
+			for ($i=0;($i<count($selected_items));$i++) {
+				db_execute("update host set min_time = '', max_time = '0', cur_time = '0',	avg_time = '0',
+						total_polls = '0', failed_polls = '0',	availability = '100.00'
+						where id = '" . $selected_items[$i] . "'");
+				push_out_host($selected_items[$i]);
+			}
+		}elseif ($_POST["drp_action"] == "5") { /* delete */
 			for ($i=0; $i<count($selected_items); $i++) {
 				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
 
@@ -164,17 +197,6 @@ function form_actions() {
 
 				api_device_remove($selected_items[$i]);
 			}
-		}elseif ($_POST["drp_action"] == "2") { /* change snmp options */
-			for ($i=0;($i<count($selected_items));$i++) {
-				reset($fields_host_edit);
-				while (list($field_name, $field_array) = each($fields_host_edit)) {
-					if (isset($_POST["t_$field_name"])) {
-						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
-					}
-				}
-
-				push_out_host($selected_items[$i]);
-			}
 		}
 
 		header("Location: host.php");
@@ -200,18 +222,21 @@ function form_actions() {
 
 	print "<form action='host.php' method='post'>\n";
 
-	if ($_POST["drp_action"] == "1") { /* delete */
+	if ($_POST["drp_action"] == "1") { /* Enable Devices */
 		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Are you sure you want to delete the following devices?</p>
-					<p>$host_list</p>";
-					form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.", "1"); print "<br>";
-					form_radio_button("delete_type", "2", "2", "Delete all associated <strong>graphs</strong> and <strong>data sources</strong>.", "1"); print "<br>";
-					print "</td></tr>
+				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>To enable the following devices, press the \"yes\" button below.</p>
+					<p>$host_list</p>
 				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "2") { /* change snmp options */
+				</tr>";
+	}elseif ($_POST["drp_action"] == "2") { /* Disable Devices */
+		print "	<tr>
+				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>To disable the following devices, press the \"yes\" button below.</p>
+					<p>$host_list</p>
+				</td>
+				</tr>";
+	}elseif ($_POST["drp_action"] == "3") { /* change snmp options */
 		print "	<tr>
 				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>To change SNMP parameters for the following devices, check the box next to the fields
@@ -241,7 +266,24 @@ function form_actions() {
 						"fields" => $form_array
 						)
 					);
-
+	}elseif ($_POST["drp_action"] == "4") { /* Disable Devices */
+		print "	<tr>
+				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>To clear the counters for the following devices, press the \"yes\" button below.</p>
+					<p>$host_list</p>
+				</td>
+				</tr>";
+	}elseif ($_POST["drp_action"] == "5") { /* delete */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following devices?</p>
+					<p>$host_list</p>";
+					form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.", "1"); print "<br>";
+					form_radio_button("delete_type", "2", "2", "Delete all associated <strong>graphs</strong> and <strong>data sources</strong>.", "1"); print "<br>";
+					print "</td></tr>
+				</td>
+			</tr>\n
+			";
 	}
 
 	if (!isset($host_array)) {
@@ -612,7 +654,7 @@ function host() {
 					<?php print round(($host["avg_time"])*1000, 2);?>
 				</td>
 				<td>
-					<?php print round($host["availability"], 0);?>%
+					<?php print round($host["availability"], 2);?>%
 				</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">

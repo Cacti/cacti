@@ -77,8 +77,9 @@ define("AVAIL_PING", 3);
 define("PING_ICMP", 1);
 define("PING_UDP", 2);
 
-define("HOST_DOWN", 0);
-define("HOST_RECOVERING", 1);
-define("HOST_UP", 2);
+define("HOST_UNKNOWN", 0);
+define("HOST_DOWN", 1);
+define("HOST_RECOVERING", 2);
+define("HOST_UP", 3);
 
 ?>
