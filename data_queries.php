@@ -97,27 +97,24 @@ function snmp_save() {
 	
 	$snmp_query_id = sql_save($save, "snmp_query");
 	
-	db_execute ("delete from snmp_query_dt where snmp_query_id=$snmp_query_id");
 	db_execute ("delete from snmp_query_dt_field where snmp_query_id=$snmp_query_id");
 	db_execute ("delete from snmp_query_dt_rrd where snmp_query_id=$snmp_query_id");
 	
 	while (list($var, $val) = each($_POST)) {
-		if (eregi("^dt_", $var)) {
-			db_execute ("replace into snmp_query_dt (snmp_query_id,data_template_id) values($snmp_query_id," . substr($var, 3) . ")");
-		}elseif (eregi("^mdt_([0-9]+)_([0-9]+)_check", $var)) {
+		if (eregi("^mdt_([0-9]+)_([0-9]+)_check", $var)) {
 			$data_template_id = ereg_replace("^mdt_([0-9]+)_([0-9]+).+", "\\1", $var);
 			$data_input_field_id = ereg_replace("^mdt_([0-9]+)_([0-9]+).+", "\\2", $var);
 			
-			if (isset($_POST{"dt_" . $data_template_id})) {
+			//if (isset($_POST{"dt_" . $data_template_id})) {
 				db_execute ("replace into snmp_query_dt_field (snmp_query_id,data_template_id,data_input_field_id,action_id) values($snmp_query_id,$data_template_id,$data_input_field_id," . $_POST{"mdt_" . $data_template_id . "_" . $data_input_field_id . "_action_id"} . ")");
-			}
+			//}
 		}elseif (eregi("^dsdt_([0-9]+)_([0-9]+)_check", $var)) {
 			$data_template_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\1", $var);
 			$data_template_rrd_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\2", $var);
 			
-			if (isset($_POST{"dt_" . $data_template_id})) {
+			//if (isset($_POST{"dt_" . $data_template_id})) {
 				db_execute ("replace into snmp_query_dt_rrd (snmp_query_id,data_template_id,data_template_rrd_id,snmp_field_name) values($snmp_query_id,$data_template_id,$data_template_rrd_id,'" . $_POST{"dsdt_" . $data_template_id . "_" . $data_template_rrd_id . "_snmp_field_output"} . "')");
-			}
+			//}
 		}
 	}
 	
@@ -184,49 +181,6 @@ function snmp_edit() {
 	
 	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
-			<font class="textEditTitle">Data Template(s)</font><br>
-			Choose one or more data templates to associate with this SNMP query.
-		</td>
-		<td>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td align="top" width="50%">
-						<?
-						$data_templates = db_fetch_assoc("select 
-							snmp_query_dt.snmp_query_id,
-							data_template.id,
-							data_template.name
-							from data_template left join snmp_query_dt
-							on (data_template.id=snmp_query_dt.data_template_id and snmp_query_dt.snmp_query_id=" . $_GET["id"] . ") 
-							order by data_template.name");
-						
-						$i = 0;
-						if (sizeof($data_templates) > 0) {
-						foreach($data_templates as $data_template) {
-							$column1 = floor((sizeof($data_templates) / 2) + (sizeof($data_templates) % 2));
-							
-							if (empty($data_template["snmp_query_id"])) {
-								$old_value = "";
-							}else{
-								$old_value = "on";
-							}
-							
-							if ($i == $column1) {
-								print "</td><td valign='top' width='50%'>";
-							}
-							DrawStrippedFormItemCheckBox("dt_".$data_template["id"], $old_value, $data_template["name"], "",true);
-							$i++;
-						}
-						}
-						?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
 			<font class="textEditTitle">Data Input Method</font><br>
 			Select the data input method that will store/execute the data for this query.
 		</td>
@@ -245,9 +199,14 @@ function snmp_edit() {
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
 			data_template.name
-			from snmp_query_dt,data_template
-			where snmp_query_dt.data_template_id=data_template.id
-			and snmp_query_dt.snmp_query_id=" . $_GET["id"]);
+			from data_template, data_template_rrd, graph_templates_item
+			where graph_templates_item.task_item_id=data_template_rrd.id
+			and data_template_rrd.data_template_id=data_template.id
+			and data_template_rrd.local_data_id=0
+			and graph_templates_item.local_graph_id=0
+			and graph_templates_item.graph_template_id=" . $snmp_query["graph_template_id"] . "
+			group by data_template.id
+			order by data_template.name");
 		
 		$i = 0;
 		if (sizeof($data_templates) > 0) {
