@@ -62,6 +62,7 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if (isset($_POST["save_component_rra"])) {
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_round_robin_archive($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[0-9]+(\.[0-9])?$", false, 3);
 		$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
