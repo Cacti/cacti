@@ -62,6 +62,16 @@ function db_install_execute($cacti_version, $sql) {
 	$_SESSION["sess_sql_install_cache"] = $sql_install_cache;
 }
 
+function find_best_path($binary_name) {
+	$search_paths = array("/bin", "/sbin", "/usr/bin", "/usr/sbin", "/usr/local/bin", "/usr/local/sbin");
+	
+	for ($i=0; $i<count($search_paths); $i++) {
+		if ((file_exists($search_paths[$i] . "/" . $binary_name)) && (is_executable($search_paths[$i] . "/" . $binary_name))) {
+			return $search_paths[$i] . "/" . $binary_name;
+		}
+	}
+}
+
 $current_document_root = "";
 $current_document = str_replace("/install", "", dirname($_SERVER["PHP_SELF"]));
 
@@ -81,7 +91,7 @@ running on. */
 $input["path_rrdtool"] = $settings["path"]["path_rrdtool"];
 
 if ($config["cacti_server_os"] == "unix") {
-	$which_rrdtool = trim(exec("which rrdtool"));
+	$which_rrdtool = find_best_path("rrdtool");
 	
 	if (!empty($which_rrdtool)) {
 		$input["path_rrdtool"]["default"] = $which_rrdtool;
@@ -98,7 +108,7 @@ if ($config["cacti_server_os"] == "unix") {
 $input["path_php_binary"] = $settings["path"]["path_php_binary"];
 
 if ($config["cacti_server_os"] == "unix") {
-	$which_php = trim(exec("which php"));
+	$which_php = find_best_path("php");
 	
 	if (!empty($which_php)) {
 		$input["path_php_binary"]["default"] = $which_php;
@@ -115,7 +125,7 @@ if ($config["cacti_server_os"] == "unix") {
 if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
 	
-	$which_snmpwalk = trim(exec("which snmpwalk"));
+	$which_snmpwalk = find_best_path("snmpwalk");
 	
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
@@ -130,10 +140,10 @@ if ($config["cacti_server_os"] == "unix") {
 if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpget"] = $settings["path"]["path_snmpget"];
 	
-	$which_snmpwalk = trim(exec("which snmpget"));
+	$which_snmpget = find_best_path("snmpget");
 	
-	if (!empty($which_snmpwalk)) {
-		$input["path_snmpget"]["default"] = $which_snmpwalk;
+	if (!empty($which_snmpget)) {
+		$input["path_snmpget"]["default"] = $which_snmpget;
 	}elseif (read_config_option("path_snmpget") != "<DEFAULT>") {
 		$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
 	}else{
