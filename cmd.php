@@ -32,6 +32,7 @@ $no_http_headers = true;
 
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/snmp.php");
+include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 
@@ -81,7 +82,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		// step below calls the include function with the script file
 		fwrite($pipes[0], "include_once " . dirname(__FILE__) . "/scripts/script_functions.php\r\n");
 	}else {
-		$using_proc_function = False;
+		$using_proc_function = false;
 		if (read_config_option("log_perror") == "on") {
 			log_data("WARNING: PHP version 4.3 or above is recommended for performance considerations.\n");
 		}
@@ -115,67 +116,67 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				if (read_config_option("log_perror") == "on") {
 					log_data(sprintf("ERROR: host '%s' is not responding to SNMP query, assumed down.", $current_host));
 				}
-
-				$new_host = false;
 			}
+
+			/* do the reindex check for this host */
+			$reindex = db_fetch_assoc("select
+				poller_reindex.data_query_id,
+				poller_reindex.action,
+				poller_reindex.op,
+				poller_reindex.assert_value,
+				poller_reindex.arg1
+				from poller_reindex
+				where poller_reindex.host_id=" . $item["host_id"]);
+
+			if ((sizeof($reindex) > 0) && (!$host_down)) {
+				print "Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.\n";
+
+				foreach ($reindex as $index_item) {
+					/* do the check */
+					switch ($index_item["action"]) {
+					case POLLER_ACTION_SNMP: /* snmp */
+						$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
+						break;
+					case POLLER_ACTION_SCRIPT: /* script (popen) */
+						$output = exec_poll($index_item["arg1"]);
+						break;
+					}
+
+					/* assert the result with the expected value in the db; recache if the assert fails */
+					if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
+						print "Assert '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
+						db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+					}else if (($index_item["op"] == ">") && ($index_item["assert_value"] <= trim($output))) {
+						print "Assert '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
+						db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+					}else if (($index_item["op"] == "<") && ($index_item["assert_value"] >= trim($output))) {
+						print "Assert '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n";
+						db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+					}
+				}
+			}
+
+			$new_host = false;
 		}
 
 		if (!$host_down) {
 			switch ($item["action"]) {
-			case '0': /* snmp */
-				$output = cacti_snmp_get($item["hostname"],
-					$item["snmp_community"],
-					$item["arg1"],
-					$item["snmp_version"],
-					$item["snmp_username"],
-					$item["snmp_password"],
-					$item["snmp_port"],
-					$item["snmp_timeout"]);
+			case POLLER_ACTION_SNMP: /* snmp */
+				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"]);
 
-				print "SNMP: " .
-					$item["hostname"] . ":" .
-					$item["snmp_port"] .
-					", dsname: " .
-					$item["rrd_name"] .
-					", oid: " .
-					$item["arg1"] .
-					", value: $output\n";
-				break;
-			case '1': /* script (popen) */
-				$command = $item["arg1"];
-				$output = `$command`;
-
-				print "CMD: $command, output: $output\n";
+				print "SNMP: " . $item["hostname"] . ":" . $item["snmp_port"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", value: $output\n";
 
 				break;
-			case '2': /* script (php script server) */
-				$command = $item["arg1"];
+			case POLLER_ACTION_SCRIPT: /* script (popen) */
+				$output = exec_poll($item["arg1"]);
 
-				// execute using php process
-				if ($using_proc_function == 1) {
-				   if (is_resource($cactiphp)) {
-					   // $pipes now looks like this:
-					   // 0 => writeable handle connected to child stdin
-					   // 1 => readable handle connected to child stdout
-					   // 2 => any error output will be sent to child stderr
+				print "CMD: " . $item["arg1"] . ", output: $output\n";
 
-						// send command to the php server
-					   fwrite($pipes[0], $command . "\r\n");
+				break;
+			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
+				$output = exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp);
 
-						// get result from server
-						$output = fgets($pipes[1], 1024);
-
-						if (substr_count($output, "ERROR") > 0) {
-							$output = "";
-						}
-				   }
-				// execute the old fashion way
-				} else {
-					$command = read_config_option("path_php_binary") - " " . $command;
-					$output = `$command`;
-				}
-
-				print "CMD: $command, output: $output";
+				print "CMD[PHP]: " . $item["arg1"] . ", output: $output";
 
 				break;
 			} /* End Switch */

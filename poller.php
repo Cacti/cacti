@@ -31,6 +31,7 @@ $no_http_headers = true;
 // Start Initialization Section
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/poller.php");
+include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
 // Record Start Time
@@ -180,6 +181,28 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 			usleep(200000);
 			$loop_count++;
 		}
+	}
+
+	/* process poller commands */
+	$poller_commands = db_fetch_assoc("select
+		poller_command.action,
+		poller_command.command
+		from poller_command
+		where poller_command.poller_id=0");
+
+	if (sizeof($poller_commands) > 0) {
+		foreach ($poller_commands as $command) {
+			switch ($command["action"]) {
+			case POLLER_COMMAND_REINDEX:
+				list($host_id, $data_query_id) = explode(":", $command["command"]);
+
+				print "Command: Re-cache host #$host_id, data query #$data_query_id\n";
+
+				run_data_query($host_id, $data_query_id);
+			}
+		}
+
+		db_execute("delete from poller_command where poller_id=0");
 	}
 }else{
 	print "There are no items in your poller cache or polling is disabled. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";

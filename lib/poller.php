@@ -24,6 +24,50 @@
  +-------------------------------------------------------------------------+
 */
 
+/* exec_poll - executes a command and returns its output
+   @arg $command - the command to execute
+   @returns - the output of $command after execution */
+function exec_poll($command) {
+	return `$command`;
+}
+
+/* exec_poll_php - sends a command to the php script server and returns the
+     output
+   @arg $command - the command to send to the php script server
+   @arg $using_proc_function - whether or not this version of php is making use
+     of the proc_open() and proc_close() functions (php 4.3+)
+   @arg $pipes - the array of r/w pipes returned from proc_open()
+   @arg $proc_fd - the file descriptor returned from proc_open()
+   @returns - the output of $command after execution against the php script
+     server */
+function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
+	/* execute using php process */
+	if ($using_proc_function == 1) {
+		if (is_resource($proc_fd)) {
+			/* $pipes now looks like this:
+			 * 0 => writeable handle connected to child stdin
+			 * 1 => readable handle connected to child stdout
+			 * 2 => any error output will be sent to child stderr */
+
+			/* send command to the php server */
+			fwrite($pipes[0], $command . "\r\n");
+
+			/* get result from server */
+			$output = fgets($pipes[1], 1024);
+
+			if (substr_count($output, "ERROR") > 0) {
+				$output = "";
+			}
+		}
+	/* execute the old fashion way */
+	}else{
+		$command = read_config_option("path_php_binary") . " " . $command;
+		$output = `$command`;
+	}
+
+	return $output;
+}
+
 /* exec_background - executes a program in the background so that php can continue
      to execute code in the foreground
    @arg $filename - the full pathname to the script to execute
