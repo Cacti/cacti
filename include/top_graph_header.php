@@ -61,7 +61,7 @@ if (!ereg('^(tree|list|preview)$', $_REQUEST["action"])) {
 <html>
 <head>
 	<title>cacti</title>
-	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . $_SERVER["SCRIPT_NAME"] . "'>\r\n";?>
+	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . $_SERVER["PHP_SELF"] . "'>\r\n";?>
 	<link href="include/main.css" rel="stylesheet">
 </head>
 

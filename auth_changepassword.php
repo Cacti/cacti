@@ -70,7 +70,7 @@ case 'changepassword':
 
 <body onload="document.login.password.focus()">
 
-<form name="login" method="post" action="<?php print $_SERVER["SCRIPT_NAME"];?>">
+<form name="login" method="post" action="<?php print $_SERVER["PHP_SELF"];?>">
 
 <table align="center">
 	<tr>

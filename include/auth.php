@@ -66,10 +66,10 @@ if (read_config_option("global_auth") == "on") {
 	}
 	
 	if (empty($_SESSION["sess_user_id"])) {
-		include ("auth_login.php");
+		include ("./auth_login.php");
 		exit;
 	}elseif (!empty($_SESSION["sess_user_id"])) {
-		$realm_id = db_fetch_cell("select realm_id from user_realm_filename where filename='" . basename($_SERVER["SCRIPT_NAME"]) . "'");
+		$realm_id = db_fetch_cell("select realm_id from user_realm_filename where filename='" . basename($_SERVER["PHP_SELF"]) . "'");
 		
 		if (!db_fetch_assoc("select
 			user_auth_realm.realm_id
@@ -79,7 +79,7 @@ if (read_config_option("global_auth") == "on") {
 			and user_auth_realm.realm_id='$realm_id'")) {
 			
 			include($config["include_path"] . "/top_header.php");
-			include("auth_noauth.php");
+			include("./auth_noauth.php");
 			include($config["include_path"] . "/bottom_footer.php");
 			exit;
 		}
