@@ -35,17 +35,19 @@ case 'login':
 	db_execute("update user_auth set password = '" . md5($_POST["password"]) . "' where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
 
 	/* --- start ldap section --- */
+	$ldap_auth = false;
 	if (read_config_option("ldap_enabled") == "on"){
 		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
 
 		if ($ldap_conn) {
+			$ldap_auth = true;
 			$ldap_dn = str_replace("<username>",$_POST["username"],read_config_option("ldap_dn"));
 			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$password);
 
 			if ($ldap_response) {
 				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and full_name='ldap user'")) == 0) {
 					/* get information about the template user */
-					$template_user = db_fetch_assoc("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = " . read_config_option("ldap_template"));
+					$template_user = db_fetch_row("SELECT '" . $_POST["username"] . "' as username, 'ldap user' as full_name, '' as must_change_password, '' as password , show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy, id FROM user_auth WHERE username = '" . read_config_option("ldap_template") . "'");
 
 					/* write out that information to the new ldap user */
 					db_execute("INSERT INTO user_auth (username, password, full_name, must_change_password, show_tree, show_list, show_preview, graph_settings, login_opts, graph_policy) VALUES ('" . $template_user["username"] . "' , '" . $template_user["password"] . "' , '" . $template_user["full_name"] . "' , '" . $template_user["must_change_password"] . "' , '" . $template_user["show_tree"] . "' , '" . $template_user["show_list"] . "' , '" . $template_user["show_preview"] . "' , '" . $template_user["graph_settings"] . "' , '" . $template_user["login_opts"] . "' , '" . $template_user["graph_policy"] . "')");
@@ -91,7 +93,7 @@ case 'login':
 
 	$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "'");
 	
-	if (sizeof($user)) {
+	if (sizeof($user) || $ldap_auth) {
 		/* --- GOOD username/password --- */
 		
 		$denied_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["id"] . " and policy='1'");
