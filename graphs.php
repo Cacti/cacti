@@ -761,7 +761,7 @@ function graph_edit() {
 	
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
-		start_box("<strong>Supplimental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Supplemental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		print "<form method='post' action='graphs.php'>\n";
 		
