@@ -156,7 +156,7 @@ $settings = array(
 					),
 				"log_perror" => array(
 					"friendly_name" => "Poller Errors",
-					"default" => ""
+					"default" => "on"
 					)
 				),
 			),
@@ -168,6 +168,7 @@ $settings = array(
 			"friendly_name" => "SNMP Version",
 			"description" => "The type of SNMP you have installed.",
 			"method" => "drop_array",
+			"default" => "net-snmp",
 			"array" => $snmp_implimentations,
 			),
 		"snmp_timeout" => array(
@@ -191,6 +192,7 @@ $settings = array(
 		"remove_verification" => array(
 			"friendly_name" => "Remove Verification",
 			"description" => "Prompt user before item deletion.",
+			"default" => "on",
 			"method" => "checkbox"
 			)
 		),
@@ -460,6 +462,7 @@ $settings = array(
 			"friendly_name" => "Use Cacti's Builtin Authentication",
 			"description" => "By default Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti. You can optionally turn this off if you are using other other means of authentication.",
 			"method" => "checkbox",
+			"default" => "on",
 			"tab" => "authentication"
 			),
 		"ldap_enabled" => array(
