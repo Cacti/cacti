@@ -80,7 +80,7 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 						&nbsp;<a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Console" align="absmiddle" border="0"></a>&nbsp;
 					</td>
 					<td>
-						<img src="images/cacti_backdrop2.gif">
+						<img src="images/cacti_backdrop2.gif" align="absmiddle">
 					</td>
 					<td align="right" nowrap>
 						<a href="graph_settings.php"><img src="images/tab_settings<?php if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; }?>.gif" border="0" alt="Settings" align="absmiddle"></a>&nbsp;&nbsp;<a href="graph_view.php?action=tree"><img src="images/tab_mode_tree<?php if ($_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" alt="Tree View" align="absmiddle"></a><a href="graph_view.php?action=list"><img src="images/tab_mode_list<?php if ($_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" alt="List View" align="absmiddle"></a><a href="graph_view.php?action=preview"><img src="images/tab_mode_preview<?php if ($_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" alt="Preview View" align="absmiddle"></a>&nbsp;<br>
