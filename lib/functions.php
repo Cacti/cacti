@@ -372,7 +372,7 @@ function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, 
 	if (sizeof($snmp_cache_data) > 0) {
 	foreach ($snmp_cache_data as $data) {
 		if (!empty($data["field_value"])) {
-			$string = stri_replace($l_escape_string . "squery_" . $data["field_name"] . $r_escape_string, $data["field_value"], $string);
+			$string = stri_replace($l_escape_string . "squery_" . $data["field_name"] . $r_escape_string, substr($data["field_value"],0,15), $string);
 		}
 	}
 	}
