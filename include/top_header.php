@@ -72,7 +72,7 @@ include ("config.php");
 	<tr height="5">
 		<td width="1%" rowspan="2" align="center" valign="top">
 			<img src="images/transparent_line.gif" width="142" height="5" border="0"><br>
-			<table width="133" cellpadding="1" cellspacing="0" border="0" class="textMenuBackground">
+			<table bgcolor="#888888" width="133" cellpadding="1" cellspacing="0" border="0"
 				<?php draw_menu();?>
 			</table>
 			

@@ -43,16 +43,6 @@ a:hover {
 	text-decoration: underline;
 }
 
-.linkTabs, .linkTabs:visited, .linkTabs:active {
-	color: #000080;
-	text-decoration: none;
-}
-
-.linkTabs:hover {
-	color: #3a5fcd;
-	text-decoration: underline;
-}
-
 /* text styles */
 
 .textError {
@@ -87,18 +77,9 @@ a:hover {
 	font-size: 12px;
 }
 
-.textTab {
-	font-size: 10px;
-	font-weight: bold;
-}
-
 .textEditTitle {
 	font-size: 10px;
 	font-weight: bold;
-}
-
-.textMenuBackground {
-	background-color: #888888;
 }
 
 .textMenuHeader {
@@ -115,7 +96,9 @@ a:hover {
 	font-size: 10px;
 }
 
-.cboSmall {
+.textMenuItemSelected {
+	background-color: #D1D1D1;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
