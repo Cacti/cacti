@@ -255,7 +255,7 @@ function update_data_source_snmp_query_cache($local_data_id) {
 	}
 }
 
-function push_out_data_template($data_template_id) {
+function push_out_data_source_custom_data($data_template_id) {
 	/* get data_input_id */
 	$data_template = db_fetch_row("select
 		id,
@@ -285,6 +285,8 @@ function push_out_data_template($data_template_id) {
 		where data_input_data.data_template_data_id=" . $data_template["id"] . "
 		and data_input_fields.input_output='in'");
 	
+	$data_rra = db_fetch_assoc("select rra_id from data_template_data_rra where data_template_data_id=" . $data_template["id"]);
+	
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
 		reset($input_fields);
@@ -301,8 +303,19 @@ function push_out_data_template($data_template_id) {
 			}
 		}
 		}
+		
+		/* make sure to update the 'data_template_data_rra' table for each data source */
+		db_execute("delete from data_template_data_rra where data_template_data_id=" . $data_source["id"]);
+		
+		reset($data_rra);
+		
+		if (sizeof($data_rra) > 0) {
+		foreach ($data_rra as $rra) {
+			db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values (" . $data_source["id"] . "," . $rra["rra_id"] . ")");
+		}
+		}
 	}
-	}	
+	}
 }
 
 function push_out_data_source_item($data_template_rrd_id) {
@@ -406,13 +419,11 @@ function change_data_template($local_data_id, $data_template_id) {
 	include($config["include_path"] . "/config_arrays.php");
 	
 	/* always update tables to new data template (or no data template) */
-	db_execute("update data_template_data set data_template_id=$data_template_id where local_data_id=$local_data_id");
-	db_execute("update data_template_rrd set data_template_id=$data_template_id where local_data_id=$local_data_id");
 	db_execute("update data_local set data_template_id=$data_template_id where id=$local_data_id");
 	
 	/* get data about the template and the data source */
 	$data = db_fetch_row("select * from data_template_data where local_data_id=$local_data_id");
-	$template_data = db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id");
+	$template_data = (($data_template_id == "0") ? $data : db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id"));
 	
 	/* determine if we are here for the first time, or coming back */
 	if ((db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "0") ||
@@ -422,15 +433,6 @@ function change_data_template($local_data_id, $data_template_id) {
 		$new_save = false;
 	}
 	
-	/* make sure the 'local_data_template_data_id' column is set */
-	$local_data_template_data_id = db_fetch_cell("select id from data_template_data where data_template_id=$data_template_id and data_template_id=id");
-	
-	if ($local_data_template_data_id == "") { $local_data_template_data_id = 0; }
-	db_execute("update data_template_data set local_data_template_data_id=$local_data_template_data_id where local_data_id=$local_data_id");
-	
-	/* if the user turned off the template for this data source; there is nothing more to do here */
-	if ($data_template_id == "0") { return 0; }
-	
 	/* some basic field values that ALL data sources should have */
 	$save["id"] = $data["id"];
 	$save["local_data_template_data_id"] = $template_data["id"];
@@ -439,7 +441,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	
 	/* loop through the "templated field names" to find to the rest... */
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		if ($field_array["type"] != "custom") {
+		if ((isset($data[$field_name])) && (isset($template_data[$field_name]))) {
 			if ((!empty($template_data{"t_" . $field_name})) && ($new_save == false)) {
 				$save[$field_name] = $data[$field_name];
 			}else{
@@ -451,11 +453,10 @@ function change_data_template($local_data_id, $data_template_id) {
 	/* these fields should never be overwritten by the template */
 	$save["data_source_path"] = $data["data_source_path"];
 	
-	//print "<pre>";print_r($save);print "</pre>";
 	$data_template_data_id = sql_save($save, "data_template_data");
 	
 	$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
-	$template_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id");
+	$template_rrds_list = (($data_template_id == "0") ? $data_rrds_list : db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id"));
 	
 	if (sizeof($data_rrds_list) > 0) {
 		/* this data source already has "child" items */
@@ -476,7 +477,6 @@ function change_data_template($local_data_id, $data_template_id) {
 				$save[$field_name] = $template_rrd[$field_name];
 			}
 			
-			//print "<pre>";print_r($save);print "</pre>";
 			sql_save($save, "data_template_rrd");
 		}
 		}
@@ -504,17 +504,6 @@ function change_data_template($local_data_id, $data_template_id) {
 	foreach ($data_rra as $rra) {
 		db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $rra["rra_id"] . ")");
 	}
-	}
-	
-	/* find out if there is a host and a host template involved, if there is... push out the 
-	host template's settings */
-	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
-	
-	if ($host_id != "0") {
-		$host_template_id = db_fetch_cell("select host_template_id from host where id=$host_id");
-		if ($host_template_id != "0") {
-			//push_out_host_template($host_template_id, $data_template_id);
-		}
 	}
 }
 
@@ -596,22 +585,11 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	include($config["include_path"] . "/config_arrays.php");
 	
 	/* always update tables to new graph template (or no graph template) */
-	db_execute("update graph_templates_graph set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
-	db_execute("update graph_templates_item set graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
 	db_execute("update graph_local set graph_template_id=$graph_template_id where id=$local_graph_id");
-	
-	/* make sure the 'local_graph_template_graph_id' column is set */
-	$local_graph_template_graph_id = db_fetch_cell("select id from graph_templates_graph where graph_template_id=$graph_template_id and graph_template_id=id");
-	
-	if ($local_graph_template_graph_id == "") { $local_graph_template_graph_id = 0; }
-	db_execute("update graph_templates_graph set local_graph_template_graph_id=$local_graph_template_graph_id where local_graph_id=$local_graph_id");
-	
-	/* if the user turned off the template for this graph; there is nothing more to do here */
-	if ($graph_template_id == "0") { return 0; }
 	
 	/* get information about both the graph and the graph template we're using */
 	$graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=$local_graph_id");
-	$template_graph_list = db_fetch_row("select * from graph_templates_graph where local_graph_id=0 and graph_template_id=$graph_template_id");
+	$template_graph_list = (($graph_template_id == "0") ? $graph_list : db_fetch_row("select * from graph_templates_graph where local_graph_id=0 and graph_template_id=$graph_template_id"));
 	
 	/* determine if we are here for the first time, or coming back */
 	if ((db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=$local_graph_id") == "0") ||
@@ -638,11 +616,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		}
 	}
 	
-	//print "<pre>";print_r($save);print "</pre>";
 	sql_save($save, "graph_templates_graph");
 	
 	$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id order by sequence");
-	$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id order by sequence");
+	$template_items_list = (($graph_template_id == "0") ? $graph_items_list : db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id order by sequence"));
 	
 	$graph_template_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
@@ -695,7 +672,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 			
 		}
 		
-		//print "<pre>";print_r($save);print "</pre>";
 		if (isset($save)) {
 			sql_save($save, "graph_templates_item");
 		}
