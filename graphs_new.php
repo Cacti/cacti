@@ -678,7 +678,7 @@ function graphs() {
 				if ($field_array["direction"] == "input") {
 					$i++;
 					
-					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $host["id"] . " and field_name='$field_name'");
+					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $host["id"] . " and field_name='$field_name' and snmp_query_id=" . $snmp_query["id"]);
 					
 					/* don't even both to display the column if it has no data */
 					if (sizeof($raw_data) > 0) {
