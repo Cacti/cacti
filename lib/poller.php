@@ -160,6 +160,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 	}
 }
 
+/* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
+     results to RRDTool for processing
+   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool */
 function process_poller_output($rrdtool_pipe) {
 	global $config;
 
@@ -191,7 +194,6 @@ function process_poller_output($rrdtool_pipe) {
 				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["items"])) {
 					db_execute("delete from poller_output where local_data_id='" . $item["local_data_id"] . "' and rrd_name='" . $item["rrd_name"] . "' and time='" . $item["time"] . "'");
 				}else{
-					print "waiting on ds#" . $item["local_data_id"] . "\n";
 					unset($rrd_update_array{$item["rrd_path"]});
 				}
 			}
