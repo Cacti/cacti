@@ -750,7 +750,7 @@ function ds_edit() {
 	
 	form_hidden_id("_data_template_id",(isset($data) ? $data["data_template_id"] : "0"));
 	form_hidden_id("_host_id",$host_id,(isset($_GET["host_id"]) ? $_GET["host_id"] : "0"));
-	form_hidden_id("_data_input_id",$host_id,(isset($_GET["data_input_id"]) ? $_GET["data_input_id"] : "0"));
+	form_hidden_id("_data_input_id",(isset($data["data_input_id"]) ? $data["data_input_id"] : "0"));
 	form_hidden_id("data_template_data_id",(isset($data) ? $data["id"] : "0"));
 	form_hidden_id("data_template_rrd_id",(isset($rrd) ? $rrd["id"] : "0"));
 	form_hidden_id("local_data_template_data_id",(isset($data) ? $data["local_data_template_data_id"] : "0"));
