@@ -523,7 +523,7 @@ function item_edit() {
 	
 	/* modifications to the default graph items array */
 	$struct_graph_item["task_item_id"]["sql"] = "select
-		CONCAT_WS('',data_template.name,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+		CONCAT_WS('',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
 		data_template_rrd.id 
 		from data_template_data,data_template_rrd,data_template 
 		where data_template_rrd.data_template_id=data_template.id 
