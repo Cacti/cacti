@@ -1070,8 +1070,8 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
 	global $colors;
 	
-	$host_id = db_fetch_cell("select host.id from data_local,host where data_local.host_id=host.id and data_local.id=$data_template_data_id");
 	$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
+	$host_id = db_fetch_cell("select host.id from data_local,host where data_local.host_id=host.id and data_local.id=" . $data["local_data_id"]);
 	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
 	
 	$draw_any_items = false;
@@ -1101,7 +1101,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 		/* find our field name */
 		$form_field_name = str_replace("|id|", $field["id"], $field_name_format);
 		
-		if ((!empty($host_id)) && (eregi('^(hostname|snmp_community|snmp_username|snmp_password|snmp_version)$', $field["type_code"]))) { /* no host fields */
+		if ((!empty($host_id)) && (eregi('^' . VALID_HOST_FIELDS . '$', $field["type_code"])) && (empty($can_template))) { /* no host fields */
 			if ($include_hidden_fields == true) {
 				form_hidden_box($form_field_name, $old_value, "");
 			}
@@ -1110,10 +1110,6 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				form_hidden_box($form_field_name, $old_value, "");
 			}
 		}elseif (empty($can_template)) { /* no templated fields */
-			if ($include_hidden_fields == true) {
-				form_hidden_box($form_field_name, $old_value, "");
-			}
-		}elseif (empty($can_template)) {
 			if ($include_hidden_fields == true) {
 				form_hidden_box($form_field_name, $old_value, "");
 			}
