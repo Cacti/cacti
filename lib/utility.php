@@ -187,7 +187,7 @@ function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 	if ($graph_type_name != "GPRINT") {
 		/* if item is not a GPRINT and the user changed the PARENT field... please ignore */
 		if (($_graph_type_name != "GPRINT") && ($graph_items[parent] != $_parent) && ($_id != 0)) {
-			print "EXCEPTION!";
+			//print "EXCEPTION!";
 			db_execute("update graph_templates_item set parent=$_parent where id=$new_id");
 			return 0;
 		}
@@ -196,7 +196,7 @@ function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 		if ($_graph_type_name == "GPRINT") { $_id = 0; }
 		
 		if ($_id == 0) { db_execute("update graph_templates_item set sequence=0 where id=$new_id"); } /* reset sequence so it doesn't get taken into account */
-		$max_sequence = GetSequence($_id, "sequence_parent", "graph_templates_item", $local_group, $local_group_value);
+		$max_sequence = get_sequence($_id, "sequence_parent", "graph_templates_item", $local_group, $local_group_value);
 		
 		db_execute("update graph_templates_item set sequence_parent=$max_sequence where id=$new_id");
 		db_execute("update graph_templates_item set parent=$new_id where id=$new_id");
@@ -271,7 +271,7 @@ function update_graph_item_groups($id, $_id, $_graph_type_id, $_parent) {
 		
 		if ($skip_end_save == false) {
 			if ($_id == 0) { db_execute("update graph_templates_item set sequence=0 where id=$new_id"); } /* reset sequence so it doesn't get taken into account */
-			$max_sequence = GetSequence($_id, "sequence", "graph_templates_item", $local_group, "$local_group_value and parent=$parent");
+			$max_sequence = get_sequence($_id, "sequence", "graph_templates_item", $local_group, "$local_group_value and parent=$parent");
 			
 			db_execute("update graph_templates_item set sequence=$max_sequence where id=$new_id");
 			db_execute("update graph_templates_item set sequence_parent=$sequence_parent where id=$new_id");
