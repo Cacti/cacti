@@ -33,13 +33,20 @@ error_reporting(E_ERROR);
 include_once(dirname(__FILE__) . "/include/config.php");
 
 // don't ask me why, ask the developers of php...
-if ($_SERVER["argc"] == 2)
+if ($_SERVER["argc"] >= 2) {
 	if ($_SERVER["argv"][1] == "cactid")
 		$environ = "cactid";
 	else
 		$environ = "other";
-else
+
+	if ($_SERVER["argc"] == 3)
+		$poller_id = $_SERVER[argv][2];
+	else
+		$poller_id = 0;
+} else {
 	$environ = "cmd";
+	$poller_id = 0;
+}
 
 // send status back to the server
 if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
