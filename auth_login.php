@@ -29,9 +29,6 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 case 'login':
-	/* --- UPDATE old password with new md5 password value */
-	db_execute("update user_auth set password = '" . md5($_POST["password"]) . "' where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
-
 	/* --- start ldap section --- */
 	$ldap_auth = false;
 	if ((read_config_option("ldap_enabled") == "on") && ($_POST["realm"] == "ldap") && (strlen($_POST["password"]))){
@@ -53,23 +50,23 @@ case 'login':
 	/* --- end ldap section --- */
 
 	if ($ldap_auth) {
-                $user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1");
+		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1");
 	} else {
 		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "' and realm = 0");
 	}
-	
+
 	if (sizeof($user)) {
 		/* make entry in the transactions log */
 		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"] ."'," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
-		
+
 		/* set the php session */
 		$_SESSION["sess_user_id"] = $user["id"];
-		
+
 		/* handle "force change password" */
 		if ($user["must_change_password"] == "on") {
 			$_SESSION["sess_change_password"] = true;
 		}
-		
+
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 		switch ($user["login_opts"]) {
@@ -85,7 +82,7 @@ case 'login':
 			case '3': /* default graph page */
 				header("Location: graph_view.php"); break;
 		}
-		
+
 		exit;
 	}else{
 		/* --- BAD username/password --- */
@@ -98,7 +95,7 @@ case 'login':
 <head>
 	<title>Login to Cacti</title>
 	<STYLE TYPE="text/css">
-	<!--	
+	<!--
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
 		A {text-decoration: none;}
 		A:active { text-decoration: none;}
