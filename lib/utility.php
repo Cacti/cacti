@@ -232,7 +232,6 @@ function change_data_template($local_data_id, $data_template_id, $_data_template
 		if ($host_id != "0") {
 			$host_template_id = db_fetch_cell("select host_template_id from host where id=$host_id");
 			if ($host_template_id != "0") {
-				
 				push_out_host_template($host_template_id, $data_template_id);
 			}
 		}
@@ -297,7 +296,7 @@ function push_out_graph_item($graph_template_item_id) {
 	}
 }
 
-function change_graph_template($local_graph_id, $graph_template_id, $_graph_template_id) {
+function change_graph_template($local_graph_id, $graph_template_id, $intrusive) {
 	include("config_arrays.php");
 	
 	/* always update tables to new graph template (or no graph template) */
@@ -337,76 +336,82 @@ function change_graph_template($local_graph_id, $graph_template_id, $_graph_temp
 	sql_save($save, "graph_templates_graph");
 	
 	/* we are going from no template -> a template */
-	if ($_graph_template_id == "0") {
+	//if ($_graph_template_id == "0") {
 		$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id");
 		$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id");
 		
-		if (sizeof($graph_items_list) > 0) {
-			/* this graph already has "child" items, we means we need user confirmation/input...
-			redirect the user to a page that does just that. */
-			
-			header("Location: graphs.php?action=save_diff&local_graph_id=$local_graph_id&_graph_template_id=$_graph_template_id&graph_template_id=$graph_template_id");
-			return false;
-		}else{
+		$graph_template_inputs = db_fetch_assoc("select
+			graph_template_input.column_name,
+			graph_template_input_defs.graph_template_item_id
+			from graph_template_input,graph_template_input_defs
+			where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+			and graph_template_input.graph_template_id=$graph_template_id");
+		
+		$k=0;
+		if (sizeof($template_items_list) > 0) {
+		foreach ($template_items_list as $template_item) {
 			unset($save);
 			
-			/* this graph does NOT have "child" items; loop through each item in the template
-			and write it exactly to each item */
-			if (sizeof($template_items_list) > 0) {
-			foreach ($template_items_list as $template_item) {
-				$save["id"] = 0;
-				$save["local_graph_template_item_id"] = $template_item["id"];
-				$save["local_graph_id"] = $local_graph_id;
-				$save["graph_template_id"] = $template_item["graph_template_id"];
+			$save["local_graph_template_item_id"] = $template_item["id"];
+			$save["local_graph_id"] = $local_graph_id;
+			$save["graph_template_id"] = $template_item["graph_template_id"];
+			
+			if (isset($graph_items_list[$k])) {
+				/* graph item at this position, "mesh" it in */
+				$save["id"] = $graph_items_list[$k]["id"];
 				
+				/* make a first pass filling in ALL values from template */
 				for ($i=0; ($i < count($struct_graph_item)); $i++) {
 					$current_name = $struct_graph_item[$i];
 					
 					$save[$current_name] = $template_item[$current_name];
 				}
-				/*$save["task_item_id"] = $template_item["task_item_id"];
-				$save["color_id"] = $template_item["color_id"];
-				$save["graph_type_id"] = $template_item["graph_type_id"];
-				$save["cdef_id"] = $template_item["cdef_id"];
-				$save["consolidation_function_id"] = $template_item["consolidation_function_id"];
-				$save["text_format"] = $template_item["text_format"];
-				$save["value"] = $template_item["value"];
-				$save["hard_return"] = $template_item["hard_return"];
-				$save["gprint_opts"] = $template_item["gprint_opts"];
-				$save["gprint_custom"] = $template_item["gprint_custom"];
-				$save["custom"] = $template_item["custom"];
-				$save["sequence"] = $template_item["sequence"];*/
 				
+				/* go back a second time and fill in the INPUT values from the graph */
+				for ($j=0; ($j < count($graph_template_inputs)); $j++) {
+					if ($graph_template_inputs[$j]["graph_template_item_id"] == $template_items_list[$i]["id"]) {
+						/* if we find out that there is an "input" covering this field/item, use the 
+						value from the graph, not the template */
+						$graph_item_field_name = $graph_template_inputs[$j]["column_name"];
+						$save[$graph_item_field_name] = $graph_items_list[$k][$graph_item_field_name];
+					}
+				}
+			}else{
+				/* no graph item at this position, tack it on */
+				$save["id"] = 0;
+				
+				if ($intrusive == true) {
+					for ($i=0; ($i < count($struct_graph_item)); $i++) {
+						$current_name = $struct_graph_item[$i];
+						
+						$save[$current_name] = $template_item[$current_name];
+					}
+				}else{
+					unset($save);
+				}
+				
+				
+			}
+			
+			//print "<pre>";print_r($save);print "</pre>";
+			
+			if (isset($save)) {
 				sql_save($save, "graph_templates_item");
 			}
-			}
+			
+			$k++;
+		}
+		}
+	//}
+	
+	/* if there are more graph items then there are items in the template, delete the difference */
+	if ((sizeof($graph_items_list) > sizeof($template_items_list)) && ($intrusive == true)) {
+		for ($i=(sizeof($graph_items_list) - (sizeof($graph_items_list) - sizeof($template_items_list))); ($i < count($graph_items_list)); $i++) {
+			db_execute("delete from graph_templates_item where id=" . $graph_items_list[$i]["id"]);
 		}
 	}
 	
-
-	
-/*	
-	if ($template_graph_list["t_image_format_id"] == "on") { $save["image_format_id"] = $graph_list["image_format_id"]; }else{ $save["image_format_id"] = $template_graph_list["image_format_id"]; }
-	if ($template_graph_list["t_title"] == "on") { $save["title"] = $graph_list["title"]; }else{ $save["title"] = $template_graph_list["title"]; }
-	if ($template_graph_list["t_height"] == "on") { $save["height"] = $graph_list["height"]; }else{ $save["height"] = $template_graph_list["height"]; }
-	if ($template_graph_list["t_width"] == "on") { $save["width"] = $graph_list["width"]; }else{ $save["width"] = $template_graph_list["width"]; }
-	if ($template_graph_list["t_upper_limit"] == "on") { $save["upper_limit"] = $graph_list["upper_limit"]; }else{ $save["upper_limit"] = $template_graph_list["upper_limit"]; }
-	if ($template_graph_list["t_lower_limit"] == "on") { $save["lower_limit"] = $graph_list["lower_limit"]; }else{ $save["lower_limit"] = $template_graph_list["lower_limit"]; }
-	if ($template_graph_list["t_vertical_label"] == "on") { $save["vertical_label"] = $graph_list["vertical_label"]; }else{ $save["vertical_label"] = $template_graph_list["vertical_label"]; }
-	if ($template_graph_list["t_auto_scale"] == "on") { $save["auto_scale"] = $graph_list["auto_scale"]; }else{ $save["auto_scale"] = $template_graph_list["auto_scale"]; }
-	if ($template_graph_list["t_auto_scale_opts"] == "on") { $save["auto_scale_opts"] = $graph_list["auto_scale_opts"]; }else{ $save["auto_scale_opts"] = $template_graph_list["auto_scale_opts"]; }
-	if ($template_graph_list["t_auto_scale_log"] == "on") { $save["auto_scale_log"] = $graph_list["auto_scale_log"]; }else{ $save["auto_scale_log"] = $template_graph_list["auto_scale_log"]; }
-	if ($template_graph_list["t_auto_scale_rigid"] == "on") { $save["auto_scale_rigid"] = $graph_list["auto_scale_rigid"]; }else{ $save["auto_scale_rigid"] = $template_graph_list["auto_scale_rigid"]; }
-	if ($template_graph_list["t_auto_padding"] == "on") { $save["auto_padding"] = $graph_list["auto_padding"]; }else{ $save["auto_padding"] = $template_graph_list["auto_padding"]; }
-	if ($template_graph_list["t_base_value"] == "on") { $save["base_value"] = $graph_list["base_value"]; }else{ $save["base_value"] = $template_graph_list["base_value"]; }
-	if ($template_graph_list["t_grouping"] == "on") { $save["grouping"] = $graph_list["grouping"]; }else{ $save["grouping"] = $template_graph_list["grouping"]; }
-	if ($template_graph_list["t_export"] == "on") { $save["export"] = $graph_list["export"]; }else{ $save["export"] = $template_graph_list["export"]; }
-	if ($template_graph_list["t_unit_value"] == "on") { $save["unit_value"] = $graph_list["unit_value"]; }else{ $save["unit_value"] = $template_graph_list["unit_value"]; }
-	if ($template_graph_list["t_unit_exponent_value"] == "on") { $save["unit_exponent_value"] = $graph_list["unit_exponent_value"]; }else{ $save["unit_exponent_value"] = $template_graph_list["unit_exponent_value"]; }
-	*/
-	
 	return true;
-	
 }
 
 function DuplicateGraph($graph_id) {
