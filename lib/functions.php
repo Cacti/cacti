@@ -219,17 +219,27 @@ function SyncDataSourceName($data_source_id, $saved_custom_data_source_name, $sa
 }
 
 function CreateList($data,$name,$value,$prev) {
-    
-    if (sizeof($data) > 0) {
-		foreach ($data as $row) {
-		    print "	<option value='$row[$value]'";
-		    
-			if ($prev == $row[$value]) {
-				print " selected ";
-		    }
-			
-		    print ">$row[$name]</option>\n";
-		}
+    /* if this array appears to be empty, try the alternate method */
+    if (sizeof($data[$value]) == 0) {
+	foreach ($data as $row) {
+	    print "<option value='$row[$value]'";
+	    
+		if ($prev == $row[$value]) {
+			print " selected ";
+	    }
+		
+	    print ">$row[$name]</option>\n";
+	}
+    }else{
+	for ($i=0; ($i < sizeof($data[$value])); $i++) {
+	    print '<option value="' . $data[$value][$i] . '"';
+	    
+		if ($prev == $data[$value][$i]) {
+			print " selected ";
+	    }
+		
+	    print ">" . $data[$name][$i] . "</option>\n";
+	}
     }
 }
 
