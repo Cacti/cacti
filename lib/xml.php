@@ -30,6 +30,7 @@ function xml2array($data) {
 	to be used for data retrieval(result-structure is Data oriented) */  
 	$p = xml_parser_create();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
+	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, &$vals, &$index);
 	xml_parser_free($p);
 	
@@ -55,7 +56,7 @@ function get_children($vals, &$i) {
 			array_push($children, $vals[$i]['value']);
 			break;
 		case 'complete':                      
-			$children{strtolower($vals[$i]['tag'])} = $vals[$i]['value'];            
+			$children{($vals[$i]['tag'])} = $vals[$i]['value'];            
 			break;
 		case 'open':                                
 			$j++;
@@ -65,7 +66,7 @@ function get_children($vals, &$i) {
 				$prevtag = $vals[$i]['tag'];
 			}            
 			
-			$children{strtolower($vals[$i]['tag'])}[$j] = get_children($vals,$i);
+			$children{($vals[$i]['tag'])}[$j] = get_children($vals,$i);
 			break;
 		case 'close':        
 			return $children;
