@@ -26,9 +26,10 @@
    and how that setting is to be rendered on a configuration page. */
 
 /* tab information */
-$tabs = array(	"general" => "General Settings",
-		"path"    => "Path Settings",
-		"visual"  => "Visual Settings");
+$tabs = array(	"general"		=> "General",
+		"path"			=> "Path",
+		"visual"		=> "Visual",
+		"authentication"	=> "Authentication");
 
 /* setting information */
 $settings = 	array(
@@ -60,10 +61,6 @@ $settings = 	array(
 						"description" => "If you want cacti to write static png's and html files a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way. Leave this field blank to disable this feature.",
 						"method" => "textbox",
 						"tab" => "path"),
-		"global_auth" => 		array("friendly_name" => "Use cacti's Builtin Authentication",
-						"description" => "By default cacti handles user authentication, which allows you to create users and give them rights to different areas within cacti. You can optionally turn this off if you are other other means of authentication.",
-						"method" => "checkbox",
-						"tab" => "general"),
 		"log" => 			array("friendly_name" => "Log File",
 						"description" => "What cacti should put in its log.",
 						"method" => "group",
@@ -121,6 +118,25 @@ $settings = 	array(
 													"description" => "User Management",
 													"method" => "checkbox",
 													"tab" => "general"),
-													))
-						);
+													)),
+		"global_auth" => 		array("friendly_name" => "Use cacti's Builtin Authentication",
+						"description" => "By default cacti handles user authentication, which allows you to create users and give them rights to different areas within cacti. You can optionally turn this off if you are other other means of authentication.",
+						"method" => "checkbox",
+						"tab" => "authentication"),
+		"ldap_enabled" => 		array("friendly_name" => "Use LDAP Authentication",
+						"description" => "This will alow users to use their LDAP credentials with cacti.",
+						"method" => "checkbox",
+						"tab" => "authentication"),
+		"ldap_server" => 		array("friendly_name" => "LDAP Server",
+						"description" => "The dns hostname or ip address of the server you wish to tie authentication from.",
+						"method" => "textbox",
+						"tab" => "authentication"),
+		"ldap_dn" => 			array("friendly_name" => "LDAP DN",
+						"description" => "This is the Distinguished Name syntax, such as NTDomain\\\\&lt;username&gt;.",
+						"method" => "textbox",
+						"tab" => "authentication"),
+		"ldap_template" => 		array("friendly_name" => "LDAP Cacti Template User",
+						"description" => "This is the user that cacti will use as a template for new LDAP users.",
+						"method" => "textbox",
+						"tab" => "authentication"));
 ?>
