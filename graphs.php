@@ -398,7 +398,7 @@ function form_actions() {
 	}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will be place under the branch selected
+					<p>When you click save, the following graphs will be placed under the branch selected
 					below.</p>
 					<p>$graph_list</p>
 					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
