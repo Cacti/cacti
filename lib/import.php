@@ -727,6 +727,11 @@ function &xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 	
+	/* update field use counter cache if possible */
+	if ((isset($xml_array["input_string"])) && (!empty($data_input_id))) {
+		generate_data_input_field_sequences($xml_array["input_string"], $data_input_id, "in");
+	}
+	
 	/* status information that will be presented to the user */ 
 	$_SESSION["import_debug_info"]["type"] = (empty($_data_input_id) ? "new" : "update");
 	$_SESSION["import_debug_info"]["title"] = $xml_array["name"];
