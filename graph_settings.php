@@ -51,14 +51,10 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	global $settings_graphs;
 	
-	if (sizeof($settings_graphs) > 0) {
-	foreach (array_keys($settings_graphs) as $setting) {
-		/* we can only get away with this because all graph settings happen to be displayed on a 
-		single page */
-		$_POST[$setting] = (isset($_POST[$setting]) ? $_POST[$setting] : "");
-		
-		db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"]. ",'$setting', '" . $_POST[$setting] . "')");
-	}
+	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+		while (list($field_name, $field_array) = each($tab_fields)) {
+			db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+		}
 	}
 	
 	/* reset local settings cache so the user sees the new settings */
@@ -95,7 +91,7 @@ function settings() {
 			$sql_where = "where user_auth_tree.user_id is not null";
 		}
 		
-		$settings_graphs["default_tree_id"]["sql"] = get_graph_tree_array(true);
+		$settings_graphs["tree"]["default_tree_id"]["sql"] = get_graph_tree_array(true);
 	}
 	
 	print "<br><form method='post' action='graph_settings.php'>\n";
@@ -116,7 +112,7 @@ function settings() {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
 			
-			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));
+			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_SESSION["sess_user_id"]);
 		}
 		
 		draw_edit_form(
@@ -131,7 +127,7 @@ function settings() {
 	
 	end_box();
 	
-	form_hidden_box("referer",$_SERVER["HTTP_REFERER"],"");
+	form_hidden_box("referer",(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""),"");
 	form_hidden_box("save_component_graph_config","1","");
 	form_save_button("graph_settings.php", "save");
 }

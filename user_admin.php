@@ -153,14 +153,10 @@ function form_save() {
 			}
 		}
 		
-		if (sizeof($settings_graphs) > 0) {
-		foreach (array_keys($settings_graphs) as $setting) {
-			/* we can only get away with this because all graph settings happen to be displayed on a 
-			single page */
-			$_POST[$setting] = (isset($_POST[$setting]) ? $_POST[$setting] : "");
-			
-			db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$setting', '" . $_POST[$setting] . "')");
-		}
+		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+			while (list($field_name, $field_array) = each($tab_fields)) {
+				db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+			}
 		}
 		
 		/* reset local settings cache so the user sees the new settings */
