@@ -65,7 +65,7 @@ switch ($action) {
 		
 		while (list($var, $val) = each($form)) {
 			if (eregi("^i_", $var)) {
-				$var = substr($var,2,1);
+				$var = str_replace("i_", "", $var);
 				
 				unset($save);
 				$save["graph_template_input_id"] = $graph_template_input_id;
@@ -99,7 +99,7 @@ switch ($action) {
 		$graph_template_item_id = sql_save($save, "graph_templates_item");
 		
 		include_once ("include/utility_functions.php");
-		update_graph_item_groups($form[graph_template_item_id], $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
+		update_graph_item_groups($graph_template_item_id, $form[graph_template_item_id], $form[_graph_type_id], $form[_parent]);
 		
 		header ("Location: graph_templates.php?action=item&graph_template_id=$form[graph_template_id]");
 		break;
@@ -241,6 +241,7 @@ switch ($action) {
 			left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
 			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
 			where graph_templates_item.local_graph_id=0
+			and graph_templates_item.graph_template_id=$args[graph_template_id]
 			order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
 		
 		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
@@ -257,7 +258,15 @@ switch ($action) {
 					$old_value = "on";
 				    }
 				    
-				    $name = "Item #" . ($i+1) . ": $item[graph_type_name] ($item[consolidation_function_name])";
+				    if ($item[graph_type_name] == "GPRINT") {
+					    $start_bold = "";
+					    $end_bold = "";
+				    }else{
+					    $start_bold = "<strong>";
+					    $end_bold = "</strong>";
+				    }
+				    
+				    $name = "$start_bold Item #" . ($i+1) . ": $item[graph_type_name] ($item[consolidation_function_name])$end_bold";
 				    DrawStrippedFormItemCheckBox("i_" . $item[graph_templates_item_id], $old_value, $name,"",true);
 				    
 				    $i++;
@@ -555,13 +564,14 @@ switch ($action) {
 				    }
 				}
 				
+				$hard_return = "";
 				if ($item[hard_return] == "on") {
-				    $matrix_title .= "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+				    $hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
 				}
 				
 				?>
 				<td>
-					<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title);?><?if ($bold_this_row == true) { print "</strong>"; }?>
+					<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
 				</td>
 				<td>
 					<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item[graph_type_name];?><?if ($bold_this_row == true) { print "</strong>"; }?>
