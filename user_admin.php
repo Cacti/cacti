@@ -80,7 +80,7 @@ switch ($_REQUEST["action"]) {
     Global Form Functions
    -------------------------- */
 
-function draw_user_form_select() {
+function draw_user_form_tabs() {
 	?>
 	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
 		<tr>
@@ -94,7 +94,7 @@ function draw_user_form_select() {
 			<td></td>
 		</tr>
 	</table>
-	<br>
+	
 <?php }
 
 /* --------------------------
@@ -237,19 +237,18 @@ function graph_perms_edit() {
 		$header_label = "[edit: " . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "]";
 	}
 	
-	if (read_config_option("full_view_user_admin") == "") {
-		draw_user_form_select();
-	}
+	/* draw user admin nav tabs */
+	draw_user_form_tabs();
 	
-	start_box("", "98%", "aaaaaa", "3", "center", "");
 	?>
-		<tr bgcolor="#e5e5e5">
+	<table width='98%' align='center' cellpadding="5">
+		<tr>
 			<td>
-				Graph policies will be evaluated in the order shown until a match is found.
+				<span style='font-size: 12px; font-weight: bold;'>Graph policies will be evaluated in the order shown until a match is found.</span>
 			</td>
 		</tr>
+	</table>
 	<?php
-	end_box();
 	
 	/* box: graph permissions */
 	start_box("<strong>Graph Permissions</strong>", "98%", $colors["header"], "3", "center", "");
@@ -279,10 +278,12 @@ function graph_perms_edit() {
 		<td colspan="2">
 			<table width="100%" cellpadding="1">
 				<?php
+				$i = 0;
 				if (sizeof($graphs) > 0) {
 				foreach ($graphs as $item) {
+					$i++;
 					print "	<tr>
-							<td>" . $item["title_cache"] . "</td>
+							<td><span style='font-weight: bold; color: " . (($policy["policy_graphs"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["title_cache"] . "</td>
 							<td width='1%' align='right'><a href='user_admin.php?action=perm_remove&type=graph&id=" . $item["local_graph_id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
@@ -335,10 +336,12 @@ function graph_perms_edit() {
 		<td colspan="2">
 			<table width="100%" cellpadding="1">
 				<?php
+				$i = 0;
 				if (sizeof($hosts) > 0) {
 				foreach ($hosts as $item) {
+					$i++;
 					print "	<tr>
-							<td>" . $item["name"] . "</td>
+							<td><span style='font-weight: bold; color: " . (($policy["policy_hosts"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
 							<td width='1%' align='right'><a href='user_admin.php?action=perm_remove&type=host&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
@@ -392,10 +395,12 @@ function graph_perms_edit() {
 		<td colspan="2">
 			<table width="100%" cellpadding="1">
 				<?php
+				$i = 0;
 				if (sizeof($graph_templates) > 0) {
 				foreach ($graph_templates as $item) {
+					$i++;
 					print "	<tr>
-							<td>" . $item["name"] . "</td>
+							<td><span style='font-weight: bold; color: " . (($policy["policy_graph_templates"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
 							<td width='1%' align='right'><a href='user_admin.php?action=perm_remove&type=graph_template&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
@@ -449,10 +454,12 @@ function graph_perms_edit() {
 		<td colspan="2">
 			<table width="100%" cellpadding="1">
 				<?php
+				$i = 0;
 				if (sizeof($trees) > 0) {
 				foreach ($trees as $item) {
+					$i++;
 					print "	<tr>
-							<td>" . $item["name"] . "</td>
+							<td><span style='font-weight: bold; color: " . (($policy["policy_trees"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
 							<td width='1%' align='right'><a href='user_admin.php?action=perm_remove&type=tree&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
@@ -484,9 +491,7 @@ function graph_perms_edit() {
 	form_hidden_id("user_id",(isset($_GET["id"]) ? $_GET["id"] : "0"));
 	form_hidden_box("save_component_graph_perms","1","");
 	
-	if (read_config_option("full_view_user_admin") == "") {
-		form_save_button("user_admin.php");
-	}
+	form_save_button("user_admin.php");
 }
 
 /* --------------------------
@@ -521,8 +526,9 @@ function user_edit() {
 		$header_label = "[new]";
 	}
 	
-	if (read_config_option("full_view_user_admin") == "") {
-		draw_user_form_select();
+	if (!empty($_GET["id"])) {
+		/* draw user admin nav tabs */
+		draw_user_form_tabs();
 	}
 	
 	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -713,14 +719,7 @@ function user_edit() {
 	form_hidden_id("_policy_graph_templates",(isset($user) ? $user["policy_graph_templates"] : "2"));
 	form_hidden_box("save_component_user","1","");
 	
-	if (read_config_option("full_view_user_admin") == "") {
-		form_save_button("user_admin.php");
-	}
-	
-	if (read_config_option("full_view_user_admin") == "on") {
-		graph_perms_edit();
-		graph_config_edit();
-	}
+	form_save_button("user_admin.php");
 }
 
 function user() {
