@@ -24,10 +24,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/* since we'll have addition headers, tell php when to flush them */
+ob_start();
+
 $guest_account = true; include ('include/auth.php');
 include_once ("include/rrd_functions.php");
 
 header("Content-type: image/png");
+
+/* flush the headers now */
+ob_end_flush();
 
 $graph_data_array = array();
 
