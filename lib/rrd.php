@@ -247,11 +247,6 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
-function cmp($a, $b) {
-	if ($a == $b) return 0;
-	return ($a > $b) ? -1 : 1;
-}
-
 /* rrdtool_function_fetch - given a data source, return all of its data in an array
    @arg $local_data_id - the data source to fetch data for
    @arg $seconds - the number of seconds into the past to fetch data for
