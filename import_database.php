@@ -405,6 +405,8 @@ foreach ($_ds as $item) {
 							print "   FAIL: Data Source Data: $field_value\n";
 						}
 					}
+					
+					$traffic_graphs{$item["ID"]} = $data_template_data_cache{$item["ID"]};
 				}elseif ($item["SrcID"] == "13") {
 					if ((!empty($item2["Value"])) && ($item2["FieldID"] == "41")) {
 						$field_value = $item2["Value"];
@@ -548,7 +550,7 @@ db_execute("delete from $database.graph_templates_graph where local_graph_id > 0
 db_execute("delete from $database.graph_templates_item where local_graph_id > 0");
 
 $_graphs = db_fetch_assoc("select * from $database_old.rrd_graph");
-
+print_r($traffic_graphs);
 if (sizeof($_graphs) > 0) {
 foreach ($_graphs as $item) {
 	if (db_execute("insert into graph_local (id,graph_template_id) values (0,0)")) {
@@ -584,6 +586,11 @@ foreach ($_graphs as $item) {
 				
 				if (!isset($data_template_rrd_cache{$item2["DSID"]})) {
 					$data_template_rrd_cache{$item2["DSID"]} = 0;
+				}
+				
+				/* this is a traffic graph */
+				if ((isset($traffic_graphs{$item2["DSID"]})) && (sizeof($_graph_items) == 8)) {
+					change_graph_template($local_graph_id_cache{$item["ID"]}, 1, true);
 				}
 				
 				if (db_execute("insert into graph_templates_item (id,local_graph_template_item_id,
@@ -674,25 +681,5 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 }
 
 repopulate_poller_cache();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ?>
