@@ -113,12 +113,12 @@ function form_save() {
 				/* push out relavant fields to data sources using this host */
 				push_out_host($host_id,0);
 				
+				/* the host subsitution cache is now stale; purge it */
+				kill_session_var("sess_host_cache_array");
+				
 				/* update title cache for graph and data source */
 				update_data_source_title_cache_from_host($host_id);
 				update_graph_title_cache_from_host($host_id);
-				
-				/* the host subsitution cache is now stale; purge it */
-				kill_session_var("sess_host_cache_array");
 			}else{
 				raise_message(2);
 			}
@@ -203,6 +203,9 @@ function host_remove() {
 		db_execute("delete from host where id=" . $_GET["id"]);
 		db_execute("delete from host_snmp_query where host_id=" . $_GET["id"]);
 		db_execute("delete from host_snmp_cache where host_id=" . $_GET["id"]);
+		
+		db_execute("update data_local set host_id=0 where host_id=" . $_GET["id"]);
+		db_execute("update graph_local set host_id=0 where host_id=" . $_GET["id"]);
 	}
 }
 
