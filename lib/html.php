@@ -63,6 +63,41 @@ function html_end_box($trailing_br = true) { ?>
 	<?php if ($trailing_br == true) { print "<br>"; } ?>
 <?php }
 
+/* html_header - draws a header row suitable for display inside of a box element
+   @arg $header_items - an array containing a list of items to be included in the header
+   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+function html_header($header_items, $last_item_colspan = 1) {
+	global $colors;
+
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+
+	for ($i=0; $i<count($header_items); $i++) {
+		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='textSubHeaderDark'>" . $header_items[$i] . "</td>\n";
+	}
+
+	print "</tr>\n";
+}
+
+/* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
+     suitable for display inside of a box element
+   @arg $header_items - an array containing a list of items to be included in the header
+   @arg $form_action - the url to post the 'select all' form to */
+function html_header_checkbox($header_items, $form_action = "") {
+	global $colors;
+
+	/* default to the 'current' file */
+	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
+
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+
+	for ($i=0; $i<count($header_items); $i++) {
+		print "<td class='textSubHeaderDark'>" . $header_items[$i] . "</td>\n";
+	}
+
+	print "<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n<form name='chk' method='post' action='$form_action'>\n";
+	print "</tr>\n";
+}
+
 /* create_list - draws the items for an html dropdown given an array of data
    @arg $form_data - an array containing data for this dropdown. it can be formatted
      in one of two ways:
