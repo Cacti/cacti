@@ -41,18 +41,17 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	$retries = read_config_option("snmp_retries");
 	if ($retries == "") $retries = 3;
 
-	/* always use SNMP version 1 for UI stuff */
-	if ($environ == SNMP_WEBUI) {
-		$version = "1";
-	}
-
-	if (($config["php_snmp_support"] == true) && ($version == "1")) {
+	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
 
-		$snmp_value = @snmpget("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
-	}else{
+		if ($version == "1") {
+			$snmp_value = @snmpget("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+		}else {
+			$snmp_value = @snmp2_get("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+		}
+	}else {
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
 
@@ -97,13 +96,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$retries = read_config_option("snmp_retries");
 	if ($retries == "") $retries = 3;
 
-	/* always use SNMP version 1 for UI stuff */
-	if ($environ == SNMP_WEBUI) {
-		$version = "1";
-	}
-
-	if (($config["php_snmp_support"] == true) && ($version == "1")) {
-		$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
+		if ($version == "1") {
+			$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+		} else {
+			$temp_array = @snmp2_walk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+		}
 
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
@@ -181,6 +179,24 @@ function format_snmp_string($string) {
 	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
 
 	return trim($string);
+}
+
+function snmp_get_method($version = 1) {
+	if ((function_exists("snmpget")) && ($version == 1)) {
+		return SNMP_METHOD_PHP;
+	}else if ((function_exists("snmp2_get")) && ($version == 2)) {
+		return SNMP_METHOD_PHP;
+	}else if ((($version == 2) || ($version == 3)) && (file_exists(read_config_option("path_snmpget")))) {
+		return SNMP_METHOD_BINARY;
+	}else if (function_exists("snmpget")) {
+		/* last resort (hopefully it isn't a 64-bit result) */
+		return SNMP_METHOD_PHP;
+	}else if (file_exists(read_config_option("path_snmpget"))) {
+		return SNMP_METHOD_BINARY;
+	}else{
+		/* looks like snmp is broken */
+		return SNMP_METHOD_BINARY;
+	}
 }
 
 ?>
