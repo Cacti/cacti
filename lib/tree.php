@@ -202,8 +202,11 @@ function delete_branch($tree_item_id) {
 	$i = 0; $ctr = 0; $_suffix_order_key = 0;
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $tree_item) {
-		/* ignore first entry */
-		if ($ctr > 0) {
+		/* ignore the first entry IF:
+		  - it is the first item && the second item is a child of the first item (ie. they are
+		    not on the same tier
+		  * we do this so the parent item is not touched during cleanup */
+		if (($ctr > 0) || ((sizeof($tree) > 1) && (tree_tier($tree[0]["order_key"], 2) == tree_tier($tree[1]["order_key"], 2)))) {
 			$suffix_order_key = substr($tree_item["order_key"], (2 * $starting_tier));
 			
 			if ((!ereg("[1-9]+",$suffix_order_key)) || ($suffix_order_key < $_suffix_order_key) || ($ctr==1 && $i==0)) {
