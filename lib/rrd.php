@@ -23,6 +23,8 @@
 */?>
 <?
 
+define("RRD_NL", " \\\n");
+
 function bufprint($text) {
 	$_SESSION["sess_debug_buffer"] .= $text;
 }
@@ -50,9 +52,9 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 	}
 	
 	/* use popen to eliminate the zombie issue */
-	if ($config[cacti_server_os] == "unix") {
+	if ($config["cacti_server_os"] == "unix") {
 		$fp = popen(read_config_option("path_rrdtool") . " $command_line", "r");
-	}elseif ($config[cacti_server_os] == "win32") {
+	}elseif ($config["cacti_server_os"] == "win32") {
 		$fp = popen(read_config_option("path_rrdtool") . " $command_line", "rb");
 	}
 	
@@ -82,133 +84,115 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 	}
 }
 
-function rrdtool_function_create($dsid, $show_source) {
-    global $config;
-    include_once ('include/functions.php');
-    
-    $data_source_path = GetDataSourcePath($dsid, true);
-    
-    /* ok, if that passes lets check to make sure an rra does not already
+function rrdtool_function_create($local_data_id, $show_source) {
+	include_once ("functions.php");
+	include ("config_arrays.php");
+	
+	$data_source_path = get_data_source_path($local_data_id, true);
+	
+	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overright data! */
-    if ($show_source != true) {
+	if ($show_source != true) {
 		if (file_exists($data_source_path) == true) {
-		    return -1;
+			return -1;
 		}
-    }
-    
-    /* the first thing we must do is make sure there is at least one
+	}
+	
+	/* the first thing we must do is make sure there is at least one
 	rra associated with this data source... * 
 	UPDATE: As of version 0.6.6, we are splitting this up into two
 	SQL strings because of the multiple DS per RRD support. This is 
 	not a big deal however since this function gets called once per
 	data source */
-    
-    $rra_list = db_fetch_assoc("select 
-		d.Step,
-		r.*,
-		c.name as CName,
-		(r.rows*r.steps) as RS
-		from rrd_ds d left join lnk_ds_rra l on l.dsid=d.id
-		left join rrd_rra r on l.rraid=r.id
-		left join lnk_rra_cf rc on rc.rraid=r.id
-		left join def_cf c on rc.consolidationfunctionid=c.id
-		where d.id=$dsid
-		order by rc.consolidationfunctionid, rs");
-    
-    /* if we find that this DS has no RRA associated; get out */
-    if (sizeof($rra_list) <= 0) {
-		LogData("There are no RRA's assigned to DSID $dsid!");
+	
+	$rras = db_fetch_assoc("select 
+		data_template_data.rrd_step,
+		rra.x_files_factor,
+		rra.steps,
+		rra.rows,
+		rra_cf.consolidation_function_id,
+		(rra.rows*rra.steps) as rra_order
+		from data_template_data
+		left join data_template_data_rra on data_template_data.id=data_template_data_rra.data_template_data_id
+		left join rra on data_template_data_rra.rra_id=rra.id
+		left join rra_cf on rra.id=rra_cf.rra_id
+		where data_template_data.local_data_id=$local_data_id
+		order by rra_cf.consolidation_function_id,rra_order");
+	
+	/* if we find that this DS has no RRA associated; get out */
+	if (sizeof($rras) <= 0) {
+		LogData("There are no RRA's assigned to local_data_id: $local_data_id!");
 		return -1;
-    }
-    
-    /* create the "--step" line */
-    $create_ds .= " \\\n--step ".$rra_list[0][Step]." \\\n";
-    
-    /* query the data sources to be used in this .rrd file */
-    $ds_list = db_fetch_assoc("select 
-		d.ID, d.Heartbeat, d.MinValue, d.MaxValue,d.SubDSID,
-		t.Name
-		from rrd_ds d left join def_ds t on d.datasourcetypeid=t.id
-		where d.id=$dsid
-		or d.subdsid=$dsid
-		order by d.id");
-    $rows = sizeof($ds_list);
-    
-    /* ONLY make a new DS entry if:
-     - There is multiple data sources and this item is not the main one.
-     - There is only one data source (then use it) */
-    
-    if ($rows > 0) {
-		foreach ($ds_list as $ds) {
-		    if ((($rows > 1) && ($ds[SubDSID] != 0)) || ($rows == 1)) {
-				/* use the cacti ds name by default or the user defined one, if entered */
-				$data_source_name = GetDataSourceName($ds[ID]);
-				
-				$create_ds .= "DS:$data_source_name:" . 
-					$ds[Name] . ":" . 
-					$ds[Heartbeat] . ":" . 
-					$ds[MinValue] . ":" . 
-					$ds[MaxValue] . " \\\n";
-			}
-		}
-    }
-    
-    /* loop through each available RRA for this DS */
-    
-    foreach ($rra_list as $rra) {
-		$create_rra .= "RRA:$rra[CName]:$rra[XFilesFactor]:$rra[Steps]:$rra[Rows] \\\n";
-    }
-    
-    if ($show_source == true) {
-		return read_config_option("path_rrdtool") . " create \\\n$data_source_path$create_ds$create_rra";
-    }else{
+	}
+	
+	/* create the "--step" line */
+	$create_ds .= RRD_NL . "--step ". $rras[0]["rrd_step"] . " " . RRD_NL;
+	
+	/* query the data sources to be used in this .rrd file */
+	$data_sources = db_fetch_assoc("select
+		data_template_rrd.rrd_heartbeat,
+		data_template_rrd.rrd_minimum,
+		data_template_rrd.rrd_maximum,
+		data_template_rrd.data_source_type_id
+		from data_template_rrd
+		where data_template_rrd.local_data_id=$local_data_id");
+	
+	/* ONLY make a new DS entry if:
+	- There is multiple data sources and this item is not the main one.
+	- There is only one data source (then use it) */
+	
+	if (sizeof($data_sources) > 0) {
+	foreach ($data_sources as $data_source) {
+		/* use the cacti ds name by default or the user defined one, if entered */
+		$data_source_name = get_data_source_name($local_data_id);
+	
+		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . $data_source["rrd_maximum"] . RRD_NL;
+	}
+	}
+	
+	/* loop through each available RRA for this DS */
+	foreach ($rras as $rra) {
+		$create_rra .= "RRA:" . $consolidation_functions{$rra["consolidation_function_id"]} . ":" . $rra["x_files_factor"] . ":" . $rra["steps"] . ":" . $rra["rows"] . RRD_NL;
+	}
+	
+	if ($show_source == true) {
+		return read_config_option("path_rrdtool") . " create" . RRD_NL . "$data_source_path$create_ds$create_rra";
+	}else{
 		if (read_config_option("log_create") == "on") { $log_data = true; }
 		rrdtool_execute("create $data_source_path $create_ds$create_rra",$log_data,1);
-    }
+	}
 }
 
-function rrdtool_function_update($dsid, $multi_data_source, $show_source) {
-    global $config;
+function rrdtool_function_update($local_data_id, $show_source) {
 	include_once ('include/functions.php');
 	
-    $data_source_path = GetDataSourcePath($dsid, true);
-    
-    if ($multi_data_source == "") {
-		/* find out if this DS has multiple outputs */
-		$multi = db_fetch_assoc("select ID from rrd_ds where subdsid=$dsid");
-		
-		if (sizeof($multi) <= 0) {
-		    $multi_data_source = false;
-		}else{
-		    $multi_data_source = true;
-		}
-    }
-    
-    if ($multi_data_source == true) {
+	$data_source_path = get_data_source_path($local_data_id, true);
+	
+	if ($multi_data_source == true) {
 		/* multi DS: This string joins on the rrd_ds->src_fields to get the 
 		field names */
 		$data = db_fetch_assoc("select 
-			d.DSName,
-			a.Value
-			from rrd_ds d left join src_fields f on d.subfieldid=f.id 
-			left join src_data a on d.id=a.dsid
-			where d.subdsid=$dsid
-			and f.inputoutput=\"out\"
-			and f.updaterra=\"on\"
-			order by d.id");
-    }else{
+		d.DSName,
+		a.Value
+		from rrd_ds d left join src_fields f on d.subfieldid=f.id 
+		left join src_data a on d.id=a.dsid
+		where d.subdsid=$dsid
+		and f.inputoutput=\"out\"
+		and f.updaterra=\"on\"
+		order by d.id");
+	}else{
 		/* single DS: This string joins on the src_data->src_fields table to get 
 		the field name */
 		$data = db_fetch_assoc("select 
-			d.DSName,
-			a.Value
-			from rrd_ds d left join src_data a on d.id=a.dsid
-			left join src_fields f on a.fieldid=f.id 
-			where d.id=$dsid
-			and f.inputoutput=\"out\"
-			and f.updaterra=\"on\"
-			order by d.id");
-    }
+		d.DSName,
+		a.Value
+		from rrd_ds d left join src_data a on d.id=a.dsid
+		left join src_fields f on a.fieldid=f.id 
+		where d.id=$dsid
+		and f.inputoutput=\"out\"
+		and f.updaterra=\"on\"
+		order by d.id");
+	}
     
     /* setup the counter */
     $rows = sizeof($data);
@@ -288,19 +272,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	include_once ("functions.php");
 	include ("config_arrays.php");
 	
-	define("RRD_NL", ' \\\n');
-	
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
 	if (read_config_option("global_auth") == "on") {
-		global $HTTP_COOKIE_VARS;
+		$user_auth = db_fetch_row("select user_id from user_auth_graph where local_graph_id=$local_graph_id and user_id=" . $_SESSION["sess_user_id"]);
 		
-		$user_auth = db_fetch_row("select UserID from auth_graph where graphid=$local_graph_id and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],read_config_option("guest_user")));
-		
-		if ($config["graph_policy"]["auth"] == "1") {
+		if ($current_user["graph_policy"] == "1") {
 			if (sizeof($user_auth) > 0) { $access_denied = true; }
-		}elseif ($config["graph_policy"]["auth"] == "2") {
-			if (sizeof($user_auth) <= 0) { $access_denied = true; }
+		}elseif ($current_user["graph_policy"] == "2") {
+			if (sizeof($user_auth) == 0) { $access_denied = true; }
 		}
 		
 		if ($access_denied == true) {
@@ -327,7 +307,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
     	
 	$graph = db_fetch_row("select
 		graph_templates_graph.title,
-		graph_templates_graph.vertical_label
+		graph_templates_graph.vertical_label,
 		graph_templates_graph.auto_scale,
 		graph_templates_graph.auto_scale_opts,
 		graph_templates_graph.auto_scale_log,
@@ -343,7 +323,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		graph_templates_graph.unit_exponent_value,
 		graph_templates_graph.export
 		from graph_templates_graph
-		where graph_templates_graph.local_graph_id=14");
+		where graph_templates_graph.local_graph_id=$local_graph_id");
 	
     	/* lets make that sql query... */
     	$graph_items = db_fetch_assoc("select
@@ -353,15 +333,17 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		graph_templates_item.value,
 		graph_templates_item.hard_return,
 		graph_templates_item.consolidation_function_id,
-		graph_templates_item.graph_type_id
-		graph_templates_item.gprint_id,
+		graph_templates_item.graph_type_id,
+		graph_templates_gprint.gprint_text,
 		colors.hex,
 		data_template_rrd.id as data_template_rrd_id,
+		data_template_rrd.local_data_id,
 		data_template_rrd.data_source_name
 		from graph_templates_item
 		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join colors on graph_templates_item.color_id=colors.id
-		where graph_templates_item.local_graph_id=14
+		left join graph_templates_gprint on graph_templates_item.gprint_id=graph_templates_gprint.id
+		where graph_templates_item.local_graph_id=$local_graph_id
 		order by graph_templates_item.sequence");
 	
   	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
@@ -471,7 +453,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		and d.dsname is not null
 		$sql_group_by");
 		$rows_defs = sizeof($defs);*/
-    
+    	
+	$i = 0;
     	if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
 		if (ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) {
@@ -494,7 +477,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			
 			$graph_defs .= "DEF:" . generate_graph_def_name(("$i")) . "=\"$data_source_path\":$data_source_name:" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
 			
-			//$cf_ds_cache[$def[ID]][$def[ConsolidationFunction]] = "$i";
+			$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
 			//$graph_group_cache[$def[IID]] = "$i";
 			
 			$i++;
@@ -577,9 +560,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		data source of global cdef, but is unique when those two variables combine. */
 		$cdef_graph_defs = "";
 		
-		if (($item[CDEFID] != "0") && (isset($cdef_cache[$item[CDEFID]][$item[ID]]) == false)) {
+		if (($graph_item["cdef_id"] != "0") && (isset($cdef_cache[$graph_item["cdef_id"]][$graph_item["graph_templates_item_id"]]) == false)) {
 		/* pull out what kind of cdef type this is */
-		$cdef_type = db_fetch_cell("select Type from rrd_ds_cdef where id=$item[CDEFID]");
+		$cdef_type = db_fetch_cell("select Type from rrd_ds_cdef where id=" . $graph_item["cdef_id"]);
 		
 		/* get all of the items for this cdef */
 		$cdef_items = db_fetch_assoc("select case
@@ -603,7 +586,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		}
 		
 		/* make the initial "virtual" cdef name: 'cdef' + md5(dsid) */
-		$cdef_graph_defs .= "CDEF:cdef" . CreateGraphDefName("$i") . "=";
+		$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name("$i") . "=";
 		$i_cdef = 0;
 		
 		/* form the cdef string by looping through each item. Additionally MD5 hash each
@@ -614,9 +597,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		foreach ($cdef_items as $cdef_item) {
 		if ($cdef_item[Type] == "Data Source") {
 		if ($cdef_item[CurrentDS] == "on") {
-		$cdef_current_item = CreateGraphDefName($cf_ds_cache[$item[ID]][$cf_id]);
+		$cdef_current_item = generate_graph_def_name($cf_ds_cache[$item[ID]][$cf_id]);
 		}else{
-		$cdef_current_item = CreateGraphDefName($cf_ds_cache[$cdef_item[DSID]][$cf_id]);
+		$cdef_current_item = generate_graph_def_name($cf_ds_cache[$cdef_item[DSID]][$cf_id]);
 		}
 		}else{
 		$cdef_current_item = $cdef_item[CDEF];
@@ -656,22 +639,22 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$text_padding = "";
 			}
 			
-			$last_graph_type = $item[TName];
+			$last_graph_type = $graph_item_types{$graph_item["graph_type_id"]};
 		}
-
+		
 	
 		/* we put this in a variable so it can be manipulated before mainly used
 		if we want to skip it, like below */
-		$current_graph_item_type = $item[TName];
+		$current_graph_item_type = $graph_item_types{$graph_item["graph_type_id"]};
 		
 		/* CF rules: if we are using a CF because it's defined in the AREA, STACK, LINE[1-3] then
 		it is ok to use it elsewhere on the graph. But it is not ok to use a CF DEF because
 		its used in a GPRINT; so check that here */
-		//if ((isset($cf_ds_cache[$item[ID]][$item[ConsolidationFunction]])) && ($item[TName] != "GPRINT")) {
-		//	$cf_id = $item[ConsolidationFunction];
-		//}else{
-		//	$cf_id = 1; /* CF: AVERAGE */
-		//}
+		if ((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]})) && ($graph_item_types{$graph_item["graph_type_id"]} != "GPRINT")) {
+			$cf_id = $graph_item["consolidation_function_id"];
+		}else{
+			$cf_id = 1; /* CF: AVERAGE */
+		}
 		
 		/* make sure grouping is on, before we make decisions based on the group */
 		//if ($graph[Grouping] == "on") {
@@ -681,13 +664,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		//$current_graph_item_type = "SKIP";
 		//}
 		//}
-		
 		/* use cdef if one if specified */
-		//if ($item[CDEFID] == "0") {
-		//$data_source_name = CreateGraphDefName($cf_ds_cache[$item[ID]][$cf_id]);
-		//}else{
-		//$data_source_name = "cdef" . CreateGraphDefName($cdef_cache[$item[CDEFID]][$item[ID]]);
-		//}
+		if ($graph_item["cdef_id"] == "0") {
+			$data_source_name = generate_graph_def_name($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]);
+		}else{
+			$data_source_name = "cdef" . generate_graph_def_name($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]});
+		}
 		
 		/* +++++++++++++++++++++++ GRAPH ITEMS +++++++++++++++++++++++ */
 		
@@ -697,58 +679,49 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		switch ($graph_item_types{$graph_item["graph_type_id"]}) {
 		case 'AREA':
 			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
 			"\"$text_format[$i]$hardreturn[$i]\" ";
 			break;
 		case 'STACK':
 			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" .
 			"\"$text_format[$i]$hardreturn[$i]\" ";
 			break;
 		case 'LINE1':
 			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
 			"\"$text_format[$i]$hardreturn[$i]\" ";
 			break;
 		case 'LINE2':
 			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
 			"\"$text_format[$i]$hardreturn[$i]\" ";
 			break;
 		case 'LINE3':
 			$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
 			$data_source_name . "#" . 
 			$graph_item["hex"] . ":" . 
 			"\"$text_format[$i]$hardreturn[$i]\" ";
 			break;
 		case 'COMMENT':
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
 			"$text_format[$i]$hardreturn[$i]\" ";
 			break;
 		case 'GPRINT':
 			if ($graph_data_array["graph_nolegend"] != true) {
-				if ($item[GprintCustom] == "") {
-					switch ($item[GprintOpts]) {
-						case "1":
-						$gprint_text = "%8.2lf %s"; break;
-						case "2":
-						$gprint_text = "%8.0lf"; break;
-					}
-				}else{
-					$gprint_text = $item[GprintCustom];
-				}
+				$gprint_text = $graph_item["gprint_text"];
 			
 				$text_format[$i] = ereg_replace (":", "\:" ,$text_format[$i]); /* escape colons */
-				$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
 				$data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} .
 				":\"$text_padding$text_format[$i]$gprint_text$hardreturn[$i]\" ";
 			}
@@ -763,7 +736,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$value_format[$i] = ereg_replace (":", "\:" ,$value_format[$i]); /* escape colons */
 			}
 			
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
 			$value_format[$i] . "#" . $graph_item["hex"] . ":\"" . 
 			"$text_format[$i]$hardreturn[$i]\" ";
 			break;
@@ -773,7 +746,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			$value_array = explode(":", $graph_item["value"]);
 			$value = date("U", mktime($value_array[0],$value_array[1],0));
 			
-			$graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
 			$value . "#" . $graph_item["hex"] . ":\"" . 
 			"$text_format[$i]$hardreturn[$i]\" ";
 			break;
@@ -782,14 +755,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$i++;
 		
 		if ($i < sizeof($graph_items)) {
-		    $graph_items .= "\\\n";
+			$txt_graph_items .= RRD_NL;
 		}
 	}
 	}
     
 	/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
 	if ($graph_data_array["print_source"] == "true") {
-		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$graph_items</PRE>";
+		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items</PRE>";
 	}else{
 		if ($graph_data_array["export"] == true) {
 			rrdtool_execute("graph $graph_opts$graph_defs$graph_items", false, "0");
