@@ -1,6 +1,7 @@
 #include "inc.h"
 
 target_t *targets = NULL;
+target_t *current = NULL;
 int entries = 0;
 conf_t conf;
 
@@ -19,6 +20,7 @@ int main(void){
   printf("INIT: ready\n");
 
   while(1){
+    current=targets;
     poller();
     sleep(conf.interval);
   }

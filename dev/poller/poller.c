@@ -1,6 +1,6 @@
 #include "inc.h"
 
-extern target_t *targets;
+extern target_t *current;
 
 void *poller(){
   target_t *entry = NULL;
@@ -11,15 +11,15 @@ void *poller(){
   char **rrdargv;
   int rrdargc;
 
-  if(targets==NULL) printf("bqqqq!!!\n");
+  if(current==NULL) printf("bqqqq!!!\n");
 
-  while(targets != NULL){
-    entry = targets;
-    if(targets->next != NULL) targets = targets->next;
-    else targets = NULL;
+  while(current != NULL){
+    entry = current;
+    if(current->next != NULL) current = current->next;
+    else current = NULL;
     printf("management_ip: %s\n", entry->management_ip);
     
-    if(targets !=NULL && entry->local_data_id == targets->local_data_id){
+    if(current !=NULL && entry->local_data_id == current->local_data_id){
       printf("Multi DS RRA\n");
       printf("Not Implemented Yet!\n");
     } else {
