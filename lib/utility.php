@@ -147,7 +147,7 @@ function update_poller_cache($local_data_id) {
 
 					/* get any extra arguments that need to be passed to the script */
 					if (!empty($script_queries["arg_prepend"])) {
-						$extra_arguments = substitute_host_data($script_queries["arg_prepend"], "|", "|", $host["id"]);
+						$extra_arguments = substitute_host_data($script_queries["arg_prepend"], "|", "|", $host_id);
 					}else{
 						$extra_arguments = "";
 					}
