@@ -328,6 +328,8 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 			$log_type = "warn";
 		else if (substr_count($string,"STATS:"))
 			$log_type = "stat";
+		else if (substr_count($string,"NOTICE:"))
+			$log_type = "note";
 
 		if (strlen($log_type)) {
 			define_syslog_variables();
@@ -345,7 +347,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 				syslog(LOG_WARNING, $message);
 			}
 
-			if ($log_type == "stat") {
+			if (($log_type == "stat") || ($log_type == "note")){
 				syslog(LOG_INFO, $message);
 			}
 
@@ -375,7 +377,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		/* update total polls, failed polls and availability */
 		$hosts[$host_id]["failed_polls"] .= + 1;
 		$hosts[$host_id]["total_polls"] .= + 1;
-		$hosts[$host_id]["availability"] = ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
+		$hosts[$host_id]["availability"] = 100 * ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
 		/* determine the error message to display */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
@@ -389,7 +391,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		/* determine if to send an alert and update remainder of statistics */
 		if ($hosts[$host_id]["status"] == HOST_UP) {
 			/* increment the event failure count */
-			$hosts[$host_id]["status_enent_count"] .= + 1;
+			$hosts[$host_id]["status_event_count"] .= + 1;
 
 			/* if it's time to issue an error message, indicate so */
 			if ($ping_failure_count >= $hosts[$host_id]["status_event_count"]) {

@@ -69,11 +69,11 @@ if ( $_SERVER["argc"] == 1 ) {
 	$print_data_to_stdout = false;
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
-			$hosts = db_fetch_assoc("select * from host where disabled = ''" .
-					"WHERE (host_id >= " .
+			$hosts = db_fetch_assoc("select * from host where (disabled = '' and " .
+					"id >= " .
 					$_SERVER["argv"][1] .
-					" and host_id <= " .
-					$_SERVER["argv"][2] . ") ORDER by host_id");
+					" and id <= " .
+					$_SERVER["argv"][2] . ") ORDER by id");
 			$hosts = array_rekey($hosts,"id",$host_struc);
 			$host_count = sizeof($hosts);
 
@@ -154,16 +154,19 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			/* if we are only allowed to use an snmp check and this host does not support snnp, we
 			must assume that this host is up */
 			if (($ping_availability == AVAIL_SNMP) && ($item["snmp_community"] == "")) {
-				$host_down = update_host_status(HOST_UP,$host_id, $hosts, $ping, $ping_availability);
+				$host_down = false;
+				update_host_status(HOST_UP,$host_id, $hosts, $ping, $ping_availability);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 					cacti_log("Host[$host_id] No host availability check possible for '" . $item["hostname"] . "'.", $print_data_to_stdout);
 				}
 			}else{
 				if ($ping->ping($ping_availability, read_config_option("ping_method"), read_config_option("ping_timeout"), read_config_option("ping_reties"))) {
-					$host_down = update_host_status(HOST_UP,$host_id, $hosts, $ping, $ping_availability,$print_data_to_stdout);
+					$host_down = true;
+					update_host_status(HOST_UP,$host_id, $hosts, $ping, $ping_availability,$print_data_to_stdout);
 				}else{
-					$host_down = update_host_status(HOST_DOWN,$host_id, $hosts, $ping, $ping_availability,$print_data_to_stdout);
+					$host_down = false;
+					update_host_status(HOST_DOWN,$host_id, $hosts, $ping, $ping_availability,$print_data_to_stdout);
 				}
 			}
 
