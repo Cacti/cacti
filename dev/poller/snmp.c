@@ -35,9 +35,13 @@ int snmp_get(char *snmp_host, char *snmp_comm, char *snmp_oid, int who){
       vars = response->variables;
       snprint_value(result_string, BUFSIZE, anOID, anOID_len, vars);
       printf("[%i] SNMP: %s\n", who, result_string);
-      result = vars->val.counter64->high;
-      result = result << 32;
-      result = result + vars->val.counter64->low;
+      //if counter is 64bit
+      if(vars->val.counter64!=NULL){
+        printf("vars on null\n");
+        result = vars->val.counter64->high;
+        result = result << 32;
+        result = result + vars->val.counter64->low;
+      }
     }
   } else printf("[%i] SNMP: (%s) Bad descriptor.\n",who, session.peername);
 
