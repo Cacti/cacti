@@ -193,9 +193,8 @@ function host_edit() {
 	
 	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 		<td width="50%">
-			<font class="textEditTitle">Host Template</font><br>
-			Choose what type of host, host template this is. The host template will govern what kinds
-			of data should be gathered from this type of host.
+			<font class="textEditTitle">SNMP Version</font><br>
+			Choose the SNMP version for this host.
 		</td>
 		<?DrawFormItemDropdownFromSQL("snmp_version",$snmp_versions,"","",$host[snmp_version],"","1");?>
 	</tr>
