@@ -133,7 +133,7 @@ function utilities_view_poller_cache() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); 
 		?>
 			<td>
-				Data Source: <?php print expand_title($item["host_id"], $item["name"]);?>
+				Data Source: <?php print get_data_source_title($item["local_data_id"]);?>
 			</td>
 		</tr>
 		<?php

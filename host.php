@@ -270,8 +270,8 @@ function host_new_graphs_save() {
 							$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
 							
 							/* if there are no '|' characters, all of the subsitutions were successful */
-							if (!strstr($subs_string, "|squery")) {
-								$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $subs_string;
+							if (!strstr($subs_string, "|query")) {
+								$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $suggested_value["text"];
 							}
 						}
 					}
@@ -333,8 +333,8 @@ function host_new_graphs_save() {
 								$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
 								
 								/* if there are no '|' characters, all of the subsitutions were successful */
-								if (!strstr($subs_string, "|squery")) {
-									$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $subs_string;
+								if (!strstr($subs_string, "|query")) {
+									$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $suggested_value["text"];
 								}
 							}
 						}
@@ -431,6 +431,16 @@ function host_new_graphs_save() {
 				/* set the expected output type (ie. bytes, errors, packets) */
 				$data_input_field_id = db_fetch_cell("select data_input_field_id from snmp_query_field where snmp_query_id=" . $matches[1] . " and action_id=3");
 				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id,$data_template_data_id,'','" . $snmp_query_to_snmp_query_graphs_array{$matches[1]} . "')");
+				
+				/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
+				update_data_source_snmp_query_cache($local_data_id);
+			}
+			
+			reset($new_graph_snmp_indexes{$matches[1]});
+			
+			while (list($local_graph_id, $snmp_index) = each($new_graph_snmp_indexes{$matches[1]})) {
+				/* now that we have put data into the 'data_input_data' table, update the snmp cache for graphs */
+				update_graph_snmp_query_cache($local_graph_id);
 			}
 		}
 	}

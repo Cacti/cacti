@@ -170,6 +170,8 @@ function form_save() {
 					/* reset current host for display purposes */
 					$_SESSION["sess_data_source_current_host_id"] = $_POST["host_id"];
 				}
+			}elseif (!empty($_POST["data_template_id"])) {
+				update_data_source_snmp_query_cache($local_data_id);
 			}
 			
 			/* if no data source path has been entered, generate one */
@@ -569,7 +571,7 @@ function ds_edit() {
 		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["id"]);
 		$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 		
-		$header_label = "[edit: " . expand_title($host_id, $data["name"]) . "]";
+		$header_label = "[edit: " . get_data_source_title($_GET["id"]) . "]";
 		
 		if ($data["data_template_id"] == "0") {
 			$use_data_template = false;
@@ -937,7 +939,7 @@ function ds() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(expand_title($data_source["host_id"], $data_source["name"]), read_config_option("max_title_data_source")));?></a>
+				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(get_data_source_title($data_source["local_data_id"]), read_config_option("max_title_data_source")));?></a>
 			</td>
 			<td>
 				<?php print $data_source["data_input_name"];?>

@@ -359,31 +359,49 @@ function clean_up_name($string) {
 
 function get_data_source_title($local_data_id) {
 	$data = db_fetch_row("select
-		data_local.host_id,data_template_data.name
+		data_local.host_id,
+		data_local.snmp_query_id,
+		data_local.snmp_index,
+		data_template_data.name
 		from data_template_data,data_local
 		where data_template_data.local_data_id=data_local.id
 		and data_local.id=$local_data_id");
 	
-	return expand_title($data["host_id"], $data["name"]);
+	if ((strstr($data["name"], "|")) && (!empty($data["host_id"]))) {
+		return expand_title($data["host_id"], $data["snmp_query_id"], $data["snmp_index"], $data["name"]);
+	}else{
+		return $data["name"];
+	}
 }
 
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row("select
-		graph_local.host_id,graph_templates_graph.title
+		graph_local.host_id,
+		graph_local.snmp_query_id,
+		graph_local.snmp_index,
+		graph_templates_graph.title
 		from graph_templates_graph,graph_local
 		where graph_templates_graph.local_graph_id=graph_local.id
 		and graph_local.id=$local_graph_id");
 	
-	return expand_title($graph["host_id"], $graph["title"]);
+	if ((strstr($graph["title"], "|")) && (!empty($graph["host_id"]))) {
+		return expand_title($graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"], $graph["title"]);
+	}else{
+		return $graph["title"];
+	}
 }
 
 function null_out_subsitions($string) {
 	return eregi_replace("\|host_(hostname|description|management_ip|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
 }
 
-function expand_title($host_id, $title) {
+function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, "|")) && (!empty($host_id))) {
-		return null_out_subsitions(subsitute_host_data($title, "|", "|", $host_id));
+		if (($snmp_query_id != "0") && ($snmp_index != "")) {
+			return subsitute_snmp_query_data(null_out_subsitions(subsitute_host_data($title, "|", "|", $host_id)), "|", "|", $host_id, $snmp_query_id, $snmp_index);
+		}else{
+			return null_out_subsitions(subsitute_host_data($title, "|", "|", $host_id));
+		}
 	}else{
 		return null_out_subsitions($title);
 	}
@@ -424,13 +442,41 @@ function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, 
 	if (sizeof($snmp_cache_data) > 0) {
 	foreach ($snmp_cache_data as $data) {
 		if ($data["field_value"] != "") {
-			$string = stri_replace($l_escape_string . "squery_" . $data["field_name"] . $r_escape_string, substr($data["field_value"],0,15), $string);
+			$string = stri_replace($l_escape_string . "query_" . $data["field_name"] . $r_escape_string, substr($data["field_value"],0,15), $string);
 		}
 	}
 	}
 	
 	return $string;
 }
+
+function data_query_index($index_type, $index_value, $host_id) {
+	return db_fetch_row("select
+		host_snmp_cache.snmp_query_id,
+		host_snmp_cache.snmp_index
+		from host_snmp_cache
+		where host_snmp_cache.field_name='$index_type'
+		and host_snmp_cache.field_value='$index_value'
+		and host_snmp_cache.host_id=$host_id");
+}
+
+function data_query_field_list($data_template_data_id) {
+	$field = db_fetch_assoc("select
+		data_input_fields.type_code,
+		data_input_data.value
+		from data_input_fields,data_input_data
+		where data_input_fields.id=data_input_data.data_input_field_id
+		and data_input_data.data_template_data_id=$data_template_data_id
+		and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
+	$field = array_rekey($field, "type_code", "value");
+	
+	if ((!isset($field["index_type"])) || (!isset($field["index_value"])) || (!isset($field["output_type"]))) {
+		return 0;
+	}else{
+		return $field;
+	}
+}
+
 
 function generate_data_source_path($local_data_id) {
 	$host_part = ""; $ds_part = "";

@@ -196,6 +196,8 @@ function form_save() {
 		
 		if ((!is_error_message()) && ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
 			change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
+		}elseif (!empty($_POST["graph_template_id"])) {
+			update_graph_snmp_query_cache($local_graph_id);
 		}
 	}
 	
@@ -513,7 +515,7 @@ function item() {
 			order by graph_templates_item.sequence");
 		
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
-		$header_label = "[edit: " . expand_title($host_id, db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"])) . "]";
+		$header_label = "[edit: " . get_graph_title($_GET["id"]) . "]";
 	}
 	
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
@@ -577,7 +579,7 @@ function item() {
 		
 		switch (true) {
 		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
-			$matrix_title = "(" . expand_title($host_id, $item["data_source_name"]) . "): " . $item["text_format"];
+			$matrix_title = "(" . get_graph_title($_GET["id"]) . "): " . $item["text_format"];
 			break;
 		case ereg("(HRULE|VRULE)", $_graph_type_name):
 			$matrix_title = "HRULE: " . $item["value"];
@@ -1003,7 +1005,7 @@ function graph_edit() {
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
 		
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
-		$header_label = "[edit: " . expand_title($host_id, $graphs["title"]) . "]";
+		$header_label = "[edit: " . get_graph_title($_GET["id"]) . "]";
 		
 		if ($graphs["graph_template_id"] == "0") {
 			$use_graph_template = false;
@@ -1268,7 +1270,7 @@ function graph() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(expand_title($graph["host_id"], $graph["title"]), read_config_option("max_title_graph")));?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(get_graph_title($graph["local_graph_id"]), read_config_option("max_title_graph")));?></a>
 			</td>
 			<td>
 				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
@@ -1288,8 +1290,6 @@ function graph() {
 	}else{
 		print "<tr><td><em>No Graphs Found</em></td></tr>";
 	}
-	
-	
 	
 	end_box(false);
 	
