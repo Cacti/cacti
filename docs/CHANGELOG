@@ -1,5 +1,10 @@
 raXnet - cacti
 
+0.8.2a
+-bug: Fixed various problems updating the poller cache.
+-bug: Fixed the Weatherbug script to work under Redhat 9.
+-cactid: Updated poller to use detached threads based on each host.
+
 0.8.2
 -bug#47: The 'cacti_server_os' variable is now auto-detected.
 -bug#56: Possible endless loop for non 0.8 users in version upgrade loop.
