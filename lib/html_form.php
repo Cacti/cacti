@@ -72,10 +72,11 @@ function DrawPlainFormHeader($title_text, $background_color, $column_span, $bold
 <?}
 
 /* draws a vertical space and a save button */
-function DrawFormSaveButton($form_action = "save") { ?>
-	<input type="hidden" name="action" value="<?print $form_action;?>">
-	<input type="image" src="images/button_save.gif" alt="Save" align="absmiddle">
-<?}
+function DrawFormSaveButton($form_action = "save") { 
+    print "
+	<input type='hidden' name='action' value='$form_action'>
+	<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>\n";
+}
 
 /* draw the ending form tag */
 function DrawFormFooter() {?>
@@ -333,16 +334,9 @@ function new_table() { ?>
 					</td>
 				</tr>
 			</table>
-		</td>
-	</tr>
-</table>
-<br>
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-	<tr>
-		<td>
 			<table align="center" width="98%" cellpadding=1 cellspacing=0 border=0 bgcolor="#00438C">
 				<tr>
-					<td width="100%">
+					<td>
 						<table cellpadding=3 cellspacing=0 border=0 bgcolor="#E1E1E1" width="100%">
 <?}
 

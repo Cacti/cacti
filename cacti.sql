@@ -658,6 +658,16 @@ CREATE TABLE polling_zones (
 INSERT INTO polling_zones (pz_id, zone_name) VALUES ('0', 'Default Polling Zone');
 
 
+#
+# Table structure for table polling_profiles
+#
+
+CREATE TABLE polling_profiles (
+  profile_id int(11) NOT NULL auto_increment,
+  profile_name varchar(100) NOT NULL default '',
+  PRIMARY KEY  (profile_id)
+) TYPE=MyISAM;
+
 
 #
 # Table structure for table 'polling_tree'
@@ -684,6 +694,7 @@ CREATE TABLE polling_hosts (
   snmp_string varchar(255) default NULL,
   snmp_user varchar(50) default NULL,
   snmp_pass varchar(50) default NULL,
+  profile_id int(11),
   PRIMARY KEY  (host_id)
 ) TYPE=MyISAM COMMENT='Hosts that we''ll present data for.';
 

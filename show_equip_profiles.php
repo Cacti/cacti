@@ -47,7 +47,7 @@ DrawMatrixHeaderItem("Profile Name",$colors[panel_text]);
 DrawMatrixHeaderItem("&nbsp;",$colors[panel_text]);
 DrawMatrixRowEnd();
 
-$profile_list = db_fetch_assoc("select * from polling_hosts where is_profile = 1 order by descrip");
+$profile_list = db_fetch_assoc("select * from polling_hosts where is_profile > 0 order by descrip");
 
 if (sizeof($profile_list) > 0) {
     foreach ($profile_list as $profile) {
@@ -65,8 +65,8 @@ if (sizeof($profile_list) > 0) {
     }
 }
 
-include_once ("include/bottom_footer.php");
 include_once ("include/bottom_table_footer.php");
+include_once ("include/bottom_footer.php");
 
 ?>
 

@@ -295,6 +295,14 @@ function UpdateCacti($old_version, $new_version) {
 					);");
 	    
 	    db_execute("INSERT INTO polling_zones (pz_id, zone_name) VALUES ('0', 'Default Polling Zone');");
+	    
+	    ##  Added 06-07-2002 at 15:31
+	    db_execute("ALTER TABLE polling_hosts CHANGE COLUMN is_profile profile_id INT(11)");
+	    db_execute("CREATE TABLE polling_profiles (
+						       profile_id int(11) NOT NULL auto_increment,
+						       profile_name varchar(100) NOT NULL default '',
+						       PRIMARY KEY  (profile_id)
+						       ) TYPE=MyISAM;");
 	}
     
     return 0;

@@ -80,39 +80,42 @@ switch ($action) {
 	<?
 	DrawFormItemHiddenIDField("pz_id",$args[id]);
 	DrawFormFooter();
-	
+    include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	break;
  default:
-	include_once ("include/top_header.php");
-	$title_text = "Polling Zones";
+    include_once ("include/top_header.php");
+    $title_text = "Polling Zones";
     $add_text = "$current_script_name?action=edit";
-	include_once ("include/top_table_header.php");
+    include_once ("include/top_table_header.php");
     
-	print "<tr bgcolor='#$colors[header_panel]'>";
-		DrawMatrixHeaderItem("Zone Name",$colors[header_text],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
-	print "</tr>";
-	
-	$zone_list = db_fetch_assoc("select * from polling_zones order by zone_name");
-	
+    print "<tr bgcolor='#$colors[header_panel]'>";
+    DrawMatrixHeaderItem("Zone Name",$colors[header_text],1);
+    DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+    print "</tr>";
+    
+    $zone_list = db_fetch_assoc("select * from polling_zones order by zone_name");
+    
+    if (sizeof($zone_list) > 0) {
 	foreach ($zone_list as $zone) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="<?print $current_script_name;?>?action=edit&id=<?print $zone[pz_id];?>"><?print $zone[zone_name];?></a>
-			</td>
-			<td width="1%" align="right">
-				<a href="<?print $current_script_name;?>?action=remove&id=<?print $zone[pz_id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-			</td>
-		</tr>
-	<?
-	$i++;
+	    DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
+	    print "<td>
+		    <a class='linkEditMain' href='$current_script_name?action=edit&id=$zone[pz_id]'>$zone[zone_name]</a>
+		    </td>
+		    <td width='1%' align='right'>
+		    <a href='$current_script_name?action=remove&id=$zone[pz_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+		  </td>	
+		    </tr>\n";
+	    
+	    $i++;
 	}
+    } else {
+	print "<tr><td colspan=2><p align=center><b>No Zones Defined</b></p></td></tr>\n";
+    }
     
-	include_once ("include/bottom_footer.php");
-	include_once ("include/bottom_table_footer.php");
-	
-	break;
+    include_once ("include/bottom_table_footer.php");
+    include_once ("include/bottom_footer.php");
+    
+    break;
 } 
 ?>

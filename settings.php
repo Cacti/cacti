@@ -46,7 +46,9 @@ switch ($action) {
     
     $settings = db_fetch_assoc("select * from settings order by name");
     
-    DrawFormHeader("cacti Settings","",false);
+    $title_text = "cacti Settings";
+    print "<form method='post' action='".basename($HTTP_SERVER_VARS["SCRIPT_NAME"])."?action=save'>\n";
+    include_once ("include/top_table_header.php");
     if (sizeof($settings) > 0) {
 	foreach ($settings as $setting) {
 	    /* split appart the 'method' on the ':' */
@@ -54,6 +56,8 @@ switch ($action) {
 	    
 	    /* make sure to skip group members here; only parents are allowed */
 	    if ($setting_method[1] != "group") {
+		++$i;
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i);
 		/* draw the acual header and textbox on the form */
 		DrawFormItem($setting[FriendlyName],$setting[Description]);
 		
@@ -61,11 +65,14 @@ switch ($action) {
 		switch ($setting_method[0]) {
 		 case 'textbox':
 		    DrawFormItemTextBox($setting[Name],$setting[Value],"","");
+		    print "</tr>\n";
 		    break;
 		 case 'checkbox':
 		    DrawFormItemCheckBox($setting[Name],$setting[Value],$setting[Description],"");
+		    print "</tr>\n";
 		    break;
 		 case 'group':
+		    print "<td><table border=0 wieth=100% cellpadding=0 cellspacing=0><tr>\n";
 		    /* use 'o' for the internal group counter...remeber we can have unlimited items
 		     under each item (hence the group). */
 		    $o = 1; 
@@ -99,16 +106,18 @@ switch ($action) {
 			    
 			}
 		    }
-		    
+		    print "\t</tr></table></td>\n</tr>\n";
 		    break;
 		}
 	    }
 	    
 	}
     }
+    print "<tr><td colspan=2>";
     DrawFormSaveButton();
-    DrawFormFooter();
-    
+    print "</td></tr>\n";
+
+    include_once ("include/bottom_table_footer.php");
     include_once ("include/bottom_footer.php");
     break;
 } ?>	

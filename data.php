@@ -146,17 +146,14 @@ switch ($action) {
     break;
  default:
     include_once ('include/top_header.php');
+    $title_text = "Current Data Input Sources";
+    $add_text = "data.php?action=edit";
+    include_once ("include/top_table_header.php");
     
-    DrawMatrixTableBegin("97%");
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderTop("Current Data Input Sources",$colors[dark_bar],"","1");
-    DrawMatrixHeaderAdd($colors[dark_bar],"","data.php?action=edit");
-    DrawMatrixRowEnd();
-    
-    DrawMatrixRowBegin();
-    DrawMatrixHeaderItem("Name",$colors[panel],$colors[panel_text]);
-    DrawMatrixHeaderItem("",$colors[panel],$colors[panel_text]);
-    DrawMatrixRowEnd();
+    print "<tr bgcolor='#$colors[header_panel]'>";
+    DrawMatrixHeaderItem("Name",$colors[header_text],1);
+    DrawMatrixHeaderItem("&nbsp;",$colors[header_text],2);
+    print "</tr>";
     
     $src_list = db_fetch_assoc("select * from src order by name");
     $rows = sizeof($src_list);
@@ -173,13 +170,13 @@ switch ($action) {
 		$matrix_remove = "";
 	    }
 	
-	    DrawMatrixLoopItemAction("Remove",$colors[panel],"",false,$matrix_remove);
-	    DrawMatrixRowEnd();
+	    DrawMatrixLoopItemAction("Remove","","",false,$matrix_remove);
+	    print "</tr>\n";
 	    $i++;
 	}
     }
     
-    DrawMatrixTableEnd();
+    include_once ("include/bottom_table_footer.php");
     include_once ("include/bottom_footer.php");
     
     break;
