@@ -552,13 +552,13 @@ function graph_settings_edit() {
 	</table>
 	<?php
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Settings</strong>", "98%", $colors["header"], "3", "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr>
-			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
-				<span class="textHeaderDark"><strong>Graph Settings</strong> [<?php print $tabs_graphs[$tab_short_name];?>]</span>
+		<tr bgcolor='<?php print $colors["header_panel"];?>'>
+			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
+				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>
 		</tr>
 		<?php
@@ -568,7 +568,21 @@ function graph_settings_edit() {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
 
-			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));
+			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
+				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+					if (graph_config_value_exists($sub_field_name)) {
+						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
+					}
+
+					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_SESSION["sess_user_id"]);
+				}
+			}else{
+				if (graph_config_value_exists($field_name)) {
+					$form_array[$field_name]["form_id"] = 1;
+				}
+
+				$form_array[$field_name]["value"] = db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_SESSION["sess_user_id"]);
+			}
 		}
 
 		draw_edit_form(
@@ -666,13 +680,7 @@ function user() {
 
 	html_start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("User Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Full Name",$colors["header_text"],1);
-                DrawMatrixHeaderItem("Realm",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],1);
-                DrawMatrixHeaderItem("Last Login",$colors["header_text"],2);
-	print "</tr>";
+	html_header(array("User Name", "Full Name", "Realm", "Default Graph Policy", "Last Login"), 2);
 
 	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, policy_graphs, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.id = user_log.user_id group by id");
 
