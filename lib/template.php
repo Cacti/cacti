@@ -282,9 +282,26 @@ function push_out_graph($graph_template_graph_id) {
      saved to the database. this is because these items most likely contain incorrect data */
 function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
 	$graph_input = db_fetch_row("select graph_template_id,column_name from graph_template_input where id=$graph_template_input_id");
+	$graph_input_items = db_fetch_assoc("select graph_template_item_id from graph_template_input_defs where graph_template_input_id=$graph_template_input_id");
+	
+	$i = 0;
+	if (sizeof($graph_input_items) > 0) {
+	foreach ($graph_input_items as $item) {
+		$include_items[$i] = $item["graph_template_item_id"];
+		$i++;
+	}
+	}
+	
+	/* we always want to make sure to stay within the same graph item input, so make a list of each
+	item included in this input to be included in the sql query */
+	if (isset($include_items)) {
+		$sql_include_items = "and " . array_to_sql_or($include_items, "local_graph_template_item_id");
+	}else{
+		$sql_include_items = "and 0=1";
+	}
 	
 	if (sizeof($session_members) == 0) {
-		$values_to_apply = db_fetch_assoc("select local_graph_id," . $graph_input["column_name"] . " from graph_templates_item where graph_template_id=" . $graph_input["graph_template_id"] . " and local_graph_id>0 group by local_graph_id");
+		$values_to_apply = db_fetch_assoc("select local_graph_id," . $graph_input["column_name"] . " from graph_templates_item where graph_template_id=" . $graph_input["graph_template_id"] . " $sql_include_items and local_graph_id>0 group by local_graph_id");
 	}else{
 		$i = 0;
 		while (list($item_id, $item_id) = each($session_members)) {
@@ -292,7 +309,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			$i++;
 		}
 		
-		$values_to_apply = db_fetch_assoc("select local_graph_id," . $graph_input["column_name"] . " from graph_templates_item where graph_template_id=" . $graph_input["graph_template_id"] . " and local_graph_id>0 and !(" . array_to_sql_or($new_session_members, "local_graph_template_item_id") . ") group by local_graph_id");
+		$values_to_apply = db_fetch_assoc("select local_graph_id," . $graph_input["column_name"] . " from graph_templates_item where graph_template_id=" . $graph_input["graph_template_id"] . " and local_graph_id>0 and !(" . array_to_sql_or($new_session_members, "local_graph_template_item_id") . ") $sql_include_items group by local_graph_id");
 	}
 	
 	if (sizeof($values_to_apply) > 0) {
