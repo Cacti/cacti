@@ -26,6 +26,7 @@
 
 include("./include/auth.php");
 include_once("./lib/utility.php");
+include_once("./lib/snmp.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -35,13 +36,20 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
-	
-	case 'new_graphs':
-		include_once("./include/top_header.php");
+	case 'query_remove':
+		host_remove_query();
 		
-		host_new_graphs();
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		break;
+	case 'query_reload':
+		host_reload_query();
 		
-		include_once("./include/bottom_footer.php");
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		break;
+	case 'query_verbose':
+		host_reload_query();
+		
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"] . "&display_dq_details=true");
 		break;
 	case 'remove':
 		host_remove();
@@ -69,7 +77,7 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if ((isset($_POST["add_y"])) && (!empty($_POST["snmp_query_id"]))) {
+	if ((isset($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
 		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . ")");
 		
 		/* recache snmp data */
@@ -134,6 +142,19 @@ function form_save() {
 	}
 }
 
+/* -------------------
+    Data Query Functions
+   ------------------- */
+
+function host_reload_query() {
+	data_query($_GET["host_id"], $_GET["id"]);
+}
+
+function host_remove_query() {
+	db_execute("delete from host_snmp_cache where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
+	db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_id=" . $_GET["host_id"]);
+}
+
 /* ---------------------
     Host Functions
    --------------------- */
@@ -177,30 +198,88 @@ function host_edit() {
 		"fields" => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
 		));
 	
-	if (!empty($host["id"])) {
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td colspan="2">
-			<table cellspacing="0" cellpadding="0" border="0" width="100%">
-				<tr>
-					<td width="50%">
-						<font class="textEditTitle">Associated Data Query</font><br>
-						If you choose to add this data query to this host, information will be queried from this
-						host upon addition.
-					</td>
-					<td width="1">
-						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","None","");?>
-					</td>
-					<td>
-						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add" align="absmiddle">
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<?php
+	end_box();
+	
+	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
+		start_box("<strong>Data Query Debug Information</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		print "<tr><td><span style='font-family: monospace;'>" . debug_log_return("data_query") . "</span></td></tr>";
+		
+		end_box();
 	}
 	
-	end_box();
+	if (!empty($host["id"])) {
+		start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
+		
+		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+			DrawMatrixHeaderItem("Data Query Name",$colors["header_text"],1);
+			DrawMatrixHeaderItem("Debugging",$colors["header_text"],1);
+			DrawMatrixHeaderItem("Status",$colors["header_text"],1);
+			DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		print "</tr>";
+		
+		$selected_data_queries = db_fetch_assoc("select 
+			snmp_query.id,
+			snmp_query.name
+			from snmp_query,host_snmp_query
+			where snmp_query.id=host_snmp_query.snmp_query_id
+			and host_snmp_query.host_id=" . $_GET["id"] . "
+			order by snmp_query.name");
+		
+		$i = 0;
+		if (sizeof($selected_data_queries) > 0) {
+		foreach ($selected_data_queries as $item) {
+			$i++;
+			
+			/* get status information for this data query */
+			$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
+			$num_dq_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
+			
+			$status = "success";
+			
+			?>
+			<tr>
+				<td style="padding: 4px;">
+					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+				</td>
+				<td>
+					(<a href="host.php?action=query_verbose&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>">Verbose Query</a>)
+				</td>
+				<td>
+					<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
+				</td>
+				<td align='right' nowrap>
+					<a href='host.php?action=query_reload&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>'><img src='images/reload_icon_small.gif' alt='Reload Data Query' border='0' align='absmiddle'></a>&nbsp;
+					<a href='host.php?action=query_remove&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>'><img src='images/delete_icon_large.gif' alt='Delete Data Query Association' border='0' align='absmiddle'></a>
+				</td>
+			</tr>
+			<?php
+		}
+		}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
+		
+		?>
+		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+			<td colspan="4">
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<td nowrap>Add Data Query:&nbsp;
+						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select 
+							snmp_query.id,
+							snmp_query.name
+							from snmp_query left join host_snmp_query
+							on (snmp_query.id=host_snmp_query.snmp_query_id and host_snmp_query.host_id=" . $_GET["id"] . ")
+							where host_snmp_query.host_id is null
+							order by snmp_query.name"),"name","id","","","");?>
+					</td>
+					<td align="right">
+						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
+					</td>
+				</table>
+			</td>
+		</tr>
+		
+		<?php
+		end_box();
+	}
 	
 	form_save_button("host.php");
 }
