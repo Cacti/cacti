@@ -588,6 +588,8 @@ function host() {
 		host.status,
 		host.hostname,
 		host.description,
+		host.min_time,
+		host.max_time,
 		host.cur_time,
 		host.avg_time,
 		host.availability
@@ -612,7 +614,7 @@ function host() {
 	}
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='7'>
+			<td colspan='9'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -631,14 +633,14 @@ function host() {
 
 	print $nav;
 
-	html_header_checkbox(array("Description", "Status", "Hostname", "Current (ms)", "Average (ms)", "Availability"));
+	html_header_checkbox(array("Description", "Status", "Hostname", "Min (ms)", "Max (ms)", "Current (ms)", "Average (ms)", "Availability"));
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {
 		foreach ($hosts as $host) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
-				<td>
+				<td width=200>
 					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
 				</td>
 				<td>
@@ -646,6 +648,12 @@ function host() {
 				</td>
 				<td>
 					<?php print $host["hostname"];?>
+				</td>
+				<td>
+					<?php print round(($host["min_time"])*1000, 2);?>
+				</td>
+				<td>
+					<?php print round(($host["max_time"])*1000, 2);?>
 				</td>
 				<td>
 					<?php print round(($host["cur_time"])*1000, 2);?>
