@@ -272,6 +272,10 @@ foreach ($_ds as $item) {
 		$host_id = $ip_to_host_cache{gethostbyname($hostname)};
 	}
 	
+	if (empty($host_id)) {
+		$host_id = 0;
+	}
+	
 	if (db_execute("insert into data_local (id,data_template_id,host_id) values (0,$data_template_id,$host_id)")) {
 		$local_data_id = db_fetch_cell("select LAST_INSERT_ID()");
 		print "SUCCESS: Local Data Entry: " . $item["Name"] . "\n";
@@ -550,7 +554,7 @@ db_execute("delete from $database.graph_templates_graph where local_graph_id > 0
 db_execute("delete from $database.graph_templates_item where local_graph_id > 0");
 
 $_graphs = db_fetch_assoc("select * from $database_old.rrd_graph");
-print_r($traffic_graphs);
+
 if (sizeof($_graphs) > 0) {
 foreach ($_graphs as $item) {
 	if (db_execute("insert into graph_local (id,graph_template_id) values (0,0)")) {
@@ -569,7 +573,7 @@ foreach ($_graphs as $item) {
 			
 			$_graph_items = db_fetch_assoc("select * from $database_old.rrd_graph_item where GraphID=" . $item["ID"] . " order by SequenceParent,Sequence");
 			
-			$seq = 0;
+			$seq = 0; $is_traffic_graph = -1;
 			if (sizeof($_graph_items) > 0) {
 			foreach ($_graph_items as $item2) {
 				$seq++;
@@ -589,8 +593,10 @@ foreach ($_graphs as $item) {
 				}
 				
 				/* this is a traffic graph */
-				if ((isset($traffic_graphs{$item2["DSID"]})) && (sizeof($_graph_items) == 8)) {
-					change_graph_template($local_graph_id_cache{$item["ID"]}, 1, true);
+				if ((isset($traffic_graphs{$item2["DSID"]})) && (sizeof($_graph_items) == 8) && ($is_traffic_graph != false)) {
+					$is_traffic_graph = true;
+				}else{
+					$is_traffic_graph = false;
 				}
 				
 				if (db_execute("insert into graph_templates_item (id,local_graph_template_item_id,
@@ -605,6 +611,11 @@ foreach ($_graphs as $item) {
 					print "   FAIL: Graph Item Entry: " . $item2["TextFormat"] . "\n";
 				}
 			}
+			}
+			
+			/* if we've determined that this graph is a 'traffic graph', then switch to that template */
+			if ($is_traffic_graph == true) {
+				change_graph_template($local_graph_id_cache{$item["ID"]}, 1, true);
 			}
 		}else{
 			print "   FAIL: Graph Entry: " . $item["Title"] . "\n";
