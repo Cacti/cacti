@@ -249,37 +249,70 @@ function utilities_view_poller_cache() {
 function utilities() {
 	global $colors;
 
-	html_start_box("<strong>Utilities</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Cacti System Utilities</strong>", "98%", $colors["header"], "3", "center", "");
 
 	?>
+
+	<tr bgcolor="<?php print $colors["header_panel"];?>">
+		<td height="1" colspan="3" class="textSubHeaderDark">Poller Cache Administration
+		</td>
+	</tr>
+
+	<colgroup span="3">
+	<col valign="top" width="20"></col>
+	<col valign="top" width="10"></col>
+	<col valigh="top" width="80"></col>
+	</colgroup>
+
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
-			<p><strong><a href='utilities.php?action=view_poller_cache'>View Poller Cache</a></strong></p>
+			<p><a href='utilities.php?action=view_poller_cache'>View Poller Cache</a></p>
+		</td>
+		<td class="textArea">
 			<p>This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.</p>
+			<p></p>
 		</td>
 	</tr>
 	<tr bgcolor="#<?php print $colors["form_alternate2"];?>">
 		<td class="textArea">
-			<p><strong><a href='utilities.php?action=view_snmp_cache'>View SNMP Cache</a></strong></p>
+			<p><a href='utilities.php?action=view_snmp_cache'>View SNMP Cache</a></p>
+		</td>
+		<td class="textArea">
 			<p>The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.</p>
+			<p></p>
 		</td>
 	</tr>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
-			<p><strong><a href='utilities.php?action=clear_poller_cache'>Clear Poller Cache</a></strong></p>
+			<p><a href='utilities.php?action=clear_poller_cache'>Clear Poller Cache</a></p>
+		</td>
+		<td class="textArea">
 			<p>The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.</p>
+			<p></p>
+		</td>
+	</tr>
+
+	<tr bgcolor="<?php print $colors["header_panel"];?>">
+		<td height="1" colspan="3" class="textSubHeaderDark">System Log Administration
+		</td>
+	</tr>
+
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><a href='utilities.php?action=view_logfile'>View Cacti Log File</a></p>
+		</td>
+		<td class="textArea">
+			<p>The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.</p>
+			<p></p>
 		</td>
 	</tr>
 	<tr bgcolor="#<?php print $colors["form_alternate2"];?>">
 		<td class="textArea">
-			<p><strong><a href='utilities.php?action=view_logfile'>View Cacti Log File</a></strong></p>
-			<p>The Cacti Log File stores statistic and error messages.  This information can be used to identify problems with the poller and application.</p>
+			<p><a href='utilities.php?action=clear_logfile'>Clear Cacti Log File</a></p>
 		</td>
-	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
-			<p><strong><a href='utilities.php?action=clear_logfile'>Clear Cacti Log File</a></strong></p>
-			<p>This action will reset the Cacti Log File.  Please note that if you are using the Syslog/Eventlog this action will have no effect.</p>
+			<p>This action will reset the Cacti Log File.  Please note that if you are using the Syslog/Eventlog only, this action will have no effect.</p>
+			<p></p>
 		</td>
 	</tr>
 	<?php
