@@ -23,6 +23,15 @@
 */?>
 <?
 
+$messages = array(
+	1  => array(
+		"message" => 'Save Successful.',
+		"type" => "info"),
+	2  => array(
+		"message" => 'Save Failed',
+		"type" => "error"),
+		);
+
 $cdef_operators = array(1 => "+",
 			     "-",
 			     "*",
@@ -87,4 +96,8 @@ $struct_graph = array("image_format_id", "title", "height", "width", "upper_limi
 
 $struct_graph_item = array("task_item_id", "color_id", "graph_type_id", "cdef_id", "consolidation_function_id",
 			    "text_format", "value", "hard_return", "gprint_id", "sequence");
+
+$snmp_versions = array(1 => "Version 1",
+			    "Version 2",
+			    "Version 3");
 ?>
