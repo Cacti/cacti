@@ -67,7 +67,7 @@ foreach ($polling_items as $item) {
 		$output_array = split(" ", $output);
 		
 		for ($i=0;($i<count($output_array));$i++) {
-			$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_name='" . ereg_replace("^([a-zA-Z0-9_-]+):.*$", "\\1", $output_array[$i]) . "' and data_input_id=" . $item["data_input_id"]);
+			$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_name='" . ereg_replace("^([a-zA-Z0-9_-]+):.*$", "\\1", $output_array[$i]) . "' and data_input_id=" . $item["data_input_id"] . " and input_output='out'");
 			$rrd_name = db_fetch_cell("select data_source_name from data_template_rrd where local_data_id=" . $item["local_data_id"] . " and data_input_field_id=" . $data_input_field["id"]);
 			
 			if ($data_input_field["update_rra"] == "on") {
