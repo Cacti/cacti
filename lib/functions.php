@@ -1406,6 +1406,16 @@ function get_hash_data_query($data_query_id) {
 	}
 }
 
+/* get_hash_version - returns the item type and cacti version in a hash format
+   @arg $type - the type of item to represent ('graph_template','data_template',
+     'data_input_method','cdef','gprint_preset','data_query','host_template')
+   @returns - a 24-bit hexadecimal hash (8-bits for type, 16-bits for version) */
+function get_hash_version($type) {
+	global $hash_type_codes, $hash_version_codes, $config;
+	
+	return $hash_type_codes[$type] . $hash_version_codes{$config["cacti_version"]};
+}
+
 /* generate_hash - generates a new unique hash
    @returns - a 128-bit, hexadecimal hash */
 function generate_hash() {
