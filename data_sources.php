@@ -349,7 +349,7 @@ function ds_save() {
 		
 		if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
 			/* update all nessesary template information */
-			$return_status = change_data_template($local_data_id, $_POST["data_template_id"], $_POST["_data_template_id"]);
+			$return_status = change_data_template($local_data_id, $_POST["data_template_id"]);
 		}
 	}
 	
@@ -441,15 +441,6 @@ function ds_edit() {
 		print "</tr>\n";
 	}
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Source Path</font><br>
-			Specify the full path to the rrd file containing the data.
-		</td>
-		<?DrawFormItemTextBox("data_source_path",$data["data_source_path"],"","255", "40");?>
-	</tr>
-	<?
-	
 	end_box();
 	
 	/* fetch ALL rrd's for this data source */
@@ -483,7 +474,7 @@ function ds_edit() {
 						$i++;
 						?>
 						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&data_template_id=<?print $_GET["data_template_id"];?>&view_rrd=<?print $template_data_rrd["id"];?>"><?print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&local_data_id=<?print $_GET["local_data_id"];?>&view_rrd=<?print $template_data_rrd["id"];?>"><?print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 						</td>
 						<?
 						}
@@ -499,6 +490,7 @@ function ds_edit() {
 	
 	print "<form method='post' action='data_sources.php'>";
 	
+	$i = 0;
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
