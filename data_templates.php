@@ -23,7 +23,9 @@
 */?>
 <?
 $section = "Add/Edit Graphs"; include ('include/auth.php');
+
 include_once ('include/form.php');
+include_once ("include/config_arrays.php");
 
 switch ($_REQUEST["action"]) {
 	case 'save':
@@ -186,7 +188,7 @@ function template_save() {
 }
 
 function template_edit() {
-	global $config, $colors;
+	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
 	
 	if (isset($_GET["data_template_id"])) {
 		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["data_template_id"]);
@@ -213,49 +215,29 @@ function template_edit() {
 	end_box();
 	
 	start_box("Data Template Configuration", "98%", $colors["header"], "3", "center", "");
-	?>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			<?DrawStrippedFormItemCheckBox("t_name",$template_data["t_name"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemTextBox("name",$template_data["name"],"","250", "40");?>
-	</tr>
+	while (list($field_name, $field_array) = each($struct_data_source)) {
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		DrawStrippedFormItemCheckBox("t_" . $field_name,$template{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		print "</td>\n";
+		
+		switch ($field_array["type"]) {
+		case 'text':
+			DrawFormItemTextBox($field_name,$template[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
+			break;
+		case 'drop_sql':
+			DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
+			break;
+		case 'check':
+			DrawFormItemCheckBox($field_name,$template[$field_name],$field_array["check_caption"],$field_array["default"]);
+			break;
+		}
+		
+		print "</tr>\n";
+	}
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Source Path</font><br>
-			Specify the full path to the rrd file containing the data.
-		</td>
-		<?DrawFormItemTextBox("data_source_path",$template_rrd["data_source_path"],"","255", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Input Source</font><br>
-			The script/source used to gather data for this data source.
-		</td>
-		<?DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$template_data["data_input_id"],"","1");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Step</font><br>
-			<?DrawStrippedFormItemCheckBox("t_rrd_step",$template_data["t_rrd_step"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemTextBox("rrd_step",$template_data["rrd_step"],"300","5","20");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Source Active</font><br>
-			<?DrawStrippedFormItemCheckBox("t_active",$template_data["t_active"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemCheckBox("active",$template_data["active"],"Data Source Active","on",$_GET["data_template_id"]);?>
-	</tr>
-	
-	<?
 	end_box();
 	
 	/* fetch ALL rrd's for this data source */
@@ -300,51 +282,25 @@ function template_edit() {
 		$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 	}
 	
-	?>
+	while (list($field_name, $field_array) = each($struct_data_source_item)) {
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		DrawStrippedFormItemCheckBox("t_" . $field_name,$template_rrd{"t_" . $field_name},"Use Per-Graph Value (Ignore this Value)","",false);
+		print "</td>\n";
+		
+		switch ($field_array["type"]) {
+		case 'text':
+			DrawFormItemTextBox($field_name,$template_rrd[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
+			break;
+		case 'drop_array':
+			DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_rrd_rrd[$field_name],$field_array["null_item"],$field_array["default"]);
+			break;
+		}
+		
+		print "</tr>\n";
+	}
 	
-	<form method="post" action="data_templates.php">
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Internal Data Source Name</font><br>
-			<?DrawStrippedFormItemCheckBox("t_data_source_name",$template_rrd["t_data_source_name"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemTextBox("data_source_name",$template_rrd["data_source_name"],"","19", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Maximum Value</font><br>
-			<?DrawStrippedFormItemCheckBox("t_rrd_maximum",$template_rrd["t_rrd_maximum"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemTextBox("rrd_maximum",$template_rrd["rrd_maximum"],"1","20","30");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Minimum Value</font><br>
-			<?DrawStrippedFormItemCheckBox("t_rrd_minimum",$template_rrd["t_rrd_minimum"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemTextBox("rrd_minimum",$template_rrd["rrd_minimum"],"0","20","30");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Source Type</font><br>
-			<?DrawStrippedFormItemCheckBox("t_data_source_type_id",$template_rrd["t_data_source_type_id"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemDropdownFromSQL("data_source_type_id",db_fetch_assoc("select * from def_ds order by Name"),"Name","ID",$template_rrd["data_source_type_id"],"","1");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Heartbeat</font><br>
-			<?DrawStrippedFormItemCheckBox("t_rrd_heartbeat",$template_rrd["t_rrd_heartbeat"],"Use Per-Graph Value (Ignore this Value)","",false);?>
-		</td>
-		<?DrawFormItemTextBox("rrd_heartbeat",$template_rrd["rrd_heartbeat"],"600","5","30");?>
-	</tr>
-	
-	<?
 	end_box();
 	
 	if (!empty($_GET["data_template_id"])) {

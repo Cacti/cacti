@@ -270,7 +270,7 @@ $struct_graph_item = array(
 		"array_name" => "consolidation_functions",
 		"default" => "0",
 		"null_item" => "",
-		"description" => " How data is to be represented on the graph."
+		"description" => "How data is to be represented on the graph."
 		),
 	"cdef_id" => array(
 		"title" => "CDEF Function",
@@ -319,18 +319,96 @@ $struct_graph_item = array(
 	);
 
 $struct_data_source = array(
+	"name" => array(
+		"title" => "Name",
+		"type" => "text",
+		"text_maxlen" => "250",
+		"text_size" => "40",
+		"default" => "",
+		"description" => "Choose a name for this data source."
+		),
+	"data_input_id" => array(
+		"title" => "Data Input Source",
+		"type" => "drop_sql",
+		"sql" => "select id,name from data_input order by name",
+		"default" => "",
+		"null_item" => "",
+		"description" => "The script/source used to gather data for this data source."
+		),
+	"rrd_step" => array(
+		"title" => "Step",
+		"type" => "text",
+		"text_maxlen" => "10",
+		"text_size" => "20",
+		"default" => "300",
+		"description" => "The amount of time in seconds between expected updates."
+		),
+	"active" => array(
+		"title" => "Data Source Active",
+		"type" => "check",
+		"check_caption" => "Data Source Active",
+		"default" => "on",
+		"description" => "Whether cacti should gather data for this data source or not."
+		)
+	);
+		
+/*$struct_data_source = array(
 	"name",
 	"active",
 	"rrd_step",
-	"FORCE:data_input_id");
+	"FORCE:data_input_id");*/
 
 $struct_data_source_item = array(
+	"data_source_name" => array(
+		"title" => "Internal Data Source Name",
+		"type" => "text",
+		"text_maxlen" => "19",
+		"text_size" => "40",
+		"default" => "",
+		"description" => "Choose unique name to represent this piece of data inside of the rrd file."
+		),
+	"rrd_minimum" => array(
+		"title" => "Minimum Value",
+		"type" => "text",
+		"text_maxlen" => "20",
+		"text_size" => "30",
+		"default" => "0",
+		"description" => "The minimum value of data that is allowed to be collected."
+		),
+	"rrd_maximum" => array(
+		"title" => "Maximum Value",
+		"type" => "text",
+		"text_maxlen" => "20",
+		"text_size" => "30",
+		"default" => "0",
+		"description" => "The maximum value of data that is allowed to be collected."
+		),
+	"data_source_type_id" => array(
+		"title" => "Data Source Type",
+		"type" => "drop_array",
+		"array_name" => "data_source_types",
+		"default" => "",
+		"null_item" => "",
+		"description" => "How data is represented in the RRA."
+		),
+	"rrd_heartbeat" => array(
+		"title" => "Heartbeat",
+		"type" => "text",
+		"text_maxlen" => "20",
+		"text_size" => "30",
+		"default" => "600",
+		"description" => "The maximum amount of time that can pass before data is entered as \"unknown\". 
+			(Usually 2x300=600)"
+		)
+	);
+
+/*$struct_data_source_item = array(
 	"rrd_maximum",
 	"rrd_minimum",
 	"rrd_heartbeat",
 	"data_source_type_id",
 	"data_source_name",
-	"FORCE:data_input_field_id");
+	"FORCE:data_input_field_id");*/
 
 $snmp_versions = array(1 =>
 	"Version 1",

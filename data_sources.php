@@ -365,7 +365,7 @@ function ds_save() {
 }
 
 function ds_edit() {
-	global $config, $colors;
+	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
 	
 	$use_data_template = true;
 	
@@ -420,69 +420,56 @@ function ds_edit() {
 	end_box();
 	
 	start_box("Data Source Configuration", "98%", $colors["header"], "3", "center", "");
-	?>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			<?if (($use_data_template == false) || ($data_template["t_name"] == "on")) { print "Choose a name for this data source."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($data_template["t_name"] == "on")) {
-			DrawFormItemTextBox("name",$data["name"],"","50", "40");
+	while (list($field_name, $field_array) = each($struct_data_source)) {
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		
+		if (($use_graph_template == false) || ($data_template{"t_" . $field_name} == "on")) {
+			print $field_array["description"];
+		}
+		
+		print "</td>\n";
+		
+		if (($use_data_template == false) || ($data_template{"t_" . $field_name} == "on")) {
+			switch ($field_array["type"]) {
+			case 'text':
+				DrawFormItemTextBox($field_name,$data[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
+				break;
+			case 'drop_sql':
+				DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$data[$field_name],$field_array["null_item"],$field_array["default"]);
+				break;
+			case 'check':
+				DrawFormItemCheckBox($field_name,$data[$field_name],$field_array["check_caption"],$field_array["default"]);
+				break;
+			}
+			
 		}else{
-			print "<td><em>" . $data["name"] . "</em></td>";
-			DrawFormItemHiddenTextBox("name",$data_template["name"],"");
-		}?>
-	</tr>
+			switch ($field_array["type"]) {
+			case 'check':
+				print "<td><em>" . html_boolean_friendly($data[$field_name]) . "</em></td>";
+				break;
+			default:
+				print "<td><em>" . $data[$field_name] . "</em></td>";
+				break;
+			}
+			
+			DrawFormItemHiddenTextBox($field_name,$data[$field_name],"");
+		}
+		
+		print "</tr>\n";
+	}
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Source Path</font><br>
 			Specify the full path to the rrd file containing the data.
 		</td>
 		<?DrawFormItemTextBox("data_source_path",$data["data_source_path"],"","255", "40");?>
 	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Input Source</font><br>
-			<?if (($use_data_template == false) || ($data_template["t_data_input_id"] == "on")) { print "The method used to gather for this data source."; }?>
-		</td>
-		<?if ($use_data_template == false) {
-			DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$data["data_input_id"],"None","1");
-		}else{
-			print "<td><em>" . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("data_input_id",$data_template["data_input_id"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Step</font><br>
-			<?if (($use_data_template == false) || ($data_template["t_rrd_step"] == "on")) { print "The amount of time in seconds between expected updates."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($data_template["t_rrd_step"] == "on")) {
-			DrawFormItemTextBox("rrd_step",$data["rrd_step"],"","50", "40");
-		}else{
-			print "<td><em>" . $data["rrd_step"] . "</em></td>";
-			DrawFormItemHiddenTextBox("rrd_step",$data_template["rrd_step"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Source Active</font><br>
-			<?if (($use_data_template == false) || ($data_template["t_active"] == "on")) { print "Whether cacti should gather data for this data source or not."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($data_template["t_active"] == "on")) {
-			DrawFormItemCheckBox("active",$data["active"],"Data Source Active","on",$_GET["local_data_id"]);
-		}else{
-			print "<td><em>" . html_boolean_friendly($data["active"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("active",$data_template["active"],"");
-		}?>
-	</tr>
-	
 	<?
+	
 	end_box();
 	
 	/* fetch ALL rrd's for this data source */
@@ -530,76 +517,42 @@ function ds_edit() {
 		$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 	}
 	
-	?>
+	print "<form method='post' action='data_sources.php'>";
 	
-	<form method="post" action="data_sources.php">
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Internal Data Source Name</font><br>
-			<?if (($use_data_template == false) || ($rrd_template["t_data_source_name"] == "on")) { print "Choose unique name to represent this piece of data inside of the rrd file."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($rrd_template["t_data_source_name"] == "on")) {
-			DrawFormItemTextBox("data_source_name",$rrd["data_source_name"],"","19", "40");
-		}else{
-			print "<td><em>" . $rrd["data_source_name"] . "</em></td>";
-			DrawFormItemHiddenTextBox("data_source_name",$rrd_template["data_source_name"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Maximum Value</font><br>
-			<?if (($use_data_template == false) || ($rrd_template["t_rrd_maximum"] == "on")) { print "The maximum value of data that is allowed to be collected."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($rrd_template["t_rrd_maximum"] == "on")) {
-			DrawFormItemTextBox("rrd_maximum",$rrd["rrd_maximum"],"","20", "30");
-		}else{
-			print "<td><em>" . $rrd["rrd_maximum"] . "</em></td>";
-			DrawFormItemHiddenTextBox("rrd_maximum",$rrd_template["rrd_maximum"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Minimum Value</font><br>
-			<?if (($use_data_template == false) || ($rrd_template["t_rrd_minimum"] == "on")) { print "The minimum value of data that is allowed to be collected."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($rrd_template["t_rrd_minimum"] == "on")) {
-			DrawFormItemTextBox("rrd_minimum",$rrd["rrd_minimum"],"","20", "30");
-		}else{
-			print "<td><em>" . $rrd["rrd_minimum"] . "</em></td>";
-			DrawFormItemHiddenTextBox("rrd_minimum",$rrd_template["rrd_minimum"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Data Source Type</font><br>
-			<?if (($use_data_template == false) || ($rrd_template["t_data_source_type_id"] == "on")) { print "How data is represented in the RRA."; }?>
-		</td>
-		<?if (($use_data_template == false) || ($rrd_template["t_data_source_type_id"] == "on")) {
-			DrawFormItemDropdownFromSQL("data_source_type_id",db_fetch_assoc("select * from def_ds order by Name"),"Name","ID",$rrd["data_source_type_id"],"","1");
-		}else{
-			print "<td><em>" . db_fetch_cell("select name from def_ds where id=" . $rrd["data_source_type_id"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("data_source_type_id",$rrd_template["data_source_type_id"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Heartbeat</font><br>
-			<?if (($use_data_template == false) || ($rrd_template["t_rrd_heartbeat"] == "on")) { print "The maximum amount of time that can pass before data is entered as \"unknown\". (Usually 2x300=600)"; }?>
-		</td>
-		<?if (($use_data_template == false) || ($rrd_template["t_rrd_heartbeat"] == "on")) {
-			DrawFormItemTextBox("rrd_heartbeat",$rrd["rrd_heartbeat"],"","20", "30");
-			}else{
-				print "<td><em>" . $rrd["rrd_heartbeat"] . "</em></td>";
-				DrawFormItemHiddenTextBox("rrd_heartbeat",$rrd_template["rrd_heartbeat"],"");
-			}?>
-		</tr>
+	while (list($field_name, $field_array) = each($struct_data_source_item)) {
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
-	<?
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		
+		if (($use_data_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
+			print $field_array["description"];
+		}
+		
+		print "</td>\n";
+		
+		if (($use_graph_template == false) || ($rrd_template{"t_" . $field_name} == "on")) {
+			switch ($field_array["type"]) {
+			case 'text':
+				DrawFormItemTextBox($field_name,$rrd[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
+				break;
+			case 'drop_array':
+				DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_rrd[$field_name],$field_array["null_item"],$field_array["default"]);
+				break;
+			}
+			
+		}else{
+			switch ($field_array["type"]) {
+			default:
+				print "<td><em>" . $rrd[$field_name] . "</em></td>";
+				break;
+			}
+			
+			DrawFormItemHiddenTextBox($field_name,$rrd[$field_name],"");
+		}
+		
+		print "</tr>\n";
+	}
+	
 	end_box();
 	
 	if (read_config_option("full_view_data_source") == "on") {
