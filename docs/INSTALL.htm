@@ -86,7 +86,7 @@ Cacti requires:
 	
 		<p class="code"><tt class="shell">shell&gt;</tt> <b>mysql --user=root mysql</b><br>
 		<tt class="shell">mysql&gt;</tt> <b>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY '<i>somepassword</i>';</b><br>
-		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br></p><br>
+		<tt class="shell">mysql&gt;</tt> <b>flush privileges;</b></p><br>
 
 	<li>Edit <b>include/config.php</b>.<p>
 
@@ -100,16 +100,6 @@ Cacti requires:
 		</p><br>
 	</ul>
 
-	<li>Edit <b>php.ini</b>.<p>
-
-	<ul>
-		<li><p>Make sure you have the following options set in your php.ini file:</p></li>
-		
-		<p class="php">
-		register_globals = On<br>
-		register_argc_argv = On</p><br>
-	</ul>
-
 	<li>Set the appropriate permissions on cacti's directories for graph/log generation. You should execute these commands from inside cacti's directory to change the permissions.<p>
 		
 		<p class="code"><tt class="shell">shell&gt;</tt> <b>chown <em>cactiuser</em> rra/ log/</b></p><br>
@@ -119,7 +109,7 @@ Cacti requires:
 		
 	<li>Add a line to your <strong>/etc/crontab</strong> file similar to:<p>
 		
-		<p class="php">*/5 * * * * <em>cactiuser</em> php <em>/var/www/html/cacti/</em>cmd.php > /dev/null 2>&amp;1</p><br>
+		<p class="php">*/5 * * * * <em>cactiuser</em> php <em>/var/www/html/cacti/</em>cmd.php > /dev/null 2>&amp;1</p>
 	
 		<p><ul>
 		<li>Replace <em>cactiuser</em> with the valid user specified in the previous step.</li>
