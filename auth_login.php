@@ -94,7 +94,7 @@ case 'login':
 	if ($ldap_auth) {
                 $user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and full_name = 'ldap user'");
 	} else {
-		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "'");
+		$user = db_fetch_row("select * from user_auth where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "' and full_name!='ldap user'");
 	}
 	
 	if (sizeof($user)) {
