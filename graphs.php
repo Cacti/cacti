@@ -750,11 +750,6 @@ function graph_edit() {
 			)
 		);
 	
-	/* don't display the "debug field" for a new form */
-	if (empty($_GET["id"])) {
-		unset($form_array["debug"]);
-	}
-	
 	draw_edit_form(
 		array(
 			"config" => array(),
