@@ -225,20 +225,67 @@ function UpdateCacti($old_version, $new_version) {
 	        db_execute("ALTER TABLE rrd_graph ADD order_key VARCHAR(60) NOT NULL AFTER ID, ADD INDEX (order_key)");
 	    
 	    ##  Added 05-21-2002 at 12:00
-	        db_execute("ALTER TABLE settings_tree RENAME settings_viewing_tree");
-	        db_execute("CREATE TABLE settings_ds_tree (UserID smallint(5) NOT NULL default '0',
-							   TreeItemID smallint(5) NOT NULL default '0', 
-							   Status tinyint(1) NOT NULL default '0'
-							   ) TYPE=MyISAM");
-	        db_execute("CREATE TABLE settings_graph_tree (UserID smallint(5) NOT NULL default '0',
-							      TreeItemID smallint(5) NOT NULL default '0',
-							      Status tinyint(1) NOT NULL default '0'
-							      ) TYPE=MyISAM");
+	        db_execute("ALTER TABLE settings_tree RENAME settings_viewing_tree;");
+	    db_execute("CREATE TABLE settings_ds_tree (UserID smallint(5) NOT NULL default '0',
+						       TreeItemID smallint(5) NOT NULL default '0', 
+						       Status tinyint(1) NOT NULL default '0'
+						       ) TYPE=MyISAM;");
 	    
+	    db_execute("CREATE TABLE settings_graph_tree (UserID smallint(5) NOT NULL default '0',
+							  TreeItemID smallint(5) NOT NULL default '0',
+							  Status tinyint(1) NOT NULL default '0'
+							  ) TYPE=MyISAM;");
+	    ##  Added 05-22-2002 at 15:17
+	    db_execute("CREATE TABLE polling_tree (ptree_id bigint(20) NOT NULL auto_increment,
+						   order_key varchar(60) NOT NULL default '',
+						   host_id bigint(20) NOT NULL default '0',
+						   name varchar(30) default NULL,
+						   PRIMARY KEY  (ptree_id)
+						   ) TYPE=MyISAM;");
 	    
+	    db_execute("CREATE TABLE polling_hosts (host_id bigint(20) NOT NULL auto_increment,
+						    hostname varchar(50) NOT NULL default '',
+						    domain varchar(250) NOT NULL default '',
+						    descrip varchar(255) default NULL,
+						    mgmt_ip varchar(15) NOT NULL default '',
+						    snmp_ver tinyint(1) NOT NULL default '0',
+						    snmp_string varchar(255) default NULL,
+						    snmp_user varchar(50) default NULL,
+						    snmp_pass varchar(50) default NULL,
+						    PRIMARY KEY  (host_id)
+						    ) TYPE=MyISAM COMMENT='Hosts that we''ll present data for.';");
+	    
+	    db_execute("CREATE TABLE polling_tasks (task_id bigint(20) NOT NULL auto_increment,
+						    host_id bigint(20) NOT NULL default '0',
+						    name varchar(50) NOT NULL default '',
+						    descrip varchar(200) NOT NULL default '',
+						    polling_interval int(10) unsigned NOT NULL default '0',
+						    to_be_polled tinyint(1) unsigned NOT NULL default '0',
+						    PRIMARY KEY  (task_id)
+						    ) TYPE=MyISAM;");
+	    
+	    db_execute("CREATE TABLE polling_items (item_id bigint(20) unsigned NOT NULL auto_increment,
+						    task_id bigint(20) unsigned NOT NULL default '0',
+						    descrip varchar(150) NOT NULL default '',
+						    heartbeat int(10) unsigned NOT NULL default '0',
+						    min_value bigint(20) NOT NULL default '0',
+						    max_value bigint(20) NOT NULL default '0',
+						    snmp_oid varchar(100) NOT NULL default '',
+						    script_arg_num tinyint(3) NOT NULL default '0',
+						    PRIMARY KEY  (item_id)
+						    ) TYPE=MyISAM COMMENT='The actual pieces of data that each polling task will gather';");
+	    
+	    #################################################################################################################
+	    ## 
+	    ##  Need some *nasty* magic in here to rip their old data sources and snmp stuff into the new table structure.
+	    ## 
+	    #################################################################################################################
+	    
+	    db_execute("ALTER TABLE rrd_graph_tree ADD order_key VARCHAR(60) NOT NULL AFTER ID, ADD graph_id bigint NOT NULL, ADD INDEX (order_key)");
+	    db_execute("ALTER TABLE rrd_graph DROP COLUMN order_key, DROP INDEX(order_key);");
 	}
-	
-	return 0;
+    
+    return 0;
 }
 
 ?>

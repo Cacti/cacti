@@ -634,7 +634,7 @@ CREATE TABLE menu_items (
 #
 
 INSERT INTO menu_items VALUES (3, 2, 'Data Sources', 'ds.php', 3, 1, '', 'images/menu_item_data_sources.gif', 1);
-INSERT INTO menu_items VALUES (4, 2, 'Round Robin Archives', 'rra.php', 9, 1, '', 'images/menu_item_round_robin_archives.gif', 3);
+INSERT INTO menu_items VALUES (4, 1, 'Available RRA\'s', 'rra.php', 9, 1, '', 'images/menu_item_round_robin_archives.gif', 3);
 INSERT INTO menu_items VALUES (6, 2, 'SNMP Interfaces', 'snmp.php', 3, 1, '', 'images/menu_item_snmp_interfaces.gif', 5);
 INSERT INTO menu_items VALUES (7, 3, 'Cron Printout', 'cron.php', 2, 1, '', 'images/menu_item_cron_printout.gif', 1);
 INSERT INTO menu_items VALUES (2, 1, 'Colors', 'color.php', 5, 1, '', 'images/menu_item_colors.gif', 3);
@@ -646,6 +646,70 @@ INSERT INTO menu_items VALUES (17, 4, 'User Administration', 'user_admin.php', 1
 INSERT INTO menu_items VALUES (14, 2, 'CDEF\'s', 'cdef.php', 3, 1, '', 'images/menu_item_cdef.gif', 2);
 INSERT INTO menu_items VALUES (1, 1, 'Graphs', 'graphs.php', 5, 1, '', 'images/menu_item_graphs.gif', 1);
 # --------------------------------------------------------
+
+
+#
+# Table structure for table 'polling_tree'
+
+CREATE TABLE polling_tree (
+  ptree_id bigint(20) NOT NULL auto_increment,
+  order_key varchar(60) NOT NULL default '',
+  host_id bigint(20) NOT NULL default '0',
+  title varchar(30) default NULL,
+  PRIMARY KEY  (ptree_id)
+) TYPE=MyISAM;
+	  
+	      	      
+#
+# Table structure for table 'polling_hosts'
+
+CREATE TABLE polling_hosts (
+  host_id bigint(20) NOT NULL auto_increment,
+  hostname varchar(50) NOT NULL default '',
+  domain varchar(250) NOT NULL default '',
+  descrip varchar(255) default NULL,
+  mgmt_ip varchar(15) NOT NULL default '',
+  snmp_ver tinyint(1) NOT NULL default '0',
+  snmp_string varchar(255) default NULL,
+  snmp_user varchar(50) default NULL,
+  snmp_pass varchar(50) default NULL,
+  PRIMARY KEY  (host_id)
+) TYPE=MyISAM COMMENT='Hosts that we''ll present data for.';
+
+
+#
+# Table structure for table 'polling_tasks'
+
+CREATE TABLE polling_tasks (
+  task_id bigint(20) NOT NULL auto_increment,
+  host_id bigint(20) NOT NULL default '0',
+  name varchar(50) NOT NULL default '',
+  descrip varchar(200) NOT NULL default '',
+  polling_interval int(10) unsigned NOT NULL default '0',
+  to_be_polled tinyint(1) unsigned NOT NULL default '0',
+  PRIMARY KEY  (task_id) 
+) TYPE=MyISAM;
+	      	          
+		  
+#
+# Table structure for table 'polling_items'
+
+CREATE TABLE polling_items (
+  item_id bigint(20) unsigned NOT NULL auto_increment,
+  task_id bigint(20) unsigned NOT NULL default '0',
+  descrip varchar(150) NOT NULL default '',
+  heartbeat int(10) unsigned NOT NULL default '0',
+  min_value bigint(20) NOT NULL default '0',
+  max_value bigint(20) NOT NULL default '0',
+  snmp_oid varchar(100) NOT NULL default '',
+  script_arg_num tinyint(3) NOT NULL default '0',
+  PRIMARY KEY  (item_id)
+) TYPE=MyISAM COMMENT='The actual pieces of data that each polling task will gather';
+
+    
+    
+    
+			
 
 #
 # Table structure for table `rrd_ds`
