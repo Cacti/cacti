@@ -104,6 +104,23 @@ $settings = 	array(
 		"use_polling_zones" => 		array("friendly_name" => "Use Polling Zones",
 						"description" => "If you want to do distributed polling you can set up 'polling zones' which correspond to each of your polling machines.  Polling Hosts are then associated with a particular polling zone.",
 						"method" => "checkbox",
-						"tab" => "general")
+						"tab" => "general"),
+		"full_view" => 			array("friendly_name" => "Use Full View",
+						"description" => "Select the areas in cacti where you would rather see everything on one edit screen rather than having to choose each area from a drop down box.",
+						"method" => "group",
+						"tab" => "visual",
+						"items" => array(	"full_view_graph_template" => 	array("friendly_name" => "",
+													"description" => "Graph Templates",
+													"method" => "checkbox",
+													"tab" => "general"),
+									"full_view_graph" => 		array("friendly_name" => "",
+													"description" => "Graph Management",
+													"method" => "checkbox",
+													"tab" => "general"),
+									"full_view_user_admin" => 	array("friendly_name" => "",
+													"description" => "User Management",
+													"method" => "checkbox",
+													"tab" => "general"),
+													))
 						);
 ?>
