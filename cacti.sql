@@ -311,6 +311,10 @@ INSERT INTO data_input_data VALUES (32,57,'on','');
 INSERT INTO data_input_data VALUES (31,57,'on','');
 INSERT INTO data_input_data VALUES (6,58,'','.1.3.6.1.2.1.25.1.6');
 INSERT INTO data_input_data VALUES (6,59,'','.1.3.6.1.2.1.25.1.5');
+INSERT INTO data_input_data VALUES (22,60,'','Buffers:');
+INSERT INTO data_input_data VALUES (22,61,'','^Cached:');
+INSERT INTO data_input_data VALUES (22,62,'','MemFree:');
+INSERT INTO data_input_data VALUES (22,63,'','SwapFree:');
 
 --
 -- Table structure for table 'data_input_data_cache'
@@ -340,6 +344,13 @@ CREATE TABLE data_input_data_cache (
 --
 
 
+INSERT INTO data_input_data_cache VALUES (1,6,1,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/linux_memory.pl Buffers:','127.0.0.1','public',1,'','','mem_buffers','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_mem_buffers_1.rrd',NULL,NULL,NULL);
+INSERT INTO data_input_data_cache VALUES (2,6,1,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/linux_memory.pl ^Cached:','127.0.0.1','public',1,'','','mem_cache','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_mem_cache_2.rrd',NULL,NULL,NULL);
+INSERT INTO data_input_data_cache VALUES (3,6,1,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/linux_memory.pl MemFree:','127.0.0.1','public',1,'','','mem_buffers','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_mem_buffers_3.rrd',NULL,NULL,NULL);
+INSERT INTO data_input_data_cache VALUES (4,6,1,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/linux_memory.pl SwapFree:','127.0.0.1','public',1,'','','mem_swap','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_mem_swap_4.rrd',NULL,NULL,NULL);
+INSERT INTO data_input_data_cache VALUES (5,4,2,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/loadavg_multi.pl','127.0.0.1','public',1,'','','','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_load_1min_5.rrd',NULL,NULL,NULL);
+INSERT INTO data_input_data_cache VALUES (6,5,1,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/unix_users.pl','127.0.0.1','public',1,'','','users','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_users_6.rrd',NULL,NULL,NULL);
+INSERT INTO data_input_data_cache VALUES (7,7,1,'perl /var/www/html/users/iberry/cacti/cacti-0.8/scripts/unix_processes.pl','127.0.0.1','public',1,'','','proc','/var/www/html/users/iberry/cacti/cacti-0.8/rra/localhost_proc_7.rrd',NULL,NULL,NULL);
 
 --
 -- Table structure for table 'data_input_data_fcache'
@@ -357,6 +368,9 @@ CREATE TABLE data_input_data_fcache (
 --
 
 
+INSERT INTO data_input_data_fcache VALUES (5,'1min','load_1min');
+INSERT INTO data_input_data_fcache VALUES (5,'5min','load_5min');
+INSERT INTO data_input_data_fcache VALUES (5,'10min','load_15min');
 
 --
 -- Table structure for table 'data_input_fields'
@@ -439,6 +453,13 @@ CREATE TABLE data_local (
 --
 
 
+INSERT INTO data_local VALUES (1,12,1,0,'');
+INSERT INTO data_local VALUES (2,14,1,0,'');
+INSERT INTO data_local VALUES (3,13,1,0,'');
+INSERT INTO data_local VALUES (4,15,1,0,'');
+INSERT INTO data_local VALUES (5,11,1,0,'');
+INSERT INTO data_local VALUES (6,17,1,0,'');
+INSERT INTO data_local VALUES (7,16,1,0,'');
 
 --
 -- Table structure for table 'data_template'
@@ -547,8 +568,8 @@ INSERT INTO data_template_data VALUES (10,0,0,10,2,'on','|host_description| - Wi
 INSERT INTO data_template_data VALUES (11,0,0,11,4,'on','|host_description| - Load Average','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (12,0,0,12,6,'on','|host_description| - Memory - Buffers','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (13,0,0,13,6,'on','|host_description| - Memory - Free','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (14,0,0,14,6,'on','|host_description|- Memory - Cache','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (15,0,0,15,6,'on','Linux - Memory - Free Swap','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (14,0,0,14,6,'on','|host_description| - Memory - Cache','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (15,0,0,15,6,'on','|host_description| - Memory - Free Swap','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (16,0,0,16,7,'on','|host_description| - Processes','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (17,0,0,17,5,'on','|host_description| - Logged in Users','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (18,0,0,18,10,'on','|host_description| - Ping Host','',NULL,'','on','',300,'');
@@ -579,6 +600,13 @@ INSERT INTO data_template_data VALUES (55,0,0,42,2,'','|host_description| - CPU 
 INSERT INTO data_template_data VALUES (56,0,0,43,11,'','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (57,0,0,44,11,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (59,0,0,46,1,'on','|host_description| - Logged in Users','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (60,12,1,12,6,NULL,'|host_description| - Memory - Buffers','Localhost - Memory - Buffers','<path_rra>/localhost_mem_buffers_1.rrd',NULL,'on',NULL,300,NULL);
+INSERT INTO data_template_data VALUES (61,14,2,14,6,NULL,'|host_description| - Memory - Cache','Localhost - Memory - Cache','<path_rra>/localhost_mem_cache_2.rrd',NULL,'on',NULL,300,NULL);
+INSERT INTO data_template_data VALUES (62,13,3,13,6,NULL,'|host_description| - Memory - Free','Localhost - Memory - Free','<path_rra>/localhost_mem_buffers_3.rrd',NULL,'on',NULL,300,NULL);
+INSERT INTO data_template_data VALUES (63,15,4,15,6,NULL,'|host_description| - Memory - Free Swap','Localhost - Memory - Free Swap','<path_rra>/localhost_mem_swap_4.rrd',NULL,'on',NULL,300,NULL);
+INSERT INTO data_template_data VALUES (64,11,5,11,4,NULL,'|host_description| - Load Average','Localhost - Load Average','<path_rra>/localhost_load_1min_5.rrd',NULL,'on',NULL,300,NULL);
+INSERT INTO data_template_data VALUES (65,17,6,17,5,NULL,'|host_description| - Logged in Users','Localhost - Logged in Users','<path_rra>/localhost_users_6.rrd',NULL,'on',NULL,300,NULL);
+INSERT INTO data_template_data VALUES (66,16,7,16,7,NULL,'|host_description| - Processes','Localhost - Processes','<path_rra>/localhost_proc_7.rrd',NULL,'on',NULL,300,NULL);
 
 --
 -- Table structure for table 'data_template_data_rra'
@@ -776,6 +804,34 @@ INSERT INTO data_template_data_rra VALUES (59,1);
 INSERT INTO data_template_data_rra VALUES (59,2);
 INSERT INTO data_template_data_rra VALUES (59,3);
 INSERT INTO data_template_data_rra VALUES (59,4);
+INSERT INTO data_template_data_rra VALUES (60,1);
+INSERT INTO data_template_data_rra VALUES (60,2);
+INSERT INTO data_template_data_rra VALUES (60,3);
+INSERT INTO data_template_data_rra VALUES (60,4);
+INSERT INTO data_template_data_rra VALUES (61,1);
+INSERT INTO data_template_data_rra VALUES (61,2);
+INSERT INTO data_template_data_rra VALUES (61,3);
+INSERT INTO data_template_data_rra VALUES (61,4);
+INSERT INTO data_template_data_rra VALUES (62,1);
+INSERT INTO data_template_data_rra VALUES (62,2);
+INSERT INTO data_template_data_rra VALUES (62,3);
+INSERT INTO data_template_data_rra VALUES (62,4);
+INSERT INTO data_template_data_rra VALUES (63,1);
+INSERT INTO data_template_data_rra VALUES (63,2);
+INSERT INTO data_template_data_rra VALUES (63,3);
+INSERT INTO data_template_data_rra VALUES (63,4);
+INSERT INTO data_template_data_rra VALUES (64,1);
+INSERT INTO data_template_data_rra VALUES (64,2);
+INSERT INTO data_template_data_rra VALUES (64,3);
+INSERT INTO data_template_data_rra VALUES (64,4);
+INSERT INTO data_template_data_rra VALUES (65,1);
+INSERT INTO data_template_data_rra VALUES (65,2);
+INSERT INTO data_template_data_rra VALUES (65,3);
+INSERT INTO data_template_data_rra VALUES (65,4);
+INSERT INTO data_template_data_rra VALUES (66,1);
+INSERT INTO data_template_data_rra VALUES (66,2);
+INSERT INTO data_template_data_rra VALUES (66,3);
+INSERT INTO data_template_data_rra VALUES (66,4);
 
 --
 -- Table structure for table 'data_template_rrd'
@@ -869,6 +925,15 @@ INSERT INTO data_template_rrd VALUES (77,0,0,43,'',10000000000,'',0,'',600,'',1,
 INSERT INTO data_template_rrd VALUES (78,0,0,43,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (79,0,0,44,'',100,'',0,'',600,'',1,'','cpu','',0);
 INSERT INTO data_template_rrd VALUES (81,0,0,46,'',5000,'',0,'',600,'',1,'','users','',0);
+INSERT INTO data_template_rrd VALUES (82,15,1,12,NULL,10000000,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
+INSERT INTO data_template_rrd VALUES (83,17,2,14,NULL,1000000,NULL,0,NULL,600,NULL,1,NULL,'mem_cache',NULL,23);
+INSERT INTO data_template_rrd VALUES (84,16,3,13,NULL,10000000,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
+INSERT INTO data_template_rrd VALUES (85,18,4,15,NULL,1000000,NULL,0,NULL,600,NULL,1,NULL,'mem_swap',NULL,23);
+INSERT INTO data_template_rrd VALUES (86,12,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_1min',NULL,17);
+INSERT INTO data_template_rrd VALUES (87,13,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_5min',NULL,18);
+INSERT INTO data_template_rrd VALUES (88,14,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_15min',NULL,19);
+INSERT INTO data_template_rrd VALUES (89,20,6,17,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'users',NULL,21);
+INSERT INTO data_template_rrd VALUES (90,19,7,16,NULL,1000,NULL,0,NULL,600,NULL,1,NULL,'proc',NULL,24);
 
 --
 -- Table structure for table 'graph_local'
@@ -890,6 +955,10 @@ CREATE TABLE graph_local (
 --
 
 
+INSERT INTO graph_local VALUES (1,12,1,0,'');
+INSERT INTO graph_local VALUES (2,9,1,0,'');
+INSERT INTO graph_local VALUES (3,10,1,0,'');
+INSERT INTO graph_local VALUES (4,8,1,0,'');
 
 --
 -- Table structure for table 'graph_template_input'
@@ -1388,6 +1457,10 @@ INSERT INTO graph_templates_graph VALUES (34,0,0,26,'',1,'on','|host_description
 INSERT INTO graph_templates_graph VALUES (35,0,0,27,'',1,'on','|host_description| - CPU Utilization','','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (36,0,0,28,'',1,'on','|host_description| - Logged in Users','','',120,'',500,'',100,'',0,'','users','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'on','|host_description| - Processes','','',120,'',500,'',100,'',0,'','processes','','on','',2,'','','','','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (38,12,1,12,'0',1,'0','|host_description| - Memory Usage','Localhost - Memory Usage','0',120,'0',500,'0',100,'0',0,'0','kilobytes','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0',0);
+INSERT INTO graph_templates_graph VALUES (39,9,2,9,'0',1,'0','|host_description| - Load Average','Localhost - Load Average','0',120,'0',500,'0',100,'0',0,'0','processes in the run queue','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0',0);
+INSERT INTO graph_templates_graph VALUES (40,10,3,10,'0',1,'0','|host_description| - Logged in Users','Localhost - Logged in Users','0',120,'0',500,'0',100,'0',0,'0','users','0','on','0',2,'0','','0','on','0','on','0',1000,'0','','0','on','0','','0',0);
+INSERT INTO graph_templates_graph VALUES (41,8,4,8,'0',1,'0','|host_description| - Processes','Localhost - Processes','0',120,'0',500,'0',100,'0',0,'0','processes','0','on','0',2,'0','','0','','0','on','0',1000,'0','','0','on','0','','0',0);
 
 --
 -- Table structure for table 'graph_templates_item'
@@ -1654,6 +1727,37 @@ INSERT INTO graph_templates_item VALUES (323,0,0,29,80,48,7,0,1,'Running Process
 INSERT INTO graph_templates_item VALUES (324,0,0,29,80,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (325,0,0,29,80,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (326,0,0,29,80,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (327,87,1,12,82,34,7,0,1,'Buffers','','',2,1);
+INSERT INTO graph_templates_item VALUES (328,88,1,12,82,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (329,89,1,12,82,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (330,90,1,12,82,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (331,91,1,12,83,42,8,0,1,'Cache','','',2,5);
+INSERT INTO graph_templates_item VALUES (332,92,1,12,83,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (333,93,1,12,83,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (334,94,1,12,83,0,9,0,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (335,95,1,12,84,41,8,0,1,'Free','','',2,9);
+INSERT INTO graph_templates_item VALUES (336,96,1,12,84,0,9,0,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (337,97,1,12,84,0,9,0,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (338,98,1,12,84,0,9,0,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (339,99,1,12,85,30,8,0,1,'Swap','','',2,13);
+INSERT INTO graph_templates_item VALUES (340,100,1,12,85,0,9,0,4,'Current:','','',2,14);
+INSERT INTO graph_templates_item VALUES (341,101,1,12,85,0,9,0,1,'Average:','','',2,15);
+INSERT INTO graph_templates_item VALUES (342,102,1,12,85,0,9,0,3,'Maximum:','','',2,16);
+INSERT INTO graph_templates_item VALUES (343,69,2,9,86,15,7,0,1,'1 Minute Average','','',2,1);
+INSERT INTO graph_templates_item VALUES (344,70,2,9,86,0,9,0,4,'Current:','','on',4,2);
+INSERT INTO graph_templates_item VALUES (345,71,2,9,87,8,8,0,1,'5 Minute Average','','',2,3);
+INSERT INTO graph_templates_item VALUES (346,72,2,9,87,0,9,0,4,'Current:','','on',4,4);
+INSERT INTO graph_templates_item VALUES (347,73,2,9,88,9,8,0,1,'15 Minute Average','','',2,5);
+INSERT INTO graph_templates_item VALUES (348,74,2,9,88,0,9,0,4,'Current:','','on',4,6);
+INSERT INTO graph_templates_item VALUES (349,75,2,9,0,1,4,12,1,'','','',2,7);
+INSERT INTO graph_templates_item VALUES (350,76,3,10,89,67,7,0,1,'Users','','',2,1);
+INSERT INTO graph_templates_item VALUES (351,77,3,10,89,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (352,78,3,10,89,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (353,79,3,10,89,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (354,65,4,8,90,48,7,0,1,'Running Processes','','',2,1);
+INSERT INTO graph_templates_item VALUES (355,66,4,8,90,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (356,67,4,8,90,0,9,0,1,'Average:','','',3,3);
+INSERT INTO graph_templates_item VALUES (357,68,4,8,90,0,9,0,3,'Maximum:','','',3,4);
 
 --
 -- Table structure for table 'graph_tree'
@@ -1721,6 +1825,7 @@ CREATE TABLE host (
 --
 
 
+INSERT INTO host VALUES (1,8,'Localhost','127.0.0.1','127.0.0.1','public',1,'','');
 
 --
 -- Table structure for table 'host_snmp_cache'
@@ -1760,6 +1865,7 @@ CREATE TABLE host_snmp_query (
 --
 
 
+INSERT INTO host_snmp_query VALUES (1,6);
 
 --
 -- Table structure for table 'host_template'
@@ -1784,6 +1890,7 @@ INSERT INTO host_template VALUES (4,'Karlnet Wireless Bridge');
 INSERT INTO host_template VALUES (5,'Cisco Router');
 INSERT INTO host_template VALUES (6,'Netware 4/5 Server');
 INSERT INTO host_template VALUES (7,'Windows 2000/XP Host');
+INSERT INTO host_template VALUES (8,'Local Linux Machine');
 
 --
 -- Table structure for table 'host_template_data_sv'
@@ -1845,6 +1952,10 @@ INSERT INTO host_template_graph VALUES (6,16);
 INSERT INTO host_template_graph VALUES (6,17);
 INSERT INTO host_template_graph VALUES (7,28);
 INSERT INTO host_template_graph VALUES (7,29);
+INSERT INTO host_template_graph VALUES (8,8);
+INSERT INTO host_template_graph VALUES (8,9);
+INSERT INTO host_template_graph VALUES (8,10);
+INSERT INTO host_template_graph VALUES (8,12);
 
 --
 -- Table structure for table 'host_template_graph_sv'
@@ -1898,6 +2009,7 @@ INSERT INTO host_template_snmp_query VALUES (6,4);
 INSERT INTO host_template_snmp_query VALUES (6,7);
 INSERT INTO host_template_snmp_query VALUES (7,8);
 INSERT INTO host_template_snmp_query VALUES (7,9);
+INSERT INTO host_template_snmp_query VALUES (8,6);
 
 --
 -- Table structure for table 'rra'
@@ -1993,6 +2105,8 @@ INSERT INTO settings VALUES ('ldap_enabled','');
 INSERT INTO settings VALUES ('ldap_server','');
 INSERT INTO settings VALUES ('ldap_dn','');
 INSERT INTO settings VALUES ('ldap_template','');
+INSERT INTO settings VALUES ('path_php_binary','/usr/bin/php');
+INSERT INTO settings VALUES ('date','2003-05-29 21:18:18');
 
 --
 -- Table structure for table 'settings_graphs'
