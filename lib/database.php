@@ -24,10 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include($config["library_path"] . "/adodb/adodb.inc.php");
-
-db_connect_real($database_hostname,$database_username,$database_password,$database_default, $database_type);
-
 /* db_connect_real - makes a connection to the database server
    @arg $host - the hostname of the database server, 'localhost' if the database server is running
       on this machine
@@ -38,14 +34,14 @@ db_connect_real($database_hostname,$database_username,$database_password,$databa
    @returns - (bool) '1' for success, '0' for error */
 function db_connect_real($host,$user,$pass,$db_name,$db_type) {
 	global $cnn_id;
-	
+
 	$cnn_id = NewADOConnection($db_type);
 	if ($cnn_id->Connect($host,$user,$pass,$db_name)) {
 		return(1);
 	}else{
-		die("<br>Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL 
+		die("<br>Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL
 		database name in 'include/config.php'.");
-		
+
 		return(0);
 	}
 }
@@ -55,36 +51,36 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type) {
    @returns - '1' for success, '0' for error */
 function db_execute($sql) {
 	global $cnn_id;
-	
+
 	if (!$cnn_id) { db_connect(); }
-	
+
 	$query = $cnn_id->Execute($sql);
-	
+
 	if ($query) {
-		return(1); 
+		return(1);
 	}else{
 		return(0);
 	}
 }
 
-/* db_fetch_cell - run a 'select' sql query and return the first column of the 
+/* db_fetch_cell - run a 'select' sql query and return the first column of the
      first row found
    @arg $sql - the sql query to execute
    @arg $col_name - use this column name instead of the first one
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql,$col_name = '') {
 	global $cnn_id;
-	
+
 	if (!$cnn_id) { db_connect(); }
-	
+
 	if ($col_name != '') {
 		$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	}else{
 		$cnn_id->SetFetchMode(ADODB_FETCH_NUM);
 	}
-	
+
 	$query = $cnn_id->Execute($sql);
-	
+
 	if ($query) {
 		if (!$query->EOF) {
 			if ($col_name != '') {
@@ -101,12 +97,12 @@ function db_fetch_cell($sql,$col_name = '') {
    @returns - the first row of the result as a hash */
 function db_fetch_row($sql) {
 	global $cnn_id;
-	
+
 	if (!$cnn_id) { db_connect(); }
 
-	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);	
+	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
-	
+
 	if ($query) {
 		if (!$query->EOF) {
 			return($query->fields);
@@ -119,13 +115,13 @@ function db_fetch_row($sql) {
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql) {
 	global $cnn_id;
-	
+
 	if (!$cnn_id) { db_connect(); }
-	
+
 	$data = array();
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
-	
+
 	if ($query) {
 		while ((!$query->EOF) && ($query)) {
 			$data{sizeof($data)} = $query->fields;
@@ -139,11 +135,11 @@ function db_fetch_assoc($sql) {
    @returns - the id of the last auto incriment row that was created */
 function db_fetch_insert_id() {
 	global $cnn_id;
-	
+
 	return $cnn_id->Insert_ID();
 }
 
-/* array_to_sql_or - loops through a single dimentional array and converts each 
+/* array_to_sql_or - loops through a single dimentional array and converts each
      item to a string that can be used in the OR portion of an sql query in the
      following form:
         column=item1 OR column=item2 OR column=item2 ...
@@ -155,20 +151,20 @@ function array_to_sql_or($array, $sql_column) {
 	if ((empty($array{count($array)-1})) && (sizeof($array) > 1)) {
 		array_pop($array);
 	}
-	
+
 	if (count($array) > 0) {
 		$sql_or = "(";
-		
+
 		for ($i=0;($i<count($array));$i++) {
 			$sql_or .= $sql_column . "='" . $array[$i] . "'";
-			
+
 			if (($i+1) < count($array)) {
 				$sql_or .= " OR ";
 			}
 		}
-		
+
 		$sql_or .= ")";
-		
+
 		return $sql_or;
 	}
 }
@@ -193,19 +189,19 @@ function db_replace($table_name, $array_items, $keyCols, $autoQuote=false) {
    @returns - the auto incriment id column (if applicable) */
 function sql_save($array_items, $table_name, $key_cols='id') {
 	global $cnn_id;
-	
+
 	while (list ($key, $value) = each ($array_items)) {
 		if (preg_match("/^((password|md5|now)\(.*\)|null)$/i", $value)) {
 			$quote = "";
 		}else{
 			$quote = "\"";
 		}
-		
+
 		$array_items[$key] = "$quote$value$quote";
 	}
-	
+
 	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, $autoQuote=false)) { return 0; }
-	
+
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {
 		if (isset($array_items["id"])) {

@@ -24,10 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once($config["include_path"] . "/config_arrays.php");
-include_once($config["base_path"] . "/lib/database.php");
-include_once($config["base_path"] . "/lib/functions.php");
-
 if (!defined("VALID_HOST_FIELDS")) {
 	define("VALID_HOST_FIELDS", "(hostname|snmp_community|snmp_username|snmp_password|snmp_version|snmp_port|snmp_timeout)");
 }
