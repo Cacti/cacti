@@ -27,37 +27,7 @@
 <html>
 <head>
 	<title>cacti</title>
-	<STYLE TYPE="text/css">	<!--
-
-	BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
-	BODY {background-color: #FFFFFF;}
-	A {text-decoration: none;}
-	A:active { text-decoration: none;}
-	A:hover {text-decoration: underline; color: #333333;}
-	A:visited {color: Blue;}
-	.textHeader {font-size: 12px; font-weight: bold;}
-	.textHeaderDark {font-size: 12px; color: #ffffff;}
-	.textSubHeaderDark {font-size: 12px; color: #ffffff;}
-	.textArea {font-size: 12px;}
-	.textTab {font-size: 10px; font-weight: bold;}
-	.textEditTitle {font-size: 10px; font-weight: bold;}
-	.textMenuBackground {background-color: #888888;}
-	.textMenuHeader {background-color: #AEB4B7; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; font-weight: bold;}
-	.textMenuItem {background-color: #E3E3E3; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px;}
-	.cboSmall {font-size: 10px;}
-	.linkEditMain {text-decoration: none; <?if ($config["vis_main_column_bold"]["value"]==true){?>font-weight: bold;<?}?>}
-	.linkEditMain:visited {text-decoration: none; <?if ($config["vis_main_column_bold"]["value"]==true){?>font-weight: bold;<?}?>}
-	.linkEditMain:active {text-decoration: underline; color: #333333; <?if ($config["vis_main_column_bold"]["value"]==true){?>font-weight: bold;<?}?>}
-	.linkEditMain:hover {color: Blue; text-decoration: underline; <?if ($config["vis_main_column_bold"]["value"]==true){?> font-weight: bold;<?}?>}
-	.linkOverDark {color: #ffffff; text-decoration: none;}
-	.linkOverDark:visited {color: #ffffff; text-decoration: none;}
-	.linkOverDark:active {color: #ffffff; text-decoration: none;}
-	.linkOverDark:hover {color: #ffffff; text-decoration: underline;}
-	.linkTabs {color: #000080; text-decoration: none;}
-	.linkTabs:visited {color: #000080; text-decoration: none;}
-	.linkTabs:active {color: #3a5fcd; text-decoration: none;}
-	.linkTabs:hover {color: #3a5fcd; text-decoration: underline;}
-	-->
+	<link href="include/main.css" rel="stylesheet">
 </style>
 	<?include_once("include/js_popup.inc");?>
 	<script language="javascript" src="include/dom-drag.js"></script>
