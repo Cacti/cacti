@@ -30,64 +30,104 @@ include ("include/config_arrays.php");
 include_once ("include/form.php");
 include_once ("include/functions.php");
 
-include_once ("include/top_graph_header.php");
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
-print "<form method='post' action='user_admin.php'>\n";
+switch ($_REQUEST["action"]) {
+	case 'save':
+		form_save();
+		
+		break;
+	default:
+		include_once ("include/top_graph_header.php");
+		
+		settings();
+		
+		include_once ("include/bottom_footer.php");
+		break;
+}
 
-start_box("", "98%", $colors["header"], "3", "center", "");
+/* --------------------------
+    The Save Function
+   -------------------------- */
 
-if (sizeof($tabs_graphs) > 0) {
-foreach (array_keys($tabs_graphs) as $tab_short_name) {
-	?>
-	<tr>
-		<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
-			<span class="textHeaderDark"><strong><?php print $tabs_graphs[$tab_short_name];?></strong> [user: <?php print $current_user["username"];?>]</span>
-		</td>
-	</tr>
-	<?php
-	
-	reset($settings_graphs);
+function form_save() {
+	global $settings_graphs;
 	
 	if (sizeof($settings_graphs) > 0) {
 	foreach (array_keys($settings_graphs) as $setting) {
-		/* make sure to skip group members here; only parents are allowed */
-		if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
-			++$i;
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-			
-			/* draw the acual header and textbox on the form */
-			form_item_label($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
-			
-			$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . $_GET["id"]);
-			
-			/* choose what kind of item this is */
-			switch ($settings_graphs[$setting]["method"]) {
-				case 'textbox':
-					form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
-					break;
-				case 'drop_sql':
-					form_dropdown($setting,db_fetch_assoc($settings_graphs[$setting]["sql"]),"name","id",$current_value,"",$settings_graphs[$setting]["default"]);
-					break;
-				case 'drop_array':
-					form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
-					break;
+		db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"]. ",'$setting', '" . $_POST[$setting] . "')");
+	}
+	}
+	
+	/* reset local settings cache so the user sees the new settings */
+	session_unregister("sess_graph_config_array");
+	
+	header ("Location: " . $_POST["referer"]);
+}
+
+/* --------------------------
+    Graph Settings Functions
+   -------------------------- */
+
+function settings() {
+	global $colors, $tabs_graphs, $settings_graphs, $current_user, $graph_views;
+	
+	print "<form method='post' action='graph_settings.php'>\n";
+	
+	start_box("", "98%", $colors["header"], "3", "center", "");
+	
+	if (sizeof($tabs_graphs) > 0) {
+	foreach (array_keys($tabs_graphs) as $tab_short_name) {
+		?>
+		<tr>
+			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
+				<span class="textHeaderDark"><strong><?php print $tabs_graphs[$tab_short_name];?></strong> [user: <?php print $current_user["username"];?>]</span>
+			</td>
+		</tr>
+		<?php
+		
+		reset($settings_graphs);
+		
+		$i = 0;
+		if (sizeof($settings_graphs) > 0) {
+		foreach (array_keys($settings_graphs) as $setting) {
+			/* make sure to skip group members here; only parents are allowed */
+			if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
+				++$i;
+				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+				
+				/* draw the acual header and textbox on the form */
+				form_item_label($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
+				
+				$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . $_SESSION["sess_user_id"]);
+				
+				/* choose what kind of item this is */
+				switch ($settings_graphs[$setting]["method"]) {
+					case 'textbox':
+						form_text_box($setting,$current_value,$settings_graphs[$setting]["default"],"");
+						break;
+					case 'drop_sql':
+						form_dropdown($setting,db_fetch_assoc($settings_graphs[$setting]["sql"]),"name","id",$current_value,"",$settings_graphs[$setting]["default"]);
+						break;
+					case 'drop_array':
+						form_dropdown($setting,${$settings_graphs[$setting]["array_name"]},"","",$current_value,"",$settings_graphs[$setting]["default"]);
+						break;
+				}
+				
+				print "</tr>\n";
 			}
-			
-			print "</tr>\n";
 		}
+		}
+	
 	}
 	}
-
+	
+	end_box();
+	
+	form_hidden_box("referer",$_SERVER["HTTP_REFERER"],"");
+	form_hidden_box("save_component_graph_config","1","");
+	form_save_button("graph_settings.php");
 }
-}
-
-end_box();
-
-form_hidden_id("user_id",$_GET["id"]);
-form_hidden_box("save_component_graph_config","1","");
-
-form_save_button("graph_settings.php");
-
-include_once ("include/bottom_footer.php");
 
 ?>
