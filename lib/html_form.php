@@ -330,16 +330,32 @@ function DrawConfirmButtons($action_url, $cancel_url) { ?>
 	</tr>
 <?}
 
-function new_table() { ?>
-						</table>
-					</td>
-				</tr>
-			</table>
-			<br>
-			<table align="center" width="98%" cellpadding=1 cellspacing=0 border=0 bgcolor="#00438C">
-				<tr>
-					<td>
-						<table cellpadding=3 cellspacing=0 border=0 bgcolor="#E1E1E1" width="100%">
+function start_box($title, $style, $add_text) {
+	global $colors; ?>
+	<table align="center" <?if ($style == "dialog") {?>width="60%"<?}else{?>width="98%"<?}?> cellpadding=1 cellspacing=0 border=0 bgcolor="#<?print $colors["header"];?>">
+		<tr>
+			<td>
+				<table cellpadding=3 cellspacing=0 border=0 bgcolor="#<?print $colors["form_background_dark"];?>" width="100%">
+					<?if ($title != "") {?><tr>
+						<td bgcolor="#<?print $colors["header"];?>" colspan="10">
+							<table width="100%" cellpadding="0" cellspacing="0">
+								<tr>
+									<td bgcolor="#<?print $colors["header"];?>" class="textHeaderDark"><?print $title;?></td>
+										<?if ($add_text != "") {?><td class="textHeaderDark" align="right" bgcolor="#<?print $colors["header"];?>"><strong><a class="linkOverDark" href="<?print $add_text;?>">Add</a>&nbsp;</strong></td><?}?>
+								</tr>
+							</table>
+						</td>
+					</tr><?}?>
+
+<?}
+
+
+function end_box() { ?>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<br>
 <?}
 
 /* ------------------ Stripped Form Objects Data ---------------------- */

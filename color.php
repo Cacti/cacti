@@ -39,24 +39,24 @@ switch ($action) {
 	
 	sql_save($save, "def_colors");
 
-	header ("Location: $current_script_name");
-	break;
+	header ("Location: color.php");
+	break;             
  case 'remove':
-    	db_execute("delete from def_colors where id=$id");
+    	db_execute("delete from def_colors where id=$args[id]");
     
-    	header ("Location: $current_script_name");
+    	header ("Location: color.php");
 	break;
  case 'edit':
 	include_once ("include/top_header.php");
-	$title_text = "Color Management [edit]";
-	include_once ("include/top_table_header.php");
 	
 	if (isset($args[id])) {
-		$color = db_fetch_row("select * from def_colors where id=$id");
+		$color = db_fetch_row("select * from def_colors where id=$args[id]");
 	}else{
 		unset($color);
 	}
-    
+	
+	start_box("Color Management [edit]", "", "");
+    	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Hex Value</font><br>
@@ -76,14 +76,15 @@ switch ($action) {
 		</td>
 	</tr>
 	<?
-	include_once ("include/bottom_table_footer.php");
+	end_box();
+	
 	include_once ("include/bottom_footer.php");
 	
     	break;
  default:
 	include_once ("include/top_header.php");
-	$title_text = "Color Management"; $add_text = "$current_script_name?action=edit";
-	include_once ("include/top_table_header.php");
+	
+	start_box("Color Management", "", "color.php?action=edit");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Hex Value",$colors[header_text],1);
@@ -92,24 +93,24 @@ switch ($action) {
 	print "</tr>";
     
 	$color_list = db_fetch_assoc("select * from def_colors order by hex");
-	$rows = sizeof($color_list);
 	
+	if (sizeof($color_list) > 0) {
 	foreach ($color_list as $color) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
+		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="<?print $current_script_name;?>?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
+				<a class="linkEditMain" href="color.php?action=edit&id=<?print $color[ID];?>"><?print $color[Hex];?></a>
 			</td>
 			<td bgcolor="#<?print $color[Hex];?>" width="1%">&nbsp;</td>
 			<td width="1%" align="right">
-				<a href="<?print $current_script_name;?>?action=remove&id=<?print $color[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="color.php?action=remove&id=<?print $color[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
-	$i++;
 	}
+	}
+	end_box();
 	
-	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
    	break;

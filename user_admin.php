@@ -63,14 +63,12 @@ function edit_perms() {
 		unset($user);
 	}
 	
+	start_box("<strong>" . db_fetch_cell("select username from auth_users where id=$args[id]") . "</strong> is Currently is <strong>$graph_policy_text</strong> to View the Following Graphs:", "", "");
+	
 	?>
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C"><strong><?print db_fetch_cell("select username from auth_users where id=$args[id]");?></strong> is Currently is <strong><?print $graph_policy_text;?></strong> to View the Following Graphs:</td>
-	</tr>
-	
 	<form method="post" action="user_admin.php">
-	
 	<?
+	
 	$perm_graphs = db_fetch_assoc("select rrd_graph.Title from
 		auth_graph left join rrd_graph on auth_graph.graphid=rrd_graph.id
 		where auth_graph.userid=$args[id]");
@@ -152,7 +150,8 @@ function edit_perms() {
 		</td>
 	</tr>
 	
-	<?	
+	<?
+	end_box();
 }
 
 function edit_graph_config() {
@@ -164,11 +163,10 @@ function edit_graph_config() {
 	}else{
 		unset($user);
 	}
-	?>
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Preview Settings</td>
-	</tr>
 	
+	start_box("Graph Preview Settings", "", "");
+	
+	?>
 	<form method="post" action="user_admin.php">
 	<?
 	
@@ -256,7 +254,9 @@ function edit_graph_config() {
 		</td>
 	</tr>
 	
-	<?	
+	<?
+	
+	end_box();
 }
 
 switch ($action) {
@@ -346,36 +346,30 @@ switch ($action) {
 	break;
  case 'edit_graph_config':
 	include_once ("include/top_header.php");
-	$title_text = "User Management [edit]";
-	include_once ("include/top_table_header.php");
 	
+	start_box("User Management [edit]", "", "");
 	draw_user_form_select();
- 	new_table();
+	end_box();
 	
 	edit_graph_config();
 	
-	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
 	break;
  case 'edit_perms':
 	include_once ("include/top_header.php");
-	$title_text = "User Management [edit]";
-	include_once ("include/top_table_header.php");
 	
+	start_box("User Management [edit]", "", "");
 	draw_user_form_select();
-	new_table();
+	end_box();
 	
 	edit_perms();
-
-	include_once ("include/bottom_table_footer.php");
+	
 	include_once ("include/bottom_footer.php");
 	
 	break;
  case 'edit':
 	include_once ("include/top_header.php");
-	if ($config[full_view_user_admin][value] == "") { $title_text = "User Management [edit]"; }
-	include_once ("include/top_table_header.php");
 	
 	if (isset($args[id])) {
 		$user = db_fetch_row("select * from auth_users where id=$args[id]");
@@ -384,15 +378,14 @@ switch ($action) {
 	}
 	
 	if ($config[full_view_user_admin][value] == "") {
+		start_box("User Management [edit]", "", "");
 		draw_user_form_select();
-		new_table();
+		end_box();
 	}
 	
-	?>
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">User Configuration</td>
-	</tr>
+	start_box("User Configuration", "", "");
 	
+	?>
 	<form method="post" action="user_admin.php">
 	<?
 	
@@ -546,21 +539,21 @@ switch ($action) {
 	
 	<?
 	if ($config[full_view_user_admin][value] == "on") {
-		new_table();
+		end_box();
 		edit_perms();
-		new_table();
 		edit_graph_config();
+	}else{
+		end_box();
 	}
 	
-	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
 	break;
  default:
 	include_once ("include/top_header.php");
-	$title_text = "User Management"; $add_text = "$current_script_name?action=edit";
-	include_once ("include/top_table_header.php");
-    
+	
+	start_box("User Management", "", "user_admin.php?action=edit");
+	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("User Name",$colors[header_text],1);
 		DrawMatrixHeaderItem("Full Name",$colors[header_text],1);
@@ -590,9 +583,9 @@ switch ($action) {
 	$i++;
 	}
 	}
-    
+	end_box();
+	
 	include_once ("include/bottom_footer.php");
-	include_once ("include/bottom_table_footer.php");
 	
 	break;
 } 

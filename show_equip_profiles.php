@@ -35,13 +35,11 @@ if ($action == 'remove') {
     ##  Code to remove profile goes here.
     header("$PHP_SELF");
 }
-	
+
 include_once ("include/top_header.php");
-$title_text = "Equipment Profiles";
-$add_text = 'equipment_profile.php?action=edit';
-include_once ("include/top_table_header.php");
-		
-		
+
+start_box("Equipment Profiles", "", "equipment_profile.php?action=edit");
+
 DrawMatrixRowBegin();
 DrawMatrixHeaderItem("Profile Name",$colors[panel_text]);
 DrawMatrixHeaderItem("&nbsp;",$colors[panel_text]);
@@ -65,8 +63,7 @@ if (sizeof($profile_list) > 0) {
     }
 }
 
-include_once ("include/bottom_table_footer.php");
+end_box();
+
 include_once ("include/bottom_footer.php");
-
 ?>
-

@@ -21,9 +21,10 @@
 | - raXnet - http://www.raxnet.net/                                       |
 +-------------------------------------------------------------------------+ */?>
 <?	$section = "Console Access"; include ('include/auth.php');
+	include_once ("include/form.php");
 	include_once ("include/top_header.php");
-	$title_text = "About cacti";
-	include_once ("include/top_table_header.php");
+	
+	start_box("About cacti", "", "");
 	?> 
 
 
@@ -72,5 +73,5 @@
 	</tr>
 
 
-<?	include_once ("include/bottom_footer.php");
-	include_once ("include/bottom_table_footer.php");?>
+<?	end_box();
+	include_once ("include/bottom_footer.php");?>

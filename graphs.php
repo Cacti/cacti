@@ -44,7 +44,8 @@
 				</table>
 			</td>
 		</tr>
-	<?}
+	<?
+	}
 	
 	function draw_graph_form_select($main_action) { 
 		global $colors, $args; ?>
@@ -67,7 +68,8 @@
 			</td>
 			</form>
 		</tr>
-	<?}
+	<?
+	}
 	
 	function item() {
 		global $args, $colors;
@@ -75,12 +77,8 @@
 		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=$args[local_graph_id]");
 		$graph_template_name = db_fetch_cell("select  name from graph_templates where id=$graph_template_id");
 		
-		?>
-		<tr>
-			<td colspan="6" class="textSubHeaderDark" bgcolor="#00438C">Graph Item Configuration<?if ($graph_template_id != 0) { print " <strong>[Template: $graph_template_name]</strong>"; }?></td>
-			<td class="textHeaderDark" align="right" bgcolor="#00438C"><?if ($graph_template_id == "0") {?><strong><a class="linkOverDark" href="graphs.php?action=item_edit&local_graph_id=<?print $args[local_graph_id];?>">Add</a>&nbsp;</strong><?}?></td>
-		</tr>
-		<?
+		if ($graph_template_name != "") { $header_text = "Graph Item Configuration <strong>[Template: $graph_template_name]</strong>"; }
+		start_box($header_text, "", "graphs.php?action=item_edit&local_graph_id=$args[local_graph_id]");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Graph Item",$colors[header_text],1);
@@ -208,13 +206,10 @@
 		
 		/* only display the "inputs" area if we are using a graph template for this graph */
 		if ($graph_template_id != "0") {
-			new_table();
+			end_box();
+			start_box("Graph Item Inputs", "", "");
 			
 			?>
-			<tr>
-				<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Item Inputs</td>
-			</tr>
-			
 			<form method="post" action="graphs.php">
 			<?
 			
@@ -294,6 +289,8 @@
 				</tr><?
 			}
 		}
+		
+		end_box();
 	}
 	
 switch ($action) {
@@ -335,12 +332,10 @@ switch ($action) {
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management [edit]";
-		include_once ("include/top_table_header.php");
 		
+		start_box("Graph Template Management [edit]", "", "");
 		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
-		
-		new_table();
+		end_box();
 		
 		if (isset($args[graph_template_item_id])) {
 			$template_item = db_fetch_row("select * from graph_templates_item where id=$args[graph_template_item_id]");
@@ -348,11 +343,8 @@ switch ($action) {
 			unset($template_item);
 		}
 		
+		start_box("Template Item Configuration", "", "");
 		?>
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Template Item Configuration</td>
-		</tr>
-		
 		<form method="post" action="graphs.php">
 		
 		<?
@@ -490,8 +482,8 @@ switch ($action) {
 			</td>
 		</tr>
 		<?
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
@@ -542,16 +534,13 @@ switch ($action) {
 		break;
 	case 'item':
 		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management [edit]";
-		include_once ("include/top_table_header.php");
 		
+		start_box("Graph Template Management [edit]", "", "");
 		draw_graph_form_select("?action=item&local_graph_id=$args[local_graph_id]");
-		
-		new_table();
+		end_box();
 		
 		item();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
@@ -619,12 +608,11 @@ switch ($action) {
 		break;
 	case 'graph_edit':
 		include_once ("include/top_header.php");
-		if ($config[full_view_graph][value] == "") { $title_text = "Graph Management [edit]"; }
-		include_once ("include/top_table_header.php");
 		
 		if ($config[full_view_graph][value] == "") {
+			start_box("Graph Management [edit]", "", "");
 			draw_graph_form_select("?action=graph_edit&local_graph_id=$args[local_graph_id]");
-			new_table();
+			end_box();
 		}
 		
 		$use_graph_template = true;
@@ -648,14 +636,11 @@ switch ($action) {
 		$graph_template_name = db_fetch_cell("select  name from graph_templates where id=$graphs[graph_template_id]");
 		
 		if ($config[full_view_graph][value] == "on") {
-			item();	
-			new_table();
+			item();
 		}
-		?>
 		
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Selection<?if ($graph_template_name != "") { print " <strong>[Template: $graph_template_name]</strong>"; }?></td>
-		</tr>
+		start_box("Graph Configuration", "", "");
+		?>
 		
 		<form method="post" action="graphs.php">
 		
@@ -670,15 +655,11 @@ switch ($action) {
 		
 		<?
 		if ($config[full_view_graph][value] == "") {
-			new_table();
+			end_box();
+			start_box("Custom Graph Configuration", "", "");
 		}
-		?>
 		
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Custom Graph Configuration</td>
-		</tr>
-				
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Title</font><br>
 				<?if (($use_graph_template == false) || ($graphs_template[t_title] == "on")) { print "The name that is printed on the graph."; }?>
@@ -926,30 +907,28 @@ switch ($action) {
 			</td>
 		</tr>
 		<?
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	case 'tree_edit':
 		include_once ("include/top_header.php");
-		$title_text = "Graph Management [edit]"; $add_text = "graphs.php?action=edit_tree";
-		include_once ("include/top_table_header.php");
 		
-		if (isset($id)) {
-			$graph_tree = db_fetch_row("select * from rrd_graph_tree where id=$_GET[id]", $cnn_id);
+		
+		if (isset($args[id])) {
+			$graph_tree = db_fetch_row("select * from rrd_graph_tree where id=$args[id]", $cnn_id);
 		}else{
 			unset($graph_tree);
 		}
 		
+		start_box("Graph Management [edit]", "", "graphs.php?action=edit_tree");
 		draw_main_form_select();
-		new_table();
-		?>
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Tree Configuration</td>
-		</tr>
+		end_box();
 		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		start_box("Graph Tree Configuration", "", "");
+		
+		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="40%">
 				<font class="textEditTitle">Tree Name</font><br>
 				Enter a name for this tree.
@@ -972,23 +951,19 @@ switch ($action) {
 			</td>
 		</tr>
 		<?
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	case 'tree':
 		include_once ("include/top_header.php");
-		$title_text = "Graph Management"; $add_text = "graphs.php?action=tree_edit";
-		include_once ("include/top_table_header.php");
 		
+		start_box("Graph Management", "", "graphs.php?action=tree_edit");
 		draw_main_form_select();
-		new_table();
-		?>
-		<tr>
-			<td colspan="3" class="textSubHeaderDark" bgcolor="#00438C">Graph Tree Configuration</td>
-		</tr>
-		<?
+		end_box();
+		
+		start_box("Graph Tree Configuration", "", "");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Tree Name",$colors[header_text],1);
@@ -1013,18 +988,19 @@ switch ($action) {
 		<?
 		$i++;
 		}
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	default:
 		include_once ("include/top_header.php");
-		$title_text = "Graph Management"; $add_text = "graphs.php?action=graph_edit";
-		include_once ("include/top_table_header.php");
 		
+		start_box("Graph Management", "", "graphs.php?action=graph_edit");
 		draw_main_form_select();
-		new_table();
+		end_box();
+		
+		start_box("", "", "");
 		?>
 			
 
@@ -1099,8 +1075,8 @@ switch ($action) {
 		$i++;
 		}
 		}
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;

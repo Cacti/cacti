@@ -53,13 +53,8 @@
 	
 	function item() {
 		global $args, $colors;
-		?>
-		<tr>
-			<td colspan="6" class="textSubHeaderDark" bgcolor="#00438C">Graph Template Item Configuration</td>
-			<td class="textHeaderDark" align="right" bgcolor="#00438C"><strong><a class="linkOverDark" href="graph_templates.php?action=item_edit&graph_template_id=<?print $args[graph_template_id];?>">Add</a>&nbsp;</strong></td>
-		</tr>
 		
-		<?
+		start_box("Graph Template Item Configuration", "", "graph_templates.php?action=item_edit&graph_template_id=$args[graph_template_id]");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Graph Item",$colors[header_text],1);
@@ -185,14 +180,8 @@
 			</tr><?
 		}
 		
-		new_table();
-		
-		?>
-		<tr>
-			<td colspan="1" class="textSubHeaderDark" bgcolor="#00438C">Graph Template User Input Configuration</td>
-			<td class="textHeaderDark" align="right" bgcolor="#00438C"><strong><a class="linkOverDark" href="graph_templates.php?action=input_edit&graph_template_id=<?print $args[graph_template_id];?>">Add</a>&nbsp;</strong></td>
-		</tr>
-		<?
+		end_box();
+		start_box("Graph Template User Input Configuration", "", "graph_templates.php?action=input_edit&graph_template_id=$args[graph_template_id]");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Name",$colors[header_text],2);
@@ -220,7 +209,9 @@
 					<em>No Inputs</em>
 				</td>
 			</tr><?
-		}	
+		}
+		
+		end_box();
 	}
 	
 switch ($action) {
@@ -404,12 +395,11 @@ switch ($action) {
 		break;
 	case 'input_edit':
 		include_once ("include/top_header.php");
-		if ($config[full_view_graph_template][value] == "") { $title_text = "Graph Template Management [edit]"; }
-		include_once ("include/top_table_header.php");
 		
 		if ($config[full_view_graph_template][value] == "") {
+			start_box("Graph Template Management [edit]", "", "");
 			draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
-			new_table();
+			end_box();
 		}
 		
 		$graph_template_items[short_names] = array(
@@ -441,11 +431,9 @@ switch ($action) {
 			unset($graph_template_input);
 		}
 		
-		?>
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Item Input Configuration</td>
-		</tr>
+		start_box("Graph Item Input Configuration", "", "");
 		
+		?>
 		<form method="post" action="graph_templates.php">
 		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
@@ -534,19 +522,18 @@ switch ($action) {
 			</td>
 		</tr>
 		<?
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
-		if ($config[full_view_graph_template][value] == "") { $title_text = "Graph Template Management [edit]"; }
-		include_once ("include/top_table_header.php");
 		
 		if ($config[full_view_graph_template][value] == "") {
+			start_box("Graph Template Management [edit]", "", "");
 			draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
-			new_table();
+			end_box();
 		}
 		
 		if (isset($args[graph_template_item_id])) {
@@ -558,13 +545,10 @@ switch ($action) {
 		/* get current graph name for the header text */
 		$graph_parameters = db_fetch_row("select title,grouping from graph_templates_graph where id=$args[graph_template_id]");
 		
+		start_box("Template Item Configuration", "", "");
+		
 		?>
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Template Item Configuration</td>
-		</tr>
-		
 		<form method="post" action="graph_templates.php">
-		
 		<?
 		/* by default, select the LAST DS chosen to make everyone's lives easier */
 		$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=$args[graph_template_id] order by sequence_parent DESC,sequence DESC");
@@ -700,34 +684,30 @@ switch ($action) {
 			</td>
 		</tr>
 		<?
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	case 'item':
 		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management [edit]";
-		include_once ("include/top_table_header.php");
 		
+		start_box("Graph Template Management [edit]", "", "");
 		draw_graph_form_select("?action=item&graph_template_id=$args[graph_template_id]");
-		
-		new_table();
+		end_box();
 		
 		item();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	case 'template_edit':
 		include_once ("include/top_header.php");
-		if ($config[full_view_graph_template][value] == "") { $title_text = "Graph Template Management [edit]"; }
-		include_once ("include/top_table_header.php");
 		
 		if ($config[full_view_graph_template][value] == "") {
+			start_box("Graph Template Management [edit]", "", "");
 			draw_graph_form_select("?action=template_edit&graph_template_id=$args[graph_template_id]");
-			new_table();
+			end_box();
 		}
 		
 		if (isset($args[graph_template_id])) {
@@ -740,13 +720,10 @@ switch ($action) {
 		
 		if ($config[full_view_graph_template][value] == "on") {
 			item();	
-			new_table();
 		}
-		?>
 		
-		<tr>
-			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Template Configuration</td>
-		</tr>
+		start_box("Template Configuration", "", "");
+		?>
 		
 		<form method="post" action="graph_templates.php">
 		
@@ -917,15 +894,15 @@ switch ($action) {
 			</td>
 		</tr>
 		<?
+		end_box();
 		
-		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
 		
 		break;
 	default:
 		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management"; $add_text = "graph_templates.php?action=template_edit";
-		include_once ("include/top_table_header.php");
+		
+		start_box("Graph Template Management", "", "graph_templates.php?action=template_edit");
 		
 		print "<tr bgcolor='#$colors[header_panel]'>";
 			DrawMatrixHeaderItem("Template Title",$colors[header_text],2);
@@ -947,7 +924,8 @@ switch ($action) {
 			$i++;
 		    }
 		}
-		include_once ("include/bottom_table_footer.php");
+		end_box();
+		
 		include_once ("include/bottom_footer.php");
 		
 		break;

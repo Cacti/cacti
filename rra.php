@@ -52,26 +52,26 @@ switch ($action) {
     header ("Location: rra.php");
     break;
  case 'remove':
-	if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=$id");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=$args[id]");
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
-		db_execute("delete from rrd_rra where id=$id");
-		db_execute("delete from lnk_ds_rra where rraid=$id");
+	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+		db_execute("delete from rrd_rra where id=$args[id]");
+		db_execute("delete from lnk_ds_rra where rraid=$args[id]");
     }
 	
     header ("Location: rra.php");
     break;
  case 'edit':
 	include_once ("include/top_header.php");
-	$title_text = "Round Robin Archive Management [edit]";
-	include_once ("include/top_table_header.php");
+	
+	start_box("Round Robin Archive Management [edit]", "", "");
 	
 	if (isset($args[id])) {
-		$rra = db_fetch_row("select * from rrd_rra where id=$id");
+		$rra = db_fetch_row("select * from rrd_rra where id=$args[id]");
 	}else{
 		unset($rra);
 	}
@@ -127,15 +127,15 @@ switch ($action) {
 		</td>
 	</tr>
 	<?
+	end_box();
 	
-	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
 	break;
  default:
 	include_once ("include/top_header.php");
-	$title_text = "Round Robin Archive Management"; $add_text = "$current_script_name?action=edit";
-	include_once ("include/top_table_header.php");
+	
+	start_box("Round Robin Archive Management", "", "rra.php?action=edit");
 	
 	print "<tr bgcolor='#$colors[header_panel]'>";
 		DrawMatrixHeaderItem("Name",$colors[header_text],1);
@@ -150,7 +150,7 @@ switch ($action) {
 		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="<?print $current_script_name;?>?action=edit&id=<?print $rra[ID];?>"><?print $rra[Name];?></a>
+				<a class="linkEditMain" href="rra.php?action=edit&id=<?print $rra[ID];?>"><?print $rra[Name];?></a>
 			</td>
 			<td>
 				<?print $rra[Steps];?>
@@ -159,14 +159,14 @@ switch ($action) {
 				<?print $rra[Rows];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="<?print $current_script_name;?>?action=remove&id=<?print $rra[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="rra.php?action=remove&id=<?print $rra[ID];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
 	$i++;
 	}
+	end_box();
 	
-	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
 	break;

@@ -61,7 +61,7 @@ switch ($action) {
 		$current_tab = $args[tab];
 	}
 	
-	$title_text = "cacti Settings (" . $tabs[$current_tab] . ")"; include_once ("include/top_table_header.php");
+	start_box("cacti Settings (" . $tabs[$current_tab] . ")", "", "");
 	
 	?>
 	
@@ -148,8 +148,8 @@ switch ($action) {
 			</td>
 		</tr>
 	<?
+	end_box();
 	
-	include_once ("include/bottom_table_footer.php");
 	include_once ("include/bottom_footer.php");
 	
 	break;

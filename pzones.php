@@ -36,28 +36,28 @@ switch ($action) {
     unset($form[action],$form[x],$form[y]);
     sql_save($form, "polling_zones");
     
-    header ("Location: $current_script_name");
-	break;
+    header ("Location: pzones.php");
+    break;
  case 'remove':
-	if (($config["remove_verification"]["value"] == "on") && ($confirm != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this polling zone?", getenv("HTTP_REFERER"), "pzones.php?action=remove&id=$id");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this polling zone?", getenv("HTTP_REFERER"), "pzones.php?action=remove&id=$args[id]");
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($confirm == "yes")) {
-	    db_execute("delete from polling_zones where pz_id=$id");
+	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+	    db_execute("delete from polling_zones where pz_id=$args[id]");
 	}
     
-    header ("Location: $current_script_name");
+    header ("Location: pzones.php");
     break;
  case 'edit':
 	include_once ("include/top_header.php");
-	$title_text = "Polling Zone";
-	include_once ("include/top_table_header.php");
+	
+	start_box("Polling Zones [edit]", "", "");
 	
 	if (isset($args[id])) {
-		$zone = db_fetch_row("select * from polling_zones where pz_id=$id");
+		$zone = db_fetch_row("select * from polling_zones where pz_id=$args[id]");
 	}else{
 		unset($zone);
 	}
@@ -83,15 +83,14 @@ switch ($action) {
 	</tr>
 	
 	<?
-	include_once ("include/bottom_table_footer.php");
+	end_box();
 	include_once ("include/bottom_footer.php");
 	
 	break;
  default:
     include_once ("include/top_header.php");
-    $title_text = "Polling Zones";
-    $add_text = "$current_script_name?action=edit";
-    include_once ("include/top_table_header.php");
+    
+    start_box("Polling Zones", "", "pzones.php?action=edit");
     
     print "<tr bgcolor='#$colors[header_panel]'>";
     DrawMatrixHeaderItem("Zone Name",$colors[header_text],1);
@@ -104,10 +103,10 @@ switch ($action) {
 	foreach ($zone_list as $zone) {
 	    DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
 	    print "<td>
-		    <a class='linkEditMain' href='$current_script_name?action=edit&id=$zone[pz_id]'>$zone[zone_name]</a>
+		    <a class='linkEditMain' href='pzones.php?action=edit&id=$zone[pz_id]'>$zone[zone_name]</a>
 		    </td>
 		    <td width='1%' align='right'>
-		    <a href='$current_script_name?action=remove&id=$zone[pz_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+		    <a href='pzones.php?action=remove&id=$zone[pz_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
 		  </td>	
 		    </tr>\n";
 	    
@@ -116,8 +115,8 @@ switch ($action) {
     } else {
 	print "<tr><td colspan=2><p align=center><b>No Zones Defined</b></p></td></tr>\n";
     }
+    end_box();
     
-    include_once ("include/bottom_table_footer.php");
     include_once ("include/bottom_footer.php");
     
     break;

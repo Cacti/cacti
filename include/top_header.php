@@ -34,7 +34,7 @@
 	A:hover {text-decoration: underline; color: #333333;}
 	A:visited {color: Blue;}
 	.textHeader {font-size: 12px; font-weight: bold;}
-	.textHeaderDark {font-size: 12px; font-weight: bold; color: #ffffff;}
+	.textHeaderDark {font-size: 12px; color: #ffffff;}
 	.textSubHeaderDark {font-size: 12px; color: #ffffff;}
 	.textArea {font-size: 12px;}
 	.textTab {font-size: 10px; font-weight: bold;}
