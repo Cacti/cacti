@@ -181,18 +181,20 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			} /* End Switch */
 
 			if (isset($output)) {
-				db_execute("insert into poller_output (local_data_id,time,output) values (" . $item["local_data_id"] . ",NOW(),'" . addslashes($output) . "')");
+				db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "',NOW(),'" . addslashes($output) . "')");
 			}
 		} /* Next Cache Item */
 	} /* End foreach */
 
-	// close php server process
-	fwrite($pipes[0], "quit\r\n");
-	fclose($pipes[0]);
-	fclose($pipes[1]);
-	fclose($pipes[2]);
+	if ($using_proc_function == true) {
+		// close php server process
+		fwrite($pipes[0], "quit\r\n");
+		fclose($pipes[0]);
+		fclose($pipes[1]);
+		fclose($pipes[2]);
 
-	$return_value = proc_close($cactiphp);
+		$return_value = proc_close($cactiphp);
+	}
 
 	db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
 }else{
