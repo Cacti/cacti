@@ -1,4 +1,4 @@
-raXnet - cacti
+Cacti Readme File
 
 REQUIREMENTS:
 Cacti should be able to run on any Unix-based operating system with
@@ -44,47 +44,53 @@ download the newest source and compile a new PHP-binary with SNMP support.
 
 INFORMATION ABOUT CACTI:
 
-Cacti is a complete frontend to rrdtool, it stores all of the nessesary 
-information to create graphs and populate them with data in a MySQL 
-database. The frontend is completely PHP driven. Along with being able 
-to maintain Graphs, Data Sources, and Round Robin Archives in a database, 
-cacti handles the data gathering also. There is also SNMP support for 
-those used to creating traffic graphs with MRTG. 
+Cacti is a complete frontend to RRDTool, it stores all of the necessary 
+information to create graphs and populate them with data in a MySQL database. 
+The frontend is completely PHP driven. Along with being able to maintain 
+Graphs, Data Sources, and Round Robin Archives in a database, cacti handles 
+the data gathering. There is also SNMP support for those used to creating 
+traffic graphs with MRTG.
+
+Data Sources
 
 To handle data gathering, you can feed cacti the paths to any external 
 script/command along with any data that the user will need to "fill in", 
 cacti will then gather this data in a cron-job and populate a MySQL 
-database/the round robin archives. 
+database/the round robin archives.
 
-Data Sources can also be created, which correspond to actual data on 
-the graph. For instance, if a user would want to graph the ping times 
-to a host, you could create a data source choosing a script that pings 
-a host and returns it's value in milliseconds. After defining options 
-for rrdtool such as how to store the data you will be able to define 
-any additional information that the data input source requires, such 
-as a host to ping in this case. Once a data source is created, it is 
-automatically mantained at 5 minute intervals. 
+Data Sources can also be created, which correspond to actual data on the 
+graph. For instance, if a user would want to graph the ping times to a host, 
+you could create a data source utilizing a script that pings a host and returns 
+it's value in milliseconds. After defining options for RRDTool such as how to 
+store the data you will be able to define any additional information that the 
+data input source requires, such as a host to ping in this case. Once a data 
+source is created, it is automatically maintained at 5 minute intervals.
 
-For those that are used to creating traffic graphs in MRTG, this 
-process has become much simplier in cacti. An SNMP interface allows 
-you to enter SNMP capable hosts and cacti will display that host's 
-interfaces, all which can be graphed will once click from that point. 
+Graphs
 
-Once one or more data sources are defined, an rrdtool graph can be 
-created using the data. Cacti allows you to create almost any 
-imaginable rrdtool graph using all of the standard rrdtool graph types 
-and consolidation functions. A color selection area and automatic text 
-padding function also aid in the creation of graphs to make the process 
-easier. 
+Once one or more data sources are defined, an RRDTool graph can be created 
+using the data. Cacti allows you to create almost any imaginable RRDTool graph 
+using all of the standard RRDTool graph types and consolidation functions. 
+A color selection area and automatic text padding function also aid in the 
+creation of graphs to make the process easier.
 
-Not only can you create rrdtool based graphs in cacti, but there are 
-many ways to display them. Along with a standard "list view" and a 
-"preview mode", which resembles the rrdtool frontend 14all, there is 
-a "tree view", which allows you to put graphs onto a hierarchical tree 
-for organizational purposes. 
+Not only can you create RRDTool based graphs in cacti, but there are many 
+ways to display them. Along with a standard "list view" and a "preview mode", 
+which resembles the RRDTool frontend 14all, there is a "tree view", which 
+allows you to put graphs onto a hierarchical tree for organizational purposes.
 
-Due to the many functions of cacti, a user based management tool is 
-built in so you can add users and give them rights to certain areas 
-of cacti. This would allow someone to create some users that can change 
-graph parameters, while others can only view graphs. Each user also 
-mantains their own settings when it comes to viewing graphs.
+User Management
+
+Due to the many functions of cacti, a user based management tool is built in 
+so you can add users and give them rights to certain areas of cacti. This would 
+allow someone to create some users that can change graph parameters, while 
+others can only view graphs. Each user also maintains their own settings when 
+it comes to viewing graphs.
+
+Templating
+
+Lastly, cacti is able to scale to a large number of data sources and graphs 
+through the use of templates. This allows the creation of a single graph or 
+data source template which defines any graph or data source associated with it. 
+Host templates enable you to define the capabilities of a host so cacti can 
+poll it for information upon the addition of a new host.
