@@ -119,6 +119,8 @@ function push_out_host($host_id) {
 	
 	if (empty($host_id)) { return 0; }
 	
+	$host = db_fetch_row("select hostname,management_ip,snmp_community,snmp_username,snmp_password,snmp_version from host where id=$host_id");
+	
 	$data_sources = db_fetch_assoc("select
 		data_template_data.id,
 		data_template_data.data_input_id
@@ -146,8 +148,8 @@ function push_out_host($host_id) {
 			           table, just fyi */
 			
 			/* make sure it is HOST related type code */
-			if (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password)$', $input_field["type_code"])) {
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . db_fetch_cell("select " . $input_field["type_code"] . " from host where id=$host_id") . "')");
+			if (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password|snmp_version)$', $input_field["type_code"])) {
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . $host{$input_field["type_code"]} . "')");
 			}
 		}
 		}
@@ -167,6 +169,13 @@ function change_data_template($local_data_id, $data_template_id) {
 	$data = db_fetch_row("select * from data_template_data where local_data_id=$local_data_id");
 	$template_data = db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id");
 	
+	/* determine if we are here for the first time, or coming back */
+	if (db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "0") {
+		$new_save = true;
+	}else{
+		$new_save = false;
+	}
+	
 	/* make sure the 'local_data_template_data_id' column is set */
 	$local_data_template_data_id = db_fetch_cell("select id from data_template_data where data_template_id=$data_template_id and data_template_id=id");
 	
@@ -181,14 +190,16 @@ function change_data_template($local_data_id, $data_template_id) {
 	
 	/* loop through the "templated field names" to find to the rest... */
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		if ($template_data{"t_" . $field_name} == "on") { $save[$field_name] = $data[$field_name]; }else{ $save[$field_name] = $template_data[$field_name]; }
+		if ($field_array["type"] != "custom") {
+			if ($template_data{"t_" . $field_name} == "on") { $save[$field_name] = $data[$field_name]; }else{ $save[$field_name] = $template_data[$field_name]; }
+		}
 	}
 	
 	/* these fields should never be overwritten by the template */
 	$save["data_source_path"] = $data["data_source_path"];
 	
-	print "<pre>";print_r($save);print "</pre>";
-	sql_save($save, "data_template_data");
+	//print "<pre>";print_r($save);print "</pre>";
+	$data_template_data_id = sql_save($save, "data_template_data");
 	
 	$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
 	$template_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id");
@@ -212,10 +223,24 @@ function change_data_template($local_data_id, $data_template_id) {
 				$save[$field_name] = $template_rrd[$field_name];
 			}
 			
-			print "<pre>";print_r($save);print "</pre>";
+			//print "<pre>";print_r($save);print "</pre>";
 			sql_save($save, "data_template_rrd");
 		}
 		}
+	}
+	
+	/* make sure to copy down script data (data_input_data) as well */
+	$data_input_data = db_fetch_assoc("select data_input_field_id,t_value,value from data_input_data where data_template_data_id=" . $template_data["id"]);
+	
+	/* this section is before most everthing else so we can determine if this is a new save, by checking
+	the status of the 'local_data_template_data_id' column */
+	if (sizeof($data_input_data) > 0) {
+	foreach ($data_input_data as $item) {
+		/* always propagate on a new save, only propagate templated fields thereafter */
+		if (($new_save == true) || (empty($item["t_value"]))) {
+			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $item["data_input_field_id"] . ",$data_template_data_id,'" . $item["t_value"] . "','" . $item["value"] . "')");
+		}
+	}
 	}
 	
 	/* find out if there is a host and a host template involved, if there is... push out the 
