@@ -50,6 +50,8 @@ function draw_edit_form($array) {
 			
 			if ($field_array["method"] == "hidden") {
 				form_hidden_box($field_name, $field_array["value"], "");
+			}elseif ($field_array["method"] == "hidden_zero") {
+				form_hidden_box($field_name, $field_array["value"], "0");
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr bgcolor='#" . $config_array["force_row_color"] . "'>";
@@ -590,6 +592,37 @@ function draw_menu() {
 	}
 	
 	print '</table></td></tr>';
+}
+
+function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
+	$check_fields = array("value", "array", "friendly_name", "description", "sql", "form_id", "items");
+	
+	/* loop through each available field */
+	while (list($field_name, $field_array) = each($form_array)) {
+		/* loop through each sub-field that we are going to check for variables */
+		foreach ($check_fields as $field_to_check) {
+			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
+				/* if the field/sub-field combination is an array, resolve it recursively */
+				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
+			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $field_array[$field_to_check], $matches))) {
+				/* an empty field name in the variable means don't treat this as an array */
+				if ($matches[2] == "") {
+					if (is_array(${$matches[1]})) {
+						/* the existing value is already an array, leave it alone */
+						$form_array[$field_name][$field_to_check] = ${$matches[1]};
+					}else{
+						/* the existing value is probably a single variable */
+						$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
+					}
+				}else{
+					/* copy the value down from the array/key specified in the variable */
+					$form_array[$field_name][$field_to_check] = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ""), $field_array[$field_to_check]);
+				}
+			}
+		}
+	}
+	
+	return $form_array;
 }
 
 ?>
