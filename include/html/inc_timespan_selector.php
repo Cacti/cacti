@@ -184,12 +184,12 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_timespan_selector" method="post">
 		<td>
-			<table>
+			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td class="textHeader">
+					<td width="80" class="textHeader">
 						Presets:&nbsp;
 					</td>
-					<td>
+					<td width="140">
 						<select name='predefined_timespan' onChange="window.location=document.form_timespan_selector.predefined_timespan.options[document.form_timespan_selector.predefined_timespan.selectedIndex].value">
 						<?php
 						$graph_timespans[GT_CUSTOM] = "Custom";
@@ -203,22 +203,22 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 						?>
 						</select>
 					</td>
-					<td class="textHeader">
-						<strong>&nbsp;From:&nbsp;</strong>
+					<td width="60" class="textHeader">
+						<strong>From:&nbsp;</strong>
 					</td>
-					<td>
+					<td width="180">
 						<input type='text' name='date1' id='date1' size='16' value='<?php print (isset($current_value_date1) ? $current_value_date1 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
 					</td>
-					<td class="textHeader">
-						<strong>&nbsp;To:&nbsp;</strong>
+					<td width="40" class="textHeader">
+						<strong>To:&nbsp;</strong>
 					</td>
-					<td>
+					<td width="180">
 						<input type='text' name='date2' id='date2' size='16' value='<?php print (isset($current_value_date2) ? $current_value_date2 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
-					<td>
-						&nbsp;<input type='image' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' action='submit'>
+					<td width="80">
+						<input type='image' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle'>
 					</td>
 					<td>
 						&nbsp;<input type='image' name='button_default' src='images/button_default.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
@@ -226,5 +226,5 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 				</tr>
 			</table>
 		</td>
-	</form>
+		</form>
 	</tr>
