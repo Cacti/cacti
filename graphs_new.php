@@ -279,9 +279,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					$sql_or = array_to_sql_or($snmp_indexes[$snmp_query_id], "snmp_index");
 					
 					/* list each of the input fields for this snmp query */
-					while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
-						$field_array = $field_array[0];
-						
+					while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
 						if ($field_array["direction"] == "input") {
 							/* create a list of all values for this index */
 							$field_values = db_fetch_assoc("select field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and field_name='$field_name' and $sql_or");
@@ -386,10 +384,9 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				
 				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 				
-				print "	<td width='50%'>
-						<font class='textEditTitle'>" . $graph_input["name"] . "</font>";
-						if (!empty($graph_input["description"])) { print "<br>" . $graph_input["description"]; }
-				print "	</td>\n";
+				/* fill in the field array with some values from the graph input */
+				$struct_graph_item{$graph_input["column_name"]}["friendly_name"] = $graph_input["name"];
+				$struct_graph_item{$graph_input["column_name"]}["description"] = $graph_input["description"];
 				
 				draw_edit_form_row($struct_graph_item{$graph_input["column_name"]}, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_" . $graph_input["id"] . "_" . $graph_input["column_name"], $current_value);
 				
