@@ -204,9 +204,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		$timeout = ceil($timeout / 1000);
 		
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
@@ -215,10 +215,10 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) { return; }
 		
-		if (read_config_option("smnp_version") == "ucd-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " -v$version -t $timeout $hostname:$port $snmp_auth $oid");
-		}elseif (read_config_option("smnp_version") == "net-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " $snmp_auth -v $version -t $timeout $hostname:$port $oid");
+		if (read_config_option("snmp_version") == "ucd-snmp") {
+			$snmp_value = exec(read_config_option("path_snmpget") . " -O v -v$version -t $timeout $hostname:$port $snmp_auth $oid");
+		}elseif (read_config_option("snmp_version") == "net-snmp") {
+			$snmp_value = exec(read_config_option("path_snmpget") . " -O v $snmp_auth -v $version -t $timeout $hostname:$port $oid");
 		}
 	}
 	
@@ -247,17 +247,17 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$timeout = ceil($timeout / 1000);
 		
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("smnp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? "'$community'" : "-c '$community'"; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
 		}
 		
-		if (read_config_option("smnp_version") == "ucd-snmp") {
+		if (read_config_option("snmp_version") == "ucd-snmp") {
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout $hostname:$port $snmp_auth $oid");
-		}elseif (read_config_option("smnp_version") == "net-snmp") {
+		}elseif (read_config_option("snmp_version") == "net-snmp") {
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " $snmp_auth -v $version -t $timeout $hostname:$port $oid");
 		}
 		
