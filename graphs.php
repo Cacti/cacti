@@ -23,7 +23,8 @@
 */?>
 <?
 $section = "Add/Edit Graphs"; include ('include/auth.php');
-include_once ('include/form.php');
+include_once ("include/form.php");
+include_once ("include/config_arrays.php");
 
 define("ROWS_PER_PAGE", 30);
 
@@ -159,7 +160,7 @@ function form_save() {
    ----------------------- */
 
 function item() {
-	global $colors, $config;
+	global $colors, $consolidation_functions, $graph_item_types;
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
@@ -193,18 +194,17 @@ function item() {
 		graph_templates_item.text_format,
 		graph_templates_item.value,
 		graph_templates_item.hard_return,
+		graph_templates_item.graph_type_id,
+		graph_templates_item.consolidation_function_id,
 		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
 		cdef.name as cdef_name,
-		def_cf.name as consolidation_function_name,
-		def_colors.hex,
-		def_graph_type.name as graph_type_name
-		from graph_templates_item left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
+		def_colors.hex
+		from graph_templates_item
+		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join data_local on data_template_rrd.local_data_id=data_local.id
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
-		left join def_cf on consolidation_function_id=def_cf.id
 		left join def_colors on color_id=def_colors.id
-		left join def_graph_type on graph_type_id=def_graph_type.id
 		where graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
 		order by graph_templates_item.sequence");
 	
@@ -214,7 +214,7 @@ function item() {
 		/* graph grouping display logic */
 		$bold_this_row = false; $use_custom_row_color = false;
 		
-		if (($item["graph_type_name"] != "GPRINT") && ($item["graph_type_name"] != $_graph_type_name)) {
+		if (($graph_item_types{$item["graph_type_id"]} != "GPRINT") && ($graph_item_types{$item["graph_type_id"]} != $_graph_type_name)) {
 			$bold_this_row = true; $use_custom_row_color = true;
 			
 			if ($group_counter % 2 == 0) {
@@ -230,7 +230,7 @@ function item() {
 			$group_counter++;
 		}
 		
-		$_graph_type_name = $item["graph_type_name"];
+		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
 		
 		/* alternating row color */
 		if ($use_custom_row_color == false) { DrawMatrixRowAlternateColorBegin($alternate_color_1,$alternate_color_2,$i); }else{ print "<tr bgcolor=\"#$custom_row_color\">"; } $i++;
@@ -243,9 +243,9 @@ function item() {
 		if (empty($graph_template_id)) { print "</a>"; }
 		print "</td>\n";
 		
-		if (empty($item["descrip"])) { $item["descrip"] = "(No Task)"; }
+		if (empty($item["data_source_name"])) { $item["data_source_name"] = "(No Task)"; }
 			
-		switch ($item["graph_type_name"]) {
+		switch ($graph_item_types{$item["graph_type_id"]}) {
 		case 'AREA':
 			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
 			break;
@@ -287,10 +287,10 @@ function item() {
 			<?if ($bold_this_row == true) { print "<strong>"; }?><?print htmlspecialchars($matrix_title) . $hard_return;?><?if ($bold_this_row == true) { print "</strong>"; }?>
 		</td>
 		<td>
-			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["graph_type_name"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $graph_item_types{$item["graph_type_id"]};?><?if ($bold_this_row == true) { print "</strong>"; }?>
 		</td>
 		<td>
-			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $item["consolidation_function_name"];?><?if ($bold_this_row == true) { print "</strong>"; }?>
+			<?if ($bold_this_row == true) { print "<strong>"; }?><?print $consolidation_functions{$item["consolidation_function_id"]};?><?if ($bold_this_row == true) { print "</strong>"; }?>
 		</td>
 		<td<?if ($item["hex"] != "") { print ' bgcolor="#' .  $item["hex"] . '"'; }?> width="1%">
 			&nbsp;
@@ -449,7 +449,7 @@ function item_save() {
 }
 
 function item_edit() {
-	global $colors, $config;
+	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("Graph Template Management [edit]", "98%", $colors["header"], "3", "center", "");
@@ -477,83 +477,41 @@ function item_edit() {
 		$default_item = 0;
 	}
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Task Item</font><br>
-			The task to use for this graph item; not used for COMMENT fields.
-		</td>
-		<?DrawFormItemDropdownFromSQL("task_item_id",db_fetch_assoc("select
-			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
-			data_template_rrd.id 
-			from data_template_data,data_template_rrd,data_local 
-			left join host on data_local.host_id=host.id
-			where data_template_rrd.local_data_id=data_local.id 
-			and data_template_data.local_data_id=data_local.id"),"name","id",$template_item["task_item_id"],"None",$default_item);?>
-	</tr>
+	while (list($field_name, $field_array) = each($struct_graph_item)) {
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		
+		if (($use_graph_template == false) || ($template_item_template{"t_" . $field_name} == "on")) {
+			print $field_array["description"];
+		}
+		
+		print "</td>\n";
+		
+		switch ($field_array["type"]) {
+		case 'text':
+			DrawFormItemTextBox($field_name,$template_item[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
+			break;
+		case 'drop_array':
+			DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
+			break;
+		case 'drop_sql':
+			DrawFormItemDropdownFromSQL($field_name,db_fetch_assoc($field_array["sql"]),"name","id",$template_item[$field_name],$field_array["null_item"],$field_array["default"]);
+			break;
+		case 'drop_color':
+			DrawFormItemColorSelect($field_name,$template_item[$field_name],"None",$field_array["default"]);
+			break;
+		case 'check':
+			DrawFormItemCheckBox($field_name,$template_item[$field_name],$field_array["check_caption"],$field_array["default"]);
+			break;
+		case 'view':
+			print "<td>$template_item[$field_name]</td>\n";
+			break;
+		}
+		
+		print "</tr>\n";
+	}
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Color</font><br>
-			The color that is used for this item; not used for COMMENT fields.
-		</td>
-		<?DrawFormItemColorSelect("color_id",$template_item["color_id"],"None","0");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Graph Item Type</font><br>
-			How data for this item is displayed.
-		</td>
-		<?DrawFormItemDropdownFromSQL("graph_type_id",db_fetch_assoc("select id,name from def_graph_type order by name"),"name","id",$template_item["graph_type_id"],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Consolidation Function</font><br>
-			How data is to be represented on the graph.
-		</td>
-		<?DrawFormItemDropdownFromSQL("consolidation_function_id",db_fetch_assoc("select id,name from def_cf order by name"),"name","id",$template_item["consolidation_function_id"],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">CDEF Function</font><br>
-			A CDEF Function to apply to this item on the graph.
-		</td>
-		<?DrawFormItemDropdownFromSQL("cdef_id",db_fetch_assoc("select id,name from cdef order by name"),"name","id",$template_item["cdef_id"],"None","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Value</font><br>
-			For use with VRULE and HRULE, <i>numbers only</i>.
-		</td>
-		<?DrawFormItemTextBox("value",$template_item["value"],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">GPRINT String Type</font><br>
-			Choose a GPRINT string to represent textual data on your graph. To add/edit these custom strings, select "GPRINT Presets" under "Graph Templates".
-		</td>
-		<?DrawFormItemDropdownFromSQL("gprint_id",db_fetch_assoc("select id,name from graph_templates_gprint order by name"),"name","id",$template_item["gprint_id"],"","2");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Text Format</font><br>
-			The text of the comment or legend, input and output keywords are allowed.
-		</td>
-		<td>
-		<?
-			DrawStrippedFormItemTextBox("text_format",$template_item["text_format"],"","","40");
-			print "<br>";
-			DrawStrippedFormItemCheckBox("hard_return",$template_item["hard_return"],"Insert Hard Return","",false);
-		?>
-		</td>
-	</tr>
-	
-	<?
 	DrawFormItemHiddenIDField("local_graph_id",$_GET["local_graph_id"]);
 	DrawFormItemHiddenIDField("graph_template_item_id",$_GET["graph_template_item_id"]);
 	DrawFormItemHiddenIDField("graph_template_id",$template_item["graph_template_id"]);
@@ -934,8 +892,6 @@ function graph_diff() {
 }
 
 function graph_remove() {
-	global $config;
-	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=" . $_GET["local_graph_id"]);
@@ -951,7 +907,7 @@ function graph_remove() {
 }
 
 function graph_edit() {
-	global $config, $colors;
+	global $colors, $struct_graph, $image_types;
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
@@ -1004,240 +960,54 @@ function graph_edit() {
 	end_box();
 	start_box("Custom Graph Configuration", "98%", $colors["header"], "3", "center", "");
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Title</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_title"] == "on")) { print "The name that is printed on the graph."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_title"] == "on")) {
-			DrawFormItemTextBox("title",$graphs["title"],"","50", "40");
+	while (list($field_name, $field_array) = each($struct_graph)) {
+		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+		
+		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
+		
+		if (($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on")) {
+			print $field_array["description"];
+		}
+		
+		print "</td>\n";
+		
+		if (($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on")) {
+			switch ($field_array["type"]) {
+			case 'text':
+				DrawFormItemTextBox($field_name,$graphs[$field_name],$field_array["default"],$field_array["text_maxlen"], $field_array["text_size"]);
+				break;
+			case 'drop_array':
+				DrawFormItemDropdownFromSQL($field_name,${$field_array["array_name"]},"","",$graphs[$field_name],"",$field_array["default"]);
+				break;
+			case 'check':
+				DrawFormItemCheckBox($field_name,$graphs[$field_name],$field_array["check_caption"],$field_array["default"]);
+				break;
+			case 'radio':
+				print "<td>";
+				
+				while (list($radio_index, $radio_array) = each($field_array["items"])) {
+					DrawStrippedFormItemRadioButton($field_name, $graphs[$field_name], $radio_array["radio_value"], $radio_array["radio_caption"],$field_array["default"],true);
+				}
+				
+				print "</td>";
+			}
+			
 		}else{
-			print "<td><em>" . $graphs["title"] . "</em></td>";
-			DrawFormItemHiddenTextBox("title",$graphs["title"],"");
-		}?>
-	</tr>
+			switch ($field_array["type"]) {
+			case 'check':
+				print "<td><em>" . html_boolean_friendly($graphs[$field_name]) . "</em></td>";
+				break;
+			default:
+				print "<td><em>" . $graphs[$field_name] . "</em></td>";
+				break;
+			}
+			
+			DrawFormItemHiddenTextBox($field_name,$graphs[$field_name],"");
+		}
+		
+		print "</tr>\n";
+	}
 	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Image Format</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_image_format_id"] == "on")) { print "The type of graph that is generated; GIF or PNG."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_image_format_id"] == "on")) {
-			DrawFormItemDropdownFromSQL("image_format_id",db_fetch_assoc("select * from def_image_type order by name"),"Name","ID",$graphs["image_format_id"],"","1");
-		}else{
-			print "<td><em>" . db_fetch_cell("select name from def_image_type where id=" . $graphs["image_format_id"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("image_format_id",$graphs["image_format_id"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Height</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_height"] == "on")) { print "The height (in pixels) that the graph is."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_height"] == "on")) {
-			DrawFormItemTextBox("height",$graphs["height"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["height"] . "</em></td>";
-			DrawFormItemHiddenTextBox("height",$graphs["height"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Width</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_width"] == "on")) { print "The width (in pixels) that the graph is."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_width"] == "on")) {
-			DrawFormItemTextBox("width",$graphs["width"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["width"] . "</em></td>";
-			DrawFormItemHiddenTextBox("width",$graphs["width"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Auto Scale</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale"] == "on")) { print ""; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale"] == "on")) {
-			DrawFormItemCheckBox("auto_scale",$graphs["auto_scale"],"Auto Scale","on");
-		}else{
-			print "<td><em>" . html_boolean_friendly($graphs["auto_scale"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale",$graphs["auto_scale"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Auto Scale Options</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale_opts"] == "on")) { print ""; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale_opts"] == "on")) {
-			print "<td>";
-			DrawStrippedFormItemRadioButton("auto_scale_opts", $graphs["auto_scale_opts"], "1", "Use --alt-autoscale","2",true);
-			DrawStrippedFormItemRadioButton("auto_scale_opts", $graphs["auto_scale_opts"], "2", "Use --alt-autoscale-max","2",true);
-			print "</td>";
-		}else{
-			print "<td><em>";
-			if ($graphs_template["auto_scale_opts"] == "1") { print "Use --alt-autoscale"; }else{ print "Use --alt-autoscale-max";}
-			print "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale_opts",$graphs["auto_scale_opts"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Rigid Boundaries Mode</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale_rigid"] == "on")) { print ""; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale_rigid"] == "on")) {
-			DrawFormItemCheckBox("auto_scale_rigid",$graphs["auto_scale_rigid"],"Use Rigid Boundaries Mode (--rigid)","");
-		}else{
-			print "<td><em>" . html_boolean_friendly($graphs["auto_scale_rigid"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale_rigid",$graphs["auto_scale_rigid"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Logarithmic Auto Scaling</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale_log"] == "on")) { print ""; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_auto_scale_log"] == "on")) {
-			DrawFormItemCheckBox("auto_scale_log",$graphs["auto_scale_log"],"Logarithmic Auto Scaling (--logarithmic)","");
-		}else{
-			print "<td><em>" . html_boolean_friendly($graphs["auto_scale_log"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_scale_logg",$graphs["auto_scale_log"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Auto Padding</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_auto_padding"] == "on")) { print "Pad text so that legend and graph data always line up. Note: this could cause graphs 
-			to take longer to render because of the larger overhead. Also Auto Padding may not 
-			be accurate on all types of graphs, consistant labeling usually helps."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_auto_padding"] == "on")) {
-			DrawFormItemCheckBox("auto_padding",$graphs["auto_padding"],"Auto Padding","on");
-		}else{
-			print "<td><em>" . html_boolean_friendly($graphs["auto_padding"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("auto_padding",$graphs["auto_padding"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Allow Grouping</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_grouping"] == "on")) { print "This will enable you to \"group\" items of your graph together for eaier manipulation. 
-			Note when you check this box and save, cacti will automatically group the items in 
-			your graph; you may have to re-group part of the graph manually."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_grouping"] == "on")) {
-			DrawFormItemCheckBox("grouping",$graphs["grouping"],"Allow Grouping","on");
-		}else{
-			print "<td><em>" . html_boolean_friendly($graphs["grouping"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("grouping",$graphs["grouping"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Allow Graph Export</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_export"] == "on")) { print "Choose whether this graph will be included in the static html/png export if you use 
-			cacti's export feature."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_export"] == "on")) {
-			DrawFormItemCheckBox("export",$graphs["export"],"Allow Graph Export","on");
-		}else{
-			print "<td><em>" . html_boolean_friendly($graphs["export"]) . "</em></td>";
-			DrawFormItemHiddenTextBox("export",$graphs["export"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Upper Limit</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_upper_limit"] == "on")) { print "The maximum vertical value for the rrd graph."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_upper_limit"] == "on")) {
-			DrawFormItemTextBox("upper_limit",$graphs["upper_limit"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["upper_limit"] . "</em></td>";
-			DrawFormItemHiddenTextBox("upper_limit",$graphs["upper_limit"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Lower Limit</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_lower_limit"] == "on")) { print "The minimum vertical value for the rrd graph."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_lower_limit"] == "on")) {
-			DrawFormItemTextBox("lower_limit",$graphs["lower_limit"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["lower_limit"] . "</em></td>";
-			DrawFormItemHiddenTextBox("lower_limit",$graphs["lower_limit"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Base Value</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_base_value"] == "on")) { print "Should be set to 1024 for memory and 1000 for traffic measurements."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_base_value"] == "on")) {
-			DrawFormItemTextBox("base_value",$graphs["base_value"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["base_value"] . "</em></td>";
-			DrawFormItemHiddenTextBox("base_value",$graphs["base_value"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Unit Value</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_unit_value"] == "on")) { print "(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was 
-			recently added in rrdtool 1.0.36."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_unit_value"] == "on")) {
-			DrawFormItemTextBox("unit_value",$graphs["unit_value"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["unit_value"] . "</em></td>";
-			DrawFormItemHiddenTextBox("unit_value",$graphs["unit_value"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Unit Exponent Value</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_unit_exponent_value"] == "on")) { print "What unit cacti should use on the Y-axis. Use 3 to display everything in 'k' or -6 
-			to display everything in 'u' (micro)."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_unit_exponent_value"] == "on")) {
-			DrawFormItemTextBox("unit_exponent_value",$graphs["unit_exponent_value"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["unit_exponent_value"] . "</em></td>";
-			DrawFormItemHiddenTextBox("unit_exponent_value",$graphs["unit_exponent_value"],"");
-		}?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
-		<td width="50%">
-			<font class="textEditTitle">Vertical Label</font><br>
-			<?if (($use_graph_template == false) || ($graphs_template["t_vertical_label"] == "on")) { print "The label vertically printed to the left of the graph."; }?>
-		</td>
-		<?if (($use_graph_template == false) || ($graphs_template["t_vertical_label"] == "on")) {
-			DrawFormItemTextBox("vertical_label",$graphs["vertical_label"],"","50", "40");
-		}else{
-			print "<td><em>" . $graphs["vertical_label"] . "</em></td>";
-			DrawFormItemHiddenTextBox("vertical_label",$graphs["vertical_label"],"");
-		}?>
-	</tr>
-	
-	<?
 	DrawFormItemHiddenIDField("graph_template_graph_id",$graphs["id"]);
 	DrawFormItemHiddenIDField("local_graph_id",$graphs["local_graph_id"]);
 	DrawFormItemHiddenIDField("order_key",$graphs["order_key"]);
