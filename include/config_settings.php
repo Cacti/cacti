@@ -63,7 +63,7 @@ $settings = array(
 			),
 		"path_rrdtool" => array(
 			"friendly_name" => "RRDTool Binary Path",
-			"description" => "Path to the rrdtool binary.",
+			"description" => "The path to the rrdtool binary.",
 			"method" => "textbox",
 			"max_length" => "255"
 			),
@@ -90,7 +90,7 @@ $settings = array(
 			),
 		"path_cactid" => array(
 			"friendly_name" => "Cactid Poller File Path",
-			"description" => "Full path to Cactid binary.",
+			"description" => "The path to Cactid binary.",
 			"method" => "textbox",
 			"max_length" => "255"
 			)
@@ -133,7 +133,7 @@ $settings = array(
 			),
 		"log_verbosity" => array(
 			"friendly_name" => "Poller Logging Level",
-			"description" => "What level of detail do you want sent to the log file.",
+			"description" => "What level of detail do you want sent to the log file.  WARNING: Leaving in any other status than NONE or LOW can exaust your disk space rapidly.",
 			"method" => "drop_array",
 			"default" => POLLER_VERBOSITY_LOW,
 			"array" => $logfile_verbosity,
@@ -164,21 +164,21 @@ $settings = array(
 			),
 		"snmp_version" => array(
 			"friendly_name" => "SNMP Utility Version",
-			"description" => "The type of SNMP you have installed.  Only required if you don't use the embedded SNMP in PHP.",
+			"description" => "The type of SNMP you have installed.  Required if you are using SNMP v2c or don't have embedded SNMP support in PHP.",
 			"method" => "drop_array",
 			"default" => "net-snmp",
 			"array" => $snmp_implimentations,
 			),
 		"snmp_ver" => array(
-			"friendly_name" => "SNMP Poller Version Default",
-			"description" => "Default SNMP read community.",
+			"friendly_name" => "SNMP Version",
+			"description" => "Default SNMP version for all new hosts.",
 			"method" => "drop_array",
 			"default" => "Version 1",
 			"array" => $snmp_versions,
 			),
 		"snmp_community" => array(
 			"friendly_name" => "SNMP Community",
-			"description" => "Default SNMP read community for polling hosts.",
+			"description" => "Default SNMP read community for all new hosts.",
 			"method" => "textbox",
 			"default" => "public",
 			"max_length" => "100",
@@ -206,14 +206,14 @@ $settings = array(
 			),
 		"snmp_port" => array(
 			"friendly_name" => "SNMP Port Number",
-			"description" => "The UDP port to be used for SNMP Calls.  Typically 161.",
+			"description" => "Default UDP port to be used for SNMP Calls.  Typically 161.",
 			"method" => "textbox",
 			"default" => "161",
 			"max_length" => "100",
 			),
 		"snmp_retries" => array(
 			"friendly_name" => "SNMP Retries",
-			"description" => "The number of SNMP retries for host polling.",
+			"description" => "The number times the SNMP poller will attempt to reach the host before failing.",
 			"method" => "textbox",
 			"default" => "3",
 			"max_length" => "100",
@@ -423,14 +423,14 @@ $settings = array(
 			),
 		"concurrent_processes" => array(
 			"friendly_name" => "Maximum Concurrent Poller Processes",
-			"description" => "The number of concurrent processes to execute.",
+			"description" => "The number of concurrent processes to execute.  Using a higher number when using cmd.php will improve performance.  Performance improvements in cactid are best resolved with the threads parameter",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
 			),
 		"max_threads" => array(
 			"friendly_name" => "Maximum Threads per Process",
-			"description" => "The maximum threads allowed per process.  NOTE Applies only to CACTID!",
+			"description" => "The maximum threads allowed per process.  Using a higher number when using cactid will improve performance.  NOTE Applies only to CACTID!",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
@@ -448,14 +448,14 @@ $settings = array(
 			),
 		"ping_method" => array(
 			"friendly_name" => "Ping Type",
-			"description" => "The type of ping packet to sent.  NOTE: ICMP requirs that the Cacti Service ID have root privilages in Unix.",
+			"description" => "The type of ping packet to sent.  NOTE: ICMP requires that the Cacti Service ID have root privilages in Unix.",
 			"method" => "drop_array",
 			"default" => PING_UDP,
 			"array" => $ping_methods,
 			),
 		"ping_timeout" => array(
 			"friendly_name" => "Ping Timeout Value",
-			"description" => "The timeout value to use for host pinging.  This setting overrides the host SNMP timeout value.",
+			"description" => "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.",
 			"method" => "textbox",
 			"default" => "400",
 			"max_length" => "10"
@@ -473,14 +473,14 @@ $settings = array(
 			),
 		"ping_failure_count" => array(
 			"friendly_name" => "Failure Count",
-			"description" => "The number of polling intervals a host must be down before issuing an error message.",
+			"description" => "The number of polling intervals a host must be down before logging an error and reporting host as down.",
 			"method" => "textbox",
 			"default" => "2",
 			"max_length" => "10"
 			),
 		"ping_recovery_count" => array(
 			"friendly_name" => "Recovery Count",
-			"description" => "The number of polling intervals a host must be return to service before returning to normal.",
+			"description" => "The number of polling intervals a host must remain up before returning host to an up status and issuing a notice.",
 			"method" => "textbox",
 			"default" => "3",
 			"max_length" => "10"
