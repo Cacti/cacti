@@ -96,6 +96,8 @@ function draw_user_form_select() {
    -------------------------- */
 
 function form_save() {
+	global $settings_graphs;
+	
 	/* user management save */
 	if (isset($_POST["save_component_user"])) {
 		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
@@ -166,6 +168,18 @@ function form_save() {
 				}
 			}
 		}
+	}
+	
+	/* per-user graph permissions */
+	if ((isset($_POST["save_component_graph_config"])) && (!is_error_message())) {
+		if (sizeof($settings_graphs) > 0) {
+		foreach (array_keys($settings_graphs) as $setting) {
+			db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"]. ",'$setting', '" . $_POST[$setting] . "')");
+		}
+		}
+		
+		/* reset local settings cache so the user sees the new settings */
+		session_unregister("sess_graph_config_array");
 	}
 	
 	/* redirect to the appropriate page */
