@@ -1,12 +1,11 @@
-%define _localdatadir %{_var}/www/html/cacti
-
 Summary: The complete RRDTool-based graphing solution.
 Name: cacti
-Version: 0.8.5a
+Version: 0.8.6
 Release: 1
 License: GPL
 Group: Application/System
 Source0: cacti-%{version}.tar.gz
+Source1: cacti-cactid-%{version}.tar.gz
 URL: http://www.raxnet.net/products/cacti/
 BuildRoot: %{_tmppath}/%{name}-root
 Requires: php, php-mysql, mysql, webserver, rrdtool, net-snmp, php-snmp
@@ -20,44 +19,42 @@ data sources, and round robin archives in a database, Cacti also handles the dat
 gathering. There is SNMP support for those used to creating traffic graphs with 
 MRTG.
 
+%package cactid
+Summary: Fast c-based poller for package %{name}
+Group: Application/System
+Requires: cacti = %{version}
+
+%description cactid
+Cactid is a supplemental poller for Cacti that makes use of pthreads to achieve
+excellent performance.
+
 %prep
 %setup
+echo -e "*/5 * * * *\tcacti\tphp %{_localstatedir}/www/cacti/poller.php &>/dev/null" >cacti.crontab
 
 %build
-cd cactid
+tar xzf %{SOURCE1}
+cd cacti-cactid-%{version}
 ./configure
-make
+%{__make} %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/var/www/html/cacti
-mkdir -p %{buildroot}/usr/bin
-mkdir -p %{buildroot}/etc
+%{__install} -d -m0755 %{buildroot}%{_localstatedir}/www/cacti/
+%{__install} -m0644 *.php cacti.sql %{buildroot}%{_localstatedir}/www/cacti/
+%{__cp} -avx docs/ images/ include/ install/ lib/ log/ resource/ rra/ scripts/ %{buildroot}%{_localstatedir}/www/cacti/
 
-cp -f cactid/cactid %{buildroot}/usr/bin/cactid
-cp -f cactid/cactid.conf %{buildroot}/etc/cactid.conf
-cp -f *.php README LICENSE cacti.sql %{buildroot}%{_localdatadir}
-cp -fR docs/ %{buildroot}%{_localdatadir}
-cp -fR images/ %{buildroot}%{_localdatadir}
-cp -fR include/ %{buildroot}%{_localdatadir}
-cp -fR install/ %{buildroot}%{_localdatadir}
-cp -fR lib/ %{buildroot}%{_localdatadir}
-cp -fR log/ %{buildroot}%{_localdatadir}
-cp -fR resource/ %{buildroot}%{_localdatadir}
-cp -fR rra/ %{buildroot}%{_localdatadir}
-cp -fR scripts/ %{buildroot}%{_localdatadir}
+%{__install} -D -m0755 cacti-cactid-%{version}/cactid %{buildroot}%{_bindir}/cactid
+%{__install} -D -m0644 cacti-cactid-%{version}/cactid.conf %{buildroot}%{_sysconfdir}/cactid.conf
+%{__install} -D -m0644 cacti.crontab %{buildroot}%{_sysconfdir}/cron.d/cacti
 
 %clean
 rm -rf %{buildroot}
 
 %pre
-useradd -d %{_localdatadir} cacti > /dev/null 2>&1 || true
+useradd -d %{_localstatedir}/www/cacti cacti > /dev/null 2>&1 || true
 
 %post
-echo "Cacti installation complete. Please add the following line to your /etc/crontab file:"
-echo
-echo "*/5 * * * * cacti php /var/www/html/cacti/cmd.php > /dev/null 2>&1"
-echo
 echo "Make sure to import the default database at /var/www/html/cacti/cacti.sql and edit"
 echo "the database configuration in /var/www/html/cacti/include/config.php."
 
@@ -65,23 +62,34 @@ echo "the database configuration in /var/www/html/cacti/include/config.php."
 userdel cacti > /dev/null 2>&1 || true
 
 %files
-%defattr(-, root, root)
-%config /etc/cactid.conf
-%config %{_localdatadir}/include/config.php
-%{_localdatadir}/*.php
-%{_localdatadir}/cacti.sql
-%{_localdatadir}/README
-%{_localdatadir}/LICENSE
-%{_localdatadir}/rra/.placeholder
-%{_localdatadir}/docs/*
-%{_localdatadir}/images/*
-%{_localdatadir}/include/*
-%{_localdatadir}/install/*
-%{_localdatadir}/lib/*
-%attr(-, cacti, cacti) %{_localdatadir}/log/*
-%{_localdatadir}/resource/*
-%attr(-, cacti, cacti) %dir %{_localdatadir}/rra/
-%{_localdatadir}/scripts/*
-/usr/bin/cactid
+%defattr(-, root, root, 0755)
+%doc LICENSE README
+%config %{_localstatedir}/www/cacti/include/config.php
+%config %{_sysconfdir}/cron.d/*
+%dir %{_localstatedir}/www/cacti/
+%{_localstatedir}/www/cacti/*.php
+%{_localstatedir}/www/cacti/cacti.sql
+%{_localstatedir}/www/cacti/docs/
+%{_localstatedir}/www/cacti/images/
+%{_localstatedir}/www/cacti/include/
+%{_localstatedir}/www/cacti/install/
+%{_localstatedir}/www/cacti/lib/
+%{_localstatedir}/www/cacti/resource/
+%{_localstatedir}/www/cacti/scripts/
+%defattr(-, cacti, cacti, 0755 )
+%{_localstatedir}/www/cacti/log/
+%{_localstatedir}/www/cacti/rra/
+
+%files cactid
+%defattr(-, root, root, 0755)
+%doc cacti-cactid-%{version}/AUTHORS cacti-cactid-%{version}/ChangeLog cacti-cactid-%{version}/COPYING cacti-cactid-%{version}/INSTALL cacti-cactid-%{version}/NEWS
+%config %{_sysconfdir}/cactid.conf
+%{_bindir}/*
 
 %changelog
+* Sat Sep 11 2004 Ian Berry <iberry@raxnet.net> - 0.8.6-1
+- Updated to release 0.8.6.
+- Broke cactid into its own package.
+
+* Thu Apr 4 2004 Ian Berry <iberry@raxnet.net> - 0.8.5a-1
+- Initial package.
