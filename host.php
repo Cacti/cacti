@@ -94,7 +94,7 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
-		db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . ")");
+		db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
 
 		/* recache snmp data */
 		run_data_query($_POST["id"], $_POST["snmp_query_id"]);
@@ -627,7 +627,7 @@ function host() {
 	}
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='9'>
+			<td colspan='7'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -646,7 +646,7 @@ function host() {
 
 	print $nav;
 
-	html_header_checkbox(array("Description", "Status", "Hostname", "Min (ms)", "Max (ms)", "Current (ms)", "Average (ms)", "Availability"));
+	html_header_checkbox(array("Description", "Status", "Hostname", "Current (ms)", "Average (ms)", "Availability"));
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {
@@ -661,12 +661,6 @@ function host() {
 				</td>
 				<td>
 					<?php print $host["hostname"];?>
-				</td>
-				<td>
-					<?php print round(($host["min_time"]), 2);?>
-				</td>
-				<td>
-					<?php print round(($host["max_time"]), 2);?>
 				</td>
 				<td>
 					<?php print round(($host["cur_time"]), 2);?>
