@@ -332,8 +332,9 @@ $struct_data_source = array(
 		"type" => "text",
 		"text_maxlen" => "255",
 		"text_size" => "40",
-		"default" => "<path_rra>/",
-		"description" => "The full path to the RRD file."
+		"default" => "",
+		"description" => "The full path to the RRD file.",
+		"flags" => "NOTEMPLATE"
 		),
 	"data_input_id" => array(
 		"title" => "Data Input Source",
@@ -342,6 +343,11 @@ $struct_data_source = array(
 		"default" => "",
 		"null_item" => "",
 		"description" => "The script/source used to gather data for this data source."
+		),
+	"rra_id" => array(
+		"type" => "custom",
+		"title" => "Associated RRA's",
+		"description" => "Which RRA's to use when entering data. (It is recommended that you select all of these values)."
 		),
 	"rrd_step" => array(
 		"title" => "Step",
