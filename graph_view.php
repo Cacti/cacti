@@ -104,8 +104,7 @@ case 'preview':
 	
 	if (isset($_REQUEST["host_id"])) {
 		$_SESSION["sess_graph_view_host"] = $_REQUEST["host_id"];
-		$_REQUEST["page"] = "1";
-	}elseif (isset($_SESSION["sess_graph_view_host"])) {
+	}elseif ((isset($_SESSION["sess_graph_view_host"])) && (!isset($_REQUEST["host_id"]))) {
 		$_REQUEST["host_id"] = $_SESSION["sess_graph_view_host"];
 	}else{
 		$_REQUEST["host_id"] = "0"; /* default value */
@@ -161,7 +160,6 @@ case 'preview':
 			}
 		}
 	}
-	
 	
 	$sql_base = "from graph_templates_graph,graph_local
 		$sql_join
@@ -240,13 +238,13 @@ case 'preview':
 					<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 						<tr>
 							<td align='left' class='textHeaderDark'>
-								<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
+								<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "&host_id=" . $_REQUEST["host_id"] . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
 							</td>\n
 							<td align='center' class='textHeaderDark'>
 								Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows
 							</td>\n
 							<td align='right' class='textHeaderDark'>
-								<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
+								<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "&host_id=" . $_REQUEST["host_id"] . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
 							</td>\n
 						</tr>
 					</table>
