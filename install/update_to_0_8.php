@@ -548,10 +548,6 @@ function update_database($database_old, $database_username, $database_password) 
 				}
 				}
 			}else{
-				print "insert into data_template_data (id,local_data_template_data_id,local_data_id,
-				data_template_id,data_input_id,name,data_source_path,active,rrd_step) values (0,$local_data_template_data_id,$local_data_id,
-				$data_template_id," . $data_input_cache{$item["SrcID"]} . ",'" . $item["Name"] . "','" . $item["DSPath"] . "',
-				'" . $item["Active"] . "','" . $item["Step"] . "')<br>";
 				$status_array{count($status_array)}["data_source"][0] = $item["Name"];
 			}
 		}else{
