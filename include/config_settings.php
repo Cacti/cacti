@@ -38,8 +38,11 @@ $tabs = array(
 	"authentication" => "Authentication");
 
 $tabs_graphs = array(
-	"general" => "General Graph Settings",
-	"tree" => "Graph Tree Settings");
+	"general" => "General",
+	"thumbnail" => "Graph Thumbnails",
+	"tree" => "Tree View Mode",
+	"preview" => "Preview Mode",
+	"list" => "List View Mode");
 
 /* setting information */
 $settings = array(
@@ -351,52 +354,17 @@ $settings_graphs = array(
 	"general" => array(
 		"default_rra_id" => array(
 			"friendly_name" => "Default RRA",
-			"description" => "The default RRA to use when displaying graphs in preview mode.",
+			"description" => "The default RRA to use when thumbnail graphs are not being displayed or when 'Thumbnail Timespan' is set to '0'.",
 			"method" => "drop_sql",
 			"sql" => "select id,name from rra order by name",
 			"default" => "1"
 			),
-		"timespan" => array(
-			"friendly_name" => "Preview Timespan",
-			"description" => "The amount of time to represent on a thumbnail graph in seconds. Putting '0' in this field uses the timespan of the RRA specified in 'Default RRA'.",
-			"method" => "textbox",
-			"default" => "60000",
-			"max_length" => "12"
-			),
-		"default_height" => array(
-			"friendly_name" => "Height",
-			"description" => "The height of graphs created in preview mode.",
-			"method" => "textbox",
-			"default" => "100",
-			"max_length" => "10"
-			),
-		"default_width" => array(
-			"friendly_name" => "Width",
-			"description" => "The width of graphs created in preview mode.",
-			"method" => "textbox",
-			"default" => "300",
-			"max_length" => "10"
-			),
 		"default_view_mode" => array(
 			"friendly_name" => "Default View Mode",
-			"description" => "What mode you wanted displayed when you visit 'graph_view.php'",
+			"description" => "Which mode you wanted displayed when you visit 'graph_view.php'",
 			"method" => "drop_array",
 			"array" => $graph_views,
 			"default" => "1"
-			),
-		"num_columns" => array(
-			"friendly_name" => "Columns",
-			"description" => "The number of columns to display graphs in using preview mode.",
-			"method" => "textbox",
-			"default" => "2",
-			"max_length" => "5"
-			),
-		"num_graphs_per_page" => array(
-			"friendly_name" => "Graphs Per-Page",
-			"description" => "The number of graphs to display graphs on one page using preview mode.",
-			"method" => "textbox",
-			"default" => "10",
-			"max_length" => "10"
 			),
 		"page_refresh" => array(
 			"friendly_name" => "Page Refresh",
@@ -406,29 +374,93 @@ $settings_graphs = array(
 			"max_length" => "10"
 			)
 		),
+	"thumbnail" => array(
+		"timespan" => array(
+			"friendly_name" => "Thumbnail Timespan",
+			"description" => "The amount of time to represent on a thumbnail graph in seconds. Putting '0' in this field uses the timespan of the RRA specified in 'Default RRA'.",
+			"method" => "textbox",
+			"default" => "60000",
+			"max_length" => "12"
+			),
+		"default_height" => array(
+			"friendly_name" => "Thumbnail Height",
+			"description" => "The height of graphs created in preview mode.",
+			"method" => "textbox",
+			"default" => "100",
+			"max_length" => "10"
+			),
+		"default_width" => array(
+			"friendly_name" => "Thumbnail Width",
+			"description" => "The width of graphs created in preview mode.",
+			"method" => "textbox",
+			"default" => "300",
+			"max_length" => "10"
+			),
+		"num_columns" => array(
+			"friendly_name" => "Thumbnail Columns",
+			"description" => "The number of columns to display graphs in using preview mode.",
+			"method" => "textbox",
+			"default" => "2",
+			"max_length" => "5"
+			),
+		"thumbnail_sections" => array(
+			"friendly_name" => "Thumbnail Sections",
+			"description" => "Which sections of Cacti should thumbnail graphs be shown for.",
+			"method" => "checkbox_group",
+			"items" => array(
+				"thumbnail_section_preview" => array(
+					"friendly_name" => "Preview Mode",
+					"default" => "on"
+					),
+				"thumbnail_section_tree_1" => array(
+					"friendly_name" => "Tree View (Single Pane)",
+					"default" => "on"
+					),
+				"thumbnail_section_tree_2" => array(
+					"friendly_name" => "Tree View (Dual Pane)",
+					"default" => ""
+					)
+				)
+			)
+		),
 	"tree" => array(
 		"default_tree_id" => array(
-			"friendly_name" => "Default Graph Hierarchy",
-			"description" => "The default graph hierarchy to use when displaying graphs in tree mode.",
+			"friendly_name" => "Default Graph Tree",
+			"description" => "The default graph tree to use when displaying graphs in tree mode.",
 			"method" => "drop_sql",
 			"sql" => "select id,name from graph_tree where user_id=0 order by name",
-			"default" => "0",
-			"tab" => "tree"
+			"default" => "0"
 			),
 		"default_tree_view_mode" => array(
 			"friendly_name" => "Default Tree View Mode",
 			"description" => "The default mode that will be used when viewing tree mode.",
 			"method" => "drop_array",
 			"array" => $graph_tree_views,
-			"default" => "2",
-			"tab" => "tree"
+			"default" => "2"
 			),
 		"expand_hosts" => array(
 			"friendly_name" => "Expand Hosts",
 			"description" => "Choose whether to expand the graph templates used for a host on the dual pane tree.",
 			"method" => "checkbox",
-			"default" => "",
-			"tab" => "tree"
+			"default" => ""
+			)
+		),
+	"preview" => array(
+		"preview_graphs_per_page" => array(
+			"friendly_name" => "Graphs Per-Page",
+			"description" => "The number of graphs to display graphs on one page using preview mode.",
+			"method" => "textbox",
+			"default" => "10",
+			"max_length" => "10"
+			)
+		),
+	"list" => array(
+		"list_graphs_per_page" => array(
+			"friendly_name" => "Graphs Per-Page",
+			"description" => "The number of graphs to display graphs on one page using list view mode.",
+			"method" => "textbox",
+			"default" => "10",
+			"max_length" => "10"
 			)
 		)
 	);

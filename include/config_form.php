@@ -899,17 +899,18 @@ $fields_user_user_edit_host = array(
 	"grp1" => array(
 		"friendly_name" => "Account Options",
 		"method" => "checkbox_group",
-		"form_id" => "|arg1:id|",
 		"description" => "Set any user account-specific options here.",
 		"items" => array(
 			"must_change_password" => array(
 				"value" => "|arg1:must_change_password|",
 				"friendly_name" => "User Must Change Password at Next Login",
+				"form_id" => "|arg1:id|",
 				"default" => ""
 				),
 			"graph_settings" => array(
 				"value" => "|arg1:graph_settings|",
 				"friendly_name" => "Allow this User to Keep Custom Graph Settings",
+				"form_id" => "|arg1:id|",
 				"default" => "on"
 				)
 			)

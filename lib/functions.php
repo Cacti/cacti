@@ -84,6 +84,14 @@ function read_graph_config_option($config_name) {
 	return $graph_config_array[$config_name];
 }
 
+/* graph_config_value_exists - determines if a value exists for the current user/setting specified
+   @arg $config_name - the name of the configuration setting as specified $settings_graphs array
+     in 'include/config_settings.php'
+   @returns (bool) - true if a value exists, false if a value does not exist */
+function graph_config_value_exists($config_name) {
+	return sizeof(db_fetch_assoc("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]));
+}
+
 /* read_default_config_option - finds the default value of a Cacti configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/config_settings.php'

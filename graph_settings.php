@@ -54,7 +54,13 @@ function form_save() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		while (list($field_name, $field_array) = each($tab_fields)) {
-			db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
+				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+					db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
+				}
+			}else{
+				db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+			}
 		}
 	}
 
@@ -95,15 +101,17 @@ function settings() {
 		$settings_graphs["tree"]["default_tree_id"]["sql"] = get_graph_tree_array(true);
 	}
 
-	print "<br><form method='post' action='graph_settings.php'>\n";
+	print "<form method='post' action='graph_settings.php'>\n";
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_graph_start_box(1, true);
+
+	print "<tr bgcolor='#" . $colors["header"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Graph Settings</strong></td></tr></table></td></tr>";
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr>
-			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
-				<span class="textHeaderDark"><strong>Graph Settings</strong> [<?php print $tabs_graphs[$tab_short_name];?>]</span>
+		<tr bgcolor='<?php print $colors["header_panel"];?>'>
+			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
+				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>
 		</tr>
 		<?php
@@ -113,7 +121,21 @@ function settings() {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
 
-			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_SESSION["sess_user_id"]);
+			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
+				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+					if (graph_config_value_exists($sub_field_name)) {
+						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
+					}
+
+					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_SESSION["sess_user_id"]);
+				}
+			}else{
+				if (graph_config_value_exists($field_name)) {
+					$form_array[$field_name]["form_id"] = 1;
+				}
+
+				$form_array[$field_name]["value"] = db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_SESSION["sess_user_id"]);
+			}
 		}
 
 		draw_edit_form(
@@ -126,7 +148,7 @@ function settings() {
 			);
 	}
 
-	html_end_box();
+	html_graph_end_box();
 
 	form_hidden_box("referer",(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""),"");
 	form_hidden_box("save_component_graph_config","1","");

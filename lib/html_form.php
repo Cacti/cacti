@@ -114,7 +114,7 @@ function draw_edit_form($array) {
 					break;
 				case 'checkbox_group':
 					while (list($check_name, $check_array) = each($field_array["items"])) {
-						form_checkbox($check_name, $check_array["value"], $check_array["friendly_name"], ((isset($check_array["default"])) ? $check_array["default"] : ""), ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+						form_checkbox($check_name, $check_array["value"], $check_array["friendly_name"], ((isset($check_array["default"])) ? $check_array["default"] : ""), ((isset($check_array["form_id"])) ? $check_array["form_id"] : ""));
 						print "<br>";
 					}
 					break;

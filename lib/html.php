@@ -63,6 +63,103 @@ function html_end_box($trailing_br = true) { ?>
 	<?php if ($trailing_br == true) { print "<br>"; } ?>
 <?php }
 
+/* html_graph_start_box - draws the start of an HTML graph view box
+   @arg $cellpadding - the table cell padding for the box
+   @arg $leading_br (bool) - whether to draw a leader <br> tag before the start of the table */
+function html_graph_start_box($cellpadding = 3, $leading_br = true) {
+	if ($leading_br == true) {
+		print "<br>\n";
+	}
+
+	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='$cellpadding'>\n";
+}
+
+/* html_graph_end_box - draws the end of an HTML graph view box */
+function html_graph_end_box() {
+	print "</table>";
+}
+
+function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
+	$i = 0;
+	if (sizeof($graph_array) > 0) {
+		if ($header != "") {
+			print $header;
+		}
+
+		foreach ($graph_array as $graph) {
+			form_alternate_row_color("f9f9f9", "ffffff", $i);
+			print "<td align='center'><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>";
+			print "<tr>\n";
+
+			$i++;
+		}
+	}else{
+		if ($no_graphs_message != "") {
+			print "<td><em>$no_graphs_message</em></td>";
+		}
+	}
+}
+
+function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
+	$i = 0; $k = 0;
+	if (sizeof($graph_array) > 0) {
+		if ($header != "") {
+			print $header;
+		}
+
+		print "<tr>";
+
+		foreach ($graph_array as $graph) {
+			print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . (empty($set_rra_id) ? read_graph_config_option("default_rra_id") : $set_rra_id) . "&graph_start=-" . (empty($set_rra_id) ? read_graph_config_option("timespan") : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true" . (($extra_url_args == "") ? "" : "&$extra_url_args") . "' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n";
+
+			$i++;
+			$k++;
+
+			if (($i == read_graph_config_option("num_columns")) && ($k < count($graph_array))) {
+				$i = 0;
+				print "</tr><tr>";
+			}
+		}
+
+		print "</tr>";
+	}else{
+		if ($no_graphs_message != "") {
+			print "<td><em>$no_graphs_message</em></td>";
+		}
+	}
+}
+
+/* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
+     page information
+   @arg $background_color - the background color of this navigation bar row
+   @arg $colspan - the colspan for the entire row
+   @arg $current_page - the current page in the navigation system
+   @arg $rows_per_page - the number of rows that are displayed on a single page
+   @arg $total_rows - the total number of rows in the navigation system
+   @arg $nav_url - the url to use when presenting users with previous/next links. the variable
+     <PAGE> will be substituted with the correct page number if included */
+function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page, $total_rows, $nav_url) {
+	?>
+	<tr bgcolor='#<?php print $background_color;?>'>
+		<td colspan='<?php print $colspan;?>'>
+			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; <?php if ($current_page > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page-1), $nav_url) . "'>"; } print "Previous"; if ($current_page > 1) { print "</a>"; } ?></strong>
+					</td>
+					<td align='center' class='textHeaderDark'>
+						Showing Rows <?php print (($rows_per_page*($current_page-1))+1);?> to <?php print ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page));?> of <?php print $total_rows;?>
+					</td>
+					<td align='right' class='textHeaderDark'>
+						<strong><?php if (($current_page * $rows_per_page) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page+1), $nav_url) . "'>"; } print "Next"; if (($current_page * $rows_per_page) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<?php
+}
+
 /* html_header - draws a header row suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
