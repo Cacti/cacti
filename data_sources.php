@@ -93,7 +93,7 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	include_once ("include/utility_functions.php");
 	
-	if ((isset($_POST["save_component_data_source_new"])) && (isset($_POST["data_template_id"]))) {
+	if ((isset($_POST["save_component_data_source_new"])) && (!empty($_POST["data_template_id"]))) {
 		$save["id"] = $_POST["local_data_id"];
 		$save["data_template_id"] = $_POST["data_template_id"];
 		$save["host_id"] = $_POST["host_id"];

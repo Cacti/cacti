@@ -130,7 +130,7 @@ function add_tree_names_to_actions_array() {
 function form_save() {
 	include_once ("include/utility_functions.php");
 	
-	if ((isset($_POST["save_component_graph_new"])) && (isset($_POST["graph_template_id"]))) {
+	if ((isset($_POST["save_component_graph_new"])) && (!empty($_POST["graph_template_id"]))) {
 		$save["id"] = $_POST["local_graph_id"];
 		$save["graph_template_id"] = $_POST["graph_template_id"];
 		$save["host_id"] = $_POST["host_id"];
