@@ -32,9 +32,11 @@ if (!isset($_SERVER["argv"][0])) {
 	exit(-1);
 }
 
-/* display No errors */
-//error_reporting(E_ERROR);
-error_reporting(E_ALL);
+/* define STDOUT/STDIN file descriptors if not running under CLI */
+if (php_sapi_name() == "cgi") {
+	define("STDIN", fopen('php://stdin', 'r'));
+	define("STDOUT", fopen('php://stdout', 'w'));
+}
 
 /* used for includes */
 include_once(dirname(__FILE__) . "/include/config.php");
