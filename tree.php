@@ -25,6 +25,7 @@
 $section = "Add/Edit Graphs"; 
 include ('include/auth.php');
 include_once ('include/form.php');
+include_once ('include/functions.php');
 
 if ($form[action]) { $action = $form[action]; } else { $action = $args[action]; }
 if ($form[ID]) { $id = $form[ID]; } else { $id = $args[id]; }
@@ -55,7 +56,7 @@ switch ($action) {
     	case 'remove':
 		tree_remove();
 		
-		header ("Location: rra.php");
+		header ("Location: tree.php");
 		break;
 	case 'edit':
 		include_once ("include/top_header.php");
@@ -80,7 +81,7 @@ switch ($action) {
 function form_save() {
 	global $form;
 	
-	if (isset($form[save_component_rra])) {
+	if (isset($form[save_component_tree])) {
 		tree_save();
 		return "tree.php";
 	}elseif (isset($form[save_component_tree_item])) {
@@ -183,6 +184,39 @@ function item_movedown() {
 /* ---------------------
     Tree Functions
    --------------------- */
+
+function tree_save() {
+        global $form;
+
+        $save["id"]   = $form["id"];
+        $save["name"] = $form["name"];
+
+        if (sql_Save($save, "graph_tree_view")) {
+                raise_message(1);
+        }else{
+                raise_message(2);
+                header("Location: " . $_SERVER["HTTP_REFERER"]);
+                exit;
+        }
+}
+
+function tree_remove() {
+	global $args, $config;
+
+        if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+                include ('include/top_header.php');
+                DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree_view where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=$args[id]");
+                include ('include/bottom_footer.php');
+                exit;
+        }
+                
+        if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
+                db_execute("delete from graph_tree_view where id=$args[id]");
+        }
+
+
+
+}
 
 function tree_edit() {
 	include_once("include/tree_view_functions.php");
