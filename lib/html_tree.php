@@ -140,6 +140,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	
 	$already_open = false;
 	$heading_ct = 0;
+	$graph_ct = 0;
 	
 	##  Here we go.  Starting the main tree drawing loop.
 	if (sizeof($heirarchy) > 0) {
