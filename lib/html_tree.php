@@ -27,6 +27,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 
 #    print "<P><strong><A HREF='graph_view.php?action=tree&tree_id=$tree_id'>$treeinfo[Title]</A></strong></P>\n";
     
+    
+    /*
     	if (read_config_option("global_auth") == "on") {
 		$sql = "select 
 			h.id,h.graph_id,h.rra_id,h.type,h.title,h.order_key,
@@ -55,9 +57,19 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			and h.order_key like '$search_key%'
 			order by h.order_key";
 	}
-
+*/
 #    print "$sql<BR>\n";
-    $heirarchy = db_fetch_assoc($sql);
+    $heirarchy = db_fetch_assoc("select
+    	graph_tree_view_items.title,
+	graph_tree_view_items.graph_id,
+	graph_tree_view_items.rra_id,
+	graph_tree_view_items.order_key,
+	graph_templates_graph.title as graph_title
+	from graph_tree_view_items
+	left join graph_templates_graph on graph_tree_view_items.graph_id=graph_templates_graph.id
+	where graph_tree_view_items.tree_id=$tree_id
+	and graph_tree_view_items.order_key like '$search_key%'
+	order by graph_tree_view_items.order_key");
 
 
     $search_key = preg_replace("/0+$/","",$start_branch);
@@ -212,13 +224,11 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 }
 
 function grow_edit_graph_tree($tree_id, $user_id, $options) {
-	global $config,$colors,$array_settings,$PHP_SELF,$args;
+	global $config, $colors;
+	
 	include_once ('include/form.php');
 	include_once ('include/tree_functions.php');
-
-	$options[use_expand_contract] = true;
-	$vbar_width = 20;
-    
+	
 	$tree = db_fetch_assoc("select
 		graph_tree_view_items.id,
 		graph_tree_view_items.graph_id,
@@ -227,100 +237,33 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		from graph_tree_view_items
 		where graph_tree_view_items.tree_id=$tree_id
 		order by graph_tree_view_items.order_key");
-
-	##  Now that we know how many hosts each heading has and whether it's supposed to be hidden, we walk the tree again from top to root to figure 
-	##  out how many rows each vertical bar should span.
-	for ($i = (sizeof($tree) - 1); $i >= 0; --$i) {
-		$leaf = $tree[$i];
-		$tier = tree_tier($leaf[order_key], 2);
-		
-		if ($tier > $max_tier) { $max_tier = $tier; }
-		
-		##  Step through the hidden headings to see which entries to skip.
-		if (! $hide[$leaf[order_key]]) {
-			for ($j = 1; $j < $tier; ++$j) {
-				$parent_key = str_pad(substr($leaf[order_key],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
-				if ($hide[$parent_key]) { 
-					$skip[$leaf[order_key]] = 1;
-					break;
-				}
-			}
-		}
-		
-		if (! $skip[$leaf[order_key]]) {
-			if (!$leaf[host_id]) {
-				if (! $hide[$leaf[order_key]]) {
-					if ($num_hosts[$leaf[order_key]] > 0) {
-						++$rowspans[$leaf[order_key]]; 
-					}
-				}
-				
-				$j = $tier - 1;
-				$parent_key = str_pad(substr($leaf[order_key],0,$j * 2 ),60,'0',STR_PAD_RIGHT);
-				$rowspans[$parent_key] += ($rowspans[$leaf[order_key]] + 1);
-			}
-		}
-	}
-    
-    	print "<!-- <P>Building Heirarchy w/ ".sizeof($tree)." leaves</P>  -->\n";
-    
-    	$already_open = false;
-    
+	
+    	print "<!-- <P>Building Heirarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
+    	
     	##  Here we go.  Starting the main tree drawing loop.
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
-		if ($skip[$leaf[order_key]]) { continue; }
-	    
 	    	$tier = tree_tier($leaf[order_key], 2);
-		$current_leaf_type = $leaf[host_id] ? "host" : "heading";
-	    
-	    	$colspan = (($max_tier - $tier) + 1);
-		$rowspan = $rowspans[$leaf[order_key]];
-	    
-	    	if (! $already_open) { 
-			print "<tr>\n";
-			$already_open = true;
-		}
-	    
-	    	if ($hide[$leaf[order_key]] == 1) {
-			$other_status = '0';
-			$ec_icon = 'show';
-		} else {
-			$other_status = '1';
-			$ec_icon =  'hide';
-			++$heading_ct;
-		}
+	    	$transparent_indent = "<img width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
 		
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
 		
-	    	//print "<td bgcolor='#ffffff' align='center' width='1'><a
-		//    	href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
-		//	src='images/$ec_icon.gif' border='0'></a></td>\n";
-	    
-	    	if ($leaf[title] == "") {
-			print "<td bgcolor='#$row_color' colspan='" . (($max_tier+1)-$tier) . "' bgcolor='#$colors[panel]'>&nbsp;<a href='tree.php?action=item_edit&tree_id=$args[id]&tree_item_id=$leaf[id]'>graph_id: $leaf[graph_id]</a></td>\n";
+	    	if ($leaf["title"] == "") {
+			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'>graph_id: $leaf[graph_id]</a></td>\n";
 			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>Graph</td>";
 		}else{
-			print "<td bgcolor='#$row_color' colspan='" . (($max_tier+1)-$tier) . "' bgcolor='#$colors[panel]'>&nbsp;<a href='tree.php?action=item_edit&tree_id=$args[id]&tree_item_id=$leaf[id]'><strong>$leaf[title]</strong></a></td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'><strong>$leaf[title]</strong></a></td>\n";
 			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>Heading</td>";
 		}
 		
 		print 	"<td bgcolor='#$row_color' width='80' align='center'>\n
-			<a href='tree.php?action=item_movedown&tree_item_id=$leaf[id]&tree_id=$args[id]'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
-			<a href='tree.php?action=item_moveup&tree_item_id=$leaf[id]&tree_id=$args[id]'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
+			<a href='tree.php?action=item_movedown&tree_item_id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
+			<a href='tree.php?action=item_moveup&tree_item_id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
 			</td>\n";
 		
 		print 	"<td bgcolor='#$row_color' width='1%' align='right'>\n
-			<a href='tree.php?action=item_remove&id=$leaf[id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;\n
+			<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;\n
 			</td></tr>\n";
-		
-	    	$already_open = false;
-	    
-	    	##  If a heading isn't hidden and has hosts, start the vertical bar.
-		if (! $hide[$leaf[order_key]] && $rowspan > 0) {
-			print "<tr><td bgcolor='#ffffff' width='15' rowspan=$rowspan>&nbsp;</td>\n";
-			$already_open = true;
-		}
 	}
 	}
 }
