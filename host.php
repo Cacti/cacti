@@ -32,6 +32,8 @@ include_once("./lib/snmp.php");
 include_once("./lib/data_query.php");
 include_once("./lib/api_device.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
 $device_actions = array(
 	1 => "Delete",
 	2 => "Enable",
@@ -622,20 +624,8 @@ function host() {
 		order by host.description
 		limit " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
 
-	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
-	user can jump straight to it */
-	$page_number = 0; $url_page_select = "";
-	for ($i=0; ($i<$total_rows); $i += read_config_option("num_rows_device")) {
-		$page_number++;
-
-		if ($_REQUEST["page"] == $page_number) {
-			$url_page_select .= "<strong><a class='linkOverDark' href='host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&page=$page_number'>$page_number</a></strong>";
-		}else{
-			$url_page_select .= "<a class='linkOverDark' href='host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&page=$page_number'>$page_number</a>";
-		}
-
-		if (($i+read_config_option("num_rows_device")) < $total_rows) { $url_page_select .= ","; }
-	}
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='7'>

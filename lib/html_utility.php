@@ -194,4 +194,60 @@ function get_current_graph_end() {
 	}
 }
 
+/* get_page_list - generates the html necessary to present the user with a list of pages limited
+     in length and number of rows per page
+   @arg $current_page - the current page number
+   @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
+     values for this argument are prefered for equality reasons
+   @arg $current_page - the current page number
+   @arg $total_rows - the total number of available rows
+   @arg $url - the url string to prepend to each page click
+   @returns - a string containing html that represents the a page list */
+function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url) {
+	$url_page_select = "";
+
+	$total_pages = ceil($total_rows / $rows_per_page);
+
+	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
+	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));
+
+	/* adjust if we are close to the beginning of the page list */
+	if ($current_page <= ceil(($pages_per_screen) / 2)) {
+		$end_page += ($pages_per_screen - $end_page);
+	}else{
+		$url_page_select .= "...";
+	}
+
+	/* adjust if we are close to the end of the page list */
+	if (($total_pages - $current_page) < ceil(($pages_per_screen) / 2)) {
+		$start_page -= (($pages_per_screen - ($end_page - $start_page)) - 1);
+	}
+
+	/* stay within limits */
+	$start_page = max(1, $start_page);
+	$end_page = min($total_pages, $end_page);
+
+	//print "start: $start_page, end: $end_page, total: $total_pages<br>";
+
+	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
+		if ($page_number < $pages_per_screen) {
+			if ($current_page == ($page_number + $start_page)) {
+				$url_page_select .= "<strong><a class='linkOverDark' href='$url&page=" . ($page_number + $start_page) . "'>" . ($page_number + $start_page) . "</a></strong>";
+			}else{
+				$url_page_select .= "<a class='linkOverDark' href='$url&page=" . ($page_number + $start_page) . "'>" . ($page_number + $start_page) . "</a>";
+			}
+		}
+
+		if (($page_number+$start_page) < $end_page) {
+			$url_page_select .= ",";
+		}
+	}
+
+	if (($total_pages - $current_page) >= ceil(($pages_per_screen) / 2)) {
+		$url_page_select .= "...";
+	}
+
+	return $url_page_select;
+}
+
 ?>

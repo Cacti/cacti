@@ -35,6 +35,8 @@ include_once("./lib/html_form_template.php");
 include_once("./lib/rrd.php");
 include_once("./lib/data_query.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
 $graph_actions = array(
 	1 => "Delete",
 	2 => "Change Graph Template",
@@ -947,20 +949,8 @@ function graph() {
 		order by graph_templates_graph.title_cache,graph_local.host_id
 		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
 
-	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
-	user can jump straight to it */
-	$page_number = 0; $url_page_select = "";
-	for ($i=0; ($i<$total_rows); $i += read_config_option("num_rows_graph")) {
-		$page_number++;
-
-		if ($_REQUEST["page"] == $page_number) {
-			$url_page_select .= "<strong><a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a></strong>";
-		}else{
-			$url_page_select .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a>";
-		}
-
-		if (($i+read_config_option("num_rows_graph")) < $total_rows) { $url_page_select .= ","; }
-	}
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_graph"), $total_rows, "graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='4'>
