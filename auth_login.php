@@ -118,10 +118,10 @@
 	-->
 	</style>
 </head>
-<body>
+<body onload="document.login.username.focus()">
 <? /* apparently IIS 5/4 have a bug (Q176113) where setting a cookie and calling the header via
 'Location' does not work. This seems to fix the bug for me at least... */ ?>
-<form method="post" action="<?print $HTTP_SERVER_VARS["SCRIPT_NAME"];?>">
+<form name="login" method="post" action="<?print $HTTP_SERVER_VARS["SCRIPT_NAME"];?>">
 <table align="center">
 	<tr>
 		<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
