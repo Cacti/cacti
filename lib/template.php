@@ -650,6 +650,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		
 		/* suggested values: data source */
 		if (isset($suggested_values_array[$graph_template_id]["data_template"]{$data_template["id"]})) {
+			reset($suggested_values_array[$graph_template_id]["data_template"]{$data_template["id"]});
 			while (list($field_name, $field_value) = each($suggested_values_array[$graph_template_id]["data_template"]{$data_template["id"]})) {
 				db_execute("update data_template_data set $field_name='$field_value' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 			}
@@ -657,6 +658,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		
 		/* suggested values: data source item */
 		if (isset($suggested_values_array[$graph_template_id]["data_template_item"])) {
+			reset($suggested_values_array[$graph_template_id]["data_template_item"]);
 			while (list($data_template_item_id, $field_array) = each($suggested_values_array[$graph_template_id]["data_template_item"])) {
 				while (list($field_name, $field_value) = each($field_array)) {
 					$data_source_item_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=$data_template_item_id and local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
@@ -667,6 +669,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		
 		/* suggested values: custom data */
 		if (isset($suggested_values_array[$graph_template_id]["custom_data"]{$data_template["id"]})) {
+			reset($suggested_values_array[$graph_template_id]["custom_data"]{$data_template["id"]});
 			while (list($data_input_field_id, $field_value) = each($suggested_values_array[$graph_template_id]["custom_data"]{$data_template["id"]})) {
 				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($data_input_field_id,$data_template_data_id,'','$field_value')");
 			}

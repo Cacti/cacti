@@ -246,4 +246,32 @@ function data_query_field_list($data_template_data_id) {
 	}
 }
 
+/* encode_data_query_index - encodes a data query index value so that it can be included
+     inside of a form
+   @arg $index - the index name to encode
+   @returns - the encoded data query index */
+function encode_data_query_index($index) {
+	return md5($index);
+}
+
+/* encode_data_query_index - decodes a data query index value so that it can be read from
+     a form
+   @arg $encoded_index - the index that was encoded with encode_data_query_index()
+   @arg $data_query_id - the id of the data query that this index belongs to
+   @arg $encoded_index - the id of the host that this index belongs to
+   @returns - the decoded data query index */
+function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
+	/* yes, i know MySQL has a MD5() function that would make this a bit quicker. however i would like to
+	keep things abstracted for now so Cacti works with ADODB fully when i get around to porting my db calls */
+	$indexes = db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=$host_id and snmp_query_id=$data_query_id  group by snmp_index");
+	
+	if (sizeof($indexes) > 0) {
+	foreach ($indexes as $index) {
+		if (encode_data_query_index($index["snmp_index"]) == $encoded_index) {
+			return $index["snmp_index"];
+		}
+	}
+	}
+}
+
 ?>

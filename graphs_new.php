@@ -59,20 +59,14 @@ function form_save() {
 	if (isset($_POST["save_component_graph"])) {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
 		while (list($var, $val) = each($_POST)) {
-			if (preg_match('/^cg_\d+$/', $var)) {
-				$graph_template_id = preg_replace('/^cg_(\d+)$/', "\\1", $var);
-				
-				$selected_graphs["cg"][$graph_template_id][$graph_template_id] = true;
+			if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
+				$selected_graphs["cg"]{$matches[1]}{$matches[1]} = true;
 			}elseif (preg_match('/^cg_g$/', $var)) {
 				if ($_POST["cg_g"] > 0) {
 					$selected_graphs["cg"]{$_POST["cg_g"]}{$_POST["cg_g"]} = true;
 				}
-			}elseif (preg_match('/^sg_\d+_\S+$/', $var)) {
-				$snmp_query_id = preg_replace('/^sg_(\d+)_(\S+)$/', "\\1", $var);
-				$snmp_query_graph_id = $_POST{"sgg_" . $snmp_query_id}; 
-				$snmp_index = preg_replace('/^sg_(\d+)_(\S+)$/', "\\2", $var);
-				
-				$selected_graphs["sg"][$snmp_query_id][$snmp_query_graph_id][$snmp_index] = true;
+			}elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
+				$selected_graphs["sg"]{$matches[1]}{$_POST{"sgg_" . $matches[1]}}{$matches[2]} = true;
 			}
 		}
 		
@@ -130,11 +124,11 @@ function host_new_graphs_save() {
 	
 	/* form an array that contains all of the data on the previous form */
 	while (list($var, $val) = each($_POST)) {
-		if (preg_match("/^g_(\d+)_(\d+)_([^_]+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: (opt) snmp index, 4: field_name */
+		if (preg_match("/^g_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: field_name */
 			if (empty($matches[1])) { /* this is a new graph from template field */
-				$values["cg"]{$matches[2]}["graph_template"]{$matches[4]} = $val;
+				$values["cg"]{$matches[2]}["graph_template"]{$matches[3]} = $val;
 			}else{ /* this is a data query field */
-				$values["sg"]{$matches[1]}{$matches[2]}["graph_template"]{$matches[4]} = $val;
+				$values["sg"]{$matches[1]}{$matches[2]}["graph_template"]{$matches[3]} = $val;
 			}
 		}elseif (preg_match("/^gi_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name */
 			/* we need to find out which graph items will be affected by saving this particular item */
@@ -153,11 +147,11 @@ function host_new_graphs_save() {
 				}
 			}
 			}
-		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_([^_]+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4: (opt) snmp_index, 5:field_name */
+		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name */
 			if (empty($matches[1])) { /* this is a new graph from template field */
-				$values["cg"]{$matches[2]}["data_template"]{$matches[3]}{$matches[5]} = $val;
+				$values["cg"]{$matches[2]}["data_template"]{$matches[3]}{$matches[4]} = $val;
 			}else{ /* this is a data query field */
-				$values["sg"]{$matches[1]}{$matches[2]}["data_template"]{$matches[3]}{$matches[5]} = $val;
+				$values["sg"]{$matches[1]}{$matches[2]}["data_template"]{$matches[3]}{$matches[4]} = $val;
 			}
 		}elseif (preg_match("/^c_(\d+)_(\d+)_(\d+)_(\d+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id */
 			if (empty($matches[1])) { /* this is a new graph from template field */
@@ -197,7 +191,7 @@ function host_new_graphs_save() {
 				$return_array = create_complete_graph_from_template($graph_template_id, $_POST["host_id"], "", $values["cg"]);
 			}elseif ($current_form_type == "sg") {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
-					$snmp_query_array["snmp_index"] = $snmp_index;
+					$snmp_query_array["snmp_index"] = decode_data_query_index($snmp_index, $snmp_query_array["snmp_query_id"], $_POST["host_id"]); 
 					
 					$return_array = create_complete_graph_from_template($graph_template_id, $_POST["host_id"], $snmp_query_array, $values["sg"]{$snmp_query_array["snmp_query_id"]});
 				}
@@ -240,7 +234,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					/* list each index that was selected */
 					$i = 0;
 					while (list($snmp_index, $one) = each($form_array3)) {
-						$snmp_indexes[$snmp_query_id][$i] = $snmp_index;
+						$snmp_indexes[$snmp_query_id][$i] = decode_data_query_index($snmp_index, $snmp_query_id, $host_id); 
+						
 						$i++;
 					}
 				}
@@ -331,13 +326,13 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				and graph_templates_graph.local_graph_id=0");
 			$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $graph_template_id);
 			
-			draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . "$graph_template_id" . "_0_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+			draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
 			draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]", false);
 			
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
+				draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0));
 				
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
@@ -568,14 +563,13 @@ function graphs() {
 				$cg_ctr = 0;
 				if (sizeof($created_graphs) > 0) {
 				foreach ($created_graphs as $created_graph) {
-					print (($cg_ctr > 0) ? "," : "") . "'" . $created_graph["snmp_index"] . "'"; 
+					print (($cg_ctr > 0) ? "," : "") . "'" . encode_data_query_index($created_graph["snmp_index"]) . "'"; 
 					
 					$cg_ctr++;
 				}
 				}
 				
 				print ")\n";
-				
 			}
 			
 			print "//-->\n</script>\n";
@@ -639,7 +633,7 @@ function graphs() {
 			$row_counter = 0;
 			if (sizeof($snmp_query_indexes) > 0) {
 			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
-				$query_row = $snmp_query["id"] . "_" . $snmp_index;
+				$query_row = $snmp_query["id"] . "_" . encode_data_query_index($snmp_index);
 				
 				print "<tr id='line$query_row' bgcolor='#" . (($row_counter % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 				
@@ -648,9 +642,9 @@ function graphs() {
 				while (list($field_name, $field_array) = each($xml_array["fields"])) {
 					if ($field_array["direction"] == "input") {
 						if (isset($snmp_query_data[$field_name][$snmp_index])) {
-							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'" : "")  ."><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
+							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($snmp_index) . "\");'" : "")  ."><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
 						}else{
-							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"$snmp_index\");'" : "") . "><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($snmp_index) . "\");'" : "") . "><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
 						}
 						
 						$column_counter++;
