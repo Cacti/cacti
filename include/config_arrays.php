@@ -213,8 +213,8 @@ $menu = array(
 		"templates_export.php" => "Export Templates"
 		),
 	"Configuration"  => array(
-		"utilities.php" => "Diagnostics",
-		"settings.php" => "Settings"
+		"settings.php" => "Settings",
+		"utilities.php" => "Diagnostics"
 		),
 	"Utilities" => array(
 		"user_admin.php" => "User Management",

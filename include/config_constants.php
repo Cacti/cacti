@@ -64,4 +64,9 @@ define("POLLER_ACTION_SCRIPT_PHP", 2);
 
 define("POLLER_COMMAND_REINDEX", 1);
 
+define("LOW", 1);
+define("HIGH", 2);
+define("DEBUG", 3);
+define("DEVELOPER", 4);
+
 ?>

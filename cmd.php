@@ -87,6 +87,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 	if (function_exists("proc_open")) {
 		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
+		$output = fgets($pipes[1], 1024);
+		if (substr_count($output, "Started") != 0) {
+			if (read_config_option("log_perror") == "on") {
+				log_data("PHPSERVER: Server Started Properly\n");
+			}
+		}
 		$using_proc_function = true;
 
 	}else {
