@@ -1,6 +1,6 @@
 -- MySQL dump 9.09
 --
--- Host: localhost    Database: dev_cacti_2
+-- Host: localhost    Database: cacti_dev_RELEASE_0_8_6
 ---------------------------------------------------------
 -- Server version	4.0.15-standard
 
@@ -1799,9 +1799,9 @@ INSERT INTO graph_templates_item VALUES (392,'3ff8dba1ca6279692b3fcabed0bc2631',
 INSERT INTO graph_templates_item VALUES (393,'d6041d14f9c8fb9b7ddcf3556f763c03',0,0,33,55,0,1,0,1,'Total Out: |sum:auto:current:2:auto|','','',2,12);
 INSERT INTO graph_templates_item VALUES (394,'76ae747365553a02313a2d8a0dd55c8a',0,0,33,54,0,1,0,1,'Total In:  |sum:auto:current:2:auto|','','on',2,5);
 INSERT INTO graph_templates_item VALUES (403,'8a1b44ab97d3b56207d0e9e77a035d25',0,0,13,95,30,8,14,1,'Cache Memory','','',2,9);
-INSERT INTO graph_templates_item VALUES (404,'6db3f439e9764941ff43fbaae348f5dc',0,0,13,95,0,9,0,4,'Current:','','',2,10);
-INSERT INTO graph_templates_item VALUES (405,'cc9b2fe7acf0820caa61c1519193f65e',0,0,13,95,0,9,0,1,'Average:','','',2,11);
-INSERT INTO graph_templates_item VALUES (406,'9eea140bdfeaa40d50c5cdcd1f23f72d',0,0,13,95,0,9,0,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (404,'6db3f439e9764941ff43fbaae348f5dc',0,0,13,95,0,9,14,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (405,'cc9b2fe7acf0820caa61c1519193f65e',0,0,13,95,0,9,14,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (406,'9eea140bdfeaa40d50c5cdcd1f23f72d',0,0,13,95,0,9,14,3,'Maximum:','','on',2,12);
 INSERT INTO graph_templates_item VALUES (407,'41316670b1a36171de2bda91a0cc2364',0,0,34,96,98,7,0,1,'','','',2,1);
 INSERT INTO graph_templates_item VALUES (408,'c9e8cbdca0215b434c902e68755903ea',0,0,34,96,0,9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (409,'dab91d7093e720841393feea5bdcba85',0,0,34,96,0,9,0,1,'Average:','','',2,3);
@@ -2220,59 +2220,6 @@ CREATE TABLE settings (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO settings VALUES ('log_destination','1');
-INSERT INTO settings VALUES ('log_snmp','');
-INSERT INTO settings VALUES ('log_graph','');
-INSERT INTO settings VALUES ('log_export','');
-INSERT INTO settings VALUES ('log_verbosity','2');
-INSERT INTO settings VALUES ('log_pstats','');
-INSERT INTO settings VALUES ('log_pwarn','');
-INSERT INTO settings VALUES ('log_perror','on');
-INSERT INTO settings VALUES ('snmp_version','net-snmp');
-INSERT INTO settings VALUES ('snmp_timeout','500');
-INSERT INTO settings VALUES ('snmp_retries','3');
-INSERT INTO settings VALUES ('remove_verification','on');
-INSERT INTO settings VALUES ('path_snmpwalk','/usr/bin/snmpwalk');
-INSERT INTO settings VALUES ('path_snmpget','/usr/bin/snmpget');
-INSERT INTO settings VALUES ('path_rrdtool','/usr/bin/rrdtool');
-INSERT INTO settings VALUES ('path_php_binary','/usr/bin/php');
-INSERT INTO settings VALUES ('path_cactilog','');
-INSERT INTO settings VALUES ('path_cactid','');
-INSERT INTO settings VALUES ('poller_enabled','on');
-INSERT INTO settings VALUES ('poller_type','1');
-INSERT INTO settings VALUES ('concurrent_processes','1');
-INSERT INTO settings VALUES ('max_threads','1');
-INSERT INTO settings VALUES ('availability_method','2');
-INSERT INTO settings VALUES ('ping_method','2');
-INSERT INTO settings VALUES ('ping_timeout','400');
-INSERT INTO settings VALUES ('ping_retries','1');
-INSERT INTO settings VALUES ('ping_failure_count','2');
-INSERT INTO settings VALUES ('ping_recovery_count','3');
-INSERT INTO settings VALUES ('export_type','disabled');
-INSERT INTO settings VALUES ('path_html_export','');
-INSERT INTO settings VALUES ('export_timing','disabled');
-INSERT INTO settings VALUES ('path_html_export_skip','');
-INSERT INTO settings VALUES ('export_hourly','');
-INSERT INTO settings VALUES ('export_daily','');
-INSERT INTO settings VALUES ('export_ftp_sanitize','');
-INSERT INTO settings VALUES ('export_ftp_host','');
-INSERT INTO settings VALUES ('export_ftp_port','');
-INSERT INTO settings VALUES ('export_ftp_passive','');
-INSERT INTO settings VALUES ('export_ftp_user','');
-INSERT INTO settings VALUES ('export_ftp_password','');
-INSERT INTO settings VALUES ('num_rows_graph','30');
-INSERT INTO settings VALUES ('max_title_graph','80');
-INSERT INTO settings VALUES ('max_data_query_field_length','15');
-INSERT INTO settings VALUES ('max_data_query_javascript_rows','96');
-INSERT INTO settings VALUES ('num_rows_data_source','30');
-INSERT INTO settings VALUES ('max_title_data_source','45');
-INSERT INTO settings VALUES ('num_rows_device','30');
-INSERT INTO settings VALUES ('global_auth','on');
-INSERT INTO settings VALUES ('ldap_enabled','');
-INSERT INTO settings VALUES ('guest_user','guest');
-INSERT INTO settings VALUES ('ldap_server','');
-INSERT INTO settings VALUES ('ldap_dn','');
-INSERT INTO settings VALUES ('ldap_template','');
 
 --
 -- Table structure for table `settings_graphs`
@@ -2290,8 +2237,6 @@ CREATE TABLE settings_graphs (
 -- Dumping data for table `settings_graphs`
 --
 
-INSERT INTO settings_graphs VALUES (1,'general','');
-INSERT INTO settings_graphs VALUES (1,'tree','');
 
 --
 -- Table structure for table `settings_tree`
@@ -2691,5 +2636,5 @@ CREATE TABLE version (
 -- Dumping data for table `version`
 --
 
-INSERT INTO version VALUES ('0.8.6');
+INSERT INTO version VALUES ('0.8.6c');
 
