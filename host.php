@@ -868,7 +868,7 @@ function host_edit() {
 						<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark' colspan='$num_input_fields'>
 							<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]
 						</td>
-						<td bgcolor='#" . $colors["header"] . "' align='center'>
+						<td bgcolor='#" . $colors["header"] . "' align='right'>
 							<a href='host.php?action=query_remove&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/delete_icon_large.gif' alt='Delete Associated Query' border='0'></a>
 						</td>
 					</tr>
