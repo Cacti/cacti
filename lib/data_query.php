@@ -353,6 +353,10 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 
 	include_once($config["library_path"] . "/sort.php");
 
+	if (empty($data_query_id)) {
+		return array("" => "Unknown Index");
+	}
+
 	/* from the xml; cached in 'host_snmp_query' */
 	$sort_cache = db_fetch_row("select sort_field,title_format from host_snmp_query where host_id='$host_id' and snmp_query_id='$data_query_id'");
 
