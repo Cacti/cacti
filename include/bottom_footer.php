@@ -50,8 +50,8 @@ function SelectForce(prefix) {
     }
   }
 }
-//-->
 
+//-->
 </script>
 
 <?php
