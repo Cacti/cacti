@@ -28,6 +28,7 @@ include ("./include/auth.php");
 include_once("./lib/tree.php");
 include_once("./lib/tree_view.php");
 include_once("./lib/utility.php");
+include_once("./lib/template.php");
 
 $ds_actions = array(
 	1 => "Delete",
