@@ -25,6 +25,7 @@
  +-------------------------------------------------------------------------+
 */
 
+ini_set("max_execution_time", "0");
 include ('include/config.php');
 include_once ("include/snmp_functions.php");
 include_once ("include/rrd_functions.php");
