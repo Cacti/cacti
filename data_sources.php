@@ -363,8 +363,10 @@ function ds_save() {
 			sql_save($save, "data_template_rrd");
 		}
 	}
-	push_out_host($_POST["host_id"]);
+	
 	if (!is_error_message()) {
+		update_poller_cache($local_data_id);
+		
 		if ($_POST["host_id"] != $_POST["_host_id"]) {
 			/* push out all nessesary host information */
 			push_out_host($_POST["host_id"]);
