@@ -294,9 +294,9 @@ if ($_REQUEST["step"] == "4") {
 						
 						<p>Make sure you have read and followed the required steps needed to install cacti
 						before continuing. Install information can be found for 
-						<a href="docs/html/install_unix.html">Unix</a> and <a href="docs/html/install_windows.html">Win32</a>-based operating systems.</p>
+						<a href="../docs/html/install_unix.html">Unix</a> and <a href="../docs/html/install_windows.html">Win32</a>-based operating systems.</p>
 						
-						<p>Also, if this is an upgrade, be sure to reading the <a href="docs/html/upgrade.html">Upgrade</a> information file.</p>
+						<p>Also, if this is an upgrade, be sure to reading the <a href="../docs/html/upgrade.html">Upgrade</a> information file.</p>
 						
 						<p>Cacti is licensed under the GNU General Public License, you must agree
 						to its provisions before continuing:</p>
