@@ -36,15 +36,19 @@ function DrawMenu($userid, $menuid) {
     /* set up the available menu headers */
     $menu = array("Graph Setup"    => array(
 					    "graphs.php" => "Graph Management",
-					    "graph_templates.php" => "Graph Templates",
+					    
 					    "tree.php" => "Graph Trees",
 					    "color.php" => "Colors"
 					    ),
+		  "Templates"	   => array(
+		  			    "graph_templates.php" => "Graph Templates",
+					    "host_templates.php" => "Host Templates",
+					    "data_templates.php" => "Data Templates"
+					    ),
 		  "Data Gathering" => array(
-					    "ds.php" => "Data Sources",
-					    "show_equip_profiles.php" => 'Equipment Profiles',
+					    "data_sources.php" => "Data Sources",
+					    "host.php" => 'Polling Hosts',
 					    "rra.php" => "Available RRA's",
-#					    "snmp.php" => "SNMP Interfaces",
 					    "data.php" => "Data Input Methods",
 					    "pzones.php" => "Polling Zones",
 					    "cdef.php" => "CDEF's"
