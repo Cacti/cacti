@@ -213,3 +213,9 @@ BODY H1, BODY H2, BODY H3, BODY H4, BODY H5, BODY H6 {
 	font-family: Courier New, Courier;
 	font-weight: normal;
 }
+
+.PROPERTY
+{
+	color: navy;
+	background-color: #EEEEEE;
+}

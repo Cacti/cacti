@@ -1327,6 +1327,7 @@ $database_password = "cacti";</userinput></screen>
    &lt;name&gt;Get SNMP Interfaces&lt;/name&gt;
    &lt;description&gt;Queries a host for a list of monitorable interfaces&lt;/description&gt;
    &lt;oid_index&gt;.1.3.6.1.2.1.2.2.1.1&lt;/oid_index&gt;
+   &lt;oid_index_parse&gt;OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3})$&lt;/oid_index_parse&gt;
    &lt;oid_num_indexes&gt;.1.3.6.1.2.1.2.1.0&lt;/oid_num_indexes&gt;
    &lt;index_order&gt;ifDescr:ifName:ifIndex&lt;/index_order&gt;
    &lt;index_order_type&gt;numeric&lt;/index_order_type&gt;
@@ -1364,7 +1365,11 @@ $database_password = "cacti";</userinput></screen>
 						</row>
 						<row>
 							<entry>query-&gt;oid_index</entry>
-							<entry>Every SNMP query must have an OID that represents the index values for the query when walked. As described above, any data query in Cacti must contain a field that uniquely identifies each row returned by the query. In the example above, the oid_index points to the OID of ifIndex in the interface MIB.</entry>
+							<entry><para>Every SNMP query must have an OID that represents the index values for the query when walked. As described above, any data query in Cacti must contain a field that uniquely identifies each row returned by the query. In the example above, the oid_index points to the OID of ifIndex in the interface MIB.</para><para><emphasis>Note:</emphasis> Starting with version 0.8.6c, Cacti is able to parse unique indexes from the OID itself. While the regular expression used for parsing the value from the OID is defined below, you must still specify an OID that can be walked by Cacti in order to obtain the list of OID's. Any OID defined for one of your input fields should work in this case. The values returned from the snmpwalk walk will be completely disregarded.</para></entry>
+						</row>
+						<row>
+							<entry>query-&gt;oid_index_parse</entry>
+							<entry>This field should only be used if you are trying to parse the unique index from the OID itself. If this field is defined, to obtain a list of indexes, Cacti walks the OID provided in the <property>oid_index</property> field above. It then applies the regular expression provided in this field to the list of OID's that are returned. The matched substrings that remain become the list of indexes for this SNMP query.</entry>
 						</row>
 						<row>
 							<entry>query-&gt;oid_num_indexes</entry>
@@ -1400,7 +1405,7 @@ $database_password = "cacti";</userinput></screen>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;source</entry>
-							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para></entry>
+							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para><para><parameter>index</parameter>: Simply use the value of the index for this row as the value. If the index is being parsed from the OID using the <property>oid_index_parse</property> field, you must specify <parameter>index</parameter> here.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;direction</entry>
