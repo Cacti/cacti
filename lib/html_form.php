@@ -144,7 +144,7 @@ function DrawFormItemDropdownFromSQL($form_name, $form_data, $column_display,$co
 ?>
 		<td>
 			<select name="<?print $form_name;?>">
-				<?if ($form_none_entry!="") {?><option value="0"<?if ($form_previous_value=="0"){print " selected";}?>><?print $form_none_entry;?></option><?}?>
+				<?if ($form_none_entry!="") {?><option value='0'<?if ($form_previous_value=="0"){print " selected";}?>><?print $form_none_entry;?></option><?}?>
 				<?CreateList($form_data,$column_display,$column_id,$form_previous_value);?>
 			</select>
 		</td>
@@ -532,6 +532,14 @@ function html_boolean($html_boolean) {
 		return true;
 	}else{
 		return false;
+	}
+}
+
+function html_boolean_friendly($html_boolean) {
+	if ($html_boolean == "on") {
+		return "Selected";
+	}else{
+		return "Not Selected";
 	}
 }
 
