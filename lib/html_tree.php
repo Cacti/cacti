@@ -347,6 +347,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	/* get the "starting leaf" if the user clicked on a specific branch */
 	if (!empty($leaf_id)) {
 		$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_items where id=$leaf_id"));
+		
+		/* we the search key should always be divisible by "2" because we are searching AT a
+		branch (__), not PAST it (%%) */
+		if (strlen($search_key) % 2 != 0) { $search_key .= "0"; }
 	}
 	
 	/* graph permissions */
