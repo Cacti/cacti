@@ -40,11 +40,15 @@ function db_connect_real($host,$user,$pass,$db_name) {
 		if (mysql_selectdb($db_name)) {
 			return(1);
 		}else{
-			die("Cannot find the database $db_name");
+			die("<br>Cannot find the database '$db_name'. Please make sure you have specified a valid MySQL 
+			server hostname in 'include/config.php'.");
+			
 			return(0);
 		}
 	}else{
-		die("Cannot connect to MySQL server on $host");
+		die("<br>Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL 
+		database name in 'include/config.php'.");
+		
 		return(0);
 	}
 }
