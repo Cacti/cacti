@@ -312,7 +312,7 @@ function item() {
 					if (!empty($item["description"])) { print "<br>" . $item["description"]; }
 			print "	</td>\n";
 			
-			draw_nontemplated_item($struct_graph_item{$item["column_name"]}, $field_name, $current_def_value[$field_name]);
+			draw_nontemplated_item($struct_graph_item{$item["column_name"]}, $field_name . "_" . $item["id"], $current_def_value[$field_name]);
 			
 			print "</tr>\n";
 		}
@@ -463,13 +463,12 @@ function input_save() {
 		
 		/* get some variables */
 		$column_name = $input["column_name"];
-		$graph_template_input_id = $input["id"];
-		$column_value = $_POST[$graph_template_input_id];
+		$column_value = $_POST{$column_name . "_" . $input["id"]};
 		
 		/* loop through each item affected and update column data */
 		if (sizeof($item_list) > 0) {
 		foreach ($item_list as $item) {
-			db_execute("update graph_templates_item set $column_name=$column_value where id=" . $item["id"]);
+			db_execute("update graph_templates_item set $column_name='$column_value' where id=" . $item["id"]);
 		}
 		}
 	}
@@ -1031,6 +1030,8 @@ function graph() {
 	<?
 	$i++;
 	}
+	}else{
+		print "<tr><td><em>No Graphs Found</em></td></tr>";
 	}
 	end_box();
 }
