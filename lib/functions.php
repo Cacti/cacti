@@ -237,12 +237,17 @@ function get_data_source_path($local_data_id, $expand_paths) {
 	}
 }
 
-function CheckDataSourceName($data_source_name) {
-    $new_data_source_name = str_replace(" ","_",$data_source_name);
-    $new_data_source_name = ereg_replace("[*]|[/]|[\]|[*]|[&]|[%]|[\"]|[\']|[,]|[.]","",$new_data_source_name);
-    $new_data_source_name = substr($new_data_source_name,0,19);
-    
-    return strtolower($new_data_source_name);
+function stri_replace($find, $replace, $string) {
+	$parts = explode(strtolower($find), strtolower($string));
+	
+	$pos = 0;
+	
+	foreach ($parts as $key=>$part) {
+		$parts[$key] = substr($string, $pos, strlen($part));
+		$pos += strlen($part) + strlen($find);
+	}
+	
+	return (join($replace, $parts));
 }
 
 function clean_up_name($string) {
@@ -250,6 +255,32 @@ function clean_up_name($string) {
     $string = preg_replace("/[*\/\*&%\"\',]/", "", $string);
     
     return $string;
+}
+
+function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
+	$host = db_fetch_row("select description,hostname,management_ip,snmp_community,snmp_version,snmp_username,snmp_password from host where id=$host_id");
+	
+	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $host["hostname"], $string);
+	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $host["description"], $string);
+	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $host["management_ip"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $host["snmp_community"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $host["snmp_version"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $host["snmp_username"], $string);
+	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $host["snmp_password"], $string);
+	
+	return $string;
+}
+
+function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
+	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
+	
+	if (sizeof($snmp_cache_data) > 0) {
+	foreach ($snmp_cache_data as $data) {
+		$string = stri_replace($l_escape_string . "squery_" . $data["field_name"] . $r_escape_string, $data["field_value"], $string);
+	}
+	}
+	
+	return $string;
 }
 
 function generate_data_source_path($local_data_id) {
@@ -272,132 +303,87 @@ function generate_graph_def_name($graph_item_id) {
     return $result;
 }
 
-function GetGraphDefID($graph_item_id, $def_items) {
-    $result = "";
-    
-    for($i=0; $i<sizeof($def_items); $i++) {
-		if ($def_items[$i] == $graph_item_id) {
-		    $result = "345" . $i;
+function create_list($data, $name, $value, $prev) {
+	if (empty($name)) {
+		foreach (array_keys($data) as $id) {
+			print '<option value="' . $id . '"';
+			
+			if ($prev == $id) {
+				print " selected";
+			}
+			
+			print ">" . $data[$id] . "</option>\n";
 		}
-    }
-    
-    if ($result == "") {
-		$result = $graph_item_id;
-    }
-    
-    return $result;
-}
-
-
-function SyncDataSourceName($data_source_id, $saved_custom_data_source_name, $saved_custom_data_source_path) {
-    global $cnn_id;
-    #include_once("include/database.php");
-    
-    /* get old data for comparison */
-    if ($data_source_id != 0) {
-		$data = db_fetch_row("select dsname,dspath,name from rrd_ds where id=$data_source_id");
-		
-		if (sizeof($data) > 0) {
-		    $old_data_source_name = $data[Name];
-		    $old_custom_data_source_path = $data[DSPath];
-		    $old_custom_data_source_name = $data[DSName];
+	}else{
+		foreach ($data as $row) {
+			print "<option value='$row[$value]'";
+			
+			if ($prev == $row[$value]) {
+				print " selected";
+			}
+			
+			print ">$row[$name]</option>\n";
 		}
-    }
-    
-    $dsname = $saved_custom_data_source_name;
-    $dspath = $saved_custom_data_source_path;
-    
-    /* only update the dspath if there isn't already one */
-    if ($old_custom_data_source_path == "") {
-		$dspath = GetDataSourcePath($data_source_id, false);
-    }
-    
-    /* only update the dsname if there isn't already one */
-    if ($old_custom_data_source_name == "") {
-		$dsname = GetDataSourceName($data_source_id);
-    }
-    
-    db_execute("update rrd_ds set dsname=\"$dsname\", dspath=\"$dspath\" where id=$data_source_id");
-    
-    /* find out if this DS has children; if it does, then write the dspath to each child */
-    db_execute("update rrd_ds set dspath=\"$dspath\" where subdsid=$data_source_id");
+	}
 }
 
-function CreateList($data,$name,$value,$prev) {
-    if (($name == "") && ($value == "")) {
-	foreach (array_keys($data) as $id) {
-	    print '<option value="' . $id . '"';
-	    
-		if ($prev == $id) {
-			print " selected";
-	    }
-		
-	    print ">" . $data[$id] . "</option>\n";
-	}
-    }else{
-	foreach ($data as $row) {
-	    print "<option value='$row[$value]'";
-	    
-		if ($prev == $row[$value]) {
-			print " selected";
-	    }
-		
-	    print ">$row[$name]</option>\n";
-	}
-    }
-}
-
-function get_next_item($tblname,$field,$startid,$lmt_query) {
-    $data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_query");
-    $end_seq = $data1[mymax];
-    $data2 = db_fetch_row("select $field from $tblname where id=$startid");
-    $start_seq = $data2[$field];
-    
-    $i = $start_seq;
-    if ($end_seq != $start_seq) {
+function get_next_item($tblname, $field, $startid, $lmt_query) {
+	$data1 = db_fetch_row("select max($field) mymax from $tblname where $lmt_query");
+	$end_seq = $data1["mymax"];
+	$data2 = db_fetch_row("select $field from $tblname where id=$startid");
+	$start_seq = $data2[$field];
+	
+	$i = $start_seq;
+	if ($end_seq != $start_seq) {
 		while ($i < $end_seq) {
-		    $data3 = db_fetch_row("select $field from $tblname where $field=$i+1 and $lmt_query");
-		    if (sizeof($data3) > 0) { return $data3[$field]; }
-		    $i++;
+			$data3 = db_fetch_row("select $field from $tblname where $field=$i+1 and $lmt_query");
+			
+			if (sizeof($data3) > 0) {
+				return $data3[$field];
+			}
+			
+			$i++;
 		}
-    }
+	}
 	
-    return $start_seq;
+	return $start_seq;
 }
 
-function get_last_item($tblname,$field,$startid,$lmt_query) {
-    $data1 = db_fetch_row("select min($field) mymin from $tblname where $lmt_query");
-    $end_seq = $data1[mymin];
-    $data2 = db_fetch_row("select $field from $tblname where id=$startid");
-    $start_seq = $data2[$field];
-    
-    $i = $start_seq;
-    if ($end_seq != $start_seq) {
-		while ($i > $end_seq) {
-		    $data3 = db_fetch_row("select $field from $tblname where $field=$i-1 and $lmt_query");
-		    if (sizeof($data3) > 0 && $data3[$field] != 0) {
-				return $data3[$field];
-		    }
-		    $i--;
-		}
-    }
+function get_last_item($tblname, $field, $startid, $lmt_query) {
+	$data1 = db_fetch_row("select min($field) mymin from $tblname where $lmt_query");
+	$end_seq = $data1["mymin"];
+	$data2 = db_fetch_row("select $field from $tblname where id=$startid");
+	$start_seq = $data2[$field];
 	
-    return $start_seq;
+	$i = $start_seq;
+	if ($end_seq != $start_seq) {
+		while ($i > $end_seq) {
+			$data3 = db_fetch_row("select $field from $tblname where $field=$i-1 and $lmt_query");
+			
+			if (sizeof($data3) > 0 && $data3[$field] != 0) {
+				return $data3[$field];
+			}
+			
+			$i--;
+		}
+	}
+	
+	return $start_seq;
 }
 
 function get_sequence($id, $field, $table_name, $group_query) {
-    if (($id=="0") || ($id == "")) {
+	if (empty($id)) {
 		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $group_query");
 		
-		if ($data[seq] == "") {
-		    return 1;
+		if ($data["seq"] == "") {
+			return 1;
 		}else{
-		    return $data[seq];
+			return $data["seq"];
 		}
 	}else{
 		$data = db_fetch_row("select $field from $table_name where id=$id");
 		return $data[$field];
-    }
+	}
 }
 
 function move_item_down($table_name, $current_id, $group_query) {
@@ -418,53 +404,28 @@ function move_item_up($table_name, $current_id, $group_query) {
 	db_execute("update $table_name set sequence=$sequence where id=$id");
 }
 
-function ParseDelimitedLine($str,$delimiter) {
-    if ($delimiter == "") {
-		$fill_array[0] = $str;
-		return $fill_array;
-    }else{
-		$fill_array = explode($delimiter, $str);
-		return $fill_array;
-    }
-}
-
 function exec_into_array($command_line) {
-    exec($command_line,$out,$err);
-    
-    for($i=0; list($key, $value) = each($out); $i++) {
+	exec($command_line,$out,$err);
+	
+	for($i=0; list($key, $value) = each($out); $i++) {
 		$command_array[$i] = $value;
-    }
-    
-    return $command_array;
+	}
+	
+	return $command_array;
 }
 
 function convert_mac_address($mac_address) {
-    return strtolower(str_replace(" ", ":", $mac_address));
+	return strtolower(str_replace(" ", ":", $mac_address));
 }
 
 function hex2bin($data) {
-    $len = strlen($data);
-    
-    for($i=0;$i<$len;$i+=2) {
+	$len = strlen($data);
+	
+	for($i=0;$i<$len;$i+=2) {
 		$newdata .=  pack("C",hexdec(substr($data,$i,2)));
-    }
-    
-    return $newdata;
-}
-
-function BuildGraphTitleFromSNMP($graph_parameters) {
-    $data = db_fetch_row("select * from snmp_hosts_interfaces where id=" . $graph_parameters["snmp_interface_id"]);
-    
-    if ($data > 0) {
-		$graph_parameters["unparsed_graph_title"] = str_replace("<data_source_name>", $graph_parameters["data_source_name"], $graph_parameters["unparsed_graph_title"]);
-		$graph_parameters["unparsed_graph_title"] = str_replace("<snmp_description>", $data[Description], $graph_parameters["unparsed_graph_title"]);
-		$graph_parameters["unparsed_graph_title"] = str_replace("<snmp_interface_number>", $data[InterfaceNumber], $graph_parameters["unparsed_graph_title"]);
-		$graph_parameters["unparsed_graph_title"] = str_replace("<snmp_interface_speed>", $data[Speed], $graph_parameters["unparsed_graph_title"]);
-		$graph_parameters["unparsed_graph_title"] = str_replace("<snmp_hardware_address>", $data[HardwareAddress], $graph_parameters["unparsed_graph_title"]);
-		$graph_parameters["unparsed_graph_title"] = str_replace("<snmp_ip_address>", $data[IPAddress], $graph_parameters["unparsed_graph_title"]);
-    }
-    
-    return $graph_parameters["unparsed_graph_title"];
+	}
+	
+	return $newdata;
 }
 
 ?>

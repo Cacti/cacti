@@ -153,7 +153,7 @@ function DrawFormItemDropdownFromSQL($form_name, $form_data, $column_display,$co
 		<td>
 			<select name="<?print $form_name;?>">
 				<?if ($form_none_entry!="") {?><option value='0'<?if ($form_previous_value=="0"){print " selected";}?>><?print $form_none_entry;?></option><?}?>
-				<?CreateList($form_data,$column_display,$column_id,$form_previous_value);?>
+				<?create_list($form_data,$column_display,$column_id,$form_previous_value);?>
 			</select>
 		</td>
 <?}
@@ -405,7 +405,7 @@ function DrawStrippedFormItemDropdownFromSQL($form_name, $sql_string, $column_di
     ?>
 		<select name="<?print $form_name;?>">
 			<?if ($form_none_entry!="") {?><option value="0"><?print $form_none_entry;?></option><?}?>
-			<?CreateList($sql_string,$column_display,$column_id,$form_previous_value);?>
+			<?create_list($sql_string,$column_display,$column_id,$form_previous_value);?>
 		</select>
 <?}
 
