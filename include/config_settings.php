@@ -296,12 +296,6 @@ $settings = array(
 			"description" => "Full path to Cactid binary.",
 			"method" => "textbox",
 			"max_length" => "255"
-			),
-		"path_scriptdir" => array(
-			"friendly_name" => "Poller Script Directory",
-			"description" => "Required for multiple processes.  Empty directory to contain multiprocess script files.",
-			"method" => "textbox",
-			"max_length" => "255"
 			)
 		),
 	"authentication" => array(
