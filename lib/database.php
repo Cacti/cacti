@@ -67,15 +67,18 @@ function db_fetch_cell($sql,$col_name = '') {
 	
 	if (!$cnn_id) { db_connect(); }
 	
+	if ($col_name != '') {
+		$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
+	}else{
+		$cnn_id->SetFetchMode(ADODB_FETCH_NUM);
+	}
 	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
 		if (!$query->EOF) {
 			if ($col_name != '') {
-				$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 				return($query->fields[$col_name]);
 			}else{
-				$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
 				return($query->fields[0]);
 			}
 		}
@@ -86,12 +89,12 @@ function db_fetch_row($sql) {
 	global $cnn_id;
 	
 	if (!$cnn_id) { db_connect(); }
-	
+
+	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);	
 	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
 		if (!$query->EOF) {
-			$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 			return($query->fields);
 		}
 	}
@@ -103,11 +106,11 @@ function db_fetch_assoc($sql) {
 	if (!$cnn_id) { db_connect(); }
 	
 	$data = array();
+	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
 	
 	if ($query) {
 		while ((!$query->EOF) && ($query)) {
-			$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 			$data{sizeof($data)} = $query->fields;
 			$query->MoveNext();
 		}
