@@ -29,9 +29,9 @@ session_start();
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 
-include_once ("../include/form.php");
-include ("../include/config.php");
-include ("../include/config_settings.php");
+include_once("../lib/form.php");
+include("../include/config.php");
+include("../include/config_settings.php");
 
 $cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4");
 
