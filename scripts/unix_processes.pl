@@ -1,3 +1,5 @@
 #!/usr/bin/perl
 
-print `ps ax | grep -c :`;
+$output = `ps ax | grep -c :`;
+chomp($output);
+print $output;
