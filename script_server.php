@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -23,13 +24,25 @@
  | - raXnet - http://www.raxnet.net/                                       |
  +-------------------------------------------------------------------------+
 */
+$no_http_headers = true;
+
+/* used for includes */
+include_once(dirname(__FILE__) . "/include/config.php");
+
+if (read_config_option("log_perror") == "on") {
+	log_data("PHPSERVER: Script Server has Started\n");
+}
+fputs(STDOUT, "PHP Script Server Started\n");
 
 // process waits for input and then calls functions as required
 while (1) {
 	$in_string = fgets(STDIN,255);
 	$in_string = rtrim(strtr(strtr($in_string,'\r',''),'\n',''));
-
 	if (strlen($in_string)>0) {
+		if (read_config_option("log_perror") == "on") {
+			log_data("PHPSERVER: CMD:" . $in_string . "\n");
+		}
+
 		if (($in_string != "quit") && ($in_string != "")) {
 			// get file to be included
 			$inc = substr($in_string,0,strpos($in_string," "));
@@ -43,21 +56,36 @@ while (1) {
 			$parm = explode(" ",$preparm);
 
 			// check for existance of function.  If exists call it
-			if (!function_exists($cmd)) {
-				eval("include_once(\"" . $inc . "\");");
+			if ($cmd != "") {
+				if (!function_exists($cmd)) {
+					if (file_exists($inc)) {
+				log_data($inc . "\n");
+						include_once($inc);
+				log_data("hello\n");
+					} elseif (read_config_option("log_perror") == "on") {
+						log_data("ERROR: PHP Script File to be included, does not exist\n");
+					}
+				}
+			} elseif (read_config_option("log_perror") == "on") {
+				log_data("ERROR: PHP Script Server encountered errors parsing the command\n");
 			}
-
+				log_data("hello\n");
 			if (function_exists($cmd)) {
+
 				$result = call_user_func_array($cmd, $parm);
+				log_data("The result was " . $result . "\n");
 				if (strpos($result,"\n") != 0) {
 					fputs(STDOUT, $result);
 				} else {
 					fputs(STDOUT, $result . "\n");
 				}
 			} else {
+				log_data("ERROR: Function does not exist\n");
 				fputs(STDOUT, "ERROR: Function does not exist\n");
 			}
 		}elseif ($in_string == "quit") {
+			fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
+			log_data("PHP Script Server Shutdown request received, exiting\n");
 			break;
 		}else {
 			fputs(STDOUT, "ERROR: Problems with input\n");
