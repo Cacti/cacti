@@ -39,13 +39,13 @@ switch ($_REQUEST["action"]) {
 		
 		header("Location: host_templates.php");
 		break;
-	case 'item_remove_gsv':
-		template_item_remove_gsv();
+	case 'item_remove_gt':
+		template_item_remove_gt();
 		
 		header("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
 		break;
-	case 'item_remove_dssv':
-		template_item_remove_dssv();
+	case 'item_remove_dq':
+		template_item_remove_dq();
 		
 		header("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
 		break;
@@ -74,6 +74,7 @@ function form_save() {
 		$redirect_back = false;
 		
 		$save["id"] = $_POST["id"];
+		$save["hash"] = get_hash_host_template($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		
 		if (!is_error_message()) {
@@ -82,43 +83,12 @@ function form_save() {
 			if ($host_template_id) {
 				raise_message(1);
 				
-				db_execute ("delete from host_template_graph where host_template_id=$host_template_id");
-				db_execute ("delete from host_template_snmp_query where host_template_id=$host_template_id");
-				
-				/* stale entries check -- walk through each graph template in the the db, and make sure that
-				there is a cooresponding POST entry for it */
-				$graph_templates = db_fetch_assoc("select id from graph_templates");
-				
-				if (sizeof($graph_templates) > 0) {
-				foreach ($graph_templates as $graph_template) {
-					if (!isset($_POST{"gt_" . $graph_template["id"]})) {
-						/* this graph template does not exist as a POST var, therefore it is
-						a stale entry. get rid of it. */
-						db_execute("delete from host_template_graph where graph_template_id=" . $graph_template["id"] . " and host_template_id=$host_template_id");
-						db_execute("delete from host_template_graph_sv where graph_template_id=" . $graph_template["id"] . " and host_template_id=$host_template_id");
-						db_execute("delete from host_template_data_sv where graph_template_id=" . $graph_template["id"] . " and host_template_id=$host_template_id");
-					}
-				}
-				}
-				
-				while (list($var, $val) = each($_POST)) {
-					if (eregi("^gt_", $var)) {
-						db_execute ("replace into host_template_graph (host_template_id,graph_template_id) values($host_template_id," . substr($var, 3) . ")");
-					}elseif (eregi("^sq_", $var)) {
-						db_execute ("replace into host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . substr($var, 3) . ")");
-					}elseif ((eregi("^svds_([0-9]+)_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_text"})) && (!empty($_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_field"}))) {
-						/* suggested values -- data templates */
-						db_execute("insert into host_template_data_sv (host_template_id,data_template_id,graph_template_id,field_name,text) values (" . $_POST["id"] . "," . $matches[2] . "," . $matches[1] . ",'" . $_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_field"} . "','" . $_POST{"svds_" . $matches[1] . "_" . $matches[2] . "_text"} . "')"); 
-						
-						$redirect_back = true;
-						clear_messages();
-					}elseif ((eregi("^svg_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svg_" . $matches[1] . "_text"})) && (!empty($_POST{"svg_" . $matches[1] . "_field"}))) {
-						/* suggested values -- graph templates */
-						db_execute("insert into host_template_graph_sv (host_template_id,graph_template_id,field_name,text) values (" . $_POST["id"] . "," . $matches[1] . ",'" . $_POST{"svg_" . $matches[1] . "_field"} . "','" . $_POST{"svg_" . $matches[1] . "_text"} . "')"); 
-						
-						$redirect_back = true;
-						clear_messages();
-					}
+				if (isset($_POST["add_gt_x"])) {
+					db_execute("replace into host_template_graph (host_template_id,graph_template_id) values($host_template_id," . $_POST["graph_template_id"] . ")");
+					$redirect_back = true;
+				}elseif (isset($_POST["add_dq_x"])) {
+					db_execute("replace into host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . $_POST["snmp_query_id"] . ")");
+					$redirect_back = true;
 				}
 			}else{
 				raise_message(2);
@@ -137,12 +107,12 @@ function form_save() {
     Template Functions
    --------------------- */
 
-function template_item_remove_gsv() {
-	db_execute("delete from host_template_graph_sv where host_template_id=" . $_GET["host_template_id"] . " and graph_template_id=" . $_GET["graph_template_id"] . " and field_name='" . $_GET["field_name"] . "'");
+function template_item_remove_gt() {
+	db_execute("delete from host_template_graph where graph_template_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
 }
 
-function template_item_remove_dssv() {
-	db_execute("delete from host_template_data_sv where host_template_id=" . $_GET["host_template_id"] . " and data_template_id=" . $_GET["data_template_id"] . " and graph_template_id=" . $_GET["graph_template_id"] . " and field_name='" . $_GET["field_name"] . "'");
+function template_item_remove_dq() {
+	db_execute("delete from host_template_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
 }
 
 function template_remove() {
@@ -156,10 +126,7 @@ function template_remove() {
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from host_template where id=" . $_GET["id"]);
 		db_execute("delete from host_template_snmp_query where host_template_id=" . $_GET["id"]);
-		db_execute("delete from host_template_data_sv where host_template_id=" . $_GET["id"]);
 		db_execute("delete from host_template_graph where host_template_id=" . $_GET["id"]);
-		db_execute("delete from host_template_graph_sv where host_template_id=" . $_GET["id"]);
-		db_execute("delete from host_template_snmp_query where host_template_id=" . $_GET["id"]);
 	}
 }
 
@@ -183,239 +150,107 @@ function template_edit() {
 		"fields" => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
 		));
 	
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="30%">
-			<font class="textEditTitle">Associated Graph Templates</font><br>
-			Select one or more graph templates to associate with this host template.
-		</td>
-		<td>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td align="top" width="50%">
-						<?php
-						$graph_templates = db_fetch_assoc("select 
-							host_template_graph.host_template_id,
-							graph_templates.id,
-							graph_templates.name
-							from graph_templates left join host_template_graph
-							on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ") 
-							order by graph_templates.name");
-						
-						$i = 0;
-						if (sizeof($graph_templates) > 0) {
-						foreach($graph_templates as $graph_template) {
-							$column1 = floor((sizeof($graph_templates) / 2) + (sizeof($graph_templates) % 2));
-							
-							if (empty($graph_template["host_template_id"])) {
-								$old_value = "";
-							}else{
-								$old_value = "on";
-							}
-							
-							if ($i == $column1) {
-								print "</td><td valign='top' width='50%'>";
-							}
-							form_checkbox("gt_".$graph_template["id"], $old_value, $graph_template["name"], "",$_GET["id"]); print "<br>";
-							$i++;
-						}
-						}
-						?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<?php
+	end_box();
 	
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="30%">
-			<font class="textEditTitle">Associated Data Queries</font><br>
-			Select one or more data queries to associate with this host template.
-		</td>
-		<td>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
-					<td align="top" width="50%">
-						<?php
-						$snmp_queries = db_fetch_assoc("select 
-							host_template_snmp_query.host_template_id,
-							snmp_query.id,
-							snmp_query.name
-							from snmp_query left join host_template_snmp_query
-							on (snmp_query.id=host_template_snmp_query.snmp_query_id and host_template_snmp_query.host_template_id=" . $_GET["id"] . ") 
-							order by snmp_query.name");
-						
-						$i = 0;
-						if (sizeof($snmp_queries) > 0) {
-						foreach($snmp_queries as $snmp_query) {
-							$column1 = floor((sizeof($snmp_queries) / 2) + (sizeof($snmp_queries) % 2));
-							
-							if (empty($snmp_query["host_template_id"])) {
-								$old_value = "";
-							}else{
-								$old_value = "on";
-							}
-							
-							if ($i == $column1) {
-								print "</td><td valign='top' width='50%'>";
-							}
-							form_checkbox("sq_".$snmp_query["id"], $old_value, $snmp_query["name"], "",$_GET["id"]); print "<br>";
-							$i++;
-						}
-						}
-						?>
-					</td>
-				</tr>
+	start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+	
+	$selected_graph_templates = db_fetch_assoc("select 
+		graph_templates.id,
+		graph_templates.name
+		from graph_templates,host_template_graph
+		where graph_templates.id=host_template_graph.graph_template_id
+		and host_template_graph.host_template_id=" . $_GET["id"] . "
+		order by graph_templates.name");
+	
+	$i = 0;
+	if (sizeof($selected_graph_templates) > 0) {
+	foreach ($selected_graph_templates as $item) {
+		$i++;
+		?>
+		<tr>
+			<td style="padding: 4px;">
+				<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+			</td>
+			<td width='1%' align='right'>
+				<a href='host_templates.php?action=item_remove_gt&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+			</td>
+		</tr>
+		<?php
+	}
+	}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
+	
+	?>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td colspan="2">
+			<table cellspacing="0" cellpadding="1" width="100%">
+				<td nowrap>Add Graph Template:&nbsp;
+					<?php form_dropdown("graph_template_id",db_fetch_assoc("select 
+						graph_templates.id,
+						graph_templates.name
+						from graph_templates left join host_template_graph
+						on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ")
+						where host_template_graph.host_template_id is null
+						order by graph_templates.name"),"name","id","","","");?>
+				</td>
+				<td align="right">
+					&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
+				</td>
 			</table>
 		</td>
 	</tr>
+	
 	<?php
 	end_box();
 	
-	reset($graph_templates);
+	start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
 	
-	if (sizeof($graph_templates) > 0) {
-	foreach($graph_templates as $graph_template) {
-		if (!empty($graph_template["host_template_id"])) {
-			$data_templates = db_fetch_assoc("select
-				data_template.id,
-				data_template.name
-				from data_template, data_template_rrd, graph_templates_item
-				where graph_templates_item.task_item_id=data_template_rrd.id
-				and data_template_rrd.data_template_id=data_template.id
-				and data_template_rrd.local_data_id=0
-				and graph_templates_item.local_graph_id=0
-				and graph_templates_item.graph_template_id=" . $graph_template["id"] . "
-				group by data_template.id
-				order by data_template.name");
-			
-			start_box("<strong>Suggested Values</strong> - " . $graph_template["name"], "98%", $colors["header"], "3", "center", "");
-			
-			/* suggested values for data templates */
-			if (sizeof($data_templates) > 0) {
-			foreach ($data_templates as $data_template) {
-				$suggested_values = db_fetch_assoc("select
-					text,
-					field_name
-					from host_template_data_sv
-					where host_template_id=" . $_GET["id"] . "
-					and graph_template_id=" . $graph_template["id"] . "
-					and data_template_id=" . $data_template["id"] . "
-					order by field_name");
-				
-				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-						<td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
-					</tr>";
-					
-				$i = 0;
-				if (sizeof($suggested_values) > 0) {
-				foreach ($suggested_values as $suggested_value) {
-					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-					?>
-						<td>
-							<table cellspacing="0" cellpadding="0" border="0" width="100%">
-								<tr>
-									<td width="120">
-										<strong><?php print $suggested_value["field_name"];?></strong>
-									</td>
-									<td>
-										<?php print $suggested_value["text"];?>
-									</td>
-									<td width="1%" align="right">
-										<a href="host_templates.php?action=item_remove_dssv&host_template_id=<?php print $_GET["id"];?>&field_name=<?php print $suggested_value["field_name"];?>&graph_template_id=<?php print $graph_template["id"];?>&data_template_id=<?php print $data_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-					<?php
-				}
-				}
-				
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-				?>
-					<td>
-						<table cellspacing="0" cellpadding="0" border="0" width="100%">
-							<tr>
-								<td width="1">
-									<input type="text" name="svds_<?php print $graph_template["id"];?>_<?php print $data_template["id"];?>_text" size="30">
-								</td>
-								<td width="200">
-									&nbsp;Field Name: <input type="text" name="svds_<?php print $graph_template["id"];?>_<?php print $data_template["id"];?>_field" size="15">
-								</td>
-								<td>
-									&nbsp;<input type="image" src="images/button_add.gif" name="svds_<?php print $graph_template["id"];?>_<?php print $data_template["id"];?>" alt="Add" align="absmiddle">
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<?php
-			}
-			}
-			
-			/* suggested values for graphs templates */
-			$suggested_values = db_fetch_assoc("select
-				text,
-				field_name
-				from host_template_graph_sv
-				where host_template_id=" . $_GET["id"] . "
-				and graph_template_id=" . $graph_template["id"] . "
-				order by field_name");
-			
-			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-					<td><span style='color: white; font-weight: bold;'>Graph Template - " . $graph_template["name"] . "</span></td>
-				</tr>";
-			
-			$i = 0;
-			if (sizeof($suggested_values) > 0) {
-			foreach ($suggested_values as $suggested_value) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-				?>
-					<td>
-						<table cellspacing="0" cellpadding="0" border="0" width="100%">
-							<tr>
-								<td width="120">
-									<strong><?php print $suggested_value["field_name"];?></strong>
-								</td>
-								<td>
-									<?php print $suggested_value["text"];?>
-								</td>
-								<td width="1%" align="right">
-									<a href="host_templates.php?action=item_remove_gsv&host_template_id=<?php print $_GET["id"];?>&graph_template_id=<?php print $graph_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<?php
-			}
-			}
-			
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-			?>
-				<td>
-					<table cellspacing="0" cellpadding="0" border="0" width="100%">
-						<tr>
-							<td width="1">
-								<input type="text" name="svg_<?php print $graph_template["id"];?>_text" size="30">
-							</td>
-							<td width="200">
-								&nbsp;Field Name: <input type="text" name="svg_<?php print $graph_template["id"];?>_field" size="15">
-							</td>
-							<td>
-								&nbsp;<input type="image" src="images/button_add.gif" name="svg_<?php print $graph_template["id"];?>" alt="Add" align="absmiddle">
-							</td>
-						</tr>
-					</table>
+	$selected_data_queries = db_fetch_assoc("select 
+		snmp_query.id,
+		snmp_query.name
+		from snmp_query,host_template_snmp_query
+		where snmp_query.id=host_template_snmp_query.snmp_query_id
+		and host_template_snmp_query.host_template_id=" . $_GET["id"] . "
+		order by snmp_query.name");
+	
+	$i = 0;
+	if (sizeof($selected_data_queries) > 0) {
+	foreach ($selected_data_queries as $item) {
+		$i++;
+		?>
+		<tr>
+			<td style="padding: 4px;">
+				<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+			</td>
+			<td width='1%' align='right'>
+				<a href='host_templates.php?action=item_remove_dq&id=<?php print $item["id"];?>&host_template_id=<?php print $_GET["id"];?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;
+			</td>
+		</tr>
+		<?php
+	}
+	}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
+	
+	?>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td colspan="2">
+			<table cellspacing="0" cellpadding="1" width="100%">
+				<td nowrap>Add Graph Template:&nbsp;
+					<?php form_dropdown("snmp_query_id",db_fetch_assoc("select 
+						snmp_query.id,
+						snmp_query.name
+						from snmp_query left join host_template_snmp_query
+						on (snmp_query.id=host_template_snmp_query.snmp_query_id and host_template_snmp_query.host_template_id=" . $_GET["id"] . ")
+						where host_template_snmp_query.host_template_id is null
+						order by snmp_query.name"),"name","id","","","");?>
 				</td>
-			</tr>
-			<?php
-			
-			end_box();
-		}
-	}
-	}
+				<td align="right">
+					&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
+				</td>
+			</table>
+		</td>
+	</tr>
+	
+	<?php
+	end_box();
 	
 	form_save_button("host_templates.php");	
 }
