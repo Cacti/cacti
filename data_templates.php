@@ -179,21 +179,24 @@ function form_save() {
 				
 				if (sizeof($input_fields) > 0) {
 				foreach ($input_fields as $input_field) {
-					/* save the data into the 'host_template_data' table */
 					$form_value = "value_" . $input_field["data_name"];
-					$form_value = $_POST[$form_value];
 					
-					$form_is_templated_value = "t_value_" . $input_field["data_name"];
-					
-					if (isset($_POST[$form_is_templated_value])) {
-						$template_this_item = "on";
-					}else{
-						$template_this_item = "";
-					}
-					
-					if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
-						db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-							values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','$form_value')");
+					if (isset($_POST[$form_value])) {
+						/* save the data into the 'host_template_data' table */
+						$form_value = $_POST[$form_value];
+						
+						$form_is_templated_value = "t_value_" . $input_field["data_name"];
+						
+						if (isset($_POST[$form_is_templated_value])) {
+							$template_this_item = "on";
+						}else{
+							$template_this_item = "";
+						}
+						
+						if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
+							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
+								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','$form_value')");
+						}
 					}
 				}
 				}
