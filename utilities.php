@@ -207,11 +207,11 @@ function utilities_view_poller_cache() {
 	global $colors;
 
 	$poller_cache = db_fetch_assoc("select
-		data_input_data_cache.*,
+		poller_item.*,
 		data_template_data.name_cache,
 		data_local.host_id
-		from data_input_data_cache,data_template_data,data_local
-		where data_input_data_cache.local_data_id=data_template_data.local_data_id
+		from poller_item,data_template_data,data_local
+		where poller_item.local_data_id=data_template_data.local_data_id
 		and data_template_data.local_data_id=data_local.id");
 
 	html_start_box("<strong>View Poller Cache</strong> [" . sizeof($poller_cache) . " Item" . ((sizeof($poller_cache) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");

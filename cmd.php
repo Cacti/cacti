@@ -35,11 +35,11 @@ include_once($config["base_path"] . "/lib/functions.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 
 if ( $_SERVER["argc"] == 1 ) {
-	$polling_items = db_fetch_assoc("SELECT * from data_input_data_cache ORDER by host_id");
+	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
 }else{
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
-			$polling_items = db_fetch_assoc("SELECT * from data_input_data_cache " .
+			$polling_items = db_fetch_assoc("SELECT * from poller_item " .
 					"WHERE (host_id >= " .
 					$_SERVER["argv"][1] .
 					" and host_id <= " .

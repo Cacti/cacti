@@ -523,7 +523,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 
 	/* delete the old graph local entry */
 	db_execute("delete from data_local where id=$local_data_id");
-	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
+	db_execute("delete from poller_item where local_data_id=$local_data_id");
 }
 
 /* create_complete_graph_from_template - creates a graph and all necessary data sources based on a
