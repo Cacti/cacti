@@ -65,8 +65,8 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 		if ($tree_item_id) {
 			raise_message(1);
 
-			/* only re-parent headings */
-			if ($type == TREE_ITEM_TYPE_HEADER) {
+			/* re-parent the branch if the parent item has changed */
+			if ($parent_tree_item_id != $tree_item_id) {
 				reparent_branch($parent_tree_item_id, $tree_item_id);
 			}
 
