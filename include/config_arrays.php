@@ -145,7 +145,7 @@ $graph_views = array(1 =>
 	"Preview View");
 
 $graph_tree_views = array(1 =>
-	"Single Pane (0.6.x - 0.8.2a Default)",
+	"Single Pane",
 	"Dual Pane");
 
 $auth_realms = array(0 =>
