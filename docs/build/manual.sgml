@@ -1820,7 +1820,7 @@ $database_password = "cacti";</userinput></screen>
 						</row>
 						<row>
 							<entry>(Graph) Vertical Label</entry>
-							<entry>The text that will be printed along the y-axis of the graph. It is generally used to describe units, such as 'bytes' of 'percent'.</entry>
+							<entry>The text that will be printed along the y-axis of the graph. It is generally used to describe units, such as 'bytes' or 'percent'.</entry>
 						</row>
 						<row>
 							<entry>(Graph Items) Legend Color</entry>
