@@ -577,17 +577,17 @@ function ds_edit() {
 	$host_id = 0;
 
 	if (!empty($_GET["id"])) {
-		$local_data_template_data_id = db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=" . $_GET["id"]);
+		$data_local = db_fetch_row("select host_id,data_template_id from data_local where id='" . $_GET["id"] . "'");
+		$data = db_fetch_row("select * from data_template_data where local_data_id='" . $_GET["id"] . "'");
 
-		$data = db_fetch_row("select * from data_template_data where local_data_id=" . $_GET["id"]);
-		$data_template = db_fetch_row("select * from data_template_data where id=$local_data_template_data_id");
-
-		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["id"]);
-		$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
+		if (!empty($data_local["data_template_id"])) {
+			$data_template = db_fetch_row("select id,name from data_template where id='" . $data_local["data_template_id"] . "'");
+			$data_template_data = db_fetch_row("select * from data_template_data where data_template_id='" . $data_local["data_template_id"] . "'");
+		}
 
 		$header_label = "[edit: " . get_data_source_title($_GET["id"]) . "]";
 
-		if ($data["data_template_id"] == "0") {
+		if (empty($data_local["data_template_id"])) {
 			$use_data_template = false;
 		}
 	}else{
@@ -628,7 +628,7 @@ function ds_edit() {
 			"method" => "drop_sql",
 			"friendly_name" => "Selected Data Template",
 			"description" => "The name given to this data template.",
-			"value" => (isset($data_template) ? $data_template["data_template_id"] : "0"),
+			"value" => (isset($data_template) ? $data_template["id"] : "0"),
 			"none_value" => "None",
 			"sql" => "select id,name from data_template order by name"
 			),
@@ -636,17 +636,17 @@ function ds_edit() {
 			"method" => "drop_sql",
 			"friendly_name" => "Host",
 			"description" => "Choose the host that this graph belongs to.",
-			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
+			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $data_local["host_id"]),
 			"none_value" => "None",
 			"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
 			),
 		"_data_template_id" => array(
 			"method" => "hidden",
-			"value" => (isset($data) ? $data["data_template_id"] : "0")
+			"value" => (isset($data_template) ? $data_template["id"] : "0")
 			),
 		"_host_id" => array(
 			"method" => "hidden",
-			"value" => (empty($host_id) ? (isset($_GET["host_id"]) ? $_GET["host_id"] : "0") : $host_id)
+			"value" => (empty($data_local["host_id"]) ? (isset($_GET["host_id"]) ? $_GET["host_id"] : "0") : $data_local["host_id"])
 			),
 		"_data_input_id" => array(
 			"method" => "hidden",
@@ -698,14 +698,14 @@ function ds_edit() {
 		while (list($field_name, $field_array) = each($struct_data_source)) {
 			$form_array += array($field_name => $struct_data_source[$field_name]);
 
-			if (!(($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
+			if (!(($use_data_template == false) || (!empty($data_template_data{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
 				$form_array[$field_name]["description"] = "";
 			}
 
 			$form_array[$field_name]["value"] = (isset($data[$field_name]) ? $data[$field_name] : "");
 			$form_array[$field_name]["form_id"] = (empty($data["id"]) ? "0" : $data["id"]);
 
-			if (!(($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
+			if (!(($use_data_template == false) || (!empty($data_template_data{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE"))) {
 				$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
 			}
 		}
@@ -776,7 +776,7 @@ function ds_edit() {
 					<strong>Data Source Item</strong> $header_label
 				</td>
 				<td class='textHeaderDark' align='right' bgcolor='" . $colors["header"] . "'>
-					" . ((!empty($_GET["id"]) && (empty($data_template["data_template_id"]))) ? "<strong><a class='linkOverDark' href='data_sources.php?action=rrd_add&id=" . $_GET["id"] . "'>New</a>&nbsp;</strong>" : "") . "
+					" . ((!empty($_GET["id"]) && (empty($data_template["id"]))) ? "<strong><a class='linkOverDark' href='data_sources.php?action=rrd_add&id=" . $_GET["id"] . "'>New</a>&nbsp;</strong>" : "") . "
 				</td>
 			</tr>\n";
 
