@@ -66,6 +66,15 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$new_host  = True;
 	$last_host = $current_host = "";
 
+	// startup Cacti php polling server
+	$cactides = array(
+   	0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+   	1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+   	2 => array("pipe", "w")  // stderr is a pipe to write to
+	);
+
+	$cactiphp = proc_open(read_config_option("php_path"), $cactides, $pipes);
+
 	foreach ($polling_items as $item) {
 		$current_host = $item["hostname"];
 
@@ -122,6 +131,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case '1': /* one output script */
 				$command = $item["command"];
 				$output = `$command`;
+
 				print "CMD: $command, output: $output\n";
 
 				$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
@@ -141,7 +151,97 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			case '2': /* multi output script */
 				$command = $item["command"];
 				$output = `$command`;
-				print "CMD: MULTI command: $command, output: $output\n";
+
+				print "CMD: $command, output: $output\n";
+
+				$output_array = split(" ", $output);
+
+				for ($i=0;($i<count($output_array));$i++) {
+					$data_input_field = db_fetch_row("select id,update_rra from data_input_fields" .
+						"where data_name='" .
+						ereg_replace("^([a-zA-Z0-9_-]+):.*$", "\\1",
+						$output_array[$i]) .
+						"' and data_input_id=" .
+						$item["data_input_id"] .
+						" and input_output='out'");
+						$rrd_name = db_fetch_cell("select data_source_name " .
+						"from data_template_rrd where local_data_id=" .
+						$item["local_data_id"] .
+						" and data_input_field_id=" .
+						$data_input_field["id"]);
+
+					if ($data_input_field["update_rra"] == "on") {
+						print "MULTI expansion: found fieldid: " .
+						$data_input_field["id"] .
+						", found rrdname: $rrd_name, value: " .
+						trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1",
+						$output_array[$i])) . "\n";
+						$update_cache_array{$item["local_data_id"]}{$rrd_name} =
+						trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1", $output_array[$i]));
+					}else{
+						/* DO NOT write data to rrd; put it in the db instead */
+						db_execute("insert into data_input_data " .
+							"(data_input_field_id,data_template_data_id,value)
+							values (" . $data_input_field["id"] . "," .
+						db_fetch_cell("select id from data_template_data
+							where local_data_id=" . $item["local_data_id"]) .
+							",'" . trim(ereg_replace("^[a-zA-Z0-9_-]+:(.*)$", "\\1",
+							$output_array[$i])) . "')");
+					}
+				}
+
+				break;
+			case '3': /* one output script */
+				$command = $item["command"];
+			   if (is_resource($cactiphp)) {
+				   // $pipes now looks like this:
+				   // 0 => writeable handle connected to child stdin
+				   // 1 => readable handle connected to child stdout
+				   // 2 => any error output will be sent to child stderr
+
+					// send command to the php server
+				   fwrite($pipes[0], $command);
+
+					// get result from server
+					$output = fgets($pipes[1], 1024);
+					if (substr_count($output, "ERROR") > 0) {
+						$output = "U";
+					}
+			   }
+				print "CMD: $command, output: $output\n";
+
+				$data_input_field = db_fetch_row("select id,update_rra from data_input_fields where data_input_id=" . $item["data_input_id"] . " and input_output='out'");
+
+				if ($data_input_field["update_rra"] == "") {
+					/* DO NOT write data to rrd; put it in the db instead */
+					db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,value)
+						values (" . $data_input_field["id"] .
+						"," . db_fetch_cell("SELECT id from data_template_data" .
+						"where local_data_id=" .
+						$item["local_data_id"]) .
+						",'$output')");
+						$item["rrd_name"] = ""; /* no rrd action here */
+				}
+
+				break;
+			case '4': /* multi output script */
+				$command = $item["command"];
+			   if (is_resource($cactiphp)) {
+				   // $pipes now looks like this:
+				   // 0 => writeable handle connected to child stdin
+				   // 1 => readable handle connected to child stdout
+				   // 2 => any error output will be sent to child stderr
+
+					// send command to the php server
+				   fwrite($pipes[0], $command);
+
+					// get result from server
+					$output = fgets($pipes[1], 1024);
+					if (substr_count($output, "ERROR") > 0) {
+						$output = "U";
+					}
+			   }
+				print "CMD: $command, output: $output\n";
 
 				$output_array = split(" ", $output);
 
@@ -190,6 +290,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 		} /* Next Cache Item */
 	} /* End foreach */
+
+	// close php server process
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+   $return_value = proc_close($process);
 
 	if (isset($update_cache_array)) {
 		rrdtool_function_update($update_cache_array);
