@@ -84,9 +84,21 @@ if (read_config_option("global_auth") == "on") {
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
 			and user_auth_realm.realm_id='$realm_id'")) {
 			
-			include($config["include_path"] . "/top_header.php");
-			include("./auth_noauth.php");
-			include($config["include_path"] . "/bottom_footer.php");
+			include_once ($config["include_path"] . "/form.php");
+			include ($config["include_path"] . "/top_header.php");
+			
+			print "	<table width='98%' align='center'>\n
+					<tr>\n
+						<td colspan='2'><img src='images/auth_deny.gif' border='0' alt='Access Denied'></td>\n
+					</tr>\n
+					<tr height='10'><td></td></tr>\n
+					<tr>\n
+						<td class='textArea' colspan='2'>You are not permitted to access this section of cacti. If you feel that you 
+						need access to this particular section, please contact the webmaster.</td>\n
+					</tr>\n
+				</table>\n";
+			
+			include ($config["include_path"] . "/bottom_footer.php");
 			exit;
 		}
 	}
