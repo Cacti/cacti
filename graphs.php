@@ -60,7 +60,7 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		item_remove();
 		
-		header ("Location: graphs.php?action=item&id=" . $_GET["id"]);
+		header ("Location: graphs.php?action=item&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -249,6 +249,11 @@ function form_save() {
 	}
 	
 	if (isset($_POST["save_component_item"])) {
+		/* generate a new sequence if needed */
+		if (empty($_POST["sequence"])) {
+			$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "local_graph_id=" . $_POST["local_graph_id"]);
+		}
+		
 		$save["id"] = $_POST["graph_template_item_id"];
 		$save["graph_template_id"] = $_POST["graph_template_id"];
 		$save["local_graph_template_item_id"] = $_POST["local_graph_template_item_id"];
@@ -521,7 +526,7 @@ function item() {
 		}
 		
 		print "<td>";
-		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'>"; }
+		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'>"; }
 		print "<strong>Item # " . ($i+1) . "</strong>";
 		if (empty($graph_template_id)) { print "</a>"; }
 		print "</td>\n";
@@ -551,9 +556,9 @@ function item() {
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
 		
 		if (empty($graph_template_id)) {
-			print "<td><a href='graphs.php?action=item_movedown&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='graphs.php?action=item_moveup&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
+			print "<td><a href='graphs.php?action=item_movedown&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+					<a href='graphs.php?action=item_moveup&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+			print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&id=" . $item["id"] . "&local_graph_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
 		}
 		
 		print "</tr>";
@@ -613,29 +618,29 @@ function item() {
 }
 
 function item_movedown() {
-	$arr = get_graph_group($_GET["graph_template_item_id"]);
-	$next_id = get_graph_parent($_GET["graph_template_item_id"], "next");
+	$arr = get_graph_group($_GET["id"]);
+	$next_id = get_graph_parent($_GET["id"], "next");
 	
-	if ((!empty($next_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
-		move_graph_group($_GET["graph_template_item_id"], $arr, $next_id, "next");
-	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
-		move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);
+	if ((!empty($next_id)) && (isset($arr{$_GET["id"]}))) {
+		move_graph_group($_GET["id"], $arr, $next_id, "next");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"]) == "9") {
+		move_item_down("graph_templates_item", $_GET["id"], "local_graph_id=" . $_GET["local_graph_id"]);
 	}
 }
 
 function item_moveup() {
-	$arr = get_graph_group($_GET["graph_template_item_id"]);
-	$previous_id = get_graph_parent($_GET["graph_template_item_id"], "previous");
+	$arr = get_graph_group($_GET["id"]);
+	$previous_id = get_graph_parent($_GET["id"], "previous");
 	
-	if ((!empty($previous_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
-		move_graph_group($_GET["graph_template_item_id"], $arr, $previous_id, "previous");
-	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
-		move_item_up("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);
+	if ((!empty($previous_id)) && (isset($arr{$_GET["id"]}))) {
+		move_graph_group($_GET["id"], $arr, $previous_id, "previous");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"]) == "9") {
+		move_item_up("graph_templates_item", $_GET["id"], "local_graph_id=" . $_GET["local_graph_id"]);
 	}
 }
 
 function item_remove() {
-	db_execute("delete from graph_templates_item where id=" . $_GET["graph_template_item_id"]);	
+	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);	
 }
 
 function item_edit() {
@@ -647,8 +652,8 @@ function item_edit() {
 		end_box();
 	}
 	
-	if (!empty($_GET["graph_template_item_id"])) {
-		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["graph_template_item_id"]);
+	if (!empty($_GET["id"])) {
+		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
 	}
 	
 	start_box("Template Item Configuration", "98%", $colors["header"], "3", "center", "");
@@ -657,12 +662,14 @@ function item_edit() {
 	
 	<?php
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
-	$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence DESC");
-	
-	if (sizeof($default) > 0) {
-		$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
-	}else{
-		$struct_graph_item["task_item_id"]["default"] = 0;
+	if (!empty($_GET["local_graph_id"])) {
+		$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence DESC");
+		
+		if (sizeof($default) > 0) {
+			$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
+		}else{
+			$struct_graph_item["task_item_id"]["default"] = 0;
+		}
 	}
 	
 	$i = 0;
@@ -692,7 +699,7 @@ function item_edit() {
 	
 	end_box();
 	
-	form_save_button( $_SERVER["HTTP_REFERER"]);
+	form_save_button("graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
 }
 
 /* ------------------------------------
@@ -924,7 +931,7 @@ function graph_diff() {
 function graph_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "</strong>?", $_SERVER["HTTP_REFERER"], "graphs.php?action=graph_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
