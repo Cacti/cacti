@@ -102,7 +102,7 @@ $input["path_php_binary"]["type"] = "textbox";
 if ($config["cacti_server_os"] == "unix") {
 	$which_php = trim(shell_exec("which php"));
 	
-	if (!empty($which_rrdtool)) {
+	if (!empty($which_php)) {
 		$input["path_php_binary"]["default"] = $which_php;
 	}elseif (read_config_option("path_rrdtool") != "<DEFAULT>") {
 		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
@@ -390,8 +390,9 @@ if ($_REQUEST["step"] == "4") {
 						import it correctly.</p>
 						
 						<p>To begin the import, you must specify the database hostname, username, password,
-						and name of your old 0.6.8 database. The data will be copied from the old database to 
-						the new leaving the old database completely unchanged.</p>
+						and name of your old 0.6.8 database. The database user <strong>must</strong> have
+						permissions to the old and new Cacti databases. The data will be copied from the old 
+						database to the new leaving the old database completely unchanged.</p>
 						
 						<p><strong>As always, make sure you have database backups!</strong></p>
 						
