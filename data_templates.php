@@ -382,7 +382,7 @@ function template_edit() {
 			<font class="textEditTitle">Data Source Active</font><br>
 			<?DrawStrippedFormItemCheckBox("t_active",$template_data[t_active],"Use Per-Graph Value (Ignore this Value)","",false);?>
 		</td>
-		<?DrawFormItemCheckBox("active",$template_data[active],"Data Source Active","on",false);?>
+		<?DrawFormItemCheckBox("active",$template_data[active],"Data Source Active","on",$args[data_template_id]);?>
 	</tr>
 	
 	<?

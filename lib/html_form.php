@@ -153,8 +153,8 @@ function DrawFormItemDropdownFromSQL($form_name, $form_data, $column_display,$co
 <?}
 
 /* creates a checkbox */
-function DrawFormItemCheckBox($form_name, $form_previous_value, $form_caption, $form_default_value) { 
-    if ($form_previous_value=="") {
+function DrawFormItemCheckBox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0) { 
+    if (($form_previous_value=="") && (empty($current_id))) {
 	$form_previous_value = $form_default_value;
     }
 ?>

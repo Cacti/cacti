@@ -281,7 +281,7 @@ function ds_edit() {
 			<?if (($use_data_template == false) || ($data_template[t_active] == "on")) { print "Whether cacti should gather data for this data source or not."; }?>
 		</td>
 		<?if (($use_data_template == false) || ($data_template[t_active] == "on")) {
-			DrawFormItemCheckBox("active",$data[active],"Data Source Active","on",false);
+			DrawFormItemCheckBox("active",$data[active],"Data Source Active","on",$args[local_data_id]);
 		}else{
 			print "<td><em>" . html_boolean_friendly($data_template[active]) . "</em></td>";
 			DrawFormItemHiddenTextBox("active",$data_template[active],"");
