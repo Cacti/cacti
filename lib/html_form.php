@@ -576,9 +576,14 @@ function draw_tree_dropdown($current_tree_id) {
 		$_SESSION["sess_view_tree_id"] = $current_tree_id;
 	}
 	
+	/* if there is a current tree, make sure it still exists before going on */
+	if ((!empty($_SESSION["sess_view_tree_id"])) && (db_fetch_cell("select id from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) == "")) {
+		$_SESSION["sess_view_tree_id"] = 0;
+	}
+	
 	/* set a default tree if none is already selected */
 	if (empty($_SESSION["sess_view_tree_id"])) {
-		if (read_graph_config_option("default_tree_id")) {
+		if (db_fetch_cell("select id from graph_tree where id=" . read_graph_config_option("default_tree_id")) > 0) {
 			$_SESSION["sess_view_tree_id"] = read_graph_config_option("default_tree_id");
 		}else{
 			if (sizeof($tree_list) > 0) {
