@@ -693,7 +693,7 @@ function host_edit() {
 	
 	if (!empty($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $host["hostname"] . "]";
+		$header_label = "[edit: " . $host["description"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
@@ -804,9 +804,9 @@ function host_edit() {
 		$graph_templates = db_fetch_assoc("select
 			graph_templates.id as graph_template_id,
 			graph_templates.name as graph_template_name
-			from host_template_graph_template, graph_templates
-			where host_template_graph_template.graph_template_id=graph_templates.id
-			and host_template_graph_template.host_template_id=" . $host["host_template_id"] . "
+			from host_template_graph, graph_templates
+			where host_template_graph.graph_template_id=graph_templates.id
+			and host_template_graph.host_template_id=" . $host["host_template_id"] . "
 			order by graph_templates.name");
 		
 		$j = 0; $_graph_template_id = "";
