@@ -143,8 +143,8 @@ if ($config["cacti_server_os"] == "unix") {
 
 /* SNMP Version */
 if ($config["cacti_server_os"] == "unix") {
-	$input["smnp_version"] = $settings["general"]["smnp_version"];
-	$input["smnp_version"]["default"] = "net-snmp";
+	$input["snmp_version"] = $settings["general"]["snmp_version"];
+	$input["snmp_version"]["default"] = "net-snmp";
 }
 
 /* default value for this variable */

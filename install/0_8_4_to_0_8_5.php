@@ -1,0 +1,59 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2003 Ian Berry                                            |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | cacti: a php-based graphing solution                                    |
+ +-------------------------------------------------------------------------+
+ | Most of this code has been designed, written and is maintained by       |
+ | Ian Berry. See about.php for specific developer credit. Any questions   |
+ | or comments regarding this code should be directed to:                  |
+ | - iberry@raxnet.net                                                     |
+ +-------------------------------------------------------------------------+
+ | - raXnet - http://www.raxnet.net/                                       |
+ +-------------------------------------------------------------------------+
+*/
+
+function upgrade_to_0_8_5() {
+	/* bug#109 */
+	db_install_execute("0.8.5", "UPDATE host_snmp_cache set field_name='ifDescr' where field_name='ifDesc' and snmp_query_id=1;");
+	db_install_execute("0.8.5", "UPDATE snmp_query_graph_rrd_sv set text = REPLACE(text,'ifDesc','ifDescr') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4 or snmp_query_graph_id=20 or snmp_query_graph_id=21 or snmp_query_graph_id=22);");
+	db_install_execute("0.8.5", "UPDATE snmp_query_graph_sv set text = REPLACE(text,'ifDesc','ifDescr') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4 or snmp_query_graph_id=20 or snmp_query_graph_id=21 or snmp_query_graph_id=22);");
+	
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=1;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=2;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=38;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=39;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=40;");
+	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(text,'ifDesc','ifDescr') where data_template_id=41;");
+	
+	$data_templates = db_fetch_assoc("select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);");
+	
+	if (sizeof($data_templates) > 0) {
+	foreach ($data_templates as $item) {
+		db_install_execute("0.8.5", "UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=" . $item["id"] . ";");
+	}
+	}
+	
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=22;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=24;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=1;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=2;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=31;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=32;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=25;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=33;");
+	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(text,'ifDesc','ifDescr') where graph_template_id=23;");
+	
+	db_install_execute("0.8.5", "UPDATE settings set name='snmp_version' where name='smnp_version';");
+}
