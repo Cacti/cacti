@@ -309,7 +309,7 @@ function grow_dhtml_trees() {
 			
 			if ($leaf["host_id"] > 0) {
 				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
-				print "sdf" . read_graph_config_option("expand_hosts");
+				
 				if (read_graph_config_option("expand_hosts") == "on") {
 					$graph_templates = db_fetch_assoc("select
 						graph_templates.id,
