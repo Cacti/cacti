@@ -561,13 +561,6 @@ function template() {
 			and (data_template_data.data_input_id = data_input.id)
 		ORDER BY data_template.name;");
 
-
-//	$template_list = db_fetch_assoc("select
-//		data_template.id,
-//		data_template.name
-//		from data_template
-//		order by data_template.name");
-
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
