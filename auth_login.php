@@ -74,7 +74,12 @@ case 'login':
 		decide what to do next */
 		switch ($user["login_opts"]) {
 			case '1': /* referer */
-				header("Location: " . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php")); break;
+				if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where realm_id=8 and user_id=" . $_SESSION["sess_user_id"])) == 0) {
+					header("Location: graph_view.php");
+				}else{
+					header("Location: " . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
+				}
+				break;
 			case '2': /* default console page */
 				header("Location: index.php"); break;
 			case '3': /* default graph page */

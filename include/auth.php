@@ -76,20 +76,31 @@ if (read_config_option("global_auth") == "on") {
 			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id))) {
 			
 			include_once($config["library_path"] . "/form.php");
-			include($config["include_path"] . "/top_header.php");
 			
-			print "	<table width='98%' align='center'>\n
-					<tr>\n
-						<td colspan='2'><img src='images/auth_deny.gif' border='0' alt='Access Denied'></td>\n
-					</tr>\n
-					<tr height='10'><td></td></tr>\n
-					<tr>\n
-						<td class='textArea' colspan='2'>You are not permitted to access this section of cacti. If you feel that you 
-						need access to this particular section, please contact the webmaster.</td>\n
-					</tr>\n
-				</table>\n";
+			?>
+			<html>
+			<head>
+				<title>Cacti</title>
+				<link href="include/main.css" rel="stylesheet">
+			</style>
+			</head>
 			
-			include($config["include_path"] . "/bottom_footer.php");
+			<br><br>
+			
+			<table width="450" align='center'>
+				<tr>
+					<td colspan='2'><img src='images/auth_deny.gif' border='0' alt='Access Denied'></td>
+				</tr>
+				<tr height='10'><td></td></tr>
+				<tr>
+					<td class='textArea' colspan='2'>You are not permitted to access this section of Cacti. If you feel that you 
+					need access to this particular section, please contact the Cacti administrator.</td>
+				</tr>
+			</table>
+			
+			</body>
+			</html>
+			<?php
 			exit;
 		}
 	}
