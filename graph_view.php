@@ -38,8 +38,8 @@ if (isset($_GET["hide"])) {
 	}
 }
 
-if (ereg("action=(tree|preview|list)", $_SERVER["REQUEST_URI"])) {
-	$_SESSION["sess_graph_view_url_cache"] = $_SERVER["REQUEST_URI"];
+if (ereg("action=(tree|preview|list)", get_browser_query_string())) {
+	$_SESSION["sess_graph_view_url_cache"] = get_browser_query_string();
 }
 
 /* set default action */
@@ -137,7 +137,7 @@ case 'preview':
 		
 		$sql_join = "left join host on host.id=graph_local.host_id
 			left join graph_templates on graph_templates.id=graph_local.graph_template_id
-			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
 	}
 	
 	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
@@ -297,7 +297,7 @@ case 'list':
 			from graph_templates_graph,graph_local
 			left join host on host.id=graph_local.host_id
 			left join graph_templates on graph_templates.id=graph_local.graph_template_id
-			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 			where graph_templates_graph.local_graph_id=graph_local.id
 			and graph_templates_graph.local_graph_id>0
 			" . (empty($sql_where) ? "" : "and $sql_where") . "

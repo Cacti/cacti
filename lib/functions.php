@@ -1029,7 +1029,7 @@ function is_graph_allowed($local_graph_id) {
 		from graph_templates_graph,graph_local
 		left join host on host.id=graph_local.host_id
 		left join graph_templates on graph_templates.id=graph_local.graph_template_id
-		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 		where graph_templates_graph.local_graph_id=graph_local.id
 		" . (empty($sql_where) ? "" : "and $sql_where") . "
 		and graph_templates_graph.local_graph_id=$local_graph_id
@@ -1250,7 +1250,7 @@ function draw_navigation_text() {
 	}
 	
 	/* keep a cache for each level we encounter */
-	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => $_SERVER["REQUEST_URI"]);
+	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => get_browser_query_string());
 	$_SESSION["sess_nav_level_cache"] = $nav_level_cache;
 	
 	print $current_nav;
@@ -1285,6 +1285,16 @@ function get_associated_rras($local_graph_id) {
 		and graph_templates_item.local_graph_id=$local_graph_id
 		group by rra.id
 		order by rra.timespan");
+}
+
+/* get_browser_query_string - returns the full url, including args requested by the browser
+   @returns - the url requested by the browser */
+function get_browser_query_string() {
+	if (isset($_SERVER["REQUEST_URI"])) {
+		return $_SERVER["REQUEST_URI"];
+	}else{
+		return $_SERVER["PHP_SELF"] . (empty($_SERVER["QUERY_STRING"]) ? "" : "?" . $_SERVER["QUERY_STRING"]);
+	}
 }
 
 ?>
