@@ -233,7 +233,7 @@ function template_edit() {
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td colspan="2">
 			<table cellspacing="0" cellpadding="1" width="100%">
-				<td nowrap>Add Graph Template:&nbsp;
+				<td nowrap>Add Data Query:&nbsp;
 					<?php form_dropdown("snmp_query_id",db_fetch_assoc("select 
 						snmp_query.id,
 						snmp_query.name
