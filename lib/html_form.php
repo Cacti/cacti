@@ -299,7 +299,7 @@ function form_save_button($cancel_url) {
 			 <td bgcolor="#f5f5f5" align="right">
 			 	<input type='hidden' name='action' value='save'>
 				<a href='<?php print $cancel_url;?>'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
-				<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>
+				<input type='image' src='images/button_<?php if (empty($_GET["id"])) { print "create"; }else{ print "save"; } ?>.gif' alt='Save' align='absmiddle'>
 			</td>
 		</tr>
 	</table>
