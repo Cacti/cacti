@@ -152,7 +152,13 @@ function display_output_messages() {
 	session_unregister("sess_messages");
 }
 
+function clear_messages() {
+	session_unregister("sess_messages");
+}
+
 function array_rekey($array, $key, $key_value) {
+	$ret_array = array();
+	
 	if (sizeof($array) > 0) {
 	foreach ($array as $item) {
 		$item_key = $item[$key];
@@ -211,6 +217,10 @@ function get_full_script_path($local_data_id) {
 	$full_path = str_replace("<path_cacti>", $paths["cacti"], $full_path);
 	$full_path = str_replace("<path_snmpget>", read_config_option("path_snmpget"), $full_path);
 	$full_path = str_replace("<path_php_binary>", read_config_option("path_php_binary"), $full_path);
+	
+	/* sometimes a certain input value will not have anything entered... null out these fields
+	in the input string so we don't mess up the script */
+	$full_path = preg_replace("/(<[A-Za-z0-9_]+>)+/", "", $full_path);
 	
 	return $full_path;
 }
