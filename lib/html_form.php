@@ -469,6 +469,7 @@ function create_list($data, $name, $value, $prev) {
 			print ">" . title_trim(null_out_substitutions($data[$id]), 75) . "</option>\n";
                 }
         }else{
+		if (sizeof($data) > 0) {
                 foreach ($data as $row) {
                         print "<option value='$row[$value]'";
 			
@@ -482,6 +483,7 @@ function create_list($data, $name, $value, $prev) {
 				print ">" . title_trim(null_out_substitutions($row[$name]), 75) . "</option>\n";
 			}
                 }
+		}
         }
 }
 
