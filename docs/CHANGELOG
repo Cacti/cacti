@@ -28,6 +28,7 @@ numerically.
 many table rows throughout the console.
 -bug#0000161: Removing a graph now gives the user the option to remove all
 associated data sources.
+-bug#0000164: HostMIB scripts do not respect SNMP port and timeout parameters.
 -bug#0000172: Added the ability to control which graph viewing areas should display
 thumbnail graphs and which ones should display full sized graphs.
 -bug#0000173: Increase the number of characters dedicated to each tier from 2 to 3
@@ -54,6 +55,16 @@ to automatically 'refresh' a data query when an indexes changes.
 default state.
 -bug#0000214: Rename 'Utilities' to 'System Utilities' and move it under the
 'Utilities' menu heading.
+-bug#0000235: Limit the number of pages displayed for graph management, data sources,
+and devices.
+-bug#0000240: Add moonman's SIMILAR_DATA_SOURCES_NODUPS CDEF patch.
+-bug#0000244: Prevent PHP errors from being displayed during summation/95th
+percentile calculation when the .rrd file does not exist.
+-bug#0000250: Allow host/graph tree items to change parents.
+-bug#0000253: Fixed recursive CDEFs.
+-bug#0000254: CDEF dropdown list in adding another CDEF is not sorted.
+-bug#0000265: Removed "CANNOT FIND GUEST USER" error message.
+-bug#0000273: Fixed 'rrdtool fetch' parsing for RRDTool 1.0.49.
 -bug: A hash was not being generated for duplicated graph and data templates which
 would cause import/export for those templates to fail.
 -bug: A user's graph permissions may fail to delete properly after removing that
@@ -86,6 +97,8 @@ export configuration options including remote FTP support.
 -feature: Ability to view/clear the log file from the console.
 -feature: Use a single RRDTool stdin pipe for all update, create, and graph export
 actions.
+-feature: Advanced timespan selector which provides a large number of presets and a
+calendar control for custom timespans.
 
 0.8.5a
 -bug#84: Updated internal CDEF caching to take CFs into account.
