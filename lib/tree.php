@@ -156,36 +156,32 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 function delete_branch($tree_item_id) {
 	if (empty($tree_item_id)) { return 0; }
 	
-	/* if this item is a graph, it will have NO children, so we can just delete the
+	$tree_item = db_fetch_row("select order_key,local_graph_id,host_id,graph_tree_id from graph_tree_items where id=$tree_item_id");
+	
+	/* if this item is a graph/host, it will have NO children, so we can just delete the
 	graph and exit. */
-	if (db_fetch_cell("select local_graph_id from graph_tree_items where id=$tree_item_id") > 0) {
+	if ((!empty($tree_item["local_graph_id"])) || (!empty($tree_item["host_id"]))) {
 		db_execute("delete from graph_tree_items where id=$tree_item_id");
 		return 0;
 	}
 	
-	/* get current key so we can do a sql select on it */
-	$order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");
-	
-	/* get the current tree_id */
-	$graph_tree_id = db_fetch_cell("select graph_tree_id from graph_tree_items where id=$tree_item_id");
-	
 	/* yeah, this would be really bad */
-	if (empty($order_key)) { return 0; }
+	if (empty($tree_item["order_key"])) { return 0; }
 	
-	$starting_tier = tree_tier($order_key, 2);
-	$order_key = substr($order_key, 0, (2 * $starting_tier));
+	$starting_tier = tree_tier($tree_item["order_key"], 2);
+	$order_key = substr($tree_item["order_key"], 0, (2 * $starting_tier));
 	
 	$tree = db_fetch_assoc("select 
 		graph_tree_items.id, graph_tree_items.order_key
 		from graph_tree_items
 		where graph_tree_items.order_key like '$order_key%%'
-		and graph_tree_items.graph_tree_id=$graph_tree_id
+		and graph_tree_items.graph_tree_id='" . $tree_item["graph_tree_id"] . "'
 		order by graph_tree_items.order_key");
 	
 	if (sizeof($tree) > 0) {
-	foreach ($tree as $tree_item) {
+	foreach ($tree as $item) {
 		/* delete the folder */
-		db_execute("delete from graph_tree_items where id=" . $tree_item["id"]);
+		db_execute("delete from graph_tree_items where id=" . $item["id"]);
 	}
 	}
 	
@@ -196,7 +192,7 @@ function delete_branch($tree_item_id) {
 		graph_tree_items.id, graph_tree_items.order_key
 		from graph_tree_items
 		where graph_tree_items.order_key like '$order_key%%'
-		and graph_tree_items.graph_tree_id=$graph_tree_id
+		and graph_tree_items.graph_tree_id='" . $tree_item["graph_tree_id"] . "'
 		order by graph_tree_items.order_key");
 	
 	if (sizeof($tree) > 0) {
