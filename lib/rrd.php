@@ -81,6 +81,14 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 			
 			print $output;
 			break;
+		case '3':
+			$line = "";
+			while (!feof($fp)) {
+				$line .= fgets($fp, 4096);
+			}
+			
+			return $line;
+			break;
 	}
 }
 
@@ -239,6 +247,77 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
+function cmp($a, $b) {
+	if ($a == $b) return 0;
+	return ($a > $b) ? -1 : 1;
+}
+
+function ninety_fifth_percentile($local_data_id, $seconds) {
+	$data_source_path = get_data_source_path($local_data_id, true);
+	
+	/* build and run the rrdtool fetch command with all of our data */
+	$command = "fetch $data_source_path AVERAGE -r $seconds -s -$seconds -e now";
+	$output = rrdtool_execute($command, false, "3");
+	
+	/* grab the first line of the output which contains a list of data sources
+	in this .rrd file */
+	$line_one = substr($output, 0, strpos($output, "\n"));
+	
+	/* loop through each data source in this .rrd file ... */
+	if (preg_match_all("/\w+/", $line_one, $data_source_names)) {
+		$data_source_names = $data_source_names[0];
+		
+		/* build a unique regexp to match each data source individually when
+		passed to preg_match_all() */
+		for ($i=0;$i<count($data_source_names);$i++) {
+			$regexps[$i] = '/[0-9]+:\s+';
+			
+			for ($j=0;$j<count($data_source_names);$j++) {
+				if ($j == $i) {
+					$regexps[$i] .= '([0-9]{1}\.[0-9]+)e([\+-][0-9]{2})';
+				}else{
+					$regexps[$i] .= '[0-9]{1}\.[0-9]+e[\+-][0-9]{2}';
+				}
+				
+				if ($j < count($data_source_names)) {
+					$regexps[$i] .= '\s+';
+				}
+			}
+			
+			$regexps[$i] .= '/';
+		}
+	}
+	
+	/* loop through each regexp determined above (or each data source) */
+	for ($i=0;$i<count($regexps);$i++) {
+		$values_array = array();
+		
+		/* match the regexp against the rrdtool fetch output to get a mantisa and
+		exponent for each line */
+		if (preg_match_all($regexps[$i], $output, $matches)) {
+			for ($j=0; ($j < count($matches[1])); $j++) {
+				$line = ($matches[1][$j] * (pow(10,$matches[2][$j])));
+				array_push($values_array, ($line * 1));
+			}
+		}
+		
+		/* sort the array in descending order */
+		usort($values_array, "cmp");
+		
+		/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
+		value */
+		$target = ((count($matches[1]) + 1) * .05);
+		$target = sprintf("%d", $target);
+		
+		if (empty($values_array[$target])) { $values_array[$target] = 0; }
+		
+		/* collect 95th percentile values in this array so we can return them */
+		$return_array{$data_source_names[$i]} = $values_array[$target];
+	}
+	
+	return $return_array;
+}
+
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	global $config;
 	
@@ -317,6 +396,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$graph_defs = "";
 	$txt_graph_items = "";
 	$text_padding = "";
+	$greatest_text_format = 0;
 	
     	if ($graph["auto_scale"] == "on") {
 		if ($graph["auto_scale_opts"] == "1") {
@@ -393,6 +473,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		"$graph_legend" .
 		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
     	
+	
 	$i = 0;
     	if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
@@ -416,39 +497,92 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			
 			$i++;
 		}
-	}
-	}
-    	
-	/* if we are not displaying a legend there is no point in us even processing the auto padding,
-	text format stuff. */
-	if (!isset($graph_data_array["graph_nolegend"])) {
-		/* use this loop to to setup all textformat data (hr, padding, subsitution, etc) */
-		$greatest_text_format = 0;
 		
-		reset($graph_items);
+		/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
 		
-		if (sizeof($graph_items) > 0) {
-		foreach ($graph_items as $graph_item) {
-			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
-			
-			/* note the current item_id for easy access */
-			$graph_item_id = $graph_item["graph_templates_item_id"];
-			
-			/* format the textformat string, and add values where there are <>'s */
-			$text_format[$graph_item_id] = $graph_item["text_format"];
-			$value_format[$graph_item_id] = $graph_item["value"];
-			
-			if (strstr($text_format[$graph_item_id], "|date_time|")) {
-				$text_format[$graph_item_id] = str_replace("|date_time|", date('D M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $text_format[$graph_item_id]);
+		/* note the current item_id for easy access */
+		$graph_item_id = $graph_item["graph_templates_item_id"];
+		
+		/* format the textformat string, and add values where there are <>'s */
+		$text_format[$graph_item_id] = $graph_item["text_format"];
+		$value_format[$graph_item_id] = $graph_item["value"];
+		
+		/* loop through each field that we want to subsitute values for:
+		   currently: text format and value */
+		for ($s=0; $s<2; $s++) {
+			if ($s == 0) {
+				$current_field = $text_format[$graph_item_id];
+				
+				/* skip 'text format' field if the legend is not being shown */
+				if (isset($graph_data_array["graph_nolegend"])) {
+					continue;
+				}
+			}elseif ($s == 1) {
+				$current_field = $value_format[$graph_item_id];
 			}
 			
-			/* set hard return variable if selected (\n) */
+			/* date/time subsitution */
+			if (strstr($current_field, "|date_time|")) {
+				$current_field = str_replace("|date_time|", date('D M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $current_field);
+			}
+			
+			/* 95th percentile */
+			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total)\|/", $current_field, $matches, PREG_SET_ORDER)) {
+				/* loop through each match and find the 95th percentile for each */
+				foreach ($matches as $match) {
+					if ($match[3] == "current") {
+						if (!isset($ninety_fifth_cache{$graph_item["local_data_id"]})) {
+							$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], abs($graph_start));
+						}
+					}elseif ($match[3] == "total") {
+						for ($t=0;($t<count($graph_items));$t++) {
+							if (!isset($ninety_fifth_cache{$graph_items[$t]["local_data_id"]})) {
+								$ninety_fifth_cache{$graph_items[$t]["local_data_id"]} = ninety_fifth_percentile($graph_items[$t]["local_data_id"], abs($graph_start));
+							}
+						}
+					}
+				}
+				
+				$ninety_fifth = 0;
+				
+				/* format the output according to args passed to the variable */ 
+				if ($match[3] == "current") {
+					$ninety_fifth = $ninety_fifth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+					$ninety_fifth = ($match[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
+					$ninety_fifth /= pow(10,$match[2]);
+				}elseif ($match[3] == "total") {
+					for ($t=0;($t<count($graph_items));$t++) {
+						if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+							$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+							$local_ninety_fifth = ($match[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
+							$local_ninety_fifth /= pow(10,$match[2]);
+							
+							$ninety_fifth += $local_ninety_fifth;
+						}
+					}
+				}
+				
+				/* subsitute in the final result and round off to two decimal digits */
+				$current_field = str_replace($match[0], round($ninety_fifth,2), $current_field);
+			}
+			
+			if ($s == 0) {
+				$text_format[$graph_item_id] = $current_field;
+			}elseif ($s == 1) {
+				$value_format[$graph_item_id] = $current_field;
+			}
+		}
+		
+		/* if we are not displaying a legend there is no point in us even processing the auto padding,
+		text format stuff. */
+		if (!isset($graph_data_array["graph_nolegend"])) {
+			/* set hard return variable if selected (\n) */                                        
 			if ($graph_item["hard_return"] == "on") { 
 				$hardreturn[$graph_item_id] = "\\n"; 
 			}else{
 				$hardreturn[$graph_item_id] = "";
 			}
-	    		
+			
 			/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
 			
 			/* PADDING: remember this is not perfect! its main use is for the basic graph setup of:
@@ -466,9 +600,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				}
 			}
 		}
-		}
-    	}
-	
+	}
+	}
+    	
     	/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
     	
 	$i = 0;
@@ -586,40 +720,37 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		switch ($graph_item_types{$graph_item["graph_type_id"]}) {
 		case 'AREA':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
-			$data_source_name . "#" . 
-			$graph_item["hex"] . ":" . 
-			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . 
+			$graph_item["hex"] . ":" . "\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'STACK':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
-			$data_source_name . "#" . 
-			$graph_item["hex"] . ":" .
-			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . 
+			$graph_item["hex"] . ":" . "\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'LINE1':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
-			$data_source_name . "#" . 
-			$graph_item["hex"] . ":" . 
-			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . 
+			$graph_item["hex"] . ":" . "\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'LINE2':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
-			$data_source_name . "#" . 
-			$graph_item["hex"] . ":" . 
-			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . 
+			$graph_item["hex"] . ":" . "\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'LINE3':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . 
-			$data_source_name . "#" . 
-			$graph_item["hex"] . ":" . 
-			"\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . 
+			"#" . $graph_item["hex"] . ":" . "\"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'COMMENT':
+			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
+			
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
 			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
@@ -636,16 +767,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			break;
 		case 'HRULE':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
+			$value_format[$graph_item_id] = str_replace(":", "\:" ,$value_format[$graph_item_id]); /* escape colons */
 			
-			if (isset($graph_data_array["graph_nolegend"])) {
-				$value_format[$graph_item_id] = $graph_item["value"];
-			}else{
-				$value_format[$graph_item_id] = str_replace(":", "\:" ,$value_format[$graph_item_id]); /* escape colons */
-			}
-			
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
-			$value_format[$graph_item_id] . "#" . $graph_item["hex"] . ":\"" . 
-			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value_format[$graph_item_id] . 
+			"#" . $graph_item["hex"] . ":\"" . "$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		case 'VRULE':
 			$text_format[$graph_item_id] = str_replace(":", "\:" ,$text_format[$graph_item_id]); /* escape colons */
@@ -658,9 +783,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 				$value = date("U", mktime($value_array[0],$value_array[1],0));
 			}
 			
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" .
-			$value . "#" . $graph_item["hex"] . ":\"" . 
-			"$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . "#" . 
+			$graph_item["hex"] . ":\"" . "$text_format[$graph_item_id]$hardreturn[$graph_item_id]\" ";
 			break;
 		}
 		

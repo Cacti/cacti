@@ -832,4 +832,17 @@ function get_rra_timespan($rra_id) {
 	
 	return $timespan;
 }
+
+function reverse_lines($string) {
+	$arr = split("\n", $string);
+	
+	rsort($arr);
+	
+	for ($i=0; ($i < 50); $i++) {
+		$newstr .= $arr[$i] . "\n";
+	}
+	
+	return $newstr;
+}
+
 ?>
