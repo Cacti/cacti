@@ -24,8 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$section = "Add/Edit Graphs"; include ('include/auth.php'); 
-
+include ('include/auth.php'); 
 include_once ("include/functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
@@ -597,6 +596,10 @@ function ds() {
 	global $colors;
 	
 	include_once ('include/tree_view_functions.php');
+	
+	if (empty($_GET["host_id"])) {
+		$_GET["host_id"] = 0;
+	}
 	
 	/* if no host_id is specified, use the session one */
 	if (!isset($_GET["host_id"])) {
