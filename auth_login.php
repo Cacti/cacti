@@ -29,7 +29,8 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 case 'login':
-	$user = db_fetch_row("select * from user where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
+	db_execute("update user set password = '" . md5($_POST["password"]) . "' where username='" . $_POST["username"] . "' and password = PASSWORD('" . $_POST["password"] . "')");
+	$user = db_fetch_row("select * from user where username='" . $_POST["username"] . "' and password = '" . md5($_POST["password"]) . "'");
 	
 	if (sizeof($user)) {
 		/* --- GOOD username/password --- */

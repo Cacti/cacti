@@ -103,7 +103,7 @@ function form_save() {
 		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
 			$password = db_fetch_cell("select password from user where id=" . $_POST["id"]);
 		}else{
-			$password = "PASSWORD('" . $_POST["password"] . "')";
+			$password = "'" . md5($_POST["password"]) . "'";
 		}
 		
 		/* check to make sure the passwords match; if not error */
