@@ -25,6 +25,8 @@
 $section = "Add/Edit Graphs"; 
 include ('include/auth.php');
 header("Cache-control: no-cache");
+
+include_once ("include/functions.php");
 include_once ("include/cdef_functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
@@ -44,6 +46,16 @@ function draw_cdef_preview($cdef_id) {
 <?}
 
 switch ($action) {
+ case 'movedown_item':
+ 	move_item_down("cdef_items", $args[id], "cdef_id", $args[cdef_id]);
+	
+	header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
+ 	break;
+ case 'moveup_item':
+ 	move_item_up("cdef_items", $args[id], "cdef_id", $args[cdef_id]);
+	
+	header ("Location: cdef.php?action=edit&id=$args[cdef_id]");
+ 	break;
  case 'save_item':
  	if ($form[value_function] != "0") { $current_type = 1; $current_value = $form[value_function]; }
 	if ($form[value_operator] != "0") { $current_type = 2; $current_value = $form[value_operator]; }
@@ -57,9 +69,11 @@ switch ($action) {
 		header ("Location: cdef.php?action=edit&id=$form[cdef_id]"); exit;
 	}
 	
+	$sequence = get_sequence($form[id], "sequence", "cdef_items", "cdef_id", $form[cdef_id]);
+	
  	$save["id"] = $form["id"];
 	$save["cdef_id"] = $form["cdef_id"];
-	$save["sequence"] = 0;
+	$save["sequence"] = $sequence;
 	$save["type"] = $current_type;
 	$save["value"] = $current_value;
 	
@@ -142,17 +156,18 @@ switch ($action) {
 	
 	<?
 	DrawFormItemHiddenIDField("id",$args[id]);
-	DrawFormItemHiddenIDField("cdef_id",$cdef_id);
-	?>
+	DrawFormItemHiddenIDField("cdef_id",$args[cdef_id]);
+	end_box();
 	
+	start_box("", "", "");
+	?>
 	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save_item", "cdef.php?action=edit&id=$cdef_id");?>
-			</form>
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save_item", "cdef.php");?>
 		</td>
 	</tr>
+	</form>
 	<?
-	
 	end_box();
 	
 	include_once ("include/bottom_footer.php");
@@ -195,16 +210,6 @@ switch ($action) {
 	
 	<?
 	DrawFormItemHiddenIDField("id",$args[id]);
-	?>
-	
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?DrawFormSaveButton("save", "cdef.php");?>
-			</form>
-		</td>
-	</tr>
-	<?
-	
 	end_box();
 	
 	start_box("", "", "");
@@ -242,6 +247,17 @@ switch ($action) {
 	<?
 	}
 	}
+	end_box();
+	
+	start_box("", "", "");
+	?>
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right">
+			<?DrawFormSaveButton("save", "cdef.php");?>
+		</td>
+	</tr>
+	</form>
+	<?
 	end_box();
 	
 	include_once ("include/bottom_footer.php");
