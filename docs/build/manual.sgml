@@ -224,7 +224,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Add the following three environment variables to your system using the procedure above: <userinput>MIBS=ALL</userinput>, <userinput>MIBSDIR=c:\php\mibs</userinput>, and <userinput>PHPRC=c:\php</userinput>.
+					Add the following three environment variables to your system using the procedure above: <userinput>MIBS=ALL</userinput>, <userinput>MIBDIRS=c:\php\mibs</userinput>, and <userinput>PHPRC=c:\php</userinput>.
 				</para>
 			</listitem>
 			<listitem>
