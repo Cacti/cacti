@@ -34,7 +34,17 @@ switch ($_REQUEST["action"]) {
 	case 'clear_poller_cache':
 		include_once("./include/top_header.php");
 
+		/* obtain timeout settings */
+		$max_execution = ini_get("max_execution_time");
+		$max_memory = ini_get("memory_limit");
+
+        ini_set("max_execution_time", "0");
+		ini_set("memory_limit", "32M");
+
 		repopulate_poller_cache();
+
+        ini_set("max_execution_time", $max_execution);
+		ini_set("memory_limit", $memory_limit);
 
 		utilities();
 		utilities_view_poller_cache();
