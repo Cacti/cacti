@@ -42,9 +42,10 @@ function DrawMenu($userid, $menuid) {
 					    ),
 		  "Data Gathering" => array(
 					    "ds.php" => "Data Sources",
-					    "rra.php" => "Round Robin Archives",
-					    "snmp.php" => "SNMP Interfaces",
-					    "data.php" => "Data Input",
+					    "show_equip_profiles.php" => 'Equipment Profiles',
+					    "rra.php" => "Available RRA's",
+#					    "snmp.php" => "SNMP Interfaces",
+					    "data.php" => "Data Input Methods",
 					    "cdef.php" => "CDEF's"
 					    ),
 		  "Configuration"  => array(
@@ -65,8 +66,6 @@ function DrawMenu($userid, $menuid) {
 				   where auth_acl.UserID=$userid");
     
     print "<tr><td width='100%'><table cellpadding=3 cellspacing=0 border=0 width='100%'>\n";
-    
-    $_m_index = -1;
     
     foreach (array_keys($menu) as $header) {
 	print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
