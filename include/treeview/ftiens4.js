@@ -259,7 +259,7 @@ function propagateChangesInState(folder)
     if (folder.isOpen) 
       folder.children[i].folderMstr(folder.navObj)
     else 
-  	  folder.children[i].esconde() 
+  	  folder.children[i].esconde()
 } 
  
 function escondeFolder() 
@@ -291,7 +291,10 @@ function linkFolderHTML(isTextLink)
   } 
   else 
     docW = docW + "<a>" 
-
+  
+  if (this.hreference == '')
+    docW = '';
+  
   return docW;
 } 
  
