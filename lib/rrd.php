@@ -157,7 +157,7 @@ function rrdtool_function_create($local_data_id, $show_source) {
 		/* use the cacti ds name by default or the user defined one, if entered */
 		$data_source_name = get_data_source_name($data_source["id"]);
 	
-		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . $data_source["rrd_maximum"] . RRD_NL;
+		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . (empty($data_source["rrd_maximum"]) ? "U" : $data_source["rrd_maximum"]) . RRD_NL;
 	}
 	}
 	
@@ -300,7 +300,7 @@ function rrdtool_function_fetch($local_data_id, $seconds) {
 		exponent for each line */
 		if (preg_match_all($regexps[$i], $output, $matches)) {
 			for ($j=0; ($j < count($matches[1])); $j++) {
-				$line = ($matches[1][$j] * (pow(10,$matches[2][$j])));
+				$line = ($matches[1][$j] * (pow(10,(float)$matches[2][$j]))); 
 				array_push($fetch_array["values"][$i], ($line * 1));
 			}
 		}
@@ -372,7 +372,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	}
 	
 	/* define the time span, which decides which rra to use */
-	$timespan = get_rra_timespan($rra_id);
+	$timespan = -(db_fetch_cell("select timespan from rra where id=$rra_id"));
 	
 	$graph = db_fetch_row("select
 		graph_templates_graph.title_cache,
