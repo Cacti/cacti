@@ -77,6 +77,7 @@ if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 /* display ALL errors */
 error_reporting(E_ALL);
 
+include_once($config["include_path"] . "/config_constants.php");
 include_once($config["include_path"] . "/config_arrays.php");
 include_once($config["include_path"] . "/config_form.php");
 include_once($config["library_path"] . "/functions.php");
