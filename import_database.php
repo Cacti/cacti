@@ -288,11 +288,13 @@ foreach ($_ds as $item) {
 			print "   SUCCESS: Data Source: " . $item["Name"] . "\n";
 			
 			if ($item["IsParent"] == "0") {
+				$old_output_field_id = db_fetch_cell("select ID from $database_old.src_fields where SrcID=" . $item["SrcID"] . " and InputOutput='out' and UpdateRRA='on'");
+				
 				if (db_execute("insert into data_template_rrd (id,local_data_template_rrd_id,
 					local_data_id,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,
 					data_source_type_id,data_source_name,data_input_field_id) values (0,$local_data_template_rrd_id,$local_data_id,$data_template_id,
 					" . $item["MaxValue"] . "," . $item["MinValue"] . "," . $item["Heartbeat"] . ",
-					" . $item["DataSourceTypeID"] . ",'" . $item["DSName"] . "',0)")) {
+					" . $item["DataSourceTypeID"] . ",'" . $item["DSName"] . "'," . (empty($data_input_field_cache[$old_output_field_id]) ? "0" : $data_input_field_cache{$old_output_field_id}) . ")")) {
 					$data_template_rrd_cache{$item["ID"]} = db_fetch_cell("select LAST_INSERT_ID()");
 					print "   SUCCESS: Data Source Item: " . $item["DSName"] . "\n";
 				}else{
