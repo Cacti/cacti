@@ -24,7 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-$guest_account = true;
 $using_guest_account = false;
 
 include_once($config["library_path"] . "/tree_view.php");

@@ -24,6 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
+$guest_account = true;
 include("./include/auth.php");
 include("./include/config_settings.php");
 
