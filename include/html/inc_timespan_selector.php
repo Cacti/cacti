@@ -1,59 +1,195 @@
-	<?php print "
-     <script type='text/javascript'>
+<?php
+/* set default timespan if there isn't one set */
+if (!isset($_SESSION["sess_current_timespan"])) {
+	$_SESSION["sess_current_timespan"] = read_graph_config_option("default_timespan");
+}
 
-        // Initialize the calendar
-        calendar=null;
+/* when a span time preselection has been defined update the span time fields */
+if ($_SESSION["sess_current_timespan"] != GT_CUSTOM) {
+	$end_now = time();
+	$end_year = date("Y",$end_now);
+	$end_month = date("m",$end_now);
+	$end_day = date("d",$end_now);
+	$end_hour = date("H",$end_now);
+	$end_min = date("i",$end_now);
+	$end_sec = 00;
 
-        // This function displays the calendar associated to the input field 'id'
-        function showCalendar(id) {
-            var el = document.getElementById(id);
-            if (calendar != null) {
-                // we already have some calendar created
-                calendar.hide();  // so we hide it first.
-             } else {
-                // first-time call, create the calendar.
-                var cal = new Calendar(true, null, selected, closeHandler);
-                cal.weekNumbers = false;  // Do not display the week number
-                cal.showsTime = true;     // Display the time
-                cal.time24 = true;        // Hours have a 24 hours format
-                cal.showsOtherMonths = false;    // Just the current month is displayed
-                calendar = cal;                  // remember it in the global var
-                cal.setRange(1900, 2070);        // min/max year allowed.
-                cal.create();
-             }
+	switch ($_SESSION["sess_current_timespan"])  {
+		case GT_LAST_HALF_HOUR:
+			$begin_now = $end_now - 60*30;
+			break;
+		case GT_LAST_HOUR:
+			$begin_now = $end_now - 60*60;
+			break;
+		case GT_LAST_2_HOURS:
+			$begin_now = $end_now - 2*60*60;
+			break;
+		case GT_LAST_4_HOURS:
+			$begin_now = $end_now - 4*60*60;
+			break;
+		case GT_LAST_6_HOURS:
+			$begin_now = $end_now - 6*60*60;
+			break;
+		case GT_LAST_12_HOURS:
+			$begin_now = $end_now - 12*60*60;
+			break;
+		case GT_LAST_DAY:
+			$begin_now = $end_now - 24*60*60;
+			break;
+		case GT_LAST_2_DAYS:
+			$begin_now = $end_now - 2*24*60*60;
+			break;
+		case GT_LAST_3_DAYS:
+			$begin_now = $end_now - 3*24*60*60;
+			break;
+		case GT_LAST_4_DAYS:
+			$begin_now = $end_now - 4*24*60*60;
+			break;
+		case GT_LAST_WEEK:
+			$begin_now = $end_now - 7*24*60*60;
+			break;
+		case GT_LAST_2_WEEKS:
+			$begin_now = $end_now - 2*7*24*60*60;
+			break;
+		case GT_LAST_MONTH:
+			$begin_now = strtotime("-1 month");
+			break;
+		case GT_LAST_2_MONTHS:
+			$begin_now = strtotime("-2 months");
+			break;
+		case GT_LAST_3_MONTHS:
+			$begin_now = strtotime("-3 months");
+			break;
+		case GT_LAST_4_MONTHS:
+			$begin_now = strtotime("-4 months");
+			break;
+		case GT_LAST_6_MONTHS:
+			$begin_now = strtotime("-6 months");
+			break;
+		case GT_LAST_YEAR:
+			$begin_now = strtotime("-1 year");
+			break;
+		case GT_LAST_2_YEARS:
+			$begin_now = strtotime("-2 years");
+			break;
+		default:
+			$begin_now = $end_now - DEFAULT_TIMESPAN;
+			break;
+	}
 
-             calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
-             calendar.parseDate(el.value);                // try to parse the text in field
-             calendar.sel = el;                           // inform it what input field we use
+	$start_year = date("Y",$begin_now);
+	$start_month = date("m",$begin_now);
+	$start_day = date("d",$begin_now);
+	$start_hour = date("H",$begin_now);
+	$start_min = date("i",$begin_now);
+	$start_sec = 00;
 
-             // Display the calendar below the input field
-             calendar.showAtElement(el, \"Br\");        // show the calendar
+	$current_value_date1 = $start_year . "-" . $start_month . "-" . $start_day . " " . $start_hour . ":" . $start_min;
+	$current_value_date2 = $end_year . "-" . $end_month . "-".$end_day . " ".$end_hour . ":" . $end_min;
+}else {
+	if (isset($_POST["date1"]) and ($_POST["date1"]!="")) {
+		$current_value_date1 = $_POST["date1"];
+		$begin_now = mktime(substr($current_value_date1,12,2),  // hour
+			substr($current_value_date1,15,2), // minute
+			"00", // second
+			substr($current_value_date1,6,2), // month
+			substr($current_value_date1,9,2), // day
+			substr($current_value_date1,1,4)); // year
+	} else {
+		if (isset($_SESSION["sess_current_timespan_begin_now"])) {
+			$begin_now = $_SESSION["sess_current_timespan_begin_now"];
+		}else {
+			$begin_now = $end_now - DEFAULT_TIMESPAN;
+		}
+	}
 
-             return false;
-         }
+	if (isset($_POST["date2"]) && ($_POST["date2"] != "")) {
+		$current_value_date2 = $_POST["date2"];
+		$end_now = mktime(substr($current_value_date2,12,2),  // hour
+			substr($current_value_date2,15,2), // minute
+			"00", // second
+			substr($current_value_date2,6,2), // month
+			substr($current_value_date2,9,2), // day
+			substr($current_value_date2,1,4)); // year
+	} else {
+		if (isset($_SESSION["sess_current_timespan_end_now"])) {
+			$end_now = $_SESSION["sess_current_timespan_end_now"];
+		}else {
+			$end_now = time();
+		}
+	}
 
-         // This function update the date in the input field when selected
-         function selected(cal, date) {
-            cal.sel.value = date;      // just update the date in the input field.
-            //if (cal.dateClicked) cal.callCloseHandler();  // to immedialely close the calendar after a selection uncomment
-         }
+	if (!isset($current_value_date1)) {
+		/* Default end date is now default time span */
+		$current_value_date1 = date("Y", $begin_now) . "-" . date("m", $begin_now) . "-" . date("d", $begin_now) . " " . date("H", $begin_now) . ":".date("i", $begin_now);
+	}
 
+	if (!isset($current_value_date2)) {
+		/* Default end date is now */
+		$current_value_date2 = date("Y", $end_now) . "-" . date("m", $end_now) . "-" . date("d", $end_now) . " " . date("H", $end_now) . ":" . date("i", $end_now);
+	}
 
-         // This function gets called when the end-user clicks on the 'Close' button.
-         // It just hides the calendar without destroying it.
-         function closeHandler(cal) {
-             cal.hide();                        // hide the calendar
-             //  cal.destroy();
-             calendar = null;
-         }
+	/* change session settings */
+	$_SESSION["sess_current_timespan"] = GT_CUSTOM;
+}
 
-         // This function set the date in the specified field
-         function setDateField(id, date) {
-           var el = document.getElementById(id);
-           el.value = date;
-         }";
-	?>
-   </script>
+/* correct bad dates on calendar */
+if ($end_now < $begin_now) {
+	$begin_now = $end_now - DEFAULT_TIMESPAN;
+	$end_now = time();
+
+	$current_value_date1 = date("Y", $begin_now) . "-" . date("m", $begin_now) . "-" . date("d", $begin_now) . " " . date("H", $begin_now) . ":".date("i", $begin_now);
+	$current_value_date2 = date("Y", $end_now) . "-" . date("m", $end_now) . "-" . date("d", $end_now) . " " . date("H", $end_now) . ":" . date("i", $end_now);
+}
+
+$_SESSION["sess_current_timespan_end_now"] = $end_now;
+$_SESSION["sess_current_timespan_begin_now"] = $begin_now;
+?>
+
+<script type='text/javascript'>
+	// Initialize the calendar
+	calendar=null;
+
+	// This function displays the calendar associated to the input field 'id'
+	function showCalendar(id) {
+		var el = document.getElementById(id);
+		if (calendar != null) {
+			// we already have some calendar created
+			calendar.hide();  // so we hide it first.
+		} else {
+			// first-time call, create the calendar.
+			var cal = new Calendar(true, null, selected, closeHandler);
+			cal.weekNumbers = false;  // Do not display the week number
+			cal.showsTime = true;     // Display the time
+			cal.time24 = true;        // Hours have a 24 hours format
+			cal.showsOtherMonths = false;    // Just the current month is displayed
+			calendar = cal;                  // remember it in the global var
+			cal.setRange(1900, 2070);        // min/max year allowed.
+			cal.create();
+		}
+
+		calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
+		calendar.parseDate(el.value);                // try to parse the text in field
+		calendar.sel = el;                           // inform it what input field we use
+
+		// Display the calendar below the input field
+		calendar.showAtElement(el, "Br");        // show the calendar
+
+		return false;
+	}
+
+	// This function update the date in the input field when selected
+	function selected(cal, date) {
+		cal.sel.value = date;      // just update the date in the input field.
+	}
+
+	// This function gets called when the end-user clicks on the 'Close' button.
+	// It just hides the calendar without destroying it.
+	function closeHandler(cal) {
+		cal.hide();                        // hide the calendar
+		calendar = null;
+	}
+</script>
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_timespan_selector" method="post">
@@ -79,14 +215,14 @@
 						<strong>&nbsp;From:&nbsp;</strong>
 					</td>
 					<td>
-						<input type='text' name='date1' id='date1' size='16'>
+						<input type='text' name='date1' id='date1' size='16' value='<?php print (isset($current_value_date1) ? $current_value_date1 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
 					</td>
 					<td class="textHeader">
 						<strong>&nbsp;To:&nbsp;</strong>
 					</td>
 					<td>
-						<input type='text' name='date2' id='date2' size='16'>
+						<input type='text' name='date2' id='date2' size='16' value='<?php print (isset($current_value_date2) ? $current_value_date2 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
 					<td>

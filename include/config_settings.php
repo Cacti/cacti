@@ -524,11 +524,11 @@ $settings_graphs = array(
 			"description" => "The default timespan you wish to be displayed when you display graphs",
 			"method" => "drop_array",
 			"array" => $graph_timespans,
-			"default" => "1"
+			"default" => GT_LAST_DAY
 			),
 		"timestamp_sel" => array(
-			"friendly_name" => "Timestamp Selectors",
-			"description" => "Do you wish to see timestamps on thumbnail graphs",
+			"friendly_name" => "Display Timestamp Selector",
+			"description" => "Choose if you want the timestamp selection box to be displayed.",
 			"method" => "checkbox",
 			"default" => ""
 		),
@@ -541,13 +541,6 @@ $settings_graphs = array(
 			)
 		),
 	"thumbnail" => array(
-		"timespan" => array(
-			"friendly_name" => "Thumbnail Timespan",
-			"description" => "The amount of time to represent on a thumbnail graph in seconds. Putting '0' in this field uses the timespan of the RRA specified in 'Default RRA'.",
-			"method" => "textbox",
-			"default" => "60000",
-			"max_length" => "12"
-			),
 		"default_height" => array(
 			"friendly_name" => "Thumbnail Height",
 			"description" => "The height of thumbnail graphs in pixels.",

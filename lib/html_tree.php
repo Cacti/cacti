@@ -406,8 +406,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$title = "";
 	$title_delimeter = "";
 	$search_key = "";
-	$param_graph_start = "";
-	$param_graph_end = "";
 
 	$leaf = db_fetch_row("select order_key,title,host_id,host_grouping_type from graph_tree_items where id=$leaf_id");
 	$leaf_type = get_tree_item_type($leaf_id);
@@ -458,10 +456,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	load_current_session_value("predefined_timespan", "sess_current_timespan", read_graph_config_option("default_timespan"));
 
 	/* include time span selector */
-	html_graph_start_box(3, false);
-	timespan_format($param_graph_start, $param_graph_end, $date1, $date2);
-	include("./include/html/inc_timespan_selector.php");
-	timespan_inject_dates($date1, $date2);
+	if (read_graph_config_option("timestamp_sel") == "on") {
+		html_graph_start_box(3, false);
+		include("./include/html/inc_timespan_selector.php");
+		html_graph_end_box();
+		print "<br>";
+	}
 
 	/* start graph display */
 	html_graph_start_box(3, false);
@@ -488,10 +488,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 		if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
 			html_graph_thumbnail_area($heirarchy, "", "view_type=tree");
-			html_graph_thumbnail_area($heirarchy, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end");
+			html_graph_thumbnail_area($heirarchy, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 		}else{
 			html_graph_area($heirarchy, "", "view_type=tree");
-			html_graph_area($heirarchy, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end");
+			html_graph_area($heirarchy, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 		}
 	}elseif ($leaf_type == "host") {
 		/* graph template grouping */
@@ -528,10 +528,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 				if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
 					html_graph_thumbnail_area($graphs, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
-					html_graph_thumbnail_area($graphs, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
+					html_graph_thumbnail_area($graphs, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end(), "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
 				}else{
 					html_graph_area($graphs, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
-					html_graph_area($graphs, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
+					html_graph_area($graphs, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end(), "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
 				}
 			}
 			}
@@ -548,10 +548,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				order by snmp_query.name");
 
 			/* for graphs without a data query */
-			array_push($data_queries, array(
-				"id" => "0",
-				"name" => "(No Data Query)"
-				));
+			if (empty($data_query_id)) {
+				array_push($data_queries, array(
+					"id" => "0",
+					"name" => "(No Data Query)"
+					));
+			}
 
 			if (sizeof($data_queries) > 0) {
 			foreach ($data_queries as $data_query) {
@@ -596,11 +598,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						}
 
 						if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
-//							html_graph_thumbnail_area($graph_list, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
-							html_graph_thumbnail_area($graph_list, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
+							html_graph_thumbnail_area($graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end(), "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
 						}else{
-//							html_graph_area($graph_list, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
-							html_graph_area($graph_list, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
+							html_graph_area($graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end(), "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
 						}
 					}
 				}

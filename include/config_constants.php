@@ -101,4 +101,6 @@ define("GT_LAST_6_MONTHS", 17);
 define("GT_LAST_YEAR", 18);
 define("GT_LAST_2_YEARS", 19);
 
+define("DEFAULT_TIMESPAN", 86400);
+
 ?>

@@ -97,10 +97,6 @@ case 'preview':
 	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
 
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
-	$param_graph_start = "";
-	$param_graph_end = "";
-	$date1 = "";
-	$date2 = "";
 
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_preview"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
@@ -115,7 +111,6 @@ case 'preview':
 	load_current_session_value("filter", "sess_graph_view_filter", "");
 	load_current_session_value("page", "sess_graph_view_current_page", "1");
 	load_current_session_value("predefined_timespan", "sess_current_timespan", read_graph_config_option("default_timespan"));
-	load_current_session_value("defaultTimeSpan", "sess_default_timespan", read_graph_config_option("timespan"));
 
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
@@ -172,14 +167,16 @@ case 'preview':
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 
 	/* include graph view filter selector */
-	html_graph_start_box(3, false);
+	html_graph_start_box(3, true);
 	include("./include/html/inc_graph_view_filter_table.php");
+	html_graph_end_box();
 
 	/* include time span selector */
-	html_graph_start_box(3, false);
-	timespan_format($param_graph_start, $param_graph_end, $date1, $date2);
-	include("./include/html/inc_timespan_selector.php");
-	timespan_inject_dates($date1, $date2);
+	if (read_graph_config_option("timestamp_sel") == "on") {
+		html_graph_start_box(3, true);
+		include("./include/html/inc_timespan_selector.php");
+		html_graph_end_box();
+	}
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
@@ -190,15 +187,13 @@ case 'preview':
 
 	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
 
-	html_graph_end_box();
-
 	html_graph_start_box(1, true);
 	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), $_REQUEST["page"], ROWS_PER_PAGE, $total_rows, $nav_url);
 
 	if (read_graph_config_option("thumbnail_section_preview") == "on") {
-		html_graph_thumbnail_area($graphs, "","graph_start=$param_graph_start&graph_end=$param_graph_end");
+		html_graph_thumbnail_area($graphs, "","graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}else{
-		html_graph_area($graphs, "", "graph_start=$param_graph_start&graph_end=$param_graph_end");
+		html_graph_area($graphs, "", "graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
 
 	html_graph_end_box();

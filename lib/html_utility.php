@@ -172,168 +172,20 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
-function timespan_format(&$param_graph_start, &$param_graph_end, &$date1, &$date2) {
-	/* set default timespan if there isn't one set */
-	if (!isset($_SESSION["sess_current_timespan"])) {
-		$_SESSION["sess_current_timespan"] = read_graph_config_option("default_timespan");
+function get_current_graph_start() {
+	if (isset($_SESSION["sess_current_timespan_begin_now"])) {
+		return $_SESSION["sess_current_timespan_begin_now"];
+	}else{
+		return "-" . DEFAULT_TIMESPAN;
 	}
-
-	/* when a span time preselection has been defined update the span time fields */
-	if ($_SESSION["sess_current_timespan"] != GT_CUSTOM) {
-		$end_now = time();
-		$end_year = date("Y",$end_now);
-		$end_month = date("m",$end_now);
-		$end_day = date("d",$end_now);
-		$end_hour = date("H",$end_now);
-		$end_min = date("i",$end_now);
-		$end_sec = 00;
-
-		switch ($_SESSION["sess_current_timespan"])  {
-			case GT_LAST_HALF_HOUR:
-				$begin_now = $end_now - 60*30;
-				break;
-			case GT_LAST_HOUR:
-				$begin_now = $end_now - 60*60;
-				break;
-			case GT_LAST_2_HOURS:
-				$begin_now = $end_now - 2*60*60;
-				break;
-			case GT_LAST_4_HOURS:
-				$begin_now = $end_now - 4*60*60;
-				break;
-			case GT_LAST_6_HOURS:
-				$begin_now = $end_now - 6*60*60;
-				break;
-			case GT_LAST_12_HOURS:
-				$begin_now = $end_now - 12*60*60;
-				break;
-			case GT_LAST_DAY:
-				$begin_now = $end_now - 24*60*60;
-				break;
-			case GT_LAST_2_DAYS:
-				$begin_now = $end_now - 2*24*60*60;
-				break;
-			case GT_LAST_3_DAYS:
-				$begin_now = $end_now - 3*24*60*60;
-				break;
-			case GT_LAST_4_DAYS:
-				$begin_now = $end_now - 4*24*60*60;
-				break;
-			case GT_LAST_WEEK:
-				$begin_now = $end_now - 7*24*60*60;
-				break;
-			case GT_LAST_2_WEEKS:
-				$begin_now = $end_now - 2*7*24*60*60;
-				break;
-			case GT_LAST_MONTH:
-				$begin_now = strtotime("-1 month");
-				break;
-			case GT_LAST_2_MONTHS:
-				$begin_now = strtotime("-2 months");
-				break;
-			case GT_LAST_3_MONTHS:
-				$begin_now = strtotime("-3 months");
-				break;
-			case GT_LAST_4_MONTHS:
-				$begin_now = strtotime("-4 months");
-				break;
-			case GT_LAST_6_MONTHS:
-				$begin_now = strtotime("-6 months");
-				break;
-			case GT_LAST_YEAR:
-				$begin_now = strtotime("-1 year");
-				break;
-			case GT_LAST_2_YEARS:
-				$begin_now = strtotime("-2 years");
-				break;
-			default:
-				$begin_now = $end_now - read_graph_config_option("timespan");
-				break;
-		}
-
-		$start_year = date("Y",$begin_now);
-		$start_month = date("m",$begin_now);
-		$start_day = date("d",$begin_now);
-		$start_hour = date("H",$begin_now);
-		$start_min = date("i",$begin_now);
-		$start_sec = 00;
-
-		$date1=$start_year."-".$start_month ."-".$start_day." ".$start_hour.":".$start_min;
-		$date2=$end_year."-".$end_month ."-".$end_day." ".$end_hour.":".$end_min;
-	}else {
-		$date1= "";
-		$date2= "";
-
-		if (isset($_POST["date2"]) and ($_POST["date2"]!="")) {
-			$date2 = $_POST["date2"];
-			$end_now = mktime(substr($date2,12,2),  // hour
-										substr($date2,15,2), // minute
-										"00", // second
-										substr($date2,6,2), // month
-										substr($date2,9,2), // day
-										substr($date2,1,4)); // year
-		} else {
-			if (isset($_SESSION["sess_current_timespan_end_now"])) {
-				$end_now = $_SESSION["sess_current_timespan_end_now"];
-			}else {
-				$end_now = time();
-			}
-		}
-
-		if (isset($_POST["date1"]) and ($_POST["date1"]!="")) {
-			$date1 = $_POST["date1"];
-			$begin_now = mktime(substr($date1,12,2),  // hour
-										substr($date1,15,2), // minute
-										"00", // second
-										substr($date1,6,2), // month
-										substr($date1,9,2), // day
-										substr($date1,1,4)); // year
-		} else {
-			if (isset($_SESSION["sess_current_timespan_begin_now"])) {
-				$begin_now = $_SESSION["sess_current_timespan_begin_now"];
-			}else {
-				$begin_now = $end_now - read_graph_config_option("timespan");
-			}
-		}
-
-		if ($date2=="") {
-			/* Default end date is now */
-			$date2=date("Y",$end_now)."-".date("m",$end_now)."-".date("d",$end_now)." ".date("H",$end_now).":".date("i",$end_now);
-		}
-
-		if ($date1=="") {
-			/* Default end date is now default time span */
-			$date1=date("Y",$begin_now)."-".date("m",$begin_now)."-".date("d",$begin_now)." ".date("H",$begin_now).":".date("i",$begin_now);
-		}
-
-		/* change session settings */
-		$_SESSION["sess_current_timespan"] = GT_CUSTOM;
-		$_SESSION["sess_current_timespan_end_now"] = $end_now;
-		$_SESSION["sess_current_timespan_begin_now"] = $begin_now;
-	}
-
-	/* correct bad dates on calendar */
-	if ($end_now < $begin_now) {
-		$end_now=time();
-		$begin_now = $end_now - read_graph_config_option("timespan");
-		$date2=date("Y",$end_now)."-".date("m",$end_now)."-".date("d",$end_now)." ".date("H",$end_now).":".date("i",$end_now);
-		$date1=date("Y",$begin_now)."-".date("m",$begin_now)."-".date("d",$begin_now)." ".date("H",$begin_now).":".date("i",$begin_now);
-	}
-
-	/* set return values for graphing */
-	$param_graph_start = $begin_now;
-	$param_graph_end = $end_now;
-
-	/* save session variables for future entries */
-
 }
 
-function timespan_inject_dates($date1, $date2) {
-	print "
-		<script type='text/javascript'>
-		setDateField('date1',\"$date1\");
-		setDateField('date2',\"$date2\");
-		</script>";
+function get_current_graph_end() {
+	if (isset($_SESSION["sess_current_timespan_end_now"])) {
+		return $_SESSION["sess_current_timespan_end_now"];
+	}else{
+		return "0";
+	}
 }
 
 ?>
