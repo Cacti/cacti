@@ -795,70 +795,72 @@ function host_edit() {
 		}
 		
 		end_box();
+	}
+	
+	$snmp_queries = db_fetch_assoc("select
+		snmp_query.id,
+		snmp_query.name,
+		snmp_query.xml_path,
+		snmp_query.graph_template_id
+		from snmp_query,host_snmp_query
+		where host_snmp_query.snmp_query_id=snmp_query.id
+		and host_snmp_query.host_id=" . $_GET["id"] . "
+		order by snmp_query.name");
+	
+	if (sizeof($snmp_queries) > 0) {
+	foreach ($snmp_queries as $snmp_query) {
+		start_box("<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]", "98%", $colors["header"], "3", "center", "");
 		
-		$snmp_queries = db_fetch_assoc("select
-			snmp_query.id,
-			snmp_query.name,
-			snmp_query.xml_path,
-			snmp_query.graph_template_id
-			from snmp_query,host_snmp_query
-			where host_snmp_query.snmp_query_id=snmp_query.id
-			and host_snmp_query.host_id=" . $_GET["id"] . "
-			order by snmp_query.name");
+		$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
+		$snmp_queries = xml2array($data);
+		$xml_outputs = array();
 		
-		if (sizeof($snmp_queries) > 0) {
-		foreach ($snmp_queries as $snmp_query) {
-			start_box("<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]", "98%", $colors["header"], "3", "center", "");
+		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		
+		$i = 0;
+		while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
+			$i++;
+			$field_array = $field_array[0];
 			
-			$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
-			$snmp_queries = xml2array($data);
-			$xml_outputs = array();
+			if (($i+1) < count($snmp_queries["fields"][0])) { $colspan = 1; }else{ $colspan = 2; }
 			
-			print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-			
-			$i = 0;
-			while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
-				$i++;
-				$field_array = $field_array[0];
+			if ($field_array["direction"] == "input") {
+				DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
+				$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
 				
-				if (($i+1) < count($snmp_queries["fields"][0])) { $colspan = 1; }else{ $colspan = 2; }
-				
-				if ($field_array["direction"] == "input") {
-					DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],$colspan);
-					$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and field_name='$field_name'");
-					
-					if (sizeof($raw_data) > 0) {
-					foreach ($raw_data as $data) {
-						$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
-						$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
-					}
-					}
+				if (sizeof($raw_data) > 0) {
+				foreach ($raw_data as $data) {
+					$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
+					$snmp_query_indexes{$data["snmp_index"]} = $data["snmp_index"];
+				}
 				}
 			}
+		}
+		
+		print "</tr>";
+		
+		if (sizeof($snmp_query_indexes) > 0) {
+		while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			
-			print "</tr>";
-			
-			if (sizeof($snmp_query_indexes) > 0) {
-			while (list($snmp_index, $snmp_index) = each($snmp_query_indexes)) {
-				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				
-				reset($snmp_query_data);
-				while (list($field_name, $field_array) = each($snmp_query_data)) {
-					if (isset($field_array[$snmp_index])) {
-						print "<td>" . $field_array[$snmp_index] . "</td>";
+			reset($snmp_queries["fields"][0]);
+			while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
+				if ($field_array[0]["direction"] == "input") {
+					if (isset($snmp_query_data[$field_name][$snmp_index])) {
+						print "<td>" . $snmp_query_data[$field_name][$snmp_index] . "</td>";
 					}else{
 						print "<td></td>";
 					}
 				}
-				
-				form_checkbox("sg_" . $snmp_query["graph_template_id"] . "_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
-				print "</tr>\n";
-			}
 			}
 			
-			end_box();
+			form_checkbox("sg_" . $snmp_query["graph_template_id"] . "_" . $snmp_query["id"] . "_" . $snmp_index,"","","");
+			print "</tr>\n";
 		}
 		}
+		
+		end_box();
+	}
 	}
 	
 	form_save_button("host.php");
