@@ -1,0 +1,58 @@
+<!-- cacti XML Dump -->
+
+<cacti>
+	<version>0.8</version>
+
+	<!-- Data Input Methods -->
+	<input>
+		<name>snmp</name>
+		<type>internal</type>
+	</input>
+
+	<input>
+		<name>ping</name>
+		<type>script</type>
+	
+		<script>
+			<input>perl /cacti/scripts/ping2.pl |host|</input>
+			<output>|out_ms|</output>
+		</script>
+	</input>
+
+	<!-- Tasks -->
+	<task>
+		<ds>
+			<name>grpws_gwia_smtp_msg_in</name>
+			<path>/cacti/rra/grpws_gwia_smtp_msg_in.rrd</path>
+		
+			<input>
+				<type>snmp</type>
+			
+				<snmp>
+					<version>1</version>
+					<host>172.16.0.3</host>
+					<username></username>
+					<password></password>
+					<community>public</community>
+					<oid>.1.3.6.1.4.1.23.2.70.1.57.1</oid>
+				</snmp>
+			</input>
+		</ds>
+	</task>
+
+	<task>
+        	<ds>
+                	<name>ping_pa_dot_net</name>
+                	<path>/cacti/rra/ping_pa_dot_net.rrd</path>
+			<use_output>out_ms</use_output>	
+		
+         	       <input>
+                	        <type>ping</type>
+
+                        	<ping>
+                        		<host>206.228.67.36</host>
+				</ping>
+                	</input>
+        	</ds>
+	</task>
+</cacti>
