@@ -63,12 +63,10 @@ start_box("<strong>About Cacti</strong>", "98%", $colors["header"], "3", "center
 				<a href="http://www.thtech.net">Treehouse Technolgies</a> for questions and ideas. Just
 				as a note, NetMRG is a complete Network Monitoring solution also written in PHP/MySQL. His
 				product also makes use of RRDTool's graphing capabilities, I encourage you to check it out.</li>
+			<li>The users of Cacti! Especially anyone who has taken the time to create a bug report, or otherwise
+				help me fix a Cacti-related problem. Also to anyone who has purchased an item from my amazon.com
+				wishlist or donated money via Paypal.</li>
 		</ul>
-		</p>
-		
-		<p><strong>Ways to Contact Ian</a></strong><br>
-		<a href="mailto:iberry@raxnet.net">iberry@raxnet.net</a><br>
-		<a href="mailto:rax@kuhncom.net">rax@kuhncom.net</a><br>
 		</p>
 		
 		<p><strong>Cacti Variables</a></strong><span style="font-family: monospace; font-size: 10px;"><br>
