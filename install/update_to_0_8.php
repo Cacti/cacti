@@ -38,7 +38,7 @@ $paths["cacti"] = str_replace("/install", "", dirname(__FILE__));
 $paths["rra"] = str_replace("/install", "", dirname(__FILE__)) . "/rra";
 
 function update_database($database_old, $database_username, $database_password) {
-	global $database_hostname, $database_default, $paths;
+	global $database_hostname, $database_default, $paths, $order_key_array;
 	
 	db_connect_real($database_hostname,$database_username,$database_password,$database_default,"mysql");
 	
