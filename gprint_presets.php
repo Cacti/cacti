@@ -32,25 +32,25 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	case 'remove':
 		gprint_presets_remove();
-		
+
 		header("Location: gprint_presets.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
-		
+
 		gprint_presets_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		gprint_presets();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -65,17 +65,17 @@ function form_save() {
 		$save["hash"] = get_hash_gprint($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["gprint_text"] = form_input_validate($_POST["gprint_text"], "gprint_text", "", false, 3);
-		
+
 		if (!is_error_message()) {
 			$gprint_preset_id = sql_save($save, "graph_templates_gprint");
-			
+
 			if ($gprint_preset_id) {
 				raise_message(1);
 			}else{
 				raise_message(2);
 			}
 		}
-		
+
 		if (is_error_message()) {
 			header("Location: gprint_presets.php?action=edit&id=" . (empty($gprint_preset_id) ? $_POST["id"] : $gprint_preset_id));
 			exit;
@@ -87,7 +87,7 @@ function form_save() {
 }
 
 /* -----------------------------------
-    gprint_presets - GPRINT Presets 
+    gprint_presets - GPRINT Presets
    ----------------------------------- */
 
 function gprint_presets_remove() {
@@ -96,7 +96,7 @@ function gprint_presets_remove() {
 		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", "gprint_presets.php", "gprint_presets.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from graph_templates_gprint where id=" . $_GET["id"]);
 	}
@@ -104,40 +104,40 @@ function gprint_presets_remove() {
 
 function gprint_presets_edit() {
 	global $colors, $fields_grprint_presets_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $gprint_preset["name"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : array()))
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	form_save_button("gprint_presets.php");
 }
-   
+
 function gprint_presets() {
 	global $colors;
-	
-	start_box("<strong>GPRINT Presets</strong>", "98%", $colors["header"], "3", "center", "gprint_presets.php?action=edit");
-	
+
+	html_start_box("<strong>GPRINT Presets</strong>", "98%", $colors["header"], "3", "center", "gprint_presets.php?action=edit");
+
 	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td colspan='2' class='textSubHeaderDark'>GPRINT Preset Title</td>
 		</tr>";
-	
-	$template_list = db_fetch_assoc("select 
+
+	$template_list = db_fetch_assoc("select
 		graph_templates_gprint.id,
-		graph_templates_gprint.name 
+		graph_templates_gprint.name
 		from graph_templates_gprint");
-	
+
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
@@ -160,5 +160,5 @@ function gprint_presets() {
 			</td>
 		</tr><?php
 	}
-	end_box();	
+	html_end_box();
 }

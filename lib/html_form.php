@@ -24,6 +24,14 @@
  +-------------------------------------------------------------------------+
 */
 
+/*
+ * Standard HTML form elements
+ */
+
+/* draw_edit_form - draws an html edit form
+   @arg $array - an array that contains all of the information needed to draw
+     the html form. see the arrays contained in include/config_settings.php
+     for the extact syntax of this array */
 function draw_edit_form($array) {
 	global $colors;
 
@@ -154,7 +162,18 @@ function draw_edit_form($array) {
 	}
 }
 
-/* creates a standard html textbox */
+/* form_text_box - draws a standard html textbox
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available
+   @arg $form_max_length - the maximum number of characters that can be entered
+     into this textbox
+   @arg $form_size - the size (width) of the textbox
+   @arg $type - the type of textbox, either 'text' or 'password'
+   @arg $current_id - used to determine if a current value for this form element
+     exists or not. a $current_id of '0' indicates that no current value exists,
+     a non-zero value indicates that a current value does exist */
 function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
@@ -178,7 +197,11 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
 }
 
-/* creates a standard hidden html textbox */
+/* form_hidden_box - draws a standard html hidden element
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available */
 function form_hidden_box($form_name, $form_previous_value, $form_default_value) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
@@ -187,8 +210,24 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 	print "<input type='hidden' name='$form_name' value='$form_previous_value'>\n";
 }
 
-/* creates a dropdown box from a sql string */
-function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value, $css_style = "") {
+/* form_dropdown - draws a standard html dropdown box
+   @arg $form_name - the name of this form element
+   @arg $form_data - an array containing data for this dropdown. it can be formatted
+     in one of two ways:
+     $array["id"] = "value";
+     -- or --
+     $array[0]["id"] = 43;
+     $array[0]["name"] = "Red";
+   @arg $column_display - used to indentify the key to be used for display data. this
+     is only applicable if the array is formatted using the second method above
+   @arg $column_id - used to indentify the key to be used for id data. this
+     is only applicable if the array is formatted using the second method above
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_none_entry - the name to use for a default 'none' element in the dropdown
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available
+   @arg $css_style - any css that needs to be applied to this form element */
+function form_dropdown($form_name, $form_data, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $css_style = "") {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
@@ -205,12 +244,20 @@ function form_dropdown($form_name, $form_data, $column_display,$column_id, $form
 		print "<option value='0'" . (empty($form_previous_value) ? " selected" : "") . ">$form_none_entry</option>\n";
 	}
 
-	create_list($form_data,$column_display,$column_id,htmlspecialchars($form_previous_value, ENT_QUOTES));
+	html_create_list($form_data, $column_display, $column_id, htmlspecialchars($form_previous_value, ENT_QUOTES));
 
 	print "</select>\n";
 }
 
-/* creates a checkbox */
+/* form_text_box - draws a standard html checkbox
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_caption - the text to display to the right of the checkbox
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available
+   @arg $current_id - used to determine if a current value for this form element
+     exists or not. a $current_id of '0' indicates that no current value exists,
+     a non-zero value indicates that a current value does exist */
 function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0) {
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
@@ -225,7 +272,13 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	print "<input type='checkbox' name='$form_name' id='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
 }
 
-/* creates a radio */
+/* form_text_box - draws a standard html radio button
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element (selected or not)
+   @arg $form_current_value - the current value of this form element (element id)
+   @arg $form_caption - the text to display to the right of the checkbox
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available */
 function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
@@ -240,7 +293,13 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 	print "<input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption\n";
 }
 
-/* creates a text area with a user defined rows and cols */
+/* form_text_box - draws a standard html text area box
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element (selected or not)
+   @arg $form_rows - the number of rows in the text area box
+   @arg $form_columns - the number of columns in the text area box
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available */
 function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
@@ -255,18 +314,48 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 	print "<textarea cols='$form_columns' rows='$form_rows' name='$form_name'>" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
-/* creates a hidden text box containing the ID */
-function form_hidden_id($form_name, $form_id) {
-	if ($form_id == "") {
-		$form_id = 0;
+/* form_multi_dropdown - draws a standard html multiple select dropdown
+   @arg $form_name - the name of this form element
+   @arg $array_display - an array containing display values for this dropdown. it must
+     be formatted like:
+     $array[id] = display;
+   @arg $sql_previous_values - an array containing keys that should be marked as selected.
+     it must be formatted like:
+     $array[0][$column_id] = key
+   @arg $column_id - the name of the key used to reference the keys above */
+function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id) {
+	print "<select name='$form_name" . "[]' multiple>\n";
+
+	foreach (array_keys($array_display) as $id) {
+		print "<option value='" . $id . "'";
+
+		for ($i=0; ($i < count($sql_previous_values)); $i++) {
+			if ($sql_previous_values[$i][$column_id] == $id) {
+				print " selected";
+			}
+		}
+
+		print ">". $array_display[$id];
+		print "</option>\n";
 	}
 
-	print "<input type='hidden' name='$form_name' value='$form_id'>\n";
+	print "</select>\n";
 }
 
-/* creates a dropdown box from a sql string */
+/*
+ * Second level form elements
+ */
+
+/* form_color_dropdown - draws a dropdown containing a list of colors that uses a bit
+     of css magic to make the dropdown item background color represent each color in
+     the list
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_none_entry - the name to use for a default 'none' element in the dropdown
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available */
 function form_color_dropdown($form_name, $form_previous_value, $form_none_entry, $form_default_value) {
-	if ($form_previous_value=="") {
+	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -293,35 +382,11 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	print "</select>\n";
 }
 
-
-/* create a multiselect listbox */
-function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id) {
-	print "<select name='$form_name" . "[]' multiple>\n";
-
-	foreach (array_keys($array_display) as $id) {
-		print "<option value='" . $id . "'";
-
-		for ($i=0; ($i < count($sql_previous_values)); $i++) {
-			if ($sql_previous_values[$i][$column_id] == $id) {
-				print " selected";
-			}
-		}
-
-		print ">". $array_display[$id];
-		print "</option>\n";
-	}
-
-	print "</select>\n";
-}
-
-function form_area($text) { ?>
-	<tr>
-		<td bgcolor="#E1E1E1" class="textArea">
-			<?php print $text;?>
-		</td>
-	</tr>
-<?php }
-
+/* form_confirm - draws a table presenting the user with some choice and allowing
+     them to either proceed (delete) or cancel
+   @arg $body_text - the text to prompt the user with on this form
+   @arg $cancel_url - the url to go to when the user clicks 'cancel'
+   @arg $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 		<br>
 		<table align="center" cellpadding=1 cellspacing=0 border=0 bgcolor="#B61D22" width="60%">
@@ -342,6 +407,10 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 
 <?php }
 
+/* form_confirm_buttons - draws a cancel and delete button suitable for display
+     on a confirmation form
+   @arg $cancel_url - the url to go to when the user clicks 'cancel'
+   @arg $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm_buttons($action_url, $cancel_url) { ?>
 	<tr>
 		<td bgcolor="#E1E1E1">
@@ -351,33 +420,11 @@ function form_confirm_buttons($action_url, $cancel_url) { ?>
 	</tr>
 <?php }
 
-function start_box($title, $width, $background_color, $cell_padding, $align, $add_text) {
-	global $colors; ?>
-	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=1 cellspacing=0 border=0 bgcolor="#<?php print $background_color;?>">
-		<tr>
-			<td>
-				<table cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 bgcolor="#<?php print $colors["form_background_dark"];?>" width="100%">
-					<?php if ($title != "") {?><tr>
-						<td bgcolor="#<?php print $background_color;?>" style="padding: 3px;" colspan="10">
-							<table width="100%" cellpadding="0" cellspacing="0">
-								<tr>
-									<td bgcolor="#<?php print $background_color;?>" class="textHeaderDark"><?php print $title;?></td>
-										<?php if ($add_text != "") {?><td class="textHeaderDark" align="right" bgcolor="#<?php print $colors["header"];?>"><strong><a class="linkOverDark" href="<?php print $add_text;?>">Add</a>&nbsp;</strong></td><?php }?>
-								</tr>
-							</table>
-						</td>
-					</tr><?php }?>
-
-<?php }
-
-function end_box($trailing_br = true) { ?>
-				</table>
-			</td>
-		</tr>
-	</table>
-	<?php if ($trailing_br == true) { print "<br>"; } ?>
-<?php }
-
+/* form_save_button - draws a (save|create) and cancel button at the bottom of
+     an html edit form
+   @arg $cancel_url - the url to go to when the user clicks 'cancel'
+   @arg $force_type - if specified, will force the 'action' button to be either
+     'save' or 'create'. otherwise this field should be properly auto-detected */
 function form_save_button($cancel_url, $force_type = "") {
 	if (empty($force_type)) {
 		if (empty($_GET["id"])) {
@@ -390,7 +437,7 @@ function form_save_button($cancel_url, $force_type = "") {
 	}elseif ($force_type == "save") {
 		$img = "button_save.gif";
 		$alt = "Save";
-	}elseif ($force_type == "save") {
+	}elseif ($force_type == "create") {
 		$img = "button_create.gif";
 		$alt = "Create";
 	}
@@ -405,424 +452,6 @@ function form_save_button($cancel_url, $force_type = "") {
 		</tr>
 	</table>
 	</form>
-	<?php
-}
-
-/* ------------------ Data Matrix ---------------------- */
-
-function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
-		<td height="1" colspan="<?php print $column_span;?>">
-			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
-		</td>
-<?php }
-
-/* ------------------ Useful Functions ---------------------- */
-
-function form_alternate_row_color($row_color1, $row_color2, $row_value) {
-	if (($row_value % 2) == 1) {
-		$current_color = $row_color1;
-	}else{
-		$current_color = $row_color2;
-	}
-
-	print "<tr bgcolor='#$current_color'>\n";
-
-	return $current_color;
-}
-
-function html_boolean($html_boolean) {
-	if ($html_boolean == "on") {
-		return true;
-	}else{
-		return false;
-	}
-}
-
-function html_boolean_friendly($html_boolean) {
-	if ($html_boolean == "on") {
-		return "Selected";
-	}else{
-		return "Not Selected";
-	}
-}
-
-function get_checkbox_style() {
-	if (get_web_browser() == "moz") {
-		return "padding: 4px; margin: 4px;";
-	}elseif (get_web_browser() == "ie") {
-		return "padding: 0px; margin: 0px;";
-	}elseif (get_web_browser() == "other") {
-		return "padding: 4px; margin: 4px;";
-	}
-}
-
-/* creates the options for the select box */
-function create_list($data, $name, $value, $prev) {
-	   if (empty($name)) {
-			 foreach (array_keys($data) as $id) {
-				    print '<option value="' . $id . '"';
-
-				    if ($prev == $id) {
-						  print " selected";
-				    }
-
-			print ">" . title_trim(null_out_substitutions($data[$id]), 75) . "</option>\n";
-			 }
-	   }else{
-		if (sizeof($data) > 0) {
-			 foreach ($data as $row) {
-				    print "<option value='$row[$value]'";
-
-				    if ($prev == $row[$value]) {
-						  print " selected";
-				    }
-
-			if (isset($row["host_id"])) {
-				print ">" . title_trim($row[$name], 75) . "</option>\n";
-			}else{
-				print ">" . title_trim(null_out_substitutions($row[$name]), 75) . "</option>\n";
-			}
-			 }
-		}
-	   }
-}
-
-function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
-	$field = db_fetch_row("select data_name,type_code from data_input_fields where id=$data_input_field_id");
-
-	if (($field["type_code"] == "index_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
-		$index_type = db_fetch_assoc("select
-			host_snmp_cache.field_name
-			from data_template_data,data_local,host_snmp_cache
-			where data_template_data.local_data_id=data_local.id
-			and data_local.snmp_query_id=host_snmp_cache.snmp_query_id
-			and data_template_data.id=$data_template_data_id
-			group by host_snmp_cache.field_name");
-
-		if (sizeof($index_type) == 0) {
-			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
-		}else{
-			form_dropdown($field_name, $index_type, "field_name", "field_name", $current_value, "", "", "");
-		}
-	}elseif (($field["type_code"] == "output_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
-		$output_type = db_fetch_assoc("select
-			snmp_query_graph.id,
-			snmp_query_graph.name
-			from data_template_data,data_local,snmp_query_graph
-			where data_template_data.local_data_id=data_local.id
-			and data_local.snmp_query_id=snmp_query_graph.snmp_query_id
-			and data_template_data.id=$data_template_data_id
-			group by snmp_query_graph.id");
-
-		if (sizeof($output_type) == 0) {
-			print "<em>Data query data sources must be created through <a href='graphs_new.php'>New Graphs</a>.</em>\n";
-		}else{
-			form_dropdown($field_name, $output_type, "name", "id", $current_value, "", "", "");
-		}
-	}else{
-		form_text_box($field_name, $current_value, "", "");
-	}
-}
-
-function draw_tree_dropdown($current_tree_id) {
-	global $colors;
-
-	$html = "";
-
-	$tree_list = get_graph_tree_array();
-
-	if (isset($_GET["tree_id"])) {
-		$_SESSION["sess_view_tree_id"] = $current_tree_id;
-	}
-
-	/* if there is a current tree, make sure it still exists before going on */
-	if ((!empty($_SESSION["sess_view_tree_id"])) && (db_fetch_cell("select id from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) == "")) {
-		$_SESSION["sess_view_tree_id"] = 0;
-	}
-
-	/* set a default tree if none is already selected */
-	if (empty($_SESSION["sess_view_tree_id"])) {
-		if (db_fetch_cell("select id from graph_tree where id=" . read_graph_config_option("default_tree_id")) > 0) {
-			$_SESSION["sess_view_tree_id"] = read_graph_config_option("default_tree_id");
-		}else{
-			if (sizeof($tree_list) > 0) {
-				$_SESSION["sess_view_tree_id"] = $tree_list[0]["id"];
-			}
-		}
-	}
-
-	/* make the dropdown list of trees */
-	if (sizeof($tree_list) > 1) {
-		$html ="<form name='form_tree_id'>
-			<td valign='middle' height='30' bgcolor='#" . $colors["panel"] . "'>\n
-				<table width='100%' cellspacing='0' cellpadding='0'>\n
-					<tr>\n
-						<td width='200' class='textHeader'>\n
-							&nbsp;&nbsp;Select a Graph Hierarchy:&nbsp;\n
-						</td>\n
-						<td bgcolor='#" . $colors["panel"] . "'>\n
-							<select name='cbo_tree_id' onChange='window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value'>\n";
-
-		foreach ($tree_list as $tree) {
-			$html .= "<option value='graph_view.php?action=tree&tree_id=" . $tree["id"] . "'";
-				if ($_SESSION["sess_view_tree_id"] == $tree["id"]) { $html .= " selected"; }
-				$html .= ">" . $tree["name"] . "</option>\n";
-			}
-
-		$html .= "</select>\n";
-		$html .= "</td></tr></table></td></form>\n";
-	}elseif (sizeof($tree_list) == 1) {
-		/* there is only one tree; use it */
-		//print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
-	}
-
-	return $html;
-}
-
-function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $colors, $config;
-
-	include($config["include_path"] . "/config_arrays.php");
-
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
-	print "</tr>";
-
-	$group_counter = 0; $_graph_type_name = ""; $i = 0;
-	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
-
-	if (sizeof($item_list) > 0) {
-	foreach ($item_list as $item) {
-		/* graph grouping display logic */
-		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
-
-		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
-
-			if ($group_counter % 2 == 0) {
-				$alternate_color_1 = "EEEEEE";
-				$alternate_color_2 = "EEEEEE";
-				$custom_row_color = "D5D5D5";
-			}else{
-				$alternate_color_1 = $colors["alternate"];
-				$alternate_color_2 = $colors["alternate"];
-				$custom_row_color = "D2D6E7";
-			}
-
-			$group_counter++;
-		}
-
-		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
-
-		/* alternating row color */
-		if ($use_custom_row_color == false) {
-			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
-		}else{
-			print "<tr bgcolor='#$custom_row_color'>";
-		}
-
-		print "<td>";
-		if ($disable_controls == false) { print "<a href='$filename?action=item_edit&id=" . $item["id"] . "&$url_data'>"; }
-		print "<strong>Item # " . ($i+1) . "</strong>";
-		if ($disable_controls == false) { print "</a>"; }
-		print "</td>\n";
-
-		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
-
-		switch (true) {
-		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			break;
-		case ereg("(HRULE|VRULE)", $_graph_type_name):
-			$matrix_title = "HRULE: " . $item["value"];
-			break;
-		case ereg("(COMMENT)", $_graph_type_name):
-			$matrix_title = "COMMENT: " . $item["text_format"];
-			break;
-		}
-
-		if ($item["hard_return"] == "on") {
-			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
-		}
-
-		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
-		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
-		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-
-		if ($disable_controls == false) {
-			print "<td><a href='$filename?action=item_movedown&id=" . $item["id"] . "&$url_data'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='$filename?action=item_moveup&id=" . $item["id"] . "&$url_data'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td width='1%' align='right'><a href='$filename?action=item_remove&id=" . $item["id"] . "&$url_data'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
-		}
-
-		print "</tr>";
-
-		$i++;
-	}
-	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='7'><em>No Items</em></td></tr>";
-	}
-}
-
-function draw_menu() {
-	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames;
-
-	include($config["include_path"] . "/config_arrays.php");
-
-	/* list all realms that this user has access to */
-	if (read_config_option("global_auth") == "on") {
-		$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
-		$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
-	}else{
-		$user_realms = $user_auth_realms;
-	}
-
-	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
-
-	/* loop through each header */
-	while (list($header_name, $header_array) = each($menu)) {
-		/* pass 1: see if we are allowed to view any children */
-		$show_header_items = false;
-		while (list($item_url, $item_title) = each($header_array)) {
-			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
-
-			if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
-				$show_header_items = true;
-			}
-		}
-
-		reset($header_array);
-
-		if ($show_header_items == true) {
-			print "<tr><td class='textMenuHeader'>$header_name</td></tr>\n";
-		}
-
-		/* pass 2: loop through each top level item and render it */
-		while (list($item_url, $item_title) = each($header_array)) {
-			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
-
-			/* if this item is an array, then it contains sub-items. if not, is just
-			the title string and needs to be displayed */
-			if (is_array($item_title)) {
-				$i = 0;
-
-				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
-					/* if the current page exists in the sub-items array, draw each sub-item */
-					if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
-						$draw_sub_items = true;
-					}else{
-						$draw_sub_items = false;
-					}
-
-					while (list($item_sub_url, $item_sub_title) = each($item_title)) {
-						/* indent sub-items */
-						if ($i > 0) {
-							$prepend_string = "---&nbsp;";
-						}else{
-							$prepend_string = "";
-						}
-
-						/* do not put a line between each sub-item */
-						if (($i == 0) || ($draw_sub_items == false)) {
-							$background = "images/menu_line.gif";
-						}else{
-							$background = "";
-						}
-
-						/* draw all of the sub-items as selected for ui grouping reasons. we can use the 'bold'
-						or 'not bold' to distinguish which sub-item is actually selected */
-						if ((basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) || ($draw_sub_items)) {
-							$td_class = "textMenuItemSelected";
-						}else{
-							$td_class = "textMenuItem";
-						}
-
-						/* always draw the first item (parent), only draw the children if we are viewing a page
-						that is contained in the sub-items array */
-						if (($i == 0) || ($draw_sub_items)) {
-							if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
-								print "<tr><td class='$td_class' background='$background'>$prepend_string<strong><a href='$item_sub_url'>$item_sub_title</a></strong></td></tr>\n";
-							}else{
-								print "<tr><td class='$td_class' background='$background'>$prepend_string<a href='$item_sub_url'>$item_sub_title</a></td></tr>\n";
-							}
-						}
-
-						$i++;
-					}
-				}
-			}else{
-				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
-					/* draw normal (non sub-item) menu item */
-					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
-						print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
-					}else{
-						print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
-					}
-				}
-			}
-		}
-	}
-
-	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
-
-	print '</table></td></tr>';
-}
-
-function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
-	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items");
-
-	/* loop through each available field */
-	while (list($field_name, $field_array) = each($form_array)) {
-		/* loop through each sub-field that we are going to check for variables */
-		foreach ($check_fields as $field_to_check) {
-			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
-				/* if the field/sub-field combination is an array, resolve it recursively */
-				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
-			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $field_array[$field_to_check], $matches))) {
-				/* an empty field name in the variable means don't treat this as an array */
-				if ($matches[2] == "") {
-					if (is_array(${$matches[1]})) {
-						/* the existing value is already an array, leave it alone */
-						$form_array[$field_name][$field_to_check] = ${$matches[1]};
-					}else{
-						/* the existing value is probably a single variable */
-						$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
-					}
-				}else{
-					/* copy the value down from the array/key specified in the variable */
-					$form_array[$field_name][$field_to_check] = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ""), $field_array[$field_to_check]);
-				}
-			}
-		}
-	}
-
-	return $form_array;
-}
-
-function draw_actions_dropdown($actions_array) {
-	?>
-	<table align='center' width='98%'>
-		<tr>
-			<td width='1' valign='top'>
-				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
-			</td>
-			<td align='right'>
-				Choose an action:
-				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
-			</td>
-			<td width='1' align='right'>
-				<input type='image' src='images/button_go.gif' alt='Go'>
-			</td>
-		</tr>
-	</table>
-
-	<input type='hidden' name='action' value='actions'>
 	<?php
 }
 

@@ -28,7 +28,7 @@ include("./include/auth.php");
 include_once("./lib/utility.php");
 include_once("./lib/template.php");
 include_once("./lib/tree.php");
-include_once("./lib/tree_view.php");
+include_once("./lib/html_form_template.php");
 include_once("./lib/rrd.php");
 include_once("./lib/data_query.php");
 
@@ -39,50 +39,50 @@ $graph_actions = array(
 	3 => "Duplicate",
 	4 => "Convert to Graph Template"
 	);
-	
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	case 'actions':
 		form_actions();
-		
+
 		break;
 	case 'graph_diff':
 		include_once("./include/top_header.php");
-		
+
 		graph_diff();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'item':
 		include_once("./include/top_header.php");
-		
+
 		item();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'graph_remove':
 		graph_remove();
-		
+
 		header("Location: graphs.php");
 		break;
 	case 'graph_edit':
 		include_once("./include/top_header.php");
-		
+
 		graph_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		graph();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -93,10 +93,10 @@ switch ($_REQUEST["action"]) {
 
 function add_tree_names_to_actions_array() {
 	global $graph_actions;
-	
+
 	/* add a list of tree names to the actions dropdown */
 	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
-	
+
 	if (sizeof($trees) > 0) {
 	foreach ($trees as $tree) {
 		$graph_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
@@ -113,20 +113,20 @@ function form_save() {
 		$save["id"] = $_POST["local_graph_id"];
 		$save["graph_template_id"] = $_POST["graph_template_id"];
 		$save["host_id"] = $_POST["host_id"];
-		
+
 		$local_graph_id = sql_save($save, "graph_local");
-		
+
 		change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
-		
+
 		/* update the title cache */
 		update_graph_title_cache($local_graph_id);
 	}
-	
+
 	if (isset($_POST["save_component_graph"])) {
 		$save1["id"] = $_POST["local_graph_id"];
 		$save1["host_id"] = $_POST["host_id"];
 		$save1["graph_template_id"] = $_POST["graph_template_id"];
-		
+
 		$save2["id"] = $_POST["graph_template_graph_id"];
 		$save2["local_graph_template_graph_id"] = $_POST["local_graph_template_graph_id"];
 		$save2["graph_template_id"] = $_POST["graph_template_id"];
@@ -146,18 +146,18 @@ function form_save() {
 		$save2["export"] = form_input_validate((isset($_POST["export"]) ? $_POST["export"] : ""), "export", "", true, 3);
 		$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
 		$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^-?[0-9]+$", true, 3);
-		
+
 		if (!is_error_message()) {
 			$local_graph_id = sql_save($save1, "graph_local");
 		}
-		
+
 		if (!is_error_message()) {
 			$save2["local_graph_id"] = $local_graph_id;
 			$graph_templates_graph_id = sql_save($save2, "graph_templates_graph");
-			
+
 			if ($graph_templates_graph_id) {
 				raise_message(1);
-				
+
 				/* if template information chanegd, update all necessary template information */
 				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
@@ -166,7 +166,7 @@ function form_save() {
 						at this point */
 						db_execute("update graph_local set graph_template_id=" . $_POST["_graph_template_id"] . " where id=$local_graph_id");
 						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["_graph_template_id"] . " where local_graph_id=$local_graph_id");
-						
+
 						header("Location: graphs.php?action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 						exit;
 					}
@@ -174,25 +174,25 @@ function form_save() {
 			}else{
 				raise_message(2);
 			}
-			
+
 			/* update the title cache */
 			update_graph_title_cache($local_graph_id);
 		}
-		
+
 		if ((!is_error_message()) && ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
 			change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
 		}elseif (!empty($_POST["graph_template_id"])) {
 			update_graph_data_query_cache($local_graph_id);
 		}
 	}
-	
+
 	if (isset($_POST["save_component_input"])) {
 		/* first; get the current graph template id */
 		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_POST["local_graph_id"]);
-		
+
 		/* get all inputs that go along with this graph template */
 		$input_list = db_fetch_assoc("select id,column_name from graph_template_input where graph_template_id=$graph_template_id");
-		
+
 		if (sizeof($input_list) > 0) {
 		foreach ($input_list as $input) {
 			/* we need to find out which graph items will be affected by saving this particular item */
@@ -202,7 +202,7 @@ function form_save() {
 				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
 				and graph_templates_item.local_graph_id=" . $_POST["local_graph_id"] . "
 				and graph_template_input_defs.graph_template_input_id=" . $input["id"]);
-			
+
 			/* loop through each item affected and update column data */
 			if (sizeof($item_list) > 0) {
 			foreach ($item_list as $item) {
@@ -217,17 +217,17 @@ function form_save() {
 		}
 		}
 	}
-	
+
 	if (isset($_POST["save_component_graph_diff"])) {
 		if ($_POST["type"] == "1") {
 			$intrusive = true;
 		}elseif ($_POST["type"] == "2") {
 			$intrusive = false;
 		}
-		
+
 		change_graph_template($_POST["local_graph_id"], $_POST["graph_template_id"], $intrusive);
 	}
-	
+
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
 		header("Location: graphs.php?action=graph_edit&host_id=" . $_POST["host_id"] . "&new=1");
 	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
@@ -238,16 +238,16 @@ function form_save() {
 }
 
 /* ------------------------
-    The "actions" function 
+    The "actions" function
    ------------------------ */
 
 function form_actions() {
 	global $colors, $graph_actions;
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
-		
+
 		if ($_POST["drp_action"] == "1") { /* delete */
 			db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "local_graph_id"));
 			db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "local_graph_id"));
@@ -255,7 +255,7 @@ function form_actions() {
 			db_execute("delete from graph_local where " . array_to_sql_or($selected_items, "id"));
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
-				change_graph_template($selected_items[$i], $_POST["graph_template_id"], true);	
+				change_graph_template($selected_items[$i], $_POST["graph_template_id"], true);
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -269,7 +269,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["tree_item_id"]);
 				$new_order_key = get_next_tree_id($old_order_key,"graph_tree_items","order_key", "graph_tree_id=" . $_POST["tree_id"]);
-				
+
 				db_execute("insert into graph_tree_items (graph_tree_id,title,order_key,local_graph_id,rra_id)
 					values (" . $_POST["tree_id"] . ",'','$new_order_key'," . $selected_items[$i] . ",1)");
 			}
@@ -279,33 +279,33 @@ function form_actions() {
 				update_graph_title_cache($selected_items[$i]);
 			}
 		}
-		
+
 		header("Location: graphs.php");
 		exit;
 	}
-	
+
 	/* setup some variables */
 	$graph_list = ""; $i = 0;
-	
+
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
 			$graph_list .= "<li>" . get_graph_title($matches[1]) . "<br>";
 			$graph_array[$i] = $matches[1];
 		}
-		
+
 		$i++;
 	}
-	
+
 	include_once("./include/top_header.php");
-	
+
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
-	
-	start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
-	
+
+	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+
 	print "<form action='graphs.php' method='post'>\n";
-	
+
 	if ($_POST["drp_action"] == "1") { /* delete */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
@@ -338,7 +338,7 @@ function form_actions() {
 	}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will be converted into graph templates. 
+					<p>When you click save, the following graphs will be converted into graph templates.
 					You can optionally change the title format for the new graph templates.</p>
 					<p>$graph_list</p>
 					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> Template", "", "255", "30", "text"); print "</p>
@@ -366,14 +366,14 @@ function form_actions() {
 			</tr>\n
 			";
 	}
-	
+
 	if (!isset($graph_array)) {
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
 		$save_html = "";
 	}else{
 		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
 	}
-	
+
 	print "	<tr>
 			<td align='right' bgcolor='#eaeaea'>
 				<input type='hidden' name='action' value='actions'>
@@ -383,23 +383,23 @@ function form_actions() {
 				$save_html
 			</td>
 		</tr>
-		";	
-	
-	end_box();
-	
+		";
+
+	html_end_box();
+
 	include_once("./include/bottom_footer.php");
 }
 
 /* -----------------------
-    item - Graph Items 
+    item - Graph Items
    ----------------------- */
 
 function item() {
 	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
-	
+
 	if (empty($_GET["id"])) {
 		$template_item_list = array();
-		
+
 		$header_label = "[new]";
 	}else{
 		$template_item_list = db_fetch_assoc("select
@@ -420,22 +420,22 @@ function item() {
 			left join colors on color_id=colors.id
 			where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 			order by graph_templates_item.sequence");
-		
+
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
 		$header_label = "[edit: " . get_graph_title($_GET["id"]) . "]";
 	}
-	
+
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
-	
+
 	if (empty($graph_template_id)) {
 		$add_text = "graphs_items.php?action=item_edit&local_graph_id=" . $_GET["id"] . "&host_id=$host_id";
 	}else{
 		$add_text = "";
 	}
-	
-	start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", $add_text);
+
+	html_start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", $add_text);
 	draw_graph_items_list($template_item_list, "graphs_items.php", "local_graph_id=" . $_GET["id"], (empty($graph_template_id) ? false : true));
-	end_box();
+	html_end_box();
 }
 
 /* ------------------------------------
@@ -444,7 +444,7 @@ function item() {
 
 function graph_diff() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
-	
+
 	$template_query = "select
 		graph_templates_item.id,
 		graph_templates_item.text_format,
@@ -460,7 +460,7 @@ function graph_diff() {
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
 		left join colors on color_id=colors.id";
-	
+
 	/* first, get information about the graph template as that's what we're going to model this
 	graph after */
 	$graph_template_items = db_fetch_assoc("
@@ -468,20 +468,20 @@ function graph_diff() {
 		where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		and graph_templates_item.local_graph_id=0
 		order by graph_templates_item.sequence");
-	
+
 	/* next, get information about the current graph so we can make the appropriate comparisons */
 	$graph_items = db_fetch_assoc("
 		$template_query
 		where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 		order by graph_templates_item.sequence");
-	
+
 	$graph_template_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
 		from graph_template_input,graph_template_input_defs
 		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"]);
-	
+
 	/* ok, we want to loop through the array with the GREATEST number of items so we don't have to worry
 	about tacking items on the end */
 	if (sizeof($graph_template_items) > sizeof($graph_items)) {
@@ -489,10 +489,10 @@ function graph_diff() {
 	}else{
 		$items = $graph_items;
 	}
-	
+
 	?>
 	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
-		<tr>          
+		<tr>
 			<td class="textArea">
 				The template you have selected requires some changes to be made to the structure of
 				your graph. Below is a preview of your graph along with changes that need to be completed
@@ -502,20 +502,20 @@ function graph_diff() {
 	</table>
 	<br>
 	<?php
-	
-	start_box("<strong>Graph Preview</strong>", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Graph Preview</strong>", "98%", $colors["header"], "3", "center", "");
+
 	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
-	
+
 	$group_counter = 0; $i = 0; $mode = "normal"; $_graph_type_name = "";
-	
+
 	if (sizeof($items) > 0) {
 	foreach ($items as $item) {
 		reset($struct_graph_item);
-		
+
 		/* graph grouping display logic */
 		$bold_this_row = false; $use_custom_row_color = false; $action_css = ""; unset($graph_preview_item_values);
-		
+
 		if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
 			$mode = "add";
 			$user_message = "When you click save, the items marked with a '<strong>+</strong>' will be added <strong>(Recommended)</strong>.";
@@ -523,20 +523,20 @@ function graph_diff() {
 			$mode = "delete";
 			$user_message = "When you click save, the items marked with a '<strong>-</strong>' will be removed <strong>(Recommended)</strong>.";
 		}
-		
+
 		/* here is the fun meshing part. first we check the graph template to see if there is an input
 		for each field of this row. if there is, we revert to the value stored in the graph, if not
 		we revert to the value stored in the template. got that? ;) */
 		for ($j=0; ($j < count($graph_template_inputs)); $j++) {
 			if ($graph_template_inputs[$j]["graph_template_item_id"] == (isset($graph_template_items[$i]["id"]) ? $graph_template_items[$i]["id"] : "")) {
-				/* if we find out that there is an "input" covering this field/item, use the 
+				/* if we find out that there is an "input" covering this field/item, use the
 				value from the graph, not the template */
 				$graph_item_field_name = (isset($graph_template_inputs[$j]["column_name"]) ? $graph_template_inputs[$j]["column_name"] : "");
 				$graph_preview_item_values[$graph_item_field_name] = (isset($graph_items[$i][$graph_item_field_name]) ? $graph_items[$i][$graph_item_field_name] : "");
 			}
 		}
-		
-		/* go back through each graph field and find out which ones haven't been covered by the 
+
+		/* go back through each graph field and find out which ones haven't been covered by the
 		"inputs" above. for each one, use the value from the template */
 		while (list($field_name, $field_array) = each($struct_graph_item)) {
 			if ($mode == "delete") {
@@ -545,15 +545,15 @@ function graph_diff() {
 				$graph_preview_item_values[$field_name] = (isset($graph_template_items[$i][$field_name]) ? $graph_template_items[$i][$field_name] : "");
 			}
 		}
-		
+
 		/* "prepare" array values */
 		$consolidation_function_id = $graph_preview_item_values["consolidation_function_id"];
 		$graph_type_id = $graph_preview_item_values["graph_type_id"];
-		
+
 		/* color logic */
 		if (($graph_item_types[$graph_type_id] != "GPRINT") && ($graph_item_types[$graph_type_id] != $_graph_type_name)) {
 			$bold_this_row = true; $use_custom_row_color = true; $hard_return = "";
-			
+
 			if ($group_counter % 2 == 0) {
 				$alternate_color_1 = "EEEEEE";
 				$alternate_color_2 = "EEEEEE";
@@ -563,12 +563,12 @@ function graph_diff() {
 				$alternate_color_2 = $colors["alternate"];
 				$custom_row_color = "D2D6E7";
 			}
-			
+
 			$group_counter++;
 		}
-		
+
 		$_graph_type_name = $graph_item_types[$graph_type_id];
-		
+
 		/* alternating row colors */
 		if ($use_custom_row_color == false) {
 			if ($i % 2 == 0) {
@@ -579,9 +579,9 @@ function graph_diff() {
 		}else{
 			$action_column_color = $custom_row_color;
 		}
-		
+
 		print "<tr bgcolor='#$action_column_color'>"; $i++;
-		
+
 		/* make the left-hand column blue or red depending on if "add"/"remove" mode is set */
 		if ($mode == "add") {
 			$action_column_color = $colors["header"];
@@ -590,17 +590,17 @@ function graph_diff() {
 			$action_column_color = "C63636";
 			$action_css = "text-decoration: line-through;";
 		}
-		
+
 		if ($bold_this_row == true) {
 			$action_css .= " font-weight:bold;";
 		}
-		
+
 		/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
 		print "<td width='1%' bgcolor='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
 		print "<td style='$action_css'><strong>Item # " . $i . "</strong></td>\n";
-		
+
 		if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
-		
+
 		switch (true) {
 		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
 			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
@@ -612,24 +612,24 @@ function graph_diff() {
 			$matrix_title = "COMMENT: " . $graph_preview_item_values["text_format"];
 			break;
 		}
-		
+
 		/* use the cdef name (if in use) if all else fails */
 		if ($matrix_title == "") {
 			if ($graph_preview_item_values["cdef_id"] != "") {
 				$matrix_title .= "CDEF: " . $graph_preview_item_values["cdef_id"];
 			}
 		}
-		
+
 		if ($graph_preview_item_values["hard_return"] == "on") {
 			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
 		}
-		
+
 		print "<td style='$action_css'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 		print "<td style='$action_css'>" . $graph_item_types{$graph_preview_item_values["graph_type_id"]} . "</td>\n";
 		print "<td style='$action_css'>" . $consolidation_functions{$graph_preview_item_values["consolidation_function_id"]} . "</td>\n";
 		print "<td" . ((!empty($graph_preview_item_values["color_id"])) ? " bgcolor='#" . $graph_preview_item_values["color_id"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
 		print "<td style='$action_css'>" . $graph_preview_item_values["color_id"] . "</td>\n";
-		
+
 		print "</tr>";
 	}
 	}else{
@@ -639,44 +639,44 @@ function graph_diff() {
 			</td>
 		</tr><?php
 	}
-	end_box();	
-	
+	html_end_box();
+
 	?>
 	<form action="graphs.php" method="post">
 	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
-		<tr>          
+		<tr>
 			<td class="textArea">
 				<input type='radio' name='type' value='1' checked>&nbsp;<?php print $user_message;?><br>
 				<input type='radio' name='type' value='2'>&nbsp;When you click save, the graph items will remain untouched (could cause inconsistencies).
 			</td>
 		</tr>
 	</table>
-	
+
 	<br>
-	
+
 	<input type="hidden" name="action" value="save">
 	<input type="hidden" name="save_component_graph_diff" value="1">
 	<input type="hidden" name="local_graph_id" value="<?php print $_GET["id"];?>">
 	<input type="hidden" name="graph_template_id" value="<?php print $_GET["graph_template_id"];?>">
 	<?php
-	
+
 	form_save_button("graphs.php?action=graph_edit&id=" . $_GET["id"]);
 }
 
 function graph_edit() {
 	global $colors, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
-	
+
 	$use_graph_template = true;
-	
+
 	if (!empty($_GET["id"])) {
 		$local_graph_template_graph_id = db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=" . $_GET["id"]);
-		
+
 		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . $_GET["id"]);
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
-		
+
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
 		$header_label = "[edit: " . get_graph_title($_GET["id"]) . "]";
-		
+
 		if ($graphs["graph_template_id"] == "0") {
 			$use_graph_template = false;
 		}
@@ -684,7 +684,7 @@ function graph_edit() {
 		$header_label = "[new]";
 		$use_graph_template = false;
 	}
-	
+
 	/* handle debug mode */
 	if (isset($_GET["debug"])) {
 		if ($_GET["debug"] == "0") {
@@ -693,7 +693,7 @@ function graph_edit() {
 			$_SESSION["graph_debug_mode"] = true;
 		}
 	}
-	
+
 	if (!empty($_GET["id"])) {
 		?>
 		<table width="98%" align="center">
@@ -709,9 +709,9 @@ function graph_edit() {
 		<br>
 		<?php
 	}
-	
-	start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	$form_array = array(
 		"graph_template_id" => array(
 			"method" => "drop_sql",
@@ -750,33 +750,33 @@ function graph_edit() {
 			"value" => (isset($host_id) ? $host_id : "0")
 			)
 		);
-	
+
 	draw_edit_form(
 		array(
 			"config" => array(),
 			"fields" => $form_array
 			)
 		);
-	
-	end_box();
-	
+
+	html_end_box();
+
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
-		start_box("<strong>Supplemental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
-		
+		html_start_box("<strong>Supplemental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
+
 		print "<form method='post' action='graphs.php'>\n";
-		
+
 		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>Graph Fields</strong>", true, true, 0);
 		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], $_GET["id"], "|field|_|id|", "<strong>Graph Item Fields</strong>", true);
-		
-		end_box();
+
+		html_end_box();
 	}
-	
+
 	/* graph item list goes here */
 	if ((!empty($_GET["id"])) && (empty($graphs["graph_template_id"]))) {
 		item();
 	}
-	
+
 	if (!empty($_GET["id"])) {
 		?>
 		<table width="98%" align="center">
@@ -800,24 +800,24 @@ function graph_edit() {
 		<br>
 		<?php
 	}
-	
+
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
-		start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
-		
+		html_start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
+
 		$form_array = array();
-		
+
 		while (list($field_name, $field_array) = each($struct_graph)) {
 			$form_array += array($field_name => $struct_graph[$field_name]);
-			
+
 			$form_array[$field_name]["value"] = (isset($graphs) ? $graphs[$field_name] : "");
 			$form_array[$field_name]["form_id"] = (isset($graphs) ? $graphs["id"] : "0");
-			
+
 			if (!(($use_graph_template == false) || ($graphs_template{"t_" . $field_name} == "on"))) {
 				$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
 				$form_array[$field_name]["description"] = "";
 			}
 		}
-		
+
 		draw_edit_form(
 			array(
 				"config" => array(
@@ -826,50 +826,30 @@ function graph_edit() {
 				"fields" => $form_array
 				)
 			);
-		
-		end_box();
+
+		html_end_box();
 	}
-	
+
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		form_hidden_box("save_component_graph","1","");
 		form_hidden_box("save_component_input","1","");
 	}else{
 		form_hidden_box("save_component_graph_new","1","");
 	}
-	
+
 	form_save_button("graphs.php");
 }
 
 function graph() {
 	global $colors, $graph_actions;
-	
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	if (isset($_REQUEST["page"])) {
-		$_SESSION["sess_graph_current_page"] = $_REQUEST["page"];
-	}elseif (isset($_SESSION["sess_graph_current_page"])) {
-		$_REQUEST["page"] = $_SESSION["sess_graph_current_page"];
-	}else{
-		$_REQUEST["page"] = "1"; /* default value */
-	}
-	
-	if (isset($_REQUEST["filter"])) {
-		$_SESSION["sess_graph_filter"] = $_REQUEST["filter"];
-	}elseif (isset($_SESSION["sess_graph_filter"])) {
-		$_REQUEST["filter"] = $_SESSION["sess_graph_filter"];
-	}else{
-		$_REQUEST["filter"] = ""; /* default value */
-	}
-	
-	if (isset($_REQUEST["host_id"])) {
-		$_SESSION["sess_graph_host_id"] = $_REQUEST["host_id"];
-	}elseif (isset($_SESSION["sess_graph_host_id"])) {
-		$_REQUEST["host_id"] = $_SESSION["sess_graph_host_id"];
-	}else{
-		$_REQUEST["host_id"] = "-1"; /* default value */
-	}
-	
-	start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
-	
+	load_current_session_value("page", "sess_graph_current_page", "1");
+	load_current_session_value("filter", "sess_graph_filter", "");
+	load_current_session_value("host_id", "sess_graph_host_id", "-1");
+
+	html_start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
+
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id">
@@ -885,7 +865,7 @@ function graph() {
 							<option value="graphs.php?host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
-							
+
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
 								print "<option value='graphs.php?host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "&page=1'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
@@ -909,14 +889,14 @@ function graph() {
 		</td>
 		<input type='hidden' name='page' value='1'>
 		</form>
-	</tr>	
+	</tr>
 	<?php
-	
-	end_box();
-	
+
+	html_end_box();
+
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'";
-	
+
 	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["host_id"] == "0") {
@@ -924,16 +904,16 @@ function graph() {
 	}elseif (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " and graph_local.host_id=" . $_REQUEST["host_id"];
 	}
-	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
 	$total_rows = db_fetch_cell("select
 		COUNT(graph_templates_graph.id)
 		from graph_local,graph_templates_graph
 		where graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where");
-	
-	$graph_list = db_fetch_assoc("select 
+
+	$graph_list = db_fetch_assoc("select
 		graph_templates_graph.id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
@@ -947,22 +927,22 @@ function graph() {
 		$sql_where
 		order by graph_templates_graph.title_cache,graph_local.host_id
 		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
-	
+
 	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
 	user can jump straight to it */
 	$page_number = 0; $url_page_select = "";
 	for ($i=0; ($i<$total_rows); $i += read_config_option("num_rows_graph")) {
 		$page_number++;
-		
+
 		if ($_REQUEST["page"] == $page_number) {
 			$url_page_select .= "<strong><a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a></strong>";
 		}else{
 			$url_page_select .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a>";
 		}
-		
+
 		if (($i+read_config_option("num_rows_graph")) < $total_rows) { $url_page_select .= ","; }
 	}
-	
+
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='4'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
@@ -980,7 +960,7 @@ function graph() {
 				</table>
 			</td>
 		</tr>\n";
-	
+
 	print "	$nav
 		<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td class='textSubHeaderDark'>Graph Title</td>
@@ -989,7 +969,7 @@ function graph() {
 			<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>
 		<form name='chk' method='post' action='graphs.php'>
 		</tr>";
-	
+
 	$i = 0;
 	if (sizeof($graph_list) > 0) {
 	foreach ($graph_list as $graph) {
@@ -1016,15 +996,15 @@ function graph() {
 	}else{
 		print "<tr><td><em>No Graphs Found</em></td></tr>";
 	}
-	
-	end_box(false);
-	
+
+	html_end_box(false);
+
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
-	
+
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($graph_actions);
-	
+
 	print "</form>\n";
 }
 

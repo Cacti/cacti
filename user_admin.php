@@ -33,50 +33,50 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	case 'perm_remove':
 		perm_remove();
-    
+
 		break;
 	case 'user_remove':
 		user_remove();
-    
+
     		header("Location: user_admin.php");
 		break;
 	case 'user_realms_edit':
 		include_once("include/top_header.php");
-		
+
 		user_edit();
-	
+
 		include_once("include/bottom_footer.php");
 		break;
 	case 'graph_settings_edit':
 		include_once("include/top_header.php");
-		
+
 		user_edit();
-	
+
 		include_once("include/bottom_footer.php");
 		break;
 	case 'graph_perms_edit':
 		include_once("include/top_header.php");
-	
+
 		user_edit();
-	
+
 		include_once("include/bottom_footer.php");
 		break;
 	case 'user_edit':
 		include_once("include/top_header.php");
-		
+
 		user_edit();
-		
+
 		include_once("include/bottom_footer.php");
 		break;
 	default:
 		include_once("include/top_header.php");
-		
+
 		user();
-	
+
 		include_once("include/bottom_footer.php");
 		break;
 }
@@ -87,11 +87,11 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	global $settings_graphs;
-	
+
 	/* graph permissions */
 	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
 		$add_button_clicked = false;
-		
+
 		if (isset($_POST["add_graph_y"])) {
 			db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $_POST["id"] . "," . $_POST["perm_graphs"] . ",1)");
 			$add_button_clicked = true;
@@ -105,13 +105,13 @@ function form_save() {
 			db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $_POST["id"] . "," . $_POST["perm_graph_templates"] . ",4)");
 			$add_button_clicked = true;
 		}
-		
+
 		if ($add_button_clicked == true) {
 			header("Location: user_admin.php?action=graph_perms_edit&id=" . $_POST["id"]);
 			exit;
 		}
 	}
-	
+
 	/* user management save */
 	if (isset($_POST["save_component_user"])) {
 		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
@@ -119,15 +119,15 @@ function form_save() {
 		}else{
 			$password = md5($_POST["password"]);
 		}
-		
+
 		/* check to make sure the passwords match; if not error */
 		if ($_POST["password"] != $_POST["password_confirm"]) {
 			raise_message(4);
 		}
-		
+
 		form_input_validate($_POST["password"], "password", "" . preg_quote($_POST["password_confirm"]) . "", true, 4);
 		form_input_validate($_POST["password_confirm"], "password_confirm", "" . preg_quote($_POST["password"]) . "", true, 4);
-		
+
 		$save["id"] = $_POST["id"];
 		$save["username"] = form_input_validate($_POST["username"], "username", "^[A-Za-z_0-9]+$", false, 3);
 		$save["full_name"] = form_input_validate($_POST["full_name"], "full_name", "", true, 3);
@@ -142,19 +142,19 @@ function form_save() {
 		$save["policy_trees"] = form_input_validate((isset($_POST["policy_trees"]) ? $_POST["policy_trees"] : $_POST["_policy_trees"]), "policy_trees", "", true, 3);
 		$save["policy_hosts"] = form_input_validate((isset($_POST["policy_hosts"]) ? $_POST["policy_hosts"] : $_POST["_policy_hosts"]), "policy_hosts", "", true, 3);
 		$save["policy_graph_templates"] = form_input_validate((isset($_POST["policy_graph_templates"]) ? $_POST["policy_graph_templates"] : $_POST["_policy_graph_templates"]), "policy_graph_templates", "", true, 3);
-		
+
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
-			
+
 			if ($user_id) {
 				raise_message(1);
 			}else{
 				raise_message(2);
 			}
-			
+
 			if (isset($_POST["save_component_realm_perms"])) {
 				db_execute("delete from user_auth_realm where user_id=$user_id");
-				
+
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^[section]", $var)) {
 						if (substr($var, 0, 7) == "section") {
@@ -168,11 +168,11 @@ function form_save() {
 						db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
 					}
 				}
-				
+
 				/* reset local settings cache so the user sees the new settings */
 				kill_session_var("sess_graph_config_array");
 			}elseif (isset($_POST["save_component_graph_perms"])) {
-				db_execute("update user_auth set 
+				db_execute("update user_auth set
 					policy_graphs='" . $_POST["policy_graphs"] . "',
 					policy_trees='" . $_POST["policy_trees"] . "',
 					policy_hosts='" . $_POST["policy_hosts"] . "',
@@ -181,7 +181,7 @@ function form_save() {
 			}
 		}
 	}
-	
+
 	/* redirect to the appropriate page */
 	if (is_error_message()) {
 		header("Location: user_admin.php?action=user_edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
@@ -204,23 +204,23 @@ function perm_remove() {
 	}elseif ($_GET["type"] == "graph_template") {
 		db_execute("delete from user_auth_perms where type=4 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
 	}
-	
+
 	header("Location: user_admin.php?action=graph_perms_edit&id=" . $_GET["user_id"]);
 }
 
 function graph_perms_edit() {
 	global $colors;
-	
+
 	$graph_policy_array = array(
 		1 => "Allow",
 		2 => "Deny");
-	
+
 	if (!empty($_GET["id"])) {
 		$policy = db_fetch_row("select policy_graphs,policy_trees,policy_hosts,policy_graph_templates from user_auth where id=" . $_GET["id"]);
-		
+
 		$header_label = "[edit: " . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "]";
 	}
-	
+
 	?>
 	<table width='98%' align='center' cellpadding="5">
 		<tr>
@@ -230,11 +230,11 @@ function graph_perms_edit() {
 		</tr>
 	</table>
 	<?php
-	
+
 	/* box: graph permissions */
-	start_box("<strong>Graph Permissions (By Graph)</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	$graphs = db_fetch_assoc("select 
+	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "98%", $colors["header"], "3", "center", "");
+
+	$graphs = db_fetch_assoc("select
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title_cache
 		from graph_templates_graph
@@ -242,10 +242,10 @@ function graph_perms_edit() {
 		where graph_templates_graph.local_graph_id > 0
 		and user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
 		order by graph_templates_graph.title_cache");
-	
+
 	?>
 	<form method="post" action="user_admin.php">
-	
+
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
@@ -275,9 +275,9 @@ function graph_perms_edit() {
 		</td>
 	</tr>
 	<?php
-	
-	end_box(false);
-	
+
+	html_end_box(false);
+
 	?>
 	<table align='center' width='98%'>
 		<tr>
@@ -291,18 +291,18 @@ function graph_perms_edit() {
 	</table>
 	<br>
 	<?php
-	
+
 	/* box: host permissions */
-	start_box("<strong>Graph Permissions (By Host)</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	$hosts = db_fetch_assoc("select 
+	html_start_box("<strong>Graph Permissions (By Host)</strong>", "98%", $colors["header"], "3", "center", "");
+
+	$hosts = db_fetch_assoc("select
 		host.id,
 		CONCAT_WS('',host.description,' (',host.hostname,')') as name
 		from host
 		left join user_auth_perms on (host.id=user_auth_perms.item_id and user_auth_perms.type=3)
 		where user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
 		order by host.description,host.hostname");
-	
+
 	?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td width="50%">
@@ -332,11 +332,11 @@ function graph_perms_edit() {
 			</table>
 		</td>
 	</tr>
-	
+
     	<?php
-	
-	end_box(false);
-	
+
+	html_end_box(false);
+
 	?>
 	<table align='center' width='98%'>
 		<tr>
@@ -350,18 +350,18 @@ function graph_perms_edit() {
 	</table>
 	<br>
 	<?php
-	
+
 	/* box: graph template permissions */
-	start_box("<strong>Graph Permissions (By Graph Template)</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	$graph_templates = db_fetch_assoc("select 
+	html_start_box("<strong>Graph Permissions (By Graph Template)</strong>", "98%", $colors["header"], "3", "center", "");
+
+	$graph_templates = db_fetch_assoc("select
 		graph_templates.id,
 		graph_templates.name
 		from graph_templates
 		left join user_auth_perms on (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4)
 		where user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
 		order by graph_templates.name");
-	
+
 	?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td width="50%">
@@ -391,11 +391,11 @@ function graph_perms_edit() {
 			</table>
 		</td>
 	</tr>
-	
+
     	<?php
-	
-	end_box(false);
-	
+
+	html_end_box(false);
+
 	?>
 	<table align='center' width='98%'>
 		<tr>
@@ -409,18 +409,18 @@ function graph_perms_edit() {
 	</table>
 	<br>
 	<?php
-	
+
 	/* box: tree permissions */
-	start_box("<strong>Tree Permissions</strong>", "98%", $colors["header"], "3", "center", "");
-	
-	$trees = db_fetch_assoc("select 
+	html_start_box("<strong>Tree Permissions</strong>", "98%", $colors["header"], "3", "center", "");
+
+	$trees = db_fetch_assoc("select
 		graph_tree.id,
 		graph_tree.name
 		from graph_tree
 		left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2)
 		where user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
 		order by graph_tree.name");
-	
+
 	?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td width="50%">
@@ -450,11 +450,11 @@ function graph_perms_edit() {
 			</table>
 		</td>
 	</tr>
-	
+
     	<?php
-	
-	end_box(false);
-	
+
+	html_end_box(false);
+
 	?>
 	<table align='center' width='98%'>
 		<tr>
@@ -467,14 +467,14 @@ function graph_perms_edit() {
 		</tr>
 	</table>
 	<br>
-	
+
 	<?php
 	form_hidden_box("save_component_graph_perms","1","");
 }
 
 function user_realms_edit() {
 	global $colors, $user_auth_realms;
-	
+
 	?>
 	<table width='98%' align='center' cellpadding="5">
 		<tr>
@@ -484,24 +484,24 @@ function user_realms_edit() {
 		</tr>
 	</table>
 	<?php
-	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong></td>
 			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"section\",this.checked)'></td>\n
 		</tr>\n";
-	
-	$realms = db_fetch_assoc("select 
+
+	$realms = db_fetch_assoc("select
 		user_auth_realm.user_id,
 		user_realm.id,
 		user_realm.name
 		from user_realm
-		left join user_auth_realm on (user_realm.id=user_auth_realm.realm_id and user_auth_realm.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ") 
+		left join user_auth_realm on (user_realm.id=user_auth_realm.realm_id and user_auth_realm.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ")
 		order by user_realm.name");
-	
+
 	?>
-	
+
 	<tr>
 		<td colspan="2" width="100%">
 			<table width="100%">
@@ -515,15 +515,15 @@ function user_realms_edit() {
 							}else{
 								$old_value = "";
 							}
-							
+
 							$column1 = floor((sizeof($user_auth_realms) / 2) + (sizeof($user_auth_realms) % 2));
-							
+
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
-							
+
 							form_checkbox("section" . $realm_id, $old_value, $realm_name, "", (!empty($_GET["id"]) ? 1 : 0)); print "<br>";
-							
+
 							$i++;
 						}
 						?>
@@ -532,16 +532,16 @@ function user_realms_edit() {
 			</table>
 		</td>
 	</tr>
-	
+
 	<?php
-	end_box();
-	
+	html_end_box();
+
 	form_hidden_box("save_component_realm_perms","1","");
 }
 
 function graph_settings_edit() {
 	global $settings_graphs, $tabs_graphs, $colors, $graph_views, $graph_tree_views;
-	
+
 	?>
 	<table width='98%' align='center' cellpadding="5">
 		<tr>
@@ -551,9 +551,9 @@ function graph_settings_edit() {
 		</tr>
 	</table>
 	<?php
-	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
 		<tr>
@@ -562,15 +562,15 @@ function graph_settings_edit() {
 			</td>
 		</tr>
 		<?php
-		
+
 		$form_array = array();
-		
+
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
-			
+
 			$form_array[$field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));
 		}
-		
+
 		draw_edit_form(
 			array(
 				"config" => array(
@@ -580,9 +580,9 @@ function graph_settings_edit() {
 				)
 			);
 	}
-	
-	end_box();
-	
+
+	html_end_box();
+
 	form_hidden_box("save_component_graph_settings","1","");
 }
 
@@ -597,34 +597,34 @@ function user_remove() {
 		include("./include/bottom_footer.php");
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from user_auth where id=" . $_GET["id"]);
 		db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
 		db_execute("delete from user_auth_perms where user_id=" . $_GET["id"]);
 		db_execute("delete from settings_graphs where user_id=" . $_GET["id"]);
-	}	
+	}
 }
 
 function user_edit() {
 	global $colors, $fields_user_user_edit_host;
-	
+
 	if (!empty($_GET["id"])) {
 		$user = db_fetch_row("select * from user_auth where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $user["username"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk"),
 		"fields" => inject_form_variables($fields_user_user_edit_host, (isset($user) ? $user : array()))
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	if (!empty($_GET["id"])) {
 		/* draw user admin nav tabs */
 		?>
@@ -647,7 +647,7 @@ function user_edit() {
 		</table>
 		<?php
 	}
-	
+
 	if ($_GET["action"] == "graph_settings_edit") {
 		graph_settings_edit();
 	}elseif ($_GET["action"] == "user_realms_edit") {
@@ -657,15 +657,15 @@ function user_edit() {
 	}else{
 		user_realms_edit();
 	}
-	
+
 	form_save_button("user_admin.php");
 }
 
 function user() {
 	global $colors, $auth_realms;
 
-	start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
-	
+	html_start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("User Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Full Name",$colors["header_text"],1);
@@ -673,9 +673,9 @@ function user() {
 		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],1);
                 DrawMatrixHeaderItem("Last Login",$colors["header_text"],2);
 	print "</tr>";
-	
+
 	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, policy_graphs, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.id = user_log.user_id group by id");
-	
+
 	$i = 0;
 	if (sizeof($user_list) > 0) {
 	foreach ($user_list as $user) {
@@ -704,6 +704,6 @@ function user() {
 	$i++;
 	}
 	}
-	end_box();	
+	html_end_box();
 }
 ?>

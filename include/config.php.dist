@@ -69,7 +69,7 @@ if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
 	header("Cache-Control: no-store, no-cache, must-revalidate");
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
-	
+
 	/* initilize php session */
 	session_start();
 }
@@ -81,7 +81,9 @@ include_once($config["include_path"] . "/config_constants.php");
 include_once($config["include_path"] . "/config_arrays.php");
 include_once($config["include_path"] . "/config_form.php");
 include_once($config["library_path"] . "/functions.php");
-include_once($config["library_path"] . "/form.php");
+include_once($config["library_path"] . "/html.php");
+include_once($config["library_path"] . "/html_form.php");
+include_once($config["library_path"] . "/html_utility.php");
 include_once($config["library_path"] . "/database.php");
 include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");

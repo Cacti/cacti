@@ -2,6 +2,8 @@
 	<name>Get SNMP Interfaces</name>
 	<description>Queries a host for a list of monitorable interfaces</description>
 	<oid_index>.1.3.6.1.2.1.2.2.1.1</oid_index>
+	<index_order>ifDescr:ifName:ifIndex</index_order>
+	<index_title_format>|chosen_order_field|</index_title_format>
 	
 	<fields>
 		<ifIndex>

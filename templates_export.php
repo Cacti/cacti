@@ -56,13 +56,13 @@ $export_types = array(
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		export();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -73,10 +73,10 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	global $export_types;
-	
+
 	if (isset($_POST["save_component_export"])) {
 		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
-		
+
 		if ($_POST["output_format"] == "1") {
 			include_once("./include/top_header.php");
 			print "<table width='98%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
@@ -98,19 +98,19 @@ function form_save() {
 
 function export() {
 	global $colors, $export_types;
-	
+
 	/* 'graph_template' should be the default */
 	if (!isset($_REQUEST["export_type"])) {
 		$_REQUEST["export_type"] = "graph_template";
 	}
-	
+
 	?>
 	<form name="form_graph_id">
 	<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 		<tr bgcolor="<?php print $colors["light"];?>">
 			<td class="textArea" style="padding: 3px;">
 				What would you like to export?&nbsp;
-				
+
 				<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
 					<?php
 					while (list($key, $array) = each($export_types)) {
@@ -124,9 +124,9 @@ function export() {
 	</form>
 	<form method="post" action="templates_export.php">
 	<?php
-	
-	start_box("<strong>Export Template</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Export Template</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "98%", $colors["header"], "3", "center", "");
+
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle"><?php print $export_types{$_REQUEST["export_type"]}["name"];?> to Export</font><br>
@@ -136,7 +136,7 @@ function export() {
 			<?php form_dropdown("export_item_id",db_fetch_assoc($export_types{$_REQUEST["export_type"]}["dropdown_sql"]),"name","id","","","0");?>
 		</td>
 	</tr>
-	
+
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Include Dependencies</font><br>
@@ -147,7 +147,7 @@ function export() {
 			<?php form_checkbox("include_deps", "on", "Include Dependencies", "on", "", true);?>
 		</td>
 	</tr>
-	
+
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Output Format</font><br>
@@ -162,12 +162,12 @@ function export() {
 		</td>
 	</tr>
 	<?php
-	
+
 	form_hidden_box("export_type", $_REQUEST["export_type"], "");
 	form_hidden_box("save_component_export","1","");
-	
-	end_box();
-	
+
+	html_end_box();
+
 	form_save_button("templates_export.php");
 }
 ?>

@@ -33,47 +33,47 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	case 'item_movedown':
 		item_movedown();
-		
+
 		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
-		
+
 		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
 		break;
 	case 'item_remove':
 		item_remove();
-	    
+
 		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
 		break;
 	case 'item_edit':
 		include_once("./include/top_header.php");
-		
+
 		item_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
 		cdef_remove();
-		
+
 		header ("Location: cdef.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
-		
+
 		cdef_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		cdef();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -88,7 +88,7 @@ function draw_cdef_preview($cdef_id) {
 		<td>
 			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
 		</td>
-	</tr>	
+	</tr>
 <?php }
 
 
@@ -101,17 +101,17 @@ function form_save() {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_cdef($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-		
+
 		if (!is_error_message()) {
 			$cdef_id = sql_save($save, "cdef");
-			
+
 			if ($cdef_id) {
 				raise_message(1);
 			}else{
 				raise_message(2);
 			}
 		}
-		
+
 		if ((is_error_message()) || (empty($_POST["id"]))) {
 			header("Location: cdef.php?action=edit&id=" . (empty($cdef_id) ? $_POST["id"] : $cdef_id));
 		}else{
@@ -119,24 +119,24 @@ function form_save() {
 		}
 	}elseif (isset($_POST["save_component_item"])) {
 		$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
-		
+
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_cdef($_POST["id"], "cdef_item");
 		$save["cdef_id"] = $_POST["cdef_id"];
 		$save["sequence"] = $sequence;
 		$save["type"] = $_POST["type"];
 		$save["value"] = $_POST["value"];
-		
+
 		if (!is_error_message()) {
 			$cdef_item_id = sql_save($save, "cdef_items");
-			
+
 			if ($cdef_item_id) {
 				raise_message(1);
 			}else{
 				raise_message(2);
 			}
 		}
-		
+
 		if (is_error_message()) {
 			header("Location: cdef.php?action=item_edit&cdef_id=" . $_POST["cdef_id"] . "&id=" . (empty($cdef_item_id) ? $_POST["id"] : $cdef_item_id));
 		}else{
@@ -150,32 +150,32 @@ function form_save() {
    -------------------------- */
 
 function item_movedown() {
-	move_item_down("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);	
+	move_item_down("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);
 }
 
 function item_moveup() {
-	move_item_up("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);	
+	move_item_up("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);
 }
 
 function item_remove() {
-	db_execute("delete from cdef_items where id=" . $_GET["id"]);	
+	db_execute("delete from cdef_items where id=" . $_GET["id"]);
 }
 
 function item_edit() {
 	global $colors, $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
-	
+
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef_items where id=" . $_GET["id"]);
 		$current_type = $cdef["type"];
 		$values[$current_type] = $cdef["value"];
 	}
-	
-	start_box("", "98%", "aaaaaa", "3", "center", "");
+
+	html_start_box("", "98%", "aaaaaa", "3", "center", "");
 	draw_cdef_preview($_GET["cdef_id"]);
-	end_box();
-	
-	start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "98%", $colors["header"], "3", "center", "");
-	
+	html_end_box();
+
+	html_start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "98%", $colors["header"], "3", "center", "");
+
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];
 	}elseif (isset($cdef["type"])) {
@@ -183,9 +183,9 @@ function item_edit() {
 	}else{
 		$current_type = "1";
 	}
-	
+
 	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
-	
+
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">CDEF Item Type</font><br>
@@ -229,17 +229,17 @@ function item_edit() {
 		</td>
 	</tr>
 	<?php
-	
+
 	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
 	form_hidden_box("type", $current_type, "");
 	form_hidden_box("cdef_id", $_GET["cdef_id"], "");
 	form_hidden_box("save_component_item", "1", "");
-	
-	end_box();
-	
+
+	html_end_box();
+
 	form_save_button("cdef.php?action=edit&id=" . $_GET["cdef_id"]);
 }
-   
+
 /* ---------------------
     CDEF Functions
    --------------------- */
@@ -251,7 +251,7 @@ function cdef_remove() {
 		include("./include/bottom_footer.php");
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from cdef where id=" . $_GET["id"]);
 		db_execute("delete from cdef_items where cdef_id=" . $_GET["id"]);
@@ -260,38 +260,38 @@ function cdef_remove() {
 
 function cdef_edit() {
 	global $colors, $cdef_item_types, $fields_cdef_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $cdef["name"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>CDEF's</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>CDEF's</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_cdef_edit, (isset($cdef) ? $cdef : array()))
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	if (!empty($_GET["id"])) {
-		start_box("", "98%", "aaaaaa", "3", "center", "");
+		html_start_box("", "98%", "aaaaaa", "3", "center", "");
 		draw_cdef_preview($_GET["id"]);
-		end_box();
-		
-		start_box("<strong>CDEF Items</strong>", "98%", $colors["header"], "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
-		
+		html_end_box();
+
+		html_start_box("<strong>CDEF Items</strong>", "98%", $colors["header"], "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
+
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Item",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Item Value",$colors["header_text"],1);
 			DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],2);
 		print "</tr>";
-	    
+
 		$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=" . $_GET["id"] . " order by sequence");
-		
+
 		$i = 0;
 		if (sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $cdef_item) {
@@ -314,24 +314,24 @@ function cdef_edit() {
 		<?php
 		}
 		}
-		end_box();
+		html_end_box();
 	}
-	
-	form_save_button("cdef.php");	
+
+	form_save_button("cdef.php");
 }
 
 function cdef() {
 	global $colors;
-	
-	start_box("<strong>CDEF's</strong>", "98%", $colors["header"], "3", "center", "cdef.php?action=edit");
-	
+
+	html_start_box("<strong>CDEF's</strong>", "98%", $colors["header"], "3", "center", "cdef.php?action=edit");
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
-    	
+
 	$cdefs = db_fetch_assoc("select * from cdef order by name");
-	
+
 	$i = 0;
 	if (sizeof($cdefs) > 0) {
 	foreach ($cdefs as $cdef) {
@@ -347,6 +347,6 @@ function cdef() {
 	<?php
 	}
 	}
-	end_box();	
+	html_end_box();
 }
 ?>

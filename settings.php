@@ -77,7 +77,7 @@ default:
 
 	print "<td></td>\n</tr></table>\n";
 
-	start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
 
 	$form_array = array();
 
@@ -109,9 +109,9 @@ default:
 			"fields" => $form_array)
 			);
 
-	end_box();
+	html_end_box();
 
-	form_hidden_id("tab",$current_tab);
+	form_hidden_box("tab", $current_tab, "");
 
 	form_save_button("settings.php?tab=$current_tab", "save");
 

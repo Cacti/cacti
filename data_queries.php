@@ -33,67 +33,67 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	case 'item_moveup_dssv':
 		data_query_item_moveup_dssv();
-		
+
 		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_movedown_dssv':
 		data_query_item_movedown_dssv();
-		
+
 		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove_dssv':
 		data_query_item_remove_dssv();
-		
+
 		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_moveup_gsv':
 		data_query_item_moveup_gsv();
-		
+
 		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_movedown_gsv':
 		data_query_item_movedown_gsv();
-		
+
 		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove_gsv':
 		data_query_item_remove_gsv();
-		
+
 		header("Location: data_queries.php?action=item_edit&id=" . $_GET["snmp_query_graph_id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_remove':
 		data_query_item_remove();
-		
+
 		header("Location: data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
 		include_once("./include/top_header.php");
-		
+
 		data_query_item_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
 		data_query_remove();
-		
+
 		header ("Location: data_queries.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
-		
+
 		data_query_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		data_query();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -110,17 +110,17 @@ function form_save() {
 		$save["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
 		$save["xml_path"] = form_input_validate($_POST["xml_path"], "xml_path", "", false, 3);
 		$save["data_input_id"] = $_POST["data_input_id"];
-		
+
 		if (!is_error_message()) {
 			$snmp_query_id = sql_save($save, "snmp_query");
-			
+
 			if ($snmp_query_id) {
 				raise_message(1);
 			}else{
 				raise_message(2);
 			}
 		}
-		
+
 		if ((is_error_message()) || (empty($_POST["id"]))) {
 			header("Location: data_queries.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
 		}else{
@@ -128,19 +128,19 @@ function form_save() {
 		}
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
 		$redirect_back = false;
-		
+
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_data_query($_POST["id"], "data_query_graph");
 		$save["snmp_query_id"] = $_POST["snmp_query_id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["graph_template_id"] = $_POST["graph_template_id"];
-		
+
 		if (!is_error_message()) {
-			$snmp_query_graph_id = sql_save($save, "snmp_query_graph");	
-			
+			$snmp_query_graph_id = sql_save($save, "snmp_query_graph");
+
 			if ($snmp_query_graph_id) {
 				raise_message(1);
-				
+
 				/* if the user changed the graph template, go through and delete everything that
 				was associated with the old graph template */
 				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
@@ -148,29 +148,29 @@ function form_save() {
 					db_execute("delete from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id");
 					$redirect_back = true;
 				}
-				
+
 				db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=$snmp_query_graph_id");
-				
+
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^dsdt_([0-9]+)_([0-9]+)_check", $var)) {
 						$data_template_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\1", $var);
 						$data_template_rrd_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\2", $var);
-						
+
 						db_execute ("replace into snmp_query_graph_rrd (snmp_query_graph_id,data_template_id,data_template_rrd_id,snmp_field_name) values($snmp_query_graph_id,$data_template_id,$data_template_rrd_id,'" . $_POST{"dsdt_" . $data_template_id . "_" . $data_template_rrd_id . "_snmp_field_output"} . "')");
 					}elseif ((eregi("^svds_([0-9]+)_x", $var, $matches)) && (!empty($_POST{"svds_" . $matches[1] . "_text"})) && (!empty($_POST{"svds_" . $matches[1] . "_field"}))) {
 						/* suggested values -- data templates */
 						$sequence = get_sequence(0, "sequence", "snmp_query_graph_rrd_sv", "snmp_query_graph_id=" . $_POST["id"]  . " and data_template_id=" . $matches[1] . " and field_name='" . $_POST{"svds_" . $matches[1] . "_field"} . "'");
 						$hash = get_hash_data_query(0, "data_query_sv_data_source");
-						db_execute("insert into snmp_query_graph_rrd_sv (hash,snmp_query_graph_id,data_template_id,sequence,field_name,text) values ('$hash'," . $_POST["id"] . "," . $matches[1] . ",$sequence,'" . $_POST{"svds_" . $matches[1] . "_field"} . "','" . $_POST{"svds_" . $matches[1] . "_text"} . "')"); 
-						
+						db_execute("insert into snmp_query_graph_rrd_sv (hash,snmp_query_graph_id,data_template_id,sequence,field_name,text) values ('$hash'," . $_POST["id"] . "," . $matches[1] . ",$sequence,'" . $_POST{"svds_" . $matches[1] . "_field"} . "','" . $_POST{"svds_" . $matches[1] . "_text"} . "')");
+
 						$redirect_back = true;
 						clear_messages();
 					}elseif ((eregi("^svg_x", $var)) && (!empty($_POST{"svg_text"})) && (!empty($_POST{"svg_field"}))) {
 						/* suggested values -- graph templates */
 						$sequence = get_sequence(0, "sequence", "snmp_query_graph_sv", "snmp_query_graph_id=" . $_POST["id"] . " and field_name='" . $_POST{"svg_field"} . "'");
 						$hash = get_hash_data_query(0, "data_query_sv_graph");
-						db_execute("insert into snmp_query_graph_sv (hash,snmp_query_graph_id,sequence,field_name,text) values ('$hash'," . $_POST["id"] . ",$sequence,'" . $_POST{"svg_field"} . "','" . $_POST{"svg_text"} . "')"); 
-						
+						db_execute("insert into snmp_query_graph_sv (hash,snmp_query_graph_id,sequence,field_name,text) values ('$hash'," . $_POST["id"] . ",$sequence,'" . $_POST{"svg_field"} . "','" . $_POST{"svg_text"} . "')");
+
 						$redirect_back = true;
 						clear_messages();
 					}
@@ -179,7 +179,7 @@ function form_save() {
 				raise_message(2);
 			}
 		}
-		
+
 		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
 			header("Location: data_queries.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
 		}else{
@@ -223,7 +223,7 @@ function data_query_item_remove() {
 		include("./include/bottom_footer.php");
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from snmp_query_graph where id=" . $_GET["id"]);
 		db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=" . $_GET["id"]);
@@ -234,26 +234,26 @@ function data_query_item_remove() {
 
 function data_query_item_edit() {
 	global $colors, $fields_data_query_item_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$snmp_query_item = db_fetch_row("select * from snmp_query_graph where id=" . $_GET["id"]);
 	}
-	
+
 	$snmp_query = db_fetch_row("select name,xml_path from snmp_query where id=" . $_GET["snmp_query_id"]);
 	$header_label = "[edit: " . $snmp_query["name"] . "]";
-	
-	start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_GET)
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	if (!empty($snmp_query_item["id"])) {
-		start_box("<strong>Associated Data Templates</strong>", "98%", $colors["header"], "3", "center", "");
-		
+		html_start_box("<strong>Associated Data Templates</strong>", "98%", $colors["header"], "3", "center", "");
+
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
 			data_template.name
@@ -265,14 +265,14 @@ function data_query_item_edit() {
 			and graph_templates_item.graph_template_id=" . $snmp_query_item["graph_template_id"] . "
 			group by data_template.id
 			order by data_template.name");
-		
+
 		$i = 0;
 		if (sizeof($data_templates) > 0) {
 		foreach ($data_templates as $data_template) {
 			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 					<td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
 				</tr>";
-			
+
 			$data_template_rrds = db_fetch_assoc("select
 				data_template_rrd.id,
 				data_template_rrd.data_source_name,
@@ -283,7 +283,7 @@ function data_query_item_edit() {
 				where data_template_rrd.data_template_id=" . $data_template["id"] . "
 				and data_template_rrd.local_data_id=0
 				order by data_template_rrd.data_source_name");
-			
+
 			$i = 0;
 			if (sizeof($data_template_rrds) > 0) {
 			foreach ($data_template_rrds as $data_template_rrd) {
@@ -292,7 +292,7 @@ function data_query_item_edit() {
 				}else{
 					$old_value = "on";
 				}
-				
+
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
 					<td>
@@ -308,13 +308,13 @@ function data_query_item_edit() {
 									<?php
 									$snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
 									$xml_outputs = array();
-									
+
 									while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
 										if ($field_array["direction"] == "output") {
-											$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;	
+											$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;
 										}
 									}
-									
+
 									form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
 								</td>
 								<td align="right">
@@ -329,13 +329,13 @@ function data_query_item_edit() {
 			}
 		}
 		}
-		
-		end_box();
-		
-		start_box("<strong>Suggested Values</strong>", "98%", $colors["header"], "0", "center", "");
-		
+
+		html_end_box();
+
+		html_start_box("<strong>Suggested Values</strong>", "98%", $colors["header"], "0", "center", "");
+
 		reset($data_templates);
-		
+
 		/* suggested values for data templates */
 		if (sizeof($data_templates) > 0) {
 		foreach ($data_templates as $data_template) {
@@ -347,15 +347,15 @@ function data_query_item_edit() {
 				where snmp_query_graph_id=" . $_GET["id"] . "
 				and data_template_id=" . $data_template["id"] . "
 				order by field_name,sequence");
-			
+
 			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 					<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
 				</tr>";
-			
+
 			$i = 0;
 			if (sizeof($suggested_values) > 0) {
 				print "<tr><td><table cellspacing='0' cellpadding='3' border='0' width='100%'>\n";
-				
+
 				foreach ($suggested_values as $suggested_value) {
 					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 					?>
@@ -375,10 +375,10 @@ function data_query_item_edit() {
 					</tr>
 					<?php
 				}
-				
+
 				print "</table></td></tr>\n";
 			}
-			
+
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 			?>
 				<td>
@@ -400,7 +400,7 @@ function data_query_item_edit() {
 			<?php
 		}
 		}
-		
+
 		/* suggested values for graphs templates */
 		$suggested_values = db_fetch_assoc("select
 			text,
@@ -409,15 +409,15 @@ function data_query_item_edit() {
 			from snmp_query_graph_sv
 			where snmp_query_graph_id=" . $_GET["id"] . "
 			order by field_name,sequence");
-		
+
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 				<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Graph Template - " . db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"]) . "</span></td>
 			</tr>";
-		
+
 		$i = 0;
 		if (sizeof($suggested_values) > 0) {
 			print "<tr><td><table cellspacing='0' cellpadding='3' border='0' width='100%'>\n";
-			
+
 			foreach ($suggested_values as $suggested_value) {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
@@ -437,10 +437,10 @@ function data_query_item_edit() {
 				</tr>
 				<?php
 			}
-			
+
 			print "</table></td></tr>\n";
 		}
-		
+
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 		?>
 			<td>
@@ -460,10 +460,10 @@ function data_query_item_edit() {
 			</td>
 		</tr>
 		<?php
-		
-		end_box();
+
+		html_end_box();
 	}
-	
+
 	form_save_button("data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
 }
 
@@ -478,16 +478,16 @@ function data_query_remove() {
 		include("./include/bottom_footer.php");
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		$snmp_query_graph = db_fetch_assoc("select id from snmp_query_graph where snmp_query_id=" . $_GET["id"]);
-		
+
 		if (sizeof($snmp_query_graph) > 0) {
 		foreach ($snmp_query_graph as $item) {
 			db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=" . $item["id"]);
 		}
 		}
-		
+
 		db_execute("delete from snmp_query where id=" . $_GET["id"]);
 		db_execute("delete from snmp_query_graph where snmp_query_id=" . $_GET["id"]);
 		db_execute("delete from host_template_snmp_query where snmp_query_id=" . $_GET["id"]);
@@ -498,26 +498,26 @@ function data_query_remove() {
 
 function data_query_edit() {
 	global $colors, $fields_data_query_edit, $config;
-	
+
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $snmp_query["name"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>Data Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Data Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	if (!empty($snmp_query["id"])) {
 		$xml_filename = str_replace("<path_cacti>", $config["base_path"], $snmp_query["xml_path"]);
-		
+
 		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
 			$text = "<font color='#0d7c09'><strong>Successfully located XML file</strong></font>";
 			$xml_file_exists = true;
@@ -525,20 +525,20 @@ function data_query_edit() {
 			$text = "<font color='#ff0000'><strong>Could not locate XML file.</strong></font>";
 			$xml_file_exists = false;
 		}
-		
-		start_box("", "98%", "aaaaaa", "3", "center", "");
+
+		html_start_box("", "98%", "aaaaaa", "3", "center", "");
 		print "<tr bgcolor='#f5f5f5'><td>$text</td></tr>";
-		end_box();
-		
+		html_end_box();
+
 		if ($xml_file_exists == true) {
-			start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
-			
+			html_start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+
 			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 					<td><span style='color: white; font-weight: bold;'>Name</span></td>
 					<td><span style='color: white; font-weight: bold;'>Graph Template Name</span></td>
 					<td></td>
 				</tr>";
-			
+
 			$snmp_query_graphs = db_fetch_assoc("select
 				snmp_query_graph.id,
 				graph_templates.name as graph_template_name,
@@ -547,7 +547,7 @@ function data_query_edit() {
 				left join graph_templates on snmp_query_graph.graph_template_id=graph_templates.id
 				where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . "
 				order by snmp_query_graph.name");
-			
+
 			$i = 0;
 			if (sizeof($snmp_query_graphs) > 0) {
 			foreach ($snmp_query_graphs as $snmp_query_graph) {
@@ -568,26 +568,26 @@ function data_query_edit() {
 			}else{
 				print "<tr><td><em>No Graph Templates Defined.</em></td></tr>";
 			}
-			
-			end_box();
+
+			html_end_box();
 		}
 	}
-	
+
 	form_save_button("data_queries.php");
 }
 
 function data_query() {
 	global $colors;
-	
-	start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
-	
+
+	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
-    	
+
 	$snmp_queries = db_fetch_assoc("select id,name from snmp_query order by name");
-	
+
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
 	foreach ($snmp_queries as $snmp_query) {
@@ -603,6 +603,6 @@ function data_query() {
 	<?php
 	}
 	}
-	end_box();	
+	html_end_box();
 }
 ?>

@@ -32,37 +32,37 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
 	case 'field_remove':
 		field_remove();
-	    
+
 		header("Location: data_input.php?action=edit&id=" . $_GET["data_input_id"]);
 		break;
 	case 'field_edit':
 		include_once("./include/top_header.php");
-		
+
 		field_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'remove':
 		data_remove();
-		
+
 		header("Location: data_input.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
-		
+
 		data_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		data();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -73,31 +73,31 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	global $registered_cacti_names;
-	
+
 	if (isset($_POST["save_component_data_input"])) {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_data_input($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["input_string"] = form_input_validate($_POST["input_string"], "input_string", "", true, 3);
 		$save["type_id"] = form_input_validate($_POST["type_id"], "type_id", "", true, 3);
-		
+
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, "data_input");
-			
+
 			if ($data_input_id) {
 				raise_message(1);
-				
+
 				/* get a list of each field so we can note their sequence of occurance in the database */
 				if (!empty($_POST["id"])) {
 					db_execute("update data_input_fields set sequence=0 where data_input_id=" . $_POST["id"]);
-					
+
 					generate_data_input_field_sequences($_POST["input_string"], $_POST["id"], "in");
 				}
 			}else{
 				raise_message(2);
 			}
 		}
-		
+
 		if ((is_error_message()) || (empty($_POST["id"]))) {
 			header("Location: data_input.php?action=edit&id=" . (empty($data_input_id) ? $_POST["id"] : $data_input_id));
 		}else{
@@ -115,13 +115,13 @@ function form_save() {
 		$save["type_code"] = form_input_validate((isset($_POST["type_code"]) ? $_POST["type_code"] : ""), "type_code", "", true, 3);
 		$save["regexp_match"] = form_input_validate((isset($_POST["regexp_match"]) ? $_POST["regexp_match"] : ""), "regexp_match", "", true, 3);
 		$save["allow_nulls"] = form_input_validate((isset($_POST["allow_nulls"]) ? $_POST["allow_nulls"] : ""), "allow_nulls", "", true, 3);
-		
+
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, "data_input_fields");
-			
+
 			if ($data_input_field_id) {
 				raise_message(1);
-				
+
 				if (!empty($data_input_field_id)) {
 					generate_data_input_field_sequences(db_fetch_cell("select " . $_POST["input_output"] . "put_string from data_input where id=" . $_POST["data_input_id"]), $_POST["data_input_id"], $_POST["input_output"]);
 				}
@@ -129,7 +129,7 @@ function form_save() {
 				raise_message(2);
 			}
 		}
-		
+
 		if (is_error_message()) {
 			header("Location: data_input.php?action=field_edit&data_input_id=" . $_POST["data_input_id"] . "&id=" . (empty($data_input_field_id) ? $_POST["id"] : $data_input_field_id) . (!empty($_POST["input_output"]) ? "&type=" . $_POST["input_output"] : ""));
 		}else{
@@ -144,21 +144,21 @@ function form_save() {
 
 function field_remove() {
 	global $registered_cacti_names;
-	
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", "data_input.php?action=edit&id=" . $_GET["data_input_id"], "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
 		include("./include/bottom_footer.php");
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		/* get information about the field we're going to delete so we can re-order the seqs */
 		$field = db_fetch_row("select input_output,data_input_id from data_input_fields where id=" . $_GET["id"]);
-		
+
 		db_execute("delete from data_input_fields where id=" . $_GET["id"]);
 		db_execute("delete from data_input_data where data_input_field_id=" . $_GET["id"]);
-		
+
 		/* when a field is deleted; we need to re-order the field sequences */
 		if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select " . $field["input_output"] . "put_string from data_input where id=" . $field["data_input_id"]), $matches)) {
 			$j = 0;
@@ -173,25 +173,25 @@ function field_remove() {
 
 function field_edit() {
 	global $colors, $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$field = db_fetch_row("select * from data_input_fields where id=" . $_GET["id"]);
 	}
-	
+
 	if (!empty($_GET["type"])) {
 		$current_field_type = $_GET["type"];
 	}else{
 		$current_field_type = $field["input_output"];
 	}
-	
+
 	if ($current_field_type == "out") {
 		$header_name = "Output";
 	}elseif ($current_field_type == "in") {
 		$header_name = "Input";
 	}
-	
+
 	$data_input = db_fetch_row("select type_id,name from data_input where id=" . $_GET["data_input_id"]);
-	
+
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select $current_field_type" . "put_string from data_input where id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches)) {
 		for ($i=0; ($i < count($matches[1])); $i++) {
@@ -201,24 +201,24 @@ function field_edit() {
 			}
 		}
 	}
-	
+
 	/* if there are no input fields to choose from, complain */
 	if ((!isset($array_field_names)) && (isset($_GET["type"]) ? $_GET["type"] == "in" : false) && ($data_input["type_id"] == "1")) {
 		display_custom_error_message("This script appears to have no input values, therefore there is nothing to add.");
 		return;
 	}
-	
-	start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
+
 	$form_array = array();
-	
+
 	/* field name */
 	if (($data_input["type_id"] == "1") && ($current_field_type == "in")) { /* script */
 		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
 	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($current_field_type == "out")) { /* snmp */
 		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, (isset($field) ? $field : array()));
 	}
-	
+
 	/* ONLY if the field is an input */
 	if ($current_field_type == "in") {
 		unset($fields_data_input_field_edit["update_rra"]);
@@ -227,17 +227,17 @@ function field_edit() {
 		unset($fields_data_input_field_edit["allow_nulls"]);
 		unset($fields_data_input_field_edit["type_code"]);
 	}
-	
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_GET)
 		));
-	
-	end_box();
-	
-	form_save_button("data_input.php?action=edit&id=" . $_GET["data_input_id"]);	
+
+	html_end_box();
+
+	form_save_button("data_input.php?action=edit&id=" . $_GET["data_input_id"]);
 }
-   
+
 /* -----------------------
     Data Input Functions
    ----------------------- */
@@ -249,7 +249,7 @@ function data_remove() {
 		include("./include/bottom_footer.php");
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from data_input where id=" . $_GET["id"]);
 		db_execute("delete from data_input_fields where data_input_id=" . $_GET["id"]);
@@ -259,33 +259,33 @@ function data_remove() {
 
 function data_edit() {
 	global $colors, $fields_data_input_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $data_input["name"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>Data Input Methods</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Data Input Methods</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	if (!empty($_GET["id"])) {
-		start_box("<strong>Input Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>Input Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Friendly Name",$colors["header_text"],2);
 		print "</tr>";
-	    
+
 		$fields = db_fetch_assoc("select id,data_name,name,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='in' order by sequence");
-		
+
 		$i = 0;
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
@@ -300,8 +300,8 @@ function data_edit() {
 				<td>
 					<?php print $field["name"];?>
 				</td>
-				<td width="1%" align="right">
-					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<td align="right">
+					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -309,18 +309,18 @@ function data_edit() {
 		}else{
 			print "<tr><td><em>No Input Fields</em></td></tr>";
 		}
-		end_box();
-		
-		start_box("<strong>Output Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
+		html_end_box();
+
+		html_start_box("<strong>Output Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Friendly Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Update RRA",$colors["header_text"],2);
 		print "</tr>";
-	
+
 		$fields = db_fetch_assoc("select id,name,data_name,update_rra,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' order by sequence");
-		
+
 		$i = 0;
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
@@ -338,8 +338,8 @@ function data_edit() {
 				<td>
 					<?php print html_boolean_friendly($field["update_rra"]);?>
 				</td>
-				<td width="1%" align="right">
-					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<td align="right">
+					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -347,24 +347,24 @@ function data_edit() {
 		}else{
 			print "<tr><td><em>No Output Fields</em></td></tr>";
 		}
-		end_box();
+		html_end_box();
 	}
-	
+
 	form_save_button("data_input.php");
 }
 
 function data() {
 	global $colors;
-	
-	start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
-	
+
+	html_start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
-    	
+
 	$data_inputs = db_fetch_assoc("select * from data_input order by name");
-	
+
 	$i = 0;
 	if (sizeof($data_inputs) > 0) {
 	foreach ($data_inputs as $data_input) {
@@ -382,6 +382,6 @@ function data() {
 	}else{
 		print "<tr><td><em>No Data Input Methods</em></td></tr>";
 	}
-	end_box();	
+	html_end_box();
 }
 ?>

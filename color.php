@@ -32,25 +32,25 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
-		break;          
+
+		break;
 	case 'remove':
 		color_remove();
-	    
+
 		header ("Location: color.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
-		
+
 		color_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		color();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -63,17 +63,17 @@ function form_save() {
 	if (isset($_POST["save_component_color"])) {
 		$save["id"] = $_POST["id"];
 		$save["hex"] = form_input_validate($_POST["hex"], "hex", "^[a-fA-F0-9]+$", false, 3);
-		
+
 		if (!is_error_message()) {
 			$color_id = sql_save($save, "colors");
-			
+
 			if ($color_id) {
 				raise_message(1);
 			}else{
 				raise_message(2);
 			}
 		}
-		
+
 		if (is_error_message()) {
 			header("Location: color.php?action=edit&id=" . (empty($color_id) ? $_POST["id"] : $color_id));
 		}else{
@@ -87,36 +87,36 @@ function form_save() {
    ----------------------- */
 
 function color_remove() {
-	db_execute("delete from colors where id=" . $_GET["id"]);	
+	db_execute("delete from colors where id=" . $_GET["id"]);
 }
 
 function color_edit() {
 	global $colors, $fields_color_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $color["hex"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>Colors</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-    	
+
+	html_start_box("<strong>Colors</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))
 		));
-	
-	end_box();
-	
+
+	html_end_box();
+
 	form_save_button("color.php");
 }
 
 function color() {
 	global $colors;
-	
-	start_box("<strong>Colors</strong>", "98%", $colors["header"], "3", "center", "color.php?action=edit");
-	
+
+	html_start_box("<strong>Colors</strong>", "98%", $colors["header"], "3", "center", "color.php?action=edit");
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
@@ -127,9 +127,9 @@ function color() {
                 DrawMatrixHeaderItem("Color",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
-    
+
 	$color_list = db_fetch_assoc("select * from colors order by hex");
-	
+
 	$i = 0;
 	if (sizeof($color_list) > 0) {
 		$j=0; ## even/odd counter
@@ -167,7 +167,7 @@ function color() {
 			<?php
 		}
 	}
-	end_box();	
+	html_end_box();
 }
-   
+
 ?>

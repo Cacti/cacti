@@ -32,25 +32,25 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
-		
+
 		break;
     	case 'remove':
 		rra_remove();
-		
+
 		header("Location: rra.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
-		
+
 		rra_edit();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
-		
+
 		rra();
-		
+
 		include_once("./include/bottom_footer.php");
 		break;
 }
@@ -68,18 +68,18 @@ function form_save() {
 		$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
 		$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
 		$save["timespan"] = form_input_validate($_POST["timespan"], "timespan", "^[0-9]*$", false, 3);
-		
+
 		if (!is_error_message()) {
 			$rra_id = sql_save($save, "rra");
-			
+
 			if ($rra_id) {
 				raise_message(1);
-				
-				db_execute("delete from rra_cf where rra_id=$rra_id"); 
-				
+
+				db_execute("delete from rra_cf where rra_id=$rra_id");
+
 				if (isset($_POST["consolidation_function_id"])) {
 					for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
-						db_execute("insert into rra_cf (rra_id,consolidation_function_id) 
+						db_execute("insert into rra_cf (rra_id,consolidation_function_id)
 							values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
 					}
 				}
@@ -87,7 +87,7 @@ function form_save() {
 				raise_message(2);
 			}
 		}
-		
+
 		if (is_error_message()) {
 			header("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
 		}else{
@@ -106,49 +106,49 @@ function rra_remove() {
 		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . db_fetch_cell("select name from rra where id=" . $_GET["id"]) . "'</strong>?", "rra.php", "rra.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
-	
+
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from rra where id=" . $_GET["id"]);
 		db_execute("delete from rra_cf where rra_id=" . $_GET["id"]);
-    	}	
+    	}
 }
 
 function rra_edit() {
 	global $colors, $fields_rra_edit;
-	
+
 	if (!empty($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $rra["name"] . "]";
 	}else{
 		$header_label = "[new]";
 	}
-	
-	start_box("<strong>Round Robin Archives</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
+
+	html_start_box("<strong>Round Robin Archives</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_rra_edit, (isset($rra) ? $rra : array()))
 		));
-	
-	end_box();
-	
-	form_save_button("rra.php");	
+
+	html_end_box();
+
+	form_save_button("rra.php");
 }
 
 function rra() {
 	global $colors;
-	
-	start_box("<strong>Round Robin Archives</strong>", "98%", $colors["header"], "3", "center", "rra.php?action=edit");
-	
+
+	html_start_box("<strong>Round Robin Archives</strong>", "98%", $colors["header"], "3", "center", "rra.php?action=edit");
+
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Steps",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Rows",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Timespan",$colors["header_text"],2);
 	print "</tr>";
-    
+
 	$rras = db_fetch_assoc("select id,name,rows,steps,timespan from rra order by steps");
-	
+
 	$i = 0;
 	if (sizeof($rras) > 0) {
 	foreach ($rras as $rra) {
@@ -173,6 +173,6 @@ function rra() {
 	<?php
 	}
 	}
-	end_box();	
+	html_end_box();
 }
 ?>

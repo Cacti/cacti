@@ -27,19 +27,19 @@
 $using_guest_account = false;
 $show_console_tab = true;
 
-include_once($config["library_path"] . "/tree_view.php");
+include_once($config["library_path"] . "/html_tree.php");
 include_once($config["library_path"] . "/rrd.php");
 
 if (read_config_option("global_auth") == "on") {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
 	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
-	
+
 	/* find out if we are logged in as a 'guest user' or not */
 	if (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"]) {
 		$using_guest_account = true;
 	}
-	
+
 	/* find out if we should show the "console" tab or not, based on this user's permissions */
 	if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where realm_id=8 and user_id=" . $_SESSION["sess_user_id"])) == 0) {
 		$show_console_tab = false;
@@ -68,9 +68,9 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 /* setup tree selection defaults if the user has not been here before */
 if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["action"] == "tree") && (!isset($_SESSION["sess_has_viewed_graphs"]))) {
 	$_SESSION["sess_has_viewed_graphs"] = true;
-	
+
 	$first_branch = find_first_folder_url();
-	
+
 	if (!empty($first_branch)) {
 		header("Location: $first_branch");
 	}
@@ -82,7 +82,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 	<title>cacti</title>
 	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";?>
 	<link href="include/main.css" rel="stylesheet">
-	
+
 	<script src="include/treeview/ua.js"></script>
 	<script src="include/treeview/ftiens4.js"></script>
 </head>
@@ -133,10 +133,10 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
 		</td>
 		<td bgcolor="#ffffff" colspan="1" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;">
-		
+
 		</td>
 	</tr>
-	
+
 	<?php if ((basename($_SERVER["PHP_SELF"]) == "graph.php") && ($_REQUEST["action"] == "properties")) {?>
 	<tr>
 		<td valign="top" height="1" colspan="3" bgcolor="#efefef">
@@ -147,23 +147,23 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 		</td>
 	</tr>
 	<?php }?>
-	
+
 	<tr>
 		<?php if ((read_graph_config_option("default_tree_view_mode") == "2") && (($_REQUEST["action"] == "tree") || ((isset($_REQUEST["view_type"]) ? $_REQUEST["view_type"] : "") == "tree"))) { ?>
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='200'>
 			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></font></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
 			<script type="text/javascript">initializeDocument();</script>
-			
+
 			<?php if (isset($_GET["select_first"])) { ?>
 			<script type="text/javascript">
 			var obj;
 			obj = findObj(1);
-			
+
 			if (!obj.isOpen) {
 				clickOnNode(1);
 			}
-			
+
 			clickOnLink(2,'','main');
 			</script>
 			<?php } ?>
