@@ -79,13 +79,13 @@ function push_out_data_source_item($data_template_rrd_id) {
 	if ($data_template_rrd[data_template_id] == 0) { return 0; }
 	
 	/* loop through each data source column name (from the above array) */
-	for ($i=0; ($i < count($struct_data_source_item)); $i++) {
-		$current_name = str_replace("FORCE:", "", $struct_data_source_item[$i]);
-		$value_type = "t_$current_name";
+	while (list($field_name, $field_array) = each($struct_data_source_item)) {
+		//$current_name = str_replace("FORCE:", "", $struct_data_source_item[$i]);
+		$value_type = "t_$field_name";
 		
 		/* are we allowed to push out the column? */
-		if (($data_template_rrd[$value_type] == "") || (ereg("FORCE:", $struct_data_source_item[$i]))) {
-			db_execute("update data_template_rrd set $current_name='$data_template_rrd[$current_name]' where local_data_template_rrd_id=$data_template_rrd[id]"); 
+		if (($data_template_rrd[$value_type] == "") || (ereg("FORCE:", $field_name))) {
+			db_execute("update data_template_rrd set $field_name='$data_template_rrd[$field_name]' where local_data_template_rrd_id=$data_template_rrd[id]"); 
 		}
 	}
 }
@@ -101,13 +101,13 @@ function push_out_data_source($data_template_data_id) {
 	if ($data_template_data[data_template_id] == 0) { return 0; }
 	
 	/* loop through each data source column name (from the above array) */
-	for ($i=0; ($i < count($struct_data_source)); $i++) {
-		$current_name = str_replace("FORCE:", "", $struct_data_source[$i]);
-		$value_type = "t_$current_name";
+	while (list($field_name, $field_array) = each($struct_data_source)) {
+		//$current_name = str_replace("FORCE:", "", $struct_data_source[$i]);
+		$value_type = "t_$field_name";
 		
 		/* are we allowed to push out the column? */
-		if (($data_template_data[$value_type] == "") || (ereg("FORCE:", $struct_data_source[$i]))) {
-			db_execute("update data_template_data set $current_name='$data_template_data[$current_name]' where local_data_template_data_id=$data_template_data[id]"); 
+		if (($data_template_data[$value_type] == "") || (ereg("FORCE:", $field_name))) {
+			db_execute("update data_template_data set $field_name='$data_template_data[$field_name]' where local_data_template_data_id=$data_template_data[id]"); 
 		}
 	}
 }
@@ -245,13 +245,12 @@ function push_out_graph($graph_template_graph_id) {
 	if ($graph_template_graph[graph_template_id] == 0) { return 0; }
 	
 	/* loop through each graph column name (from the above array) */
-	for ($i=0; ($i < count($struct_graph)); $i++) {
-		$current_name = $struct_graph[$i];
-		$value_type = "t_$current_name";
+	while (list($field_name, $field_array) = each($struct_graph)) {
+		$value_type = "t_$field_name";
 		
 		/* are we allowed to push out the column? */
 		if ($graph_template_graph[$value_type] == "") {
-			db_execute("update graph_templates_graph set $current_name='$graph_template_graph[$current_name]' where local_graph_template_graph_id=$graph_template_graph[id]"); 
+			db_execute("update graph_templates_graph set $field_name='$graph_template_graph[$field_name]' where local_graph_template_graph_id=$graph_template_graph[id]"); 
 		}
 	}
 }
@@ -281,12 +280,10 @@ function push_out_graph_item($graph_template_item_id) {
 	$graph_item_inputs = array_rekey($graph_item_inputs, "column_name", "graph_template_item_id");
 	
 	/* loop through each graph item column name (from the above array) */
-	for ($i=0; ($i < count($struct_graph_item)); $i++) {
-		$current_name = $struct_graph_item[$i];
-		
+	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
-		if ($graph_item_inputs[$current_name] != $graph_template_item_id) {
-			db_execute("update graph_templates_item set $current_name='$graph_template_item[$current_name]' where local_graph_template_item_id=$graph_template_item[id]"); 
+		if ($graph_item_inputs[$field_name] != $graph_template_item_id) {
+			db_execute("update graph_templates_item set $field_name='$graph_template_item[$field_name]' where local_graph_template_item_id=$graph_template_item[id]"); 
 		}
 	}
 }
@@ -321,11 +318,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	$save["order_key"] = $graph_list["order_key"];
 	
 	/* loop through the "templated field names" to find to the rest... */
-	for ($i=0; ($i < count($struct_graph)); $i++) {
-		$current_name = $struct_graph[$i];
-		$value_type = "t_$current_name";
+	while (list($field_name, $field_array) = each($struct_graph)) {
+		$value_type = "t_$field_name";
 		
-		if ($template_graph_list[$value_type] == "on") { $save[$current_name] = $graph_list[$current_name]; }else{ $save[$current_name] = $template_graph_list[$current_name]; }
+		if ($template_graph_list[$value_type] == "on") { $save[$field_name] = $graph_list[$field_name]; }else{ $save[$field_name] = $template_graph_list[$field_name]; }
 	}
 	
 	sql_save($save, "graph_templates_graph");
@@ -356,10 +352,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 				$save["id"] = $graph_items_list[$k]["id"];
 				
 				/* make a first pass filling in ALL values from template */
-				for ($i=0; ($i < count($struct_graph_item)); $i++) {
-					$current_name = $struct_graph_item[$i];
-					
-					$save[$current_name] = $template_item[$current_name];
+				while (list($field_name, $field_array) = each($struct_graph_item)) {
+					$save[$field_name] = $template_item[$field_name];
 				}
 				
 				/* go back a second time and fill in the INPUT values from the graph */
@@ -376,10 +370,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 				$save["id"] = 0;
 				
 				if ($intrusive == true) {
-					for ($i=0; ($i < count($struct_graph_item)); $i++) {
-						$current_name = $struct_graph_item[$i];
-						
-						$save[$current_name] = $template_item[$current_name];
+					while (list($field_name, $field_array) = each($struct_graph_item)) {
+						$save[$field_name] = $template_item[$field_name];
 					}
 				}else{
 					unset($save);
