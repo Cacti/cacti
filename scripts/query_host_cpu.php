@@ -52,6 +52,7 @@ function get_cpu_usage($hostname, $snmp_community) {
 	for ($i=0;($i<sizeof($arr));$i++) {
 		if (ereg("^[0-9]+$", $arr[$i])) {
 			$return_arr[$j] = $arr[$i];
+			$j++;
 		}
 	}
 	
