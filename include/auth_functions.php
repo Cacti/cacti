@@ -36,7 +36,6 @@ function DrawMenu($userid, $menuid) {
     /* set up the available menu headers */
     $menu = array("Graph Setup"    => array(
 					    "graphs.php" => "Graph Management",
-					    
 					    "tree.php" => "Graph Trees",
 					    "color.php" => "Colors"
 					    ),
@@ -50,7 +49,6 @@ function DrawMenu($userid, $menuid) {
 					    "host.php" => 'Polling Hosts',
 					    "rra.php" => "Available RRA's",
 					    "data_input.php" => "Data Input Methods",
-					    "pzones.php" => "Polling Zones",
 					    "cdef.php" => "CDEF's"
 					    ),
 		  "Configuration"  => array(
