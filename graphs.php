@@ -46,11 +46,8 @@ switch ($_REQUEST["action"]) {
 		
 		break;
 	case 'actions':
-		include_once ("include/top_header.php");
-		
 		form_actions();
 		
-		include_once ("include/bottom_footer.php");
 		break;
 	case 'graph_diff':
 		include_once ("include/top_header.php");
@@ -253,6 +250,7 @@ function form_save() {
 	if (isset($_POST["save_component_item"])) {
 		$save["id"] = $_POST["graph_template_item_id"];
 		$save["graph_template_id"] = $_POST["graph_template_id"];
+		$save["local_graph_template_item_id"] = $_POST["local_graph_template_item_id"];
 		$save["local_graph_id"] = $_POST["local_graph_id"];
 		$save["task_item_id"] = form_input_validate($_POST["task_item_id"], "task_item_id", "", true, 3);
 		$save["color_id"] = form_input_validate($_POST["color_id"], "color_id", "", true, 3);
@@ -301,26 +299,65 @@ function form_save() {
 function form_actions() {
 	include_once ("include/tree_functions.php");
 	include_once ("include/tree_view_functions.php");
+	include_once ("include/utility_functions.php");
 	
 	global $colors, $graph_actions;
+	
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		
+		if ($_POST["drp_action"] == "1") { /* delete */
+			db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "local_graph_id"));
+			db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "local_graph_id"));
+			db_execute("delete from graph_tree_items where " . array_to_sql_or($selected_items, "local_graph_id"));
+			db_execute("delete from graph_local where " . array_to_sql_or($selected_items, "id"));
+		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
+			for ($i=0;($i<count($selected_items));$i++) {
+				change_graph_template($selected_items[$i], $_POST["graph_template_id"], true);	
+			}
+		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				duplicate_graph($selected_items[$i], $_POST["title_format"]);
+			}
+		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+			for ($i=0;($i<count($selected_items));$i++) {
+				$tree = db_fetch_row("select graph_tree_id,order_key from graph_tree_items where id=" . $_POST["tree_item_id"]);
+				$order_key = get_next_tree_id($tree["order_key"],"graph_tree_items","order_key");
+				
+				db_execute("insert into graph_tree_items (graph_tree_id,title,order_key,local_graph_id,rra_id)
+					values (" . $tree["graph_tree_id"] . ",'','$order_key'," . $selected_items[$i] . ",
+					1)");
+			}
+		}
+		
+		header("Location: graphs.php");
+		exit;
+	}
+	
+	/* setup some variables */
+	$graph_list = ""; $i = 0;
+	
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			$graph_list .= "<li>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $matches[1]) . "<br>";
+			$graph_array[$i] = $matches[1];
+		}
+		
+		$i++;
+	}
+	
+	include_once ("include/top_header.php");
 	
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 	
 	start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 	
-	$graph_list = "";
-	
-	while (list($var,$val) = each($_POST)) {
-		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
-			$graph_list .= "<li>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $matches[1]) . "<br>";
-			$graph_array{$matches[1]} = $matches[1];
-		}
-	}
-	
 	print "<form action='graphs.php' method='post'>\n";
 	
-	if ($_POST["drp_action"] == "1") {
+	if ($_POST["drp_action"] == "1") { /* delete */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Are you sure you want to delete the following graphs?</p>
@@ -328,7 +365,7 @@ function form_actions() {
 				</td>
 			</tr>\n
 			";
-	}elseif ($_POST["drp_action"] == "2") {
+	}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Choose a graph template and click save to change the graph template for
@@ -339,7 +376,7 @@ function form_actions() {
 				</td>
 			</tr>\n
 			";
-	}elseif ($_POST["drp_action"] == "3") {
+	}elseif ($_POST["drp_action"] == "3") { /* duplicate */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>When you click save, the following graphs will be duplicated. You can
@@ -349,7 +386,7 @@ function form_actions() {
 				</td>
 			</tr>\n
 			";
-	}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) {
+	}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>When you click save, the following graphs will be place under the branch selected
@@ -363,13 +400,18 @@ function form_actions() {
 	
 	print "	<tr>
 			<td align='right' bgcolor='#eaeaea'>
-				<a href='graphs.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>\n
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . serialize($graph_array) . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='graphs.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>
 			</td>
 		</tr>
 		";	
 	
 	end_box();
+	
+	include_once ("include/bottom_footer.php");
 }
 
 /* -----------------------
@@ -599,12 +641,12 @@ function item_edit() {
 	
 	<?php
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
-	$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["id"] . " order by sequence_parent DESC,sequence DESC");
-
+	$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence DESC");
+	
 	if (sizeof($default) > 0) {
-		$default_item = $default["task_item_id"];
+		$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
 	}else{
-		$default_item = 0;
+		$struct_graph_item["task_item_id"]["default"] = 0;
 	}
 	
 	$i = 0;
@@ -624,8 +666,9 @@ function item_edit() {
 		print "</tr>\n";
 	}
 	
-	form_hidden_id("local_graph_id",$_GET["id"]);
+	form_hidden_id("local_graph_id",$_GET["local_graph_id"]);
 	form_hidden_id("graph_template_item_id",(isset($template_item) ? $template_item["id"] : "0"));
+	form_hidden_id("local_graph_template_item_id",(isset($template_item) ? $template_item["local_graph_template_item_id"] : "0"));
 	form_hidden_id("graph_template_id",(isset($template_item) ? $template_item["graph_template_id"] : "0"));
 	form_hidden_id("sequence",(isset($template_item) ? $template_item["sequence"] : "0"));
 	form_hidden_id("_graph_type_id",(isset($template_item) ? $template_item["graph_type_id"] : "0"));
@@ -993,7 +1036,7 @@ function graph() {
 	
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_id" method="post">
+		<form name="form_graph_id">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
@@ -1077,7 +1120,22 @@ function graph() {
 			order by graph_templates_graph.title
 			limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 	}
+	
+	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
+	user can jump straight to it */
+	$page_number = 0; $url_page_select = "";
+	for ($i=0; ($i<$total_rows); $i += ROWS_PER_PAGE) {
+		$page_number++;
 		
+		if ($_REQUEST["page"] == $page_number) {
+			$url_page_select .= "<strong><a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a></strong>";
+		}else{
+			$url_page_select .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=$page_number'>$page_number</a>";
+		}
+		
+		if (($i+ROWS_PER_PAGE) < $total_rows) { $url_page_select .= ","; }
+	}
+	
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='4'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
@@ -1086,7 +1144,7 @@ function graph() {
 							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } print "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows
+							Showing Rows " . ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
 							<strong>"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
@@ -1110,7 +1168,7 @@ function graph() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
 			</td>
 			<td>
 				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
@@ -1133,22 +1191,24 @@ function graph() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 	
-	print "	<table align='center' width='98%'>
-			<tr>
-				<td width='1' valign='top'>
-					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
-				</td>
-				<td align='right'>";
-					form_base_dropdown("drp_action",$graph_actions,"","","1","","");
-	print "			</td>
-				<td width='1' align='right'>
-					<input type='image' src='images/button_go.gif' alt='Create Graphs'>
-				</td>
-			</tr>
-		</table>
-		<input type='hidden' name='action' value='actions'>
-		</form>
-		<br>";
+	?>
+	<table align='center' width='98%'>
+		<tr>
+			<td width='1' valign='top'>
+				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+			</td>
+			<td align='right'>
+				<?php form_base_dropdown("drp_action",$graph_actions,"","","1","","");?>
+			</td>
+			<td width='1' align='right'>
+				<input type='image' src='images/button_go.gif' alt='Go'>
+			</td>
+		</tr>
+	</table>
+	
+	<input type='hidden' name='action' value='actions'>
+	</form>
+	<?php
 }
 
 ?>
