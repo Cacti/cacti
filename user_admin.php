@@ -119,6 +119,13 @@ function form_save() {
 			$password = md5($_POST["password"]);
 		}
 
+		/* check duplicate username on new user */
+		if (empty($_POST["id"])) {
+			if (sizeof(db_fetch_row("select * from user_auth where realm = 0 and username = '" . $_POST["username"] . "'"))) {
+				raise_message(12);	
+			}
+		}
+
 		/* check to make sure the passwords match; if not error */
 		if ($_POST["password"] != $_POST["password_confirm"]) {
 			raise_message(4);

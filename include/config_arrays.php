@@ -46,11 +46,14 @@ $messages = array(
 	7  => array(
 		"message" => 'XML parse error.',
 		"type" => "error"),
+	12 => array(
+		"message" => 'Username already in use.',
+		"type" => "error"),
 	15 => array(
 		"message" => 'XML: Cacti version does not exist.',
 		"type" => "error"),
 	16 => array(
-		"message" => 'XML: Generated with an unknown (probably newer) version of Cacti.',
+		"message" => 'XML: Hash version does not exist.',
 		"type" => "error"),
 	17 => array(
 		"message" => 'XML: Generated with a newer version of Cacti.',
@@ -341,8 +344,7 @@ $hash_version_codes = array(
 	"0.8.5a" => "0002",
 	"0.8.6" => "0003",
 	"0.8.6a" => "0004",
-	"0.8.6b" => "0005",
-	"0.8.6c" => "0006"
+	"0.8.6b" => "0005"
 	);
 
 $hash_type_names = array(
