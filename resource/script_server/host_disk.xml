@@ -8,7 +8,9 @@
 	<arg_query>query</arg_query>
 	<arg_get>get</arg_get>
 	<output_delimeter>!</output_delimeter>
+	<index_order>hrStorageDescr:hrStorageIndex</index_order>
 	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
 
 	<fields>
 		<hrStorageIndex>

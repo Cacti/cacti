@@ -7,7 +7,9 @@
 	<arg_get>get</arg_get>
 	<arg_num_indexes>num_indexes</arg_num_indexes>
 	<output_delimeter>:</output_delimeter>
+	<index_order>dskDevice</index_order>
 	<index_order_type>alphabetic</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
 
 	<fields>
 		<dskDevice>
