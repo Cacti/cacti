@@ -69,6 +69,20 @@ start_box("<strong>About Cacti</strong>", "98%", $colors["header"], "3", "center
 		</ul>
 		</p>
 		
+		<p><strong>License</strong><br>
+		
+		<p>Cacti is licensed under the GNU GPL:</p>
+		
+		<p><tt>This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.</tt></p>
+
+<p><tt>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</tt></p>
+		
 		<p><strong>Cacti Variables</a></strong><span style="font-family: monospace; font-size: 10px;"><br>
 		<strong>Operating System:</strong> <?php print $config["cacti_server_os"];?><br>
 		<strong>PHP SNMP Support:</strong> <?php print $config["php_snmp_support"] ? "yes" : "no";?><br>
