@@ -342,7 +342,7 @@ if ($_REQUEST["step"] == "4") {
 						<p>Below is the status of your 0.6.8 -> 0.8 database import. Please make sure to take note
 						of any errors, as those items might have to be individually imported.</p>
 						
-						<?
+						<?php
 						for ($i=0;($i<count($status_array));$i++) {
 							while (list($type, $arr) = each($status_array[$i])) {
 								$spew = false;
