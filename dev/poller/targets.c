@@ -16,7 +16,8 @@ int get_targets(){
   }
   sprintf(query, "select action,command,management_ip,snmp_community, \
     snmp_version, snmp_username, snmp_password, rrd_name, rrd_path, \
-    arg1, arg2, arg3 from data_input_data_cache, local_data_id order by local_data_id");
+    arg1, arg2, arg3, local_data_id from data_input_data_cache order \
+    by local_data_id");
   if (mysql_query(&mysql, query)) fprintf(stderr, "Error in query\n");
   if ((result = mysql_store_result(&mysql)) == NULL){
     fprintf(stderr, "Error retrieving data\n");

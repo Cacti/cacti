@@ -28,8 +28,11 @@ void *poller(void *thread_args){
       printf("[%i] get %s %i (queue %d)\n", worker->index, current->management_ip, \
         current->action, threads->work_count);
       entry = current;
-      if (current->next != NULL) current = current->next;
-      else current = NULL;
+      if (current->next != NULL){
+        current = current->next;
+        if(entry->local_data_id == current->local_data_id) printf("multi DS rra\n");
+      } else current = NULL;
+      printf("debug1\n");
       if(entry->action == 0){
       //do snmp stuff
         printf("[%i] snmp_get(%s,%s,%i,%s,%i)\n",worker->index, entry->management_ip, \
@@ -38,6 +41,8 @@ void *poller(void *thread_args){
           entry->snmp_version, entry->arg1, worker->index);
         printf("[%i] snmp_get() done\n",worker->index);
       } else if(entry->action == 1){
+        printf("debug\n");
+	result = 0;
       //execute external program and read data from stdout
         printf("[%i] exec(%s)\n", worker->index, entry->command);
         cmd_stdout=popen(entry->command, "r");
