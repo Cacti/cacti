@@ -81,6 +81,7 @@ switch ($action) {
 	case 'item_save':
 		$save["id"] = $form["graph_template_item_id"];
 		$save["graph_template_id"] = $form["graph_template_id"];
+		$save["local_graph_id"] = 0;
 		$save["task_item_id"] = $form["task_item_id"];
 		$save["color_id"] = $form["color_id"];
 		$save["graph_type_id"] = $form["graph_type_id"];
