@@ -68,7 +68,7 @@ $first_host = 0;
 $last_host = 0;
 
 /* Update web paths for the poller */
-db_execute("replace into settings (name,value) values ('path_webroot','" . addslashes(dirname(__FILE__)) . "')");
+db_execute("replace into settings (name,value) values ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1) : dirname(__FILE__)) . "')");
 
 // Obtain some defaults from the database
 $poller = read_config_option("poller_type");
