@@ -186,7 +186,7 @@ function host_remove() {
 
 function host_new_graphs_save() {
 	include_once ("include/utility_functions.php");
-	include_once ("include/xml_functions.php");
+	include_once ("include/snmp_functions.php");
 	
 	global $struct_graph, $struct_data_source, $struct_graph_item, $struct_data_source_item, $paths;
 	
@@ -210,8 +210,7 @@ function host_new_graphs_save() {
 				
 				$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=$snmp_query_graph_id");
 				
-				$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id"))));
-				$snmp_query_array = xml2array($data);
+				$snmp_query_array = get_snmp_query_array($snmp_query_id);
 			}
 			
 			unset($save);
@@ -422,7 +421,7 @@ function host_new_graphs_save() {
 }
 
 function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
-	include_once ("include/xml_functions.php");
+	include_once ("include/snmp_functions.php");
 	include_once ("include/top_header.php");
 	
 	global $colors, $paths, $struct_graph, $row_counter, $struct_data_source, $struct_graph_item, $struct_data_source_item;
@@ -480,8 +479,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 								the SNMP host.
 							</td>";
 					
-					$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
-					$snmp_queries = xml2array($data);
+					$snmp_queries = get_snmp_query_array($snmp_query_id);
+					
 					$xml_outputs = array();
 					
 					/* list each of the input fields for this snmp query */
@@ -685,7 +684,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 }
 
 function host_edit() {
-	include_once ("include/xml_functions.php");
+	include_once ("include/snmp_functions.php");
 	
 	global $colors, $snmp_versions, $paths;
 	
@@ -846,8 +845,7 @@ function host_edit() {
 		
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
-			$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
-			$xml_array = xml2array($data);
+			$xml_array = get_snmp_query_array($snmp_query["id"]);
 			$xml_outputs = array();
 			
 			$num_input_fields = 0;

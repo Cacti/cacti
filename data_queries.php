@@ -238,7 +238,7 @@ function snmp_item_remove() {
 }
 
 function snmp_item_edit() {
-	include_once ("include/xml_functions.php");
+	include_once ("include/snmp_functions.php");
 	
 	global $colors, $paths;
 	
@@ -327,8 +327,7 @@ function snmp_item_edit() {
 								</td>
 								<td width="1">
 									<?php
-									$data = implode("",file(str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"])));
-									$snmp_queries = xml2array($data);
+									$snmp_queries = get_snmp_query_array($snmp_query["id"]);
 									$xml_outputs = array();
 									
 									while (list($field_name, $field_array) = each($snmp_queries["fields"][0])) {
@@ -531,9 +530,7 @@ function snmp_remove() {
 }
 
 function snmp_edit() {
-	include_once ("include/xml_functions.php");
-	
-	global $colors, $paths, $snmp_query_field_actions;
+	global $colors, $snmp_query_field_actions;
 	
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
