@@ -279,6 +279,22 @@ function grow_dhtml_trees() {
 	
 	$tree_list = get_graph_tree_array();
 	
+	/* auth check for hosts on the trees */
+	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("select policy_hosts from user_auth where id=" . $_SESSION["sess_user_id"]);
+		
+		$sql_join = "left join user_auth_perms on (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
+		
+		if ($current_user["policy_hosts"] == "1") {
+			$sql_where = "and !(user_auth_perms.user_id is not null and graph_tree_items.host_id > 0)";
+		}elseif ($current_user["policy_hosts"] == "2") {
+			$sql_where = "and !(user_auth_perms.user_id is null and graph_tree_items.host_id > 0)";
+		}
+	}else{
+		$sql_join = "";
+		$sql_where = "";
+	}
+	
 	if (sizeof($tree_list) > 0) {
 	foreach ($tree_list as $tree) {
 		$heirarchy = db_fetch_assoc("select
@@ -286,10 +302,13 @@ function grow_dhtml_trees() {
 			graph_tree_items.title,
 			graph_tree_items.order_key,
 			graph_tree_items.host_id,
-			CONCAT_WS('',host.description,' (',host.hostname,')') as hostname
+			CONCAT_WS('',host.description,' (',host.hostname,')') as hostname,
+			user_auth_perms.user_id
 			from graph_tree_items
 			left join host on host.id=graph_tree_items.host_id
+			$sql_join
 			where graph_tree_items.graph_tree_id=" . $tree["id"] . "
+			$sql_where
 			and graph_tree_items.local_graph_id = 0
 			order by graph_tree_items.order_key");
 		
