@@ -1,0 +1,26 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "cacti_win32_service", "cacti_win32_service.vbproj", "{DF16AF0A-CE31-4BB7-BF90-8120C7A84B6F}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "cacti_win32_service Setup", "..\cacti_win32_service Setup\cacti_win32_service Setup.vdproj", "{04E280EB-FE19-4DD1-AA96-3F00440CBF29}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{DF16AF0A-CE31-4BB7-BF90-8120C7A84B6F}.Debug.ActiveCfg = Debug|.NET
+		{DF16AF0A-CE31-4BB7-BF90-8120C7A84B6F}.Debug.Build.0 = Debug|.NET
+		{DF16AF0A-CE31-4BB7-BF90-8120C7A84B6F}.Release.ActiveCfg = Release|.NET
+		{DF16AF0A-CE31-4BB7-BF90-8120C7A84B6F}.Release.Build.0 = Release|.NET
+		{04E280EB-FE19-4DD1-AA96-3F00440CBF29}.Debug.ActiveCfg = Debug
+		{04E280EB-FE19-4DD1-AA96-3F00440CBF29}.Release.ActiveCfg = Release
+		{04E280EB-FE19-4DD1-AA96-3F00440CBF29}.Release.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
