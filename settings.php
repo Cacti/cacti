@@ -43,7 +43,7 @@ switch ($_REQUEST["action"]) {
 				}
 				}
 			}else{
-				db_execute("replace into settings (name,value) values ('$setting', '$_POST[$setting]')");
+				db_execute("replace into settings (name,value) values ('$setting', '" . (isset($_POST[$setting]) ? $_POST[$setting] : "") . "')");
 			}
 		}
 	}
