@@ -40,35 +40,6 @@ switch ($_REQUEST["action"]) {
 		
 		include_once ("include/bottom_footer.php");
 		break;
-	case 'tree':
-		include_once ("include/top_header.php");
-		
-		tree();
-		
-		include_once ("include/bottom_footer.php");
-		break;
-	case 'tree_edit':
-		include_once ("include/top_header.php");
-		
-		tree_edit();
-		
-		include_once ("include/bottom_footer.php");
-		break;
-	case 'tree_moveup': 
-		tree_moveup();
-		
-		header ("Location: data_sources.php?action=tree");
-		break;
-	case 'tree_movedown':
-		tree_movedown();
-		
-		header ("Location: data_sources.php?action=tree");
-		break;
-	case 'tree_remove':
-		tree_remove();
-
-		header ("Location: data_sources.php?action=tree");
-		break;
 	case 'ds_remove':
 		ds_remove();
 		
@@ -652,7 +623,8 @@ function ds() {
 		on data_local.id=data_template_data.local_data_id
 		left join data_input
 		on data_input.id=data_template_data.data_input_id
-		where data_local.host_id=" . $_GET["host_id"]);
+		where data_local.host_id=" . $_GET["host_id"] . "
+		order by data_template_data.name");
 	
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
