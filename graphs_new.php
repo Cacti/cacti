@@ -669,10 +669,11 @@ function graphs() {
 							</tr>
 						</table>
 					</td>
-				</tr>
-				<tr bgcolor='#" . $colors["header_panel"] . "'>";
+				</tr>";
 		
 		if ($xml_array != false) {
+			$html_dq_header = "";
+			
 			while (list($field_name, $field_array) = each($xml_array["fields"])) {
 				if ($field_array["direction"] == "input") {
 					$i++;
@@ -682,7 +683,7 @@ function graphs() {
 					/* don't even both to display the column if it has no data */
 					if (sizeof($raw_data) > 0) {
 						/* draw each header item <TD> */
-						DrawMatrixHeaderItem($field_array["name"],$colors["header_text"],1);
+						$html_dq_header .= "<td height='1'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></td>\n";
 						
 						foreach ($raw_data as $data) {
 							$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
@@ -695,15 +696,20 @@ function graphs() {
 						field in the xml array so it is not drawn */
 						unset($xml_array["fields"][$field_name]);
 					}
-					
-					/* draw the 'check all' box if we are at the end of the row */
-					if ($i >= $num_input_fields) {
-						print "<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\");dq_update_selection_indicators();'></td>\n";
-					}
 				}
 			}
 			
-			print "</tr>";
+			if ($num_visible_fields{$snmp_query["id"]} == 0) {
+				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td>This data query returned 0 rows, perhaps there was a problem executing this
+					data query. You can <a href='host.php?action=query_verbose&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'>run this data 
+					query in debug mode</a> to get more information.</td></tr>\n";
+			}else{
+				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+						$html_dq_header
+						<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\");dq_update_selection_indicators();'></td>\n
+					</tr>\n";
+				
+			}
 			
 			 $row_counter = 0;
 			if (sizeof($snmp_query_indexes) > 0) {
