@@ -35,8 +35,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$snmp_query = db_fetch_row("select xml_path from snmp_query where id=$snmp_query_id");
 	
 	$xml_file_path = str_replace("<path_cacti>", $paths["cacti"], $snmp_query["xml_path"]);
-	
+	print "query xml: $xml_file_path\n";
 	if ((empty($host["management_ip"])) || (!file_exists($xml_file_path))) {
+		print "does not exist!!\n";
 		return 0;
 	}
 	
