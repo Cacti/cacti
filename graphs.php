@@ -28,25 +28,6 @@
 	if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 	if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
 	
-	function draw_main_form_select() { 
-		global $colors, $args;?>
-		<tr>
-			<td valign="middle">
-				<table cellspacing="0" cellpadding="0" border="0">
-					<tr>
-						<td bgcolor="#<?print $colors[panel];?>">
-							<a href="graphs.php"><img src="images/button_graph_management_<?if (($args[action]=="") || (strstr($args[action],"graph"))) { print "down.gif"; }else{ print "up.gif"; }?>" border="0" alt="Graph Management" align="absmiddle"></a>
-						</td>
-						<td>
-							<a href="graphs.php?action=tree"><img src="images/button_graph_trees_<?if (strstr($args[action],"tree")){ print "down.gif"; }else{ print "up.gif"; }?>" border="0" alt="Graph Management" align="absmiddle"></a>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	<?
-	}
-	
 	function draw_graph_form_select($main_action) { 
 		global $colors, $args; ?>
 		<tr bgcolor="#<?print $colors[panel];?>">
@@ -917,98 +898,12 @@ switch ($action) {
 		include_once ("include/bottom_footer.php");
 		
 		break;
-	case 'tree_edit':
-		include_once ("include/top_header.php");
-		
-		
-		if (isset($args[id])) {
-			$graph_tree = db_fetch_row("select * from rrd_graph_tree where id=$args[id]", $cnn_id);
-		}else{
-			unset($graph_tree);
-		}
-		
-		start_box("<strong>Graph Management [edit]</strong>", "", "graphs.php?action=edit_tree");
-		draw_main_form_select();
-		end_box();
-		
-		start_box("Graph Tree Configuration", "", "");
-		
-		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
-			<td width="40%">
-				<font class="textEditTitle">Tree Name</font><br>
-				Enter a name for this tree.
-			</td>
-			<?DrawFormItemTextBox("name",$graph_tree[name],"","50", "40");?>
-		</tr>
-		
-		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
-			<td width="40%">
-				<font class="textEditTitle">Show as Tab</font><br>
-				Whether to show this tree as a tab on the graph management page.
-			</td>
-			<?DrawFormItemCheckBox("show_tab",$graph_tree[show_tab],"Show as Tab","",true);?>
-		</tr>
-		
-		<tr bgcolor="#<?print $colors[form_alternate2];?>">
-			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("save", "graphs.php?action=tree");?>
-				</form>
-			</td>
-		</tr>
-		<?
-		end_box();
-		
-		include_once ("include/bottom_footer.php");
-		
-		break;
-	case 'tree':
-		include_once ("include/top_header.php");
-		
-		start_box("Graph Management", "", "graphs.php?action=tree_edit");
-		draw_main_form_select();
-		end_box();
-		
-		start_box("Graph Tree Configuration", "", "");
-		
-		print "<tr bgcolor='#$colors[header_panel]'>";
-			DrawMatrixHeaderItem("Tree Name",$colors[header_text],1);
-			DrawMatrixHeaderItem("Display as Tab",$colors[header_text],2);
-		print "</tr>";
-		
-		$graph_tree_list = db_fetch_assoc("select * from rrd_graph_tree", $cnn_id);
-		
-		foreach ($graph_tree_list as $graph_tree) {
-			DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i);
-				?>
-				<td>
-					<a class="linkEditMain" href="graphs.php?action=tree_edit&id=<?print $graph_tree[id];?>"><?print $graph_tree[name];?></a>
-				</td>
-				<td>
-					<?if ($graph_tree[show_tab] == "on") { print "Yes"; }else{ print "No"; }?>
-				</td>
-				<td width="1%" align="right">
-					<a href="graphs.php?action=tree_remove&id=<?print $graph_tree[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-				</td>
-			</tr>
-		<?
-		$i++;
-		}
-		end_box();
-		
-		include_once ("include/bottom_footer.php");
-		
-		break;
 	default:
 		include_once ("include/top_header.php");
 		
 		start_box("<strong>Graph Management</strong>", "", "graphs.php?action=graph_edit");
-		draw_main_form_select();
-		end_box();
 		
-		start_box("", "", "");
 		?>
-			
-
 			<tr height="33">
 				<td valign="bottom" colspan="3" background="images/tab_back.gif">
 					<table border="0" cellspacing="0" cellpadding="0">
@@ -1039,7 +934,6 @@ switch ($action) {
 				</td>
 				</form>
 			</tr>
-			
 		<?
 		
 		print "<tr bgcolor='#$colors[panel]'>";
