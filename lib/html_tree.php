@@ -302,7 +302,7 @@ function grow_dhtml_trees() {
 			graph_tree_items.title,
 			graph_tree_items.order_key,
 			graph_tree_items.host_id,
-			CONCAT_WS('',host.description,' (',host.hostname,')') as hostname,
+			host.description as hostname,
 			user_auth_perms.user_id
 			from graph_tree_items
 			left join host on host.id=graph_tree_items.host_id
@@ -387,7 +387,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $graph_template_id) {
 	/* get information for the headers */
 	if (!empty($tree_id)) { $tree_name = db_fetch_cell("select name from graph_tree where id=$tree_id"); }
 	if (!empty($leaf_id)) { $leaf_name = db_fetch_cell("select title from graph_tree_items where id=$leaf_id"); }
-	if (!empty($leaf_id)) { $host_name = db_fetch_cell("select CONCAT_WS('',host.description,' (',host.hostname,')') from graph_tree_items,host where graph_tree_items.host_id=host.id and graph_tree_items.id=$leaf_id"); }
+	if (!empty($leaf_id)) { $host_name = db_fetch_cell("select host.description from graph_tree_items,host where graph_tree_items.host_id=host.id and graph_tree_items.id=$leaf_id"); }
 	if (!empty($leaf_id)) { $host_id = db_fetch_cell("select host_id from graph_tree_items where id=$leaf_id"); }
 	if (!empty($graph_template_id)) { $graph_template_name = db_fetch_cell("select name from graph_templates where id=$graph_template_id"); }
 	
