@@ -153,6 +153,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				$ping_availability = read_config_option("availability_method");
 			}
 
+			/* for this host, get it's current status for spike detection and set default spike value */
+			$pre_host_status = $hosts[$host_id]["status"];
+            $set_spike_kill = FALSE;
+
 			/* if we are only allowed to use an snmp check and this host does not support snnp, we
 			must assume that this host is up */
 			if (($ping_availability == AVAIL_SNMP) && ($item["snmp_community"] == "")) {
@@ -166,6 +170,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				if ($ping->ping($ping_availability, read_config_option("ping_method"), read_config_option("ping_timeout"), read_config_option("ping_retries"))) {
 					$host_down = false;
 					update_host_status(HOST_UP, $host_id, $hosts, $ping, $ping_availability, $print_data_to_stdout);
+
+					/* spike detection logic */
+					if ($pre_host_status == HOST_DOWN) {
+						$set_spike_kill = TRUE;
+						$set_spike_kill_time = date("Y-m-d H:i:s", strtotime($poller_update_time) - 10);
+
+						if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+							cacti_log("Host[$host_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $print_data_to_stdout);
+						}
+					}
 				}else{
 					$host_down = true;
 					update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $ping_availability, $print_data_to_stdout);
@@ -222,6 +236,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						 *     the assert to fail */
 						if (($assert_fail == true) || ($index_item["op"] == ">") || ($index_item["op"] == "<")) {
 							db_execute("update poller_reindex set assert_value='$output' where host_id='$host_id' and data_query_id='" . $index_item["data_query_id"] . "' and arg1='" . $index_item["arg1"] . "'");
+
+							/* spike kill logic */
+							if (($assert_fail) && ($index_item["arg1"] == ".1.3.6.1.2.1.1.3.0") && (!$set_spike_kill)){
+								$set_spike_kill = TRUE;
+								$set_spike_kill_time = date("Y-m-d H:i:s", strtotime($poller_update_time) - 10);
+
+								if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+									cacti_log("Host[$host_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $print_data_to_stdout);
+								}
+							}
 						}
 					}
 				}
@@ -310,6 +334,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			} /* End Switch */
 
 			if (isset($output)) {
+				/* compensate for spikes */
+                if (($set_spike_kill) && (!substr_count($output, ":"))) {
+					db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "','$set_spike_kill_time','" . addslashes("nan") . "')");
+                }
+
 				db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "','$poller_update_time','" . addslashes($output) . "')");
 			}
 		} /* Next Cache Item */
