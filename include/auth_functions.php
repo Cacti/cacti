@@ -37,11 +37,12 @@ function DrawMenu($userid, $menuid) {
     $menu_headers = array(0 => "Graph Setup", 1 => "Data Gathering", 2 => "Configuration", 3 => "Utilities");
     
     /* link each menu item to a header */
-    $menu_items[mIndex] = array(0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3);
+    $menu_items[mIndex] = array(0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3);
     
     /* setup the actual menu item definitions */
     $menu_items[mTitle] = array(
     	"Graph Management", 
+	"Graph Templates", 
 	"Graph Hierarchy",
 	"Colors",
 	"Data Sources",
@@ -57,6 +58,7 @@ function DrawMenu($userid, $menuid) {
     
     $menu_items[mURL] = array(
     	"graphs.php", 
+	"graph_templates.php",
 	"tree.php",
 	"color.php",
 	"ds.php",
