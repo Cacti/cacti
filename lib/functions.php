@@ -170,13 +170,14 @@ function get_full_script_path($local_data_id) {
 		left join data_input_data
 		on data_input_fields.id=data_input_data.data_input_field_id
 		where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
+		and data_input_data.data_template_data_id=" . $data_source["id"] . "
 		and data_input_fields.input_output='in'");
 	
 	$full_path = $data_source["input_string"];
 	
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
-		$full_path = str_replace("<" . $data["data_name"] . ">", $data["value"], $full_path);
+		$full_path = str_replace("<" . $item["data_name"] . ">", $item["value"], $full_path);
 	}
 	}
 	
