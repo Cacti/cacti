@@ -48,11 +48,11 @@ CREATE TABLE cdef_items (
 
 
 INSERT INTO cdef_items VALUES (7,2,1,4,'CURRENT_DATA_SOURCE');
-INSERT INTO cdef_items VALUES (9,2,3,6,'8');
-INSERT INTO cdef_items VALUES (8,2,2,2,'3');
+INSERT INTO cdef_items VALUES (9,2,2,6,'8');
+INSERT INTO cdef_items VALUES (8,2,3,2,'3');
 INSERT INTO cdef_items VALUES (10,3,1,4,'CURRENT_DATA_SOURCE');
-INSERT INTO cdef_items VALUES (11,3,2,2,'3');
-INSERT INTO cdef_items VALUES (12,3,3,6,'-1');
+INSERT INTO cdef_items VALUES (11,3,3,2,'3');
+INSERT INTO cdef_items VALUES (12,3,2,6,'-1');
 INSERT INTO cdef_items VALUES (13,4,1,4,'CURRENT_DATA_SOURCE');
 INSERT INTO cdef_items VALUES (14,4,3,2,'3');
 INSERT INTO cdef_items VALUES (15,4,2,6,'300');
