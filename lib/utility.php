@@ -155,7 +155,9 @@ function push_out_host($host_id) {
 	}
 }
 
-function change_data_template($local_data_id, $data_template_id, $_data_template_id) {
+function change_data_template($local_data_id, $data_template_id) {
+	include("config_arrays.php");
+	
 	/* always update tables to new data template (or no data template) */
 	db_execute("update data_template_data set data_template_id=$data_template_id where local_data_id=$local_data_id");
 	db_execute("update data_template_rrd set data_template_id=$data_template_id where local_data_id=$local_data_id");
@@ -171,64 +173,59 @@ function change_data_template($local_data_id, $data_template_id, $_data_template
 	if ($local_data_template_data_id == "") { $local_data_template_data_id = 0; }
 	db_execute("update data_template_data set local_data_template_data_id=$local_data_template_data_id where local_data_id=$local_data_id");
 	
-	if (($_data_template_id == "0") && ($data_template_id != "0")) {
-		/* we are going from no template -> a template */
-		$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
-		$template_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id");
-		
-		if (sizeof($data_rrds_list) > 0) {
-			/* this data source already has "child" items */
-		}else{
-			/* this data source does NOT have "child" items; loop through each item in the template
-			and write it exactly to each item */
-			if (sizeof($template_rrds_list) > 0) {
-			foreach ($template_rrds_list as $template_rrd) {
-				$save["id"] = 0;
-				$save["local_data_template_rrd_id"] = $template_rrd["id"];
-				$save["local_data_id"] = $local_data_id;
-				$save["data_template_id"] = $template_rrd["data_template_id"];
-				$save["rrd_maximum"] = $template_rrd["rrd_maximum"];
-				$save["rrd_minimum"] = $template_rrd["rrd_minimum"];
-				$save["rrd_heartbeat"] = $template_rrd["rrd_heartbeat"];
-				$save["data_source_type_id"] = $template_rrd["data_source_type_id"];
-				$save["data_source_name"] = $template_rrd["data_source_name"];
-				$save["script_output_argument"] = $template_rrd["script_output_argument"];
-				
-				sql_save($save, "data_template_rrd");
-			}
-			}
-		}
-	}elseif (($_data_template_id != "0") && ($data_template_id == "0")) {
-		/* we are going from no a template -> no template */
-		
-		db_execute("update data_input_data set t_value='on' where data_template_data_id=" . $data["id"]);
+	/* some basic field values that ALL data sources should have */
+	$save["id"] = $data["id"];
+	$save["local_data_template_data_id"] = $template_data["id"];
+	$save["local_data_id"] = $local_data_id;
+	$save["data_template_id"] = $data_template_id;
+	
+	/* loop through the "templated field names" to find to the rest... */
+	while (list($field_name, $field_array) = each($struct_data_source)) {
+		if ($template_data{"t_" . $field_name} == "on") { $save[$field_name] = $data[$field_name]; }else{ $save[$field_name] = $template_data[$field_name]; }
 	}
 	
-	/* if there is a template and the template changed, propagate template changes to the data source */
-	if (($data_template_id != $_data_template_id) && ($data_template_id != "0")) {
-		unset($save);
-		
-		$save["id"] = $data["id"];
-		$save["local_data_template_data_id"] = $template_data["id"];
-		$save["local_data_id"] = $local_data_id;
-		$save["data_template_id"] = $data_template_id;
-		$save["data_input_id"] = $template_data["data_input_id"];
-		$save["data_source_path"] = $data["data_source_path"]; /* NEVER overright */
-		
-		if ($template_data["t_name"] == "on") { $save["name"] = $data["name"]; }else{ $save["name"] = $template_data["name"]; }
-		if ($template_data["t_active"] == "on") { $save["active"] = $data["active"]; }else{ $save["active"] = $template_data["active"]; }
-		if ($template_data["t_rrd_step"] == "on") { $save["rrd_step"] = $data["rrd_step"]; }else{ $save["rrd_step"] = $template_data["rrd_step"]; }
-		
-		sql_save($save, "data_template_data");
-		
-		/* find out if there is a host and a host template involved, if there is... push out the 
-		host template's settings */
-		$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
-		if ($host_id != "0") {
-			$host_template_id = db_fetch_cell("select host_template_id from host where id=$host_id");
-			if ($host_template_id != "0") {
-				push_out_host_template($host_template_id, $data_template_id);
+	/* these fields should never be overwritten by the template */
+	$save["data_source_path"] = $data["data_source_path"];
+	
+	print "<pre>";print_r($save);print "</pre>";
+	sql_save($save, "data_template_data");
+	
+	$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
+	$template_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id");
+	
+	if (sizeof($data_rrds_list) > 0) {
+		/* this data source already has "child" items */
+	}else{
+		/* this data source does NOT have "child" items; loop through each item in the template
+		and write it exactly to each item */
+		if (sizeof($template_rrds_list) > 0) {
+		foreach ($template_rrds_list as $template_rrd) {
+			unset($save);
+			reset($struct_data_source_item);
+			
+			$save["id"] = 0;
+			$save["local_data_template_rrd_id"] = $template_rrd["id"];
+			$save["local_data_id"] = $local_data_id;
+			$save["data_template_id"] = $template_rrd["data_template_id"];
+			
+			while (list($field_name, $field_array) = each($struct_data_source_item)) {
+				$save[$field_name] = $template_rrd[$field_name];
 			}
+			
+			print "<pre>";print_r($save);print "</pre>";
+			sql_save($save, "data_template_rrd");
+		}
+		}
+	}
+	
+	/* find out if there is a host and a host template involved, if there is... push out the 
+	host template's settings */
+	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
+	
+	if ($host_id != "0") {
+		$host_template_id = db_fetch_cell("select host_template_id from host where id=$host_id");
+		if ($host_template_id != "0") {
+			//push_out_host_template($host_template_id, $data_template_id);
 		}
 	}
 }
@@ -315,7 +312,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
 	$save["local_graph_id"] = $local_graph_id;
 	$save["graph_template_id"] = $graph_template_id;
-	$save["order_key"] = $graph_list["order_key"];
 	
 	/* loop through the "templated field names" to find to the rest... */
 	while (list($field_name, $field_array) = each($struct_graph)) {
@@ -324,72 +320,71 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		if ($template_graph_list[$value_type] == "on") { $save[$field_name] = $graph_list[$field_name]; }else{ $save[$field_name] = $template_graph_list[$field_name]; }
 	}
 	
+	print "<pre>";print_r($save);print "</pre>";
 	sql_save($save, "graph_templates_graph");
 	
-	/* we are going from no template -> a template */
-	//if ($_graph_template_id == "0") {
-		$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id");
-		$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id");
+	$graph_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$local_graph_id");
+	$template_items_list = db_fetch_assoc("select * from graph_templates_item where local_graph_id=0 and graph_template_id=$graph_template_id");
+	
+	$graph_template_inputs = db_fetch_assoc("select
+		graph_template_input.column_name,
+		graph_template_input_defs.graph_template_item_id
+		from graph_template_input,graph_template_input_defs
+		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		and graph_template_input.graph_template_id=$graph_template_id");
+	
+	$k=0;
+	if (sizeof($template_items_list) > 0) {
+	foreach ($template_items_list as $template_item) {
+		unset($save);
+		reset($struct_graph_item);
 		
-		$graph_template_inputs = db_fetch_assoc("select
-			graph_template_input.column_name,
-			graph_template_input_defs.graph_template_item_id
-			from graph_template_input,graph_template_input_defs
-			where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-			and graph_template_input.graph_template_id=$graph_template_id");
+		$save["local_graph_template_item_id"] = $template_item["id"];
+		$save["local_graph_id"] = $local_graph_id;
+		$save["graph_template_id"] = $template_item["graph_template_id"];
 		
-		$k=0;
-		if (sizeof($template_items_list) > 0) {
-		foreach ($template_items_list as $template_item) {
-			unset($save);
+		if (isset($graph_items_list[$k])) {
+			/* graph item at this position, "mesh" it in */
+			$save["id"] = $graph_items_list[$k]["id"];
 			
-			$save["local_graph_template_item_id"] = $template_item["id"];
-			$save["local_graph_id"] = $local_graph_id;
-			$save["graph_template_id"] = $template_item["graph_template_id"];
+			/* make a first pass filling in ALL values from template */
+			while (list($field_name, $field_array) = each($struct_graph_item)) {
+				$save[$field_name] = $template_item[$field_name];
+			}
 			
-			if (isset($graph_items_list[$k])) {
-				/* graph item at this position, "mesh" it in */
-				$save["id"] = $graph_items_list[$k]["id"];
-				
-				/* make a first pass filling in ALL values from template */
+			/* go back a second time and fill in the INPUT values from the graph */
+			for ($j=0; ($j < count($graph_template_inputs)); $j++) {
+				if ($graph_template_inputs[$j]["graph_template_item_id"] == $template_items_list[$i]["id"]) {
+					/* if we find out that there is an "input" covering this field/item, use the 
+					value from the graph, not the template */
+					$graph_item_field_name = $graph_template_inputs[$j]["column_name"];
+					$save[$graph_item_field_name] = $graph_items_list[$k][$graph_item_field_name];
+				}
+			}
+		}else{
+			/* no graph item at this position, tack it on */
+			$save["id"] = 0;
+			
+			if ($intrusive == true) {
 				while (list($field_name, $field_array) = each($struct_graph_item)) {
 					$save[$field_name] = $template_item[$field_name];
 				}
-				
-				/* go back a second time and fill in the INPUT values from the graph */
-				for ($j=0; ($j < count($graph_template_inputs)); $j++) {
-					if ($graph_template_inputs[$j]["graph_template_item_id"] == $template_items_list[$i]["id"]) {
-						/* if we find out that there is an "input" covering this field/item, use the 
-						value from the graph, not the template */
-						$graph_item_field_name = $graph_template_inputs[$j]["column_name"];
-						$save[$graph_item_field_name] = $graph_items_list[$k][$graph_item_field_name];
-					}
-				}
 			}else{
-				/* no graph item at this position, tack it on */
-				$save["id"] = 0;
-				
-				if ($intrusive == true) {
-					while (list($field_name, $field_array) = each($struct_graph_item)) {
-						$save[$field_name] = $template_item[$field_name];
-					}
-				}else{
-					unset($save);
-				}
-				
-				
+				unset($save);
 			}
 			
-			//print "<pre>";print_r($save);print "</pre>";
 			
-			if (isset($save)) {
-				sql_save($save, "graph_templates_item");
-			}
-			
-			$k++;
 		}
+		
+		print "<pre>";print_r($save);print "</pre>";
+		
+		if (isset($save)) {
+			sql_save($save, "graph_templates_item");
 		}
-	//}
+		
+		$k++;
+	}
+	}
 	
 	/* if there are more graph items then there are items in the template, delete the difference */
 	if ((sizeof($graph_items_list) > sizeof($template_items_list)) && ($intrusive == true)) {
