@@ -81,15 +81,19 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 	if (($config["cacti_server_os"] == "unix") and ($poller == "2")) {
 		$command_string = read_config_option("path_cactid");
 		$extra_args = "";
+		$method = "cactid";
 	}else if ($config["cacti_server_os"] == "unix") {
 		$command_string = read_config_option("path_php_binary");
 		$extra_args = $config["base_path"] . "/cmd.php";
+		$method = "cmd.php";
 	}else if ($poller == "2") {
 		$command_string = read_config_option("path_cactid");
 		$extra_args = "";
+		$method = "cactid";
 	}else{
 		$command_string = read_config_option("path_php_binary");
 		$extra_args = $config["base_path"] . "\\cmd.php";
+		$method = "cmd.php";
 	}
 
 	/* Populate each execution file with appropriate information */
@@ -173,7 +177,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				"Polled Hosts: %s, " .
 				"Hosts/Process: %s",
 				round($end-$start,4),
-				$command_string,
+				$method,
 				$concurrent_processes,
 				$max_threads,
 				sizeof($polling_items),

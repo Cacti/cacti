@@ -35,7 +35,7 @@ if ($config["cacti_server_os"] == "unix") {
 	define("SNMP_ESCAPE_CHARACTER", "\"");
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500) {
+function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 1000) {
 	global $config;
 
 	$retries = read_config_option("snmp_retries");
@@ -75,7 +75,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 1000) {
 	global $config;
 
 	$snmp_array = array();

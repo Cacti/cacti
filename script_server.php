@@ -26,7 +26,7 @@
 */
 $no_http_headers = true;
 
-/* display ALL errors */
+/* display No errors */
 error_reporting(E_ERROR);
 
 /* used for includes */
@@ -81,9 +81,9 @@ while (1) {
 				if (!function_exists($cmd)) {
 					if (file_exists($inc)) {
 						// quirk in php R5.0RC3, believe it or not....
-//						if ($environ == "cactid") {
+						if ($environ == "cactid") {
 							$inc = strtolower($inc);
-//						}
+						}
 						include_once($inc);
 					} else {
 						log_data("ERROR: PHP Script File to be included, does not exist\n");
