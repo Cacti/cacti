@@ -86,6 +86,21 @@ function upgrade_to_0_8_6a() {
 			}
 		}
 	}
+
+	/* make sure the 'host_graph' table is populated (problem from 0.8.4) */
+	$hosts = db_fetch_assoc("select id,host_template_id from host where host_template_id > 0");
+
+	if (sizeof($hosts) > 0) {
+		foreach ($hosts as $host) {
+			$graph_templates = db_fetch_assoc("select graph_template_id from host_template_graph where host_template_id=" . $host["host_template_id"]);
+
+			if (sizeof($graph_templates) > 0) {
+				foreach ($graph_templates as $graph_template) {
+					db_execute("replace into host_graph (host_id,graph_template_id) values (" . $host["id"] . "," . $graph_template["graph_template_id"] . ")");
+				}
+			}
+		}
+	}
 }
 
 ?>
