@@ -217,6 +217,7 @@ function host_new_graphs_save() {
 			
 			$save["id"] = 0;
 			$save["graph_template_id"] = $graph_template_id;
+			$save["host_id"] = $_POST["host_id"];
 			
 			if ($current_form_type == "cg") {
 				$local_graph_id = sql_save($save, "graph_local");
