@@ -231,7 +231,7 @@ function item_edit() {
 			<font class="textEditTitle">Host</font><br>
 			Choose a host here to add it to the tree.
 		</td>
-		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",(isset($tree_item) ? $tree_item["host_id"] : 0),"None","1");?>
+		<?php form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id",(isset($tree_item) ? $tree_item["host_id"] : 0),"None","");?>
 	</tr>
 	<?php
 	
