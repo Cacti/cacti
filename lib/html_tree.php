@@ -9,8 +9,8 @@ function grow_graph_tree($tree_id, $starting_branch, $user_id, $options) {
 	$options[use_expand_contract] = true;
 	
 	/* get the "starting leaf" if the user clicked on a specific branch */
-	if (($tree_parameters["options"]["start_branch"] != "") && ($tree_parameters["options"]["start_branch"] != "0")) {
-		$search_key = preg_replace("/0+$/","",db_fetch_cell("select OrderKey from graph_hierarchy_items where id=" . $tree_parameters["options"]["start_branch"]));
+	if (($starting_branch != "") && ($starting_branch != "0")) {
+		$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_view_items where id=$starting_branch"));
 	}
 	
 	/* find out what type of policy is in effect for this user: ALLOW or DENY, and
@@ -23,31 +23,31 @@ function grow_graph_tree($tree_id, $starting_branch, $user_id, $options) {
 	
 	if ($config["global_auth"]["value"] == "on") {
 		$hierarchy = db_fetch_assoc('select 
-			h.ID,h.GraphID,h.RRAID,h.Type,h.Title,h.OrderKey,
+			h.id,h.graph_id,h.rra_id,h.type,h.title,h.order_key,
 			g.Title as gtitle,
 			st.Status,
 			ag.graphid as aggraphid, ag.userid as aguserid 
-			from graph_hierarchy_items h 
-			left join rrd_graph g on h.graphid=g.id 
+			from graph_tree_view_items h 
+			left join rrd_graph g on h.graph_id=g.id 
 			left join settings_tree st on (h.id=st.treeitemid and st.userid=' . $user_id . ') 
 			left join auth_graph ag on (g.id=ag.graphid and ag.userid=' . $user_id . ') 
-			where h.treeid=' . $tree_id . '
-			and OrderKey like "' . $search_key . '%"
+			where h.tree_id=' . $tree_id . '
+			and h.order_key like "' . $search_key . '%"
 			' . $sql_where . '
-			order by h.OrderKey');
+			order by h.order_key');
 	}else{
 		$hierarchy = db_fetch_assoc('select 
-			h.ID,h.GraphID,h.RRAID,h.Type,h.Title,h.OrderKey,
+			h.id,h.graph_id,h.rra_id,h.type,h.title,h.order_key,
 			g.title as gtitle,
 			r.name as rname,
 			st.Status 
-			from graph_hierarchy_items h 
-			left join rrd_graph g on h.graphid=g.id 
+			from graph_tree_view_items h 
+			left join rrd_graph g on h.graph_id=g.id 
 			left join rrd_rra r on h.rraid=r.id 
 			left join settings_tree st on (h.id=st.treeitemid and st.userid=' . $user_id . ') 
-			where h.treeid=' . $tree_id . ' 
-			and OrderKey like "' . $search_key . '%"
-			order by h.OrderKey');
+			where h.tree_id=' . $tree_id . ' 
+			and h.order_key like "' . $search_key . '%"
+			order by h.order_key');
 	}
 	
 	$rows = sizeof($hierarchy); $i = 0;
@@ -57,7 +57,7 @@ function grow_graph_tree($tree_id, $starting_branch, $user_id, $options) {
 	
 	/* loop through all items */
 	foreach ($hierarchy as $leaf) {
-		$tier = tree_tier($leaf[OrderKey], 2);
+		$tier = tree_tier($leaf[order_key], 2);
 		
 		/* check to see if we are currently "hiding" items. If so, check and see if we
 		should stop */
@@ -76,12 +76,12 @@ function grow_graph_tree($tree_id, $starting_branch, $user_id, $options) {
 		unset($start_tr, $end_tr, $start_nested_table, $end_nested_table, $td_indent, $indent);
 		
 		/* put the current column type in a variable for easy access (c) :) */
-		$current_column_type = $leaf[Type];
+		$current_column_type = $leaf[type];
 		
 		/* get the next type (if we're not the last item) to see when to end a row on an
 		'off' column */
 		if (($i+2) <= $rows) {
-			$next_column_type = $hierarchy[$i+1][Type];
+			$next_column_type = $hierarchy[$i+1][type];
 		}
 		
 		/* figure out if the user wants a margin; if this item can have children,
@@ -160,20 +160,13 @@ function grow_graph_tree($tree_id, $starting_branch, $user_id, $options) {
 		
 		if ($current_column_type == "Graph") {
 			/* What happens when the user clicks the graph? */
-			$html_item = $indent . '<a href="graph.php?graphid=' . $leaf[GraphID] . '
-				&rraid=all"><img align="middle" src="graph_image.php?graphid=' . $leaf[GraphID] . '
-				&rraid=' . $leaf[RRAID] . '&graph_start=-' . 
-				$array_settings[preview][timespan] . '&graph_height=' . 
-				$array_settings[preview][height] . '&graph_width=' . $array_settings[preview][width] . '
-				&graph_nolegend=true" border="0" alt="' . $leaf[gtitle] . '"></a>';
+			$html_item = $indent . '<a href="graph.php?graphid=' . $leaf[graph_id] . '&rraid=all"><img align="middle" src="graph_image.php?graphid=' . $leaf[graph_id] . '&rraid=' . $leaf[rra_id] . '&graph_start=-' . $array_settings[preview][timespan] . '&graph_height=' . $array_settings[preview][height] . '&graph_width=' . $array_settings[preview][width] . '&graph_nolegend=true" border="0" alt="' . $leaf[gtitle] . '"></a>';
 			$html_td_item = 'bgcolor="#' . $colors[light] . '"';
 		}elseif ($current_column_type == "Heading") {
 			/* What happens when the user clicks the header? */
-			$html_item = '<strong><a href="graph_view.php?action=tree&tree_id=' . $tree_id . '&start_branch="' . $leaf[ID] . '">' . $leaf[Title] . '</a></strong>';
+			$html_item = '<strong><a href="graph_view.php?action=tree&tree_id=' . $tree_id . '&start_branch=' . $leaf[id] . '">' . $leaf[title] . '</a></strong>';
 			$html_td_item = 'bgcolor="#' . $colors[panel] . '" colspan="' . $options[num_columns] . '"';
 		}
-		
-		
 		
 		/* draw the main item */
 		print "$start_tr$html_margin$start_nested_table<td $html_td_item>$td_indent$html_item</td>";

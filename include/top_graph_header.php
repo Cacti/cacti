@@ -119,12 +119,12 @@
 				}
 				
 				$tree_list = db_fetch_assoc("select gh.*,agh.userid
-					from graph_hierarchy gh 
+					from graph_tree_view gh 
 					left join auth_graph_hierarchy agh on (gh.id=agh.hierarchyid and agh.userid=" . GetCurrentUserID($HTTP_SESSION_VARS['user_id'], $config["guest_user"]["value"]) . ") 
 					$sql_where
 					order by gh.name");
 			}else{
-				$tree_list = db_fetch_assoc("select * from graph_hierarchy order by name");
+				$tree_list = db_fetch_assoc("select * from graph_tree_view order by name");
 			}
 			
 			//$rows = mysql_num_rows($sql_id); $i = 0;
@@ -135,7 +135,7 @@
 					$tree_id = $array_settings["hierarchical"]["treeid"];
 				}else{
 					if (sizeof($tree_list) != 0) {
-						$tree_id = db_fetch_cell("select ID from graph_hierarchy");
+						$tree_id = db_fetch_cell("select id from graph_tree_view");
 					}
 				}
 			}
@@ -147,18 +147,18 @@
 				&nbsp;&nbsp;Select a Graph Hierarchy:&nbsp;
 				<select name="cbo_tree_id" onChange="window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value">
 					<?foreach ($tree_list as $tree) {?>
-						<option value="graph_view.php?action=tree&tree_id=<?print $tree[ID]; ?>"
-						<?if ($tree_id == $tree[ID]) { ?>
-						selected <? $tree_name = $tree[Name]; } ?>><? print $tree[Name]; ?></option>
-						<?//$i++;
+						<option value="graph_view.php?action=tree&tree_id=<?print $tree[id]; ?>"
+						<?if ($tree_id == $tree[id]) { ?>
+						selected <? $tree_name = $tree[name]; } ?>><? print $tree[name]; ?></option>
+						<?
 					} ?>
 				</select>
 				<?
 			/* there is only one tree; use it */
 			}elseif (sizeof($tree_list) == 1) {?>
 			<td valign="middle" height="5" colspan="3" bgcolor="#<?print $colors[panel];?>">
-				<?$tree_id = db_fetch_cell("select ID from graph_hierarchy");;
-				$tree_name = db_fetch_cell("select Name from graph_hierarchy");;
+				<?$tree_id = db_fetch_cell("select id from graph_tree_view");;
+				$tree_name = db_fetch_cell("select name from graph_tree_view");;
 			}
 			?>
 		</td>
