@@ -137,7 +137,7 @@ if (empty($_REQUEST["step"])) {
 }else{
 	if ($_REQUEST["step"] == "1") {
 		$_REQUEST["step"] = "2";
-	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "1")) {
+	}elseif (($_REQUEST["step"] == "2") && (($_REQUEST["install_type"] == "1") || ($_REQUEST["install_type"] == "3"))) {
 		$_REQUEST["step"] = "3";
 	}elseif (($_REQUEST["step"] == "2") && ($_REQUEST["install_type"] == "2")) {
 		$_REQUEST["step"] = "10";
