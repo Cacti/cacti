@@ -70,6 +70,7 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		snmp_item_remove();
 		
+		header ("Location: snmp.php?action=item_edit&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -226,7 +227,7 @@ function snmp_item_remove_dssv() {
 function snmp_item_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "snmp.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -234,6 +235,8 @@ function snmp_item_remove() {
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from snmp_query_graph where id=" . $_GET["id"]);
 		db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=" . $_GET["id"]);
+		db_execute("delete from snmp_query_graph_rrd_sv where snmp_query_graph_id=" . $_GET["id"]);
+		db_execute("delete from snmp_query_graph_sv where snmp_query_graph_id=" . $_GET["id"]);
 	}
 }
 
@@ -547,7 +550,7 @@ function snmp_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
-			A name for this SNMP query.
+			A name for this data query.
 		</td>
 		<?php form_text_box("name",(isset($snmp_query) ? $snmp_query["name"] : ""),"","100", "40");?>
 	</tr>
@@ -555,7 +558,7 @@ function snmp_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Description</font><br>
-			A description for this SNMP query.
+			A description for this data query.
 		</td>
 		<?php form_text_box("description",(isset($snmp_query) ? $snmp_query["description"] : ""),"","255", "40");?>
 	</tr>
@@ -563,7 +566,7 @@ function snmp_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">XML Path</font><br>
-			The full path to the XML file containing definitions for this snmp query.
+			The full path to the XML file containing definitions for this data query.
 		</td>
 		<?php form_text_box("xml_path",(isset($snmp_query) ? $snmp_query["xml_path"] : ""),"<path_cacti>/resource/","255", "40");?>
 	</tr>
