@@ -5,15 +5,15 @@
 	<authorgroup>
 		<author>
 			<firstname>Ian</firstname>
-			<surname>Berry</surname>	
+			<surname>Berry</surname>
 		</author>
 	</authorgroup>
-	<pubdate>2003</pubdate>
+	<pubdate>2004</pubdate>
 	<copyright>
-		<year>2003</year>
+		<year>2004</year>
 		<holder>Ian Berry</holder>
 	</copyright>
-	
+
 	<legalnotice id="license">
 		<para>This project is licensed under the terms of the GPL.</para>
 		<para>
@@ -29,8 +29,8 @@
 			GNU General Public License for more details.
 		</para>
 		<para>
-			All product names are property of their respective owners.  Such names are used 
-			for identification purposes only and are not indicative of endorsement by or of 
+			All product names are property of their respective owners.  Such names are used
+			for identification purposes only and are not indicative of endorsement by or of
 			any company, organization, product, or platform.
 		</para>
 	</legalnotice>
@@ -164,12 +164,12 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Set the appropriate permissions on cacti's directories for graph/log generation. You 
+					Set the appropriate permissions on cacti's directories for graph/log generation. You
 					should execute these commands from inside cacti's directory to change the permissions.
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>chown -R cactiuser rra/ log/</userinput></screen>
 				<para>
-					(Enter a valid username for <emphasis>cactiuser</emphasis>, this user will also be used in the next step for 
+					(Enter a valid username for <emphasis>cactiuser</emphasis>, this user will also be used in the next step for
 					data gathering.)
 				</para>
 			</listitem>
@@ -195,8 +195,8 @@ $database_password = "cacti";</userinput></screen>
 					</para>
 				</blockquote>
 				<para>
-					Log in the with a username/password of <emphasis>admin</emphasis>. You will be required to change this 
-					password immediately. Make sure to fill in all of the path variables carefully and 
+					Log in the with a username/password of <emphasis>admin</emphasis>. You will be required to change this
+					password immediately. Make sure to fill in all of the path variables carefully and
 					correctly on the following screen.
 				</para>
 			</listitem>
@@ -233,8 +233,8 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					In the <filename>c:\php</filename> directory, copy the <filename>php.ini-dist</filename> file to 
-					<filename>c:\winnt</filename>, rename the file to <filename>php.ini</filename>, and make the 
+					In the <filename>c:\php</filename> directory, copy the <filename>php.ini-dist</filename> file to
+					<filename>c:\winnt</filename>, rename the file to <filename>php.ini</filename>, and make the
 					following changes to the file:
 				</para>
 				<screen><userinput>extension_dir = c:\php\extensions</userinput>
@@ -251,8 +251,8 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Install the Apache web server. This is as simple as double clicking the .msi file and 
-					following the prompts. Make sure to install it as a service and for the sake of the 
+					Install the Apache web server. This is as simple as double clicking the .msi file and
+					following the prompts. Make sure to install it as a service and for the sake of the
 					HOWTO, install it to <filename>c:\apache</filename> or <filename>c:\apache2</filename>.
 				</para>
 			</listitem>
@@ -280,20 +280,20 @@ $database_password = "cacti";</userinput></screen>
 			<title>Configure the Webserver (IIS)</title>
 			<listitem>
 				<para>
-					Start the Microsoft Management Console, right click on <guilabel>Default Web Server</guilabel> (in most cases) 
+					Start the Microsoft Management Console, right click on <guilabel>Default Web Server</guilabel> (in most cases)
 					and select <guilabel>Properties</guilabel>.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Under the <guilabel>Home Directory</guilabel> tab, select <guilabel>Configuration</guilabel> 
-					and click <guilabel>Add</guilabel>. Browse to the path of <filename>php4isapi.dll</filename>, 
+					Under the <guilabel>Home Directory</guilabel> tab, select <guilabel>Configuration</guilabel>
+					and click <guilabel>Add</guilabel>. Browse to the path of <filename>php4isapi.dll</filename>,
 					and type in .php as the extension.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Under the <guilabel>ISAPI Filters</guilabel> tab, click <guilabel>Add</guilabel> and browse 
+					Under the <guilabel>ISAPI Filters</guilabel> tab, click <guilabel>Add</guilabel> and browse
 					to the <filename>php4isapi.dll</filename> file. Name the filter "php" and click OK.
 				</para>
 			</listitem>
@@ -314,7 +314,7 @@ $database_password = "cacti";</userinput></screen>
 			<title>RRDTool</title>
 			<listitem>
 				<para>
-					Extract RRDTool to <filename>c:\rrdtool</filename> and copy <filename>c:\rrdtool\src\tool_release\rrdtool.exe</filename> to <filename>c:\rrdtool</filename>. 
+					Extract RRDTool to <filename>c:\rrdtool</filename> and copy <filename>c:\rrdtool\src\tool_release\rrdtool.exe</filename> to <filename>c:\rrdtool</filename>.
 				</para>
 			</listitem>
 		</orderedlist>
@@ -368,9 +368,9 @@ $database_password = "cacti";</userinput></screen>
 			<title>Install Cacti</title>
 			<listitem>
 				<para>
-					Extract the distribution archive. These instructions will assume that the archive has been 
-					extracted to <filename>C:\Apache\htdocs\cacti</filename>, although you can use a different 
-					path if you wish. Make sure you extract with "Use folder names" enabled, so that the 
+					Extract the distribution archive. These instructions will assume that the archive has been
+					extracted to <filename>C:\Apache\htdocs\cacti</filename>, although you can use a different
+					path if you wish. Make sure you extract with "Use folder names" enabled, so that the
 					necessary sub-folders will be used.
 				</para>
 			</listitem>
@@ -385,7 +385,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					You are going to need to schedule a task so <filename>cmd.php</filename> can run every 
+					You are going to need to schedule a task so <filename>cmd.php</filename> can run every
 					5 minutes. Make sure the Task Scheduler service is started and follow the steps below to
 					begin.
 				</para>
@@ -396,7 +396,7 @@ $database_password = "cacti";</userinput></screen>
 				<orderedlist>
 					<listitem>
 						<para>
-							Select <guilabel>Start</guilabel> --> <guilabel>Settings</guilabel> --> <guilabel>Control Panel</guilabel> and double 
+							Select <guilabel>Start</guilabel> --> <guilabel>Settings</guilabel> --> <guilabel>Control Panel</guilabel> and double
 							click on  <guilabel>Scheduled Tasks</guilabel>.
 						</para>
 					</listitem>
@@ -407,7 +407,7 @@ $database_password = "cacti";</userinput></screen>
 					</listitem>
 					<listitem>
 						<para>
-							Click <guilabel>Next</guilabel> and <guilabel>Browse</guilabel> on the following screen. Find <filename>c:\php</filename> and select 
+							Click <guilabel>Next</guilabel> and <guilabel>Browse</guilabel> on the following screen. Find <filename>c:\php</filename> and select
 							<filename>php.exe</filename>. Choose <guilabel>Daily</guilabel> on and click <guilabel>Next</guilabel>.
 						</para>
 					</listitem>
@@ -479,7 +479,7 @@ c:\php\sapi</screen>
 					</para>
 				</blockquote>
 				<para>
-					Log in the with a username/password of <emphasis>admin</emphasis>. You will be required to change this 
+					Log in the with a username/password of <emphasis>admin</emphasis>. You will be required to change this
 					password immediately. Using the default paths described in this document, your paths should look something like:
 				</para>
 				<para>
@@ -547,12 +547,12 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Set the appropriate permissions on Cacti's directories for graph/log generation. You 
+					Set the appropriate permissions on Cacti's directories for graph/log generation. You
 					should execute these commands from inside Cacti's directory to change the permissions.
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>chown -R cactiuser rra/ log/</userinput></screen>
 				<para>
-					(Enter a valid username for cactiuser, this user will also be used in the next step for data 
+					(Enter a valid username for cactiuser, this user will also be used in the next step for data
 					gathering.)
 				</para>
 			</listitem>
@@ -578,59 +578,59 @@ $database_password = "cacti";</userinput></screen>
 	<chapter id="graph_overview">
 		<title>Graph Overview</title>
 		<para>
-			Almost everything in Cacti is somehow related to a graph. At any time, you can list all available 
-			graphs by clicking on the <guilabel>Graph Management</guilabel> menu item. While it is possible to 
-			manually create graphs through this screen, new users should follow the instructions provided in the 
+			Almost everything in Cacti is somehow related to a graph. At any time, you can list all available
+			graphs by clicking on the <guilabel>Graph Management</guilabel> menu item. While it is possible to
+			manually create graphs through this screen, new users should follow the instructions provided in the
 			next chapter for creating new graphs in Cacti.
 		</para>
 		<para>
 			For users that are familiar with <ulink url="http://www.rrdtool.org/"><application>RRDTool</application>
-			</ulink>, you will immediately recognize that a graph in Cacti is closely modeled after <application>RRDTool</application>'s graphs. 
-			This makes sense since Cacti provides a user friendly interface to <application>RRDTool</application> without requiring users to 
-			understand how <application>RRDTool</application> works. With this in mind, every graph in Cacti has certain settings and at least 
-			one graph item associated with it. While graph settings define the overall properties of a graph, the graph 
-			items define the data that is to be represented on the graph. So the graph items define which data to display 
+			</ulink>, you will immediately recognize that a graph in Cacti is closely modeled after <application>RRDTool</application>'s graphs.
+			This makes sense since Cacti provides a user friendly interface to <application>RRDTool</application> without requiring users to
+			understand how <application>RRDTool</application> works. With this in mind, every graph in Cacti has certain settings and at least
+			one graph item associated with it. While graph settings define the overall properties of a graph, the graph
+			items define the data that is to be represented on the graph. So the graph items define which data to display
 			and how it should displayed, and also define what should be displayed on the legend.
 		</para>
 		<para>
-			Each graph and graph item has a set of parameters which control various aspects of the graph. 
-			Fortunately through the use of graph templates, it is not necessary to understand the function 
-			of each field to create graphs for your network. When you are ready to take on the task of 
-			creating your own graph templates, extensive field descriptions for both graphs and graph items 
+			Each graph and graph item has a set of parameters which control various aspects of the graph.
+			Fortunately through the use of graph templates, it is not necessary to understand the function
+			of each field to create graphs for your network. When you are ready to take on the task of
+			creating your own graph templates, extensive field descriptions for both graphs and graph items
 			are provided in that section of the manual.
 		</para>
 	</chapter>
 	<chapter id="graph_howto">
 		<title>How to Graph Your Network</title>
 		<para>
-			At this point, you probably realize that graphing is Cacti's greatest strength. Cacti has many powerful 
-			features that provide complex graphing and data acquisition, some which have a slight learning curve. 
+			At this point, you probably realize that graphing is Cacti's greatest strength. Cacti has many powerful
+			features that provide complex graphing and data acquisition, some which have a slight learning curve.
 			Do not let that stop you however, because graphing your network is incredibly simple.
 		</para>
 		<para>
-			The next two sections will outline the two basic steps which are typically required to create graphs for 
+			The next two sections will outline the two basic steps which are typically required to create graphs for
 			most devices.
 		</para>
 		<sect1 id="new_device">
 			<title>Creating a Device</title>
 			<para>
-				The first step to creating graphs for your network is adding a device for each network device that 
-				you want to create graphs for. A device specifies important details such as the network 
+				The first step to creating graphs for your network is adding a device for each network device that
+				you want to create graphs for. A device specifies important details such as the network
 				hostname, SNMP parameters, and host type.
 			</para>
 			<para>
-				To manage devices within Cacti, click on the <guilabel>Devices</guilabel> menu item. 
-				Clicking <guilabel>Add</guilabel>  will bring up a new device form. The first two fields, 
-				<guilabel>Description</guilabel> and <guilabel>Hostname</guilabel> are the only two fields that 
-				require your input beyond the defaults. If your host type is defined under the host template 
-				dropdown, be sure to select it here. You can always choose "Generic SNMP-enabled Host" if you are 
-				just graphing traffic or "None" if you are unsure. It is important to remember that the host 
-				template you choose will not lock you into any particular configuration, it will just provide 
+				To manage devices within Cacti, click on the <guilabel>Devices</guilabel> menu item.
+				Clicking <guilabel>Add</guilabel>  will bring up a new device form. The first two fields,
+				<guilabel>Description</guilabel> and <guilabel>Hostname</guilabel> are the only two fields that
+				require your input beyond the defaults. If your host type is defined under the host template
+				dropdown, be sure to select it here. You can always choose "Generic SNMP-enabled Host" if you are
+				just graphing traffic or "None" if you are unsure. It is important to remember that the host
+				template you choose will not lock you into any particular configuration, it will just provide
 				more intelligent defaults for that type of host.
 			</para>
 			<figure id="img_device_new">
 				<title>Adding a New Device</title>
-				
+
 				<mediaobject>
 					<imageobject>
 						<imagedata fileref="images/new_device" format="PNG">
@@ -638,31 +638,31 @@ $database_password = "cacti";</userinput></screen>
 				</mediaobject>
 			</figure>
 			<para>
-				After saving your new device, you should be redirected back to the same edit form with some 
-				additional information. If you configured SNMP for this host by providing a valid community string, 
-				you should see various statistics listed at the top of the page. If you see "SNMP error" instead, 
+				After saving your new device, you should be redirected back to the same edit form with some
+				additional information. If you configured SNMP for this host by providing a valid community string,
+				you should see various statistics listed at the top of the page. If you see "SNMP error" instead,
 				this indicates an SNMP problem between Cacti and your device.
 			</para>
 			<para>
-				Towards the bottom of the page there will be two addition boxes, <guilabel>Associated Data 
-				Queries</guilabel>, and <guilabel>Associated Graph Templates</guilabel>. If you selected a host 
-				template on the previous page, there will probably be a few items in each box. If there is nothing 
-				listed in either box, you will need to associate at least one data query or graph template with 
-				your new device or you will not be able to create graphs in the next step. If no available 
-				graph template or data query applies to your device, you can check the Cacti templates repository 
+				Towards the bottom of the page there will be two addition boxes, <guilabel>Associated Data
+				Queries</guilabel>, and <guilabel>Associated Graph Templates</guilabel>. If you selected a host
+				template on the previous page, there will probably be a few items in each box. If there is nothing
+				listed in either box, you will need to associate at least one data query or graph template with
+				your new device or you will not be able to create graphs in the next step. If no available
+				graph template or data query applies to your device, you can check the Cacti templates repository
 				or create your own if nothing currently exists.
 			</para>
 			<sect2 id='snmp_info'>
 				<title>A Word About SNMP</title>
 				<para>
-					The SNMP version that you choose can have a great effect on how SNMP works for you in 
-					Cacti. Version 1 should be used for everything unless you have reason to choose otherwise. 
-					If you plan on utilizing (and your device supports) high-speed (64-bit) counters, you must 
+					The SNMP version that you choose can have a great effect on how SNMP works for you in
+					Cacti. Version 1 should be used for everything unless you have reason to choose otherwise.
+					If you plan on utilizing (and your device supports) high-speed (64-bit) counters, you must
 					select version 2. At the present time, version 3 is not fully implemented and will not work.
 				</para>
 				<para>
-					The way in which Cacti retrieves SNMP information from a host has an effect on which 
-					SNMP-related options are supported. Currently there are three types of SNMP retrieval 
+					The way in which Cacti retrieves SNMP information from a host has an effect on which
+					SNMP-related options are supported. Currently there are three types of SNMP retrieval
 					methods in Cacti and are outlined below.
 				</para>
 				<table frame='all'>
@@ -704,17 +704,17 @@ $database_password = "cacti";</userinput></screen>
 				</table>
 			</sect2>
 		</sect1>
-		
+
 		<sect1 id="new_graphs">
 			<title>Creating the Graphs</title>
 			<para>
-				Now that you have created some devices, it is time to create graphs for these devices. To 
-				do this, select the <guilabel>New Graphs</guilabel> menu option under the <guilabel>Create</guilabel> 
+				Now that you have created some devices, it is time to create graphs for these devices. To
+				do this, select the <guilabel>New Graphs</guilabel> menu option under the <guilabel>Create</guilabel>
 				heading. You will see a screen similar to the image pictured below.
 			</para>
 			<figure id="img_graph_new">
 				<title>Creating New Graphs</title>
-				
+
 				<mediaobject>
 					<imageobject>
 						<imagedata fileref="images/new_graphs" format="PNG">
@@ -722,30 +722,30 @@ $database_password = "cacti";</userinput></screen>
 				</mediaobject>
 			</figure>
 			<para>
-				The dropdown menu that contains each device should be used to select the host that you 
-				want to create new graphs for. The basic concept to this page is simple, place a check in each 
+				The dropdown menu that contains each device should be used to select the host that you
+				want to create new graphs for. The basic concept to this page is simple, place a check in each
 				row that you want to create a graph for and click <guilabel>Create</guilabel>.
 			</para>
 			<para>
-				If you are creating graphs from inside a "Data Query" box, there are a few additional things to 
-				keep in mind. First is that you may encounter the situation as pictured above with the "SNMP - 
-				Interface Statistics" data query. If this occurs you may want to consult the section on debugging 
-				data queries to see why your data query is not returning any results. Also, you may see a "Select 
-				a graph type" dropdown box under some data query boxes. Changing the value of this dropdown box 
-				affects which type of graph Cacti will make after clicking the <guilabel>Create</guilabel> button. 
-				Cacti only displays this dropdown box when there is more than one type to choose from, so it may 
+				If you are creating graphs from inside a "Data Query" box, there are a few additional things to
+				keep in mind. First is that you may encounter the situation as pictured above with the "SNMP -
+				Interface Statistics" data query. If this occurs you may want to consult the section on debugging
+				data queries to see why your data query is not returning any results. Also, you may see a "Select
+				a graph type" dropdown box under some data query boxes. Changing the value of this dropdown box
+				affects which type of graph Cacti will make after clicking the <guilabel>Create</guilabel> button.
+				Cacti only displays this dropdown box when there is more than one type to choose from, so it may
 				not be displayed in all cases.
 			</para>
 			<para>
-				Once you have selected the graphs that you want to create, simply click the <guilabel>Create</guilabel> 
-				button at the bottom of the page. You will be taken to a new page that allows you to specify 
-				additional information about the graphs you are about to create. You only see the fields here 
-				that are not part of each template, otherwise the value automatically comes from the template. 
-				When all of the values on this page look correct, click the <guilabel>Create</guilabel> button 
+				Once you have selected the graphs that you want to create, simply click the <guilabel>Create</guilabel>
+				button at the bottom of the page. You will be taken to a new page that allows you to specify
+				additional information about the graphs you are about to create. You only see the fields here
+				that are not part of each template, otherwise the value automatically comes from the template.
+				When all of the values on this page look correct, click the <guilabel>Create</guilabel> button
 				one last time to actually create your graphs.
 			</para>
 			<para>
-				If you would like to edit or delete your graphs after they have been created, use the 
+				If you would like to edit or delete your graphs after they have been created, use the
 				<guilabel>Graph Management</guilabel> item on the menu. Likewise, the <guilabel>Data Source
 				</guilabel> menu item allows you to manage your data sources in Cacti.
 			</para>
@@ -756,23 +756,23 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="new_graph_trees">
 			<title>Graph Trees</title>
 			<para>
-				A graph tree can be thought of as a hierarchical way of organizing your graphs. Each graph tree 
-				consists of zero or more headers or branch nodes that contain leaf nodes such as graphs or trees. 
-				Multiple graph trees or branches within a single tree can be combined to form a very powerful way 
+				A graph tree can be thought of as a hierarchical way of organizing your graphs. Each graph tree
+				consists of zero or more headers or branch nodes that contain leaf nodes such as graphs or trees.
+				Multiple graph trees or branches within a single tree can be combined to form a very powerful way
 				of organizing your graphs.
 			</para>
 			<sect2 id="new_graph_tree">
 				<title>Creating a Graph Tree</title>
 				<para>
-					To create a new graph tree, select the <guilabel>Graph Trees</guilabel> menu item under the 
-					<guilabel>Management</guilabel> header. Select <guilabel>Add</guilabel> on this page to create a 
-					new tree. The following page will prompt you for a tree name, which will be used to identify the 
-					graph tree throughout Cacti. Once you type a name, click the <guilabel>Create</guilabel> button to 
+					To create a new graph tree, select the <guilabel>Graph Trees</guilabel> menu item under the
+					<guilabel>Management</guilabel> header. Select <guilabel>Add</guilabel> on this page to create a
+					new tree. The following page will prompt you for a tree name, which will be used to identify the
+					graph tree throughout Cacti. Once you type a name, click the <guilabel>Create</guilabel> button to
 					continue. You will be redirected to a page similar to the one below, but without all of the items.
 				</para>
 				<figure id="img_graph_tree_new">
 					<title>Editing a Graph Tree</title>
-					
+
 					<mediaobject>
 						<imageobject>
 							<imagedata fileref="images/graph_tree" format="PNG">
@@ -780,11 +780,11 @@ $database_password = "cacti";</userinput></screen>
 					</mediaobject>
 				</figure>
 				<para>
-					To start adding items to your tree, click add in the <guilabel>Tree Items</guilabel> box. There are 
-					currently three different types of tree items you can choose from: header, graph, or host. Simply 
-					choose the type you want, fill in the value for that type, and click <guilabel>Create</guilabel> to 
-					make your new graph tree item. Clicking the <guilabel>Add</guilabel> link to the right of any branch 
-					will add the new item below that branch, you can change the branch that any item belongs to by changing 
+					To start adding items to your tree, click add in the <guilabel>Tree Items</guilabel> box. There are
+					currently three different types of tree items you can choose from: header, graph, or host. Simply
+					choose the type you want, fill in the value for that type, and click <guilabel>Create</guilabel> to
+					make your new graph tree item. Clicking the <guilabel>Add</guilabel> link to the right of any branch
+					will add the new item below that branch, you can change the branch that any item belongs to by changing
 					its <guilabel>Parent Item</guilabel> field.
 				</para>
 			</sect2>
@@ -793,31 +793,31 @@ $database_password = "cacti";</userinput></screen>
 	<chapter id="user_management">
 		<title>User Management</title>
 		<para>
-			In addition to giving you the tools to create sophisticated graphs, Cacti enables you to create users 
-			that are tailored specifically to their requirements. Each user has certain settings such as login 
-			actions, as well as graph viewing settings. There are also two levels of permissions control, realm 
+			In addition to giving you the tools to create sophisticated graphs, Cacti enables you to create users
+			that are tailored specifically to their requirements. Each user has certain settings such as login
+			actions, as well as graph viewing settings. There are also two levels of permissions control, realm
 			permissions and graph permissions which enable you to control what the user can see and change.
 		</para>
 		<para>
-			Out of the box, there are two users that come with every Cacti installation. The "admin" user, is the 
-			main user that by default has access to see and change everything in Cacti. This is the user that you 
-			first login with in Cacti, and is probably a good idea to keep around unless you know otherwise. The 
-			second user is the "guest" user, which controls which areas/graphs are allowed for unauthenticated 
-			users. By default this user only has rights to view, but not change all graphs. This enables any 
-			unauthenticated user to visit 'graph_view.php' and view your graphs. This behavior can be changed by 
-			either changing the realm permissions for the "guest" user, or disabling the guest user altogether 
+			Out of the box, there are two users that come with every Cacti installation. The "admin" user, is the
+			main user that by default has access to see and change everything in Cacti. This is the user that you
+			first login with in Cacti, and is probably a good idea to keep around unless you know otherwise. The
+			second user is the "guest" user, which controls which areas/graphs are allowed for unauthenticated
+			users. By default this user only has rights to view, but not change all graphs. This enables any
+			unauthenticated user to visit 'graph_view.php' and view your graphs. This behavior can be changed by
+			either changing the realm permissions for the "guest" user, or disabling the guest user altogether
 			under <guilabel>Cacti Settings</guilabel>.
 		</para>
 		<sect1 id="create_new_user">
 			<title>Creating a New User</title>
 			<para>
-				To create a new user, select the <guilabel>User Management</guilabel> item under the 
-				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen, 
+				To create a new user, select the <guilabel>User Management</guilabel> item under the
+				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen,
 				click <guilabel>Add</guilabel>. You will see a screen that looks similar to the image below.
 			</para>
 			<figure id="img_user_new">
 				<title>Adding a User</title>
-				
+
 				<mediaobject>
 					<imageobject>
 						<imagedata fileref="images/user_management" format="PNG">
@@ -826,9 +826,9 @@ $database_password = "cacti";</userinput></screen>
 			</figure>
 			<para>
 				At minimum, you must specify a <guilabel>User Name</guilabel> and
-				a <guilabel>Password</guilabel> for each user. Each user field is described in more detail 
-				below. In addition to these fields, each user can have their own realm permissions", graph 
-				permissions, and graph settings. Each of these items are described in this section of the 
+				a <guilabel>Password</guilabel> for each user. Each user field is described in more detail
+				below. In addition to these fields, each user can have their own realm permissions", graph
+				permissions, and graph settings. Each of these items are described in this section of the
 				manual.
 			</para>
 			<table frame='all'>
@@ -874,54 +874,54 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="realm_permissions">
 			<title>Realm Permissions</title>
 			<para>
-				Realm permissions control which areas of Cacti a user can access. You can edit a user's realm 
-				permissions by selecting <guilabel>User Management</guilabel> and choosing the user you 
-				want to edit the permissions for. The <guilabel>Realm Permissions</guilabel> box will be displayed 
-				in the lower part of the screen. Each "realm" is a grouping that represents common tasks in Cacti, 
+				Realm permissions control which areas of Cacti a user can access. You can edit a user's realm
+				permissions by selecting <guilabel>User Management</guilabel> and choosing the user you
+				want to edit the permissions for. The <guilabel>Realm Permissions</guilabel> box will be displayed
+				in the lower part of the screen. Each "realm" is a grouping that represents common tasks in Cacti,
 				making it easier to fine tune each user's access.
 			</para>
 			<para>
-				If you want to create a user that can only view graphs, you should select the <guilabel>View 
-				Graphs</guilabel> realm and leave everything else unchecked. See the <guilabel>Graph 
-				Permissions</guilabel> section for more information about how to fine tune this even more on a per-graph 
-				basis. Conversely, if the user needs to access the console, they will need <guilabel>Console 
+				If you want to create a user that can only view graphs, you should select the <guilabel>View
+				Graphs</guilabel> realm and leave everything else unchecked. See the <guilabel>Graph
+				Permissions</guilabel> section for more information about how to fine tune this even more on a per-graph
+				basis. Conversely, if the user needs to access the console, they will need <guilabel>Console
 				Access</guilabel> and any additional realms that you see fit.
 			</para>
 		</sect1>
 		<sect1 id="graph_permissions">
 			<title>Graph Permissions</title>
 			<para>
-				Graph permissions control which graphs a user is allowed to view, it does not apply to editing graphs. 
-				You can edit a user's graph permissions by selecting <guilabel>User Management</guilabel> and choosing 
-				the user you want to edit the permissions for. Now select the <guilabel>Graph Permissions</guilabel> tab 
-				to view this user's graph permissions. There are three different ways that you can apply graph permissions, 
-				by graph, by host, or by graph template. This works by allowing or denying the user to all graphs associated 
-				with the particular group. So you can deny a user to a single graph, all graphs associated with a particular 
-				host, or all graphs associated with a particular graph template. Combining these three types of assigning 
+				Graph permissions control which graphs a user is allowed to view, it does not apply to editing graphs.
+				You can edit a user's graph permissions by selecting <guilabel>User Management</guilabel> and choosing
+				the user you want to edit the permissions for. Now select the <guilabel>Graph Permissions</guilabel> tab
+				to view this user's graph permissions. There are three different ways that you can apply graph permissions,
+				by graph, by host, or by graph template. This works by allowing or denying the user to all graphs associated
+				with the particular group. So you can deny a user to a single graph, all graphs associated with a particular
+				host, or all graphs associated with a particular graph template. Combining these three types of assigning
 				graph permissions results in a very powerful graph policy editor.
 			</para>
 			<para>
-				Each assignment type contains a <guilabel>Default Policy</guilabel> dropdown which can be used to control 
-				whether the user should be allowed to view everything or be denied from everything by default in the particular 
-				group. It is very important to remember that these policies are evaluated in the order: graph, host, graph 
-				template. Therefore, if you set graph's default policy to <guilabel>Deny</guilabel>, but kept host and graph 
-				template at <guilabel>Allow</guilabel>, the user's effective policy would be <guilabel>Deny</guilabel> since 
-				the graph assignment type is evaluated first. You typically either want to set all default policies to 
-				<guilabel>Deny</guilabel> for a restrictive user, or <guilabel>Allow</guilabel> for a non-restrictive user. 
-				If you thoroughly understand Cacti's graph permissions system, these default policies can be combined to provide 
+				Each assignment type contains a <guilabel>Default Policy</guilabel> dropdown which can be used to control
+				whether the user should be allowed to view everything or be denied from everything by default in the particular
+				group. It is very important to remember that these policies are evaluated in the order: graph, host, graph
+				template. Therefore, if you set graph's default policy to <guilabel>Deny</guilabel>, but kept host and graph
+				template at <guilabel>Allow</guilabel>, the user's effective policy would be <guilabel>Deny</guilabel> since
+				the graph assignment type is evaluated first. You typically either want to set all default policies to
+				<guilabel>Deny</guilabel> for a restrictive user, or <guilabel>Allow</guilabel> for a non-restrictive user.
+				If you thoroughly understand Cacti's graph permissions system, these default policies can be combined to provide
 				very complex results.
 			</para>
 		</sect1>
 		<sect1 id="graph_settings">
 			<title>Graph Settings</title>
 			<para>
-				Cacti stores certain graph viewing settings for each user, which enables each user to view graphs in an optimal 
-				way. These preferences controls things such as the preview graph size or the default graph viewing mode to use. 
-				In addition to managing these settings here under user management, each user can change their own settings by 
-				clicking on the <guilabel>Graphs</guilabel> tab and selecting the <guilabel>Settings</guilabel> tab on the 
-				following page. If you want to prevent a user from being able to keep their own graph preferences, uncheck the 
-				<guilabel>Allow this User to Keep Custom Graph Settings</guilabel> checkbox in user management. The user will be 
-				presented with an "Access Denied" error message if they attempt to click the <guilabel>Settings</guilabel> tab 
+				Cacti stores certain graph viewing settings for each user, which enables each user to view graphs in an optimal
+				way. These preferences controls things such as the preview graph size or the default graph viewing mode to use.
+				In addition to managing these settings here under user management, each user can change their own settings by
+				clicking on the <guilabel>Graphs</guilabel> tab and selecting the <guilabel>Settings</guilabel> tab on the
+				following page. If you want to prevent a user from being able to keep their own graph preferences, uncheck the
+				<guilabel>Allow this User to Keep Custom Graph Settings</guilabel> checkbox in user management. The user will be
+				presented with an "Access Denied" error message if they attempt to click the <guilabel>Settings</guilabel> tab
 				when this box is checked.
 			</para>
 		</sect1>
@@ -933,15 +933,15 @@ $database_password = "cacti";</userinput></screen>
 	<chapter id="data_input_methods">
 		<title>Data Input Methods</title>
 		<para>
-			Data input methods allow Cacti to retrieve data to insert into data sources and ultimately put on a graph. 
-			There are different ways for Cacti to retrieve data, the most popular being through an external script or from 
+			Data input methods allow Cacti to retrieve data to insert into data sources and ultimately put on a graph.
+			There are different ways for Cacti to retrieve data, the most popular being through an external script or from
 			SNMP.
 		</para>
 		<sect1 id="new_data_input_method">
 			<title>Creating a Data Input Method</title>
 			<para>
-				To create a new data input method, select the <guilabel>Data Input Methods</guilabel> option under 
-				the <guilabel>Management</guilabel> heading. Once on that screen, click <guilabel>Add</guilabel> on the 
+				To create a new data input method, select the <guilabel>Data Input Methods</guilabel> option under
+				the <guilabel>Management</guilabel> heading. Once on that screen, click <guilabel>Add</guilabel> on the
 				right. You will be presented with a few fields to populate on the following screen.
 			</para>
 			<table frame='all'>
@@ -976,18 +976,18 @@ $database_password = "cacti";</userinput></screen>
 				</tgroup>
 			</table>
 			<para>
-				When you are finished filling in all necessary fields, click the <guilabel>Create</guilabel> button to continue. You will 
-				be redirected back to the same page, but this time with two new boxes, <guilabel>Input Fields</guilabel> and <guilabel>Output 
-				Fields</guilabel>. The <guilabel>Input Fields</guilabel> box is used to define any fields that require information from the 
-				user. Any input fields referenced to in the input string must be defined here. The <guilabel>Output Fields</guilabel> box 
-				is used to define each field that you expect back from the script. <emphasis>All data input methods must have at least one output field 
+				When you are finished filling in all necessary fields, click the <guilabel>Create</guilabel> button to continue. You will
+				be redirected back to the same page, but this time with two new boxes, <guilabel>Input Fields</guilabel> and <guilabel>Output
+				Fields</guilabel>. The <guilabel>Input Fields</guilabel> box is used to define any fields that require information from the
+				user. Any input fields referenced to in the input string must be defined here. The <guilabel>Output Fields</guilabel> box
+				is used to define each field that you expect back from the script. <emphasis>All data input methods must have at least one output field
 				defined</emphasis>, but may have more for a script.
 			</para>
 			<sect2 id='data_input_fields'>
 				<title>Data Input Fields</title>
 				<para>
-					To define a new field, click <guilabel>Add</guilabel> next to the input or output field boxes. You 
-					will be presented with some or all of the fields below depending on whether you are adding an input or 
+					To define a new field, click <guilabel>Add</guilabel> next to the input or output field boxes. You
+					will be presented with some or all of the fields below depending on whether you are adding an input or
 					output field.
 				</para>
 				<table frame='all'>
@@ -1030,8 +1030,8 @@ $database_password = "cacti";</userinput></screen>
 					</tgroup>
 				</table>
 				<para>
-					When you are finished filling in all necessary fields, click the <guilabel>Create</guilabel> button to continue. You 
-					will be redirected back to the data input method edit page. From here you can continue to add additional fields, or 
+					When you are finished filling in all necessary fields, click the <guilabel>Create</guilabel> button to continue. You
+					will be redirected back to the data input method edit page. From here you can continue to add additional fields, or
 					click <guilabel>Save</guilabel> on this screen when finished.
 				</para>
 			</sect2>
@@ -1039,28 +1039,28 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="making_scripts_work_with_cacti">
 			<title>Making Your Scripts Work With Cacti</title>
 			<para>
-				The simplest way to extend Cacti's data gathering functionality is through external scripts. Cacti comes 
-				with a number of scripts out of the box which are located in the <filename>scripts/</filename> directory. 
+				The simplest way to extend Cacti's data gathering functionality is through external scripts. Cacti comes
+				with a number of scripts out of the box which are located in the <filename>scripts/</filename> directory.
 				These scripts are used by the data input methods that are present in a new installation of Cacti.
 			</para>
 			<para>
-				To have Cacti call an external script to gather data you must create a new data input method, making sure 
-				to specify <guilabel>Script/Command</guilabel> for the <guilabel>Input Type</guilabel> field. See the 
-				previous section, <ulink url="data_input_methods.html">Creating a Data Input Method</ulink> for more 
-				information about how to create a data input method. To gather data using your data input method, Cacti 
-				simply executes the shell command specified in the <guilabel>Input String</guilabel> field. Because of 
-				this, you can have Cacti run any shell command or call any script which can be written in almost any 
+				To have Cacti call an external script to gather data you must create a new data input method, making sure
+				to specify <guilabel>Script/Command</guilabel> for the <guilabel>Input Type</guilabel> field. See the
+				previous section, <ulink url="data_input_methods.html">Creating a Data Input Method</ulink> for more
+				information about how to create a data input method. To gather data using your data input method, Cacti
+				simply executes the shell command specified in the <guilabel>Input String</guilabel> field. Because of
+				this, you can have Cacti run any shell command or call any script which can be written in almost any
 				language.
 			</para>
 			<para>
-				What Cacti is concerned with is the output of the script. When you define your data input method, you are 
-				required to define one or more output fields. The number of output fields that you define here is important 
-				to your script's output. For a data input method with only one output field, your script should output its 
+				What Cacti is concerned with is the output of the script. When you define your data input method, you are
+				required to define one or more output fields. The number of output fields that you define here is important
+				to your script's output. For a data input method with only one output field, your script should output its
 				value in the following format:
 			</para>
 			<screen><userinput>&lt;value_1&gt;</userinput></screen>
 			<para>
-				So if I wrote a script that outputs the number of running processes, its output might look like the 
+				So if I wrote a script that outputs the number of running processes, its output might look like the
 				following:
 			</para>
 			<example>
@@ -1070,13 +1070,13 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 			</example>
 			<para>
-				Data input methods with more than one output field are handled a bit differently when writing scripts. 
+				Data input methods with more than one output field are handled a bit differently when writing scripts.
 				Scripts that output more than one value should be formatted like the following:
 			</para>
 			<screen><userinput>&lt;fieldname_1&gt;:&lt;value_1&gt; &lt;fieldname_2&gt;:&lt;value_2&gt; ... &lt;fieldname_n&gt;:&lt;value_n&gt;</userinput></screen>
 			<para>
-				Lets say that I write a script that outputs the 1, 5, and 10 minute load average of a Unix machine. In Cacti, 
-				I name the output fields '1min', '5min', and '10min', respectively. Based on these two things, the output of 
+				Lets say that I write a script that outputs the 1, 5, and 10 minute load average of a Unix machine. In Cacti,
+				I name the output fields '1min', '5min', and '10min', respectively. Based on these two things, the output of
 				the script should look like the following:
 			</para>
 			<example>
@@ -1086,8 +1086,8 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 			</example>
 			<para>
-				One last thing to keep in mind when writing scripts for Cacti is that they will be executed as the user the 
-				data gatherer runs as. Sometimes a script may work correctly when executed as root, but fails due to permissions 
+				One last thing to keep in mind when writing scripts for Cacti is that they will be executed as the user the
+				data gatherer runs as. Sometimes a script may work correctly when executed as root, but fails due to permissions
 				problems when executed as a less privileged user.
 			</para>
 		</sect1>
@@ -1095,39 +1095,39 @@ $database_password = "cacti";</userinput></screen>
 	<chapter id="data_queries">
 		<title>Data Queries</title>
 		<para>
-			Data queries are not a replacement for data input methods in Cacti. Instead they provide an easy way to 
-			query, or list data based upon an index, making the data easier to graph. The most common use of a data query 
-			within Cacti is to retrieve a list of network interfaces via SNMP. If you want to graph the traffic of a network 
-			interface, first Cacti must retrieve a list of interfaces on the host. Second, Cacti can use that 
-			information to create the necessary graphs and data sources. Data queries are only concerned with the 
-			first step of the process, that is obtaining a list of network interfaces and not creating the graphs/data 
-			sources for them. While listing network interfaces is a common use for data queries, they also have other 
+			Data queries are not a replacement for data input methods in Cacti. Instead they provide an easy way to
+			query, or list data based upon an index, making the data easier to graph. The most common use of a data query
+			within Cacti is to retrieve a list of network interfaces via SNMP. If you want to graph the traffic of a network
+			interface, first Cacti must retrieve a list of interfaces on the host. Second, Cacti can use that
+			information to create the necessary graphs and data sources. Data queries are only concerned with the
+			first step of the process, that is obtaining a list of network interfaces and not creating the graphs/data
+			sources for them. While listing network interfaces is a common use for data queries, they also have other
 			uses such as listing partitions, processors, or even cards in a router.
 		</para>
 		<para>
-			One requirement for any data query in Cacti, is that it has some unique value that defines each row in the list. 
-			This concept follows that of a 'primary key' in SQL, and makes sure that each row in the list can be uniquely 
-			referenced. Examples of these index values are 'ifIndex' for SNMP network interfaces or the device name for 
+			One requirement for any data query in Cacti, is that it has some unique value that defines each row in the list.
+			This concept follows that of a 'primary key' in SQL, and makes sure that each row in the list can be uniquely
+			referenced. Examples of these index values are 'ifIndex' for SNMP network interfaces or the device name for
 			partitions.
 		</para>
 		<para>
-			There are two types of data queries that you will see referred to throughout Cacti. They are script 
-			queries and SNMP queries. Script and SNMP queries are virtually identical in their functionality and 
-			only differ in how they obtain their information. A script query will call an external command or 
+			There are two types of data queries that you will see referred to throughout Cacti. They are script
+			queries and SNMP queries. Script and SNMP queries are virtually identical in their functionality and
+			only differ in how they obtain their information. A script query will call an external command or
 			script and an SNMP query will make an SNMP call to retrieve a list of data.
 		</para>
 		<para>
-			All data queries have two parts, the XML file and the definition within Cacti. An XML file must be 
-			created for each query, that defines where each piece of information is and how to retrieve it. This 
-			could be thought of as the actual query. The second part is a definition within Cacti, which tells 
+			All data queries have two parts, the XML file and the definition within Cacti. An XML file must be
+			created for each query, that defines where each piece of information is and how to retrieve it. This
+			could be thought of as the actual query. The second part is a definition within Cacti, which tells
 			Cacti where to find the XML file and associates the data query with one or more graph templates.
 		</para>
 		<sect1 id="new_data_query">
 			<title>Creating a Data Query</title>
 			<para>
-				Once you have created the XML file that defines your data query, you must add the data query 
-				within Cacti. To do this you must click on <guilabel>Data Queries</guilabel> under the <guilabel>Data 
-				Gathering</guilabel> heading, and select <guilabel>Add</guilabel>. You will be prompted for some 
+				Once you have created the XML file that defines your data query, you must add the data query
+				within Cacti. To do this you must click on <guilabel>Data Queries</guilabel> under the <guilabel>Data
+				Gathering</guilabel> heading, and select <guilabel>Add</guilabel>. You will be prompted for some
 				basic information about the data query, described in more detail below.
 			</para>
 			<table frame='all'>
@@ -1162,19 +1162,19 @@ $database_password = "cacti";</userinput></screen>
 				</tgroup>
 			</table>
 			<para>
-				When you are finished filling in all necessary fields, click the <guilabel>Create</guilabel> button 
-				to continue. You will be redirected back to the same page, but this time with some additional 
-				information to fill in. If you receive a red warning that says 'XML File Does Not Exist', correct 
+				When you are finished filling in all necessary fields, click the <guilabel>Create</guilabel> button
+				to continue. You will be redirected back to the same page, but this time with some additional
+				information to fill in. If you receive a red warning that says 'XML File Does Not Exist', correct
 				the value specified in the 'XML Path' field.
 			</para>
 			<para>
-				Under the <guilabel>Data Input Method</guilabel> box, you need to specify mappings that tell 
-				Cacti where to send data it recieves from the data query. There are three data source fields that 
-				Cacti cares about when referring to a data query; index type, index value, and output type ID. 
-				Index type refers to the name of the input field to search in, while the index value contains the 
-				value to search for in that field. Lastly, output type ID specifies the ID of the "Associated 
-				Graph Template" to use. You do not have to worry about filling in values for these fields when 
-				creating data sources, Cacti will do that for you. Below are the default mappings that will work 
+				Under the <guilabel>Data Input Method</guilabel> box, you need to specify mappings that tell
+				Cacti where to send data it recieves from the data query. There are three data source fields that
+				Cacti cares about when referring to a data query; index type, index value, and output type ID.
+				Index type refers to the name of the input field to search in, while the index value contains the
+				value to search for in that field. Lastly, output type ID specifies the ID of the "Associated
+				Graph Template" to use. You do not have to worry about filling in values for these fields when
+				creating data sources, Cacti will do that for you. Below are the default mappings that will work
 				in almost all cases:
 			</para>
 			<table frame='all'>
@@ -1205,18 +1205,18 @@ $database_password = "cacti";</userinput></screen>
 				</tgroup>
 			</table>
 			<para>
-				<emphasis>Make sure to check the checkboxes to the right of these three fields, or the mappings will 
+				<emphasis>Make sure to check the checkboxes to the right of these three fields, or the mappings will
 				not be saved.</emphasis>
 			</para>
 			<sect2 id="data_queries_associated_graph_templates">
 				<title>Associated Graph Templates</title>
 				<para>
-					Every data query must have at least one graph template associated with it, and possibly 
-					more depending on the number of output fields specified in the XML file. This is where 
-					you get to choose what kind of graphs to generate from this query. For instance, the 
-					interface data query has multiple graph template associations, used to graph traffic, 
-					errors, or packets. To add a new graph template association, simply click <guilabel>Add</guilabel> 
-					at the right of the <guilabel>Associated Graph Templates</guilabel> box. You will be presented 
+					Every data query must have at least one graph template associated with it, and possibly
+					more depending on the number of output fields specified in the XML file. This is where
+					you get to choose what kind of graphs to generate from this query. For instance, the
+					interface data query has multiple graph template associations, used to graph traffic,
+					errors, or packets. To add a new graph template association, simply click <guilabel>Add</guilabel>
+					at the right of the <guilabel>Associated Graph Templates</guilabel> box. You will be presented
 					with a few fields to fill in:
 				</para>
 				<table frame='all'>
@@ -1243,23 +1243,23 @@ $database_password = "cacti";</userinput></screen>
 					</tgroup>
 				</table>
 				<para>
-					When you are finished filling in these fields, click the <guilabel>Create</guilabel> button. 
-					You will be redirected back to the same page with some additional information to fill in. Cacti 
-					will make a list of each data template referenced to in your selected graph template and display 
-					them under the <guilabel>Associated Data Templates</guilabel> box. For each data source item 
-					listed, you must selected the data query output field that corresponds with it. <emphasis>Do not forget to 
+					When you are finished filling in these fields, click the <guilabel>Create</guilabel> button.
+					You will be redirected back to the same page with some additional information to fill in. Cacti
+					will make a list of each data template referenced to in your selected graph template and display
+					them under the <guilabel>Associated Data Templates</guilabel> box. For each data source item
+					listed, you must selected the data query output field that corresponds with it. <emphasis>Do not forget to
 					check the checkbox to the right of each selection, or your settings will not be saved.</emphasis>
 				</para>
 				<para>
-					The <guilabel>Suggested Values</guilabel> box gives you a way to control field values of data sources and graphs 
-					created using this data query. If you specify multiple suggested values for the same field, Cacti will evaluate 
-					them in order which you can control using the up or down arrow icons. For more information about valid field names 
+					The <guilabel>Suggested Values</guilabel> box gives you a way to control field values of data sources and graphs
+					created using this data query. If you specify multiple suggested values for the same field, Cacti will evaluate
+					them in order which you can control using the up or down arrow icons. For more information about valid field names
 					and variables, read the section on suggested values.
 				</para>
 				<para>
-					When you are finished filling in all necessary fields on this form, click the <guilabel>Save</guilabel> button to 
-					return to the data queries edit screen. Repeat the steps under this heading as many times as necessary to represent 
-					all data in your XML file. When you are finished with this, you should be ready to start adding your data query to 
+					When you are finished filling in all necessary fields on this form, click the <guilabel>Save</guilabel> button to
+					return to the data queries edit screen. Repeat the steps under this heading as many times as necessary to represent
+					all data in your XML file. When you are finished with this, you should be ready to start adding your data query to
 					hosts.
 				</para>
 			</sect2>
@@ -1270,6 +1270,10 @@ $database_password = "cacti";</userinput></screen>
    &lt;name&gt;Get SNMP Interfaces&lt;/name&gt;
    &lt;description&gt;Queries a host for a list of monitorable interfaces&lt;/description&gt;
    &lt;oid_index&gt;.1.3.6.1.2.1.2.2.1.1&lt;/oid_index&gt;
+   &lt;oid_num_indexes&gt;.1.3.6.1.2.1.2.1.0&lt;/oid_num_indexes&gt;
+   &lt;index_order&gt;ifDescr:ifName:ifIndex&lt;/index_order&gt;
+   &lt;index_order_type&gt;numeric&lt;/index_order_type&gt;
+   &lt;index_title_format&gt;|chosen_order_field|&lt;/index_title_format&gt;
 
    &lt;fields&gt;
       &lt;ifIndex&gt;
@@ -1306,6 +1310,22 @@ $database_password = "cacti";</userinput></screen>
 							<entry>Every SNMP query must have an OID that represents the index values for the query when walked. As described above, any data query in Cacti must contain a field that uniquely identifies each row returned by the query. In the example above, the oid_index points to the OID of ifIndex in the interface MIB.</entry>
 						</row>
 						<row>
+							<entry>query-&gt;oid_num_indexes</entry>
+							<entry>An OID that can be queried to determine the total number of available indexes. If specified, this will be used to determine when to automatically recache this SNMP query when it is attached to a device.</entry>
+						</row>
+						<row>
+							<entry>query-&gt;index_order</entry>
+							<entry>As of version 0.8.6, Cacti will attempt to find the best field to index off of based on whether each row in the query is unique and non-null. If specified, Cacti will perform this check on the fields listed here in the order specified. Only input fields can be specified and multiple fields should be delimited with a comma.</entry>
+						</row>
+						<row>
+							<entry>query-&gt;index_order_type</entry>
+							<entry><para>For sorting purposes, specify whether the index is numeric or alphanumeric.</para><para><parameter>numeric</parameter>: The indexes in this SNMP query are to be sorted numerically (ie. 1,2,3,10,20,31)</para><para><parameter>alphabetic</parameter>: The indexes in this SNMP query are to be sorted alphabetically (1,10,2,20,3,31).</para></entry>
+						</row>
+						<row>
+							<entry>query-&gt;index_title_format</entry>
+							<entry>Specify the title format to use when representing an index to the user. Any input field name can be used as a variable if enclosed in pipes (|). The variable <parameter>|chosen_order_field|</parameter> will be substituted with the field chosen by Cacti to index off of (see index_order above).</entry>
+						</row>
+						<row>
 							<entry>query-&gt;fields</entry>
 							<entry>Each field contained within the SNMP query must be defined under this tag.</entry>
 						</row>
@@ -1319,15 +1339,15 @@ $database_password = "cacti";</userinput></screen>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;method</entry>
-							<entry>Tell Cacti how you want it to gather SNMP information for this field. Valid values are 'walk' and 'get'. The 'get' method obtains a list of indexes and does an snmpget for each index of the OID specified for this field. The walk method simply does a walk of the OID specified for this field. Both methods will return the same values, even though the 'walk' method is typically more efficient.</entry>
+							<entry><para>Tell Cacti how you want it to gather SNMP information for this field.</para><para><parameter>get</parameter>: The 'get' method obtains a list of indexes and does an snmpget for each index of the OID specified for this field.</para><para><parameter>walk</parameter>: The 'walk' method does a walk of the OID specified for this field. Both methods will return the same values, even though the 'walk' method is typically more efficient.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;source</entry>
-							<entry>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row. Valid options here are 'value', 'OID/REGEXP:(regexp_match)', and 'VALUE/REGEXP:(regexp_match)'. The 'value' option simply returns the result of the snmpget for each row. The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file. Finally, the 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</entry>
+							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;direction</entry>
-							<entry>There are two types of fields when dealing with an SNMP query, 'input' and 'output'. Input values are the "known" values that you will use to derive the output values, this is where the "query" part of SNMP query comes in. When you create a graph based on an SNMP query, Cacti will prompt you to choose the input value to base the graph on. A rule of thumb is that input fields contain semi-static data that is not graphable, while the output fields contain the data that will be graphed.</entry>
+							<entry><para><parameter>input</parameter>: Input values are the "known" values that you will use to derive the output values, this is where the "query" part of SNMP query comes in. When you create a graph based on an SNMP query, Cacti will prompt you to choose the input value to base the graph on.</para><para><parameter>output</parameter>: Output values are "unknown" values that are returned from the script. An SNMP query may return multiple statistics for a single index. For instance, a single interface could return bytes/sec in, errors, packets/sec, etc.</para><para>A rule of thumb is that input fields contain semi-static data that is not graphable, while the output fields contain the data that will be graphed.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;oid</entry>
@@ -1346,8 +1366,12 @@ $database_password = "cacti";</userinput></screen>
    &lt;arg_index&gt;index&lt;/arg_index&gt;
    &lt;arg_query&gt;query&lt;/arg_query&gt;
    &lt;arg_get&gt;get&lt;/arg_get&gt;
+   &lt;arg_num_indexes&gt;num_indexes&lt;/arg_num_indexes&gt;
    &lt;output_delimeter&gt;:&lt;/output_delimeter&gt;
-   
+   &lt;index_order&gt;dskDevice:dskMount&lt;/index_order&gt;
+   &lt;index_order_type&gt;alphabetic&lt;/index_order_type&gt;
+   &lt;index_title_format&gt;|chosen_order_field|&lt;/index_title_format&gt;
+
    &lt;fields&gt;
       &lt;dskDevice&gt;
          &lt;name&gt;Device Name&lt;/name&gt;
@@ -1393,8 +1417,24 @@ $database_password = "cacti";</userinput></screen>
 							<entry>Enter the argument that is to be passed to the script to retrieve a single value given a field name and index value.</entry>
 						</row>
 						<row>
+							<entry>query-&gt;arg_num_indexes</entry>
+							<entry>Enter the argument that is to be passed to the script to determine the total number of available indexes. If specified, this will be used to determine when to automatically recache this script query when it is attached to a device.</entry>
+						</row>
+						<row>
 							<entry>query-&gt;output_delimeter</entry>
 							<entry>Enter the one character delimiter that will be used to separate output values. This is only used when you "query" the script in which case it outputs 'index(delimiter)value'.</entry>
+						</row>
+						<row>
+							<entry>query-&gt;index_order</entry>
+							<entry>As of version 0.8.6, Cacti will attempt to find the best field to index off of based on whether each row in the query is unique and non-null. If specified, Cacti will perform this check on the fields listed here in the order specified. Only input fields can be specified and multiple fields should be delimited with a comma.</entry>
+						</row>
+						<row>
+							<entry>query-&gt;index_order_type</entry>
+							<entry><para>For sorting purposes, specify whether the index is numeric or alphanumeric.</para><para><parameter>numeric</parameter>: The indexes in this script query are to be sorted numerically (ie. 1,2,3,10,20,31)</para><para><parameter>alphabetic</parameter>: The indexes in this script query are to be sorted alphabetically (1,10,2,20,3,31).</para></entry>
+						</row>
+						<row>
+							<entry>query-&gt;index_title_format</entry>
+							<entry>Specify the title format to use when representing an index to the user. Any input field name can be used as a variable if enclosed in pipes (|). The variable <parameter>|chosen_order_field|</parameter> will be substituted with the field chosen by Cacti to index off of (see index_order above).</entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields</entry>
@@ -1410,7 +1450,7 @@ $database_password = "cacti";</userinput></screen>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;dskDevice-&gt;direction</entry>
-							<entry>There are two types of fields when dealing with an script query, 'input' and 'output'. Input values are the "known" values that you will use to derive the output values, this is where the "query" part of script query comes in. When you create a graph based on an script query, Cacti will prompt you to choose the input value to base the graph on. A rule of thumb is that input fields contain semi-static data that is not graphable, while the output fields contain the data that will be graphed.</entry>
+							<entry><para><parameter>input</parameter>: Input values are the "known" values that you will use to derive the output values, this is where the "query" part of script query comes in. When you create a graph based on a script query, Cacti will prompt you to choose the input value to base the graph on.</para><para><parameter>output</parameter>: Output values are "unknown" values that are returned from the script. A script query may return multiple statistics for a single index. For instance, a single partition could return free disk space, total disk space, fragmentation percentage, etc.</para><para>A rule of thumb is that input fields contain semi-static data that is not graphable, while the output fields contain the data that will be graphed.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;dskDevice-&gt;query_name</entry>
@@ -1426,25 +1466,25 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="graph_templates">
 			<title>Graph Templates</title>
 			<para>
-				In Cacti, a graph template provides a skeleton for an actual graph. If you have many graphs that 
-				share most of their characteristics, using a graph template would probably make sense. After a 
-				graph is attached to a particular graph template, all changes made to the graph template will 
+				In Cacti, a graph template provides a skeleton for an actual graph. If you have many graphs that
+				share most of their characteristics, using a graph template would probably make sense. After a
+				graph is attached to a particular graph template, all changes made to the graph template will
 				propagate out to all of its graphs.
 			</para>
 			<sect2 id="creating_graph_templates">
 				<title>Creating a Graph Template</title>
 				<para>
-					To create a new graph template, select <guilabel>Graph Templates</guilabel> under the 
+					To create a new graph template, select <guilabel>Graph Templates</guilabel> under the
 					<guilabel>Templates</guilabel> heading and click <guilabel>Add</guilabel>.
 				</para>
 				<para>
-					The first thing you must do is give the template a name. This name has nothing to do with 
-					the graph title, but is what you will use to identify the template throughout Cacti. 
-					Second, you will notice a list of graph field names with Use Per-Graph Value checkboxes 
-					next to each one. The nice thing about templates in Cacti is that you can choose whether 
-					to template each field on a per-field basis. If you leave the checkbox uncheked, every 
-					graph attached to the template will inherit its value from the template. If the checkbox 
-					is checked, every graph attached to the template will contain its own value for that 
+					The first thing you must do is give the template a name. This name has nothing to do with
+					the graph title, but is what you will use to identify the template throughout Cacti.
+					Second, you will notice a list of graph field names with Use Per-Graph Value checkboxes
+					next to each one. The nice thing about templates in Cacti is that you can choose whether
+					to template each field on a per-field basis. If you leave the checkbox uncheked, every
+					graph attached to the template will inherit its value from the template. If the checkbox
+					is checked, every graph attached to the template will contain its own value for that
 					particular field.
 				</para>
 				<table frame='all'>
@@ -1527,18 +1567,18 @@ $database_password = "cacti";</userinput></screen>
 					</tgroup>
 				</table>
 				<para>
-					<emphasis>Note:</emphasis> For most graph templates, you will want to check the Use 
-					<guilabel>Per-Graph Value</guilabel> checkbox for the title field so each graph using this 
-					template has its own unique title. It also makes sense to enter an initial value in this 
+					<emphasis>Note:</emphasis> For most graph templates, you will want to check the Use
+					<guilabel>Per-Graph Value</guilabel> checkbox for the title field so each graph using this
+					template has its own unique title. It also makes sense to enter an initial value in this
 					field that includes the variable |host_description| for organizational purposes.
 				</para>
 				<para>
-					When you are finished filling in values for the graph template, click <guilabel>Create</guilabel> 
+					When you are finished filling in values for the graph template, click <guilabel>Create</guilabel>
 					and you will be presented with a page similar to the graph edit page.
 				</para>
 				<figure id="img_graph_template_new">
 					<title>Adding a Graph Template</title>
-					
+
 					<mediaobject>
 						<imageobject>
 							<imagedata fileref="images/graph_template" format="PNG">
@@ -1548,9 +1588,9 @@ $database_password = "cacti";</userinput></screen>
 				<sect3 id="graph_items">
 					<title>Graph Items</title>
 					<para>
-						The first thing you should do is create graph items for this graph template, just like for a regular graph. 
-						One difference you will notice is that the <guilabel>Data Sources</guilabel> dropdown will contain a list 
-						of data template items rather than data source items. It is important that Cacti can make this association 
+						The first thing you should do is create graph items for this graph template, just like for a regular graph.
+						One difference you will notice is that the <guilabel>Data Sources</guilabel> dropdown will contain a list
+						of data template items rather than data source items. It is important that Cacti can make this association
 						here, so that Cacti doesn't have to make unnecessary assumptions later.
 					</para>
 					<table frame='all'>
@@ -1608,12 +1648,12 @@ $database_password = "cacti";</userinput></screen>
 				<sect3 id="graph_item_inputs">
 					<title>Graph Item Inputs</title>
 					<para>
-						After creating graph items for your template, you will need to create some graph item inputs. Graph item inputs are 
-						unique to graph templates because of the large number of items they sometimes contain. Graph item inputs enable you to 
+						After creating graph items for your template, you will need to create some graph item inputs. Graph item inputs are
+						unique to graph templates because of the large number of items they sometimes contain. Graph item inputs enable you to
 						take one graph item field, and associate it with multiple graph items.
 					</para>
 					<para>
-						To create a new graph item input, click <guilabel>Add</guilabel> on the right of the <guilabel>Graph Item 
+						To create a new graph item input, click <guilabel>Add</guilabel> on the right of the <guilabel>Graph Item
 						Inputs</guilabel> box. There are various fields that must be filled in for every graph item input:
 					</para>
 					<table frame='all'>
@@ -1652,21 +1692,21 @@ $database_password = "cacti";</userinput></screen>
 			<sect2 id="applying_graph_templates">
 				<title>Applying Graph Templates to Graphs</title>
 				<para>
-					Applying a graph template to a graph is a very simple process. The first thing you must do is select the graph you 
-					want to apply the template to under <guilabel>Graph Management</guilabel>. Under the <guilabel>Graph Template 
-					Selection</guilabel> box, select the graph template that you want to apply to the graph and click 
-					<guilabel>Save</guilabel>. If this is a new graph or the graph and graph template contains an equal number of 
-					graph items, the graph template will be automatically applied. If number of graph items varies from the graph to 
+					Applying a graph template to a graph is a very simple process. The first thing you must do is select the graph you
+					want to apply the template to under <guilabel>Graph Management</guilabel>. Under the <guilabel>Graph Template
+					Selection</guilabel> box, select the graph template that you want to apply to the graph and click
+					<guilabel>Save</guilabel>. If this is a new graph or the graph and graph template contains an equal number of
+					graph items, the graph template will be automatically applied. If number of graph items varies from the graph to
 					the target graph template, you will be propmted with a warning that your graph will be changed.
 				</para>
 				<para>
-					Once the template is applied to the graph, you will notice that you can only change values for the fields that 
-					you checked Use Per-Graph Value for. You will also notice a new box, called <guilabel>Graph Item Inputs</guilabel>. 
-					This is where you can specify values for the graph items inputs that you defined in the graph template. The values 
+					Once the template is applied to the graph, you will notice that you can only change values for the fields that
+					you checked Use Per-Graph Value for. You will also notice a new box, called <guilabel>Graph Item Inputs</guilabel>.
+					This is where you can specify values for the graph items inputs that you defined in the graph template. The values
 					specified here will be applied to each graph item tied to the graph item input.
 				</para>
 				<para>
-					<emphasis>Now any time a change is made to the graph template, it will be automatically propagated to the graphs 
+					<emphasis>Now any time a change is made to the graph template, it will be automatically propagated to the graphs
 					attached to it.</emphasis>
 				</para>
 			</sect2>
@@ -1674,25 +1714,25 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="data_templates">
 			<title>Data Templates</title>
 			<para>
-				In Cacti, a data template provides a skeleton for an actual data source. If you have many data 
-				sources that share most of their characteristics, using a data template would probably make sense. 
+				In Cacti, a data template provides a skeleton for an actual data source. If you have many data
+				sources that share most of their characteristics, using a data template would probably make sense.
 				After a data source is attached to a particular data template, all changes made to the data template
 				will propagate out to all of its data sources.
 			</para>
 			<sect2 id="creating_data_templates">
 				<title>Creating a Data Template</title>
 				<para>
-					To create a new data template, select <guilabel>Data Templates</guilabel> under the 
+					To create a new data template, select <guilabel>Data Templates</guilabel> under the
 					<guilabel>Templates</guilabel> heading and click <guilabel>Add</guilabel>.
 				</para>
 				<para>
-					The first thing you must do is give the template a name. This name has nothing to do with the 
-					data source name, but is what you will use to identify the template throughout Cacti. Second, 
-					you will notice a list of data source/data source item field names with Use <guilabel>Per-Data 
-					Source Value</guilabel> checkboxes next to each one. The nice thing about templates in Cacti is 
-					that you can choose whether to template each field on a per-field basis. If you leave the checkbox 
-					unchecked, every data source attached to the template will inherit its value from the template. If 
-					the checkbox is checked, every data source attached to the template will contain its own value for 
+					The first thing you must do is give the template a name. This name has nothing to do with the
+					data source name, but is what you will use to identify the template throughout Cacti. Second,
+					you will notice a list of data source/data source item field names with Use <guilabel>Per-Data
+					Source Value</guilabel> checkboxes next to each one. The nice thing about templates in Cacti is
+					that you can choose whether to template each field on a per-field basis. If you leave the checkbox
+					unchecked, every data source attached to the template will inherit its value from the template. If
+					the checkbox is checked, every data source attached to the template will contain its own value for
 					that particular field.
 				</para>
 				<table frame='all'>
@@ -1735,18 +1775,18 @@ $database_password = "cacti";</userinput></screen>
 					</tgroup>
 				</table>
 				<para>
-					<emphasis>Note:</emphasis> For most data templates, you will want to check the <guilabel>Use 
-					Per-Graph Value</guilabel> checkbox for the name field so each data source using this template has its 
-					own unique name. It also makes sense to enter an inital value in this field that includes the variable 
+					<emphasis>Note:</emphasis> For most data templates, you will want to check the <guilabel>Use
+					Per-Graph Value</guilabel> checkbox for the name field so each data source using this template has its
+					own unique name. It also makes sense to enter an inital value in this field that includes the variable
 					|host_description| for organizational purposes.
 				</para>
 				<para>
-					When you are finished filling in values for the data template, click <guilabel>Create</guilabel> and 
+					When you are finished filling in values for the data template, click <guilabel>Create</guilabel> and
 					you will be presented with a screen similar to the data source edit screen.
 				</para>
 				<figure id="img_data_template_new">
 					<title>Adding a Data Template</title>
-					
+
 					<mediaobject>
 						<imageobject>
 							<imagedata fileref="images/data_template" format="PNG">
@@ -1800,10 +1840,10 @@ $database_password = "cacti";</userinput></screen>
 				<sect3 id="custom_data">
 					<title>Custom Data</title>
 					<para>
-						Assuming you selected a data input source on the previous screen, you should now be presented 
-						with a <guilabel>Custom Data</guilabel> box. Each custom data field is per-field templatable as 
-						all of the other data source fields are. Even if you select the <guilabel>Use Per-Data Source 
-						Value</guilabel> checkbox, it might be useful to specify a value that will be used as an "inital 
+						Assuming you selected a data input source on the previous screen, you should now be presented
+						with a <guilabel>Custom Data</guilabel> box. Each custom data field is per-field templatable as
+						all of the other data source fields are. Even if you select the <guilabel>Use Per-Data Source
+						Value</guilabel> checkbox, it might be useful to specify a value that will be used as an "inital
 						value" for any data source using this data template.
 					</para>
 				</sect3>
@@ -1811,17 +1851,17 @@ $database_password = "cacti";</userinput></screen>
 			<sect2 id="applying_data_templates">
 				<title>Applying Data Templates to Data Sources</title>
 				<para>
-					Applying a data template to a data source is a very simple process. The first thing you 
-					must do is select the data source you want to apply the template to under <guilabel>Data 
-					Sources</guilabel>. Under the <guilabel>Data Template Selection</guilabel> box, select 
+					Applying a data template to a data source is a very simple process. The first thing you
+					must do is select the data source you want to apply the template to under <guilabel>Data
+					Sources</guilabel>. Under the <guilabel>Data Template Selection</guilabel> box, select
 					the data template that you want to apply to the data source and click <guilabel>Save</guilabel>.
 				</para>
 				<para>
-					Once the template is applied to the data source, you will notice that you can only change 
+					Once the template is applied to the data source, you will notice that you can only change
 					values for the fields that you checked Use <guilabel>Per-Data Source Value</guilabel> for.
 				</para>
 				<para>
-					<emphasis>Now any time a change is made to the data template, it will be automatically 
+					<emphasis>Now any time a change is made to the data template, it will be automatically
 					propagated to the data sources attached to it.</emphasis>
 				</para>
 			</sect2>
@@ -1829,26 +1869,26 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="host_templates">
 			<title>Host Templates</title>
 			<para>
-				Host templates in Cacti serve a different purpose then data and graph templates. Instead of 
-				abstracting the fields of a host, a host template allows you to associate graph templates and 
-				data queries with a given host type. This way when you assign a host template to a host, all 
+				Host templates in Cacti serve a different purpose then data and graph templates. Instead of
+				abstracting the fields of a host, a host template allows you to associate graph templates and
+				data queries with a given host type. This way when you assign a host template to a host, all
 				of the relevant graphs to that host type are only one click away from the user.
 			</para>
 			<sect2 id="host_template_new">
 				<title>Adding a Host Template</title>
 				<para>
-					To create a new host template in Cacti, select the <guilabel>Host Templates</guilabel> 
-					option under the <guilabel>Templates</guilabel> heading. Once on that screen, click 
-					<guilabel>Add</guilabel> on the right. Type a unique name for the host template and 
-					click the <guilabel>Create</guilabel> button. You will be redirected back to the edit 
-					page with the <guilabel>Associated Graph Templates</guilabel> and <guilabel>Associated 
-					Data Queries</guilabel> boxes. These two boxes allow you to associate certain graph 
-					templates or data queries with the host template. Simply select something from the 
+					To create a new host template in Cacti, select the <guilabel>Host Templates</guilabel>
+					option under the <guilabel>Templates</guilabel> heading. Once on that screen, click
+					<guilabel>Add</guilabel> on the right. Type a unique name for the host template and
+					click the <guilabel>Create</guilabel> button. You will be redirected back to the edit
+					page with the <guilabel>Associated Graph Templates</guilabel> and <guilabel>Associated
+					Data Queries</guilabel> boxes. These two boxes allow you to associate certain graph
+					templates or data queries with the host template. Simply select something from the
 					dropdown menu and click <guilabel>Add</guilabel> to associate it with your host template.
 				</para>
 				<figure id="img_host_template_new">
 					<title>Adding a Host Template</title>
-					
+
 					<mediaobject>
 						<imageobject>
 							<imagedata fileref="images/host_template" format="PNG">
@@ -1862,27 +1902,27 @@ $database_password = "cacti";</userinput></screen>
 
 <part id="using_cacti">
 	<title>Using Cacti</title>
-	
+
 	<chapter id="how_to">
 		<title>How To</title>
 		<sect1 id="graph_snmp_oid">
 			<title>Graph a Single SNMP OID</title>
 			<para>
-				When dealing with SNMP-enabled devices, there are often times when you want to graph the value of a single 
-				OID. This tutorial explains how to do this in Cacti. It also assumes that you have the "SNMP - Generic OID 
-				Template" graph template, which is now included in Cacti as of version 0.8.5. If you do not see this 
-				template listed under <guilabel>Graph Templates</guilabel>, download the template from the Cacti website 
+				When dealing with SNMP-enabled devices, there are often times when you want to graph the value of a single
+				OID. This tutorial explains how to do this in Cacti. It also assumes that you have the "SNMP - Generic OID
+				Template" graph template, which is now included in Cacti as of version 0.8.5. If you do not see this
+				template listed under <guilabel>Graph Templates</guilabel>, download the template from the Cacti website
 				in XML form and import it using the <guilabel>Import Templates</guilabel> menu item.
 			</para>
 			<para>
-				To start the process of creating a new graph for your OID, click the <guilabel>New Graphs</guilabel> menu 
-				item and select the host that contains the target OID from the dropdown. Under the <guilabel>Graph 
-				Templates</guilabel> box, you will see a dropdown on the last line that reads <guilabel>(Select a graph 
-				type to create)</guilabel>. From this dropdown, choose "SNMP - Generic OID Template" and click the 
+				To start the process of creating a new graph for your OID, click the <guilabel>New Graphs</guilabel> menu
+				item and select the host that contains the target OID from the dropdown. Under the <guilabel>Graph
+				Templates</guilabel> box, you will see a dropdown on the last line that reads <guilabel>(Select a graph
+				type to create)</guilabel>. From this dropdown, choose "SNMP - Generic OID Template" and click the
 				<guilabel>Create</guilabel> button at the bottom of the page.
 			</para>
 			<para>
-				You will be presented with several fields that will require input before the new graph can be created. 
+				You will be presented with several fields that will require input before the new graph can be created.
 				They are described in more detail below.
 			</para>
 			<table frame='all'>
@@ -1933,8 +1973,8 @@ $database_password = "cacti";</userinput></screen>
 				</tgroup>
 			</table>
 			<para>
-				When finished filling in values for these fields, click the <guilabel>Create</guilabel> button. Your new graph can 
-				now be accessed through the <guilabel>Graph Management</guilabel> page or the <guilabel>Graphs</guilabel> tab 
+				When finished filling in values for these fields, click the <guilabel>Create</guilabel> button. Your new graph can
+				now be accessed through the <guilabel>Graph Management</guilabel> page or the <guilabel>Graphs</guilabel> tab
 				inside of Cacti.
 			</para>
 		</sect1>
@@ -1946,14 +1986,14 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 			</authorblurb>
 			<para>
-				This HOWTO walks you through the simplest steps of graphing the output of a single value from a script. 
-				As a new user of cacti, I had a difficult time understanding how to graph anything that wasn't canned with 
-				the original load. After a lot of playing around, I came up with these procedures which can be built upon for 
+				This HOWTO walks you through the simplest steps of graphing the output of a single value from a script.
+				As a new user of cacti, I had a difficult time understanding how to graph anything that wasn't canned with
+				the original load. After a lot of playing around, I came up with these procedures which can be built upon for
 				more sophisticated collections and graphs.
 			</para>
 			<para>
-				I do not use templates in this HOWTO. Templates provide a significant advantage if you are graphing the output 
-				for multiple instances or creating graphs for multiple hosts. They help to maintain consistency and simplify 
+				I do not use templates in this HOWTO. Templates provide a significant advantage if you are graphing the output
+				for multiple instances or creating graphs for multiple hosts. They help to maintain consistency and simplify
 				setup.
 			</para>
 			<para>
@@ -1963,11 +2003,11 @@ $database_password = "cacti";</userinput></screen>
 				I've not put a lot of explanations in the procedures. Refer to the Cacti manual for more details.
 			</para>
 			<para>
-				Have a tested script ready to go. I used the following script located in <filename>/home/cactiuser/bin</filename> 
+				Have a tested script ready to go. I used the following script located in <filename>/home/cactiuser/bin</filename>
 				called <filename>random2.pl</filename>:
 			</para>
 			<programlisting>#!/usr/bin/perl -w
- 
+
 print int(rand(10));</programlisting>
 			<para>
 				This script simply prints out a random integer between 0 and 9 every time it's called.
@@ -2583,9 +2623,9 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							Before you can create traffic graphs, Cacti must have working SNMP support. One way to do this is to compile 
-							PHP with SNMP support built in, many times you can install the 'php-snmp' package to do this. The second option 
-							is to have Cacti call the snmpget and snmpwalk binaries from your ucd-snmp or <application>net-snmp</application> 
+							Before you can create traffic graphs, Cacti must have working SNMP support. One way to do this is to compile
+							PHP with SNMP support built in, many times you can install the 'php-snmp' package to do this. The second option
+							is to have Cacti call the snmpget and snmpwalk binaries from your ucd-snmp or <application>net-snmp</application>
 							installation. You can use the about page to determine whether to are using "built-in" or "external" SNMP support.
 						</para>
 						<para>
@@ -2610,7 +2650,7 @@ print int(rand(10));</programlisting>
 							<listitem>
 								<para>Click <guilabel>Create</guilabel>, and <guilabel>Create</guilabel> again on the following screen to create your graphs.</para>
 							</listitem>
-						</orderedlist>	
+						</orderedlist>
 					</answer>
 				</qandaentry>
 			</qandadiv>
@@ -2636,8 +2676,8 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							Your installation of PHP does not have MySQL installed or enabled. On binary-based distributions, make 
-							sure you have the 'php-mysql' package installed. Also make sure that 'extension=mysql.so' is uncommented 
+							Your installation of PHP does not have MySQL installed or enabled. On binary-based distributions, make
+							sure you have the 'php-mysql' package installed. Also make sure that 'extension=mysql.so' is uncommented
 							in your php.ini file.
 						</para>
 					</answer>
@@ -2650,7 +2690,7 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							To reset the admin account password back to the default of 'admin', connect to your Cacti database at the 
+							To reset the admin account password back to the default of 'admin', connect to your Cacti database at the
 							command line.
 						</para>
 						<screen><prompt>shell&gt;</prompt> <userinput>mysql -u root -p cacti</userinput></screen>
@@ -2671,8 +2711,8 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							Give cactid, the future replacement for cmd.php a try. Unlike cmd.php, cactid is written in c and makes use 
-							of pthreads. On a typical installation, it is not uncommon for cactid to poll about 500 items in less then 10 
+							Give cactid, the future replacement for cmd.php a try. Unlike cmd.php, cactid is written in c and makes use
+							of pthreads. On a typical installation, it is not uncommon for cactid to poll about 500 items in less then 10
 							seconds.
 						</para>
 					</answer>
@@ -2697,7 +2737,7 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							<application>Redhat 8.0</application> comes with a broken php-snmp package. Updating your 'php-snmp' and 'net-snmp' 
+							<application>Redhat 8.0</application> comes with a broken php-snmp package. Updating your 'php-snmp' and 'net-snmp'
 							packages to their latest versions should fix this problem.
 						</para>
 					</answer>
@@ -2710,8 +2750,8 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							Run <command>snmpconf -g basic_setup</command> and follow the prompts. Also check that the file being used by snmpd 
-							is the correct config file. For Redhat Linux, snmpconf creates the <filename>/etc/snmpd.conf</filename>, but snmpd 
+							Run <command>snmpconf -g basic_setup</command> and follow the prompts. Also check that the file being used by snmpd
+							is the correct config file. For Redhat Linux, snmpconf creates the <filename>/etc/snmpd.conf</filename>, but snmpd
 							uses <filename>/etc/snmpd/snmpd.conf</filename>.
 						</para>
 						<para>
@@ -2739,9 +2779,9 @@ disk /</userinput></screen>
 					</question>
 					<answer>
 						<para>
-							For you to actually get graph images, cmd.php must run at least once so it can create .rrd files in Cacti's 'rra/' 
-							directory. Double check that you configured your <filename>/etc/crontab</filename> file to execute cmd.php every 
-							five minutes. Also make sure that the user cmd.php runs as has permission to create new files in Cacti's 'rra/' 
+							For you to actually get graph images, cmd.php must run at least once so it can create .rrd files in Cacti's 'rra/'
+							directory. Double check that you configured your <filename>/etc/crontab</filename> file to execute cmd.php every
+							five minutes. Also make sure that the user cmd.php runs as has permission to create new files in Cacti's 'rra/'
 							directory.
 						</para>
 						<para>
@@ -2749,8 +2789,8 @@ disk /</userinput></screen>
 						</para>
 						<screen><prompt>shell&gt;</prompt> <userinput>php cmd.php</userinput></screen>
 						<para>
-							If you have files in your 'rra/' directory, but your graphs still appear as broken images, you should enable graph 
-							debug mode see exactly why the graphs are not rendering. To do this go into Cacti, select <guilabel>Graph Management</guilabel> 
+							If you have files in your 'rra/' directory, but your graphs still appear as broken images, you should enable graph
+							debug mode see exactly why the graphs are not rendering. To do this go into Cacti, select <guilabel>Graph Management</guilabel>
 							from the menu, select any graph listed, and select <guilabel>Turn On Graph Debug Mode</guilabel>.
 						</para>
 					</answer>
@@ -2763,15 +2803,15 @@ disk /</userinput></screen>
 					</question>
 					<answer>
 						<para>
-							More often than not, this problem's cause is permissions. For instance if you run cmd.php manually as root for testing, any 
-							.rrd files that it creates will be owned by root. Now when cmd.php runs from cron, it will not be able to update these .rrd 
-							files because they are owned by root. You can double check the owner of your .rrd files by running the following command in 
+							More often than not, this problem's cause is permissions. For instance if you run cmd.php manually as root for testing, any
+							.rrd files that it creates will be owned by root. Now when cmd.php runs from cron, it will not be able to update these .rrd
+							files because they are owned by root. You can double check the owner of your .rrd files by running the following command in
 							your Cacti directory:
 						</para>
 						<screen><prompt>shell&gt;</prompt> <userinput>ls -al rra/</userinput></screen>
 						<para>
-							If only some of your graphs are not updating correctly, double check the <guilabel>Maximum Value</guilabel> field for all data 
-							sources used by these graphs. If the value being fed to the .rrd file exceeds its <guilabel>Maximum Value</guilabel>, RRDTool 
+							If only some of your graphs are not updating correctly, double check the <guilabel>Maximum Value</guilabel> field for all data
+							sources used by these graphs. If the value being fed to the .rrd file exceeds its <guilabel>Maximum Value</guilabel>, RRDTool
 							will insert an <guilabel>Unknown</guilabel> and you will see no data on the graph.
 						</para>
 					</answer>
@@ -2784,8 +2824,8 @@ disk /</userinput></screen>
 					</question>
 					<answer>
 						<para>
-							Cacti does this by default to better control graph title formatting. You can change this limit, by going to <guilabel>Cacti 
-							Settings</guilabel> on the Cacti menu, selecting the <guilabel>Visual</guilabel> tab, and changing the value for <guilabel>Data 
+							Cacti does this by default to better control graph title formatting. You can change this limit, by going to <guilabel>Cacti
+							Settings</guilabel> on the Cacti menu, selecting the <guilabel>Visual</guilabel> tab, and changing the value for <guilabel>Data
 							Queries - Maximum Field Length</guilabel>.
 						</para>
 					</answer>
@@ -2798,9 +2838,9 @@ disk /</userinput></screen>
 					</question>
 					<answer>
 						<para>
-							This occurs because the reboot causes SNMP's counters to reset, which can cause a rather large spike on the graph when 
-							<application>RRDTool</application> tries to determine the change between the new small counter value and the large 
-							previous value. One way to combat this issue is to specify realistic maximum values for your data sources. 
+							This occurs because the reboot causes SNMP's counters to reset, which can cause a rather large spike on the graph when
+							<application>RRDTool</application> tries to determine the change between the new small counter value and the large
+							previous value. One way to combat this issue is to specify realistic maximum values for your data sources.
 							<application>RRDTool</application> will ignore any value that is larger than the maximum value.
 						</para>
 						<para>
@@ -2835,14 +2875,14 @@ disk /</userinput></screen>
 		<sect1 id="graph_variables">
 			<title>Graph Variables</title>
 			<para>
-				The following variables can be used in the <guilabel>Text Format</guilabel> and <guilabel>Value</guilabel> graph 
+				The following variables can be used in the <guilabel>Text Format</guilabel> and <guilabel>Value</guilabel> graph
 				item fields. Below is a description of each of these variables.
 			</para>
 			<sect2 id="variable_date_time">
 				<title>Date/Time</title>
 				<screen><userinput>|date_time|</userinput></screen>
 				<para>
-					This variable will place the date and time of the last poller run on the graph. It can be used to replicate 
+					This variable will place the date and time of the last poller run on the graph. It can be used to replicate
 					<application>MRTG</application>'s "graph last updated" feature.
 				</para>
 			</sect2>
@@ -2870,12 +2910,12 @@ disk /</userinput></screen>
 				<title>95th Percentile</title>
 				<screen><userinput>|95:(bits|bytes):[0-9]:(current|total|max):[0-9]|</userinput></screen>
 				<para>
-					95th percentile is often used by hosting providers to bill customers based on their peak traffic usage while 
-					ignoring their top 5 percent. This way if a customer has a fairly consistent traffic pattern and decides to 
+					95th percentile is often used by hosting providers to bill customers based on their peak traffic usage while
+					ignoring their top 5 percent. This way if a customer has a fairly consistent traffic pattern and decides to
 					download a huge file one day, the large spike will be ignored.
 				</para>
 				<para>
-					In Cacti, 95th percentile works just like any other graph variable. To use this variable you must give it four 
+					In Cacti, 95th percentile works just like any other graph variable. To use this variable you must give it four
 					arguments:
 				</para>
 				<table frame='all'>
@@ -2920,12 +2960,12 @@ disk /</userinput></screen>
 				<title>Bandwidth Summation</title>
 				<screen><userinput>|sum:([0-9]|auto):(current|total):([0-9]):([0-9]+|auto)|</userinput></screen>
 				<para>
-					Bandwidth summation is useful for summing up all values in an RRD file for a given time range. This is typically 
-					useful on traffic graphs where you can see a total of all traffic that has gone through an interface in a given 
+					Bandwidth summation is useful for summing up all values in an RRD file for a given time range. This is typically
+					useful on traffic graphs where you can see a total of all traffic that has gone through an interface in a given
 					time period.
 				</para>
 				<para>
-					In Cacti, bandwidth summation works just like any other graph variable. To use this variable you must give it three 
+					In Cacti, bandwidth summation works just like any other graph variable. To use this variable you must give it three
 					arguments:
 				</para>
 				<table frame='all'>
@@ -3019,19 +3059,19 @@ disk /</userinput></screen>
 		<sect1 id="gprint_presets">
 			<title>GPRINT Presets</title>
 			<para>
-				A GPRINT is a graph item type that enables you to print the values of data sources on a graph. 
-				They are typically used to represent legend values on the graph. The output format of these 
-				numbers are controlled by a printf-like format string. Cacti enables you to keep a global list 
+				A GPRINT is a graph item type that enables you to print the values of data sources on a graph.
+				They are typically used to represent legend values on the graph. The output format of these
+				numbers are controlled by a printf-like format string. Cacti enables you to keep a global list
 				of these strings that can be applied to any graph item throughout Cacti.
 			</para>
 			<sect2 id="add_new_gprint_preset">
 				<title>Creating a GPRINT Preset</title>
 				<para>
-					To create a new GPRINT preset, select the <guilabel>Graph Management</guilabel> menu item under the 
-					<guilabel>Management</guilabel> heading, and select <guilabel>GPRINT Presets</guilabel>. Click 
-					<guilabel>Add</guilabel> to the right and you will be presented with an edit page containing two fields. 
-					Enter a name for your GPRINT preset, and the actual printf-like string in the <guilabel>GPRINT 
-					Text</guilabel> field. When you are finished, click the <guilabel>Create</guilabel> button to create 
+					To create a new GPRINT preset, select the <guilabel>Graph Management</guilabel> menu item under the
+					<guilabel>Management</guilabel> heading, and select <guilabel>GPRINT Presets</guilabel>. Click
+					<guilabel>Add</guilabel> to the right and you will be presented with an edit page containing two fields.
+					Enter a name for your GPRINT preset, and the actual printf-like string in the <guilabel>GPRINT
+					Text</guilabel> field. When you are finished, click the <guilabel>Create</guilabel> button to create
 					your new GPRINT preset.
 				</para>
 			</sect2>
@@ -3039,20 +3079,20 @@ disk /</userinput></screen>
 		<sect1 id="cdefs">
 			<title>CDEFs</title>
 			<para>
-				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a 
-				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more 
+				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a
+				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
 				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/tutorial/cdeftutorial.html">CDEF tutorial</ulink>.
 			</para>
 			<sect2 id="add_new_cdef">
 				<title>Creating a CDEF</title>
 				<para>
-					To create a new CDEF in Cacti, select the <guilabel>Graph Management</guilabel> option under 
-					the <guilabel>Management</guilabel> heading, and select <guilabel>CDEFs</guilabel>. Once at 
-					this screen, click <guilabel>Add</guilabel> to the right. You will be prompted for a CDEF 
-					name, for which you can type anything used to describe your CDEF. Click the <guilabel>Create</guilabel> 
-					button so you are redirected back to the edit page, now with an empty <guilabel>CDEF Items</guilabel> 
-					box. Construct your CDEF by adding an item for each element in the CDEF string, common types such as 
-					operators and functions are enumerated for your convenience. Below is a basic description of each 
+					To create a new CDEF in Cacti, select the <guilabel>Graph Management</guilabel> option under
+					the <guilabel>Management</guilabel> heading, and select <guilabel>CDEFs</guilabel>. Once at
+					this screen, click <guilabel>Add</guilabel> to the right. You will be prompted for a CDEF
+					name, for which you can type anything used to describe your CDEF. Click the <guilabel>Create</guilabel>
+					button so you are redirected back to the edit page, now with an empty <guilabel>CDEF Items</guilabel>
+					box. Construct your CDEF by adding an item for each element in the CDEF string, common types such as
+					operators and functions are enumerated for your convenience. Below is a basic description of each
 					CDEF item type.
 				</para>
 				<table frame='all'>
