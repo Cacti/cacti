@@ -52,7 +52,7 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 		where data_template_data.data_input_id=data_input.id
 		and data_template_data.local_data_id=$local_data_id");
 
-	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
+	$data_source = db_fetch_row("select host_id,snmp_query_id,snmp_index from data_local where id=$local_data_id");
 
 	/* clear cache for this local_data_id */
 	if (!$truncate_performed) {
@@ -67,8 +67,6 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
 		if (empty($field)) { return; }
-
-		$query = data_query_index($field["index_type"], $field["index_value"], $host_id);
 
 		$outputs = db_fetch_assoc("select
 			snmp_query_graph_rrd.snmp_field_name,
@@ -103,7 +101,7 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 				$data_source_item_name = "";
 			}
 
-			api_poller_cache_item_add($host_id, array(), $local_data_id, $action, $data_source_item_name, 1, addslashes($script_path));
+			api_poller_cache_item_add($data_source["host_id"], array(), $local_data_id, $action, $data_source_item_name, 1, addslashes($script_path));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP) { /* snmp */
 			$host_fields = array_rekey(db_fetch_assoc("select
 				data_input_fields.type_code,
@@ -122,23 +120,23 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 
-			api_poller_cache_item_add($host_id, $host_fields, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields["snmp_oid"]) ? $host_fields["snmp_oid"] : ""));
+			api_poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields["snmp_oid"]) ? $host_fields["snmp_oid"] : ""));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
-			$snmp_queries = get_data_query_array($query["snmp_query_id"]);
+			$snmp_queries = get_data_query_array($data_source["snmp_query_id"]);
 
 			if (sizeof($outputs) > 0) {
 			foreach ($outputs as $output) {
 				if (isset($snmp_queries["fields"]{$output["snmp_field_name"]}["oid"])) {
-					$oid = $snmp_queries["fields"]{$output["snmp_field_name"]}["oid"] . "." . $query["snmp_index"];
+					$oid = $snmp_queries["fields"]{$output["snmp_field_name"]}["oid"] . "." . $data_source["snmp_index"];
 				}
 
 				if (!empty($oid)) {
-					api_poller_cache_item_add($host_id, array(), $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
+					api_poller_cache_item_add($data_source["host_id"], array(), $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
 				}
 			}
 			}
 		}else if (($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
-			$script_queries = get_data_query_array($query["snmp_query_id"]);
+			$script_queries = get_data_query_array($data_source["snmp_query_id"]);
 
 			if (sizeof($outputs) > 0) {
 				foreach ($outputs as $output) {
@@ -148,18 +146,18 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 						/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
 						if (($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists("proc_open"))) {
 							$action = POLLER_ACTION_SCRIPT_PHP;
-							$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"] . " " . $script_queries["script_function"], $host_id);
+							$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $data_source["snmp_index"], $script_queries["script_path"] . " " . $script_queries["script_function"], $data_source["host_id"]);
 						}else if (($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists("proc_open"))) {
 							$action = POLLER_ACTION_SCRIPT;
-							$script_path = read_config_option("path_php_binary") . " -q " . get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
+							$script_path = read_config_option("path_php_binary") . " -q " . get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $data_source["snmp_index"], $script_queries["script_path"], $data_source["host_id"]);
 						}else{
 							$action = POLLER_ACTION_SCRIPT;
-							$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $query["snmp_index"], $script_queries["script_path"], $host_id);
+							$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] : "") . " " . $script_queries["arg_get"] . " " . $identifier . " " . $data_source["snmp_index"], $script_queries["script_path"], $data_source["host_id"]);
 						}
 					}
 
 					if (isset($script_path)) {
-						api_poller_cache_item_add($host_id, array(), $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
+						api_poller_cache_item_add($data_source["host_id"], array(), $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
 					}
 				}
 			}

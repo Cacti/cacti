@@ -226,15 +226,16 @@ function query_snmp_host($host_id, $snmp_query_id) {
    @arg $index_type - the name of the index to match
    @arg $index_value - the value of the index to match
    @arg $host_id - (int) the host ID to match
+   @arg $data_query_id - (int) the data query ID to match
    @returns - (array) the data query ID and index that matches the three arguments */
-function data_query_index($index_type, $index_value, $host_id) {
-	return db_fetch_row("select
-		host_snmp_cache.snmp_query_id,
+function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
+	return db_fetch_cell("select
 		host_snmp_cache.snmp_index
 		from host_snmp_cache
 		where host_snmp_cache.field_name='$index_type'
 		and host_snmp_cache.field_value='$index_value'
-		and host_snmp_cache.host_id=$host_id");
+		and host_snmp_cache.host_id='$host_id'
+		and host_snmp_cache.snmp_query_id='$data_query_id'");
 }
 
 /* data_query_field_list - returns an array containing data query information for a given data source
@@ -307,14 +308,16 @@ function update_graph_data_query_cache($local_graph_id) {
 
 	if (empty($field)) { return; }
 
-	$query = data_query_index($field["index_type"], $field["index_value"], $host_id);
+	$data_query_id = db_fetch_cell("select snmp_query_id from snmp_query_graph where id='" . $field["output_type"] . "'");
 
-	if (($query["snmp_query_id"] != "0") && ($query["snmp_index"] != "")) {
-		db_execute("update graph_local set snmp_query_id=" . $query["snmp_query_id"] . ",snmp_index='" . $query["snmp_index"] . "' where id=$local_graph_id");
+	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
+
+	if (($data_query_id != "0") && ($index != "")) {
+		db_execute("update graph_local set snmp_query_id='$data_query_id',snmp_index='$index' where id=$local_graph_id");
 
 		/* update data source/graph title cache */
-		update_data_source_title_cache_from_query($query["snmp_query_id"], $query["snmp_index"]);
-		update_graph_title_cache_from_query($query["snmp_query_id"], $query["snmp_index"]);
+		update_data_source_title_cache_from_query($data_query_id, $index);
+		update_graph_title_cache_from_query($data_query_id, $index);
 	}
 }
 
@@ -331,13 +334,15 @@ function update_data_source_data_query_cache($local_data_id) {
 
 	if (empty($field)) { return; }
 
-	$query = data_query_index($field["index_type"], $field["index_value"], $host_id);
+	$data_query_id = db_fetch_cell("select snmp_query_id from snmp_query_graph where id='" . $field["output_type"] . "'");
 
-	if (($query["snmp_query_id"] != "0") && ($query["snmp_index"] != "")) {
-		db_execute("update data_local set snmp_query_id=" . $query["snmp_query_id"] . ",snmp_index='" . $query["snmp_index"] . "' where id=$local_data_id");
+	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
+
+	if (($data_query_id != "0") && ($index != "")) {
+		db_execute("update data_local set snmp_query_id='$data_query_id',snmp_index='$index' where id='$local_data_id'");
 
 		/* update graph title cache */
-		update_graph_title_cache_from_query($query["snmp_query_id"], $query["snmp_index"]);
+		update_graph_title_cache_from_query($data_query_id, $index);
 	}
 }
 
