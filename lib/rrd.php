@@ -78,7 +78,7 @@ function rrd_get_fd(&$rrd_struc, $fd_type) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc = array()) {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc = array()) {
 	global $config;
 
 	if (!is_numeric($output_flag)) {
@@ -94,7 +94,7 @@ function rrdtool_execute($command_line, $log_command, $output_flag, $rrd_struc =
 
 	/* output information to the log file if appropriate */
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-		cacti_log("RRD: " . read_config_option("path_rrdtool") . " $command_line",true);
+		cacti_log("RRD: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout);
 	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
@@ -246,13 +246,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 	if ($show_source == true) {
 		return read_config_option("path_rrdtool") . " create" . RRD_NL . "$data_source_path$create_ds$create_rra";
 	}else{
-		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-			$log_data = true;
-		}else {
-			$log_data = false;
-		}
-
-		rrdtool_execute("create $data_source_path $create_ds$create_rra", $log_data, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
+		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc);
 	}
 }
 
@@ -341,8 +335,8 @@ function rrdtool_function_tune($rrd_tune_array) {
    @arg $seconds - the number of seconds into the past to fetch data for
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing all data in this data source broken down
-     by each data source item. the maximum of all data source items is included in
-     an item called 'ninety_fifth_percentile_maximum' */
+	 by each data source item. the maximum of all data source items is included in
+	 an item called 'ninety_fifth_percentile_maximum' */
 function &rrdtool_function_fetch($local_data_id, $seconds, $resolution) {
 	if (empty($local_data_id)) {
 		return;
@@ -474,8 +468,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		where graph_local.id=graph_templates_graph.local_graph_id
 		and graph_templates_graph.local_graph_id=$local_graph_id");
 
-    	/* lets make that sql query... */
-    	$graph_items = db_fetch_assoc("select
+		/* lets make that sql query... */
+		$graph_items = db_fetch_assoc("select
 		graph_templates_item.id as graph_templates_item_id,
 		graph_templates_item.cdef_id,
 		graph_templates_item.text_format,
@@ -497,7 +491,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		where graph_templates_item.local_graph_id=$local_graph_id
 		order by graph_templates_item.sequence");
 
-  	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
+	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
 	/* define some variables */
 	$scale = "";
@@ -510,7 +504,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$greatest_text_format = 0;
 	$last_graph_type = "";
 
-    	if ($graph["auto_scale"] == "on") {
+		if ($graph["auto_scale"] == "on") {
 		if ($graph["auto_scale_opts"] == "1") {
 			$scale = "--alt-autoscale" . RRD_NL;
 		}elseif ($graph["auto_scale_opts"] == "2") {
@@ -583,7 +577,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		$graph_opts = read_config_option("path_html_export") . "/" . $graph_data_array["export_filename"] . RRD_NL;
 	}else{
 		if (empty($graph_data_array["output_filename"])) {
-	    		$graph_opts = "-" . RRD_NL;
+				$graph_opts = "-" . RRD_NL;
 		}else{
 			$graph_opts = $graph_data_array["output_filename"] . RRD_NL;
 		}
@@ -605,7 +599,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
 
 	$i = 0;
-    	if (sizeof($graph_items > 0)) {
+		if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
 		if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && ($graph_item["data_source_name"] != "")) {
 			/* use a user-specified ds path if one is entered */
@@ -708,7 +702,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	}
 	}
 
-    	/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
+		/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
 
 	$i = 0;
 	reset($graph_items);
@@ -879,19 +873,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL);
 			return 0;
 		}else{
-			$log_data = false;
-
-			if (read_config_option("log_graph") == "on") {
-				$log_data = true;
-			}
-
 			if (isset($graph_data_array["output_flag"])) {
 				$output_flag = $graph_data_array["output_flag"];
 			}else{
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 			}
 
-			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", $log_data, $output_flag);
+			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag);
 		}
 	}
 }
