@@ -120,13 +120,13 @@ function form_save() {
 function item_movedown() {
 	global $args;
 	
-	move_item_down("cdef_items", $args[id], "cdef_id", $args[cdef_id]);	
+	move_item_down("cdef_items", $args[id], "cdef_id=$args[cdef_id]");	
 }
 
 function item_moveup() {
 	global $args;
 	
-	move_item_up("cdef_items", $args[id], "cdef_id", $args[cdef_id]);	
+	move_item_up("cdef_items", $args[id], "cdef_id=$args[cdef_id]");	
 }
 
 function item_remove() {
@@ -150,7 +150,7 @@ function item_save() {
 		header ("Location: cdef.php?action=edit&id=$form[cdef_id]"); exit;
 	}
 	
-	$sequence = get_sequence($form[id], "sequence", "cdef_items", "cdef_id", $form[cdef_id]);
+	$sequence = get_sequence($form[id], "sequence", "cdef_items", "cdef_id=$form[cdef_id]");
 	
  	$save["id"] = $form["id"];
 	$save["cdef_id"] = $form["cdef_id"];
