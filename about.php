@@ -58,7 +58,7 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 		<p><strong>Thanks</a></strong><br>
 		<ul type="disc">
 			<li>A very special thanks to <a href="http://ee-staff.ethz.ch/~oetiker/">Tobi Oetiker</a>, 
-				the creator of <a href="http://www.mrtg.org/">rrdtool</a> and the very popular
+				the creator of <a href="http://www.mrtg.org/">RRDTool</a> and the very popular
 				<a href="http://www.mrtg.org">MRTG</a>.</li>
 			<li>Brady Alleman, creator of NetMRG and 
 				<a href="http://www.thtech.net">Treehouse Technolgies</a> for questions and ideas. Just
