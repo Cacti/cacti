@@ -44,9 +44,7 @@ if (read_config_option("global_auth") == "on") {
 		$guest_user_id = db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'");
 
 		/* cannot find guest user */
-		if (empty($guest_user_id)) {
-			print "<strong><font size='+1' color='FF0000'>CANNOT FIND GUEST USER: " . read_config_option("guest_user") . "</font></strong>";
-		}else{
+		if (!empty($guest_user_id)) {
 			$_SESSION["sess_user_id"] = $guest_user_id;
 		}
 	}
