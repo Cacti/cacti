@@ -427,7 +427,11 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					Backup the old Cacti database.
 				</para>
-				<screen><prompt>shell&gt;</prompt> <userinput>mysqldump cacti &gt; mysql.cacti</userinput></screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>mysqldump -l --add-drop-table cacti &gt; mysql.cacti</userinput></screen>
+				<para>
+					Note: You will probably have to specify the -u and -p flags for the MySQL username and password. This user
+					must have permission to read from Cacti's database or you will end up with an empty backup.
+				</para>
 			</listitem>
 			<listitem>
 				<para>
@@ -458,9 +462,15 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Copy the *.rrd files from the old cacti directory.
+					Copy the *.rrd files from the old Cacti directory.
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>cp cacti_old/rra/* cacti/rra/</userinput></screen>
+			</listitem>
+			<listitem>
+				<para>
+					Copy any custom scripts from the old Cacti directory.
+				</para>
+				<screen><prompt>shell&gt;</prompt> <userinput>cp cacti_old/scripts/* cacti/scripts/</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>

@@ -407,6 +407,8 @@ if ($_REQUEST["step"] == "4") {
 						
 						<?php
 						$current_version  = "";
+						$upgrade_results = "";
+						$failed_sql_query = false;
 						
 						$fail_text = "<span style='color: red; font-weight: bold; font-size: 12px;'>[Fail]</span>&nbsp;";
 						$success_text = "<span style='color: green; font-weight: bold; font-size: 12px;'>[Success]</span>&nbsp;";
@@ -417,10 +419,16 @@ if ($_REQUEST["step"] == "4") {
 									while (list($status, $sql) = each($arr2)) {
 										if ($current_version != $version) {
 											$version_index = array_search($version, $cacti_versions);
-											print "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
+											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
 										}
 										
-										print "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
+										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
+										
+										/* if there are one or more failures, make a note because we are going to print
+										out a warning to the user later on */
+										if ($status == 0) {
+											$failed_sql_query = true;
+										}
 										
 										$current_version = $version;
 									}
@@ -431,6 +439,16 @@ if ($_REQUEST["step"] == "4") {
 						}else{
 							print "<em>No SQL queries have been executed.</em>";
 						}
+						
+						if ($failed_sql_query == true) {
+							print "<p><strong><font color='#FF0000'>WARNING:</font></strong> One or more of the SQL queries needed to
+								upgraded your Cacti installation has failed. Please see below for more details. Your
+								Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong> 
+								permissions. You should try executing the failed queries as 'root' to ensure that you do not have 
+								a permissions problem.</p>\n";
+						}
+						
+						print $upgrade_results;
 						?>
 						
 						<?php }?>
