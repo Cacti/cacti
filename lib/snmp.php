@@ -62,7 +62,6 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER : "-c " . SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
-//			$snmp_auth = "-u $username -X $password";
 			$snmp_auth = "-u $username -l authPriv -a MD5 -A $password -x DES -X $password"; /* v3 - username/password */
 		}
 
@@ -74,14 +73,19 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}elseif (read_config_option("snmp_version") == "net-snmp") {
 			exec(read_config_option("path_snmpget") . " -O vt $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
 		}
-
-		/* fix for multi-line snmp output */
-		$snmp_value = implode(" ", $snmp_value);
 	}
 
-	$snmp_value = format_snmp_string($snmp_value);
+	if (isset($snmp_value)) {
+		/* fix for multi-line snmp output */
+		if (is_array($snmp_value)) {
+			$snmp_value = implode(" ", $snmp_value);
+		}
 
-	return $snmp_value;
+		/* strip out non-snmp data */
+		$snmp_value = format_snmp_string($snmp_value);
+
+		return $snmp_value;
+	}
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500, $environ = SNMP_POLLER) {
@@ -117,7 +121,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER : "-c " . SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
-			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
+			$snmp_auth = "-u $username -l authPriv -a MD5 -A $password -x DES -X $password"; /* v3 - username/password */
 		}
 
 		if (read_config_option("snmp_version") == "ucd-snmp") {
@@ -127,7 +131,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		if (sizeof($temp_array) == 0) {
-			return 0;
+			return array();
 		}
 
 		for ($i=0; $i < count($temp_array); $i++) {
