@@ -24,7 +24,9 @@
 <?
 $section = "Add/Edit Graphs"; include ('include/auth.php');
 include_once ('include/form.php');
-	
+
+define("ROWS_PER_PAGE", 30);
+
 switch ($_REQUEST["action"]) {
 	case 'save':
 		$redirect_location = form_save();
@@ -1266,7 +1268,7 @@ function graph() {
 	
 	?>
 	<tr bgcolor="<?print $colors["panel"];?>">
-		<form name="form_graph_id">
+		<form name="form_graph_id" method="post">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
@@ -1275,14 +1277,14 @@ function graph() {
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?host_id=0"<?if ($_GET["host_id"] == "0") {?> selected<?}?>>None</option>
+							<option value="graphs.php?host_id=0&filter=<?print $_REQUEST["filter"];?>"<?if ($_REQUEST["host_id"] == "0") {?> selected<?}?>>None</option>
 							
 							<?
 							$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 							
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='data_sources.php?host_id=" . $host["id"] . "'"; if ($_GET["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+								print "<option value='graphs.php?host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
 							}
 							}
 							?>
@@ -1290,10 +1292,10 @@ function graph() {
 					</td>
 					<td width="5"></td>
 					<td width="1">
-						<input type="text" name="filter" size="20">
+						<input type="text" name="filter" size="20" value="<?print $_REQUEST["filter"];?>">
 					</td>
 					<td>
-						&nbsp;<a href="data_sources.php<?print $main_action;?>"><img src="images/button_go.gif" alt="Go" border="0" align="absmiddle"></a><br>
+						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
 					</td>
 				</tr>
 			</table>
@@ -1306,29 +1308,94 @@ function graph() {
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
+	/* default to page 1 */
+	if (empty($_GET["page"])) {
+		$_GET["page"] = "1";
+	}
+	
+	/* set the current page num as a session var */
+	$_SESSION["sess_graph_current_page"] = $_GET["page"];
+	
+	/* restore the page num from the session var if it is currently stored */
+	if (!empty($_SESSION["sess_graph_current_page"])) {
+		$_GET["page"] = $_SESSION["sess_graph_current_page"];
+	}
+	
+	if (!empty($_REQUEST["host_id"])) {
+		$sql_base = "from graph_templates_graph
+			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
+			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+			left join graph_templates_item on graph_local.id=graph_templates_item.local_graph_id
+			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
+			left join data_local on data_template_rrd.local_data_id=data_local.id
+			where data_local.host_id=" . $_REQUEST["host_id"] . "
+			and graph_templates_graph.local_graph_id>0
+			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+			group by graph_templates_graph.id";
+		
+		$total_rows = sizeof(db_fetch_assoc("select
+			graph_templates_graph.local_graph_id
+			$sql_base"));
+		$graph_list = db_fetch_assoc("select
+			graph_templates_graph.id,
+			graph_templates_graph.local_graph_id,
+			graph_templates_graph.height,
+			graph_templates_graph.width,
+			graph_templates_graph.title,
+			graph_templates.name
+			$sql_base
+			order by graph_templates_graph.title
+			limit " . (ROWS_PER_PAGE*($_GET["page"]-1)) . "," . ROWS_PER_PAGE);
+	}else{
+		$total_rows = db_fetch_cell("select
+			COUNT(id)
+			from graph_templates_graph
+			where graph_templates_graph.local_graph_id!=0
+			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'");
+		$graph_list = db_fetch_assoc("select 
+			graph_templates_graph.id,
+			graph_templates_graph.local_graph_id,
+			graph_templates_graph.height,
+			graph_templates_graph.width,
+			graph_templates_graph.title,
+			graph_templates.name
+			from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
+			where graph_templates_graph.local_graph_id!=0
+			and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+			order by graph_templates_graph.title
+			limit " . (ROWS_PER_PAGE*($_GET["page"]-1)) . "," . ROWS_PER_PAGE);
+	}
+		
+	print "	<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='4'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='left' class='textHeaderDark'>
+							<strong>&lt;&lt; "; if ($_GET["page"] > 1) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_GET["page"]-1) . "'>"; } print "Previous"; if ($_GET["page"] > 1) { print "</a>"; } print "</strong>
+						</td>\n
+						<td align='center' class='textHeaderDark'>
+							Showing Rows " . (ROWS_PER_PAGE*($_GET["page"]-1)) . " to " . (($total_rows < ROWS_PER_PAGE) ? $total_rows : (ROWS_PER_PAGE*$_GET["page"])) . " of $total_rows
+						</td>\n
+						<td align='right' class='textHeaderDark'>
+							<strong>"; if (($_GET["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_GET["page"]+1) . "'>"; } print "Next"; if (($_GET["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } print " &gt;&gt;</strong>
+						</td>\n
+					</tr>
+				</table>
+			</td>
+		</tr>\n";
+	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Title",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Template Name",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Size",$colors["header_text"],2);
 	print "</tr>";
 	
-	$graph_list = db_fetch_assoc("select 
-		graph_templates_graph.id,
-		graph_templates_graph.local_graph_id,
-		graph_templates_graph.height,
-		graph_templates_graph.width,
-		graph_templates_graph.title,
-		graph_templates.name
-		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-		where graph_templates_graph.local_graph_id!=0
-		order by graph_templates_graph.title");
-	
 	if (sizeof($graph_list) > 0) {
 	foreach ($graph_list as $graph) {
 		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?print $graph["local_graph_id"];?>"><?print $graph["title"];?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?print $graph["local_graph_id"];?>"><?print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
 			</td>
 			<td>
 				<?if ($graph["name"] == "") { print "<em>None</em>"; }else{ print $graph["name"]; }?>
