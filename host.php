@@ -545,10 +545,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					/* we must treat suggested values for snmp queries different because one
 					entry here might might 20 graphs... so we can't automatically fill in the 
 					values */
-					if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id")) > 0)) {
+					if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id and field_name='$field_name'")) > 0)) {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 						print "<td><strong>" . $struct_graph[$field_name]["title"] . "</strong></td>";
-						print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
+						print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 						print "</td></tr>\n";
 					}else{
 						draw_templated_row($field_array, "g_" . $snmp_query_id . "_" . $graph_template_id . "_0_" . $field_name, (isset($data_template[$field_name]) ? $data_template[$field_name] : ""));
@@ -608,11 +608,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 							/* we must treat suggested values for snmp queries different because one
 							entry here might might 20 graphs... so we can't automatically fill in the 
 							values */
-							
-							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"])) > 0)) {
+							if ((!empty($snmp_query_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=" . $data_template["data_template_id"] . " and field_name='$field_name'")) > 0)) {
 								print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>";
 								print "<td><strong>" . $struct_data_source[$field_name]["title"] . "</strong></td>";
-								print "<td><em>Using Suggested Values</em> (see XML file)</td>"; 
+								print "<td><em>Using Suggested Values</em> (see SNMP Query)</td>"; 
 								print "</td></tr>\n";
 							}else{
 								draw_templated_row($field_array, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_0_" . $field_name, $data_template[$field_name]);
