@@ -106,7 +106,7 @@ function settings() {
 			order by graph_tree.name";
 	}
 	
-	print "<form method='post' action='graph_settings.php'>\n";
+	print "<br><form method='post' action='graph_settings.php'>\n";
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
 	
