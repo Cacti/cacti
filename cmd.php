@@ -39,7 +39,6 @@ include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/snmp.php");
 include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/rrd.php");
-include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/ping.php");
 
 /* PHP Bug.  Not yet submitted */

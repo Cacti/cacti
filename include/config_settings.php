@@ -34,6 +34,7 @@ $tabs = array(
 	"general" => "General",
 	"path" => "Paths",
 	"poller" => "Poller",
+	"export" => "Graph Export",
 	"visual" => "Visual",
 	"authentication" => "Authentication");
 
@@ -94,23 +95,6 @@ $settings = array(
 			"description" => "Full path to Cactid binary.",
 			"method" => "textbox",
 			"max_length" => "255"
-			),
-		"htmlexport_header" => array(
-			"friendly_name" => "HTML Export",
-			"method" => "spacer",
-			),
-		"path_html_export" => array(
-			"friendly_name" => "HTML Export Path",
-			"description" => "If you want Cacti to write static PNG's and HTML files to a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way. Leave this field blank to disable this feature.",
-			"method" => "textbox",
-			"max_length" => "255"
-			),
-		"path_html_export_skip" => array(
-			"friendly_name" => "Export Every x Times",
-			"description" => "If you don't want Cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.",
-			"method" => "textbox",
-			"tab" => "path",
-			"max_length" => "10"
 			)
 		),
 	"general" => array(
@@ -137,6 +121,10 @@ $settings = array(
 					),
 				"log_graph" => array(
 					"friendly_name" => "Web RRD Graph Syntax",
+					"default" => ""
+					),
+				"log_export" => array(
+					"friendly_name" => "Graph Export Messages",
 					"default" => ""
 					)
 				),
@@ -204,6 +192,105 @@ $settings = array(
 			"friendly_name" => "Remove Verification",
 			"description" => "Prompt user before item deletion.",
 			"method" => "checkbox"
+			)
+		),
+	"export" => array(
+		"export_hdr_general" => array(
+			"friendly_name" => "General",
+			"method" => "spacer",
+			),
+		"export_type" => array(
+			"friendly_name" => "Export Method",
+			"description" => "Choose which export method to use.",
+			"method" => "drop_array",
+			"array" => array(
+						"local" => "Classic (local path)",
+						"ftp_php" => "Ftp (remote) - use php functions",
+						"ftp_ncftpput" => "Ftp (remote) - use ncftpput"
+						),
+			),
+		"export_hdr_paths" => array(
+			"friendly_name" => "Paths",
+			"method" => "spacer",
+			),
+		"path_html_export" => array(
+			"friendly_name" => "Export Path (both local and ftp)",
+			"description" => "If you want Cacti to write static PNG's and HTML files to a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"export_hdr_timing" => array(
+			"friendly_name" => "Timing",
+			"method" => "spacer",
+			),
+		"export_timing" => array(
+			"friendly_name" => "Export timing",
+			"description" => "Choose when to export graphs.",
+			"method" => "drop_array",
+			"array" => array(
+						"disabled" => "Disabled",
+						"classic" => "Classic (export every x times)",
+						"export_hourly" => "Hourly at specified minutes",
+						"export_daily" => "Daily at specified time"
+						),
+			),
+		"path_html_export_skip" => array(
+			"friendly_name" => "Export Every x Times",
+			"description" => "If you don't want Cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.",
+			"method" => "textbox",
+			"max_length" => "10"
+			),
+		"export_hourly" => array(
+			"friendly_name" => "Hourly at specified minutes",
+			"description" => "If you want Cacti to export static images on an hourly basis, put the minutes of the hour when to do that. Cacti assumes that you run the data gathering script every 5 minutes, so it will round your value to the one closest to its runtime. For instance, 43 would equal 40 minutes past the hour.",
+			"method" => "textbox",
+			"max_length" => "10"
+			),
+		"export_daily" => array(
+			"friendly_name" => "Daily at specified time",
+			"description" => "If you want Cacti to export static images on an daily basis, put here the time when to do that. Cacti assumes that you run the data gathering script every 5 minutes, so it will round your value to the one closest to its runtime. For instance, 21:23 would equal 20 minutes after 9 PM.",
+			"method" => "textbox",
+			"max_length" => "10"
+			),
+		"export_hdr_ftp" => array(
+			"friendly_name" => "FTP Options",
+			"method" => "spacer",
+			),
+		"export_ftp_sanitize" => array(
+			"friendly_name" => "Sanitize remote directory",
+			"description" => "Check this if you want to delete any existing files in the FTP remote directory. This option is in use only when using the PHP built-in ftp functions.",
+			"method" => "checkbox",
+			"max_length" => "255"
+			),
+		"export_ftp_host" => array(
+			"friendly_name" => "FTP Host",
+			"description" => "Denotes the host to upload your graphs by ftp.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"export_ftp_port" => array(
+			"friendly_name" => "FTP Port",
+			"description" => "Communication port with the ftp server (leave empty for defaults). Default: 21.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"export_ftp_passive" => array(
+			"friendly_name" => "Use passive mode",
+			"description" => "Check this if you want to connect in passive mode to the FTP server.",
+			"method" => "checkbox",
+			"max_length" => "255"
+			),
+		"export_ftp_user" => array(
+			"friendly_name" => "FTP User",
+			"description" => "Account to logon on the remote server (leave empty for defaults). Default: Anonymous.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"export_ftp_password" => array(
+			"friendly_name" => "FTP Password",
+			"description" => "Password for the remote ftp account (leave empty for blank).",
+			"method" => "textbox_password",
+			"max_length" => "255"
 			)
 		),
 	"visual" => array(

@@ -39,6 +39,7 @@ $no_http_headers = true;
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/data_query.php");
+include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
 /* Record Start Time */
@@ -168,7 +169,9 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 			break;
 		}else {
-			print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+				print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
+			}
 
 			process_poller_output($rrdtool_pipe);
 
@@ -179,7 +182,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 				exit;
 			}
 
-			usleep(50000);
+			usleep(500000);
 			$loop_count++;
 		}
 	}
@@ -207,6 +210,9 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 		db_execute("delete from poller_command where poller_id=0");
 	}
+
+	/* graph export */
+	config_graph_export();
 
 	db_execute("truncate table poller_output");
 }else{
