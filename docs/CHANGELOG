@@ -1,5 +1,20 @@
 raXnet - cacti
 
+0.8.4
+-bug: Removed size limits on Linux memory data template.
+-bug: Undefined variable errors when creating new graphs/data sources
+without a template.
+-bug: multiple problems that caused the Windows disk space and CPU graphs
+to stop working.
+-bug: Problems creating graphs from data queries where there was only row row total
+in the query result.
+-bug: Broken images for bandwidth summation graphs that were less than a day old.
+-feature: The "Total All Items" CDEF is now able to total NaN's without becoming
+'U'.
+-feature: Data query results are now grayed out if they have already been created.
+-doc: Added a FAQ.
+
+
 0.8.3a
 -bug#81: Partial/complete poller cache rebuild failure after an upgrade.
 -bug#82: Undefined variable error messages under win32/IIS.
