@@ -102,7 +102,7 @@ function gprint_presets_remove() {
 }
 
 function gprint_presets_edit() {
-	global $colors;
+	global $colors, $fields_grprint_presets_edit;
 	
 	if (!empty($_GET["id"])) {
 		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["id"]);
@@ -113,36 +113,10 @@ function gprint_presets_edit() {
 	
 	start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "Enter a name for this GPRINT preset, make sure it is something you recognize.",
-					"value" => (isset($gprint_preset) ? $gprint_preset["name"] : ""),
-					"max_length" => "50",
-					),
-				"gprint_text" => array(
-					"method" => "textbox",
-					"friendly_name" => "GPRINT Text",
-					"description" => "Enter the custom GPRINT string here.",
-					"value" => (isset($gprint_preset) ? $gprint_preset["gprint_text"] : ""),
-					"max_length" => "50",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($gprint_preset) ? $gprint_preset["id"] : "0")
-					),
-				"save_component_gprint_presets" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : array()))
+		));
 	
 	end_box();
 	

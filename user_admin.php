@@ -517,7 +517,7 @@ function user_remove() {
 }
 
 function user_edit() {
-	global $colors, $tabs_graphs, $settings_graphs, $graph_views, $graph_tree_views;
+	global $colors, $tabs_graphs, $settings_graphs, $graph_views, $graph_tree_views, $fields_user_user_edit_host;
 	
 	if (!empty($_GET["id"])) {
 		$user = db_fetch_row("select * from user_auth where id=" . $_GET["id"]);
@@ -533,121 +533,10 @@ function user_edit() {
 	
 	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"username" => array(
-					"method" => "textbox",
-					"friendly_name" => "User Name",
-					"description" => "The login name for this user.",
-					"value" => (isset($user) ? $user["username"] : ""),
-					"max_length" => "255"
-					),
-				"full_name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Full Name",
-					"description" => "A more descriptive name for this user, that can include spaces or special characters.",
-					"value" => (isset($user) ? $user["full_name"] : ""),
-					"max_length" => "255"
-					),
-				"password" => array(
-					"method" => "textbox_password",
-					"friendly_name" => "Password",
-					"description" => "Enter the password for this user twice. Remember that passwords are case sensitive!",
-					"value" => "",
-					"max_length" => "255"
-					),
-				"" => array(
-					"friendly_name" => "Account Options",
-					"method" => "checkbox_group",
-					"form_id" => (!empty($_GET["id"]) ? 1 : 0),
-					"description" => "Set any user account-specific options here.",
-					"items" => array(
-						"must_change_password" => array(
-							"value" => (isset($user) ? $user["must_change_password"] : ""),
-							"friendly_name" => "User Must Change Password at Next Login",
-							"default" => ""
-							),
-						"graph_settings" => array(
-							"value" => (isset($user) ? $user["graph_settings"] : ""),
-							"friendly_name" => "Allow this User to Keep Custom Graph Settings",
-							"default" => "on"
-							)
-						)
-					),
-				"" => array(
-					"friendly_name" => "Graph Options",
-					"method" => "checkbox_group",
-					"form_id" => (!empty($_GET["id"]) ? 1 : 0),
-					"description" => "Set any graph-specific options here.",
-					"items" => array(
-						"show_tree" => array(
-							"value" => (isset($user) ? $user["show_tree"] : ""),
-							"friendly_name" => "User Has Rights to Tree View",
-							"default" => "on"
-							),
-						"show_list" => array(
-							"value" => (isset($user) ? $user["show_list"] : ""),
-							"friendly_name" => "User Has Rights to List View",
-							"default" => "on"
-							),
-						"show_preview" => array(
-							"value" => (isset($user) ? $user["show_preview"] : ""),
-							"friendly_name" => "User Has Rights to Preview View",
-							"default" => "on"
-							)
-						)
-					),
-				"login_opts" => array(
-					"friendly_name" => "Login Options",
-					"method" => "radio",
-					"default" => "1",
-					"description" => "What to do when this user logs in.",
-					"value" => (isset($user) ? $user["login_opts"] : ""),
-					"items" => array(
-						0 => array(
-							"radio_value" => "1",
-							"radio_caption" => "Show the page that user pointed their browser to."
-							),
-						1 => array(
-							"radio_value" => "2",
-							"radio_caption" => "Show the default console screen."
-							),
-						2 => array(
-							"radio_value" => "3",
-							"radio_caption" => "Show the default graph screen."
-							)
-						)
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($user) ? $user["id"] : "0")
-					),
-				"_policy_graphs" => array(
-					"method" => "hidden",
-					"value" => (isset($user) ? $user["policy_graphs"] : "0")
-					),
-				"_policy_trees" => array(
-					"method" => "hidden",
-					"value" => (isset($user) ? $user["policy_trees"] : "0")
-					),
-				"_policy_hosts" => array(
-					"method" => "hidden",
-					"value" => (isset($user) ? $user["policy_hosts"] : "0")
-					),
-				"_policy_graph_templates" => array(
-					"method" => "hidden",
-					"value" => (isset($user) ? $user["policy_graph_templates"] : "0")
-					),
-				"save_component_user" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_user_user_edit_host, (isset($user) ? $user : array()))
+		));
 	
 	end_box();
 	
@@ -732,7 +621,6 @@ function user_edit() {
 				)
 			);
 	}
-	
 	
 	end_box();
 	

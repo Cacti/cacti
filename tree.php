@@ -148,7 +148,7 @@ function form_save() {
    ----------------------- */
 
 function item_edit() {
-	global $colors;
+	global $colors, $fields_tree_item_edit_header, $fields_tree_item_edit_graph, $fields_tree_item_edit_host;
 	
 	$color_graph = $colors["header"];
 	$color_header = $colors["header"];
@@ -189,87 +189,28 @@ function item_edit() {
 	
 	start_box("Tree Items [header]", "98%", $color_header, "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				"no_form_tag" => true
-				),
-			"fields" => array(
-				"title" => array(
-					"method" => "textbox",
-					"friendly_name" => "Header Title",
-					"description" => "If this item is a header, enter a title here.",
-					"value" => (isset($tree_item) ? $tree_item["title"] : ""),
-					"max_length" => "255",
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array("no_form_tag" => true),
+		"fields" => inject_form_variables($fields_tree_item_edit_header, (isset($tree_item) ? $tree_item : array()))
+		));
 	
 	end_box();
 	
 	start_box("Tree Items [graph]", "98%", $color_graph, "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				"no_form_tag" => true
-				),
-			"fields" => array(
-				"local_graph_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Graph",
-					"description" => "Choose a graph from this list to add it to the tree.",
-					"value" => (isset($tree_item) ? $tree_item["local_graph_id"] : "0"),
-					"none_value" => "None",
-					"sql" => "select graph_templates_graph.local_graph_id as id,graph_templates_graph.title_cache as name from graph_templates_graph,graph_local where graph_local.id=graph_templates_graph.local_graph_id and local_graph_id != 0 order by title_cache"
-					),
-				"rra_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Round Robin Archive",
-					"description" => "Choose a round robin archive to control how this graph is displayed.",
-					"value" => (isset($tree_item) ? $tree_item["rra_id"] : 0),
-					"default" => "1",
-					"none_value" => "None",
-					"sql" => "select id,name from rra"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array("no_form_tag" => true),
+		"fields" => inject_form_variables($fields_tree_item_edit_graph, (isset($tree_item) ? $tree_item : array()))
+		));
 	
 	end_box();
 	
 	start_box("Tree Items [host]", "98%", $color_host, "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				"no_form_tag" => true
-				),
-			"fields" => array(
-				"host_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Host",
-					"description" => "Choose a host here to add it to the tree.",
-					"value" => (isset($tree_item) ? $tree_item["host_id"] : "0"),
-					"none_value" => "None",
-					"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($tree_item) ? $tree_item["id"] : "0")
-					),
-				"graph_tree_id" => array(
-					"method" => "hidden",
-					"value" => $_GET["tree_id"]
-					),
-				"save_component_tree_item" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array("no_form_tag" => true),
+		"fields" => inject_form_variables($fields_tree_item_edit_host, (isset($tree_item) ? $tree_item : array()), $_GET)
+		));
 	
 	end_box();
 	
@@ -329,7 +270,7 @@ function tree_remove() {
 }
 
 function tree_edit() {
-	global $colors;
+	global $colors, $fields_tree_edit;
 	
 	if (!empty($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree where id=" . $_GET["id"]);
@@ -340,29 +281,10 @@ function tree_edit() {
 	
 	start_box("<strong>Graph Trees</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "A useful name for this graph tree.",
-					"value" => (isset($tree) ? $tree["name"] : ""),
-					"max_length" => "255",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($tree) ? $tree["id"] : "0")
-					),
-				"save_component_tree" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_tree_edit, (isset($tree) ? $tree : array()))
+		));
 	
 	end_box();
 	

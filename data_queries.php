@@ -239,7 +239,7 @@ function snmp_item_remove() {
 }
 
 function snmp_item_edit() {
-	global $colors, $paths;
+	global $colors, $paths, $fields_data_query_item_edit;
 	
 	if (!empty($_GET["id"])) {
 		$snmp_query_item = db_fetch_row("select * from snmp_query_graph where id=" . $_GET["id"]);
@@ -250,44 +250,10 @@ function snmp_item_edit() {
 	
 	start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "A name for this associated graph.",
-					"value" => (isset($snmp_query_item) ? $snmp_query_item["name"] : ""),
-					"max_length" => "100",
-					),
-				"graph_template_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Graph Template",
-					"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
-					"value" => (isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0"),
-					"sql" => "select id,name from graph_templates order by name",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($snmp_query_item) ? $snmp_query_item["id"] : "0")
-					),
-				"snmp_query_id" => array(
-					"method" => "hidden",
-					"value" => $_GET["snmp_query_id"]
-					),
-				"_graph_template_id" => array(
-					"method" => "hidden",
-					"value" => (isset($snmp_query_item) ? $snmp_query_item["graph_template_id"] : "0")
-					),
-				"save_component_snmp_query_item" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_GET)
+		));
 	
 	end_box();
 	
@@ -544,7 +510,7 @@ function snmp_remove() {
 }
 
 function snmp_edit() {
-	global $colors, $snmp_query_field_actions, $paths;
+	global $colors, $snmp_query_field_actions, $paths, $fields_data_query_edit;
 	
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
@@ -555,51 +521,10 @@ function snmp_edit() {
 	
 	start_box("<strong>Data Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "A name for this data query.",
-					"value" => (isset($snmp_query) ? $snmp_query["name"] : ""),
-					"max_length" => "100",
-					),
-				"description" => array(
-					"method" => "textbox",
-					"friendly_name" => "Description",
-					"description" => "A description for this data query.",
-					"value" => (isset($snmp_query) ? $snmp_query["description"] : ""),
-					"max_length" => "255",
-					),
-				"xml_path" => array(
-					"method" => "textbox",
-					"friendly_name" => "XML Path",
-					"description" => "The full path to the XML file containing definitions for this data query.",
-					"value" => (isset($snmp_query) ? $snmp_query["xml_path"] : ""),
-					"default" => "<path_cacti>/resource/",
-					"max_length" => "255",
-					),
-				"data_input_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Data Input Method",
-					"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
-					"value" => (isset($host) ? $host["data_input_id"] : "0"),
-					"sql" => "select id,name from data_input order by name",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($snmp_query) ? $snmp_query["id"] : "0")
-					),
-				"save_component_snmp_query" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
+		));
 	
 	end_box();
 	

@@ -172,7 +172,7 @@ function field_remove() {
 }
 
 function field_edit() {
-	global $colors, $registered_cacti_names;
+	global $colors, $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 	
 	if (!empty($_GET["id"])) {
 		$field = db_fetch_row("select * from data_input_fields where id=" . $_GET["id"]);
@@ -210,116 +210,28 @@ function field_edit() {
 	
 	start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
-	$form_array = array(
-			"config" => array(
-				),
-			"fields" => array(
-				)
-			);
-	
-	$i = 0;
+	$form_array = array();
 	
 	/* field name */
 	if (($data_input["type_id"] == "1") && ($current_field_type == "in")) { /* script */
-		$form_array["fields"] += array(
-			"data_name" => array(
-				"method" => "drop_array",
-				"friendly_name" => "Field [$header_name]",
-				"description" => "Choose the associated field from the $header_name field.",
-				"value" => (isset($field) ? $field["data_name"] : ""),
-				"array" => $array_field_names,
-				)
-			);
+		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, $field);
 	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($current_field_type == "out")) { /* snmp */
-		$form_array["fields"] += array(
-			"data_name" => array(
-				"method" => "textbox",
-				"friendly_name" => "Field [$header_name]",
-				"description" => "Enter a name for this $header_name field.",
-				"value" => (isset($field) ? $field["data_name"] : ""),
-				"max_length" => "50",
-				)
-			);
-	}
-	
-	/* field friendly name (or description) */
-	$form_array["fields"] += array(
-		"name" => array(
-			"method" => "textbox",
-			"friendly_name" => "Friendly Name",
-			"description" => "Enter a meaningful name for this data input method.",
-			"value" => (isset($field) ? $field["name"] : ""),
-			"max_length" => "200",
-			)
-		);
-	
-	/* ONLY if the field is an output */
-	if ($current_field_type == "out") {
-		$form_array["fields"] += array(
-			"name" => array(
-				"method" => "checkbox",
-				"friendly_name" => "Update RRD File",
-				"description" => "Whether data from this output field is to be entered into the rrd file.",
-				"value" => (isset($field) ? $field["update_rra"] : ""),
-				"default" => "on",
-				"form_id" => (isset($field) ? $field["id"] : "")
-				)
-			);
+		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, $field);
 	}
 	
 	/* ONLY if the field is an input */
 	if ($current_field_type == "in") {
-		$form_array["fields"] += array(
-			"regexp_match" => array(
-				"method" => "textbox",
-				"friendly_name" => "Regular Expression Match",
-				"description" => "If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).",
-				"value" => (isset($field) ? $field["regexp_match"] : ""),
-				"max_length" => "200"
-				),
-			"allow_nulls" => array(
-				"method" => "checkbox",
-				"friendly_name" => "Allow Empty Input",
-				"description" => "Check here if you want to allow NULL input in this field from the user.",
-				"value" => (isset($field) ? $field["allow_nulls"] : ""),
-				"default" => "",
-				"form_id" => false
-				),
-			"type_code" => array(
-				"method" => "textbox",
-				"friendly_name" => "Special Type Code",
-				"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'management_ip', 'snmp_community', 'snmp_username', 'snmp_password', and 'snmp_version'.",
-				"value" => (isset($field) ? $field["type_code"] : ""),
-				"max_length" => "40"
-				),
-			);
-		
+		unset($fields_data_input_field_edit["update_rra"]);
+	}elseif ($current_field_type == "out") {
+		unset($fields_data_input_field_edit["regexp_match"]);
+		unset($fields_data_input_field_edit["allow_nulls"]);
+		unset($fields_data_input_field_edit["type_code"]);
 	}
 	
-	$form_array["fields"] += array(
-		"id" => array(
-			"method" => "hidden",
-			"value" => (isset($field) ? $field["id"] : "0")
-			),
-		"input_output" => array(
-			"method" => "hidden",
-			"value" => $current_field_type
-			),
-		"sequence" => array(
-			"method" => "hidden",
-			"value" => (isset($field) ? $field["sequence"] : "0")
-			),
-		"data_input_id" => array(
-			"method" => "hidden",
-			"value" => (isset($field) ? $field["data_input_id"] : "0")
-			),
-		"save_component_field" => array(
-			"method" => "hidden",
-			"value" => "1"
-			),
-		);
-	
-	draw_edit_form($form_array);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type)
+		));
 	
 	end_box();
 	
@@ -346,7 +258,7 @@ function data_remove() {
 }
 
 function data_edit() {
-	global $colors, $input_types;
+	global $colors, $fields_data_input_edit;
 	
 	if (!empty($_GET["id"])) {
 		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);
@@ -357,50 +269,10 @@ function data_edit() {
 	
 	start_box("<strong>Data Input Methods</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "Enter a meaningful name for this data input method.",
-					"value" => (isset($data_input) ? $data_input["name"] : ""),
-					"max_length" => "255",
-					),
-				"type_id" => array(
-					"method" => "drop_array",
-					"friendly_name" => "Input Type",
-					"description" => "Choose what type of data input method this is.",
-					"value" => (isset($data_input) ? $data_input["type_id"] : ""),
-					"array" => $input_types,
-					),
-				"input_string" => array(
-					"method" => "textbox",
-					"friendly_name" => "Input String",
-					"description" => "The data that in sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.",
-					"value" => (isset($data_input) ? $data_input["input_string"] : ""),
-					"max_length" => "255",
-					),
-				"output_string" => array(
-					"method" => "textbox",
-					"friendly_name" => "Output String",
-					"description" => "The data that is expected back from the input script; defined as &lt;&gt; brackets.",
-					"value" => (isset($data_input) ? $data_input["output_string"] : ""),
-					"max_length" => "255",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($data_input) ? $data_input["id"] : "0")
-					),
-				"save_component_data_input" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
+		));
 	
 	end_box();
 	

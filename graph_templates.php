@@ -700,7 +700,7 @@ function input_remove() {
 }
 
 function input_edit() {
-	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 	
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 	
@@ -717,48 +717,10 @@ function input_edit() {
 	
 	start_box("<strong>Graph Item Inputs</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "Enter a name for this graph item input, make sure it is something you recognize.",
-					"value" => (isset($graph_template_input) ? $graph_template_input["name"] : ""),
-					"max_length" => "50"
-					),
-				"description" => array(
-					"method" => "textarea",
-					"friendly_name" => "Description",
-					"description" => "Enter a description for this graph item input to describe what this input is used for.",
-					"value" => (isset($graph_template_input) ? $graph_template_input["description"] : ""),
-					"textarea_rows" => "5",
-					"textarea_cols" => "40"
-					),
-				"column_name" => array(
-					"method" => "drop_array",
-					"friendly_name" => "Field Type",
-					"description" => "How data is to be represented on the graph.",
-					"value" => (isset($graph_template_input) ? $graph_template_input["column_name"] : ""),
-					"array" => $graph_template_items,
-					),
-				"graph_template_id" => array(
-					"method" => "hidden",
-					"value" => $_GET["graph_template_id"]
-					),
-				"graph_template_input_id" => array(
-					"method" => "hidden",
-					"value" => $_GET["id"]
-					),
-				"save_component_input" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_graph_template_input_edit, $graph_template_input, $graph_template_items, $_GET)
+		));
 	
 	if (!(isset($_GET["id"]))) { $_GET["id"] = 0; }
 	
@@ -828,7 +790,7 @@ function input_edit() {
    ---------------------------- */
 
 function template_edit() {
-	global $colors, $struct_graph, $image_types;
+	global $colors, $struct_graph, $image_types, $fields_graph_template_template_edit;
 	
 	/* graph item list goes here */
 	if (!empty($_GET["id"])) {
@@ -846,35 +808,13 @@ function template_edit() {
 	
 	start_box("<strong>Template</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "The name given to this graph template.",
-					"value" => (isset($template) ? $template["name"] : ""),
-					"max_length" => "150",
-					),
-				"graph_template_id" => array(
-					"method" => "hidden",
-					"value" => (isset($template_graph) ? $template_graph["graph_template_id"] : "0")
-					),
-				"graph_template_graph_id" => array(
-					"method" => "hidden",
-					"value" => (isset($template_graph) ? $template_graph["id"] : "0")
-					),
-				"save_component_template" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : array()), (isset($template_graph) ? $template_graph : array()))
+		));
 	
 	end_box();
+	
 	start_box("<strong>Graph Template</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	$form_array = array();

@@ -352,7 +352,7 @@ function template_rrd_add() {
 }
 
 function template_edit() {
-	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
+	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
 	
 	if (!empty($_GET["id"])) {
 		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id=0");
@@ -365,41 +365,10 @@ function template_edit() {
 	
 	start_box("<strong>Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"template_name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "The name given to this data template.",
-					"value" => (isset($template) ? $template["name"] : ""),
-					"max_length" => "150",
-					),
-				"data_template_id" => array(
-					"method" => "hidden",
-					"value" => (isset($template_data) ? $template_data["data_template_id"] : "0")
-					),
-				"data_template_data_id" => array(
-					"method" => "hidden",
-					"value" => (isset($template_data) ? $template_data["id"] : "0")
-					),
-				"data_template_rrd_id" => array(
-					"method" => "hidden",
-					"value" => (isset($template_rrd) ? $template_rrd["id"] : "0")
-					),
-				"current_rrd" => array(
-					"method" => "hidden",
-					"value" => (isset($_GET["view_rrd"]) ? $_GET["view_rrd"] : "0")
-					),
-				"save_component_template" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : array()), (isset($template_data) ? $template_data : array()), (isset($template_rrd) ? $template_rrd : array()), $_GET)
+		));
 	
 	end_box();
 	
@@ -407,7 +376,6 @@ function template_edit() {
 	
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source["data_source_path"]);
-	
 	
 	$form_array = array();
 	

@@ -172,7 +172,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $cdef_functions, $cdef_operators, $custom_data_source_types;
+	global $colors, $fields_cdef_item_edit;
 	
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef_items where id=" . $_GET["id"]);
@@ -186,65 +186,10 @@ function item_edit() {
 	
 	start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"" => array(
-					"method" => "custom",
-					"value" => "",
-					"friendly_name" => "<span class='textArea'>Choose any one of these items:</span>"
-					),
-				"value_function" => array(
-					"method" => "drop_array",
-					"friendly_name" => "Function",
-					"value" => (isset($values[1]) ? $values[1] : ""),
-					"none_value" => "None",
-					"array" => $cdef_functions,
-					),
-				"value_operator" => array(
-					"method" => "drop_array",
-					"friendly_name" => "Operator",
-					"value" => (isset($values[2]) ? $values[2] : ""),
-					"none_value" => "None",
-					"array" => $cdef_operators,
-					),
-				"value_special_data_source" => array(
-					"method" => "drop_array",
-					"friendly_name" => "Special Data Source",
-					"value" => (isset($values[4]) ? $values[4] : ""),
-					"none_value" => "None",
-					"array" => $custom_data_source_types,
-					),
-				"value_cdef" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Another CDEF",
-					"value" => (isset($values[5]) ? $values[5] : ""),
-					"none_value" => "None",
-					"sql" => "select name,id from cdef",
-					),
-				"value_custom" => array(
-					"method" => "textbox",
-					"friendly_name" => "Custom String",
-					"value" => (isset($values[6]) ? $values[6] : ""),
-					"max_length" => "150",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($cdef) ? $cdef["id"] : "0")
-					),
-				"cdef_id" => array(
-					"method" => "hidden",
-					"value" => $_GET["cdef_id"]
-					),
-				"save_component_item" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_cdef_item_edit, (isset($values) ? $values : array()), (isset($cdef) ? $cdef : array()), $_GET)
+		));
 	
 	end_box();
 	
@@ -270,7 +215,7 @@ function cdef_remove() {
 }
 
 function cdef_edit() {
-	global $colors, $cdef_item_types;
+	global $colors, $cdef_item_types, $fields_cdef_edit;
 	
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef where id=" . $_GET["id"]);
@@ -281,29 +226,10 @@ function cdef_edit() {
 	
 	start_box("<strong>CDEF's</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "A useful name for this CDEF.",
-					"value" => (isset($cdef) ? $cdef["name"] : ""),
-					"max_length" => "255",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($cdef) ? $cdef["id"] : "0")
-					),
-				"save_component_cdef" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_cdef_edit, (isset($cdef) ? $cdef : array()))
+		));
 	
 	end_box();
 	

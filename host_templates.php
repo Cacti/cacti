@@ -164,7 +164,7 @@ function template_remove() {
 }
 
 function template_edit() {
-	global $colors;
+	global $colors, $fields_host_template_edit;
 	
 	display_output_messages();
 	
@@ -178,29 +178,10 @@ function template_edit() {
 	
 	start_box("<strong>Host Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "A useful name for this host template.",
-					"value" => (isset($host_template) ? $host_template["name"] : ""),
-					"max_length" => "255",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($host_template) ? $host_template["id"] : "0")
-					),
-				"save_component_template" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
+		));
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="30%">

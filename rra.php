@@ -113,7 +113,7 @@ function rra_remove() {
 }
 
 function rra_edit() {
-	global $colors, $consolidation_functions;
+	global $colors, $fields_rra_edit;
 	
 	if (!empty($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
@@ -124,64 +124,10 @@ function rra_edit() {
 	
 	start_box("<strong>Round Robin Archives</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"name" => array(
-					"method" => "textbox",
-					"friendly_name" => "Name",
-					"description" => "How data is to be entered in RRA's.",
-					"value" => (isset($rra) ? $rra["name"] : ""),
-					"max_length" => "100",
-					),
-				"consolidation_function_id" => array(
-					"method" => "drop_multi",
-					"friendly_name" => "Consolidation Functions",
-					"description" => "How data is to be entered in RRA's.",
-					"array" => $consolidation_functions,
-					"sql" => "select consolidation_function_id as id,rra_id from rra_cf where rra_id=" . (isset($rra) ? $rra["id"] : "0"),
-					),
-				"x_files_factor" => array(
-					"method" => "textbox",
-					"friendly_name" => "X-Files Factor",
-					"description" => "The amount of unknown data that can still be regarded as known.",
-					"value" => (isset($rra) ? $rra["x_files_factor"] : ""),
-					"max_length" => "10",
-					),
-				"steps" => array(
-					"method" => "textbox",
-					"friendly_name" => "Steps",
-					"description" => "How many data points are needed to put data into the RRA.",
-					"value" => (isset($rra) ? $rra["steps"] : ""),
-					"max_length" => "8",
-					),
-				"rows" => array(
-					"method" => "textbox",
-					"friendly_name" => "Rows",
-					"description" => "How many generations data is kept in the RRA.",
-					"value" => (isset($rra) ? $rra["rows"] : ""),
-					"max_length" => "8",
-					),
-				"timespan" => array(
-					"method" => "textbox",
-					"friendly_name" => "Timespan",
-					"description" => "How many seconds to display in graph for this RRA.",
-					"value" => (isset($rra) ? $rra["timespan"] : ""),
-					"max_length" => "8",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($rra) ? $rra["id"] : "0")
-					),
-				"save_component_rra" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_rra_edit, (isset($rra) ? $rra : array()))
+		));
 	
 	end_box();
 	

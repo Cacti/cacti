@@ -91,7 +91,7 @@ function color_remove() {
 }
 
 function color_edit() {
-	global $colors;
+	global $colors, $fields_color_edit;
 	
 	if (!empty($_GET["id"])) {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
@@ -102,29 +102,10 @@ function color_edit() {
 	
 	start_box("<strong>Colors</strong> $header_label", "98%", $colors["header"], "3", "center", "");
     	
-	draw_edit_form(
-		array(
-			"config" => array(
-				),
-			"fields" => array(
-				"hex" => array(
-					"method" => "textbox",
-					"friendly_name" => "Hex Value",
-					"description" => "The hex value for this color; valid range: 000000-FFFFFF.",
-					"value" => (isset($color) ? $color["hex"] : ""),
-					"max_length" => "6",
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($color) ? $color["id"] : "0")
-					),
-				"save_component_color" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))
+		));
 	
 	end_box();
 	

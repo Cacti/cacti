@@ -754,7 +754,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 }
 
 function host_edit() {
-	global $colors, $snmp_versions, $paths;
+	global $colors, $paths, $fields_host_edit;
 	
 	display_output_messages();
 	
@@ -767,92 +767,10 @@ function host_edit() {
 	
 	start_box("<strong>Polling Hosts</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	draw_edit_form(
-		array(
-			"config" => array(
-				"form_name" => "chk"
-				),
-			"fields" => array(
-				"description" => array(
-					"method" => "textbox",
-					"friendly_name" => "Description",
-					"description" => "Give this host a meaningful description.",
-					"value" => (isset($host) ? $host["description"] : ""),
-					"max_length" => "250",
-					),
-				"host_template_id" => array(
-					"method" => "drop_sql",
-					"friendly_name" => "Host Template",
-					"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
-					"value" => (isset($host) ? $host["host_template_id"] : "0"),
-					"none_value" => "None",
-					"sql" => "select id,name from host_template",
-					),
-				"hostname" => array(
-					"method" => "textbox",
-					"friendly_name" => "Hostname",
-					"description" => "Fill in the fully qualified hostname for this device.",
-					"value" => (isset($host) ? $host["hostname"] : ""),
-					"max_length" => "250",
-					),
-				"management_ip" => array(
-					"method" => "textbox",
-					"friendly_name" => "Management IP",
-					"description" => "Choose the IP address that will be used to gather data from this host. The hostname will be used a fallback in case this fails.",
-					"value" => (isset($host) ? $host["management_ip"] : ""),
-					"max_length" => "15",
-					),
-				"snmp_community" => array(
-					"method" => "textbox",
-					"friendly_name" => "SNMP Community",
-					"description" => "Fill in the SNMP read community for this device.",
-					"value" => (isset($host) ? $host["snmp_community"] : ""),
-					"max_length" => "100",
-					),
-				"snmp_username" => array(
-					"method" => "textbox",
-					"friendly_name" => "SNMP Username",
-					"description" => "Fill in the SNMP username for this device (v3).",
-					"value" => (isset($host) ? $host["snmp_username"] : ""),
-					"max_length" => "50",
-					),
-				"snmp_password" => array(
-					"method" => "textbox",
-					"friendly_name" => "SNMP Password",
-					"description" => "Fill in the SNMP password for this device (v3).",
-					"value" => (isset($host) ? $host["snmp_password"] : ""),
-					"max_length" => "50",
-					),
-				"snmp_version" => array(
-					"method" => "drop_array",
-					"friendly_name" => "SNMP Version",
-					"description" => "Choose the SNMP version for this host.",
-					"value" => (isset($host) ? $host["snmp_version"] : ""),
-					"array" => $snmp_versions,
-					),
-				"disabled" => array(
-					"method" => "checkbox",
-					"friendly_name" => "Disable Host",
-					"description" => "Check this box to disable all checks for this host.",
-					"value" => (isset($host) ? $host["disabled"] : ""),
-					"default" => "",
-					"form_id" => false
-					),
-				"id" => array(
-					"method" => "hidden",
-					"value" => (isset($host) ? $host["id"] : "0")
-					),
-				"_host_template_id" => array(
-					"method" => "hidden",
-					"value" => (isset($host) ? $host["host_template_id"] : "0")
-					),
-				"save_component_host" => array(
-					"method" => "hidden",
-					"value" => "1"
-					)
-				)
-			)
-		);
+	draw_edit_form(array(
+		"config" => array(),
+		"fields" => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
+		));
 	
 	if (!empty($host["id"])) {
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
