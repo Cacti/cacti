@@ -33,12 +33,11 @@ include("config.php");
 /* initilize php session */
 session_start();
 
-/* check to see if this is a new installation */
-include_once ("include/version_functions.php");
 include_once ("functions.php");
 
-if (GetCurrentVersion() != $config["cacti_version"]) {
-	header ("Location: install.php");
+/* check to see if this is a new installation */
+if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
+	header ("Location: install/");
 	exit;
 }
 
