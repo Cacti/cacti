@@ -72,9 +72,10 @@ function DrawPlainFormHeader($title_text, $background_color, $column_span, $bold
 <?}
 
 /* draws a vertical space and a save button */
-function DrawFormSaveButton($form_action = "save") { 
+function DrawFormSaveButton($form_action = "save", $cancel_action) { 
     print "
 	<input type='hidden' name='action' value='$form_action'>
+	<a href='$cancel_action'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>\n
 	<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>\n";
 }
 
