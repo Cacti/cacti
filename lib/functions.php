@@ -24,10 +24,17 @@
 <?
 
 function read_graph_config_option($config_name) {
+	include ("config_settings.php");
+	
 	$graph_config_array = unserialize($_SESSION["sess_graph_config_array"]);
 	
 	if (!isset($graph_config_array[$config_name])) {
 		$graph_config_array[$config_name] = db_fetch_cell("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]);
+		
+		if (empty($graph_config_array[$config_name])) {
+			$graph_config_array[$config_name] = $settings_graphs[$config_name]["default"];
+		}
+			
 		$_SESSION["sess_graph_config_array"] = serialize($graph_config_array);
 	}
 	
@@ -181,48 +188,54 @@ function GetCronPath($dsid) {
     }
 }
 
-function GetDataSourceName($dsid) {    
-    if ($dsid == 0) { return ""; }
-    
-    $data = db_fetch_row("select Name, DSname from rrd_ds where id=$dsid");
-    
-    /* use the cacti ds name by default or the user defined one, if entered */
-    if ($data[DBName] == "") {
+function get_data_source_name($local_data_id) {    
+	if (empty($local_data_id)) { return ""; }
+	
+	$data_source = db_fetch_row("select
+		data_template_rrd.data_source_name,
+		data_template_data.name
+		from data_template_rrd,data_template_data
+		where data_template_rrd.local_data_id=data_template_data.local_data_id
+		and data_template_rrd.local_data_id=$local_data_id");
+	
+	/* use the cacti ds name by default or the user defined one, if entered */
+	if (empty($data_source["data_source_name"])) {
 		/* limit input to 19 characters */
-		return CheckDataSourceName($data[Name]);
-    }else{
-		return $data[Name];
-    }
+		$data_source_name = clean_up_name($data_source["name"]);
+		$data_source_name = substr(strtolower($data_source_name),0,(19-strlen($local_data_id))) . $local_data_id;
+		
+		return $data_source_name;
+	}else{
+		return $data_source["data_source_name"];
+	}
 }
 
-function GetDataSourcePath($data_source_id, $expand_paths) {
-    global $config,$paths;
-    if ($data_source_id == 0) { return ""; }
-    
-    $data = db_fetch_row("select Name, DSPath from rrd_ds where id=$data_source_id");
-    
-    if (sizeof($data) > 0) {
-		if ($data[DSPath] == "") {
-		    /* no custom path was specified */
-		    $data_source_path = "<path_rra>/" . CheckDataSourceName($data[Name]) . ".rrd";
+function get_data_source_path($local_data_id, $expand_paths) {
+	global $paths;
+	
+    	if (empty($local_data_id)) { return ""; }
+    	
+    	$data_source = db_fetch_row("select name,data_source_path from data_template_data where local_data_id=$local_data_id");
+    	
+	if (sizeof($data_source) > 0) {
+		if (empty($data_source["data_source_path"])) {
+			/* no custom path was specified */
+			$data_source_path = generate_data_source_path($local_data_id);
 		}else{
-		    $pos = strpos($data[DSPath],"/");
-		    
-		    /* make sure we represent the path correctly */
-		    if (is_string ($pos) && !$pos) {
-				$data_source_path = "<path_rra>/$data[DSPath]";
-		    }else{
-				$data_source_path = $data[DSPath];
-		    }
+			if (!strstr($data_source["data_source_path"], "/")) {
+				$data_source_path = "<path_rra>/" . $data_source["data_source_path"];
+			}else{
+				$data_source_path = $data_source["data_source_path"];
+			}
 		}
 		
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-		    $data_source_path = ereg_replace ("<path_rra>", $paths[rra], $data_source_path);
+			$data_source_path = str_replace("<path_rra>", $paths["rra"], $data_source_path);
 		}
 		
 		return $data_source_path;
-    }
+	}
 }
 
 function CheckDataSourceName($data_source_name) {
@@ -233,14 +246,20 @@ function CheckDataSourceName($data_source_name) {
     return strtolower($new_data_source_name);
 }
 
-function CleanUpName($string) {
-    $new_string = ereg_replace("[ ]|[.]","_",$string);
-    $new_string = ereg_replace("[*]|[/]|[\]|[*]|[&]|[%]|[\"]|[\']|[,]","",$new_string);
+function clean_up_name($string) {
+    $string = preg_replace("/[\s\.]+/", "_", $string);
+    $string = preg_replace("/[*\/\*&%\"\',]/", "", $string);
     
-    return $new_string;
+    return $string;
 }
 
-function CreateGraphDefName($graph_item_id) {
+function generate_data_source_path($local_data_id) {
+	$data_source_name = db_fetch_cell("select name from data_template_data where local_data_id=$local_data_id");
+	
+	return "<path_rra>/" . substr(strtolower(clean_up_name($data_source_name)), 0, 15) . "_" . $local_data_id . ".rrd";
+}
+
+function generate_graph_def_name($graph_item_id) {
     $lookup_table = array("a","b","c","d","e","f","g","h","i","j");
     
     for($i=0; $i<strlen($graph_item_id); $i++) {
