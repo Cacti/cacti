@@ -56,6 +56,7 @@ switch ($action) {
 		$save["id"] = $form["graph_template_input_id"];
 		$save["graph_template_id"] = $form["graph_template_id"];
 		$save["name"] = $form["name"];
+		$save["description"] = $form["description"];
 		$save["column_name"] = $form["column_name"];
 		
 		$graph_template_input_id = sql_save($save, "graph_template_input");
@@ -210,6 +211,14 @@ switch ($action) {
 		</tr>
 		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+			<td width="50%">
+				<font class="textEditTitle">Description</font><br>
+				Enter a description for this graph item input to describe what this input is used for.
+			</td>
+			<?DrawFormItemTextArea("description",$graph_template_input[description],5,40,"");?>
+		</tr>
+		
+		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Field Type</font><br>
 				How data is to be represented on the graph.
@@ -587,7 +596,7 @@ switch ($action) {
 			DrawMatrixHeaderItem("Name",$colors[panel],$colors[panel_text]);
 		DrawMatrixRowEnd();
 		
-		$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=$args[graph_template_id]");
+		$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=$args[graph_template_id] order by name");
 		
 		if (sizeof($template_item_list) > 0) {
 		foreach ($template_item_list as $item) {
@@ -601,6 +610,7 @@ switch ($action) {
 				</td>
 			</tr>
 		<?
+		$i++;
 		}
 		}
 		
