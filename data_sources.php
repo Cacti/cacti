@@ -360,7 +360,8 @@ function ds_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
 		
-		print "<br>";
+		print "	<br>
+			<form action='data_sources.php' method='get'>";
 		
 		start_box("<strong>Are You Sure?</strong>", "60%", "B61D22", "3", "center", "");
 		
@@ -387,20 +388,66 @@ function ds_remove() {
 			
 			print "<br>";
 			form_base_radio_button("delete_type", "1", "1", "Leave the graphs untouched.", "1", true);
-			form_base_radio_button("delete_type", "1", "2", "Delete all graph items that reference to this data source.", "1", true);
+			form_base_radio_button("delete_type", "1", "2", "Delete all <strong>graph items</strong> that reference to this data source.", "1", true);
+			form_base_radio_button("delete_type", "1", "3", "Delete all <strong>graphs</strong> that reference to this data source.", "1", true);
 			print "</td></tr>";
 		}
 		
-		form_confirm_buttons("data_sources.php?action=ds_remove&id=" . $_GET["id"], "data_sources.php");
+		form_post_confirm_buttons("data_sources.php");
 		
 		end_box();
+		
+		form_hidden_box("action","ds_remove","");
+		form_hidden_box("confirm","yes","");
+		form_hidden_box("id",$_GET["id"],"0");
+		print "</form>";
 		
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
+		/* set default delete type */
+		if (!isset($_GET["delete_type"])) { $_GET["delete_type"] = ""; }
+		
+		switch ($_GET["delete_type"]) {
+		case '2': /* delete all graph items tied to this data source */
+			$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where local_data_id=" . $_GET["id"]);
+			
+			/* loop through each data source item */
+			if (sizeof($data_template_rrds) > 0) {
+			foreach ($data_template_rrds as $item) {
+				db_execute("delete from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
+			}
+			}
+			
+			break;
+		case '3': /* delete all graphs tied to this data source */
+			$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where local_data_id=" . $_GET["id"]);
+			
+			/* loop through each data source item */
+			if (sizeof($data_template_rrds) > 0) {
+			foreach ($data_template_rrds as $item) {
+				$graphs = db_fetch_assoc("select local_graph_id from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
+				
+				/* loop through each graph */
+				if (sizeof($graphs) > 0) {
+				foreach ($graphs as $graph) {
+					db_execute("delete from graph_templates_graph where local_graph_id=" . $graph["local_graph_id"]);
+					db_execute("delete from graph_templates_item where local_graph_id=" . $graph["local_graph_id"]);
+					db_execute("delete from graph_tree_items where local_graph_id=" . $graph["local_graph_id"]);
+					db_execute("delete from graph_local where id=" . $graph["local_graph_id"]);
+				}
+				}
+			}
+			}
+			
+			break;
+		}
+		
+		/* delete the data source and its data when we're done */
 		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["id"]));
+		db_execute("delete from data_input_data where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["id"]));
 		db_execute("delete from data_template_data where local_data_id=" . $_GET["id"]);
 		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["id"]);
 		db_execute("delete from data_input_data_cache where local_data_id=" . $_GET["id"]);
