@@ -205,7 +205,7 @@ INSERT INTO data_input VALUES (2,'Get SNMP Data (Indexed)','','',3);
 INSERT INTO data_input VALUES (3,'Unix - Get Free Disk Space','perl <path_cacti>/scripts/diskfree.pl <partition>','',1);
 INSERT INTO data_input VALUES (4,'Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl','',1);
 INSERT INTO data_input VALUES (5,'Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>','',1);
-INSERT INTO data_input VALUES (6,'Linux - Get Memory Usage','perl <path_cacti>/scripts/memfree.pl <grepstr>','',1);
+INSERT INTO data_input VALUES (6,'Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>','',1);
 INSERT INTO data_input VALUES (7,'Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl','',1);
 INSERT INTO data_input VALUES (8,'Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>','',1);
 INSERT INTO data_input VALUES (9,'Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>','',1);
@@ -1814,7 +1814,6 @@ INSERT INTO settings VALUES ('log_update','on');
 INSERT INTO settings VALUES ('log_snmp','on');
 INSERT INTO settings VALUES ('full_view_data_source','on');
 INSERT INTO settings VALUES ('global_auth','on');
-INSERT INTO settings VALUES ('path_php_binary','/usr/bin/php');
 INSERT INTO settings VALUES ('path_snmpget','/usr/local/bin/snmpget');
 INSERT INTO settings VALUES ('path_html_export','');
 INSERT INTO settings VALUES ('guest_user','guest');
@@ -1953,14 +1952,14 @@ CREATE TABLE snmp_query_graph_rrd (
 --
 
 
-INSERT INTO snmp_query_graph_rrd VALUES (1,2,2,'ifInOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (1,1,1,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (2,38,47,'ifInDiscards');
 INSERT INTO snmp_query_graph_rrd VALUES (3,40,52,'ifOutNUcastPkts');
 INSERT INTO snmp_query_graph_rrd VALUES (3,40,53,'ifInNUcastPkts');
 INSERT INTO snmp_query_graph_rrd VALUES (4,39,48,'ifInUcastPkts');
 INSERT INTO snmp_query_graph_rrd VALUES (2,38,51,'ifOutErrors');
 INSERT INTO snmp_query_graph_rrd VALUES (6,3,4,'dskused');
-INSERT INTO snmp_query_graph_rrd VALUES (1,1,1,'ifInOctets');
+INSERT INTO snmp_query_graph_rrd VALUES (1,2,2,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (6,3,3,'dskavail');
 INSERT INTO snmp_query_graph_rrd VALUES (7,7,8,'kbWirelessStationExclHellos');
 INSERT INTO snmp_query_graph_rrd VALUES (7,8,9,'kbWirelessStationExclHellos');
@@ -2059,6 +2058,10 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (59,4,39,1,'name','|host_description|
 INSERT INTO snmp_query_graph_rrd_sv VALUES (60,4,39,2,'name','|host_description| - Unicast Packets - |squery_ifAlias|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (61,4,39,3,'name','|host_description| - Unicast Packets - |squery_ifIP|/|squery_ifDesc|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (62,4,39,4,'name','|host_description| - Unicast Packets - |squery_ifDesc|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (63,13,1,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (64,13,2,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (65,14,1,1,'rrd_maximum','|squery_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (66,14,2,1,'rrd_maximum','|squery_ifSpeed|');
 
 --
 -- Table structure for table 'snmp_query_graph_sv'
@@ -2239,7 +2242,6 @@ CREATE TABLE user_log (
 --
 
 
-INSERT INTO user_log VALUES ('admin',20030320205549,1,'192.168.1.101');
 
 --
 -- Table structure for table 'user_realm'
