@@ -443,6 +443,24 @@ function host_edit() {
 			and host_graph.host_id=" . $_GET["id"] . "
 			order by graph_templates.name");
 
+		$available_graph_templates = db_fetch_assoc("SELECT
+			graph_templates.id, graph_templates.name
+			FROM snmp_query_graph RIGHT JOIN graph_templates
+			ON snmp_query_graph.graph_template_id = graph_templates.id
+			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
+
+		$keeper = array();
+		foreach ($available_graph_templates as $item) {
+			if (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" .
+					$item["id"] . " and host_id=" . $_GET["id"])) > 0) {
+				/* do nothing */
+			} else {
+				array_push($keeper, $item);
+			}
+		}
+
+		$available_graph_templates = $keeper;
+
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
 		foreach ($selected_graph_templates as $item) {
@@ -472,13 +490,7 @@ function host_edit() {
 			<td colspan="4">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
-						<?php form_dropdown("graph_template_id",db_fetch_assoc("select
-							graph_templates.id,
-							graph_templates.name
-							from graph_templates left join host_graph
-							on (graph_templates.id=host_graph.graph_template_id and host_graph.host_id=" . $_GET["id"] . ")
-							where host_graph.host_id is null
-							order by graph_templates.name"),"name","id","","","");?>
+						<?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
@@ -502,6 +514,25 @@ function host_edit() {
 			where snmp_query.id=host_snmp_query.snmp_query_id
 			and host_snmp_query.host_id=" . $_GET["id"] . "
 			order by snmp_query.name");
+
+		$available_data_queries = db_fetch_assoc("select
+							snmp_query.id,
+							snmp_query.name
+							from snmp_query
+							order by snmp_query.name");
+
+		$keeper = array();
+		foreach ($available_data_queries as $item) {
+			if (sizeof(db_fetch_assoc("SELECT snmp_query_id FROM host_snmp_query " .
+					" WHERE ((host_id=" . $_GET["id"] . ")" .
+					" and (snmp_query_id=" . $item["id"] ."))")) > 0) {
+				/* do nothing */
+			} else {
+				array_push($keeper, $item);
+			}
+		}
+
+		$available_data_queries = $keeper;
 
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
@@ -542,11 +573,7 @@ function host_edit() {
 			<td colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
-						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select
-							snmp_query.id,
-							snmp_query.name
-							from snmp_query
-							order by snmp_query.name"),"name","id","","","");?>
+						<?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
 					</td>
 					<td nowrap>Re-Index Method:&nbsp;
 						<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
