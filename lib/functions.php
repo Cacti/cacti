@@ -24,6 +24,13 @@
  +-------------------------------------------------------------------------+
 */
 
+/* title_trim - takes a string of text, truncates it to $max_length and appends
+     three periods onto the end
+   @arg $text - the string to evaluate
+   @arg $max_length - the maximum number of characters the string can contain
+     before it is truncated
+   @returns - the truncated string if len($text) is greater than $max_length, else
+     the origional string */
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
 		return substr($text, 0, $max_length) . "...";
@@ -32,6 +39,10 @@ function title_trim($text, $max_length) {
 	}
 }
 
+/* read_graph_config_option - finds the current value of a graph configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings_graphs array
+     in 'include/config_settings.php'
+   @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name) {
 	global $config;
 	
@@ -59,6 +70,10 @@ function read_graph_config_option($config_name) {
 	return $graph_config_array[$config_name];
 }
 
+/* read_config_option - finds the current value of a Cacti configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings array
+     in 'include/config_settings.php'
+   @returns - the current value of the configuration option */
 function read_config_option($config_name) {
 	global $config;
 	
@@ -81,6 +96,15 @@ function read_config_option($config_name) {
 	return $config_array[$config_name];
 }
 
+/* form_input_validate - validates the value of a form field and takes the appropriate action if the input
+     is not valid
+   @arg $field_value - the value of the form field
+   @arg $field_name - the name of the $_POST field as specified in the HTML
+   @arg $regexp_match - (optionally) enter a regular expression to match the value against
+   @arg $allow_nulls - (bool) whether to allow an empty string as a value or not
+   @arg $custom_message - (int) the ID of the message to raise upon an error which is defined in the 
+     $messages array in 'include/config_arrays.php'
+   @returns - the origional $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	/* write current values to the "field_values" array so we can retain them */
 	if (isset($_SESSION["sess_field_values"])) {
@@ -118,6 +142,9 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	return $field_value;
 }
 
+/* is_error_message - finds whether an error message has been raised and has not been outputted to the
+     user
+   @returns - (bool) whether the messages array contains an error or not */
 function is_error_message() {
 	global $config;
 	
@@ -136,6 +163,8 @@ function is_error_message() {
 	return false;
 }
 
+/* raise_message - mark a message to be displayed to the user once display_output_messages() is called
+   @arg $message_id - the ID of the message to raise as defined in $messages in 'include/config_arrays.php' */
 function raise_message($message_id) {
 	if (isset($_SESSION["sess_messages"])) {
 		$array_messages = unserialize($_SESSION["sess_messages"]);
@@ -145,6 +174,8 @@ function raise_message($message_id) {
 	$_SESSION["sess_messages"] = serialize($array_messages);
 }
 
+/* display_output_messages - displays all of the cached messages from the raise_message() function and clears
+     the message cache */
 function display_output_messages() {
 	global $config;
 	
@@ -184,10 +215,12 @@ function display_output_messages() {
 	kill_session_var("sess_messages");
 }
 
+/* clear_messages - clears the message cache */
 function clear_messages() {
 	kill_session_var("sess_messages");
 }
 
+/* kill_session_var - kills a session variable using two methods -- session_unregister() and unset() */
 function kill_session_var($var_name) {
 	/* register_global = off: reset local settings cache so the user sees the new settings */
 	session_unregister($var_name);
@@ -196,6 +229,14 @@ function kill_session_var($var_name) {
 	unset($_SESSION[$var_name]);
 }
 
+/* array_rekey - changes an array in the form:
+     '$arr[0] = array("id" => 23, "name" => "blah")'
+     to the form
+     '$arr = array(23 => "blah")'
+   @arg $array - (array) the origional array to manipulate
+   @arg $key - the name of the key
+   @arg $key_value - the name of the key value
+   @returns - the modified array */
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
 	
@@ -210,29 +251,9 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
-function draw_menu() {
-	global $colors, $config;
-	
-	include ($config["include_path"] . "/config_arrays.php");
-	
-	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
-	
-	foreach (array_keys($menu) as $header) {
-		print "<tr><td class='textMenuHeader'>$header</td></tr>\n";
-		if (sizeof($menu[$header]) > 0) {
-			foreach (array_keys($menu[$header]) as $url) {
-				if (basename($_SERVER["PHP_SELF"]) == basename($url)) {
-					print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
-				}else{
-					print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$url'>".$menu[$header][$url]."</a></td></tr>\n";
-				}
-			}
-		}
-	}
-	
-	print '</table></td></tr>';
-}
-
+/* log_data - logs a string to Cacti's log file or optionally to the browser
+   @arg $string - the string to append to the log file
+   @arg $output - (bool) whether to output the log line to the browser using pring() or not */
 function log_data($string, $output = false) {
 	/* fill in the current date for printing in the log */
 	$date = date("m/d/Y g:i A");
@@ -247,6 +268,10 @@ function log_data($string, $output = false) {
 	}
 }
 
+/* get_full_script_path - gets the full path to the script to execute to obtain data for a
+     given data source. this function does not work on SNMP actions, only script-based actions
+   @arg $local_data_id - (int) the ID of the data source
+   @returns - the full script path or (bool) false for an error */
 function get_full_script_path($local_data_id) {
 	$data_source = db_fetch_row("select
 		data_template_data.id,
@@ -291,6 +316,10 @@ function get_full_script_path($local_data_id) {
 	return $full_path;
 }
 
+/* get_data_source_name - gets the name of a data source item or generates a new one if one does not
+     already exist
+   @arg $data_template_rrd_id - (int) the ID of the data source item
+   @returns - the name of the data source item or an empty string for an error */
 function get_data_source_name($data_template_rrd_id) {    
 	if (empty($data_template_rrd_id)) { return ""; }
 	
@@ -313,6 +342,10 @@ function get_data_source_name($data_template_rrd_id) {
 	}
 }
 
+/* get_data_source_path - gets the full path to the .rrd file associated with a given data source 
+   @arg $local_data_id - (int) the ID of the data source
+   @arg $expand_paths - (bool) whether to expand the <path_rra> variable into its full path or not
+   @returns - the full path to the data source or an empty string for an error */
 function get_data_source_path($local_data_id, $expand_paths) {
     	if (empty($local_data_id)) { return ""; }
     	
@@ -339,6 +372,11 @@ function get_data_source_path($local_data_id, $expand_paths) {
 	}
 }
 
+/* stri_replace - a case insensitive string replace
+   @arg $find - needle
+   @arg $replace - replace needle with this
+   @arg $string - haystack
+   @returns - the origional string with '$find' replaced by '$replace' */
 function stri_replace($find, $replace, $string) {
 	$parts = explode(strtolower($find), strtolower($string));
 	
@@ -352,6 +390,10 @@ function stri_replace($find, $replace, $string) {
 	return (join($replace, $parts));
 }
 
+/* clean_up_name - runs a string through a series of regular expressions designed to
+     eliminate "bad" characters
+   @arg $string - the string to modify/clean
+   @returns - the modified string */
 function clean_up_name($string) {
 	$string = preg_replace("/[\s\.]+/", "_", $string);
 	$string = preg_replace("/_{2,}/", "_", $string);
@@ -360,6 +402,9 @@ function clean_up_name($string) {
 	return $string;
 }
 
+/* update_data_source_title_cache_from_template - updates the title cache for all data sources
+     that match a given data template
+   @arg $data_template_id - (int) the ID of the data template to match */
 function update_data_source_title_cache_from_template($data_template_id) {
 	$data = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=$data_template_id and local_data_id>0");
 	
@@ -370,6 +415,10 @@ function update_data_source_title_cache_from_template($data_template_id) {
 	}
 }
 
+/* update_data_source_title_cache_from_query - updates the title cache for all data sources
+     that match a given data query/index combination
+   @arg $snmp_query_id - (int) the ID of the data query to match
+   @arg $snmp_index - the index within the data query to match */
 function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
 	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
 	
@@ -380,6 +429,9 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
 	}
 }
 
+/* update_data_source_title_cache_from_host - updates the title cache for all data sources
+     that match a given host
+   @arg $host_id - (int) the ID of the host to match */
 function update_data_source_title_cache_from_host($host_id) {
 	$data = db_fetch_assoc("select id from data_local where host_id=$host_id");
 	
@@ -390,10 +442,15 @@ function update_data_source_title_cache_from_host($host_id) {
 	}
 }
 
+/* update_data_source_title_cache - updates the title cache for a single data source
+   @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
 	db_execute("update data_template_data set name_cache='" . get_data_source_title($local_data_id) . "' where local_data_id=$local_data_id");
 }
 
+/* update_graph_title_cache_from_template - updates the title cache for all graphs
+     that match a given graph template
+   @arg $graph_template_id - (int) the ID of the graph template to match */
 function update_graph_title_cache_from_template($graph_template_id) {
 	$graphs = db_fetch_assoc("select local_graph_id from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id>0");
 	
@@ -404,6 +461,10 @@ function update_graph_title_cache_from_template($graph_template_id) {
 	}
 }
 
+/* update_graph_title_cache_from_query - updates the title cache for all graphs
+     that match a given data query/index combination
+   @arg $snmp_query_id - (int) the ID of the data query to match
+   @arg $snmp_index - the index within the data query to match */
 function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	$graphs = db_fetch_assoc("select id from graph_local where snmp_query_id=$snmp_query_id and snmp_index=$snmp_index");
 	
@@ -414,6 +475,9 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	}
 }
 
+/* update_graph_title_cache_from_host - updates the title cache for all graphs
+     that match a given host
+   @arg $host_id - (int) the ID of the host to match */
 function update_graph_title_cache_from_host($host_id) {
 	$graphs = db_fetch_assoc("select id from graph_local where host_id=$host_id");
 	
@@ -424,10 +488,15 @@ function update_graph_title_cache_from_host($host_id) {
 	}
 }
 
+/* update_graph_title_cache - updates the title cache for a single graph
+   @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
 	db_execute("update graph_templates_graph set title_cache='" . get_graph_title($local_graph_id) . "' where local_graph_id=$local_graph_id");
 }
 
+/* get_data_source_title - returns the title of a data source without using the title cache
+   @arg $local_data_id - (int) the ID of the data source to get a title for
+   @returns - the data source title */
 function get_data_source_title($local_data_id) {
 	$data = db_fetch_row("select
 		data_local.host_id,
@@ -445,6 +514,9 @@ function get_data_source_title($local_data_id) {
 	}
 }
 
+/* get_graph_title - returns the title of a graph without using the title cache
+   @arg $local_graph_id - (int) the ID of the graph to get a title for
+   @returns - the graph title */
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row("select
 		graph_local.host_id,
@@ -462,10 +534,20 @@ function get_graph_title($local_graph_id) {
 	}
 }
 
+/* null_out_subsitions - takes a string and cleans out any host variables that do not have values
+   @arg $string - the string to clean out unsubsituted variables for
+   @returns - the cleaned up string */
 function null_out_subsitions($string) {
 	return eregi_replace("\|host_(hostname|description|management_ip|snmp_community|snmp_version|snmp_username|snmp_password)\|( - )?", "", $string);
 }
 
+/* expand_title - takes a string and subsitutes all data query variables contained in it or cleans
+     them out if no data query is in use
+   @arg $host_id - (int) the host ID to match
+   @arg $snmp_query_id - (int) the data query ID to match
+   @arg $snmp_index - the data query index to match
+   @arg $title - the origional string that contains the data query variables
+   @returns - the origional string with all of the variable subsitutions made */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, "|")) && (!empty($host_id))) {
 		if (($snmp_query_id != "0") && ($snmp_index != "")) {
@@ -478,13 +560,23 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	}
 }
 
+/* subsitute_data_query_path - takes a string and subsitutes all path variables contained in it
+   @arg $path - the string to make path variable subsitutions on
+   @returns - the origional string with all of the variable subsitutions made */
 function subsitute_data_query_path($path) {
 	$path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $path);
-	$path = str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path);
+	$path = str_replace("|path_php_binary
+	|", read_config_option("path_php_binary"), $path);
 	
 	return $path;
 }
 
+/* subsitute_host_data - takes a string and subsitutes all host variables contained in it
+   @arg $string - the string to make host variable subsitutions on
+   @arg $l_escape_string - the character used to escape each variable on the left side
+   @arg $r_escape_string - the character used to escape each variable on the right side
+   @arg $host_id - (int) the host ID to match
+   @returns - the origional string with all of the variable subsitutions made */
 function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (isset($_SESSION["sess_host_cache_array"])) {
 		$host_cache_array = unserialize($_SESSION["sess_host_cache_array"]);
@@ -507,6 +599,14 @@ function subsitute_host_data($string, $l_escape_string, $r_escape_string, $host_
 	return $string;
 }
 
+/* subsitute_snmp_query_data - takes a string and subsitutes all data query variables contained in it 
+   @arg $string - the origional string that contains the data query variables
+   @arg $l_escape_string - the character used to escape each variable on the left side
+   @arg $r_escape_string - the character used to escape each variable on the right side
+   @arg $host_id - (int) the host ID to match
+   @arg $snmp_query_id - (int) the data query ID to match
+   @arg $snmp_index - the data query index to match
+   @returns - the origional string with all of the variable subsitutions made */
 function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, $host_id, $snmp_query_id, $snmp_index) {
 	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
 	
@@ -521,6 +621,12 @@ function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, 
 	return $string;
 }
 
+/* data_query_index - returns an array containing the data query ID and index value given
+     a data query index type/value combination and a host ID
+   @arg $index_type - the name of the index to match
+   @arg $index_value - the value of the index to match
+   @arg $host_id - (int) the host ID to match
+   @returns - (array) the data query ID and index that matches the three arguments */
 function data_query_index($index_type, $index_value, $host_id) {
 	return db_fetch_row("select
 		host_snmp_cache.snmp_query_id,
@@ -531,6 +637,15 @@ function data_query_index($index_type, $index_value, $host_id) {
 		and host_snmp_cache.host_id=$host_id");
 }
 
+/* data_query_field_list - returns an array containing data query information for a given data source
+   @arg $data_template_data_id - the ID of the data source to retrieve information for
+   @returns - (array) an array that looks like:
+     Array
+     (
+        [index_type] => ifIndex
+        [index_value] => 3
+        [output_type] => 13
+     ) */
 function data_query_field_list($data_template_data_id) {
 	$field = db_fetch_assoc("select
 		data_input_fields.type_code,
@@ -548,7 +663,10 @@ function data_query_field_list($data_template_data_id) {
 	}
 }
 
-
+/* generate_data_source_path - creates a new data source path from scratch using the first data source
+     item name and updates the database with the new value
+   @arg $local_data_id - (int) the ID of the data source to generate a new path for
+   @returns - the new generated path */
 function generate_data_source_path($local_data_id) {
 	$host_part = ""; $ds_part = "";
 	
@@ -577,6 +695,10 @@ function generate_data_source_path($local_data_id) {
 	return $new_path;
 }
 
+/* generate_graph_def_name - takes a number and turns each digit into its letter-based
+     counterpart for RRDTool DEF names (ex 1 -> a, 2 -> b, etc)
+   @arg $graph_item_id - (int) the ID to generate a letter-based representation of
+   @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {
 	$lookup_table = array("a","b","c","d","e","f","g","h","i","j");
 	
@@ -589,6 +711,11 @@ function generate_graph_def_name($graph_item_id) {
 	return $result;
 }
 
+/* generate_data_input_field_sequences - re-numbers the sequences of each field associated
+     with a particular data input method based on its position within the input string
+   @arg $string - the input string that contains the field variables in a certain order
+   @arg $data_input_id - (int) the ID of the data input method
+   @arg $inout - ('in' or 'out') whether these fields are from the input or output string */
 function generate_data_input_field_sequences($string, $data_input_id, $inout) {
 	global $config;
 	
@@ -604,6 +731,13 @@ function generate_data_input_field_sequences($string, $data_input_id, $inout) {
 	}	
 }
 
+/* move_graph_group - takes a graph group (parent+children) and swaps it with another graph
+     group
+   @arg $graph_template_item_id - (int) the ID of the (parent) graph item that was clicked
+   @arg $graph_group_array - (array) an array containing the graph group to be moved
+   @arg $target_id - (int) the ID of the (parent) graph item of the target group
+   @arg $direction - ('next' or 'previous') whether the graph group is to be swapped with
+      group above or below the current group */
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
 	$graph_item = db_fetch_row("select local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
 	
@@ -676,6 +810,10 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	}
 }
 
+/* get_graph_group - returns an array containing each item in the graph group given a single
+     graph item in that group
+   @arg $graph_template_item_id - (int) the ID of the graph item to return the group of
+   @returns - (array) an array containing each item in the graph group */
 function get_graph_group($graph_template_item_id) {
 	global $graph_item_types;
 	
@@ -714,6 +852,10 @@ function get_graph_group($graph_template_item_id) {
 	return $graph_item_children_array;
 }
 
+/* get_graph_parent - returns the ID of the next or previous parent graph item id
+   @arg $graph_template_item_id - (int) the ID of the current graph item
+   @arg $direction - ('next' or 'previous') whether to find the next or previous parent
+   @returns - (int) the ID of the next or previous parent graph item id */
 function get_graph_parent($graph_template_item_id, $direction) {
 	$graph_item = db_fetch_row("select sequence,local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
 	
@@ -740,6 +882,13 @@ function get_graph_parent($graph_template_item_id, $direction) {
 	}
 }
 
+/* get_item - returns the ID of the next or previous item id
+   @arg $tblname - the table name that contains the target id
+   @arg $field - the field name that contains the target id
+   @arg $startid - (int) the current id
+   @arg $lmt_query - an SQL "where" clause to limit the query
+   @arg $direction - ('next' or 'previous') whether to find the next or previous item id
+   @returns - (int) the ID of the next or previous item id */
 function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 	if ($direction == "next") {
 		$sql_operator = ">";
@@ -759,6 +908,12 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 	}
 }
 
+/* get_sequence - returns the next available sequence id
+   @arg $id - (int) the current id
+   @arg $field - the field name that contains the target id
+   @arg $table_name - the table name that contains the target id
+   @arg $group_query - an SQL "where" clause to limit the query
+   @returns - (int) the next available sequence id */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
 		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $group_query");
@@ -774,6 +929,10 @@ function get_sequence($id, $field, $table_name, $group_query) {
 	}
 }
 
+/* move_item_down - moves an item down by swapping it with the item below it
+   @arg $table_name - the table name that contains the target id
+   @arg $current_id - (int) the current id
+   @arg $group_query - an SQL "where" clause to limit the query */
 function move_item_down($table_name, $current_id, $group_query) {
 	$next_item = get_item($table_name, "sequence", $current_id, $group_query, "next");
 	
@@ -783,6 +942,10 @@ function move_item_down($table_name, $current_id, $group_query) {
 	db_execute("update $table_name set sequence=$sequence where id=$next_item");
 }
 
+/* move_item_up - moves an item down by swapping it with the item above it
+   @arg $table_name - the table name that contains the target id
+   @arg $current_id - (int) the current id
+   @arg $group_query - an SQL "where" clause to limit the query */
 function move_item_up($table_name, $current_id, $group_query) {
 	$last_item = get_item($table_name, "sequence", $current_id, $group_query, "previous");
 	
@@ -792,6 +955,10 @@ function move_item_up($table_name, $current_id, $group_query) {
 	db_execute("update $table_name set sequence=$sequence where id=$last_item");
 }
 
+/* exec_into_array - executes a command and puts each line of its output into
+     an array
+   @arg $command_line - the command to execute
+   @returns - (array) an array containing the command output */
 function exec_into_array($command_line) {
 	exec($command_line,$out,$err);
 	
@@ -804,6 +971,8 @@ function exec_into_array($command_line) {
 	return $command_array;
 }
 
+/* get_web_browser - determines the current web browser in use by the client
+   @returns - ('ie' or 'moz' or 'other') */
 function get_web_browser() {
 	if (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla") && (!(stristr($_SERVER["HTTP_USER_AGENT"], "compatible")))) {
 		return "moz";
@@ -814,36 +983,12 @@ function get_web_browser() {
 	}
 }
 
-function hex2bin($data) {
-	$len = strlen($data);
-	
-	for($i=0;$i<$len;$i+=2) {
-		$newdata .=  pack("C",hexdec(substr($data,$i,2)));
-	}
-	
-	return $newdata;
-}
-
-/* Converts the number of rra records into a time period */
-function get_rra_timespan($rra_id) {
-	$rra = db_fetch_row("select timespan from rra where id=$rra_id");
-	$timespan = -($rra["timespan"]);
-	
-	return $timespan;
-}
-
-function reverse_lines($string) {
-	$arr = split("\n", $string);
-	
-	rsort($arr);
-	
-	for ($i=0; ($i < 50); $i++) {
-		$newstr .= $arr[$i] . "\n";
-	}
-	
-	return $newstr;
-}
-
+/* get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph
+     template policies
+   @arg $policy_graphs - (int) the current graph policy
+   @arg $policy_hosts - (int) the current host policy
+   @arg $policy_graph_templates - (int) the current graph template policy
+   @returns - an SQL "where" statement */
 function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_templates) {
 	$sql = "";
 	$sql_or = "";
@@ -895,6 +1040,9 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	}
 }
 
+/* is_graph_allowed - determines whether the current user is allowed to view a certain graph
+   @arg $local_graph_id - (int) the ID of the graph to check permissions for
+   @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id) {
 	$current_user = db_fetch_row("select policy_graphs,policy_hosts,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
 	
@@ -919,6 +1067,9 @@ function is_graph_allowed($local_graph_id) {
 	}
 }
 
+/* is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
+   @arg $tree_id - (int) the ID of the graph tree to check permissions for
+   @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function is_tree_allowed($tree_id) {
 	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
 	
@@ -944,6 +1095,9 @@ function is_tree_allowed($tree_id) {
 	}
 }
 
+/* get_graph_tree_array - returns a list of graph trees taking permissions into account if
+     necessary
+   @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array() {
 	if (read_config_option("global_auth") == "on") {
 		$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
@@ -969,6 +1123,8 @@ function get_graph_tree_array() {
 	return $tree_list;
 }
 
+/* draw_navigation_text - determines the top header navigation text for the current page and displays it to
+     the browser */
 function draw_navigation_text() {
 	$nav_level_cache = isset($_SESSION["sess_nav_level_cache"]) ? unserialize($_SESSION["sess_nav_level_cache"]) : array();
 	
@@ -1090,6 +1246,10 @@ function draw_navigation_text() {
 	print $current_nav;
 }
 
+/* resolve_navigation_title - apply any special functions that are necessary to the navigation text, this
+     function is only called if no other title is available
+   @arg $id - the special function to use
+   @returns - the origional navigation text with all subsitutions made */
 function resolve_navigation_title($id) {
 	switch ($id) {
 	case 'graph.php:':
