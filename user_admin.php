@@ -32,6 +32,23 @@ if ($form[ID]) { $id = $form[ID]; } else { $id = $args[id]; }
 
 $current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
 
+function draw_user_form_select() { 
+	global $current_script_name, $colors, $args; ?>
+	<tr bgcolor="#<?print $colors[panel];?>">
+		</form>
+		<form name="form_user">
+		<td>
+			<select name="cbo_user" onChange="window.location=document.form_user.cbo_user.options[document.form_user.cbo_user.selectedIndex].value">
+				<option value="<?print $current_script_name;?>?action=edit&id=<?print $args[id];?>"<?if ($args[action] == "edit") {?> selected<?}?>>User Configuration</option>
+				<option value="<?print $current_script_name;?>?action=edit_perms&id=<?print $args[id];?>"<?if ($args[action] == "edit_perms") {?> selected<?}?>>Individual Graph Permissions</option>
+				<option value="<?print $current_script_name;?>?action=edit_graph_config&id=<?print $args[id];?>"<?if ($args[action] == "edit_graph_config") {?> selected<?}?>>User Graph Settings</option>
+			</select>
+		</td>
+		</form>
+		<form method="post" action="<?print basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);?>">
+	</tr>
+<?}
+
 switch ($action) { 
  case 'save':
     	/* only change password when user types on */
@@ -82,6 +99,215 @@ switch ($action) {
     
     header ("Location: $current_script_name");
     break;
+ case 'edit_graph_config':
+ 	include_once ("include/functions.php");
+	include_once ("include/top_header.php");
+	$title_text = "User Management [edit]";
+	include_once ("include/top_table_header.php");
+	if (isset($args[id])) {
+		$graph_settings = LoadSettingsIntoArray($HTTP_SESSION_VARS["user_id"], $config["guest_user"]["value"]);
+	}else{
+		unset($user);
+	}
+	
+	draw_user_form_select();
+ 	
+	?>
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Preview Settings</td>
+	</tr>
+	<?
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Height</font><br>
+			The height of graphs created in preview mode.
+		</td>
+		<?DrawFormItemTextBox("Height",$graph_settings[Height],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Width</font><br>
+			The width of graphs created in preview mode.
+		</td>
+		<?DrawFormItemTextBox("Width",$graph_settings[Width],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Timespan</font><br>
+			The amount of time to represent on a graph created in preview mode (0 uses auto).
+		</td>
+		<?DrawFormItemTextBox("TimeSpan",$graph_settings[TimeSpan],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Default RRA</font><br>
+			The default RRA to use when displaying graphs in preview mode.
+		</td>
+		<?DrawFormItemDropdownFromSQL("RRAID",db_fetch_assoc("select * from rrd_rra order by name"),"Name","ID",$graph_settings[RRAID],"","");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Columns</font><br>
+			The number of columns to display graphs in using preview mode.
+		</td>
+		<?DrawFormItemTextBox("ColumnNumber",$graph_settings[ColumnNumber],"","50", "40");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">Page Refresh</font><br>
+			The number of seconds between automatic page refreshes.
+		</td>
+		<?DrawFormItemTextBox("PageRefresh",$graph_settings[PageRefresh],"","50", "40");?>
+	</tr>
+	
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Hierarchical Settings</td>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Default Graph Hierarchy</font><br>
+			The default graph hierarchy to use when displaying graphs in tree mode.
+		</td>
+		<?DrawFormItemDropdownFromSQL("TreeID",db_fetch_assoc("select * from viewing_trees order by Title"),"Title","ID",$graph_settings[TreeID],"","");?>
+	</tr>
+	
+	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+		<td width="50%">
+			<font class="textEditTitle">View Settings</font><br>
+			Options that govern how the graphs are displayed.
+		</td>
+		<td>
+		<?
+			DrawStrippedFormItemRadioButton("ViewType", $graph_settings[ViewType], "1", "Show a preview of the graph.", "1",true);
+			DrawStrippedFormItemRadioButton("ViewType", $graph_settings[ViewType], "2", "Show a text-based listing of the graph.", "1",true);
+		?>
+		</td>
+	</tr>
+	
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right" background="images/blue_line.gif">
+			<?DrawFormSaveButton("save");?>
+		</td>
+	</tr>
+	
+	<?
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	DrawFormFooter();
+	
+	include_once ("include/bottom_footer.php");
+	break;
+ case 'edit_perms':
+	include_once ("include/top_header.php");
+	$title_text = "User Management [edit]";
+	include_once ("include/top_table_header.php");
+	
+	if (isset($args[id])) {
+		$graph_policy = db_fetch_cell("select GraphPolicy from auth_users where id=$args[id]");
+		
+		if ($graph_policy == "1") {
+			$graph_policy_text = "DENIED";
+		}elseif ($graph_policy == "2") {
+			$graph_policy_text = "ALLOWED";
+		}
+	}else{
+		unset($user);
+	}
+	
+	draw_user_form_select();
+	
+	?>
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C"><strong><?print db_fetch_cell("select username from auth_users where id=$args[id]");?></strong> is Currently is <strong><?print $graph_policy_text;?></strong> to View the Following Graphs:</td>
+	</tr>
+	
+	<?
+	$perm_graphs = db_fetch_assoc("select rrd_graph.Title from
+		auth_graph left join rrd_graph on auth_graph.graphid=rrd_graph.id
+		where auth_graph.userid=$args[id]");
+	
+	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+		<td width="50%" colspan="2" class="textEditTitle">
+			<?
+			if (sizeof($perm_graphs) > 0) {
+				foreach ($perm_graphs as $graph) {
+					print "$graph[Title]<br>";
+				}
+			}else{
+				print "<em>No Graphs</em>";
+			}
+			?>
+		</td>
+	</tr>
+	<?
+	if ($graph_policy == "1") {
+		$graph_policy_text = "Select the graphs you want to <strong>DENY</strong> this user from.";
+	} elseif ($graph_policy == "2") {
+		$graph_policy_text = "Select the graphs you want <strong>ALLOW</strong> this user to view.";
+	}
+	
+	$graphs = db_fetch_assoc("select 
+		ag.UserID,
+		g.ID, g.Title 
+		from rrd_graph g
+		left join auth_graph ag on (g.id=ag.graphid and ag.userid=$id) 
+		order by g.title");
+	$rows = sizeof($graphs);
+	
+	?>
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C"><?print $graph_policy_text;?></td>
+	</tr>
+	
+	<td colspan="2" width="100%">
+		<table width="100%">
+			<tr>
+				<td align="top" width="50%">
+	<?
+	
+	if (sizeof($graphs) > 0) {
+		foreach ($graphs as $graph) {
+		    if ($graph[UserID] == "") {
+			$old_value = "";
+		    }else{
+			$old_value = "on";
+		    }
+		    
+		    $column1 = floor(($rows / 2) + ($rows % 2));
+		    
+		    if ($i == $column1) {
+			print "</td><td valign='top' width='50%'>";
+		    }
+				
+		    DrawStrippedFormItemCheckBox("graph".$graph[ID], $old_value, $graph[Title],"",true);
+		    
+		    $i++;
+		}
+	}
+	?>
+				</td>
+			</tr>
+		</table>
+	</td>
+    
+	<tr bgcolor="#FFFFFF">
+		 <td colspan="2" align="right" background="images/blue_line.gif">
+			<?DrawFormSaveButton("save");?>
+		</td>
+	</tr>
+	
+	<?
+	DrawFormItemHiddenIDField("ID",$args[id]);
+	DrawFormFooter();
+	
+	include_once ("include/bottom_footer.php");
+	break;
  case 'edit':
 	include_once ("include/top_header.php");
 	$title_text = "User Management [edit]";
@@ -92,6 +318,14 @@ switch ($action) {
 	}else{
 		unset($user);
 	}
+	
+	draw_user_form_select();
+	
+	?>
+	<tr>
+		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">User Configuration</td>
+	</tr>
+	<?
 	
 	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 		<td width="50%">

@@ -137,11 +137,11 @@ switch ($action) {
 		
 		draw_main_form_select();
 		
-			?>
-			<tr>
-				<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Configuration</td>
-			</tr>
-			<?
+		?>
+		<tr>
+			<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Graph Configuration</td>
+		</tr>
+		<?
 		
 		draw_graph_form_select();
 		
@@ -173,7 +173,7 @@ switch ($action) {
 				<font class="textEditTitle">Image Format</font><br>
 				The type of graph that is generated; GIF or PNG.
 			</td>
-			<?DrawFormItemDropdownFromSQL("ImageFormatID","select * from def_image_type order by Name","Name","ID",$graphs[ImageFormatID],"","1");?>
+			<?DrawFormItemDropdownFromSQL("ImageFormatID",db_fetch_assoc("select * from def_image_type order by Name"),"Name","ID",$graphs[ImageFormatID],"","1");?>
 		</tr>
 		
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>

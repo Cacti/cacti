@@ -323,31 +323,31 @@ function LoadSettingsIntoArray($user_id, $guest_account) {
     if ($user_id == "") {
 		$use_default_settings = true;
     }else{
-		if (sizeof($settings) == 0) {
+	    if (sizeof($settings) == 0) {
 		    $use_default_settings = true;
-		}
+	    }
     }
     
     if ($use_default_settings == true) {
 		/* use defaults */
-		$array_settings["preview"]["height"] = 100;
-		$array_settings["preview"]["width"] = 300;
-		$array_settings["preview"]["timespan"] = 60000;
-		$array_settings["preview"]["rraid"] = 1;
-		$array_settings["preview"]["columnnumber"] = 2;
-		$array_settings["preview"]["pagerefresh"] = 300;
-		$array_settings["list"]["listviewtype"] = 1;
-		$array_settings["hierarchical"]["viewtype"] = 1;
+		$array_settings[Height] = 100;
+		$array_settings[Width] = 300;
+		$array_settings[TimeSpan] = 60000;
+		$array_settings[RRA] = 1;
+		$array_settings[ColumnNumber] = 2;
+		$array_settings[PageRefresh] = 300;
+		$array_settings[ListViewType] = 1;
+		$array_settings[ViewType] = 1;
     }else{
-		$array_settings["preview"]["height"] = $settings[Height];
-		$array_settings["preview"]["width"] = $settings[Width];
-		$array_settings["preview"]["timespan"] = $settings[Timespan];
-		$array_settings["preview"]["rraid"] = $settings[RRAID];
-		$array_settings["preview"]["columnnumber"] = $settings[ColumnNumber];
-		$array_settings["preview"]["pagerefresh"] = $settings[PageRefresh];
-		$array_settings["list"]["listviewtype"] = $settings[ListViewType];
-		$array_settings["hierarchical"]["viewtype"] = $settings[ViewType];
-		$array_settings["hierarchical"]["treeid"] = $settings[TreeID];
+		$array_settings[Height] = $settings[Height];
+		$array_settings[Width] = $settings[Width];
+		$array_settings[TimeSpan] = $settings[Timespan];
+		$array_settings[RRA] = $settings[RRAID];
+		$array_settings[ColumnNumber] = $settings[ColumnNumber];
+		$array_settings[PageRefresh] = $settings[PageRefresh];
+		$array_settings[ListViewType] = $settings[ListViewType];
+		$array_settings[ViewType] = $settings[ViewType];
+		$array_settings[TreeID] = $settings[TreeID];
     }
     
     return $array_settings;
