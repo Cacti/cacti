@@ -61,10 +61,10 @@ $last_host = 0;
 // Obtain some defaults from the database
 $poller = read_config_option("poller_type");
 $max_threads = read_config_option("max_threads");
-// End Initialization Section
 
-// Initialize poller_time database
+// Initialize poller_time and poller_output tables
 db_execute("truncate table poller_time");
+db_execute("truncate table poller_output");
 
 // Enter Mainline Processing
 if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "on")) {
@@ -129,13 +129,15 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$polling_items = db_fetch_assoc("select poller_id, end_time from poller_time where poller_id = 0");
 
 		if (sizeof($polling_items) == $process_file_number) {
+			// write rrdtool output for all result rows
+//			$results = db_fetch_assoc("select local_data_id, rrd_name, rrd_path, output " .
+//								"from poller_item inner join poller_output where local_data_id = local_data_id order by local_data_id");
+//			rrdtool_function_update($results);
+// Ian this one is beyond me for tonight...
+
 			/* take time and log performance data */
 			list($micro,$seconds) = split(" ", microtime());
 			$end = $seconds + $micro;
-
-//			$result = db_fetch_assoc("select Max(end_time) as end_timer from poller_time where poller_id = 0");
-//			$end_time = date("01.4f s",$result[0]["end_timer"]);
-//			$end_time = date("01.4f s");
 
 			if (read_config_option("log_pstats") == "on") {
 				log_data(sprintf("STATS: " .
