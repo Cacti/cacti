@@ -99,6 +99,8 @@ case 'preview':
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
 	$param_graph_start = "";
 	$param_graph_end = "";
+	$date1 = "";
+	$date2 = "";
 
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_preview"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
@@ -112,6 +114,8 @@ case 'preview':
 	load_current_session_value("host_id", "sess_graph_view_host", "0");
 	load_current_session_value("filter", "sess_graph_view_filter", "");
 	load_current_session_value("page", "sess_graph_view_current_page", "1");
+	load_current_session_value("predefined_timespan", "sess_current_timespan", read_graph_config_option("default_timespan"));
+	load_current_session_value("defaultTimeSpan", "sess_default_timespan", read_graph_config_option("timespan"));
 
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
@@ -167,14 +171,15 @@ case 'preview':
 		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 
-	/* Include time span selector */
-	html_graph_start_box(3, true);
-	include("./include/html/inc_timespan_selector.php");
-	format_timespan($param_graph_start, $param_graph_end);
-
-	html_graph_start_box(3, true);
-
+	/* include graph view filter selector */
+	html_graph_start_box(3, false);
 	include("./include/html/inc_graph_view_filter_table.php");
+
+	/* include time span selector */
+	html_graph_start_box(3, false);
+	timespan_format($param_graph_start, $param_graph_end, $date1, $date2);
+	include("./include/html/inc_timespan_selector.php");
+	timespan_inject_dates($date1, $date2);
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {

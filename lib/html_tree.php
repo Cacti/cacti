@@ -394,6 +394,7 @@ function grow_dhtml_trees() {
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	global $current_user, $colors, $config;
 
+	include($config["include_path"] . "/config_arrays.php");
 	include_once($config["library_path"] . "/data_query.php");
 	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/html_utility.php");
@@ -452,11 +453,19 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = "-> "; }
 
 	print "<table width='98%' align='center' cellpadding='3'>";
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='3' class='textHeaderDark'>$title</td></tr>";
 
-	/* Include time span selector */
-	include_once($config["include_path"] . "/html/inc_timespan_selector.php");
-	format_timespan($param_graph_start, $param_graph_end);
+	/* include time span selector */
+	load_current_session_value("predefined_timespan", "sess_current_timespan", read_graph_config_option("default_timespan"));
+
+	/* include time span selector */
+	html_graph_start_box(3, false);
+	timespan_format($param_graph_start, $param_graph_end, $date1, $date2);
+	include("./include/html/inc_timespan_selector.php");
+	timespan_inject_dates($date1, $date2);
+
+	/* start graph display */
+	html_graph_start_box(3, false);
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='3' class='textHeaderDark'>$title</td></tr>";
 
 	if ($leaf_type == "header") {
 		$heirarchy = db_fetch_assoc("select

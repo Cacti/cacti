@@ -80,4 +80,25 @@ define("HOST_DOWN", 1);
 define("HOST_RECOVERING", 2);
 define("HOST_UP", 3);
 
+define("GT_CUSTOM", 0);
+define("GT_LAST_HALF_HOUR", 1);
+define("GT_LAST_HOUR", 2);
+define("GT_LAST_2_HOURS", 3);
+define("GT_LAST_4_HOURS", 4);
+define("GT_LAST_6_HOURS", 5);
+define("GT_LAST_12_HOURS", 6);
+define("GT_LAST_DAY", 7);
+define("GT_LAST_2_DAYS", 8);
+define("GT_LAST_3_DAYS", 9);
+define("GT_LAST_4_DAYS", 10);
+define("GT_LAST_WEEK", 11);
+define("GT_LAST_2_WEEKS", 12);
+define("GT_LAST_MONTH", 13);
+define("GT_LAST_2_MONTHS", 14);
+define("GT_LAST_3_MONTHS", 15);
+define("GT_LAST_4_MONTHS", 16);
+define("GT_LAST_6_MONTHS", 17);
+define("GT_LAST_YEAR", 18);
+define("GT_LAST_2_YEARS", 19);
+
 ?>

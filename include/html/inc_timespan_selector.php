@@ -56,7 +56,7 @@
    </script>
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="timespan_selector" method="post">
+		<form name="form_timespan_selector" method="post">
 		<td>
 			<table>
 				<tr>
@@ -64,28 +64,15 @@
 						Presets:&nbsp;
 					</td>
 					<td>
-						<select name='predefined_timespan'>
-							<option value='No Preset' selected>No Preset
-							<option value='Default'>Default
-							<option value='Last Half Hour'>Last Half Hour
-							<option value='Last Hour'>Last Hour
-							<option value='Last 2 Hours'>Last 2 Hours
-							<option value='Last 4 Hours'>Last 4 Hours
-							<option value='Last 6 Hours'>Last 6 Hours
-							<option value='Last 12 Hours'>Last 12 Hours
-							<option value='Last Day'>Last Day
-							<option value='Last 2 Days'>Last 2 Days
-							<option value='Last 3 Days'>Last 3 Days
-							<option value='Last 4 Days'>Last 4 Days
-							<option value='Last Week'>Last Week
-							<option value='Last 2 Weeks'>Last 2 Weeks
-							<option value='Last Month'>Last Month
-							<option value='Last 2 Months'>Last 2 Months
-							<option value='Last 3 Months'>Last 3 Months
-							<option value='Last 4 Months'>Last 4 Months
-							<option value='Last 6 Months'>Last 6 Months
-							<option value='Last Year'>Last Year
-							<option value='Last 2 Years'>Last 2 Years
+						<select name='predefined_timespan' onChange="window.location=document.form_timespan_selector.predefined_timespan.options[document.form_timespan_selector.predefined_timespan.selectedIndex].value">
+						<?php
+						if (sizeof($graph_timespans) > 0) {
+							$value = 0;
+							for ($value=0; $value < sizeof($graph_timespans); $value++) {
+								print "<option value='" . $_SESSION['sess_graph_view_url_cache'] . "&predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+							}
+						}
+						?>
 						</select>
 					</td>
 					<td class="textHeader">

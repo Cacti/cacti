@@ -366,27 +366,26 @@ $host_struc = array(
 	);
 
 $graph_timespans = array(
-	"No Preset" => "No Preset",
-	"Default" => "Default",
-	"Last Half Hour"=> "Last Half Hour",
-	"Last Hour"=> "Last Hour",
-	"Last 2 Hours"=> "Last 2 Hours",
-	"Last 4 Hours"=> "Last 4 Hours",
-	"Last 6 Hours"=>"Last 6 Hours",
-	"Last 12 Hours"=>"Last 12 Hours",
-	"Last Day"=>"Last Day",
-	"Last 2 Days"=>"Last 2 Days",
-	"Last 3 Days"=>"Last 3 Days",
-	"Last 4 Days"=>"Last 4 Days",
-	"Last Week"=>"Last Week",
-	"Last 2 Weeks"=>"Last 2 Weeks",
-	"Last Month"=>"Last Month",
-	"Last 2 Months"=>"Last 2 Months",
-	"Last 3 Months"=>"Last 3 Months",
-	"Last 4 Months"=>"Last 4 Months",
-	"Last 6 Months"=>"Last 6 Months",
-	"Last Year"=>"Last Year",
-	"Last 2 Years"=>"Last 2 Years"
-)
+	GT_CUSTOM  => "Custom",
+	GT_LAST_HALF_HOUR => "Last Half Hour",
+	GT_LAST_HOUR => "Last Hour",
+	GT_LAST_2_HOURS => "Last 2 Hours",
+	GT_LAST_4_HOURS => "Last 4 Hours",
+	GT_LAST_6_HOURS =>"Last 6 Hours",
+	GT_LAST_12_HOURS =>"Last 12 Hours",
+	GT_LAST_DAY =>"Last Day",
+	GT_LAST_2_DAYS =>"Last 2 Days",
+	GT_LAST_3_DAYS =>"Last 3 Days",
+	GT_LAST_4_DAYS =>"Last 4 Days",
+	GT_LAST_WEEK =>"Last Week",
+	GT_LAST_2_WEEKS =>"Last 2 Weeks",
+	GT_LAST_MONTH =>"Last Month",
+	GT_LAST_2_MONTHS =>"Last 2 Months",
+	GT_LAST_3_MONTHS =>"Last 3 Months",
+	GT_LAST_4_MONTHS =>"Last 4 Months",
+	GT_LAST_6_MONTHS =>"Last 6 Months",
+	GT_LAST_YEAR =>"Last Year",
+	GT_LAST_2_YEARS =>"Last 2 Years"
+	);
 
 ?>
