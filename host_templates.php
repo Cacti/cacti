@@ -235,8 +235,8 @@ function template_edit() {
 	
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="30%">
-			<font class="textEditTitle">Associated SNMP Queries</font><br>
-			Select one or more SNMP queries to associate with this host template.
+			<font class="textEditTitle">Associated Data Queries</font><br>
+			Select one or more data queries to associate with this host template.
 		</td>
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
