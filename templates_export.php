@@ -50,17 +50,7 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_export"])) {
-		$xml_data = "";
-		
-		if ($_POST["export_type"] == "graph_template") {
-			$xml_data = graph_template_to_xml($_POST["export_item_id"]);
-		}elseif ($_POST["export_type"] == "data_template") {
-			$xml_data = data_template_to_xml($_POST["export_item_id"]);
-		}elseif ($_POST["export_type"] == "host_template") {
-			//$xml_data = graph_template_to_xml($_POST["export_item_id"]);
-		}elseif ($_POST["export_type"] == "data_query") {
-			$xml_data = data_query_to_xml($_POST["export_item_id"]);
-		}
+		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
 		
 		if ($_POST["output_format"] == "1") {
 			include_once("./include/top_header.php");
