@@ -308,7 +308,7 @@ function DrawConfirmForm($title_text, $body_text, $cancel_url, $action_url) { ?>
 				<td bgcolor="#B61D22" colspan="10">
 					<table width="100%" cellpadding="3" cellspacing="0">
 						<tr>
-							<td bgcolor="#B61D22" class="textHeaderDark"><?print $title_text;?></td>
+							<td bgcolor="#B61D22" class="textHeaderDark"><strong><?print $title_text;?></strong></td>
 						</tr>
 						<?
 						DrawFormArea($body_text);
