@@ -71,7 +71,7 @@ void *poller(){
 
     printf("management_ip: %s target_id: %i result: %lli\n",entry->management_ip, entry->target_id, entry->result);
 
-    if(current_head==0 && entry->local_data_id == current->local_data_id){
+    if(/*current_head==0 && */entry->local_data_id == current->local_data_id){
       printf("Multi DS RRA\n");
       if(entry->local_data_id != current_local_data_id){
         printf("New MultiDS: %i\n", entry->local_data_id);
@@ -99,7 +99,8 @@ void *poller(){
       current_local_data_id=0;
     } else if(entry->action==2){
       printf("String result\n");
-      sprintf(rrd_targets[rrd_target_counter].rrdcmd, "%s", rrdcmd_string(entry->rrd_path, entry->stringresult));
+      printf("ldid: %i\n", entry->local_data_id);
+      sprintf(rrd_targets[rrd_target_counter].rrdcmd, "%s", rrdcmd_string(entry->rrd_path, entry->stringresult, entry->local_data_id));
       rrd_target_counter++;
     } else {
       printf("Single DS RRA\n");
