@@ -101,7 +101,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 			if (sizeof($snmp_queries) > 0) {
 			foreach ($snmp_queries as $snmp_query) {
-				db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $snmp_query["snmp_query_id"] . ")");
+				db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values ($host_id," . $snmp_query["snmp_query_id"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
 
 				/* recache snmp data */
 				run_data_query($host_id, $snmp_query["snmp_query_id"]);
