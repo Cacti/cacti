@@ -158,8 +158,10 @@ function template_remove() {
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
 		db_execute("delete from host_template where id=" . $_GET["id"]);
 		db_execute("delete from host_template_snmp_query where host_template_id=" . $_GET["id"]);
-		db_execute("delete from host_template_graph_template where host_template_id=" . $_GET["id"]);
-		db_execute("delete from host_template_data_template where host_template_id=" . $_GET["id"]);
+		db_execute("delete from host_template_data_sv where host_template_id=" . $_GET["id"]);
+		db_execute("delete from host_template_graph where host_template_id=" . $_GET["id"]);
+		db_execute("delete from host_template_graph_sv where host_template_id=" . $_GET["id"]);
+		db_execute("delete from host_template_snmp_query where host_template_id=" . $_GET["id"]);
 	}
 }
 

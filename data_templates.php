@@ -240,6 +240,9 @@ function form_actions() {
 			
 			db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
 			db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+			db_execute("delete from host_template_data_sv where " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("delete from snmp_query_graph_rrd where " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("delete from snmp_query_graph_rrd_sv where " . array_to_sql_or($selected_items, "data_template_id"));
 			db_execute("delete from data_template where " . array_to_sql_or($selected_items, "id"));
 			
 			/* "undo" any graph that is currently using this template */
