@@ -491,7 +491,7 @@ function grow_polling_tree($start_branch, $user_id, $options) {
 			print "<tr bgcolor='#$colors[light]'>\n";
 			print "<td bgcolor='#$colors[panel]' align='center' width='1' valign='top'></td>";
 			print "<td colspan=" . ($colspan+1) . " NOWRAP>";
-			start_pagebox("<strong>Data Sources for '$leaf[hostname]'</strong>", "100%", "bbbbbb", "3", "center", "data_sources.php?action=edit&host_id=$leaf[host_id]");
+			start_pagebox("<strong>Data Sources for '$leaf[hostname]'</strong>", "100%", "bbbbbb", "3", "center", "data_sources.php?action=ds_edit&host_id=$leaf[host_id]");
 			
 			$i = 0;
 			if (sizeof($hosts) > 0) {
