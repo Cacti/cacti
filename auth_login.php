@@ -45,7 +45,6 @@ case 'login':
 				$ldap_auth = true;
 				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $_POST["username"] . "' and realm = 1")) == 0) {
 					/* copy template user's settings */
-					include_once("./lib/auth.php");
 					user_copy(read_config_option("ldap_template"), $_POST["username"], 1);
 				}
 			}

@@ -27,6 +27,7 @@
 include("./include/auth.php");
 include_once("./lib/utility.php");
 include_once("./lib/snmp.php");
+include_once("./lib/data_query.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

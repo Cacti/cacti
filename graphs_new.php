@@ -25,7 +25,7 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/snmp.php");
+include_once("./lib/data_query.php");
 include_once("./lib/utility.php");
 include_once("./lib/template.php");
 
