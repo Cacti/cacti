@@ -742,7 +742,7 @@ CREATE TABLE data_template_rrd (
 
 
 INSERT INTO data_template_rrd VALUES (1,0,0,1,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
-INSERT INTO data_template_rrd VALUES (2,0,0,2,'',100000000,'',0,'',600,'',2,'','traffic_out','',0);
+INSERT INTO data_template_rrd VALUES (2,0,0,2,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
 INSERT INTO data_template_rrd VALUES (3,0,0,3,'',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
 INSERT INTO data_template_rrd VALUES (4,0,0,3,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (5,0,0,4,'',100,'',0,'',600,'',2,'','cpu_system','',0);
