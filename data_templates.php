@@ -141,6 +141,11 @@ function form_save() {
 			}
 		}
 
+		/* update actual host template information for live hosts */
+		if (!is_error_message()) {
+			db_execute("update data_template_data set	data_input_id = '" . $_POST["data_input_id"] . "' where data_template_id = " . $_POST["data_template_id"] . ";");
+		}
+
 		if (!is_error_message()) {
 			$save3["data_template_id"] = $data_template_id;
 			$data_template_rrd_id = sql_save($save3, "data_template_rrd");
