@@ -571,7 +571,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			/* bandwidth summation */
 			if (preg_match_all("/\|sum:(\d|auto):(current|total):(\d):(\d+|auto)\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
-					$graph_variables[$field_name][$graph_item_id] = str_replace($matches[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_start, $seconds_between_graph_updates, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
+					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_start, $seconds_between_graph_updates, $rra["steps"], $ds_step), $graph_variables[$field_name][$graph_item_id]);
 				}
 			}
 		}
