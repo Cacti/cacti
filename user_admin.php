@@ -433,12 +433,12 @@ switch ($action) {
 	$title_text = "User Management"; $add_text = "$current_script_name?action=edit";
 	include_once ("include/top_table_header.php");
     
-	DrawMatrixRowBegin();
-		DrawMatrixHeaderItem("User Name",$colors[panel],$colors[panel_text]);
-		DrawMatrixHeaderItem("Full Name",$colors[panel],$colors[panel_text]);
-		DrawMatrixHeaderItem("Default Graph Policy",$colors[panel],$colors[panel_text]);
-	DrawMatrixRowEnd();
-    
+	print "<tr bgcolor='#$colors[header_panel]'>";
+		DrawMatrixHeaderItem("User Name",$colors[header_text],1);
+		DrawMatrixHeaderItem("Full Name",$colors[header_text],1);
+		DrawMatrixHeaderItem("Default Graph Policy",$colors[header_text],2);
+	print "</tr>";
+	
 	$user_list = db_fetch_assoc("select ID,Username,FullName,GraphPolicy from auth_users order by Username");
 	
 	foreach ($user_list as $user) {

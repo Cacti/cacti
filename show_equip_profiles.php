@@ -398,10 +398,9 @@ $title_text = "Equipment Profiles";
 		include_once ("include/top_table_header.php");
 		
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Profile Name",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("&nbsp;",$colors[panel],$colors[panel_text]);
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[panel]'>";
+			DrawMatrixHeaderItem("Profile Name",$colors[panel_text],2);
+		print "</tr>";
 		
 		$profile_list = db_fetch_assoc("select * from polling_hosts where is_profile = 1 order by descrip");
 		

@@ -461,13 +461,13 @@ switch ($action) {
 		</tr>
 		<?
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Graph Item",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Task Name",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("Graph Item Type",$colors[panel],$colors[panel_text]);
-			DrawMatrixHeaderItem("CF Type",$colors[panel],$colors[panel_text]);
-			DrawMatrixCustom("<td bgcolor=\"$colors[panel]\" colspan=\"2\"><strong>Item Color</strong></td>");
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[header_panel]'>";
+			DrawMatrixHeaderItem("Graph Item",$colors[header_text],1);
+			DrawMatrixHeaderItem("Task Name",$colors[header_text],1);
+			DrawMatrixHeaderItem("Graph Item Type",$colors[header_text],1);
+			DrawMatrixHeaderItem("CF Type",$colors[header_text],1);
+			DrawMatrixHeaderItem("Item Color",$colors[header_text],3);
+		print "</tr>";
 		
 		$allow_grouping = db_fetch_cell("select grouping from graph_templates_graph where graph_template_id=$args[graph_template_id]");
 		
@@ -592,9 +592,9 @@ switch ($action) {
 		</tr>
 		<?
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Name",$colors[panel],$colors[panel_text]);
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[header_panel]'>";
+			DrawMatrixHeaderItem("Name",$colors[header_text],2);
+		print "</tr>";
 		
 		$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=$args[graph_template_id] order by name");
 		
@@ -818,9 +818,9 @@ switch ($action) {
 		$title_text = "Graph Template Management"; $add_text = "graph_templates.php?action=template_edit";
 		include_once ("include/top_table_header.php");
 		
-		DrawMatrixRowBegin();
-			DrawMatrixHeaderItem("Template Title",$colors[panel],$colors[panel_text]);
-		DrawMatrixRowEnd();
+		print "<tr bgcolor='#$colors[header_panel]'>";
+			DrawMatrixHeaderItem("Template Title",$colors[header_text],2);
+		print "</tr>";
 		
 		$template_list = db_fetch_assoc("select id,name from graph_templates order by name");
                 if (sizeof($template_list) > 0) {

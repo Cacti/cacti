@@ -82,10 +82,11 @@ switch ($action) {
 	$title_text = "Color Management"; $add_text = "$current_script_name?action=edit";
 	include_once ("include/top_table_header.php");
 	
-	DrawMatrixRowBegin();
-		DrawMatrixHeaderItem("Hex Value",$colors[panel],$colors[panel_text]);
-		DrawMatrixHeaderItem("Color",$colors[panel],$$colors[panel_text]);
-	DrawMatrixRowEnd();
+	print "<tr bgcolor='#$colors[header_panel]'>";
+		DrawMatrixHeaderItem("Hex Value",$colors[header_text],1);
+		DrawMatrixHeaderItem("Color",$colors[header_text],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+	print "</tr>";
     
 	$color_list = db_fetch_assoc("select * from def_colors order by hex");
 	$rows = sizeof($color_list);

@@ -133,11 +133,11 @@ switch ($action) {
 	$title_text = "Round Robin Archive Management"; $add_text = "$current_script_name?action=edit";
 	include_once ("include/top_table_header.php");
 	
-	DrawMatrixRowBegin();
-		DrawMatrixHeaderItem("Name",$colors[panel],$colors[panel_text]);
-		DrawMatrixHeaderItem("Steps",$colors[panel],$$colors[panel_text]);
-		DrawMatrixHeaderItem("Rows",$colors[panel],$$colors[panel_text]);
-	DrawMatrixRowEnd();
+	print "<tr bgcolor='#$colors[header_panel]'>";
+		DrawMatrixHeaderItem("Name",$colors[header_text],1);
+		DrawMatrixHeaderItem("Steps",$colors[header_text],1);
+		DrawMatrixHeaderItem("Rows",$colors[header_text],2);
+	print "</tr>";
     
 	$rra_list = db_fetch_assoc("select ID,Name,Rows,Steps from rrd_rra order by steps");
 	$rows = sizeof($color_list);
