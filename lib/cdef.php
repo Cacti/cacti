@@ -27,7 +27,7 @@
 /* get_cdef_item_name - resolves a single CDEF item into its text-based representation
    @arg $cdef_item_id - the id of the individual cdef item
    @returns - a text-based representation of the cdef item */
-function get_cdef_item_name($cdef_item_id) {
+function get_cdef_item_name($cdef_item_id) 	{
 	global $config;
 	
 	include($config["include_path"] . "/config_arrays.php");
@@ -60,7 +60,7 @@ function get_cdef($cdef_id) {
 		}
 		
 		if ($cdef_item["type"] == 5) {
-			$current_cdef_id = $cdef_item[value];
+			$current_cdef_id = $cdef_item["value"];
 			$cdef_string .= "(" . get_cdef($current_cdef_id) . ")";
 		}else{
 			$cdef_string .= get_cdef_item_name($cdef_item["id"]);
