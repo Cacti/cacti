@@ -177,7 +177,8 @@ class Net_Ping
 				$this->host["snmp_username"],
 				$this->host["snmp_password"],
 				$this->host["snmp_port"],
-				$this->host["snmp_timeout"]);
+				$this->host["snmp_timeout"],
+				SNMP_CMDPHP);
 
 			/* determine total time +- ~10% */
 			$this->time = $this->get_time($this->precision);

@@ -113,4 +113,8 @@ define("GD_Y_MN_D", 5);
 define("GDC_HYPHEN", 0);
 define("GDC_SLASH", 1);
 
+define("SNMP_POLLER", 0);
+define("SNMP_CMDPHP", 1);
+define("SNMP_WEBUI", 2);
+
 ?>

@@ -35,13 +35,17 @@ if ($config["cacti_server_os"] == "unix") {
 	define("SNMP_ESCAPE_CHARACTER", "\"");
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500) {
+function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500, $environ = SNMP_POLLER) {
 	global $config;
 
 	$retries = read_config_option("snmp_retries");
 	if ($retries == "") $retries = 3;
+	if (($environ != SNMP_POLLER) && ($environ != SNMP_WEBUI) && ($environ != SNMP_CMDPHP)) {
+		$environ = SNMP_POLLER;
+	}
 
-	if (($config["php_snmp_support"] == true) && ($version == "1")) {
+	if (($config["php_snmp_support"] == true) &&
+		(($version == "1") || (($version == "2") && ($environ == SNMP_WEBUI)))) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -75,7 +79,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500, $environ = SNMP_POLLER) {
 	global $config;
 
 	$snmp_array = array();
@@ -84,7 +88,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$retries = read_config_option("snmp_retries");
 	if ($retries == "") $retries = 3;
 
-	if (($config["php_snmp_support"] == true) && ($version == "1")) {
+	if (($environ != SNMP_POLLER) && ($environ != SNMP_WEBUI) && ($environ != SNMP_CMDPHP)) {
+		$environ = SNMP_POLLER;
+	}
+
+	if (($config["php_snmp_support"] == true) &&
+		(($version == "1") || (($version == "2") && ($environ == SNMP_WEBUI)))) {
 		$temp_array = @snmpwalkoid("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
 
 		$o = 0;
