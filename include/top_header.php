@@ -29,8 +29,6 @@
 	<title>cacti</title>
 	<link href="include/main.css" rel="stylesheet">
 </style>
-	<?include_once("include/js_popup.inc");?>
-	<script language="javascript" src="include/dom-drag.js"></script>
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="startup();">
