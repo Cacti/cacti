@@ -579,14 +579,22 @@ function data_query_edit() {
 function data_query() {
 	global $colors;
 
-	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
+	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "4", "center", "data_queries.php?action=edit");
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Data Input Method",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
 
-	$snmp_queries = db_fetch_assoc("select id,name from snmp_query order by name");
+//	$snmp_queries = db_fetch_assoc("select id,name,data_input_id from snmp_query order by name");
+
+	$snmp_queries = db_fetch_assoc("SELECT
+			snmp_query.id,
+			snmp_query.name,
+			data_input.name AS data_input_method
+			FROM snmp_query INNER JOIN data_input ON snmp_query.data_input_id = data_input.id
+			ORDER BY snmp_query.name");
 
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
@@ -595,6 +603,9 @@ function data_query() {
 			?>
 			<td>
 				<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
+			</td>
+			<td>
+				<?php print $snmp_query["data_input_method"]; ?>
 			</td>
 			<td align="right">
 				<a href="data_queries.php?action=remove&id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>

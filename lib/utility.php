@@ -60,8 +60,8 @@ function update_poller_cache($local_data_id) {
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 		 ($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
-		 ($data_input["type_id"] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) ||
-		 ($data_input["type_id"] == DATA_INPUT_TYPE_PHP_SCRIPT_QUERY_SERVER)){
+		 ($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_SERVER) ||
+		 ($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
 		if (empty($field)) { return; }
@@ -143,7 +143,7 @@ function update_poller_cache($local_data_id) {
 			}
 
 			break;
-		case DATA_INPUT_TYPE_PHP_SCRIPT_SERVER: /* php script server */
+		case DATA_INPUT_TYPE_SCRIPT_SERVER: /* php script server */
 			$script_queries = get_data_query_array($query["snmp_query_id"]);
 
 			$action = 2;
@@ -164,7 +164,7 @@ function update_poller_cache($local_data_id) {
 			}
 
 			break;
-		case DATA_INPUT_TYPE_PHP_SCRIPT_QUERY_SERVER: /* php script server query */
+		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER: /* php script server query */
 			$script_queries = get_data_query_array($query["snmp_query_id"]);
 
 			$action = 2;

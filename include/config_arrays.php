@@ -88,10 +88,8 @@ $input_types = array(
 	DATA_INPUT_TYPE_SNMP_QUERY => "SNMP Query",
 	DATA_INPUT_TYPE_SCRIPT => "Script/Command",  // Action 1:
 	DATA_INPUT_TYPE_SCRIPT_QUERY => "Script Query", // Action 1:
-	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER => "Script - PHP Script Server",
-//	DATA_INPUT_TYPE_PERL_SCRIPT_SERVER => "Script - Perl Script Server",
-	DATA_INPUT_TYPE_PHP_SCRIPT_QUERY_SERVER => "Script Query - PHP Script Server"
-//	DATA_INPUT_TYPE_PERL_SCRIPT_QUERY_SERVER => "Script Query - Perl Script Server"
+	DATA_INPUT_TYPE_SCRIPT_SERVER => "Script - Script Server",
+	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => "Script Query - Script Server"
 	);
 
 $snmp_query_field_actions = array(1 =>
