@@ -63,7 +63,7 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 			<li>Brady Alleman, creator of NetMRG and 
 				<a href="http://www.thtech.net">Treehouse Technolgies</a> for questions and ideas. Just
 				as a note, NetMRG is a complete Network Monitoring solution also written in PHP/MySQL. His
-				product also makes use of rrdtool's graphing capabilities, I encourage you to check it out.</li>
+				product also makes use of RRDTool's graphing capabilities, I encourage you to check it out.</li>
 		</ul>
 		</p>
 		
