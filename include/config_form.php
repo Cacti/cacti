@@ -686,6 +686,7 @@ $fields_host_edit = array(
 		"description" => "Fill in the SNMP read community for this device.",
 		"value" => "|arg1:snmp_community|",
 		"default" => "public",
+		"form_id" => "|arg1:id|",
 		"max_length" => "100",
 		),
 	"snmp_username" => array(
