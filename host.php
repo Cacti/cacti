@@ -43,7 +43,7 @@ switch ($action) {
 	case 'remove':
 		host_remove();
 		
-		header ("Location: host_templates.php");
+		header ("Location: host.php");
 		break;
 	case 'edit':
 		include_once ("include/top_header.php");
