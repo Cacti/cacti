@@ -29,7 +29,7 @@ include("../include/config.php");
 /* allow the upgrade script to run for as long as it needs to */
 ini_set("max_execution_time", "0");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b", "0.8.6c");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -113,7 +113,11 @@ if ($config["cacti_server_os"] == "unix") {
 		$input["path_php_binary"]["default"] = "/usr/bin/php";
 	}
 }elseif ($config["cacti_server_os"] == "win32") {
-	$input["path_php_binary"]["default"] = "c:/php/php.exe";
+	if (strlen(read_config_option("path_php_binary"))) {
+		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
+	} else {
+		$input["path_php_binary"]["default"] = "c:/php/php.exe";
+	}
 }
 
 /* snmpwalk Binary Path */
@@ -129,6 +133,8 @@ if ($config["cacti_server_os"] == "unix") {
 	}else{
 		$input["path_snmpwalk"]["default"] = "/usr/local/bin/snmpwalk";
 	}
+}elseif ($config["cacti_server_os"] == "win32") {
+	$input["path_snmpwalk"]["default"] = "c:/net-snmp/bin/snmpwalk.exe";
 }
 
 /* snmpget Binary Path */
@@ -144,12 +150,18 @@ if ($config["cacti_server_os"] == "unix") {
 	}else{
 		$input["path_snmpget"]["default"] = "/usr/local/bin/snmpget";
 	}
+}elseif ($config["cacti_server_os"] == "win32") {
+	$input["path_snmpget"]["default"] = "c:/net-snmp/bin/snmpget.exe";
 }
 
 /* log file path */
 $input["path_cactilog"] = $settings["path"]["path_cactilog"];
 $input["path_cactilog"]["description"] = "The path to your Cacti log file.";
-$input["path_cactilog"]["default"] = $config["base_path"] . "/log/cacti.log";
+if (strlen(read_config_option("path_cactilog"))) {
+	$input["path_cactilog"]["default"] = read_config_option("path_cactilog");
+} else {
+	$input["path_cactilog"]["default"] = $config["base_path"] . "/log/cacti.log";
+}
 
 /* SNMP Version */
 if ($config["cacti_server_os"] == "unix") {
@@ -251,25 +263,19 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.5") {
 			include ("0_8_4_to_0_8_5.php");
 			upgrade_to_0_8_5();
-		}elseif ($cacti_versions[$i] == "0.8.5a") {
-			/* no database upgrades for 0.8.5 -> 0.8.5a */
 		}elseif ($cacti_versions[$i] == "0.8.6") {
 			include ("0_8_5a_to_0_8_6.php");
 			upgrade_to_0_8_6();
 		}elseif ($cacti_versions[$i] == "0.8.6a") {
 			include ("0_8_6_to_0_8_6a.php");
 			upgrade_to_0_8_6a();
-
-			if ($old_cacti_version == "0.8.6") {
-				/* no database upgrades for 0.8.6 -> 0.8.6a */
-				$_REQUEST["step"] = "3";
-			}
-		}elseif ($cacti_versions[$i] == "0.8.6b") {
-			if ($old_cacti_version == "0.8.6a") {
-				/* no database upgrades for 0.8.6a -> 0.8.6b */
-				$_REQUEST["step"] = "3";
-			}
 		}
+	}
+
+	/* there are no (visible) database changes between these version(s) and the current version.
+	 * that means we can skip the "upgrade results" page altogether */
+	if (($old_cacti_version == "0.8.6") || ($old_cacti_version == "0.8.6a") || ($old_cacti_version == "0.8.6b")) {
+		$_REQUEST["step"] = "3";
 	}
 }
 
