@@ -72,8 +72,7 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_data_input"])) {
-		data_save();
-		return "data_input.php";
+		return data_save();
 	}elseif (isset($_POST["save_component_field"])) {
 		field_save();
 		return "data_input.php?action=edit&id=" . $_POST["data_input_id"];
@@ -149,8 +148,6 @@ function field_edit() {
 	
 	if (isset($_GET["id"])) {
 		$field = db_fetch_row("select * from data_input_fields where id=" . $_GET["id"]);
-	}else{
-		unset($field);
 	}
 	
 	if (!empty($_GET["type"])) {
@@ -165,7 +162,7 @@ function field_edit() {
 		$header_name = "Input";
 	}
 	
-	$data_input_type = db_fetch_cell("select type_id from data_input where id=" . $_GET["data_input_id"]);
+	$data_input = db_fetch_row("select type_id,name from data_input where id=" . $_GET["data_input_id"]);
 	
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select $current_field_type" . "put_string from data_input where id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches)) {
@@ -177,13 +174,13 @@ function field_edit() {
 		}
 	}
 	
-	start_box("<strong>$header_name Fields</strong> [edit]", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="data_input.php">
 	
 	<?
-	if ($data_input_type == "1") { /* script */
+	if ($data_input["type_id"] == "1") { /* script */
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field [<?print $header_name;?>]</font><br>
@@ -191,7 +188,7 @@ function field_edit() {
 			</td>
 			<?DrawFormItemDropdownFromSQL("data_name",$array_field_names,"","",$field["data_name"],"","");?>
 		</tr><?
-	}elseif (($data_input_type == "2") || ($data_input_type == "3")) { /* snmp */
+	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3")) { /* snmp */
 		DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field Name [<?print $header_name;?>]</font><br>
@@ -303,7 +300,7 @@ function data_save() {
 	$save["output_string"] = $_POST["output_string"];
 	$save["type_id"] = $_POST["type_id"];
 	
-	sql_save($save, "data_input");
+	$data_input_id = sql_save($save, "data_input");
 	
 	/* get a list of each field so we can note their sequence of occurance in the database */
 	if (!empty($_POST["id"])) {
@@ -328,19 +325,24 @@ function data_save() {
 		}
 	}
 	
-	
+	if (empty($_POST["id"])) {
+		return "data_input.php?action=edit&id=$data_input_id";
+	}else{
+		return "data_input.php";
+	}
 }
 
 function data_edit() {
 	global $colors, $input_types;
 	
-	start_box("<strong>Data Input Methods</strong> [edit]", "98%", $colors["header"], "3", "center", "");
-	
 	if (isset($_GET["id"])) {
 		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $data_input["name"] . "]";
 	}else{
-		unset($data_input);
+		$header_label = "[new]";
 	}
+	
+	start_box("<strong>Data Input Methods</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="data_input.php">
@@ -382,7 +384,7 @@ function data_edit() {
 	end_box();
 	
 	if (!empty($_GET["id"])) {
-		start_box("Input Fields", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		start_box("<strong>Input Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
@@ -415,7 +417,7 @@ function data_edit() {
 		}
 		end_box();
 		
-		start_box("Output Fields", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
+		start_box("<strong>Output Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
@@ -492,6 +494,8 @@ function data() {
 		</tr>
 	<?
 	}
+	}else{
+		print "<tr><td><em>No Data Input Methods</em></td></tr>";
 	}
 	end_box();	
 }
