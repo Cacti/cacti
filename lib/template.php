@@ -488,12 +488,18 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	<graph_title> will be substituted for the current graph title */
 function graph_to_graph_template($local_graph_id, $graph_title) {
 	/* create a new graph template entry */
-	db_execute("insert into graph_templates (id,name) values (0,'" . str_replace("<graph_title>", db_fetch_cell("select title from graph_templates_graph where local_graph_id=$local_graph_id"), $graph_title) . "')");
+	db_execute("insert into graph_templates (id,name,hash) values (0,'" . str_replace("<graph_title>", db_fetch_cell("select title from graph_templates_graph where local_graph_id=$local_graph_id"), $graph_title) . "','" . get_hash_graph_template(0) . "')");
 	$graph_template_id = db_fetch_insert_id();
 
 	/* update graph to point to the new template */
 	db_execute("update graph_templates_graph set local_graph_id=0,local_graph_template_graph_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
-	db_execute("update graph_templates_item set local_graph_id=0,local_graph_template_item_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	db_execute("update graph_templates_item set local_graph_id=0,local_graph_template_item_id=0,graph_template_id=$graph_template_id,task_item_id=0 where local_graph_id=$local_graph_id");
+
+	/* create hashes for the graph template items */
+	$items = db_fetch_assoc("select id from graph_templates_item where graph_template_id='$graph_template_id' and local_graph_id=0");
+	for ($j=0; $j<count($items); $j++) {
+		db_execute("update graph_templates_item set hash='" . get_hash_graph_template($items[$j]["id"], "graph_template_item") . "' where id=" . $items[$j]["id"]);
+	}
 
 	/* delete the old graph local entry */
 	db_execute("delete from graph_local where id=$local_graph_id");
@@ -506,12 +512,18 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 	<ds_title> will be substituted for the current data source title */
 function data_source_to_data_template($local_data_id, $data_source_title) {
 	/* create a new graph template entry */
-	db_execute("insert into data_template (id,name) values (0,'" . str_replace("<ds_title>", db_fetch_cell("select name from data_template_data where local_data_id=$local_data_id"), $data_source_title) . "')");
+	db_execute("insert into data_template (id,name,hash) values (0,'" . str_replace("<ds_title>", db_fetch_cell("select name from data_template_data where local_data_id=$local_data_id"), $data_source_title) . "','" .  get_hash_data_template(0) . "')");
 	$data_template_id = db_fetch_insert_id();
 
 	/* update graph to point to the new template */
 	db_execute("update data_template_data set local_data_id=0,local_data_template_data_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
-	db_execute("update data_template_rrd set local_data_id=0,local_graph_template_item_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
+	db_execute("update data_template_rrd set local_data_id=0,local_data_template_rrd_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
+
+	/* create hashes for the data template items */
+	$items = db_fetch_assoc("select id from data_template_rrd where data_template_id='$data_template_id' and local_data_id=0");
+	for ($j=0; $j<count($items); $j++) {
+		db_execute("update data_template_rrd set hash='" . get_hash_data_template($items[$j]["id"], "data_template_item") . "' where id=" . $items[$j]["id"]);
+	}
 
 	/* delete the old graph local entry */
 	db_execute("delete from data_local where id=$local_data_id");
