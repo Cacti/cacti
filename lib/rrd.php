@@ -41,6 +41,9 @@ function rrd_init() {
 	if (function_exists("proc_open")) {
 		$rrd_struc["fd"] = proc_open(read_config_option("path_rrdtool") . " -", $rrd_des, $rrd_pipes);
 		$rrd_struc["pipes"] = $rrd_pipes;
+
+		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_READ], false);
+		stream_set_blocking($rrd_struc["pipes"][RRDTOOL_PIPE_CHILD_WRITE], false);
 	}else {
 		$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
 	}
@@ -258,6 +261,10 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 		/* create the rrd if one does not already exist */
 		if (!file_exists($rrd_path)) {
 			rrdtool_function_create($rrd_fields["local_data_id"], false, $rrd_struc);
+
+			/* for some reason rrdtool will not let you update using times less than the
+			rrd create time */
+			$rrd_fields["time"] = "N";
 		}
 
 		/* default the rrdupdate time to now */
