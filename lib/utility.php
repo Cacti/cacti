@@ -574,6 +574,34 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	return true;
 }
 
+function graph_to_graph_template($local_graph_id, $graph_title) {
+	/* create a new graph template entry */
+	db_execute("insert into graph_templates (id,name) values (0,'" . str_replace("<graph_title>", db_fetch_cell("select title from graph_templates_graph where local_graph_id=$local_graph_id"), $graph_title) . "')");
+	$graph_template_id = db_fetch_insert_id();
+	
+	/* update graph to point to the new template */
+	db_execute("update graph_templates_graph set local_graph_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	db_execute("update graph_templates_item set local_graph_id=0,graph_template_id=$graph_template_id where local_graph_id=$local_graph_id");
+	
+	/* delete the old graph local entry */
+	db_execute("delete from graph_local where id=$local_graph_id");
+	db_execute("delete from graph_tree_items where local_graph_id=$local_graph_id");
+}
+
+function data_source_to_data_template($local_data_id, $data_source_title) {
+	/* create a new graph template entry */
+	db_execute("insert into data_template (id,name) values (0,'" . str_replace("<ds_title>", db_fetch_cell("select name from data_template_data where local_data_id=$local_data_id"), $data_source_title) . "')");
+	$data_template_id = db_fetch_insert_id();
+	
+	/* update graph to point to the new template */
+	db_execute("update data_template_data set local_data_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
+	db_execute("update data_template_rrd set local_data_id=0,data_template_id=$data_template_id where local_data_id=$local_data_id");
+	
+	/* delete the old graph local entry */
+	db_execute("delete from data_local where id=$local_data_id");
+	db_execute("delete from data_input_data_cache where local_data_id=$local_data_id");
+}
+
 function duplicate_graph($_local_graph_id, $graph_title) {
 	$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
 	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where local_graph_id=$_local_graph_id");
