@@ -31,7 +31,7 @@ include ("include/top_graph_header.php");
 if (isset($_GET["hide"])) {
 	if (($_GET["hide"] == "0") || ($_GET["hide"] == "1")) {
 		/* only update expand/contract info is this user has rights to keep their own settings */
-		if ($current_user["graph_settings"] == "on") {
+		if ((isset($current_user)) && ($current_user["graph_settings"] == "on")) {
 			db_execute("delete from settings_tree where graph_tree_item_id=" . $_GET["branch_id"] . " and user_id=" . $_SESSION["sess_user_id"]);
 			db_execute("insert into settings_tree (graph_tree_item_id,user_id,status) values (" . $_GET["branch_id"] . "," . $_SESSION["sess_user_id"] . "," . $_GET["hide"] . ")");
 		}
