@@ -48,7 +48,7 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		item_remove();
 		
-		header ("Location: graphs.php?action=item&local_graph_id=" . $_GET["local_graph_id"]);
+		header ("Location: graphs.php?action=item&id=" . $_GET["id"]);
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -115,8 +115,8 @@ function draw_graph_form_select($main_action) {
 				<tr>
 					<td width="1%">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graphs.php?action=graph_edit&local_graph_id=<?php print $_GET["local_graph_id"];?>"<?php if (($_GET["action"]=="") || (strstr($_GET["action"],"graph"))) {?> selected<?php }?>>Graph Configuration</option>
-							<option value="graphs.php?action=item&local_graph_id=<?php print $_GET["local_graph_id"];?>"<?php if (strstr($_GET["action"],"item")){?> selected<?php }?>>Custom Graph Item Configuration</option>
+							<option value="graphs.php?action=graph_edit&id=<?php print $_GET["id"];?>"<?php if (($_GET["action"]=="") || (strstr($_GET["action"],"graph"))) {?> selected<?php }?>>Graph Configuration</option>
+							<option value="graphs.php?action=item&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"item")){?> selected<?php }?>>Custom Graph Item Configuration</option>
 						</select>
 					</td>
 					<td>
@@ -181,7 +181,7 @@ function form_save() {
 						db_execute("update graph_local set graph_template_id=" . $_POST["_graph_template_id"] . " where id=$local_graph_id");
 						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["_graph_template_id"] . " where local_graph_id=$local_graph_id");
 						
-						header("Location: graphs.php?action=graph_diff&local_graph_id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
+						header("Location: graphs.php?action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 						exit;
 					}
 					
@@ -256,19 +256,19 @@ function form_save() {
 		}
 		
 		if (is_error_message()) {
-			header ("Location: graphs.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&local_graph_id=" . $_POST["local_graph_id"]);
+			header ("Location: graphs.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&id=" . $_POST["local_graph_id"]);
 			exit;
 		}elseif (read_config_option("full_view_graph") == "") {
-			header ("Location: graphs.php?action=item&local_graph_id=" . $_POST["local_graph_id"]);
+			header ("Location: graphs.php?action=item&id=" . $_POST["local_graph_id"]);
 			exit;
 		}elseif (read_config_option("full_view_graph") == "on") {
-			header ("Location: graphs.php?action=graph_edit&local_graph_id=" . $_POST["local_graph_id"]);
+			header ("Location: graphs.php?action=graph_edit&id=" . $_POST["local_graph_id"]);
 			exit;
 		}
 	}
 	
 	if ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_input"])) || (isset($_POST["save_component_graph_diff"]))) {
-		header ("Location: graphs.php?action=graph_edit&local_graph_id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id));
+		header ("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id));
 	}else{
 		header ("Location: graphs.php");
 	}
@@ -281,7 +281,7 @@ function form_save() {
 function item() {
 	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
 	
-	if (empty($_GET["local_graph_id"])) {
+	if (empty($_GET["id"])) {
 		$template_item_list = array();
 		
 		$header_label = "[new]";
@@ -302,22 +302,22 @@ function item() {
 			left join data_template_data on data_local.id=data_template_data.local_data_id
 			left join cdef on cdef_id=cdef.id
 			left join colors on color_id=colors.id
-			where graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
+			where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 			order by graph_templates_item.sequence");
 		
-		$header_label = "[edit: " . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "]";
+		$header_label = "[edit: " . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "]";
 	}
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["local_graph_id"]);
+		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["id"]);
 		end_box();
 	}
 	
-	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["local_graph_id"]);
+	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
 	
 	if (empty($graph_template_id)) {
-		$add_text = "graphs.php?action=item_edit&local_graph_id=" . $_GET["local_graph_id"];
+		$add_text = "graphs.php?action=item_edit&local_graph_id=" . $_GET["id"];
 	}else{
 		$add_text = "";
 	}
@@ -365,7 +365,7 @@ function item() {
 		}
 		
 		print "<td>";
-		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&graph_template_item_id=" . $item["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'>"; }
+		if (empty($graph_template_id)) { print "<a href='graphs.php?action=item_edit&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'>"; }
 		print "<strong>Item # " . ($i+1) . "</strong>";
 		if (empty($graph_template_id)) { print "</a>"; }
 		print "</td>\n";
@@ -393,9 +393,9 @@ function item() {
 		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
 		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-		print "<td><a href='graph_templates.php?action=item_movedown&graph_template_item_id=" . $item["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-		       	   <a href='graph_templates.php?action=item_moveup&graph_template_item_id=" . $item["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-		print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&graph_template_item_id=" . $item["id"] . "&local_graph_id=" . $_GET["local_graph_id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
+		print "<td><a href='graph_templates.php?action=item_movedown&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+		       	   <a href='graph_templates.php?action=item_moveup&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+		print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
 		
 		print "</tr>";
 		
@@ -422,7 +422,7 @@ function item() {
 				from graph_templates_item,graph_template_input_defs 
 				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id 
 				and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
-				and graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
+				and graph_templates_item.local_graph_id=" . $_GET["id"] . "
 				limit 0,1");
 			
 			$field_name = $item["column_name"];
@@ -445,7 +445,7 @@ function item() {
 		end_box();
 	}
 	
-	form_hidden_id("local_graph_id",$_GET["local_graph_id"]);
+	form_hidden_id("local_graph_id",$_GET["id"]);
 	form_hidden_box("save_component_input","1","");
 	
 	if ((read_config_option("full_view_graph") == "") && (sizeof($input_item_list) > 0)) {
@@ -456,13 +456,13 @@ function item() {
 function item_movedown() {
 	include_once ("include/functions.php");
 	
-	move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["local_graph_id"]);	
+	move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);	
 }
 
 function item_moveup() {
 	include_once ("include/functions.php");
 	
-	move_item_up("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["local_graph_id"]);	
+	move_item_up("graph_templates_item", $_GET["graph_template_item_id"], "local_graph_id=" . $_GET["id"]);	
 }
 
 function item_remove() {
@@ -474,7 +474,7 @@ function item_edit() {
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("Graph Template Management [edit]", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=item&local_graph_id=" . $_GET["local_graph_id"]);
+		draw_graph_form_select("?action=item&id=" . $_GET["id"]);
 		end_box();
 	}
 	
@@ -488,7 +488,7 @@ function item_edit() {
 	
 	<?php
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
-	$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence_parent DESC,sequence DESC");
+	$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["id"] . " order by sequence_parent DESC,sequence DESC");
 
 	if (sizeof($default) > 0) {
 		$default_item = $default["task_item_id"];
@@ -513,7 +513,7 @@ function item_edit() {
 		print "</tr>\n";
 	}
 	
-	form_hidden_id("local_graph_id",$_GET["local_graph_id"]);
+	form_hidden_id("local_graph_id",$_GET["id"]);
 	form_hidden_id("graph_template_item_id",(isset($template_item) ? $template_item["id"] : "0"));
 	form_hidden_id("graph_template_id",(isset($template_item) ? $template_item["graph_template_id"] : "0"));
 	form_hidden_id("sequence",(isset($template_item) ? $template_item["sequence"] : "0"));
@@ -560,7 +560,7 @@ function graph_diff() {
 	/* next, get information about the current graph so we can make the appropriate comparisons */
 	$graph_items = db_fetch_assoc("
 		$template_query
-		where graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] . "
+		where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 		order by graph_templates_item.sequence");
 	
 	$graph_template_inputs = db_fetch_assoc("select
@@ -744,26 +744,26 @@ function graph_diff() {
 	
 	<input type="hidden" name="action" value="save">
 	<input type="hidden" name="save_component_graph_diff" value="1">
-	<input type="hidden" name="local_graph_id" value="<?php print $_GET["local_graph_id"];?>">
+	<input type="hidden" name="local_graph_id" value="<?php print $_GET["id"];?>">
 	<input type="hidden" name="graph_template_id" value="<?php print $_GET["graph_template_id"];?>">
 	<?php
 	
-	form_save_button("graphs.php?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);
+	form_save_button("graphs.php?action=graph_edit&id=" . $_GET["id"]);
 }
 
 function graph_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&local_graph_id=" . $_GET["local_graph_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the graph <strong>" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["id"]) . "</strong>?", getenv("HTTP_REFERER"), "graphs.php?action=graph_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
-		db_execute("delete from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"]);
-		db_execute("delete from graph_tree_items where local_graph_id=" . $_GET["local_graph_id"]);
-		db_execute("delete from graph_local where id=" . $_GET["local_graph_id"]);
+		db_execute("delete from graph_templates_graph where local_graph_id=" . $_GET["id"]);
+		db_execute("delete from graph_templates_item where local_graph_id=" . $_GET["id"]);
+		db_execute("delete from graph_tree_items where local_graph_id=" . $_GET["id"]);
+		db_execute("delete from graph_local where id=" . $_GET["id"]);
 	}	
 }
 
@@ -772,16 +772,16 @@ function graph_edit() {
 	
 	if (read_config_option("full_view_graph") == "") {
 		start_box("<strong>Graph Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
-		draw_graph_form_select("?action=graph_edit&local_graph_id=" . $_GET["local_graph_id"]);
+		draw_graph_form_select("?action=graph_edit&id=" . $_GET["id"]);
 		end_box();
 	}
 	
 	$use_graph_template = true;
 	
-	if (!empty($_GET["local_graph_id"])) {
-		$local_graph_template_graph_id = db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
+	if (!empty($_GET["id"])) {
+		$local_graph_template_graph_id = db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=" . $_GET["id"]);
 		
-		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
+		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . $_GET["id"]);
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
 		
 		$header_label = "[edit: " . $graphs["title"] . "]";
@@ -794,7 +794,7 @@ function graph_edit() {
 		$use_graph_template = false;
 	}
 	
-	if ((read_config_option("full_view_graph") == "on") && (!empty($_GET["local_graph_id"]))) {
+	if ((read_config_option("full_view_graph") == "on") && (!empty($_GET["id"]))) {
 		item();
 	}
 	
@@ -997,7 +997,7 @@ function graph() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&local_graph_id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . $_REQUEST["filter"] . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $graph["title"]);?></a>
 			</td>
 			<td>
 				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
@@ -1006,7 +1006,7 @@ function graph() {
 				<?php print $graph["height"];?>x<?php print $graph["width"];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="graphs.php?action=graph_remove&local_graph_id=<?php print $graph["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="graphs.php?action=graph_remove&id=<?php print $graph["local_graph_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?php

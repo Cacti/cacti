@@ -205,7 +205,7 @@ function form_save() {
 	}
 	
 	if ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
-		header ("Location: data_sources.php?action=ds_edit&local_data_id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["view_rrd"]) ? $_POST["view_rrd"] : "0"));
+		header ("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["view_rrd"]) ? $_POST["view_rrd"] : "0"));
 	}else{
 		header ("Location: data_sources.php");
 	}
@@ -225,8 +225,8 @@ function draw_data_form_select($main_action) {
 				<tr>
 					<td width="1%">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?action=ds_edit&local_data_id=<?php print $_GET["local_data_id"];?>"<?php if (strstr($_GET["action"],"ds")) {?> selected<?php }?>>Data Source Configuration</option>
-							<option value="data_sources.php?action=data_edit&local_data_id=<?php print $_GET["local_data_id"];?>"<?php if (strstr($_GET["action"],"data")) {?> selected<?php }?>>Custom Data Configuration</option>
+							<option value="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"ds")) {?> selected<?php }?>>Data Source Configuration</option>
+							<option value="data_sources.php?action=data_edit&id=<?php print $_GET["id"];?>"<?php if (strstr($_GET["action"],"data")) {?> selected<?php }?>>Custom Data Configuration</option>
 						</select>
 					</td>
 					<td>
@@ -246,11 +246,11 @@ function draw_data_form_select($main_action) {
 function data_edit() {
 	global $config, $colors;
 	
-	if (!empty($_GET["local_data_id"])) {
-		$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+	if (!empty($_GET["id"])) {
+		$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where local_data_id=" . $_GET["id"]);
 		$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
 		
-		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=" . $_GET["local_data_id"]);
+		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=" . $_GET["id"]);
 		
 		$header_label = "[edit: " . $data["name"] . "]";
 	}else{
@@ -259,7 +259,7 @@ function data_edit() {
 	
 	if (read_config_option("full_view_data_source") == "") {
 		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
+		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["id"]);
 		end_box();
 	}
 	
@@ -337,7 +337,7 @@ function ds_remove() {
 		
 		start_box("<strong>Are You Sure?</strong>", "60%", "B61D22", "3", "center", "");
 		
-		form_area("Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?");
+		form_area("Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["id"]) . "'</strong>?");
 		
 		/* find out what (if any) graphs are using this data source, so we can complain to the user */
 		$graphs = db_fetch_assoc("select
@@ -345,7 +345,7 @@ function ds_remove() {
 			from data_template_rrd
 			left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
 			left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
-			where data_template_rrd.local_data_id=" . $_GET["local_data_id"] . "
+			where data_template_rrd.local_data_id=" . $_GET["id"] . "
 			and graph_templates_item.local_graph_id>0
 			and graph_templates_graph.local_graph_id>0
 			group by graph_templates_graph.title
@@ -364,7 +364,7 @@ function ds_remove() {
 			print "</td></tr>";
 		}
 		
-		form_confirm_buttons("data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"], "data_sources.php");
+		form_confirm_buttons("data_sources.php?action=ds_remove&id=" . $_GET["id"], "data_sources.php");
 		
 		end_box();
 		
@@ -373,11 +373,11 @@ function ds_remove() {
 	}
 	
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
-		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["local_data_id"]));
-		db_execute("delete from data_template_data where local_data_id=" . $_GET["local_data_id"]);
-		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["local_data_id"]);
-		db_execute("delete from data_input_data_cache where local_data_id=" . $_GET["local_data_id"]);
-		db_execute("delete from data_local where id=" . $_GET["local_data_id"]);
+		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where local_data_id=" . $_GET["id"]));
+		db_execute("delete from data_template_data where local_data_id=" . $_GET["id"]);
+		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["id"]);
+		db_execute("delete from data_input_data_cache where local_data_id=" . $_GET["id"]);
+		db_execute("delete from data_local where id=" . $_GET["id"]);
 	}
 }
 
@@ -389,13 +389,13 @@ function ds_edit() {
 	$use_data_template = true;
 	$host_id = 0;
 	
-	if (!empty($_GET["local_data_id"])) {
-		$local_data_template_data_id = db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+	if (!empty($_GET["id"])) {
+		$local_data_template_data_id = db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=" . $_GET["id"]);
 		
-		$data = db_fetch_row("select * from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+		$data = db_fetch_row("select * from data_template_data where local_data_id=" . $_GET["id"]);
 		$data_template = db_fetch_row("select * from data_template_data where id=$local_data_template_data_id");
 		
-		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["local_data_id"]);
+		$host_id = db_fetch_cell("select host_id from data_local where id=" . $_GET["id"]);
 		$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 		
 		$header_label = "[edit: " . $data["name"] . "]";
@@ -413,7 +413,7 @@ function ds_edit() {
 	
 	if (read_config_option("full_view_data_source") == "") {
 		start_box("<strong>Data Sources</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-		draw_data_form_select("?action=ds_edit&local_data_id=" . $_GET["local_data_id"]);
+		draw_data_form_select("?action=ds_edit&id=" . $_GET["id"]);
 		end_box();
 	}
 	
@@ -476,8 +476,8 @@ function ds_edit() {
 	end_box();
 	
 	/* fetch ALL rrd's for this data source */
-	if (!empty($_GET["local_data_id"])) {
-		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where local_data_id=" . $_GET["local_data_id"] . " order by data_source_name");
+	if (!empty($_GET["id"])) {
+		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where local_data_id=" . $_GET["id"] . " order by data_source_name");
 	}
 	
 	/* select the first "rrd" of this data source by default */
@@ -508,7 +508,7 @@ function ds_edit() {
 							$i++;
 							?>
 							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&local_data_id=<?php print $_GET["local_data_id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_sources.php?action=ds_edit&id=<?php print $_GET["id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 							</td>
 							<?php
 							}
@@ -645,10 +645,10 @@ function ds() {
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&local_data_id=" . $data_source["local_data_id"] . "'>" . $data_source["name"] . "</a></td>";
+		print "<td><a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "'>" . $data_source["name"] . "</a></td>";
 		print "<td>" . $data_source["data_input_name"] . "</td>";
 		print "<td>" . ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]) . "</td>";
-		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&local_data_id=" . $data_source["local_data_id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
+		print "<td width='1%' align='right'><a href='data_sources.php?action=ds_remove&id=" . $data_source["local_data_id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
 		print "</tr>";
 	}
 	}else{

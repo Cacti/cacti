@@ -36,6 +36,14 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
+	case 'rrd_add':
+		template_rrd_add();
+		
+		break;
+	case 'rrd_remove':
+		template_rrd_remove();
+		
+		break;
 	case 'template_remove':
 		template_remove();
 		
@@ -141,44 +149,46 @@ function form_save() {
 					values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
 			}
 			
-			/* push out all data source settings to child data source using this template */
-			push_out_data_source($data_template_data_id);
-			push_out_data_source_item($data_template_rrd_id);
-			
-			/* ok, first pull out all 'input' values so we know how much to save */
-			$input_fields = db_fetch_assoc("select
-				id,
-				input_output,
-				data_name 
-				from data_input_fields
-				where data_input_id=" . $_POST["data_input_id"] . "
-				and input_output='in'");
-			
-			db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
-			
-			if (sizeof($input_fields) > 0) {
-			foreach ($input_fields as $input_field) {
-				/* save the data into the 'host_template_data' table */
-				$form_value = "value_" . $input_field["data_name"];
-				$form_value = $_POST[$form_value];
+			if (!empty($_POST["data_template_id"])) {
+				/* push out all data source settings to child data source using this template */
+				push_out_data_source($data_template_data_id);
+				push_out_data_source_item($data_template_rrd_id);
 				
-				$form_is_templated_value = "t_value_" . $input_field["data_name"];
+				/* ok, first pull out all 'input' values so we know how much to save */
+				$input_fields = db_fetch_assoc("select
+					id,
+					input_output,
+					data_name 
+					from data_input_fields
+					where data_input_id=" . $_POST["data_input_id"] . "
+					and input_output='in'");
 				
-				if (isset($_POST[$form_is_templated_value])) {
-					if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
-						db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-							values (" . $input_field["id"] . ",$data_template_data_id,'" . $_POST[$form_is_templated_value] . "','$form_value')");
+				db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
+				
+				if (sizeof($input_fields) > 0) {
+				foreach ($input_fields as $input_field) {
+					/* save the data into the 'host_template_data' table */
+					$form_value = "value_" . $input_field["data_name"];
+					$form_value = $_POST[$form_value];
+					
+					$form_is_templated_value = "t_value_" . $input_field["data_name"];
+					
+					if (isset($_POST[$form_is_templated_value])) {
+						if ((!empty($form_value)) || (!empty($_POST[$form_is_templated_value]))) {
+							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
+								values (" . $input_field["id"] . ",$data_template_data_id,'" . $_POST[$form_is_templated_value] . "','$form_value')");
+						}
 					}
 				}
+				}
+				
+				/* push out all "custom data" for this data source template */
+				push_out_data_template($data_template_id);
 			}
-			}
-			
-			/* push out all "custom data" for this data source template */
-			push_out_data_template($data_template_id);
 		}
 		
 		if ((is_error_message()) || (empty($_POST["data_template_id"]))) {
-			header ("Location: data_templates.php?action=template_edit&data_template_id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id)) . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id);
+			header ("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id)) . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id);
 		}else{
 			header ("Location: data_templates.php");
 		}
@@ -192,29 +202,43 @@ function form_save() {
 function template_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["data_template_id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&data_template_id=" . $_GET["data_template_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where data_template_id=" . $_GET["data_template_id"]));
-		db_execute("delete from data_template_data where data_template_id=" . $_GET["data_template_id"] . " and local_graph_id=0");
-		db_execute("delete from data_template_rrd where data_template_id=" . $_GET["data_template_id"] . " and local_graph_id=0");
-		db_execute("delete from data_template where id=" . $_GET["data_template_id"]);
+		db_execute("delete from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where data_template_id=" . $_GET["id"]));
+		db_execute("delete from data_template_data where data_template_id=" . $_GET["id"] . " and local_graph_id=0");
+		db_execute("delete from data_template_rrd where data_template_id=" . $_GET["id"] . " and local_graph_id=0");
+		db_execute("delete from data_template where id=" . $_GET["id"]);
 		
 		/* "undo" any graph that is currently using this template */
-		db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where data_template_id=" . $_GET["data_template_id"]);
-		db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where data_template_id=" . $_GET["data_template_id"]);
+		db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where data_template_id=" . $_GET["id"]);
+		db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where data_template_id=" . $_GET["id"]);
 	}	
+}
+
+function template_rrd_remove() {
+	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
+	
+	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["data_template_id"]);
+}
+
+function template_rrd_add() {
+	db_execute("insert into data_template_rrd (data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
+		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
+	$data_template_rrd_id = db_fetch_cell("select LAST_INSERT_ID()");
+	
+	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 }
 
 function template_edit() {
 	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
 	
-	if (!empty($_GET["data_template_id"])) {
-		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["data_template_id"] . " and local_data_id=0");
-		$template = db_fetch_row("select * from data_template where id=" . $_GET["data_template_id"]);
+	if (!empty($_GET["id"])) {
+		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id=0");
+		$template = db_fetch_row("select * from data_template where id=" . $_GET["id"]);
 		
 		$header_label = "[edit: " . $template["name"] . "]";
 	}else{
@@ -263,8 +287,8 @@ function template_edit() {
 	end_box();
 	
 	/* fetch ALL rrd's for this data source */
-	if (!empty($_GET["data_template_id"])) {
-		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where data_template_id=" . $_GET["data_template_id"] . " and local_data_id=0 order by data_source_name");
+	if (!empty($_GET["id"])) {
+		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where data_template_id=" . $_GET["id"] . " and local_data_id=0 order by data_source_name");
 	}
 	
 	/* select the first "rrd" of this data source by default */
@@ -277,7 +301,16 @@ function template_edit() {
 		$template_rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
 	}
 	
-	start_box("<strong>Data Source Item</strong> [" . (isset($template_rrd) ? $template_rrd["data_source_name"] : "") . "]", "98%", $colors["header"], "3", "center", "");
+	start_box("", "98%", $colors["header"], "3", "center", "");
+	
+	print "	<tr>
+			<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark'>
+				<strong>Data Source Item</strong> [" . (isset($template_rrd) ? $template_rrd["data_source_name"] : "") . "]
+			</td>
+			<td class='textHeaderDark' align='right' bgcolor='" . $colors["header"] . "'>
+				" . (!empty($_GET["id"]) ? "<strong><a class='linkOverDark' href='data_templates.php?action=rrd_add&id=" . $_GET["id"] . "'>New</a>&nbsp;</strong>" : "") . "
+			</td>
+		</tr>\n";
 	
 	$i = 0;
 	if (isset($template_data_rrds)) {
@@ -292,7 +325,7 @@ function template_edit() {
 							$i++;
 							?>
 							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&data_template_id=<?php print $_GET["data_template_id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&id=<?php print $_GET["id"];?>&view_rrd=<?php print $template_data_rrd["id"];?>"><?php print "$i: " . $template_data_rrd["data_source_name"];?></a>&nbsp;<a href="data_templates.php?action=rrd_remove&id=<?php print $template_data_rrd["id"];?>&data_template_id=<?php print $_GET["id"];?>"><img src="images/delete_icon_dark_back.gif" width="10" height="12" border="0" alt="Delete" align="middle"></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 							</td>
 							<?php
 							}
@@ -307,6 +340,7 @@ function template_edit() {
 		}
 	}
 	
+	$i = 1;
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
@@ -322,7 +356,7 @@ function template_edit() {
 	end_box();
 	
 	$i = 0;
-	if (!empty($_GET["data_template_id"])) {
+	if (!empty($_GET["id"])) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 		
@@ -342,7 +376,7 @@ function template_edit() {
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
 				<td width="50%">
 					<strong><?php print $field["name"];?></strong><br>
-					<?php form_base_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",$_GET["data_template_id"],false);?>
+					<?php form_base_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",$_GET["id"],false);?>
 				</td>
 				<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>
 			</tr>
@@ -387,10 +421,10 @@ function template() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="data_templates.php?action=template_edit&data_template_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
+				<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="data_templates.php?action=template_remove&data_template_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="data_templates.php?action=template_remove&id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 		<?php
