@@ -62,15 +62,11 @@ case 'tree':
 	/* don't even print the table if there is not >1 tree */
 	if ((!empty($tree_dropdown_html)) && (read_graph_config_option("default_tree_view_mode") == "1")) {
 		print "
-		<br>
 		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
 			<tr>
-				<td>
-					$tree_dropdown_html
-				</td>
+				$tree_dropdown_html
 			</tr>
-		</table>\n
-		<br>";
+		</table>\n";
 	}
 	
 	if (isset($_SESSION["sess_view_tree_id"])) {
