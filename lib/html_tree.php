@@ -125,16 +125,18 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 					$rowspans[$parent_key] = 0;
 				}
 				
+				if (!isset($rowspans{$leaf["order_key"]})) {
+					$rowspans{$leaf["order_key"]} = 0;
+				}
+				
 				$rowspans[$parent_key] += ($rowspans{$leaf["order_key"]} + 1);
 			}
 		}
 	}
     	
-	//$indent = "<img src='images/gray_line.gif' width='" . ($level * $vbar_width) . "' height='1' align='middle'>&nbsp;";
-	
 	print "<!-- <P>Building Heirarchy w/ " . sizeof($heirarchy) . " leaves</P>  -->\n";
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong></td></tr></table></td></tr>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='30'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong></td></tr></table></td></tr>";
 	
 	$already_open = false;
 	$heading_ct = 0;
