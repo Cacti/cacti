@@ -24,6 +24,7 @@
 <?
 $section = "User Administration"; include ('include/auth.php');
 include_once ("include/form.php");
+include ("include/config_settings.php");
 
 switch ($_REQUEST["action"]) {
 	case 'save':
@@ -232,13 +233,7 @@ function graph_perms_edit() {
 
 function graph_config_edit() {
 	include_once ("include/functions.php");
-	global $colors, $config;
-	
-	if (isset($_GET["id"])) {
-		$graph_settings = LoadSettingsIntoArray($_SESSION["user_id"], read_config_option("guest_user"));
-	}else{
-		unset($user);
-	}
+	global $colors, $tabs_graphs, $settings_graphs;
 	
 	if (read_config_option("full_view_user_admin") == "") {
 		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
@@ -246,86 +241,49 @@ function graph_config_edit() {
 		end_box();
 	}
 	
-	start_box("Graph Preview Settings", "98%", $colors["header"], "3", "center", "");
+	print "<form method='post' action='user_admin.php'>\n";
 	
-	?>
-	<form method="post" action="user_admin.php">
-	<?
+	start_box("", "98%", $colors["header"], "3", "center", "");
 	
-	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Height</font><br>
-			The height of graphs created in preview mode.
-		</td>
-		<?DrawFormItemTextBox("Height",$graph_settings["height"],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Width</font><br>
-			The width of graphs created in preview mode.
-		</td>
-		<?DrawFormItemTextBox("Width",$graph_settings["width"],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Timespan</font><br>
-			The amount of time to represent on a graph created in preview mode (0 uses auto).
-		</td>
-		<?DrawFormItemTextBox("TimeSpan",$graph_settings["time_span"],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Default RRA</font><br>
-			The default RRA to use when displaying graphs in preview mode.
-		</td>
-		<?DrawFormItemDropdownFromSQL("RRAID",db_fetch_assoc("select * from rrd_rra order by name"),"Name","ID",$graph_settings["rra_id"],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Columns</font><br>
-			The number of columns to display graphs in using preview mode.
-		</td>
-		<?DrawFormItemTextBox("ColumnNumber",$graph_settings["column_number"],"","50", "40");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Page Refresh</font><br>
-			The number of seconds between automatic page refreshes.
-		</td>
-		<?DrawFormItemTextBox("PageRefresh",$graph_settings["page_refresh"],"","50", "40");?>
-	</tr>
-	
-	<tr>
-		<td colspan="2" class="textSubHeaderDark" bgcolor="#00438C">Hierarchical Settings</td>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Default Graph Hierarchy</font><br>
-			The default graph hierarchy to use when displaying graphs in tree mode.
-		</td>
-		<?DrawFormItemDropdownFromSQL("TreeID",db_fetch_assoc("select * from viewing_trees order by Title"),"Title","ID",$graph_settings["tree_id"],"","");?>
-	</tr>
-	
-	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">View Settings</font><br>
-			Options that govern how the graphs are displayed.
-		</td>
-		<td>
-		<?
-			DrawStrippedFormItemRadioButton("ViewType", $graph_settings["view_type"], "1", "Show a preview of the graph.", "1",true);
-			DrawStrippedFormItemRadioButton("ViewType", $graph_settings["view_type"], "2", "Show a text-based listing of the graph.", "1",true);
+	if (sizeof($tabs_graphs) > 0) {
+	foreach (array_keys($tabs_graphs) as $tab_short_name) {
 		?>
-		</td>
-	</tr>
+		<tr>
+			<td colspan="2" bgcolor="#<?print $colors["header"];?>">
+				<span class="textHeaderDark"><?print $tabs_graphs[$tab_short_name];?></span>
+			</td>
+		</tr>
+		<?
+		
+		reset($settings_graphs);
+		
+		if (sizeof($settings_graphs) > 0) {
+		foreach (array_keys($settings_graphs) as $setting) {
+			/* make sure to skip group members here; only parents are allowed */
+			if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
+				++$i;
+				DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i);
+				
+				/* draw the acual header and textbox on the form */
+				DrawFormItem($settings_graphs[$setting]["friendly_name"],$settings_graphs[$setting]["description"]);
+				
+				$current_value = db_fetch_cell("select value from settings_graphs where name='$setting' and user_id=" . $_GET["id"]);
+				
+				/* choose what kind of item this is */
+				switch ($settings_graphs[$setting]["method"]) {
+					case 'textbox':
+						DrawFormItemTextBox($setting,$current_value,$settings_graphs[$setting]["default"],"");
+						print "</tr>\n";
+						break;
+				}
+			}
+		
+		}
+		}
 	
-	<?
+	}
+	}
+	
 	end_box();
 	
 	DrawFormItemHiddenIDField("user_id",$_GET["id"]);
