@@ -240,17 +240,25 @@ function item_movedown() {
 function item_remove() {
 	include_once("include/tree_functions.php");
 	
-        if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-                include ('include/top_header.php');
-                form_confirm("Are You Sure?", "Are you sure you want to delete the item <strong>'" . db_fetch_cell("select title from graph_tree_items where id=" . $_GET["id"]) . "'</strong>?", $_SERVER["HTTP_REFERER"], "tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]);
-                include ('include/bottom_footer.php');
-                exit;
-        }
-
-        if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-               delete_branch($_GET["id"]);
-        }
+	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
+		$graph_tree_item = db_fetch_row("select title,local_graph_id from graph_tree_items where id=" . $_GET["id"]);
+		
+		if (empty($graph_tree_item["local_graph_id"])) {
+			$text = "Are you sure you want to delete the header item <strong>'" . $graph_tree_item["title"] . "'</strong>?";
+		}else{
+			$text = "Are you sure you want to delete the graph item <strong>'" . db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $graph_tree_item["local_graph_id"]) . "'</strong>?";
+		}
+		
+		include ('include/top_header.php');
+		form_confirm("Are You Sure?", $text, $_SERVER["HTTP_REFERER"], "tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]);
+		include ('include/bottom_footer.php');
+		exit;
+	}
 	
+	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
+		delete_branch($_GET["id"]);
+	}
+
 	header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]); exit;
 }
 
