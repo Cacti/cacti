@@ -397,7 +397,7 @@ function form_base_checkbox($form_name, $form_previous_value, $form_caption, $fo
 		}
 	}
 	
-	print "<input type='checkbox' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
+	print "<input type='checkbox' class='chkStyled' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
 }
 
 /* creates a radio */
@@ -473,7 +473,12 @@ function draw_nontemplated_item($array_struct, $field_name, $previous_value) {
 		form_color_dropdown($field_name,$previous_value,"None",$array_struct["default"]);
 		break;
 	case 'check':
-		form_checkbox($field_name,$previous_value,$array_struct["check_caption"],$array_struct["default"]);
+		$check_id = 0;
+		if (isset($_GET{$array_struct["check_id"]})) {
+			$check_id = $_GET{$array_struct["check_id"]};
+		}
+		
+		form_checkbox($field_name,$previous_value,$array_struct["check_caption"],$array_struct["default"],$check_id);
 		break;
 	case 'radio':
 		print "<td>";
