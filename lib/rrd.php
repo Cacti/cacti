@@ -71,7 +71,7 @@ function rrdtool_execute($command_line, $log_command, $output_flag) {
 		case '2':
 			$output = fgets($fp, 1000000);
 			
-			if (substr($output, 0, 4) == "‰PNG") {
+			if (substr($output, 1, 3) == "PNG") {
 				return "OK";
 			}
 			
@@ -435,6 +435,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 	
 	$graph = db_fetch_row("select
+		graph_local.host_id,
+		graph_local.snmp_query_id,
+		graph_local.snmp_index,
 		graph_templates_graph.title_cache,
 		graph_templates_graph.vertical_label,
 		graph_templates_graph.auto_scale,
@@ -451,8 +454,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 		graph_templates_graph.unit_value,
 		graph_templates_graph.unit_exponent_value,
 		graph_templates_graph.export
-		from graph_templates_graph
-		where graph_templates_graph.local_graph_id=$local_graph_id");
+		from graph_templates_graph,graph_local
+		where graph_local.id=graph_templates_graph.local_graph_id
+		and graph_templates_graph.local_graph_id=$local_graph_id");
 	
     	/* lets make that sql query... */
     	$graph_items = db_fetch_assoc("select
@@ -618,6 +622,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 			/* date/time substitution */
 			if (strstr($current_field, "|date_time|")) {
 				$current_field = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $current_field);
+			}
+			
+			/* data query variables */
+			if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $current_field)) {
+				$current_field = substitute_snmp_query_data($current_field, "|", "|", $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
 			}
 			
 			/* 95th percentile */
