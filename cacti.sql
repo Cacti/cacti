@@ -1813,7 +1813,7 @@ INSERT INTO graph_templates_item VALUES (410,'03e5bd2151fea3c90843eb1130b84458',
 
 CREATE TABLE graph_tree (
   id smallint(5) unsigned NOT NULL auto_increment,
-  user_id mediumint(8) unsigned NOT NULL default '0',
+  sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY ID (id),
@@ -2228,10 +2228,6 @@ INSERT INTO settings VALUES ('log_verbosity','2');
 INSERT INTO settings VALUES ('log_pstats','');
 INSERT INTO settings VALUES ('log_pwarn','');
 INSERT INTO settings VALUES ('log_perror','on');
-INSERT INTO settings VALUES ('snmp_community','public');
-INSERT INTO settings VALUES ('snmp_username','');
-INSERT INTO settings VALUES ('snmp_password','');
-INSERT INTO settings VALUES ('snmp_ver','Version 1');
 INSERT INTO settings VALUES ('snmp_version','net-snmp');
 INSERT INTO settings VALUES ('snmp_timeout','500');
 INSERT INTO settings VALUES ('snmp_retries','3');
@@ -2240,7 +2236,6 @@ INSERT INTO settings VALUES ('path_snmpwalk','/usr/bin/snmpwalk');
 INSERT INTO settings VALUES ('path_snmpget','/usr/bin/snmpget');
 INSERT INTO settings VALUES ('path_rrdtool','/usr/bin/rrdtool');
 INSERT INTO settings VALUES ('path_php_binary','/usr/bin/php');
-INSERT INTO settings VALUES ('path_webroot','');
 INSERT INTO settings VALUES ('path_cactilog','');
 INSERT INTO settings VALUES ('path_cactid','');
 INSERT INTO settings VALUES ('poller_enabled','on');
