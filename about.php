@@ -27,7 +27,7 @@
 include("./include/auth.php");
 include("./include/top_header.php");
 
-start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center", "");
+start_box("<strong>About Cacti</strong>", "98%", $colors["header"], "3", "center", "");
 ?>
 
 <tr>
@@ -39,18 +39,18 @@ start_box("<strong>About cacti</strong>", "98%", $colors["header"], "3", "center
 	<td valign="top" bgcolor="#<?php print $colors["light"];?>" class="textArea">
 		<a href="http://www.raxnet.net/"><img align="right" src="images/raxnet_logo.gif" border="0" alt="raXnet"></a>
 		
-		raXnet's cacti is designed to be a complete graphing solution for your network. Its goal is to make the
+		Cacti is designed to be a complete graphing solution for your network. Its goal is to make the
 		network administrator's job easier by taking care of all the necessary details necessary to create 
 		meaningful network graphs.
 		
-		<p>The design of cacti took many hours of SQL and PHP coding, so I hope you find it very useful.</p>
+		<p>The design of Cacti took many hours of SQL and PHP coding, so I hope you find it very useful.</p>
 		
 		<p><strong>Developer Thanks</strong><br>
 		<ul type="disc">
 			<li><a href="http://blyler.cc">Andy Blyler</a>, for ideas, code, and that much needed overall support 
 			during really lengthy coding sessions.</li>
 			<li>Rivo Nurges, for that c-based poller that was talked so long about. This <em>really</em> fast poller
-			is what will enable cacti to make its way into larger and larger networks.</li>
+			is what will enable Cacti to make its way into larger and larger networks.</li>
 		</ul>
 		</p>
 		
