@@ -243,7 +243,7 @@ function item() {
 		if (empty($graph_template_id)) { print "</a>"; }
 		print "</td>\n";
 		
-		if (empty($item["data_source_name"])) { $item["data_source_name"] = "(No Task)"; }
+		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
 			
 		switch ($graph_item_types{$item["graph_type_id"]}) {
 		case 'AREA':
