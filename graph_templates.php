@@ -27,11 +27,9 @@
 	
 	if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
 	if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
-	
-	$current_script_name = basename($HTTP_SERVER_VARS["SCRIPT_NAME"]);
 
 	function draw_graph_form_select($main_action) { 
-		global $current_script_name, $colors, $args; ?>
+		global $colors, $args; ?>
 		<tr bgcolor="<?print $colors[panel];?>">
 			<form name="form_graph_id">
 			<td colspan="6">
@@ -39,8 +37,8 @@
 					<tr>
 						<td width="1%">
 							<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-								<option value="<?print $current_script_name;?>?action=template_edit&graph_template_id=<?print $args[graph_template_id];?>"<?if (strstr($args[action],"template")) {?> selected<?}?>>Graph Template Configuration</option>
-								<option value="<?print $current_script_name;?>?action=item&graph_template_id=<?print $args[graph_template_id];?>"<?if (strstr($args[action],"item")){?> selected<?}?>>Graph Item Template Configuration</option>
+								<option value="graph_templates.php?action=template_edit&graph_template_id=<?print $args[graph_template_id];?>"<?if (strstr($args[action],"template")) {?> selected<?}?>>Graph Template Configuration</option>
+								<option value="graph_templates.php?action=item&graph_template_id=<?print $args[graph_template_id];?>"<?if ((strstr($args[action],"item")) || (strstr($args[action],"input"))) {?> selected<?}?>>Graph Item Template Configuration</option>
 							</select>
 						</td>
 						<td>
@@ -115,7 +113,9 @@ switch ($action) {
 		$graph_template_id = sql_save($save, "graph_templates");
 		unset ($save);
 		
-		$save["id"] = $form["graph_template_id_graph"];
+		$save["id"] = $form["graph_template_graph_id"];
+		$save["local_graph_template_graph_id"] = 0;
+		$save["local_graph_id"] = 0;
 		$save["graph_template_id"] = $graph_template_id;
 		$save["t_image_format_id"] = $form["t_image_format_id"];
 		$save["image_format_id"] = $form["image_format_id"];
@@ -230,7 +230,8 @@ switch ($action) {
 			from graph_templates_item left join graph_template_input_defs on (graph_template_input_defs.graph_template_item_id=graph_templates_item.id and graph_template_input_defs.graph_template_input_id=$args[graph_template_input_id])
 			left join def_cf on graph_templates_item.consolidation_function_id=def_cf.id
 			left join def_graph_type on graph_templates_item.graph_type_id=def_graph_type.id
-			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id");
+			left join polling_items on graph_templates_item.task_item_id=polling_items.item_id
+			where graph_templates_item.local_graph_id=0");
 		
 		DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
 			<td width="50%">
@@ -477,6 +478,7 @@ switch ($action) {
 			left join def_colors on color_id=def_colors.id
 			left join def_graph_type on graph_type_id=def_graph_type.id
 			where graph_templates_item.graph_template_id=$args[graph_template_id]
+			and graph_templates_item.local_graph_id=0
 			order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
 		
 		$group_counter = 0;
@@ -657,7 +659,7 @@ switch ($action) {
 		<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Image Format</font><br>
-				<?DrawStrippedFormItemCheckBox("t_image_format_id",$template_graph[t_title],"Use Per-Graph Value (Ignore this Value)","",false);?>
+				<?DrawStrippedFormItemCheckBox("t_image_format_id",$template_graph[t_image_format_id],"Use Per-Graph Value (Ignore this Value)","",false);?>
 			</td>
 			<?DrawFormItemDropdownFromSQL("image_format_id",db_fetch_assoc("select * from def_image_type order by Name"),"Name","ID",$template_graph[image_format_id],"","1");?>
 		</tr>
@@ -795,7 +797,7 @@ switch ($action) {
 		<?
 		
 		DrawFormItemHiddenIDField("graph_template_id",$args[graph_template_id]);
-		DrawFormItemHiddenIDField("graph_template_id_graph",$template_graph[id]);
+		DrawFormItemHiddenIDField("graph_template_graph_id",$template_graph[id]);
 		
 		include_once ("include/bottom_table_footer.php");
 		include_once ("include/bottom_footer.php");
@@ -803,7 +805,7 @@ switch ($action) {
 		break;
 	default:
 		include_once ("include/top_header.php");
-		$title_text = "Graph Template Management"; $add_text = "$current_script_name?action=template_edit";
+		$title_text = "Graph Template Management"; $add_text = "graph_templates.php?action=template_edit";
 		include_once ("include/top_table_header.php");
 		
 		DrawMatrixRowBegin();
