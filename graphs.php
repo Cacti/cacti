@@ -182,7 +182,7 @@ function item() {
 		left join def_colors on color_id=def_colors.id
 		left join def_graph_type on graph_type_id=def_graph_type.id
 		where graph_templates_item.local_graph_id=$args[local_graph_id]
-		order by graph_templates_item.sequence_parent,graph_templates_item.sequence");
+		order by graph_templates_item.sequence");
 	
 	$group_counter = 0;
 	if (sizeof($template_item_list) > 0) {
