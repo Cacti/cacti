@@ -167,15 +167,25 @@ function form_save() {
 		
 		
 		if (!is_error_message()) {
+			if (!empty($_POST["rra_id"])) {
+				/* save entries in 'selected rras' field */
+				db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
+				
+				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+				}
+			}
+			
 			if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
-				/* update all nessesary template information */
+				/* update all necessary template information */
 				change_data_template($local_data_id, $_POST["data_template_id"]);
 			}elseif (!empty($_POST["data_template_id"])) {
 				update_data_source_snmp_query_cache($local_data_id);
 			}
 			
 			if ($_POST["host_id"] != $_POST["_host_id"]) {
-				/* push out all nessesary host information */
+				/* push out all necessary host information */
 				push_out_host($_POST["host_id"], $local_data_id);
 				
 				/* reset current host for display purposes */
@@ -189,16 +199,6 @@ function form_save() {
 			
 			/* update the title cache */
 			update_data_source_title_cache($local_data_id);
-			
-			/* save entried in 'selected rras' field */
-			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
-			
-			if (isset($_POST["rra_id"])) {
-				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
-					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
-						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
-				}
-			}
 		}
 	}
 	
@@ -555,6 +555,7 @@ function data_edit() {
 
 function ds_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
+	db_execute("update graph_templates_item set task_item_id=0 where task_item_id=" . $_GET["id"]);
 	
 	header ("Location: data_sources.php?action=ds_edit&id=" . $_GET["local_data_id"]);
 }
@@ -666,15 +667,10 @@ function ds_edit() {
 			
 			print "</td>\n";
 			
-			if ($field_array["type"] == "custom") {
-				$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
-				form_multi_dropdown("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . (isset($data) ? $data["id"] : "0")), "rra_id");
+			if (($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE")) {
+				draw_nontemplated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), $data["id"]);
 			}else{
-				if (($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE")) {
-					draw_nontemplated_item($field_array, $field_name, (isset($data) ? $data[$field_name] : ""));
-				}else{
-					draw_templated_item($field_array, $field_name, (isset($data) ? $data[$field_name] : ""));
-				}
+				draw_templated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), $data["id"]);
 			}
 			
 			print "</tr>\n";
@@ -715,7 +711,7 @@ function ds_edit() {
 					foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
 						print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center' class='tab'>
-								<span class='textHeader'><a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a> <a href='data_sources.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&local_data_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
+								<span class='textHeader'><a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a>" . (($use_data_template == false) ? " <a href='data_sources.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&local_data_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : "") . "</span>
 							</td>\n
 							<td width='1'></td>\n";
 					}
