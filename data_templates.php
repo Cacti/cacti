@@ -151,7 +151,7 @@ function form_save() {
 		}
 		
 		if (!is_error_message()) {
-			/* save entried in 'selected rras' field */
+			/* save entries in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
 			
 			if (isset($_POST["rra_id"])) {
@@ -202,7 +202,7 @@ function form_save() {
 				}
 				
 				/* push out all "custom data" for this data source template */
-				push_out_data_template($data_template_id);
+				push_out_data_source_custom_data($data_template_id);
 			}
 		}
 		
@@ -326,8 +326,15 @@ function form_actions() {
    ---------------------------- */
 
 function template_rrd_remove() {
-	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
-	db_execute("delete from snmp_query_graph_rrd where data_template_rrd_id=" . $_GET["id"]);
+	$children = db_fetch_assoc("select id from data_template_rrd where local_data_template_rrd_id=" . $_GET["id"] . " or id=" . $_GET["id"]); 
+	
+	if (sizeof($children) > 0) {
+	foreach ($children as $item) {
+		db_execute("delete from data_template_rrd where id=" . $item["id"]);
+		db_execute("delete from snmp_query_graph_rrd where data_template_rrd_id=" . $item["id"]);
+		db_execute("update graph_templates_item set task_item_id=0 where task_item_id=" . $item["id"]);
+	}
+	}
 	
 	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["data_template_id"]);
 }
@@ -336,6 +343,15 @@ function template_rrd_add() {
 	db_execute("insert into data_template_rrd (data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
 		data_source_name) values (" . $_GET["id"] . ",100,0,600,1,'ds')");
 	$data_template_rrd_id = db_fetch_insert_id();
+	
+	$children = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id>0"); 
+	
+	if (sizeof($children) > 0) {
+	foreach ($children as $item) {
+		db_execute("insert into data_template_rrd (local_data_template_rrd_id,local_data_id,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
+			data_source_name) values ($data_template_rrd_id," . $item["local_data_id"] . "," . $_GET["id"] . ",100,0,600,1,'ds')");
+	}
+	}
 	
 	header ("Location: data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 }
@@ -378,15 +394,16 @@ function template_edit() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		
 		print "<td width='50%'><font class='textEditTitle'>" . $field_array["title"] . "</font><br>\n";
-		form_base_checkbox("t_" . $field_name,(isset($template_data{"t_" . $field_name}) ? $template_data{"t_" . $field_name} : ""),"Use Per-Data Source Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
+		
+		if ($field_array["flags"] == "ALWAYSTEMPLATE") {
+			print "<em>This field is always templated.</em>";
+		}else{
+			form_base_checkbox("t_" . $field_name,(isset($template_data{"t_" . $field_name}) ? $template_data{"t_" . $field_name} : ""),"Use Per-Data Source Value (Ignore this Value)","",(isset($template_data) ? $template_data["data_template_id"] : "0"),false);
+		}
+		
 		print "</td>\n";
 		
-		if ($field_array["type"] == "custom") {
-			$array_rra = array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name");
-			form_multi_dropdown("rra_id",$array_rra,db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . (isset($template_data) ? $template_data["id"] : "0")), "rra_id");
-		}else{
-			draw_nontemplated_item($field_array, $field_name, (isset($template_data) ? $template_data[$field_name] : ""));
-		}
+		draw_nontemplated_item($field_array, $field_name, (isset($template_data[$field_name]) ? $template_data[$field_name] : ""), $template_data["id"]);
 		
 		print "</tr>\n";
 	}
