@@ -199,31 +199,32 @@ function delete_branch($tree_item_id) {
 		and graph_tree_items.graph_tree_id=$graph_tree_id
 		order by graph_tree_items.order_key");
 	
-	$i = 0; $ctr = 0; $_suffix_order_key = 0;
 	if (sizeof($tree) > 0) {
-	foreach ($tree as $tree_item) {
-		/* ignore the first entry IF:
-		  - it is the first item && the second item is a child of the first item (ie. they are
-		    not on the same tier
-		  * we do this so the parent item is not touched during cleanup */
-		if (($ctr > 0) || ((sizeof($tree) > 1) && (tree_tier($tree[0]["order_key"], 2) == tree_tier($tree[1]["order_key"], 2)))) {
-			$suffix_order_key = substr($tree_item["order_key"], (2 * $starting_tier));
+		$old_key_part = substr($tree[0]["order_key"], strlen($order_key), 2);
+		
+		/* we key tier==0 off of '1' and tier>0 off of '0' */
+		if (tree_tier($order_key, 2) == "0") {
+			$i = 1;
+		}else{
+			$i = 0;
+		}
+		
+		foreach ($tree as $tree_item) {
+			/* this is the key column we are going to 'rekey' */
+			$new_key_part = substr($tree_item["order_key"], strlen($order_key), 2);
 			
-			if ((!ereg("[1-9]+",$suffix_order_key)) || ($suffix_order_key < $_suffix_order_key) || ($ctr==1 && $i==0)) {
+			/* incriment a counter for the new key column */
+			if ($old_key_part != $new_key_part) {
 				$i++;
 			}
 			
-			$prefix_order_key = substr($tree_item["order_key"], 0, (2 * ($starting_tier-1)));
-			$prefix_order_key .= str_pad($i,2,'0',STR_PAD_LEFT);
-			$prefix_order_key .= $suffix_order_key;
+			/* build the new order key string */
+			$key = $order_key . str_pad(strval($i),2,'0',STR_PAD_LEFT) . substr($tree_item["order_key"], (strlen($order_key) + 2));
 			
-			db_execute("update graph_tree_items set order_key='$prefix_order_key' where id=" . $tree_item["id"]);
+			db_execute("update graph_tree_items set order_key='$key' where id=" . $tree_item["id"]);
 			
-			$_suffix_order_key = $suffix_order_key;
+			$old_key_part = $new_key_part;
 		}
-		
-		$ctr++;
-	}
 	}
 }
 
