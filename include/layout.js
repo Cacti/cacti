@@ -77,7 +77,7 @@ function gt_update_deps(num_columns) {
 	for (var i = 0; i < gt_created_graphs.length; i++) {
 		for (var j = 0; j < num_columns; j++) {
 			lineid = document.getElementById('gt_text' + gt_created_graphs[i] + '_' + j);
-			lineid.style.color = '888888';
+			lineid.style.color = '999999';
 		}
 		
 		chkbx = document.getElementById('cg_' + gt_created_graphs[i]);
@@ -163,7 +163,7 @@ function dq_update_deps(snmp_query_id, num_columns) {
 	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
 		for (var j = 0; j < num_columns; j++) {
 			lineid = document.getElementById('text' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i] + '_' + j);
-			lineid.style.color = '888888';
+			lineid.style.color = '999999';
 		}
 		
 		chkbx = document.getElementById('sg_' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
@@ -193,7 +193,7 @@ function dq_reset_deps(snmp_query_id, num_columns) {
 
 function SelectAll(prefix) {
 	for (var i = 0; i < document.chk.elements.length; i++) {
-		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
+		if ((document.chk.elements[i].name.substr(0, prefix.length) == prefix) && (document.chk.elements[i].style.visibility != 'hidden')) {
 			document.chk.elements[i].checked = !(document.chk.elements[i].checked);
 		}
 	}
@@ -201,7 +201,7 @@ function SelectAll(prefix) {
 
 function SelectForce(prefix) {
 	for (var i = 0; i < document.chk.elements.length; i++) {
-		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
+		if ((document.chk.elements[i].name.substr(0, prefix.length) == prefix) && (document.chk.elements[i].style.visibility != 'hidden')) {
 			document.chk.elements[i].checked = document.chk.all.checked;
 		}
 	}
