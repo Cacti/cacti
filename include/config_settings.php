@@ -82,8 +82,9 @@ $settings = array(
 			),
 		"path_cactilog" => array(
 			"friendly_name" => "Cacti Log File Path",
-			"description" => "The path to your Cacti log file (if blank, defaults to cacti/log/rrd.log)",
+			"description" => "The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti.log)",
 			"method" => "textbox",
+			"default" => read_config_option("path_webroot") . "/log/cacti.log",
 			"max_length" => "255"
 			),
 		"pollerpaths_header" => array(
@@ -165,17 +166,52 @@ $settings = array(
 			"method" => "spacer",
 			),
 		"snmp_version" => array(
-			"friendly_name" => "SNMP Version",
-			"description" => "The type of SNMP you have installed.",
+			"friendly_name" => "SNMP Utility Version",
+			"description" => "The type of SNMP you have installed.  Only required if you don't use the embedded SNMP in PHP.",
 			"method" => "drop_array",
 			"default" => "net-snmp",
 			"array" => $snmp_implimentations,
+			),
+		"snmp_ver" => array(
+			"friendly_name" => "SNMP Poller Version Default",
+			"description" => "Default SNMP read community.",
+			"method" => "drop_array",
+			"default" => "Version 1",
+			"array" => $snmp_versions,
+			),
+		"snmp_community" => array(
+			"friendly_name" => "SNMP Community",
+			"description" => "Default SNMP read community for polling hosts.",
+			"method" => "textbox",
+			"default" => "public",
+			"max_length" => "100",
+			),
+		"snmp_username" => array(
+			"friendly_name" => "SNMP v3 Username",
+			"description" => "The SNMP v3 Username for polling hosts.",
+			"method" => "textbox",
+			"default" => "",
+			"max_length" => "100",
+			),
+		"snmp_password" => array(
+			"friendly_name" => "SNMP v3 Password",
+			"description" => "The SNMP v3 Password for polling hosts.",
+			"method" => "textbox",
+			"default" => "",
+			"max_length" => "100",
 			),
 		"snmp_timeout" => array(
 			"friendly_name" => "SNMP Timeout",
 			"description" => "Default SNMP timeout in milli-seconds.",
 			"method" => "textbox",
 			"default" => "500",
+			"max_length" => "100",
+			),
+		"snmp_port" => array(
+			"friendly_name" => "SNMP Port Number",
+			"description" => "The UDP port to be used for SNMP Calls.  Typically 161.",
+			"method" => "textbox",
+			"default" => "161",
 			"max_length" => "100",
 			),
 		"snmp_retries" => array(

@@ -647,7 +647,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Community",
 		"description" => "Fill in the SNMP read community for this device.",
 		"value" => "|arg1:snmp_community|",
-		"default" => "public",
+		"default" => read_config_option("snmp_community"),
 		"form_id" => "|arg1:id|",
 		"max_length" => "100",
 		),
@@ -656,6 +656,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Username",
 		"description" => "Fill in the SNMP username for this device (v3).",
 		"value" => "|arg1:snmp_username|",
+		"default" => read_config_option("snmp_username"),
 		"max_length" => "50",
 		),
 	"snmp_password" => array(
@@ -663,6 +664,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Password",
 		"description" => "Fill in the SNMP password for this device (v3).",
 		"value" => "|arg1:snmp_password|",
+		"default" => read_config_option("snmp_password"),
 		"max_length" => "50",
 		),
 	"snmp_version" => array(
@@ -670,6 +672,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Version",
 		"description" => "Choose the SNMP version for this host.",
 		"value" => "|arg1:snmp_version|",
+		"default" => read_config_option("snmp_ver"),
 		"array" => $snmp_versions,
 		),
 	"snmp_port" => array(
@@ -677,7 +680,7 @@ $fields_host_edit = array(
 		"friendly_name" => "SNMP Port",
 		"description" => "Enter the UDP port number to use for SNMP (default is 161).",
 		"value" => "|arg1:snmp_port|",
-		"default" => "161",
+		"default" => read_config_option("snmp_port"),
 		"max_length" => "5",
 		"size" => "15"
 		),
