@@ -226,7 +226,7 @@ function update_graph_snmp_query_cache($local_graph_id) {
 	$query = data_query_index($field["index_type"], $field["index_value"], $host_id);
 	
 	if (($query["snmp_query_id"] != "0") && ($query["snmp_index"] != "")) {
-		db_execute("update graph_local set snmp_query_id=" . $query["snmp_query_id"] . ",snmp_index=" . $query["snmp_index"] . " where id=$local_graph_id");
+		db_execute("update graph_local set snmp_query_id=" . $query["snmp_query_id"] . ",snmp_index='" . $query["snmp_index"] . "' where id=$local_graph_id");
 		
 		/* update data source/graph title cache */
 		update_data_source_title_cache_from_query($query["snmp_query_id"], $query["snmp_index"]);
@@ -247,7 +247,7 @@ function update_data_source_snmp_query_cache($local_data_id) {
 	$query = data_query_index($field["index_type"], $field["index_value"], $host_id);
 	
 	if (($query["snmp_query_id"] != "0") && ($query["snmp_index"] != "")) {
-		db_execute("update data_local set snmp_query_id=" . $query["snmp_query_id"] . ",snmp_index=" . $query["snmp_index"] . " where id=$local_data_id");
+		db_execute("update data_local set snmp_query_id=" . $query["snmp_query_id"] . ",snmp_index='" . $query["snmp_index"] . "' where id=$local_data_id");
 		
 		/* update graph title cache */
 		update_graph_title_cache_from_query($query["snmp_query_id"], $query["snmp_index"]);
