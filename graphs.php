@@ -509,7 +509,6 @@ function graph_save() {
 	$save["auto_scale_rigid"] = $_POST["auto_scale_rigid"];
 	$save["auto_padding"] = $_POST["auto_padding"];
 	$save["base_value"] = $_POST["base_value"];
-	$save["grouping"] = $_POST["grouping"];
 	$save["export"] = $_POST["export"];
 	$save["unit_value"] = $_POST["unit_value"];
 	$save["unit_exponent_value"] = $_POST["unit_exponent_value"];

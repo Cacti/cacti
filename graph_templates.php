@@ -656,8 +656,6 @@ function template_save() {
 	$save["auto_padding"] = $_POST["auto_padding"];
 	$save["t_base_value"] = $_POST["t_base_value"];
 	$save["base_value"] = $_POST["base_value"];
-	$save["t_grouping"] = $_POST["t_grouping"];
-	$save["grouping"] = $_POST["grouping"];
 	$save["t_export"] = $_POST["t_export"];
 	$save["export"] = $_POST["export"];
 	$save["t_unit_value"] = $_POST["t_unit_value"];
