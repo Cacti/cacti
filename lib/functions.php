@@ -23,22 +23,40 @@
    */?>
 <?
 
+function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
+	if ((!ereg($regexp_match, $field_value) || (($allow_nulls == false) && (empty($field_value))))) {
+		raise_message($custom_message);
+		
+		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+		$array_error_fields[$field_name] = $field_name;
+		$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+	}else{
+		$array_field_names = unserialize($_SESSION["sess_field_values"]);
+		$array_field_names[$field_name] = $field_value;
+		$_SESSION["sess_field_values"] = serialize($array_field_names);
+	}
+	
+	return $field_value;
+}
+
 function is_error_message() {
 	include("config_arrays.php");
 	
-	$message_ids = split(":", $_SESSION["sess_messages"]);
+	$array_messages = unserialize($_SESSION["sess_messages"]);
 	
-	for ($i=0; ($i < count($message_ids)); $i++) {
-		$current_message_id = $message_ids[$i];
-		
-		if ($messages[$current_message_id]["type"] == "error") { return true; }
+	if (is_array($array_messages)) {
+		foreach (array_keys($array_messages) as $current_message_id) {
+			if ($messages[$current_message_id]["type"] == "error") { return true; }
+		}
 	}
 	
 	return false;
 }
 
 function raise_message($message_id) {
-	$_SESSION["sess_messages"] .= "$message_id:";
+	$array_messages = unserialize($_SESSION["sess_messages"]);
+	$array_messages[$message_id] = $message_id;
+	$_SESSION["sess_messages"] = serialize($array_messages);
 }
 
 function display_output_messages() {
@@ -46,24 +64,24 @@ function display_output_messages() {
 	include_once("form.php");
 	global $colors;
 	
-	$message_ids = split(":", $_SESSION["sess_messages"]);
+	$array_messages = unserialize($_SESSION["sess_messages"]);
 	
-	for ($i=0; ($i < count($message_ids)); $i++) {
-		$current_message_id = $message_ids[$i];
-		
-		eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
-		
-		switch ($messages[$current_message_id]["type"]) {
-		case 'info':
-			start_pagebox("", "98%", "00438C", "3", "center", "");
-			print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
-			end_box();
-			break;
-		case 'error':
-			start_pagebox("", "98%", "ff0000", "3", "center", "");
-			print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
-			end_box();
-			break;
+	if (is_array($array_messages)) {
+		foreach (array_keys($array_messages) as $current_message_id) {
+			eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
+			
+			switch ($messages[$current_message_id]["type"]) {
+			case 'info':
+				start_pagebox("", "98%", "00438C", "3", "center", "");
+				print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
+				end_box();
+				break;
+			case 'error':
+				start_pagebox("", "98%", "ff0000", "3", "center", "");
+				print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
+				end_box();
+				break;
+			}
 		}
 	}
 	
@@ -300,34 +318,6 @@ function CreateList($data,$name,$value,$prev) {
 		
 	    print ">$row[$name]</option>\n";
 	}
-    }
-}
-
-function CreateMultipleList($sql,$name,$value,$prevsql,$prevsqlvalue) {
-    /* make sure you order by eqivilant columns in your sql strings!
-     for instance: 'order by id', 'order by cfid'
-     NOT: 'order by id', 'order by name'
-     these values must line up! */
-    $data = db_fetch_assoc("$sql order by $value");
-    $data_prev = db_fetch_assoc("$prevsql order by $prevsqlvalue");
-    $rows = sizeof($data);
-    $rows_prev = sizeof($data_prev);
-    $i = 0;
-    $i_prev = 0;
-    
-    while ($i < $rows) {
-		print "<option value='".$data[$i][$value]."'";
-		
-		if ($i_prev < $rows_prev) {
-		    if ($data_prev[$i_prev][$prevsqlvalue] == $data[$i][$value]) {
-				print " selected ";
-				$i_prev++;
-		    }
-		}
-		
-		print ">".$data[$i][$name];
-		$i++;
-		print "</option>\n";
     }
 }
 
