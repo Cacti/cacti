@@ -285,7 +285,7 @@ $struct_data_source = array(
 		"method" => "drop_sql",
 		"sql" => "select id,name from data_input order by name",
 		"default" => "",
-		"null_item" => "None",
+		"none_value" => "None",
 		"description" => "The script/source used to gather data for this data source.",
 		"flags" => "ALWAYSTEMPLATE"
 		),
@@ -557,7 +557,7 @@ $struct_graph_item = array(
 		"method" => "drop_sql",
 		"sql" => "select id,name from cdef order by name",
 		"default" => "0",
-		"null_item" => "None",
+		"none_value" => "None",
 		"description" => "A CDEF Function to apply to this item on the graph."
 		),
 	"value" => array(
@@ -572,7 +572,6 @@ $struct_graph_item = array(
 		"method" => "drop_sql",
 		"sql" => "select id,name from graph_templates_gprint order by name",
 		"default" => "2",
-		"null_item" => "",
 		"description" => "If this graph item is a GPRINT, you can optionally choose another format 
 			here. You can define additional types under \"Graph Templates\"."
 		),
