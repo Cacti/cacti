@@ -188,7 +188,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 }
 
 /* creates a dropdown box from a sql string */
-function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value) { 
+function form_dropdown($form_name, $form_data, $column_display,$column_id, $form_previous_value, $form_none_entry, $form_default_value, $css_style = "") { 
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
@@ -199,7 +199,7 @@ function form_dropdown($form_name, $form_data, $column_display,$column_id, $form
 		}
 	}
 	
-	print "<select name='$form_name'>";
+	print "<select name='$form_name' style='$css_style'>";
 	
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? " selected" : "") . ">$form_none_entry</option>\n";
@@ -632,71 +632,95 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 }
 
 function draw_menu() {
-	global $colors, $config;
+	global $colors, $config, $user_auth_realm_filenames;
 	
 	include($config["include_path"] . "/config_arrays.php");
+	
+	/* list all realms that this user has access to */
+	$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
+	$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
 	
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
 	
 	/* loop through each header */
 	while (list($header_name, $header_array) = each($menu)) {
-		print "<tr><td class='textMenuHeader'>$header_name</td></tr>\n";
-		
-		/* loop through each top level item */
+		/* pass 1: see if we are allowed to view any children */
+		$show_header_items = false;
 		while (list($item_url, $item_title) = each($header_array)) {
+			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
+			
+			if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+				$show_header_items = true;
+			}
+		}
+		
+		reset($header_array);
+		
+		if ($show_header_items == true) {
+			print "<tr><td class='textMenuHeader'>$header_name</td></tr>\n";
+		}
+		
+		/* pass 2: loop through each top level item and render it */
+		while (list($item_url, $item_title) = each($header_array)) {
+			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
+			
 			/* if this item is an array, then it contains sub-items. if not, is just
 			the title string and needs to be displayed */
 			if (is_array($item_title)) {
 				$i = 0;
 				
-				/* if the current page exists in the sub-items array, draw each sub-item */
-				if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
-					$draw_sub_items = true;
-				}else{
-					$draw_sub_items = false;
-				}
-				
-				while (list($item_sub_url, $item_sub_title) = each($item_title)) {
-					/* indent sub-items */
-					if ($i > 0) {
-						$prepend_string = "---&nbsp;";
+				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+					/* if the current page exists in the sub-items array, draw each sub-item */
+					if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
+						$draw_sub_items = true;
 					}else{
-						$prepend_string = "";
+						$draw_sub_items = false;
 					}
 					
-					/* do not put a line between each sub-item */
-					if (($i == 0) || ($draw_sub_items == false)) {
-						$background = "images/menu_line.gif";
-					}else{
-						$background = "";
-					}
-					
-					/* draw all of the sub-items as selected for ui grouping reasons. we can use the 'bold'
-					or 'not bold' to distinguish which sub-item is actually selected */
-					if ((basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) || ($draw_sub_items)) {
-						$td_class = "textMenuItemSelected";
-					}else{
-						$td_class = "textMenuItem";
-					}
-					
-					/* always draw the first item (parent), only draw the children if we are viewing a page
-					that is contained in the sub-items array */
-					if (($i == 0) || ($draw_sub_items)) {
-						if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
-							print "<tr><td class='$td_class' background='$background'>$prepend_string<strong><a href='$item_sub_url'>$item_sub_title</a></strong></td></tr>\n";
+					while (list($item_sub_url, $item_sub_title) = each($item_title)) {
+						/* indent sub-items */
+						if ($i > 0) {
+							$prepend_string = "---&nbsp;";
 						}else{
-							print "<tr><td class='$td_class' background='$background'>$prepend_string<a href='$item_sub_url'>$item_sub_title</a></td></tr>\n";
+							$prepend_string = "";
 						}
+						
+						/* do not put a line between each sub-item */
+						if (($i == 0) || ($draw_sub_items == false)) {
+							$background = "images/menu_line.gif";
+						}else{
+							$background = "";
+						}
+						
+						/* draw all of the sub-items as selected for ui grouping reasons. we can use the 'bold'
+						or 'not bold' to distinguish which sub-item is actually selected */
+						if ((basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) || ($draw_sub_items)) {
+							$td_class = "textMenuItemSelected";
+						}else{
+							$td_class = "textMenuItem";
+						}
+						
+						/* always draw the first item (parent), only draw the children if we are viewing a page
+						that is contained in the sub-items array */
+						if (($i == 0) || ($draw_sub_items)) {
+							if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
+								print "<tr><td class='$td_class' background='$background'>$prepend_string<strong><a href='$item_sub_url'>$item_sub_title</a></strong></td></tr>\n";
+							}else{
+								print "<tr><td class='$td_class' background='$background'>$prepend_string<a href='$item_sub_url'>$item_sub_title</a></td></tr>\n";
+							}
+						}
+						
+						$i++;
 					}
-					
-					$i++;
 				}
 			}else{
-				/* draw normal (non sub-item) menu item */
-				if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
-					print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
-				}else{
-					print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
+				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+					/* draw normal (non sub-item) menu item */
+					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
+						print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
+					}else{
+						print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
+					}
 				}
 			}
 		}
