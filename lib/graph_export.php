@@ -27,7 +27,7 @@
 
 function graph_export() {
 	if ((file_exists(read_config_option("path_html_export"))) && (read_config_option("path_html_export") != "")) {
-		if (read_config_option("path_html_export_skip") == read_config_option("path_html_export_ctr")) {
+		if (read_config_option("path_html_export_skip") >= read_config_option("path_html_export_ctr")) {
 			db_execute("update settings set value='1' where name='path_html_export_ctr'");
 			export();
 		}else{
