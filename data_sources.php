@@ -243,6 +243,7 @@ function data_edit() {
 				$old_value = $data_input_data[value];
 			}else{
 				$old_value = "";
+				$data_input_data["t_value"] = "on"; /* default to allow users to input data */
 			}
 			
 			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i);
@@ -250,6 +251,9 @@ function data_edit() {
 			if ((!empty($host["id"])) && (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password)$', $field["type_code"]))) {
 				print "<td width='50%'><strong>$field[name]</strong> (From Host: " . $host["hostname"] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
+			}elseif (empty($data_input_data["t_value"])) {
+				print "<td width='50%'><strong>$field[name]</strong> (From Host Template)</td>\n";
+				print "<td><em>" . (empty($old_value) ? "Nothing Entered" : $old_value) . "</em></td>\n";
 			}else{
 				print "<td width='50%'><strong>$field[name]</strong></td>\n";
 				DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");
