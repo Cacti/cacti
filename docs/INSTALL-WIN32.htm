@@ -69,26 +69,31 @@ Cacti requires:
 	<li><a href="http://www.apache.org/">Apache</a> 1.3.20/IIS 5.x or higher</li>
 </ul><p>
 
-<h3>Install PHP (With Apache)</h3><p>
+<h3>Install PHP</h3><p>
 
 <ol>
-	<li>Install the Apache web server. This is as simple as double clicking the .msi file and following the prompts.
-	Make sure to install it as a service and for the sake of the HOWTO, install it to c:\apache or c:\apache2<p>
-	
 	<li>Extract PHP to c:\ and rename the new directory to 'php'.<p>
-
-	<li>Copy the <strong>php4ts.dll</strong> file from c:\php to the c:\windows\system32 directory.<p>
 	
 	<li>Move all MIB files from c:\php\mibs to c:\usr\mibs<p>
+	
+	<li>Create the directory <em>c:\tmp</em><p>
 	
 	<li>In the c:\php directory, rename the <em>php.ini-dist</em> file to <em>php.ini</em> and make the following 
 	changes to the file:<p>
 	
 		<p class="php">extension_dir = c:/php/extensions<br>
 		extension=php_snmp.dll<br>
-		include_path=c:/apache/htdocs/cacti<br><p>
+		include_path=c:/webroot/cacti<br>
+		session.save_path=c:\tmp<p>
 	
-	Make sure to replace <em>c:/apache/htdocs/cacti</em> with your <strong>full</strong> path to cacti.<p>
+	Make sure to replace <em>c:/webroot/cacti</em> with your <strong>full</strong> path to cacti.<p>
+</ol>
+
+<h3>Configure the Webserver (Apache)</h3><p>
+
+<ol>
+	<li>Install the Apache web server. This is as simple as double clicking the .msi file and following the prompts.
+	Make sure to install it as a service and for the sake of the HOWTO, install it to c:\apache or c:\apache2<p>
 	
 	<li>If you are using <strong>Apache 1.3.x</strong>, add the following lines to your httpd.conf file in the c:\apache\conf directory:<p>
 	
@@ -105,22 +110,9 @@ Cacti requires:
 	
 </ol>
 
-<h3>Install PHP (With IIS)</h3><p>
+<h3>Configure the Webserver (IIS)</h3><p>
 
 <ol>
-	<li>Extract PHP to c:\ and rename the new directory to 'php'.<p>
-	
-	<li>Move all MIB files from c:\php\mibs to c:\usr\mibs<p>
-	
-	<li>In the c:\php directory, rename the <em>php.ini-dist</em> file to <em>php.ini</em> and make the following 
-	changes to the file:<p>
-	
-		<p class="php">extension_dir = c:/php/extensions<br>
-		extension=php_snmp.dll<br>
-		include_path=c:/inetpub/wwwroot/cacti<p>
-	
-	Make sure to replace <em>c:/inetpub/wwwroot/cacti</em> with your <strong>full</strong> path to cacti.<p>
-	
 	<li>Start the Microsoft Management Console, right click on <em>Default Web Server</em> (in most cases) and
 	select <strong>Properties</strong>.<p>
 	
