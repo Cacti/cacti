@@ -326,145 +326,193 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 }
 
 function grow_polling_tree($start_branch, $user_id, $options) {
-    global $config,$colors,$array_settings,$PHP_SELF,$args;
-    include_once ('include/form.php');
-    include_once ('include/tree_functions.php');
-    
-    $options[use_expand_contract] = true;
-    $vbar_width = 20;
-    
-    /* get the "starting leaf" if the user clicked on a specific branch */
-    if (($start_branch != "") && ($start_branch != "0")) {
-	$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_view_items where id=$start_branch"));
-    }
-    
-    
-    $sql = "select * from polling_tree
-	     left join polling_hosts on polling_tree.host_id = polling_hosts.host_id
-	     left join settings_ds_tree on ( polling_tree.ptree_id = settings_ds_tree.TreeItemID AND settings_ds_tree.userid = $user_id)
-	     where polling_tree.order_key like '$search_key%'
-	     and (polling_hosts.profile_id = 0 OR polling_hosts.profile_id IS NULL)
-	     order by polling_tree.order_key";
-    
-    
-#        print "$sql<BR>\n";
-    $heirarchy = db_fetch_assoc($sql);
-    
-    
-    ##  First off, we walk the tree from the top to the root.  We do it in that order so that we 
-    for ($i = (sizeof($heirarchy) - 1); $i >= 0; --$i) {
-	$leaf = $heirarchy[$i];
+	global $config,$colors,$array_settings,$PHP_SELF,$args;
+	include_once ('include/form.php');
+	include_once ('include/tree_functions.php');
 	
-	## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_viewing_tree == 1)
-	if ($leaf[Status] == 1) {
-	    $hide[$leaf[order_key]] = 1; 
-	}
+	$options[use_expand_contract] = true;
+	$vbar_width = 20;
 	
-	$tier = tree_tier($leaf[order_key], 2);
-	$parent_key = str_pad(substr($leaf[order_key],0,(($tier - 1) * 2) ),60,'0',STR_PAD_RIGHT);
+	/* get the "starting leaf" if the user clicked on a specific branch */
+	//if (($start_branch != "") && ($start_branch != "0")) {
+	//	$search_key = preg_replace("/0+$/","",db_fetch_cell("select order_key from graph_tree_view_items where id=$start_branch"));
+	//}
 	
-	##  If there's a host_id, the leaf is a host, not a heading, so we increment the parent's num_hosts
-	if ($leaf[host_id]) {
-	    ++$num_hosts[$parent_key];
-	    #	    print "host_id = '$leaf[host_id]'.  Incrementing parent '$parent_key'.<BR>\n";
-	}
-	
-	##  We also need the max_tier to do colspans so we do this to get it:
-	if ($tier > $max_tier) { $max_tier = $tier; }
-    }
-    
-    
-    ##  Now that we know how many hosts each heading has and whether it's supposed to be hidden, we walk the tree again from top to root to figure 
-    ##  out how many rows each vertical bar should span.
-    for ($i = (sizeof($heirarchy) - 1); $i >= 0; --$i) {
-	$leaf = $heirarchy[$i];
-	$tier = tree_tier($leaf[order_key], 2);
-	
-	##  Step through the hidden headings to see which entries to skip.
-	if (! $hide[$leaf[order_key]]) {
-	    for ($j = 1; $j < $tier; ++$j) {
-		$parent_key = str_pad(substr($leaf[order_key],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
-		if ($hide[$parent_key]) { 
-		    $skip[$leaf[order_key]] = 1;
-		    break;
+	$tree = db_fetch_assoc("select
+		data_tree.id,
+		host.hostname,
+		data_tree.title,
+		host.description,
+		host.id as host_id,
+		data_tree.order_key,
+		data_tree.host_id
+		from data_tree
+		left join host on data_tree.host_id = host.id
+		left join settings_ds_tree on ( data_tree.id = settings_ds_tree.TreeItemID AND settings_ds_tree.userid = $user_id)
+		where data_tree.order_key like '$search_key%'
+		order by data_tree.order_key");
+
+	##  First off, we walk the tree from the top to the root.  We do it in that order so that we 
+	for ($i = (sizeof($tree) - 1); $i >= 0; --$i) {
+		$leaf = $tree[$i];
+
+		## While we're walking the tree, let's go ahead and set 'hide' flags for any branches that should be hidden (status in settings_viewing_tree == 1)
+		if ($leaf[Status] == 1) {
+			$hide[$leaf[order_key]] = 1; 
 		}
-	    }
+
+		$tier = tree_tier($leaf[order_key], 2);
+		$parent_key = str_pad(substr($leaf[order_key],0,(($tier - 1) * 2) ),60,'0',STR_PAD_RIGHT);
+
+		##  If there's a host_id, the leaf is a host, not a heading, so we increment the parent's num_hosts
+		if ($leaf[host_id]) {
+			++$num_hosts[$parent_key];
+		}
+
+		##  We also need the max_tier to do colspans so we do this to get it:
+		if ($tier > $max_tier) { $max_tier = $tier; }
 	}
 	
-	if (! $skip[$leaf[order_key]]) {
-	    if (!$leaf[host_id]) {
-#	    print "Checking header $leaf[ptree_id], $leaf[order_key], num_hosts = '".$num_hosts[$leaf[order_key]]."'<BR>\n";
+	##  Now that we know how many hosts each heading has and whether it's supposed to be hidden, we walk the tree again from top to root to figure 
+	##  out how many rows each vertical bar should span.
+	for ($i = (sizeof($tree) - 1); $i >= 0; --$i) {
+		$leaf = $tree[$i];
+		$tier = tree_tier($leaf[order_key], 2);
+
+		##  Step through the hidden headings to see which entries to skip.
 		if (! $hide[$leaf[order_key]]) {
-		    if ($num_hosts[$leaf[order_key]] > 0) {
-			++$rowspans[$leaf[order_key]]; 
-#		    print "num_hosts[$leaf[order_key]] > 0 - incrementing rowspans[$leaf[order_key]]<BR>\n";
-		    }
+			for ($j = 1; $j < $tier; ++$j) {
+				$parent_key = str_pad(substr($leaf[order_key],0,($j * 2) ),60,'0',STR_PAD_RIGHT);
+				if ($hide[$parent_key]) { 
+					$skip[$leaf[order_key]] = 1;
+					break;
+				}
+			}
 		}
-		$j = $tier - 1;
-		$parent_key = str_pad(substr($leaf[order_key],0,$j * 2 ),60,'0',STR_PAD_RIGHT);
-		$rowspans[$parent_key] += ($rowspans[$leaf[order_key]] + 1);
-#	    print "Adding ".($rowspans[$leaf[order_key]] + 1)." to rowspans[$parent_key] for $leaf[ptree_id]<BR>\n";
-	    }
+
+		if (! $skip[$leaf[order_key]]) {
+			if (!$leaf[host_id]) {
+				if (! $hide[$leaf[order_key]]) {
+					if ($num_hosts[$leaf[order_key]] > 0) {
+						++$rowspans[$leaf[order_key]]; 
+					}
+				}
+				$j = $tier - 1;
+				$parent_key = str_pad(substr($leaf[order_key],0,$j * 2 ),60,'0',STR_PAD_RIGHT);
+				$rowspans[$parent_key] += ($rowspans[$leaf[order_key]] + 1);
+			}
+		}
 	}
-    }
-    
-    $indent = "<img src=\"images/gray_line.gif\" width=\"".($level * $vbar_width)."\" height=\"1\" align=\"middle\">&nbsp;";
-    
-    print "<!-- <P>Building Heirarchy w/ ".sizeof($heirarchy)." leaves</P>  -->\n";
-    
-    DrawMatrixTableBegin();
-    
-    $already_open = false;
-    
-    ##  Here we go.  Starting the main tree drawing loop.
-    if (sizeof($heirarchy) > 0) {
-	foreach ($heirarchy as $leaf) {
-	    
-	    if ($skip[$leaf[order_key]]) { continue; }
-	    
-	    $tier = tree_tier($leaf[order_key], 2);
-	    $current_leaf_type = $leaf[host_id] ? "host" : "heading";
-	    
-	    $colspan = (($max_tier - $tier) + 1);
-	    $rowspan = $rowspans[$leaf[order_key]];
-	    #		print "Order key = '$leaf[order_key]', rs = '".$rowspans[$leaf[order_key]]."', rowspan = '$rowspan'<BR>\n";
-	    
-	    if (! $already_open) { 
-		print "<tr>\n";
-		$already_open = true;
-	    }
-	    
-	    if ($hide[$leaf[order_key]] == 1) {
-		$other_status = '0';
-		$ec_icon = 'show';
-	    } else {
-		$other_status = '1';
-		$ec_icon =  'hide';
-		++$heading_ct;
-	    }
-	    print "<td bgcolor=\"$colors[panel]\" align=\"center\" width=\"1\"><a
-		    href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
-		    src='images/$ec_icon.gif' border='0'></a></td>\n";
-	    if ($current_leaf_type == 'heading') {
-		print "<td bgcolor='$colors[panel]' colspan=$colspan NOWRAP><strong>$leaf[title]</strong></td>\n";
-	    } else {
-		print "<td bgcolor='$colors[panel]'><a href=''>$leaf[hostname].$leaf[domain]</a> - $leaf[descrip]</td>\n";
-	    }
-	    print "	<td bgcolor='$colors[panel]'>
-		    [ <a href='?action=move_up&branch_id=$leaf[ptree_id]'>Up</a> ]
-		    [ <a href='?action=move_down&branch_id=$leaf[ptree_id]'>Down</a> ]
-		    </td></tr>";
-	    $already_open = false;
-	    
-	    ##  If a heading isn't hidden and has hosts, start the vertical bar.
-	    if (! $hide[$leaf[order_key]] && $rowspan > 0) {
-		print "<tr><td bgcolor=\"$colors[panel]\" width=\"1%\" rowspan=$rowspan>&nbsp;</td>\n";
-		$already_open = true;
-	    }
-	    
+		
+		
+	print "<!-- <P>Building Heirarchy w/ ".sizeof($tree)." leaves</P>  -->\n";
+
+	//$already_open = false;
+
+	##  Here we go.  Starting the main tree drawing loop.
+	if (sizeof($tree) > 0) {
+	foreach ($tree as $leaf) {
+		if ($skip[$leaf[order_key]]) { continue; }
+		
+		$tier = tree_tier($leaf[order_key], 2);
+		$current_leaf_type = $leaf[host_id] ? "host" : "heading";
+		
+		$colspan = (($max_tier - $tier) + 1);
+		$rowspan = $rowspans[$leaf[order_key]];
+
+		if (! $already_open) { 
+			if ($options[edit_mode] == true) {
+				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j);
+			}else{
+				print "<tr bgcolor='#$colors[light]'>\n";
+			}
+			
+			$already_open = true;
+		}
+		
+		if ($hide[$leaf[order_key]] == 1) {
+			$other_status = '0';
+			$ec_icon = 'show';
+		}else{
+			$other_status = '1';
+			$ec_icon =  'hide';
+			++$heading_ct;
+		}
+		
+		print "<td bgcolor='#$colors[panel]' align='center' width='1' valign='top'><a
+			href='$PHP_SELF?action=tree&start_branch=$start_branch&hide=$other_status&branch_id=$leaf[ptree_id]'><img
+			src='images/$ec_icon.gif' border='0'></a></td>\n";
+		
+		if ($current_leaf_type == 'heading') {
+			print "<td colspan=$colspan NOWRAP><strong>$leaf[title]</strong></td>\n"; $j++;
+		}else{
+			print "<td colspan=$colspan NOWRAP'>Host: <strong><a href='host.php?action=edit&id=$leaf[host_id]'>$leaf[hostname]</a> - $leaf[description]</strong></td>\n"; $j++;
+		}
+		
+		if ($options[edit_mode] == true) {
+			print "<td valign='top' width='40'>
+		  		<a href='data_sources.php?action=tree_movedown&branch_id=$leaf[id]'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+				<a href='data_sources.php?action=tree_moveup&branch_id=$leaf[id]'><img src='images/move_up.gif' border='0' alt='Move Up'></a>
+				</td>";
+			print "<td width='1%' valign='top' align='right'><a href='data_sources.php?action=leaf_remove&id=$leaf[id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
+		}
+		
+		print "</tr>";
+		
+		
+		
+		if (($current_leaf_type == 'host') && ($options[edit_mode] != true)) {
+			/* ok, we have a host on our hands. this means that it can have data sources
+			under it... let's find out. */
+			$hosts = db_fetch_assoc("select
+				data_template_data.local_data_id,
+				data_template_data.name,
+				data_input.name as data_input_name
+				from data_local
+				left join data_template_data
+				on data_local.id=data_template_data.local_data_id
+				left join data_input
+				on data_input.id=data_template_data.data_input_id
+				where data_local.host_id=$leaf[host_id]");
+			
+			print "<tr bgcolor='#$colors[light]'>\n";
+			print "<td bgcolor='#$colors[panel]' align='center' width='1' valign='top'></td>";
+			print "<td colspan=" . ($colspan+1) . " NOWRAP>";
+			start_pagebox("<strong>Data Sources for '$leaf[hostname]'</strong>", "100%", "bbbbbb", "3", "center", "data_sources.php?action=edit&host_id=$leaf[host_id]");
+			
+			$i = 0;
+			if (sizeof($hosts) > 0) {
+			foreach ($hosts as $host) {
+				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++;
+				print "<td><a href='data_sources.php?action=edit&local_data_id=$host[local_data_id]'>$host[name]</a></td>";
+				print "<td>$host[data_input_name]</td>";
+				print "<td width='1%' align='right'><a href='data_sources.php?action=remove&local_data_id=$host[local_data_id]'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>";
+				print "</tr>";
+			}
+			}else{
+				print "<tr><td><em>No Data Sources</em></td></tr>";
+			}
+			
+			end_box();
+		}
+		
+		
+		
+		$already_open = false;
+
+		##  If a heading isn't hidden and has hosts, start the vertical bar.
+		if (! $hide[$leaf[order_key]] && $rowspan > 0) {
+			if ($options[edit_mode] == true) {
+				DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$j);
+			}else{
+				print "<tr bgcolor='#$colors[light]'>\n";
+			}
+			
+			print "<td bgcolor='#$colors[panel]' width='1%' rowspan=$rowspan>&nbsp;</td>\n";
+			$already_open = true;
+		}
 	}
-    }
-    DrawMatrixTableEnd();
+	}
 }
     
-    ?>
+?>
