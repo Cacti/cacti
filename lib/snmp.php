@@ -174,6 +174,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
 		}
 		
+		/* no valid snmp version has been set, get out */
+		if (empty($snmp_auth)) { return; }
+		
 		if (read_config_option("smnp_version") == "ucd-snmp") {
 			$snmp_value = exec(read_config_option("path_snmpget") . " $hostname $snmp_auth -v $version $oid");
 		}elseif (read_config_option("smnp_version") == "net-snmp") {
