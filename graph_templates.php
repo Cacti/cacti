@@ -36,31 +36,6 @@ switch ($_REQUEST["action"]) {
 		form_save();
 		
 		break;
-	case 'gprint_presets_remove':
-		if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
-			include_once ('include/top_header.php');
-			form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", getenv("HTTP_REFERER"), "graph_templates.php?action=gprint_presets_remove&gprint_preset_id=" . $_GET["gprint_preset_id"]);
-			exit;
-		}
-		
-		gprint_presets_remove();
-		
-		header ("Location: graph_templates.php?action=gprint_presets");
-		break;
-	case 'gprint_presets_edit':
-		include_once ("include/top_header.php");
-		
-		gprint_presets_edit();
-		
-		include_once ("include/bottom_footer.php");
-		break;
-	case 'gprint_presets':
-		include_once ("include/top_header.php");
-		
-		gprint_presets();
-		
-		include_once ("include/bottom_footer.php");
-		break;
 	case 'template_remove':
 		template_remove();
 		
@@ -69,12 +44,12 @@ switch ($_REQUEST["action"]) {
 	case 'input_remove':
 		input_remove();
 		
-		header ("Location: " . getenv("HTTP_REFERER"));
+		header ("Location: " . $_SERVER["HTTP_REFERER"]);
 		break;
 	case 'item_remove':
 		item_remove();
 		
-		header ("Location: " . getenv("HTTP_REFERER"));
+		header ("Location: " . $_SERVER["HTTP_REFERER"]);
 		break;
 	case 'input_edit':
 		include_once ("include/top_header.php");
@@ -86,12 +61,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		item_movedown();
 		
-		header ("Location: " . getenv("HTTP_REFERER"));
+		header ("Location: " . $_SERVER["HTTP_REFERER"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 		
-		header ("Location: " . getenv("HTTP_REFERER"));
+		header ("Location: " . $_SERVER["HTTP_REFERER"]);
 		break;
 	case 'item_edit':
 		include_once ("include/top_header.php");
@@ -149,21 +124,6 @@ function draw_graph_form_select($main_action) {
 		</form>
 	</tr>
 <?php }
-
-function draw_tabs() {
-	global $action;
-	?>
-	<table height="20" cellspacing="0" cellpadding="0" width="98%" align="center">
-		<tr>
-			<td valign="bottom">
-				<?php if ($action != "") {?><a href="graph_templates.php"><?php }?><img src="images/tab_con_graph_templates<?php if ((strstr($action,"template") == true) || (empty($action)) || ($action == "item_edit")) { print "_down"; }?>.gif" alt="Data Sources" border="0" align="absmiddle"><?php if ($action != "") {?></a><?php }?>
-				<?php if ($action != "gprint_presets") {?><a href="graph_templates.php?action=gprint_presets"><?php }?><img src="images/tab_con_gprint_presets<?php if (strstr($action,"gprint_presets") == true) { print "_down"; }?>.gif" alt="Data Source Tree" border="0" align="absmiddle"><?php if ($action != "gprint_presets") {?></a><?php }?>
-			</td>
-		</tr>
-	</table>
-	<br>
-	<?php	
-}
 
 /* --------------------------
     The Save Function
@@ -323,124 +283,11 @@ function form_save() {
 		}
 	}
 	
-	if (isset($_POST["save_component_gprint_presets"])) {
-		$save["id"] = $_POST["gprint_preset_id"];
-		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-		$save["gprint_text"] = form_input_validate($_POST["gprint_text"], "gprint_text", "", false, 3);
-		
-		if (!is_error_message()) {
-			$gprint_preset_id = sql_save($save, "graph_templates_gprint");
-			
-			if ($gprint_preset_id) {
-				raise_message(1);
-			}else{
-				raise_message(2);
-			}
-		}
-		
-		if (is_error_message()) {
-			header ("Location: graph_templates.php?action=gprint_presets_edit&gprint_preset_id=" . (empty($gprint_preset_id) ? $_POST["gprint_preset_id"] : $gprint_preset_id));
-			exit;
-		}else{
-			header ("Location: graph_templates.php?action=gprint_presets");
-			exit;
-		}
-	}
-	
 	if ((is_error_message()) || (empty($_POST["graph_template_id"]))) {
 		header ("Location: graph_templates.php?action=template_edit&id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
 	}else{
 		header ("Location: graph_templates.php");
 	}
-}
-
-/* -----------------------------------
-    gprint_presets - GPRINT Presets 
-   ----------------------------------- */
-
-function gprint_presets_remove() {
-	db_execute("delete from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]);
-}
-   
-function gprint_presets_edit() {
-	global $colors;
-	
-	if (!empty($_GET["gprint_preset_id"])) {
-		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]);
-		$header_label = "[edit: " . $gprint_preset["name"] . "]";
-	}else{
-		$header_label = "[new]";
-	}
-	
-	draw_tabs();
-	start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
-	
-	?>
-	<form method="post" action="graph_templates.php">
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Name</font><br>
-			Enter a name for this GPRINT preset, make sure it is something you recognize.
-		</td>
-		<?php form_text_box("name",(isset($gprint_preset) ? $gprint_preset["name"] : ""),"","50", "40");?>
-	</tr>
-	
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">GPRINT Text</font><br>
-			Enter the custom GPRINT string here.
-		</td>
-		<?php form_text_box("gprint_text",(isset($gprint_preset) ? $gprint_preset["gprint_text"] : ""),"","50", "40");?>
-	</tr>
-	
-	<?php
-	end_box();
-	
-	form_hidden_id("gprint_preset_id",(isset($gprint_preset) ? $gprint_preset["id"] : "0"));
-	form_hidden_box("save_component_gprint_presets","1","");
-	
-	form_save_button("graph_templates.php?action=gprint_presets");
-}
-   
-function gprint_presets() {
-	global $colors;
-	
-	draw_tabs();
-	start_box("<strong>GPRINT Presets</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=gprint_presets_edit");
-	
-	print "<tr bgcolor='#" . $colors["panel"] . "'>";
-		DrawMatrixHeaderItem("GPRINT Preset Title",$colors["panel_text"],2);
-	print "</tr>";
-	
-	$template_list = db_fetch_assoc("select 
-		graph_templates_gprint.id,
-		graph_templates_gprint.name 
-		from graph_templates_gprint");
-	
-	$i = 0;
-	if (sizeof($template_list) > 0) {
-	foreach ($template_list as $template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=gprint_presets_edit&gprint_preset_id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
-			</td>
-			<td width="1%" align="right">
-				<a href="graph_templates.php?action=gprint_presets_remove&gprint_preset_id=<?php print $template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
-			</td>
-		</tr>
-		<?php
-		$i++;
-	}
-	}else{
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-			<td colspan="2">
-				<em>No Items</em>
-			</td>
-		</tr><?php
-	}
-	end_box();	
 }
 
 /* -----------------------
@@ -450,18 +297,18 @@ function gprint_presets() {
 function item_movedown() {
 	include_once ("include/functions.php");
 	
-	$arr = get_graph_group($_GET["graph_template_item_id"]);
-	$next_id = get_graph_parent($_GET["graph_template_item_id"], "next");
+	$arr = get_graph_group($_GET["id"]);
+	$next_id = get_graph_parent($_GET["id"], "next");
 	
-	if ((!empty($next_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
-		move_graph_group($_GET["graph_template_item_id"], $arr, $next_id, "next");
-	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
+	if ((!empty($next_id)) && (isset($arr{$_GET["id"]}))) {
+		move_graph_group($_GET["id"], $arr, $next_id, "next");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"]) == "9") {
 		/* this is so we know the "other" graph item to propagate the changes to */
-		$next_item = get_item("graph_templates_item", "sequence", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0", "next");
+		$next_item = get_item("graph_templates_item", "sequence", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0", "next");
 		
-		move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
+		move_item_down("graph_templates_item", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
 		
-		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["graph_template_item_id"]) . " where local_graph_template_item_id=" . $_GET["graph_template_item_id"]);
+		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["id"]) . " where local_graph_template_item_id=" . $_GET["id"]);
 		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $next_item). " where local_graph_template_item_id=" . $next_item);
 	}
 }
@@ -469,18 +316,18 @@ function item_movedown() {
 function item_moveup() {
 	include_once ("include/functions.php");
 	
-	$arr = get_graph_group($_GET["graph_template_item_id"]);
-	$next_id = get_graph_parent($_GET["graph_template_item_id"], "previous");
+	$arr = get_graph_group($_GET["id"]);
+	$next_id = get_graph_parent($_GET["id"], "previous");
 	
-	if ((!empty($next_id)) && (isset($arr{$_GET["graph_template_item_id"]}))) {
-		move_graph_group($_GET["graph_template_item_id"], $arr, $next_id, "previous");
-	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["graph_template_item_id"]) == "9") {
+	if ((!empty($next_id)) && (isset($arr{$_GET["id"]}))) {
+		move_graph_group($_GET["id"], $arr, $next_id, "previous");
+	}elseif (db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"]) == "9") {
 		/* this is so we know the "other" graph item to propagate the changes to */
-		$last_item = get_item("graph_templates_item", "sequence", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0", "previous");
+		$last_item = get_item("graph_templates_item", "sequence", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0", "previous");
 		
-		move_item_down("graph_templates_item", $_GET["graph_template_item_id"], "graph_template_id=" . $_GET["id"] . " and local_graph_id=0");
+		move_item_up("graph_templates_item", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
 		
-		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["graph_template_item_id"]) . " where local_graph_template_item_id=" . $_GET["graph_template_item_id"]);
+		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["id"]) . " where local_graph_template_item_id=" . $_GET["id"]);
 		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $last_item). " where local_graph_template_item_id=" . $last_item);
 	}
 }
@@ -522,7 +369,7 @@ function item() {
 		end_box();
 	}
 	
-	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&id=" . $_GET["id"]);
+	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "graph_templates.php?action=item_edit&graph_template_id=" . $_GET["id"]);
 	
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
@@ -562,7 +409,7 @@ function item() {
 			print "<tr bgcolor='#$custom_row_color'>";
 		}
 		
-		print "<td><a class='linkEditMain' href='graph_templates.php?action=item_edit&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'>Item # " . ($i+1) . "</a></td>\n";
+		print "<td><a class='linkEditMain' href='graph_templates.php?action=item_edit&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'>Item # " . ($i+1) . "</a></td>\n";
 		
 		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
 		
@@ -587,9 +434,9 @@ function item() {
 		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
 		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-		print "<td><a href='graph_templates.php?action=item_movedown&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-		       	   <a href='graph_templates.php?action=item_moveup&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-		print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&graph_template_item_id=" . $item["id"] . "&id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
+		print "<td><a href='graph_templates.php?action=item_movedown&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+		       	   <a href='graph_templates.php?action=item_moveup&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+		print "<td width='1%' align='right'><a href='graph_templates.php?action=item_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>\n";
 		
 		print "</tr>";
 		
@@ -631,15 +478,13 @@ function item() {
 }
 
 function item_remove() {
-	db_execute("delete from graph_templates_item where id=" . $_GET["graph_template_item_id"]);
+	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);
 }
 
 function item_edit() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
 	
-	draw_tabs();
-	
-	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "]";
+	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 	
 	if (read_config_option("full_view_graph_template") == "") {
 		start_box("<strong>Graph Template Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
@@ -647,21 +492,23 @@ function item_edit() {
 		end_box();
 	}
 	
-	start_box("<strong>Template Item</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Graph Template Items</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
-	if (!empty($_GET["graph_template_item_id"])) {
-		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["graph_template_item_id"]);
+	if (!empty($_GET["id"])) {
+		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
 	}
 	
 	print "<form method='post' action='graph_templates.php'>\n";
 	
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
-	$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=" . $_GET["id"] . " order by sequence DESC");
-
-	if (sizeof($default) > 0) {
-		$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
-	}else{
-		$struct_graph_item["task_item_id"]["default"] = 0;
+	if (!empty($_GET["graph_template_id"])) {
+		$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0 order by sequence DESC");
+	
+		if (sizeof($default) > 0) {
+			$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
+		}else{
+			$struct_graph_item["task_item_id"]["default"] = 0;
+		}
 	}
 	
 	/* modifications to the default graph items array */
@@ -695,12 +542,12 @@ function item_edit() {
 	end_box();
 	
 	form_hidden_id("graph_template_item_id",(isset($template_item) ? $template_item["id"] : "0"));
-	form_hidden_id("graph_template_id",$_GET["id"]);
+	form_hidden_id("graph_template_id",$_GET["graph_template_id"]);
 	form_hidden_id("sequence",(isset($template_item) ? $template_item["sequence"] : "0"));
 	form_hidden_id("_graph_type_id",(isset($template_item) ? $template_item["graph_type_id"] : "0"));
 	form_hidden_box("save_component_item","1","");
 	
-	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["id"]);
+	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 }
 
 /* ------------------------------------
@@ -710,7 +557,7 @@ function item_edit() {
 function input_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", getenv("HTTP_REFERER"), "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["graph_template_input_id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", $_SERVER["HTTP_REFERER"], "graph_templates.php?action=input_remove&graph_template_input_id=" . $_GET["graph_template_input_id"] . "&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -723,8 +570,6 @@ function input_remove() {
 
 function input_edit() {
 	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
-	
-	draw_tabs();
 	
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "]";
 	
@@ -745,7 +590,7 @@ function input_edit() {
 		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["graph_template_input_id"]);
 	}
 	
-	start_box("<strong>Graph Item Input</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Graph Item Inputs</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="graph_templates.php">
@@ -846,7 +691,7 @@ function input_edit() {
 function template_remove() {
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include ('include/top_header.php');
-		form_confirm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", getenv("HTTP_REFERER"), "graph_templates.php?action=template_remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the graph template <strong>'" . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "'</strong>? This is generally not a good idea if you have graphs attached to this template even though it should not affect any graphs.", $_SERVER["HTTP_REFERER"], "graph_templates.php?action=template_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
@@ -875,10 +720,8 @@ function template_remove() {
 function template_edit() {
 	global $colors, $struct_graph, $image_types;
 	
-	draw_tabs();
-	
 	if (read_config_option("full_view_graph_template") == "") {
-		start_box("<strong>Graph Template Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
 		draw_graph_form_select("?action=template_edit&id=" . $_GET["id"]);
 		end_box();
 	}
@@ -938,12 +781,11 @@ function template_edit() {
 function template() {
 	global $colors;
 	
-	draw_tabs();
-	start_box("<strong>Graph Template Management</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
+	start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
 	
-	print "<tr bgcolor='#" . $colors["panel"] . "'>";
-		DrawMatrixHeaderItem("Template Title",$colors["panel_text"],2);
-	print "</tr>";
+	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+			<td colspan='2' class='textSubHeaderDark'>Template Title</td>
+		</tr>";
 	
 	$template_list = db_fetch_assoc("select 
 		graph_templates.id,graph_templates.name 
