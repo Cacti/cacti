@@ -179,6 +179,9 @@ function form_save() {
 				generate_data_source_path($local_data_id);
 			}
 			
+			/* update the title cache */
+			update_graph_title_cache($local_graph_id);
+			
 			/* save entried in 'selected rras' field */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
 			
@@ -364,7 +367,8 @@ function form_actions() {
 		/* find out what (if any) graphs are using this data source, so we can complain to the user */
 		if (isset($ds_array)) {
 			$graphs = db_fetch_assoc("select
-				graph_templates_graph.local_graph_id
+				graph_templates_graph.local_graph_id,
+				graph_templates_graph.title_cache
 				from data_template_rrd
 				left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
 				left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
@@ -384,7 +388,7 @@ function form_actions() {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following graphs are using this data source:</p>\n";
 						
 						foreach ($graphs as $graph) {
-							print "<strong>" . get_graph_title($graph["local_graph_id"]) . "</strong><br>\n";
+							print "<strong>" . $graph["title_cache"] . "</strong><br>\n";
 						}
 						
 						print "<br>";
@@ -872,7 +876,7 @@ function ds() {
 		$sql_where"));
 	$data_sources = db_fetch_assoc("select
 		data_template_data.local_data_id,
-		data_template_data.name,
+		data_template_data.name_cache,
 		data_template_data.active,
 		data_input.name as data_input_name,
 		data_template.name as data_template_name,
@@ -885,7 +889,7 @@ function ds() {
 		left join data_template
 		on data_local.data_template_id=data_template.id
 		$sql_where
-		order by data_template_data.name, data_local.host_id
+		order by data_template_data.name_cache,data_local.host_id
 		limit " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
 	
 	start_box("", "98%", $colors["header"], "3", "center", "");
@@ -939,7 +943,7 @@ function ds() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(get_data_source_title($data_source["local_data_id"]), read_config_option("max_title_data_source")));?></a>
+				<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>'><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source")));?></a>
 			</td>
 			<td>
 				<?php print $data_source["data_input_name"];?>

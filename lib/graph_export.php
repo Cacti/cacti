@@ -70,13 +70,13 @@ function export() {
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
 		graph_templates_graph.width,
-		graph_templates_graph.title,
+		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id
 		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
 		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		where graph_templates_graph.local_graph_id!=0
-		order by graph_templates_graph.title");
+		order by graph_templates_graph.title_cache");
 	$rras = db_fetch_assoc("select
 		rra.id,
 		rra.name
@@ -110,7 +110,7 @@ function export() {
 		
 		fwrite($fp_graph_index, HTML_HEADER);
 		fwrite($fp_graph_index, HTML_GRAPH_HEADER_ONE);
-		fwrite($fp_graph_index, "<strong>Graph - " . get_graph_title($graph["local_graph_id"]) . "</strong>");
+		fwrite($fp_graph_index, "<strong>Graph - " . $graph["title_cache"] . "</strong>");
 		fwrite($fp_graph_index, HTML_GRAPH_HEADER_TWO);
 		fwrite($fp_graph_index, "<td>");
 		
@@ -137,7 +137,7 @@ function export() {
 		fclose($fp_graph_index);
 		
 		/* main graph page html */
-		fwrite($fp_index, "<td align='center' width='" . (98 / 2) . "%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . get_graph_title($graph["local_graph_id"]) . "'></a></td>\n");
+		fwrite($fp_index, "<td align='center' width='" . (98 / 2) . "%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
 		
 		$i++;
 		$k++;

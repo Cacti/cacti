@@ -179,9 +179,9 @@ case 'preview':
 		$sql_base"));
 	$graphs = db_fetch_assoc("select 
 		graph_templates_graph.local_graph_id,
-		graph_templates_graph.title
+		graph_templates_graph.title_cache
 		$sql_base
-		order by graph_templates_graph.title
+		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 			
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
@@ -258,7 +258,7 @@ case 'preview':
 	$i = 0; $k = 0;
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $graph) {
-		print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . (empty($set_rra_id) ? read_graph_config_option("default_rra_id") : $set_rra_id) . "&graph_start=-" . (empty($set_rra_id) ? read_graph_config_option("timespan") : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . get_graph_title($graph["local_graph_id"]) . "'></a></td>\n";
+		print "<td align='center' width='" . (98 / read_graph_config_option("num_columns")) . "%'><a href='graph.php?rra_id=all&local_graph_id=" . $graph["local_graph_id"] . "'><img src='graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . (empty($set_rra_id) ? read_graph_config_option("default_rra_id") : $set_rra_id) . "&graph_start=-" . (empty($set_rra_id) ? read_graph_config_option("timespan") : "0") . "&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n";
 		
 		$i++;
 		$k++;
@@ -293,20 +293,20 @@ case 'list':
 		
 		$graphs = db_fetch_assoc("select 
 			graph_templates_graph.local_graph_id,
-			graph_templates_graph.title,
+			graph_templates_graph.title_cache,
 			graph_templates_graph.height,
 			graph_templates_graph.width
 			from graph_templates_graph 
 			left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_SESSION["sess_user_id"] . ") 
 			$sql_where
 			and graph_templates_graph.local_graph_id > 0
-			order by graph_templates_graph.title");
+			order by graph_templates_graph.title_cache");
 	}else{
 		$graphs = db_fetch_assoc("select 
-			local_graph_id,title,height,width
+			local_graph_id,title_cache,height,width
 			from graph_templates_graph 
 			where local_graph_id > 0
-			order by title");
+			order by title_cache");
 	}
 	
 	print "<form action='graph_view.php' method='get'>\n";
@@ -322,7 +322,7 @@ case 'list':
 		form_base_checkbox("graph_" . $graph["local_graph_id"], "", "", "", 0, false);
 		print "</td>";
 		
-		print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . get_graph_title($graph["local_graph_id"]) . "</a></strong></td>\n";
+		print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title_cache"] . "</a></strong></td>\n";
 		print "<td>" . $graph["height"] . "x" . $graph["width"] . "</td>\n";
 		print "</tr>";
 		

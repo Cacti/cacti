@@ -379,7 +379,7 @@ function create_list($data, $name, $value, $prev) {
                         }
 			
 			if (isset($row["host_id"])) {
-				print ">" . title_trim(expand_title($row["host_id"], "0", "", $row[$name]), 75) . "</option>\n";
+				print ">" . title_trim($row[$name], 75) . "</option>\n";
 			}else{
 				print ">" . title_trim(null_out_subsitions($row[$name]), 75) . "</option>\n";
 			}

@@ -113,6 +113,10 @@ function form_save() {
 				/* push out relavant fields to data sources using this host */
 				push_out_host($host_id,0);
 				
+				/* update title cache for graph and data source */
+				update_data_source_title_cache_from_host($host_id);
+				update_graph_title_cache_from_host($host_id);
+				
 				/* the host subsitution cache is now stale; purge it */
 				kill_session_var("sess_host_cache_array");
 			}else{
@@ -444,6 +448,10 @@ function host_new_graphs_save() {
 			}
 		}
 	}
+	
+	/* update title cache */
+	update_data_source_title_cache_from_host($_POST["host_id"]);
+	update_graph_title_cache_from_host($_POST["host_id"]);
 	
 	/* lastly push host-specific information to our data sources */
 	push_out_host($_POST["host_id"],0);

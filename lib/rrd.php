@@ -270,7 +270,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$timespan = -($rra["rows"] * $rra["steps"] * 144);
 	
 	$graph = db_fetch_row("select
-		graph_templates_graph.title,
+		graph_templates_graph.title_cache,
 		graph_templates_graph.vertical_label,
 		graph_templates_graph.auto_scale,
 		graph_templates_graph.auto_scale_opts,
@@ -386,7 +386,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array) {
 	$graph_opts .= 
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL . 
 		"--start=$graph_start" . RRD_NL .
-		"--title=\"" . get_graph_title($local_graph_id) . "\"" . RRD_NL .
+		"--title=\"" . $graph["title_cache"] . "\"" . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .
 		"--height=$graph_height" . RRD_NL .

@@ -192,6 +192,9 @@ function form_save() {
 			}else{
 				raise_message(2);
 			}
+			
+			/* update the title cache */
+			update_graph_title_cache($local_graph_id);
 		}
 		
 		if ((!is_error_message()) && ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
@@ -502,7 +505,7 @@ function item() {
 			graph_templates_item.hard_return,
 			graph_templates_item.graph_type_id,
 			graph_templates_item.consolidation_function_id,
-			CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
+			data_template_rrd.data_source_name,
 			cdef.name as cdef_name,
 			colors.hex
 			from graph_templates_item
@@ -579,7 +582,7 @@ function item() {
 		
 		switch (true) {
 		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
-			$matrix_title = "(" . get_graph_title($_GET["id"]) . "): " . $item["text_format"];
+			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
 			break;
 		case ereg("(HRULE|VRULE)", $_graph_type_name):
 			$matrix_title = "HRULE: " . $item["value"];
@@ -624,7 +627,11 @@ function item() {
 		
 		/* modifications to the default graph items array */
 		$struct_graph_item["task_item_id"]["sql"] = "select
-			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			CONCAT_WS('',
+			case
+			when host.description is null then 'No Host - ' 
+			when host.description is not null then ''
+			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
 			data_template_rrd.id 
 			from data_template_data,data_template_rrd,data_local 
 			left join host on data_local.host_id=host.id
@@ -1211,7 +1218,7 @@ function graph() {
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
 		graph_templates_graph.width,
-		graph_templates_graph.title,
+		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id
 		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
@@ -1219,7 +1226,7 @@ function graph() {
 		where graph_templates_graph.local_graph_id!=0
 		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
-		order by graph_templates_graph.title,graph_local.host_id
+		order by graph_templates_graph.title_cache,graph_local.host_id
 		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
 	
 	/* sometimes its a pain to browse throug a long list page by page... so make a list of each page #, so the
@@ -1270,7 +1277,7 @@ function graph() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(get_graph_title($graph["local_graph_id"]), read_config_option("max_title_graph")));?></a>
+				<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph")));?></a>
 			</td>
 			<td>
 				<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>

@@ -119,7 +119,7 @@ function utilities_view_poller_cache() {
 	
 	$poller_cache = db_fetch_assoc("select 
 		data_input_data_cache.*,
-		data_template_data.name,
+		data_template_data.name_cache,
 		data_local.host_id
 		from data_input_data_cache,data_template_data,data_local 
 		where data_input_data_cache.local_data_id=data_template_data.local_data_id
@@ -133,7 +133,7 @@ function utilities_view_poller_cache() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); 
 		?>
 			<td>
-				Data Source: <?php print get_data_source_title($item["local_data_id"]);?>
+				Data Source: <?php print $item["name_cache"];?>
 			</td>
 		</tr>
 		<?php
