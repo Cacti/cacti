@@ -37,7 +37,7 @@ void *poller(void *thread_args){
 	#ifdef RRD
 	  //internal rrd_update
           sprintf(rrdcmd,"update %s N:%llu", entry->rrd, result);
-          printf("RRD: wrap_rrd_update(%s)\n",rrdcmd);
+          printf("RRD: rrd_update(%s)\n",rrdcmd);
           rrdargv = string_to_argv(rrdcmd, &rrdargc);
           rrd_update(rrdargc, rrdargv);
 	#else
