@@ -138,7 +138,14 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 				}
 
 				return $line;
-			/* stdin rrdtool pipe; read 1024 bytes and stop */
+			/* stdin rrdtool pipe (popen); read 1024 bytes and stop */
+			}else if (empty($rrd_struc["using_proc_open"])) {
+				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
+					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
+				}
+
+				return fgets($fp, 1024);
+			/* stdin rrdtool pipe (proc_open); select and wait */
 			}else{
 				if (rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE) != 0) {
 					$fp = rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_WRITE);
@@ -150,7 +157,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 				$except_fd = array($efp);
 
 				if (false === ($num_changed_streams = @stream_select($read_fd, $write_fd = NULL, $except_fd, 2, 0))) {
-				   /* Error handling */
+					/* Error handling */
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 						cacti_log("RRD2CACTI: ERROR: RRD Did not Respond to RRDTool Command", $log_to_stdout, "POLLER");
 					}
@@ -158,9 +165,9 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 					$line = "";
 					$error = "";
 
-				   /* At least on one of the streams something interesting happened */
+					/* At least on one of the streams something interesting happened */
 					foreach ($read_fd as $file) {
-		            $line .= fgets($file, 4096);
+						$line .= fgets($file, 4096);
 					}
 
 					if ($config["cacti_server_os"] == "unix") {
