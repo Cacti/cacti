@@ -368,9 +368,9 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 				the exponent to 3 digits, rather than 2 on every Unix version that I have
 				ever seen */
 				if ($j == $i) {
-					$regexps[$i] .= '([0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})';
+					$regexps[$i] .= '([\-]?[0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})';
 				}else{
-					$regexps[$i] .= '[0-9]{1}\.[0-9]+e[\+-][0-9]{2,3}';
+					$regexps[$i] .= '[\-]?[0-9]{1}\.[0-9]+e[\+-][0-9]{2,3}';
 				}
 
 				if ($j < count($fetch_array["data_source_names"])) {
