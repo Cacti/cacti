@@ -23,6 +23,61 @@
    */?>
 <?
 
+function push_out_host_template($host_template_id, $data_template_id) {
+	global $form;
+	
+	/* get data_input_id */
+	$data_input_id = db_fetch_cell("select
+		data_input_id
+		from data_template_data
+		where id=$data_template_id");
+	
+	/* must be a data template */
+	if ((empty($data_template_id)) || (empty($data_input_id)) || (empty($host_template_id))) { return 0; }
+	
+	/* get a list of data sources using this template */
+	$data_sources = db_fetch_assoc("select
+		data_template_data.id,
+		data_template_data.data_input_id
+		from data_template_data,data_local,host
+		where data_template_data.local_data_id=data_local.id
+		and data_local.host_id=host.id
+		and host.host_template_id=$host_template_id
+		and data_template_data.data_template_id=$data_template_id");
+	
+	/* pull out all 'input' values so we know how much to save */
+	$input_fields = db_fetch_assoc("select
+		id,
+		input_output,
+		data_name 
+		from data_input_fields
+		where data_input_id=$data_input_id
+		and input_output='in'");
+	
+	if (sizeof($data_sources) > 0) {
+	foreach ($data_sources as $data_source) {
+		reset($input_fields);
+		
+		if (sizeof($input_fields) > 0) {
+		foreach ($input_fields as $input_field) {
+			/* save the data into the 'host_template_data' table */
+			$form_value = "value_" . $input_field[data_name];
+			$form_value = $form[$form_value];
+			
+			$form_is_templated_value = "t_value_" . $input_field[data_name];
+			$form_is_templated_value = $form[$form_is_templated_value];
+			
+			if (empty($form_is_templated_value)) { /* template this value */
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values ($input_field[id],$data_source[id],'','$form_value')");
+			}else{
+				db_execute("update data_input_data set t_value='on' where data_input_field_id=$input_field[id] and data_template_data_id=$data_source[id]");
+			}
+		}
+		}
+	}
+	}	
+}
+
 function push_out_data_source_item($data_template_rrd_id) {
 	include ("config_arrays.php");
 	include_once ("functions.php");
