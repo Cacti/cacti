@@ -65,9 +65,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$new_host  = true;
 	$last_host = $current_host = "";
 
-	// initialize the rrdtool and return array of file descriptor, pipes to file descripors and execution method
-	$rrd_struc = rrd_init();
-
 	// startup Cacti php polling server and include the include file for script processing
 	$cactides = array(
 		0 => array("pipe", "r"), // stdin is a pipe that the child will read from
@@ -229,9 +226,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	fclose($pipes[0]);
 	fclose($pipes[1]);
 	fclose($pipes[2]);
-
-	// close rrdtool process
-	rrd_close($rrd_proc);
 
 	$return_value = proc_close($cactiphp);
 }else{
