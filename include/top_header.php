@@ -24,6 +24,7 @@
  +-------------------------------------------------------------------------+
 */
 
+include ("config.php");
 include_once ("auth_functions.php");
 
 ?>
@@ -82,4 +83,4 @@ include_once ("auth_functions.php");
 	</tr>
 	<tr>
 		<td height="500"></td>
-		<td valign="top" width="100%">
+		<td valign="top" width="100%"><?php display_output_messages();?>
