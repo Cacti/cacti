@@ -47,12 +47,12 @@ if (isset($args[hide]) == true) {
 switch ($args[action]) {
  case 'move_up': 
     $order_key = db_fetch_cell("SELECT order_key FROM polling_tree WHERE ptree_id=$args[branch_id]");
-    if ($order_key > 0) { branch_up($order_key, 'polling_tree', 'order_key', '', 'ptree_id'); }    
+    if ($order_key > 0) { branch_up($order_key, 'polling_tree', 'order_key', ''); }
     header ("Location: $PHP_SELF");
     break;
  case 'move_down':
     $order_key = db_fetch_cell("SELECT order_key FROM polling_tree WHERE ptree_id=$args[branch_id]");
-    if ($order_key > 0) { branch_down($order_key, 'polling_tree', 'order_key', '', 'ptree_id'); }
+    if ($order_key > 0) { branch_down($order_key, 'polling_tree', 'order_key', ''); }
     header ("Location: $PHP_SELF");
     break;
  case 'duplicate':

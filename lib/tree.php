@@ -107,18 +107,23 @@ function get_next_tree_id($id,$table,$field,$where = '') {
 }
 
 
-function branch_up($order_key, $table, $field, $where = '', $primary_key = 'ID') { move_branch('up',$order_key, $table, $field, $where, $primary_key); }
+function branch_up($order_key, $table, $field, $where = '', $primary_key = 'ID') { 
+    move_branch('up',$order_key, $table, $field, $where, $primary_key); 
+}
 
 
-function branch_down($order_key, $table, $field, $where, $primary_key = 'ID') { move_branch('down',$order_key, $table, $field, $where, $primary_key); }
+function branch_down($order_key, $table, $field, $where, $primary_key = 'ID') { 
+    move_branch('down',$order_key, $table, $field, $where, $primary_key); 
+}
 
 
-function move_branch($dir,$order_key, $table, $field, $where, $primary_key = 'ID') {
+function move_branch($dir,$order_key, $table, $field, $where) {
     $tier = tree_tier($order_key,'2');
     if ($where != '') { $where = " AND $where"; }
     $arrow = $dir == 'up' ? '<' : '>';
     $order = $dir == 'up' ? 'DESC' : 'ASC';
-    $sql = "SELECT * FROM $table WHERE $field  $arrow $order_key AND $field LIKE '%".substr($order_key,($tier * 2))."' AND $field NOT LIKE '%00".substr($order_key,($tier * 2))."'ORDER BY $field $order $where";
+    $sql = "SELECT * FROM $table WHERE $field  $arrow $order_key AND $field LIKE '%".substr($order_key,($tier * 2))."' 
+	    AND $field NOT LIKE '%00".substr($order_key,($tier * 2))."'ORDER BY $field $order $where";
     $displaced_row = db_fetch_row($sql);
     if (sizeof($displaced_row) > 0) {
 	$old_root = substr($order_key,0,($tier * 2));
@@ -137,9 +142,9 @@ function move_branch($dir,$order_key, $table, $field, $where, $primary_key = 'ID
 
 function spread_branches($order_key,$table,$field,$where = '') {
     $tier = tree_tier($order_key,'2');
-    $wcard = str_pad(substr($order_key,0,(($tier - 1) * 2)). '%',60,'0',STR_PAD_RIGHT);
     if ($where != '') { $where = " AND $where"; }
-    $sql = "SELECT $field FROM $table WHERE $field LIKE '$wcard' AND $field >= $order_key $where ORDER by $field DESC";
+    $sql = "SELECT $field FROM $table WHERE $field >= $order_key AND $field LIKE '%".substr($order_key,($tier * 2))."' 
+	    AND $field NOT LIKE '%00".substr($order_key,($tier * 2))."' $where ORDER by $field DESC";
     print "'$sql'<BR>\n";
     $br_to_move = db_fetch_assoc($sql);
     if (sizeof($br_to_move) > 0) {
@@ -153,6 +158,7 @@ function spread_branches($order_key,$table,$field,$where = '') {
 	    $next_id = trim($next_id,"0");
 	    $sql = "UPDATE $table SET $field = CONCAT($next_id, SUBSTRING($field,".(($tier * 2) + 1).")) WHERE $field LIKE '".substr($order_key,0,($tier * 2))."'";
 	    print "'$sql'<BR>\n";
+#	    db_execute($sql);
 	}
 	db_execute("UNLOCK TABLES $table");
     }
