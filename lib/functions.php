@@ -423,9 +423,11 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		} elseif ($hosts[$host_id]["status"] == HOST_RECOVERING) {
 			$hosts[$host_id]["status_event_count"] = 1;
 			$hosts[$host_id]["status"] = HOST_DOWN;
-		/* host is already down, just update stats */
+
+		/* host was unknown and now is down */
 		} elseif ($hosts[$host_id]["status"] == HOST_UNKNOWN) {
-			$hosts[$host_id]["status_event_count"]++;
+			$hosts[$host_id]["status"] = HOST_DOWN;
+			$hosts[$host_id]["status_event_count"] = 0;
 		} else {
 			$hosts[$host_id]["status_event_count"]++;
 		}
@@ -513,7 +515,11 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} elseif ($ping_availability == AVAIL_SNMP) {
-				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+				if ($hosts[$host_id]["snmp_community"] == "") {
+					cacti_log("Host[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout);
+				}else{
+					cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+				}
 			} else {
 				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 			}
