@@ -548,7 +548,7 @@ function host() {
 		host.description,
 		host.cur_time,
 		host.avg_time,
-		host.availability,
+		host.availability
 		from host
 		$sql_where
 		order by host.description
@@ -570,7 +570,7 @@ function host() {
 	}
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='4'>
+			<td colspan='7'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -589,7 +589,7 @@ function host() {
 
 	print $nav;
 
-	html_header_checkbox(array("Status", "Description", "Hostname", "Current", "Average", "Availability"));
+	html_header_checkbox(array("Description", "Status", "Hostname", "Current (ms)", "Average (ms)", "Availability"));
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {
@@ -600,7 +600,19 @@ function host() {
 					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
 				</td>
 				<td>
-					<?php print iconify_host($host["disabled"], $host["status"])  . "   " . $host["hostname"] . "   " . $host["cur_time"] . "   " . $host["avg_time"] . "   " . $host["availability"];?>
+					<?php print get_colored_device_status($host["disabled"], $host["status"]);?>
+				</td>
+				<td>
+					<?php print $host["hostname"];?>
+				</td>
+				<td>
+					<?php print $host["cur_time"];?>
+				</td>
+				<td>
+					<?php print $host["avg_time"];?>
+				</td>
+				<td>
+					<?php print $host["availability"];?>
 				</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">

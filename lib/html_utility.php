@@ -142,4 +142,34 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
 	}
 }
 
+/* get_colored_device_status - given a device's status, return the colored text in HTML
+     format suitable for display
+   @arg $disabled (bool) - true if the device is disabled, false is it is not
+   @arg $status - the status type of the device as defined in config_constants.php
+   @returns - a string containing html that represents the device's current status */
+function get_colored_device_status($disabled, $status) {
+	$disabled_color = "a1a1a1";
+
+	$status_colors = array(
+		HOST_DOWN => "ff0000",
+		HOST_RECOVERING => "ff8f1e",
+		HOST_UP => "198e32"
+		);
+
+	if ($disabled) {
+		return "<span style='color: #$disabled_color'>Disabled</a>";
+	}else{
+		switch ($status) {
+			case HOST_DOWN:
+				return "<span style='color: #" . $status_colors[HOST_DOWN] . "'>Down</a>"; break;
+			case HOST_RECOVERING:
+				return "<span style='color: #" . $status_colors[HOST_RECOVERING] . "'>Recovering</a>"; break;
+			case HOST_UP:
+				return "<span style='color: #" . $status_colors[HOST_UP] . "'>Up</a>"; break;
+			default:
+				return "<span style='color: #0000ff'>Unknown</a>"; break;
+		}
+	}
+}
+
 ?>
