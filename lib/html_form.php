@@ -551,7 +551,7 @@ function draw_tree_dropdown($current_tree_id) {
 	
 	global $colors;
 	
-	$current_user = db_fetch_row("select * from user where id=" . $_SESSION["sess_user_id"]);
+	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 	
 	print "<form name='form_tree_id'>";
 	
