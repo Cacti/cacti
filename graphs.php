@@ -601,7 +601,7 @@ function item() {
 			
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 			
-			print "	<td width='50%'>
+			print "	<td width='35%'>
 					<font class='textEditTitle'>" . $item["name"] . "</font>";
 					if (!empty($item["description"])) { print "<br>" . $item["description"]; }
 			print "	</td>\n";
