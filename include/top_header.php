@@ -59,6 +59,11 @@ include ("config.php");
 						print "<a href='graph_view.php'><img src='images/top_tabs_graphs.gif' border='0' width='79' height='32' align='absmiddle'></a>";
 						?>
 					</td>
+					<?php if (read_config_option("global_auth") == "on") { ?>
+					<td align="right" class="textHeaderDark">
+						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong>&nbsp;
+					</td>
+					<?php } ?>
 				</tr>
 			</table>
 		</td>
