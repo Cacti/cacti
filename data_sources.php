@@ -22,19 +22,13 @@
    +-------------------------------------------------------------------------+
    */?>
 <?
-$section = "Add/Edit Graphs"; 
-include ('include/auth.php');
-header("Cache-control: no-cache");
-
+$section = "Add/Edit Graphs"; include ('include/auth.php'); 
 include_once ("include/functions.php");
 include_once ("include/cdef_functions.php");
 include_once ("include/config_arrays.php");
 include_once ('include/form.php');
 
-if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
-if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
-
-switch ($action) {
+switch ($_REQUEST["action"]) {
 	case 'ds_save':
 		$redirect_location = form_save();
 		
@@ -103,22 +97,20 @@ switch ($action) {
    -------------------------- */
 
 function form_save() {
-	global $form;
-	
-	if (isset($form[save_component_data_source])) {
+	if (isset($_POST["save_component_data_source"])) {
 		$local_data_id = ds_save();
 		
-		if ($form[data_template_id] != $form[_data_template_id]) {
-			return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=$form[host_id]&view_rrd=$form[view_rrd]";
+		if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
+			return "data_sources.php?action=ds_edit&local_data_id=$local_data_id&host_id=" . $_POST["host_id"] . "&view_rrd=" . $_POST["view_rrd"];
 		}else{
 			return "data_sources.php";
 		}
-	}elseif (isset($form[save_component_data])) {
+	}elseif (isset($_POST["save_component_data"])) {
 		data_save();
 		
-		if ($config[full_view_data_source][value] == "") {
-			return "data_sources.php?action=ds_edit&local_data_id=$form[local_data_id]&view_rrd=$form[current_rrd]";
-		}elseif ($config[full_view_data_source][value] == "on") {
+		if ($config["full_view_data_source"]["value"] == "") {
+			return "data_sources.php?action=ds_edit&local_data_id=" . $_POST["local_data_id"] . "&view_rrd=" . $_POST["current_rrd"];
+		}elseif ($config["full_view_data_source"]["value"] == "on") {
 			return "data_sources.php";
 		}
 	}
@@ -144,16 +136,16 @@ function draw_tabs() {
 }
 
 function draw_data_form_select($main_action) { 
-	global $colors, $args; ?>
-	<tr bgcolor="<?print $colors[panel];?>">
+	global $colors; ?>
+	<tr bgcolor="<?print $colors["panel"];?>">
 		<form name="form_graph_id">
 		<td colspan="6">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="1%">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="data_sources.php?action=ds_edit&local_data_id=<?print $args[local_data_id];?>"<?if (strstr($args[action],"ds")) {?> selected<?}?>>Data Source Configuration</option>
-							<option value="data_sources.php?action=data_edit&local_data_id=<?print $args[local_data_id];?>"<?if (strstr($args[action],"data")) {?> selected<?}?>>Custom Data Configuration</option>
+							<option value="data_sources.php?action=ds_edit&local_data_id=<?print $_GET["local_data_id"];?>"<?if (strstr($_GET["action"],"ds")) {?> selected<?}?>>Data Source Configuration</option>
+							<option value="data_sources.php?action=data_edit&local_data_id=<?print $_GET["local_data_id"];?>"<?if (strstr($_GET["action"],"data")) {?> selected<?}?>>Custom Data Configuration</option>
 						</select>
 					</td>
 					<td>
@@ -171,8 +163,6 @@ function draw_data_form_select($main_action) {
    ---------------------------- */
 
 function data_save() {
-	global $form;
-	
 	/* ok, first pull out all 'input' values so we know how much to save */
 	$input_fields = db_fetch_assoc("select
 		data_template_data.data_input_id,
@@ -182,13 +172,13 @@ function data_save() {
 		from data_template_data
 		left join data_input_fields
 		on data_input_fields.data_input_id=data_template_data.data_input_id
-		where data_template_data.id=$form[data_template_data_id]
+		where data_template_data.id=" . $_POST["data_template_data_id"] . "
 		and data_input_fields.input_output='in'");
 	
 	if (sizeof($input_fields) > 0) {
 	foreach ($input_fields as $input_field) {
 		/* then, check and see if this value already exists */
-		$data_input_data_id = db_fetch_cell("select id from data_input_data where data_input_field_id=$input_field[id] and data_template_data_id=$form[data_template_data_id]");
+		$data_input_data_id = db_fetch_cell("select id from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . $_POST["data_template_data_id"]);
 		
 		/* use id 0 if it doesn't; previd if it does */
 		if (empty($data_input_data_id)) {
@@ -198,29 +188,29 @@ function data_save() {
 		}
 		
 		/* save the data into the 'data_input_data' table */
-		$form_value = "value_" . $input_field[data_name];
-		$form_value = $form[$form_value];
+		$form_value = "value_" . $input_field["data_name"];
+		$form_value = $_POST[$form_value];
 		
 		db_execute("replace into data_input_data (id,data_input_field_id,data_template_data_id,value) values
-			($new_id,$input_field[id],$form[data_template_data_id],'$form_value')");
+			($new_id," . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'$form_value')");
 	}
 	}
 }
 
 function data_edit() {
-	global $args, $config, $colors;
+	global $config, $colors;
 	
-	if ($config[full_view_data_source][value] == "") {
+	if ($config["full_view_data_source"]["value"] == "") {
 		draw_tabs();
 		
 		start_box("<strong>Data Sources</strong> [edit]", "", "");
-		draw_data_form_select("?action=data_edit&local_data_id=$args[local_data_id]");
+		draw_data_form_select("?action=data_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
 	}
 	
-	if (isset($args[local_data_id])) {
-		$template_data = db_fetch_row("select id,data_input_id from data_template_data where local_data_id=$args[local_data_id]");
-		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=$args[local_data_id]");
+	if (isset($_GET["local_data_id"])) {
+		$template_data = db_fetch_row("select id,data_input_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=" . $_GET["local_data_id"]);
 	}else{
 		unset($template_data);
 	}
@@ -228,35 +218,35 @@ function data_edit() {
 	print "<form method='post' action='data_sources.php'>\n";
 	
 	$i = 0;
-	if (!empty($template_data[data_input_id])) {
+	if (!empty($template_data["data_input_id"])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=$template_data[data_input_id] and input_output='in' order by name");
+		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 		
-		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=$template_data[data_input_id]") . "]", "", "");
+		start_box("Custom Data [" . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "", "");
 		
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=$template_data[id] and data_input_field_id=$field[id]");
+			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
 			
 			if (sizeof($data_input_data) > 0) {
-				$old_value = $data_input_data[value];
+				$old_value = $data_input_data["value"];
 			}else{
 				$old_value = "";
 				$data_input_data["t_value"] = "on"; /* default to allow users to input data */
 			}
 			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i);
+			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i);
 			
 			if ((!empty($host["id"])) && (eregi('^(hostname|management_ip|snmp_community|snmp_username|snmp_password)$', $field["type_code"]))) {
-				print "<td width='50%'><strong>$field[name]</strong> (From Host: " . $host["hostname"] . ")</td>\n";
+				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host: " . $host["hostname"] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
 			}elseif (empty($data_input_data["t_value"])) {
-				print "<td width='50%'><strong>$field[name]</strong> (From Host Template)</td>\n";
+				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host Template)</td>\n";
 				print "<td><em>" . (empty($old_value) ? "Nothing Entered" : $old_value) . "</em></td>\n";
 			}else{
-				print "<td width='50%'><strong>$field[name]</strong></td>\n";
-				DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");
+				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
+				DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");
 			}
 			
 			print "</tr>\n";
@@ -270,11 +260,11 @@ function data_edit() {
 		end_box();
 	}
 	
-	DrawFormItemHiddenIDField("local_data_id",$args[local_data_id]);
-	DrawFormItemHiddenIDField("data_template_data_id",$template_data[id]);
+	DrawFormItemHiddenIDField("local_data_id",$_GET["local_data_id"]);
+	DrawFormItemHiddenIDField("data_template_data_id",$template_data["id"]);
 	DrawFormItemHiddenTextBox("save_component_data","1","");
 	
-	if ($config[full_view_data_source][value] == "") {
+	if ($config["full_view_data_source"]["value"] == "") {
 		start_box("", "", "");
 		?>
 		<tr bgcolor="#FFFFFF">
@@ -295,7 +285,7 @@ function data_edit() {
 function tree() {
 	include_once ('include/tree_view_functions.php');
 	
-	$tree_parameters[edit_mode] = true;
+	$tree_parameters["edit_mode"] = true;
 	
 	draw_tabs();
 	start_box("<strong>Data Source Tree</strong>", "", "data_sources.php?action=edit");
@@ -307,10 +297,10 @@ function tree() {
 function tree_edit() {
 	include_once("include/tree_view_functions.php");
 	
-	global $args, $colors;
+	global $colors;
 	
-	if (isset($args[id])) {
-		$tree_item = db_fetch_row("select * from data_tree where id=$args[id]");
+	if (isset($_GET["id"])) {
+		$tree_item = db_fetch_row("select * from data_tree where id=" . $_GET["id"]);
 	}else{
 		unset($tree_item);
 	}
@@ -322,7 +312,7 @@ function tree_edit() {
 	draw_tabs();
 	start_box("<strong>Date Source Tree</strong> [edit] - Tree Item", "", "");
 	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Item Parent</font><br>
 			Choose a parent for this item.
@@ -333,16 +323,16 @@ function tree_edit() {
 	end_box();
 	
 	/* bold the active "type" */
-	if ($tree_item[host_id] > 0) { $title = "<strong>Tree Item [host]</strong>"; }else{ $title = "Tree Item [host]"; }
+	if ($tree_item["host_id"] > 0) { $title = "<strong>Tree Item [host]</strong>"; }else{ $title = "Tree Item [host]"; }
 	
 	start_box($title, "", "");
 	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Host</font><br>
 			If this item is a host, please select it from the list.
 		</td>
-		<?DrawFormItemDropdownFromSQL("host_id",db_fetch_assoc("select id,hostname from host order by hostname"),"hostname","id",$tree_item[host_id],"None","1");?>
+		<?DrawFormItemDropdownFromSQL("host_id",db_fetch_assoc("select id,hostname from host order by hostname"),"hostname","id",$tree_item["host_id"],"None","1");?>
 	</tr>
 	
 	<?
@@ -350,30 +340,30 @@ function tree_edit() {
 	end_box();
 	
 	/* bold the active "type" */
-	if ($tree_item[title] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
+	if ($tree_item["title"] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
 	
 	start_box($title, "", "");
 	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Header Title</font><br>
 			If this item is a header, enter a title here.
 		</td>
-		<?DrawFormItemTextBox("title",$tree_item[title],"","100","40");?>
+		<?DrawFormItemTextBox("title",$tree_item["title"],"","100","40");?>
 	</tr>
 	<?
 	
 	end_box();
 	
-	DrawFormItemHiddenIDField("id",$args[tree_item_id]);
-	DrawFormItemHiddenIDField("tree_id",$args[tree_id]);
+	DrawFormItemHiddenIDField("id",$_GET["tree_item_id"]);
+	DrawFormItemHiddenIDField("tree_id",$_GET["tree_id"]);
 	DrawFormItemHiddenTextBox("save_component_tree_item","1","");
 	
 	start_box("", "", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "tree.php?action=edit&id=$args[tree_id]");?>
+			<?DrawFormSaveButton("save", "tree.php?action=edit&id=" . $_GET["tree_id"]);?>
 		</td>
 	</tr>
 	</form>
@@ -383,32 +373,30 @@ function tree_edit() {
 
 function tree_moveup() {
 	include_once("include/tree_functions.php");
-	global $args;
 	
-	$order_key = db_fetch_cell("SELECT order_key FROM data_tree WHERE id=$args[branch_id]");
+	$order_key = db_fetch_cell("SELECT order_key FROM data_tree WHERE id=" . $_GET["branch_id"]);
 	if ($order_key > 0) { branch_up($order_key, 'data_tree', 'order_key', ''); }
 }
 
 function tree_movedown() {
 	include_once("include/tree_functions.php");
-	global $args;
 	
-	$order_key = db_fetch_cell("SELECT order_key FROM data_tree WHERE id=$args[branch_id]");
+	$order_key = db_fetch_cell("SELECT order_key FROM data_tree WHERE id=" . $_GET["branch_id"]);
 	if ($order_key > 0) { branch_down($order_key, 'data_tree', 'order_key', ''); }
 }
 
 function tree_remove() {
-	global $args, $config;
+	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source tree <strong>'" . db_fetch_cell("select title from data_tree where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=tree_remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source tree <strong>'" . db_fetch_cell("select title from data_tree where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=tree_remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 
-	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-		db_execute("delete from data_tree where id=$args[id]");
+	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+		db_execute("delete from data_tree where id=" . $_GET["id"]);
 	}
 }
 
@@ -417,80 +405,78 @@ function tree_remove() {
    ------------------------ */
 
 function ds_remove() {
-	global $args, $config;
+	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=$args[local_data_id]") . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=ds_remove&local_data_id=$args[local_data_id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the data source <strong>'" . db_fetch_cell("select name from data_template_data where local_data_id=" . $_GET["local_data_id"]) . "'</strong>?", getenv("HTTP_REFERER"), "data_sources.php?action=ds_remove&local_data_id=" . $_GET["local_data_id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-		db_execute("delete from data_template_data where local_data_id=$args[local_data_id]");
-		db_execute("delete from data_template_rrd where local_data_id=$args[local_data_id]");
-		db_execute("delete from data_local where id=$args[local_data_id]");
+	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+		db_execute("delete from data_template_data where local_data_id=" . $_GET["local_data_id"]);
+		db_execute("delete from data_template_rrd where local_data_id=" . $_GET["local_data_id"]);
+		db_execute("delete from data_local where id=" . $_GET["local_data_id"]);
 	}
 }
 
 function ds_save() {
-	global $form;
-	
-	$save["id"] = $form["local_data_id"];
-	$save["data_template_id"] = $form["data_template_id"];
-	$save["host_id"] = $form["host_id"];
+	$save["id"] = $_POST["local_data_id"];
+	$save["data_template_id"] = $_POST["data_template_id"];
+	$save["host_id"] = $_POST["host_id"];
 	
 	$local_data_id = sql_save($save, "data_local");
 	unset($save);
 	
-	$save["id"] = $form["data_template_data_id"];
-	$save["local_data_template_data_id"] = $form["local_data_template_data_id"];
+	$save["id"] = $_POST["data_template_data_id"];
+	$save["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
 	$save["local_data_id"] = $local_data_id;
-	$save["data_template_id"] = $form["data_template_id"];
-	$save["data_input_id"] = $form["data_input_id"];
-	$save["name"] = $form["name"];
-	$save["data_source_path"] = $form["data_source_path"];
-	$save["active"] = $form["active"];
-	$save["rrd_step"] = $form["rrd_step"];
+	$save["data_template_id"] = $_POST["data_template_id"];
+	$save["data_input_id"] = $_POST["data_input_id"];
+	$save["name"] = $_POST["name"];
+	$save["data_source_path"] = $_POST["data_source_path"];
+	$save["active"] = $_POST["active"];
+	$save["rrd_step"] = $_POST["rrd_step"];
 	
 	sql_save($save, "data_template_data");
 	unset($save);
 	
 	/* if this is a new data source and a template has been selected, skip item creation this time
 	otherwise it throws off the templatate creation because of the NULL data */
-	if (($form["data_template_id"] == "0") || ($form["data_template_rrd_id"] != "0")) {
-		$save["id"] = $form["data_template_rrd_id"];
-		$save["local_data_template_rrd_id"] = $form["local_data_template_rrd_id"];
+	if (($_POST["data_template_id"] == "0") || ($_POST["data_template_rrd_id"] != "0")) {
+		$save["id"] = $_POST["data_template_rrd_id"];
+		$save["local_data_template_rrd_id"] = $_POST["local_data_template_rrd_id"];
 		$save["local_data_id"] = $local_data_id;
-		$save["data_template_id"] = $form["data_template_id"];
-		$save["rrd_maximum"] = $form["rrd_maximum"];
-		$save["rrd_minimum"] = $form["rrd_minimum"];
-		$save["rrd_heartbeat"] = $form["rrd_heartbeat"];
-		$save["data_source_type_id"] = $form["data_source_type_id"];
-		$save["data_source_name"] = $form["data_source_name"];
-		$save["script_output_argument"] = $form["script_output_argument"];
+		$save["data_template_id"] = $_POST["data_template_id"];
+		$save["rrd_maximum"] = $_POST["rrd_maximum"];
+		$save["rrd_minimum"] = $_POST["rrd_minimum"];
+		$save["rrd_heartbeat"] = $_POST["rrd_heartbeat"];
+		$save["data_source_type_id"] = $_POST["data_source_type_id"];
+		$save["data_source_name"] = $_POST["data_source_name"];
+		$save["script_output_argument"] = $_POST["script_output_argument"];
 		
 		sql_save($save, "data_template_rrd");
 	}
 	
-	if ($form[data_template_id] != $form[_data_template_id]) {
+	if ($_POST["data_template_id"] != $_POST["_data_template_id"]) {
 		/* update all nessesary template information */
 		include_once ("include/utility_functions.php");
-		$return_status = change_data_template($local_data_id, $form[data_template_id], $form[_data_template_id]);
+		$return_status = change_data_template($local_data_id, $_POST["data_template_id"], $_POST["_data_template_id"]);
 	}
 	
 	return $local_data_id;
 }
 
 function ds_edit() {
-	global $args, $config, $colors;
+	global $config, $colors;
 	
 	$use_data_template = true;
 	
-	if (isset($args[local_data_id])) {
-		$local_data_template_data_id = db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$args[local_data_id]");
+	if (isset($_GET["local_data_id"])) {
+		$local_data_template_data_id = db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		
-		$data = db_fetch_row("select * from data_template_data where local_data_id=$args[local_data_id]");
+		$data = db_fetch_row("select * from data_template_data where local_data_id=" . $_GET["local_data_id"]);
 		$data_template = db_fetch_row("select * from data_template_data where id=$local_data_template_data_id");
 	}else{
 		unset($data_template);
@@ -499,17 +485,17 @@ function ds_edit() {
 		$use_data_template = false;
 	}
 	
-	if ($data[data_template_id] == "0") {
+	if ($data["data_template_id"] == "0") {
 		$use_data_template = false;
 	}
 	
-	$data_template_name = db_fetch_cell("select name from data_template where id=$data[data_template_id]");
+	$data_template_name = db_fetch_cell("select name from data_template where id=" . $data["data_template_id"]);
 	
 	draw_tabs();
 	
-	if ($config[full_view_data_source][value] == "") {
+	if ($config["full_view_data_source"]["value"] == "") {
 		start_box("<strong>Data Sources</strong> [edit]", "", "");
-		draw_data_form_select("?action=ds_edit&local_data_id=$args[local_data_id]");
+		draw_data_form_select("?action=ds_edit&local_data_id=" . $_GET["local_data_id"]);
 		end_box();
 	}
 	
@@ -517,12 +503,12 @@ function ds_edit() {
 	
 	print "<form method='post' action='data_sources.php'>\n";
 	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Data Template</font><br>
 			The name given to this data template.
 		</td>
-		<?DrawFormItemDropdownFromSQL("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$data_template[data_template_id],"None","0");?>
+		<?DrawFormItemDropdownFromSQL("data_template_id",db_fetch_assoc("select id,name from data_template order by name"),"name","id",$data_template["data_template_id"],"None","0");?>
 	</tr>
 	
 	<?
@@ -531,63 +517,63 @@ function ds_edit() {
 	start_box("Data Template Configuration", "", "");
 	?>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
-			<?if (($use_data_template == false) || ($data_template[t_name] == "on")) { print "Choose a name for this data source."; }?>
+			<?if (($use_data_template == false) || ($data_template["t_name"] == "on")) { print "Choose a name for this data source."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($data_template[t_name] == "on")) {
-			DrawFormItemTextBox("name",$data[name],"","50", "40");
+		<?if (($use_data_template == false) || ($data_template["t_name"] == "on")) {
+			DrawFormItemTextBox("name",$data["name"],"","50", "40");
 		}else{
-			print "<td><em>$data[name]</em></td>";
-			DrawFormItemHiddenTextBox("name",$data_template[name],"");
+			print "<td><em>" . $data["name"] . "</em></td>";
+			DrawFormItemHiddenTextBox("name",$data_template["name"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Source Path</font><br>
 			Specify the full path to the rrd file containing the data.
 		</td>
-		<?DrawFormItemTextBox("data_source_path",$data[data_source_path],"","255", "40");?>
+		<?DrawFormItemTextBox("data_source_path",$data["data_source_path"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Input Source</font><br>
-			<?if (($use_data_template == false) || ($data_template[t_data_input_id] == "on")) { print "The method used to gather for this data source."; }?>
+			<?if (($use_data_template == false) || ($data_template["t_data_input_id"] == "on")) { print "The method used to gather for this data source."; }?>
 		</td>
 		<?if ($use_data_template == false) {
-			DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$data[data_input_id],"None","1");
+			DrawFormItemDropdownFromSQL("data_input_id",db_fetch_assoc("select id,name from data_input order by name"),"name","id",$data["data_input_id"],"None","1");
 		}else{
-			print "<td><em>" . db_fetch_cell("select name from data_input where id=$data[data_input_id]") . "</em></td>";
-			DrawFormItemHiddenTextBox("data_input_id",$data_template[data_input_id],"");
+			print "<td><em>" . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "</em></td>";
+			DrawFormItemHiddenTextBox("data_input_id",$data_template["data_input_id"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Step</font><br>
-			<?if (($use_data_template == false) || ($data_template[t_rrd_step] == "on")) { print "The amount of time in seconds between expected updates."; }?>
+			<?if (($use_data_template == false) || ($data_template["t_rrd_step"] == "on")) { print "The amount of time in seconds between expected updates."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($data_template[t_rrd_step] == "on")) {
-			DrawFormItemTextBox("rrd_step",$data[rrd_step],"","50", "40");
+		<?if (($use_data_template == false) || ($data_template["t_rrd_step"] == "on")) {
+			DrawFormItemTextBox("rrd_step",$data["rrd_step"],"","50", "40");
 		}else{
-			print "<td><em>$data[rrd_step]</em></td>";
-			DrawFormItemHiddenTextBox("rrd_step",$data_template[rrd_step],"");
+			print "<td><em>" . $data["rrd_step"] . "</em></td>";
+			DrawFormItemHiddenTextBox("rrd_step",$data_template["rrd_step"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Source Active</font><br>
-			<?if (($use_data_template == false) || ($data_template[t_active] == "on")) { print "Whether cacti should gather data for this data source or not."; }?>
+			<?if (($use_data_template == false) || ($data_template["t_active"] == "on")) { print "Whether cacti should gather data for this data source or not."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($data_template[t_active] == "on")) {
-			DrawFormItemCheckBox("active",$data[active],"Data Source Active","on",$args[local_data_id]);
+		<?if (($use_data_template == false) || ($data_template["t_active"] == "on")) {
+			DrawFormItemCheckBox("active",$data["active"],"Data Source Active","on",$_GET["local_data_id"]);
 		}else{
-			print "<td><em>" . html_boolean_friendly($data[active]) . "</em></td>";
-			DrawFormItemHiddenTextBox("active",$data_template[active],"");
+			print "<td><em>" . html_boolean_friendly($data["active"]) . "</em></td>";
+			DrawFormItemHiddenTextBox("active",$data_template["active"],"");
 		}?>
 	</tr>
 	
@@ -595,24 +581,24 @@ function ds_edit() {
 	end_box();
 	
 	/* fetch ALL rrd's for this data source */
-	if (isset($args[local_data_id])) {
-		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where local_data_id=$args[local_data_id] order by data_source_name");
+	if (isset($_GET["local_data_id"])) {
+		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where local_data_id=" . $_GET["local_data_id"] . " order by data_source_name");
 	}
 	
 	/* select the first "rrd" of this data source by default */
-	if (empty($args[view_rrd])) {
-		$args[view_rrd] = $template_data_rrds[0][id];
+	if (empty($_GET["view_rrd"])) {
+		$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 	}
 	
 	/* get more information about the rrd we chose */
-	if (!empty($args[view_rrd])) {
-		$local_data_template_rrd_id = db_fetch_cell("select local_data_template_rrd_id from data_template_rrd where id=$args[view_rrd]");
+	if (!empty($_GET["view_rrd"])) {
+		$local_data_template_rrd_id = db_fetch_cell("select local_data_template_rrd_id from data_template_rrd where id=" . $_GET["view_rrd"]);
 		
-		$rrd = db_fetch_row("select * from data_template_rrd where id=$args[view_rrd]");
+		$rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
 		$rrd_template = db_fetch_row("select * from data_template_rrd where id=$local_data_template_rrd_id");
 	}
 	
-	start_box("Data Source Configuration [" . $rrd[data_source_name] . "]", "", "");
+	start_box("Data Source Configuration [" . $rrd["data_source_name"] . "]", "", "");
 	
 	if (sizeof($template_data_rrds) > 1) {
 		?>
@@ -625,7 +611,7 @@ function ds_edit() {
 						$i++;
 						?>
 						<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&data_template_id=<?print $args[data_template_id];?>&view_rrd=<?print $template_data_rrd[id];?>"><?print "$i: $template_data_rrd[data_source_name]";?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+							<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="data_templates.php?action=template_edit&data_template_id=<?print $_GET["data_template_id"];?>&view_rrd=<?print $template_data_rrd["id"];?>"><?print "$i: " . $template_data_rrd["data_source_name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 						</td>
 						<?
 						}
@@ -636,93 +622,93 @@ function ds_edit() {
 		</tr>
 		<?
 	}elseif (sizeof($template_data_rrds) == 1) {
-		$args[view_rrd] = $template_data_rrds[0][id];
+		$_GET["view_rrd"] = $template_data_rrds[0]["id"];
 	}
 	
 	?>
 	
 	<form method="post" action="data_sources.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Internal Data Source Name</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_data_source_name] == "on")) { print "Choose unique name to represent this piece of data inside of the rrd file."; }?>
+			<?if (($use_data_template == false) || ($rrd_template["t_data_source_name"] == "on")) { print "Choose unique name to represent this piece of data inside of the rrd file."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($rrd_template[t_data_source_name] == "on")) {
-			DrawFormItemTextBox("data_source_name",$rrd[data_source_name],"","19", "40");
+		<?if (($use_data_template == false) || ($rrd_template["t_data_source_name"] == "on")) {
+			DrawFormItemTextBox("data_source_name",$rrd["data_source_name"],"","19", "40");
 		}else{
-			print "<td><em>$rrd[data_source_name]</em></td>";
-			DrawFormItemHiddenTextBox("data_source_name",$rrd_template[data_source_name],"");
+			print "<td><em>" . $rrd["data_source_name"] . "</em></td>";
+			DrawFormItemHiddenTextBox("data_source_name",$rrd_template["data_source_name"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Maximum Value</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_rrd_maximum] == "on")) { print "The maximum value of data that is allowed to be collected."; }?>
+			<?if (($use_data_template == false) || ($rrd_template["t_rrd_maximum"] == "on")) { print "The maximum value of data that is allowed to be collected."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($rrd_template[t_rrd_maximum] == "on")) {
-			DrawFormItemTextBox("rrd_maximum",$rrd[rrd_maximum],"","20", "30");
+		<?if (($use_data_template == false) || ($rrd_template["t_rrd_maximum"] == "on")) {
+			DrawFormItemTextBox("rrd_maximum",$rrd["rrd_maximum"],"","20", "30");
 		}else{
-			print "<td><em>$rrd[rrd_maximum]</em></td>";
-			DrawFormItemHiddenTextBox("rrd_maximum",$rrd_template[rrd_maximum],"");
+			print "<td><em>" . $rrd["rrd_maximum"] . "</em></td>";
+			DrawFormItemHiddenTextBox("rrd_maximum",$rrd_template["rrd_maximum"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Minimum Value</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_rrd_minimum] == "on")) { print "The minimum value of data that is allowed to be collected."; }?>
+			<?if (($use_data_template == false) || ($rrd_template["t_rrd_minimum"] == "on")) { print "The minimum value of data that is allowed to be collected."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($rrd_template[t_rrd_minimum] == "on")) {
-			DrawFormItemTextBox("rrd_minimum",$rrd[rrd_minimum],"","20", "30");
+		<?if (($use_data_template == false) || ($rrd_template["t_rrd_minimum"] == "on")) {
+			DrawFormItemTextBox("rrd_minimum",$rrd["rrd_minimum"],"","20", "30");
 		}else{
-			print "<td><em>$rrd[rrd_minimum]</em></td>";
-			DrawFormItemHiddenTextBox("rrd_minimum",$rrd_template[rrd_minimum],"");
+			print "<td><em>" . $rrd["rrd_minimum"] . "</em></td>";
+			DrawFormItemHiddenTextBox("rrd_minimum",$rrd_template["rrd_minimum"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Data Source Type</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_data_source_type_id] == "on")) { print "How data is represented in the RRA."; }?>
+			<?if (($use_data_template == false) || ($rrd_template["t_data_source_type_id"] == "on")) { print "How data is represented in the RRA."; }?>
 		</td>
-		<?if (($use_data_template == false) || ($rrd_template[t_data_source_type_id] == "on")) {
-			DrawFormItemDropdownFromSQL("data_source_type_id",db_fetch_assoc("select * from def_ds order by Name"),"Name","ID",$rrd[data_source_type_id],"","1");
+		<?if (($use_data_template == false) || ($rrd_template["t_data_source_type_id"] == "on")) {
+			DrawFormItemDropdownFromSQL("data_source_type_id",db_fetch_assoc("select * from def_ds order by Name"),"Name","ID",$rrd["data_source_type_id"],"","1");
 		}else{
-			print "<td><em>" . db_fetch_cell("select name from def_ds where id=$rrd[data_source_type_id]") . "</em></td>";
-			DrawFormItemHiddenTextBox("data_source_type_id",$rrd_template[data_source_type_id],"");
+			print "<td><em>" . db_fetch_cell("select name from def_ds where id=" . $rrd["data_source_type_id"]) . "</em></td>";
+			DrawFormItemHiddenTextBox("data_source_type_id",$rrd_template["data_source_type_id"],"");
 		}?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); $i++; ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 		<td width="50%">
 			<font class="textEditTitle">Heartbeat</font><br>
-			<?if (($use_data_template == false) || ($rrd_template[t_rrd_heartbeat] == "on")) { print "The maximum amount of time that can pass before data is entered as \"unknown\". (Usually 2x300=600)"; }?>
+			<?if (($use_data_template == false) || ($rrd_template["t_rrd_heartbeat"] == "on")) { print "The maximum amount of time that can pass before data is entered as \"unknown\". (Usually 2x300=600)"; }?>
 		</td>
-		<?if (($use_data_template == false) || ($rrd_template[t_rrd_heartbeat] == "on")) {
-			DrawFormItemTextBox("rrd_heartbeat",$rrd[rrd_heartbeat],"","20", "30");
+		<?if (($use_data_template == false) || ($rrd_template["t_rrd_heartbeat"] == "on")) {
+			DrawFormItemTextBox("rrd_heartbeat",$rrd["rrd_heartbeat"],"","20", "30");
 		}else{
-			print "<td><em>$rrd[rrd_heartbeat]</em></td>";
-			DrawFormItemHiddenTextBox("rrd_heartbeat",$rrd_template[rrd_heartbeat],"");
+			print "<td><em>" . $rrd["rrd_heartbeat"] . "</em></td>";
+			DrawFormItemHiddenTextBox("rrd_heartbeat",$rrd_template["rrd_heartbeat"],"");
 		}?>
 	</tr>
 	
 	<?
 	end_box();
 	
-	if ($config[full_view_data_source][value] == "on") {
+	if ($config["full_view_data_source"]["value"] == "on") {
 		data_edit();	
 	}
 	
-	DrawFormItemHiddenIDField("_data_template_id",$data[data_template_id]);
-	DrawFormItemHiddenIDField("data_template_data_id",$data[id]);
-	DrawFormItemHiddenIDField("data_template_rrd_id",$rrd[id]);
-	DrawFormItemHiddenIDField("local_data_template_data_id",$data[local_data_template_data_id]);
-	DrawFormItemHiddenIDField("local_data_template_rrd_id",$rrd[local_data_template_rrd_id]);
-	DrawFormItemHiddenIDField("local_data_id",$data[local_data_id]);
-	DrawFormItemHiddenIDField("current_rrd",$args[view_rrd]);
-	DrawFormItemHiddenTextBox("host_id",$args[host_id],db_fetch_cell("select host_id from data_local where id=$data[local_data_id]"));
+	DrawFormItemHiddenIDField("_data_template_id",$data["data_template_id"]);
+	DrawFormItemHiddenIDField("data_template_data_id",$data["id"]);
+	DrawFormItemHiddenIDField("data_template_rrd_id",$rrd["id"]);
+	DrawFormItemHiddenIDField("local_data_template_data_id",$data["local_data_template_data_id"]);
+	DrawFormItemHiddenIDField("local_data_template_rrd_id",$rrd["local_data_template_rrd_id"]);
+	DrawFormItemHiddenIDField("local_data_id",$data["local_data_id"]);
+	DrawFormItemHiddenIDField("current_rrd",$_GET["view_rrd"]);
+	DrawFormItemHiddenTextBox("host_id",$_GET["host_id"],db_fetch_cell("select host_id from data_local where id=" . $data["local_data_id"]));
 	DrawFormItemHiddenTextBox("save_component_data_source","1","");
 	
 	start_box("", "", "");

@@ -26,15 +26,14 @@
 	
 	start_box("<strong>About cacti</strong>", "", "");
 	?> 
-
-
+	
 	<tr>
-		<td bgcolor="#<?print $colors[header_panel];?>" colspan="2">
-			<strong><font color="#<?print $colors[header_text];?>">Version <?print $config[cacti_version];?></font></strong>
+		<td bgcolor="#<?print $colors["header_panel"];?>" colspan="2">
+			<strong><font color="#<?print $colors["header_text"];?>">Version <?print $config["cacti_version"];?></font></strong>
 		</td>
 	</tr>
 	<tr>
-		<td valign="top" bgcolor="#<?print $colors[light];?>" class="textArea">
+		<td valign="top" bgcolor="#<?print $colors["light"];?>" class="textArea">
 			<a href="http://www.raxnet.net/"><img align="right" src="images/raxnet_logo.gif" border="0" alt="raXnet"></a>
 			
 			raXnet's cacti is designed to be the complete frontend to rrdtool. Cacti's goal is to make the
@@ -44,11 +43,7 @@
 			<p>The design of cacti took many hours of SQL and PHP coding, so I hope you find it very useful.</p>
 			
 			<p><strong>Developer Thanks</strong><br>
-			<ul type="disc">
-				<li>A <em>very</em> special thanks to <a href="mailto:rob@ldg.net">Rob Sweet</a> for contributing large amounts 
-					of code to the 0.8 branch. Also thanks to <a href="http://www.cox.com/">Cox Communications</a> for paying Rob to work on
-					cacti.</li>
-			</ul>
+			
 			</p>
 			
 			<p><strong>Thanks</a></strong><br>
@@ -71,7 +66,6 @@
 			</p>
 		</td>
 	</tr>
-
 
 <?	end_box();
 	include_once ("include/bottom_footer.php");?>

@@ -21,16 +21,12 @@
    | - raXnet - http://www.raxnet.net/                                       |
    +-------------------------------------------------------------------------+
    */?>
-<? 	
-$section = "Add/Edit Graphs"; 
-include ('include/auth.php');
+<?
+$section = "Add/Edit Graphs"; include ('include/auth.php');
 include_once ('include/form.php');
 include_once ('include/functions.php');
 
-if ($form[action]) { $action = $form[action]; } else { $action = $args[action]; }
-if ($form[ID]) { $id = $form[ID]; } else { $id = $args[id]; }
-
-switch ($action) {
+switch ($_REQUEST["action"]) {
 	case 'save':
 		$redirect_location = form_save();
 		
@@ -84,14 +80,12 @@ switch ($action) {
    -------------------------- */
 
 function form_save() {
-	global $form;
-	
-	if (isset($form[save_component_tree])) {
+	if (isset($_POST["save_component_tree"])) {
 		tree_save();
 		return "tree.php";
-	}elseif (isset($form[save_component_tree_item])) {
+	}elseif (isset($_POST["save_component_tree_item"])) {
 		item_save();
-		return "tree.php?action=edit&id=$form[tree_id]";
+		return "tree.php?action=edit&id=" . $_POST["tree_id"];
 	}
 }
 
@@ -100,36 +94,36 @@ function form_save() {
    ----------------------- */
 
 function item_edit() {
-	global $args, $colors, $cdef_item_types;
+	global $colors, $cdef_item_types;
 	
-	if (isset($args[tree_item_id])) {
-		$tree_item = db_fetch_row("select * from graph_tree_view_items where id=$args[tree_item_id]");
+	if (isset($_GET["tree_item_id"])) {
+		$tree_item = db_fetch_row("select * from graph_tree_view_items where id=" . $_GET["tree_item_id"]);
 	}else{
 		unset($tree_item);
 	}
 	
 	/* bold the active "type" */
-	if ($tree_item[graph_id] > 0) { $title = "<strong>Tree Item [graph]</strong>"; }else{ $title = "Tree Item [graph]"; }
+	if ($tree_item["graph_id"] > 0) { $title = "<strong>Tree Item [graph]</strong>"; }else{ $title = "Tree Item [graph]"; }
 	
 	start_box($title, "", "");
 	
 	?>
 	<form method="post" action="tree.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Graph</font><br>
 			Choose a graph from this list to add it to the tree.
 		</td>
-		<?DrawFormItemDropdownFromSQL("graph_id",db_fetch_assoc("select id,title from graph_templates_graph where local_graph_id != 0"),"title","id",$tree_item[graph_id],"None","");?>
+		<?DrawFormItemDropdownFromSQL("graph_id",db_fetch_assoc("select id,title from graph_templates_graph where local_graph_id != 0"),"title","id",$tree_item["graph_id"],"None","");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Round Robin Archive</font><br>
 			Choose a round robin archive to control how this graph is displayed.
 		</td>
-		<?DrawFormItemDropdownFromSQL("rra_id",db_fetch_assoc("select ID,Name from rrd_rra"),"Name","ID",$tree_item[rra_id],"None","1");?>
+		<?DrawFormItemDropdownFromSQL("rra_id",db_fetch_assoc("select ID,Name from rrd_rra"),"Name","ID",$tree_item["rra_id"],"None","1");?>
 	</tr>
 	
 	<?
@@ -137,30 +131,30 @@ function item_edit() {
 	end_box();
 	
 	/* bold the active "type" */
-	if ($tree_item[title] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
+	if ($tree_item["title"] != "") { $title = "<strong>Tree Item [header]</strong>"; }else{ $title = "Tree Item [header]"; }
 	
 	start_box($title, "", "");
 	
-	DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Header Title</font><br>
 			If this item is a header, enter a title here.
 		</td>
-		<?DrawFormItemTextBox("title",$tree_item[title],"","255","40");?>
+		<?DrawFormItemTextBox("title",$tree_item["title"],"","255","40");?>
 	</tr>
 	<?
 	
 	end_box();
 	
-	DrawFormItemHiddenIDField("id",$args[tree_item_id]);
-	DrawFormItemHiddenIDField("tree_id",$args[tree_id]);
+	DrawFormItemHiddenIDField("id",$_GET["tree_item_id"]);
+	DrawFormItemHiddenIDField("tree_id",$_GET["tree_id"]);
 	DrawFormItemHiddenTextBox("save_component_tree_item","1","");
 	
 	start_box("", "", "");
 	?>
 	<tr bgcolor="#FFFFFF">
 		 <td colspan="2" align="right">
-			<?DrawFormSaveButton("save", "tree.php?action=edit&id=$args[tree_id]");?>
+			<?DrawFormSaveButton("save", "tree.php?action=edit&id=" . $_GET["tree_id"]);?>
 		</td>
 	</tr>
 	</form>
@@ -171,29 +165,23 @@ function item_edit() {
 function item_moveup() {
 	include_once('include/tree_functions.php');
 	
-	global $args;
-	
-	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_view_items WHERE id=$args[tree_item_id]");
+	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_view_items WHERE id=" . $_GET["tree_item_id"]);
 	if ($order_key > 0) { branch_up($order_key, 'graph_tree_view_items', 'order_key', ''); }
 }
 
 function item_movedown() {
 	include_once('include/tree_functions.php');
 	
-	global $args;
-	
-	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_view_items WHERE id=$args[tree_item_id]");
+	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_view_items WHERE id=" . $_GET["tree_item_id"]);
 	if ($order_key > 0) { branch_down($order_key, 'graph_tree_view_items', 'order_key', ''); }
 }
 
 function item_save() {
-	global $form;
-	
-	$save["id"] 		= $form["id"];
-	$save["tree_id"]	= $form["tree_id"];
-	$save["title"]  	= $form["title"];
-	$save["graph_id"]	= $form["graph_id"];
-	$save["rra_id"]		= $form["rra_id"];
+	$save["id"] 		= $_POST["id"];
+	$save["tree_id"]	= $_POST["tree_id"];
+	$save["title"]  	= $_POST["title"];
+	$save["graph_id"]	= $_POST["graph_id"];
+	$save["rra_id"]		= $_POST["rra_id"];
 
 	if (sql_Save($save, "graph_tree_view_items")) {
 		raise_message(1);
@@ -206,17 +194,17 @@ function item_save() {
 }
 
 function item_remove() {
-        global $args, $config;
+        global $config;
 
-        if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+        if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
                 include ('include/top_header.php');
-                DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the item <strong>'" . db_fetch_cell("select title from graph_tree_view_items where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=$args[id]");
+                DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the item <strong>'" . db_fetch_cell("select title from graph_tree_view_items where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=" . $_GET["id"]);
                 include ('include/bottom_footer.php');
                 exit;
         }
 
-        if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-                db_execute("delete from graph_tree_view_items where id=$args[id]");
+        if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+                db_execute("delete from graph_tree_view_items where id=" . $_GET["id"]);
         }
 }
 
@@ -226,10 +214,8 @@ function item_remove() {
    --------------------- */
 
 function tree_save() {
-        global $form;
-
-        $save["id"]   = $form["id"];
-        $save["name"] = $form["name"];
+        $save["id"]   = $_POST["id"];
+        $save["name"] = $_POST["name"];
 
         if (sql_Save($save, "graph_tree_view")) {
                 raise_message(1);
@@ -241,29 +227,29 @@ function tree_save() {
 }
 
 function tree_remove() {
-	global $args, $config;
+	global $config;
 
-        if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+        if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
                 include ('include/top_header.php');
-                DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree_view where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=$args[id]");
+                DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree_view where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=" . $_GET["id"]);
                 include ('include/bottom_footer.php');
                 exit;
         }
                 
-        if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-                db_execute("delete from graph_tree_view where id=$args[id]");
+        if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+                db_execute("delete from graph_tree_view where id=" . $_GET["id"]);
         }
 }
 
 function tree_edit() {
 	include_once("include/tree_view_functions.php");
 	
-	global $args, $colors, $cdef_item_types;
+	global $colors, $cdef_item_types;
 	
 	start_box("<strong>Trees [edit]</strong>", "", "");
 	
-	if (isset($args[id])) {
-		$tree = db_fetch_row("select * from graph_tree_view where id=$args[id]");
+	if (isset($_GET["id"])) {
+		$tree = db_fetch_row("select * from graph_tree_view where id=" . $_GET["id"]);
 	}else{
 		unset($tree);
 	}
@@ -271,20 +257,20 @@ function tree_edit() {
 	?>
 	<form method="post" action="tree.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this graph tree.
 		</td>
-		<?DrawFormItemTextBox("name",$tree[name],"","255", "40");?>
+		<?DrawFormItemTextBox("name",$tree["name"],"","255", "40");?>
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("id",$args[id]);
+	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	end_box();
 	
-	start_box("Tree Items", "", "tree.php?action=item_edit&tree_id=$tree[id]");
-	grow_edit_graph_tree($args[id], "", "");
+	start_box("Tree Items", "", "tree.php?action=item_edit&tree_id=" . $tree["id"]);
+	grow_edit_graph_tree($_GET["id"], "", "");
 	end_box();
 	
 	DrawFormItemHiddenTextBox("save_component_tree","1","");
@@ -306,22 +292,22 @@ function tree() {
 	
 	start_box("<strong>Graph Trees</strong>", "", "tree.php?action=edit");
 	                         
-	print "<tr bgcolor='#$colors[header_panel]'>";
-		DrawMatrixHeaderItem("Name",$colors[header_text],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
     
 	$trees = db_fetch_assoc("select * from graph_tree_view order by name");
 	
 	if (sizeof($trees) > 0) {
 	foreach ($trees as $tree) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="tree.php?action=edit&id=<?print $tree[id];?>"><?print $tree[name];?></a>
+				<a class="linkEditMain" href="tree.php?action=edit&id=<?print $tree["id"];?>"><?print $tree["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="tree.php?action=remove&id=<?print $tree[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="tree.php?action=remove&id=<?print $tree["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?

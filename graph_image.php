@@ -22,26 +22,23 @@
 +-------------------------------------------------------------------------+
 */?>
 <?
-$section = "View Graphs"; 
-$guest_account = true; 
-include ('include/auth.php');
+$section = "View Graphs"; $guest_account = true; include ('include/auth.php');
 include_once ("include/rrd_functions.php");
-
 
 /* check to see if there are user specified vars */
 if ($graph_start != "") {
 	$graph_data_array["use"] = true;
-	$graph_data_array["graph_start"] = $args[graph_start];
-	$graph_data_array["graph_height"] = $args[graph_height];
-	$graph_data_array["graph_width"] = $args[graph_width];
+	$graph_data_array["graph_start"] = $_GET["graph_start"];
+	$graph_data_array["graph_height"] = $_GET["graph_height"];
+	$graph_data_array["graph_width"] = $_GET["graph_width"];
 }
 
 /* treat the legend separatly */
 if ($graph_nolegend != "") {
-	$graph_data_array["graph_nolegend"] = $args[graph_nolegend];
+	$graph_data_array["graph_nolegend"] = $_GET["graph_nolegend"];
 }
 
-$graph_data_array["print_source"] = $args[showsource];
-print rrdtool_function_graph($args[graphid], $args[rraid], $graph_data_array);
+$graph_data_array["print_source"] = $_GET["showsource"];
+print rrdtool_function_graph($_GET["graphid"], $_GET["rraid"], $graph_data_array);
 
 ?>

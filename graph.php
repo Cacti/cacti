@@ -22,17 +22,12 @@
 +-------------------------------------------------------------------------+
 */?>
 <?	
-$section = "View Graphs"; 
-$guest_account = true; 
-include ('include/auth.php');
+$section = "View Graphs"; $guest_account = true; include ('include/auth.php');
 include_once ("include/rrd_functions.php");
 include_once ("include/functions.php");
 include ("include/top_graph_header.php");
 
-if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
-if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
-
-switch ($args[rraid]) {
+switch ($_GET["rraid"]) {
  case 'all':
     $sql_where = " where id is not null";
     break;
@@ -69,8 +64,8 @@ $rra_list = db_fetch_assoc("select ID,Name from rrd_rra $sql_where order by step
 if (sizeof($rra_list) > 0) {
     foreach ($rra_list as $rra) {
 	?>
-	<div align="center"><img src="graph_image.php?graphid=<?print $graphid;?>&rraid=<?print $rra[ID];?>" border="0" alt="cacti/rrdtool graph"></div>
-	<div align="center"><strong><?print $rra[Name];?></strong> [<a href="graph.php?graphid=<?print $graphid;?>&rraid=<?print $rra[ID];?>&showinfo=true">source</a>]</div><br>
+	<div align="center"><img src="graph_image.php?graphid=<?print $graphid;?>&rraid=<?print $rra["ID"];?>" border="0" alt="cacti/rrdtool graph"></div>
+	<div align="center"><strong><?print $rra["Name"];?></strong> [<a href="graph.php?graphid=<?print $graphid;?>&rraid=<?print $rra["ID"];?>&showinfo=true">source</a>]</div><br>
 	<?
     }
 }

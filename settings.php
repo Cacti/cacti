@@ -22,43 +22,40 @@
 +-------------------------------------------------------------------------+
 */?>
 <?
-$section = "User Administration"; 
-include ('include/auth.php');
-header("Cache-control: no-cache");
-
+$section = "User Administration"; include ('include/auth.php');
 include_once ("include/config_settings.php");
 include_once ("include/functions.php");
 include_once ('include/form.php');
 
-switch ($action) {
+switch ($_REQUEST["action"]) {
  case 'save':
 	if (sizeof($settings) > 0) {
 	foreach (array_keys($settings) as $setting) {
-		if ($settings[$setting][tab] == $form[tab]) {
-			if ($settings[$setting][method] == "group") {
-				if (sizeof($settings[$setting][items]) > 0) {
-				foreach (array_keys($settings[$setting][items]) as $item) {
-					db_execute("replace into settings (name,value) values ('$item', '$form[$item]')");
+		if ($settings[$setting]["tab"] == $_POST["tab"]) {
+			if ($settings[$setting]["method"] == "group") {
+				if (sizeof($settings[$setting]["items"]) > 0) {
+				foreach (array_keys($settings[$setting]["items"]) as $item) {
+					db_execute("replace into settings (name,value) values ('$item', '$_POST[$item]')");
 				}
 				}
 			}else{
-				db_execute("replace into settings (name,value) values ('$setting', '$form[$setting]')");
+				db_execute("replace into settings (name,value) values ('$setting', '$_POST[$setting]')");
 			}
 		}
 	}
 	}
 
-	header ("Location: settings.php?tab=$form[tab]");
+	header ("Location: settings.php?tab=" . $_POST["tab"]);
 	break;
  default:
     	include_once ('include/top_header.php');
 	
-	if (!(isset($args[tab]))) {
+	if (!(isset($_GET["tab"]))) {
 		/* there is no selected tab; select the first one */
 		$current_tab = array_keys($tabs);
 		$current_tab = $current_tab[0];
 	}else{
-		$current_tab = $args[tab];
+		$current_tab = $_GET["tab"];
 	}
 	
 	start_box("<strong>cacti Settings (" . $tabs[$current_tab] . ")</strong>", "", "");
@@ -91,39 +88,39 @@ switch ($action) {
 	if (sizeof($settings) > 0) {
 	foreach (array_keys($settings) as $setting) {
 	    	/* make sure to skip group members here; only parents are allowed */
-		if (($settings[$setting][method] != "internal") && ($settings[$setting][tab] == $current_tab)) {
+		if (($settings[$setting]["method"] != "internal") && ($settings[$setting]["tab"] == $current_tab)) {
 			++$i;
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i);
+			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i);
 			
 			/* draw the acual header and textbox on the form */
-			DrawFormItem($settings[$setting][friendly_name],$settings[$setting][description]);
+			DrawFormItem($settings[$setting]["friendly_name"],$settings[$setting]["description"]);
 			
 			$current_value = db_fetch_cell("select value from settings where name='$setting'");
 			
 			/* choose what kind of item this is */
-			switch ($settings[$setting][method]) {
+			switch ($settings[$setting]["method"]) {
 				case 'textbox':
 					DrawFormItemTextBox($setting,$current_value,"","");
 					print "</tr>\n";
 					break;
 				case 'checkbox':
-					DrawFormItemCheckBox($setting,$current_value,$settings[$setting][friendly_name],"");
+					DrawFormItemCheckBox($setting,$current_value,$settings[$setting]["friendly_name"],"");
 					print "</tr>\n";
 					break;
 				case 'group':
 					print "<td>\n";
 					
 		    			/* loop through the resultset and draw each item in the group */
-					if (sizeof($settings[$setting][items]) > 0) {
-					foreach (array_keys($settings[$setting][items]) as $item) {
+					if (sizeof($settings[$setting]["items"]) > 0) {
+					foreach (array_keys($settings[$setting]["items"]) as $item) {
 						$current_value = db_fetch_cell("select value from settings where name='$item'");
 						
-			    			switch ($settings[$setting][items][$item][method]) {
+			    			switch ($settings[$setting]["items"][$item]["method"]) {
 							case 'textbox':
 								DrawtrippedFormItemTextBox($item,$current_value,"","");
 								break;
 							case 'checkbox':
-								DrawStrippedFormItemCheckBox($item,$current_value,$settings[$setting][items][$item][description],"",true);
+								DrawStrippedFormItemCheckBox($item,$current_value,$settings[$setting]["items"][$item]["description"],"",true);
 								break;
 						}
 			    
@@ -143,7 +140,7 @@ switch ($action) {
 	?>
 		<tr bgcolor="#FFFFFF">
 			 <td colspan="2" align="right" background="images/blue_line.gif">
-				<?DrawFormSaveButton("save", "settings.php?tab=$args[tab]");?>
+				<?DrawFormSaveButton("save", "settings.php?tab=" . $_GET["tab"]);?>
 				</form>
 			</td>
 		</tr>

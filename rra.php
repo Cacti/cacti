@@ -27,10 +27,7 @@ include_once ('include/config_arrays.php');
 include_once ('include/functions.php');
 include_once ('include/form.php');
 
-if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
-if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
-
-switch ($action) {
+switch ($_REQUEST["action"]) {
 	case 'save':
 		$redirect_location = form_save();
 		
@@ -62,9 +59,7 @@ switch ($action) {
    -------------------------- */
 
 function form_save() {
-	global $form;
-	
-	if (isset($form[save_component_rra])) {
+	if (isset($_POST["save_component_rra"])) {
 		return rra_save();
 	}
 }
@@ -74,56 +69,52 @@ function form_save() {
    ------------------- */
 
 function rra_save() {
-	global $form;
-	
-	$save["id"] = $form["id"];
-	$save["name"] = form_input_validate($form["name"], "name", "", false, 3);
-	$save["x_files_factor"] = form_input_validate($form["x_files_factor"], "x_files_factor", "^[0-9]+(\.[0-9])?$", false, 3);
-	$save["steps"] = form_input_validate($form["steps"], "steps", "^[0-9]*$", false, 3);
-	$save["rows"] = form_input_validate($form["rows"], "rows", "^[0-9]*$", false, 3);
+	$save["id"] = $_POST["id"];
+	$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+	$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[0-9]+(\.[0-9])?$", false, 3);
+	$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
+	$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
 	
 	if (!is_error_message()) {
 		$rra_id = sql_save($save, "rra");
 		
 		db_execute("delete from rra_cf where rra_id=$rra_id"); 
 		
-		for ($i=0; ($i < count($form[consolidation_function_id])); $i++) {
+		for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
 			db_execute("insert into rra_cf (rra_id,consolidation_function_id) 
-				values ($rra_id,".$form[consolidation_function_id][$i].")");
+				values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
 		}
 	}
 	
 	if (is_error_message()) {
-		return "rra.php?action=edit&id=$form[id]";
+		return "rra.php?action=edit&id=" . $_POST["id"];
 	}else{
 		return "rra.php";
 	}
 }
 
 function rra_remove() {
-	global $args;
-	
-	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
 		include_once ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete this round robin archive?", getenv("HTTP_REFERER"), "rra.php?action=remove&id=" . $_GET["id"]);
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-		db_execute("delete from rra where id=$args[id]");
-		db_execute("delete from rra_cf where rra_id=$args[id]");
+	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+		db_execute("delete from rra where id=" . $_GET["id"]);
+		db_execute("delete from rra_cf where rra_id=" . $_GET["id"]);
     	}	
 }
 
 function rra_edit() {
-	global $args, $colors, $consolidation_functions;
+	global $colors, $consolidation_functions;
 	
 	display_output_messages();
 	
 	start_box("<strong>Round Robin Archives [edit]</strong>", "", "");
 	
-	if (isset($args[id])) {
-		$rra = db_fetch_row("select * from rra where id=$args[id]");
+	if (isset($_GET["id"])) {
+		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
 	}else{
 		unset($rra);
 	}
@@ -131,48 +122,48 @@ function rra_edit() {
 	?>
 	<form method="post" action="rra.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?DrawFormItemTextBox("name",$rra[name],"","100", "40");?>
+		<?DrawFormItemTextBox("name",$rra["name"],"","100", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Consolidation Functions</font><br>
 			How data is to be entered in RRA's.
 		</td>
-		<?DrawFormItemMultipleList("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=$args[id]"), "consolidation_function_id");?>
+		<?DrawFormItemMultipleList("consolidation_function_id",$consolidation_functions,db_fetch_assoc("select * from rra_cf where rra_id=" . $_GET["id"]), "consolidation_function_id");?>
 	</tr>
     
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">X-Files Factor</font><br>
 			The amount of unknown data that can still be regarded as known.
 		</td>
-		<?DrawFormItemTextBox("x_files_factor",$rra[x_files_factor],"","10", "40");?>
+		<?DrawFormItemTextBox("x_files_factor",$rra["x_files_factor"],"","10", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Steps</font><br>
 			How many data points are needed to put data into the RRA.
 		</td>
-		<?DrawFormItemTextBox("steps",$rra[steps],"","8", "40");?>
+		<?DrawFormItemTextBox("steps",$rra["steps"],"","8", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Rows</font><br>
 			How many generations data is kept in the RRA.
 		</td>
-		<?DrawFormItemTextBox("rows",$rra[rows],"","8", "40");?>
+		<?DrawFormItemTextBox("rows",$rra["rows"],"","8", "40");?>
 	</tr>
 	
 	<?
-	DrawFormItemHiddenIDField("id",$args[id]);
+	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_rra","1","");
 	?>
 	
@@ -193,29 +184,29 @@ function rra() {
 	
 	start_box("<strong>Round Robin Archives</strong>", "", "rra.php?action=edit");
 	
-	print "<tr bgcolor='#$colors[header_panel]'>";
-		DrawMatrixHeaderItem("Name",$colors[header_text],1);
-		DrawMatrixHeaderItem("Steps",$colors[header_text],1);
-		DrawMatrixHeaderItem("Rows",$colors[header_text],2);
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Steps",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Rows",$colors["header_text"],2);
 	print "</tr>";
     
 	$rras = db_fetch_assoc("select id,name,rows,steps from rra order by steps");
 	
 	if (sizeof($rras) > 0) {
 	foreach ($rras as $rra) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="rra.php?action=edit&id=<?print $rra[id];?>"><?print $rra[name];?></a>
+				<a class="linkEditMain" href="rra.php?action=edit&id=<?print $rra["id"];?>"><?print $rra["name"];?></a>
 			</td>
 			<td>
-				<?print $rra[steps];?>
+				<?print $rra["steps"];?>
 			</td>
 			<td>
-				<?print $rra[rows];?>
+				<?print $rra["rows"];?>
 			</td>
 			<td width="1%" align="right">
-				<a href="rra.php?action=remove&id=<?print $rra[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="rra.php?action=remove&id=<?print $rra["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?

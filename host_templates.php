@@ -22,18 +22,12 @@
    +-------------------------------------------------------------------------+
    */?>
 <?
-$section = "Add/Edit Graphs"; 
-include ('include/auth.php');
-header("Cache-control: no-cache");
-
+$section = "Add/Edit Graphs"; include ('include/auth.php');
 include_once ("include/functions.php");
 include_once ("include/cdef_functions.php");
 include_once ('include/form.php');
 
-if (isset($form[action])) { $action = $form[action]; } else { $action = $args[action]; }
-if (isset($form[ID])) { $id = $form[ID]; } else { $id = $args[id]; }
-
-switch ($action) {
+switch ($_REQUEST["action"]) {
 	case 'save':
 		$redirect_location = form_save();
 		
@@ -66,9 +60,7 @@ switch ($action) {
    -------------------------- */
 
 function form_save() {
-	global $form;
-	
-	if ((isset($form[save_component_template])) && (isset($form[save_component_data]))) {
+	if ((isset($_POST["save_component_template"])) && (isset($_POST["save_component_data"]))) {
 		template_save();
 		data_save();
 		
@@ -82,13 +74,11 @@ function form_save() {
    ---------------------------- */
 
 function data_save() {
-	global $form;
-	
 	/* get data_input_id */
 	$data_input_id = db_fetch_cell("select
 		data_input_id
 		from data_template_data
-		where id=$form[data_template_id]");
+		where id=" . $_POST["data_template_id"]);
 	
 	/* ok, first pull out all 'input' values so we know how much to save */
 	$input_fields = db_fetch_assoc("select
@@ -99,20 +89,20 @@ function data_save() {
 		where data_input_id=$data_input_id
 		and input_output='in'");
 	
-	db_execute("delete from host_template_data where data_template_id=$form[data_template_id] and host_template_id=$form[id]");
+	db_execute("delete from host_template_data where data_template_id=" . $_POST["data_template_id"] . " and host_template_id=" . $_POST["id"]);
 	
 	if (sizeof($input_fields) > 0) {
 	foreach ($input_fields as $input_field) {
 		/* save the data into the 'host_template_data' table */
-		$form_value = "value_" . $input_field[data_name];
-		$form_value = $form[$form_value];
+		$form_value = "value_" . $input_field["data_name"];
+		$form_value = $_POST[$form_value];
 		
-		$form_is_templated_value = "t_value_" . $input_field[data_name];
-		$form_is_templated_value = $form[$form_is_templated_value];
+		$form_is_templated_value = "t_value_" . $input_field["data_name"];
+		$form_is_templated_value = $_POST[$form_is_templated_value];
 		
 		if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
 			db_execute("insert into host_template_data (data_input_field_id,data_template_id,host_template_id,t_value,value)
-				values ($input_field[id],$form[data_template_id],$form[id],'$form_is_templated_value','$form_value')");
+				values (" . $input_field["id"] . "," . $_POST["data_template_id"] . "," . $_POST["id"] . ",'$_POST_is_templated_value','$form_value')");
 		}
 	}
 	}
@@ -123,27 +113,25 @@ function data_save() {
    --------------------- */
 
 function template_remove() {
-	global $args, $config;
+	global $config;
 	
-	if (($config["remove_verification"]["value"] == "on") && ($args[confirm] != "yes")) {
+	if (($config["remove_verification"]["value"] == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
-		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=$args[id]") . "'</strong>?", getenv("HTTP_REFERER"), "host_templates.php?action=remove&id=$args[id]");
+		DrawConfirmForm("Are You Sure?", "Are you sure you want to delete the host template <strong>'" . db_fetch_cell("select name from host_template where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "host_templates.php?action=remove&id=" . $_GET["id"]);
 		include ('include/bottom_footer.php');
 		exit;
 	}
 	
-	if (($config["remove_verification"]["value"] == "") || ($args[confirm] == "yes")) {
-		db_execute("delete from host_template where id=$args[id]");
+	if (($config["remove_verification"]["value"] == "") || ($_GET["confirm"] == "yes")) {
+		db_execute("delete from host_template where id=" . $_GET["id"]);
 	}
 }
 
 function template_save() {
 	include_once("include/utility_functions.php");
 	
-	global $form;
-	
-	$save["id"] = $form["id"];
-	$save["name"] = $form["name"];
+	$save["id"] = $_POST["id"];
+	$save["name"] = $_POST["name"];
 	
 	$host_template_id = sql_save($save, "host_template");
 	
@@ -157,25 +145,25 @@ function template_save() {
 	
 	db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
 	
-	while (list($var, $val) = each($form)) {
+	while (list($var, $val) = each($_POST)) {
 		if (eregi("^[dt_]", $var)) {
 			db_execute ("replace into host_template_data_template (host_template_id,data_template_id) values($host_template_id," . substr($var, 3) . ")");
 		}
 	}
 	
 	/* push out settings to each data source under a host using this template. got that? */
-	push_out_host_template($host_template_id, $form[data_template_id]);
+	push_out_host_template($host_template_id, $_POST["data_template_id"]);
 }
 
 function template_edit() {
-	global $args, $colors;
+	global $colors;
 	
 	display_output_messages();
 	
 	start_box("<strong>Host Templates [edit]</strong>", "", "");
 	
-	if (isset($args[id])) {
-		$host_template = db_fetch_row("select * from host_template where id=$args[id]");
+	if (isset($_GET["id"])) {
+		$host_template = db_fetch_row("select * from host_template where id=" . $_GET["id"]);
 	}else{
 		unset($host_template);
 	}
@@ -183,15 +171,15 @@ function template_edit() {
 	?>
 	<form method="post" action="host_templates.php">
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],0); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Name</font><br>
 			A useful name for this host template.
 		</td>
-		<?DrawFormItemTextBox("name",$host_template[name],"","255", "40");?>
+		<?DrawFormItemTextBox("name",$host_template["name"],"","255", "40");?>
 	</tr>
 	
-	<?DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],1); ?>
+	<?DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Selected Data Templates</font><br>
 			Select one or more data templates to associate with this host template.
@@ -213,7 +201,7 @@ function template_edit() {
 						foreach($data_templates as $data_template) {
 							$column1 = floor((sizeof($data_templates) / 2) + (sizeof($data_templates) % 2));
 							
-							if (empty($data_template[host_template_id])) {
+							if (empty($data_template["host_template_id"])) {
 								$old_value = "";
 							}else{
 								$old_value = "on";
@@ -222,7 +210,7 @@ function template_edit() {
 							if ($i == $column1) {
 								print "</td><td valign='top' width='50%'>";
 							}
-							DrawStrippedFormItemCheckBox("dt_".$data_template[id], $old_value, $data_template[name], "",true);
+							DrawStrippedFormItemCheckBox("dt_".$data_template["id"], $old_value, $data_template["name"], "",true);
 							$i++;
 						}
 						}
@@ -233,39 +221,39 @@ function template_edit() {
 			</td>
 		</tr>
 	<?
-	DrawFormItemHiddenIDField("id",$args[id]);
+	DrawFormItemHiddenIDField("id",$_GET["id"]);
 	DrawFormItemHiddenTextBox("save_component_template","1","");
 	end_box();
 	
 	/* fetch ALL data templates for this data host template */
-	if (isset($args[id])) {
+	if (isset($_GET["id"])) {
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
 			data_template.name
 			from data_template, host_template_data_template
 			where host_template_data_template.data_template_id=data_template.id
-			and host_template_data_template.host_template_id=$args[id]
+			and host_template_data_template.host_template_id=" . $_GET["id"] . "
 			order by data_template.name");
 	}
 	
 	/* select the "first" data template of this host template by default */
-	if (empty($args[view_data_template])) {
-		$args[view_data_template] = $data_templates[0][id];
+	if (empty($_GET["view_data_template"])) {
+		$_GET["view_data_template"] = $data_templates[0]["id"];
 	}
 	
 	/* get more information about the data template we chose */
-	if (!empty($args[view_data_template])) {
-		$data_template = db_fetch_row("select * from data_template where id=$args[view_data_template]");
+	if (!empty($_GET["view_data_template"])) {
+		$data_template = db_fetch_row("select * from data_template where id=" . $_GET["view_data_template"]);
 	}
 	
 	/* find out what type of input it is using */
-	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=$args[view_data_template] and local_data_id=0");
+	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $_GET["view_data_template"] . " and local_data_id=0");
 	
 	$i = 0;
 	
 	/* if it is not using any input; skip this step: no custom data */
-	if (!empty($template_data[data_input_id])) {
-		start_box("Custom Data for Host Template [" . $data_template[name] . ": " . db_fetch_cell("select name from data_input where id=$template_data[data_input_id]") . "]", "", "");
+	if (!empty($template_data["data_input_id"])) {
+		start_box("Custom Data for Host Template [" . $data_template["name"] . ": " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "", "");
 		
 		/* loop through each data template in use and draw tabs if there is more than one */
 		if (sizeof($data_templates) > 1) {
@@ -280,7 +268,7 @@ function template_edit() {
 							$i++;
 							?>
 							<td nowrap class="textTab" align="center" background="images/tab_middle.gif">
-								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="host_templates.php?action=edit&id=<?print $args[id];?>&view_data_template=<?print $data_template[id];?>"><?print "$i: $data_template[name]";?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
+								<img src="images/tab_left.gif" border="0" align="absmiddle"><a class="linkTabs" href="host_templates.php?action=edit&id=<?print $_GET["id"];?>&view_data_template=<?print $data_template["id"];?>"><?print "$i: " . $data_template["name"];?></a><img src="images/tab_right.gif" border="0" align="absmiddle">
 							</td>
 							<?
 							}
@@ -291,29 +279,29 @@ function template_edit() {
 			</tr>
 			<?
 		}elseif (sizeof($data_templates) == 1) {
-			$args[view_data_template] = $data_templates[0][id];
+			$_GET["view_data_template"] = $data_templates[0]["id"];
 		}
 		
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=$template_data[data_input_id] and input_output='in' order by name");
+		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 		
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select t_value,value from host_template_data where data_template_id=$args[view_data_template] and host_template_id=$args[id] and data_input_field_id=$field[id]");
+			$data_input_data = db_fetch_row("select t_value,value from host_template_data where data_template_id=" . $_GET["view_data_template"] . " and host_template_id=" . $_GET["id"] . " and data_input_field_id=" . $field["id"]);
 			
 			if (sizeof($data_input_data) > 0) {
-				$old_value = $data_input_data[value];
+				$old_value = $data_input_data["value"];
 			}else{
 				$old_value = "";
 			}
 			
-			DrawMatrixRowAlternateColorBegin($colors[form_alternate1],$colors[form_alternate2],$i); ?>
+			DrawMatrixRowAlternateColorBegin($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
 				<td width="50%">
-					<strong><?print $field[name];?></strong><br>
-					<?DrawStrippedFormItemCheckBox("t_value_" . $field[data_name],$data_input_data[t_value],"Use Per-Data Source Value (Ignore this Value)","",false);?>
+					<strong><?print $field["name"];?></strong><br>
+					<?DrawStrippedFormItemCheckBox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",false);?>
 				</td>
-				<?DrawFormItemTextBox("value_" . $field[data_name],$old_value,"","");?>
+				<?DrawFormItemTextBox("value_" . $field["data_name"],$old_value,"","");?>
 			</tr>
 			<?
 			
@@ -327,7 +315,7 @@ function template_edit() {
 	}
 	
 	DrawFormItemHiddenTextBox("save_component_data","1","");
-	DrawFormItemHiddenIDField("data_template_id",$args[view_data_template]);
+	DrawFormItemHiddenIDField("data_template_id",$_GET["view_data_template"]);
 	
 	start_box("", "", "");
 	?>
@@ -348,22 +336,22 @@ function template() {
 	
 	start_box("<strong>Host Templates</strong>", "", "host_templates.php?action=edit");
 	                         
-	print "<tr bgcolor='#$colors[header_panel]'>";
-		DrawMatrixHeaderItem("Name",$colors[header_text],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors[header_text],1);
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
     
 	$host_templates = db_fetch_assoc("select * from host_template order by name");
 	
 	if (sizeof($host_templates) > 0) {
 	foreach ($host_templates as $host_template) {
-		DrawMatrixRowAlternateColorBegin($colors[alternate],$colors[light],$i); $i++;
+		DrawMatrixRowAlternateColorBegin($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="host_templates.php?action=edit&id=<?print $host_template[id];?>"><?print $host_template[name];?></a>
+				<a class="linkEditMain" href="host_templates.php?action=edit&id=<?print $host_template["id"];?>"><?print $host_template["name"];?></a>
 			</td>
 			<td width="1%" align="right">
-				<a href="host_templates.php?action=remove&id=<?print $host_template[id];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
+				<a href="host_templates.php?action=remove&id=<?print $host_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>&nbsp;
 			</td>
 		</tr>
 	<?
