@@ -210,6 +210,7 @@ INSERT INTO data_input VALUES (7,'Unix - Get System Processes','perl <path_cacti
 INSERT INTO data_input VALUES (8,'Unix - Get TCP Connections','perl <path_cacti>/scripts/tcp_custom.pl <grepstr>','',1);
 INSERT INTO data_input VALUES (9,'Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>','',1);
 INSERT INTO data_input VALUES (10,'Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>','',1);
+INSERT INTO data_input VALUES (11,'Get Script Data (Indexed)','','',4);
 
 --
 -- Table structure for table 'data_input_data'
@@ -280,6 +281,9 @@ INSERT INTO data_input_data VALUES (12,35,'on','');
 INSERT INTO data_input_data VALUES (14,36,'on','');
 INSERT INTO data_input_data VALUES (13,36,'on','');
 INSERT INTO data_input_data VALUES (12,36,'on','');
+INSERT INTO data_input_data VALUES (33,37,'on','');
+INSERT INTO data_input_data VALUES (32,37,'on','');
+INSERT INTO data_input_data VALUES (31,37,'on','');
 
 --
 -- Table structure for table 'data_input_data_cache'
@@ -366,6 +370,9 @@ INSERT INTO data_input_fields VALUES (27,9,'(Optional) Log Path','log_path','in'
 INSERT INTO data_input_fields VALUES (28,9,'Web Hits','webhits','out','on',0,'','','');
 INSERT INTO data_input_fields VALUES (29,10,'IP Address','ip','in','',1,'','','');
 INSERT INTO data_input_fields VALUES (30,10,'Milliseconds','out_ms','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (31,11,'Index Type','index_type','in','',0,'index_type','','');
+INSERT INTO data_input_fields VALUES (32,11,'Index Value','index_value','in','',0,'index_value','','');
+INSERT INTO data_input_fields VALUES (33,11,'Output Type ID','output_type','in','',0,'output_type','','');
 
 --
 -- Table structure for table 'data_local'
@@ -439,6 +446,7 @@ INSERT INTO data_template VALUES (32,'ucd/net - Load Average - 15 Minute');
 INSERT INTO data_template VALUES (33,'ucd/net - Memory - Buffers');
 INSERT INTO data_template VALUES (34,'ucd/net - Memory - Free');
 INSERT INTO data_template VALUES (36,'Netware - Directory Entries');
+INSERT INTO data_template VALUES (37,'Unix - Hard Drive Space');
 
 --
 -- Table structure for table 'data_template_data'
@@ -506,6 +514,7 @@ INSERT INTO data_template_data VALUES (33,0,0,33,1,'on','ucd/net - Memory - Buff
 INSERT INTO data_template_data VALUES (34,0,0,34,1,'on','ucd/net - Memory - Free',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (35,0,0,35,2,'','Netware - Volumes',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (36,0,0,36,2,'','Netware - Directory Entries',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (37,0,0,37,11,'','Unix - Hard Drive Space',NULL,'','on','',300,'');
 
 --
 -- Table structure for table 'data_template_data_rra'
@@ -667,6 +676,10 @@ INSERT INTO data_template_data_rra VALUES (36,1);
 INSERT INTO data_template_data_rra VALUES (36,2);
 INSERT INTO data_template_data_rra VALUES (36,3);
 INSERT INTO data_template_data_rra VALUES (36,4);
+INSERT INTO data_template_data_rra VALUES (37,1);
+INSERT INTO data_template_data_rra VALUES (37,2);
+INSERT INTO data_template_data_rra VALUES (37,3);
+INSERT INTO data_template_data_rra VALUES (37,4);
 
 --
 -- Table structure for table 'data_template_rrd'
@@ -743,6 +756,8 @@ INSERT INTO data_template_rrd VALUES (39,0,0,35,'',1000000000000,'',0,'',600,'',
 INSERT INTO data_template_rrd VALUES (40,0,0,35,'',1000000000000,'',0,'',600,'',1,'','vol_freeable','',0);
 INSERT INTO data_template_rrd VALUES (42,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
 INSERT INTO data_template_rrd VALUES (43,0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
+INSERT INTO data_template_rrd VALUES (44,0,0,37,'',10000000000,'',0,'',600,'',1,'','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (45,0,0,37,'',10000000000,'',0,'',600,'',1,'','hdd_used','',0);
 
 --
 -- Table structure for table 'graph_local'
@@ -832,8 +847,10 @@ INSERT INTO graph_template_input VALUES (46,18,'Legend Color','','color_id');
 INSERT INTO graph_template_input VALUES (47,19,'Free Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (48,19,'Total Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (49,19,'Freeable Space Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (53,21,'Available Disk Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (51,20,'Used Directory Entries Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (52,20,'Available Directory Entries Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (54,21,'Used Disk Space Data Source','','task_item_id');
 
 --
 -- Table structure for table 'graph_template_input_defs'
@@ -1013,6 +1030,14 @@ INSERT INTO graph_template_input_defs VALUES (52,163);
 INSERT INTO graph_template_input_defs VALUES (52,164);
 INSERT INTO graph_template_input_defs VALUES (52,165);
 INSERT INTO graph_template_input_defs VALUES (52,166);
+INSERT INTO graph_template_input_defs VALUES (53,172);
+INSERT INTO graph_template_input_defs VALUES (53,173);
+INSERT INTO graph_template_input_defs VALUES (53,174);
+INSERT INTO graph_template_input_defs VALUES (53,175);
+INSERT INTO graph_template_input_defs VALUES (54,167);
+INSERT INTO graph_template_input_defs VALUES (54,169);
+INSERT INTO graph_template_input_defs VALUES (54,170);
+INSERT INTO graph_template_input_defs VALUES (54,171);
 
 --
 -- Table structure for table 'graph_templates'
@@ -1051,6 +1076,7 @@ INSERT INTO graph_templates VALUES (17,'Netware - User Processes');
 INSERT INTO graph_templates VALUES (18,'Cisco - CPU Usage');
 INSERT INTO graph_templates VALUES (19,'Netware - Volume Information');
 INSERT INTO graph_templates VALUES (20,'Netware - Directory Information');
+INSERT INTO graph_templates VALUES (21,'Unix - Available Disk Space');
 
 --
 -- Table structure for table 'graph_templates_gprint'
@@ -1148,6 +1174,7 @@ INSERT INTO graph_templates_graph VALUES (17,0,0,17,'',1,'on','User Processes','
 INSERT INTO graph_templates_graph VALUES (18,0,0,18,'',1,'on','CPU Usage','',120,'',500,'',100,'',0,'','percent','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (19,0,0,19,'',1,'on','Netware - Volume Information','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 INSERT INTO graph_templates_graph VALUES (20,0,0,20,'',1,'on','Netware - Directory Information','',120,'',500,'',100,'',0,'','directory entries','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
+INSERT INTO graph_templates_graph VALUES (21,0,0,21,'',1,'','Available Disk Space','',120,'',500,'',100,'',0,'','bytes','','on','',2,'','','','on','','on','',1000,'0','','','on','','','',0);
 
 --
 -- Table structure for table 'graph_templates_item'
@@ -1334,6 +1361,10 @@ INSERT INTO graph_templates_item VALUES (151,0,0,19,40,95,5,14,1,'Freeable Space
 INSERT INTO graph_templates_item VALUES (152,0,0,19,40,0,9,14,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (153,0,0,19,40,0,9,14,1,'Average:','','',2,11);
 INSERT INTO graph_templates_item VALUES (154,0,0,19,40,0,9,14,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (171,0,0,21,45,0,9,0,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (170,0,0,21,45,0,9,0,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (169,0,0,21,45,0,9,0,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (167,0,0,21,45,48,7,0,1,'Used','','',2,1);
 INSERT INTO graph_templates_item VALUES (159,0,0,20,43,77,7,0,1,'Used Directory Entries','','',2,1);
 INSERT INTO graph_templates_item VALUES (160,0,0,20,43,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (161,0,0,20,43,0,9,0,1,'Average:','','',3,3);
@@ -1342,6 +1373,14 @@ INSERT INTO graph_templates_item VALUES (163,0,0,20,42,1,5,0,1,'Available Direct
 INSERT INTO graph_templates_item VALUES (164,0,0,20,42,0,9,0,4,'Current:','','',3,6);
 INSERT INTO graph_templates_item VALUES (165,0,0,20,42,0,9,0,1,'Average:','','',3,7);
 INSERT INTO graph_templates_item VALUES (166,0,0,20,42,0,9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (172,0,0,21,44,20,8,0,1,'Available','','',2,5);
+INSERT INTO graph_templates_item VALUES (173,0,0,21,44,0,9,0,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (174,0,0,21,44,0,9,0,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (175,0,0,21,44,0,9,0,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (176,0,0,21,0,1,5,12,1,'Total','','',2,9);
+INSERT INTO graph_templates_item VALUES (177,0,0,21,0,0,9,12,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (178,0,0,21,0,0,9,12,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (179,0,0,21,0,0,9,12,3,'Maximum:','','on',2,12);
 
 --
 -- Table structure for table 'graph_tree'
@@ -1419,7 +1458,7 @@ CREATE TABLE host_snmp_cache (
   snmp_query_id mediumint(8) NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
   field_value varchar(255) default NULL,
-  snmp_index int(20) NOT NULL default '0',
+  snmp_index varchar(60) NOT NULL default '',
   oid varchar(255) NOT NULL default '',
   PRIMARY KEY  (host_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
@@ -1715,10 +1754,11 @@ CREATE TABLE snmp_query (
 --
 
 
-INSERT INTO snmp_query VALUES (1,'<path_cacti>/resource/snmp_queries/interface.xml','Get SNMP Interfaces','Queries a host for a list of monitorable interfaces',0,2);
-INSERT INTO snmp_query VALUES (2,'<path_cacti>/resource/snmp_queries/net-snmp_disk.xml','Get net-snmp Partitions','Retrieves a list of monitored partitions/disks from a net-snmp enabled host.',0,2);
-INSERT INTO snmp_query VALUES (3,'<path_cacti>/resource/snmp_queries/kbridge.xml','Get Karlnet Wireless Bridge Statistics','Gets information about the wireless connectivity of each station from a Karlnet bridge.',0,2);
-INSERT INTO snmp_query VALUES (4,'<path_cacti>/resource/snmp_queries/netware_disk.xml','Get Netware Volumes','Retrieves a list of volumes from a Netware server.',0,2);
+INSERT INTO snmp_query VALUES (1,'<path_cacti>/resource/snmp_queries/interface.xml','SNMP - Interface Statistics','Queries a host for a list of monitorable interfaces',0,2);
+INSERT INTO snmp_query VALUES (2,'<path_cacti>/resource/snmp_queries/net-snmp_disk.xml','ucd/net -  Get Monitored Partitions','Retrieves a list of monitored partitions/disks from a net-snmp enabled host.',0,2);
+INSERT INTO snmp_query VALUES (3,'<path_cacti>/resource/snmp_queries/kbridge.xml','Karlnet - Wireless Bridge Statistics','Gets information about the wireless connectivity of each station from a Karlnet bridge.',0,2);
+INSERT INTO snmp_query VALUES (4,'<path_cacti>/resource/snmp_queries/netware_disk.xml','Netware - Get Available Volumes','Retrieves a list of volumes from a Netware server.',0,2);
+INSERT INTO snmp_query VALUES (5,'<path_cacti>/resource/script_queries/unix_disk.xml','Unix - Get Mounted Partitions','Queries a list of mounted partitions on a unix-based host with the',0,11);
 
 --
 -- Table structure for table 'snmp_query_field'
@@ -1738,18 +1778,21 @@ CREATE TABLE snmp_query_field (
 --
 
 
+INSERT INTO snmp_query_field VALUES (1,14,3);
 INSERT INTO snmp_query_field VALUES (1,13,2);
 INSERT INTO snmp_query_field VALUES (1,12,1);
-INSERT INTO snmp_query_field VALUES (1,14,3);
-INSERT INTO snmp_query_field VALUES (2,12,1);
-INSERT INTO snmp_query_field VALUES (2,13,2);
 INSERT INTO snmp_query_field VALUES (2,14,3);
-INSERT INTO snmp_query_field VALUES (3,12,1);
-INSERT INTO snmp_query_field VALUES (3,13,2);
+INSERT INTO snmp_query_field VALUES (2,13,2);
+INSERT INTO snmp_query_field VALUES (2,12,1);
 INSERT INTO snmp_query_field VALUES (3,14,3);
+INSERT INTO snmp_query_field VALUES (3,13,2);
+INSERT INTO snmp_query_field VALUES (3,12,1);
 INSERT INTO snmp_query_field VALUES (4,14,3);
 INSERT INTO snmp_query_field VALUES (4,13,2);
 INSERT INTO snmp_query_field VALUES (4,12,1);
+INSERT INTO snmp_query_field VALUES (5,33,3);
+INSERT INTO snmp_query_field VALUES (5,32,2);
+INSERT INTO snmp_query_field VALUES (5,31,1);
 
 --
 -- Table structure for table 'snmp_query_graph'
@@ -1781,6 +1824,7 @@ INSERT INTO snmp_query_graph VALUES (8,3,'Wireless Transmissions',6);
 INSERT INTO snmp_query_graph VALUES (9,1,'In/Out Bytes (64-bit Counters)',1);
 INSERT INTO snmp_query_graph VALUES (10,4,'Volume Information (free, freeable space)',19);
 INSERT INTO snmp_query_graph VALUES (11,4,'Directory Information (total/available entries)',20);
+INSERT INTO snmp_query_graph VALUES (12,5,'Available/Used Disk Space',21);
 
 --
 -- Table structure for table 'snmp_query_graph_rrd'
@@ -1823,6 +1867,8 @@ INSERT INTO snmp_query_graph_rrd VALUES (10,35,40,'nwVolFreeable');
 INSERT INTO snmp_query_graph_rrd VALUES (10,35,39,'nwVolFree');
 INSERT INTO snmp_query_graph_rrd VALUES (11,36,42,'nwVolTotalDirEntries');
 INSERT INTO snmp_query_graph_rrd VALUES (11,36,43,'nwVolUsedDirEntries');
+INSERT INTO snmp_query_graph_rrd VALUES (12,37,45,'dskUsed');
+INSERT INTO snmp_query_graph_rrd VALUES (12,37,44,'dskAvailable');
 
 --
 -- Table structure for table 'snmp_query_graph_rrd_sv'
@@ -1873,6 +1919,7 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (25,9,1,1,'rrd_maximum','|squery_ifSp
 INSERT INTO snmp_query_graph_rrd_sv VALUES (26,9,2,1,'rrd_maximum','|squery_ifSpeed|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (30,11,36,1,'name','|host_description| - Directories - |squery_nwVolPhysicalName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (29,10,35,1,'name','|host_description| - Volumes - |squery_nwVolPhysicalName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (32,12,37,1,'name','|host_description| - Partition - |squery_dskDevice|');
 
 --
 -- Table structure for table 'snmp_query_graph_sv'
@@ -1906,6 +1953,7 @@ INSERT INTO snmp_query_graph_sv VALUES (9,9,2,'title','|host_description| - Traf
 INSERT INTO snmp_query_graph_sv VALUES (10,9,3,'title','|host_description| - Traffic - |squery_ifDesc|/|squery_ifIndex|');
 INSERT INTO snmp_query_graph_sv VALUES (11,10,1,'title','|host_description| - Volume Information - |squery_nwVolPhysicalName|');
 INSERT INTO snmp_query_graph_sv VALUES (12,11,1,'title','|host_description| - Directory Information - |squery_nwVolPhysicalName|');
+INSERT INTO snmp_query_graph_sv VALUES (14,12,1,'title','|host_description| - Disk Space - |squery_dskDevice|');
 
 --
 -- Table structure for table 'user_auth'
@@ -2122,3 +2170,4 @@ CREATE TABLE version (
 
 
 INSERT INTO version VALUES ('0.8');
+
