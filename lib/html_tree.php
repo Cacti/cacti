@@ -41,6 +41,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	}
 	
 	$heirarchy = db_fetch_assoc("select
+		graph_tree_items.id,
 		graph_tree_items.title,
 		graph_tree_items.local_graph_id,
 		graph_tree_items.rra_id,
@@ -111,6 +112,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	
 	print "<!-- <P>Building Heirarchy w/ " . sizeof($heirarchy) . " leaves</P>  -->\n";
 	print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong></td></tr></table></td></tr>";
 	
 	$already_open = false;
 	
@@ -158,7 +160,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			}
 			
 			print "<td bgcolor='$colors[panel]' colspan=$colspan NOWRAP><strong>
-				<a href='?tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a></strong></td>\n</tr>";
+				<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=" . $leaf["id"] . "'>" . $leaf["title"] . "</a></strong></td>\n</tr>";
 				$already_open = false;
 			
 			##  If a heading isn't hidden and has graphs, start the vertical bar.
@@ -170,7 +172,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			##  If this heading has graphs and we're supposed to show graphs, start that table.
 			if ($num_graphs{$leaf["order_key"]} > 0 && ! $hide{$leaf["order_key"]}) { 
 				$need_table_close = true;
-				print "<td colspan=$colspan><table border=0><tr>\n"; 
+				print "<td colspan=$colspan><table border='0'><tr>\n"; 
 			}else{
 				$need_table_close = false;
 			}
@@ -188,7 +190,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	}
 	}
 	
-	print "</tr>";
+	print "</tr></table></td></tr></table>";
 }
 
 function grow_edit_graph_tree($tree_id, $user_id, $options) {
