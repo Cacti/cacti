@@ -60,10 +60,17 @@ function query_script_host($host_id, $snmp_query_id) {
 	}
 	
 	/* get a complete path for out target script */
-	$script_path = str_replace("|path_cacti|", read_config_option("path_webroot") . read_config_option("path_webcacti"), $script_queries["script_path"]);
+	$script_path = subsitute_data_query_path($script_queries["script_path"]);
+	
+	/* get any extra arguments that need to be passed to the script */
+	if (!empty($script_queries["arg_prepend"])) {
+		$extra_arguments = subsitute_host_data($script_queries["arg_prepend"], "|", "|", $host_id);
+	}else{
+		$extra_arguments = "";
+	}
 	
 	/* fetch specified index at specified OID */
-	$script_index_array = exec_into_array($script_path . " " . $script_queries["arg_index"]);
+	$script_index_array = exec_into_array("$script_path $extra_arguments " . $script_queries["arg_index"]);
 	
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
 	
@@ -71,7 +78,7 @@ function query_script_host($host_id, $snmp_query_id) {
 		$field_array = $field_array[0];
 		
 		if ($field_array["direction"] == "input") {
-			$script_data_array = exec_into_array($script_path . " " . $script_queries["arg_query"] . " " . $field_array["query_name"]);
+			$script_data_array = exec_into_array("$script_path $extra_arguments " . $script_queries["arg_query"] . " " . $field_array["query_name"]);
 			
 			for ($i=0;($i<sizeof($script_data_array));$i++) {
 				if (preg_match("/(.*)" . preg_quote($script_queries["output_delimeter"]) . "(.*)/", $script_data_array[$i], $matches)) {
