@@ -40,8 +40,9 @@ $config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
 $config["php_snmp_support"] = function_exists("snmpget");
 
 /* used for includes */
-$config["include_path"] = dirname(__FILE__);
+$config["base_path"] = ereg_replace("(.*)[\/\\]include", "\\1", dirname(__FILE__));
 $config["library_path"] = ereg_replace("(.*[\/\\])include", "\\1lib", dirname(__FILE__));
+$config["include_path"] = dirname(__FILE__);
 
 /* colors */
 $colors["dark_outline"] = "454E53";
@@ -75,11 +76,12 @@ header("Pragma: no-cache");
 session_start();
 
 include_once($config["include_path"] . "/config_arrays.php");
+include_once($config["include_path"] . "/config_form.php");
 include_once($config["library_path"] . "/functions.php");
 include_once($config["library_path"] . "/form.php");
 include_once($config["library_path"] . "/database.php");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.3a";
+$config["cacti_version"] = "0.8.4";
 
 ?>
