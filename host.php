@@ -107,59 +107,9 @@ function form_save() {
 	}
 
 	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_y"]))) {
-		$save["id"] = $_POST["id"];
-		$save["host_template_id"] = $_POST["host_template_id"];
-		$save["description"] = form_input_validate($_POST["description"], "description", "", false, 3);
-		$save["hostname"] = form_input_validate($_POST["hostname"], "hostname", "", false, 3);
-		$save["snmp_community"] = form_input_validate($_POST["snmp_community"], "snmp_community", "", true, 3);
-		$save["snmp_version"] = form_input_validate($_POST["snmp_version"], "snmp_version", "", true, 3);
-		$save["snmp_username"] = form_input_validate($_POST["snmp_username"], "snmp_username", "", true, 3);
-		$save["snmp_password"] = form_input_validate($_POST["snmp_password"], "snmp_password", "", true, 3);
-		$save["snmp_port"] = form_input_validate($_POST["snmp_port"], "snmp_port", "^[0-9]+$", false, 3);
-		$save["snmp_timeout"] = form_input_validate($_POST["snmp_timeout"], "snmp_timeout", "^[0-9]+$", false, 3);
-		$save["disabled"] = form_input_validate((isset($_POST["disabled"]) ? $_POST["disabled"] : ""), "disabled", "", true, 3);
-
-		if (!is_error_message()) {
-			$host_id = sql_save($save, "host");
-
-			if ($host_id) {
-				raise_message(1);
-
-				/* push out relavant fields to data sources using this host */
-				push_out_host($host_id,0);
-
-				/* the host substitution cache is now stale; purge it */
-				kill_session_var("sess_host_cache_array");
-
-				/* update title cache for graph and data source */
-				update_data_source_title_cache_from_host($host_id);
-				update_graph_title_cache_from_host($host_id);
-			}else{
-				raise_message(2);
-			}
-
-			/* if the user changes the host template, add each snmp query associated with it */
-			if (($_POST["host_template_id"] != $_POST["_host_template_id"]) && ($_POST["host_template_id"] != "0")) {
-				$snmp_queries = db_fetch_assoc("select snmp_query_id from host_template_snmp_query where host_template_id=" . $_POST["host_template_id"]);
-
-				if (sizeof($snmp_queries) > 0) {
-				foreach ($snmp_queries as $snmp_query) {
-					db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $snmp_query["snmp_query_id"] . ")");
-
-					/* recache snmp data */
-					run_data_query($host_id, $snmp_query["snmp_query_id"]);
-				}
-				}
-
-				$graph_templates = db_fetch_assoc("select graph_template_id from host_template_graph where host_template_id=" . $_POST["host_template_id"]);
-
-				if (sizeof($graph_templates) > 0) {
-				foreach ($graph_templates as $graph_template) {
-					db_execute("replace into host_graph (host_id,graph_template_id) values ($host_id," . $graph_template["graph_template_id"] . ")");
-				}
-				}
-			}
-		}
+		$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"], $_POST["hostname"],
+			$_POST["snmp_community"], $_POST["snmp_version"], $_POST["snmp_username"], $_POST["snmp_password"],
+			$_POST["snmp_port"], $_POST["snmp_timeout"], (isset($_POST["disabled"]) ? $_POST["disabled"] : ""));
 
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
 			header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
@@ -577,21 +527,24 @@ function host() {
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {
-	foreach ($hosts as $host) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-			?>
-			<td>
-				<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
-			</td>
-			<td>
-				<?php print $host["hostname"];?>
-			</td>
-			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">
-			</td>
-		</tr>
-	<?php
-	}
+		foreach ($hosts as $host) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				?>
+				<td>
+					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
+				</td>
+				<td>
+					<?php print $host["hostname"];?>
+				</td>
+				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">
+				</td>
+			</tr>
+			<?php
+		}
+
+		/* put the nav bar on the bottom as well */
+		print $nav;
 	}else{
 		print "<tr><td><em>No Hosts</em></td></tr>";
 	}
