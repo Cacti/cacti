@@ -28,12 +28,23 @@
 <!--
 function drag_prep() {
 <?
-    foreach ($drag_inits as $div_id) {
-	if ($div_id[2] == '') { $div_id[2] = 'undefined'; }
-	if ($browser->BROWSER == 'Netscape') {
-	    print "  Drag.init(document.getElementById(\"$div_id[0]\"),document.getElementById(\"$div_id[1]\"),\"$div_id[2]\");\n";
-	} else {
-	    print "  Drag.init(document.all[\"$div_id[0]\"],document.all[\"$div_id[1]\"],\"$div_id[2]\");\n";
+    if (sizeof($drag_inits) > 0) {
+	foreach ($drag_inits as $div_id) {
+	    if ($browser->BROWSER == 'Netscape') {
+		print "  obj1 = document.all ? document.all[\"$div_id[0]\"] : document.getElementById(\"$div_id[0]\");\n";
+		if ($div_id[1]) {
+		    print "  obj2 = document.all ? document.all[\"$div_id[1]\"] : document.getElementById(\"$div_id[1]\");\n";
+		    print "  Drag.init(obj1, obj2);\n";
+		} else {
+		    print "  Drag.init(obj1);\n";
+		}
+		if ($div_id[2]) {
+		    print "  obj2.onDragStart = function(x, y) { pop_dragger(\"$div_id[0]\", \"$div_id[1]\"); }\n";
+		    print "  obj2.onDragEnd   = function(x, y) { alert(get_abs_x(obj2)+\" , \"+get_abs_y(obj2)); }\n";
+		}
+	    } else {
+		print "  Drag.init(document.all[\"$div_id[0]\"],document.all[\"$div_id[1]\"]);\n";
+	    }
 	}
     }
     ?>
