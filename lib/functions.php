@@ -67,7 +67,7 @@ function read_default_graph_config_option($config_name) {
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name) {
 	/* users must have cacti user auth turned on to use this */
-	if (read_config_option("global_auth") != "on") {
+	if ((read_config_option("global_auth") != "on") || (!isset($_SESSION["sess_user_id"]))) {
 		return read_default_graph_config_option($config_name);
 	}
 
