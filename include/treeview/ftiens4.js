@@ -43,8 +43,8 @@ function Folder(folderDescription, hreference) //constructor
   this.iconImg = 0; 
   this.nodeImg = 0;
   this.isLastNode = 0;
-  this.iconSrc = ICONPATH + "ftv2folderopen.gif";
-  this.iconSrcClosed = ICONPATH + "ftv2folderclosed.gif";
+  this.iconSrc = ICONPATH + "";
+  this.iconSrcClosed = ICONPATH + "";
   this.children = new Array;
   this.nChildren = 0;
   this.level = 0;
@@ -810,9 +810,9 @@ function preLoadIcons() {
 	auxImg.src = ICONPATH + "ftv2blank.gif";
 	auxImg.src = ICONPATH + "ftv2lastnode.gif";
 	auxImg.src = ICONPATH + "ftv2node.gif";
-	auxImg.src = ICONPATH + "ftv2folderclosed.gif";
-	auxImg.src = ICONPATH + "ftv2folderopen.gif";
-	auxImg.src = ICONPATH + "ftv2doc.gif";
+	auxImg.src = ICONPATH + "";
+	auxImg.src = ICONPATH + "";
+	auxImg.src = ICONPATH + "";
 }
 
 //Open some folders for initial layout, if necessary
