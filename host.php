@@ -592,7 +592,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				$current_value = db_fetch_cell("select 
 					graph_templates_item." . $graph_input["column_name"] . "
 					from graph_templates_item,graph_template_input_defs 
-					where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id 
+					where graph_template_input_defs.graph_template_item_id=graph_templates_item.id 
 					and graph_template_input_defs.graph_template_input_id=" . $graph_input["id"] . "
 					and graph_templates_item.graph_template_id=" . $graph_template_id . "
 					limit 0,1");
