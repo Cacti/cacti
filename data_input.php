@@ -243,7 +243,7 @@ function field_edit() {
 	
 	<?php
 	$i = 0;
-	if (($data_input["type_id"] == "1") && ($_GET["type"] == "in")) { /* script */
+	if (($data_input["type_id"] == "1") && ($current_field_type == "in")) { /* script */
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field [<?php print $header_name;?>]</font><br>
@@ -251,7 +251,7 @@ function field_edit() {
 			</td>
 			<?php form_dropdown("data_name",$array_field_names,"","",(isset($field) ? $field["data_name"] : ""),"","");?>
 		</tr><?php
-	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($_GET["type"] == "out")) { /* snmp */
+	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($current_field_type == "out")) { /* snmp */
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field Name [<?php print $header_name;?>]</font><br>
