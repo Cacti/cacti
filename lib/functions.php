@@ -24,7 +24,7 @@
 <?
 
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
-	if ((!ereg($regexp_match, $field_value) || (($allow_nulls == false) && (empty($field_value))))) {
+	if ((!ereg($regexp_match, $field_value) || (($allow_nulls == false) && ($field_value == "")))) {
 		raise_message($custom_message);
 		
 		$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
