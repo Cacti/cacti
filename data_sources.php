@@ -1002,7 +1002,7 @@ function ds() {
 				<?php print ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);?>
 			</td>
 			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name"];?>">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name_cache"];?>">
 			</td>
 		</tr>
 		<?php
