@@ -71,8 +71,7 @@ case 'tree':
 			<tr>
 				$tree_dropdown_html
 			</tr>
-		</table>
-		<br>\n";
+		</table>\n";
 	}
 	
 	if (isset($_SESSION["sess_view_tree_id"])) {
