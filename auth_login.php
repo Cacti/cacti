@@ -89,10 +89,10 @@ case 'login':
 							}
 							
 							/* hierarchy */
-							$auth_graph_hierarchy = db_fetch_assoc("SELECT HierarchyID FROM `auth_graph_hierarchy` WHERE UserID = $user_id");
+							$user_auth_tree = db_fetch_assoc("SELECT tree_id FROM `user_auth_tree` WHERE UserID = $user_id");
 							
-							foreach ($auth_graph_hierarchy as $item) {
-								db_execute("INSERT INTO auth_graph_hierarchy (HierarchyID, UserID) VALUES (" . $item["HierarchyID"] . ", $user_id)");
+							foreach ($user_auth_tree as $item) {
+								db_execute("INSERT INTO user_auth_tree (tree_id, user_id) VALUES (" . $item["tree_id"] . ", $user_id)");
 							}
 							
 							/* hosts */
@@ -112,16 +112,16 @@ case 'login':
 		db_execute("insert into user_log (username,result,ip) values('$username',1,'" . $_SERVER["REMOTE_ADDR"] . "')");
 		
 		/* set the php session */
-		$_SESSION["sess_user_id"] = $user["ID"];
+		$_SESSION["sess_user_id"] = $user["id"];
 		
 		/* handle "force change password" */
-		if ($user["MustChangePassword"] == "on") {
+		if ($user["must_change_password"] == "on") {
 			$_SESSION["sess_change_password"] = "1";
 		}
 		
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
-		switch ($user[LoginOpts]) {
+		switch ($user["login_opts"]) {
 			case '1': /* referer */
 				header("Location: " . $_SERVER["HTTP_REFERER"]); break;
 			case '2': /* default console page */
