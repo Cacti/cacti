@@ -1472,10 +1472,10 @@ INSERT INTO graph_templates_item VALUES (151,0,0,19,40,95,5,14,1,'Freeable Space
 INSERT INTO graph_templates_item VALUES (152,0,0,19,40,0,9,14,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (153,0,0,19,40,0,9,14,1,'Average:','','',2,11);
 INSERT INTO graph_templates_item VALUES (154,0,0,19,40,0,9,14,3,'Maximum:','','on',2,12);
-INSERT INTO graph_templates_item VALUES (171,0,0,21,56,0,9,0,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (170,0,0,21,56,0,9,0,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (169,0,0,21,56,0,9,0,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (167,0,0,21,56,48,7,0,1,'Used','','',2,1);
+INSERT INTO graph_templates_item VALUES (171,0,0,21,56,0,9,14,3,'Maximum:','','on',2,4);
+INSERT INTO graph_templates_item VALUES (170,0,0,21,56,0,9,14,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (169,0,0,21,56,0,9,14,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (167,0,0,21,56,48,7,14,1,'Used','','',2,1);
 INSERT INTO graph_templates_item VALUES (159,0,0,20,43,77,7,0,1,'Used Directory Entries','','',2,1);
 INSERT INTO graph_templates_item VALUES (160,0,0,20,43,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (161,0,0,20,43,0,9,0,1,'Average:','','',3,3);
@@ -1484,14 +1484,14 @@ INSERT INTO graph_templates_item VALUES (163,0,0,20,42,1,5,0,1,'Available Direct
 INSERT INTO graph_templates_item VALUES (164,0,0,20,42,0,9,0,4,'Current:','','',3,6);
 INSERT INTO graph_templates_item VALUES (165,0,0,20,42,0,9,0,1,'Average:','','',3,7);
 INSERT INTO graph_templates_item VALUES (166,0,0,20,42,0,9,0,3,'Maximum:','','',3,8);
-INSERT INTO graph_templates_item VALUES (172,0,0,21,44,20,8,0,1,'Available','','',2,5);
-INSERT INTO graph_templates_item VALUES (173,0,0,21,44,0,9,0,4,'Current:','','',2,6);
-INSERT INTO graph_templates_item VALUES (174,0,0,21,44,0,9,0,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (175,0,0,21,44,0,9,0,3,'Maximum:','','on',2,8);
-INSERT INTO graph_templates_item VALUES (176,0,0,21,0,1,5,12,1,'Total','','',2,9);
-INSERT INTO graph_templates_item VALUES (177,0,0,21,0,0,9,12,4,'Current:','','',2,10);
-INSERT INTO graph_templates_item VALUES (178,0,0,21,0,0,9,12,1,'Average:','','',2,11);
-INSERT INTO graph_templates_item VALUES (179,0,0,21,0,0,9,12,3,'Maximum:','','on',2,12);
+INSERT INTO graph_templates_item VALUES (172,0,0,21,44,20,8,14,1,'Available','','',2,5);
+INSERT INTO graph_templates_item VALUES (173,0,0,21,44,0,9,14,4,'Current:','','',2,6);
+INSERT INTO graph_templates_item VALUES (174,0,0,21,44,0,9,14,1,'Average:','','',2,7);
+INSERT INTO graph_templates_item VALUES (175,0,0,21,44,0,9,14,3,'Maximum:','','on',2,8);
+INSERT INTO graph_templates_item VALUES (176,0,0,21,0,1,5,15,1,'Total','','',2,9);
+INSERT INTO graph_templates_item VALUES (177,0,0,21,0,0,9,15,4,'Current:','','',2,10);
+INSERT INTO graph_templates_item VALUES (178,0,0,21,0,0,9,15,1,'Average:','','',2,11);
+INSERT INTO graph_templates_item VALUES (179,0,0,21,0,0,9,15,3,'Maximum:','','on',2,12);
 INSERT INTO graph_templates_item VALUES (180,0,0,22,47,31,4,0,1,'Discards In','','',2,1);
 INSERT INTO graph_templates_item VALUES (181,0,0,22,47,0,9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (182,0,0,22,47,0,9,0,1,'Average:','','',2,3);
@@ -2315,6 +2315,7 @@ CREATE TABLE user_log (
 --
 
 
+INSERT INTO user_log VALUES ('admin',20030420123214,1,'192.168.1.101');
 
 --
 -- Table structure for table 'user_realm'
