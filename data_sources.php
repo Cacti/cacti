@@ -379,17 +379,21 @@ function form_actions() {
 	print "<form action='data_sources.php' method='post'>\n";
 	
 	if ($_POST["drp_action"] == "1") { /* delete */
+		$graphs = array();
+		
 		/* find out what (if any) graphs are using this data source, so we can complain to the user */
-		$graphs = db_fetch_assoc("select
-			graph_templates_graph.title
-			from data_template_rrd
-			left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
-			left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
-			where " . array_to_sql_or($ds_array, "data_template_rrd.local_data_id") . "
-			and graph_templates_item.local_graph_id>0
-			and graph_templates_graph.local_graph_id>0
-			group by graph_templates_graph.title
-			order by graph_templates_graph.title");
+		if (isset($ds_array)) {
+			$graphs = db_fetch_assoc("select
+				graph_templates_graph.title
+				from data_template_rrd
+				left join graph_templates_item on graph_templates_item.task_item_id=data_template_rrd.id
+				left join graph_templates_graph on graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
+				where " . array_to_sql_or($ds_array, "data_template_rrd.local_data_id") . "
+				and graph_templates_item.local_graph_id>0
+				and graph_templates_graph.local_graph_id>0
+				group by graph_templates_graph.title
+				order by graph_templates_graph.title");
+		}
 		
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
@@ -455,13 +459,20 @@ function form_actions() {
 			";
 	}
 	
+	if (!isset($ds_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data source.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>";
+	}
+	
 	print "	<tr>
 			<td align='right' bgcolor='#eaeaea'>
 				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . serialize($ds_array) . "'>
+				<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='graphs.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
-				<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>
+				<a href='data_sources.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
 			</td>
 		</tr>
 		";	
@@ -823,7 +834,7 @@ function ds() {
 							
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='data_sources.php?host_id=" . $host["id"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+								print "<option value='data_sources.php?host_id=" . $host["id"] . "&page=1'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
 							}
 							}
 							?>
@@ -840,6 +851,7 @@ function ds() {
 				</tr>
 			</table>
 		</td>
+		<input type='hidden' name='page' value='1'>
 		</form>
 	</tr>
 	<?php

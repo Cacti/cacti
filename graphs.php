@@ -426,13 +426,20 @@ function form_actions() {
 			";
 	}
 	
+	if (!isset($graph_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>";
+	}
+	
 	print "	<tr>
 			<td align='right' bgcolor='#eaeaea'>
 				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . serialize($graph_array) . "'>
+				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
 				<a href='graphs.php'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
-				<input type='image' src='images/button_save.gif' alt='Save' align='absmiddle'>
+				$save_html
 			</td>
 		</tr>
 		";	
@@ -1083,7 +1090,7 @@ function graph() {
 							
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='graphs.php?host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+								print "<option value='graphs.php?host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "&page=1'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
 							}
 							}
 							?>
@@ -1099,6 +1106,7 @@ function graph() {
 				</tr>
 			</table>
 		</td>
+		<input type='hidden' name='page' value='1'>
 		</form>
 	</tr>	
 	<?php
