@@ -22,6 +22,8 @@ attached data sources as well.
 graph and data templates.
 -bug: Got rid of the "Use Per-Data Source Value" checkbox where it isn't 
 usable.
+-bug: Strange sequence/ordering behavior after updating an already created tree 
+item.
 -feature: Added host and graph template permissions for graph viewing users.
 -feature: Added a new 'dual pane' tree view type that draws the graph trees
 on a DHTML tree on the left side of the page.

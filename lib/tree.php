@@ -46,7 +46,13 @@ function get_parent_id($id, $table, $where = "") {
 		$parent_root = substr($order_key,0,(($tier - 1) * 2) );
 	}
 	
-	return db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root,60,'0') . "' and $where");
+	$parent_id = db_fetch_cell("select id from $table where order_key='" . str_pad($parent_root,60,'0') . "' and $where");
+	
+	if (empty($parent_id)) {
+		return "0";
+	}else{
+		return $parent_id;
+	}
 }
 
 function get_next_tree_id($order_key, $table, $field, $where) {
@@ -110,6 +116,11 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 	
 	/* get the current tree_id */
 	$graph_tree_id = db_fetch_cell("select graph_tree_id from graph_tree_items where id=$tree_item_id");
+	
+	/* make sure the parent id actually changed */
+	if (get_parent_id($tree_item_id, "graph_tree_items", "graph_tree_id=$graph_tree_id") == $new_parent_id) {
+		return 0;
+	}
 	
 	/* get current key so we can do a sql select on it */
 	$old_order_key = db_fetch_cell("select order_key from graph_tree_items where id=$tree_item_id");

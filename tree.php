@@ -128,7 +128,10 @@ function form_save() {
 			if ($tree_item_id) {
 				raise_message(1);
 				
-				reparent_branch($_POST["parent_item_id"], $_POST["id"]);
+				/* only re-parent headings */
+				if ($save["title"] != "") {
+					reparent_branch($_POST["parent_item_id"], $_POST["id"]);
+				}
 			}else{
 				raise_message(2);
 			}
@@ -156,8 +159,8 @@ function item_edit() {
 	$color_header = $colors["header"];
 	$color_host = $colors["header"];
 	
-	if (!empty($_GET["tree_item_id"])) {
-		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["tree_item_id"]);
+	if (!empty($_GET["id"])) {
+		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["id"]);
 		
 		/* bold the active "type" */
 		if ($tree_item["local_graph_id"] > 0) { $color_graph = $colors["header_panel"]; }
@@ -244,14 +247,14 @@ function item_edit() {
 function item_moveup() {
 	include_once('include/tree_functions.php');
 	
-	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["tree_item_id"]);
+	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["id"]);
 	if ($order_key > 0) { branch_up($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
 }
 
 function item_movedown() {
 	include_once('include/tree_functions.php');
 	
-	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["tree_item_id"]);
+	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["id"]);
 	if ($order_key > 0) { branch_down($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
 }
 
