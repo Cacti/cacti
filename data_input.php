@@ -31,9 +31,8 @@ include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'field_remove':
 		field_remove();
@@ -73,11 +72,94 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
+	global $registered_cacti_names;
+	
 	if (isset($_POST["save_component_data_input"])) {
-		return data_save();
+		$save["id"] = $_POST["id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["input_string"] = form_input_validate($_POST["input_string"], "input_string", "", true, 3);
+		$save["output_string"] = form_input_validate($_POST["output_string"], "output_string", "", true, 3);
+		$save["type_id"] = form_input_validate($_POST["type_id"], "type_id", "", true, 3);
+		
+		if (!is_error_message()) {
+			$data_input_id = sql_save($save, "data_input");
+			
+			if ($data_input_id) {
+				raise_message(1);
+				
+				/* get a list of each field so we can note their sequence of occurance in the database */
+				if (!empty($_POST["id"])) {
+					db_execute("update data_input_fields set sequence=0 where data_input_id=" . $_POST["id"]);
+					
+					if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $_POST["input_string"], $matches)) {
+						$j = 0;
+						for ($i=0; ($i < count($matches[1])); $i++) {
+							if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+								$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["id"] . " and input_output='in' and data_name='" . $matches[1][$i] . "'");
+							}
+						}
+					}
+					
+					if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $_POST["output_string"], $matches)) {
+						$j = 0;
+						for ($i=0; ($i < count($matches[1])); $i++) {
+							if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+								$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["id"] . " and input_output='out' and data_name='" . $matches[1][$i] . "'");
+							}
+						}
+					}
+				}
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if ((is_error_message()) || (empty($_POST["id"]))) {
+			header ("Location: data_input.php?action=edit&id=" . (empty($data_input_id) ? $_POST["id"] : $data_input_id));
+		}else{
+			header ("Location: data_input.php");
+		}
 	}elseif (isset($_POST["save_component_field"])) {
-		field_save();
-		return "data_input.php?action=edit&id=" . $_POST["data_input_id"];
+		$save["id"] = $_POST["id"];
+		$save["data_input_id"] = $_POST["data_input_id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["data_name"] = form_input_validate($_POST["data_name"], "data_name", "", true, 3);
+		$save["input_output"] = $_POST["input_output"];
+		$save["update_rra"] = form_input_validate($_POST["update_rra"], "update_rra", "", true, 3);
+		$save["sequence"] = $_POST["sequence"];
+		$save["type_code"] = form_input_validate($_POST["type_code"], "type_code", "", true, 3);
+		$save["regexp_match"] = form_input_validate($_POST["regexp_match"], "regexp_match", "", true, 3);
+		$save["allow_nulls"] = form_input_validate($_POST["allow_nulls"], "allow_nulls", "", true, 3);
+		
+		if (!is_error_message()) {
+			$data_input_field_id = sql_save($save, "data_input_fields");
+			
+			if ($data_input_field_id) {
+				raise_message(1);
+				
+				if (!empty($data_input_field_id)) {
+					if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select " . $_POST["input_output"] . "put_string from data_input where id=" . $_POST["data_input_id"]), $matches)) {
+						$j = 0;
+						for ($i=0; ($i < count($matches[1])); $i++) {
+							if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+								$j++;
+								if ($matches[1][$i] == $_POST["data_name"]) {
+									db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["data_input_id"] . " and input_output='" .  $_POST["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
+								}
+							}
+						}
+					}
+				}
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: data_input.php?action=field_edit&data_input_id=" . $_POST["data_input_id"] . "&id=" . (empty($data_input_field_id) ? $_POST["id"] : $data_input_field_id));
+		}else{
+			header ("Location: data_input.php?action=edit&id=" . $_POST["data_input_id"]);
+		}
 	}
 }
 
@@ -86,7 +168,7 @@ function form_save() {
    -------------------------- */
 
 function field_remove() {
-	global $config, $registered_cacti_names;
+	global $registered_cacti_names;
 	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
@@ -108,37 +190,6 @@ function field_remove() {
 			for ($i=0; ($i < count($matches[1])); $i++) {
 				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 					$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $field["data_input_id"] . " and input_output='" .  $field["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
-				}
-			}
-		}
-	}
-}
-
-function field_save() {
-	global $registered_cacti_names;
-	
- 	$save["id"] = $_POST["id"];
-	$save["data_input_id"] = $_POST["data_input_id"];
-	$save["name"] = $_POST["name"];
-	$save["data_name"] = $_POST["data_name"];
-	$save["input_output"] = $_POST["input_output"];
-	$save["update_rra"] = $_POST["update_rra"];
-	$save["sequence"] = $_POST["sequence"];
-	$save["type_code"] = $_POST["type_code"];
-	$save["regexp_match"] = $_POST["regexp_match"];
-	$save["allow_nulls"] = $_POST["allow_nulls"];
-	
-	$data_input_field_id = sql_save($save, "data_input_fields");
-	
-	if (!empty($data_input_field_id)) {
-		if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select " . $_POST["input_output"] . "put_string from data_input where id=" . $_POST["data_input_id"]), $matches)) {
-			$j = 0;
-			for ($i=0; ($i < count($matches[1])); $i++) {
-				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-					$j++;
-					if ($matches[1][$i] == $_POST["data_name"]) {
-						db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["data_input_id"] . " and input_output='" .  $_POST["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
-					}
 				}
 			}
 		}
@@ -260,16 +311,7 @@ function field_edit() {
 	form_hidden_box("save_component_field","1","");
 	end_box();
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "data_input.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();	
+	form_save_button("data_input.php");	
 }
    
 /* -----------------------
@@ -290,47 +332,6 @@ function data_remove() {
 		db_execute("delete from data_input where id=" . $_GET["id"]);
 		db_execute("delete from data_input_fields where data_input_id=" . $_GET["id"]);
 		db_execute("delete from data_input_data where data_input_id=" . $_GET["id"]);
-	}
-}
-
-function data_save() {
-	global $registered_cacti_names;
-	
-	$save["id"] = $_POST["id"];
-	$save["name"] = $_POST["name"];
-	$save["input_string"] = $_POST["input_string"];
-	$save["output_string"] = $_POST["output_string"];
-	$save["type_id"] = $_POST["type_id"];
-	
-	$data_input_id = sql_save($save, "data_input");
-	
-	/* get a list of each field so we can note their sequence of occurance in the database */
-	if (!empty($_POST["id"])) {
-		db_execute("update data_input_fields set sequence=0 where data_input_id=" . $_POST["id"]);
-		
-		if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $_POST["input_string"], $matches)) {
-			$j = 0;
-			for ($i=0; ($i < count($matches[1])); $i++) {
-				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-					$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["id"] . " and input_output='in' and data_name='" . $matches[1][$i] . "'");
-				}
-			}
-		}
-		
-		if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $_POST["output_string"], $matches)) {
-			$j = 0;
-			for ($i=0; ($i < count($matches[1])); $i++) {
-				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-					$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $_POST["id"] . " and input_output='out' and data_name='" . $matches[1][$i] . "'");
-				}
-			}
-		}
-	}
-	
-	if (empty($_POST["id"])) {
-		return "data_input.php?action=edit&id=$data_input_id";
-	}else{
-		return "data_input.php";
 	}
 }
 
@@ -459,16 +460,7 @@ function data_edit() {
 	
 	form_hidden_box("save_component_data_input","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "data_input.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();	
+	form_save_button("data_input.php");
 }
 
 function data() {

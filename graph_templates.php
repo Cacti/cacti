@@ -30,9 +30,8 @@ include_once ("include/config_arrays.php");
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'gprint_presets_remove':
 		if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
@@ -168,29 +167,189 @@ function draw_tabs() {
    -------------------------- */
 
 function form_save() {
-	global $config;
+	include_once ("include/utility_functions.php");
 	
 	if (isset($_POST["save_component_template"])) {
-		return template_save();
-	}elseif (isset($_POST["save_component_item"])) {
-		item_save();
-
-		if (read_config_option("full_view_graph_template") == "") {
-			return "graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"];
-		}elseif (read_config_option("full_view_graph_template") == "on") {
-			return "graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"];
-		}
-	}elseif (isset($_POST["save_component_input"])) {
-		input_save();
+		$save["id"] = $_POST["graph_template_id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		
-		if (read_config_option("full_view_graph_template") == "") {
-			return "graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"];
-		}elseif (read_config_option("full_view_graph_template") == "on") {
-			return "graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"];
+		if (!is_error_message()) {
+			$graph_template_id = sql_save($save, "graph_templates");
+			
+			if ($graph_template_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
 		}
-	}elseif (isset($_POST["save_component_gprint_presets"])) {
-		gprint_presets_save();
-		return "graph_templates.php?action=gprint_presets";
+		
+		unset ($save);
+		
+		$save["id"] = $_POST["graph_template_graph_id"];
+		$save["local_graph_template_graph_id"] = 0;
+		$save["local_graph_id"] = 0;
+		$save["graph_template_id"] = $graph_template_id;
+		$save["t_image_format_id"] = $_POST["t_image_format_id"];
+		$save["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
+		$save["t_title"] = form_input_validate($_POST["t_title"], "t_title", "", true, 3);
+		$save["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
+		$save["t_height"] = form_input_validate($_POST["t_height"], "t_height", "", true, 3);
+		$save["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
+		$save["t_width"] = form_input_validate($_POST["t_width"], "t_width", "", true, 3);
+		$save["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
+		$save["t_upper_limit"] = form_input_validate($_POST["t_upper_limit"], "t_upper_limit", "", true, 3);
+		$save["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[0-9]+$", false, 3);
+		$save["t_lower_limit"] = form_input_validate($_POST["t_lower_limit"], "t_lower_limit", "", true, 3);
+		$save["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[0-9]+$", false, 3);
+		$save["t_vertical_label"] = form_input_validate($_POST["t_vertical_label"], "t_vertical_label", "", true, 3);
+		$save["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
+		$save["t_auto_scale"] = form_input_validate($_POST["t_auto_scale"], "t_auto_scale", "", true, 3);
+		$save["auto_scale"] = form_input_validate($_POST["auto_scale"], "auto_scale", "", true, 3);
+		$save["t_auto_scale_opts"] = form_input_validate($_POST["t_auto_scale_opts"], "t_auto_scale_opts", "", true, 3);
+		$save["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
+		$save["t_auto_scale_log"] = form_input_validate($_POST["t_auto_scale_log"], "t_auto_scale_log", "", true, 3);
+		$save["auto_scale_log"] = form_input_validate($_POST["auto_scale_log"], "auto_scale_log", "", true, 3);
+		$save["t_auto_scale_rigid"] = form_input_validate($_POST["t_auto_scale_rigid"], "t_auto_scale_rigid", "", true, 3);
+		$save["auto_scale_rigid"] = form_input_validate($_POST["auto_scale_rigid"], "auto_scale_rigid", "", true, 3);
+		$save["t_auto_padding"] = form_input_validate($_POST["t_auto_padding"], "t_auto_padding", "", true, 3);
+		$save["auto_padding"] = form_input_validate($_POST["auto_padding"], "auto_padding", "", true, 3);
+		$save["t_base_value"] = form_input_validate($_POST["t_base_value"], "t_base_value", "", true, 3);
+		$save["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", false, 3);
+		$save["t_export"] = form_input_validate($_POST["t_export"], "t_export", "", true, 3);
+		$save["export"] = form_input_validate($_POST["export"], "export", "", true, 3);
+		$save["t_unit_value"] = form_input_validate($_POST["t_unit_value"], "t_unit_value", "", true, 3);
+		$save["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
+		$save["t_unit_exponent_value"] = form_input_validate($_POST["t_unit_exponent_value"], "t_unit_exponent_value", "", true, 3);
+		$save["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^[0-9]+$", false, 3);
+		
+		if (!is_error_message()) {
+			$graph_template_graph_id = sql_save($save, "graph_templates_graph");
+			
+			if ($graph_template_graph_id) {
+				raise_message(1);
+				
+				push_out_graph($graph_template_graph_id);
+			}else{
+				raise_message(2);
+			}
+		}
+	}
+	
+	if (isset($_POST["save_component_item"])) {
+		/* generate a new sequence if needed */
+		if (empty($_POST["sequence"])) {
+			$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "graph_template_id=" . $_POST["graph_template_id"] . " and local_graph_id=0");
+		}
+		
+		$save["id"] = $_POST["graph_template_item_id"];
+		$save["graph_template_id"] = $_POST["graph_template_id"];
+		$save["local_graph_id"] = 0;
+		$save["task_item_id"] = form_input_validate($_POST["task_item_id"], "task_item_id", "", true, 3);
+		$save["color_id"] = form_input_validate($_POST["color_id"], "color_id", "", true, 3);
+		$save["graph_type_id"] = form_input_validate($_POST["graph_type_id"], "graph_type_id", "", true, 3);
+		$save["cdef_id"] = form_input_validate($_POST["cdef_id"], "cdef_id", "", true, 3);
+		$save["consolidation_function_id"] = form_input_validate($_POST["consolidation_function_id"], "consolidation_function_id", "", true, 3);
+		$save["text_format"] = form_input_validate($_POST["text_format"], "text_format", "", true, 3);
+		$save["value"] = form_input_validate($_POST["value"], "value", "", true, 3);
+		$save["hard_return"] = form_input_validate($_POST["hard_return"], "hard_return", "", true, 3);
+		$save["gprint_id"] = form_input_validate($_POST["gprint_id"], "gprint_id", "", true, 3);
+		$save["sequence"] = $_POST["sequence"];
+		
+		if (!is_error_message()) {
+			$graph_template_item_id = sql_save($save, "graph_templates_item");
+			
+			if ($graph_template_item_id) {
+				raise_message(1);
+				
+				push_out_graph_item($graph_template_item_id);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: graph_templates.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "on") {
+			header ("graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}
+	}
+	
+	if ((isset($_POST["save_component_input"])) && (!is_error_message())) {
+		$save["id"] = $_POST["graph_template_input_id"];
+		$save["graph_template_id"] = $_POST["graph_template_id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
+		$save["column_name"] = form_input_validate($_POST["column_name"], "column_name", "", true, 3);
+		
+		if (!is_error_message()) {
+			$graph_template_input_id = sql_save($save, "graph_template_input");
+			
+			if ($graph_template_input_id) {
+				raise_message(1);
+				
+				db_execute("delete from graph_template_input_defs where graph_template_input_id=$graph_template_input_id");
+				
+				while (list($var, $val) = each($_POST)) {
+					if (eregi("^i_", $var)) {
+						$var = str_replace("i_", "", $var);
+						
+						unset($save);
+						$save["graph_template_input_id"] = $graph_template_input_id;
+						$save["graph_template_item_id"] = $var;
+						
+						sql_save($save, "graph_template_input_defs");
+					}
+				}
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: graph_templates.php?action=input_edit&graph_template_input_id=" . (empty($graph_template_input_id) ? $_POST["graph_template_input_id"] : $graph_template_input_id) . "&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "") {
+			header ("Location: graph_templates.php?action=item&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}elseif (read_config_option("full_view_graph_template") == "on") {
+			header ("graph_templates.php?action=template_edit&graph_template_id=" . $_POST["graph_template_id"]);
+			exit;
+		}
+	}
+	
+	if (isset($_POST["save_component_gprint_presets"])) {
+		$save["id"] = $_POST["gprint_preset_id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["gprint_text"] = form_input_validate($_POST["gprint_text"], "gprint_text", "", false, 3);
+		
+		if (!is_error_message()) {
+			$gprint_preset_id = sql_save($save, "graph_templates_gprint");
+			
+			if ($gprint_preset_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: graph_templates.php?action=gprint_presets_edit&gprint_preset_id=" . (empty($gprint_preset_id) ? $_POST["gprint_preset_id"] : $gprint_preset_id));
+			exit;
+		}else{
+			header ("graph_templates.php?action=gprint_presets");
+			exit;
+		}
+	}
+	
+	if ((is_error_message()) || (empty($_POST["graph_template_id"]))) {
+		header ("Location: graph_templates.php?action=template_edit&graph_template_id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
+	}else{
+		header ("Location: graph_templates.php");
 	}
 }
 
@@ -200,14 +359,6 @@ function form_save() {
 
 function gprint_presets_remove() {
 	db_execute("delete from graph_templates_gprint where id=" . $_GET["gprint_preset_id"]);
-}
-
-function gprint_presets_save() {
-	$save["id"] = $_POST["gprint_preset_id"];
-	$save["name"] = $_POST["name"];
-	$save["gprint_text"] = $_POST["gprint_text"];
-	
-	sql_save($save, "graph_templates_gprint");
 }
    
 function gprint_presets_edit() {
@@ -247,16 +398,7 @@ function gprint_presets_edit() {
 	form_hidden_id("gprint_preset_id",$gprint_preset["id"]);
 	form_hidden_box("save_component_gprint_presets","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "graph_templates.php?action=gprint_presets");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("graph_templates.php?action=gprint_presets");
 }
    
 function gprint_presets() {
@@ -476,33 +618,6 @@ function item_remove() {
 	db_execute("delete from graph_templates_item where id=" . $_GET["graph_template_item_id"]);
 }
 
-function item_save() {
-	include_once ("include/utility_functions.php");
-	
-	/* generate a new sequence if needed */
-	if (empty($_POST["sequence"])) {
-		$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "graph_template_id=" . $_POST["graph_template_id"] . " and local_graph_id=0");
-	}
-	
-	$save["id"] = $_POST["graph_template_item_id"];
-	$save["graph_template_id"] = $_POST["graph_template_id"];
-	$save["local_graph_id"] = 0;
-	$save["task_item_id"] = $_POST["task_item_id"];
-	$save["color_id"] = $_POST["color_id"];
-	$save["graph_type_id"] = $_POST["graph_type_id"];
-	$save["cdef_id"] = $_POST["cdef_id"];
-	$save["consolidation_function_id"] = $_POST["consolidation_function_id"];
-	$save["text_format"] = $_POST["text_format"];
-	$save["value"] = $_POST["value"];
-	$save["hard_return"] = $_POST["hard_return"];
-	$save["gprint_id"] = $_POST["gprint_id"];
-	$save["sequence"] = $_POST["sequence"];
-	
-	$graph_template_item_id = sql_save($save, "graph_templates_item");
-	
-	push_out_graph_item($graph_template_item_id);
-}
-
 function item_edit() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
 	
@@ -568,16 +683,7 @@ function item_edit() {
 	form_hidden_id("_graph_type_id",$template_item["graph_type_id"]);
 	form_hidden_box("save_component_item","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
 }
 
 /* ----------------------------
@@ -613,67 +719,6 @@ function template_remove() {
 		db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
 		db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where graph_template_id=" . $_GET["graph_template_id"]);
 	}	
-}
-
-function template_save() {
-	include_once ("include/utility_functions.php");
-	
-	if ($_POST["upper_limit"] == "") { $_POST["upper_limit"] = 0; }
-	if ($_POST["lower_limit"] == "") { $_POST["lower_limit"] = 0; }
-	if ($_POST["unit_exponent_value"] == "") { $_POST["unit_exponent_value"] = 0; }
-	
-	$save["id"] = $_POST["graph_template_id"];
-	$save["name"] = $_POST["name"];
-	
-	$graph_template_id = sql_save($save, "graph_templates");
-	unset ($save);
-	
-	$save["id"] = $_POST["graph_template_graph_id"];
-	$save["local_graph_template_graph_id"] = 0;
-	$save["local_graph_id"] = 0;
-	$save["graph_template_id"] = $graph_template_id;
-	$save["t_image_format_id"] = $_POST["t_image_format_id"];
-	$save["image_format_id"] = $_POST["image_format_id"];
-	$save["t_title"] = $_POST["t_title"];
-	$save["title"] = $_POST["title"];
-	$save["t_height"] = $_POST["t_height"];
-	$save["height"] = $_POST["height"];
-	$save["t_width"] = $_POST["t_width"];
-	$save["width"] = $_POST["width"];
-	$save["t_upper_limit"] = $_POST["t_upper_limit"];
-	$save["upper_limit"] = $_POST["upper_limit"];
-	$save["t_lower_limit"] = $_POST["t_lower_limit"];
-	$save["lower_limit"] = $_POST["lower_limit"];
-	$save["t_vertical_label"] = $_POST["t_vertical_label"];
-	$save["vertical_label"] = $_POST["vertical_label"];
-	$save["t_auto_scale"] = $_POST["t_auto_scale"];
-	$save["auto_scale"] = $_POST["auto_scale"];
-	$save["t_auto_scale_opts"] = $_POST["t_auto_scale_opts"];
-	$save["auto_scale_opts"] = $_POST["auto_scale_opts"];
-	$save["t_auto_scale_log"] = $_POST["t_auto_scale_log"];
-	$save["auto_scale_log"] = $_POST["auto_scale_log"];
-	$save["t_auto_scale_rigid"] = $_POST["t_auto_scale_rigid"];
-	$save["auto_scale_rigid"] = $_POST["auto_scale_rigid"];
-	$save["t_auto_padding"] = $_POST["t_auto_padding"];
-	$save["auto_padding"] = $_POST["auto_padding"];
-	$save["t_base_value"] = $_POST["t_base_value"];
-	$save["base_value"] = $_POST["base_value"];
-	$save["t_export"] = $_POST["t_export"];
-	$save["export"] = $_POST["export"];
-	$save["t_unit_value"] = $_POST["t_unit_value"];
-	$save["unit_value"] = $_POST["unit_value"];
-	$save["t_unit_exponent_value"] = $_POST["t_unit_exponent_value"];
-	$save["unit_exponent_value"] = $_POST["unit_exponent_value"];
-	
-	$graph_template_graph_id = sql_save($save, "graph_templates_graph");
-	
-	push_out_graph($graph_template_graph_id);
-	
-	if (empty($_POST["graph_template_id"])) {
-		return "graph_templates.php?action=template_edit&graph_template_id=$graph_template_id";
-	}else{
-		return "graph_templates.php";
-	}
 }
 
 function template_edit() {
@@ -735,16 +780,7 @@ function template_edit() {
 	form_hidden_id("graph_template_graph_id",$template_graph["id"]);
 	form_hidden_box("save_component_template","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "graph_templates.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("graph_templates.php");
 }
 
 function template() {
@@ -796,31 +832,6 @@ function input_remove() {
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from graph_template_input where id=" . $_GET["graph_template_input_id"]);
 		db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $_GET["graph_template_input_id"]);
-	}
-}
-
-function input_save() {
-	$save["id"] = $_POST["graph_template_input_id"];
-	$save["graph_template_id"] = $_POST["graph_template_id"];
-	$save["name"] = $_POST["name"];
-	$save["description"] = $_POST["description"];
-	$save["column_name"] = $_POST["column_name"];
-	
-	$graph_template_input_id = sql_save($save, "graph_template_input");
-	
-	db_execute("delete from graph_template_input_defs where graph_template_input_id=$graph_template_input_id");
-	
-	while (list($var, $val) = each($_POST)) {
-		if (eregi("^i_", $var)) {
-			$var = str_replace("i_", "", $var);
-			
-			unset($save);
-			$save["graph_template_input_id"] = $graph_template_input_id;
-			$save["graph_template_item_id"] = $var;
-			
-			sql_save($save, "graph_template_input_defs");
-			
-		}
 	}
 }
 
@@ -940,16 +951,7 @@ function input_edit() {
 	form_hidden_id("graph_template_input_id",$_GET["graph_template_input_id"]);
 	form_hidden_box("save_component_input","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("graph_templates.php?action=template_edit&graph_template_id=" . $_GET["graph_template_id"]);
 }
 
 ?>

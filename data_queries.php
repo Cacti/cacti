@@ -31,9 +31,8 @@ include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'remove':
 		snmp_remove();
@@ -62,9 +61,45 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_snmp_query"])) {
-		$url = snmp_save();
+		$save["id"] = $_POST["id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
+		$save["xml_path"] = form_input_validate($_POST["xml_path"], "xml_path", "", false, 3);
+		$save["graph_template_id"] = $_POST["graph_template_id"];
+		$save["data_input_id"] = $_POST["data_input_id"];
 		
-		return $url;
+		if (!is_error_message()) {
+			$snmp_query_id = sql_save($save, "snmp_query");
+			
+			if ($snmp_query_id) {
+				raise_message(1);
+				
+				db_execute ("delete from snmp_query_dt_field where snmp_query_id=$snmp_query_id");
+				db_execute ("delete from snmp_query_dt_rrd where snmp_query_id=$snmp_query_id");
+				
+				while (list($var, $val) = each($_POST)) {
+					if (eregi("^mdt_([0-9]+)_([0-9]+)_check", $var)) {
+						$data_template_id = ereg_replace("^mdt_([0-9]+)_([0-9]+).+", "\\1", $var);
+						$data_input_field_id = ereg_replace("^mdt_([0-9]+)_([0-9]+).+", "\\2", $var);
+						
+						db_execute ("replace into snmp_query_dt_field (snmp_query_id,data_template_id,data_input_field_id,action_id) values($snmp_query_id,$data_template_id,$data_input_field_id," . $_POST{"mdt_" . $data_template_id . "_" . $data_input_field_id . "_action_id"} . ")");
+					}elseif (eregi("^dsdt_([0-9]+)_([0-9]+)_check", $var)) {
+						$data_template_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\1", $var);
+						$data_template_rrd_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\2", $var);
+						
+						db_execute ("replace into snmp_query_dt_rrd (snmp_query_id,data_template_id,data_template_rrd_id,snmp_field_name) values($snmp_query_id,$data_template_id,$data_template_rrd_id,'" . $_POST{"dsdt_" . $data_template_id . "_" . $data_template_rrd_id . "_snmp_field_output"} . "')");
+					}
+				}
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if ((is_error_message()) || (empty($_POST["id"]))) {
+			header ("Location: snmp.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
+		}else{
+			header ("Location: snmp.php");
+		}
 	}
 }
    
@@ -88,54 +123,10 @@ function snmp_remove() {
 	}
 }
 
-function snmp_save() {
-	$save["id"] = $_POST["id"];
-	$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-	$save["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
-	$save["xml_path"] = form_input_validate($_POST["xml_path"], "xml_path", "", false, 3);
-	$save["graph_template_id"] = $_POST["graph_template_id"];
-	$save["data_input_id"] = $_POST["data_input_id"];
-	
-	$snmp_query_id = sql_save($save, "snmp_query");
-	
-	db_execute ("delete from snmp_query_dt_field where snmp_query_id=$snmp_query_id");
-	db_execute ("delete from snmp_query_dt_rrd where snmp_query_id=$snmp_query_id");
-	
-	while (list($var, $val) = each($_POST)) {
-		if (eregi("^mdt_([0-9]+)_([0-9]+)_check", $var)) {
-			$data_template_id = ereg_replace("^mdt_([0-9]+)_([0-9]+).+", "\\1", $var);
-			$data_input_field_id = ereg_replace("^mdt_([0-9]+)_([0-9]+).+", "\\2", $var);
-			
-			//if (isset($_POST{"dt_" . $data_template_id})) {
-				db_execute ("replace into snmp_query_dt_field (snmp_query_id,data_template_id,data_input_field_id,action_id) values($snmp_query_id,$data_template_id,$data_input_field_id," . $_POST{"mdt_" . $data_template_id . "_" . $data_input_field_id . "_action_id"} . ")");
-			//}
-		}elseif (eregi("^dsdt_([0-9]+)_([0-9]+)_check", $var)) {
-			$data_template_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\1", $var);
-			$data_template_rrd_id = ereg_replace("^dsdt_([0-9]+)_([0-9]+).+", "\\2", $var);
-			
-			//if (isset($_POST{"dt_" . $data_template_id})) {
-				db_execute ("replace into snmp_query_dt_rrd (snmp_query_id,data_template_id,data_template_rrd_id,snmp_field_name) values($snmp_query_id,$data_template_id,$data_template_rrd_id,'" . $_POST{"dsdt_" . $data_template_id . "_" . $data_template_rrd_id . "_snmp_field_output"} . "')");
-			//}
-		}
-	}
-	
-	if (is_error_message()) {
-		return $_SERVER["HTTP_REFERER"];
-	}else{
-		if (empty($_POST["id"])) {
-			return "snmp.php?action=edit&id=$snmp_query_id";
-		}else{
-			return "snmp.php";
-		}
-	}
-}
-
 function snmp_edit() {
 	include_once ("include/xml_functions.php");
 	
 	global $colors, $paths, $snmp_query_field_actions;
-	
-	display_output_messages();
 	
 	if (isset($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
@@ -331,22 +322,11 @@ function snmp_edit() {
 	
 	form_hidden_box("save_component_snmp_query","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "snmp.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();	
+	form_save_button("snmp.php");
 }
 
 function snmp() {
 	global $colors;
-	
-	display_output_messages();
 	
 	start_box("<strong>SNMP Queries</strong>", "98%", $colors["header"], "3", "center", "snmp.php?action=edit");
 	

@@ -30,9 +30,8 @@ include_once ("include/config_arrays.php");
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'template_remove':
 		template_remove();
@@ -60,10 +59,128 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	global $config;
+	include_once ("include/utility_functions.php");
 	
 	if (isset($_POST["save_component_template"])) {
-		return template_save();
+		/* save: data_template */
+		$save["id"] = $_POST["data_template_id"];
+		$save["name"] = form_input_validate($_POST["template_name"], "template_name", "", false, 3);
+		$save["graph_template_id"] = 0;
+		
+		if (!is_error_message()) {
+			$data_template_id = sql_save($save, "data_template");
+			
+			if ($data_template_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		unset ($save);
+		
+		/* save: data_template_data */
+		$save["id"] = $_POST["data_template_data_id"];
+		$save["local_data_template_data_id"] = 0;
+		$save["local_data_id"] = 0;
+		$save["data_template_id"] = $data_template_id;
+		$save["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
+		$save["t_name"] = form_input_validate($_POST["t_name"], "t_name", "", true, 3);
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["t_active"] = form_input_validate($_POST["t_active"], "t_active", "", true, 3);
+		$save["active"] = form_input_validate($_POST["active"], "active", "", true, 3);
+		$save["t_rrd_step"] = form_input_validate($_POST["t_rrd_step"], "t_rrd_step", "", true, 3);
+		$save["rrd_step"] = form_input_validate($_POST["rrd_step"], "rrd_step", "^[0-9]+$", false, 3);
+		$save["t_rra_id"] = form_input_validate($_POST["t_rra_id"], "t_rra_id", "", true, 3);
+		
+		if (!is_error_message()) {
+			$data_template_data_id = sql_save($save, "data_template_data");
+			
+			if ($data_template_data_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		unset ($save);
+		
+		/* save: data_template_rrd */
+		$save["id"] = $_POST["data_template_rrd_id"];
+		$save["local_data_template_rrd_id"] = 0;
+		$save["local_data_id"] = 0;
+		$save["data_template_id"] = $data_template_id;
+		$save["t_rrd_maximum"] = form_input_validate($_POST["t_rrd_maximum"], "t_rrd_maximum", "", true, 3);
+		$save["rrd_maximum"] = form_input_validate($_POST["rrd_maximum"], "rrd_maximum", "^[0-9]+$", false, 3);
+		$save["t_rrd_minimum"] = form_input_validate($_POST["t_rrd_minimum"], "t_rrd_minimum", "", true, 3);
+		$save["rrd_minimum"] = form_input_validate($_POST["rrd_minimum"], "rrd_minimum", "^[0-9]+$", false, 3);
+		$save["t_rrd_heartbeat"] = form_input_validate($_POST["t_rrd_heartbeat"], "t_rrd_heartbeat", "", true, 3);
+		$save["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", false, 3);
+		$save["t_data_source_type_id"] = form_input_validate($_POST["t_data_source_type_id"], "t_data_source_type_id", "", true, 3);
+		$save["data_source_type_id"] = form_input_validate($_POST["data_source_type_id"], "data_source_type_id", "", true, 3);
+		$save["t_data_source_name"] = form_input_validate($_POST["t_data_source_name"], "t_data_source_name", "", true, 3);
+		$save["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_]{1,19}$", false, 3);
+		$save["data_input_field_id"] = $_POST["data_input_field_id"];
+		
+		if (!is_error_message()) {
+			$data_template_rrd_id = sql_save($save, "data_template_rrd");
+			
+			if ($data_template_rrd_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (!is_error_message()) {
+			/* save entried in 'selected rras' field */
+			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
+			
+			for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+				db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
+					values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
+			}
+			
+			/* push out all data source settings to child data source using this template */
+			push_out_data_source($data_template_data_id);
+			push_out_data_source_item($data_template_rrd_id);
+			
+			/* ok, first pull out all 'input' values so we know how much to save */
+			$input_fields = db_fetch_assoc("select
+				id,
+				input_output,
+				data_name 
+				from data_input_fields
+				where data_input_id=" . $_POST["data_input_id"] . "
+				and input_output='in'");
+			
+			db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
+			
+			if (sizeof($input_fields) > 0) {
+			foreach ($input_fields as $input_field) {
+				/* save the data into the 'host_template_data' table */
+				$form_value = "value_" . $input_field["data_name"];
+				$form_value = $_POST[$form_value];
+				
+				$form_is_templated_value = "t_value_" . $input_field["data_name"];
+				$form_is_templated_value = $_POST[$form_is_templated_value];
+				
+				if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
+					db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
+						values (" . $input_field["id"] . ",$data_template_data_id,'$form_is_templated_value','$form_value')");
+				}
+			}
+			}
+			
+			/* push out all "custom data" for this data source template */
+			push_out_data_template($data_template_id);
+		}
+		
+		if ((is_error_message()) || (empty($_POST["data_template_id"]))) {
+			header ("Location: data_templates.php?action=template_edit&data_template_id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id)) . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id);
+		}else{
+			header ("Location: data_templates.php");
+		}
 	}
 }
    
@@ -72,8 +189,6 @@ function form_save() {
    ---------------------------- */
 
 function template_remove() {
-	global $config;
-	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		form_confirm("Are You Sure?", "Are you sure you want to delete the data template <strong>'" . db_fetch_cell("select name from data_template where id=" . $_GET["data_template_id"]) . "'</strong>? This is generally not a good idea if you have data sources attached to this template even though it should not affect any data sources.", getenv("HTTP_REFERER"), "data_templates.php?action=template_remove&data_template_id=" . $_GET["data_template_id"]);
@@ -91,105 +206,6 @@ function template_remove() {
 		db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where data_template_id=" . $_GET["data_template_id"]);
 		db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where data_template_id=" . $_GET["data_template_id"]);
 	}	
-}
-
-function template_save() {
-	include_once ("include/utility_functions.php");
-	
-	if ($_POST["rrd_maximum"] == "") { $_POST["rrd_maximum"] = 0; }
-	if ($_POST["rrd_minimum"] == "") { $_POST["rrd_minimum"] = 0; }
-	
-	/* save: data_template */
-	$save["id"] = $_POST["data_template_id"];
-	$save["name"] = $_POST["template_name"];
-	$save["graph_template_id"] = 0;
-	
-	$data_template_id = sql_save($save, "data_template");
-	unset ($save);
-	
-	/* save: data_template_data */
-	$save["id"] = $_POST["data_template_data_id"];
-	$save["local_data_template_data_id"] = 0;
-	$save["local_data_id"] = 0;
-	$save["data_template_id"] = $data_template_id;
-	$save["data_input_id"] = $_POST["data_input_id"];
-	$save["t_name"] = $_POST["t_name"];
-	$save["name"] = $_POST["name"];
-	$save["t_active"] = $_POST["t_active"];
-	$save["active"] = $_POST["active"];
-	$save["t_rrd_step"] = $_POST["t_rrd_step"];
-	$save["rrd_step"] = $_POST["rrd_step"];
-	$save["t_rra_id"] = $_POST["t_rra_id"];
-	
-	$data_template_data_id = sql_save($save, "data_template_data");
-	unset ($save);
-	
-	/* save: data_template_rrd */
-	$save["id"] = $_POST["data_template_rrd_id"];
-	$save["local_data_template_rrd_id"] = 0;
-	$save["local_data_id"] = 0;
-	$save["data_template_id"] = $data_template_id;
-	$save["t_rrd_maximum"] = $_POST["t_rrd_maximum"];
-	$save["rrd_maximum"] = $_POST["rrd_maximum"];
-	$save["t_rrd_minimum"] = $_POST["t_rrd_minimum"];
-	$save["rrd_minimum"] = $_POST["rrd_minimum"];
-	$save["t_rrd_heartbeat"] = $_POST["t_rrd_heartbeat"];
-	$save["rrd_heartbeat"] = $_POST["rrd_heartbeat"];
-	$save["t_data_source_type_id"] = $_POST["t_data_source_type_id"];
-	$save["data_source_type_id"] = $_POST["data_source_type_id"];
-	$save["t_data_source_name"] = $_POST["t_data_source_name"];
-	$save["data_source_name"] = $_POST["data_source_name"];
-	$save["data_input_field_id"] = $_POST["data_input_field_id"];
-	
-	$data_template_rrd_id = sql_save($save, "data_template_rrd");
-	
-	/* save entried in 'selected rras' field */
-	db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id"); 
-	
-	for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
-		db_execute("insert into data_template_data_rra (rra_id,data_template_data_id) 
-			values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
-	}
-	
-	/* push out all data source settings to child data source using this template */
-	push_out_data_source($data_template_data_id);
-	push_out_data_source_item($data_template_rrd_id);
-	
-	/* ok, first pull out all 'input' values so we know how much to save */
-	$input_fields = db_fetch_assoc("select
-		id,
-		input_output,
-		data_name 
-		from data_input_fields
-		where data_input_id=" . $_POST["data_input_id"] . "
-		and input_output='in'");
-	
-	db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
-	
-	if (sizeof($input_fields) > 0) {
-	foreach ($input_fields as $input_field) {
-		/* save the data into the 'host_template_data' table */
-		$form_value = "value_" . $input_field["data_name"];
-		$form_value = $_POST[$form_value];
-		
-		$form_is_templated_value = "t_value_" . $input_field["data_name"];
-		$form_is_templated_value = $_POST[$form_is_templated_value];
-		
-		if ((!empty($form_value)) || (!empty($form_is_templated_value))) {
-			db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-				values (" . $input_field["id"] . ",$data_template_data_id,'$form_is_templated_value','$form_value')");
-		}
-	}
-	}
-	
-	/* push out all "custom data" for this data source template */
-	push_out_data_template($data_template_id);
-	
-	if (empty($_POST["data_template_id"])) {
-		return "data_templates.php?action=template_edit&data_template_id=" . $data_template_id . "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id);
-	}else{
-		return "data_templates.php";
-	}
 }
 
 function template_edit() {
@@ -343,16 +359,7 @@ function template_edit() {
 	form_hidden_id("current_rrd",$_GET["view_rrd"]);
 	form_hidden_box("save_component_template","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "data_templates.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("data_templates.php");
 }
 
 function template() {

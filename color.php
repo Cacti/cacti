@@ -29,9 +29,8 @@ include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;          
 	case 'remove':
 		color_remove();
@@ -60,21 +59,30 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_color"])) {
-		color_save();
-		return "color.php";
+		$save["id"] = $_POST["id"];
+		$save["hex"] = form_input_validate($_POST["hex"], "hex", "^[a-fA-F0-9]+$", false, 3);
+		
+		if (!is_error_message()) {
+			$color_id = sql_save($save, "colors");
+			
+			if ($color_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: color.php?action=edit&id=" . (empty($color_id) ? $_POST["id"] : $color_id));
+		}else{
+			header ("Location: color.php");
+		}
 	}
 }
 
 /* -----------------------
     Color Functions
    ----------------------- */
-
-function color_save() {
-	$save["id"] = $_POST["id"];
-	$save["hex"] = $_POST["hex"];
-	
-	sql_save($save, "colors");	
-}
 
 function color_remove() {
 	db_execute("delete from colors where id=" . $_GET["id"]);	
@@ -85,11 +93,12 @@ function color_edit() {
 	
 	if (isset($_GET["id"])) {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $color["hex"] . "]";
 	}else{
-		unset($color);
+		$header_label = "[new]";
 	}
 	
-	start_box("<strong>Colors [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Colors</strong> $header_label", "98%", $colors["header"], "3", "center", "");
     	
 	?>
 	<form method="post" action="color.php">
@@ -101,20 +110,13 @@ function color_edit() {
 		</td>
 		<?php form_text_box("hex",$color["hex"],"","6", "40");?>
 	</tr>
-	
 	<?php
+	end_box();
+	
 	form_hidden_id("id",$_GET["id"]);
 	form_hidden_box("save_component_color","1","");
-	?>
 	
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?php form_save_button("save", "color.php");?>
-			</form>
-		</td>
-	</tr>
-	<?php
-	end_box();	
+	form_save_button("color.php");
 }
 
 function color() {

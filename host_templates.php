@@ -30,9 +30,8 @@ include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'remove':
 		template_remove();
@@ -61,9 +60,40 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_template"])) {
-		template_save();
+		$save["id"] = $_POST["id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		
-		return "host_templates.php";
+		if (!is_error_message()) {
+			$host_template_id = sql_save($save, "host_template");
+			
+			if ($host_template_id) {
+				raise_message(1);
+				
+				db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
+				db_execute ("delete from host_template_graph_template where host_template_id=$host_template_id");
+				
+				while (list($var, $val) = each($_POST)) {
+					if (eregi("^gt_", $var)) {
+						db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'" . $_POST{"ogt_suggested_values_" . substr($var, 3)} . "')");
+					}elseif (eregi("^odt_suggested_values_", $var)) {
+						$data_template_id = ereg_replace("^odt_suggested_values_([0-9]+)_[0-9]+$", "\\1", $var);
+						$graph_template_id = ereg_replace("^odt_suggested_values_[0-9]+_([0-9]+)$", "\\1", $var);
+						
+						if (!empty($val)) {
+							db_execute ("replace into host_template_data_template (host_template_id,data_template_id,graph_template_id,suggested_values) values($host_template_id,$data_template_id,$graph_template_id,'$val')");
+						}
+					}
+				}
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
+		}else{
+			header ("Location: host_templates.php");
+		}
 	}
 }
 
@@ -83,37 +113,6 @@ function template_remove() {
 	
 	if ((read_config_option("remove_verification") == "") || ($_GET["confirm"] == "yes")) {
 		db_execute("delete from host_template where id=" . $_GET["id"]);
-	}
-}
-
-function template_save() {
-	$save["id"] = $_POST["id"];
-	$save["name"] = $_POST["name"];
-	
-	$host_template_id = sql_save($save, "host_template");
-	
-	if ($host_template_id) {
-		raise_message(1);
-	}else{
-		raise_message(2);
-		header("Location: " . $_SERVER["HTTP_REFERER"]);
-		exit;
-	}
-	
-	db_execute ("delete from host_template_data_template where host_template_id=$host_template_id");
-	db_execute ("delete from host_template_graph_template where host_template_id=$host_template_id");
-	
-	while (list($var, $val) = each($_POST)) {
-		if (eregi("^gt_", $var)) {
-			db_execute ("replace into host_template_graph_template (host_template_id,graph_template_id,suggested_values) values($host_template_id," . substr($var, 3) . ",'" . $_POST{"ogt_suggested_values_" . substr($var, 3)} . "')");
-		}elseif (eregi("^odt_suggested_values_", $var)) {
-			$data_template_id = ereg_replace("^odt_suggested_values_([0-9]+)_[0-9]+$", "\\1", $var);
-			$graph_template_id = ereg_replace("^odt_suggested_values_[0-9]+_([0-9]+)$", "\\1", $var);
-			
-			if (!empty($val)) {
-				db_execute ("replace into host_template_data_template (host_template_id,data_template_id,graph_template_id,suggested_values) values($host_template_id,$data_template_id,$graph_template_id,'$val')");
-			}
-		}
 	}
 }
 
@@ -244,16 +243,7 @@ function template_edit() {
 	form_hidden_id("id",$_GET["id"]);
 	form_hidden_box("save_component_template","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "host_templates.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();	
+	form_save_button("host_templates.php");	
 }
 
 function template() {

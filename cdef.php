@@ -32,9 +32,8 @@ include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'item_movedown':
 		item_movedown();
@@ -99,11 +98,59 @@ function draw_cdef_preview($cdef_id) {
 
 function form_save() {
 	if (isset($_POST["save_component_cdef"])) {
-		cdef_save();
-		return "cdef.php";
+		$save["id"] = $_POST["id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		
+		if (!is_error_message()) {
+			$cdef_id = sql_save($save, "cdef");
+			
+			if ($cdef_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: cdef.php?action=edit&id=" . (empty($cdef_id) ? $_POST["id"] : $cdef_id));
+		}else{
+			header ("Location: cdef.php");
+		}
 	}elseif (isset($_POST["save_component_item"])) {
-		item_save();
-		return "cdef.php?action=edit&id=" . $_POST["cdef_id"];
+		if ($_POST["value_function"] != "0") { $current_type = 1; $current_value = $_POST["value_function"]; }
+		if ($_POST["value_operator"] != "0") { $current_type = 2; $current_value = $_POST["value_operator"]; }
+		if ($_POST["value_special_data_source"] != "0") { $current_type = 4; $current_value = $_POST["value_special_data_source"]; }
+		if ($_POST["value_cdef"] != "0") { $current_type = 5; $current_value = $_POST["value_cdef"]; }
+		if ($_POST["value_custom"] != "") { $current_type = 6; $current_value = $_POST["value_custom"]; }
+		
+		if (!(isset($current_type))) {
+			/* YOU MUST SELECT SOMETHING */
+			header ("Location: cdef.php?action=edit&id=" . $_POST["cdef_id"]); exit;
+		}
+		
+		$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
+		
+		$save["id"] = $_POST["id"];
+		$save["cdef_id"] = $_POST["cdef_id"];
+		$save["sequence"] = $sequence;
+		$save["type"] = $current_type;
+		$save["value"] = $current_value;
+		
+		if (!is_error_message()) {
+			$cdef_item_id = sql_save($save, "cdef_items");
+			
+			if ($cdef_item_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: cdef.php?action=item_edit&cdef_id=" . $_POST["cdef_id"] . "&id=" . (empty($cdef_item_id) ? $_POST["id"] : $cdef_item_id));
+		}else{
+			header ("Location: cdef.php?action=edit&id=$cdef_id");
+		}
 	}
 }
 
@@ -123,29 +170,6 @@ function item_remove() {
 	db_execute("delete from cdef_items where id=" . $_GET["id"]);	
 }
 
-function item_save() {
-	if ($_POST["value_function"] != "0") { $current_type = 1; $current_value = $_POST["value_function"]; }
-	if ($_POST["value_operator"] != "0") { $current_type = 2; $current_value = $_POST["value_operator"]; }
-	if ($_POST["value_special_data_source"] != "0") { $current_type = 4; $current_value = $_POST["value_special_data_source"]; }
-	if ($_POST["value_cdef"] != "0") { $current_type = 5; $current_value = $_POST["value_cdef"]; }
-	if ($_POST["value_custom"] != "") { $current_type = 6; $current_value = $_POST["value_custom"]; }
-	
-	if (!(isset($current_type))) {
-		/* YOU MUST SELECT SOMETHING */
-		header ("Location: cdef.php?action=edit&id=" . $_POST["cdef_id"]); exit;
-	}
-	
-	$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
-	
- 	$save["id"] = $_POST["id"];
-	$save["cdef_id"] = $_POST["cdef_id"];
-	$save["sequence"] = $sequence;
-	$save["type"] = $current_type;
-	$save["value"] = $current_value;
-	
-	sql_save($save, "cdef_items");	
-}
-
 function item_edit() {
 	global $colors, $cdef_functions, $cdef_operators, $custom_data_source_types;
 	
@@ -153,8 +177,6 @@ function item_edit() {
 		$cdef = db_fetch_row("select * from cdef_items where id=" . $_GET["id"]);
 		$current_type = $cdef["type"];
 		$values[$current_type] = $cdef["value"];
-	}else{
-		unset($cdef);
 	}
 	
 	start_box("", "98%", "aaaaaa", "3", "center", "");
@@ -213,16 +235,7 @@ function item_edit() {
 	form_hidden_box("save_component_item","1","");
 	end_box();
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "cdef.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();	
+	form_save_button("cdef.php");
 }
    
 /* ---------------------
@@ -243,13 +256,6 @@ function cdef_remove() {
 		db_execute("delete from cdef where id=" . $_GET["id"]);
 		db_execute("delete from cdef_items where cdef_id=" . $_GET["id"]);
 	}
-}
-
-function cdef_save() {
-	$save["id"] = $_POST["id"];
-	$save["name"] = $_POST["name"];
-	
-	sql_save($save, "cdef");	
 }
 
 function cdef_edit() {
@@ -318,16 +324,7 @@ function cdef_edit() {
 	
 	form_hidden_box("save_component_cdef","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "cdef.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();	
+	form_save_button("cdef.php");	
 }
 
 function cdef() {

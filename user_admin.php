@@ -30,14 +30,13 @@ include_once ("include/form.php");
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'user_remove':
 		user_remove();
     
-    		header ("Location: user_auth.php");
+    		header ("Location: user_admin.php");
 		break;
 	case 'graph_config_edit':
 		include_once ("include/top_header.php");
@@ -94,22 +93,83 @@ function draw_user_form_select() {
    -------------------------- */
 
 function form_save() {
-	global $config;
+	/* user management save */
+	if (isset($_POST["save_component_user"])) {
+		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
+			$password = db_fetch_cell("select password from user where id=" . $_POST["id"]);
+		}else{
+			$password = "PASSWORD('" . $_POST["password"] . "')";
+		}
+		
+		/* check to make sure the passwords match; if not error */
+		if ($_POST["password"] != $_POST["password_confirm"]) {
+			$array_error_fields = unserialize($_SESSION["sess_error_fields"]);
+			$array_error_fields["password"] = "password";
+			$array_error_fields["password_confirm"] = "password_confirm";
+			$_SESSION["sess_error_fields"] = serialize($array_error_fields);
+			
+			raise_message(4);
+		}
+		
+		form_input_validate($_POST["password"], "password", "" . $_POST["password_confirm"] . "", true, 4);
+		form_input_validate($_POST["password_confirm"], "password_confirm", "" . $_POST["password"] . "", true, 4);
+		
+		$save["id"] = $_POST["id"];
+		$save["username"] = form_input_validate($_POST["username"], "username", "^[A-Za-z_0-9]+$", false, 3);
+		$save["full_name"] = form_input_validate($_POST["full_name"], "full_name", "", true, 3);
+		$save["password"] = $password;
+		$save["must_change_password"] = form_input_validate($_POST["must_change_password"], "must_change_password", "", true, 3);
+		$save["show_tree"] = form_input_validate($_POST["show_tree"], "show_tree", "", true, 3);
+		$save["show_list"] = form_input_validate($_POST["show_list"], "show_list", "", true, 3);
+		$save["show_preview"] = form_input_validate($_POST["show_preview"], "show_preview", "", true, 3);
+		$save["graph_settings"] = form_input_validate($_POST["graph_settings"], "graph_settings", "", true, 3);
+		$save["login_opts"] = form_input_validate($_POST["login_opts"], "login_opts", "", true, 3);
+		$save["graph_policy"] = form_input_validate($_POST["graph_policy"], "graph_policy", "", true, 3);
+		
+		if (!is_error_message()) {
+			$user_id = sql_save($save, "user");
+			
+			if ($user_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+			
+			db_execute("delete from user_auth_realm where user_id=$user_id");
+			
+			while (list($var, $val) = each($_POST)) {
+				if (eregi("^[section]", $var)) {
+					if (substr($var, 0, 7) == "section") {
+					    db_execute ("replace into user_auth_realm (user_id,realm_id) values($user_id," . substr($var, 7) . ")");
+					}
+				}
+			}
+		}
+	}
 	
-	if ((isset($_POST["save_component_user"])) && (isset($_POST["save_component_graph_perms"])) && (isset($_POST["save_component_graph_config"]))) {
-		user_save();
-		graph_perms_save();
-		/* graph_config_save(); */
-		return "user_admin.php?action=user_edit&id=" . $_POST["user_id"];
-	}elseif (isset($_POST["save_component_user"])) {
-		user_save();
-		return "user_admin.php";
-	}elseif (isset($_POST["save_component_graph_perms"])) {
-		graph_perms_save();
-		return "user_admin.php";
-	}elseif (isset($_POST["save_component_graph_config"])) {
-		/* graph_config_save(); */
-		return "user_admin.php";
+	/* graph permissions */
+	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
+		db_execute ("delete from user_auth_graph where user_id=$user_id");
+		db_execute ("delete from user_auth_tree where user_id=$user_id");
+		
+		reset($_POST);
+		
+		while (list($var, $val) = each($_POST)) {
+			if (eregi("^[graph|tree]", $var)) {
+				if (substr($var, 0, 5) == "graph") {
+				    db_execute ("replace into user_auth_graph (user_id,local_graph_id) values($user_id," . substr($var, 5) . ")");
+				}elseif (substr($var, 0, 4) == "tree") {
+				    db_execute ("replace into user_auth_tree (user_id,tree_id) values($user_id," . substr($var, 4) . ")");
+				}
+			}
+		}
+	}
+	
+	/* redirect to the appropriate page */
+	if ((empty($_POST["id"])) || (is_error_message())) {
+		header ("Location: user_admin.php?action=user_edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
+	}else{
+		header ("Location: user_admin.php");
 	}
 }
 
@@ -117,25 +177,8 @@ function form_save() {
     Graph Permissions
    -------------------------- */
 
-function graph_perms_save() {
-	db_execute ("delete from user_auth_graph where user_id=" . $_POST["user_id"]);
-    	db_execute ("delete from user_auth_tree where user_id=" . $_POST["user_id"]);
-	
-	reset($_POST);
-	
-	while (list($var, $val) = each($_POST)) {
-		if (eregi("^[graph|tree]", $var)) {
-			if (substr($var, 0, 5) == "graph") {
-			    db_execute ("replace into user_auth_graph (user_id,local_graph_id) values(" . $_POST["user_id"] . "," . substr($var, 5) . ")");
-			}elseif (substr($var, 0, 4) == "tree") {
-			    db_execute ("replace into user_auth_tree (user_id,tree_id) values(" . $_POST["user_id"] . "," . substr($var, 4) . ")");
-			}
-		}
-	}
-}
-
 function graph_perms_edit() {
-	global $colors, $config;
+	global $colors;
 	
 	if (isset($_GET["id"])) {
 		$graph_policy = db_fetch_cell("select graph_policy from user where id=" . $_GET["id"]);
@@ -145,33 +188,28 @@ function graph_perms_edit() {
 		}elseif ($graph_policy == "2") {
 			$graph_policy_text = "ALLOWED";
 		}
-	}else{
-		unset($user);
 	}
 	
+	$header_label = "[edit: " . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "]";
+	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
 	}
 	
-	if ($graph_policy == "1") {
-		$graph_policy_text = "Select the graphs you want to <strong>DENY</strong> this user from.";
-	} elseif ($graph_policy == "2") {
-		$graph_policy_text = "Select the graphs you want <strong>ALLOW</strong> this user to view.";
-	}
+	$header_label = "<strong>Graph Permissions</strong> [policy: " . (($graph_policy == "1") ? "ALLOW" : "DENY") . "]";
 	
-	start_box($graph_policy_text, "98%", $colors["header"], "3", "center", "");
+	start_box($header_label, "98%", $colors["header"], "3", "center", "");
 	
 	$graphs = db_fetch_assoc("select 
 		user_auth_graph.user_id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title
 		from graph_templates_graph
-		left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . $_GET["id"] . ") 
+		left join user_auth_graph on (graph_templates_graph.local_graph_id=user_auth_graph.local_graph_id and user_auth_graph.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ") 
 		where graph_templates_graph.local_graph_id > 0
 		order by graph_templates_graph.title");
-	$rows = sizeof($graphs);
 	
 	?>
 	<form method="post" action="user_admin.php">
@@ -181,27 +219,26 @@ function graph_perms_edit() {
 			<table width="100%">
 				<tr>
 					<td align="top" width="50%">
-		<?php
-		
-		if (sizeof($graphs) > 0) {
-			foreach ($graphs as $graph) {
-			    if ($graph["user_id"] == "") {
-				$old_value = "";
-			    }else{
-				$old_value = "on";
-			    }
-			    
-			    $column1 = floor(($rows / 2) + ($rows % 2));
-			    
-			    if ($i == $column1) {
-				print "</td><td valign='top' width='50%'>";
-			    }
-					
-			    form_base_checkbox("graph" . $graph["id"], $old_value, $graph["title"], "", $_GET["id"], true);
-			    $i++;
-			}
-		}
-		?>
+						<?php
+						if (sizeof($graphs) > 0) {
+						foreach ($graphs as $graph) {
+							if ($graph["user_id"] == "") {
+								$old_value = "";
+							}else{
+								$old_value = "on";
+							}
+							
+							$column1 = floor((sizeof($graphs) / 2) + (sizeof($graphs) % 2));
+							
+							if ($i == $column1) {
+								print "</td><td valign='top' width='50%'>";
+							}
+							
+							form_base_checkbox("graph" . $graph["local_graph_id"], $old_value, $graph["title"], "", $_GET["id"], true);
+							$i++;
+						}
+						}
+						?>
 					</td>
 				</tr>
 			</table>
@@ -215,16 +252,7 @@ function graph_perms_edit() {
 	form_hidden_box("save_component_graph_perms","1","");
 	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("", "98%", $colors["header"], "3", "center", "");
-		?>
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right">
-				<?php form_save_button("save", "user_admin.php");?>
-			</td>
-		</tr>
-		</form>
-		<?php
-		end_box();
+		form_save_button("user_admin.php");
 	}
 }
 
@@ -238,8 +266,10 @@ function graph_config_edit() {
 	
 	global $colors, $tabs_graphs, $settings_graphs;
 	
+	$header_label = "[edit: " . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "]";
+	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
 	}
@@ -253,7 +283,7 @@ function graph_config_edit() {
 		?>
 		<tr>
 			<td colspan="2" bgcolor="#<?php print $colors["header"];?>">
-				<span class="textHeaderDark"><?php print $tabs_graphs[$tab_short_name];?></span>
+				<span class="textHeaderDark"><strong>Graph Settings</strong> [<?php print $tabs_graphs[$tab_short_name];?>]</span>
 			</td>
 		</tr>
 		<?php
@@ -264,7 +294,7 @@ function graph_config_edit() {
 		foreach (array_keys($settings_graphs) as $setting) {
 			/* make sure to skip group members here; only parents are allowed */
 			if (($settings_graphs[$setting]["method"] != "internal") && ($settings_graphs[$setting]["tab"] == $tab_short_name)) {
-				++$i;
+				
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 				
 				/* draw the acual header and textbox on the form */
@@ -285,6 +315,8 @@ function graph_config_edit() {
 						break;
 				}
 				
+				++$i;
+				
 				print "</tr>\n";
 			}
 		
@@ -299,62 +331,14 @@ function graph_config_edit() {
 	form_hidden_id("user_id",$_GET["id"]);
 	form_hidden_box("save_component_graph_config","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "user_admin.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("user_admin.php");
 }
 
 /* --------------------------
     User Administration
    -------------------------- */
 
-function user_save() {
-	/* only change password when user types one */
-	if ($_POST["password"] != $_POST["confirm"]) {
-		$passwords_do_not_match = true;
-	}elseif (($_POST["password"] == "") && ($_POST["confirm"] == "")) {
-		$password = db_fetch_cell("select password from user where id=" . $_POST["id"]);
-	}else{
-		$password = "PASSWORD('" . $_POST["password"] . "')";
-	}
-	
-	if ($passwords_do_not_match != true) {
-		$save["id"] = $_POST["id"];
-		$save["username"] = $_POST["username"];
-		$save["full_name"] = $_POST["full_name"];
-		$save["password"] = $password;
-		$save["must_change_password"] = $_POST["must_change_password"];
-		$save["show_tree"] = $_POST["show_tree"];
-		$save["show_list"] = $_POST["show_list"];
-		$save["show_preview"] = $_POST["show_preview"];
-		$save["graph_settings"] = $_POST["graph_settings"];
-		$save["login_opts"] = $_POST["login_opts"];
-		$save["graph_policy"] = $_POST["graph_policy"];
-		
-		$user_id = sql_save($save, "user");
-		
-		db_execute("delete from user_auth_realm where user_id=$user_id");
-		
-		while (list($var, $val) = each($_POST)) {
-			if (eregi("^[section]", $var)) {
-				if (substr($var, 0, 7) == "section") {
-				    db_execute ("replace into user_auth_realm (user_id,realm_id) values($user_id," . substr($var, 7) . ")");
-				}
-			}
-		}
-	}	
-}
-
 function user_remove() {
-	global $config;
-	
 	if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
 		include ('include/top_header.php');
 		form_confirm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "user_admin.php?action=user_remove&id=" . $_GET["id"]);
@@ -373,21 +357,22 @@ function user_remove() {
 }
 
 function user_edit() {
-	global $colors, $config;
+	global $colors;
 	
 	if (isset($_GET["id"])) {
 		$user = db_fetch_row("select * from user where id=" . $_GET["id"]);
+		$header_label = "[edit: " . $user["username"] . "]";
 	}else{
-		unset($user);
+		$header_label = "[new]";
 	}
 	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("<strong>User Management [edit]</strong>", "98%", $colors["header"], "3", "center", "");
+		start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 		draw_user_form_select();
 		end_box();
 	}
 	
-	start_box("User Configuration", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="user_admin.php">
@@ -396,7 +381,7 @@ function user_edit() {
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">User Name</font><br>
-			
+			The login name for this user.
 		</td>
 		<?php form_text_box('username',$user["username"],"","");?>
 	</tr>
@@ -404,7 +389,7 @@ function user_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Full Name</font><br>
-			
+			A more descriptive name for this user, that can include spaces or special characters.
 		</td>
 		<?php form_text_box('full_name',$user["full_name"],"","");?>
 	</tr>
@@ -412,18 +397,18 @@ function user_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Password</font><br>
-			
+			Enter the password for this user twice. Remember that passwords are case sensitive!
 		</td>
 		<td>
 			<?php form_base_password_box("password","","","","40");?><br>
-			<?php form_base_password_box("confirm","","","","40");?>
+			<?php form_base_password_box("password_confirm","","","","40");?>
 		</td>
 	</tr>
     
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 		<td width="50%">
 			<font class="textEditTitle">Account Options</font><br>
-			
+			Set any user account-specific options here.
 		</td>
 		<td>
 		<?php
@@ -436,7 +421,7 @@ function user_edit() {
 	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
 			<font class="textEditTitle">Graph Options</font><br>
-			
+			Set any graph-specific options here.
 		</td>
 		<td>
 		<?php
@@ -477,14 +462,14 @@ function user_edit() {
 	
 	<?php
 	end_box();
-	start_box("User Permissions", "98%", $colors["header"], "3", "center", "");
+	start_box("<strong>Realm Permissions</strong>", "98%", $colors["header"], "3", "center", "");
 	
 	$realms = db_fetch_assoc("select 
 		user_auth_realm.user_id,
 		user_realm.id,
 		user_realm.name
 		from user_realm
-		left join user_auth_realm on (user_realm.id=user_auth_realm.realm_id and user_auth_realm.user_id=" . $_GET["id"] . ") 
+		left join user_auth_realm on (user_realm.id=user_auth_realm.realm_id and user_auth_realm.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ") 
 		order by user_realm.name");
 	
 	?>
@@ -494,28 +479,27 @@ function user_edit() {
 			<table width="100%">
 				<tr>
 					<td align="top" width="50%">
-		<?php
-		
-		if (sizeof($realms) > 0) {
-		foreach ($realms as $realm) {
-			if ($realm["user_id"] == "") {
-				$old_value = "";
-			}else{
-				$old_value = "on";
-			}
-			
-			$column1 = floor((sizeof($realms) / 2) + (sizeof($realms) % 2));
-			
-			if ($i == $column1) {
-				print "</td><td valign='top' width='50%'>";
-			}
-			
-			form_base_checkbox("section" . $realm["id"], $old_value, $realm["name"], "", $_GET["id"], true);
-			
-			$i++;
-		}
-		}
-		?>
+						<?php
+						if (sizeof($realms) > 0) {
+						foreach ($realms as $realm) {
+							if ($realm["user_id"] == "") {
+								$old_value = "";
+							}else{
+								$old_value = "on";
+							}
+							
+							$column1 = floor((sizeof($realms) / 2) + (sizeof($realms) % 2));
+							
+							if ($i == $column1) {
+								print "</td><td valign='top' width='50%'>";
+							}
+							
+							form_base_checkbox("section" . $realm["id"], $old_value, $realm["name"], "", $_GET["id"], true);
+							
+							$i++;
+						}
+						}
+						?>
 					</td>
 				</tr>
 			</table>
@@ -529,22 +513,13 @@ function user_edit() {
 	form_hidden_box("save_component_user","1","");
 	
 	if (read_config_option("full_view_user_admin") == "") {
-		start_box("", "98%", $colors["header"], "3", "center", "");
-		?>
-		<tr bgcolor="#FFFFFF">
-			 <td colspan="2" align="right">
-				<?php form_save_button("save", "user_admin.php");?>
-			</td>
-		</tr>
-		</form>
-		<?php
-		end_box();
+		form_save_button("user_admin.php");
 	}
 	
 	if (read_config_option("full_view_user_admin") == "on") {
 		graph_perms_edit();
 		graph_config_edit();
-	}	
+	}
 }
 
 function user() {

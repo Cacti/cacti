@@ -31,9 +31,8 @@ include_once ('include/form.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
     	case 'remove':
 		rra_remove();
@@ -62,7 +61,36 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_rra"])) {
-		return rra_save();
+		$save["id"] = $_POST["id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[0-9]+(\.[0-9])?$", false, 3);
+		$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
+		$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
+		
+		if (!is_error_message()) {
+			$rra_id = sql_save($save, "rra");
+			
+			if ($rra_id) {
+				raise_message(1);
+				
+				db_execute("delete from rra_cf where rra_id=$rra_id"); 
+				
+				for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
+					db_execute("insert into rra_cf (rra_id,consolidation_function_id) 
+						values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
+				}
+			}else{
+				raise_message(2);
+			}
+			
+
+		}
+		
+		if (is_error_message()) {
+			header ("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
+		}else{
+			header ("Location: rra.php");
+		}
 	}
 }
 
@@ -71,28 +99,7 @@ function form_save() {
    ------------------- */
 
 function rra_save() {
-	$save["id"] = $_POST["id"];
-	$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-	$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[0-9]+(\.[0-9])?$", false, 3);
-	$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
-	$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
-	
-	if (!is_error_message()) {
-		$rra_id = sql_save($save, "rra");
-		
-		db_execute("delete from rra_cf where rra_id=$rra_id"); 
-		
-		for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
-			db_execute("insert into rra_cf (rra_id,consolidation_function_id) 
-				values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
-		}
-	}
-	
-	if (is_error_message()) {
-		return "rra.php?action=edit&id=" . $_POST["id"];
-	}else{
-		return "rra.php";
-	}
+
 }
 
 function rra_remove() {
@@ -110,8 +117,6 @@ function rra_remove() {
 
 function rra_edit() {
 	global $colors, $consolidation_functions;
-	
-	display_output_messages();
 	
 	if (isset($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
@@ -166,24 +171,16 @@ function rra_edit() {
 	</tr>
 	
 	<?php
+	end_box();
+	
 	form_hidden_id("id",$_GET["id"]);
 	form_hidden_box("save_component_rra","1","");
-	?>
 	
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right" background="images/blue_line.gif">
-			<?php form_save_button("save", "rra.php");?>
-			</form>
-		</td>
-	</tr>
-	<?php
-	end_box();	
+	form_save_button("rra.php");	
 }
 
 function rra() {
 	global $colors;
-	
-	display_output_messages();
 	
 	start_box("<strong>Round Robin Archives</strong>", "98%", $colors["header"], "3", "center", "rra.php?action=edit");
 	

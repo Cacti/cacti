@@ -30,9 +30,8 @@ include_once ('include/functions.php');
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		$redirect_location = form_save();
+		form_save();
 		
-		header ("Location: $redirect_location"); exit;
 		break;
 	case 'item_movedown':
 		item_movedown();
@@ -82,12 +81,60 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
+	include_once("include/tree_functions.php");
+	
 	if (isset($_POST["save_component_tree"])) {
-		tree_save();
-		return "tree.php";
+		$save["id"] = $_POST["id"];
+		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		
+		if (!is_error_message()) {
+			$tree_id = sql_save($save, "graph_tree");
+			
+			if ($tree_id) {
+				raise_message(1);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: tree.php?action=edit&id=" . (empty($tree_id) ? $_POST["id"] : $tree_id));
+		}else{
+			header ("Location: tree.php");
+		}
 	}elseif (isset($_POST["save_component_tree_item"])) {
-		item_save();
-		return "tree.php?action=edit&id=" . $_POST["graph_tree_id"];
+		if (empty($_POST["id"])) {
+			/* new/save - generate new order key */
+			$order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["parent_item_id"]),"graph_tree_items","order_key");
+		}else{
+			/* edit/save - use old order_key */
+			$order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["id"]);
+		}
+		
+		$save["id"] = $_POST["id"];
+		$save["graph_tree_id"] = $_POST["graph_tree_id"];
+		$save["title"] = form_input_validate($_POST["title"], "title", "", true, 3);
+		$save["order_key"] = $order_key;
+		$save["local_graph_id"] = form_input_validate($_POST["local_graph_id"], "local_graph_id", "", true, 3);
+		$save["rra_id"]	= form_input_validate($_POST["rra_id"], "rra_id", "", true, 3);
+		
+		if (!is_error_message()) {
+			$tree_item_id = sql_save($save, "graph_tree_items");
+			
+			if ($tree_item_id) {
+				raise_message(1);
+				
+				reparent_branch($_POST["parent_item_id"], $_POST["id"]);
+			}else{
+				raise_message(2);
+			}
+		}
+		
+		if (is_error_message()) {
+			header ("Location: tree.php?action=item_edit&tree_item_id=" . (empty($tree_item_id) ? $_POST["id"] : $tree_item_id) . "&tree_id=" . $_POST["graph_tree_id"]);
+		}else{
+			header ("Location: tree.php?action=edit&id=" . $_POST["graph_tree_id"]);
+		}
 	}
 }
 
@@ -167,16 +214,7 @@ function item_edit() {
 	form_hidden_id("graph_tree_id",$_GET["tree_id"]);
 	form_hidden_box("save_component_tree_item","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "tree.php?action=edit&id=" . $_GET["tree_id"]);?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("tree.php?action=edit&id=" . $_GET["tree_id"]);
 }
 
 function item_moveup() {
@@ -191,35 +229,6 @@ function item_movedown() {
 	
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["tree_item_id"]);
 	if ($order_key > 0) { branch_down($order_key, 'graph_tree_items', 'order_key', ''); }
-}
-
-function item_save() {
-	include_once("include/tree_functions.php");
-	
-	if (empty($_POST["id"])) {
-		/* new/save - generate new order key */
-		$order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["parent_item_id"]),"graph_tree_items","order_key");
-	}else{
-		/* edit/save - use old order_key */
-		$order_key = db_fetch_cell("select order_key from graph_tree_items where id=" . $_POST["id"]);
-	}
-	
-	$save["id"] = $_POST["id"];
-	$save["graph_tree_id"] = $_POST["graph_tree_id"];
-	$save["title"] = $_POST["title"];
-	$save["order_key"] = $order_key;
-	$save["local_graph_id"] = $_POST["local_graph_id"];
-	$save["rra_id"]	= $_POST["rra_id"];
-
-	if (sql_save($save, "graph_tree_items")) {
-		raise_message(1);
-		
-		reparent_branch($_POST["parent_item_id"], $_POST["id"]);
-	}else{
-		raise_message(2);
-                header("Location: " . $_SERVER["HTTP_REFERER"]);
-                exit;
-	}
 }
 
 function item_remove() {
@@ -244,22 +253,7 @@ function item_remove() {
     Tree Functions
    --------------------- */
 
-function tree_save() {
-        $save["id"] = $_POST["id"];
-        $save["name"] = $_POST["name"];
-
-        if (sql_save($save, "graph_tree")) {
-                raise_message(1);
-        }else{
-                raise_message(2);
-                header("Location: " . $_SERVER["HTTP_REFERER"]);
-                exit;
-        }
-}
-
 function tree_remove() {
-	global $config;
-
         if ((read_config_option("remove_verification") == "on") && ($_GET["confirm"] != "yes")) {
                 include ('include/top_header.php');
                 form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", getenv("HTTP_REFERER"), "tree.php?action=remove&id=" . $_GET["id"]);
@@ -275,7 +269,7 @@ function tree_remove() {
 function tree_edit() {
 	include_once("include/tree_view_functions.php");
 	
-	global $colors, $cdef_item_types;
+	global $colors;
 	
 	start_box("<strong>Trees [edit]</strong>", "98%", $colors["header"], "3", "center", "");
 	
@@ -306,16 +300,7 @@ function tree_edit() {
 	
 	form_hidden_box("save_component_tree","1","");
 	
-	start_box("", "98%", $colors["header"], "3", "center", "");
-	?>
-	<tr bgcolor="#FFFFFF">
-		 <td colspan="2" align="right">
-			<?php form_save_button("save", "tree.php");?>
-		</td>
-	</tr>
-	</form>
-	<?php
-	end_box();
+	form_save_button("tree.php");
 }
 
 function tree() {
