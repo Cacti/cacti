@@ -28,13 +28,13 @@ LIB+=-lmysqlclient -lrrd -lpthread
 
 OBJS=snmp.o sighandler.o poller.o targets.o util.o conf.o main.o
 
-all: poller
+all: cactid
 
-poller: $(OBJS)
-	$(CC) $(OBJS) -o poller $(LIB) 
+cactid: $(OBJS)
+	$(CC) $(OBJS) -o cactid $(LIB) 
 
 clean:
-	rm -f $(OBJS) poller
+	rm -f $(OBJS) cactid
 
 .c.o:
 	$(CC) -c $< -o $@ $(DEF) $(INC)

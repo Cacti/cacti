@@ -2,11 +2,18 @@
 #define BUFSIZE 512
 
 typedef struct target_struct{
-  char host[80];
-  char oid[256];
-  char community[80];
-  char rrd[256];
-  int ver;
+  int action;
+  char command[256];
+  char management_ip[15];
+  char snmp_community[100];
+  int snmp_version;
+  char snmp_username[50];
+  char snmp_password[50];
+  char rrd_name[19];
+  char rrd_path[255];
+  char arg1[255];
+  char arg2[255];
+  char arg3[255];
   struct target_struct *next;
   struct target_struct *prev;
 }target_t;

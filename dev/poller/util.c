@@ -38,3 +38,12 @@ char** string_to_argv(char *argstring, int *argc){
     return NULL;
   }
 }
+
+int is_number (char *string){
+  int i;
+  for(i=0; i<strlen(string); i++) {
+    if(!isdigit(string[i]) && !(i==strlen(string)-1 && isspace(string[i]))) return(0);
+  }
+  return(1);
+}
+
