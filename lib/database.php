@@ -129,7 +129,7 @@ function db_fetch_assoc($sql) {
 
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
-	if (empty($array{count($array)})) {
+	if (empty($array{count($array)-1})) {
 		array_pop($array);
 	}
 	
