@@ -24,8 +24,17 @@ less confusing to users.
 and "Data Sources" pages.
 -bug#127: Added an HTML "title" tag to the three graph mode images.
 -bug#129: Added support for correctly parsing timeticks in both cmd.php and cactid.
--bug: Fix the navigation display so it doesn't display errors when directly linking
+-bug#130: Users are sometimes redirected to the incorrect host when selecting the
+"Create Graphs for this Host" link under "Polling Hosts".
+-bug#131: Load averages above '10' were not being returned correctly from the
+loadavg_multi.pl script.
+-bug#133: Non-SNMP data sources were not being removed from the poller cache when a 
+host became 'disabled'.
+-bug#134: Make sure to delete associated 'host' tree items when deleting a host.
+-bug#135: Fix the navigation display so it doesn't display errors when directly linking
 to a graph.
+-bug#137: Remove the 'td.shadow' CSS class as it isn't being used and contains
+an incorrect image reference.
 -bug: Allow the user to enter a "Unit Exponent Value" of '0'.
 -bug: Remove all references to $_SERVER["HTTP_REFERER"] for web servers that do not
 include this variable.
@@ -38,6 +47,10 @@ memory + cache memory + buffered memory'.
 -bug: Fixed a problem importing CDEF items correctly from an XML file.
 -bug: Deleting a GPRINT preset now correctly displays the name of the item about to
 be removed.
+-bug: Problems importing XML that contained a host template with more than one
+associated graph template.
+-bug: Added a potential workaround for the PHP session/popen bug which occurs on
+Windows systems using PHP in ISAPI mode.
 -feature: Data query variables such as |query_ifAlias| can now be included on the 
 actual graph in the "Text Format" or "Value" field.
 -feature: Added two new special data sources to CDEFs, which enable users to use
@@ -56,10 +69,18 @@ when using a template.
 -feature: Renamed "Polling Hosts" to "Devices" since polling hosts technically
 implies that you are managing the hosts that poll data, which could be reserved
 for later use.
+-feature: If you enter a value for a "host field" in the data template, Cacti will 
+use that value rather than always defaulting to the host. If you leave it blank, 
+Cacti will use the value from the host.
+-feature: Data input method type codes 'snmp_timeout' and 'snmp_port' are now
+supported.
+-feature: Users will only see tabs for the graph viewing modes that they have access 
+to.
 -doc: Completely re-written manual in SGML/Docbook so HTML, PDF, and ASCII versions
 of the manual are now possible. The new manual also includes a better introduction
 to Cacti for new users and makes use of screen shots to illustrate various portions
 of the user interface.
+-cactid: Fixed segfault problems using cactid on Solaris platforms.
 
 0.8.4
 -bug#87: Deleting top level branches without children on the tree caused ordering
