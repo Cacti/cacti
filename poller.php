@@ -25,6 +25,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/* do NOT run this script through a web browser */
+if (!isset($_SERVER["argv"][0])) {
+	die("<br><strong>This script is only meant to run at the command line.</strong>");
+}
+
 // We are not talking to the browser
 $no_http_headers = true;
 

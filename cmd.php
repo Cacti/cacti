@@ -25,6 +25,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/* do NOT run this script through a web browser */
+if (!isset($_SERVER["argv"][0])) {
+	die("<br><strong>This script is only meant to run at the command line.</strong>");
+}
+
 $start = date("Y-n-d H:i:s");
 print $start . "\n";
 ini_set("max_execution_time", "0");
@@ -76,7 +81,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		);
 
 	if (function_exists("proc_open")) {
-		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php", $cactides, $pipes);
+		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/resource/script_server/script_server.php", $cactides, $pipes);
 		$using_proc_function = true;
 
 		// step below calls the include function with the script file
