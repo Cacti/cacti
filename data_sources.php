@@ -101,6 +101,14 @@ function form_save() {
 		$local_data_id = sql_save($save, "data_local");
 		
 		change_data_template($local_data_id, $_POST["data_template_id"]);
+		
+		/* update the title cache */
+		update_data_source_title_cache($local_data_id);
+		
+		/* update host data */
+		if (!empty($_POST["host_id"])) {
+			push_out_host($_POST["host_id"], $local_data_id);
+		}
 	}
 	
 	if (isset($_POST["save_component_data_source"])) {
@@ -597,7 +605,7 @@ function ds_edit() {
 	}
 	
 	/* display the debug mode box if the user wants it */
-	if (isset($_SESSION["ds_debug_mode"])) {
+	if ((isset($_SESSION["ds_debug_mode"])) && (isset($_GET["id"]))) {
 		start_box("<strong>Data Source Debug</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		?>
@@ -863,7 +871,7 @@ function ds() {
 	end_box();
 	
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "where data_template_data.name like '%%" . $_REQUEST["filter"] . "%%'";
+	$sql_where = "where data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'";
 	
 	if (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];

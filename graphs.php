@@ -138,6 +138,9 @@ function form_save() {
 		$local_graph_id = sql_save($save, "graph_local");
 		
 		change_graph_template($local_graph_id, $_POST["graph_template_id"], true);
+		
+		/* update the title cache */
+		update_graph_title_cache($local_graph_id);
 	}
 	
 	if (isset($_POST["save_component_graph"])) {
@@ -152,8 +155,8 @@ function form_save() {
 		$save2["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
 		$save2["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
 		$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
-		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[0-9]+$", false, 3);
-		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[0-9]+$", false, 3);
+		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^-?[0-9]+$", false, 3);
+		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^-?[0-9]+$", false, 3);
 		$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
 		$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
 		$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
@@ -1037,7 +1040,7 @@ function graph_edit() {
 	}
 	
 	/* display the debug mode box if the user wants it */
-	if (isset($_SESSION["graph_debug_mode"])) {
+	if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
 		start_box("<strong>Graph Debug</strong>", "98%", $colors["header"], "3", "center", "");
 		
 		$graph_data_array["output_flag"] = 2;
@@ -1210,7 +1213,7 @@ function graph() {
 		from graph_templates_graph
 		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		where graph_templates_graph.local_graph_id!=0
-		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+		and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]));
 	
 	$graph_list = db_fetch_assoc("select 
@@ -1224,7 +1227,7 @@ function graph() {
 		from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
 		left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 		where graph_templates_graph.local_graph_id!=0
-		and graph_templates_graph.title like '%%" . $_REQUEST["filter"] . "%%'
+		and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
 		order by graph_templates_graph.title_cache,graph_local.host_id
 		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
