@@ -228,87 +228,91 @@ function DrawFormItemFileBox($form_name) { ?>
 <?}
 
 /* creates a dropdown box from a sql string */
-function DrawFormItemColorSelect($form_name, $database_conn_id,
-	$form_previous_value, $form_none_entry, $form_default_value) { 
-	global $current_path; include_once ("$current_path/functions.php");
+function DrawFormItemColorSelect($form_name, $form_previous_value, $form_none_entry, $form_default_value) { 
+    global $current_path; 
+    include_once ("$current_path/functions.php");
 	
-	if (substr($form_previous_value,0,13)=="Resource id #") {
-		$form_previous_value = mysql_result($form_previous_value, 0, $form_name);
-	}else{
-		if ($form_previous_value=="") {
-			$form_previous_value = $form_default_value;
-		}
-	}?>
-		<td bgcolor="#DEE3E7">
-		<?if ($form_none_entry != "") {?>
-			<input type="radio" name="<?print $form_name;?>" value="0"<?if ($form_previous_value==0){?> checked<?}?>> <?print $form_none_entry;?>
-		<?}?>
-		<table width="100%" border="0">
-		<?	$sql_id = mysql_query("select * from def_colors order by hex",$database_conn_id);
-			$rows = mysql_num_rows($sql_id); $i = 0;
-		
-		$row_style = "color"; $k = 0; $o = 0;
-		while ($i < $rows) {
-			
-			/* we reached the end, wrap up row and continue on next. there will be no 
-			more database pulls from this point in the loop */
-			if ($o == $rows) {
-				$row_style = "radio";
-				
-				/* only fill in td's if there we are NOT at the end of a row */
-				if ($k != 0) {
-					for ($p = 1; $p < (15-$k); $p++) {
-						print "<td></td>";
-					}
-					
-					//print "</tr><tr height=\"10\"><td>&nbsp;</td></tr><tr>";
-					print "</tr><tr>";
-				}
-				
-				$k = 0; $o = 0;
-			}
-			
-			/* draw either a picture or label */
-			if ($row_style == "color") {
-				?><td height="15" bgcolor="#<?print mysql_result($sql_id, $o, "hex");?>">
-					&nbsp;
-				</td><?
-				$row_array_id[$k] = mysql_result($sql_id, $o, "id");
-				
-				$o++;
-			}else{
-			?><td align="center">
-				<input type="radio" name="<?print $form_name;?>" value="<?print $row_array_id[$k];?>"<?if ($form_previous_value==$row_array_id[$k]){?> checked<?}?>>
-			</td><?
-			}
-			
-			/* every second time, incriment sql counter */
-			$j++;
-			if ($j == 2) {
-				$j = 0;
-				$i++;
-			}
-			
-			$k++;
-			 /* every fourth time, write a new row */
-			if ($k == 15) {
-				$k = 0;
-				if ($row_style == "color") {
-					$row_style = "radio";
-					//print "</tr><tr height=\"5\"><td></td></tr><tr>";
-					print "</tr><tr>";
-				}else{
-					$row_style = "color";
-					//print "</tr><tr height=\"5\"><td>&nbsp;</td></tr><tr>";
-					print "</tr><tr>";
-				}
-				
-			}
-		}?>
-		</table>
-		</td>
-<?}
+    if ($form_previous_value=="") {
+	$form_previous_value = $form_default_value;
 
+    }
+    print "<tr><td>\n";
+    if ($form_none_entry != "") {
+	print "<input type='radio' name='$form_name' value='0'";
+	if ($form_previous_value==0){ print " checked"; }
+	print "> $form_none_entry\n";
+		
+    }
+    print "<table width='100%' border='0'>\n";
+    $colors = db_fetch_assoc("select * from def_colors order by hex");
+    $rows = sizeof($colors);
+    $i = 0;
+		
+    $row_style = "color"; $k = 0; $o = 0;
+    while ($i < $rows) {
+	$color = $colors[$i];		
+	/* we reached the end, wrap up row and continue on next. there will be no 
+	 more database pulls from this point in the loop */
+	if ($o == $rows) {
+	    $row_style = "radio";
+				
+	    /* only fill in td's if there we are NOT at the end of a row */
+	    if ($k != 0) {
+		for ($p = 1; $p < (15-$k); $p++) {
+		    print "<td></td>";
+		}
+		
+		//print "</tr><tr height=\"10\"><td>&nbsp;</td></tr><tr>";
+		print "</tr><tr>";
+	    }
+	    
+	    $k = 0; $o = 0;
+	}
+	
+	/* draw either a picture or label */
+	if ($row_style == "color") {
+	    print "<td height='15' bgcolor='#$color[Hex]'>
+						&nbsp;
+				</td>\n";
+	    $row_array_id[$k] = $color[ID];
+				
+	    $o++;
+	} else {
+	    print "<td align='center'>
+		    <input type='radio' name='$form_name' value='$row_array_id[$k]'";
+	    if ($form_previous_value == $row_array_id[$k]){ print " checked"; }
+	    print ">
+			</td>\n";
+	}
+			
+	/* every second time, incriment sql counter */
+	$j++;
+	if ($j == 2) {
+	    $j = 0;
+	    $i++;
+	}
+	
+	$k++;
+	/* every fifteenth time, write a new row */
+	if ($k == 15) {
+	    $k = 0;
+	    if ($row_style == "color") {
+		$row_style = "radio";
+		//print "</tr><tr height=\"5\"><td></td></tr><tr>";
+		print "</tr><tr>";
+	    } else {
+		$row_style = "color";
+		//print "</tr><tr height=\"5\"><td>&nbsp;</td></tr><tr>";
+		print "</tr><tr>";
+	    }
+	    
+	}
+    }?>
+			</table>
+		</td></tr>
+    <?}
+    
+    
 /* create a multiselect listbox */
 function DrawFormItemMultipleList($form_name, $database_conn_id, $sql_string_display, $sql_display_name,
 	$sql_display_value, $sql_string_previous_values, $sql_previous_value) {

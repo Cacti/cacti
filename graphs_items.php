@@ -239,8 +239,8 @@ switch ($action) {
 #	print "$sql<BR>\n";
 	db_execute($sql);
     } elseif ($sequence_column == "sequence") { /* item order */
-	$id  = db_fetch_row("select ID from rrd_graph_item where $sequence_column=$next_item and graphid=$gid and parent=$tid");
-	$seq = db_fetch_row("select $sequence_column from rrd_graph_item where id=$id");
+	$id  = db_fetch_cell("select ID from rrd_graph_item where $sequence_column=$next_item and graphid=$gid and parent=$tid");
+	$seq = db_fetch_cell("select $sequence_column from rrd_graph_item where id=$id");
 	db_execute("update rrd_graph_item set $sequence_column=$next_item where id=$id");
 	db_execute("update rrd_graph_item set $sequence_column=$seq[$sequence_column] where id=$id[ID]");
     }
