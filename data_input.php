@@ -230,6 +230,12 @@ function field_edit() {
 		}
 	}
 	
+	/* if there are no input fields to choose from, complain */
+	if ((!isset($array_field_names)) && ($_GET["type"] == "in")) {
+		print "<span class='textError'>This script appears to have no input values, therefore there is nothing to add.</span>";
+		return;
+	}
+	
 	start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
 	
 	?>
@@ -237,7 +243,7 @@ function field_edit() {
 	
 	<?php
 	$i = 0;
-	if ($data_input["type_id"] == "1") { /* script */
+	if (($data_input["type_id"] == "1") && ($_GET["type"] == "in")) { /* script */
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field [<?php print $header_name;?>]</font><br>
@@ -245,7 +251,7 @@ function field_edit() {
 			</td>
 			<?php form_dropdown("data_name",$array_field_names,"","",(isset($field) ? $field["data_name"] : ""),"","");?>
 		</tr><?php
-	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3")) { /* snmp */
+	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($_GET["type"] == "out")) { /* snmp */
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++; ?>
 			<td width="50%">
 				<font class="textEditTitle">Field Name [<?php print $header_name;?>]</font><br>
