@@ -90,7 +90,8 @@ include_once("include/snmp_functions.php");
 include_once("include/functions.php");
 include_once("include/utility_functions.php");
 
-$paths["cacti"] = read_config_option("path_webroot") . read_config_option("path_webcacti");
+$paths["cacti"] = dirname(__FILE__);
+$paths["rra"] = dirname(__FILE__) . "/rra";
 
 if ($cnn_id) {
 	print "Successfully connected to database: $database\n";
@@ -703,7 +704,6 @@ function climb_tree($parent, $tree_id, $branch, $prefix_key, $item_count_array) 
 	return $branch;
 }
 
-$paths["rra"] = read_config_option("path_webroot") . read_config_option("path_webcacti") . "/rra";
 repopulate_poller_cache();
 
 ?>
