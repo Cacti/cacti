@@ -124,34 +124,4 @@
 			<oid>.1.3.6.1.2.1.4.20.1.2</oid>
 		</ifIP>
 	</fields>
-	
-	<!-- suggested values for snmp queries are made manditory for the user when specified here. When the graphs/
-	data sources are created, each line will be evaluated in order. The first one that is able to subsitute 
-	all of the items is used. -->
-	
-	<suggested_values>
-		<graph>
-			<title>
-				<i1>Traffic Analysis for |host_description| - |squery_ifAlias|</i1>
-				<i2>Traffic Analysis for |host_description| - |squery_ifIP| (|squery_ifDesc|)</i2>
-				<i3>Traffic Analysis for |host_description| - |squery_ifDesc|/|squery_ifIndex|</i3>
-			</title>
-		</graph>
-		<ds_traffic_in>
-			<name>
-				<i1>Traffic - |squery_ifIP| - |squery_ifAlias| (In)</i1>
-				<i2>Traffic - |squery_ifAlias| (In)</i2>
-				<i3>Traffic - |squery_ifIP|/|squery_ifDesc| (In)</i3>
-				<i4>Traffic - |squery_ifDesc| (In)</i4>
-			</name>
-		</ds_traffic_in>
-		<ds_traffic_out>
-			<name>
-				<i1>Traffic - |squery_ifIP| - |squery_ifAlias| (Out)</i1>
-				<i2>Traffic - |squery_ifAlias| (Out)</i2>
-				<i3>Traffic - |squery_ifIP|/|squery_ifDesc| (Out)</i3>
-				<i4>Traffic - |squery_ifDesc| (Out)</i4>
-			</name>
-		</ds_traffic_out>
-	</suggested_values>
 </interface>
