@@ -106,33 +106,6 @@ case 'login':
 	}
 	
 	if (sizeof($user)) {
-		/* --- GOOD username/password --- */
-		
-		$denied_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["id"] . " and policy='1'");
-		$allowed_ips = db_fetch_assoc("select hostname,policy from user_auth_hosts where user_id=" . $user["id"] . " and policy='2'");
-		
-		$deny_ip = false; /* do not deny by ip by default */
-		
-		if (sizeof($denied_ips) > 0) {
-			/* if our ip is in this list, it means that we're denied */
-			if (in_array($_SERVER["REMOTE_ADDR"],array_rekey($denied_ips, "hostname", "hostname"))) {
-				$deny_ip = true;
-			}
-		}
-		
-		if (sizeof($allowed_ips) > 0) {
-			/* if this list contains items, but our ip is not in this list, the we're denied */
-			if (!in_array($_SERVER["REMOTE_ADDR"],array_rekey($allowed_ips, "hostname", "hostname"))) {
-				$deny_ip = true;
-			}
-		}
-		
-		if ($deny_ip == true) {
-			db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"]. "'," . $user["id"] . ",2,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
-			include ("noauth.php");
-			exit;
-		}
-		
 		/* make entry in the transactions log */
 		db_execute("insert into user_log (username,user_id,result,ip,time) values('" . $_POST["username"] ."'," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 		
