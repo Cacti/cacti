@@ -744,7 +744,7 @@ function update_database($database_old, $database_username, $database_password) 
 	if (sizeof($_tree) > 0) {
 	foreach ($_tree as $item) {
 		if (db_execute("insert into graph_tree (id,user_id,name) values (0,0,'" . $item["Name"] . "')")) {
-			$graph_tree_id = db_fetch_insert_id();
+			$tree_cache{$item["ID"]} = db_fetch_insert_id();
 			$status_array{count($status_array)}["tree"][1] = $item["Name"];
 			climb_tree(0, $item["ID"], 0, "", "", $database_old);
 			
@@ -757,7 +757,7 @@ function update_database($database_old, $database_username, $database_password) 
 				}
 				
 				if (db_execute("insert into graph_tree_items (id,graph_tree_id,local_graph_id,rra_id,title,
-					order_key) values (0,$graph_tree_id," . $local_graph_id_cache{$item2["GraphID"]} . ",
+					order_key) values (0," . $tree_cache{$item["ID"]} . "," . $local_graph_id_cache{$item2["GraphID"]} . ",
 					" . $item2["RRAID"] . ",'" . $item2["Title"] . "','" . $order_key_array{$item2["ID"]} . "')")) {
 					$status_array{count($status_array)}["tree_item"][1] = $item2["ID"] . "/" . $item2["Title"];
 				}else{
@@ -768,6 +768,27 @@ function update_database($database_old, $database_username, $database_password) 
 		}else{
 			$status_array{count($status_array)}["tree"][0] = $item["Name"];
 		}
+	}
+	}
+	
+	db_execute("truncate table $database_default.user_auth_graph");
+	db_execute("truncate table $database_default.user_auth_tree");
+	
+	$_ag = db_fetch_assoc("select * from $database_old.auth_graph");
+	
+	if (sizeof($_ag) > 0) {
+	foreach ($_ag as $item) {
+		db_execute("insert into $database_default.user_auth_graph (user_id,local_graph_id) values (" . $user_cache{$item["UserID"]} . ",
+			" . $local_graph_id_cache{$item["GraphID"]} . ")");
+	}
+	}
+	
+	$_at = db_fetch_assoc("select * from $database_old.auth_graph_hierarchy");
+	
+	if (sizeof($_at) > 0) {
+	foreach ($_at as $item) {
+		db_execute("insert into $database_default.user_auth_tree (user_id,tree_id) values (" . $user_cache{$item["UserID"]} . ",
+			" . $tree_cache{$item["HierarchyID"]} . ")");
 	}
 	}
 	
