@@ -588,13 +588,13 @@ function item_presets_edit() {
 		graph_templates_item.consolidation_function_id,
 		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
 		cdef.name as cdef_name,
-		def_colors.hex
+		colors.hex
 		from graph_templates_item
 		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join data_local on data_template_rrd.local_data_id=data_local.id
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
-		left join def_colors on color_id=def_colors.id
+		left join colors on color_id=colors.id
 		where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		and graph_templates_item.local_graph_id=0
 		order by graph_templates_item.sequence");
@@ -691,13 +691,13 @@ function item() {
 		graph_templates_item.consolidation_function_id,
 		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
 		cdef.name as cdef_name,
-		def_colors.hex
+		colors.hex
 		from graph_templates_item
 		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
 		left join data_local on data_template_rrd.local_data_id=data_local.id
 		left join data_template_data on data_local.id=data_template_data.local_data_id
 		left join cdef on cdef_id=cdef.id
-		left join def_colors on color_id=def_colors.id
+		left join colors on color_id=colors.id
 		where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		and graph_templates_item.local_graph_id=0
 		order by graph_templates_item.sequence");

@@ -32,14 +32,14 @@ switch ($_GET["rraid"]) {
     $sql_where = " where id is not null";
     break;
  default:
-    $sql_where = " where id=$rraid";
+    $sql_where = " where id=" . $_GET["rraid"];
     break;
 }
 
 /* take graph permissions into account here, if the user does not have permission
  give an "access denied" message */
 if (read_config_option("global_auth") == "on") {
-    $user = db_fetch_row("select userid from auth_graph where graphid=$graphid and userid=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],read_config_option("guest_user")));
+    $user = db_fetch_row("select user_id from user_auth_graph where local_graph_id=$graphid and user_id=" . GetCurrentUserID($HTTP_COOKIE_VARS["cactilogin"],read_config_option("guest_user")));
     
     if ($config["graph_policy"]["auth"] == "1") {
 	if (sizeof($user) > 0) { $access_denied = true; }
@@ -53,13 +53,13 @@ if (read_config_option("global_auth") == "on") {
 }
 
 /* make sure the graph requested exists (sanity) */
-$gid = db_fetch_cell("select ID from rrd_graph where id=$graphid");
+//$gid = db_fetch_cell("select ID from rrd_graph where id=$graphid");
 
-if (! $gid > 0) {
-    print "<strong><font size=\"+1\" color=\"FF0000\">GRAPH DOES NOT EXIST</font></strong>"; exit;
-}
+//if (! $gid > 0) {
+ //   print "<strong><font size=\"+1\" color=\"FF0000\">GRAPH DOES NOT EXIST</font></strong>"; exit;
+//}
 
-$rra_list = db_fetch_assoc("select ID,Name from rrd_rra $sql_where order by steps");
+$rra_list = db_fetch_assoc("select id,name from rra $sql_where order by steps");
 
 if (sizeof($rra_list) > 0) {
     foreach ($rra_list as $rra) {

@@ -45,7 +45,7 @@ switch ($action) {
     include_once ('include/top_graph_header.php');
     
     /* find out if the current user has right s here */
-    $gs = db_fetch_cell("select GraphSettings from auth_users where id=$current_user_id");
+    $gs = db_fetch_cell("select graph_settings from user where id=$current_user_id");
     
     if (! $gs) {
 	print "<strong><font size=\"+1\" color=\"FF0000\">YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>"; exit;
