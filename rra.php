@@ -78,9 +78,11 @@ function form_save() {
 				
 				db_execute("delete from rra_cf where rra_id=$rra_id"); 
 				
-				for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
-					db_execute("insert into rra_cf (rra_id,consolidation_function_id) 
-						values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
+				if (isset($_POST["consolidation_function_id"])) {
+					for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
+						db_execute("insert into rra_cf (rra_id,consolidation_function_id) 
+							values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
+					}
 				}
 			}else{
 				raise_message(2);
