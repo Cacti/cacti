@@ -172,4 +172,145 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
+function establish_timespan(&$param_graph_start, &$param_graph_end) {
+	/* Compute the time start and end */
+	/* When a span time preselection has been defined update the span time fields */
+	if (isset($_POST["predefined_timespan"]) and ($_POST["predefined_timespan"]!="") and ($_POST["predefined_timespan"]!="No Preset"))  {
+		$end_now=strtotime("now");
+		$end_year = date("Y",$end_now);
+		$end_month = date("m",$end_now);
+		$end_day = date("d",$end_now);
+		$end_hour = date("H",$end_now);
+		$end_min = date("i",$end_now);
+		$end_sec = 00;
+
+		switch ($_POST["predefined_timespan"])  {
+			case 'Default':
+				$begin_now = $end_now - read_graph_config_option("timespan");
+				break;
+			case 'Last Half Hour':
+				$begin_now = $end_now - 60*30;
+				break;
+			case 'Last Hour':
+				$begin_now = $end_now - 60*60;
+				break;
+			case 'Last 2 Hours':
+				$begin_now = $end_now - 2*60*60;
+				break;
+			case 'Last 4 Hours':
+				$begin_now = $end_now - 4*60*60;
+				break;
+			case 'Last 6 Hours':
+				$begin_now = $end_now - 6*60*60;
+				break;
+			case 'Last 12 Hours':
+				$begin_now = $end_now - 12*60*60;
+				break;
+			case 'Last Day':
+				$begin_now = $end_now - 24*60*60;
+				break;
+			case 'Last 2 Days':
+				$begin_now = $end_now - 2*24*60*60;
+				break;
+			case 'Last 3 Days':
+				$begin_now = $end_now - 3*24*60*60;
+				break;
+			case 'Last 4 Days':
+				$begin_now = $end_now - 4*24*60*60;
+				break;
+			case 'Last Week':
+				$begin_now = $end_now - 7*24*60*60;
+				break;
+			case 'Last Week':
+				$begin_now = $end_now - 7*24*60*60;
+				break;
+			case 'Last 2 Weeks':
+				$begin_now = $end_now - 2*7*24*60*60;
+				break;
+			case 'Last Month':
+				$begin_now = strtotime("-1 month");
+				break;
+			case 'Last 2 Months':
+				$begin_now = strtotime("-2 months");
+				break;
+			case 'Last 3 Months':
+				$begin_now = strtotime("-3 months");
+				break;
+			case 'Last 4 Months':
+				$begin_now = strtotime("-4 months");
+				break;
+			case 'Last 6 Months':
+				$begin_now = strtotime("-6 months");
+				break;
+			case 'Last Year':
+				$begin_now = strtotime("-1 year");
+				break;
+			case 'Last 2 Years':
+				$begin_now = strtotime("-2 years");
+				break;
+			default:
+				$begin_now = $end_now - read_graph_config_option("timespan");
+				break;
+		}
+
+		$start_year = date("Y",$begin_now);
+		$start_month = date("m",$begin_now);
+		$start_day = date("d",$begin_now);
+		$start_hour = date("H",$begin_now);
+		$start_min = date("i",$begin_now);
+		$start_sec = 00;
+
+		$date1=$start_year."-".$start_month ."-".$start_day." ".$start_hour.":".$start_min;
+		$date2=$end_year."-".$end_month ."-".$end_day." ".$end_hour.":".$end_min;
+	}else {
+		$date1= "";
+		$date2= "";
+
+		if (isset($_POST["date1"]) and ($_POST["date1"]!="")) {
+			$date1 = $_POST["date1"];
+		}
+
+		if (isset($_POST["date2"]) and ($_POST["date2"]!="")) {
+			$date2 = $_POST["date2"];
+		}
+
+		$end_now=strtotime("now");
+		$begin_now = $end_now - read_graph_config_option("timespan");
+		if ($date2=="") {
+			/* Default end date is now */
+			$date2=date("Y",$end_now)."-".date("m",$end_now)."-".date("d",$end_now)." ".date("H",$end_now).":".date("i",$end_now);
+		}
+
+		if ($date1=="") {
+			/* Default end date is now default time span */
+			$date1=date("Y",$begin_now)."-".date("m",$begin_now)."-".date("d",$begin_now)." ".date("H",$begin_now).":".date("i",$begin_now);
+		}
+	}
+
+	/* Compute graph start and end date */
+	$param_graph_start=strtotime($date1);
+	$param_graph_end=strtotime($date2);
+
+	/* Reverse the 2 dates when defined incorrectly */
+	if ($param_graph_end < $param_graph_start) {
+		$date1=$param_graph_end;
+		$param_graph_end=$param_graph_start;
+		$param_graph_start=$date1;
+	}
+
+	/* Rebuild date start and end in case of format error above */
+	$date1=date("Y",$param_graph_start)."-".date("m",$param_graph_start)."-".date("d",$param_graph_start)." ".date("H",$param_graph_start).":".date("i",$param_graph_start);
+	$date2=date("Y",$param_graph_end)."-".date("m",$param_graph_end)."-".date("d",$param_graph_end)." ".date("H",$param_graph_end).":".date("i",$param_graph_end);
+
+	/* Update start and end date field */
+	print "
+		<script type='text/javascript'>
+		setDateField('date1',\"$date1\");
+		setDateField('date2',\"$date2\");
+		</script>";
+
+	/* $param_graph_start=mktime($start_hour, $start_min, $start_sec, $start_month, $start_day, $start_year); */
+	/* $param_graph_end=mktime($end_hour, $end_min, $end_sec, $end_month, $end_day, $end_year); */
+}
+
 ?>

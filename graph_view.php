@@ -97,6 +97,8 @@ case 'preview':
 	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
 
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
+	$param_graph_start = "";
+	$param_graph_end = "";
 
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_preview"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
@@ -140,6 +142,9 @@ case 'preview':
 				$_REQUEST["host_id"] = "0";
 
 				$set_rra_id = $_GET["rra_id"];
+
+				/* Fix to avoid error in 'preview' after selection in 'list' : Notice: Undefined index: rra_id in C:\apache2\htdocs\cacti\graph_view.php on line 142 */
+				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : $_GET["rra_id"];
 			}
 		}
 	}
@@ -164,6 +169,11 @@ case 'preview':
 		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 
+	/* Include time span selector */
+	html_graph_start_box(3, true);
+	include("./include/html/inc_timespan_selector.php");
+	establish_timespan($param_graph_start, $param_graph_end);
+
 	html_graph_start_box(3, true);
 
 	include("./include/html/inc_graph_view_filter_table.php");
@@ -184,8 +194,10 @@ case 'preview':
 
 	if (read_graph_config_option("thumbnail_section_preview") == "on") {
 		html_graph_thumbnail_area($graphs, "");
+		html_graph_thumbnail_area($graphs, "","graph_start=$param_graph_start&graph_end=$param_graph_end");
 	}else{
 		html_graph_area($graphs, "");
+		html_graph_area($graphs, "", "graph_start=$param_graph_start&graph_end=$param_graph_end");
 	}
 
 	html_graph_end_box();
@@ -257,6 +269,18 @@ case 'list':
 				<td width='1'>";
 					form_dropdown("rra_id", db_fetch_assoc("select id,name,(rra.rows*rra.steps) as rra_order from rra order by rra_order,name"), "name", "id", "1", "", "");
 	print "			</td>
+				<td>
+					<input type='image' src='images/button_view.gif' alt='View'>
+				</td>
+			</tr>
+		</table><br><br>\n
+	<input type='hidden' name='page' value='1'>
+	<input type='hidden' name='style' value='selective'>\n
+	<input type='hidden' name='action' value='preview'>\n
+	</form>\n";
+	print "	</table>
+		<table align='center' width='98%'>
+			<tr>
 				<td>
 					<input type='image' src='images/button_view.gif' alt='View'>
 				</td>

@@ -396,6 +396,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	include_once($config["library_path"] . "/data_query.php");
 	include_once($config["library_path"] . "/tree.php");
+	include_once($config["library_path"] . "/html_utility.php");
 
 	if (empty($tree_id)) { return; }
 
@@ -404,6 +405,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$title = "";
 	$title_delimeter = "";
 	$search_key = "";
+	$param_graph_start = "";
+	$param_graph_end = "";
 
 	$leaf = db_fetch_row("select order_key,title,host_id,host_grouping_type from graph_tree_items where id=$leaf_id");
 	$leaf_type = get_tree_item_type($leaf_id);
@@ -451,6 +454,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print "<table width='98%' align='center' cellpadding='3'>";
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='3' class='textHeaderDark'>$title</td></tr>";
 
+	/* Include time span selector */
+	include_once($config["include_path"] . "/html/inc_timespan_selector.php");
+	establish_timespan($param_graph_start, $param_graph_end);
+
 	if ($leaf_type == "header") {
 		$heirarchy = db_fetch_assoc("select
 			graph_tree_items.id,
@@ -472,8 +479,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 		if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
 			html_graph_thumbnail_area($heirarchy, "", "view_type=tree");
+			html_graph_thumbnail_area($heirarchy, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end");
 		}else{
 			html_graph_area($heirarchy, "", "view_type=tree");
+			html_graph_area($heirarchy, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end");
 		}
 	}elseif ($leaf_type == "host") {
 		/* graph template grouping */
@@ -510,8 +519,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 				if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
 					html_graph_thumbnail_area($graphs, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
+					html_graph_thumbnail_area($graphs, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
 				}else{
 					html_graph_area($graphs, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
+					html_graph_area($graphs, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
 				}
 			}
 			}
@@ -576,9 +587,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						}
 
 						if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
-							html_graph_thumbnail_area($graph_list, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
+//							html_graph_thumbnail_area($graph_list, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
+							html_graph_thumbnail_area($graph_list, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
 						}else{
-							html_graph_area($graph_list, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
+//							html_graph_area($graph_list, "", "view_type=tree", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
+							html_graph_area($graph_list, "", "view_type=tree&graph_start=$param_graph_start&graph_end=$param_graph_end", "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'>$sort_field_value</td></tr>");
 						}
 					}
 				}

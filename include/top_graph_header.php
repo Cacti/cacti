@@ -29,6 +29,10 @@ $show_console_tab = true;
 
 include_once($config["library_path"] . "/html_tree.php");
 include_once($config["library_path"] . "/rrd.php");
+require_once($config["include_path"] . "/jscalendar/calendar.php");
+
+/* Include time span selector javascript */
+//include($config["include_path"]."/html/inc_timespan_selector.php");
 
 if (read_config_option("global_auth") == "on") {
 	/* at this point this user is good to go... so get some setting about this
@@ -83,8 +87,11 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["a
 	<?php print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'; url='" . basename($_SERVER["PHP_SELF"]) . "'>\r\n";?>
 	<link href="include/main.css" rel="stylesheet">
 
-	<script src="include/treeview/ua.js"></script>
-	<script src="include/treeview/ftiens4.js"></script>
+	<script type="text/javascript" src="include/treeview/ua.js"></script>
+	<script type="text/javascript" src="include/treeview/ftiens4.js"></script>
+	<script type="text/javascript" src="include/jscalendar/calendar.js"></script>
+	<script type="text/javascript" src="include/jscalendar/lang/calendar-en.js"></script>
+	<script type="text/javascript" src="include/jscalendar/calendar-setup.js"></script>
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
