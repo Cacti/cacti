@@ -142,13 +142,6 @@ $fields_data_input_edit = array(
 		"value" => "|arg1:input_string|",
 		"max_length" => "255",
 		),
-	"output_string" => array(
-		"method" => "textbox",
-		"friendly_name" => "Output String",
-		"description" => "The data that is expected back from the input script; defined as &lt;&gt; brackets.",
-		"value" => "|arg1:output_string|",
-		"max_length" => "255",
-		),
 	"id" => array(
 		"method" => "hidden_zero",
 		"value" => "|arg1:id|"
@@ -234,7 +227,7 @@ $fields_data_input_field_edit = array(
 		),
 	"data_input_id" => array(
 		"method" => "hidden_zero",
-		"value" => "|arg1:data_input_id|"
+		"value" => "|arg3:data_input_id|"
 		),
 	"save_component_field" => array(
 		"method" => "hidden",
