@@ -88,6 +88,7 @@ char *rrdcmd_string(char *rrd_path, char *stringresult, int local_data_id){
     row = mysql_fetch_row(result);
     strcat(rrdcmd, row[0]);
   }
+  mysql_close(&mysql);
   strcat(rrdcmd, " N");
   for(j=1; j<i; j=j+2){
     strcat(rrdcmd, ":");
