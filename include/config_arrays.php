@@ -42,6 +42,9 @@ $messages = array(
 		"type" => "error"),
 	6  => array(
 		"message" => 'You must have built in user authentication turned on to use this feature.',
+		"type" => "error"),
+	7  => array(
+		"message" => 'XML parse error.',
 		"type" => "error")
 		);
 
@@ -210,7 +213,8 @@ $user_auth_realms = array(
 	13 => "SNMP Queries",
 	14 => "Update CDEF's",
 	15 => "Global Settings",
-	16 => "Export Data"
+	16 => "Export Data",
+	17 => "Import Data"
 	);
 
 $user_auth_realm_filenames = array(
@@ -238,23 +242,46 @@ $user_auth_realm_filenames = array(
 	"settings.php" => 15,
 	"snmp.php" => 13,
 	"templates_export.php" => 16,
+	"templates_import.php" => 17,
 	"tree.php" => 4,
 	"user_admin.php" => 1,
 	"utilities.php" => 15
 	);
 
 $hash_type_codes = array(
-	"graph_template" => "00",
-	"data_template" => "01",
-	"host_template" => "02",
-	"data_input_method" => "03",
-	"data_query" => "04",
 	"cdef" => "05",
-	"gprint_preset" => "06"
+	"cdef_item" => "14",
+	"gprint_preset" => "06",
+	"data_input_method" => "03",
+	"data_input_field" => "07",
+	"data_template" => "01",
+	"data_template_item" => "08",
+	"graph_template" => "00",
+	"graph_template_item" => "10",
+	"graph_template_input" => "09",
+	"data_query" => "04",
+	"data_query_graph" => "11",
+	"data_query_sv_graph" => "12",
+	"data_query_sv_data_source" => "13",
+	"host_template" => "02"
 	);
 
 $hash_version_codes = array(
 	"0.8.4" => "0000"
 	);
 
+$hash_type_names = array(
+	"cdef" => "CDEF",
+	"cdef_item" => "CDEF Item",
+	"gprint_preset" => "GPRINT Preset",
+	"data_input_method" => "Data Input Method",
+	"data_input_field" => "Data Input Field",
+	"data_template" => "Data Template",
+	"data_template_item" => "Data Template Item",
+	"graph_template" => "Graph Template",
+	"graph_template_item" => "Graph Template Item",
+	"graph_template_input" => "Graph Template Input",
+	"data_query" => "Data Query",
+	"host_template" => "Host Template"
+	);
 ?>
