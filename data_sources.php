@@ -252,7 +252,7 @@ function form_save() {
 	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {
 		header ("Location: data_sources.php?action=ds_edit&host_id=" . $_POST["host_id"] . "&new=1");
 	}elseif ((is_error_message()) || ($_POST["data_template_id"] != $_POST["_data_template_id"]) || ($_POST["data_input_id"] != $_POST["_data_input_id"]) || ($_POST["host_id"] != $_POST["_host_id"])) {
-		header ("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["view_rrd"]) ? $_POST["view_rrd"] : "0"));
+		header ("Location: data_sources.php?action=ds_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&host_id=" . $_POST["host_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
 	}else{
 		header ("Location: data_sources.php");
 	}
@@ -668,9 +668,9 @@ function ds_edit() {
 			print "</td>\n";
 			
 			if (($use_data_template == false) || (!empty($data_template{"t_" . $field_name})) || ($field_array["flags"] == "NOTEMPLATE")) {
-				draw_nontemplated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), $data["id"]);
+				draw_nontemplated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), (empty($data["id"]) ? "0" : $data["id"]));
 			}else{
-				draw_templated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), $data["id"]);
+				draw_templated_item($field_array, $field_name, (isset($data[$field_name]) ? $data[$field_name] : ""), (empty($data["id"]) ? "0" : $data["id"]));
 			}
 			
 			print "</tr>\n";
