@@ -140,8 +140,9 @@ function field_save() {
 			$j = 0;
 			for ($i=0; ($i < count($matches[1])); $i++) {
 				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+					$j++;
 					if ($matches[1][$i] == $form["data_name"]) {
-						$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $form["data_input_id"] . " and input_output='" .  $form["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
+						db_execute("update data_input_fields set sequence=$j where data_input_id=" . $form["data_input_id"] . " and input_output='" .  $form["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
 					}
 				}
 			}
