@@ -846,6 +846,7 @@ function reverse_lines($string) {
 }
 
 function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_templates) {
+	$sql = "";
 	$sql_or = "";
 	$sql_and = "";
 	$sql_policy_or = "";
@@ -878,7 +879,6 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	}
 	
 	$sql_and = "";
-	$sql = "(";
 	
 	if (!empty($sql_policy_or)) {
 		$sql_and = "AND ";
@@ -889,13 +889,18 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 		$sql .= "$sql_and$sql_policy_or";
 	}
 	
-	$sql .= ")";
-	
-	return $sql;
+	if (empty($sql)) {
+		return "";
+	}else{
+		return "(" . $sql . ")";
+	}
 }
 
 function is_graph_allowed($local_graph_id) {
 	$current_user = db_fetch_row("select policy_graphs,policy_hosts,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
+	
+	/* get policy information for the sql where clause */
+	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 	
 	$graphs = db_fetch_assoc("select
 		graph_templates_graph.local_graph_id
@@ -904,7 +909,7 @@ function is_graph_allowed($local_graph_id) {
 		left join graph_templates on graph_templates.id=graph_local.graph_template_id
 		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1) OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3) OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4) and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
 		where graph_templates_graph.local_graph_id=graph_local.id
-		and " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]) . "
+		" . (empty($sql_where) ? "" : "and $sql_where") . "
 		and graph_templates_graph.local_graph_id=$local_graph_id
 		group by graph_templates_graph.local_graph_id");
 	
@@ -913,6 +918,187 @@ function is_graph_allowed($local_graph_id) {
 	}else{
 		return false;
 	}
+}
+
+function is_tree_allowed($tree_id) {
+	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+	
+	$trees = db_fetch_assoc("select
+		user_id
+		from user_auth_perms
+		where user_id=" . $_SESSION["sess_user_id"] . "
+		and type=2
+		and item_id=$tree_id");
+	
+	/* policy == allow AND matches = DENY */
+	if ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "1")) {
+		return false;
+	/* policy == deny AND matches = ALLOW */
+	}elseif ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "2")) {
+		return true;
+	/* policy == allow AND no matches = ALLOW */
+	}elseif ((sizeof($trees) == 0) && ($current_user["policy_trees"] == "1")) {
+		return true;
+	/* policy == deny AND no matches = DENY */
+	}elseif ((sizeof($trees) == 0) && ($current_user["policy_trees"] == "2")) {
+		return false;
+	}
+}
+
+function get_graph_tree_array() {
+	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+		
+		if ($current_user["policy_trees"] == "1") {
+			$sql_where = "where user_auth_perms.user_id is null";
+		}elseif ($current_user["policy_trees"] == "2") {
+			$sql_where = "where user_auth_perms.user_id is not null";
+		}
+		
+		$tree_list = db_fetch_assoc("select
+			graph_tree.id,
+			graph_tree.name,
+			user_auth_perms.user_id
+			from graph_tree
+			left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+			$sql_where
+			order by graph_tree.name");
+	}else{
+		$tree_list = db_fetch_assoc("select * from graph_tree order by name");
+	}
+	
+	return $tree_list;
+}
+
+function draw_navigation_text() {
+	$nav_level_cache = isset($_SESSION["sess_nav_level_cache"]) ? unserialize($_SESSION["sess_nav_level_cache"]) : array();
+	
+	$nav = array(
+		"graph_view.php:tree" => array("title" => "Tree Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=tree", "level" => "1"),
+		"graph_view.php:list" => array("title" => "List Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=list", "level" => "1"),
+		"graph_view.php:preview" => array("title" => "Preview Mode", "mapping" => "graph_view.php:", "url" => "graph_view.php?action=preview", "level" => "1"),
+		"graph_view.php:" => array("title" => "Graphs", "mapping" => "", "url" => "graph_view.php", "level" => "0"),
+		"graph.php:" => array("title" => "", "mapping" => "graph_view.php:,?", "level" => "2"),
+		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
+		"index.php:" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
+		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
+		"graphs.php:graph_edit" => array("title" => "(Edit)", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
+		"graphs.php:graph_diff" => array("title" => "Change Graph Template", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
+		"graphs.php:actions" => array("title" => "Actions", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
+		"graphs.php:item_edit" => array("title" => "Graph Items", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
+		"gprint_presets.php:" => array("title" => "GPRINT Presets", "mapping" => "index.php:", "url" => "gprint_presets.php", "level" => "1"),
+		"gprint_presets.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,gprint_presets.php:", "url" => "", "level" => "2"),
+		"gprint_presets.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,gprint_presets.php:", "url" => "", "level" => "2"),
+		"cdef.php:" => array("title" => "CDEF's", "mapping" => "index.php:", "url" => "cdef.php", "level" => "1"),
+		"cdef.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,cdef.php:", "url" => "", "level" => "2"),
+		"cdef.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,cdef.php:", "url" => "", "level" => "2"),
+		"cdef.php:item_edit" => array("title" => "CDEF Items", "mapping" => "index.php:,cdef.php:,cdef.php:edit", "url" => "", "level" => "3"),
+		"tree.php:" => array("title" => "Graph Trees", "mapping" => "index.php:", "url" => "tree.php", "level" => "1"),
+		"tree.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
+		"tree.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
+		"tree.php:item_edit" => array("title" => "Graph Tree Items", "mapping" => "index.php:,tree.php:,tree.php:edit", "url" => "", "level" => "3"),
+		"tree.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,tree.php:,tree.php:edit", "url" => "", "level" => "3"),
+		"color.php:" => array("title" => "Colors", "mapping" => "index.php:", "url" => "color.php", "level" => "1"),
+		"color.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,color.php:", "url" => "", "level" => "2"),
+		"graph_templates.php:" => array("title" => "Graph Templates", "mapping" => "index.php:", "url" => "graph_templates.php", "level" => "1"),
+		"graph_templates.php:template_edit" => array("title" => "(Edit)", "mapping" => "index.php:,graph_templates.php:", "url" => "", "level" => "2"),
+		"graph_templates.php:actions" => array("title" => "Actions", "mapping" => "index.php:,graph_templates.php:", "url" => "", "level" => "2"),
+		"graph_templates.php:item_edit" => array("title" => "Graph Template Items", "mapping" => "index.php:,graph_templates.php:,graph_templates.php:template_edit", "url" => "", "level" => "3"),
+		"graph_templates.php:input_edit" => array("title" => "Graph Item Inputs", "mapping" => "index.php:,graph_templates.php:,graph_templates.php:template_edit", "url" => "", "level" => "3"),
+		"host_templates.php:" => array("title" => "Host Templates", "mapping" => "index.php:", "url" => "host_templates.php", "level" => "1"),
+		"host_templates.php:edit" => array("title" => "(Edit)", "mapping" => "host_templates.php:,host_templates.php:", "url" => "", "level" => "2"),
+		"host_templates.php:remove" => array("title" => "(Remove)", "mapping" => "host_templates.php:,host_templates.php:", "url" => "", "level" => "2"),
+		"data_templates.php:" => array("title" => "Data Templates", "mapping" => "index.php:", "url" => "data_templates.php", "level" => "1"),
+		"data_templates.php:template_edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_templates.php:", "url" => "", "level" => "2"),
+		"data_templates.php:actions" => array("title" => "Actions", "mapping" => "index.php:,data_templates.php:", "url" => "", "level" => "2"),
+		"data_sources.php:" => array("title" => "Data Sources", "mapping" => "index.php:", "url" => "data_sources.php", "level" => "1"),
+		"data_sources.php:ds_edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_sources.php:", "url" => "", "level" => "2"),
+		"data_sources.php:actions" => array("title" => "Actions", "mapping" => "index.php:,data_sources.php:", "url" => "", "level" => "2"),
+		"host.php:" => array("title" => "Polling Hosts", "mapping" => "index.php:", "url" => "host.php", "level" => "1"),
+		"host.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,host.php:", "url" => "", "level" => "2"),
+		"host.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,host.php:", "url" => "", "level" => "2"),
+		"host.php:save" => array("title" => "Create Graphs from Data Query", "mapping" => "index.php:,host.php:,host.php:edit", "url" => "", "level" => "3"),
+		"rra.php:" => array("title" => "Round Robin Archives", "mapping" => "index.php:", "url" => "rra.php", "level" => "1"),
+		"rra.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
+		"rra.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
+		"data_input.php:" => array("title" => "Data Input Methods", "mapping" => "index.php:", "url" => "data_input.php", "level" => "1"),
+		"data_input.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
+		"data_input.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
+		"data_input.php:field_edit" => array("title" => "Data Input Fields", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),
+		"data_input.php:field_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),
+		"snmp.php:" => array("title" => "Data Queries", "mapping" => "index.php:", "url" => "snmp.php", "level" => "1"),
+		"snmp.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,snmp.php:", "url" => "", "level" => "2"),
+		"snmp.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,snmp.php:", "url" => "", "level" => "2"),
+		"snmp.php:item_edit" => array("title" => "Associated Graph Templates", "mapping" => "index.php:,snmp.php:,snmp.php:edit", "url" => "", "level" => "3"),
+		"snmp.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,snmp.php:,snmp.php:edit", "url" => "", "level" => "3"),
+		"utilities.php:" => array("title" => "Utilities", "mapping" => "index.php:", "url" => "utilities.php", "level" => "1"),
+		"utilities.php:view_poller_cache" => array("title" => "View Poller Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:view_snmp_cache" => array("title" => "View SNMP Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:clear_poller_cache" => array("title" => "Clear Poller Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"settings.php:" => array("title" => "Cacti Settings", "mapping" => "index.php:", "url" => "settings.php", "level" => "1"),
+		"user_admin.php:" => array("title" => "User Management", "mapping" => "index.php:", "url" => "user_admin.php", "level" => "1"),
+		"user_admin.php:user_edit" => array("title" => "User Configuration", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
+		"user_admin.php:user_remove" => array("title" => "(Remove)", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
+		"user_admin.php:graph_perms_edit" => array("title" => "Graph Permissions", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
+		"about.php:" => array("title" => "About Cacti", "mapping" => "index.php:", "url" => "about.php", "level" => "1"),
+		);
+	
+	$current_page = basename($_SERVER["PHP_SELF"]);
+	$current_action = (isset($_REQUEST["action"]) ? $_REQUEST["action"] : "");
+	
+	/* find the current page in the big array */
+	$current_array = $nav{$current_page . ":" . $current_action};
+	$current_mappings = split(",", $current_array["mapping"]);
+	$current_nav = "";
+	
+	/* resolve all mappings to build the navigation string */
+	for ($i=0; ($i<count($current_mappings)); $i++) {
+		if (empty($current_mappings[$i])) { continue; }
+		
+		if (!empty($nav_level_cache{$i}["url"])) {
+			/* found a match in the url cache for this level */
+			$url = $nav_level_cache{$i}["url"];
+		}elseif (!empty($current_array["url"])) {
+			/* found a default url in the above array */
+			$url = $current_array["url"];
+		}else{
+			/* default to no url */
+			$url = "";
+		}
+		
+		if ($current_mappings[$i] == "?") {
+			/* '?' tells us to pull title from the cache at this level */
+			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . $nav{$nav_level_cache{$i}["id"]}["title"] . (empty($url) ? "" : "</a>") . " -> ";
+		}else{
+			/* there is no '?' - pull from the above array */
+			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . $nav{$current_mappings[$i]}["title"] . (empty($url) ? "" : "</a>") . " -> ";
+		}
+	}
+	
+	/* put on the last entry (current) */
+	if (empty($current_array["title"])) {
+		/* if no title is specified, try to resolve one */
+		$current_nav .= resolve_navigation_title($current_page . ":" . $current_action);
+	}else{
+		/* use the title specified in the above array */
+		$current_nav .= $current_array["title"];
+	}
+	
+	/* keep a cache for each level we encounter */
+	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => $_SERVER["REQUEST_URI"]);
+	$_SESSION["sess_nav_level_cache"] = serialize($nav_level_cache);
+	
+	print $current_nav;
+}
+
+function resolve_navigation_title($id) {
+	switch ($id) {
+	case 'graph.php:':
+		return get_graph_title($_GET["local_graph_id"]);
+		break;
+	}
+	
+	return;
 }
 
 ?>

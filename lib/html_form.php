@@ -566,26 +566,7 @@ function draw_tree_dropdown($current_tree_id) {
 	
 	$html = "";
 	
-	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
-		
-		if ($current_user["policy_graphs"] == "1") {
-			$sql_where = "where user_auth_tree.user_id is null";
-		}elseif ($current_user["policy_graphs"] == "2") {
-			$sql_where = "where user_auth_tree.user_id is not null";
-		}
-		
-		$tree_list = db_fetch_assoc("select
-			graph_tree.id,
-			graph_tree.name,
-			user_auth_tree.user_id
-			from graph_tree
-			left join user_auth_tree on (graph_tree.id=user_auth_tree.tree_id and user_auth_tree.user_id=" . $_SESSION["sess_user_id"] . ") 
-			$sql_where
-			order by graph_tree.name");
-	}else{
-		$tree_list = db_fetch_assoc("select * from graph_tree order by name");
-	}
+	$tree_list = get_graph_tree_array();
 	
 	if (isset($_GET["tree_id"])) {
 		$_SESSION["sess_view_tree_id"] = $current_tree_id;
