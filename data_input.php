@@ -175,7 +175,7 @@ function field_edit() {
 		}
 	}
 	
-	start_box("<strong>$header_name Fields</strong> [edit]", "", "");
+	start_box("<strong>$header_name Fields</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 	
 	?>
 	<form method="post" action="data_input.php">
@@ -320,7 +320,7 @@ function data_save() {
 function data_edit() {
 	global $colors;
 	
-	start_box("<strong>Data Input Methods</strong> [edit]", "", "");
+	start_box("<strong>Data Input Methods</strong> [edit]", "98%", $colors["header"], "3", "center", "");
 	
 	if (isset($_GET["id"])) {
 		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);
@@ -360,7 +360,7 @@ function data_edit() {
 	end_box();
 	
 	if (!empty($_GET["id"])) {
-		start_box("Input Fields", "", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		start_box("Input Fields", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
@@ -393,7 +393,7 @@ function data_edit() {
 		}
 		end_box();
 		
-		start_box("Output Fields", "", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
+		start_box("Output Fields", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
