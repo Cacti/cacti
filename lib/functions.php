@@ -380,9 +380,28 @@ function subsitute_snmp_query_data($string, $l_escape_string, $r_escape_string, 
 }
 
 function generate_data_source_path($local_data_id) {
-	$data_source_name = db_fetch_cell("select name from data_template_data where local_data_id=$local_data_id");
-	$new_path = "<path_rra>/" . substr(strtolower(clean_up_name($data_source_name)), 0, 15) . "_" . $local_data_id . ".rrd";
+	$host_part = ""; $ds_part = "";
 	
+	/* try any prepend the name with the host description */
+	$host_name = db_fetch_cell("select host.description from host,data_local where data_local.host_id=host.id and data_local.id=$local_data_id");
+	
+	if (!empty($host_name)) {
+		$host_part = strtolower(clean_up_name($host_name)) . "_";
+	}
+	
+	/* then try and use the internal DS name to identify it */
+	$data_source_rrd_name = db_fetch_cell("select data_source_name from data_template_rrd where local_data_id=$local_data_id order by id");
+	
+	if (!empty($data_source_rrd_name)) {
+		$ds_part = strtolower(clean_up_name($data_source_rrd_name));
+	}else{
+		$ds_part = "ds";
+	}
+	
+	/* put it all together using the local_data_id at the end */
+	$new_path = "<path_rra>/$host_part$ds_part" . "_" . "$local_data_id.rrd	";
+	
+	/* update our changes to the db */
 	db_execute("update data_template_data set data_source_path='$new_path' where local_data_id=$local_data_id");
 	
 	return $new_path;
@@ -587,10 +606,6 @@ function exec_into_array($command_line) {
 	}
 	
 	return $command_array;
-}
-
-function convert_mac_address($mac_address) {
-	return strtolower(str_replace(" ", ":", $mac_address));
 }
 
 function get_web_browser() {
