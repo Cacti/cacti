@@ -94,7 +94,7 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
-		db_execute("replace into host_snmp_query (host_id,snmp_query_id) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . ")");
+		db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . ")");
 
 		/* recache snmp data */
 		run_data_query($_POST["id"], $_POST["snmp_query_id"]);
@@ -340,7 +340,7 @@ function host_remove() {
 }
 
 function host_edit() {
-	global $colors, $fields_host_edit;
+	global $colors, $fields_host_edit, $reindex_types;
 
 	display_output_messages();
 
@@ -418,11 +418,12 @@ function host_edit() {
 	if (!empty($host["id"])) {
 		html_start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
 
-		html_header(array("Data Query Name", "Debugging", "Status"), 2);
+		html_header(array("Data Query Name", "Debugging", "Re-Index Method", "Status"), 2);
 
 		$selected_data_queries = db_fetch_assoc("select
 			snmp_query.id,
-			snmp_query.name
+			snmp_query.name,
+			host_snmp_query.reindex_method
 			from snmp_query,host_snmp_query
 			where snmp_query.id=host_snmp_query.snmp_query_id
 			and host_snmp_query.host_id=" . $_GET["id"] . "
@@ -448,6 +449,9 @@ function host_edit() {
 					(<a href="host.php?action=query_verbose&id=<?php print $item["id"];?>&host_id=<?php print $_GET["id"];?>">Verbose Query</a>)
 				</td>
 				<td>
+					<?php print $reindex_types{$item["reindex_method"]};?>
+				</td>
+				<td>
 					<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
 				</td>
 				<td align='right' nowrap>
@@ -461,7 +465,7 @@ function host_edit() {
 
 		?>
 		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-			<td colspan="4">
+			<td colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
 						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select
@@ -471,6 +475,9 @@ function host_edit() {
 							on (snmp_query.id=host_snmp_query.snmp_query_id and host_snmp_query.host_id=" . $_GET["id"] . ")
 							where host_snmp_query.host_id is null
 							order by snmp_query.name"),"name","id","","","");?>
+					</td>
+					<td nowrap>Re-Index Method:&nbsp;
+						<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">

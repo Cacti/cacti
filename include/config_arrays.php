@@ -92,6 +92,13 @@ $input_types = array(
 	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => "Script Query - Script Server"
 	);
 
+$reindex_types = array(
+	DATA_QUERY_AUTOINDEX_NONE => "None",
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME => "Uptime Goes Backwards",
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE => "Index Count Changed",
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => "Verify All Fields"
+	);
+
 $snmp_query_field_actions = array(1 =>
 	"SNMP Field Name (Dropdown)",
 	"SNMP Field Value (From User)",
