@@ -33,6 +33,8 @@ if (!isset($_SERVER["argv"][0])) {
 $start = date("Y-n-d H:i:s");
 // print $start . "\n";
 ini_set("max_execution_time", "0");
+ini_set("memory_limit", "32M");
+
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/include/config.php");
