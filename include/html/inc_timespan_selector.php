@@ -206,22 +206,22 @@ $_SESSION["sess_current_timespan_begin_now"] = $begin_now;
 					<td width="60" class="textHeader">
 						<strong>From:&nbsp;</strong>
 					</td>
-					<td width="180" nowrap>
-						<input type='text' name='date1' id='date1' size='16' value='<?php print (isset($current_value_date1) ? $current_value_date1 : "");?>'>
+					<td width="170" nowrap>
+						<input type='text' name='date1' id='date1' size='14' value='<?php print (isset($current_value_date1) ? $current_value_date1 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
 					</td>
 					<td width="40" class="textHeader">
 						<strong>To:&nbsp;</strong>
 					</td>
-					<td width="180" nowrap>
-						<input type='text' name='date2' id='date2' size='16' value='<?php print (isset($current_value_date2) ? $current_value_date2 : "");?>'>
+					<td width="170" nowrap>
+						<input type='text' name='date2' id='date2' size='14' value='<?php print (isset($current_value_date2) ? $current_value_date2 : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
-					<td width="80">
+					<td width="80" nowrap>
 						<input type='image' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle'>
 					</td>
-					<td>
-						&nbsp;<input type='image' name='button_default' src='images/button_default.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
+					<td nowrap>
+						<input type='image' name='button_default' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle' action='submit'>
 					</td>
 				</tr>
 			</table>
