@@ -68,10 +68,13 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (empty($snmp_auth)) { return; }
 
 		if (read_config_option("snmp_version") == "ucd-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
+			exec(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
 		}elseif (read_config_option("snmp_version") == "net-snmp") {
-			$snmp_value = exec(read_config_option("path_snmpget") . " -O vt $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+			exec(read_config_option("path_snmpget") . " -O vt $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
 		}
+
+		/* fix for multi-line snmp output */
+		$snmp_value = implode(" ", $snmp_value);
 	}
 
 	$snmp_value = format_snmp_string($snmp_value);
