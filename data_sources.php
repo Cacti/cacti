@@ -851,30 +851,21 @@ function ds_edit() {
 function ds() {
 	global $colors, $ds_actions;
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_ds_current_page");
+		kill_session_var("sess_ds_filter");
+		kill_session_var("sess_ds_host_id");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["host_id"]);
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	if (isset($_REQUEST["page"])) {
-		$_SESSION["sess_ds_current_page"] = $_REQUEST["page"];
-	}elseif (isset($_SESSION["sess_ds_current_page"])) {
-		$_REQUEST["page"] = $_SESSION["sess_ds_current_page"];
-	}else{
-		$_REQUEST["page"] = "1"; /* default value */
-	}
-
-	if (isset($_REQUEST["filter"])) {
-		$_SESSION["sess_ds_filter"] = $_REQUEST["filter"];
-	}elseif (isset($_SESSION["sess_ds_filter"])) {
-		$_REQUEST["filter"] = $_SESSION["sess_ds_filter"];
-	}else{
-		$_REQUEST["filter"] = ""; /* default value */
-	}
-
-	if (isset($_REQUEST["host_id"])) {
-		$_SESSION["sess_ds_host_id"] = $_REQUEST["host_id"];
-	}elseif (isset($_SESSION["sess_ds_host_id"])) {
-		$_REQUEST["host_id"] = $_SESSION["sess_ds_host_id"];
-	}else{
-		$_REQUEST["host_id"] = "-1"; /* default value */
-	}
+	load_current_session_value("page", "sess_ds_current_page", "1");
+	load_current_session_value("filter", "sess_ds_filter", "");
+	load_current_session_value("host_id", "sess_ds_host_id", "-1");
 
 	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
 

@@ -555,6 +555,17 @@ function host_edit() {
 function host() {
 	global $colors, $device_actions;
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_device_current_page");
+		kill_session_var("sess_device_filter");
+		kill_session_var("sess_device_host_template_id");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["host_template_id"]);
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_device_current_page", "1");
 	load_current_session_value("filter", "sess_device_filter", "");

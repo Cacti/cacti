@@ -891,6 +891,17 @@ function graph_edit() {
 function graph() {
 	global $colors, $graph_actions;
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_graph_current_page");
+		kill_session_var("sess_graph_filter");
+		kill_session_var("sess_graph_host_id");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["host_id"]);
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_graph_current_page", "1");
 	load_current_session_value("filter", "sess_graph_filter", "");
