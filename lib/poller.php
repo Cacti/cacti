@@ -160,4 +160,45 @@ function update_reindex_cache($host_id, $data_query_id) {
 	}
 }
 
+function process_poller_output($rrdtool_pipe) {
+	global $config;
+
+	include_once($config["library_path"] . "/rrd.php");
+
+	/* create/update the rrd files */
+	$results = db_fetch_assoc("select
+		poller_output.output,
+		poller_output.time,
+		poller_output.local_data_id,
+		poller_item.rrd_path,
+		poller_item.rrd_name,
+		poller_item.rrd_num
+		from poller_output,poller_item
+		where (poller_output.local_data_id=poller_item.local_data_id and poller_output.rrd_name=poller_item.rrd_name)");
+
+	if (sizeof($results) > 0) {
+		/* create an array keyed off of each .rrd file */
+		foreach ($results as $item) {
+			$rrd_update_array{$item["rrd_path"]}["time"] = strtotime($item["time"]);
+			$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
+			$rrd_update_array{$item["rrd_path"]}["items"]{$item["rrd_name"]} = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
+		}
+
+		/* make sure each .rrd file has complete data */
+		reset($results);
+		foreach ($results as $item) {
+			if (isset($rrd_update_array{$item["rrd_path"]})) {
+				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["items"])) {
+					db_execute("delete from poller_output where local_data_id='" . $item["local_data_id"] . "' and rrd_name='" . $item["rrd_name"] . "' and time='" . $item["time"] . "'");
+				}else{
+					print "waiting on ds#" . $item["local_data_id"] . "\n";
+					unset($rrd_update_array{$item["rrd_path"]});
+				}
+			}
+		}
+
+		rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+	}
+}
+
 ?>

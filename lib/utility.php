@@ -95,7 +95,7 @@ function update_poller_cache($local_data_id) {
 
 		switch ($data_input["type_id"]) {
 		case DATA_INPUT_TYPE_SCRIPT: /* script */
-			$num_output_fields = sizeof(db_fetch_assoc("select id from data_input_fields where data_input_id=" . $data_input["id"] . " and input_output='out'"));
+			$num_output_fields = sizeof(db_fetch_assoc("select id from data_input_fields where data_input_id=" . $data_input["id"] . " and input_output='out' and update_rra='on'"));
 
 			if ($num_output_fields == 1) {
 				$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
@@ -104,7 +104,7 @@ function update_poller_cache($local_data_id) {
 				$data_source_item_name = "";
 			}
 
-			api_poller_cache_item_add($host_id, $local_data_id, 1, $data_source_item_name, addslashes(get_full_script_path($local_data_id)));
+			api_poller_cache_item_add($host_id, $local_data_id, 1, $data_source_item_name, 1, addslashes(get_full_script_path($local_data_id)));
 
 			break;
 		case DATA_INPUT_TYPE_SNMP: /* snmp */
@@ -118,7 +118,7 @@ function update_poller_cache($local_data_id) {
 
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 
-			api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), $field["snmp_oid"]);
+			api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($data_template_rrd_id), 1, $field["snmp_oid"]);
 
 			break;
 		case DATA_INPUT_TYPE_SNMP_QUERY: /* snmp query */
@@ -131,7 +131,7 @@ function update_poller_cache($local_data_id) {
 				}
 
 				if (!empty($oid)) {
-					api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), $oid);
+					api_poller_cache_item_add($host_id, $local_data_id, 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
 				}
 			}
 			}
@@ -158,7 +158,7 @@ function update_poller_cache($local_data_id) {
 					}
 
 					if (isset($script_path)) {
-							api_poller_cache_item_add($host_id, $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), addslashes($script_path));
+						api_poller_cache_item_add($host_id, $local_data_id, $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
 					}
 				}
 			}
