@@ -146,8 +146,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						cacti_log("Host[$host_id] ERROR: ICMP Ping failed for Host:" . $item["hostname"] . ", assumed down.",$print_data_to_stdout);
 					}
 				} else {
-					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-						cacti_log("Host[$host_id] ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$print_data_to_stdout);
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_NONE) {
+						cacti_log("Host[$host_id] ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$true);
+//						cacti_log("Host[$host_id] ICMP: Sucess for Host:". $item["hostname"] . " is " . $ping->time . " seconds.",$print_data_to_stdout);
 					}
 				}
 			} else {
