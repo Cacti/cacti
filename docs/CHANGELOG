@@ -1,5 +1,36 @@
 raXnet - cacti
 
+0.8.3
+-bug#50: When viewing a graph, only display it for the RRAs used on the graph.
+-bug#66: Users can see a list of all hosts in graph preview mode.
+-bug#71: Extra escape characters in the |date_time| variable output.
+-bug#72: Disk space graph for ucd/net was broken for original 0.8 users.
+-bug#75: Problems monitoring more than one CPU with query_host_cpu.php.
+-bug#76: Cactid segfault on Solaris caused by unchecked use of NULL with
+sprintf.
+-bug#77: Cactid segfault upon a MySQL connect error.
+-bug: Redirect user to the correct page after a forced password change.
+-bug: Problems entering negative numbers for upper/lower limit fields on
+graph pages.
+-bug: Never try to use internal SNMP support if SNMP version 2 or 3 is 
+selected.
+-feature: Added host and graph template permissions for graph viewing users.
+-feature: Added a new 'dual pane' tree view type that draws the graph trees
+on a DHTML tree on the left side of the page.
+-feature: Added the ability to add hosts to a tree.
+-feature: Added a 'timespan' field to "Round Robin Archives" to determine
+the timespan (in seconds) of graphs using each RRA.
+-feature: Completely replaced the header images/layout for both the console
+and graph viewing pages
+-feature: Added a navigation bar in the header so you can keep track of your
+location in the UI.
+-feature: Added bandwidth summation support. See the manual for more 
+information.
+-cactid: Changed threading strategy to spawn threads based on hosts.
+-cactid: Created header files for each source file and moved precasts out
+of cactid.h.
+-cactid: A bunch of autoconf updates.
+
 0.8.2a
 -bug: Fixed various problems updating the poller cache.
 -bug: Fixed the Weatherbug script to work under Redhat 9.
