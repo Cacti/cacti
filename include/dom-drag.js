@@ -11,7 +11,7 @@ var Drag = {
 
 	obj : null,
 
-	init : function(o, oRoot, reOrigin, minX, maxX, minY, maxY, bSwapHorzRef, bSwapVertRef, fXMapper, fYMapper)
+	init : function(o, oRoot, startFunc, stopFunc, minX, maxX, minY, maxY, bSwapHorzRef, bSwapVertRef, fXMapper, fYMapper)
 	{
 		o.onmousedown	= Drag.start;
 
@@ -19,8 +19,6 @@ var Drag = {
 		o.vmode			= bSwapVertRef ? false : true ;
 
 		o.root = oRoot && oRoot != null ? oRoot : o ;
-   	        o.root.reOrigin = reOrigin == 'undefined' ? false : true;	
-		o.root.handle = o;
 		
 		if (o.hmode  && isNaN(parseInt(o.root.style.left  ))) o.root.style.left   = "0px";
 		if (o.vmode  && isNaN(parseInt(o.root.style.top   ))) o.root.style.top    = "0px";
@@ -44,16 +42,9 @@ var Drag = {
 	{
 		var o = Drag.obj = this;
 		e = Drag.fixE(e);
+		
 		var y = parseInt(o.vmode ? o.root.style.top  : o.root.style.bottom);
 		var x = parseInt(o.hmode ? o.root.style.left : o.root.style.right );
-		var hx = o.root.handle.style["left"];
-		var hy = o.root.handle.style["top"];
-		if (o.root.reOrigin == true) {
-  		    alert("Should re-Origin Now to "+hx+","+hy+" from "+ o.root.style["left"]+","+o.root.style["top"]);
-		
-		    o.root.style["left"] = o.root.hx + "px";
-		    o.root.style["top"]  = o.root.hx + "px";
-		}
 		o.root.onDragStart(x, y);
 
 		o.lastMouseX	= e.clientX;
