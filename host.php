@@ -886,7 +886,7 @@ function host_edit() {
 							<table  cellspacing='0' cellpadding='0' width='100%' >
 								<tr>
 									<td class='textHeaderDark'>
-										<strong>SNMP Query</strong> [" . $snmp_query["name"] . "] - (Reload)
+										<strong>SNMP Query</strong> [" . $snmp_query["name"] . "]
 									</td>
 									<td align='right' nowrap>
 										<a href='host.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $_GET["id"] . "'><img src='images/reload_icon_small.gif' alt='Reload Associated Query' border='0' align='absmiddle'></a>&nbsp;
