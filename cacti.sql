@@ -1920,7 +1920,6 @@ CREATE TABLE host_template_graph (
 INSERT INTO host_template_graph VALUES (3,4);
 INSERT INTO host_template_graph VALUES (3,11);
 INSERT INTO host_template_graph VALUES (3,13);
-INSERT INTO host_template_graph VALUES (3,18);
 INSERT INTO host_template_graph VALUES (5,18);
 INSERT INTO host_template_graph VALUES (6,14);
 INSERT INTO host_template_graph VALUES (6,16);
@@ -2028,8 +2027,6 @@ CREATE TABLE settings (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO settings VALUES ('path_webcacti','/cacti/cacti-0.8');
-INSERT INTO settings VALUES ('path_webroot','/var/www/html/users/iberry');
 INSERT INTO settings VALUES ('path_snmpwalk','/usr/bin/snmpwalk');
 INSERT INTO settings VALUES ('path_rrdtool','/usr/bin/rrdtool');
 INSERT INTO settings VALUES ('log','');
@@ -2050,13 +2047,12 @@ INSERT INTO settings VALUES ('full_view_graph_template','on');
 INSERT INTO settings VALUES ('full_view_graph','on');
 INSERT INTO settings VALUES ('full_view_user_admin','');
 INSERT INTO settings VALUES ('full_view_data_template','on');
-INSERT INTO settings VALUES ('smnp_version','net-snmp');
 INSERT INTO settings VALUES ('ldap_enabled','');
 INSERT INTO settings VALUES ('ldap_server','');
 INSERT INTO settings VALUES ('ldap_dn','');
 INSERT INTO settings VALUES ('ldap_template','');
 INSERT INTO settings VALUES ('path_php_binary','/usr/bin/php');
-INSERT INTO settings VALUES ('date','2004-01-05 22:30:02');
+INSERT INTO settings VALUES ('snmp_version','net-snmp');
 INSERT INTO settings VALUES ('num_rows_graph','30');
 INSERT INTO settings VALUES ('max_title_graph','80');
 INSERT INTO settings VALUES ('max_data_query_field_length','15');
