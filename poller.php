@@ -36,6 +36,7 @@ include_once($config["base_path"] . "/lib/rrd.php");
 // Record Start Time
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
+//$start = date("Y-n-d H:i:s");
 
 // Let PHP Run Just as Long as It Has To
 ini_set("max_execution_time", "0");
@@ -61,6 +62,9 @@ $last_host = 0;
 $poller = read_config_option("poller_type");
 $max_threads = read_config_option("max_threads");
 // End Initialization Section
+
+// Initialize poller_time database
+db_execute("truncate table poller_time");
 
 // Enter Mainline Processing
 if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "on")) {
@@ -100,6 +104,7 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 
 			$host_count = 1;
 			$change_files = False;
+			$process_file_number++;
 			$first_host = 0;
 			$last_host = 0;
 		} /* End change_files */
@@ -109,33 +114,50 @@ if ((sizeof($polling_items) > 0) and (read_config_option("poller_enabled") == "o
 		$last_host = $item["id"];
 
 		exec_background($command_string, "$extra_args $first_host $last_host");
+		$process_file_number++;
 	}
 
 	/* insert the current date/time for graphs */
 	db_execute("replace into settings (name,value) values ('date',NOW())");
 
-	/* take time and log performance data */
-	list($micro,$seconds) = split(" ", microtime());
-	$end = $seconds + $micro;
-
 	if ($poller == "1") {
 		$max_threads = "N/A";
 	}
 
-	if(read_config_option("log_pstats") == "on")
-		log_data(sprintf("STATS: " .
-			"Execution Time: %01.4f s, " .
-			"Method: %s, " .
-			"Max Processes: %s, " .
-			"Max Threads/Process: %s, " .
-			"Polled Hosts: %s, " .
-			"Hosts/Process: %s",
-			round($end-$start,4),
-			$command_string,
-			$concurrent_processes,
-			$max_threads,
-			sizeof($polling_items),
-			$hosts_per_file));
+	$loop_count = 0;
+	while (1) {
+		$polling_items = db_fetch_assoc("select poller_id, end_time from poller_time where poller_id = 0");
+
+		if (sizeof($polling_items) == $process_file_number) {
+			/* take time and log performance data */
+			list($micro,$seconds) = split(" ", microtime());
+			$end = $seconds + $micro;
+
+//			$result = db_fetch_assoc("select Max(end_time) as end_timer from poller_time where poller_id = 0");
+//			$end_time = date("01.4f s",$result[0]["end_timer"]);
+//			$end_time = date("01.4f s");
+
+			if (read_config_option("log_pstats") == "on") {
+				log_data(sprintf("STATS: " .
+				"Execution Time: %01.4f s, " .
+				"Method: %s, " .
+				"Max Processes: %s, " .
+				"Max Threads/Process: %s, " .
+				"Polled Hosts: %s, " .
+				"Hosts/Process: %s",
+				round($end-$start,4),
+				$command_string,
+				$concurrent_processes,
+				$max_threads,
+				sizeof($polling_items),
+				$hosts_per_file));
+			}
+			break;
+		}else {
+			usleep(50000);
+			$loop_count++;
+		}
+	}
 }else{
 	print "There are no items in your poller cache or polling is disabled. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
 }
