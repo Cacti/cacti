@@ -152,7 +152,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
 					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
-						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], &$hash_cache);
+						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
 						$save[$field_name] = $item_array[$field_name];
 					}
@@ -247,7 +247,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 		if (isset($xml_array["ds"][$field_name])) {
 			/* is the value of this field a hash or not? */
 			if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $xml_array["ds"][$field_name])) {
-				$save[$field_name] = resolve_hash_to_id($xml_array["ds"][$field_name], &$hash_cache);
+				$save[$field_name] = resolve_hash_to_id($xml_array["ds"][$field_name], $hash_cache);
 			}else{
 				$save[$field_name] = $xml_array["ds"][$field_name];
 			}
@@ -299,7 +299,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
 					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
-						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], &$hash_cache);
+						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
 						$save[$field_name] = $item_array[$field_name];
 					}
@@ -317,7 +317,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 		while (list($item_hash, $item_array) = each($xml_array["data"])) {
 			unset($save);
 			$save["data_template_data_id"] = $data_template_data_id;
-			$save["data_input_field_id"] = resolve_hash_to_id($item_array["data_input_field_id"], &$hash_cache);
+			$save["data_input_field_id"] = resolve_hash_to_id($item_array["data_input_field_id"], $hash_cache);
 			$save["t_value"] = $item_array["t_value"];
 			$save["value"] = $item_array["value"];
 			
@@ -346,7 +346,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		if (isset($xml_array[$field_name])) {
 			/* is the value of this field a hash or not? */
 			if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $xml_array[$field_name])) {
-				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], &$hash_cache);
+				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], $hash_cache);
 			}else{
 				$save[$field_name] = $xml_array[$field_name];
 			}
@@ -362,7 +362,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		while (list($item_hash, $item_array) = each($xml_array["fields"])) {
 			unset($save);
 			$save["snmp_query_id"] = $data_query_id;
-			$save["data_input_field_id"] = resolve_hash_to_id($item_array["data_input_field_id"], &$hash_cache);
+			$save["data_input_field_id"] = resolve_hash_to_id($item_array["data_input_field_id"], $hash_cache);
 			$save["action_id"] = $item_array["action_id"];
 			
 			sql_save($save, "snmp_query_field", array("snmp_query_id", "data_input_field_id"));
@@ -390,7 +390,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
 					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
-						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], &$hash_cache);
+						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
 						$save[$field_name] = $item_array[$field_name];
 					}
@@ -406,8 +406,8 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 				while (list($sub_item_hash, $sub_item_array) = each($item_array["rrd"])) {
 					unset($save);
 					$save["snmp_query_graph_id"] = $data_query_graph_id;
-					$save["data_template_id"] = resolve_hash_to_id($sub_item_array["data_template_id"], &$hash_cache);
-					$save["data_template_rrd_id"] = resolve_hash_to_id($sub_item_array["data_template_rrd_id"], &$hash_cache);
+					$save["data_template_id"] = resolve_hash_to_id($sub_item_array["data_template_id"], $hash_cache);
+					$save["data_template_rrd_id"] = resolve_hash_to_id($sub_item_array["data_template_rrd_id"], $hash_cache);
 					$save["snmp_field_name"] = $sub_item_array["snmp_field_name"];
 					
 					sql_save($save, "snmp_query_graph_rrd", array("snmp_query_graph_id", "data_template_id", "data_template_rrd_id"));
@@ -452,7 +452,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$save["id"] = (empty($_data_query_graph_rrd_sv_id) ? "0" : $_data_query_graph_rrd_sv_id);
 					$save["hash"] = $parsed_hash["hash"];
 					$save["snmp_query_graph_id"] = $data_query_graph_id;
-					$save["data_template_id"] = resolve_hash_to_id($sub_item_array["data_template_id"], &$hash_cache);
+					$save["data_template_id"] = resolve_hash_to_id($sub_item_array["data_template_id"], $hash_cache);
 					$save["sequence"] = $sub_item_array["sequence"];
 					$save["field_name"] = $sub_item_array["field_name"];
 					$save["text"] = $sub_item_array["text"];
