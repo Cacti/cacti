@@ -206,7 +206,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		}else{
 			++$graph_ct;
 			
-			print "<td><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all'><img align='middle' alt='" . $leaf["graph_title"] . "'
+			print "<td><a href='graph.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=all'><img align='middle' alt='" . get_graph_title($leaf["local_graph_id"]) . "'
 				src='graph_image.php?local_graph_id=" . $leaf["local_graph_id"] . "&rra_id=" . read_graph_config_option("default_rra_id") . "&graph_start=-" . read_graph_config_option("timespan") . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0' alt='" . $leaf["title"] . "'></a></td>\n";
 			
@@ -248,11 +248,11 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
 		
 	    	if ($leaf["title"] == "") {
-			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'>" . $leaf["graph_title"] . "</a></td>\n";
-			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>Graph</td>";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'>" . get_graph_title($leaf["local_graph_id"]) . "</a></td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
 		}else{
-			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'><strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
-			print "<td bgcolor='#$row_color' bgcolor='#$colors[panel]'>Heading</td>";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&tree_item_id=" . $leaf["id"] . "'><strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Heading</td>";
 		}
 		
 		print 	"<td bgcolor='#$row_color' width='80' align='center'>\n

@@ -97,11 +97,14 @@ function form_save() {
 				
 				/* push out relavant fields to data sources using this host */
 				push_out_host($host_id,0);
+				
+				/* the host subsitution cache is now stale; purge it */
+				kill_session_var("sess_host_cache_array");
 			}else{
 				raise_message(2);
 			}
 			
-			if (isset($_POST["add_y"])) {
+			if ((isset($_POST["add_y"])) && (!empty($_POST["snmp_query_id"]))) {
 				db_execute("replace into host_snmp_query (host_id,snmp_query_id) values ($host_id," . $_POST["snmp_query_id"] . ")");
 				
 				/* recache snmp data */
@@ -248,11 +251,11 @@ function host_new_graphs_save() {
 					foreach ($suggested_values as $suggested_value) {
 						/* once we find a match; don't try to find more */
 						if (!isset($_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]})) {
-							$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
-							$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
+							//$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
+							$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
 							
 							/* if there are no '|' characters, all of the subsitutions were successful */
-							if (!strstr($subs_string, "|")) {
+							if (!strstr($subs_string, "|squery")) {
 								$_POST{"g_" . $snmp_query_id . "_" . $graph_template_id . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $subs_string;
 							}
 						}
@@ -311,11 +314,11 @@ function host_new_graphs_save() {
 						foreach ($suggested_values as $suggested_value) {
 							/* once we find a match; don't try to find more */
 							if (!isset($_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]})) {
-								$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
-								$subs_string = subsitute_snmp_query_data($subs_string, "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
+								//$subs_string = subsitute_host_data($suggested_value["text"], "|", "|", $_POST["host_id"]);
+								$subs_string = subsitute_snmp_query_data($suggested_value["text"], "|", "|", $_POST["host_id"], $snmp_query_id, $snmp_index);
 								
 								/* if there are no '|' characters, all of the subsitutions were successful */
-								if (!strstr($subs_string, "|")) {
+								if (!strstr($subs_string, "|squery")) {
 									$_POST{"d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["id"] . "_" . $snmp_index . "_" . $suggested_value["field_name"]} = $subs_string;
 								}
 							}
@@ -781,7 +784,7 @@ function host_edit() {
 						host upon addition.
 					</td>
 					<td width="1">
-						<?php form_base_dropdown("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","","");?>
+						<?php form_base_dropdown("snmp_query_id",db_fetch_assoc("select id,name from snmp_query order by name"),"name","id","","None","");?>
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add" align="absmiddle">

@@ -58,7 +58,8 @@ if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where loca
 }
 
 $rras = db_fetch_assoc("select id,name from rra $sql_where order by steps");
-$graph_title = db_fetch_cell("select title from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]);
+
+$graph_title = get_graph_title($_GET["local_graph_id"]);
 
 print "<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='3' class='textHeaderDark'><strong>Viewing Graph '$graph_title'</strong></td></tr>";

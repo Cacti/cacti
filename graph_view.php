@@ -322,7 +322,7 @@ case 'list':
 		form_base_checkbox("graph_" . $graph["local_graph_id"], "", "", "", 0, false);
 		print "</td>";
 		
-		print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title"] . "</a></strong></td>\n";
+		print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . get_graph_title($graph["local_graph_id"]) . "</a></strong></td>\n";
 		print "<td>" . $graph["height"] . "x" . $graph["width"] . "</td>\n";
 		print "</tr>";
 		
