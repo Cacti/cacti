@@ -101,7 +101,7 @@ function form_save() {
 	/* user management save */
 	if (isset($_POST["save_component_user"])) {
 		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
-			$password = db_fetch_cell("select password from user where id=" . $_POST["id"]);
+			$password = db_fetch_cell("select password from user_auth where id=" . $_POST["id"]);
 		}else{
 			$password = "'" . md5($_POST["password"]) . "'";
 		}
@@ -132,7 +132,7 @@ function form_save() {
 		$save["graph_policy"] = form_input_validate($_POST["graph_policy"], "graph_policy", "", true, 3);
 		
 		if (!is_error_message()) {
-			$user_id = sql_save($save, "user");
+			$user_id = sql_save($save, "user_auth");
 			
 			if ($user_id) {
 				raise_message(1);
