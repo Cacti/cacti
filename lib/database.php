@@ -141,31 +141,16 @@ function array_to_sql_or($array, $sql_column) {
 function sql_save($array_items, $table_name) {
 	global $cnn_id;
 	
-	$sql_save = "replace into $table_name (";
-	
-	$sql_save_fields = ""; $sql_save_values = "";
-	
-	while (list($field_name, $field_value) = each($array_items)) {
-	 	$sql_save_fields .= "$field_name,";
-		
-		if (eregi("(PASSWORD\()|(MD5\()|(NOW\()", $field_value)) {
+	while (list ($key, $value) = each ($array_items)) {
+		if (eregi("(PASSWORD\()|(MD5\()|(NOW\()", $value)) {
 			$quote = "";
 		}else{
 			$quote = "\"";
 		}
-		
-		$sql_save_values .= "$quote$field_value$quote,";
+		$array_items[$key] = "$quote$value$quote";
 	}
 	
-	/* chop off the last ',' */
-	$sql_save_fields = substr($sql_save_fields, 0, (strlen($sql_save_fields)-1));
-	$sql_save_values = substr($sql_save_values, 0, (strlen($sql_save_values)-1));
-	
-	/* form the SQL string */
-	$sql_save = "replace into $table_name ($sql_save_fields) values ($sql_save_values)";
-	
-	//print $sql_save . "<br>";
-	if (!db_execute($sql_save)) { return 0; }
+	if (!$cnn_id->Replace($table_name, $array_items, 'id', $autoQuote=false)) { return 0; }
 	
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {
