@@ -327,7 +327,7 @@ function get_full_script_path($local_data_id) {
 	in the input string so we don't mess up the script */
 	$full_path = preg_replace("/(<[A-Za-z0-9_]+>)+/", "", $full_path);
 	
-	return clean_up_path($full_path);
+	return $full_path;
 }
 
 /* get_data_source_name - gets the name of a data source item or generates a new one if one does not
