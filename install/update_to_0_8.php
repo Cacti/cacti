@@ -507,10 +507,10 @@ function update_database($database_old, $database_username, $database_password) 
 									$status_array{count($status_array)}["data_source_data"][1] = $item2["Value"];
 									
 									if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
-										t_value,value) values (33," . $data_template_data_cache{$item2["DSID"]} . ",'','12')")) {
-										$status_array{count($status_array)}["data_source_data"][1] = "12";
+										t_value,value) values (33," . $data_template_data_cache{$item2["DSID"]} . ",'','15')")) {
+										$status_array{count($status_array)}["data_source_data"][1] = "15";
 									}else{
-										$status_array{count($status_array)}["data_source_data"][0] = "12";
+										$status_array{count($status_array)}["data_source_data"][0] = "15";
 									}
 								}else{
 									$status_array{count($status_array)}["data_source_data"][0] = $item2["Value"];	
@@ -520,7 +520,7 @@ function update_database($database_old, $database_username, $database_password) 
 							}
 						}
 						
-						data_query($ip_to_host_cache["127.0.0.1"], 5);
+						data_query($ip_to_host_cache["127.0.0.1"], 6);
 					}else{
 						if ((!empty($item2["Value"]) && (!empty($data_input_field_cache{$item2["FieldID"]})))) {
 							if (db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,
