@@ -62,7 +62,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER : "-c " . SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER; /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
-			$snmp_auth = "-u $username -X $password"; /* v3 - username/password */
+//			$snmp_auth = "-u $username -X $password";
+			$snmp_auth = "-u $username -l authPriv -a MD5 -A $password -x DES -X $password"; /* v3 - username/password */
 		}
 
 		/* no valid snmp version has been set, get out */
