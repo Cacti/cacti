@@ -33,7 +33,7 @@ include_once ("../include/form.php");
 include ("../include/config.php");
 include ("../include/config_settings.php");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -204,6 +204,9 @@ if ($_REQUEST["step"] == "4") {
 	}
 	
 	setcookie(session_name(),"",time() - 3600,"/");
+	
+	kill_session_var("sess_config_array");
+	kill_session_var("sess_host_cache_array");
 	
 	/* just in case we have hard drive graphs to deal with */
 	data_query(db_fetch_cell("select id from host where management_ip='127.0.0.1'"), 6);
@@ -400,22 +403,26 @@ if ($_REQUEST["step"] == "4") {
 						$fail_text = "<span style='color: red; font-weight: bold; font-size: 12px;'>[Fail]</span>&nbsp;";
 						$success_text = "<span style='color: green; font-weight: bold; font-size: 12px;'>[Success]</span>&nbsp;";
 						
-						while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
-							while (list($version, $arr2) = each($arr1)) {
-								while (list($status, $sql) = each($arr2)) {
-									if ($current_version != $version) {
-										$version_index = array_search($version, $cacti_versions);
-										print "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
+						if (isset($_SESSION["sess_sql_install_cache"])) {
+							while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
+								while (list($version, $arr2) = each($arr1)) {
+									while (list($status, $sql) = each($arr2)) {
+										if ($current_version != $version) {
+											$version_index = array_search($version, $cacti_versions);
+											print "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
+										}
+										
+										print "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
+										
+										$current_version = $version;
 									}
-									
-									print "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
-									
-									$current_version = $version;
 								}
 							}
-						}
 						
-						kill_session_var("sess_sql_install_cache");
+							kill_session_var("sess_sql_install_cache");
+						}else{
+							print "<em>No SQL queries have been executed.</em>";
+						}
 						?>
 						
 						<?php }?>
