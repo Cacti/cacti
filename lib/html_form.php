@@ -284,12 +284,12 @@ function start_box($title, $width, $background_color, $cell_padding, $align, $ad
 
 <?php }
 
-function end_box() { ?>
+function end_box($trailing_br = true) { ?>
 				</table>
 			</td>
 		</tr>
 	</table>
-	<br>
+	<?php if ($trailing_br == true) { print "<br>"; } ?>
 <?php }
 
 function form_save_button($cancel_url) {
@@ -310,7 +310,7 @@ function form_save_button($cancel_url) {
 /* ------------------ Stripped Form Objects Data ---------------------- */
 
 /* creates a standard html password textbox */
-function form_base_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size, $type) { 
+function form_base_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size, $type) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
@@ -406,7 +406,7 @@ function form_base_checkbox($form_name, $form_previous_value, $form_caption, $fo
 		}
 	}
 	
-	print "<input type='checkbox' class='chkStyled' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
+	print "<input type='checkbox' class='chkNormal' name='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption" . ($trailing_br ? "<br>" : "")  ."\n";
 }
 
 /* creates a radio */
@@ -462,6 +462,16 @@ function html_boolean_friendly($html_boolean) {
 		return "Selected";
 	}else{
 		return "Not Selected";
+	}
+}
+
+function get_checkbox_style() {
+	if (get_web_browser() == "moz") {
+		return "padding: 4px; margin: 4px;";
+	}elseif (get_web_browser() == "ie") {
+		return "padding: 0px; margin: 0px;";
+	}elseif (get_web_browser() == "other") {
+		return "padding: 4px; margin: 4px;";
 	}
 }
 
