@@ -200,7 +200,7 @@ function graph_perms_edit() {
 	$graph_policy = "1";
 	
 	if (!empty($_GET["id"])) {
-		$graph_policy = db_fetch_cell("select graph_policy from user where id=" . $_GET["id"]);
+		$graph_policy = db_fetch_cell("select graph_policy from user_auth where id=" . $_GET["id"]);
 		
 		if ($graph_policy == "1") {
 			$graph_policy_text = "DENIED";
@@ -208,7 +208,7 @@ function graph_perms_edit() {
 			$graph_policy_text = "ALLOWED";
 		}
 		
-		$header_label = "[edit: " . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "]";
+		$header_label = "[edit: " . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "]";
 	}
 	
 	if (read_config_option("full_view_user_admin") == "") {
@@ -287,7 +287,7 @@ function graph_config_edit() {
 	global $colors, $tabs_graphs, $settings_graphs;
 	
 	if (!empty($_GET["id"])) {
-		$header_label = "[edit: " . db_fetch_cell("select username from user where id=" . $_GET["id"]) . "]";
+		$header_label = "[edit: " . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "]";
 	}
 	
 	if (read_config_option("full_view_user_admin") == "") {
@@ -369,7 +369,7 @@ function user_remove() {
 	}
 	
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-	    db_execute("delete from user where id=" . $_GET["id"]);
+	    db_execute("delete from user_auth where id=" . $_GET["id"]);
 	    db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
 	    db_execute("delete from user_auth_hosts where user_id=" . $_GET["id"]);
 	    db_execute("delete from user_auth_graph where user_id=" . $_GET["id"]);
@@ -382,7 +382,7 @@ function user_edit() {
 	global $colors;
 	
 	if (!empty($_GET["id"])) {
-		$user = db_fetch_row("select * from user where id=" . $_GET["id"]);
+		$user = db_fetch_row("select * from user_auth where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $user["username"] . "]";
 	}else{
 		$header_label = "[new]";
@@ -556,7 +556,7 @@ function user() {
 		DrawMatrixHeaderItem("Default Graph Policy",$colors["header_text"],2);
 	print "</tr>";
 	
-	$user_list = db_fetch_assoc("select id,username,full_name,graph_policy from user order by username");
+	$user_list = db_fetch_assoc("select id,username,full_name,graph_policy from user_auth order by username");
 	
 	$i = 0;
 	if (sizeof($user_list) > 0) {
