@@ -485,7 +485,7 @@ CREATE TABLE data_local (
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
-  snmp_index varchar(60) NOT NULL default '',
+  snmp_index varchar(100) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -942,7 +942,7 @@ CREATE TABLE graph_local (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
-  snmp_index varchar(60) NOT NULL default '',
+  snmp_index varchar(100) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -1919,7 +1919,7 @@ CREATE TABLE host_snmp_cache (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
   field_value varchar(255) default NULL,
-  snmp_index varchar(60) NOT NULL default '',
+  snmp_index varchar(100) NOT NULL default '',
   oid varchar(255) NOT NULL default '',
   PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
@@ -2637,4 +2637,3 @@ CREATE TABLE version (
 --
 
 INSERT INTO version VALUES ('0.8.6c');
-
