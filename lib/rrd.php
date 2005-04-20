@@ -965,7 +965,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . $graph_item["hex"] . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
+			}else {
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+			}
 		}elseif (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && (!isset($graph_data_array["graph_nolegend"]))) {
 			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . ":\"$text_padding" . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $hardreturn[$graph_item_id] . "\" ";
