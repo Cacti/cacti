@@ -85,6 +85,12 @@ $settings = array(
 			"method" => "textbox",
 			"max_length" => "255"
 			),
+		"path_rrdtool_default_font" => array(
+			"friendly_name" => "RRDTool Default Font Path",
+			"description" => "The path to the rrdtool default true type font for version 1.2 and above.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
 		"path_php_binary" => array(
 			"friendly_name" => "PHP Binary Path",
 			"description" => "The path to your PHP binary file (may require a php recompile to get this file).",

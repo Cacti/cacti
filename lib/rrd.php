@@ -431,6 +431,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	include_once($config["library_path"] . "/graph_variables.php");
 	include($config["include_path"] . "/config_arrays.php");
 
+	/* set the rrdtool default font */
+	if (read_config_option("path_rrdtool_default_font")) {
+		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
+	}
+
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
 	if ((read_config_option("global_auth") == "on") && (isset($_SESSION["sess_user_id"]))) {
