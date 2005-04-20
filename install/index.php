@@ -29,7 +29,7 @@ include("../include/config.php");
 /* allow the upgrade script to run for as long as it needs to */
 ini_set("max_execution_time", "0");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b", "0.8.6c");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -265,6 +265,9 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.6a") {
 			include ("0_8_6_to_0_8_6a.php");
 			upgrade_to_0_8_6a();
+		}elseif ($cacti_versions[$i] == "0.8.6d") {
+			include ("0_8_6c_to_0_8_6d.php");
+			upgrade_to_0_8_6d();
 		}
 	}
 
