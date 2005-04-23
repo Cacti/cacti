@@ -31,7 +31,7 @@ switch ($_REQUEST["action"]) {
 case 'login':
 	/* --- start ldap section --- */
 	$ldap_auth = false;
-	if ((read_config_option("ldap_enabled") == "on") && ($_POST["realm"] == "ldap") && (strlen($_POST["login_password"]))){
+	if ((read_config_option("ldap_enabled") == "on") && ($_POST["realm"] == "ldap") && (strlen($_POST["login_password"])) && (strlen($_POST["login_username"]))){
 		$ldap_conn = ldap_connect(read_config_option("ldap_server"));
 
 		if ($ldap_conn) {
