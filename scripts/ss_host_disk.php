@@ -13,7 +13,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array("ss_host_disk", $_SERVER["argv"]);
 }
 
-function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $cmd, $arg1 = "", $arg2 = "", $snmp_port = 161, $snmp_timeout = 500) {
+function ss_host_disk($hostname, $snmp_community, $snmp_version, $host_id, $snmp_port = 161, $snmp_timeout = 500, $cmd, $arg1 = "", $arg2 = "") {
 	$oids = array(
 		"total" => ".1.3.6.1.2.1.25.2.3.1.5",
 		"used" => ".1.3.6.1.2.1.25.2.3.1.6",
