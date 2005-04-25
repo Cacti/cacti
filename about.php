@@ -37,37 +37,43 @@ html_start_box("<strong>About Cacti</strong>", "98%", $colors["header"], "3", "c
 </tr>
 <tr>
 	<td valign="top" bgcolor="#<?php print $colors["light"];?>" class="textArea">
-		<a href="http://www.raxnet.net/"><img align="right" src="images/raxnet_logo.gif" border="0" alt="raXnet"></a>
+		<a href="http://www.cacti.net/"><img align="right" src="images/cacti_about_logo.gif" border="0" alt="raXnet"></a>
 
-		Cacti is designed to be a complete graphing solution for your network. Its goal is to make the
+		Cacti is designed to be a complete graphing solution based on the RRDTool's framework. Its goal is to make a
 		network administrator's job easier by taking care of all the necessary details necessary to create
-		meaningful network graphs.
+		meaningful graphs.
 
-		<p>The design of Cacti took many hours of SQL and PHP coding, so I hope you find it very useful.</p>
+		<p>Please see the <a href="http://www.cacti.net/">official Cacti website</a> for information, support, and updates.</p>
 
-		<p><strong>Developer Thanks</strong><br>
+		<p><strong>Current Cacti Developers</strong><br>
 		<ul type="disc">
-			<li><a href="http://blyler.cc">Andy Blyler</a>, for ideas, code, and that much needed overall support
-			during really lengthy coding sessions.</li>
-			<li>Rivo Nurges, for that c-based poller that was talked so long about. This <em>really</em> fast poller
-			is what will enable Cacti to make its way into larger and larger networks.</li>
-			<li>Larry Adams, for providing insight, time, superb support, and personal sanity. I could not have pulled
-			off a release of this magnitude without your help.
+			<li><strong>Ian Berry</strong> (raX) is original creator of Cacti which was first released to the world in 2001. He remained the sole
+				developer for over two years, writing code, supporting users, and keeping the project active. Today, Ian continues
+				to actively develop Cacti, focusing on backend components such as templates, data queries, and graph management.</li>
+			<li><strong>Larry Adams</strong> (TheWitness) joined the Cacti team in June of 2004 right before the major 0.8.6 release. He helped bring the new poller
+				architecture to life by providing ideas, writing code, and managing an active group of beta testers. Larry continues
+				to focus on the poller as well as RRDTool integration and SNMP in a Windows environment.</li>
+			<li><strong>Tony Roman</strong> (rony) joined the Cacti team in October of 2004 offering years of programming and system administration
+				experience to the project. He is contributing a great deal to the upcoming 0.9 release of Cacti by providing many usability
+				and documentation changes in addition to revamping Cacti's user management component.</li>
 		</ul>
 		</p>
 
 		<p><strong>Thanks</a></strong><br>
 		<ul type="disc">
-			<li>A very special thanks to <a href="http://ee-staff.ethz.ch/~oetiker/">Tobi Oetiker</a>,
+			<li>A very special thanks to <a href="http://ee-staff.ethz.ch/~oetiker/"><strong>Tobi Oetiker</strong></a>,
 				the creator of <a href="http://www.mrtg.org/">RRDTool</a> and the very popular
 				<a href="http://www.mrtg.org">MRTG</a>.</li>
-			<li>Brady Alleman, creator of NetMRG and
-				<a href="http://www.thtech.net">Treehouse Technolgies</a> for questions and ideas. Just
+			<li><strong>Brady Alleman</strong>, creator of NetMRG and
+				<a href="http://www.thtech.net">Treehouse Technologies</a> for questions and ideas. Just
 				as a note, NetMRG is a complete Network Monitoring solution also written in PHP/MySQL. His
 				product also makes use of RRDTool's graphing capabilities, I encourage you to check it out.</li>
-			<li>The users of Cacti! Especially anyone who has taken the time to create a bug report, or otherwise
+			<li><strong>Andy Blyler</strong>, for ideas, code, and that much needed overall support
+				during really lengthy coding sessions.</li>
+			<li><strong>The users of Cacti</strong>! Especially anyone who has taken the time to create a bug report, or otherwise
 				help me fix a Cacti-related problem. Also to anyone who has purchased an item from my amazon.com
-				wishlist or donated money via Paypal.</li>
+				wishlist or donated money to the project.</li>
+
 		</ul>
 		</p>
 
