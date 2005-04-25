@@ -165,6 +165,23 @@ if ($config["cacti_server_os"] == "unix") {
 	$input["snmp_version"]["default"] = "net-snmp";
 }
 
+/* RRDTool Version */
+if ((file_exists($input["path_rrdtool"]["default"])) && (is_executable($input["path_rrdtool"]["default"]))) {
+	$input["rrdtool_version"] = $settings["general"]["rrdtool_version"];
+
+	$out_array = array();
+
+	exec($input["path_rrdtool"]["default"], $out_array);
+
+	if (sizeof($out_array) > 0) {
+		if (ereg("^RRDtool 1\.2\.", $out_array[0])) {
+			$input["rrdtool_version"]["default"] = "rrd-1.2.x";
+		}else if (ereg("^RRDtool 1\.0\.", $out_array[0])) {
+			$input["rrdtool_version"]["default"] = "rrd-1.0.x";
+		}
+	}
+}
+
 /* default value for this variable */
 if (!isset($_REQUEST["install_type"])) {
 	$_REQUEST["install_type"] = 0;
@@ -217,7 +234,11 @@ if ($_REQUEST["step"] == "4") {
 	kill_session_var("sess_host_cache_array");
 
 	/* just in case we have hard drive graphs to deal with */
-	run_data_query(db_fetch_cell("select id from host where hostname='127.0.0.1'"), 6);
+	$host_id = db_fetch_cell("select id from host where hostname='127.0.0.1'");
+
+	if (!empty($host_id)) {
+		run_data_query($host_id, 6);
+	}
 
 	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
 	up-to-date */
@@ -269,12 +290,6 @@ if ($_REQUEST["step"] == "4") {
 			include ("0_8_6c_to_0_8_6d.php");
 			upgrade_to_0_8_6d();
 		}
-	}
-
-	/* there are no (visible) database changes between these version(s) and the current version.
-	 * that means we can skip the "upgrade results" page altogether */
-	if (($old_cacti_version == "0.8.6") || ($old_cacti_version == "0.8.6a") || ($old_cacti_version == "0.8.6b")) {
-		$_REQUEST["step"] = "3";
 	}
 }
 
