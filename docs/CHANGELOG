@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -bug: Change default value in Unix ping script to correct for template bug.
 -bug: Fixed session initialization problems with some browsers.
 -bug: Fixed page refresh issue.
+-bug: LDAP Auth with no DN specified and blank username would allow login.
 
 0.8.6c
 -bug#0000354: User Name field always displays "admin" in Mozilla web browser.
