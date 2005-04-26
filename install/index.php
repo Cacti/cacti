@@ -174,7 +174,7 @@ if ((file_exists($input["path_rrdtool"]["default"])) && (is_executable($input["p
 	exec($input["path_rrdtool"]["default"], $out_array);
 
 	if (sizeof($out_array) > 0) {
-		if (ereg("^RRDtool 1\.2\.", $out_array[0])) {
+		if (ereg("^RRDtool 1\.2", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.2.x";
 		}else if (ereg("^RRDtool 1\.0\.", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.0.x";
