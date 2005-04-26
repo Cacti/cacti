@@ -1,28 +1,29 @@
 Cacti CHANGELOG
 
 0.8.6d
--feature: Basic support for RRDTool 1.2 including specifying a default True Type Font.
--feature: Added support for spike suppression within the cmd.php poller.
--feature: Support php_snmp version 2 builtin functions.
--bug#0000416: Speed up binary net-snmp calls by removing MIB lookup requirment.
+-bug#0000416: Speed up binary net-snmp calls by removing MIB lookup requirement.
 -bug#0000434/#0000403: Allow for periods in script return variable names.
 -bug#0000436: Made snmp.php more like version 0.9 code base.
 -bug#0000419: Fixed session initialization problems with some browsers.
 -bug#0000394: Fixed a web server crash when reordering items in a graph tree.
 -bug#0000390: Remove deep linking in Cacti.
 -bug#0000389: Implement directory security in Cacti.
--bug: Correct for issues encountered when creating mutiple graphs from a single graph template.
--bug: Corrects a problem where no graphs are displaying in the graph tree when authentication is turned off.
+-bug#0000443: Add SNMP port/timeout to the Host MIB CPU/disk script queries.
+-bug: Corrected issues encountered when creating multiple graphs from a single graph template.
+-bug: Corrected a problem where no graphs are displayed in the graph tree when authentication is turned off.
 -bug: Allow RRDTool fetch command to retrieve negative numbers.
--bug: Increase some field lengths for very long OID's.
+-bug: Increased some field lengths for very long OID's.
 -bug: Removed references to non-existing code when attempting to make database connections.
 -bug: Give poller cache more time to process entries during a clear operation, give it more memory.
--bug: Change default value in Unix ping script to correct for template bug.
+-bug: Changed default value in Unix ping script to correct for template bug.
 -bug: Fixed page refresh issue.
--bug: Fix include ordering in config.php to accomodate mysql bugs and logging.
--bug: Change snmp ping OID to be sysUptime because it is more common.
--bug: Increase PHP timeout to accomodate for long running recache events causing poller issues.
+-bug: Fixed include ordering in config.php to accommodate MySQL bugs and logging.
+-bug: Changed SNMP ping OID to be sysUptime because it is more common.
+-bug: Increased PHP timeout to accommodate for long running recache events causing poller issues.
 -bug: LDAP Auth with no DN specified and blank username would allow login.
+-feature: Basic support for RRDTool 1.2 including specifying a default True Type Font.
+-feature: Added support for spike suppression within the cmd.php poller.
+-feature: Support php_snmp version 2 builtin functions.
 
 0.8.6c
 -bug#0000354: User Name field always displays "admin" in Mozilla web browser.
