@@ -1186,7 +1186,7 @@ function get_graph_tree_array($return_sql = false, $force_refresh = false) {
 	if (!isset($_SESSION["tree_array"]) || ($force_refresh) ||
 		(($_SESSION["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
 
-		if (read_config_option("auth_method") != "0") {
+		if (read_config_option("global_auth") == "on") {
 			$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 			if ($current_user["policy_trees"] == "1") {
