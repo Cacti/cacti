@@ -115,9 +115,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		$o = 0;
-		foreach ($temp_array as $key => $val) {
-			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $key);
-			$snmp_array[$o]["value"] = format_snmp_string($val);
+		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
+			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
+			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i]);
 			$o++;
 		}
 	}else{
