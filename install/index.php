@@ -166,7 +166,7 @@ if ($config["cacti_server_os"] == "unix") {
 }
 
 /* RRDTool Version */
-if ((file_exists($input["path_rrdtool"]["default"])) && (is_executable($input["path_rrdtool"]["default"]))) {
+if ((file_exists($input["path_rrdtool"]["default"])) && (($config["cacti_server_os"] == "win32") || (is_executable($input["path_rrdtool"]["default"]))) ) {
 	$input["rrdtool_version"] = $settings["general"]["rrdtool_version"];
 
 	$out_array = array();
