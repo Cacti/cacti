@@ -486,6 +486,17 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 	/* create an SQL string that contains each index in this snmp_index_id */
 	$sql_or = array_to_sql_or($data_query_index_array, "snmp_index");
 
+	/* check for nonunique query parameter, set value */
+	if (isset($raw_xml["index_type"])) {
+		if ($raw_xml["index_type"] == "nonunique") {
+			$nonunique = 1;
+		}else{
+			$nonunique = 0;
+		}
+	} else {
+		$nonunique = 0;
+	}
+
 	/* list each of the input fields for this snmp query */
 	while (list($field_name, $field_array) = each($raw_xml["fields"])) {
 		if ($field_array["direction"] == "input") {
@@ -500,7 +511,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 			$aggregate_field_values = array_rekey($field_values, "field_value", "field_value");
 
 			/* fields that contain duplicate or empty values are not suitable to index off of */
-			if (!((sizeof($aggregate_field_values) < sizeof($field_values)) || (in_array("", $aggregate_field_values) == true) || (sizeof($aggregate_field_values) == 0))) {
+			if (!((sizeof($aggregate_field_values) < sizeof($field_values)) || (in_array("", $aggregate_field_values) == true) || (sizeof($aggregate_field_values) == 0)) || ($nonunique)) {
 				array_push($xml_outputs, $field_name);
 			}
 		}
