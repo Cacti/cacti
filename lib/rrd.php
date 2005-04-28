@@ -698,6 +698,22 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"$graph_legend" .
 		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
 
+	/* rrdtool 1.2 font options */
+	if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+		if (file_exists(read_graph_config_option("title_font"))) {
+			$graph_opts .= "--font TITLE:" . read_graph_config_option("title_size") . ":" . read_graph_config_option("title_font") . RRD_NL;
+        }
+		if (file_exists(read_graph_config_option("axis_font"))) {
+			$graph_opts .= "--font AXIS:" . read_graph_config_option("axis_size") . ":" . read_graph_config_option("axis_font") . RRD_NL;
+        }
+		if (file_exists(read_graph_config_option("legend_font"))) {
+			$graph_opts .= "--font LEGEND:" . read_graph_config_option("legend_size") . ":" . read_graph_config_option("legend_font") . RRD_NL;
+        }
+		if (file_exists(read_graph_config_option("unit_font"))) {
+			$graph_opts .= "--font UNIT:" . read_graph_config_option("unit_size") . ":" . read_graph_config_option("unit_font") . RRD_NL;
+        }
+	}
+
 	$i = 0;
 	if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
