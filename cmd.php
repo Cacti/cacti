@@ -230,10 +230,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 							/* spike kill logic */
 							if (($assert_fail) && ($index_item["arg1"] == ".1.3.6.1.2.1.1.3.0")) {
-								$set_spike_kill = true;
+								/* don't spike kill unless we are certain */
+								if (!empty($output)) {
+									$set_spike_kill = true;
 
-								if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-									cacti_log("Host[$host_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $print_data_to_stdout);
+									if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+										cacti_log("Host[$host_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $print_data_to_stdout);
+									}
 								}
 							}
 						}
