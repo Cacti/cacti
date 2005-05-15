@@ -327,7 +327,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			} /* End Switch */
 
 			if (isset($output)) {
-				/* insert a NaN in place of the actual value if the snmp agent restarts */
+				/* insert a U in place of the actual value if the snmp agent restarts */
 				if (($set_spike_kill) && (!substr_count($output, ":"))) {
 					db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "','$poller_update_time','" . addslashes("U") . "')");
 				/* otherwise, just insert the value received from the poller */
