@@ -40,7 +40,9 @@ $ds_actions = array(
 	2 => "Change Data Template",
 	3 => "Change Host",
 	4 => "Duplicate",
-	5 => "Convert to Data Template"
+	5 => "Convert to Data Template",
+	6 => "Enable",
+	7 => "Disable"
 	);
 
 /* set default action */
@@ -344,6 +346,14 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				data_source_to_data_template($selected_items[$i], $_POST["title_format"]);
 			}
+		}elseif ($_POST["drp_action"] == "6") { /* data source enable */
+			for ($i=0;($i<count($selected_items));$i++) {
+				api_data_source_enable($selected_items[$i]);
+			}
+		}elseif ($_POST["drp_action"] == "7") { /* data source disable */
+			for ($i=0;($i<count($selected_items));$i++) {
+				api_data_source_disable($selected_items[$i]);
+			}
 		}
 
 		header("Location: data_sources.php");
@@ -438,13 +448,29 @@ function form_actions() {
 				</td>
 			</tr>\n
 			";
-	}elseif ($_POST["drp_action"] == "5") { /* graph -> graph template */
+	}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
 		print "	<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>When you click save, the following data sources will be converted into data templates.
 					You can optionally change the title format for the new data templates.</p>
 					<p>$ds_list</p>
 					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<ds_title> Template", "", "255", "30", "text"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "6") { /* data source enable */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click yes, the following data sources will be enabled.</p>
+					<p>$ds_list</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "7") { /* data source disable */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click yes, the following data sources will be disabled.</p>
+					<p>$ds_list</p>
 				</td>
 			</tr>\n
 			";

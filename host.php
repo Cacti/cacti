@@ -179,6 +179,19 @@ function form_actions() {
 				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
 
 				switch ($_POST["delete_type"]) {
+					case '1': /* leave graphs and data_sources in place, but disable the data sources */
+						$data_sources = db_fetch_assoc("select
+							data_local.id as local_data_id
+							from data_local
+							where " . array_to_sql_or($selected_items, "data_local.host_id"));
+
+						if (sizeof($data_sources) > 0) {
+							foreach ($data_sources as $data_source) {
+								api_data_source_disable($data_source["local_data_id"]);
+							}
+						}
+
+						break;
 					case '2': /* delete graphs/data sources tied to this device */
 						$data_sources = db_fetch_assoc("select
 							data_local.id as local_data_id
@@ -288,7 +301,7 @@ function form_actions() {
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Are you sure you want to delete the following devices?</p>
 					<p>$host_list</p>";
-					form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.", "1"); print "<br>";
+					form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.  Data sources will be disabled however.", "1"); print "<br>";
 					form_radio_button("delete_type", "2", "2", "Delete all associated <strong>graphs</strong> and <strong>data sources</strong>.", "1"); print "<br>";
 					print "</td></tr>
 				</td>

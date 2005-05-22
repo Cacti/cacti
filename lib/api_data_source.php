@@ -42,4 +42,14 @@ function api_data_source_remove($local_data_id) {
 	db_execute("delete from data_local where id=$local_data_id");
 }
 
+function api_data_source_enable($local_data_id) {
+    db_execute("UPDATE data_template_data SET active='on' WHERE local_data_id=$local_data_id");
+	update_poller_cache($local_data_id, false);
+ }
+
+function api_data_source_disable($local_data_id) {
+	db_execute("DELETE FROM poller_item WHERE local_data_id=$local_data_id");
+	db_execute("UPDATE data_template_data SET active='' WHERE local_data_id=$local_data_id");
+ }
+
 ?>
