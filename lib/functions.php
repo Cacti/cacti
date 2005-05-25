@@ -44,10 +44,9 @@ function title_trim($text, $max_length) {
      in 'include/config_settings.php'
    @returns - the default value of the configuration option */
 function read_default_graph_config_option($config_name) {
-	global $config;
+	global $config, $settings_graphs;
 
-	include($config["include_path"] . "/config_settings.php");
-
+	reset($settings_graphs);
 	while (list($tab_name, $tab_array) = each($settings_graphs)) {
 		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]["default"]))) {
 			return $tab_array[$config_name]["default"];
@@ -112,10 +111,9 @@ function graph_config_value_exists($config_name, $user_id) {
      in 'include/config_settings.php'
    @returns - the default value of the configuration option */
 function read_default_config_option($config_name) {
-	global $config;
+	global $config, $settings;
 
-	include($config["include_path"] . "/config_settings.php");
-
+	reset($settings);
 	while (list($tab_name, $tab_array) = each($settings)) {
 		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]["default"]))) {
 			return $tab_array[$config_name]["default"];
@@ -1636,6 +1634,36 @@ function debug_log_return($type) {
 	}
 
 	return $log_text;
+}
+
+/* sanitize_search_string - cleans up a search string submitted by the user to be passed
+     to the database. NOTE: some of the code for this function came from the phpBB project.
+   @arg $string - the original raw search string
+   @returns - the sanitized search string */
+function sanitize_search_string($string) {
+	static $drop_char_match =   array('^', '$', '&', '(', ')', '<', '>', '`', '\'', '"', '|', ',', '@', '_', '?', '%', '-', '~', '+', '.', '[', ']', '{', '}', ':', '\\', '/', '=', '#', '\'', ';', '!');
+	static $drop_char_replace = array(' ', ' ', ' ', ' ', ' ', ' ', ' ', '',  '',   ' ', ' ', ' ', ' ', '',  ' ', ' ', '',  ' ',  ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' , ' ', ' ', ' ', ' ',  ' ', ' ');
+
+	$string = ' ' . strip_tags(strtolower($string)) . ' ';
+
+	/* Replace line endings by a space */
+	$string = preg_replace('/[\n\r]/is', ' ', $string);
+	/* HTML entities like &nbsp; */
+	$string = preg_replace('/\b&[a-z]+;\b/', ' ', $string);
+	/* Remove URL's */
+	$string = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string);
+
+	/* Filter out strange characters like ^, $, &, change "it's" to "its" */
+	for($i = 0; $i < count($drop_char_match); $i++) {
+		$string =  str_replace($drop_char_match[$i], $drop_char_replace[$i], $string);
+	}
+
+	$string = str_replace('*', ' ', $string);
+
+	/* 'words' that consist of <3 or >20 characters are removed. */
+	$string = preg_replace('/[ ]([\S]{1,2}|[\S]{21,})[ ]/',' ', $string);
+
+	return $string;
 }
 
 ?>
