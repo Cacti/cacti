@@ -24,8 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include($config["include_path"] . "/config_arrays.php");
-
 /* tab information */
 $tabs = array(
 	"general" => "General",
