@@ -73,6 +73,10 @@ function form_save() {
 				/* list all select graph items for use down below */
 				while (list($var, $val) = each($_POST)) {
 					if (preg_match("/^i_(\d+)$/", $var, $matches)) {
+						/* ================= input validation ================= */
+						input_validate_input_number($matches[1]);
+						/* ==================================================== */
+
 						$selected_graph_items{$matches[1]} = $matches[1];
 
 						if (isset($db_selected_graph_item{$matches[1]})) {
@@ -120,6 +124,11 @@ function form_save() {
    ------------------------------------ */
 
 function input_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("graph_template_id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", "graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"], "graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
@@ -135,6 +144,11 @@ function input_remove() {
 
 function input_edit() {
 	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("graph_template_id"));
+	/* ==================================================== */
 
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 

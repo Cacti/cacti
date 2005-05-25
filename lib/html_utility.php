@@ -126,6 +126,24 @@ function get_checkbox_style() {
 	}
 }
 
+/* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
+     returning a default value if the request variable does not exist
+   @arg $name - the name of the request variable. this should be a valid key in the
+     $_REQUEST array
+   @arg $default - the value to return if the specified name does not exist in the
+     $_REQUEST array
+   @returns - the value of the request variable */
+function get_request_var($name, $default = "")
+{
+	if (isset($_REQUEST[$name]))
+	{
+		return $_REQUEST[$name];
+	} else
+	{
+		return $default;
+	}
+}
+
 /* load_current_session_value - finds the correct value of a variable that is being
      cached as a session variable on an HTML form
    @arg $request_var_name - the array index name for the request variable

@@ -131,6 +131,10 @@ function host_new_graphs_save() {
 				$values["sg"]{$matches[1]}{$matches[2]}["graph_template"]{$matches[3]} = $val;
 			}
 		}elseif (preg_match("/^gi_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name */
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[3]);
+			/* ==================================================== */
+
 			/* we need to find out which graph items will be affected by saving this particular item */
 			$item_list = db_fetch_assoc("select
 				graph_template_item_id
@@ -231,6 +235,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				html_start_box("<strong>Create Graph from '" . db_fetch_cell("select name from graph_templates where id=$graph_template_id") . "'", "98%", $colors["header"], "3", "center", "");
 			}elseif ($form_type == "sg") {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
+					/* ================= input validation ================= */
+					input_validate_input_number($snmp_query_id);
+					/* ==================================================== */
+
 					$snmp_query_id = $form_id1;
 					$snmp_query_graph_id = $form_id2;
 					$num_graphs = sizeof($form_array3);
@@ -247,6 +255,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				/* DRAW: Data Query */
 				html_start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from '" . db_fetch_cell("select name from snmp_query where id=$snmp_query_id") . "'", "98%", $colors["header"], "3", "center", "");
 			}
+
+			/* ================= input validation ================= */
+			input_validate_input_number($graph_template_id);
+			/* ==================================================== */
 
 			$data_templates = db_fetch_assoc("select
 				data_template.name as data_template_name,
@@ -330,6 +342,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 function graphs() {
 	global $colors;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("host_id"));
+	/* ==================================================== */
 
 	/* use the first host in the list as the default */
 	if ((!isset($_SESSION["sess_graphs_new_host_id"])) && (empty($_REQUEST["host_id"]))) {

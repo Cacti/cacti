@@ -78,6 +78,10 @@ function form_save() {
 				db_execute("delete from rra_cf where rra_id=$rra_id");
 
 				if (isset($_POST["consolidation_function_id"])) {
+					/* ================= input validation ================= */
+					input_validate_input_number($_POST["consolidation_function_id"][$i]);
+					/* ==================================================== */
+
 					for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
 						db_execute("insert into rra_cf (rra_id,consolidation_function_id)
 							values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
@@ -101,6 +105,10 @@ function form_save() {
    ------------------- */
 
 function rra_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include_once("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . db_fetch_cell("select name from rra where id=" . $_GET["id"]) . "'</strong>?", "rra.php", "rra.php?action=remove&id=" . $_GET["id"]);
@@ -115,6 +123,10 @@ function rra_remove() {
 
 function rra_edit() {
 	global $colors, $fields_rra_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);

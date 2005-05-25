@@ -75,6 +75,10 @@ function form_save() {
 	global $registered_cacti_names;
 
 	if (isset($_POST["save_component_data_input"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		/* ==================================================== */
+
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_data_input($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
@@ -104,6 +108,12 @@ function form_save() {
 			header("Location: data_input.php");
 		}
 	}elseif (isset($_POST["save_component_field"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var("data_input_id"));
+		input_validate_input_regex(get_request_var("input_output"), "^(in|out)$");
+		/* ==================================================== */
+
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_data_input($_POST["id"], "data_input_field");
 		$save["data_input_id"] = $_POST["data_input_id"];
@@ -145,6 +155,11 @@ function form_save() {
 function field_remove() {
 	global $registered_cacti_names;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("data_input_id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", "data_input.php?action=edit&id=" . $_GET["data_input_id"], "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
@@ -173,6 +188,12 @@ function field_remove() {
 
 function field_edit() {
 	global $colors, $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("data_input_id"));
+	input_validate_input_regex(get_request_var("type"), "^(in|out)$");
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$field = db_fetch_row("select * from data_input_fields where id=" . $_GET["id"]);
@@ -243,6 +264,10 @@ function field_edit() {
    ----------------------- */
 
 function data_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", "data_input.php", "data_input.php?action=remove&id=" . $_GET["id"]);
@@ -259,6 +284,10 @@ function data_remove() {
 
 function data_edit() {
 	global $colors, $fields_data_input_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);

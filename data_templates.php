@@ -82,6 +82,11 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_template"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("data_input_id"));
+		input_validate_input_number(get_request_var("data_template_id"));
+		/* ==================================================== */
+
 		/* save: data_template */
 		$save1["id"] = $_POST["data_template_id"];
 		$save1["hash"] = get_hash_data_template($_POST["data_template_id"]);
@@ -163,6 +168,10 @@ function form_save() {
 
 			if (isset($_POST["rra_id"])) {
 				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
+					/* ================= input validation ================= */
+					input_validate_input_number($_POST["rra_id"][$i]);
+					/* ==================================================== */
+
 					db_execute("insert into data_template_data_rra (rra_id,data_template_data_id)
 						values (" . $_POST["rra_id"][$i] . ",$data_template_data_id)");
 				}
@@ -250,6 +259,10 @@ function form_actions() {
 			db_execute("update data_local set data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				duplicate_data_source(0, $selected_items[$i], $_POST["title_format"]);
 			}
 		}
@@ -264,6 +277,10 @@ function form_actions() {
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
 			$ds_list .= "<li>" . db_fetch_cell("select name from data_template where id=" . $matches[1]) . "<br>";
 			$ds_array[$i] = $matches[1];
 		}
@@ -326,6 +343,11 @@ function form_actions() {
    ---------------------------- */
 
 function template_rrd_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("data_template_id"));
+	/* ==================================================== */
+
 	$children = db_fetch_assoc("select id from data_template_rrd where local_data_template_rrd_id=" . $_GET["id"] . " or id=" . $_GET["id"]);
 
 	if (sizeof($children) > 0) {
@@ -340,6 +362,11 @@ function template_rrd_remove() {
 }
 
 function template_rrd_add() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("local_data_id"));
+	/* ==================================================== */
+
 	$hash = get_hash_data_template(0, "data_template_item");
 
 	db_execute("insert into data_template_rrd (hash,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
@@ -361,6 +388,11 @@ function template_rrd_add() {
 
 function template_edit() {
 	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("view_rrd"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id=0");

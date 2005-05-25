@@ -72,6 +72,11 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if (isset($_POST["save_component_item"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("graph_template_id"));
+		input_validate_input_number(get_request_var("task_item_id"));
+		/* ==================================================== */
+
 		global $graph_item_types;
 
 		$items[0] = array();
@@ -207,6 +212,11 @@ function form_save() {
    ----------------------- */
 
 function item_movedown() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("graph_template_id"));
+	/* ==================================================== */
+
 	global $graph_item_types;
 
 	$arr = get_graph_group($_GET["id"]);
@@ -226,6 +236,11 @@ function item_movedown() {
 }
 
 function item_moveup() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("graph_template_id"));
+	/* ==================================================== */
+
 	global $graph_item_types;
 
 	$arr = get_graph_group($_GET["id"]);
@@ -245,6 +260,11 @@ function item_moveup() {
 }
 
 function item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("graph_template_id"));
+	/* ==================================================== */
+
 	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);
 	db_execute("delete from graph_templates_item where local_graph_template_item_id=" . $_GET["id"]);
 
@@ -270,6 +290,11 @@ function item_remove() {
 
 function item_edit() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("graph_template_id"));
+	/* ==================================================== */
 
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 

@@ -127,6 +127,10 @@ function form_save() {
 			header("Location: data_queries.php");
 		}
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		/* ==================================================== */
+
 		$redirect_back = false;
 
 		$save["id"] = $_POST["id"];
@@ -193,30 +197,63 @@ function form_save() {
    ---------------------------- */
 
 function data_query_item_movedown_gsv() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("snmp_query_graph_id"));
+	/* ==================================================== */
+
 	move_item_down("snmp_query_graph_sv", $_GET["id"], "snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
 function data_query_item_moveup_gsv() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("snmp_query_graph_id"));
+	/* ==================================================== */
+
 	move_item_up("snmp_query_graph_sv", $_GET["id"], "snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
 function data_query_item_remove_gsv() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	db_execute("delete from snmp_query_graph_sv where id=" . $_GET["id"]);
 }
 
 function data_query_item_movedown_dssv() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("data_template_id"));
+	/* ==================================================== */
+
 	move_item_down("snmp_query_graph_rrd_sv", $_GET["id"], "data_template_id=" . $_GET["data_template_id"] . " and snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
 function data_query_item_moveup_dssv() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("data_template_id"));
+	/* ==================================================== */
+
 	move_item_up("snmp_query_graph_rrd_sv", $_GET["id"], "data_template_id=" . $_GET["data_template_id"] . " and snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
 }
 
 function data_query_item_remove_dssv() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	db_execute("delete from snmp_query_graph_rrd_sv where id=" . $_GET["id"]);
 }
 
 function data_query_item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("snmp_query_id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php?action=edit&id=" . $_GET["snmp_query_id"], "data_queries.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
@@ -234,6 +271,11 @@ function data_query_item_remove() {
 
 function data_query_item_edit() {
 	global $colors, $fields_data_query_item_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("snmp_query_id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$snmp_query_item = db_fetch_row("select * from snmp_query_graph where id=" . $_GET["id"]);
@@ -472,6 +514,10 @@ function data_query_item_edit() {
    --------------------- */
 
 function data_query_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php", "data_queries.php?action=remove&id=" . $_GET["id"]);
@@ -498,6 +544,10 @@ function data_query_remove() {
 
 function data_query_edit() {
 	global $colors, $fields_data_query_edit, $config;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);

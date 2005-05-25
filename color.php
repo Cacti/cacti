@@ -87,11 +87,19 @@ function form_save() {
    ----------------------- */
 
 function color_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	db_execute("delete from colors where id=" . $_GET["id"]);
 }
 
 function color_edit() {
 	global $colors, $fields_color_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);

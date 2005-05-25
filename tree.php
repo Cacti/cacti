@@ -129,6 +129,11 @@ function form_save() {
 function item_edit() {
 	global $colors, $tree_sort_types;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("tree_id"));
+	/* ==================================================== */
+
 	$tree_item_types = array(
 		TREE_ITEM_TYPE_HEADER => "Header",
 		TREE_ITEM_TYPE_GRAPH => "Graph",
@@ -296,16 +301,31 @@ function item_edit() {
 }
 
 function item_moveup() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("tree_id"));
+	/* ==================================================== */
+
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["id"]);
 	if ($order_key > 0) { branch_up($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
 }
 
 function item_movedown() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("tree_id"));
+	/* ==================================================== */
+
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["id"]);
 	if ($order_key > 0) { branch_down($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
 }
 
 function item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("tree_id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		$graph_tree_item = db_fetch_row("select title,local_graph_id,host_id from graph_tree_items where id=" . $_GET["id"]);
 
@@ -336,6 +356,10 @@ function item_remove() {
    --------------------- */
 
 function tree_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", "tree.php", "tree.php?action=remove&id=" . $_GET["id"]);
@@ -351,6 +375,10 @@ function tree_remove() {
 
 function tree_edit() {
 	global $colors, $fields_tree_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree where id=" . $_GET["id"]);

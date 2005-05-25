@@ -91,6 +91,10 @@ function form_save() {
    ----------------------------------- */
 
 function gprint_presets_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include_once("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", "gprint_presets.php", "gprint_presets.php?action=remove&id=" . $_GET["id"]);
@@ -104,6 +108,10 @@ function gprint_presets_remove() {
 
 function gprint_presets_edit() {
 	global $colors, $fields_grprint_presets_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["id"]);

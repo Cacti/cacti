@@ -26,8 +26,17 @@
 
 $guest_account = true;
 include("./include/auth.php");
+include("./lib/html_tree.php");
 include("./include/html/inc_timespan_settings.php");
 include("./include/top_graph_header.php");
+
+/* ================= input validation ================= */
+input_validate_input_number(get_request_var("branch_id"));
+input_validate_input_number(get_request_var("hide"));
+input_validate_input_number(get_request_var("tree_id"));
+input_validate_input_number(get_request_var("leaf_id"));
+input_validate_input_number(get_request_var("rra_id"));
+/* ==================================================== */
 
 if (isset($_GET["hide"])) {
 	if (($_GET["hide"] == "0") || ($_GET["hide"] == "1")) {
@@ -96,6 +105,16 @@ case 'tree':
 	break;
 case 'preview':
 	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("host_id"));
+	input_validate_input_number(get_request_var("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
 
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
 

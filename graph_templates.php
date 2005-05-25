@@ -190,6 +190,10 @@ function form_actions() {
 			db_execute("update graph_local set graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				duplicate_graph(0, $selected_items[$i], $_POST["title_format"]);
 			}
 		}
@@ -204,6 +208,10 @@ function form_actions() {
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
 			$graph_list .= "<li>" . db_fetch_cell("select name from graph_templates where id=" . $matches[1]) . "<br>";
 			$graph_array[$i] = $matches[1];
 		}
@@ -263,6 +271,10 @@ function form_actions() {
 
 function item() {
 	global $colors, $consolidation_functions, $graph_item_types;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (empty($_GET["id"])) {
 		$template_item_list = array();
@@ -332,6 +344,10 @@ function item() {
 
 function template_edit() {
 	global $colors, $struct_graph, $image_types, $fields_graph_template_template_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	/* graph item list goes here */
 	if (!empty($_GET["id"])) {

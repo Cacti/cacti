@@ -128,6 +128,10 @@ function form_actions() {
 			db_execute("update host set host_template_id=0 where " . array_to_sql_or($selected_items, "host_template_id"));
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				duplicate_host_template($selected_items[$i], $_POST["title_format"]);
 			}
 		}
@@ -142,6 +146,10 @@ function form_actions() {
 	/* loop through each of the host templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
 			$host_list .= "<li>" . db_fetch_cell("select name from host_template where id=" . $matches[1]) . "<br>";
 			$host_array[$i] = $matches[1];
 		}
@@ -204,15 +212,29 @@ function form_actions() {
    --------------------- */
 
 function template_item_remove_gt() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_template_id"));
+	/* ==================================================== */
+
 	db_execute("delete from host_template_graph where graph_template_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
 }
 
 function template_item_remove_dq() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_template_id"));
+	/* ==================================================== */
+
 	db_execute("delete from host_template_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
 }
 
 function template_edit() {
 	global $colors, $fields_host_template_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	display_output_messages();
 

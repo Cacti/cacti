@@ -89,6 +89,10 @@ function form_save() {
 
 	/* graph permissions */
 	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		/* ==================================================== */
+
 		$add_button_clicked = false;
 
 		if (isset($_POST["add_graph_y"])) {
@@ -113,6 +117,10 @@ function form_save() {
 
 	/* user management save */
 	if (isset($_POST["save_component_user"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		/* ==================================================== */
+
 		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
 			$password = db_fetch_cell("select password from user_auth where id=" . $_POST["id"]);
 		}else{
@@ -121,7 +129,7 @@ function form_save() {
 
 		/* check duplicate username */
 		if (sizeof(db_fetch_row("select * from user_auth where realm = 0 and username = '" . $_POST["username"] . "' and id != '" . $_POST["id"] . "'"))) {
-			raise_message(12);	
+			raise_message(12);
 		}
 
 		/* check to make sure the passwords match; if not error */
@@ -205,6 +213,11 @@ function form_save() {
    -------------------------- */
 
 function perm_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("user_id"));
+	/* ==================================================== */
+
 	if ($_GET["type"] == "graph") {
 		db_execute("delete from user_auth_perms where type=1 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
 	}elseif ($_GET["type"] == "tree") {
@@ -220,6 +233,10 @@ function perm_remove() {
 
 function graph_perms_edit() {
 	global $colors;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	$graph_policy_array = array(
 		1 => "Allow",
@@ -485,6 +502,10 @@ function graph_perms_edit() {
 function user_realms_edit() {
 	global $colors, $user_auth_realms;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	?>
 	<table width='98%' align='center' cellpadding="5">
 		<tr>
@@ -552,6 +573,10 @@ function user_realms_edit() {
 function graph_settings_edit() {
 	global $settings_graphs, $tabs_graphs, $colors, $graph_views, $graph_tree_views;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	?>
 	<table width='98%' align='center' cellpadding="5">
 		<tr>
@@ -615,6 +640,10 @@ function graph_settings_edit() {
    -------------------------- */
 
 function user_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "'</strong>?", "user_admin.php", "user_admin.php?action=user_remove&id=" . $_GET["id"]);
@@ -632,6 +661,10 @@ function user_remove() {
 
 function user_edit() {
 	global $colors, $fields_user_user_edit_host;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$user = db_fetch_row("select * from user_auth where id=" . $_GET["id"]);

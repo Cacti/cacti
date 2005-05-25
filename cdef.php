@@ -150,19 +150,39 @@ function form_save() {
    -------------------------- */
 
 function item_movedown() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("cdef_id"));
+	/* ==================================================== */
+
 	move_item_down("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);
 }
 
 function item_moveup() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("cdef_id"));
+	/* ==================================================== */
+
 	move_item_up("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);
 }
 
 function item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("cdef_id"));
+	/* ==================================================== */
+
 	db_execute("delete from cdef_items where id=" . $_GET["id"]);
 }
 
 function item_edit() {
 	global $colors, $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("cdef_id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef_items where id=" . $_GET["id"]);
@@ -245,6 +265,10 @@ function item_edit() {
    --------------------- */
 
 function cdef_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", "cdef.php", "cdef.php?action=remove&id=" . $_GET["id"]);
@@ -260,6 +284,10 @@ function cdef_remove() {
 
 function cdef_edit() {
 	global $colors, $cdef_item_types, $fields_cdef_edit;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$cdef = db_fetch_row("select * from cdef where id=" . $_GET["id"]);

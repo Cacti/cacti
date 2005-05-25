@@ -192,13 +192,7 @@ function sql_save($array_items, $table_name, $key_cols='id') {
 	global $cnn_id;
 
 	while (list ($key, $value) = each ($array_items)) {
-		if (preg_match("/^((password|md5|now)\(.*\)|null)$/i", $value)) {
-			$quote = "";
-		}else{
-			$quote = "\"";
-		}
-
-		$array_items[$key] = "$quote$value$quote";
+		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
 	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, false)) { return 0; }
@@ -213,6 +207,16 @@ function sql_save($array_items, $table_name, $key_cols='id') {
 	}else{
 		return $cnn_id->Insert_ID();
 	}
+}
+
+/* sql_sanitize - removes and quotes unwanted chars in values passed for use in SQL statements
+   @arg $value - value to sanitize
+   @return - fixed value */
+function sql_sanitize($value) {
+	//$value = str_replace("'", "''", $value);
+	$value = str_replace(";", "", $value);
+
+	return $value;
 }
 
 ?>

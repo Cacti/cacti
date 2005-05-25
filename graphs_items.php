@@ -147,6 +147,11 @@ function form_save() {
 function item_movedown() {
 	global $graph_item_types;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("local_graph_id"));
+	/* ==================================================== */
+
 	$arr = get_graph_group($_GET["id"]);
 	$next_id = get_graph_parent($_GET["id"], "next");
 
@@ -159,6 +164,11 @@ function item_movedown() {
 
 function item_moveup() {
 	global $graph_item_types;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("local_graph_id"));
+	/* ==================================================== */
 
 	$arr = get_graph_group($_GET["id"]);
 	$previous_id = get_graph_parent($_GET["id"], "previous");
@@ -176,6 +186,11 @@ function item_remove() {
 
 function item_edit() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("local_graph_id"));
+	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);

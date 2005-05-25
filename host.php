@@ -96,6 +96,12 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var("snmp_query_id"));
+		input_validate_input_number(get_request_var("reindex_method"));
+		/* ==================================================== */
+
 		db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . ")");
 
 		/* recache snmp data */
@@ -106,6 +112,11 @@ function form_save() {
 	}
 
 	if ((!empty($_POST["add_gt_y"])) && (!empty($_POST["graph_template_id"]))) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var("graph_template_id"));
+		/* ==================================================== */
+
 		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $_POST["id"] . "," . $_POST["graph_template_id"] . ")");
 
 		header("Location: host.php?action=edit&id=" . $_POST["id"]);
@@ -138,6 +149,10 @@ function form_actions() {
 
 		if ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				db_execute("update host set disabled='' where id='" . $selected_items[$i] . "'");
 
 				/* update poller cache */
@@ -151,6 +166,10 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* Disable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				db_execute("update host set disabled='on' where id='" . $selected_items[$i] . "'");
 
 				/* update poller cache */
@@ -159,6 +178,10 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["t_$field_name"])) {
@@ -170,12 +193,20 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				db_execute("update host set min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = '" . $selected_items[$i] . "'");
 			}
 		}elseif ($_POST["drp_action"] == "1") { /* delete */
 			for ($i=0; $i<count($selected_items); $i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
 				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
 
 				switch ($_POST["delete_type"]) {
@@ -232,6 +263,10 @@ function form_actions() {
 	/* loop through each of the host templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
 		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
 			$host_list .= "<li>" . db_fetch_cell("select description from host where id=" . $matches[1]) . "<br>";
 			$host_array[$i] = $matches[1];
 		}
@@ -337,14 +372,29 @@ function form_actions() {
    ------------------- */
 
 function host_reload_query() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_id"));
+	/* ==================================================== */
+
 	run_data_query($_GET["host_id"], $_GET["id"]);
 }
 
 function host_remove_query() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_id"));
+	/* ==================================================== */
+
 	api_device_dq_remove($_GET["host_id"], $_GET["id"]);
 }
 
 function host_remove_gt() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_id"));
+	/* ==================================================== */
+
 	api_device_gt_remove($_GET["host_id"], $_GET["id"]);
 }
 
@@ -354,6 +404,10 @@ function host_remove_gt() {
 
 function host_remove() {
 	global $config;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
@@ -369,6 +423,10 @@ function host_remove() {
 
 function host_edit() {
 	global $colors, $fields_host_edit, $reindex_types;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
 
 	display_output_messages();
 
@@ -595,6 +653,16 @@ function host_edit() {
 
 function host() {
 	global $colors, $device_actions;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("host_template_id"));
+	input_validate_input_number(get_request_var("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {

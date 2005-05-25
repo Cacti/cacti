@@ -24,62 +24,39 @@
  +-------------------------------------------------------------------------+
 */
 
-/* since we'll have additional headers, tell php when to flush them */
-ob_start();
-
-$guest_account = true;
-
-include("./include/auth.php");
-include_once("./lib/rrd.php");
-
-/* ================= input validation ================= */
-input_validate_input_number(get_request_var("graph_start"));
-input_validate_input_number(get_request_var("graph_end"));
-input_validate_input_number(get_request_var("graph_height"));
-input_validate_input_number(get_request_var("graph_width"));
-input_validate_input_number(get_request_var("local_graph_id"));
-input_validate_input_number(get_request_var("rra_id"));
-/* ==================================================== */
-
-header("Content-type: image/png");
-
-/* flush the headers now */
-ob_end_flush();
-
-session_write_close();
-
-$graph_data_array = array();
-
-/* override: graph start time (unix time) */
-if (!empty($_GET["graph_start"])) {
-	$graph_data_array["graph_start"] = $_GET["graph_start"];
+function input_validate_input_equals($value, $c_value) {
+	if ($value != $c_value) {
+		die_html_input_error();
+	}
 }
 
-/* override: graph end time (unix time) */
-if (!empty($_GET["graph_end"])) {
-	$graph_data_array["graph_end"] = $_GET["graph_end"];
+function input_validate_input_number($value) {
+	if ((!is_numeric($value)) && ($value != "")) {
+		die_html_input_error();
+	}
 }
 
-/* override: graph height (in pixels) */
-if (!empty($_GET["graph_height"])) {
-	$graph_data_array["graph_height"] = $_GET["graph_height"];
+function input_validate_input_regex($value, $regex) {
+	if ((!ereg($regex, $value)) && ($value != "")) {
+		die_html_input_error();
+	}
 }
 
-/* override: graph width (in pixels) */
-if (!empty($_GET["graph_width"])) {
-	$graph_data_array["graph_width"] = $_GET["graph_width"];
-}
+function die_html_input_error() {
+	global $config;
 
-/* override: skip drawing the legend? */
-if (!empty($_GET["graph_nolegend"])) {
-	$graph_data_array["graph_nolegend"] = $_GET["graph_nolegend"];
-}
+	?>
+	<table width="98%" align="center">
+		<tr>
+			<td>
+				Validation error.
+			</td>
+		</tr>
+	</table>
+	<?php
 
-/* print RRDTool graph source? */
-if (!empty($_GET["show_source"])) {
-	$graph_data_array["print_source"] = $_GET["show_source"];
+	include_once("./include/bottom_footer.php");
+	exit;
 }
-
-print rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array);
 
 ?>
