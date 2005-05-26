@@ -289,6 +289,9 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.6d") {
 			include ("0_8_6c_to_0_8_6d.php");
 			upgrade_to_0_8_6d();
+		}elseif ($cacti_versions[$i] == "0.8.6e") {
+			include ("0_8_6c_to_0_8_6e.php");
+			upgrade_to_0_8_6e();
 		}
 	}
 }
