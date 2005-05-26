@@ -82,6 +82,12 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 	/* Determine the number of hosts to process per file */
 	$hosts_per_file = ceil(sizeof($polling_hosts) / $concurrent_processes );
 
+    /* Exit poller if cactid is selected and file does not exist */
+    if (($poller == "2") && (!file_exists(read_config_option("path_cactid")))) {
+		cacti_log("ERROR: The path: " . read_config_option("path_cactid") . " is invalid.  Can not continue\n", true, "POLLER");
+		exit;
+	}
+
 	/* Determine Command Name */
 	if (($config["cacti_server_os"] == "unix") and ($poller == "2")) {
 		$command_string = read_config_option("path_cactid");

@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+0.8.6e
+-bug#0000458: Generate and error message and exit poller.php if the cactid binary path is invalid
+-feature: Allow the user to Enable/Disable Data Sources from the user interface and automatically disable hosts when deleting a device.
+
 0.8.6d
 -bug#0000416: Speed up binary net-snmp calls by removing MIB lookup requirement.
 -bug#0000434/#0000403: Allow for periods in script return variable names.
