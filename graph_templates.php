@@ -102,9 +102,9 @@ function form_save() {
 		$save2["t_width"] = form_input_validate((isset($_POST["t_width"]) ? $_POST["t_width"] : ""), "t_width", "", true, 3);
 		$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
 		$save2["t_upper_limit"] = form_input_validate((isset($_POST["t_upper_limit"]) ? $_POST["t_upper_limit"] : ""), "t_upper_limit", "", true, 3);
-		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^[eE0-9\+\.-]+$", false, 3);
+		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^(-?(\d+(\.\d*)?|\d*\.\d+)([eE][+\-]?\d+)?)|U$", false, 3);
 		$save2["t_lower_limit"] = form_input_validate((isset($_POST["t_lower_limit"]) ? $_POST["t_lower_limit"] : ""), "t_lower_limit", "", true, 3);
-		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^[eE0-9\+\.-]+$", false, 3);
+		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^(-?(\d+(\.\d*)?|\d*\.\d+)([eE][+\-]?\d+)?)|U$", false, 3);
 		$save2["t_vertical_label"] = form_input_validate((isset($_POST["t_vertical_label"]) ? $_POST["t_vertical_label"] : ""), "t_vertical_label", "", true, 3);
 		$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
 		$save2["t_auto_scale"] = form_input_validate((isset($_POST["t_auto_scale"]) ? $_POST["t_auto_scale"] : ""), "t_auto_scale", "", true, 3);
