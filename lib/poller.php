@@ -39,13 +39,13 @@ function exec_poll($command) {
 		$output = fgets($fp, 1024);
 
 		/* determine if the script timedout */
-		$info = stream_get_meta_data($pipes[0]);
+		$info = stream_get_meta_data($fp);
 
 		if ($info['timed_out']) {
 			cacti_log("ERROR: Script Timed Out\n", true);
 		}
 
-		$pclose($fp);
+		pclose($fp);
 	}else{
 		$output = `$command`;
 	}
