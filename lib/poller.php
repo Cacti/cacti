@@ -28,7 +28,25 @@
    @arg $command - the command to execute
    @returns - the output of $command after execution */
 function exec_poll($command) {
-	return `$command`;
+	/* set script server timeout */
+	$script_timeout = 25;
+ 	stream_set_timeout($pipes[0], $script_timeout);
+
+	$fp = popen($command, "rb");
+
+	/* get output from command */
+	$output = fgets($fp, 1024);
+
+	/* determine if the script timedout */
+	$info = stream_get_meta_data($pipes[0]);
+
+	if ($info['timed_out']) {
+		cacti_log("ERROR: Script Timed Out\n", true);
+	}
+
+	$pclose($fp);
+
+	return $output;
 }
 
 /* exec_poll_php - sends a command to the php script server and returns the
@@ -41,6 +59,10 @@ function exec_poll($command) {
    @returns - the output of $command after execution against the php script
      server */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
+	/* set script server timeout */
+	$script_timeout = 25;
+ 	stream_set_timeout($pipes[0], $script_timeout);
+
 	/* execute using php process */
 	if ($using_proc_function == 1) {
 		if (is_resource($proc_fd)) {
@@ -55,14 +77,33 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			/* get result from server */
 			$output = fgets($pipes[1], 1024);
 
-			if (substr_count($output, "ERROR") > 0) {
+			/* determine if the script timedout */
+			$info = stream_get_meta_data($pipes[0]);
+
+			if ($info['timed_out']) {
+				cacti_log("ERROR: Script Server Timed Out\n", true);
+				$output = "U";
+			}elseif (substr_count($output, "ERROR") > 0) {
 				$output = "U";
 			}
 		}
 	/* execute the old fashion way */
 	}else{
+		/* formulate command and execute */
 		$command = read_config_option("path_php_binary") . " " . $command;
-		$output = `$command`;
+		$fp = popen($command, "rb");
+
+		/* get output from command */
+		$output = fgets($fp, 1024);
+
+		/* determine if the script timedout */
+		$info = stream_get_meta_data($pipes[0]);
+
+		if ($info['timed_out']) {
+			cacti_log("ERROR: Script Timed Out\n", true);
+		}
+
+		$pclose($fp);
 	}
 
 	return $output;
