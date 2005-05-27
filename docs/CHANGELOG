@@ -1,6 +1,11 @@
 Cacti CHANGELOG
 
 0.8.6e
+-bug#0000465: Allow for the mass resize of graphs
+-bug#0000463: Fix Syslog logging of poller statistics
+-bug#0000464: Remove dates from Syslog generated messages
+-bug#0000377: Fix logarithmic graph creation issues
+-bug#0000402/#0000457: Allow bounds to be set properly for logarithmic graph creation
 -bug#0000458: Generate and error message and exit poller.php if the cactid binary path is invalid
 -feature: Allow the user to Enable/Disable Data Sources from the user interface and automatically disable hosts when deleting a device.
 -bug#0000450: Fix a minimal bug for view all data queries index during a new graph
