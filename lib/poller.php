@@ -28,23 +28,27 @@
    @arg $command - the command to execute
    @returns - the output of $command after execution */
 function exec_poll($command) {
-	$fp = popen($command, "rb");
+	if (function_exists("stream_set_timeout")) {
+		$fp = popen($command, "rb");
 
-	/* set script server timeout */
-	$script_timeout = 25;
- 	stream_set_timeout($fp, $script_timeout);
+		/* set script server timeout */
+		$script_timeout = 25;
+ 		stream_set_timeout($fp, $script_timeout);
 
-	/* get output from command */
-	$output = fgets($fp, 1024);
+		/* get output from command */
+		$output = fgets($fp, 1024);
 
-	/* determine if the script timedout */
-	$info = stream_get_meta_data($pipes[0]);
+		/* determine if the script timedout */
+		$info = stream_get_meta_data($pipes[0]);
 
-	if ($info['timed_out']) {
-		cacti_log("ERROR: Script Timed Out\n", true);
+		if ($info['timed_out']) {
+			cacti_log("ERROR: Script Timed Out\n", true);
+		}
+
+		$pclose($fp);
+	}else{
+		$output = `$command`;
 	}
-
-	$pclose($fp);
 
 	return $output;
 }
@@ -89,25 +93,30 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 		}
 	/* execute the old fashion way */
 	}else{
-		/* formulate command and execute */
+   		/* formulate command */
 		$command = read_config_option("path_php_binary") . " " . $command;
-		$fp = popen($command, "rb");
 
-		/* set script server timeout */
-		$script_timeout = 25;
-	 	stream_set_timeout($fp, $script_timeout);
+		if (function_exists("stream_set_timeout")) {
+			$fp = popen($command, "rb");
 
-		/* get output from command */
-		$output = fgets($fp, 1024);
+			/* set script server timeout */
+			$script_timeout = 25;
+		 	stream_set_timeout($fp, $script_timeout);
 
-		/* determine if the script timedout */
-		$info = stream_get_meta_data($pipes[0]);
+			/* get output from command */
+			$output = fgets($fp, 1024);
 
-		if ($info['timed_out']) {
-			cacti_log("ERROR: Script Timed Out\n", true);
+			/* determine if the script timedout */
+			$info = stream_get_meta_data($pipes[0]);
+
+			if ($info['timed_out']) {
+				cacti_log("ERROR: Script Timed Out\n", true);
+			}
+
+			$pclose($fp);
+		}else{
+			$output = `$command`;
 		}
-
-		$pclose($fp);
 	}
 
 	return $output;
