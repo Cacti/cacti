@@ -620,7 +620,7 @@ function graphs() {
 						foreach ($raw_data as $data) {
 							$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
 
-							if (!in_array($data["snmp_index"], $snmp_query_indexes)) {
+							if (!in_array($data["snmp_index"], $snmp_query_indexes,TRUE)) {
 								array_push($snmp_query_indexes, $data["snmp_index"]);
 							}
 						}
