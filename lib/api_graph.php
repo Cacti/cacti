@@ -35,6 +35,18 @@ function api_graph_remove($local_graph_id) {
 	db_execute("delete from graph_local where id=$local_graph_id");
 }
 
+/* api_resize_graphs - resizes the selected graph, overriding the template value
+   @arg $graph_templates_graph_id - the id of the graph to resize
+   @arg $graph_width - the width of the resized graph
+   @arg $graph_height - the height of the resized graph
+  */
+function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
+	global $config;
+
+	/* get graphs template id */
+	db_execute("UPDATE graph_templates_graph SET width=" . $graph_width . ", height=" . $graph_height . " WHERE local_graph_id=" . $local_graph_id);
+}
+
 /* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
    @arg $graph_templates_graph_id - the id of the graph to reapply the name to
 */
