@@ -358,15 +358,15 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
 
 			if (($log_type == "err") && (read_config_option("log_perror"))) {
-				syslog(LOG_CRIT, $message);
+				syslog(LOG_CRIT, $environ . ": " . $string);
 			}
 
 			if (($log_type == "warn") && (read_config_option("log_pwarn"))) {
-				syslog(LOG_WARNING, $message);
+				syslog(LOG_WARNING, $environ . ": " . $string);
 			}
 
-			if ((($log_type == "stat") || ($log_type == "note")) && (read_config_option("log_pstat"))) {
-				syslog(LOG_INFO, $message);
+			if ((($log_type == "stat") || ($log_type == "note")) && (read_config_option("log_pstats"))) {
+				syslog(LOG_INFO, $environ . ": " . $string);
 			}
 
 			closelog();
