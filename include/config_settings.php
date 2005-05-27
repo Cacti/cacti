@@ -507,6 +507,13 @@ $settings = array(
 			"default" => "1",
 			"max_length" => "10"
 			),
+		"script_timeout" => array(
+			"friendly_name" => "Script and Script Server Timeout Value",
+			"description" => "The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds",
+			"method" => "textbox",
+			"default" => "25",
+			"max_length" => "10"
+			),
 		"availability_header" => array(
 			"friendly_name" => "Poller Host Availability Settings",
 			"method" => "spacer",

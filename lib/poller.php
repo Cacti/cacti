@@ -32,7 +32,7 @@ function exec_poll($command) {
 		$fp = popen($command, "rb");
 
 		/* set script server timeout */
-		$script_timeout = 25;
+		$script_timeout = read_config_option("script_timeout");
  		stream_set_timeout($fp, $script_timeout);
 
 		/* get output from command */
@@ -72,7 +72,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			 * 2 => any error output will be sent to child stderr */
 
 			/* set script server timeout */
-			$script_timeout = 25;
+			$script_timeout = read_config_option("script_timeout");
 		 	stream_set_timeout($pipes[0], $script_timeout);
 
 			/* send command to the php server */
@@ -100,8 +100,8 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			$fp = popen($command, "rb");
 
 			/* set script server timeout */
-			$script_timeout = 25;
-		 	stream_set_timeout($fp, $script_timeout);
+			$script_timeout = read_config_option("script_timeout");
+			stream_set_timeout($fp, $script_timeout);
 
 			/* get output from command */
 			$output = fgets($fp, 1024);
