@@ -149,8 +149,8 @@ function form_save() {
 		$save2["title"] = form_input_validate($_POST["title"], "title", "", false, 3);
 		$save2["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", false, 3);
 		$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", false, 3);
-		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^(-?(\d+(\.\d*)?|\d*\.\d+)([eE][+\-]?\d+)?)|U$", false, 3);
-		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^(-?(\d+(\.\d*)?|\d*\.\d+)([eE][+\-]?\d+)?)|U$", false, 3);
+		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", false, 3);
+		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", false, 3);
 		$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
 		$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
 		$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
