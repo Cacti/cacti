@@ -28,11 +28,11 @@
    @arg $command - the command to execute
    @returns - the output of $command after execution */
 function exec_poll($command) {
+	$fp = popen($command, "rb");
+
 	/* set script server timeout */
 	$script_timeout = 25;
- 	stream_set_timeout($pipes[0], $script_timeout);
-
-	$fp = popen($command, "rb");
+ 	stream_set_timeout($fp, $script_timeout);
 
 	/* get output from command */
 	$output = fgets($fp, 1024);
@@ -59,10 +59,6 @@ function exec_poll($command) {
    @returns - the output of $command after execution against the php script
      server */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
-	/* set script server timeout */
-	$script_timeout = 25;
- 	stream_set_timeout($pipes[0], $script_timeout);
-
 	/* execute using php process */
 	if ($using_proc_function == 1) {
 		if (is_resource($proc_fd)) {
@@ -70,6 +66,10 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			 * 0 => writeable handle connected to child stdin
 			 * 1 => readable handle connected to child stdout
 			 * 2 => any error output will be sent to child stderr */
+
+			/* set script server timeout */
+			$script_timeout = 25;
+		 	stream_set_timeout($pipes[0], $script_timeout);
 
 			/* send command to the php server */
 			fwrite($pipes[0], $command . "\r\n");
@@ -92,6 +92,10 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 		/* formulate command and execute */
 		$command = read_config_option("path_php_binary") . " " . $command;
 		$fp = popen($command, "rb");
+
+		/* set script server timeout */
+		$script_timeout = 25;
+	 	stream_set_timeout($fp, $script_timeout);
 
 		/* get output from command */
 		$output = fgets($fp, 1024);
