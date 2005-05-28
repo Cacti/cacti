@@ -231,6 +231,9 @@ function process_poller_output($rrdtool_pipe) {
 
 	include_once($config["library_path"] . "/rrd.php");
 
+	/* let's count the number of rrd files we processed */
+	$rrds_processed = 0;
+
 	/* create/update the rrd files */
 	$results = db_fetch_assoc("select
 		poller_output.output,
@@ -299,8 +302,11 @@ function process_poller_output($rrdtool_pipe) {
 			}
 		}
 
-		rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
 	}
+
+    return $rrds_processed;
 }
+
 
 ?>

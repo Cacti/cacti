@@ -215,6 +215,9 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 }
 
 function rrdtool_function_update($update_cache_array, $rrd_struc) {
+	/* lets count the number of rrd files processed */
+	$rrds_processed = 0;
+
 	while (list($rrd_path, $rrd_fields) = each($update_cache_array)) {
 		$create_rrd_file = false;
 
@@ -260,9 +263,12 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 				}
 
 				rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, "POLLER");
+				$rrds_processed++;
 			}
 		}
 	}
+
+	return $rrds_processed;
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
