@@ -1660,9 +1660,6 @@ function sanitize_search_string($string) {
 
 	$string = str_replace('*', ' ', $string);
 
-	/* 'words' that consist of <3 or >20 characters are removed. */
-	$string = preg_replace('/[ ]([\S]{1,2}|[\S]{21,})[ ]/',' ', $string);
-
 	return $string;
 }
 
