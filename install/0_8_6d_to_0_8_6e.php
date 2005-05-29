@@ -38,5 +38,7 @@ function upgrade_to_0_8_6e() {
 	db_install_execute("0.8.6e", "ALTER TABLE `graph_tree_items` ADD KEY host_id (host_id), ADD KEY local_graph_id (local_graph_id), ADD KEY order_key (order_key);");
 	db_install_execute("0.8.6e", "ALTER TABLE `graph_templates` ADD KEY name (name);");
 	db_install_execute("0.8.6e", "ALTER TABLE `snmp_query` ADD KEY name (name);");
+	db_install_execute("0.8.6e", "ALTER TABLE `host_snmp_cache` ADD KEY snmp_query_id (snmp_query_id);");
+
  }
 ?>
