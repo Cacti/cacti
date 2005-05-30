@@ -7,7 +7,9 @@ Cacti CHANGELOG
 -bug#0000377: Fix logarithmic graph creation issues
 -bug#0000402/#0000457: Allow bounds to be set properly for logarithmic graph creation
 -bug#0000458: Generate and error message and exit poller.php if the cactid binary path is invalid
+-bug: Speed the generation of the Tree View Dual Pane by cahcing the Tree to a local session variable
 -feature: Allow the user to Enable/Disable Data Sources from the user interface and automatically disable hosts when deleting a device.
+-feature: Add Data Source information to the Cacti Log File to assist with trouble shooting
 -bug#0000450: Fix a minimal bug for view all data queries index during a new graph
 
 0.8.6d
