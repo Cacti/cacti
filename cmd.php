@@ -128,6 +128,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	}
 
 	foreach ($polling_items as $item) {
+		$data_source = $item["local_data_id"];
 		$current_host = $item["hostname"];
 
 		if ($current_host != $last_host) {
@@ -263,12 +264,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						$strout = strlen($output);
 					}
 
-					cacti_log("Host[$host_id] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+					cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 					$output = "U";
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$host_id] SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$host_id] DS[$data_source] SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
@@ -285,12 +286,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						$strout = strlen($output);
 					}
 
-					cacti_log("Host[$host_id] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+					cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 					$output = "U";
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$host_id] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$host_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 				}
 
 				break;
@@ -308,16 +309,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 							$strout = strlen($output);
 						}
 
-						cacti_log("Host[$host_id] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+						cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 						$output = "U";
 					}
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-						cacti_log("Host[$host_id] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
+						cacti_log("Host[$host_id] DS[$data_source] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
 					}
 				}else{
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-						cacti_log("Host[$host_id] *SKIPPING* SERVER: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
+						cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* SERVER: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
 					}
 
 					$output = "U";
