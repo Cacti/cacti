@@ -12,9 +12,7 @@ CREATE TABLE cdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -40,7 +38,6 @@ CREATE TABLE cdef_items (
   type tinyint(2) NOT NULL default '0',
   value varchar(150) NOT NULL default '',
   PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
   KEY cdef_id (cdef_id)
 ) TYPE=MyISAM;
 
@@ -72,9 +69,7 @@ INSERT INTO cdef_items VALUES (23,'204423d4b2598f1f7252eea19458345c',15,3,2,'3')
 CREATE TABLE colors (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hex varchar(6) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -193,9 +188,7 @@ CREATE TABLE data_input (
   name varchar(200) NOT NULL default '',
   input_string varchar(255) default NULL,
   type_id tinyint(2) NOT NULL default '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -224,8 +217,7 @@ CREATE TABLE data_input_data (
   data_template_data_id mediumint(8) unsigned NOT NULL default '0',
   t_value char(2) default NULL,
   value text,
-  PRIMARY KEY  (data_input_field_id,data_template_data_id),
-  KEY data_input_field_id (data_input_field_id,data_template_data_id)
+  PRIMARY KEY  (data_input_field_id,data_template_data_id)
 ) TYPE=MyISAM;
 
 --
@@ -428,8 +420,6 @@ CREATE TABLE data_input_fields (
   regexp_match varchar(200) default NULL,
   allow_nulls char(2) default NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id),
   KEY data_input_id (data_input_id)
 ) TYPE=MyISAM;
 
@@ -486,9 +476,7 @@ CREATE TABLE data_local (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(100) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -509,9 +497,7 @@ CREATE TABLE data_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(150) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -580,8 +566,6 @@ CREATE TABLE data_template_data (
   rrd_step mediumint(8) unsigned NOT NULL default '0',
   t_rra_id char(2) default NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id)
 ) TYPE=MyISAM;
@@ -860,8 +844,6 @@ CREATE TABLE data_template_rrd (
   t_data_input_field_id char(2) default NULL,
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id)
 ) TYPE=MyISAM;
@@ -944,8 +926,9 @@ CREATE TABLE graph_local (
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(100) NOT NULL default '',
   PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  KEY host_id (host_id),
+  KEY graph_template_id (graph_template_id),
+  KEY snmp_index (snmp_index)
 ) TYPE=MyISAM COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
@@ -968,10 +951,7 @@ CREATE TABLE graph_template_input (
   name varchar(255) NOT NULL default '',
   description text,
   column_name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id),
-  KEY id_3 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM COMMENT='Stores the names for graph item input groups.';
 
 --
@@ -1337,9 +1317,7 @@ CREATE TABLE graph_templates (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash char(32) NOT NULL default '',
   name char(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM COMMENT='Contains each graph template name.';
 
 --
@@ -1389,9 +1367,7 @@ CREATE TABLE graph_templates_gprint (
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   gprint_text varchar(255) default NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -1446,11 +1422,10 @@ CREATE TABLE graph_templates_graph (
   unit_value varchar(20) default NULL,
   t_unit_exponent_value char(2) default '0',
   unit_exponent_value varchar(5) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
+  PRIMARY KEY  (id)
   KEY local_graph_id (local_graph_id),
-  KEY id_2 (id),
-  KEY graph_template_id (graph_template_id)
+  KEY graph_template_id (graph_template_id),
+  KEY title_cache (title_cache)
 ) TYPE=MyISAM COMMENT='Stores the actual graph data.';
 
 --
@@ -1516,10 +1491,9 @@ CREATE TABLE graph_templates_item (
   gprint_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
   KEY graph_template_id (graph_template_id),
-  KEY id_2 (id),
-  KEY local_graph_id (local_graph_id)
+  KEY local_graph_id (local_graph_id),
+  KEY name (name)
 ) TYPE=MyISAM COMMENT='Stores the actual graph item data.';
 
 --
@@ -1815,9 +1789,7 @@ CREATE TABLE graph_tree (
   id smallint(5) unsigned NOT NULL auto_increment,
   sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -1841,9 +1813,10 @@ CREATE TABLE graph_tree_items (
   host_grouping_type tinyint(3) unsigned NOT NULL default '1',
   sort_children_type tinyint(3) unsigned NOT NULL default '1',
   PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id),
-  KEY graph_tree_id (graph_tree_id)
+  KEY graph_tree_id (graph_tree_id),
+  KEY host_id (host_id),
+  KEY local_graph_id (local_graph_id),
+  KEY order_key (order_key)
 ) TYPE=MyISAM;
 
 --
@@ -1880,9 +1853,7 @@ CREATE TABLE host (
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
   availability decimal(7,5) NOT NULL default '100.00000',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -1959,9 +1930,7 @@ CREATE TABLE host_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -2088,6 +2057,8 @@ CREATE TABLE poller_item (
   rrd_name varchar(19) NOT NULL default '',
   rrd_path varchar(255) NOT NULL default '',
   rrd_num tinyint(2) unsigned NOT NULL default '0',
+  rrd_step mediumint(8) unsigned NOT NULL default '300',
+  rrd_next_step mediumint(8) NOT NULL default '0',
   arg1 varchar(255) default NULL,
   arg2 varchar(255) default NULL,
   arg3 varchar(255) default NULL,
@@ -2166,9 +2137,7 @@ CREATE TABLE rra (
   steps mediumint(8) default '1',
   rows int(12) NOT NULL default '600',
   timespan int(12) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -2211,9 +2180,7 @@ INSERT INTO rra_cf VALUES (4,3);
 CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
   value varchar(255) NOT NULL default '',
-  PRIMARY KEY  (name),
-  UNIQUE KEY Name (name),
-  KEY name_2 (name)
+  PRIMARY KEY  (name)
 ) TYPE=MyISAM;
 
 --
@@ -2229,8 +2196,7 @@ CREATE TABLE settings_graphs (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
   value varchar(255) NOT NULL default '',
-  PRIMARY KEY  (user_id,name),
-  KEY user_id (user_id,name)
+  PRIMARY KEY  (user_id,name)
 ) TYPE=MyISAM;
 
 --
@@ -2267,8 +2233,7 @@ CREATE TABLE snmp_query (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  KEY name (name)
 ) TYPE=MyISAM;
 
 --
@@ -2294,9 +2259,7 @@ CREATE TABLE snmp_query_graph (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(100) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
@@ -2393,8 +2356,6 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) TYPE=MyISAM;
 
@@ -2474,9 +2435,7 @@ CREATE TABLE snmp_query_graph_sv (
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
-  KEY id (id),
-  KEY snmp_query_graph_id (snmp_query_graph_id),
-  KEY id_2 (id)
+  KEY snmp_query_graph_id (snmp_query_graph_id)
 ) TYPE=MyISAM;
 
 --
@@ -2544,9 +2503,7 @@ CREATE TABLE user_auth (
   policy_trees tinyint(1) unsigned NOT NULL default '1',
   policy_hosts tinyint(1) unsigned NOT NULL default '1',
   policy_graph_templates tinyint(1) unsigned NOT NULL default '1',
-  PRIMARY KEY  (id),
-  UNIQUE KEY ID (id),
-  KEY id_2 (id)
+  PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
 --
