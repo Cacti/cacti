@@ -69,6 +69,10 @@ case 'tree':
 	$access_denied = false;
 	$tree_parameters = array();
 
+	if ((!isset($_GET["tree_id"])) && (isset($_SESSION['dhtml_tree']))) {
+		unset($_SESSION["dhtml_tree"]);
+	}
+
 	$tree_dropdown_html = draw_tree_dropdown((isset($_GET["tree_id"]) ? $_GET["tree_id"] : "0"));
 
 	/* don't even print the table if there is not >1 tree */

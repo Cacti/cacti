@@ -290,8 +290,47 @@ function grow_dhtml_trees() {
 	PERSERVESTATE = 1
 	HIGHLIGHT = 1
 	<?php
+    /* get current time */
+	list($micro,$seconds) = split(" ", microtime());
+	$current_time = $seconds + $micro;
+    $expand_hosts = read_graph_config_option("expand_hosts");
 
-	print "foldersTree = gFld(\"\", \"\")\n";
+	if (!isset($_SESSION['dhtml_tree'])) {
+		$dhtml_tree = create_dhtml_tree();
+		$_SESSION['dhtml_tree'] = $dhtml_tree;
+	}else{
+		$dhtml_tree = $_SESSION['dhtml_tree'];
+		if (($dhtml_tree[0] + read_graph_config_option("page_refresh") < $current_time) || ($expand_hosts != $dhtml_tree[2])) {
+			$dhtml_tree = create_dhtml_tree();
+			$_SESSION['dhtml_tree'] = $dhtml_tree;
+		}else{
+			$dhtml_tree = $_SESSION['dhtml_tree'];
+		}
+	}
+
+	$total_tree_items = sizeof($dhtml_tree) - 1;
+
+	for ($i = 2; $i <= $total_tree_items; $i++) {
+		print $dhtml_tree[$i];
+	}
+	?>
+	foldersTree.treeID = "t2";
+	//-->
+	</script>
+	<?php
+}
+
+function create_dhtml_tree() {
+    /* Record Start Time */
+	list($micro,$seconds) = split(" ", microtime());
+	$start = $seconds + $micro;
+
+	$dhtml_tree = array();
+
+	$dhtml_tree[0] = $start;
+	$dhtml_tree[1] = read_graph_config_option("expand_hosts");
+	$dhtml_tree[2] = "foldersTree = gFld(\"\", \"\")\n";
+    $i = 2;
 
 	$tree_list = get_graph_tree_array();
 
@@ -312,90 +351,91 @@ function grow_dhtml_trees() {
 	}
 
 	if (sizeof($tree_list) > 0) {
-	foreach ($tree_list as $tree) {
-		$heirarchy = db_fetch_assoc("select
-			graph_tree_items.id,
-			graph_tree_items.title,
-			graph_tree_items.order_key,
-			graph_tree_items.host_id,
-			graph_tree_items.host_grouping_type,
-			host.description as hostname
-			from graph_tree_items
-			left join host on host.id=graph_tree_items.host_id
-			$sql_join
-			where graph_tree_items.graph_tree_id=" . $tree["id"] . "
-			$sql_where
-			and graph_tree_items.local_graph_id = 0
-			order by graph_tree_items.order_key");
+    foreach ($tree_list as $tree) {
+        $i++;
+        $heirarchy = db_fetch_assoc("select
+            graph_tree_items.id,
+            graph_tree_items.title,
+            graph_tree_items.order_key,
+            graph_tree_items.host_id,
+            graph_tree_items.host_grouping_type,
+            host.description as hostname
+            from graph_tree_items
+            left join host on host.id=graph_tree_items.host_id
+            $sql_join
+            where graph_tree_items.graph_tree_id=" . $tree["id"] . "
+            $sql_where
+            and graph_tree_items.local_graph_id = 0
+            order by graph_tree_items.order_key");
 
-		print "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
+        $dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
 
-		if (sizeof($heirarchy) > 0) {
-		foreach ($heirarchy as $leaf) {
-			$tier = tree_tier($leaf["order_key"]);
+        if (sizeof($heirarchy) > 0) {
+        foreach ($heirarchy as $leaf) {
+            $i++;
+            $tier = tree_tier($leaf["order_key"]);
 
-			if ($leaf["host_id"] > 0) {
-				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+            if ($leaf["host_id"] > 0) {
+                $dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
 
-				if (read_graph_config_option("expand_hosts") == "on") {
-					if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
-						$graph_templates = db_fetch_assoc("select
-							graph_templates.id,
-							graph_templates.name
-							from graph_local,graph_templates,graph_templates_graph
-							where graph_local.id=graph_templates_graph.local_graph_id
-							and graph_templates_graph.graph_template_id=graph_templates.id
-							and graph_local.host_id=" . $leaf["host_id"] . "
-							group by graph_templates.id
-							order by graph_templates.name");
+                if (read_graph_config_option("expand_hosts") == "on") {
+                    if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+                        $graph_templates = db_fetch_assoc("select
+                            graph_templates.id,
+                            graph_templates.name
+                            from graph_local,graph_templates,graph_templates_graph
+                            where graph_local.id=graph_templates_graph.local_graph_id
+                            and graph_templates_graph.graph_template_id=graph_templates.id
+                            and graph_local.host_id=" . $leaf["host_id"] . "
+                            group by graph_templates.id
+                            order by graph_templates.name");
 
-						if (sizeof($graph_templates) > 0) {
-						foreach ($graph_templates as $graph_template) {
-							print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=graph_template:" . $graph_template["id"] . "\"))\n";
-						}
-						}
-					}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
-						$data_queries = db_fetch_assoc("select
-							snmp_query.id,
-							snmp_query.name
-							from graph_local,snmp_query
-							where graph_local.snmp_query_id=snmp_query.id
-							and graph_local.host_id=" . $leaf["host_id"] . "
-							group by snmp_query.id
-							order by snmp_query.name");
+                        if (sizeof($graph_templates) > 0) {
+                        foreach ($graph_templates as $graph_template) {
+                            $i++;
+                            $dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=graph_template:" . $graph_template["id"] . "\"))\n";
+                        }
+                        }
+                    }else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+                        $data_queries = db_fetch_assoc("select
+                            snmp_query.id,
+                            snmp_query.name
+                            from graph_local,snmp_query
+                            where graph_local.snmp_query_id=snmp_query.id
+                            and graph_local.host_id=" . $leaf["host_id"] . "
+                            group by snmp_query.id
+                            order by snmp_query.name");
 
-						array_push($data_queries, array(
-							"id" => "0",
-							"name" => "(Non Indexed)"
-							));
+                        array_push($data_queries, array(
+                            "id" => "0",
+                            "name" => "(Non Indexed)"
+                            ));
 
-						if (sizeof($data_queries) > 0) {
-						foreach ($data_queries as $data_query) {
-							print "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
+                        if (sizeof($data_queries) > 0) {
+                        foreach ($data_queries as $data_query) {
+                            $i++;
+                            $dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
 
-							/* fetch a list of field names that are sorted by the preferred sort field */
-							$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
+                            /* fetch a list of field names that are sorted by the preferred sort field */
+                            $sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
 
-							while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-								print "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
-							}
-						}
-						}
-					}
-				}
-			}else{
-				print "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
-			}
-		}
-		}
+                            while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+                                $i++;
+                                $dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
+                            }
+                        }
+                        }
+                    }
+                }
+            }else{
+                $dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+            }
+        }
+        }
+    }
 	}
-	}
 
-	?>
-	foldersTree.treeID = "t2";
-	//-->
-	</script>
-	<?php
+	return $dhtml_tree;
 }
 
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
