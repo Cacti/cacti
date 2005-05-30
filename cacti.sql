@@ -1317,7 +1317,8 @@ CREATE TABLE graph_templates (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash char(32) NOT NULL default '',
   name char(255) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY name (name)  
 ) TYPE=MyISAM COMMENT='Contains each graph template name.';
 
 --
@@ -1422,7 +1423,7 @@ CREATE TABLE graph_templates_graph (
   unit_value varchar(20) default NULL,
   t_unit_exponent_value char(2) default '0',
   unit_exponent_value varchar(5) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
   KEY title_cache (title_cache)
@@ -1492,8 +1493,7 @@ CREATE TABLE graph_templates_item (
   sequence mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY graph_template_id (graph_template_id),
-  KEY local_graph_id (local_graph_id),
-  KEY name (name)
+  KEY local_graph_id (local_graph_id)
 ) TYPE=MyISAM COMMENT='Stores the actual graph item data.';
 
 --
