@@ -151,11 +151,12 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 	$rrdtool_pipe = rrd_init();
 
 	$loop_count = 0;
+	$rrds_processed = 0;
 	while (1) {
 		$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id = 0");
 
 		if (sizeof($polling_items) == $process_file_number) {
-			process_poller_output($rrdtool_pipe);
+			$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
 
 			/* take time and log performance data */
 			list($micro,$seconds) = split(" ", microtime());
@@ -167,13 +168,17 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 				"Processes: %s, " .
 				"Threads: %s, " .
 				"Hosts: %s, " .
-				"Hosts/Process: %s",
+				"Hosts/Process: %s, " .
+				"Data Sources %s, " .
+				"RRDs Processed %s",
 				round($end-$start,4),
 				$method,
 				$concurrent_processes,
 				$max_threads,
 				sizeof($polling_hosts),
-				$hosts_per_file),true,"SYSTEM");
+				$hosts_per_file,
+				$num_polling_items,
+				$rrds_processed),true,"SYSTEM");
 
 			break;
 		}else {
@@ -181,7 +186,7 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 				print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
 			}
 
-			process_poller_output($rrdtool_pipe);
+			$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
 
 			/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 			if (($start + MAX_POLLER_RUNTIME) < time()) {
