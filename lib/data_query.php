@@ -481,6 +481,11 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index_array = array()) {
 	$raw_xml = get_data_query_array($data_query_id);
 
+	/* invalid xml check */
+	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
+		return array();
+	}
+
 	$xml_outputs = array();
 
 	/* create an SQL string that contains each index in this snmp_index_id */
