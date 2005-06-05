@@ -83,7 +83,8 @@ function get_data_query_array($snmp_query_id) {
 function query_script_host($host_id, $snmp_query_id) {
 	$script_queries = get_data_query_array($snmp_query_id);
 
-	if ($script_queries == false) {
+	/* invalid xml check */
+	if ((!is_array($script_queries)) || (sizeof($script_queries) == 0)) {
 		debug_log_insert("data_query", "Error parsing XML file into an array.");
 		return false;
 	}
@@ -138,7 +139,13 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
-	if ((empty($host["hostname"])) || ($snmp_queries == false)) {
+	if ($host["hostname"] == "") {
+		debug_log_insert("data_query", "Invalid host_id: $host_id");
+		return false;
+	}
+
+	/* invalid xml check */
+	if ((!is_array($snmp_queries)) || (sizeof($snmp_queries) == 0)) {
 		debug_log_insert("data_query", "Error parsing XML file into an array.");
 		return false;
 	}
