@@ -1016,7 +1016,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
 				if (!empty($graph_item["hex"])) {
 					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-					$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . "#" . $graph_item["hex"] . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . ": STACK " . $hardreturn[$graph_item_id] . "\" ";
+					$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . "#" . $graph_item["hex"] . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\":STACK";
 				}
 			}else {
 				if (!empty($graph_item["hex"])) {
