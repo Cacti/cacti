@@ -856,6 +856,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	$i = 0;
 	reset($graph_items);
 
+	/* hack for rrdtool 1.2.x support */
+	$graph_item_stack_type = "";
+
 	if (sizeof($graph_items) > 0) {
 	foreach ($graph_items as $graph_item) {
 		/* first we need to check if there is a DEF for the current data source/cf combination. if so,
@@ -1003,10 +1006,23 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* most of the calculations have been done above. now we have for print everything out
 		in an RRDTool-friendly fashion */
-		if (ereg("^(AREA|STACK|LINE[123])$", $graph_item_types{$graph_item["graph_type_id"]})) {
+		if (ereg("^(AREA|LINE[123])$", $graph_item_types{$graph_item["graph_type_id"]})) {
+			$graph_item_stack_type = $graph_item_types{$graph_item["graph_type_id"]};
 			if (!empty($graph_item["hex"])) {
 				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . $graph_item["hex"] . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+			}
+		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "STACK") {
+			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+				if (!empty($graph_item["hex"])) {
+					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+					$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . "#" . $graph_item["hex"] . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . ": STACK " . $hardreturn[$graph_item_id] . "\" ";
+				}
+			}else {
+				if (!empty($graph_item["hex"])) {
+					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . "#" . $graph_item["hex"] . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				}
 			}
 		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
