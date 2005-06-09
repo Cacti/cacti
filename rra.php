@@ -34,7 +34,7 @@ switch ($_REQUEST["action"]) {
 		form_save();
 
 		break;
-    	case 'remove':
+	case 'remove':
 		rra_remove();
 
 		header("Location: rra.php");
@@ -78,11 +78,11 @@ function form_save() {
 				db_execute("delete from rra_cf where rra_id=$rra_id");
 
 				if (isset($_POST["consolidation_function_id"])) {
-					/* ================= input validation ================= */
-					input_validate_input_number($_POST["consolidation_function_id"][$i]);
-					/* ==================================================== */
-
 					for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
+						/* ================= input validation ================= */
+						input_validate_input_number($_POST["consolidation_function_id"][$i]);
+						/* ==================================================== */
+
 						db_execute("insert into rra_cf (rra_id,consolidation_function_id)
 							values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
 					}
