@@ -1,17 +1,27 @@
 Cacti CHANGELOG
 
 0.8.6e
--bug#0000465: Allow for the mass resize of graphs
--bug#0000463: Fix Syslog logging of poller statistics
--bug#0000464: Remove dates from Syslog generated messages
--bug#0000377: Fix logarithmic graph creation issues
--bug#0000402/#0000457: Allow bounds to be set properly for logarithmic graph creation
--bug#0000458: Generate and error message and exit poller.php if the cactid binary path is invalid
--bug: Speed the generation of the Tree View Dual Pane by cahcing the Tree to a local session variable
+-bug#0000143: Allow the user to enter 'U' for unknown minimum and maximum data source input values.
+-bug#0000377: Fix logarithmic graph creation issues.
+-bug#0000392: Implement caching to reduce the number of SQL queries needed to render the graph tree.
+-bug#0000402/#0000457: Allow bounds to be set properly for logarithmic graph creation.
+-bug#0000450: Force strict checking for data query parsing to prevent numeric values from being incorrectly handled.
+-bug#0000458: Generate and error message and exit poller.php if the cactid binary path is invalid.
+-bug#0000463: Fix Syslog logging of poller statistics.
+-bug#0000464: Remove dates from Syslog generated messages.
+-bug#0000465: Allow for the mass resize of graphs.
+-bug#0000471: Remove the graph 'Settings' tab if the user does not have 'Global Settings' access.
+-bug#0000481: Add several checks to prevent PHP errors when parsing data query XML files.
+-bug: Speed the generation of the Tree View Dual Pane by caching the Tree to a local session variable.
+-bug: Handle STACK graph items properly in RRDtool 1.2.
+-bug: Prevent data query recaches if the device returns empty input.
+-bug: Fix potential issues with graph gaps when using a large number of poller processes.
+-feature: Add additional options to control RRDtool 1.2 fonts.
 -feature: Allow the user to Enable/Disable Data Sources from the user interface and automatically disable hosts when deleting a device.
--feature: Add Data Source information to the Cacti Log File to assist with trouble shooting
--feature: Allow linking to directly to problem data sources in Cacti Log File
--bug#0000450: Fix a minimal bug for view all data queries index during a new graph
+-feature: Add Data Source information to the Cacti Log File to assist with troubleshooting.
+-feature: Allow linking to directly to problem data sources in Cacti Log File.
+-security: Fix several remote inclusion bugs that were exploitable when PHP's 'register_global' feature is turned on [IDEF0941], [IDEF1023], [IDEF1024].
+-security: Fix several SQL injection bugs due to improper input validation [IDEF1001].
 
 0.8.6d
 -bug#0000416: Speed up binary net-snmp calls by removing MIB lookup requirement.
