@@ -7,7 +7,7 @@
 						Filter by host template:&nbsp;
 					</td>
 					<td width="1">
-						<select name="host_template_id" onChange="window.location=document.form_devices.host_template_id.options[document.form_devices.host_template_id.selectedIndex].value">
+						<select name="cbo_host_template_id" onChange="window.location=document.form_devices.cbo_host_template_id.options[document.form_devices.cbo_host_template_id.selectedIndex].value">
 							<option value="host.php?host_template_id=-1&host_status=<?php print $_REQUEST["host_status"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_template_id"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="host.php?host_template_id=0&host_status=<?php print $_REQUEST["host_status"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_template_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -26,7 +26,7 @@
 						Host Status:&nbsp;
 					</td>
 					<td width="1">
-						<select name="host_status" onChange="window.location=document.form_devices.host_status.options[document.form_devices.host_status.selectedIndex].value">
+						<select name="cbo_host_status" onChange="window.location=document.form_devices.cbo_host_status.options[document.form_devices.cbo_host_status.selectedIndex].value">
 							<option value="host.php?host_status=-1&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="host.php?host_status=3&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "3") {?> selected<?php }?>>Up</option>
 							<option value="host.php?host_status=1&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "1") {?> selected<?php }?>>Down</option>
