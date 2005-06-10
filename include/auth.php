@@ -92,6 +92,9 @@ if (read_config_option("global_auth") == "on") {
 					<td class='textArea' colspan='2'>You are not permitted to access this section of Cacti. If you feel that you
 					need access to this particular section, please contact the Cacti administrator.</td>
 				</tr>
+				<tr>
+					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'>Return</a> | <a href='logout.php'>Login</a> )</td>
+				</tr>
 			</table>
 
 			</body>

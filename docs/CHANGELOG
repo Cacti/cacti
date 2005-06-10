@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6e
+-bug#0000428: Unable to try login again after Access Denied
 -bug#0000453: SPAN tag between each character of GraphTitle in Graph Management
 -bug#0000143: Allow the user to enter 'U' for unknown minimum and maximum data source input values.
 -bug#0000377: Fix logarithmic graph creation issues.
