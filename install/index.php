@@ -90,7 +90,7 @@ if ($config["cacti_server_os"] == "unix") {
 
 	if (!empty($which_rrdtool)) {
 		$input["path_rrdtool"]["default"] = $which_rrdtool;
-	}elseif (read_config_option("path_rrdtool") != "<DEFAULT>") {
+	}elseif (config_value_exists("path_rrdtool")) {
 		$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");
 	}else{
 		$input["path_rrdtool"]["default"] = "/usr/local/bin/rrdtool";
@@ -107,13 +107,13 @@ if ($config["cacti_server_os"] == "unix") {
 
 	if (!empty($which_php)) {
 		$input["path_php_binary"]["default"] = $which_php;
-	}elseif (read_config_option("path_php_binary") != "<DEFAULT>") {
+	}elseif (config_value_exists("path_php_binary")) {
 		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
 	}else{
 		$input["path_php_binary"]["default"] = "/usr/bin/php";
 	}
 }elseif ($config["cacti_server_os"] == "win32") {
-	if (strlen(read_config_option("path_php_binary"))) {
+	if (config_value_exists("path_php_binary")) {
 		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
 	} else {
 		$input["path_php_binary"]["default"] = "c:/php/php.exe";
@@ -128,7 +128,7 @@ if ($config["cacti_server_os"] == "unix") {
 
 	if (!empty($which_snmpwalk)) {
 		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
-	}elseif (read_config_option("path_snmpwalk") != "<DEFAULT>") {
+	}elseif (config_value_exists("path_snmpwalk")) {
 		$input["path_snmpwalk"]["default"] = read_config_option("path_snmpwalk");
 	}else{
 		$input["path_snmpwalk"]["default"] = "/usr/local/bin/snmpwalk";
@@ -143,7 +143,7 @@ if ($config["cacti_server_os"] == "unix") {
 
 	if (!empty($which_snmpget)) {
 		$input["path_snmpget"]["default"] = $which_snmpget;
-	}elseif (read_config_option("path_snmpget") != "<DEFAULT>") {
+	}elseif (config_value_exists("path_snmpget")) {
 		$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
 	}else{
 		$input["path_snmpget"]["default"] = "/usr/local/bin/snmpget";
@@ -153,7 +153,7 @@ if ($config["cacti_server_os"] == "unix") {
 /* log file path */
 $input["path_cactilog"] = $settings["path"]["path_cactilog"];
 $input["path_cactilog"]["description"] = "The path to your Cacti log file.";
-if (strlen(read_config_option("path_cactilog"))) {
+if (config_value_exists("path_cactilog")) {
 	$input["path_cactilog"]["default"] = read_config_option("path_cactilog");
 } else {
 	$input["path_cactilog"]["default"] = $config["base_path"] . "/log/cacti.log";
