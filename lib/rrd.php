@@ -714,30 +714,30 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		/* title fonts */
 		if (file_exists(read_graph_config_option("title_font"))) {
 			$graph_opts .= "--font TITLE:" . read_graph_config_option("title_size") . ":" . read_graph_config_option("title_font") . RRD_NL;
-        }elseif (file_exists(read_config_option("title_font"))) {
+		}elseif (file_exists(read_config_option("title_font"))) {
 			$graph_opts .= "--font TITLE:" . read_config_option("title_size") . ":" . read_config_option("title_font") . RRD_NL;
 		}
 
 		/* axis fonts */
 		if (file_exists(read_graph_config_option("axis_font"))) {
 			$graph_opts .= "--font AXIS:" . read_graph_config_option("axis_size") . ":" . read_graph_config_option("axis_font") . RRD_NL;
-        }elseif (file_exists(read_config_option("axis_font"))) {
+		}elseif (file_exists(read_config_option("axis_font"))) {
 			$graph_opts .= "--font AXIS:" . read_config_option("axis_size") . ":" . read_config_option("axis_font") . RRD_NL;
 		}
 
 		/* legend fonts */
 		if (file_exists(read_graph_config_option("legend_font"))) {
 			$graph_opts .= "--font LEGEND:" . read_graph_config_option("legend_size") . ":" . read_graph_config_option("legend_font") . RRD_NL;
-        }elseif (file_exists(read_config_option("legend_font"))) {
+		}elseif (file_exists(read_config_option("legend_font"))) {
 			$graph_opts .= "--font LEGEND:" . read_config_option("legend_size") . ":" . read_config_option("legend_font") . RRD_NL;
-        }
+		}
 
 		/* unit fonts */
 		if (file_exists(read_graph_config_option("unit_font"))) {
 			$graph_opts .= "--font UNIT:" . read_graph_config_option("unit_size") . ":" . read_graph_config_option("unit_font") . RRD_NL;
-        }elseif (file_exists(read_config_option("unit_font"))) {
+		}elseif (file_exists(read_config_option("unit_font"))) {
 			$graph_opts .= "--font UNIT:" . read_config_option("unit_size") . ":" . read_config_option("unit_font") . RRD_NL;
-        }
+		}
 	}
 
 	$i = 0;
@@ -1024,7 +1024,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\":STACK";
 			}else {
 				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . "#" . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 			}
 		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
