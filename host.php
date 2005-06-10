@@ -751,23 +751,12 @@ function host() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td width=200>
-					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
-				</td>
-				<td>
-					<?php print get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]);?>
-				</td>
-				<td>
-					<?php print $host["hostname"];?>
-				</td>
-				<td>
-					<?php print round(($host["cur_time"]), 2);?>
-				</td>
-				<td>
-					<?php print round(($host["avg_time"]), 2);?>
-				</td>
-				<td>
-					<?php print round($host["availability"], 2);?>%
-				</td>
+					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]); }else{ print $host["description"]; } ?></a></td>
+				<td><?php print get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]);?></td>
+				<td><?php print $host["hostname"];?></td>
+				<td><?php print round(($host["cur_time"]), 2);?></td>
+				<td><?php print round(($host["avg_time"]), 2);?></td>
+				<td><?php print round($host["availability"], 2);?>%</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">
 				</td>
