@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -bug#0000464: Remove dates from Syslog generated messages.
 -bug#0000465: Allow for the mass resize of graphs.
 -bug#0000471: Remove the graph 'Settings' tab if the user is not allowed to save graph settings.
+-bug#0000478: Validate field input values on the Data Templates page. Prevent duplicate data template items from appearing as a result of this bug.
 -bug#0000481: Add several checks to prevent PHP errors when parsing data query XML files.
 -bug: Speed the generation of the Tree View Dual Pane by caching the Tree to a local session variable.
 -bug: Handle STACK graph items properly in RRDtool 1.2.
