@@ -29,6 +29,7 @@
 						<select name="cbo_host_status" onChange="window.location=document.form_devices.cbo_host_status.options[document.form_devices.cbo_host_status.selectedIndex].value">
 							<option value="host.php?host_status=-1&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="host.php?host_status=3&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "3") {?> selected<?php }?>>Up</option>
+							<option value="host.php?host_status=-2&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-2") {?> selected<?php }?>>Disabled</option>
 							<option value="host.php?host_status=1&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "1") {?> selected<?php }?>>Down</option>
 							<option value="host.php?host_status=2&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "2") {?> selected<?php }?>>Recovering</option>
 							<option value="host.php?host_status=0&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "0") {?> selected<?php }?>>Unknown</option>

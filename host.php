@@ -695,8 +695,10 @@ function host() {
 
 	if ($_REQUEST["host_status"] == "-1") {
 		/* Show all items */
-	}else{
-		$sql_where .= " and host.status=" . $_REQUEST["host_status"];
+	}elseif ($_REQUEST["host_status"] == "-2") {
+		$sql_where .= " and host.disabled='on'";
+	}else {
+		$sql_where .= " and (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')";
 	}
 
 	if ($_REQUEST["host_template_id"] == "-1") {
