@@ -125,6 +125,29 @@ function form_save() {
 		$save3["t_data_input_field_id"] = form_input_validate((isset($_POST["t_data_input_field_id"]) ? $_POST["t_data_input_field_id"] : ""), "t_data_input_field_id", "", true, 3);
 		$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
 
+		/* ok, first pull out all 'input' values so we know how much to save */
+		$input_fields = db_fetch_assoc("select
+			id,
+			input_output,
+			regexp_match,
+			allow_nulls,
+			type_code,
+			data_name
+			from data_input_fields
+			where data_input_id=" . $_POST["data_input_id"] . "
+			and input_output='in'");
+
+		/* pass#1 for validation */
+		if (sizeof($input_fields) > 0) {
+			foreach ($input_fields as $input_field) {
+				$form_value = "value_" . $input_field["data_name"];
+
+				if ((isset($_POST[$form_value])) && ($input_field["type_code"] == "")) {
+					form_input_validate($_POST[$form_value], "value_" . $input_field["data_name"], $input_field["regexp_match"], ($input_field["allow_nulls"] == "on" ? true : false), 3);
+				}
+			}
+		}
+
 		if (!is_error_message()) {
 			$data_template_id = sql_save($save1, "data_template");
 
@@ -182,17 +205,9 @@ function form_save() {
 				push_out_data_source($data_template_data_id);
 				push_out_data_source_item($data_template_rrd_id);
 
-				/* ok, first pull out all 'input' values so we know how much to save */
-				$input_fields = db_fetch_assoc("select
-					id,
-					input_output,
-					data_name
-					from data_input_fields
-					where data_input_id=" . $_POST["data_input_id"] . "
-					and input_output='in'");
-
 				db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
 
+				reset($input_fields);
 				if (sizeof($input_fields) > 0) {
 				foreach ($input_fields as $input_field) {
 					$form_value = "value_" . $input_field["data_name"];
