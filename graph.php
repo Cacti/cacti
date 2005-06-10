@@ -31,8 +31,9 @@ if (!isset($_REQUEST["view_type"])) { $_REQUEST["view_type"] = ""; }
 $guest_account = true;
 include("./include/auth.php");
 include("./lib/rrd.php");
+include("./lib/html_tree.php");
 include("./include/top_graph_header.php");
-
+                               
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var("rra_id"), "^([0-9]+|all)$");
 input_validate_input_number(get_request_var("local_graph_id"));
