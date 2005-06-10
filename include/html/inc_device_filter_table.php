@@ -3,8 +3,8 @@
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="150">
-						Filter by host template:&nbsp;
+					<td width="20">
+						Type:&nbsp;
 					</td>
 					<td width="1">
 						<select name="cbo_host_template_id" onChange="window.location=document.form_devices.cbo_host_template_id.options[document.form_devices.cbo_host_template_id.selectedIndex].value">
@@ -21,9 +21,9 @@
 							?>
 						</select>
 					</td>
-					<td width="10"></td>
-    				<td width="75">
-						Host Status:&nbsp;
+					<td width="5"></td>
+    				<td width="20">
+						Status:&nbsp;
 					</td>
 					<td width="1">
 						<select name="cbo_host_status" onChange="window.location=document.form_devices.cbo_host_status.options[document.form_devices.cbo_host_status.selectedIndex].value">
@@ -34,7 +34,7 @@
 							<option value="host.php?host_status=0&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "0") {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
-					<td width="10"></td>
+					<td width="5"></td>
 					<td width="60">
 						Search:&nbsp;
 					</td>
