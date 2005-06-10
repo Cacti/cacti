@@ -19,10 +19,11 @@ Cacti CHANGELOG
 -bug: Handle STACK graph items properly in RRDtool 1.2.
 -bug: Prevent data query recaches if the device returns empty input.
 -bug: Fix potential issues with graph gaps when using a large number of poller processes.
+-feature: Add ability to filter by host status as well as add ability to filter accross both description and hostname
 -feature: Add additional options to control RRDtool 1.2 fonts.
 -feature: Allow the user to Enable/Disable Data Sources from the user interface and automatically disable hosts when deleting a device.
 -feature: Add Data Source information to the Cacti Log File to assist with troubleshooting.
--feature: Allow linking to directly to problem data sources in Cacti Log File.
+-feature: Add html links to both hosts and data sources in the Cacti Log File.
 -security: Fix several remote inclusion bugs that were exploitable when PHP's 'register_global' feature is turned on [IDEF0941], [IDEF1023], [IDEF1024].
 -security: Fix several SQL injection bugs due to improper input validation [IDEF1001].
 
