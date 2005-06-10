@@ -28,6 +28,8 @@
    @arg $command - the command to execute
    @returns - the output of $command after execution */
 function exec_poll($command) {
+	global $config;
+
 	if (function_exists("stream_set_timeout")) {
 		if ($config["cacti_server_os"] == "unix") {
 			$fp = popen($command, "r");
@@ -37,7 +39,7 @@ function exec_poll($command) {
 
 		/* set script server timeout */
 		$script_timeout = read_config_option("script_timeout");
- 		stream_set_timeout($fp, $script_timeout);
+		stream_set_timeout($fp, $script_timeout);
 
 		/* get output from command */
 		$output = fgets($fp, 1024);
