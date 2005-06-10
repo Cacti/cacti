@@ -35,7 +35,7 @@
 						</select>
 					</td>
 					<td width="5"></td>
-					<td width="60">
+					<td width="20">
 						Search:&nbsp;
 					</td>
 					<td width="1">
