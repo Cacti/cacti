@@ -28,11 +28,9 @@
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 // Global constant
-
 var cURLBase = "graph.php?action=zoom";
 
 // Global variables
-
 var gZoomGraphName = "zoomGraphImage";
 var gZoomGraphObj;
 var gMouseObj;
@@ -41,44 +39,44 @@ var gBrowserObj;
 
 // Objects declaration
 
-
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /*++++++++++++++++++++++++++++++++  urlObj  +++++++++++++++++++++++++++++++++*/
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 function urlObj(url) {
- var urlBaseAndParameters;
+	var urlBaseAndParameters;
 
- urlBaseAndParameters = url.split("?");
- this.urlBase = urlBaseAndParameters[0];
- this.urlParameters = urlBaseAndParameters[1].split("&");
+	urlBaseAndParameters = url.split("?");
+	this.urlBase = urlBaseAndParameters[0];
+	this.urlParameters = urlBaseAndParameters[1].split("&");
 
- this.getUrlBase = urlObjGetUrlBase;
- this.getUrlParameterValue = urlObjGetUrlParameterValue;
+	this.getUrlBase = urlObjGetUrlBase;
+	this.getUrlParameterValue = urlObjGetUrlParameterValue;
 }
 
 /*++++++++++++++++++++++++  urlObjGetUrlBase  +++++++++++++++++++++++++++++++*/
 
 function urlObjGetUrlBase() {
- return this.urlBase;
+	return this.urlBase;
 }
 
 /*++++++++++++++++++++  urlObjGetUrlParameterValue  +++++++++++++++++++++++++*/
 
 function urlObjGetUrlParameterValue(parameter) {
- var i;
- var fieldAndValue;
- var value;
+	var i;
+	var fieldAndValue;
+	var value;
 
- i = 0;
- while (this.urlParameters [i] != undefined) {
-  fieldAndValue = this.urlParameters[i].split("=");
-  if (fieldAndValue[0] == parameter) {
-   value = fieldAndValue[1];
-  }
-  i++;
- }
- return value;
+	i = 0;
+	while (this.urlParameters [i] != undefined) {
+		fieldAndValue = this.urlParameters[i].split("=");
+		if (fieldAndValue[0] == parameter) {
+			value = fieldAndValue[1];
+		}
+		i++;
+	}
+
+	return value;
 }
 
 
@@ -88,264 +86,264 @@ function urlObjGetUrlParameterValue(parameter) {
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 function mouseObj() {
- this.startedX = 0;
- this.startedY = 0;
+	this.startedX = 0;
+	this.startedY = 0;
 
- this.stoppedX = 0;
- this.stoppedY = 0;
+	this.stoppedX = 0;
+	this.stoppedY = 0;
 
- this.currentX = 0;
- this.currentY = 0;
+	this.currentX = 0;
+	this.currentY = 0;
 
- this.dragging = false;
+	this.dragging = false;
 
- this.setEvent = mouseObjSetEvent;
- this.leftButtonPressed = mouseObjLeftButtonPressed;
- this.rightButtonPressed = mouseObjRightButtonPressed;
- this.getCurrentPosition = mouseObjGetCurrentPosition;
- this.saveCurrentToStartPosition = mouseObjSaveCurrentToStartPosition;
- this.saveCurrentToStopPosition = mouseObjSaveCurrentToStopPosition;
+	this.setEvent = mouseObjSetEvent;
+	this.leftButtonPressed = mouseObjLeftButtonPressed;
+	this.rightButtonPressed = mouseObjRightButtonPressed;
+	this.getCurrentPosition = mouseObjGetCurrentPosition;
+	this.saveCurrentToStartPosition = mouseObjSaveCurrentToStartPosition;
+	this.saveCurrentToStopPosition = mouseObjSaveCurrentToStopPosition;
 }
 
 /*++++++++++++++++++++++++  mouseObjSetEvent  +++++++++++++++++++++++++++++++*/
 
 function mouseObjSetEvent(theEvent) {
- if (gBrowserObj.browser == "Netscape") {
-  this.event = theEvent;
- } else {
-  this.event = window.event;
- }
+	if (gBrowserObj.browser == "Netscape") {
+		this.event = theEvent;
+	} else {
+		this.event = window.event;
+	}
 }
 
 /*++++++++++++++++++++++++  mouseObjLeftMouseButton  +++++++++++++++++++++++++++++++*/
 
 function mouseObjLeftButtonPressed() {
- var LeftButtonPressed = false;
-// alert ("Button Pressed");
- if (gBrowserObj.browser == "Netscape") {
-  LeftButtonPressed = (this.event.which == 1);
-//   	alert ("Net");
- } else {
-  LeftButtonPressed = (this.event.button == 1);
- }
- return LeftButtonPressed;
+	var LeftButtonPressed = false;
+	// alert ("Button Pressed");
+	if (gBrowserObj.browser == "Netscape") {
+		LeftButtonPressed = (this.event.which == 1);
+		// alert ("Net");
+	} else {
+		LeftButtonPressed = (this.event.button == 1);
+	}
+
+	return LeftButtonPressed;
 }
 
 /*++++++++++++++++++++++++  mouseObjRightMouseButton  +++++++++++++++++++++++++++++++*/
 
 function mouseObjRightButtonPressed() {
- var RightButtonPressed = false;
-// alert ("Button Pressed");
- if (gBrowserObj.browser == "Netscape") {
-  RightButtonPressed = (this.event.which == 3);
-//   	alert ("Net");
- } else {
-  RightButtonPressed = (this.event.button == 2);
- }
- return RightButtonPressed;
+	var RightButtonPressed = false;
+	// alert ("Button Pressed");
+	if (gBrowserObj.browser == "Netscape") {
+		RightButtonPressed = (this.event.which == 3);
+		// alert ("Net");
+	} else {
+		RightButtonPressed = (this.event.button == 2);
+	}
+
+	return RightButtonPressed;
 }
 
 /*+++++++++++++++++++  mouseObjGetCurrentPosition  ++++++++++++++++++++++++++*/
 
 function mouseObjGetCurrentPosition() {
- this.currentX = this.event.clientX + document.body.scrollLeft;
- this.currentY = this.event.clientY + document.body.scrollTop;
+	this.currentX = this.event.clientX + document.body.scrollLeft;
+	this.currentY = this.event.clientY + document.body.scrollTop;
 // alert (this.currentX + "\n" + this.currentY);
 }
 
 /*+++++++++++++++++  mouseObjSaveCurrentToStartPosition  ++++++++++++++++++++*/
 
 function mouseObjSaveCurrentToStartPosition() {
- this.startedX = this.currentX;
- this.startedY = this.currentY;
+	this.startedX = this.currentX;
+	this.startedY = this.currentY;
 }
 
 /*++++++++++++++++++  mouseObjSaveCurrentToStopPosition  ++++++++++++++++++++*/
 
 function mouseObjSaveCurrentToStopPosition() {
- this.stoppedX = this.currentX;
- this.stoppedY = this.currentY;
+	this.stoppedX = this.currentX;
+	this.stoppedY = this.currentY;
 }
-
-
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /*+++++++++++++++++++++++++++++  zoomGraphObj  ++++++++++++++++++++++++++++++*/
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 function zoomGraphObj(zoomGraphName) {
+	// We use 3 zones. The first (zoomGraph) represent the entire graph image.
+	// The second (zoomBox) represent the graph itself.
+	// The last zone (zoomSensitiveZone) represent the area where the user can
+	// launch the zoom function
 
-// We use 3 zones. The first (zoomGraph) represent the entire graph image.
-// The second (zoomBox) represent the graph itself.
-// The last zone (zoomSensitiveZone) represent the area where the user can
-// launch the zoom function
+	this.zoomGraphName = zoomGraphName;
+	this.imgObject = document.getElementById(this.zoomGraphName);
+	gUrlObj = new urlObj(this.imgObject.src);
 
- this.zoomGraphName = zoomGraphName;
- this.imgObject = document.getElementById(this.zoomGraphName);
- gUrlObj = new urlObj(this.imgObject.src);
+	this.zoomGraphLeft = 0;
+	this.zoomGraphTop = 0;
+	this.zoomGraphRight = 0;
+	this.zoomGraphBottom = 0;
+	this.zoomGraphWidth = 0;
+	this.zoomGraphHeight = 0;
 
- this.zoomGraphLeft = 0;
- this.zoomGraphTop = 0;
- this.zoomGraphRight = 0;
- this.zoomGraphBottom = 0;
- this.zoomGraphWidth = 0;
- this.zoomGraphHeight = 0;
+	this.zoomBoxLeft = 0;
+	this.zoomBoxTop = 0;
+	this.zoomBoxRight = 0;
+	this.zoomBoxBottom = 0;
+	this.zoomBoxWidth = 0;
+	this.zoomBoxHeight = 0;
 
- this.zoomBoxLeft = 0;
- this.zoomBoxTop = 0;
- this.zoomBoxRight = 0;
- this.zoomBoxBottom = 0;
- this.zoomBoxWidth = 0;
- this.zoomBoxHeight = 0;
+	this.zoomSensitiveZoneLeft = 0;
+	this.zoomSensitiveZoneTop = 0;
+	this.zoomSensitiveZoneRight = 0;
+	this.zoomSensitiveZoneBottom = 0;
+	this.zoomSensitiveZoneWith = 0;
+	this.zoomSensitiveZoneHeight = 0;
 
- this.zoomSensitiveZoneLeft = 0;
- this.zoomSensitiveZoneTop = 0;
- this.zoomSensitiveZoneRight = 0;
- this.zoomSensitiveZoneBottom = 0;
- this.zoomSensitiveZoneWith = 0;
- this.zoomSensitiveZoneHeight = 0;
+	this.refresh = zoomGraphObjRefresh;
+	this.drawSelection = zoomGraphObjDrawSelection;
 
- this.refresh = zoomGraphObjRefresh;
- this.drawSelection = zoomGraphObjDrawSelection;
-
- this.refresh();
-
+	this.refresh();
 }
 
 /*+++++++++++++++++++++++++++  zoomGraphObjRefresh  +++++++++++++++++++++++++*/
 
 function zoomGraphObjRefresh() {
-//  Constants
- var cZoomBoxName = "zoomBox";
+	//  constants
+	var cZoomBoxName = "zoomBox";
 
- var titleFontSize = parseInt(gUrlObj.getUrlParameterValue("title_font_size"));
+	var titleFontSize = parseInt(gUrlObj.getUrlParameterValue("title_font_size"));
 
- if (titleFontSize == 0) {
-  var cZoomBoxTopOffsetWOText = 15 - 1;
-  var cZoomBoxTopOffsetWText = 32 - 1;
- } else {
-   var cZoomBoxTopOffsetWOText = titleFontSize + (titleFontSize * 1.6);
-   var cZoomBoxTopOffsetWText = titleFontSize + (titleFontSize * 1.6) + 10;
- }
- var cZoomBoxRightOffset = -16;
+	if (titleFontSize == 0) {
+		var cZoomBoxTopOffsetWOText = 15 - 1;
+		var cZoomBoxTopOffsetWText = 32 - 1;
+		var cZoomBoxRightOffset = -16;
+	} else {
+		var cZoomBoxTopOffsetWOText = 10 - 1;
+		var cZoomBoxTopOffsetWText = titleFontSize + (titleFontSize * 1.6) + 10 - 1;
+		var cZoomBoxRightOffset = -28;
+	}
 
- var cZoomSensitiveZoneName = "zoomSensitiveZone";
- var cZoomSensitiveZoneOffset = 12;
+	// zone outside of Zoom box where user can move cursor to without causing odd behavior
+	var cZoomSensitiveZoneName = "zoomSensitiveZone";
+	var cZoomSensitiveZoneOffset = 30;
 
-// Variables
- var imgObject;
-// var imgSource;
- var imgAlt;
+	// variables
+	var imgObject;
+	// var imgSource;
+	var imgAlt;
 
- var divObject;
+	var divObject;
 
- var left;
- var top;
- var width;
- var height;
+	var left;
+	var top;
+	var width;
+	var height;
 
- var zoomBoxWidth;
- var zoomBoxHeight;
+	// zoomable selection area Width and Height
+	var zoomBoxWidth;
+	var zoomBoxHeight;
 
- imgObject = this.imgObject;
- //imgSource = imgObject.src;
- imgAlt = imgObject.alt;
+	imgObject = this.imgObject;
+	//imgSource = imgObject.src;
+	imgAlt = imgObject.alt;
 
- width = imgObject.width;
- height = imgObject.height;
+	// determine the overall graph size
+	width = imgObject.width;
+	height = imgObject.height;
 
- zoomBoxWidth = parseInt(gUrlObj.getUrlParameterValue("graph_width")) + 1;
- zoomBoxHeight = parseInt(gUrlObj.getUrlParameterValue("graph_height")) + 1;
+	// get the graph area size from the url
+	zoomBoxWidth = parseInt(gUrlObj.getUrlParameterValue("graph_width")) + 1;
+	zoomBoxHeight = parseInt(gUrlObj.getUrlParameterValue("graph_height")) + 1;
 
- // Get absolute graph position
- // start with the image's coordinates and walk through it's
- // ancestory of elements (tables, div's, spans, etc...) until
- // we're at the top.  Along the way we add in each element's
- // coordinates to get the final answer
+	// Get absolute image position relative to the overall window.
+	//
+	// start with the image's coordinates and walk through it's
+	// ancestory of elements (tables, div's, spans, etc...) until
+	// we're at the top of the display.  Along the way we add in each element's
+	// coordinates to get absolute image postion.
+	left = 0;
+	top = 0;
+	do {
+		left += imgObject.offsetLeft;
+		top += imgObject.offsetTop;
+		imgObject  = imgObject.offsetParent;
+	} while(imgObject);
 
+	// set the images's Ix1,Iy1 and Ix2,Iy2 postions based upon results
+	this.zoomGraphLeft = left;
+	this.zoomGraphTop = top;
+	this.zoomGraphRight = left + width;
+	this.zoomGraphBottom = top + height;
+	this.zoomGraphWidth = width;
+	this.zoomGraphHeight = height;
 
- if (titleFontSize == 0) {
-  left = -3;
- } else {
-  left = -12;
- }
- top = 0;
- do
- {
-  left += imgObject.offsetLeft;
-  top += imgObject.offsetTop;
-  imgObject  = imgObject.offsetParent;
- }
- while(imgObject);
+	// calculate the right hand coordinate (rrdGAx2) of the zoom box (aka rrd Graph area)
+	this.zoomBoxRight = this.zoomGraphRight + cZoomBoxRightOffset;
 
- this.zoomGraphLeft = left;
- this.zoomGraphTop = top;
- this.zoomGraphRight = left + width;
- this.zoomGraphBottom = top + height;
- this.zoomGraphWidth = width;
- this.zoomGraphHeight = height;
+	// calculate the top coordinate (rrdGAy2) of the zoom box (aka rrd Graph area)
+	if(imgAlt == "") {
+		this.zoomBoxTop = this.zoomGraphTop + cZoomBoxTopOffsetWOText;
+	} else {
+		this.zoomBoxTop = this.zoomGraphTop + cZoomBoxTopOffsetWText;
+	}
 
-this.zoomBoxRight = this.zoomGraphRight + cZoomBoxRightOffset;
-if(imgAlt == "") {
- this.zoomBoxTop = this.zoomGraphTop + cZoomBoxTopOffsetWOText;
-}
-else {
- this.zoomBoxTop = this.zoomGraphTop + cZoomBoxTopOffsetWText;
-}
- this.zoomBoxLeft = this.zoomBoxRight - zoomBoxWidth;
- this.zoomBoxBottom = this.zoomBoxTop + zoomBoxHeight;
+	// calculate the left hand coordinate (rrdGAx1) of the zoom box (aka rrd Graph area)
+	this.zoomBoxLeft = this.zoomBoxRight - zoomBoxWidth;
 
- this.zoomBoxWidth = zoomBoxWidth;
- this.zoomBoxHeight = zoomBoxHeight;
+	// calculate the bottom coordinate (rrdGAy1) of the zoom box (aka rrd Graph area)
+	this.zoomBoxBottom = this.zoomBoxTop + zoomBoxHeight;
 
-// this.drawSelection(this.zoomBoxLeft, this.zoomBoxTop, this.zoomBoxRight, this.zoomBoxBottom);
- this.drawSelection(0, 0, 0, 0); // reset selection
+	// set the objects zoom sizes from the url values (aka rrd Graph size)
+	this.zoomBoxWidth = zoomBoxWidth;
+	this.zoomBoxHeight = zoomBoxHeight;
 
+	// this.drawSelection(this.zoomBoxLeft, this.zoomBoxTop, this.zoomBoxRight, this.zoomBoxBottom);
+	this.drawSelection(0, 0, 0, 0); // reset selection
 
- divObject = document.getElementById(cZoomBoxName);
- divObject.style.left = this.zoomBoxLeft;
- divObject.style.top = this.zoomBoxTop;
- divObject.style.width = this.zoomBoxWidth;
- divObject.style.height = this.zoomBoxHeight;
+	divObject = document.getElementById(cZoomBoxName);
+	divObject.style.left = this.zoomBoxLeft;
+	divObject.style.top = this.zoomBoxTop;
+	divObject.style.width = this.zoomBoxWidth;
+	divObject.style.height = this.zoomBoxHeight;
 
+	// allow the crosshair to extend outside of the Graph area without graphical glitches
+	this.zoomSensitiveZoneLeft = this.zoomBoxLeft - cZoomSensitiveZoneOffset;
+	this.zoomSensitiveZoneTop = this.zoomBoxTop - cZoomSensitiveZoneOffset;
+	this.zoomSensitiveZoneRight = this.zoomBoxRight + cZoomSensitiveZoneOffset;
+	this.zoomSensitiveZoneBottom = this.zoomBoxBottom + cZoomSensitiveZoneOffset;
+	this.zoomSensitiveZoneWidth = this.zoomSensitiveZoneRight - this.zoomSensitiveZoneLeft;
+	this.zoomSensitiveZoneHeight = this.zoomSensitiveZoneBottom - this.zoomSensitiveZoneTop;
 
- this.zoomSensitiveZoneLeft = this.zoomBoxLeft - cZoomSensitiveZoneOffset;
- this.zoomSensitiveZoneTop = this.zoomBoxTop - cZoomSensitiveZoneOffset;
- this.zoomSensitiveZoneRight = this.zoomBoxRight + cZoomSensitiveZoneOffset;
- this.zoomSensitiveZoneBottom = this.zoomBoxBottom + cZoomSensitiveZoneOffset;
- this.zoomSensitiveZoneWidth = this.zoomSensitiveZoneRight - this.zoomSensitiveZoneLeft;
- this.zoomSensitiveZoneHeight = this.zoomSensitiveZoneBottom - this.zoomSensitiveZoneTop;
-
- divObject = document.getElementById(cZoomSensitiveZoneName);
- divObject.style.left = this.zoomSensitiveZoneLeft;
- divObject.style.top = this.zoomSensitiveZoneTop;
- divObject.style.width = this.zoomSensitiveZoneWidth;
- divObject.style.height = this.zoomSensitiveZoneHeight;
+	divObject = document.getElementById(cZoomSensitiveZoneName);
+	divObject.style.left = this.zoomSensitiveZoneLeft;
+	divObject.style.top = this.zoomSensitiveZoneTop;
+	divObject.style.width = this.zoomSensitiveZoneWidth;
+	divObject.style.height = this.zoomSensitiveZoneHeight;
 }
 
 /*++++++++++++++++++++++  zoomGraphObjDrawSelection  ++++++++++++++++++++++++*/
 
 function zoomGraphObjDrawSelection (x1, y1, x2, y2) {
- var cZoomBoxName = "zoomBox";
- var divObject;
+	var cZoomBoxName = "zoomBox";
+	var divObject;
 
-// Calculate relative to zoomBox
+	// calculate relative to zoomBox
+	x1 = x1 - this.zoomBoxLeft;
+	x2 = x2 - this.zoomBoxLeft;
+	y1 = y1 - this.zoomBoxTop;
+	y2 = y2 - this.zoomBoxTop;
 
- x1 = x1 - this.zoomBoxLeft;
- x2 = x2 - this.zoomBoxLeft;
- y1 = y1 - this.zoomBoxTop;
- y2 = y2 - this.zoomBoxTop;
+	var minX = Math.min(x1, x2);
+	var maxX = Math.max(x1, x2) + 1;
+	var minY = Math.min(y1, y2);
+	var maxY = Math.max(y1, y2) + 1;
 
- var minX = Math.min(x1, x2);
- var maxX = Math.max(x1, x2) + 1;
- var minY = Math.min(y1, y2);
- var maxY = Math.max(y1, y2) + 1;
-
- divObject = document.getElementById(cZoomBoxName);
- divObject.style.clip ="rect(" + minY + "px " + maxX + "px " + maxY + "px " + minX + "px)";
+	divObject = document.getElementById(cZoomBoxName);
+	divObject.style.clip ="rect(" + minY + "px " + maxX + "px " + maxY + "px " + minX + "px)";
 }
-
-
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /*++++++++++++++++++++  standard functions definition  ++++++++++++++++++++++*/
@@ -364,179 +362,166 @@ Author Email: blaylock@wired.com
 Usage: var bd = new BrowserDetector(navigator.userAgent);
 */
 
-
-// Utility function to trim spaces from both ends of a string
+// utility function to trim spaces from both ends of a string
 function Trim(inString) {
-  var retVal = "";
-  var start = 0;
-  while ((start < inString.length) && (inString.charAt(start) == ' ')) {
-    ++start;
-  }
-  var end = inString.length;
-  while ((end > 0) && (inString.charAt(end - 1) == ' ')) {
-    --end;
-  }
-  retVal = inString.substring(start, end);
-  return retVal;
+	var retVal = "";
+	var start = 0;
+	while ((start < inString.length) && (inString.charAt(start) == ' ')) {
+    	++start;
+	}
+
+	var end = inString.length;
+
+	while ((end > 0) && (inString.charAt(end - 1) == ' ')) {
+		--end;
+	}
+
+	retVal = inString.substring(start, end);
+
+	return retVal;
 }
 
 function BrowserDetector(ua) {
+	// defaults
+	this.browser = "Unknown";
+	this.platform = "Unknown";
+	this.version = "";
+	this.majorver = "";
+	this.minorver = "";
 
-// Defaults
-  this.browser = "Unknown";
-  this.platform = "Unknown";
-  this.version = "";
-  this.majorver = "";
-  this.minorver = "";
+	uaLen = ua.length;
 
-  uaLen = ua.length;
+	// ##### split into stuff before parens and stuff in parens
+	var preparens = "";
+	var parenthesized = "";
 
-// ##### Split into stuff before parens and stuff in parens
-  var preparens = "";
-  var parenthesized = "";
+	i = ua.indexOf("(");
 
-  i = ua.indexOf("(");
-  if (i >= 0) {
-    preparens = Trim(ua.substring(0,i));
-        parenthesized = ua.substring(i+1, uaLen);
-        j = parenthesized.indexOf(")");
-        if (j >= 0) {
-          parenthesized = parenthesized.substring(0, j);
-        }
-  }
-  else {
-    preparens = ua;
-  }
+	if (i >= 0) {
+		preparens = Trim(ua.substring(0,i));
+		parenthesized = ua.substring(i+1, uaLen);
+		j = parenthesized.indexOf(")");
+		if (j >= 0) {
+			parenthesized = parenthesized.substring(0, j);
+		}
+	} else {
+		preparens = ua;
+	}
 
-// ##### First assume browser and version are in preparens
-// ##### override later if we find them in the parenthesized stuff
-  var browVer = preparens;
+	// ##### first assume browser and version are in preparens
+	// ##### override later if we find them in the parenthesized stuff
+	var browVer = preparens;
 
-  var tokens = parenthesized.split(";");
-  var token = "";
-// # Now go through parenthesized tokens
-  for (var i=0; i < tokens.length; i++) {
-    token = Trim(tokens[i]);
-        //## compatible - might want to reset from Netscape
+	var tokens = parenthesized.split(";");
+	var token = "";
+
+	// # Now go through parenthesized tokens
+	for (var i=0; i < tokens.length; i++) {
+		token = Trim(tokens[i]);
+		//## compatible - might want to reset from Netscape
         if (token == "compatible") {
-          //## One might want to reset browVer to a null string
-          //## here, but instead, we'll assume that if we don't
-          //## find out otherwise, then it really is Mozilla
-          //## (or whatever showed up before the parens).
-        //## browser - try for Opera or IE
-    }
-        else if (token.indexOf("MSIE") >= 0) {
-      browVer = token;
-    }
-    else if (token.indexOf("Opera") >= 0) {
-      browVer = token;
-    }
-        //'## platform - try for X11, SunOS, Win, Mac, PPC
-    else if ((token.indexOf("X11") >= 0) || (token.indexOf("SunOS") >= 0) ||
-(token.indexOf("Linux") >= 0)) {
-      this.platform = "Unix";
-        }
-    else if (token.indexOf("Win") >= 0) {
-      this.platform = token;
-        }
-    else if ((token.indexOf("Mac") >= 0) || (token.indexOf("PPC") >= 0)) {
-      this.platform = token;
-        }
-  }
+			//## One might want to reset browVer to a null string
+			//## here, but instead, we'll assume that if we don't
+			//## find out otherwise, then it really is Mozilla
+			//## (or whatever showed up before the parens).
+			//## browser - try for Opera or IE
+		} else if (token.indexOf("MSIE") >= 0) {
+			browVer = token;
+		} else if (token.indexOf("Opera") >= 0) {
+			browVer = token;
+		} else if ((token.indexOf("X11") >= 0) || (token.indexOf("SunOS") >= 0) || (token.indexOf("Linux") >= 0)) {
+			//'## platform - try for X11, SunOS, Win, Mac, PPC
+			this.platform = "Unix";
+		} else if (token.indexOf("Win") >= 0) {
+			this.platform = token;
+        } else if ((token.indexOf("Mac") >= 0) || (token.indexOf("PPC") >= 0)) {
+			this.platform = token;
+		}
+	}
 
-  var msieIndex = browVer.indexOf("MSIE");
-  if (msieIndex >= 0) {
-    browVer = browVer.substring(msieIndex, browVer.length);
-  }
+	var msieIndex = browVer.indexOf("MSIE");
+	if (msieIndex >= 0) {
+		browVer = browVer.substring(msieIndex, browVer.length);
+	}
 
-  var leftover = "";
-  if (browVer.substring(0, "Mozilla".length) == "Mozilla") {
-    this.browser = "Netscape";
-        leftover = browVer.substring("Mozilla".length+1, browVer.length);
-  }
-  else if (browVer.substring(0, "Lynx".length) == "Lynx") {
-    this.browser = "Lynx";
-        leftover = browVer.substring("Lynx".length+1, browVer.length);
-  }
-  else if (browVer.substring(0, "MSIE".length) == "MSIE") {
-    this.browser = "IE";
-    leftover = browVer.substring("MSIE".length+1, browVer.length);
-  }
-  else if (browVer.substring(0, "Microsoft Internet Explorer".length) ==
-"Microsoft Internet Explorer") {
-    this.browser = "IE"
-        leftover = browVer.substring("Microsoft Internet Explorer".length+1,
-browVer.length);
-  }
-  else if (browVer.substring(0, "Opera".length) == "Opera") {
-    this.browser = "Opera"
-    leftover = browVer.substring("Opera".length+1, browVer.length);
-  }
+	var leftover = "";
+	if (browVer.substring(0, "Mozilla".length) == "Mozilla") {
+		this.browser = "Netscape";
+		leftover = browVer.substring("Mozilla".length+1, browVer.length);
+	} else if (browVer.substring(0, "Lynx".length) == "Lynx") {
+		this.browser = "Lynx";
+		leftover = browVer.substring("Lynx".length+1, browVer.length);
+	} else if (browVer.substring(0, "MSIE".length) == "MSIE") {
+		this.browser = "IE";
+		leftover = browVer.substring("MSIE".length+1, browVer.length);
+	} else if (browVer.substring(0, "Microsoft Internet Explorer".length) == "Microsoft Internet Explorer") {
+		this.browser = "IE"
+		leftover = browVer.substring("Microsoft Internet Explorer".length+1, browVer.length);
+	} else if (browVer.substring(0, "Opera".length) == "Opera") {
+		this.browser = "Opera"
+		leftover = browVer.substring("Opera".length+1, browVer.length);
+	}
 
-  leftover = Trim(leftover);
+	leftover = Trim(leftover);
 
-  // # Try to get version info out of leftover stuff
-  i = leftover.indexOf(" ");
-  if (i >= 0) {
-    this.version = leftover.substring(0, i);
-  }
-  else
-  {
-    this.version = leftover;
-  }
-  j = this.version.indexOf(".");
-  if (j >= 0) {
-    this.majorver = this.version.substring(0,j);
-    this.minorver = this.version.substring(j+1, this.version.length);
-  }
-  else {
-    this.majorver = this.version;
-  }
+	// # try to get version info out of leftover stuff
+	i = leftover.indexOf(" ");
+	if (i >= 0) {
+		this.version = leftover.substring(0, i);
+	} else {
+		this.version = leftover;
+	}
 
-
+	j = this.version.indexOf(".");
+	if (j >= 0) {
+		this.majorver = this.version.substring(0,j);
+		this.minorver = this.version.substring(j+1, this.version.length);
+	} else {
+		this.majorver = this.version;
+	}
 } // function BrowserCap
 
 
 /*++++++++++++++++++++++++++  initBonsai  ++++++++++++++++++++++++++*/
 
 function initBonsai() {
- gBrowserObj = new BrowserDetector(navigator.userAgent);
-// alert("Browser: " + gBrowserObj.browser + "\nPlatform: " + gBrowserObj.platform + "\nVersion: " + gBrowserObj.version + "\nMajorVer: " + gBrowserObj.majorver + "\nMinorVer: " + gBrowserObj.minorver);
-/* gUrlObj = new urlObj(document.URL);*/
- gZoomGraphObj = new zoomGraphObj(gZoomGraphName);
- gMouseObj = new mouseObj();
- initEvents();
+	gBrowserObj = new BrowserDetector(navigator.userAgent);
+	// alert("Browser: " + gBrowserObj.browser + "\nPlatform: " + gBrowserObj.platform + "\nVersion: " + gBrowserObj.version + "\nMajorVer: " + gBrowserObj.majorver + "\nMinorVer: " + gBrowserObj.minorver);
+
+	// gUrlObj = new urlObj(document.URL);
+	gZoomGraphObj = new zoomGraphObj(gZoomGraphName);
+	gMouseObj = new mouseObj();
+	initEvents();
 }
 
 /*+++++++++++++++++++++++++++  insideZoomBox  +++++++++++++++++++++++++++++++*/
 
 function insideZoomBox() {
- var szLeft = gZoomGraphObj.zoomSensitiveZoneLeft;
- var szTop = gZoomGraphObj.zoomSensitiveZoneTop;
- var szRight = gZoomGraphObj.zoomSensitiveZoneRight;
- var szBottom = gZoomGraphObj.zoomSensitiveZoneBottom;
+	var szLeft = gZoomGraphObj.zoomSensitiveZoneLeft;
+	var szTop = gZoomGraphObj.zoomSensitiveZoneTop;
+	var szRight = gZoomGraphObj.zoomSensitiveZoneRight;
+	var szBottom = gZoomGraphObj.zoomSensitiveZoneBottom;
 
- var mpX = gMouseObj.currentX;
- var mpY = gMouseObj.currentY;
- return ((mpX >= szLeft) && (mpX <= szRight) && (mpY >= szTop) && (mpY <= szBottom));
+	var mpX = gMouseObj.currentX;
+	var mpY = gMouseObj.currentY;
+
+	return ((mpX >= szLeft) && (mpX <= szRight) && (mpY >= szTop) && (mpY <= szBottom));
 }
 
 /*++++++++++++++++++++++++++++  initEvents  +++++++++++++++++++++++++++++++++*/
 
 function initEvents() {
- document.onmousemove = onMouseMouveEvent;
- document.onmousedown = onMouseDownEvent;
- document.onmouseup = onMouseUpEvent;
- window.onresize = windowOnResizeEvent;
+	document.onmousemove = onMouseMouveEvent;
+	document.onmousedown = onMouseDownEvent;
+	document.onmouseup = onMouseUpEvent;
+	window.onresize = windowOnResizeEvent;
 
- if (gBrowserObj.browser == "Netscape") {
-  document.captureEvents(Event.MOUSEMOVE);
-  document.captureEvents(Event.MOUSEDOWN);
-  document.captureEvents(Event.MOUSEUP);
- }
+	if (gBrowserObj.browser == "Netscape") {
+		document.captureEvents(Event.MOUSEMOVE);
+		document.captureEvents(Event.MOUSEDOWN);
+		document.captureEvents(Event.MOUSEUP);
+	}
 }
-
-
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /*+++++++++++++++++++++  events functions definition  +++++++++++++++++++++++*/
@@ -545,118 +530,119 @@ function initEvents() {
 /*+++++++++++++++++++++++++++  onMouseDownEvent  ++++++++++++++++++++++++++++*/
 
 function onMouseDownEvent(e) {
- gMouseObj.setEvent(e);
- gMouseObj.getCurrentPosition();
+	gMouseObj.setEvent(e);
+	gMouseObj.getCurrentPosition();
 
- if (insideZoomBox()) {
-  if ((gMouseObj.leftButtonPressed()) && (!gMouseObj.dragging)) {
-   gMouseObj.dragging = true;
-   gMouseObj.saveCurrentToStartPosition();
-   gZoomGraphObj.drawSelection(gMouseObj.currentX, gMouseObj.currentY, gMouseObj.currentX, gMouseObj.currentY);
-  } else if (gMouseObj.rightButtonPressed()) {
-   var test = true;
-  }
- }
+	if (insideZoomBox()) {
+		if ((gMouseObj.leftButtonPressed()) && (!gMouseObj.dragging)) {
+			gMouseObj.dragging = true;
+			gMouseObj.saveCurrentToStartPosition();
+			gZoomGraphObj.drawSelection(gMouseObj.currentX, gMouseObj.currentY, gMouseObj.currentX, gMouseObj.currentY);
+		} else if (gMouseObj.rightButtonPressed()) {
+			var test = true;
+		}
+	}
 }
 
 /*+++++++++++++++++++++++++++  onMouseMouveEvent  +++++++++++++++++++++++++++*/
 
 function onMouseMouveEvent(e) {
- gMouseObj.setEvent(e);
- if (gMouseObj.dragging) {
-  gMouseObj.getCurrentPosition();
-  gZoomGraphObj.drawSelection(gMouseObj.startedX, gMouseObj.startedY, gMouseObj.currentX, gMouseObj.currentY);
- }
+	gMouseObj.setEvent(e);
+	if (gMouseObj.dragging) {
+		gMouseObj.getCurrentPosition();
+		gZoomGraphObj.drawSelection(gMouseObj.startedX, gMouseObj.startedY, gMouseObj.currentX, gMouseObj.currentY);
+	}
 }
 
 /*+++++++++++++++++++++++++++++  onMouseUpEvent  ++++++++++++++++++++++++++++*/
 
 function onMouseUpEvent(e) {
- var graphStart;
- var graphEnd;
+	var graphStart;
+	var graphEnd;
 
- var newGraphStart;
- var newGraphEnd;
+	var newGraphStart;
+	var newGraphEnd;
 
- gMouseObj.setEvent(e);
+	gMouseObj.setEvent(e);
 
- graphStart = parseInt(gUrlObj.getUrlParameterValue("graph_start"));
- graphEnd = parseInt(gUrlObj.getUrlParameterValue("graph_end"));
+	graphStart = parseInt(gUrlObj.getUrlParameterValue("graph_start"));
+	graphEnd = parseInt(gUrlObj.getUrlParameterValue("graph_end"));
 
- if ((gMouseObj.rightButtonPressed()) && (insideZoomBox())) {
-  var Timespan = graphEnd - graphStart;
+	if ((gMouseObj.rightButtonPressed()) && (insideZoomBox())) {
+		var Timespan = graphEnd - graphStart;
 
-  gMouseObj.dragging = false;
-  newGraphEnd = graphEnd + Timespan * 2;
-  newGraphStart = graphStart - Timespan * 2;
+		gMouseObj.dragging = false;
+		newGraphEnd = graphEnd + Timespan * 2;
+		newGraphStart = graphStart - Timespan * 2;
 
-  var urlBase = cURLBase;
-  var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
-  var rraId = gUrlObj.getUrlParameterValue("rra_id");
-  var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
-  var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
-  var viewType = gUrlObj.getUrlParameterValue("view_type");
-  var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
+		var urlBase = cURLBase;
+		var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
+		var rraId = gUrlObj.getUrlParameterValue("rra_id");
+		var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
+		var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
+		var viewType = gUrlObj.getUrlParameterValue("view_type");
+		var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
 
-  open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
- }
+		open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
+	}
 
- if ((gMouseObj.leftButtonPressed()) && (gMouseObj.dragging)) {
-  gMouseObj.getCurrentPosition();
-  gMouseObj.saveCurrentToStopPosition();
-  gMouseObj.dragging = false;
+	if ((gMouseObj.leftButtonPressed()) && (gMouseObj.dragging)) {
+		gMouseObj.getCurrentPosition();
+		gMouseObj.saveCurrentToStopPosition();
+		gMouseObj.dragging = false;
 
-  var x1 = gMouseObj.startedX - gZoomGraphObj.zoomBoxLeft;
-  var x2 = gMouseObj.stoppedX - gZoomGraphObj.zoomBoxLeft;
+		var x1 = gMouseObj.startedX - gZoomGraphObj.zoomBoxLeft;
+		var x2 = gMouseObj.stoppedX - gZoomGraphObj.zoomBoxLeft;
 
-  var y1 = gMouseObj.startedY - gZoomGraphObj.zoomBoxTop;
-  var y2 = gMouseObj.stoppedY - gZoomGraphObj.zoomBoxTop;
+		var y1 = gMouseObj.startedY - gZoomGraphObj.zoomBoxTop;
+		var y2 = gMouseObj.stoppedY - gZoomGraphObj.zoomBoxTop;
 
-  var minX = Math.min(x1, x2);
-  var maxX = Math.max(x1, x2);
-  var minY = Math.min(y1, y2);
-  var maxY = Math.max(y1, y2);
+		var minX = Math.min(x1, x2);
+		var maxX = Math.max(x1, x2);
+		var minY = Math.min(y1, y2);
+		var maxY = Math.max(y1, y2);
 
-  if (minX < 0) {
-   minX = 0;
-  }
-  if (maxX > gZoomGraphObj.zoomBoxWidth) {
-   maxX = gZoomGraphObj.zoomBoxWidth;
-  }
-  if (minY < 0) {
-   minY = 0;
-  }
-  if (maxY > gZoomGraphObj.zoomBoxHeight) {
-   maxY = gZoomGraphObj.zoomBoxHeight;
-  }
+		if (minX < 0) {
+			minX = 0;
+		}
 
-  if ((minX != maxX) || (minY != maxY)) {
-   var OnePixel = (graphEnd - graphStart) / gZoomGraphObj.zoomBoxWidth;  // Represent # of seconds for 1 pixel on the graph
+		if (maxX > gZoomGraphObj.zoomBoxWidth) {
+			maxX = gZoomGraphObj.zoomBoxWidth;
+		}
 
-   newGraphEnd = Math.round(graphEnd - (gZoomGraphObj.zoomBoxWidth - maxX) * OnePixel);
-   newGraphStart = Math.round(graphStart + minX * OnePixel);
+		if (minY < 0) {
+			minY = 0;
+		}
 
-//  var urlBase = gUrlObj.getUrlBase();
-   var urlBase = cURLBase;
-   var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
-   var rraId = gUrlObj.getUrlParameterValue("rra_id");
-   var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
-   var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
-   var viewType = gUrlObj.getUrlParameterValue("view_type");
-   var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
+		if (maxY > gZoomGraphObj.zoomBoxHeight) {
+			maxY = gZoomGraphObj.zoomBoxHeight;
+		}
 
-   open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
-  }
- }
+		if ((minX != maxX) || (minY != maxY)) {
+			var OnePixel = (graphEnd - graphStart) / gZoomGraphObj.zoomBoxWidth;  // Represent # of seconds for 1 pixel on the graph
+
+			newGraphEnd = Math.round(graphEnd - (gZoomGraphObj.zoomBoxWidth - maxX) * OnePixel);
+			newGraphStart = Math.round(graphStart + minX * OnePixel);
+
+			//  var urlBase = gUrlObj.getUrlBase();
+			var urlBase = cURLBase;
+			var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
+			var rraId = gUrlObj.getUrlParameterValue("rra_id");
+			var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
+			var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
+			var viewType = gUrlObj.getUrlParameterValue("view_type");
+			var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
+
+			open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
+		}
+	}
 }
 
 /*+++++++++++++++++++++++++++  windowOnResizeEvent  +++++++++++++++++++++++++*/
 
 function windowOnResizeEvent() {
- gZoomGraphObj.refresh();
+	gZoomGraphObj.refresh();
 }
-
-
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /*++++++++++++++++++++++++++++++  main script  ++++++++++++++++++++++++++++++*/
