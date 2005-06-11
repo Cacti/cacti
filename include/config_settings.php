@@ -200,14 +200,14 @@ $settings = array(
 			"max_length" => "100",
 			),
 		"snmp_username" => array(
-			"friendly_name" => "SNMP v3 Username",
+			"friendly_name" => "SNMP Username (v3)",
 			"description" => "The SNMP v3 Username for polling hosts.",
 			"method" => "textbox",
 			"default" => "",
 			"max_length" => "100",
 			),
 		"snmp_password" => array(
-			"friendly_name" => "SNMP v3 Password",
+			"friendly_name" => "SNMP Password (v3)",
 			"description" => "The SNMP v3 Password for polling hosts.",
 			"method" => "textbox_password",
 			"default" => "",
