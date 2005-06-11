@@ -33,7 +33,7 @@ include("./include/auth.php");
 include("./lib/rrd.php");
 include("./lib/html_tree.php");
 include("./include/top_graph_header.php");
-                               
+
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var("rra_id"), "^([0-9]+|all)$");
 input_validate_input_number(get_request_var("local_graph_id"));
@@ -169,9 +169,17 @@ case 'zoom':
 
 	$graph_height = $graph["height"];
 	$graph_width = $graph["width"];
-	if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-		$title_font_size = read_graph_config_option("title_size");
-        } else {
+	if ((read_config_option("rrdtool_version")) == "rrd-1.2.x") {
+		if (read_graph_config_option("title_font") == "") {
+			if (read_config_option("title_font") == "") {
+                $title_font_size = 10;
+			}else {
+				$title_font_size = read_config_option("title_size");
+			}
+		}else {
+			$title_font_size = read_graph_config_option("title_size");
+		}
+	}else {
 		$title_font_size = 0;
 	}
 
