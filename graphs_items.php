@@ -190,7 +190,49 @@ function item_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("local_graph_id"));
+	input_validate_input_number(get_request_var("host_id"));
 	/* ==================================================== */
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_ds_host_id");
+
+		unset($_REQUEST["host_id"]);
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("filter", "sess_ds_filter", "");
+	load_current_session_value("host_id", "sess_ds_host_id", "-1");
+
+	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
+
+	html_start_box("<strong>Data Source by Host</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "");
+
+	include("./include/html/inc_graph_items_filter_table.php");
+
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "and name like '%%" . $_REQUEST["filter"] . "%%'";
+
+	if ($_REQUEST["host_id"] == "-1") {
+		/* Show all items */
+	}elseif ($_REQUEST["host_id"] == "0") {
+		$sql_where .= " and data_local.host_id=0";
+	}elseif (!empty($_REQUEST["host_id"])) {
+		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];
+	}
+
+	/* modify the task_item_id default for filtering */
+	$struct_graph_item["task_item_id"]["sql"] = "select
+			CONCAT_WS('',case when host.description is null then 'No Host' when host.description is not null then host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') as name,
+			data_template_rrd.id
+			from data_template_data,data_template_rrd,data_local
+			left join host on data_local.host_id=host.id
+			where data_template_rrd.local_data_id=data_local.id
+			$sql_where
+			and data_template_data.local_data_id=data_local.id
+			order by name";
 
 	if (!empty($_GET["id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
