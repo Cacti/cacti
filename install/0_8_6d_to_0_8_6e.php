@@ -40,6 +40,12 @@ function upgrade_to_0_8_6e() {
 	db_install_execute("0.8.6e", "ALTER TABLE `snmp_query` ADD KEY name (name);");
 	db_install_execute("0.8.6e", "ALTER TABLE `host_snmp_cache` ADD KEY snmp_query_id (snmp_query_id);");
 
+	/* missing key's to improve Clear Poller Cache performance */
+	db_install_execute("0.8.6e", "ALTER TABLE `snmp_query_graph_rrd` ADD KEY data_template_rrd_id (data_template_rrd_id);");
+	db_install_execute("0.8.6e", "ALTER TABLE `snmp_query_graph_rrd` ADD KEY data_template_id (data_template_id);");
+	db_install_execute("0.8.6e", "ALTER TABLE `data_template_rrd` ADD KEY local_data_template_rrd_id (local_data_template_rrd_id);");
+	db_install_execute("0.8.6e", "ALTER TABLE `data_input_fields` ADD KEY type_code (type_code);");
+
     /* remove NVA indexes from database */
     db_install_execute("0.8.6e", "ALTER TABLE `cdef` DROP INDEX ID, DROP INDEX id_2;");
     db_install_execute("0.8.6e", "ALTER TABLE `cdef_items` DROP INDEX ID;");
