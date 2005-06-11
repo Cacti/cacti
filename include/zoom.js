@@ -330,7 +330,6 @@ function zoomGraphObjDrawSelection (x1, y1, x2, y2) {
 	var cZoomBoxName = "zoomBox";
 	var divObject;
 
-	// calculate relative to zoomBox
 	x1 = x1 - this.zoomBoxLeft;
 	x2 = x2 - this.zoomBoxLeft;
 	y1 = y1 - this.zoomBoxTop;
@@ -568,6 +567,7 @@ function onMouseUpEvent(e) {
 	graphStart = parseInt(gUrlObj.getUrlParameterValue("graph_start"));
 	graphEnd = parseInt(gUrlObj.getUrlParameterValue("graph_end"));
 
+	// zoom out action
 	if ((gMouseObj.rightButtonPressed()) && (insideZoomBox())) {
 		var Timespan = graphEnd - graphStart;
 
@@ -586,54 +586,63 @@ function onMouseUpEvent(e) {
 		open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
 	}
 
+	// zoom in action
 	if ((gMouseObj.leftButtonPressed()) && (gMouseObj.dragging)) {
 		gMouseObj.getCurrentPosition();
 		gMouseObj.saveCurrentToStopPosition();
 		gMouseObj.dragging = false;
 
-		var x1 = gMouseObj.startedX - gZoomGraphObj.zoomBoxLeft;
-		var x2 = gMouseObj.stoppedX - gZoomGraphObj.zoomBoxLeft;
+		// check for appropriate selection zone
+		if (((gMouseObj.startedX < gZoomGraphObj.zoomBoxLeft) && (gMouseObj.stoppedX < gZoomGraphObj.zoomBoxLeft)) ||
+			((gMouseObj.startedX > gZoomGraphObj.zoomBoxRight) && (gMouseObj.stoppedX > gZoomGraphObj.zoomBoxRight)) ||
+			((gMouseObj.startedY > gZoomGraphObj.zoomBoxBottom) && (gMouseObj.stoppedY > gZoomGraphObj.zoomBoxBottom)) ||
+			((gMouseObj.startedY < gZoomGraphObj.zoomBoxTop) && (gMouseObj.stoppedY < gZoomGraphObj.zoomBoxTop))) {
+			// alert("Selection Outside of Allowed Area");
+		}else {
+			var x1 = gMouseObj.startedX - gZoomGraphObj.zoomBoxLeft;
+			var x2 = gMouseObj.stoppedX - gZoomGraphObj.zoomBoxLeft;
 
-		var y1 = gMouseObj.startedY - gZoomGraphObj.zoomBoxTop;
-		var y2 = gMouseObj.stoppedY - gZoomGraphObj.zoomBoxTop;
+			var y1 = gMouseObj.startedY - gZoomGraphObj.zoomBoxTop;
+			var y2 = gMouseObj.stoppedY - gZoomGraphObj.zoomBoxTop;
 
-		var minX = Math.min(x1, x2);
-		var maxX = Math.max(x1, x2);
-		var minY = Math.min(y1, y2);
-		var maxY = Math.max(y1, y2);
+			var minX = Math.min(x1, x2);
+			var maxX = Math.max(x1, x2);
+			var minY = Math.min(y1, y2);
+			var maxY = Math.max(y1, y2);
 
-		if (minX < 0) {
-			minX = 0;
-		}
+			if (minX < 0) {
+				minX = 0;
+			}
 
-		if (maxX > gZoomGraphObj.zoomBoxWidth) {
-			maxX = gZoomGraphObj.zoomBoxWidth;
-		}
+			if (maxX > gZoomGraphObj.zoomBoxWidth) {
+				maxX = gZoomGraphObj.zoomBoxWidth;
+			}
 
-		if (minY < 0) {
-			minY = 0;
-		}
+			if (minY < 0) {
+				minY = 0;
+			}
 
-		if (maxY > gZoomGraphObj.zoomBoxHeight) {
-			maxY = gZoomGraphObj.zoomBoxHeight;
-		}
+			if (maxY > gZoomGraphObj.zoomBoxHeight) {
+				maxY = gZoomGraphObj.zoomBoxHeight;
+			}
 
-		if ((minX != maxX) || (minY != maxY)) {
-			var OnePixel = (graphEnd - graphStart) / gZoomGraphObj.zoomBoxWidth;  // Represent # of seconds for 1 pixel on the graph
+			if ((minX != maxX) || (minY != maxY)) {
+				var OnePixel = (graphEnd - graphStart) / gZoomGraphObj.zoomBoxWidth;  // Represent # of seconds for 1 pixel on the graph
 
-			newGraphEnd = Math.round(graphEnd - (gZoomGraphObj.zoomBoxWidth - maxX) * OnePixel);
-			newGraphStart = Math.round(graphStart + minX * OnePixel);
+				newGraphEnd = Math.round(graphEnd - (gZoomGraphObj.zoomBoxWidth - maxX) * OnePixel);
+				newGraphStart = Math.round(graphStart + minX * OnePixel);
 
-			//  var urlBase = gUrlObj.getUrlBase();
-			var urlBase = cURLBase;
-			var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
-			var rraId = gUrlObj.getUrlParameterValue("rra_id");
-			var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
-			var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
-			var viewType = gUrlObj.getUrlParameterValue("view_type");
-			var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
+				//  var urlBase = gUrlObj.getUrlBase();
+				var urlBase = cURLBase;
+				var localGraphId = gUrlObj.getUrlParameterValue("local_graph_id");
+				var rraId = gUrlObj.getUrlParameterValue("rra_id");
+				var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
+				var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
+				var viewType = gUrlObj.getUrlParameterValue("view_type");
+				var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
 
-			open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
+				open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
+			}
 		}
 	}
 }
