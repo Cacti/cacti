@@ -20,6 +20,8 @@ Cacti CHANGELOG
 -bug: Handle STACK graph items properly in RRDtool 1.2.
 -bug: Prevent data query recaches if the device returns empty input.
 -bug: Fix potential issues with graph gaps when using a large number of poller processes.
+-bug: Fix issues when zooming with new RRDtool 1.2 title fonts with a point size other than 10
+-bug: Fix issues when zooming outside of the select areas causing a broken graph
 -feature: Add ability to filter by host status as well as add ability to filter accross both description and hostname
 -feature: Add additional options to control RRDtool 1.2 fonts.
 -feature: Allow the user to Enable/Disable Data Sources from the user interface and automatically disable hosts when deleting a device.
