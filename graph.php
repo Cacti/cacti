@@ -169,6 +169,11 @@ case 'zoom':
 
 	$graph_height = $graph["height"];
 	$graph_width = $graph["width"];
+	if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+		$title_font_size = read_graph_config_option("title_size");
+        } else {
+		$title_font_size = 0;
+	}
 
 	?>
 	<tr bgcolor='#<?php print $colors["header_panel"];?>'>
@@ -183,7 +188,7 @@ case 'zoom':
 			<table width='1' cellpadding='0'>
 				<tr>
 					<td>
-						<img id='zoomGraphImage' src='graph_image.php?local_graph_id=<?php print $_GET["local_graph_id"];?>&rra_id=<?php print $_GET["rra_id"];?>&view_type=<?php print $_REQUEST["view_type"];?>&graph_start=<?php print $graph_start;?>&graph_end=<?php print $graph_end;?>&graph_height=<?php print $graph_height;?>&graph_width=<?php print $graph_width;?>' border='0' alt='<?php print $graph_title;?>'>
+						<img id='zoomGraphImage' src='graph_image.php?local_graph_id=<?php print $_GET["local_graph_id"];?>&rra_id=<?php print $_GET["rra_id"];?>&view_type=<?php print $_REQUEST["view_type"];?>&graph_start=<?php print $graph_start;?>&graph_end=<?php print $graph_end;?>&graph_height=<?php print $graph_height;?>&graph_width=<?php print $graph_width;?>&title_font_size=<?php print $title_font_size ?>' border='0' alt='<?php print $graph_title;?>'>
 					</td>
 					<td valign='top' style='padding: 3px;'>
 						<a href='graph.php?action=properties&local_graph_id=<?php print $_GET["local_graph_id"];?>&rra_id=<?php print $_GET["rra_id"];?>&view_type=<?php print $_REQUEST["view_type"];?>&graph_start=<?php print $graph_start;?>&graph_end=<?php print $graph_end;?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a>

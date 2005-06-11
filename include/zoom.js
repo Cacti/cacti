@@ -217,8 +217,16 @@ function zoomGraphObj(zoomGraphName) {
 function zoomGraphObjRefresh() {
 //  Constants
  var cZoomBoxName = "zoomBox";
- var cZoomBoxTopOffsetWOText = 15 - 1;
- var cZoomBoxTopOffsetWText = 32 - 1;
+
+ var titleFontSize = parseInt(gUrlObj.getUrlParameterValue("title_font_size"));
+
+ if (titleFontSize == 0) {
+  var cZoomBoxTopOffsetWOText = 15 - 1;
+  var cZoomBoxTopOffsetWText = 32 - 1;
+ } else {
+   var cZoomBoxTopOffsetWOText = titleFontSize + (titleFontSize * 1.6);
+   var cZoomBoxTopOffsetWText = titleFontSize + (titleFontSize * 1.6) + 10;
+ }
  var cZoomBoxRightOffset = -16;
 
  var cZoomSensitiveZoneName = "zoomSensitiveZone";
@@ -255,7 +263,12 @@ function zoomGraphObjRefresh() {
  // we're at the top.  Along the way we add in each element's
  // coordinates to get the final answer
 
- left = 0;
+
+ if (titleFontSize == 0) {
+  left = -3;
+ } else {
+  left = -12;
+ }
  top = 0;
  do
  {
@@ -583,8 +596,9 @@ function onMouseUpEvent(e) {
   var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
   var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
   var viewType = gUrlObj.getUrlParameterValue("view_type");
+  var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
 
-  open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth, "_self");
+  open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
  }
 
  if ((gMouseObj.leftButtonPressed()) && (gMouseObj.dragging)) {
@@ -629,8 +643,9 @@ function onMouseUpEvent(e) {
    var graphWidth = gUrlObj.getUrlParameterValue("graph_width");
    var graphHeight = gUrlObj.getUrlParameterValue("graph_height");
    var viewType = gUrlObj.getUrlParameterValue("view_type");
+   var titleFontSize = gUrlObj.getUrlParameterValue("title_font_size");
 
-   open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth, "_self");
+   open(urlBase + "&local_graph_id=" + localGraphId + "&rra_id=" + rraId + "&view_type=" + viewType + "&graph_start=" + newGraphStart + "&graph_end=" + newGraphEnd + "&graph_height=" + graphHeight + "&graph_width=" + graphWidth + "&title_font_size=" + titleFontSize, "_self");
   }
  }
 }

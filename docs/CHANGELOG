@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6e
+-bug: Graph zoom feature had incorrect bounding box when using RRD 1.2.x
 -bug#0000428: Unable to try login again after Access Denied
 -bug#0000453: SPAN tag between each character of GraphTitle in Graph Management
 -bug#0000143: Allow the user to enter 'U' for unknown minimum and maximum data source input values.
