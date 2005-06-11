@@ -149,7 +149,8 @@ $image_types = array(1 =>
 
 $snmp_versions = array(1 =>
 	"Version 1",
-	"Version 2");
+	"Version 2",
+	"Version 3");
 
 $logfile_options = array(1 =>
 	"Logfile Only",
