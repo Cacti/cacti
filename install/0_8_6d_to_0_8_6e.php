@@ -32,6 +32,9 @@ function upgrade_to_0_8_6e() {
 	db_install_execute("0.8.6e", "ALTER TABLE `graph_templates_graph` CHANGE `lower_limit` `lower_limit` VARCHAR( 20 ) NOT NULL;");
 	db_install_execute("0.8.6e", "ALTER TABLE `poller_item` ADD `rrd_step` MEDIUMINT( 8 ) UNSIGNED AFTER `rrd_num`, ADD `rrd_next_step` MEDIUMINT( 8 ) AFTER `rrd_step`;");
 
+	/* increase size of ping status field to handle more extensive messages */
+	db_install_execute("0.8.6e", "ALTER TABLE `host` CHANGE `status_last_error` `status_last_error` VARCHAR( 100 );");
+
 	/* missing key's to improve Treeview performance */
 	db_install_execute("0.8.6e", "ALTER TABLE `graph_local` ADD KEY host_id (host_id), ADD KEY graph_template_id (graph_template_id), ADD KEY snmp_query_id (snmp_query_id), ADD KEY snmp_index (snmp_index);");
 	db_install_execute("0.8.6e", "ALTER TABLE `graph_templates_graph` ADD KEY title_cache (title_cache);");
