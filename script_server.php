@@ -175,6 +175,9 @@ while (1) {
 	}else {
 		cacti_log("ERROR: Input Expected, Script Server Terminating", false, "PHPSVR");
 		fputs(STDOUT, "ERROR: Input Expected, Script Server Terminating\n");
+
+		/* parent abended, let's show the parent as done  */
+		db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
 		exit (-1);
 	}
 }
