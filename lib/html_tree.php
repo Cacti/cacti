@@ -27,6 +27,7 @@
 function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	global $colors, $current_user, $config;
 
+	include($config["include_path"] . "/config_arrays.php");
 	include_once($config["library_path"] . "/tree.php");
 
 	$search_key = "";
@@ -51,6 +52,14 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		$sql_join = "left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 			left join graph_templates on graph_templates.id=graph_local.graph_template_id
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
+	}
+
+	/* include time span selector */
+	if (read_graph_config_option("timespan_sel") == "on") {
+		html_graph_start_box(3, false);
+		include("./include/html/inc_timespan_selector.php");
+		html_graph_end_box();
+		print "<br>";
 	}
 
 	$heirarchy = db_fetch_assoc("select
@@ -727,17 +736,33 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 
 	/* print out the actual graph html */
 	if (read_graph_config_option("thumbnail_section_tree_1") == "on") {
-		print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title'
-			src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
-			read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
+		if (read_graph_config_option("timespan_sel") == "on") {
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title'
+				src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
+				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
-		/* if we are at the end of a row, start a new one */
-		if ($graph_counter % read_graph_config_option("num_columns") == 0) {
-			print "</tr><tr>\n";
+			/* if we are at the end of a row, start a new one */
+			if ($graph_counter % read_graph_config_option("num_columns") == 0) {
+				print "</tr><tr>\n";
+			}
+		}else{
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title'
+				src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
+				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
+
+			/* if we are at the end of a row, start a new one */
+			if ($graph_counter % read_graph_config_option("num_columns") == 0) {
+				print "</tr><tr>\n";
+			}
 		}
 	}else{
-		print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
-		print "</tr><tr>\n";
+		if (read_graph_config_option("timespan_sel") == "on") {
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
+			print "</tr><tr>\n";
+		}else{
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
+			print "</tr><tr>\n";
+		}
 	}
 
 	/* if we are at the end of the graph group, end the nested table */
