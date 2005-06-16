@@ -237,7 +237,7 @@ function form_save() {
 					$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id$name_modifier"]) ? $_POST["data_input_field_id$name_modifier"] : "0"), "data_input_field_id$name_modifier", "", true, 3);
 
 					$data_template_rrd_id = sql_save($save3, "data_template_rrd");
-	print "<pre>";print_r($save3);print "</pre>";
+
 					if ($data_template_rrd_id) {
 						raise_message(1);
 					}else{
