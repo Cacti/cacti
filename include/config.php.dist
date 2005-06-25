@@ -32,6 +32,19 @@ $database_username = "cactiuser";
 $database_password = "cactiuser";
 
 /* ----- you probably do not need to change anything below this line ----- */
+
+/* Files that do not need http header information - Command line scripts */
+$no_http_header_files = array(
+	"poller.php",
+	"cmd.php",
+	"query_host_cpu.php",
+	"query_host_partitions.php",
+	"sql.php",
+	"ss_host_cpu.php",
+	"ss_host_disk.php",
+	"ss_sql.php"
+);
+
 $config = array();
 
 /* this should be auto-detected, set it manually if needed */
@@ -63,7 +76,8 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
-if ((isset($no_http_headers) ? $no_http_headers : false) != true) {
+
+if (! in_array(basename($_SERVER["PHP_SELF"]),$no_http_header_files,true)) {
 	/* we don't want these pages cached */
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
