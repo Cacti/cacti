@@ -1,5 +1,10 @@
 Cacti CHANGELOG
 
+0.8.6f
+-security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability
+-security: Hardened PHP Project Advisory #022005 - Cacti Multiple SQL Injection Vulnerabilities 
+-security: Hardened PHP Project Advisory #032005 - Cacti Remote Command Execution Vulnerability
+
 0.8.6e
 -bug#0000143: Allow the user to enter 'U' for unknown minimum and maximum data source input values.
 -bug#0000377: Fix logarithmic graph creation issues.
