@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6f
+-bug: Stop the poller cmd.php from attempting to poll an invalid data source (snmp_version == 0)
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability
 -security: Hardened PHP Project Advisory #022005 - Cacti Multiple SQL Injection Vulnerabilities 
 -security: Hardened PHP Project Advisory #032005 - Cacti Remote Command Execution Vulnerability
