@@ -118,7 +118,7 @@ function add_tree_names_to_actions_array() {
 function form_save() {
 	if ((isset($_POST["save_component_graph_new"])) && (!empty($_POST["graph_template_id"]))) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("graph_template_id"));
+		input_validate_input_number(get_request_var_post("graph_template_id"));
 		/* ==================================================== */
 
 		$save["id"] = $_POST["local_graph_id"];
@@ -135,8 +135,8 @@ function form_save() {
 
 	if (isset($_POST["save_component_graph"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("graph_template_id"));
-		input_validate_input_number(get_request_var("_graph_template_id"));
+		input_validate_input_number(get_request_var_post("graph_template_id"));
+		input_validate_input_number(get_request_var_post("_graph_template_id"));
 		/* ==================================================== */
 
 		$save1["id"] = $_POST["local_graph_id"];
@@ -204,7 +204,7 @@ function form_save() {
 
 	if (isset($_POST["save_component_input"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("local_graph_id"));
+		input_validate_input_number(get_request_var_post("local_graph_id"));
 		/* ==================================================== */
 
 		/* first; get the current graph template id */
@@ -301,7 +301,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var("graph_template_id"));
+				input_validate_input_number(get_request_var_post("graph_template_id"));
 				/* ==================================================== */
 
 				change_graph_template($selected_items[$i], $_POST["graph_template_id"], true);
@@ -326,8 +326,8 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var("tree_id"));
-				input_validate_input_number(get_request_var("tree_item_id"));
+				input_validate_input_number(get_request_var_post("tree_id"));
+				input_validate_input_number(get_request_var_post("tree_item_id"));
 				/* ==================================================== */
 
 				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_GRAPH, $_POST["tree_item_id"], "", $selected_items[$i], read_graph_config_option("default_rra_id"), 0, 0, 0, false);
@@ -336,7 +336,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var("host_id"));
+				input_validate_input_number(get_request_var_post("host_id"));
 				/* ==================================================== */
 
 				db_execute("update graph_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
@@ -991,8 +991,8 @@ function graph() {
 	global $colors, $graph_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("host_id"));
-	input_validate_input_number(get_request_var("page"));
+	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
 
 	/* clean up search string */

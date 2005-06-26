@@ -128,7 +128,7 @@ function form_save() {
 		}
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var_post("id"));
 		/* ==================================================== */
 
 		$redirect_back = false;

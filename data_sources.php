@@ -100,8 +100,8 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if ((isset($_POST["save_component_data_source_new"])) && (!empty($_POST["data_template_id"]))) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("host_id"));
-		input_validate_input_number(get_request_var("data_template_id"));
+		input_validate_input_number(get_request_var_post("host_id"));
+		input_validate_input_number(get_request_var_post("data_template_id"));
 		/* ==================================================== */
 
 		$save["id"] = $_POST["local_data_id"];
@@ -123,7 +123,7 @@ function form_save() {
 
 	if ((isset($_POST["save_component_data"])) && (!is_error_message())) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("data_template_data_id"));
+		input_validate_input_number(get_request_var_post("data_template_data_id"));
 		/* ==================================================== */
 
 		/* ok, first pull out all 'input' values so we know how much to save */
@@ -173,10 +173,10 @@ function form_save() {
 
 	if ((isset($_POST["save_component_data_source"])) && (!is_error_message())) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("local_data_id"));
-		input_validate_input_number(get_request_var("current_rrd"));
-		input_validate_input_number(get_request_var("data_template_id"));
-		input_validate_input_number(get_request_var("host_id"));
+		input_validate_input_number(get_request_var_post("local_data_id"));
+		input_validate_input_number(get_request_var_post("current_rrd"));
+		input_validate_input_number(get_request_var_post("data_template_id"));
+		input_validate_input_number(get_request_var_post("host_id"));
 		/* ==================================================== */
 
 		$save1["id"] = $_POST["local_data_id"];
@@ -358,7 +358,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var("data_template_id"));
+				input_validate_input_number(get_request_var_post("data_template_id"));
 				/* ==================================================== */
 
 				change_data_template($selected_items[$i], $_POST["data_template_id"]);
@@ -367,7 +367,7 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var("host_id"));
+				input_validate_input_number(get_request_var_post("host_id"));
 				/* ==================================================== */
 
 				db_execute("update data_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
@@ -946,8 +946,8 @@ function ds() {
 	global $colors, $ds_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("host_id"));
-	input_validate_input_number(get_request_var("page"));
+	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
 
 	/* clean up search string */

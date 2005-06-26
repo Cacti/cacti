@@ -73,8 +73,8 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if (isset($_POST["save_component_item"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("graph_template_id"));
-		input_validate_input_number(get_request_var("task_item_id"));
+		input_validate_input_number(get_request_var_post("graph_template_id"));
+		input_validate_input_number(get_request_var_post("task_item_id"));
 		/* ==================================================== */
 
 		global $graph_item_types;

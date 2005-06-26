@@ -97,9 +97,9 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
-		input_validate_input_number(get_request_var("snmp_query_id"));
-		input_validate_input_number(get_request_var("reindex_method"));
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("snmp_query_id"));
+		input_validate_input_number(get_request_var_post("reindex_method"));
 		/* ==================================================== */
 
 		db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . ")");
@@ -113,8 +113,8 @@ function form_save() {
 
 	if ((!empty($_POST["add_gt_y"])) && (!empty($_POST["graph_template_id"]))) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
-		input_validate_input_number(get_request_var("graph_template_id"));
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("graph_template_id"));
 		/* ==================================================== */
 
 		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $_POST["id"] . "," . $_POST["graph_template_id"] . ")");
@@ -655,9 +655,9 @@ function host() {
 	global $colors, $device_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("host_template_id"));
-	input_validate_input_number(get_request_var("page"));
-	input_validate_input_number(get_request_var("host_status"));
+	input_validate_input_number(get_request_var_request("host_template_id"));
+	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("host_status"));
 	/* ==================================================== */
 
 	/* clean up search string */

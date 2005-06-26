@@ -344,7 +344,7 @@ function graphs() {
 	global $colors;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("host_id"));
+	input_validate_input_number(get_request_var_request("host_id"));
 	/* ==================================================== */
 
 	/* use the first host in the list as the default */

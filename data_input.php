@@ -76,7 +76,7 @@ function form_save() {
 
 	if (isset($_POST["save_component_data_input"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var_post("id"));
 		/* ==================================================== */
 
 		$save["id"] = $_POST["id"];
@@ -109,9 +109,9 @@ function form_save() {
 		}
 	}elseif (isset($_POST["save_component_field"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
-		input_validate_input_number(get_request_var("data_input_id"));
-		input_validate_input_regex(get_request_var("input_output"), "^(in|out)$");
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("data_input_id"));
+		input_validate_input_regex(get_request_var_post("input_output"), "^(in|out)$");
 		/* ==================================================== */
 
 		$save["id"] = $_POST["id"];

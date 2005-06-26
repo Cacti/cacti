@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004 Ian Berry                                            |
+ | Copyright (C) 2005 The Cacti Group                                      |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,14 +13,12 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | cacti: a php-based graphing solution                                    |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
- | Most of this code has been designed, written and is maintained by       |
- | Ian Berry. See about.php for specific developer credit. Any questions   |
- | or comments regarding this code should be directed to:                  |
- | - iberry@raxnet.net                                                     |
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
  +-------------------------------------------------------------------------+
- | - raXnet - http://www.raxnet.net/                                       |
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -42,6 +40,8 @@
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
 	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items");
 
+	reset($form_array);
+
 	/* loop through each available field */
 	while (list($field_name, $field_array) = each($form_array)) {
 		/* loop through each sub-field that we are going to check for variables */
@@ -58,6 +58,9 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 					}else{
 						/* the existing value is probably a single variable */
 						$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
+
+						/* extra global variables */
+						//$form_array[$field_name][$field_to_check] = str_replace("|var:current_page|", basename($_SERVER["PHP_SELF"]), $field_array[$field_to_check]);
 					}
 				}else{
 					/* copy the value down from the array/key specified in the variable */
@@ -92,10 +95,12 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value) {
    @arg $html_boolean - the value of the HTML checkbox
    @returns - true or false based on the value of the HTML checkbox */
 function html_boolean($html_boolean) {
-	if ($html_boolean == "on") {
-		return true;
+	if ($html_boolean == "") {
+		return 0;
+	}else if ($html_boolean == "on") {
+		return 1;
 	}else{
-		return false;
+		return $html_boolean;
 	}
 }
 
@@ -106,9 +111,9 @@ function html_boolean($html_boolean) {
      checkbox */
 function html_boolean_friendly($html_boolean) {
 	if ($html_boolean == "on") {
-		return "Selected";
+		return _("Selected");
 	}else{
-		return "Not Selected";
+		return _("Not Selected");
 	}
 }
 
@@ -123,24 +128,6 @@ function get_checkbox_style() {
 		return "padding: 0px; margin: 0px;";
 	}elseif (get_web_browser() == "other") {
 		return "padding: 4px; margin: 4px;";
-	}
-}
-
-/* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
-     returning a default value if the request variable does not exist
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_REQUEST array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_REQUEST array
-   @returns - the value of the request variable */
-function get_request_var($name, $default = "")
-{
-	if (isset($_REQUEST[$name]))
-	{
-		return $_REQUEST[$name];
-	} else
-	{
-		return $default;
 	}
 }
 
@@ -175,17 +162,17 @@ function get_colored_device_status($disabled, $status) {
 		);
 
 	if ($disabled) {
-		return "<span style='color: #$disabled_color'>Disabled</a>";
+		return "<span style='color: #$disabled_color'>" . _("Disabled") . "</a>";
 	}else{
 		switch ($status) {
 			case HOST_DOWN:
-				return "<span style='color: #" . $status_colors[HOST_DOWN] . "'>Down</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_DOWN] . "'>" . _("Down") . "</a>"; break;
 			case HOST_RECOVERING:
-				return "<span style='color: #" . $status_colors[HOST_RECOVERING] . "'>Recovering</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_RECOVERING] . "'>" . _("Recovering") . "</a>"; break;
 			case HOST_UP:
-				return "<span style='color: #" . $status_colors[HOST_UP] . "'>Up</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_UP] . "'>" . _("Up") . "</a>"; break;
 			default:
-				return "<span style='color: #0000ff'>Unknown</a>"; break;
+				return "<span style='color: #0000ff'>" . _("Unknown") . "</a>"; break;
 		}
 	}
 }

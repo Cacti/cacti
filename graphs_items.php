@@ -188,9 +188,9 @@ function item_edit() {
 	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("local_graph_id"));
-	input_validate_input_number(get_request_var("host_id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("local_graph_id"));
+	input_validate_input_number(get_request_var_request("host_id"));
 	/* ==================================================== */
 
 	/* if the user pushed the 'clear' button */
@@ -220,18 +220,18 @@ function item_edit() {
 		$sql_where = " and data_local.host_id=" . $_REQUEST["host_id"];
 	}
 
-	if (!empty($_GET["id"])) {
-		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
-		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["local_graph_id"]);
+	if (!empty($_REQUEST["id"])) {
+		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_REQUEST["id"]);
+		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_REQUEST["local_graph_id"]);
 	}
 
-	$header_label = "[edit graph: " . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]) . "]";
+	$header_label = "[edit graph: " . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $_REQUEST["local_graph_id"]) . "]";
 
 	html_start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", "");
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
-	if (!empty($_GET["local_graph_id"])) {
-		$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_GET["local_graph_id"] . " order by sequence DESC");
+	if (!empty($_REQUEST["local_graph_id"])) {
+		$default = db_fetch_row("select task_item_id from graph_templates_item where local_graph_id=" . $_REQUEST["local_graph_id"] . " order by sequence DESC");
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
@@ -247,7 +247,7 @@ function item_edit() {
 			left join host on data_local.host_id=host.id
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id
-			" . (((!empty($host_id)) || (!empty($_GET["host_id"]))) ? (!empty($host_id) ? " and data_local.host_id=$host_id" : " and data_local.host_id=" . $_GET["host_id"]) : "") . "
+			" . (((!empty($host_id)) || (!empty($_REQUEST["host_id"]))) ? (!empty($host_id) ? " and data_local.host_id=$host_id" : " and data_local.host_id=" . $_REQUEST["host_id"]) : "") . "
 			order by name";
 	}
 
@@ -269,7 +269,7 @@ function item_edit() {
 			)
 		);
 
-	form_hidden_box("local_graph_id", $_GET["local_graph_id"], "0");
+	form_hidden_box("local_graph_id", $_REQUEST["local_graph_id"], "0");
 	form_hidden_box("graph_template_item_id", (isset($template_item) ? $template_item["id"] : "0"), "");
 	form_hidden_box("local_graph_template_item_id", (isset($template_item) ? $template_item["local_graph_template_item_id"] : "0"), "");
 	form_hidden_box("graph_template_id", (isset($template_item) ? $template_item["graph_template_id"] : "0"), "");
@@ -279,5 +279,5 @@ function item_edit() {
 
 	html_end_box();
 
-	form_save_button("graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
+	form_save_button("graphs.php?action=graph_edit&id=" . $_REQUEST["local_graph_id"]);
 }

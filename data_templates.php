@@ -83,8 +83,8 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	if (isset($_POST["save_component_template"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("data_input_id"));
-		input_validate_input_number(get_request_var("data_template_id"));
+		input_validate_input_number(get_request_var_post("data_input_id"));
+		input_validate_input_number(get_request_var_post("data_template_id"));
 		/* ==================================================== */
 
 		/* save: data_template */

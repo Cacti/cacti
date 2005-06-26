@@ -111,8 +111,8 @@ case 'preview':
 	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("host_id"));
-	input_validate_input_number(get_request_var("page"));
+	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -145,8 +145,8 @@ case 'preview':
 	}
 
 	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
-	if (isset($_GET["style"])) {
-		if ($_GET["style"] == "selective") {
+	if (isset($_REQUEST["style"])) {
+		if ($_REQUEST["style"] == "selective") {
 			$i = 0;
 			while (list($var, $val) = each($_GET)) {
 				if (ereg('^graph_([0-9]+)$', $var, $matches)) {
@@ -164,7 +164,7 @@ case 'preview':
 				$_REQUEST["host_id"] = "0";
 
 				/* Fix to avoid error in 'preview' after selection in 'list' : Notice: Undefined index: rra_id in C:\apache2\htdocs\cacti\graph_view.php on line 142 */
-				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : $_GET["rra_id"];
+				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : $_REQUEST["rra_id"];
 			}
 		}
 	}
