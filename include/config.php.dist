@@ -46,6 +46,7 @@ $no_http_header_files = array(
 );
 
 $config = array();
+$colors = array();
 
 /* this should be auto-detected, set it manually if needed */
 $config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
@@ -159,6 +160,6 @@ include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.6e";
+$config["cacti_version"] = "0.8.6f";
 
 ?>
