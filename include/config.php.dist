@@ -76,8 +76,7 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
-
-if (! in_array(basename($_SERVER["PHP_SELF"]),$no_http_header_files,true)) {
+if (! in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) {
 	/* we don't want these pages cached */
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -109,6 +108,31 @@ if (! in_array(basename($_SERVER["PHP_SELF"]),$no_http_header_files,true)) {
 			session_destroy();
 		}
 	}
+}
+
+/* emulate 'register_globals' = 'off' if turned on */
+if ((bool)ini_get("register_globals")) {
+	$not_unset = array("_GET", "_POST", "_COOKIE", "_SERVER", "_SESSION", "_ENV", "_FILES", "database_type", "database_default", "database_hostname", "database_username", "database_password", "config", "colors");
+
+	/* Not only will array_merge give a warning if a parameter is not an array, it will
+	* actually fail. So we check if HTTP_SESSION_VARS has been initialised. */
+	if (!isset($_SESSION)) {
+		$_SESSION = array();
+	}
+
+	/* Merge all into one extremely huge array; unset this later */
+	$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_SESSION, $_ENV, $_FILES);
+
+	unset($input["input"]);
+	unset($input["not_unset"]);
+
+	while (list($var,) = @each($input)) {
+		if (!in_array($var, $not_unset)) {
+			unset($$var);
+		}
+	}
+
+	unset($input);
 }
 
 /* display ALL errors */
