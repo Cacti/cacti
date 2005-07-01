@@ -90,7 +90,11 @@ function form_save() {
 	/* graph permissions */
 	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("perm_graphs"));
+		input_validate_input_number(get_request_var_post("perm_trees"));
+		input_validate_input_number(get_request_var_post("perm_hosts"));
+		input_validate_input_number(get_request_var_post("perm_graph_templates"));
 		/* ==================================================== */
 
 		$add_button_clicked = false;
@@ -118,7 +122,7 @@ function form_save() {
 	/* user management save */
 	if (isset($_POST["save_component_user"])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var_post("id"));
 		/* ==================================================== */
 
 		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {

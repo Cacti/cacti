@@ -226,6 +226,7 @@ function data_query_item_movedown_dssv() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("data_template_id"));
+	input_validate_input_number(get_request_var("snmp_query_graph_id"));
 	/* ==================================================== */
 
 	move_item_down("snmp_query_graph_rrd_sv", $_GET["id"], "data_template_id=" . $_GET["data_template_id"] . " and snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
@@ -235,6 +236,7 @@ function data_query_item_moveup_dssv() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("data_template_id"));
+	input_validate_input_number(get_request_var("snmp_query_graph_id"));
 	/* ==================================================== */
 
 	move_item_up("snmp_query_graph_rrd_sv", $_GET["id"], "data_template_id=" . $_GET["data_template_id"] . " and snmp_query_graph_id=" . $_GET["snmp_query_graph_id"] . " and field_name='" . $_GET["field_name"] . "'");
