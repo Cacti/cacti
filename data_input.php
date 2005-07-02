@@ -234,9 +234,15 @@ function field_edit() {
 	$form_array = array();
 
 	/* field name */
-	if (($data_input["type_id"] == "1") && ($current_field_type == "in")) { /* script */
+	if ((($data_input["type_id"] == "1") || ($data_input["type_id"] = "5")) && ($current_field_type == "in")) { /* script */
 		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
-	}elseif (($data_input["type_id"] == "2") || ($data_input["type_id"] == "3") || ($data_input["type_id"] == "4") || ($data_input["type_id"] == "5") || ($data_input["type_id"] == "6") || ($data_input["type_id"] == "7") || ($data_input["type_id"] == "8") || ($current_field_type == "out")) { /* snmp */
+	}elseif (($data_input["type_id"] == "2") ||
+			($data_input["type_id"] == "3") ||
+			($data_input["type_id"] == "4") ||
+			($data_input["type_id"] == "6") ||
+			($data_input["type_id"] == "7") ||
+			($data_input["type_id"] == "8") ||
+			($current_field_type == "out")) { /* snmp */
 		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, (isset($field) ? $field : array()));
 	}
 

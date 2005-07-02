@@ -515,7 +515,9 @@ function template_edit() {
 		</tr>\n";
 
 	/* data input fields list */
-	if ((empty($template_data["data_input_id"])) || (db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) > "1")) {
+	if ((empty($template_data["data_input_id"])) ||
+		((db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) != "1") &&
+		(db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) != "5"))) {
 		unset($struct_data_source_item["data_input_field_id"]);
 	}else{
 		$struct_data_source_item["data_input_field_id"]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='out' and update_rra='on' order by data_name,name";
