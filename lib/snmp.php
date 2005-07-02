@@ -44,6 +44,11 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	$retries = read_config_option("snmp_retries");
 	if ($retries == "") $retries = 3;
 
+	/* do not attempt to poll invalid combinations */
+	if (($version == 0) || (($community == "") && ($version != 3))) {
+		return "U";
+	}
+
 	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
@@ -73,7 +78,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			exec(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
 		}else {
-			exec(read_config_option("path_snmpget") . " -O fntUev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
+			exec(read_config_option("path_snmpget") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
 		}
 	}
 

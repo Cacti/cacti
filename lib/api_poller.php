@@ -49,6 +49,10 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 				return true;
 			}
 		} else {
+			if ($poller_action_id == 0) {
+				return true;
+			}
+
 			$host["id"] = 0;
 			$host["snmp_community"] = "";
 			$host["snmp_timeout"] = "";
@@ -57,6 +61,13 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			$host["snmp_version"] = "";
 			$host["snmp_port"] = "";
 			$host["hostname"] = "None";
+		}
+
+		if ($poller_action_id == 0) {
+			if (($host["snmp_version"] < 1) || ($host["snmp_version"] > 3) ||
+				($host["snmp_community"] == "" && $host["snmp_version"] != 3)) {
+				return true;
+			}
 		}
 
 		return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,

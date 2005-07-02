@@ -209,15 +209,15 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
-							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n", $print_data_to_stdout);
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] <= trim($output))) {
-							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n", $print_data_to_stdout);
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] >= trim($output))) {
-							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"] . ".\n", $print_data_to_stdout);
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}
@@ -252,20 +252,25 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		if (!$host_down) {
 			switch ($item["action"]) {
 			case POLLER_ACTION_SNMP: /* snmp */
-				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], SNMP_CMDPHP);
-
-				/* remove any quotes from string */
-				$output = strip_quotes($output);
-
-				if (!validate_result($output)) {
-					if (strlen($output) > 20) {
-						$strout = 20;
-					} else {
-						$strout = strlen($output);
-					}
-
-					cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+				if (($item["snmp_version"] == 0) || (($item["snmp_community"] == "") && ($item["snmp_version"] != 3))) {
+					cacti_log("Host[$host_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout);
 					$output = "U";
+				}else {
+					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], SNMP_CMDPHP);
+
+					/* remove any quotes from string */
+					$output = strip_quotes($output);
+
+					if (!validate_result($output)) {
+						if (strlen($output) > 20) {
+							$strout = 20;
+						} else {
+							$strout = strlen($output);
+						}
+
+						cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+						$output = "U";
+					}
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
