@@ -353,9 +353,9 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 			define_syslog_variables();
 
 			if ($config["cacti_server_os"] == "win32")
-				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_USER);
+				openlog("Cacti", LOG_NDELAY | LOG_PID, LOG_USER);
 			else
-				openlog("Cacti Logging", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
+				openlog("Cacti", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
 
 			if (($log_type == "err") && (read_config_option("log_perror"))) {
 				syslog(LOG_CRIT, $environ . ": " . $string);
