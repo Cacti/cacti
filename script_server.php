@@ -90,7 +90,7 @@ fflush(STDOUT);
 /* process waits for input and then calls functions as required */
 while (1) {
 	$result = "";
-	$in_string = fgets(STDIN,255);
+	$in_string = fgets(STDIN,1024);
 	$in_string = trim(strtr(strtr($in_string,'\r',''),'\n',''));
 	if (strlen($in_string)>0) {
 		if (($in_string != "quit") && ($in_string != "")) {
