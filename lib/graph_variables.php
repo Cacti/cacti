@@ -48,7 +48,7 @@ function ninety_fifth_percentile($local_data_id, $start_time, $end_time) {
 			$values_array = $fetch_array["values"][$i];
 
 			/* sort the array in descending order */
-			rsort($values_array);
+			rsort($values_array, SORT_NUMERIC);
 
 			/* grab the 95% row (or 5% in reverse) and use that as our 95th percentile
 			value */
@@ -118,7 +118,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
        $arr[0] // full variable string
        $arr[1] // bits or bytes
        $arr[2] // power of 10 divisor
-       $arr[3] // current, total, or max
+       $arr[3] // current, total, max, total_peak, all_max_current, all_max_peak
        $arr[4] // digits of floating point precision
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
@@ -138,7 +138,7 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 
 	if (($regexp_match_array[3] == "current") || ($regexp_match_array[3] == "max")) {
 		$ninety_fifth_cache{$graph_item["local_data_id"]} = ninety_fifth_percentile($graph_item["local_data_id"], $graph_start, $graph_end);
-	}elseif ($regexp_match_array[3] == "total") {
+	}elseif (($regexp_match_array[3] == "total") || ($regexp_match_array[3] == "total_peak") || ($regexp_match_array[3] == "all_max_current") || ($regexp_match_array[3] == "all_max_peak")) {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (!empty($graph_items[$t]["local_data_id"])) {
 				$ninety_fifth_cache{$graph_items[$t]["local_data_id"]} = ninety_fifth_percentile($graph_items[$t]["local_data_id"], $graph_start, $graph_end);
@@ -167,6 +167,42 @@ function variable_ninety_fifth_percentile(&$regexp_match_array, &$graph_item, &$
 		$ninety_fifth = $ninety_fifth_cache{$graph_item["local_data_id"]}["ninety_fifth_percentile_maximum"];
 		$ninety_fifth = ($regexp_match_array[1] == "bits") ? $ninety_fifth * 8 : $ninety_fifth;
 		$ninety_fifth /= pow(10,intval($regexp_match_array[2]));
+	}elseif ($regexp_match_array[3] == "total_peak") {
+		for ($t=0;($t<count($graph_items));$t++) {
+			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+				$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}["ninety_fifth_percentile_maximum"];
+				$local_ninety_fifth = ($regexp_match_array[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
+				$local_ninety_fifth /= pow(10,intval($regexp_match_array[2]));
+
+				$ninety_fifth += $local_ninety_fifth;
+			}
+		}
+	}elseif ($regexp_match_array[3] == "all_max_current") {
+		$ninety_fifth = 0;
+		for ($t=0;($t<count($graph_items));$t++) {
+			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+				$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+				$local_ninety_fifth = ($regexp_match_array[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
+				$local_ninety_fifth /= pow(10,intval($regexp_match_array[2]));
+
+				if ($local_ninety_fifth > $ninety_fifth) {
+					$ninety_fifth = $local_ninety_fifth;
+				}
+			}
+		}
+	}elseif ($regexp_match_array[3] == "all_max_peak") {
+		$ninety_fifth = 0;
+		for ($t=0;($t<count($graph_items));$t++) {
+			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
+				$local_ninety_fifth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}["ninety_fifth_percentile_maximum"];
+				$local_ninety_fifth = ($regexp_match_array[1] == "bits") ? $local_ninety_fifth * 8 : $local_ninety_fifth;
+				$local_ninety_fifth /= pow(10,intval($regexp_match_array[2]));
+
+				if ($local_ninety_fifth > $ninety_fifth) {
+					$ninety_fifth = $local_ninety_fifth;
+				}
+			}
+		}
 	}
 
 	/* determine the floating point precision */

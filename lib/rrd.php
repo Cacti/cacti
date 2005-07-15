@@ -807,7 +807,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			/* 95th percentile */
-			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
+			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
 				}
@@ -1007,26 +1007,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		/* most of the calculations have been done above. now we have for print everything out
 		in an RRDTool-friendly fashion */
 
-		/* initialize any color syntax for graph item */
-		if (empty($graph_item["hex"])) {
-			$graph_item_color_code = "";
-		}else {
-			$graph_item_color_code = "#" . $graph_item["hex"];
-		}
-
-		if (ereg("^(AREA|LINE[123])$", $graph_item_types{$graph_item["graph_type_id"]})) {
-			$graph_item_stack_type = $graph_item_types{$graph_item["graph_type_id"]};
-			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
-		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "STACK") {
-			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-				$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\":STACK";
-			}else {
-				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
-			}
-		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
+		if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
 			}else {
@@ -1035,22 +1016,39 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}elseif (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && (!isset($graph_data_array["graph_nolegend"]))) {
 			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . ":\"$text_padding" . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $hardreturn[$graph_item_id] . "\" ";
-		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "HRULE") {
-			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-			$graph_variables["value"][$graph_item_id] = str_replace(":", "\:", $graph_variables["value"][$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_variables["value"][$graph_item_id] . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
-		}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "VRULE") {
-			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+		}elseif (!empty($graph_item["hex"])) {
+			/* initialize any color syntax for graph item */
+			$graph_item_color_code = "#" . $graph_item["hex"];
 
-			$value_array = explode(":", $graph_item["value"]);
+			if (ereg("^(AREA|LINE[123])$", $graph_item_types{$graph_item["graph_type_id"]})) {
+				$graph_item_stack_type = $graph_item_types{$graph_item["graph_type_id"]};
+				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "STACK") {
+				if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+					$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\":STACK";
+				}else {
+					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				}
+			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "HRULE") {
+				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+				$graph_variables["value"][$graph_item_id] = str_replace(":", "\:", $graph_variables["value"][$graph_item_id]); /* escape colons */
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_variables["value"][$graph_item_id] . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "VRULE") {
+				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 
-			if ($value_array[0] < 0) {
-				$value = date("U") - (-3600 * $value_array[0]) - 60 * $value_array[1];
-			}else{
-				$value = date("U", mktime($value_array[0],$value_array[1],0));
+				$value_array = explode(":", $graph_item["value"]);
+
+				if ($value_array[0] < 0) {
+					$value = date("U") - (-3600 * $value_array[0]) - 60 * $value_array[1];
+				}else{
+					$value = date("U", mktime($value_array[0],$value_array[1],0));
+				}
+
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 			}
-
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 		}
 
 		$i++;
