@@ -32,6 +32,7 @@ function api_device_remove($device_id) {
 	db_execute("delete from host_snmp_query where host_id=$device_id");
 	db_execute("delete from host_snmp_cache where host_id=$device_id");
 	db_execute("delete from poller_item where host_id=$device_id");
+	db_execute("delete from poller_reindex where host_id=$device_id");
 	db_execute("delete from graph_tree_items where host_id=$device_id");
 
 	db_execute("update data_local set host_id=0 where host_id=$device_id");
@@ -44,6 +45,7 @@ function api_device_remove($device_id) {
 function api_device_dq_remove($device_id, $data_query_id) {
 	db_execute("delete from host_snmp_cache where snmp_query_id=$data_query_id and host_id=$device_id");
 	db_execute("delete from host_snmp_query where snmp_query_id=$data_query_id and host_id=$device_id");
+	db_execute("delete from poller_reindex where data_query_id=$data_query_id and host_id=$device_id");
 }
 
 /* api_device_gt_remove - removes a device->graph template mapping
