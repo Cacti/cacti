@@ -117,7 +117,7 @@ case 'preview':
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
