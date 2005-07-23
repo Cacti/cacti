@@ -234,7 +234,7 @@ function field_edit() {
 	$form_array = array();
 
 	/* field name */
-	if ((($data_input["type_id"] == "1") || ($data_input["type_id"] = "5")) && ($current_field_type == "in")) { /* script */
+	if ((($data_input["type_id"] == "1") || ($data_input["type_id"] == "5")) && ($current_field_type == "in")) { /* script */
 		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
 	}elseif (($data_input["type_id"] == "2") ||
 			($data_input["type_id"] == "3") ||
