@@ -29,37 +29,37 @@
    @arg $new_user - username of the account to be created
    @arg $new_realm - the realm the new account should be a member of */
 function user_copy($template_user, $new_user, $new_realm=0) {
-        $user_auth = db_fetch_row("select * from user_auth where username = '$template_user'");
-        $user_auth['username'] = $new_user;
+	$user_auth = db_fetch_row("select * from user_auth where username = '$template_user'");
+	$user_auth['username'] = $new_user;
 	$user_auth['realm'] = $new_realm;
-        $old_id = $user_auth['id'];
-        $user_auth['id'] = 0;
-                                                                                                                                               
-        $new_id = sql_save($user_auth, 'user_auth');
-                                                                                                                                               
-        $user_auth_perms = db_fetch_assoc("select * from user_auth_perms where user_id = '$old_id'");
-        foreach ($user_auth_perms as $user_auth_perm) {
-                $user_auth_perm['user_id'] = $new_id;
-                sql_save($user_auth_perm, 'user_auth_perms', array('user_id', 'item_id', 'type'));
-        }
-                                                                                                                                               
-        $user_auth_realm = db_fetch_assoc("select * from user_auth_realm where user_id = '$old_id'");
-        foreach ($user_auth_realm as $row) {
-                $row['user_id'] = $new_id;
-                sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'));
-        }
-                                                                                                                                               
-        $settings_graphs = db_fetch_assoc("select * from settings_graphs where user_id = '$old_id'");
-        foreach ($settings_graphs as $settings_graph) {
-                $settings_graph['user_id'] = $new_id;
-                sql_save($settings_graph, 'settings_graphs', array('user_id', 'name'));
-        }
-                                                                                                                                               
-        $settings_tree = db_fetch_assoc("select * from settings_tree where user_id = '$old_id'");
-        foreach ($settings_tree as $row) {
-                $row['user_id'] = $new_id;
-                sql_save($settings_tree, 'settings_tree', array('user_id', 'graph_tree_item_id'));
-        }
+	$old_id = $user_auth['id'];
+	$user_auth['id'] = 0;
+
+	$new_id = sql_save($user_auth, 'user_auth');
+
+	$user_auth_perms = db_fetch_assoc("select * from user_auth_perms where user_id = '$old_id'");
+	foreach ($user_auth_perms as $row) {
+		$row['user_id'] = $new_id;
+		sql_save($row, 'user_auth_perms', array('user_id', 'item_id', 'type'));
+	}
+
+	$user_auth_realm = db_fetch_assoc("select * from user_auth_realm where user_id = '$old_id'");
+	foreach ($user_auth_realm as $row) {
+		$row['user_id'] = $new_id;
+		sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'));
+	}
+
+	$settings_graphs = db_fetch_assoc("select * from settings_graphs where user_id = '$old_id'");
+	foreach ($settings_graphs as $row) {
+		$row['user_id'] = $new_id;
+		sql_save($row, 'settings_graphs', array('user_id', 'name'));
+	}
+
+	$settings_tree = db_fetch_assoc("select * from settings_tree where user_id = '$old_id'");
+	foreach ($settings_tree as $row) {
+		$row['user_id'] = $new_id;
+		sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'));
+	}
 }
 
 /* get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph
