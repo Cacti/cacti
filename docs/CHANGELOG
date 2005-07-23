@@ -1,5 +1,7 @@
 Cacti CHANGELOG
 
+-bug#0000520: LDAP authentication causes crash/abort
+
 0.8.6f
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability
 -security: Hardened PHP Project Advisory #022005 - Cacti Multiple SQL Injection Vulnerabilities
