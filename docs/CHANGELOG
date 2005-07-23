@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug#0000520: LDAP authentication causes crash/abort
+-bug: lib/ping.php could not be used as an include in script_server scripts
 
 0.8.6f
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability
