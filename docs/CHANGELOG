@@ -1,7 +1,20 @@
 Cacti CHANGELOG
 
+0.8.6g
+-bug#0000351: fixed zooming capability in Safari
+-bug#0000498: fixed issue where editing data input methods damaged portions of the database
+-bug#0000502: fix syslogging in unix
+-bug#0000508: fixed issues where filter functionality would not work in preview mode
+-bug#0000512: increase script server buffer size for large output
 -bug#0000520: LDAP authentication causes crash/abort
+-bug#0000521: added graph/data source title mouseover support
+-bug#0000530: OID's truncated to 132 characters when polling
+-bug: fixed multiple output support in script server
+-bug: fixed incompatible binary snmp calling parameter issue with net-snmp versions earlier than 5.1
+-bug: fixed issues encounted when polling invalid data sources
+-bug: fixed issue where if a host was deleted, reindexing would continue to attempt to be performed on it
 -bug: lib/ping.php could not be used as an include in script_server scripts
+-feature: allow |query_*| to be used within a CDEF
 
 0.8.6f
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability

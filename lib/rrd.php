@@ -740,7 +740,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
-	$i = 0;
+	$i = 0; $j = 0;
 	if (sizeof($graph_items > 0)) {
 	foreach ($graph_items as $graph_item) {
 		if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && ($graph_item["data_source_name"] != "")) {
@@ -764,6 +764,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}
 
+		/* cache cdef value here to support data query variables in the cdef string */
+		if (empty($graph_item["cdef_id"])) {
+			$graph_item["cdef_cache"] = "";
+			$graph_items[$j]["cdef_cache"] = "";
+		}else{
+			$graph_item["cdef_cache"] = get_cdef($graph_item["cdef_id"]);
+			$graph_items[$j]["cdef_cache"] = get_cdef($graph_item["cdef_id"]);
+		}
+
 		/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
 
 		/* note the current item_id for easy access */
@@ -775,6 +784,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				"process_no_legend" => false
 				),
 			"value" => array(
+				"process_no_legend" => true
+				),
+			"cdef_cache" => array(
 				"process_no_legend" => true
 				)
 			);
@@ -848,6 +860,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 			}
 		}
+
+		$j++;
 	}
 	}
 
@@ -886,7 +900,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = "";
 
 		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
-			$cdef_string = get_cdef($graph_item["cdef_id"]);
+			$cdef_string = $graph_variables["cdef_cache"]{$graph_item["graph_templates_item_id"]};
 
 			/* create cdef string for "total all data sources" if requested */
 			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {

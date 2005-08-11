@@ -169,8 +169,8 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 				"Threads: %s, " .
 				"Hosts: %s, " .
 				"Hosts/Process: %s, " .
-				"Data Sources %s, " .
-				"RRDs Processed %s",
+				"DataSources: %s, " .
+				"RRDsProcessed: %s",
 				round($end-$start,4),
 				$method,
 				$concurrent_processes,
