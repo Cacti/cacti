@@ -246,12 +246,6 @@ $menu = array(
 		"data_queries.php" => "Data Queries",
 		"data_input.php" => "Data Input Methods"
 		),
-	//"Event Management" => array(
-	//	"smtp_servers.php" => "Mail Servers",
-	//	"email_templates.php" => "Email Templates",
-	//	"event_queue.php" => "Event Queue",
-	//	"smtp_queue.php" => "Mail Queue"
-	//	),
 	"Templates" => array(
 		"graph_templates.php" => "Graph Templates",
 		"host_templates.php" => "Host Templates",
@@ -353,7 +347,8 @@ $hash_version_codes = array(
 	"0.8.6c" => "0006",
 	"0.8.6d" => "0007",
 	"0.8.6e" => "0008",
-	"0.8.6f" => "0009"
+	"0.8.6f" => "0009",
+	"0.8.6g" => "0010"
 	);
 
 $hash_type_names = array(
