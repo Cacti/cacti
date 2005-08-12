@@ -71,12 +71,12 @@ function push_out_data_source_custom_data($data_template_id) {
 				/* this is not a "host field", so we should either push out the value if it is templated
 				or leave it alone if the user checked "Use Per-Data Source Value". */
 				if ($input_field["t_value"] == "") { /* template this value */
-					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . $input_field["value"] . "')");
+					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . addslashes($input_field["value"]) . "')");
 				}
 			}elseif (($input_field["t_value"] == "") && ($input_field["value"] != "")) {
 				/* we only template a "host field" when the user types something in the field. this way the data
 				template always overides the host if the user chooses to do so */
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . $input_field["value"] . "')");
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . addslashes($input_field["value"]) . "')");
 			}
 		}
 		}
@@ -112,7 +112,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_rrd{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_rrd{"t_" . $field_name})) && (isset($data_template_rrd[$field_name])))) {
-			db_execute("update data_template_rrd set $field_name='" . $data_template_rrd[$field_name] . "' where local_data_template_rrd_id=" . $data_template_rrd["id"]);
+			db_execute("update data_template_rrd set $field_name='" . addslashes($data_template_rrd[$field_name]) . "' where local_data_template_rrd_id=" . $data_template_rrd["id"]);
 		}
 	}
 }
@@ -133,7 +133,7 @@ function push_out_data_source($data_template_data_id) {
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_data{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_data{"t_" . $field_name})) && (isset($data_template_data[$field_name])))) {
-			db_execute("update data_template_data set $field_name='" . $data_template_data[$field_name] . "' where local_data_template_data_id=" . $data_template_data["id"]);
+			db_execute("update data_template_data set $field_name='" . addslashes($data_template_data[$field_name]) . "' where local_data_template_data_id=" . $data_template_data["id"]);
 
 			/* update the title cache */
 			if ($field_name == "name") {
@@ -257,7 +257,7 @@ function push_out_graph($graph_template_graph_id) {
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* are we allowed to push out the column? */
 		if (empty($graph_template_graph{"t_" . $field_name})) {
-			db_execute("update graph_templates_graph set $field_name='$graph_template_graph[$field_name]' where local_graph_template_graph_id=" . $graph_template_graph["id"]);
+			db_execute("update graph_templates_graph set $field_name='" . addslashes($graph_template_graph[$field_name]) . "' where local_graph_template_graph_id=" . $graph_template_graph["id"]);
 
 			/* update the title cache */
 			if ($field_name == "title") {
@@ -312,7 +312,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	foreach ($values_to_apply as $value) {
 		/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
 		if (!(($graph_input["column_name"] == "task_item_id") && (empty($value{$graph_input["column_name"]})))) {
-			db_execute("update graph_templates_item set " . $graph_input["column_name"] . "='" . $value{$graph_input["column_name"]} . "' where local_graph_id=" . $value["local_graph_id"] . " and local_graph_template_item_id=$graph_template_item_id");
+			db_execute("update graph_templates_item set " . $graph_input["column_name"] . "='" . addslashes($value{$graph_input["column_name"]}) . "' where local_graph_id=" . $value["local_graph_id"] . " and local_graph_template_item_id=$graph_template_item_id");
 		}
 	}
 	}
@@ -361,7 +361,7 @@ function push_out_graph_item($graph_template_item_id) {
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
 		if (!isset($graph_item_inputs[$field_name])) {
-			db_execute("update graph_templates_item set $field_name='$graph_template_item[$field_name]' where local_graph_template_item_id=" . $graph_template_item["id"]);
+			db_execute("update graph_templates_item set $field_name='" . addslashes($graph_template_item[$field_name]) . "' where local_graph_template_item_id=" . $graph_template_item["id"]);
 		}
 	}
 }
@@ -575,7 +575,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				$subs_string = substitute_snmp_query_data($suggested_value["text"], $host_id, $snmp_query_array["snmp_query_id"], $snmp_query_array["snmp_index"], read_config_option("max_data_query_field_length"));
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if (!strstr($subs_string, "|query")) {
-					db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_graph_id=" . $cache_array["local_graph_id"]);
+					db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . addslashes($suggested_value["text"]) . "' where local_graph_id=" . $cache_array["local_graph_id"]);
 
 					/* once we find a working value, stop */
 					$suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]} = true;
@@ -643,7 +643,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 					/* if there are no '|' characters, all of the substitutions were successful */
 					if (!strstr($subs_string, "|query")) {
-						db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+						db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . addslashes($suggested_value["text"]) . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 
 						/* once we find a working value, stop */
 						$suggested_values_ds{$data_template["id"]}{$suggested_value["field_name"]} = true;
