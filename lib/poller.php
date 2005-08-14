@@ -145,7 +145,7 @@ function exec_background($filename, $args = "") {
 
 	if (file_exists($filename)) {
 		if ($config["cacti_server_os"] == "win32") {
-			pclose(popen("start \"Cactiplus\" /I /B \"" . $filename . "\" " . $args, "r"));
+			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, "r"));
 		}else{
 			exec($filename . " " . $args . " > /dev/null &");
 		}

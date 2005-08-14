@@ -315,7 +315,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	$logfile        = read_config_option("path_cactilog");
 
 	/* format the message */
-	if ($environ != "SYSTEM") {
+	if (($environ != "SYSTEM") && ($environ != "EXPORT") && ($environ != "RECACHE")) {
 		$message = "$date - " . $environ . ": Poller[0] " . $string . "\n";
 	}else {
 		$message = "$date - " . $environ . " " . $string . "\n";

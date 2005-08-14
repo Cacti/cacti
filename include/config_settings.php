@@ -476,15 +476,15 @@ $settings = array(
 			"method" => "spacer",
 			),
 		"poller_enabled" => array(
-			"friendly_name" => "Poller Enabled",
+			"friendly_name" => "Enabled",
 			"description" => "If you wish to stop the polling process, uncheck this box.",
 			"method" => "checkbox",
 			"default" => "on",
 			"tab" => "poller"
 			),
 		"poller_type" => array(
-			"friendly_name" => "Poller Type",
-			"description" => "The Cacti poller to use.  This Setting will take effect at next polling interval.",
+			"friendly_name" => "Type",
+			"description" => "The poller to use.  This setting will take effect at next polling interval.",
 			"method" => "drop_array",
 			"default" => 1,
 			"array" => $poller_options,
@@ -621,7 +621,7 @@ $settings_graphs = array(
 			"friendly_name" => "Default RRA",
 			"description" => "The default RRA to use when thumbnail graphs are not being displayed or when 'Thumbnail Timespan' is set to '0'.",
 			"method" => "drop_sql",
-			"sql" => "select id,name from rra order by name",
+			"sql" => "select id,name from rra order by timespan",
 			"default" => "Default"
 			),
 		"default_view_mode" => array(

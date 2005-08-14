@@ -14,7 +14,10 @@ Cacti CHANGELOG
 -bug: fixed issues encounted when polling invalid data sources
 -bug: fixed issue where if a host was deleted, reindexing would continue to attempt to be performed on it
 -bug: lib/ping.php could not be used as an include in script_server scripts
+-bug: eliminate the need to run php-win.exe in Windows environment.  Will now work with just php.exe
 -feature: allow |query_*| to be used within a CDEF
+-feature: force export functions to a separate process
+-feature: force recaching of data queries to a separate process
 
 0.8.6f
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability

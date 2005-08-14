@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -25,8 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-define("MAX_POLLER_RUNTIME", 296);
-
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
@@ -38,27 +35,13 @@ $no_http_headers = true;
 /* Start Initialization Section */
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
-
-/* Record Start Time */
-list($micro,$seconds) = split(" ", microtime());
-$start = $seconds + $micro;
 
 /* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");
 
 /* graph export */
 graph_export();
-
-/* take time and log performance data */
-list($micro,$seconds) = split(" ", microtime());
-$export = $seconds + $micro;
-
-cacti_log(sprintf("STATS: " .
-	"Export Time: %01.4f s",
-	round($export - $start,4)),
-	true,"EXPORT");
 
 ?>

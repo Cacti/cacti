@@ -162,15 +162,15 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 			list($micro,$seconds) = split(" ", microtime());
 			$end = $seconds + $micro;
 
-			cacti_log(sprintf("STATS: " .
-				"Time: %01.4f s, " .
-				"Method: %s, " .
-				"Processes: %s, " .
-				"Threads: %s, " .
-				"Hosts: %s, " .
-				"Hosts/Process: %s, " .
-				"DataSources: %s, " .
-				"RRDsProcessed: %s",
+			$cacti_stats = sprintf(
+				"Time:%01.4f " .
+				"Method:%s " .
+				"Processes:%s " .
+				"Threads:%s " .
+				"Hosts:%s " .
+				"HostsPerProcess:%s " .
+				"DataSources:%s " .
+				"RRDsProcessed:%s",
 				round($end-$start,4),
 				$method,
 				$concurrent_processes,
@@ -178,7 +178,12 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 				sizeof($polling_hosts),
 				$hosts_per_file,
 				$num_polling_items,
-				$rrds_processed),true,"SYSTEM");
+				$rrds_processed);
+
+			cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
+
+			/* insert poller stats into the settings table */
+			db_execute("replace into settings (name,value) values ('stats_poller','$cacti_stats')");
 
 			break;
 		}else {
@@ -203,59 +208,9 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 	rrd_close($rrdtool_pipe);
 
 	/* process poller commands */
-	$poller_commands = db_fetch_assoc("select
-		poller_command.action,
-		poller_command.command
-		from poller_command
-		where poller_command.poller_id=0");
-
-	$last_host_id = 0;
-	$first_host = true;
-	$recached_hosts = 0;
-
-	if (sizeof($poller_commands) > 0) {
-		foreach ($poller_commands as $command) {
-			switch ($command["action"]) {
-			case POLLER_COMMAND_REINDEX:
-				list($host_id, $data_query_id) = explode(":", $command["command"]);
-
-				if ($last_host_id != $host_id) {
-					$last_host_id = $host_id;
-					$first_host = true;
-					$recached_hosts = $recached_hosts + 1;
-				} else {
-					$first_host = false;
-				}
-
-				if ($first_host) {
-					cacti_log("Host[$host_id] WARNING: Recache Event Detected for Host", true, "POLLER");
-				}
-
-				if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-					cacti_log("Host[$host_id] RECACHE: Re-cache for Host, data query #$data_query_id", true, "POLLER");
-				}
-
-				run_data_query($host_id, $data_query_id);
-
-				if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-					cacti_log("Host[$host_id] RECACHE: Re-cache successful.", true, "POLLER");
-				}
-			}
-		}
-
-		db_execute("delete from poller_command where poller_id=0");
-
-		/* take time and log performance data */
-		list($micro,$seconds) = split(" ", microtime());
-		$recache = $seconds + $micro;
-
-		cacti_log(sprintf("STATS: " .
-			"Time: %01.4f s, " .
-			"Hosts Recached: %s",
-			round($recache - $end,4),
-			$recached_hosts),
-			true,"RECACHE");
-	}
+	$command_string = read_config_option("path_php_binary");
+	$extra_args = "-q " . $config["base_path"] . "/poller_commands.php";
+	exec_background($command_string, "$extra_args");
 
 	/* graph export */
 	$command_string = read_config_option("path_php_binary");

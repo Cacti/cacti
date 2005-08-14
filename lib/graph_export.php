@@ -25,65 +25,87 @@
 */
 
 function graph_export() {
+	/* take time to log performance data */
+	list($micro,$seconds) = split(" ", microtime());
+	$start = $seconds + $micro;
+
 	if (read_config_option("export_timing") != "disabled") {
 		switch (read_config_option("export_timing")) {
 			case "classic":
 				if (read_config_option("path_html_export_ctr") >= read_config_option("path_html_export_skip")) {
 					db_execute("update settings set value='1' where name='path_html_export_ctr'");
-					config_graph_export();
+					$total_graphs_created = config_graph_export();
+					config_export_stats($start, $total_graphs_created);
 				} elseif (read_config_option("path_html_export_ctr") == "") {
 					db_execute("delete from settings where name='path_html_export_ctr' or name='path_html_export_skip'");
 					db_execute("insert into settings (name,value) values ('path_html_export_ctr','1')");
 					db_execute("insert into settings (name,value) values ('path_html_export_skip','1')");
 				} else {
 					db_execute("update settings set value='" . (read_config_option("path_html_export_ctr") + 1) . "' where name='path_html_export_ctr'");
-				} ;
+				}
 				break;
 			case "export_hourly":
 				$export_minute = read_config_option('export_hourly');
 				if (empty($export_minute)) {
 					db_execute("insert into settings (name,value) values ('export_hourly','0')");
 				} elseif (floor((date('i') / 5)) == floor((read_config_option('export_hourly') / 5))) {
-					config_graph_export();
-				} ;
+					$total_graphs_created = config_graph_export();
+					config_export_stats($start, $total_graphs_created);
+				}
 				break;
 			case "export_daily":
 				if (strstr(read_config_option('export_daily'), ':')) {
 					$export_daily_time = explode(':', read_config_option('export_daily'));
 					if (date('G') == $export_daily_time[0]) {
 						if (floor((date('i') / 5)) == floor(($export_daily_time[1] / 5))) {
-							config_graph_export();
-						} ;
-					} ;
+							$total_graphs_created = config_graph_export();
+							config_export_stats($start, $total_graphs_created);
+						}
+					}
 				} else {
 					db_execute("insert into settings (name,value) values ('export_daily','00:00')");
-				} ;
+				}
 				break;
 			default:
 				export_log("Export timing not specified. Updated config to disable exporting.");
 				db_execute("insert into settings (name,value) values ('export_timing','disabled')");
-		} ;
-	} ;
+		}
+	}
+}
+
+function config_export_stats($start, $total_graphs_created) {
+	/* take time to log performance data */
+	list($micro,$seconds) = split(" ", microtime());
+	$end = $seconds + $micro;
+
+	$export_stats = sprintf(
+		"ExportTime:%01.4f TotalGraphs:%s",
+		round($end - $start,4), $total_graphs_created);
+
+	cacti_log("STATS: " . $export_stats, true, "EXPORT");
+
+	/* insert poller stats into the settings table */
+	db_execute("replace into settings (name,value) values ('stats_export','$export_stats')");
 }
 
 function config_graph_export() {
 	switch (read_config_option("export_type")) {
 		case "local":
-			export();
+			$total_graphs_created = export();
 			break;
 		case "ftp_php":
 			// set the temp directory
 			$stExportDir = $_ENV["TMP"].'/cacti-ftp-temp';
-			export_pre_ftp_upload($stExportDir);
+			$total_graphs_created = export_pre_ftp_upload($stExportDir);
 			export_log("Using PHP built-in FTP functions.");
 			export_ftp_php_execute($stExportDir);
 			export_post_ftp_upload($stExportDir);
 			break;
 		case "ftp_ncftpput":
-			if (strstr(PHP_OS, "WIN")) export_fatal("ncftpput only available in unix environment!");
+			if (strstr(PHP_OS, "WIN")) export_fatal("ncftpput only available in unix environment!  Export can not continue.");
 			// set the temp directory
 			$stExportDir = $_ENV["TMP"].'/cacti-ftp-temp';
-			export_pre_ftp_upload($stExportDir);
+			$total_graphs_created = export_pre_ftp_upload($stExportDir);
 			export_log("Using ncftpput.");
 			export_ftp_ncftpput_execute($stExportDir);
 			export_post_ftp_upload($stExportDir);
@@ -93,19 +115,21 @@ function config_graph_export() {
 		default:
 			export_log("Export method not specified. Updated config to use local exporting.");
 			db_execute("insert into settings (name,value) values ('export_type','local')");
-	};
-};
+	}
+
+	return $total_graphs_created;
+}
 
 function export_fatal($stMessage) {
-	export_log($stMessage);
-	die($stMessage."\n");
-};
+	cacti_log("FATAL ERROR: " . $stMessage, true, "EXPORT");
+	exit;
+}
 
 function export_log($stMessage) {
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
 		cacti_log($stMessage, true, "EXPORT");
-	};
-};
+	}
+}
 
 function export_pre_ftp_upload($stExportDir) {
 	global $aFtpExport;
@@ -124,21 +148,21 @@ function export_pre_ftp_upload($stExportDir) {
 		};
 	} else {
 		@mkdir($stExportDir);
-	};
+	}
 	// go export
-	export();
+	$total_graphs_created = export();
 	// force reaing of the variable from the database
 	unset($_SESSION["sess_config_array"]["path_html_export"]);
 
 	$aFtpExport['server'] = read_config_option('export_ftp_host');
 	if (empty($aFtpExport['server'])) {
 		die("EXPORT (fatal): FTP Hostname is not expected to be blank!");
-	};
+	}
 
 	$aFtpExport['remotedir'] = read_config_option('path_html_export');
 	if (empty($aFtpExport['remotedir'])) {
 		die("EXPORT (fatal): FTP Remote export path is not expected to be blank!");
-	};
+	}
 
 	$aFtpExport['port'] = read_config_option('export_ftp_port');
 	$aFtpExport['port'] = empty($aFtpExport['port']) ? '21' : $aFtpExport['port'];
@@ -149,7 +173,7 @@ function export_pre_ftp_upload($stExportDir) {
 		$aFtpExport['username'] = 'Anonymous';
 		$aFtpExport['password'] = '';
 		export_log("Using Anonymous transfer method.");
-	};
+	}
 
 	if (read_config_option('export_ftp_passive') == 'on') {
 	$aFtpExport['passive'] = TRUE;
@@ -157,36 +181,38 @@ function export_pre_ftp_upload($stExportDir) {
 	} else {
 	$aFtpExport['passive'] = FALSE;
 		export_log("Using active transfer method.");
-	};
-};
+	}
+
+	return $total_graphs_created;
+}
 
 function export_ftp_php_execute($stExportDir) {
 	global $aFtpExport;
 
 	$oFtpConnection = ftp_connect($aFtpExport['server'], $aFtpExport['port']);
 	if (!$oFtpConnection) {
-		export_fatal("EXPORT (fatal): FTP Connection failed! Check hostname and port.");
+		export_fatal("FTP Connection failed! Check hostname and port.  Export can not continue.");
 	} else {
 		export_log("Conection to remote server was successful.");
-	};
+	}
 
 	if (!ftp_login($oFtpConnection, $aFtpExport['username'], $aFtpExport['password'])) {
 		ftp_close($oFtpConnection);
-		export_fatal("EXPORT (fatal): FTP Login failed! Check username and password.");
+		export_fatal("FTP Login failed! Check username and password.  Export can not continue.");
 	} else {
 		export_log("Remote login was successful.");
-	};
+	}
 
 	if ($aFtpExport['passive']) {
 		ftp_pasv($oFtpConnection, TRUE);
 	} else {
 		ftp_pasv($oFtpConnection, FALSE);
-	};
+	}
 
 	if (!@ftp_chdir($oFtpConnection, $aFtpExport['remotedir'])) {
 		ftp_close($oFtpConnection);
-		export_fatal("EXPORT (fatal): FTP Remote directory does not exist!.");
-	};
+		export_fatal("FTP Remote directory '" . $aFtpExport['remotedir'] . "' does not exist!.  Export can not continue.");
+	}
 
 	// sanitize remote path
 	if (read_config_option('export_ftp_sanitize') == 'on') {
@@ -195,9 +221,9 @@ function export_ftp_php_execute($stExportDir) {
 		if (is_array($aFtpRemoteFiles)) {
 			foreach ($aFtpRemoteFiles as $stFile) {
 				ftp_delete($oFtpConnection, $aFtpExport['remotedir'].'/'.$stFile);
-			};
-		};
-	};
+			}
+		}
+	}
 
 	if ($dh = opendir($stExportDir)) {
 		export_log("Uploading files to remote location.");
@@ -207,13 +233,13 @@ function export_ftp_php_execute($stExportDir) {
 				if (!ftp_put($oFtpConnection, $aFtpExport['remotedir'].'/'.$file, $filePath, FTP_BINARY)) {
 				export_log("Failed to upload '$file'.");
 				}
-			};
-		};
+			}
+		}
 		closedir($dh);
-	};
+	}
 	ftp_close($oFtpConnection);
 	export_log("Closed ftp connection.");
-};
+}
 
 function export_ftp_ncftpput_execute($stExportDir) {
 	global $aFtpExport;
@@ -222,23 +248,23 @@ function export_ftp_ncftpput_execute($stExportDir) {
 	$stExecute = 'ncftpput -V -r 1 -u '.$aFtpExport['username'].' -p '.$aFtpExport['password'];
 	if ($aFtpExport['passive']) {
 		$stExecute .= ' -F ';
-	};
+	}
 	$stExecute .= ' -P '.$aFtpExport['port'].' '.$aFtpExport['server'].' '.$aFtpExport['remotedir'];
 
 	if ($dh = opendir($stExportDir)) {
 		while (($file = readdir($dh)) !== false) {
 			if ($file != "." && $file != ".." && !is_dir($stExportDir."/".$file)) {
 				$stExecute .= " $file";
-			};
-		};
+			}
+		}
 		closedir($dh);
 		system($stExecute, $iExecuteReturns);
 
 		$aNcftpputStatusCodes = array ('Success.', 'Could not connect to remote host.', 'Could not connect to remote host - timed out.', 'Transfer failed.', 'Transfer failed - timed out.', 'Directory change failed.', 'Directory change failed - timed out.', 'Malformed URL.', 'Usage error.', 'Error in login configuration file.', 'Library initialization failed.', 'Session initialization failed.');
 
 		export_log('Ncftpput returned: '.$aNcftpputStatusCodes[$iExecuteReturns]);
-	};
-};
+	}
+}
 
 function export_post_ftp_upload($stExportDir) {
 	// clean-up after ftp-put
@@ -247,18 +273,21 @@ function export_post_ftp_upload($stExportDir) {
 			$filePath = $stExportDir."/".$file;
 			if ($file != "." && $file != ".." && !is_dir($filePath)) {
 				unlink($filePath);
-			};
-		};
+			}
+		}
 		closedir($dh);
 		rmdir($stExportDir);
-	};
-};
+	}
+}
 
 function export() {
 	global $config;
 
+	/* count how many graphs are created */
+	$total_graphs_created = 0;
+
 	if (!file_exists(read_config_option("path_html_export"))) {
-		export_fatal("Export path does not exist!");
+		export_fatal("Export path '" . read_config_option("path_html_export") . "' does not exist!  Export can not continue.");
 	}
 
 	export_log("Running graph export");
@@ -298,7 +327,7 @@ function export() {
 		rra.id,
 		rra.name
 		from rra
-		order by steps");
+		order by timespan");
 
 	/* write the html header data to the index file */
 	fwrite($fp_index, HTML_HEADER);
@@ -322,7 +351,9 @@ function export() {
 		$graph_data_array["graph_nolegend"] = true;
 		$graph_data_array["export"] = true;
 		$graph_data_array["export_filename"] = "thumb_" . $graph["local_graph_id"] . ".png";
+
 		rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
+		$total_graphs_created++;
 
 		/* generate html files for each graph */
 		$fp_graph_index = fopen($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html", "w");
@@ -343,6 +374,7 @@ function export() {
 			$graph_data_array["export_filename"] = "graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 
 			rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
+			$total_graphs_created++;
 
 			/* write image related html */
 			fwrite($fp_graph_index, "<div align=center><img src='graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
@@ -366,7 +398,8 @@ function export() {
 		}
 
 	}
-	}else{ fwrite($fp_index, "<td><em>No Graphs Found.</em></td>");
+	}else{
+		fwrite($fp_index, "<td><em>No Graphs Found.</em></td>");
 	}
 
 	/* close the rrdtool pipe */
@@ -375,6 +408,8 @@ function export() {
 	fwrite($fp_index, HTML_GRAPH_FOOTER);
 	fwrite($fp_index, HTML_FOOTER);
 	fclose($fp_index);
+
+	return $total_graphs_created;
 }
 
 function check_remove($filename) {

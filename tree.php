@@ -259,7 +259,7 @@ function item_edit() {
 				Choose a round robin archive to control how this graph is displayed.
 			</td>
 			<td>
-				<?php form_dropdown("rra_id", db_fetch_assoc("select id,name from rra"), "name", "id", (isset($tree_item["rra_id"]) ? $tree_item["rra_id"] : ""), "", "");?>
+				<?php form_dropdown("rra_id", db_fetch_assoc("select id,name from rra order by timespan"), "name", "id", (isset($tree_item["rra_id"]) ? $tree_item["rra_id"] : ""), "", "");?>
 			</td>
 		</tr>
 		<?php

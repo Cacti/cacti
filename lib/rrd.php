@@ -32,6 +32,11 @@ function escape_command($command) {
 }
 
 function rrd_init() {
+	/* set the rrdtool default font */
+	if (read_config_option("path_rrdtool_default_font")) {
+		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
+	}
+
 	$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
 
 	return $rrd_struc;

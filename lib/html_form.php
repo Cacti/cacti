@@ -120,7 +120,7 @@ function draw_edit_control($field_name, &$field_array) {
 		form_multi_dropdown($field_name, $field_array["array"], db_fetch_assoc($field_array["sql"]), "id");
 		break;
 	case 'drop_multi_rra':
-		form_multi_dropdown($field_name, array_rekey(db_fetch_assoc("select id,name from rra order by name"), "id", "name"), (empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), "id");
+		form_multi_dropdown($field_name, array_rekey(db_fetch_assoc("select id,name from rra order by timespan"), "id", "name"), (empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), "id");
 		break;
 	case 'drop_tree':
 		grow_dropdown_tree($field_array["tree_id"], $field_name, $field_array["value"]);

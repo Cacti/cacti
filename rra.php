@@ -159,7 +159,7 @@ function rra() {
 		DrawMatrixHeaderItem("Timespan",$colors["header_text"],2);
 	print "</tr>";
 
-	$rras = db_fetch_assoc("select id,name,rows,steps,timespan from rra order by steps");
+	$rras = db_fetch_assoc("select id,name,rows,steps,timespan from rra order by timespan");
 
 	$i = 0;
 	if (sizeof($rras) > 0) {
