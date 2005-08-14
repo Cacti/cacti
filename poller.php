@@ -258,7 +258,9 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 	}
 
 	/* graph export */
-	graph_export();
+	$command_string = read_config_option("path_php_binary");
+	$extra_args = "-q " . $config["base_path"] . "/export.php";
+	exec_background($command_string, "$extra_args");
 
 	if ($method == "cactid") {
 		chdir(read_config_option("path_webroot"));
