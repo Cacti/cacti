@@ -25,8 +25,6 @@
  +-------------------------------------------------------------------------+
 */
 
-define("MAX_POLLER_RUNTIME", 296);
-
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
@@ -49,8 +47,20 @@ $start = $seconds + $micro;
 /* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");
 
+/* Disable Mib File Loading */
+putenv("MIBS=NONE");
+
 /* Get number of polling items from the database */
-$num_polling_items = db_fetch_cell("select count(*) from poller_item");
+$polling_interval = read_config_option("poller_interval");
+
+if (isset($polling_interval)) {
+	$num_polling_items = db_fetch_cell("select count(*) from poller_item where rrd_next_step<=0");
+	define("MAX_POLLER_RUNTIME", ($polling_interval - 4));
+}else{
+	$num_polling_items = db_fetch_cell("select count(*) from poller_item");
+	define("MAX_POLLER_RUNTIME", 296);
+}
+
 $polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("select id from host where disabled = '' order by id"));
 
 /* Retreive the number of concurrent process settings */
@@ -78,7 +88,7 @@ $max_threads = read_config_option("max_threads");
 db_execute("truncate table poller_time");
 
 // Enter Mainline Processing
-if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) {
+if (read_config_option("poller_enabled") == "on") {
 	/* Determine the number of hosts to process per file */
 	$hosts_per_file = ceil(sizeof($polling_hosts) / $concurrent_processes );
 
@@ -214,7 +224,7 @@ if (($num_polling_items > 0) && (read_config_option("poller_enabled") == "on")) 
 
 	/* graph export */
 	$command_string = read_config_option("path_php_binary");
-	$extra_args = "-q " . $config["base_path"] . "/poller_export.php";
+	$extra_args = "-q " . $config["base_path"] . "/export.php";
 	exec_background($command_string, "$extra_args");
 
 	if ($method == "cactid") {
