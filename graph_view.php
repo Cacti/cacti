@@ -107,6 +107,8 @@ case 'tree':
 	print "<br><br>";
 
 	break;
+
+
 case 'preview':
 	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
 
@@ -124,6 +126,17 @@ case 'preview':
 
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_preview"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_graph_view_current_page");
+		kill_session_var("sess_graph_view_filter");
+		kill_session_var("sess_graph_view_host");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["host_id"]);
 	}
 
 	/* reset the page counter to '1' if a search in initiated */
@@ -247,6 +260,17 @@ case 'list':
 
 	load_current_session_value("host_id", "sess_graph_view_list_host", "0");
 	load_current_session_value("filter", "sess_graph_view_list_filter", "");
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_graph_view_list_current_page");
+		kill_session_var("sess_graph_view_list_filter");
+		kill_session_var("sess_graph_view_list_host");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["host_id"]);
+	}
 
 	/* include graph view filter selector */
 	html_graph_start_box(3, true);

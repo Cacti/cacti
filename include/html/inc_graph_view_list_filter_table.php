@@ -1,3 +1,5 @@
+	<? if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; } 
+	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; } ?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id" method="post">
 		<td>
@@ -27,6 +29,7 @@
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>
 				</tr>
 			</table>
