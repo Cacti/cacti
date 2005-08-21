@@ -224,14 +224,44 @@ case 'preview':
 	print "<br><br>";
 
 	break;
+
+
+
 case 'list':
 	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_list"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
 	}
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("host_id"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	}
+
+	if ((read_config_option("global_auth") == "on") && (empty($current_user["show_preview"]))) {
+		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
+	}
+
+	load_current_session_value("host_id", "sess_graph_view_list_host", "0");
+	load_current_session_value("filter", "sess_graph_view_list_filter", "");
+
+	/* include graph view filter selector */
+	html_graph_start_box(3, true);
+	include("./include/html/inc_graph_view_list_filter_table.php");
+	html_graph_end_box();
+
+	/* create filter for sql */
+	$sql_filter = "";
+	$sql_filter .= (empty($_REQUEST["filter"]) ? "" : " graph_templates_graph.title_cache like '%" . $_REQUEST["filter"] . "%'"); 
+	$sql_filter .= (empty($_REQUEST["host_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.host_id=" . $_REQUEST["host_id"]);
+       
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
 		/* get policy information for the sql where clause */
+		$sql_where = "";
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 
 		$graphs = db_fetch_assoc("select
@@ -245,14 +275,17 @@ case 'list':
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 			where graph_templates_graph.local_graph_id=graph_local.id
 			and graph_templates_graph.local_graph_id>0
-			" . (empty($sql_where) ? "" : "and $sql_where") . "
+			" . (empty($sql_where) ? "" : "and $sql_where") . 
+			(empty($sql_filter) ? "" : "and $sql_filter") . "
 			group by graph_templates_graph.local_graph_id
 			order by graph_templates_graph.title_cache");
+
 	}else{
 		$graphs = db_fetch_assoc("select
 			local_graph_id,title_cache,height,width
 			from graph_templates_graph
 			where local_graph_id > 0
+			" . (empty($sql_filter) ? "" : "and $sql_filter") . "
 			order by title_cache");
 	}
 
@@ -298,6 +331,5 @@ case 'list':
 	break;
 }
 
-//print "<pre>";print $_SESSION["sess_debug_buffer"];print "</pre>";session_unregister("sess_debug_buffer");
 
 include_once("./include/bottom_footer.php");
