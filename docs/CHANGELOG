@@ -1,8 +1,6 @@
 Cacti CHANGELOG
 
 0.8.6g
--feature: Added filter to graph list
--bug: fixed sanitize search function to play nice
 -bug#0000351: fixed zooming capability in Safari
 -bug#0000498: fixed issue where editing data input methods damaged portions of the database
 -bug#0000502: fix syslogging in unix
@@ -11,6 +9,8 @@ Cacti CHANGELOG
 -bug#0000520: LDAP authentication causes crash/abort
 -bug#0000521: added graph/data source title mouseover support
 -bug#0000530: OID's truncated to 132 characters when polling
+-bug#0000536: Printing of Zoomed Graph in IE causes white box over graph
+-bug: fixed sanitize search function to play nice
 -bug: fixed multiple output support in script server
 -bug: fixed incompatible binary snmp calling parameter issue with net-snmp versions earlier than 5.1
 -bug: fixed issues encounted when polling invalid data sources
@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -feature: allow |query_*| to be used within a CDEF
 -feature: force export functions to a separate process
 -feature: force recaching of data queries to a separate process
+-feature: Added filter to graph list
 
 0.8.6f
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability
