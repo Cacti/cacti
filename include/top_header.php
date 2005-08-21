@@ -88,6 +88,7 @@ global $colors;
 			
 			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
+			<p align="left">Version: <? print $config["cacti_version"] ?></p>
 		</td>
 		<td></td>
 	</tr>
