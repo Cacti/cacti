@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6g
+-feature: Added filter to graph list
 -bug: fixed sanitize search function to play nice
 -bug#0000351: fixed zooming capability in Safari
 -bug#0000498: fixed issue where editing data input methods damaged portions of the database
