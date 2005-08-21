@@ -1,6 +1,6 @@
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id" method="post">
-		<td colspan='<?php print read_graph_config_option("num_columns");?>'>
+		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="120" class="textHeader">
