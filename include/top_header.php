@@ -77,7 +77,7 @@ global $colors;
 			<img src="images/transparent_line.gif" width="135" height="2" border="0"><br>
 		</td>
 		<td colspan="2" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
-			
+
 		</td>
 	</tr>
 	<tr height="5">
@@ -85,11 +85,10 @@ global $colors;
 			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0">
 				<?php draw_menu();?>
 			</table>
-			
+
 			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
 			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
-			<p align="left">Version: <? print $config["cacti_version"] ?></p>
 		</td>
 		<td></td>
 	</tr>
