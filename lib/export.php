@@ -807,7 +807,9 @@ function get_item_xml($type, $id, $follow_deps) {
 		$xml_indent .= "\t" . $xml_array[$i] . "\n";
 	}
 
-	return "<cacti>" . $xml_indent . "</cacti>";
+	$xml_text = "<cacti>" . $xml_indent . "</cacti>";
+
+	return $xml_text;
 }
 
 function xml_character_encode($text) {
