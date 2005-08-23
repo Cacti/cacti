@@ -378,7 +378,6 @@ case 'list':
 		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
 
-
 	print "<form name='graphs' id='graphs' action='graph_view.php' method='get' onSubmit='form_graph(document.graphs)'>\n";
 	print "	<script type=\"text/javascript\">
                 <!--
