@@ -137,6 +137,10 @@ case 'preview':
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_id"]);
+		unset($_REQUEST["graph_list"]);
+		unset($_REQUEST["graph_add"]);
+		unset($_REQUEST["graph_remove"]);
+
 	}
 
 	/* reset the page counter to '1' if a search in initiated */
