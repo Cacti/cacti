@@ -743,7 +743,7 @@ $settings_graphs = array(
 			"description" => "The number of graphs to display on one page in preview mode.",
 			"method" => "textbox",
 			"default" => "10",
-			"max_length" => "10"
+			"max_length" => "5"
 			)
 		),
 	"list" => array(
@@ -751,8 +751,8 @@ $settings_graphs = array(
 			"friendly_name" => "Graphs Per-Page",
 			"description" => "The number of graphs to display on one page in list view mode.",
 			"method" => "textbox",
-			"default" => "10",
-			"max_length" => "10"
+			"default" => "30",
+			"max_length" => "5"
 			)
 		),
 	"fonts" => array(
