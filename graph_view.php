@@ -334,9 +334,87 @@ case 'list':
 		}
 	}
 
-	/* include graph view filter selector */
+	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
+	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
+		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
+	}else{
+		#$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . $_REQUEST["host_id"];
+		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>";
+	}
+
+	$nav_url = ereg_replace("(\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*|(\?|&)graph_add=[\,0-9]*|(\?|&)graph_remove=[\,0-9]*|(\?|&)graph_list=[\,0-9]*", "", $nav_url);
+	$graph_list_text = "";
+	if (! empty($graph_list)) {
+		foreach ($graph_list as $item => $value) {
+			$graph_list_text .= $item . ",";
+		}
+		if (substr($graph_list_text,strlen($graph_list_text) - 1, 1) == ",") {
+			$graph_list_text = substr($graph_list_text,0,strlen($graph_list_text) - 1);
+		}
+		$nav_url .= "&graph_list=" . $graph_list_text;
+	}
+
+	/* display graph view filter selector */
 	html_graph_start_box(3, true);
-	include("./include/html/inc_graph_view_list_filter_table.php");
+
+	if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; } 
+	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; } 
+	?>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = 'graph_view.php?action=list&page=1&host_id=' + objForm.host_id[objForm.host_id.selectedIndex].value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + url_graph('');
+		document.location = strURL;
+		return false;
+	}
+	-->
+	</script>
+
+	<tr bgcolor="<?php print $colors["panel"];?>">
+		<form name="form_graph_id" method="POST" onSubmit='form_graph(document.graphs,document.form_graph_id)'>
+		<input type='hidden' name='graph_list' value='<? print $graph_list_text; ?>'>
+		<input type='hidden' name='graph_add' value=''>
+		<input type='hidden' name='graph_remove' value=''>
+		<td>
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="120" class="textHeader">
+						Filter by host:&nbsp;
+					</td>
+					<td width="1">
+						<select name="host_id" onChange="applyFilterChange(document.form_graph_id)">
+							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
+							<?php
+							$hosts = get_host_array();
+
+							if (sizeof($hosts) > 0) {
+								foreach ($hosts as $host) {
+									print "<option value=\"" . $host["id"] . "\""; 
+									if ($_REQUEST["host_id"] == $host["id"]) { 
+										print " selected"; 
+									} 
+									print ">" . $host["name"] . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td width="5"></td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+					</td>
+					<td>
+						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>
+	<?php
 	html_graph_end_box();
 
 	/* create filter for sql */
@@ -377,77 +455,62 @@ case 'list':
 		group by graph_templates_graph.local_graph_id
 		order by graph_templates_graph.title_cache
 		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+	?>
 
-	print "<form name='graphs' id='graphs' action='graph_view.php' method='get' onSubmit='form_graph(document.graphs)'>\n";
-	print "	<script type=\"text/javascript\">
-                <!--
-		function url_graph(strNavURL) {
-			var strURL = '';
-			var strAdd = '';
-			var strDel = '';
-			for(var i = 0; i < document.graphs.elements.length; i++) {
-				if (document.graphs.elements[i].name.substring(0,5) == 'graph') {
-					if (document.graphs.elements[i].name != 'graph_list') {
-						if (document.graphs.elements[i].checked) {
-							strAdd = strAdd + document.graphs.elements[i].value + ',';
-						} else {
-							if (document.graphs.elements[i].value != '') {
-								strDel = strDel + document.graphs.elements[i].value + ',';
-							}
+	<script type='text/javascript'>
+	<!--
+	function url_graph(strNavURL) {
+		var strURL = '';
+		var strAdd = '';
+		var strDel = '';
+		for(var i = 0; i < document.graphs.elements.length; i++) {
+			if (document.graphs.elements[i].name.substring(0,5) == 'graph') {
+				if (document.graphs.elements[i].name != 'graph_list') {
+					if (document.graphs.elements[i].checked) {
+						strAdd = strAdd + document.graphs.elements[i].value + ',';
+					} else {
+						if (document.graphs.elements[i].value != '') {
+							strDel = strDel + document.graphs.elements[i].value + ',';
 						}
 					}
 				}
 			}
-			strAdd = strAdd.substring(0,strAdd.length - 1);
-			strDel = strDel.substring(0,strDel.length - 1);
-			strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
-			document.location=strNavURL + strURL;
-			return false;
 		}
-		function form_graph(objForm) {
-			var strAdd = '';
-			var strDel = '';
-			for(var i = 0; i < objForm.elements.length; i++) {
-				if (objForm.elements[i].name.substring(0,5) == 'graph') {
-					if (objForm.elements[i].name != 'graph_list') {
-						if (objForm.elements[i].checked) {
-							strAdd = strAdd + objForm.elements[i].value + ',';
-						} else {
-							if (objForm.elements[i].value != '') {
-								strDel = strDel + objForm.elements[i].value + ',';
-							}
+		strAdd = strAdd.substring(0,strAdd.length - 1);
+		strDel = strDel.substring(0,strDel.length - 1);
+		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
+                return strNavURL + strURL;
+	}
+	function url_go(strURL) {
+		document.location = strURL;
+		return false;
+	}
+	function form_graph(objForm,objFormSubmit) {
+		var strAdd = '';
+		var strDel = '';
+		for(var i = 0; i < objForm.elements.length; i++) {
+			if (objForm.elements[i].name.substring(0,5) == 'graph') {
+				if (objForm.elements[i].name != 'graph_list') {
+					if (objForm.elements[i].checked) {
+						strAdd = strAdd + objForm.elements[i].value + ',';
+					} else {
+						if (objForm.elements[i].value != '') {
+							strDel = strDel + objForm.elements[i].value + ',';
 						}
 					}
 				}
 			}
-			strAdd = strAdd.substring(0,strAdd.length - 1);
-			strDel = strDel.substring(0,strDel.length - 1);
-			objForm.graph_add.value = strAdd;
-			objForm.graph_remove.value = strDel;
 		}
-		-->
-	</script>\n";
-
-	html_graph_start_box(1, true);
-
-	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
-		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
-	}else{
-		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . $_REQUEST["host_id"];
+		strAdd = strAdd.substring(0,strAdd.length - 1);
+		strDel = strDel.substring(0,strDel.length - 1);
+		objFormSubmit.graph_add.value = strAdd;
+		objFormSubmit.graph_remove.value = strDel;
 	}
+	-->
+	</script>
+	<form name='graphs' id='graphs' action='graph_view.php' method='get' onSubmit='form_graph(document.graphs,document.graphs)'>
 
-	$nav_url = ereg_replace("(\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*|(\?|&)graph_add=[\,0-9]*|(\?|&)graph_remove=[\,0-9]*|(\?|&)graph_list=[\,0-9]*", "", $nav_url);
-	$graph_list_text = "";
-	if (! empty($graph_list)) {
-		foreach ($graph_list as $item => $value) {
-			$graph_list_text .= $item . ",";
-		}
-		if (substr($graph_list_text,strlen($graph_list_text) - 1, 1) == ",") {
-			$graph_list_text = substr($graph_list_text,0,strlen($graph_list_text) - 1);
-		}
-		$nav_url .= "&graph_list=" . $graph_list_text;
-	}
+	<?php
 
 	html_graph_start_box(1, true);
 	?>
@@ -456,13 +519,13 @@ case 'list':
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; <?php if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "' onClick='return url_graph(\"" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "\")'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } ?></strong>
+						<strong>&lt;&lt; <?php if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "\"))'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } ?></strong>
 					</td>
 					<td align='center' class='textHeaderDark'>
 						Showing Rows <?php print ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1);?> to <?php print ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"]));?> of <?php print $total_rows;?>
 					</td>
 					<td align='right' class='textHeaderDark'>
-						<strong><?php if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "' onClick='return url_graph(\"" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "\")'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
+						<strong><?php if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "\"))'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
 					</td>
 				</tr>
 			</table>
@@ -491,27 +554,24 @@ case 'list':
 		}
 	}
 
-	print "	</table>
+	?>	</table>
 		<table align='center' width='98%'>
 			<tr>
-				<td width='1'>
-					<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
-				</td>
-				<td>
-					<input type='image' src='images/button_view.gif' alt='View'>
-				</td>
+				<td width='1'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
+				<td><input type='image' src='images/button_view.gif' alt='View'></td>
 			</tr>
-		</table><br><br>\n
+		</table>
 	<input type='hidden' name='page' value='1'>
-	<input type='hidden' name='style' value='selective'>\n
-	<input type='hidden' name='action' value='preview'>\n
-	<input type='hidden' name='graph_list' value='" . $graph_list_text . "'>\n
-	<input type='hidden' name='graph_add' value=''>\n
-	<input type='hidden' name='graph_remove' value=''>\n
-	</form>\n";
+	<input type='hidden' name='style' value='selective'>
+	<input type='hidden' name='action' value='preview'>
+	<input type='hidden' name='graph_list' value='<? print $graph_list_text; ?>'>
+	<input type='hidden' name='graph_add' value=''>
+	<input type='hidden' name='graph_remove' value=''>
+	</form><?;
 
 	break;
 }
 
-
 include_once("./include/bottom_footer.php");
+
+?>
