@@ -41,22 +41,19 @@ class Net_Ping
 	var $time;
 	var $timer_start_time;
 
-	function Net_Ping()
-	{
+	function Net_Ping() {
+		$this->port = 33439;
 	}
 
-	function close_socket()
-	{
+	function close_socket() {
 		socket_close($this->socket);
 	}
 
-	function start_time()
-	{
+	function start_time() {
 		$this->timer_start_time = microtime();
 	}
 
-	function get_time($acc=2)
-	{
+	function get_time($acc=2) {
 		// format start time
 		$start_time = explode (" ", $this->timer_start_time);
 		$start_time = $start_time[1] + $start_time[0];
@@ -87,7 +84,7 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
-	function ping_icmp()	{
+	function ping_icmp() {
 		/* ping me */
 		if ($this->host["hostname"]) {
 			/* initialize variables */
@@ -107,9 +104,7 @@ class Net_Ping
 					"usec"=>0  // I assume timeout in microseconds
 				));
 
-			if (@socket_connect($this->socket, $this->host["hostname"], NULL)) {
-				// do nothing
-			} else {
+			if (!(@socket_connect($this->socket, $this->host["hostname"], NULL))) {
 				$this->ping_response = "Cannot connect to host";
 				$this->ping_status   = "down";
 				return false;
@@ -210,13 +205,11 @@ class Net_Ping
 				SOL_SOCKET,  // socket level
 				SO_RCVTIMEO, // timeout option
 				array(
-					"sec"=>$this->timeout, // Timeout in seconds
-					"usec"=>0  // I assume timeout in microseconds
+					"sec"=>$this->timeout,  // I assume timeout in microseconds
+					"usec"=>0 // Timeout in seconds
 				));
 
-			if (@socket_connect($this->socket, $this->host["hostname"], 33439)) {
-					// do nothing
-			} else {
+			if (!(@socket_connect($this->socket, $this->host["hostname"], $this->port))) {
 				$this->ping_status = "down";
 				$this->ping_response = "Cannot connect to host";
 				return false;
@@ -262,6 +255,42 @@ class Net_Ping
 		}
 	} /* end ping_udp */
 
+	function ping_tcp() {
+		/* Host must be nonblank */
+		if ($this->host["hostname"]) {
+			/* initialize variables */
+			$this->ping_status   = "down";
+			$this->ping_response = "default";
+
+			/* initilize the socket */
+			$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+
+			while (1) {
+				/* set start time */
+				$this->start_time();
+
+				if (@socket_connect($this->socket, $this->host["hostname"], $this->port)) {
+					/* caculate total time */
+					$this->time = $this->get_time($this->precision);
+
+					if (($this->time*1000) <= $this->timeout) {
+						$this->ping_response = "TCP ping success";
+						$this->ping_status   = $this->time*1000;
+					}
+					return true;
+				}
+
+				$this->ping_response = "TCP ping timed out";
+				$this->ping_status   = "down";
+				return false;
+			}
+		} else {
+			$this->ping_response = "Destination address not specified";
+			$this->ping_status   = "down";
+			return false;
+		}
+	} /* end ping_tcp */
+
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = ICMP_PING, $timeout=500, $retries=3)
 	{
 		/* initialize variables */
@@ -301,6 +330,8 @@ class Net_Ping
 				$ping_result = $this->ping_icmp();
 			}else if ($ping_type == PING_UDP) {
 				$ping_result = $this->ping_udp();
+			}else if ($ping_type == PING_TCP) {
+				$ping_result = $this->ping_tcp();
 			}
 		}
 
