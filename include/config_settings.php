@@ -515,10 +515,10 @@ $settings = array(
 			"max_length" => "10"
 			),
 		"max_get_size" => array(
-			"friendly_name" => "The Maximum SNMP OID's Per Request",
-			"description" => "The maximum number of snmp get OID's to issue per snmp request.  Increasing this value speeds poller performance over slow links.  Affects Cactid performance only.  The maximum value is 128 OID's.",
+			"friendly_name" => "The Maximum SNMP OID's Per SNMP Get Request",
+			"description" => "The maximum number of snmp get OID's to issue per snmp request.  Increasing this value speeds poller performance over slow links.  Affects Cactid performance only.  The maximum value is 60 OID's.",
 			"method" => "textbox",
-			"default" => "25",
+			"default" => "10",
 			"max_length" => "10"
 			),
 		"availability_header" => array(
