@@ -699,7 +699,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL .
 		"--start=$graph_start" . RRD_NL .
 		"--end=$graph_end" . RRD_NL .
-		"--title=\"" . $graph["title_cache"] . "\"" . RRD_NL .
+		"--title=\"" . addslashes($graph["title_cache"]) . "\"" . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .
 		"--height=$graph_height" . RRD_NL .
