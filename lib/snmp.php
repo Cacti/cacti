@@ -173,7 +173,12 @@ function format_snmp_string($string) {
 	$string = str_replace("\\", "", $string);
 
 	/* Remove invalid chars */
-	$string =  ereg_replace("![A-Za-z0-9\ \!\@\#\$\%\^\&\*\(\)\-\_\+\=\[\]\{\}\;\:\?\/\.\,\~]", "", $string);
+	$k = strlen($string);
+	for ($i=0; $i < $k; $i++) {
+		if ((ord($string[$i]) <= 31) || (ord($string[$i]) >= 127)) {
+			$string[$i] = ".";
+		}
+	}
 
 	if (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
 		$octet = "";
