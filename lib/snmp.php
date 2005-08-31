@@ -176,9 +176,10 @@ function format_snmp_string($string) {
 	$k = strlen($string);
 	for ($i=0; $i < $k; $i++) {
 		if ((ord($string[$i]) <= 31) || (ord($string[$i]) >= 127)) {
-			$string[$i] = ".";
+			$string[$i] = " ";
 		}
 	}
+	$string = trim($string);
 
 	if (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
 		$octet = "";
