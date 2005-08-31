@@ -1087,7 +1087,7 @@ function graph() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>" title="<?php print $graph["title_cache"];?>"><?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))); }else{ print title_trim($graph["title_cache"], read_config_option("max_title_graph")); } ?></a>
+					<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>" title="<?php print htmlspecialchars($graph["title_cache"]);?>"><?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))); }else{ print title_trim($graph["title_cache"], read_config_option("max_title_graph")); } ?></a>
 				</td>
 				<td>
 					<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
