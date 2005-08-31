@@ -262,6 +262,16 @@ $settings = array(
 						"ftp_ncftpput" => "Ftp (remote) - use ncftpput"
 						),
 			),
+		"export_presentation" => array(
+			"friendly_name" => "Exported Files Presentation",
+			"description" => "Choose which presentation would you want for the html generated pages. If you choose classical presentation, the graphs will be in a only-one-html page. If you choose tree presentation, the graph tree architecture will be kept in the static html pages",
+			"method" => "drop_array",
+			"default" => "disabled",
+			"array" => array(
+						"classical" => "Classical Presentation",
+						"tree" => "Tree Presentation",
+						),
+			),
 		"export_hdr_paths" => array(
 			"friendly_name" => "Paths",
 			"method" => "spacer",
