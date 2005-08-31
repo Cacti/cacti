@@ -224,7 +224,7 @@ if (read_config_option("poller_enabled") == "on") {
 
 	/* graph export */
 	$command_string = read_config_option("path_php_binary");
-	$extra_args = "-q " . $config["base_path"] . "/export.php";
+	$extra_args = "-q " . $config["base_path"] . "/poller_export.php";
 	exec_background($command_string, "$extra_args");
 
 	if ($method == "cactid") {
