@@ -150,7 +150,7 @@ $settings = array(
 			"tab" => "poller",
 			"items" => array(
 				"log_pstats" => array(
-					"friendly_name" => "Poller Statsistics",
+					"friendly_name" => "Poller Statistics",
 					"default" => ""
 					),
 				"log_pwarn" => array(
