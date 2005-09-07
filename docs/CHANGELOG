@@ -1,29 +1,37 @@
 Cacti CHANGELOG
 
 0.8.6g
--bug#0000547: Hosts with Corrupted ifName/ifAlias Cause Tree View to Break
--bug#0000351: fixed zooming capability in Safari
--bug#0000498: fixed issue where editing data input methods damaged portions of the database
--bug#0000502: fix syslogging in unix
--bug#0000508: fixed issues where filter functionality would not work in preview mode
--bug#0000512: increase script server buffer size for large output
--bug#0000520: LDAP authentication causes crash/abort
--bug#0000521: added graph/data source title mouseover support
--bug#0000530: OID's truncated to 132 characters when polling
--bug#0000536: Printing of Zoomed Graph in IE causes white box over graph
--bug: fixed sanitize search function to play nice
--bug: fixed multiple output support in script server
--bug: fixed incompatible binary snmp calling parameter issue with net-snmp versions earlier than 5.1
--bug: fixed issues encounted when polling invalid data sources
--bug: fixed issue where if a host was deleted, reindexing would continue to attempt to be performed on it
--bug: lib/ping.php could not be used as an include in script_server scripts
--bug: eliminate the need to run php-win.exe in Windows environment.  Will now work with just php.exe
--feature: great new graph export format "Tree Presentation" thanks to our friend from Tourlouse France jaybob1 at hotmail dot com
--feature: allow |query_*| to be used within a CDEF
--feature: force export functions to a separate process
--feature: force recaching of data queries to a separate process
--feature: Added filter to graph list and pages
--feature: enhanced ss_fping.php and ping.php to inclue ICMP, TCP and UDP ping functionality and to specify a port
+-bug#0000351: Fix zooming capability in Safari.
+-bug#0000491: Allow underscore, dash, and forward slash characters through search string validation.
+-bug#0000498: Fix issue where editing data input methods damaged portions of the database.
+-bug#0000502: Fix Syslog support in unix.
+-bug#0000506/#0000517: Properly handle special XML characters when importing/exporting templates.
+-bug#0000508: Fix issues where filter functionality would not work in preview mode.
+-bug#0000512: Increase script server buffer size for large output.
+-bug#0000520: Fix issue where LDAP authentication causes crash/abort.
+-bug#0000521: Add graph/data source title mouseover support.
+-bug#0000525: Make sure that all files in the Cacti distribution contain an EOF character.
+-bug#0000530: Remove 132 character limitation for OID's during polling.
+-bug#0000531: Make sure that quote characters in suggested value fields are properly escaped.
+-bug#0000535: Fix template export support for PHP 4.4.
+-bug#0000536: Fix printing of zoomed graphs where in IE where a white box would appear over the graph.
+-bug#0000537: Re-implement functional SNMPv3 support (authNoPriv only)
+-bug#0000543: Always allow non-templated graph/data template fields to be blank.
+-bug#0000547: Fix issue with escaping certain control characters, causing the graph tree to break.
+-bug#0000552: Fix typo on the Settings page.
+-bug#0000544: See graph tree export contrib below.
+-bug: Fix multiple output support in the script server.
+-bug: Fix incompatible binary SNMP calling parameter issue with NET-SNMP versions earlier than 5.1.
+-bug: Fix issues encountered when polling invalid data sources.
+-bug: Fix issue where if a host was deleted, re-indexing would continue to attempt to be performed on it.
+-bug: Allow lib/ping.php to be included in user script server scripts.
+-bug: Eliminate the need to run php-win.exe in Windows environment.  Will now work with just php.exe.
+-feature: Add a great new graph export format "Tree Presentation", thanks to our friend from Tourlouse France (forums user: jaybob).
+-feature: Allow data query |query_*| variables to be used within a CDEF string.
+-feature: Force export functions into a separate poller process.
+-feature: Force re-caching of data queries into a separate poller process.
+-feature: Added filter capability to graph list view mode.
+-feature: Enhanced ss_fping.php and ping.php to inclue ICMP, TCP and UDP ping functionality and to specify a port.
 
 0.8.6f
 -security: Hardened PHP Project Advisory #042005 - Cacti Authentification/Addslashes Bypass Vulnerability
