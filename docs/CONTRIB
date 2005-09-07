@@ -1,6 +1,16 @@
 Documentation of user-contributed code:
 
-2004-08-23: moonman [nitzan_tz@co.zahav.net.il] based on patch by SR [sbalukoff@cardomain.com]
+2005-08-29: jaybob [jay_bob1 at hotmail dot com]
+  I want to present an add-on that I developed on Cacti-0.8.6f. Actually, I needed an advance
+  export graph format. The patch that I propose uses the Cacti graph tree.
+
+  In the cacti_export_path, for each tree, a directory is made. For each branch, there is a new
+  html file generated. And on the left, the tree is showed, with the javaScript used in Cacti.
+  Only graphs that are enable to export attached on the Cacti graph tree will be really exported.
+
+  [source: http://forums.cacti.net/viewtopic.php?t=9088]
+
+2004-08-23: moonman [nitzan_tz at co dot zahav dot net dot il] based on patch by SR [sbalukoff at cardomain dot com]
   The attached patch against cacti 0.8.5a adds the 'SIMILAR_DATA_SOURCES_NODUPS' special
   data souce as a possible CDEF input for graph template items. This makes it possible to
   graph several different types of data on the same graph (eg. traffic_in and traffic_out),
@@ -19,9 +29,9 @@ Documentation of user-contributed code:
 
   (And yes, you can interchange steps 3 and 4 above.)
 
-  [source: http://www.raxnet.net/board/viewtopic.php?t=4080]
+  [source: http://forums.cacti.net/viewtopic.php?t=4080]
 
-2004-08-02: branix [branix@osmcluj.ro]
+2004-08-02: branix [branix at osmcluj dot ro]
   Cacti's export function was buggy in cacti 0.8.5a, and lacked extra functionality.
   The patches presented here allow extra graph export options.
 
@@ -42,7 +52,7 @@ Documentation of user-contributed code:
     * FTP using the ncftpput client - for users which don't want to use PHP's built-in FTP support,
       and have the ncftpput binary installed.
 
-2004-05-17: Eric Steffen [eric.steffen@gmx.net]
+2004-05-17: Eric Steffen [eric.steffen at gmx dot net]
   Bonsai is very similar to Cactistoric developed by Bruno Prigent, with a little bit
   more user friendly interface in mind (my opinion).
 
