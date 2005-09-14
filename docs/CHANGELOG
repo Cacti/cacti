@@ -26,7 +26,7 @@ Cacti CHANGELOG
 -bug: Fix issue where if a host was deleted, re-indexing would continue to attempt to be performed on it.
 -bug: Allow lib/ping.php to be included in user script server scripts.
 -bug: Eliminate the need to run php-win.exe in Windows environment.  Will now work with just php.exe.
--feature: Add a great new graph export format "Tree Presentation", thanks to our friend from Tourlouse France (forums user: jaybob).
+-feature: Add a great new graph export format "Tree Presentation", thanks to our friend from Toulouse France (forums user: jaybob).
 -feature: Allow data query |query_*| variables to be used within a CDEF string.
 -feature: Force export functions into a separate poller process.
 -feature: Force re-caching of data queries into a separate poller process.
