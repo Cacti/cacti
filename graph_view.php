@@ -374,7 +374,7 @@ case 'list':
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id" method="POST" onSubmit='form_graph(document.graphs,document.form_graph_id)'>
-		<input type='hidden' name='graph_list' value='<? print $graph_list_text; ?>'>
+		<input type='hidden' name='graph_list' value='<?php print $graph_list_text; ?>'>
 		<input type='hidden' name='graph_add' value=''>
 		<input type='hidden' name='graph_remove' value=''>
 		<td>
@@ -564,10 +564,10 @@ case 'list':
 	<input type='hidden' name='page' value='1'>
 	<input type='hidden' name='style' value='selective'>
 	<input type='hidden' name='action' value='preview'>
-	<input type='hidden' name='graph_list' value='<? print $graph_list_text; ?>'>
+	<input type='hidden' name='graph_list' value='<?php print $graph_list_text; ?>'>
 	<input type='hidden' name='graph_add' value=''>
 	<input type='hidden' name='graph_remove' value=''>
-	</form><?;
+	</form><?php
 
 	break;
 }

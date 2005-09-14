@@ -1,4 +1,4 @@
-	<? if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; } 
+	<?php if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
 	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; } ?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_graph_id" method="post">
