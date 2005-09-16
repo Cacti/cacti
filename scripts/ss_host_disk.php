@@ -47,7 +47,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 		);
 
 	if ($cmd == "index") {
-		$return_arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, SNMP_POLLER));
+		$return_arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, SNMP_POLLER));
 
 		for ($i=0;($i<sizeof($return_arr));$i++) {
 			print $return_arr[$i] . "\n";
@@ -55,8 +55,8 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 	}elseif ($cmd == "query") {
 		$arg = $arg1;
 
-		$arr_index = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, SNMP_POLLER));
-		$arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, SNMP_POLLER));
+		$arr_index = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, SNMP_POLLER));
+		$arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, SNMP_POLLER));
 
 		for ($i=0;($i<sizeof($arr_index));$i++) {
 			print $arr_index[$i] . "!" . $arr[$i] . "\n";
@@ -69,9 +69,9 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 			/* get hrStorageAllocationUnits from the snmp cache since it is faster */
 			$sau = eregi_replace("[^0-9]", "", db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='hrStorageAllocationUnits' and snmp_index='$index'"));
 
-			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, SNMP_POLLER) * $sau;
+			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, SNMP_POLLER) * $sau;
 		}else{
-			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, SNMP_POLLER);
+			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, SNMP_POLLER);
 		}
 	}
 }
