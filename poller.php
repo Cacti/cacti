@@ -47,9 +47,6 @@ $start = $seconds + $micro;
 /* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");
 
-/* Disable Mib File Loading */
-putenv("MIBS=NONE");
-
 /* Get number of polling items from the database */
 $polling_interval = read_config_option("poller_interval");
 
