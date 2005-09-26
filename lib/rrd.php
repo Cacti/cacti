@@ -747,6 +747,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	$i = 0; $j = 0;
 	if (sizeof($graph_items > 0)) {
+
+	#$ds_array = array();
+
 	foreach ($graph_items as $graph_item) {
 		if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && ($graph_item["data_source_name"] != "")) {
 			/* use a user-specified ds path if one is entered */
@@ -764,6 +767,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				//print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
 				$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
+
+                                #array_push($ds_array, $graph_item["local_data_id"]);
 
 				$i++;
 			}
@@ -824,9 +829,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			/* 95th percentile */
-			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
+			if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
+					#$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $ds_array, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
 				}
 			}
 
