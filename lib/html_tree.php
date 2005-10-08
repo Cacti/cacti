@@ -376,17 +376,17 @@ function create_dhtml_tree() {
 				$sql_where
 				and graph_tree_items.local_graph_id = 0
 				order by graph_tree_items.order_key");
-		
+
 			$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
-		
+
 			if (sizeof($heirarchy) > 0) {
 				foreach ($heirarchy as $leaf) {
 					$i++;
 					$tier = tree_tier($leaf["order_key"]);
-				
+
 					if ($leaf["host_id"] > 0) {
 						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
-				
+
 						if (read_graph_config_option("expand_hosts") == "on") {
 							if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
 								$graph_templates = db_fetch_assoc("select
@@ -398,7 +398,7 @@ function create_dhtml_tree() {
 									and graph_local.host_id=" . $leaf["host_id"] . "
 									group by graph_templates.id
 									order by graph_templates.name");
-				
+
 								if (sizeof($graph_templates) > 0) {
 									foreach ($graph_templates as $graph_template) {
 										$i++;
@@ -414,20 +414,20 @@ function create_dhtml_tree() {
 									and graph_local.host_id=" . $leaf["host_id"] . "
 									group by snmp_query.id
 									order by snmp_query.name");
-					
+
 								array_push($data_queries, array(
 									"id" => "0",
 									"name" => "(Non Indexed)"
 								));
-				
+
 								if (sizeof($data_queries) > 0) {
 									foreach ($data_queries as $data_query) {
 										$i++;
 										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($data_query["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
-				
+
 										/* fetch a list of field names that are sorted by the preferred sort field */
 										$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
-					
+
 										while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
 											$i++;
 											$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . addslashes($sort_field_value) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
@@ -485,7 +485,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	/* get information for the headers */
 	if (!empty($tree_id)) { $tree_name = db_fetch_cell("select name from graph_tree where id=$tree_id"); }
 	if (!empty($leaf_id)) { $leaf_name = $leaf["title"]; }
-	if (!empty($leaf_id)) { $host_name = db_fetch_cell("select host.description from graph_tree_items,host where graph_tree_items.host_id=host.id and graph_tree_items.id=$leaf_id"); }
+	if (!empty($leaf_id)) { $host_name = db_fetch_cell("select host.description from (graph_tree_items,host) where graph_tree_items.host_id=host.id and graph_tree_items.id=$leaf_id"); }
 
 	$host_group_data_array = explode(":", $host_group_data);
 
@@ -528,7 +528,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			graph_tree_items.rra_id,
 			graph_tree_items.order_key,
 			graph_templates_graph.title_cache as title_cache
-			from graph_tree_items,graph_local
+			from (graph_tree_items,graph_local)
 			left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 			$sql_join
 			where graph_tree_items.graph_tree_id=$tree_id
@@ -569,7 +569,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				$graphs = db_fetch_assoc("select
 					graph_templates_graph.title_cache,
 					graph_templates_graph.local_graph_id
-					from graph_local,graph_templates_graph
+					from (graph_local,graph_templates_graph)
 					$sql_join
 					where graph_local.id=graph_templates_graph.local_graph_id
 					and graph_local.graph_template_id=" . $graph_template["id"] . "
@@ -614,7 +614,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					graph_templates_graph.title_cache,
 					graph_templates_graph.local_graph_id,
 					graph_local.snmp_index
-					from graph_local,graph_templates_graph
+					from (graph_local,graph_templates_graph)
 					$sql_join
 					where graph_local.id=graph_templates_graph.local_graph_id
 					and graph_local.snmp_query_id=" . $data_query["id"] . "

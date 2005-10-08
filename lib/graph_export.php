@@ -332,7 +332,8 @@ function export() {
 			graph_templates_graph.title_cache,
 			graph_templates.name,
 			graph_local.host_id
-			from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
+			from graph_templates_graph
+			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
 			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 			where graph_templates_graph.local_graph_id!=0 and graph_templates_graph.export='on'
 			order by graph_templates_graph.title_cache");

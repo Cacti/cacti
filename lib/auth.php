@@ -74,7 +74,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	$sql_and = "";
 	$sql_policy_or = "";
 	$sql_policy_and = "";
-	
+
 	if ($policy_graphs == "1") {
 		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type is null)";
 		$sql_and = " AND ";
@@ -84,7 +84,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 		$sql_or = " OR ";
 		$sql_null = "is not null";
 	}
-	
+
 	if ($policy_hosts == "1") {
 		$sql_policy_and .= "$sql_and((user_auth_perms.type != 3) OR (user_auth_perms.type is null))";
 		$sql_and = " AND ";
@@ -92,7 +92,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 		$sql_policy_or .= "$sql_or((user_auth_perms.type = 3) OR (user_auth_perms.type is not null))";
 		$sql_or = " OR ";
 	}
-	
+
 	if ($policy_graph_templates == "1") {
 		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type is null))";
 		$sql_and = " AND ";
@@ -100,18 +100,18 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type is not null))";
 		$sql_or = " OR ";
 	}
-	
+
 	$sql_and = "";
-	
+
 	if (!empty($sql_policy_or)) {
 		$sql_and = "AND ";
 		$sql .= $sql_policy_or;
 	}
-	
+
 	if (!empty($sql_policy_and)) {
 		$sql .= "$sql_and$sql_policy_and";
 	}
-	
+
 	if (empty($sql)) {
 		return "";
 	}else{
@@ -124,13 +124,13 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id) {
 	$current_user = db_fetch_row("select policy_graphs,policy_hosts,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
-	
+
 	/* get policy information for the sql where clause */
 	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-	
+
 	$graphs = db_fetch_assoc("select
 		graph_templates_graph.local_graph_id
-		from graph_templates_graph,graph_local
+		from (graph_templates_graph,graph_local)
 		left join host on host.id=graph_local.host_id
 		left join graph_templates on graph_templates.id=graph_local.graph_template_id
 		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
@@ -138,7 +138,7 @@ function is_graph_allowed($local_graph_id) {
 		" . (empty($sql_where) ? "" : "and $sql_where") . "
 		and graph_templates_graph.local_graph_id=$local_graph_id
 		group by graph_templates_graph.local_graph_id");
-	
+
 	if (sizeof($graphs) > 0) {
 		return true;
 	}else{
@@ -151,14 +151,14 @@ function is_graph_allowed($local_graph_id) {
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function is_tree_allowed($tree_id) {
 	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
-	
+
 	$trees = db_fetch_assoc("select
 		user_id
 		from user_auth_perms
 		where user_id=" . $_SESSION["sess_user_id"] . "
 		and type=2
 		and item_id=$tree_id");
-	
+
 	/* policy == allow AND matches = DENY */
 	if ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "1")) {
 		return false;

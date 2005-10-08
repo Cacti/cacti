@@ -243,7 +243,7 @@ function item_edit() {
 		$struct_graph_item["task_item_id"]["sql"] = "select
 			CONCAT_WS('',data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
 			data_template_rrd.id
-			from data_template_data,data_template_rrd,data_local
+			from (data_template_data,data_template_rrd,data_local)
 			left join host on data_local.host_id=host.id
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id

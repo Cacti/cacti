@@ -207,7 +207,7 @@ case 'preview':
 		}
 	}
 
-	$sql_base = "from graph_templates_graph,graph_local
+	$sql_base = "from (graph_templates_graph,graph_local)
 		$sql_join
 		$sql_where
 		" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
@@ -435,7 +435,7 @@ case 'list':
 		$sql_join = "";
 	}
 
-	$sql_base = "from graph_templates_graph,graph_local
+	$sql_base = "from (graph_templates_graph,graph_local)
 		$sql_join
 		$sql_where
 		" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
