@@ -58,11 +58,16 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 		data_template_data.id as data_template_data_id,
 		data_template_data.data_template_id,
 		data_template_data.active
-		from data_template_data,data_input
+		from (data_template_data,data_input)
 		where data_template_data.data_input_id=data_input.id
 		and data_template_data.local_data_id=$local_data_id");
 
-	$data_source = db_fetch_row("select host_id,snmp_query_id,snmp_index from data_local where id=$local_data_id");
+	$data_source = db_fetch_row("select
+		host_id,
+		snmp_query_id,
+		snmp_index
+		from data_local
+		where id=$local_data_id");
 
 	/* clear cache for this local_data_id */
 	if (!$truncate_performed) {
@@ -82,7 +87,7 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 		$outputs = db_fetch_assoc("select
 			snmp_query_graph_rrd.snmp_field_name,
 			data_template_rrd.id as data_template_rrd_id
-			from snmp_query_graph_rrd,data_template_rrd
+			from (snmp_query_graph_rrd,data_template_rrd)
 			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
 			and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"] . "
 			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
@@ -201,7 +206,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		data_template_data.data_input_id,
 		data_template_data.local_data_id,
 		data_template_data.local_data_template_data_id
-		from data_local,data_template_data
+		from (data_local,data_template_data)
 		where " . (empty($local_data_id) ? "data_local.host_id=$host_id" : "data_local.id=$local_data_id") . "
 		and data_local.id=data_template_data.local_data_id
 		and data_template_data.data_input_id>0");

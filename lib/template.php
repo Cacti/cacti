@@ -349,7 +349,7 @@ function push_out_graph_item($graph_template_item_id) {
 	$graph_item_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
-		from graph_template_input, graph_template_input_defs
+		from (graph_template_input, graph_template_input_defs)
 		where graph_template_input.graph_template_id=" . $graph_template_item["graph_template_id"] . "
 		and graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		and graph_template_input_defs.graph_template_item_id=$graph_template_item_id");
@@ -418,7 +418,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	$graph_template_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
-		from graph_template_input,graph_template_input_defs
+		from (graph_template_input,graph_template_input_defs)
 		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		and graph_template_input.graph_template_id=$graph_template_id");
 
@@ -609,7 +609,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		data_template.id,
 		data_template.name,
 		data_template_rrd.data_source_name
-		from data_template, data_template_rrd, graph_templates_item
+		from (data_template, data_template_rrd, graph_templates_item)
 		where graph_templates_item.task_item_id=data_template_rrd.id
 		and data_template_rrd.data_template_id=data_template.id
 		and data_template_rrd.local_data_id=0
@@ -657,7 +657,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			$data_input_field = array_rekey(db_fetch_assoc("select
 				data_input_fields.id,
 				data_input_fields.type_code
-				from snmp_query,data_input,data_input_fields
+				from (snmp_query,data_input,data_input_fields)
 				where snmp_query.data_input_id=data_input.id
 				and data_input.id=data_input_fields.data_input_id
 				and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')
@@ -714,7 +714,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		graph_templates_item.id,
 		data_template_rrd.id as data_template_rrd_id,
 		data_template_rrd.data_template_id
-		from graph_templates_item,data_template_rrd
+		from (graph_templates_item,data_template_rrd)
 		where graph_templates_item.task_item_id=data_template_rrd.id
 		and graph_templates_item.graph_template_id=$graph_template_id
 		and local_graph_id=0

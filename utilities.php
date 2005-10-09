@@ -203,7 +203,7 @@ function utilities_view_snmp_cache() {
 	$snmp_cache = db_fetch_assoc("select host_snmp_cache.*,
 		host.description,
 		snmp_query.name
-		from host_snmp_cache,snmp_query,host
+		from (host_snmp_cache,snmp_query,host)
 		where host_snmp_cache.host_id=host.id
 		and host_snmp_cache.snmp_query_id=snmp_query.id
 		order by host_snmp_cache.host_id,host_snmp_cache.snmp_query_id,host_snmp_cache.snmp_index");
@@ -247,7 +247,7 @@ function utilities_view_poller_cache() {
 		poller_item.*,
 		data_template_data.name_cache,
 		data_local.host_id
-		from poller_item,data_template_data,data_local
+		from (poller_item,data_template_data,data_local)
 		where poller_item.local_data_id=data_template_data.local_data_id
 		and data_template_data.local_data_id=data_local.id");
 

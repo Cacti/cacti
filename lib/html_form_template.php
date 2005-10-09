@@ -139,7 +139,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				$current_def_value = db_fetch_row("select
 					graph_templates_item." . $item["column_name"] . ",
 					graph_templates_item.id
-					from graph_templates_item,graph_template_input_defs
+					from (graph_templates_item,graph_template_input_defs)
 					where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
 					and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
 					and graph_templates_item.local_graph_id=$local_graph_id
@@ -148,7 +148,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				$current_def_value = db_fetch_row("select
 					graph_templates_item." . $item["column_name"] . ",
 					graph_templates_item.id
-					from graph_templates_item,graph_template_input_defs
+					from (graph_templates_item,graph_template_input_defs)
 					where graph_template_input_defs.graph_template_item_id=graph_templates_item.id
 					and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
 					and graph_templates_item.graph_template_id=" . $graph_template_id . "
@@ -397,7 +397,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	global $colors;
 
 	$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
-	$host_id = db_fetch_cell("select host.id from data_local,host where data_local.host_id=host.id and data_local.id=" . $data["local_data_id"]);
+	$host_id = db_fetch_cell("select host.id from (data_local,host) where data_local.host_id=host.id and data_local.id=" . $data["local_data_id"]);
 	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
 
 	$draw_any_items = false;
@@ -481,7 +481,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 	if (($field["type_code"] == "index_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
 		$index_type = db_fetch_assoc("select
 			host_snmp_cache.field_name
-			from data_template_data,data_local,host_snmp_cache
+			from (data_template_data,data_local,host_snmp_cache)
 			where data_template_data.local_data_id=data_local.id
 			and data_local.snmp_query_id=host_snmp_cache.snmp_query_id
 			and data_template_data.id=$data_template_data_id
@@ -496,7 +496,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 		$output_type = db_fetch_assoc("select
 			snmp_query_graph.id,
 			snmp_query_graph.name
-			from data_template_data,data_local,snmp_query_graph
+			from (data_template_data,data_local,snmp_query_graph)
 			where data_template_data.local_data_id=data_local.id
 			and data_local.snmp_query_id=snmp_query_graph.snmp_query_id
 			and data_template_data.id=$data_template_data_id

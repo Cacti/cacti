@@ -301,7 +301,7 @@ function data_query_item_edit() {
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
 			data_template.name
-			from data_template, data_template_rrd, graph_templates_item
+			from (data_template, data_template_rrd, graph_templates_item)
 			where graph_templates_item.task_item_id=data_template_rrd.id
 			and data_template_rrd.data_template_id=data_template.id
 			and data_template_rrd.local_data_id=0

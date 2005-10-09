@@ -509,7 +509,7 @@ function host_edit() {
 		$selected_graph_templates = db_fetch_assoc("select
 			graph_templates.id,
 			graph_templates.name
-			from graph_templates,host_graph
+			from (graph_templates,host_graph)
 			where graph_templates.id=host_graph.graph_template_id
 			and host_graph.host_id=" . $_GET["id"] . "
 			order by graph_templates.name");
@@ -569,7 +569,7 @@ function host_edit() {
 			snmp_query.id,
 			snmp_query.name,
 			host_snmp_query.reindex_method
-			from snmp_query,host_snmp_query
+			from (snmp_query,host_snmp_query)
 			where snmp_query.id=host_snmp_query.snmp_query_id
 			and host_snmp_query.host_id=" . $_GET["id"] . "
 			order by snmp_query.name");

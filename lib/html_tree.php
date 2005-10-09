@@ -118,7 +118,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 				$graph_templates = db_fetch_assoc("select
 					graph_templates.id,
 					graph_templates.name
-					from graph_local,graph_templates,graph_templates_graph
+					from (graph_local,graph_templates,graph_templates_graph)
 					where graph_local.id=graph_templates_graph.local_graph_id
 					and graph_templates_graph.graph_template_id=graph_templates.id
 					and graph_local.host_id=" . $leaf["host_id"] . "
@@ -133,7 +133,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 					$graphs = db_fetch_assoc("select
 						graph_templates_graph.title_cache,
 						graph_templates_graph.local_graph_id
-						from graph_local,graph_templates,graph_templates_graph
+						from (graph_local,graph_templates,graph_templates_graph)
 						where graph_local.id=graph_templates_graph.local_graph_id
 						and graph_templates_graph.graph_template_id=graph_templates.id
 						and graph_local.graph_template_id=" . $graph_template["id"] . "
@@ -392,7 +392,7 @@ function create_dhtml_tree() {
 								$graph_templates = db_fetch_assoc("select
 									graph_templates.id,
 									graph_templates.name
-									from graph_local,graph_templates,graph_templates_graph
+									from (graph_local,graph_templates,graph_templates_graph)
 									where graph_local.id=graph_templates_graph.local_graph_id
 									and graph_templates_graph.graph_template_id=graph_templates.id
 									and graph_local.host_id=" . $leaf["host_id"] . "
@@ -409,7 +409,7 @@ function create_dhtml_tree() {
 								$data_queries = db_fetch_assoc("select
 									snmp_query.id,
 									snmp_query.name
-									from graph_local,snmp_query
+									from (graph_local,snmp_query)
 									where graph_local.snmp_query_id=snmp_query.id
 									and graph_local.host_id=" . $leaf["host_id"] . "
 									group by snmp_query.id
@@ -550,7 +550,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$graph_templates = db_fetch_assoc("select
 				graph_templates.id,
 				graph_templates.name
-				from graph_local,graph_templates,graph_templates_graph
+				from (graph_local,graph_templates,graph_templates_graph)
 				where graph_local.id=graph_templates_graph.local_graph_id
 				and graph_templates_graph.graph_template_id=graph_templates.id
 				and graph_local.host_id=" . $leaf["host_id"] . "
@@ -589,7 +589,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$data_queries = db_fetch_assoc("select
 				snmp_query.id,
 				snmp_query.name
-				from graph_local,snmp_query
+				from (graph_local,snmp_query)
 				where graph_local.snmp_query_id=snmp_query.id
 				and graph_local.host_id=" . $leaf["host_id"] . "
 				" . (!isset($data_query_id) ? "" : "and snmp_query.id=$data_query_id") . "

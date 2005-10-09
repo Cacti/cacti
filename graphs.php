@@ -218,7 +218,7 @@ function form_save() {
 			/* we need to find out which graph items will be affected by saving this particular item */
 			$item_list = db_fetch_assoc("select
 				graph_templates_item.id
-				from graph_template_input_defs,graph_templates_item
+				from (graph_template_input_defs,graph_templates_item)
 				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
 				and graph_templates_item.local_graph_id=" . $_POST["local_graph_id"] . "
 				and graph_template_input_defs.graph_template_input_id=" . $input["id"]);
@@ -279,7 +279,7 @@ function form_actions() {
 					case '2': /* delete all data sources referenced by this graph */
 						$data_sources = db_fetch_assoc("select
 							data_template_data.local_data_id
-							from data_template_rrd,data_template_data,graph_templates_item
+							from (data_template_rrd,data_template_data,graph_templates_item)
 							where graph_templates_item.task_item_id=data_template_rrd.id
 							and data_template_rrd.local_data_id=data_template_data.local_data_id
 							and " . array_to_sql_or($selected_items, "graph_templates_item.local_graph_id") . "
@@ -399,7 +399,7 @@ function form_actions() {
 			$data_sources = db_fetch_assoc("select
 				data_template_data.local_data_id,
 				data_template_data.name_cache
-				from data_template_rrd,data_template_data,graph_templates_item
+				from (data_template_rrd,data_template_data,graph_templates_item)
 				where graph_templates_item.task_item_id=data_template_rrd.id
 				and data_template_rrd.local_data_id=data_template_data.local_data_id
 				and " . array_to_sql_or($graph_array, "graph_templates_item.local_graph_id") . "
@@ -622,7 +622,7 @@ function graph_diff() {
 	$graph_template_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
-		from graph_template_input,graph_template_input_defs
+		from (graph_template_input,graph_template_input_defs)
 		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"]);
 
@@ -1038,7 +1038,7 @@ function graph() {
 
 	$total_rows = db_fetch_cell("select
 		COUNT(graph_templates_graph.id)
-		from graph_local,graph_templates_graph
+		from (graph_local,graph_templates_graph)
 		where graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where");
 

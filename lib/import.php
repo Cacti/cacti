@@ -114,7 +114,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 
 	/* import into: graph_templates_graph */
 	unset($save);
-	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("select graph_templates_graph.id from graph_templates,graph_templates_graph where graph_templates.id=graph_templates_graph.graph_template_id and graph_templates.id=$graph_template_id and graph_templates_graph.local_graph_id=0"));
+	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("select graph_templates_graph.id from (graph_templates,graph_templates_graph) where graph_templates.id=graph_templates_graph.graph_template_id and graph_templates.id=$graph_template_id and graph_templates_graph.local_graph_id=0"));
 	$save["graph_template_id"] = $graph_template_id;
 
 	/* parse information from the hash */
@@ -251,7 +251,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 
 	/* import into: data_template_data */
 	unset($save);
-	$save["id"] = (empty($_data_template_id) ? "0" : db_fetch_cell("select data_template_data.id from data_template,data_template_data where data_template.id=data_template_data.data_template_id and data_template.id=$data_template_id and data_template_data.local_data_id=0"));
+	$save["id"] = (empty($_data_template_id) ? "0" : db_fetch_cell("select data_template_data.id from (data_template,data_template_data) where data_template.id=data_template_data.data_template_id and data_template.id=$data_template_id and data_template_data.local_data_id=0"));
 	$save["data_template_id"] = $data_template_id;
 
 	reset($struct_data_source);

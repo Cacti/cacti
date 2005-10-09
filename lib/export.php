@@ -646,7 +646,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		/* dep: data template */
 		$graph_template_items = db_fetch_assoc("select
 			data_template_rrd.data_template_id
-			from graph_templates_item,data_template_rrd
+			from (graph_templates_item,data_template_rrd)
 			where graph_templates_item.task_item_id=data_template_rrd.id
 			and graph_templates_item.graph_template_id=$id
 			and graph_templates_item.local_graph_id=0

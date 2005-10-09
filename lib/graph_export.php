@@ -797,7 +797,7 @@ function create_dhtml_tree_export($tree_id) {
 					$graph_templates = db_fetch_assoc("select
 						graph_templates.id,
 						graph_templates.name
-						from graph_local,graph_templates,graph_templates_graph
+						from (graph_local,graph_templates,graph_templates_graph)
 						where graph_local.id=graph_templates_graph.local_graph_id
 						and graph_templates_graph.graph_template_id=graph_templates.id
 						and graph_local.host_id=" . $leaf["host_id"] . "
@@ -814,7 +814,7 @@ function create_dhtml_tree_export($tree_id) {
 					$data_queries = db_fetch_assoc("select
 						snmp_query.id,
 						snmp_query.name
-						from graph_local,snmp_query
+						from (graph_local,snmp_query)
 						where graph_local.snmp_query_id=snmp_query.id
 						and graph_local.host_id=" . $leaf["host_id"] . "
 						group by snmp_query.id

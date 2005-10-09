@@ -678,7 +678,7 @@ function get_full_script_path($local_data_id) {
 		data_template_data.data_input_id,
 		data_input.type_id,
 		data_input.input_string
-		from data_template_data,data_input
+		from (data_template_data,data_input)
 		where data_template_data.data_input_id=data_input.id
 		and data_template_data.local_data_id=$local_data_id");
 
@@ -726,7 +726,7 @@ function get_data_source_item_name($data_template_rrd_id) {
 	$data_source = db_fetch_row("select
 		data_template_rrd.data_source_name,
 		data_template_data.name
-		from data_template_rrd,data_template_data
+		from (data_template_rrd,data_template_data)
 		where data_template_rrd.local_data_id=data_template_data.local_data_id
 		and data_template_rrd.id=$data_template_rrd_id");
 
@@ -830,7 +830,7 @@ function get_data_source_title($local_data_id) {
 		data_local.snmp_query_id,
 		data_local.snmp_index,
 		data_template_data.name
-		from data_template_data,data_local
+		from (data_template_data,data_local)
 		where data_template_data.local_data_id=data_local.id
 		and data_local.id=$local_data_id");
 
@@ -850,7 +850,7 @@ function get_graph_title($local_graph_id) {
 		graph_local.snmp_query_id,
 		graph_local.snmp_index,
 		graph_templates_graph.title
-		from graph_templates_graph,graph_local
+		from (graph_templates_graph,graph_local)
 		where graph_templates_graph.local_graph_id=graph_local.id
 		and graph_local.id=$local_graph_id");
 
@@ -869,7 +869,7 @@ function generate_data_source_path($local_data_id) {
 	$host_part = ""; $ds_part = "";
 
 	/* try any prepend the name with the host description */
-	$host_name = db_fetch_cell("select host.description from host,data_local where data_local.host_id=host.id and data_local.id=$local_data_id");
+	$host_name = db_fetch_cell("select host.description from (host,data_local) where data_local.host_id=host.id and data_local.id=$local_data_id");
 
 	if (!empty($host_name)) {
 		$host_part = strtolower(clean_up_name($host_name)) . "_";
@@ -1424,7 +1424,7 @@ function get_associated_rras($local_graph_id) {
 		rra.name,
 		rra.timespan,
 		data_template_data.rrd_step
-		from graph_templates_item,data_template_data_rra,data_template_rrd,data_template_data,rra
+		from (graph_templates_item,data_template_data_rra,data_template_rrd,data_template_data,rra)
 		where graph_templates_item.task_item_id=data_template_rrd.id
 		and data_template_rrd.local_data_id=data_template_data.local_data_id
 		and data_template_data.id=data_template_data_rra.data_template_data_id

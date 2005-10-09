@@ -31,7 +31,7 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once($config["library_path"] . "/utility.php");
 
 	debug_log_insert("data_query", "Running data query [$snmp_query_id].");
-	$type_id = db_fetch_cell("select data_input.type_id from snmp_query,data_input where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
+	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
 		debug_log_insert("data_query", "Found type = '3' [snmp query].");
@@ -301,7 +301,7 @@ function data_query_field_list($data_template_data_id) {
 	$field = db_fetch_assoc("select
 		data_input_fields.type_code,
 		data_input_data.value
-		from data_input_fields,data_input_data
+		from (data_input_fields,data_input_data)
 		where data_input_fields.id=data_input_data.data_input_field_id
 		and data_input_data.data_template_data_id=$data_template_data_id
 		and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
@@ -372,7 +372,7 @@ function update_graph_data_query_cache($local_graph_id) {
 
 	$field = data_query_field_list(db_fetch_cell("select
 		data_template_data.id
-		from graph_templates_item,data_template_rrd,data_template_data
+		from (graph_templates_item,data_template_rrd,data_template_data)
 		where graph_templates_item.task_item_id=data_template_rrd.id
 		and data_template_rrd.local_data_id=data_template_data.local_data_id
 		and graph_templates_item.local_graph_id=$local_graph_id
@@ -441,7 +441,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	$sort_field_data = array_rekey(db_fetch_assoc("select
 		graph_local.snmp_index,
 		host_snmp_cache.field_value
-		from graph_local,host_snmp_cache
+		from (graph_local,host_snmp_cache)
 		where graph_local.host_id=host_snmp_cache.host_id
 		and graph_local.snmp_query_id=host_snmp_cache.snmp_query_id
 		and graph_local.snmp_index=host_snmp_cache.snmp_index

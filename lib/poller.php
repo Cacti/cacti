@@ -39,7 +39,12 @@ function exec_poll($command) {
 
 		/* set script server timeout */
 		$script_timeout = read_config_option("script_timeout");
-		stream_set_timeout($fp, $script_timeout);
+
+		/* establish timeout variables */
+		$to_sec = floor($script_timeout/1000);
+		$to_usec = ($script_timeout%1000)*1000;
+
+		stream_set_timeout($fp, $to_sec, $to_usec);
 
 		/* get output from command */
 		$output = fgets($fp, 4096);
@@ -79,7 +84,12 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 
 			/* set script server timeout */
 			$script_timeout = read_config_option("script_timeout");
-		 	stream_set_timeout($pipes[0], $script_timeout);
+
+			/* establish timeout variables */
+			$to_sec = floor($script_timeout/1000);
+			$to_usec = ($script_timeout%1000)*1000;
+
+			stream_set_timeout($pipes[1], $to_sec, $to_usec);
 
 			/* send command to the php server */
 			fwrite($pipes[0], $command . "\r\n");
@@ -111,7 +121,12 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 
 			/* set script server timeout */
 			$script_timeout = read_config_option("script_timeout");
-			stream_set_timeout($fp, $script_timeout);
+
+			/* establish timeout variables */
+			$to_sec = floor($script_timeout/1000);
+			$to_usec = ($script_timeout%1000)*1000;
+
+			stream_set_timeout($fp, $to_sec, $to_usec);
 
 			/* get output from command */
 			$output = fgets($fp, 4096);
@@ -167,7 +182,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 	$host = db_fetch_row("select hostname,snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,snmp_timeout from host where id=$host_id");
 	$data_query = db_fetch_row("select reindex_method,sort_field from host_snmp_query where host_id=$host_id and snmp_query_id=$data_query_id");
-	$data_query_type = db_fetch_cell("select data_input.type_id from data_input,snmp_query where data_input.id=snmp_query.data_input_id and snmp_query.id=$data_query_id");
+	$data_query_type = db_fetch_cell("select data_input.type_id from (data_input,snmp_query) where data_input.id=snmp_query.data_input_id and snmp_query.id=$data_query_id");
 	$data_query_xml = get_data_query_array($data_query_id);
 
 	switch ($data_query["reindex_method"]) {
@@ -252,7 +267,7 @@ function process_poller_output($rrdtool_pipe) {
 		poller_item.rrd_path,
 		poller_item.rrd_name,
 		poller_item.rrd_num
-		from poller_output,poller_item
+		from (poller_output,poller_item)
 		where (poller_output.local_data_id=poller_item.local_data_id and poller_output.rrd_name=poller_item.rrd_name)");
 
 	if (sizeof($results) > 0) {
@@ -273,7 +288,7 @@ function process_poller_output($rrdtool_pipe) {
 				$rrd_field_names = array_rekey(db_fetch_assoc("select
 					data_template_rrd.data_source_name,
 					data_input_fields.data_name
-					from data_template_rrd,data_input_fields
+					from (data_template_rrd,data_input_fields)
 					where data_template_rrd.data_input_field_id=data_input_fields.id
 					and data_template_rrd.local_data_id=" . $item["local_data_id"]), "data_name", "data_source_name");
 

@@ -264,7 +264,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				data_template.name as data_template_name,
 				data_template_rrd.data_source_name,
 				data_template_data.*
-				from data_template, data_template_rrd, data_template_data, graph_templates_item
+				from (data_template, data_template_rrd, data_template_data, graph_templates_item)
 				where graph_templates_item.task_item_id=data_template_rrd.id
 				and data_template_rrd.data_template_id=data_template.id
 				and data_template_data.data_template_id=data_template.id
@@ -277,7 +277,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			$graph_template = db_fetch_row("select
 				graph_templates.name as graph_template_name,
 				graph_templates_graph.*
-				from graph_templates, graph_templates_graph
+				from (graph_templates, graph_templates_graph)
 				where graph_templates.id=graph_templates_graph.graph_template_id
 				and graph_templates.id=" . $graph_template_id . "
 				and graph_templates_graph.local_graph_id=0");
@@ -441,14 +441,14 @@ function graphs() {
 	$graph_templates = db_fetch_assoc("select
 		graph_templates.id as graph_template_id,
 		graph_templates.name as graph_template_name
-		from host_graph,graph_templates
+		from (host_graph,graph_templates)
 		where host_graph.graph_template_id=graph_templates.id
 		and host_graph.host_id=" . $_REQUEST["host_id"] . "
 		order by graph_templates.name");
 
 	$template_graphs = db_fetch_assoc("select
 		graph_local.graph_template_id
-		from graph_local,host_graph
+		from (graph_local,host_graph)
 		where graph_local.graph_template_id=host_graph.graph_template_id
 		and graph_local.host_id=host_graph.host_id
 		and graph_local.host_id=" . $host["id"] . "
@@ -513,7 +513,7 @@ function graphs() {
 		snmp_query.id,
 		snmp_query.name,
 		snmp_query.xml_path
-		from snmp_query,host_snmp_query
+		from (snmp_query,host_snmp_query)
 		where host_snmp_query.snmp_query_id=snmp_query.id
 		and host_snmp_query.host_id=" . $host["id"] . "
 		order by snmp_query.name");

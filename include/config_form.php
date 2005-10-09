@@ -243,7 +243,7 @@ $struct_data_source = array(
 		"form_id" => "|arg1:id|",
 		"sql" => "select rra_id as id,data_template_data_id from data_template_data_rra where data_template_data_id=|arg1:id|",
 		"sql_all" => "select rra.id from rra order by id",
-		"sql_print" => "select rra.name from data_template_data_rra,rra where data_template_data_rra.rra_id=rra.id and data_template_data_rra.data_template_data_id=|arg1:id|",
+		"sql_print" => "select rra.name from (data_template_data_rra,rra) where data_template_data_rra.rra_id=rra.id and data_template_data_rra.data_template_data_id=|arg1:id|",
 		"flags" => "ALWAYSTEMPLATE"
 		),
 	"rrd_step" => array(

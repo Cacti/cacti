@@ -56,7 +56,7 @@ function upgrade_to_0_8_6a() {
 			/* find non-templated graph template items */
 			$non_templated_items = array_rekey(db_fetch_assoc("select
 				graph_template_input_defs.graph_template_item_id
-				from graph_template_input,graph_template_input_defs
+				from (graph_template_input,graph_template_input_defs)
 				where graph_template_input_defs.graph_template_input_id=graph_template_input.id
 				and graph_template_input.column_name = 'task_item_id'
 				and graph_template_input.graph_template_id = '" . $graph_template["id"] . "'"), "graph_template_item_id", "graph_template_item_id");

@@ -331,7 +331,7 @@ function form_actions() {
 				case '3': /* delete all graphs tied to this data source */
 					$graphs = db_fetch_assoc("select
 						graph_templates_graph.local_graph_id
-						from data_template_rrd,graph_templates_item,graph_templates_graph
+						from (data_template_rrd,graph_templates_item,graph_templates_graph)
 						where graph_templates_item.task_item_id=data_template_rrd.id
 						and graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
 						and " . array_to_sql_or($selected_items, "data_template_rrd.local_data_id") . "
@@ -435,7 +435,7 @@ function form_actions() {
 			$graphs = db_fetch_assoc("select
 				graph_templates_graph.local_graph_id,
 				graph_templates_graph.title_cache
-				from data_template_rrd,graph_templates_item,graph_templates_graph
+				from (data_template_rrd,graph_templates_item,graph_templates_graph)
 				where graph_templates_item.task_item_id=data_template_rrd.id
 				and graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
 				and " . array_to_sql_or($ds_array, "data_template_rrd.local_data_id") . "
@@ -562,7 +562,7 @@ function data_edit() {
 		$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where local_data_id=" . $_GET["id"]);
 		$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
 
-		$host = db_fetch_row("select host.id,host.hostname from data_local,host where data_local.host_id=host.id and data_local.id=" . $_GET["id"]);
+		$host = db_fetch_row("select host.id,host.hostname from (data_local,host) where data_local.host_id=host.id and data_local.id=" . $_GET["id"]);
 
 		$header_label = "[edit: " . $data["name"] . "]";
 	}else{
@@ -992,7 +992,7 @@ function ds() {
 
 	$total_rows = sizeof(db_fetch_assoc("select
 		data_local.id
-		from data_local,data_template_data
+		from (data_local,data_template_data)
 		where data_local.id=data_template_data.local_data_id
 		$sql_where"));
 	$data_sources = db_fetch_assoc("select

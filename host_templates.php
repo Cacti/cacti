@@ -261,7 +261,7 @@ function template_edit() {
 		$selected_graph_templates = db_fetch_assoc("select
 			graph_templates.id,
 			graph_templates.name
-			from graph_templates,host_template_graph
+			from (graph_templates,host_template_graph)
 			where graph_templates.id=host_template_graph.graph_template_id
 			and host_template_graph.host_template_id=" . $_GET["id"] . "
 			order by graph_templates.name");
@@ -311,7 +311,7 @@ function template_edit() {
 		$selected_data_queries = db_fetch_assoc("select
 			snmp_query.id,
 			snmp_query.name
-			from snmp_query,host_template_snmp_query
+			from (snmp_query,host_template_snmp_query)
 			where snmp_query.id=host_template_snmp_query.snmp_query_id
 			and host_template_snmp_query.host_template_id=" . $_GET["id"] . "
 			order by snmp_query.name");

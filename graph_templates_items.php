@@ -135,7 +135,7 @@ function form_save() {
 					graph_template_input.id,
 					graph_template_input.name,
 					graph_templates_item.task_item_id
-					from graph_template_input,graph_template_input_defs,graph_templates_item
+					from (graph_template_input,graph_template_input_defs,graph_templates_item)
 					where graph_template_input.id=graph_template_input_defs.graph_template_input_id
 					and graph_template_input_defs.graph_template_item_id=graph_templates_item.id
 					and graph_template_input.graph_template_id=" . $save["graph_template_id"] . "
@@ -271,7 +271,7 @@ function item_remove() {
 	/* delete the graph item input if it is empty */
 	$graph_item_inputs = db_fetch_assoc("select
 		graph_template_input.id
-		from graph_template_input,graph_template_input_defs
+		from (graph_template_input,graph_template_input_defs)
 		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
 		and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
@@ -319,7 +319,7 @@ function item_edit() {
 	$struct_graph_item["task_item_id"]["sql"] = "select
 		CONCAT_WS('',data_template.name,' - ',' (',data_template_rrd.data_source_name,')') as name,
 		data_template_rrd.id
-		from data_template_data,data_template_rrd,data_template
+		from (data_template_data,data_template_rrd,data_template)
 		where data_template_rrd.data_template_id=data_template.id
 		and data_template_data.data_template_id=data_template.id
 		and data_template_data.local_data_id=0
@@ -341,7 +341,7 @@ function item_edit() {
 		$graph_item_input_fields = db_fetch_assoc("select
 			graph_template_input.id,
 			graph_template_input.column_name
-			from graph_template_input,graph_template_input_defs
+			from (graph_template_input,graph_template_input_defs)
 			where graph_template_input.id=graph_template_input_defs.graph_template_input_id
 			and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
 			and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
