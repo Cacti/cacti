@@ -1002,7 +1002,7 @@ function ds() {
 		data_input.name as data_input_name,
 		data_template.name as data_template_name,
 		data_local.host_id
-		from data_local,data_template_data
+		from (data_local,data_template_data)
 		left join data_input
 		on data_input.id=data_template_data.data_input_id
 		left join data_template
