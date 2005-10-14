@@ -89,6 +89,8 @@ function config_export_stats($start, $total_graphs_created) {
 }
 
 function config_graph_export() {
+	$total_graphs_created = 0;
+
 	switch (read_config_option("export_type")) {
 		case "local":
 			$total_graphs_created = export();
