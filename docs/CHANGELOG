@@ -8,6 +8,8 @@ Cacti CHANGELOG
 -bug: Save statistics even when the poller times out.
 -bug: Only call poller_commands.php or poller_export.php if they require calling.
 -bug: Incorporate a timeout to ss_fping.php so that a host that takes to long to finish at least returns data
+-bug: Correct the display of custom data in data input methods to follow the proper order
+-bug: Change the default behavior of ping.php to mark a host as up if either snmp or ping are successful.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
 
 0.8.6g

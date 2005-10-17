@@ -400,8 +400,8 @@ class Net_Ping
 			case AVAIL_SNMP_AND_PING:
 				if ($snmp_result)
 					return true;
-				if (!$ping_result)
-					return false;
+				if ($ping_result)
+					return true;
 				else
 					return false;
 			case AVAIL_SNMP:
