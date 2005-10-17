@@ -374,7 +374,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
    }
 
 	/* print output to standard out if required */
-	if ($output == true) {
+	if (($output == true) && (isset($_SERVER["argv"][0]))){
 		print $message;
 	}
 }
@@ -1344,10 +1344,6 @@ function draw_navigation_text() {
 		"templates_export.php:" => array("title" => "Export Templates", "mapping" => "index.php:", "url" => "templates_export.php", "level" => "1"),
 		"templates_export.php:save" => array("title" => "Export Results", "mapping" => "index.php:,templates_export.php:", "url" => "templates_export.php", "level" => "2"),
 		"templates_import.php:" => array("title" => "Import Templates", "mapping" => "index.php:", "url" => "templates_import.php", "level" => "1"),
-		"smtp_servers.php:" => array("title" => "Coming Soon", "mapping" => "index.php:", "url" => "smtp_servers.php", "level" => "1"),
-		"email_templates.php:" => array("title" => "Coming Soon", "mapping" => "index.php:", "url" => "email_templates.php", "level" => "1"),
-		"event_queue.php:" => array("title" => "Coming Soon", "mapping" => "index.php:", "url" => "event_queue.php", "level" => "1"),
-		"smtp_queue.php:" => array("title" => "Coming Soon", "mapping" => "index.php:", "url" => "smtp_queue.php", "level" => "1"),
 		);
 
 	$current_page = basename($_SERVER["PHP_SELF"]);
@@ -1641,8 +1637,8 @@ function debug_log_return($type) {
    @arg $string - the original raw search string
    @returns - the sanitized search string */
 function sanitize_search_string($string) {
-	static $drop_char_match =   array('^', '$', '&', '(', ')', '<', '>', '`', '\'', '"', '|', ',', '@', '?', '~', '+', '.', '[', ']', '{', '}', '#', ';', '!');
-	static $drop_char_replace = array(' ', ' ', ' ', ' ', ' ', ' ', ' ',  '',   '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+	static $drop_char_match =   array('^', '$', '&', '(', ')', '<', '>', '`', '\'', '"', '|', ',', '@', '?', '~', '+', '[', ']', '{', '}', '#', ';', '!');
+	static $drop_char_replace = array(' ', ' ', ' ', ' ', ' ', ' ', ' ',  '',   '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
 	/* Replace line endings by a space */
 	$string = preg_replace('/[\n\r]/is', ' ', $string);
