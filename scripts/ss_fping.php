@@ -18,6 +18,10 @@ if (!isset($called_by_script_server)) {
 //End header.
 
 function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
+	/* record start time */
+	list($micro,$seconds) = split(" ", microtime());
+	$ss_fping_start = $seconds + $micro;
+
 	$ping = new Net_Ping;
 
 	$time = array();
@@ -30,6 +34,9 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
 	$max = 0.0;
 	$min = 9999.99;
 	$dev = 0.0;
+
+	$script_timeout = read_config_option("script_timeout");
+	$ping_timeout = read_config_option("ping_timeout");
 
 	switch ($ping_type) {
 	case "ICMP":
@@ -60,6 +67,16 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
 		}
 
 		$i++;
+
+		/* get current time */
+		list($micro,$seconds) = split(" ", microtime());
+		$ss_fping_current = $seconds + $micro;
+
+		/* if called from script server, end one second before a timeout occurs */
+		if ((isset($called_by_script_server)) && (($ss_fping_current - $ss_fping_start + ($ping_timeout/1000) + 1) > $script_timeout)) {
+			$ping_sweeps = $i;
+			break;
+		}
 	}
 
 	if ($failed_results == $ping_sweeps) {
