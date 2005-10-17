@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug: Allow primary keys other than "ID" to be handled properly using the html code
 -bug: Make PHP timeout more rapidly, allow more time for concurrent PHP poller processes to start
 -bug: Save statistics even when the poller times out.
+-bug: Only call poller_commands.php or poller_export.php if they require calling.
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.

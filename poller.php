@@ -247,14 +247,18 @@ if (read_config_option("poller_enabled") == "on") {
 	rrd_close($rrdtool_pipe);
 
 	/* process poller commands */
-	$command_string = read_config_option("path_php_binary");
-	$extra_args = "-q " . $config["base_path"] . "/poller_commands.php";
-	exec_background($command_string, "$extra_args");
+	if (db_fetch_cell("select count(*) from poller_command") > 0) {
+		$command_string = read_config_option("path_php_binary");
+		$extra_args = "-q " . $config["base_path"] . "/poller_commands.php";
+		exec_background($command_string, "$extra_args");
+	}
 
 	/* graph export */
-	$command_string = read_config_option("path_php_binary");
-	$extra_args = "-q " . $config["base_path"] . "/poller_export.php";
-	exec_background($command_string, "$extra_args");
+	if (read_config_option("export_timing") != "disabled") {
+		$command_string = read_config_option("path_php_binary");
+		$extra_args = "-q " . $config["base_path"] . "/poller_export.php";
+		exec_background($command_string, "$extra_args");
+	}
 
 	if ($method == "cactid") {
 		chdir(read_config_option("path_webroot"));
