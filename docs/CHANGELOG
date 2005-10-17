@@ -3,6 +3,8 @@ Cacti CHANGELOG
 0.8.6h
 -bug: Stop MySQL connect messages from appearing in user interface
 -bug: Allow primary keys other than "ID" from saving properly in function sql_save
+-bug: Make PHP timeout more rapidly, allow more time for concurrent PHP poller processes to start
+-bug: Save statistics even when the poller times out.
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.

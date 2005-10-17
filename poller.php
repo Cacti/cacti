@@ -44,19 +44,19 @@ include_once($config["base_path"] . "/lib/rrd.php");
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
 
-/* Let PHP Run Just as Long as It Has To */
-ini_set("max_execution_time", "0");
-
 /* Get number of polling items from the database */
 $polling_interval = read_config_option("poller_interval");
 
 if (isset($polling_interval)) {
 	$num_polling_items = db_fetch_cell("select count(*) from poller_item where rrd_next_step<=0");
-	define("MAX_POLLER_RUNTIME", ($polling_interval - 4));
+	define("MAX_POLLER_RUNTIME", ($polling_interval - 8));
 }else{
 	$num_polling_items = db_fetch_cell("select count(*) from poller_item");
-	define("MAX_POLLER_RUNTIME", 296);
+	define("MAX_POLLER_RUNTIME", 292);
 }
+
+/* Let PHP only run 1 second longer than the max runtime */
+ini_set("max_execution_time", MAX_POLLER_RUNTIME + 1);
 
 $polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("select id from host where disabled = '' order by id"));
 
@@ -131,6 +131,7 @@ if (read_config_option("poller_enabled") == "on") {
 
 		if ($change_files) {
 			exec_background($command_string, "$extra_args $first_host $last_host");
+			sleep(1);
 
 			$host_count = 1;
 			$change_files = False;
@@ -144,6 +145,8 @@ if (read_config_option("poller_enabled") == "on") {
 		$last_host = $item["id"];
 
 		exec_background($command_string, "$extra_args $first_host $last_host");
+		sleep(1);
+
 		$process_file_number++;
 	}
 
@@ -191,6 +194,7 @@ if (read_config_option("poller_enabled") == "on") {
 
 			/* insert poller stats into the settings table */
 			db_execute("replace into settings (name,value) values ('stats_poller','$cacti_stats')");
+			db_execute("truncate table poller_output");
 
 			break;
 		}else {
@@ -204,7 +208,35 @@ if (read_config_option("poller_enabled") == "on") {
 			if (($start + MAX_POLLER_RUNTIME) < time()) {
 				rrd_close($rrdtool_pipe);
 				cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true, "POLLER");
-				exit;
+
+				/* take time and log performance data */
+				list($micro,$seconds) = split(" ", microtime());
+				$end = $seconds + $micro;
+
+				$cacti_stats = sprintf(
+					"Time:%01.4f " .
+					"Method:%s " .
+					"Processes:%s " .
+					"Threads:%s " .
+					"Hosts:%s " .
+					"HostsPerProcess:%s " .
+					"DataSources:%s " .
+					"RRDsProcessed:%s",
+					round($end-$start,4),
+					$method,
+					$concurrent_processes,
+					$max_threads,
+					sizeof($polling_hosts),
+					$hosts_per_file,
+					$num_polling_items,
+					$rrds_processed);
+
+				cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
+
+				/* insert poller stats into the settings table */
+				db_execute("replace into settings (name,value) values ('stats_poller','$cacti_stats')");
+
+				break;
 			}
 
 			sleep(1);
@@ -227,8 +259,6 @@ if (read_config_option("poller_enabled") == "on") {
 	if ($method == "cactid") {
 		chdir(read_config_option("path_webroot"));
 	}
-
-	db_execute("truncate table poller_output");
 }else{
 	print "There are no items in your poller cache or polling is disabled. Make sure you have at least one data source created. If you do, go to 'Utilities', and select 'Clear Poller Cache'.\n";
 }
