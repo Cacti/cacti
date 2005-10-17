@@ -36,21 +36,20 @@
 function db_connect_real($host,$user,$pass,$db_name,$db_type, $retries = 20) {
 	global $cnn_id;
 
-	$i = 1;
+	$i = 0;
 	$cnn_id = NewADOConnection($db_type);
 
 	while ($i <= $retries) {
-		if ($cnn_id->Connect($host,$user,$pass,$db_name)) {
+		if ($cnn_id->PConnect($host,$user,$pass,$db_name)) {
 			return(1);
 		}
 
 		$i++;
-		usleep(100000);
+
+		usleep(400000);
 	}
 
-	cacti_log("ERROR: Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL   database name in 'include/config.php'.");
-
-	die("<br>Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL database name in 'include/config.php'.");
+	cacti_log("ERROR: Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL database name in 'include/config.php'.");
 
 	return(0);
 }
@@ -199,8 +198,8 @@ function sql_save($array_items, $table_name, $key_cols='id') {
 
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {
-		if (isset($array_items["id"])) {
-			return str_replace("\"", "", $array_items["id"]);
+		if (isset($array_items[$key_cols])) {
+			return str_replace("\"", "", $array_items[$key_cols]);
 		}else{
 			return 0;
 		}

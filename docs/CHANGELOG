@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+0.8.6h
+-bug: Stop MySQL connect messages from appearing in user interface
+-bug: Allow primary keys other than "ID" from saving properly in function sql_save
+
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.
 -bug#0000491: Allow underscore, dash, and forward slash characters through search string validation.
