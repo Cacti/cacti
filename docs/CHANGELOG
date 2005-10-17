@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug: Save statistics even when the poller times out.
 -bug: Only call poller_commands.php or poller_export.php if they require calling.
 -bug: Incorporate a timeout to ss_fping.php so that a host that takes to long to finish at least returns data
+-feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.
