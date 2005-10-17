@@ -433,9 +433,9 @@ function form_confirm_buttons($action_url, $cancel_url) { ?>
    @arg $cancel_url - the url to go to when the user clicks 'cancel'
    @arg $force_type - if specified, will force the 'action' button to be either
      'save' or 'create'. otherwise this field should be properly auto-detected */
-function form_save_button($cancel_url, $force_type = "") {
+function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	if (empty($force_type)) {
-		if (empty($_GET["id"])) {
+		if (empty($_GET[$key_field])) {
 			$img = "button_create.gif";
 			$alt = "Create";
 		}else{
