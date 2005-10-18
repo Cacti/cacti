@@ -89,6 +89,8 @@ function config_export_stats($start, $total_graphs_created) {
 }
 
 function config_graph_export() {
+	$total_graphs_created = 0;
+
 	switch (read_config_option("export_type")) {
 		case "local":
 			$total_graphs_created = export();
@@ -302,7 +304,7 @@ function export() {
 
 	if ($cacti_root_path == $cacti_export_path) {
 		export_fatal("Export path '" . read_config_option("path_html_export") . "' is the same as the Cacti web root.  You must be out of your mind.");
-  }
+	}
 
 	/* delete all files and directories in the cacti_export_path */
 	del_directory($cacti_export_path, false);
@@ -336,7 +338,8 @@ function export() {
 			graph_templates_graph.title_cache,
 			graph_templates.name,
 			graph_local.host_id
-			from graph_templates_graph left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
+			from graph_templates_graph
+			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
 			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
 			where graph_templates_graph.local_graph_id!=0 and graph_templates_graph.export='on'
 			order by graph_templates_graph.title_cache");
@@ -800,7 +803,7 @@ function create_dhtml_tree_export($tree_id) {
 					$graph_templates = db_fetch_assoc("select
 						graph_templates.id,
 						graph_templates.name
-						from graph_local,graph_templates,graph_templates_graph
+						from (graph_local,graph_templates,graph_templates_graph)
 						where graph_local.id=graph_templates_graph.local_graph_id
 						and graph_templates_graph.graph_template_id=graph_templates.id
 						and graph_local.host_id=" . $leaf["host_id"] . "
@@ -817,7 +820,7 @@ function create_dhtml_tree_export($tree_id) {
 					$data_queries = db_fetch_assoc("select
 						snmp_query.id,
 						snmp_query.name
-						from graph_local,snmp_query
+						from (graph_local,snmp_query)
 						where graph_local.snmp_query_id=snmp_query.id
 						and graph_local.host_id=" . $leaf["host_id"] . "
 						group by snmp_query.id
