@@ -106,7 +106,8 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$retries = read_config_option("snmp_retries");
 	if ($retries == "") $retries = 3;
 
-	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
+	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&
+		(($version == 1) || (read_config_option("path_snmpbulkwalk") == ""))) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -145,7 +146,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
 		}else {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O QfntUe $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+			$path_snmpbulkwalk = read_config_option("path_snmpbulkwalk");
+			if (!empty($path_snmpbulkwalk)) {
+				$temp_array = exec_into_array(read_config_option("path_snmpbulkwalk") . " -O QfntUe $snmp_auth -v $version -t $timeout -r $retries -Cr50 $hostname:$port $oid");
+			}else{
+				$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O QfntUe $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+			}
 		}
 
 		if ((sizeof($temp_array) == 0) || (substr_count($temp_array[0], "No Such Object"))) {
