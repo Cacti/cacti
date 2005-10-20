@@ -112,10 +112,6 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		we are getting back */
 		snmp_set_quick_print(0);
 
-		if (function_exists("snmp_set_valueretrieval")) {
-			snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-		}
-
 		if ($version == "1") {
 			$temp_array = @snmprealwalk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
 		}elseif ($version == "2") {

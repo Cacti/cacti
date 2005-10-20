@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug: Correct the display of custom data in data input methods to follow the proper order
 -bug: Change the default behavior of ping.php to mark a host as up if either snmp or ping are successful.
 -bug: Don't allow graph_export to delete your web site.
+-bug: Correct issue where snmp was not returning hex data and some text data.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
 
 0.8.6g
