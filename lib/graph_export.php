@@ -302,8 +302,9 @@ function export() {
 	$cacti_root_path = $config["base_path"];
 	$cacti_export_path = read_config_option("path_html_export");
 
-	if ($cacti_root_path == $cacti_export_path) {
-		export_fatal("Export path '" . read_config_option("path_html_export") . "' is the same as the Cacti web root.  You must be out of your mind.");
+	if (substr_count($cacti_root_path, $cacti_export_path) ||
+		(substr_count($cacti_export_path, $cacti_root_path))) {
+		export_fatal("Export path '" . read_config_option("path_html_export") . "' is to closely related to the Cacti web root.  You must be out of your mind.");
 	}
 
 	/* delete all files and directories in the cacti_export_path */
