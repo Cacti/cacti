@@ -66,7 +66,7 @@ if ( $_SERVER["argc"] == 1 ) {
 	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
 	$hosts = array_rekey($hosts,"id",$host_struc);
 	$host_count = sizeof($hosts);
-
+	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
 }else{
 	$print_data_to_stdout = false;
 	if ($_SERVER["argc"] == "3") {
@@ -84,6 +84,12 @@ if ( $_SERVER["argc"] == 1 ) {
 					$_SERVER["argv"][1] .
 					" and host_id <= " .
 					$_SERVER["argv"][2] . ") ORDER by host_id");
+
+			$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item " .
+					"WHERE (action=2 AND (host_id >= " .
+					$_SERVER["argv"][1] .
+					" and host_id <= " .
+					$_SERVER["argv"][2] . "))");
 		}else{
 			print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
 			print "USAGE: CMD.PHP [[first_host] [second_host]]\n";
@@ -100,31 +106,34 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$new_host  = true;
 	$last_host = ""; $current_host = "";
 
-	// startup Cacti php polling server and include the include file for script processing
-	$cactides = array(
-		0 => array("pipe", "r"), // stdin is a pipe that the child will read from
-		1 => array("pipe", "w"), // stdout is a pipe that the child will write to
-		2 => array("pipe", "w")  // stderr is a pipe to write to
-		);
-
 	// create new ping socket for host pinging
 	$ping = new Net_Ping;
 
-	if (function_exists("proc_open")) {
-		$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
-		$output = fgets($pipes[1], 1024);
-		if (substr_count($output, "Started") != 0) {
-			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-				cacti_log("PHP Script Server Started Properly",$print_data_to_stdout);
+	// startup Cacti php polling server and include the include file for script processing
+	if ($script_server_calls > 0) {
+		$cactides = array(
+			0 => array("pipe", "r"), // stdin is a pipe that the child will read from
+			1 => array("pipe", "w"), // stdout is a pipe that the child will write to
+			2 => array("pipe", "w")  // stderr is a pipe to write to
+			);
+
+		if (function_exists("proc_open")) {
+			$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
+			$output = fgets($pipes[1], 1024);
+			if (substr_count($output, "Started") != 0) {
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
+					cacti_log("PHP Script Server Started Properly",$print_data_to_stdout);
+				}
+			}
+			$using_proc_function = true;
+		}else {
+			$using_proc_function = false;
+			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("WARNING: PHP version 4.3 or above is recommended for performance considerations.",$print_data_to_stdout);
 			}
 		}
-		$using_proc_function = true;
-
-	}else {
-		$using_proc_function = false;
-		if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-			cacti_log("WARNING: PHP version 4.3 or above is recommended for performance considerations.",$print_data_to_stdout);
-		}
+	}else{
+		$using_proc_function = FALSE;
 	}
 
 	foreach ($polling_items as $item) {
@@ -344,7 +353,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		} /* Next Cache Item */
 	} /* End foreach */
 
-	if ($using_proc_function == true) {
+	if (($using_proc_function == true) && ($script_server_calls > 0)) {
 		// close php server process
 		fwrite($pipes[0], "quit\r\n");
 		fclose($pipes[0]);
