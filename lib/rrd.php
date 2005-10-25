@@ -333,7 +333,7 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 	global $rrd_fetch_cache;
 
 	if (empty($local_data_id)) {
-                unset($var);
+		unset($var);
 		return $var;
 	}
 
