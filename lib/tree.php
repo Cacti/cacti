@@ -150,7 +150,7 @@ function move_branch($dir, $order_key, $table, $field, $where) {
 	$arrow = $dir == 'up' ? '<' : '>';
 	$order = $dir == 'up' ? 'DESC' : 'ASC';
 
-	$sql = "SELECT * FROM $table WHERE $field $arrow $order_key AND $field LIKE '%" . substr($order_key, ($tier * CHARS_PER_TIER))."'
+	$sql = "SELECT * FROM $table WHERE $field $arrow '$order_key' AND $field LIKE '%" . substr($order_key, ($tier * CHARS_PER_TIER))."'
 		AND $field NOT LIKE '%" . str_repeat('0', CHARS_PER_TIER) . substr($order_key, ($tier * CHARS_PER_TIER)) . "' $where ORDER BY $field $order";
 
 	$displaced_row = db_fetch_row($sql);
@@ -163,7 +163,7 @@ function move_branch($dir, $order_key, $table, $field, $where) {
 		db_execute("UPDATE $table SET $field = CONCAT('" . str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1).")) WHERE $field LIKE '$new_root%'$where");
 		db_execute("UPDATE $table SET $field = CONCAT('$new_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '$old_root%' $where");
 		db_execute("UPDATE $table SET $field = CONCAT('$old_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '".str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "%' $where");
-		db_execute("UNLOCK TABLES $table");
+		db_execute("UNLOCK TABLES");
 	}
 }
 
