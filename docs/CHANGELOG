@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -bug: Correct issue where snmp was not returning hex data and some text data.
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
+-feature: Added support for new 95th Percentile Variables: aggregate, aggregate_max, aggregate_sum
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.
