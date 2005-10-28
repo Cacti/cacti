@@ -403,7 +403,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	$draw_any_items = false;
 
 	/* get each INPUT field for this data input source */
-	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='in' order by name");
+	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='in' order by sequence");
 
 	/* loop through each field found */
 	$i = 0;
