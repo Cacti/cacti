@@ -1033,6 +1033,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		/* most of the calculations have been done above. now we have for print everything out
 		in an RRDTool-friendly fashion */
 
+		$need_rrd_nl = TRUE;
+
 		if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
@@ -1075,11 +1077,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 			}
+		}else{
+			$need_rrd_nl = FALSE;
 		}
 
 		$i++;
 
-		if ($i < sizeof($graph_items)) {
+		if (($i < sizeof($graph_items)) && ($need_rrd_nl)) {
 			$txt_graph_items .= RRD_NL;
 		}
 	}

@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -bug: Don't allow graph_export to delete your web site.
 -bug: Correct issue where snmp was not returning hex data and some text data.
 -bug: Prevent a never ending table lock in lib/tree.php
+-bug: Correct issue where either AREA or LINEx without color were causing RRD_NL without any elements in rrdtool_graph.
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
 -feature: Added support for new 95th Percentile Variables: aggregate, aggregate_max, aggregate_sum
