@@ -762,7 +762,7 @@ function host() {
 		foreach ($hosts as $host) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
-				<td width=200>
+				<td width=250>
 					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
 				</td>
 				<td><?php print get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]);?></td>
