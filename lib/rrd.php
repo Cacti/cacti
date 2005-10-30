@@ -1043,9 +1043,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}elseif (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && (!isset($graph_data_array["graph_nolegend"]))) {
 			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . ":\"$text_padding" . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $hardreturn[$graph_item_id] . "\" ";
-		}elseif (!empty($graph_item["hex"])) {
+		}elseif (ereg("^(AREA|LINE[123]|STACK|HRULE|VRULE)$", $graph_item_types{$graph_item["graph_type_id"]})) {
+
 			/* initialize any color syntax for graph item */
-			$graph_item_color_code = "#" . $graph_item["hex"];
+			if (empty($graph_item["hex"])) {
+				$graph_item_color_code = "";
+			}else{
+				$graph_item_color_code = "#" . $graph_item["hex"];
+			}
 
 			if (ereg("^(AREA|LINE[123])$", $graph_item_types{$graph_item["graph_type_id"]})) {
 				$graph_item_stack_type = $graph_item_types{$graph_item["graph_type_id"]};
