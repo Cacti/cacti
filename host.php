@@ -517,7 +517,7 @@ function host_edit() {
 		$available_graph_templates = db_fetch_assoc("SELECT
 			graph_templates.id, graph_templates.name
 			FROM snmp_query_graph RIGHT JOIN graph_templates
-			ON snmp_query_graph.graph_template_id = graph_templates.id
+			ON (snmp_query_graph.graph_template_id = graph_templates.id)
 			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
 
 		$i = 0;

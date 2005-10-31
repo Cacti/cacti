@@ -596,7 +596,7 @@ function data_query_edit() {
 				graph_templates.name as graph_template_name,
 				snmp_query_graph.name
 				from snmp_query_graph
-				left join graph_templates on snmp_query_graph.graph_template_id=graph_templates.id
+				left join graph_templates on (snmp_query_graph.graph_template_id=graph_templates.id)
 				where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . "
 				order by snmp_query_graph.name");
 
@@ -643,7 +643,7 @@ function data_query() {
 			snmp_query.id,
 			snmp_query.name,
 			data_input.name AS data_input_method
-			FROM snmp_query INNER JOIN data_input ON snmp_query.data_input_id = data_input.id
+			FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id = data_input.id)
 			ORDER BY snmp_query.name");
 
 	$i = 0;

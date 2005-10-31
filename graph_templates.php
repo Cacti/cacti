@@ -292,11 +292,11 @@ function item() {
 			cdef.name as cdef_name,
 			colors.hex
 			from graph_templates_item
-			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-			left join data_local on data_template_rrd.local_data_id=data_local.id
-			left join data_template_data on data_local.id=data_template_data.local_data_id
-			left join cdef on cdef_id=cdef.id
-			left join colors on color_id=colors.id
+			left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+			left join data_local on (data_template_rrd.local_data_id=data_local.id)
+			left join data_template_data on (data_local.id=data_template_data.local_data_id)
+			left join cdef on (cdef_id=cdef.id)
+			left join colors on (color_id=colors.id)
 			where graph_templates_item.graph_template_id=" . $_GET["id"] . "
 			and graph_templates_item.local_graph_id=0
 			order by graph_templates_item.sequence");

@@ -729,7 +729,7 @@ function user() {
 
 	html_header(array("User Name", "Full Name", "Realm", "Default Graph Policy", "Last Login"), 2);
 
-	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, policy_graphs, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on user_auth.id = user_log.user_id group by id");
+	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, policy_graphs, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on (user_auth.id = user_log.user_id) group by id");
 
 	$i = 0;
 	if (sizeof($user_list) > 0) {

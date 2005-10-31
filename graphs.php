@@ -551,11 +551,11 @@ function item() {
 			cdef.name as cdef_name,
 			colors.hex
 			from graph_templates_item
-			left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-			left join data_local on data_template_rrd.local_data_id=data_local.id
-			left join data_template_data on data_local.id=data_template_data.local_data_id
-			left join cdef on cdef_id=cdef.id
-			left join colors on color_id=colors.id
+			left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+			left join data_local on (data_template_rrd.local_data_id=data_local.id)
+			left join data_template_data on (data_local.id=data_template_data.local_data_id)
+			left join cdef on (cdef_id=cdef.id)
+			left join colors on (color_id=colors.id)
 			where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 			order by graph_templates_item.sequence");
 
@@ -599,11 +599,11 @@ function graph_diff() {
 		cdef.name as cdef_id,
 		colors.hex as color_id
 		from graph_templates_item
-		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-		left join data_local on data_template_rrd.local_data_id=data_local.id
-		left join data_template_data on data_local.id=data_template_data.local_data_id
-		left join cdef on cdef_id=cdef.id
-		left join colors on color_id=colors.id";
+		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+		left join data_local on (data_template_rrd.local_data_id=data_local.id)
+		left join data_template_data on (data_local.id=data_template_data.local_data_id)
+		left join cdef on (cdef_id=cdef.id)
+		left join colors on (color_id=colors.id)";
 
 	/* first, get information about the graph template as that's what we're going to model this
 	graph after */
@@ -1051,7 +1051,7 @@ function graph() {
 		graph_templates.name,
 		graph_local.host_id
 		from (graph_local,graph_templates_graph)
-		left join graph_templates on graph_local.graph_template_id=graph_templates.id
+		left join graph_templates on (graph_local.graph_template_id=graph_templates.id)
 		where graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where
 		order by graph_templates_graph.title_cache,graph_local.host_id

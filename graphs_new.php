@@ -496,7 +496,7 @@ function graphs() {
 	$available_graph_templates = db_fetch_assoc("SELECT
 		graph_templates.id, graph_templates.name
 		FROM snmp_query_graph RIGHT JOIN graph_templates
-		ON snmp_query_graph.graph_template_id = graph_templates.id
+		ON (snmp_query_graph.graph_template_id = graph_templates.id)
 		WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
 
 	/* create a row at the bottom that lets the user create any graph they choose */
@@ -563,8 +563,8 @@ function graphs() {
 				$created_graphs = db_fetch_assoc("select distinct
 					data_local.snmp_index
 					from (data_local,data_template_data)
-					left join data_input_data on data_template_data.id=data_input_data.data_template_data_id
-					left join data_input_fields on data_input_data.data_input_field_id=data_input_fields.id
+					left join data_input_data on (data_template_data.id=data_input_data.data_template_data_id)
+					left join data_input_fields on (data_input_data.data_input_field_id=data_input_fields.id)
 					where data_local.id=data_template_data.local_data_id
 					and data_input_fields.type_code='output_type'
 					and data_input_data.value='" . $snmp_query_graph["id"] . "'
@@ -575,7 +575,7 @@ function graphs() {
 				$cg_ctr = 0;
 				if (sizeof($created_graphs) > 0) {
 				foreach ($created_graphs as $created_graph) {
-					print (($cg_ctr > 0) ? "," : "") . "'" . encode_data_query_index($created_graph["snmp_index"]) . "'";
+					print (($cg_ctr > 0) ? "," : "") . "'" . $created_graph["snmp_index"] . "'";
 
 					$cg_ctr++;
 				}
@@ -657,7 +657,7 @@ function graphs() {
 			$row_counter = 0;
 			if (sizeof($snmp_query_indexes) > 0) {
 			while (list($id, $snmp_index) = each($snmp_query_indexes)) {
-				$query_row = $snmp_query["id"] . "_" . encode_data_query_index($snmp_index);
+				$query_row = $snmp_query["id"] . "_" . $snmp_index;
 
 				print "<tr id='line$query_row' bgcolor='#" . (($row_counter % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 
@@ -666,9 +666,9 @@ function graphs() {
 				while (list($field_name, $field_array) = each($xml_array["fields"])) {
 					if ($field_array["direction"] == "input") {
 						if (isset($snmp_query_data[$field_name][$snmp_index])) {
-							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($snmp_index) . "\");'" : "")  ."><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
+							print "<td><span id='text$query_row" . "_" . $column_counter . "'>" . $snmp_query_data[$field_name][$snmp_index] . "</span></td>";
 						}else{
-							print "<td " . (($use_javascript == true) ? "onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($snmp_index) . "\");'" : "") . "><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+							print "<td><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
 						}
 
 						$column_counter++;

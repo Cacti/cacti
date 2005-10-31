@@ -181,9 +181,9 @@ function input_edit() {
 		graph_template_input_defs.graph_template_input_id
 		from graph_templates_item
 		left join graph_template_input_defs on (graph_template_input_defs.graph_template_item_id=graph_templates_item.id and graph_template_input_defs.graph_template_input_id=" . $_GET["id"] . ")
-		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-		left join data_local on data_template_rrd.local_data_id=data_local.id
-		left join data_template_data on data_local.id=data_template_data.local_data_id
+		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+		left join data_local on (data_template_rrd.local_data_id=data_local.id)
+		left join data_template_data on (data_local.id=data_template_data.local_data_id)
 		where graph_templates_item.local_graph_id=0
 		and graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		order by graph_templates_item.sequence");

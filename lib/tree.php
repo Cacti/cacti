@@ -213,7 +213,7 @@ function sort_tree($sort_type, $item_id, $sort_style) {
 		CONCAT_WS('',description,' (',hostname,')') as hostname
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
-		left join host on host.id=graph_tree_items.host_id
+		left join host on (host.id=graph_tree_items.host_id)
 		$sql_where
 		order by graph_tree_items.order_key");
 

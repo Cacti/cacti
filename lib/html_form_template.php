@@ -126,7 +126,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
 			data_template_rrd.id
 			from (data_template_data,data_template_rrd,data_local)
-			left join host on data_local.host_id=host.id
+			left join host on (data_local.host_id=host.id)
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id
 			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "

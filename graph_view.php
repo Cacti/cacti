@@ -156,8 +156,8 @@ case 'preview':
 	if (read_config_option("global_auth") == "on") {
 		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 
-		$sql_join = "left join host on host.id=graph_local.host_id
-			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+		$sql_join = "left join host on (host.id=graph_local.host_id)
+			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
 	}else{
 		$sql_where = "";
@@ -426,8 +426,8 @@ case 'list':
 	if (read_config_option("global_auth") == "on") {
 		/* get policy information for the sql where clause */
 		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-		$sql_join = "left join host on host.id=graph_local.host_id
-			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+		$sql_join = "left join host on (host.id=graph_local.host_id)
+			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
 
 	}else{

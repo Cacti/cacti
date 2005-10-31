@@ -692,7 +692,7 @@ function get_full_script_path($local_data_id) {
 		data_input_data.value
 		from data_input_fields
 		left join data_input_data
-		on data_input_fields.id=data_input_data.data_input_field_id
+		on (data_input_fields.id=data_input_data.data_input_field_id)
 		where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
 		and data_input_data.data_template_data_id=" . $data_source["id"] . "
 		and data_input_fields.input_output='in'");

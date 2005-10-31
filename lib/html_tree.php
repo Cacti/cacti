@@ -49,8 +49,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		/* get policy information for the sql where clause */
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
-		$sql_join = "left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
-			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+		$sql_join = "left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
+			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
 	}
 
@@ -75,7 +75,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		left join settings_tree on (graph_tree_items.id=settings_tree.graph_tree_item_id and settings_tree.user_id=$user_id)
-		left join host on graph_tree_items.host_id=host.id
+		left join host on (graph_tree_items.host_id=host.id)
 		$sql_join
 		where graph_tree_items.graph_tree_id=$tree_id
 		and graph_tree_items.order_key like '$search_key%'
@@ -202,7 +202,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		CONCAT_WS('',description,' (',hostname,')') as hostname
 		from graph_tree_items
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
-		left join host on host.id=graph_tree_items.host_id
+		left join host on (host.id=graph_tree_items.host_id)
 		where graph_tree_items.graph_tree_id=$tree_id
 		order by graph_tree_items.order_key");
 
@@ -370,7 +370,7 @@ function create_dhtml_tree() {
 				graph_tree_items.host_grouping_type,
 				host.description as hostname
 				from graph_tree_items
-				left join host on host.id=graph_tree_items.host_id
+				left join host on (host.id=graph_tree_items.host_id)
 				$sql_join
 				where graph_tree_items.graph_tree_id=" . $tree["id"] . "
 				$sql_where
@@ -477,8 +477,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and $sql_where");
 		$sql_join = "
-			left join host on host.id=graph_local.host_id
-			left join graph_templates on graph_templates.id=graph_local.graph_template_id
+			left join host on (host.id=graph_local.host_id)
+			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
 			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
 	}
 

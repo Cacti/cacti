@@ -608,7 +608,7 @@ function template() {
 		data_input.name as data_input_method,
 		data_template_data.active as active
 		from (data_template,data_template_data)
-		left join data_input on data_template_data.data_input_id = data_input.id
+		left join data_input on (data_template_data.data_input_id = data_input.id)
 		where data_template.id = data_template_data.data_template_id
 		and data_template_data.local_data_id = 0
 		order by data_template.name");

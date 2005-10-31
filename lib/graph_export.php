@@ -340,8 +340,8 @@ function export() {
 			graph_templates.name,
 			graph_local.host_id
 			from graph_templates_graph
-			left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-			left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+			left join graph_templates on (graph_templates_graph.graph_template_id=graph_templates.id)
+			left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
 			where graph_templates_graph.local_graph_id!=0 and graph_templates_graph.export='on'
 			order by graph_templates_graph.title_cache");
 
@@ -558,8 +558,8 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 				graph_templates.name,
 				graph_local.host_id
 			from graph_templates_graph
-				left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-			    left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+				left join graph_templates on (graph_templates_graph.graph_template_id=graph_templates.id)
+			    left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
 			where graph_local.host_id=".get_host_id($parent_tree_item_id)."
 			  and graph_templates_graph.local_graph_id!=0
 			  and graph_templates_graph.export='on'
@@ -576,9 +576,9 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 				graph_local.host_id,
 				graph_tree_items.id as gtid
 			from graph_templates_graph
-				left join graph_tree_items on graph_templates_graph.local_graph_id=graph_tree_items.local_graph_id
-			    left join graph_templates on graph_templates_graph.graph_template_id=graph_templates.id
-			    left join graph_local on graph_templates_graph.local_graph_id=graph_local.id
+				left join graph_tree_items on (graph_templates_graph.local_graph_id=graph_tree_items.local_graph_id)
+			    left join graph_templates on (graph_templates_graph.graph_template_id=graph_templates.id)
+			    left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
 			where graph_tree_items.graph_tree_id =".$tree_id."
 			  and graph_templates_graph.local_graph_id!=0
 			  and graph_templates_graph.export='on'
@@ -784,7 +784,7 @@ function create_dhtml_tree_export($tree_id) {
 		graph_tree_items.host_grouping_type,
 		host.description as hostname
 		from graph_tree_items
-		left join host on host.id=graph_tree_items.host_id
+		left join host on (host.id=graph_tree_items.host_id)
 		where graph_tree_items.graph_tree_id=" . $tree_id . "
 		and graph_tree_items.local_graph_id = 0
 		order by graph_tree_items.order_key");

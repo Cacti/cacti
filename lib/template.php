@@ -54,7 +54,7 @@ function push_out_data_source_custom_data($data_template_id) {
 		data_input_data.value,
 		data_input_data.t_value
 		from data_input_fields left join data_input_data
-		on data_input_fields.id=data_input_data.data_input_field_id
+		on (data_input_fields.id=data_input_data.data_input_field_id)
 		where data_input_data.data_template_data_id=" . $data_template["id"] . "
 		and data_input_fields.input_output='in'");
 

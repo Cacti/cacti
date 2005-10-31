@@ -137,8 +137,8 @@ function form_save() {
 			data_input_fields.allow_nulls,
 			data_input_fields.type_code
 			from data_template_data
-			left join data_input_fields on data_input_fields.data_input_id=data_template_data.data_input_id
-			left join data_local on data_template_data.local_data_id=data_local.id
+			left join data_input_fields on (data_input_fields.data_input_id=data_template_data.data_input_id)
+			left join data_local on (data_template_data.local_data_id=data_local.id)
 			where data_template_data.id=" . $_POST["data_template_data_id"] . "
 			and data_input_fields.input_output='in'");
 
@@ -1004,9 +1004,9 @@ function ds() {
 		data_local.host_id
 		from (data_local,data_template_data)
 		left join data_input
-		on data_input.id=data_template_data.data_input_id
+		on (data_input.id=data_template_data.data_input_id)
 		left join data_template
-		on data_local.data_template_id=data_template.id
+		on (data_local.data_template_id=data_template.id)
 		where data_local.id=data_template_data.local_data_id
 		$sql_where
 		order by data_template_data.name_cache,data_local.host_id

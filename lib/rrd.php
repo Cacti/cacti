@@ -167,9 +167,9 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 		rra_cf.consolidation_function_id,
 		(rra.rows*rra.steps) as rra_order
 		from data_template_data
-		left join data_template_data_rra on data_template_data.id=data_template_data_rra.data_template_data_id
-		left join rra on data_template_data_rra.rra_id=rra.id
-		left join rra_cf on rra.id=rra_cf.rra_id
+		left join data_template_data_rra on (data_template_data.id=data_template_data_rra.data_template_data_id)
+		left join rra on (data_template_data_rra.rra_id=rra.id)
+		left join rra_cf on (rra.id=rra_cf.rra_id)
 		where data_template_data.local_data_id=$local_data_id
 		and (rra.steps is not null or rra.rows is not null)
 		order by rra_cf.consolidation_function_id,rra_order");
@@ -549,9 +549,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		data_template_rrd.data_source_name,
 		data_template_rrd.local_data_template_rrd_id
 		from graph_templates_item
-		left join data_template_rrd on graph_templates_item.task_item_id=data_template_rrd.id
-		left join colors on graph_templates_item.color_id=colors.id
-		left join graph_templates_gprint on graph_templates_item.gprint_id=graph_templates_gprint.id
+		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+		left join colors on (graph_templates_item.color_id=colors.id)
+		left join graph_templates_gprint on (graph_templates_item.gprint_id=graph_templates_gprint.id)
 		where graph_templates_item.local_graph_id=$local_graph_id
 		order by graph_templates_item.sequence");
 
