@@ -138,7 +138,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				cacti_log("ERROR: Script Timed Out\n", true);
 			}
 
-			$pclose($fp);
+			pclose($fp);
 		}else{
 			$output = `$command`;
 		}
