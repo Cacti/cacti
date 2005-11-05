@@ -7,11 +7,15 @@
 			<firstname>Ian</firstname>
 			<surname>Berry</surname>
 		</author>
+		<author>
+			<firstname>Tony</firstname>
+			<surname>Roman</surname>
+		</author>
 	</authorgroup>
 	<pubdate>2005</pubdate>
 	<copyright>
 		<year>2005</year>
-		<holder>Ian Berry</holder>
+		<holder>The Cacti Group</holder>
 	</copyright>
 
 	<legalnotice id="license">
@@ -44,7 +48,7 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<application>RRDTool</application> 1.0.48 or greater
+					<application>RRDTool</application> 1.0.49 or 1.2.x or greater
 				</para>
 			</listitem>
 			<listitem>
@@ -643,6 +647,13 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>cp cacti_old/scripts/* cacti/scripts/</userinput></screen>
 			</listitem>
+			<listitem>
+				<para>
+					Copy any custom resources from the old Cacti directory.  It is important to note that you don't overwrite resource files that come with cacti.
+				</para>
+				<screen><prompt>shell&gt;</prompt> <userinput>cp -R cacti_old/resource/* cacti/resource/</userinput></screen>
+			</listitem>
+
 			<listitem>
 				<para>
 					Set the appropriate permissions on Cacti's directories for graph/log generation. You
@@ -3017,7 +3028,7 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							Cacti 0.8 and above requires that you have at least PHP 4.1 or greater installed.
+							Cacti 0.8.6 and above requires that you have at least PHP 4.1 or greater installed.
 						</para>
 					</answer>
 				</qandaentry>
@@ -3050,7 +3061,7 @@ print int(rand(10));</programlisting>
 						<para>
 							Now execute the following SQL:
 						</para>
-						<screen><prompt>mysql&gt;</prompt> <userinput>update user_auth set password='21232f297a57a5a743894a0e4a801fc3' where username='admin';</userinput></screen>
+						<screen><prompt>mysql&gt;</prompt> <userinput>update user_auth set password=md5('admin') where username='admin';</userinput></screen>
 					</answer>
 				</qandaentry>
 			</qandadiv>
@@ -3201,6 +3212,19 @@ disk /</userinput></screen>
 						</para>
 					</answer>
 				</qandaentry>
+				<qandaentry>
+					<question>
+						<para>
+							RRDTool Says: ERROR: unknown option '--slope-mode' or RRDTool Says: ERROR: Garbage ':39:24 To 2005/10/22 16:39:24\c' after command: COMMENT:From 2005/10/21 16:39:24 To 2005/10/22 16:39:24\c 
+						</para>
+					</question>
+					<answer>
+						<para>
+							This occurs because the version of RRDTool that you are running does not match the RRDTool version Cacti is configured to use.  Double check your Cacti Settings and make sure that the RRDTool version matches what version of RRDTool you are running.
+						</para>
+					</answer>
+				</qandaentry>
+
 			</qandadiv>
 			<qandadiv>
 				<title>Windows Related</title>
@@ -3292,7 +3316,7 @@ disk /</userinput></screen>
 								<entry>This field determines the power of 10 divisor that will be applied to your 95th percentile number. Enter '0' to leave the number alone, '3' for kilo or '6' for mega, etc.</entry>
 							</row>
 							<row>
-								<entry><function>(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate)</function></entry>
+								<entry><function>( current | total | max | total_peak | all_max_current | all_max_peak | aggregate_max | aggregate_sum | aggregate )</function></entry>
 								<entry>95th Percentile Type - Refer to 95th Types</entry>
 							</row>
 							<row>
@@ -3353,6 +3377,9 @@ disk /</userinput></screen>
 						</tbody>
 					</tgroup>
 				</table>
+				<note><title>Concerning aggregate 95th percentile functions and rra definitions</title>
+				<para>All data sources used in a graph MUST have the same rra definitions.  If the number of rows do not match when calculations are attempted, the results may produce errors and invalid results.</para>
+				</note>
 				<example>
 					<title>Output in the following format: 42.58 mbit</title>
 					<para>
@@ -3485,7 +3512,7 @@ disk /</userinput></screen>
 			<para>
 				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a
 				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
-				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/tutorial/cdeftutorial.html">CDEF tutorial</ulink>.
+				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph_data.en.html">CDEF tutorial</ulink>.
 			</para>
 			<sect2 id="add_new_cdef">
 				<title>Creating a CDEF</title>
@@ -3513,7 +3540,7 @@ disk /</userinput></screen>
 						<tbody>
 							<row>
 								<entry>Function</entry>
-								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/manual/rrdgraph.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
+								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
 							</row>
 							<row>
 								<entry>Operator</entry>
