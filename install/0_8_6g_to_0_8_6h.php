@@ -26,9 +26,13 @@
 
 function upgrade_to_0_8_6h() {
 	/* changes for ping result times */
-	db_install_execute("0.8.6h", "ALTER TABLE `cacti086` `host` MODIFY COLUMN `min_time` DECIMAL(10,5) DEFAULT 9.99999;");
-	db_install_execute("0.8.6h", "ALTER TABLE `cacti086` `host` MODIFY COLUMN `max_time` DECIMAL(10,5) DEFAULT 0.00000;");
-	db_install_execute("0.8.6h", "ALTER TABLE `cacti086` `host` MODIFY COLUMN `cur_time` DECIMAL(10,5) DEFAULT 0.00000;");
-	db_install_execute("0.8.6h", "ALTER TABLE `cacti086` `host` MODIFY COLUMN `avg_time` DECIMAL(10,5) DEFAULT 0.00000;");
+	db_install_execute("0.8.6h", "ALTER TABLE `host` MODIFY COLUMN `min_time` DECIMAL(10,5) DEFAULT 9.99999;");
+	db_install_execute("0.8.6h", "ALTER TABLE `host` MODIFY COLUMN `max_time` DECIMAL(10,5) DEFAULT 0.00000;");
+	db_install_execute("0.8.6h", "ALTER TABLE `host` MODIFY COLUMN `cur_time` DECIMAL(10,5) DEFAULT 0.00000;");
+	db_install_execute("0.8.6h", "ALTER TABLE `host` MODIFY COLUMN `avg_time` DECIMAL(10,5) DEFAULT 0.00000;");
+
+	/* Changes to user_log */
+	db_install_execute("0.8.6h", "ALTER TABLE `user_log` MODIFY COLUMN `ip` VARCHAR(40);");
+
  }
 ?>
