@@ -39,7 +39,7 @@ $old_version_index = array_search($old_cacti_version, $cacti_versions);
 /* do a version check */
 if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		upgrades, this installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
+		This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
 	exit;
 }elseif (ereg("^0\.6", $old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
