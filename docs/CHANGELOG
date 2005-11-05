@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.6h
 -bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
+-bug#0000603: user_log.ip field not ipv6 compatible
 -bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement 
 -bug: Stop MySQL connect messages from appearing in user interface
 -bug: Allow primary keys other than "ID" from saving properly in function sql_save
