@@ -52,6 +52,7 @@ function exec_poll($command) {
 			cacti_log("WARNING: POPEN Timed out.");
 			$output = "U";
 		}elseif ($num_changed_streams > 0) {
+echo "PHP Rules\n";
 			$output = fgets($fp, 4096);
 		}else{
 			cacti_log("WARNING: Problem with POPEN command.");
