@@ -92,13 +92,28 @@ class Net_Ping
 			$this->ping_status = "down";
 			$this->ping_response = "ICMP Ping timed out";
 
-			/* initialize the socket */
-			$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
-			socket_set_block($this->socket);
-
 			/* establish timeout variables */
 			$to_sec = floor($this->timeout/1000);
 			$to_usec = ($this->timeout%1000)*1000;
+
+			/* clean up hostname if specifying snmp_transport */
+			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
+			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
+
+			/* initilize the socket */
+			if (substr_count($this->host["hostname"],":") > 0) {
+				if (defined("AF_INET6")) {
+					$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
+				}else{
+					$this->ping_response = "PHP version does not support IPv6";
+					$this->ping_status   = "down";
+					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+					return false;
+				}
+			}else{
+				$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
+			}
+			socket_set_block($this->socket);
 
 			if (!(@socket_connect($this->socket, $this->host["hostname"], NULL))) {
 				$this->ping_response = "Cannot connect to host";
@@ -214,8 +229,24 @@ class Net_Ping
 			$to_sec = floor($this->timeout/1000);
 			$to_usec = ($this->timeout%1000)*1000;
 
+			/* clean up hostname if specifying snmp_transport */
+			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
+			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
+
 			/* initilize the socket */
-			$this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+			if (substr_count($this->host["hostname"],":") > 0) {
+				if (defined("AF_INET6")) {
+					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
+				}else{
+					$this->ping_response = "PHP version does not support IPv6";
+					$this->ping_status   = "down";
+					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+					return false;
+				}
+			}else{
+				$this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+			}
+
 			socket_set_nonblock($this->socket);
 			socket_connect($this->socket, $this->host["hostname"], $this->port);
 			socket_set_nonblock($this->socket);
@@ -294,8 +325,23 @@ class Net_Ping
 			$to_sec = floor($this->timeout/1000);
 			$to_usec = ($this->timeout%1000)*1000;
 
+			/* clean up hostname if specifying snmp_transport */
+			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
+			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
+
 			/* initilize the socket */
-			$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			if (substr_count($this->host["hostname"],":") > 0) {
+				if (defined("AF_INET6")) {
+					$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
+				}else{
+					$this->ping_response = "PHP binary does not support IPv6";
+					$this->ping_status   = "down";
+					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+					return false;
+				}
+			}else{
+				$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			}
 
 			while (1) {
 				/* set start time */
