@@ -36,7 +36,7 @@
 function db_connect_real($host,$user,$pass,$db_name,$db_type, $retries = 20) {
 	global $cnn_id;
 
-	$i = 1;
+	$i = 0;
 	$cnn_id = NewADOConnection($db_type);
 
 	while ($i <= $retries) {
@@ -45,12 +45,11 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $retries = 20) {
 		}
 
 		$i++;
-		usleep(100000);
+
+		usleep(400000);
 	}
 
-	cacti_log("ERROR: Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL   database name in 'include/config.php'.");
-
-	die("<br>Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL database name in 'include/config.php'.");
+	cacti_log("ERROR: Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL database name in 'include/config.php'.");
 
 	return(0);
 }
@@ -66,6 +65,7 @@ function db_execute($sql) {
 	if ($query) {
 		return(1);
 	}else{
+		cacti_log("ERROR: SQL Failed '" . $sql . "'");
 		return(0);
 	}
 }
@@ -94,6 +94,8 @@ function db_fetch_cell($sql,$col_name = '') {
 				return($query->fields[0]);
 			}
 		}
+	}else{
+		cacti_log("ERROR: SQL Failed '" . $sql . "'");
 	}
 }
 
@@ -110,6 +112,8 @@ function db_fetch_row($sql) {
 		if (!$query->EOF) {
 			return($query->fields);
 		}
+	}else{
+		cacti_log("ERROR: SQL Failed '" . $sql . "'");
 	}
 }
 
@@ -129,6 +133,8 @@ function db_fetch_assoc($sql) {
 			$query->MoveNext();
 		}
 		return($data);
+	}else{
+		cacti_log("ERROR: SQL Failed '" . $sql . "'");
 	}
 }
 
@@ -188,7 +194,7 @@ function db_replace($table_name, $array_items, $keyCols) {
    @arg $table_name - the name of the table to make the replacement in
    @arg $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
-function sql_save($array_items, $table_name, $key_cols='id') {
+function sql_save($array_items, $table_name, $key_cols = "id") {
 	global $cnn_id;
 
 	while (list ($key, $value) = each ($array_items)) {
@@ -199,11 +205,12 @@ function sql_save($array_items, $table_name, $key_cols='id') {
 
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {
-		if (isset($array_items[$key_cols])) {
-			return str_replace("\"", "", $array_items[$key_cols]);
-		}else{
-			return 0;
+		if (!is_array($key_cols)) {
+			if (isset($array_items[$key_cols])) {
+				return str_replace("\"", "", $array_items[$key_cols]);
+			}
 		}
+		return 0;
 	}else{
 		return $cnn_id->Insert_ID();
 	}
