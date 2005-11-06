@@ -65,7 +65,7 @@ function db_execute($sql) {
 	if ($query) {
 		return(1);
 	}else{
-		cacti_log("ERROR: SQL Failed '" . $sql . "'");
+		cacti_log("ERROR: SQL Failed '" . str_replace("\\n", "", str_replace("\\r", "", str_replace("\\t", " ", $sql))) . "'");
 		return(0);
 	}
 }
@@ -95,7 +95,7 @@ function db_fetch_cell($sql,$col_name = '') {
 			}
 		}
 	}else{
-		cacti_log("ERROR: SQL Failed '" . $sql . "'");
+		cacti_log("ERROR: SQL Failed '" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'");
 	}
 }
 
@@ -113,7 +113,7 @@ function db_fetch_row($sql) {
 			return($query->fields);
 		}
 	}else{
-		cacti_log("ERROR: SQL Failed '" . $sql . "'");
+		cacti_log("ERROR: SQL Failed '" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'");
 	}
 }
 
@@ -134,7 +134,7 @@ function db_fetch_assoc($sql) {
 		}
 		return($data);
 	}else{
-		cacti_log("ERROR: SQL Failed '" . $sql . "'");
+		cacti_log("ERROR: SQL Failed '" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'");
 	}
 }
 
