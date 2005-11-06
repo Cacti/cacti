@@ -72,7 +72,6 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 		 ($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
-		 ($data_input["type_id"] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) ||
 		 ($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
