@@ -62,12 +62,7 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 		where data_template_data.data_input_id=data_input.id
 		and data_template_data.local_data_id=$local_data_id");
 
-	$data_source = db_fetch_row("select
-		host_id,
-		snmp_query_id,
-		snmp_index
-		from data_local
-		where id=$local_data_id");
+	$data_source = db_fetch_row("select host_id,snmp_query_id,snmp_index from data_local where id=$local_data_id");
 
 	/* clear cache for this local_data_id */
 	if (!$truncate_performed) {
