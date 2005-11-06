@@ -37,6 +37,12 @@ function exec_poll($command) {
 			$fp = popen($command, "rb");
 		}
 
+		/* return if the popen command was not successfull */
+		if ($fp == 0) {
+			cacti_log("WARNING; Problem with POPEN command.");
+			return "U";
+		}
+
 		/* set script server timeout */
 		$script_timeout = read_config_option("script_timeout");
 
@@ -52,11 +58,10 @@ function exec_poll($command) {
 			cacti_log("WARNING: POPEN Timed out.");
 			$output = "U";
 		}elseif ($num_changed_streams > 0) {
-echo "PHP Rules\n";
 			$output = fgets($fp, 4096);
 		}else{
 			cacti_log("WARNING: Problem with POPEN command.");
-			$output = "U";
+			return "U";
 		}
 
 		pclose($fp);
@@ -125,6 +130,12 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				$fp = popen($command, "rb");
 			}
 
+			/* return if the popen command was not successfull */
+			if ($fp == 0) {
+				cacti_log("WARNING; Problem with POPEN command.");
+				return "U";
+			}
+
 			/* set script server timeout */
 			$script_timeout = read_config_option("script_timeout");
 
@@ -143,7 +154,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				$output = fgets($fp, 4096);
 			}else{
 				cacti_log("WARNING: Problem with POPEN command.");
-				$output = "U";
+				return "U";
 			}
 
 			pclose($fp);
