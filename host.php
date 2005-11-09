@@ -683,7 +683,6 @@ function host() {
 		unset($_REQUEST["host_status"]);
 	}
 
-
 	if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
 		$_REQUEST["page"] = 1;
 	}
