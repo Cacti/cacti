@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug#0000596: Proper excape of ' in graph titles
 -bug#0000603: user_log.ip field not ipv6 compatible
 -bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement 
+-bug#0000615: Minor host.php tweak
 -bug: Stop MySQL connect messages from appearing in user interface
 -bug: Allow primary keys other than "ID" from saving properly in function sql_save
 -bug: Allow primary keys other than "ID" to be handled properly using the html code

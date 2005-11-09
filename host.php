@@ -461,10 +461,15 @@ function host_edit() {
 						}else{
 							$snmp_uptime = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], SNMP_WEBUI);
 							$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], SNMP_WEBUI);
+							$snmp_location = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.6.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], SNMP_WEBUI);
+							$snmp_contact = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], SNMP_WEBUI);
+
 
 							print "<strong>System:</strong> $snmp_system<br>\n";
 							print "<strong>Uptime:</strong> $snmp_uptime<br>\n";
 							print "<strong>Hostname:</strong> $snmp_hostname<br>\n";
+							print "<strong>Location:</strong> $snmp_location<br>\n";
+							print "<strong>Contact:</strong> $snmp_contact<br>\n";
 						}
 					}
 					?>
