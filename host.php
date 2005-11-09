@@ -683,8 +683,9 @@ function host() {
 		unset($_REQUEST["host_status"]);
 	}
 
-	if ($_SESSION["sess_host_status"] != "host_status") {
-		unset($_REQUEST["page"]);
+
+	if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
+		$_REQUEST["page"] = 1;
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
