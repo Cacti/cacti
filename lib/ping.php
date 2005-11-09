@@ -100,8 +100,11 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
 			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
 
+			/* determine the host's ip address */
+			$host_ip = gethostbyname($this->host["hostname"]);
+
 			/* initilize the socket */
-			if (substr_count($this->host["hostname"],":") > 0) {
+			if (substr_count($host_ip,":") > 0) {
 				if (defined("AF_INET6")) {
 					$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
 				}else{
@@ -114,8 +117,8 @@ class Net_Ping
 				$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
 			}
 			socket_set_block($this->socket);
-
-			if (!(@socket_connect($this->socket, $this->host["hostname"], NULL))) {
+			
+			if (!(@socket_connect($this->socket, $host_ip, NULL))) {
 				$this->ping_response = "Cannot connect to host";
 				$this->ping_status   = "down";
 				return false;
@@ -233,8 +236,11 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
 			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
 
+			/* determine the host's ip address */
+			$host_ip = gethostbyname($this->host["hostname"]);
+
 			/* initilize the socket */
-			if (substr_count($this->host["hostname"],":") > 0) {
+			if (substr_count($host_ip,":") > 0) {
 				if (defined("AF_INET6")) {
 					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
 				}else{
@@ -248,7 +254,7 @@ class Net_Ping
 			}
 
 			socket_set_nonblock($this->socket);
-			socket_connect($this->socket, $this->host["hostname"], $this->port);
+			socket_connect($this->socket, $host_ip, $this->port);
 			socket_set_nonblock($this->socket);
 
 			/* format packet */
@@ -329,8 +335,11 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
 			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
 
+			/* determine the host's ip address */
+			$host_ip = gethostbyname($this->host["hostname"]);
+
 			/* initilize the socket */
-			if (substr_count($this->host["hostname"],":") > 0) {
+			if (substr_count($host_ip,":") > 0) {
 				if (defined("AF_INET6")) {
 					$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
 				}else{
@@ -349,7 +358,7 @@ class Net_Ping
 
 				/* allow immediate return */
 				socket_set_nonblock($this->socket);
-				@socket_connect($this->socket, $this->host["hostname"], $this->port);
+				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
 
 				switch(socket_select($r = array($this->socket), $w = array($this->socket), $f = array($this->socket), $to_sec, $to_usec)){
