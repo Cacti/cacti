@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6h
+-bug#0000572: Added $database_port to config.php
 -bug#0000570: Grammer edit for text about already up-to-date
 -bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
 -bug#0000596: Proper excape of ' in graph titles

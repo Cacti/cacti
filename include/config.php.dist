@@ -30,6 +30,7 @@ $database_default = "cacti";
 $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
+$database_port = "3306";
 
 /* ----- you probably do not need to change anything below this line ----- */
 
@@ -160,6 +161,6 @@ include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.6h";
+$config["cacti_version"] = "0.8.6g";
 
 ?>

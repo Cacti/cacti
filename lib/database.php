@@ -33,14 +33,16 @@
    @arg $db_type - the type of database server to connect to, only 'mysql' is currently supported
    @arg $retries - the number a time the server should attempt to connect before failing
    @returns - (bool) '1' for success, '0' for error */
-function db_connect_real($host,$user,$pass,$db_name,$db_type, $retries = 20) {
+function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = 3306, $retries = 20) {
 	global $cnn_id;
 
 	$i = 0;
 	$cnn_id = NewADOConnection($db_type);
 
+	$hostport = $host . ":" . $port;
+
 	while ($i <= $retries) {
-		if ($cnn_id->PConnect($host,$user,$pass,$db_name)) {
+		if ($cnn_id->PConnect($hostport,$user,$pass,$db_name)) {
 			return(1);
 		}
 
@@ -60,12 +62,16 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $retries = 20) {
 function db_execute($sql) {
 	global $cnn_id;
 
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+		cacti_log("DEBUG: SQL Exec: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+	}
+
 	$query = $cnn_id->Execute($sql);
 
 	if ($query) {
 		return(1);
 	}else{
-		cacti_log("ERROR: SQL Failed '" . str_replace("\\n", "", str_replace("\\r", "", str_replace("\\t", " ", $sql))) . "'");
+		cacti_log("ERROR: SQL Exec Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 		return(0);
 	}
 }
@@ -77,6 +83,10 @@ function db_execute($sql) {
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql,$col_name = '') {
 	global $cnn_id;
+
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+		cacti_log("DEBUG: SQL Cell: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+	}
 
 	if ($col_name != '') {
 		$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -95,15 +105,21 @@ function db_fetch_cell($sql,$col_name = '') {
 			}
 		}
 	}else{
-		cacti_log("ERROR: SQL Failed '" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'");
+		cacti_log("ERROR: SQL Cell Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
 /* db_fetch_row - run a 'select' sql query and return the first row found
    @arg $sql - the sql query to execute
    @returns - the first row of the result as a hash */
-function db_fetch_row($sql) {
+function db_fetch_row($sql, $log = TRUE) {
 	global $cnn_id;
+
+	if ($log) {
+		if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+			cacti_log("DEBUG: SQL Row: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"\n", FALSE);
+		}
+	}
 
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
@@ -113,7 +129,7 @@ function db_fetch_row($sql) {
 			return($query->fields);
 		}
 	}else{
-		cacti_log("ERROR: SQL Failed '" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'");
+		cacti_log("ERROR: SQL Row Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -122,6 +138,10 @@ function db_fetch_row($sql) {
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql) {
 	global $cnn_id;
+
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+		cacti_log("DEBUG: SQL Assoc: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+	}
 
 	$data = array();
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -134,7 +154,7 @@ function db_fetch_assoc($sql) {
 		}
 		return($data);
 	}else{
-		cacti_log("ERROR: SQL Failed '" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'");
+		cacti_log("ERROR: SQL Assoc Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}
 }
 
