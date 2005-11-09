@@ -683,6 +683,10 @@ function host() {
 		unset($_REQUEST["host_status"]);
 	}
 
+	if ($_SESSION["sess_host_status"] != "host_status") {
+		unset($_REQUEST["page"]);
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_device_current_page", "1");
 	load_current_session_value("filter", "sess_device_filter", "");
