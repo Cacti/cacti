@@ -68,18 +68,31 @@ if (sizeof($poller_commands) > 0) {
 			}
 
 			if ($first_host) {
-				cacti_log("Host[$host_id] WARNING: Recache Event Detected for Host", true, "POLLER");
+				cacti_log("Host[$host_id] WARNING: Recache Event Detected for Host", true, "PCOMMAND");
 			}
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] RECACHE: Re-cache for Host, data query #$data_query_id", true, "POLLER");
+				cacti_log("Host[$host_id] RECACHE: Re-cache for Host, data query #$data_query_id", true, "PCOMMAND");
 			}
 
 			run_data_query($host_id, $data_query_id);
 
 			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] RECACHE: Re-cache successful.", true, "POLLER");
+				cacti_log("Host[$host_id] RECACHE: Re-cache successful.", true, "PCOMMAND");
 			}
+			break;
+		case POLLER_COMMAND_RRDPURGE:
+			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+				cacti_log("Host[$host_id] PURGE: Unused RRDfile removed from system '$command'", true, "PCOMMAND");
+			}
+
+			if (file_exists($command)) {
+				@unlink($command);
+			}
+
+			break;
+		default:
+			cacti_log("ERROR: Unknown poller command issued", true, "PCOMMAND");
 		}
 
 		/* record current_time */
@@ -88,7 +101,7 @@ if (sizeof($poller_commands) > 0) {
 
 		/* end if runtime has been exceeded */
 		if (($current-$start) > MAX_RECACHE_RUNTIME) {
-			cacti_log("ERROR: Host Recaching Timed Out While Processing '" . $command . "'",true,"RECACHE");
+			cacti_log("ERROR: Poller Command processing timed out after processing '" . $command . "'",true,"PCOMMAND");
 			break;
 		}
 	}
