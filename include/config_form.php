@@ -628,7 +628,7 @@ $fields_host_edit = array(
 		"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
 		"value" => "|arg1:host_template_id|",
 		"none_value" => "None",
-		"sql" => "select id,name from host_template",
+		"sql" => "select id,name from host_template order by name",
 		),
 	"disabled" => array(
 		"method" => "checkbox",
