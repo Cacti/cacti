@@ -137,7 +137,7 @@ function read_config_option($config_name) {
 	}
 
 	if (!isset($config_array[$config_name])) {
-		$db_setting = db_fetch_row("select value from settings where name='$config_name'");
+		$db_setting = db_fetch_row("select value from settings where name='$config_name'", FALSE);
 
 		if (isset($db_setting["value"])) {
 			$config_array[$config_name] = $db_setting["value"];
