@@ -60,8 +60,9 @@ function exec_poll($command) {
 		}elseif ($num_changed_streams > 0) {
 			$output = fgets($fp, 4096);
 		}else{
-			cacti_log("WARNING: Problem with POPEN command.");
-			return "U";
+			$output = fgets($fp, 4096);
+//			cacti_log("WARNING: Problem with POPEN command.");
+//			return "U";
 		}
 
 		pclose($fp);
@@ -110,8 +111,9 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			}elseif ($num_changed_streams > 0) {
 				$output = fgets($pipes[1], 4096);
 			}else{
-				cacti_log("WARNING: Problem with SERVER command.");
-				$output = "U";
+				$output = fgets($pipes[1], 4096);
+//				cacti_log("WARNING: Problem with SERVER command.");
+//				$output = "U";
 			}
 
 			if (substr_count($output, "ERROR") > 0) {
@@ -179,7 +181,7 @@ function exec_background($filename, $args = "") {
 
 	if (file_exists($filename)) {
 		if ($config["cacti_server_os"] == "win32") {
-			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, "r"));
+			pclose(popen("start \"Cactiplus\" /I /B \"" . $filename . "\" " . $args, "r"));
 		}else{
 			exec($filename . " " . $args . " > /dev/null &");
 		}
