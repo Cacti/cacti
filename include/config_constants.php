@@ -81,6 +81,7 @@ define("HOST_UNKNOWN", 0);
 define("HOST_DOWN", 1);
 define("HOST_RECOVERING", 2);
 define("HOST_UP", 3);
+define("HOST_ERROR", 4);
 
 define("GT_CUSTOM", 0);
 define("GT_LAST_HALF_HOUR", 1);

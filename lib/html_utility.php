@@ -207,6 +207,7 @@ function get_colored_device_status($disabled, $status) {
 
 	$status_colors = array(
 		HOST_DOWN => "ff0000",
+		HOST_ERROR => "750F7D",
 		HOST_RECOVERING => "ff8f1e",
 		HOST_UP => "198e32"
 		);
@@ -221,6 +222,8 @@ function get_colored_device_status($disabled, $status) {
 				return "<span style='color: #" . $status_colors[HOST_RECOVERING] . "'>Recovering</a>"; break;
 			case HOST_UP:
 				return "<span style='color: #" . $status_colors[HOST_UP] . "'>Up</a>"; break;
+			case HOST_ERROR:
+				return "<span style='color: #" . $status_colors[HOST_ERROR] . "'>Error</a>"; break;
 			default:
 				return "<span style='color: #0000ff'>Unknown</a>"; break;
 		}
