@@ -43,8 +43,8 @@ function exec_poll($command) {
 			return "U";
 		}
 
-		/* set script server timeout */
-		$script_timeout = read_config_option("script_timeout");
+		/* get script server timeout and convert to milliseconds */
+		$script_timeout = read_config_option("script_timeout")*1000;
 
 		/* establish timeout variables */
 		$to_sec = floor($script_timeout/1000);
@@ -53,7 +53,7 @@ function exec_poll($command) {
 		/* Prepare the read array */
 		$read = array($fp);
 
-		stream_set_blocking ($fp, 1);
+		stream_set_blocking ($fp, TRUE);
 		if (false === ($num_changed_streams = stream_select($read, $write = NULL, $except = NULL, $to_sec, $to_usec))) {
 			cacti_log("WARNING: POPEN Timed out.");
 			$output = "U";
@@ -92,7 +92,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			 * 2 => any error output will be sent to child stderr */
 
 			/* set script server timeout */
-			$script_timeout = read_config_option("script_timeout");
+			$script_timeout = read_config_option("script_timeout")*1000;
 
 			/* establish timeout variables */
 			$to_sec = floor($script_timeout/1000);
@@ -104,7 +104,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			/* Prepare the read array */
 			$read = array($pipes[1]);
 
-			stream_set_blocking ($pipes[1], 1);
+			stream_set_blocking ($pipes[1], TRUE);
 			if (false === ($num_changed_streams = stream_select($read, $write = NULL, $except = NULL, $to_sec, $to_usec))) {
 				cacti_log("WARNING: SERVER PROC_OPEN Timed out.");
 				$output = "U";
@@ -139,7 +139,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			}
 
 			/* set script server timeout */
-			$script_timeout = read_config_option("script_timeout");
+			$script_timeout = read_config_option("script_timeout")*1000;
 
 			/* establish timeout variables */
 			$to_sec = floor($script_timeout/1000);
@@ -148,7 +148,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			/* Prepare the read array */
 			$read = array($fp);
 
-			stream_set_blocking ($fp, 1);
+			stream_set_blocking ($fp, TRUE);
 			if (false === ($num_changed_streams = stream_select($read, $write = NULL, $except = NULL, $to_sec, $to_usec))) {
 				cacti_log("WARNING: SERVER POPEN Timed out.");
 				$output = "U";
