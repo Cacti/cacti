@@ -145,7 +145,7 @@ function form_save() {
 		form_input_validate($_POST["password_confirm"], "password_confirm", "" . preg_quote($_POST["password"]) . "", true, 4);
 
 		$save["id"] = $_POST["id"];
-		$save["username"] = form_input_validate($_POST["username"], "username", "^[A-Za-z_0-9]+$", false, 3);
+		$save["username"] = form_input_validate($_POST["username"], "username", "^[A-Za-z0-9\._\-]+$", false, 3);
 		$save["full_name"] = form_input_validate($_POST["full_name"], "full_name", "", true, 3);
 		$save["password"] = $password;
 		$save["must_change_password"] = form_input_validate((isset($_POST["must_change_password"]) ? $_POST["must_change_password"] : ""), "must_change_password", "", true, 3);
