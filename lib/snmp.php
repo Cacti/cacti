@@ -112,6 +112,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		(($version == 1) || (strlen(trim($path_snmpbulkwalk)) == 0))) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
+
+		/* force php to return numeric oid's */
+		if (function_exists("snmp_set_oid_numeric_print")) {
+			snmp_set_oid_numeric_print(TRUE);
+		}
+
 		snmp_set_quick_print(0);
 
 		if ($version == "1") {
