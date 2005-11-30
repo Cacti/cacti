@@ -357,8 +357,8 @@ case 'list':
 	/* display graph view filter selector */
 	html_graph_start_box(3, true);
 
-	if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; } 
-	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; } 
+	if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
+	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; }
 	?>
 	<script type="text/javascript">
 	<!--
@@ -385,16 +385,16 @@ case 'list':
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyFilterChange(document.form_graph_id)">
-							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
+							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
 							<?php
 							$hosts = get_host_array();
 
 							if (sizeof($hosts) > 0) {
 								foreach ($hosts as $host) {
-									print "<option value=\"" . $host["id"] . "\""; 
-									if ($_REQUEST["host_id"] == $host["id"]) { 
-										print " selected"; 
-									} 
+									print "<option value=\"" . $host["id"] . "\"";
+									if ($_REQUEST["host_id"] == $host["id"]) {
+										print " selected";
+									}
 									print ">" . $host["name"] . "</option>\n";
 								}
 							}
@@ -419,9 +419,9 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_filter = "";
-	$sql_filter .= (empty($_REQUEST["filter"]) ? "" : " graph_templates_graph.title_cache like '%" . $_REQUEST["filter"] . "%'"); 
+	$sql_filter .= (empty($_REQUEST["filter"]) ? "" : " graph_templates_graph.title_cache like '%" . $_REQUEST["filter"] . "%'");
 	$sql_filter .= (empty($_REQUEST["host_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.host_id=" . $_REQUEST["host_id"]);
-       
+
 	/* graph permissions */
 	if (read_config_option("global_auth") == "on") {
 		/* get policy information for the sql where clause */
@@ -537,7 +537,7 @@ case 'list':
 	if (sizeof($graphs) > 0) {
 		foreach ($graphs as $graph) {
 			form_alternate_row_color("f5f5f5", "ffffff", $i);
-	
+
 			print "<td width='1%'>";
 			print "<input type='checkbox' name='graph_" . $graph["local_graph_id"] . "' id='graph_" . $graph["local_graph_id"] . "' value='" . $graph["local_graph_id"] . "'";
 			if (isset($graph_list[$graph["local_graph_id"]])) {
@@ -545,11 +545,11 @@ case 'list':
 			}
 			print ">\n";
 			print "</td>\n";
-	
+
 			print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title_cache"] . "</a></strong></td>\n";
 			print "<td>" . $graph["height"] . "x" . $graph["width"] . "</td>\n";
 			print "</tr>";
-	
+
 			$i++;
 		}
 	}
