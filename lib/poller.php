@@ -30,7 +30,7 @@
 function exec_poll($command) {
 	global $config;
 
-	if (function_exists("stream_select")) {
+	if (function_exists("popen")) {
 		if ($config["cacti_server_os"] == "unix") {
 			$fp = popen($command, "r");
 		}else{
@@ -43,27 +43,7 @@ function exec_poll($command) {
 			return "U";
 		}
 
-		/* get script server timeout and convert to milliseconds */
-		$script_timeout = read_config_option("script_timeout")*1000;
-
-		/* establish timeout variables */
-		$to_sec = floor($script_timeout/1000);
-		$to_usec = ($script_timeout%1000)*1000;
-
-		/* Prepare the read array */
-		$read = array($fp);
-
-		stream_set_blocking ($fp, TRUE);
-		if (false === ($num_changed_streams = stream_select($read, $write = NULL, $except = NULL, $to_sec, $to_usec))) {
-			cacti_log("WARNING: POPEN Timed out.");
-			$output = "U";
-		}elseif ($num_changed_streams > 0) {
-			$output = fgets($fp, 4096);
-		}else{
-			$output = fgets($fp, 4096);
-//			cacti_log("WARNING: Problem with POPEN command.");
-//			return "U";
-		}
+		$output = fgets($fp, 4096);
 
 		pclose($fp);
 	}else{
@@ -91,30 +71,10 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			 * 1 => readable handle connected to child stdout
 			 * 2 => any error output will be sent to child stderr */
 
-			/* set script server timeout */
-			$script_timeout = read_config_option("script_timeout")*1000;
-
-			/* establish timeout variables */
-			$to_sec = floor($script_timeout/1000);
-			$to_usec = ($script_timeout%1000)*1000;
-
 			/* send command to the php server */
 			fwrite($pipes[0], $command . "\r\n");
 
-			/* Prepare the read array */
-			$read = array($pipes[1]);
-
-			stream_set_blocking ($pipes[1], TRUE);
-			if (false === ($num_changed_streams = stream_select($read, $write = NULL, $except = NULL, $to_sec, $to_usec))) {
-				cacti_log("WARNING: SERVER PROC_OPEN Timed out.");
-				$output = "U";
-			}elseif ($num_changed_streams > 0) {
-				$output = fgets($pipes[1], 4096);
-			}else{
-				$output = fgets($pipes[1], 4096);
-//				cacti_log("WARNING: Problem with SERVER command.");
-//				$output = "U";
-			}
+			$output = fgets($pipes[1], 4096);
 
 			if (substr_count($output, "ERROR") > 0) {
 				$output = "U";
@@ -125,7 +85,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
    		/* formulate command */
 		$command = read_config_option("path_php_binary") . " " . $command;
 
-		if (function_exists("stream_select")) {
+		if (function_exists("popen")) {
 			if ($config["cacti_server_os"] == "unix")  {
 				$fp = popen($command, "r");
 			}else{
@@ -138,26 +98,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				return "U";
 			}
 
-			/* set script server timeout */
-			$script_timeout = read_config_option("script_timeout")*1000;
-
-			/* establish timeout variables */
-			$to_sec = floor($script_timeout/1000);
-			$to_usec = ($script_timeout%1000)*1000;
-
-			/* Prepare the read array */
-			$read = array($fp);
-
-			stream_set_blocking ($fp, TRUE);
-			if (false === ($num_changed_streams = stream_select($read, $write = NULL, $except = NULL, $to_sec, $to_usec))) {
-				cacti_log("WARNING: SERVER POPEN Timed out.");
-				$output = "U";
-			}elseif ($num_changed_streams > 0) {
-				$output = fgets($fp, 4096);
-			}else{
-				cacti_log("WARNING: Problem with POPEN command.");
-				return "U";
-			}
+			$output = fgets($fp, 4096);
 
 			pclose($fp);
 		}else{
@@ -353,6 +294,5 @@ function process_poller_output($rrdtool_pipe) {
 
     return $rrds_processed;
 }
-
 
 ?>

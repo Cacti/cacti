@@ -748,29 +748,29 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	$i = 0; $j = 0;
 	if (sizeof($graph_items > 0)) {
-	
+
 		foreach ($graph_items as $graph_item) {
 			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && ($graph_item["data_source_name"] != "")) {
 				/* use a user-specified ds path if one is entered */
 				$data_source_path = get_data_source_path($graph_item["local_data_id"], true);
-	
+
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = str_replace(":", "\:", $data_source_path);
-	
+
 				if (!empty($data_source_path)) {
 					/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
 					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . $graph_item["data_source_name"] . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
-	
+
 					//print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
 					$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
-	
+
 					$i++;
 				}
 			}
-	
+
 			/* cache cdef value here to support data query variables in the cdef string */
 			if (empty($graph_item["cdef_id"])) {
 				$graph_item["cdef_cache"] = "";
@@ -779,12 +779,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_item["cdef_cache"] = get_cdef($graph_item["cdef_id"]);
 				$graph_items[$j]["cdef_cache"] = get_cdef($graph_item["cdef_id"]);
 			}
-	
+
 			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
-	
+
 			/* note the current item_id for easy access */
 			$graph_item_id = $graph_item["graph_templates_item_id"];
-	
+
 			/* the following fields will be searched for graph variables */
 			$variable_fields = array(
 				"text_format" => array(
@@ -797,7 +797,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					"process_no_legend" => true
 					)
 				);
-	
+
 			/* loop through each field that we want to substitute values for:
 			currently: text format and value */
 			while (list($field_name, $field_array) = each($variable_fields)) {
@@ -805,14 +805,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (($field_array["process_no_legend"] == false) && (isset($graph_data_array["graph_nolegend"]))) {
 					continue;
 				}
-	
+
 				$graph_variables[$field_name][$graph_item_id] = $graph_item[$field_name];
-	
+
 				/* date/time substitution */
 				if (strstr($graph_variables[$field_name][$graph_item_id], "|date_time|")) {
 					$graph_variables[$field_name][$graph_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $graph_variables[$field_name][$graph_item_id]);
 				}
-	
+
 				/* data query variables */
 				if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $graph_variables[$field_name][$graph_item_id])) {
 					/* default to the graph data query information from the graph */
@@ -824,14 +824,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						$graph_variables[$field_name][$graph_item_id] = substitute_snmp_query_data($graph_variables[$field_name][$graph_item_id], $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
 					}
 				}
-	
+
 				/* 95th percentile */
 				if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
 					}
 				}
-	
+
 				/* bandwidth summation */
 				if (preg_match_all("/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
@@ -839,7 +839,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 				}
 			}
-	
+
 			/* if we are not displaying a legend there is no point in us even processing the auto padding,
 			text format stuff. */
 			if (!isset($graph_data_array["graph_nolegend"])) {
@@ -849,9 +849,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}else{
 					$hardreturn[$graph_item_id] = "";
 				}
-	
+
 				/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
-	
+
 				/* PADDING: remember this is not perfect! its main use is for the basic graph setup of:
 				AREA - GPRINT-CURRENT - GPRINT-AVERAGE - GPRINT-MAXIMUM \n
 				of course it can be used in other situations, however may not work as intended.
@@ -860,14 +860,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					/* only applies to AREA and STACK */
 					if (ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) {
 						$text_format_lengths{$graph_item["data_template_rrd_id"]} = strlen($graph_variables["text_format"][$graph_item_id]);
-	
+
 						if ((strlen($graph_variables["text_format"][$graph_item_id]) > $greatest_text_format) && ($graph_item_types{$graph_item["graph_type_id"]} != "COMMENT")) {
 							$greatest_text_format = strlen($graph_variables["text_format"][$graph_item_id]);
 						}
 					}
 				}
 			}
-	
+
 			$j++;
 		}
 	}
