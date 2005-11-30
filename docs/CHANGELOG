@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug#0000570: Grammer edit for text about already up-to-date
 -bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
 -bug#0000596: Proper excape of ' in graph titles
+-bug#0000599: add filtering to graphs and data templates
 -bug#0000603: user_log.ip field not ipv6 compatible
 -bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement 
 -bug#0000615: Minor host.php tweak

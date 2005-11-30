@@ -30,6 +30,8 @@ include_once("./lib/html_tree.php");
 include_once("./lib/utility.php");
 include_once("./lib/template.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
 $ds_actions = array(
 	1 => "Delete",
 	2 => "Duplicate"
@@ -598,9 +600,43 @@ function template_edit() {
 function template() {
 	global $colors, $ds_actions;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_data_template_current_page");
+		kill_session_var("sess_data_template_filter");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_data_template_current_page", "1");
+	load_current_session_value("filter", "sess_data_template_filter", "");
+
 	html_start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 
-	html_header_checkbox(array("Template Name", "Data Input Method", "Status"));
+	include("./include/html/inc_data_template_filter_table.php");
+
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "where (data_template.name like '%%" . $_REQUEST["filter"] . "%%')";
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	$total_rows = db_fetch_cell("select
+		COUNT(data_template.id)
+		from data_template
+		$sql_where");
 
 	$template_list = db_fetch_assoc("select
 		data_template.id,
@@ -609,31 +645,61 @@ function template() {
 		data_template_data.active as active
 		from (data_template,data_template_data)
 		left join data_input on (data_template_data.data_input_id = data_input.id)
-		where data_template.id = data_template_data.data_template_id
+		$sql_where
+		and data_template.id = data_template_data.data_template_id
 		and data_template_data.local_data_id = 0
-		order by data_template.name");
+		order by data_template.name
+		limit " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "data_templates.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		<td colspan='7'>
+			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='data_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+					</td>\n
+					<td align='center' class='textHeaderDark'>
+						Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+					</td>\n
+					<td align='right' class='textHeaderDark'>
+						<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+					</td>\n
+				</tr>
+			</table>
+		</td>
+	</tr>\n";
+
+	print $nav;
+
+	html_header_checkbox(array("Template Name", "Data Input Method", "Status"));
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
-	foreach ($template_list as $template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
-			</td>
-			<td>
-				<?php print (empty($template["data_input_method"]) ? "<em>None</em>": $template["data_input_method"]);?>
-			</td>
-			<td>
-				<?php if ($template["active"] == "on") print "Active"; else print "Disabled";?>
-			</td>
-			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
-			</td>
-		</tr>
-		<?php
-		$i++;
-	}
+		foreach ($template_list as $template) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+				?>
+				<td>
+					<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
+				</td>
+				<td>
+					<?php print (empty($template["data_input_method"]) ? "<em>None</em>": $template["data_input_method"]);?>
+				</td>
+				<td>
+					<?php if ($template["active"] == "on") print "Active"; else print "Disabled";?>
+				</td>
+				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
+				</td>
+			</tr>
+			<?php
+			$i++;
+		}
+
+		/* put the nav bar on the bottom as well */
+		print $nav;
 	}else{
 		print "<tr><td><em>No Data Templates</em></td></tr>\n";
 	}

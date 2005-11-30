@@ -30,6 +30,8 @@ include_once("./lib/template.php");
 include_once("./lib/tree.php");
 include_once("./lib/html_tree.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
 $graph_actions = array(
 	1 => "Delete",
 	2 => "Duplicate"
@@ -405,30 +407,93 @@ function template_edit() {
 function template() {
 	global $colors, $graph_actions;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_graph_template_current_page");
+		kill_session_var("sess_graph_template_filter");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_graph_template_current_page", "1");
+	load_current_session_value("filter", "sess_graph_template_filter", "");
+
 	html_start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
 
-	html_header_checkbox(array("Template Title"));
+	include("./include/html/inc_graph_template_filter_table.php");
+
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "where (graph_templates.name like '%%" . $_REQUEST["filter"] . "%%')";
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	$total_rows = db_fetch_cell("select
+		COUNT(graph_templates.id)
+		from graph_templates
+		$sql_where");
 
 	$template_list = db_fetch_assoc("select
 		graph_templates.id,graph_templates.name
 		from graph_templates
-		order by name");
+		$sql_where
+		order by name
+		limit " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "graph_templates.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		<td colspan='7'>
+			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='graph_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+					</td>\n
+					<td align='center' class='textHeaderDark'>
+						Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+					</td>\n
+					<td align='right' class='textHeaderDark'>
+						<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='graph_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+					</td>\n
+				</tr>
+			</table>
+		</td>
+		</tr>\n";
+
+	print $nav;
+
+	html_header_checkbox(array("Template Title"));
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
-	foreach ($template_list as $template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-			?>
+		foreach ($template_list as $template) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+				?>
 			<td>
 				<a class="linkEditMain" href="graph_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
 			</td>
 			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
 			</td>
-		</tr>
-		<?php
-		$i++;
-	}
+			</tr>
+			<?php
+			$i++;
+		}
+		/* put the nav bar on the bottom as well */
+		print $nav;
 	}else{
 		print "<tr><td><em>No Graph Templates</em></td></tr>\n";
 	}
