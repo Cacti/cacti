@@ -499,15 +499,11 @@ $settings = array(
 			"tab" => "poller"
 			),
 		"poller_type" => array(
-			"friendly_name" => "Type",
-			"description" => "The poller to use.  This setting will take effect at next polling interval.",
+			"friendly_name" => "Poller Type",
+			"description" => "The poller type to use.  This setting will take effect at next polling interval.",
 			"method" => "drop_array",
 			"default" => 1,
 			"array" => $poller_options,
-			),
-		"methods_header" => array(
-			"friendly_name" => "Poller Execution Parameters",
-			"method" => "spacer",
 			),
 		"concurrent_processes" => array(
 			"friendly_name" => "Maximum Concurrent Poller Processes",
@@ -516,9 +512,20 @@ $settings = array(
 			"default" => "1",
 			"max_length" => "10"
 			),
+		"cactid_header" => array(
+			"friendly_name" => "Cactid Specific Execution Parameters",
+			"method" => "spacer",
+			),
 		"max_threads" => array(
 			"friendly_name" => "Maximum Threads per Process",
-			"description" => "The maximum threads allowed per process.  Using a higher number when using cactid will improve performance.  NOTE Applies only to CACTID!",
+			"description" => "The maximum threads allowed per process.  Using a higher number when using cactid will improve performance.",
+			"method" => "textbox",
+			"default" => "1",
+			"max_length" => "10"
+			),
+		"php_servers" => array(
+			"friendly_name" => "Number of PHP Script Servers",
+			"description" => "The number of concurrent script server processes to run per Cactid process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts.",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
@@ -532,7 +539,7 @@ $settings = array(
 			),
 		"max_get_size" => array(
 			"friendly_name" => "The Maximum SNMP OID's Per SNMP Get Request",
-			"description" => "The maximum number of snmp get OID's to issue per snmp request.  Increasing this value speeds poller performance over slow links.  Affects Cactid performance only.  The maximum value is 60 OID's.",
+			"description" => "The maximum number of snmp get OID's to issue per snmp request.  Increasing this value speeds poller performance over slow links.  The maximum value is 60 OID's.",
 			"method" => "textbox",
 			"default" => "10",
 			"max_length" => "10"
