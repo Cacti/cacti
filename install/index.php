@@ -158,8 +158,8 @@ if ($config["cacti_server_os"] == "unix") {
 
 	if (config_value_exists("path_snmpbulkwalk")) {
 		$input["path_snmpbulkwalk"]["default"] = read_config_option("path_snmpbulkwalk");
-	}else if (!empty($which_snmpget)) {
-		$input["path_snmpbulkwalk"]["default"] = $which_snmpget;
+	}else if (!empty($which_snmpbulkwalk)) {
+		$input["path_snmpbulkwalk"]["default"] = $which_snmpbulkwalk;
 	}else{
 		$input["path_snmpbulkwalk"]["default"] = "/usr/local/bin/snmpbulkwalk";
 	}
