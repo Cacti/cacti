@@ -78,10 +78,12 @@ switch ($_REQUEST["action"]) {
 	case 'clear_logfile':
 		include_once("./include/top_header.php");
 
+		utilities();
+
 		utilities_clear_logfile();
 
-		utilities();
-		utilities_view_logfile();
+		#utilities_view_logfile();
+
 
 		include_once("./include/bottom_footer.php");
 		break;
@@ -185,16 +187,27 @@ function utilities_view_logfile() {
 }
 
 function utilities_clear_logfile() {
+	global $colors;
+
 	$logfile = read_config_option("path_cactilog");
 
 	if ($logfile == "") {
-		$logfile = "./log/rrd.log";
+		$logfile = "./log/cacti.log";
 	}
 
+	html_start_box("<strong>Clear Cacti Log File</strong>", "98%", $colors["header"], "1", "center", "");
 	if (file_exists($logfile)) {
-		unlink($logfile);
-		touch($logfile);
+		if (is_writable($logfile)) {
+			unlink($logfile);
+			touch($logfile);
+			print "<tr><td>Cacti Log File Cleared</td></tr>";
+		}else{
+			print "<tr><td><font color='red'><b>Error: Unable to clear log, no write permissions.<b></font></td></tr>";
+		}
+	}else{
+		print "<tr><td><font color='red'><b>Error: Unable to clear log, file does not exist.</b></font></td></tr>";
 	}
+	html_end_box();
 }
 
 function utilities_view_snmp_cache() {
