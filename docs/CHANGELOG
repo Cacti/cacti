@@ -7,7 +7,8 @@ Cacti CHANGELOG
 -bug#0000582: Ampersand present in graph template graph name causes xml import to fail
 -bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
 -bug#0000596: Proper excape of ' in graph titles
--bug#0000599: add filtering to graphs and data templates
+-bug#0000599: Add filtering to graphs and data templates
+-bug#0000601: Add ability to add multiple hosts to a tree
 -bug#0000603: user_log.ip field not ipv6 compatible
 -bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement 
 -bug#0000615: Minor host.php tweak
@@ -33,6 +34,7 @@ Cacti CHANGELOG
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
 -feature: Added support for new 95th Percentile Variables: aggregate, aggregate_max, aggregate_sum
+-feature: Allow additional filtering for graph item adding while creating graphs
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.

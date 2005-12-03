@@ -27,6 +27,8 @@
 include("./include/auth.php");
 include_once("./lib/utility.php");
 include_once("./lib/api_data_source.php");
+include_once("./lib/api_tree.php");
+include_once("./lib/html_tree.php");
 include_once("./lib/api_graph.php");
 include_once("./lib/snmp.php");
 include_once("./lib/data_query.php");
@@ -88,6 +90,23 @@ switch ($_REQUEST["action"]) {
 
 		include_once("./include/bottom_footer.php");
 		break;
+}
+
+/* --------------------------
+    Global Form Functions
+   -------------------------- */
+
+function add_tree_names_to_actions_array() {
+	global $device_actions;
+
+	/* add a list of tree names to the actions dropdown */
+	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
+
+	if (sizeof($trees) > 0) {
+	foreach ($trees as $tree) {
+		$device_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
+	}
+	}
 }
 
 /* --------------------------
@@ -251,6 +270,16 @@ function form_actions() {
 
 				api_device_remove($selected_items[$i]);
 			}
+		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				input_validate_input_number(get_request_var_post("tree_id"));
+				input_validate_input_number(get_request_var_post("tree_item_id"));
+				/* ==================================================== */
+
+				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 0, 0, false);
+			}
 		}
 
 		header("Location: host.php");
@@ -275,6 +304,9 @@ function form_actions() {
 	}
 
 	include_once("./include/top_header.php");
+
+	/* add a list of tree names to the actions dropdown */
+	add_tree_names_to_actions_array();
 
 	html_start_box("<strong>" . $device_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
@@ -341,6 +373,17 @@ function form_actions() {
 					print "</td></tr>
 				</td>
 			</tr>\n
+			";
+	}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following hosts will be placed under the branch selected
+					below.</p>
+					<p>$host_list</p>
+					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+				</td>
+			</tr>\n
+			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 			";
 	}
 
@@ -794,6 +837,9 @@ function host() {
 		print "<tr><td><em>No Hosts</em></td></tr>";
 	}
 	html_end_box(false);
+
+	/* add a list of tree names to the actions dropdown */
+	add_tree_names_to_actions_array();
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);
