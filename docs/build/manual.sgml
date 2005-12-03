@@ -1388,7 +1388,7 @@ $database_password = "cacti";</userinput></screen>
 						</row>
 						<row>
 							<entry>query-&gt;index_order</entry>
-							<entry>As of version 0.8.6, Cacti will attempt to find the best field to index off of based on whether each row in the query is unique and non-null. If specified, Cacti will perform this check on the fields listed here in the order specified. Only input fields can be specified and multiple fields should be delimited with a comma.</entry>
+							<entry>As of version 0.8.6, Cacti will attempt to find the best field to index off of based on whether each row in the query is unique and non-null. If specified, Cacti will perform this check on the fields listed here in the order specified. Only input fields can be specified and multiple fields should be delimited with a colon.</entry>
 						</row>
 						<row>
 							<entry>query-&gt;index_order_type</entry>

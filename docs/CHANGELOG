@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0000557: Changing filter value resulted in invalid page/row selection.
 -bug#0000572: Added $database_port to config.php
 -bug#0000570: Grammer edit for text about already up-to-date
+-bug#0000582: Ampersand present in graph template graph name causes xml import to fail
 -bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
 -bug#0000596: Proper excape of ' in graph titles
 -bug#0000599: add filtering to graphs and data templates
@@ -12,7 +13,7 @@ Cacti CHANGELOG
 -bug#0000615: Minor host.php tweak
 -bug#0000619: Host Templates not alphabetized on device creation form
 -bug#0000625: Cannot modify/create a user with a period in the username
--bug#0000582: Ampersand present in graph template graph name causes xml import to fail
+-bug#0000631: Invalid information concerning delimiter for index_order in SNMP Query documentation
 -bug: Stop MySQL connect messages from appearing in user interface
 -bug: Allow primary keys other than "ID" from saving properly in function sql_save
 -bug: Allow primary keys other than "ID" to be handled properly using the html code
