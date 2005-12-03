@@ -29,11 +29,13 @@ function &import_xml_data(&$xml_data) {
 
 	include_once($config["library_path"] . "/xml.php");
 
+	$info_array = array();
+
 	$xml_array = xml2array($xml_data);
 
 	if (sizeof($xml_array) == 0) {
 		raise_message(7); /* xml parse error */
-		return;
+		return $info_array;
 	}
 
 	while (list($hash, $hash_array) = each($xml_array)) {
@@ -41,7 +43,7 @@ function &import_xml_data(&$xml_data) {
 		$parsed_hash = parse_xml_hash($hash);
 
 		/* invalid/wrong hash */
-		if ($parsed_hash == false) { return ; }
+		if ($parsed_hash == false) { return $info_array; }
 
 		if (isset($dep_hash_cache{$parsed_hash["type"]})) {
 			array_push($dep_hash_cache{$parsed_hash["type"]}, $parsed_hash);

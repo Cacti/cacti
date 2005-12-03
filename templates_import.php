@@ -62,7 +62,11 @@ function form_save() {
 			header("Location: templates_import.php"); exit;
 		}
 
-		$_SESSION["import_debug_info"] = import_xml_data($xml_data);
+		/* obtain debug information if it's set */
+		$debug_data = import_xml_data($xml_data);
+		if(sizeof($debug_data) > 0) {
+			$_SESSION["import_debug_info"] = $debug_data;
+		}
 
 		header("Location: templates_import.php");
 	}

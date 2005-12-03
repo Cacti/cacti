@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6h
+-bug#0000528: Allow template_import.php to return without error when xml file is invalid in PHP 4.4 and above.
 -bug#0000557: Changing filter value resulted in invalid page/row selection.
 -bug#0000572: Added $database_port to config.php
 -bug#0000570: Grammer edit for text about already up-to-date
