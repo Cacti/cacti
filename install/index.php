@@ -51,7 +51,10 @@ if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>You have created a new database, but have not yet imported
 		the 'cacti.sql' file. At the command line, execute the following to continue:</p>
-		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>";
+		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>
+		<p>This error may also be generated if the cacti database user does not have correct permissions on the cacti database.  
+		Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX 
+		on the cacti database.</p>";
 	exit;
 }
 
