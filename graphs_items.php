@@ -190,34 +190,37 @@ function item_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
 	input_validate_input_number(get_request_var_request("local_graph_id"));
-	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("ds_host_id"));
+	input_validate_input_number(get_request_var_request("ds_data_template_id"));
 	/* ==================================================== */
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_ds_host_id");
-
-		unset($_REQUEST["host_id"]);
-	}
-
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("filter", "sess_ds_filter", "");
-	load_current_session_value("host_id", "sess_ds_host_id", "-1");
+	load_current_session_value("local_graph_id", "sess_local_graph_id", "");
+	load_current_session_value("ds_host_id", "sess_ds_host_id", "-1");
+	load_current_session_value("ds_data_template_id", "sess_data_template_id", "-1");
 
-	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
+	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["ds_host_id"]);
 
-	html_start_box("<strong>Data Source by Host</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_graph_items_filter_table.php");
 
 	html_end_box();
 
-	if ($_REQUEST["host_id"] == "-1") {
+	if ($_REQUEST["ds_host_id"] == "-1") {
 		$sql_where = "";
-	}elseif ($_REQUEST["host_id"] == "0") {
+	}elseif ($_REQUEST["ds_host_id"] == "0") {
 		$sql_where = " and data_local.host_id=0";
-	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where = " and data_local.host_id=" . $_REQUEST["host_id"];
+	}elseif (!empty($_REQUEST["ds_host_id"])) {
+		$sql_where = " and data_local.host_id=" . $_REQUEST["ds_host_id"];
+	}
+
+	if ($_REQUEST["ds_data_template_id"] == "-1") {
+		$sql_where .= "";
+	}elseif ($_REQUEST["ds_data_template_id"] == "0") {
+		$sql_where .= " and data_local.data_template_id=0";
+	}elseif (!empty($_REQUEST["ds_data_template_id"])) {
+		$sql_where .= " and data_local.data_template_id=" . $_REQUEST["ds_data_template_id"];
 	}
 
 	if (!empty($_REQUEST["id"])) {
@@ -247,7 +250,7 @@ function item_edit() {
 			left join host on (data_local.host_id=host.id)
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id
-			" . (((!empty($host_id)) || (!empty($_REQUEST["host_id"]))) ? (!empty($host_id) ? " and data_local.host_id=$host_id" : " and data_local.host_id=" . $_REQUEST["host_id"]) : "") . "
+			$sql_where
 			order by name";
 	}
 
@@ -258,7 +261,6 @@ function item_edit() {
 
 		$form_array[$field_name]["value"] = (isset($template_item) ? $template_item[$field_name] : "");
 		$form_array[$field_name]["form_id"] = (isset($template_item) ? $template_item["id"] : "0");
-
 	}
 
 	draw_edit_form(
