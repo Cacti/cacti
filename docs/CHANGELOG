@@ -31,11 +31,13 @@ Cacti CHANGELOG
 -bug: Correct issue where either AREA or LINEx without color were causing RRD_NL without any elements in rrdtool_graph.
 -bug: Fix ordering issues with Data Input methods and Graph Creation for Custom Data
 -bug: Allow hostname to include TCP: or UDP: an keep tcp, icmp, udp ping functional
+-bug: Better error reporting for Clear Cacti Log File in Utilties
 -feature: Add IPv6 support to lib/ping.php
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
 -feature: Added support for new 95th Percentile Variables: aggregate, aggregate_max, aggregate_sum
 -feature: Allow additional filtering for graph item adding while creating graphs
+-feature: Command line script to copy users
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.
