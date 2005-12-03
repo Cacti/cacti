@@ -39,12 +39,12 @@ function &graph_template_to_xml($graph_template_id) {
 		return "Invalid graph template.";
 	}
 
-	$xml_text .= "<hash_" . $hash["graph_template"] . ">\n\t<name>" . $graph_template["name"] . "</name>\n\t<graph>\n";
+	$xml_text .= "<hash_" . $hash["graph_template"] . ">\n\t<name>" . xml_character_encode($graph_template["name"]) . "</name>\n\t<graph>\n";
 
 	/* XML Branch: <graph> */
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
-		$xml_text .= "\t\t<t_$field_name>" . $graph_template_graph{"t_" . $field_name} . "</t_$field_name>\n";
+		$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($graph_template_graph{"t_" . $field_name}) . "</t_$field_name>\n";
 		$xml_text .= "\t\t<$field_name>" . xml_character_encode($graph_template_graph{$field_name}) . "</$field_name>\n";
 	}
 
@@ -148,13 +148,13 @@ function &data_template_to_xml($data_template_id) {
 		return "Invalid data template.";
 	}
 
-	$xml_text .= "<hash_" . $hash["data_template"] . ">\n\t<name>" . $data_template["name"] . "</name>\n\t<ds>\n";
+	$xml_text .= "<hash_" . $hash["data_template"] . ">\n\t<name>" . xml_character_encode($data_template["name"]) . "</name>\n\t<ds>\n";
 
 	/* XML Branch: <ds> */
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		if (isset($data_template_data{"t_" . $field_name})) {
-			$xml_text .= "\t\t<t_$field_name>" . $data_template_data{"t_" . $field_name} . "</t_$field_name>\n";
+			$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($data_template_data{"t_" . $field_name}) . "</t_$field_name>\n";
 		}
 
 		if (($field_name == "data_input_id") && (!empty($data_template_data{$field_name}))) {
@@ -198,7 +198,7 @@ function &data_template_to_xml($data_template_id) {
 		reset($struct_data_source_item);
 		while (list($field_name, $field_array) = each($struct_data_source_item)) {
 			if (isset($item{"t_" . $field_name})) {
-				$xml_text .= "\t\t\t<t_$field_name>" . $item{"t_" . $field_name} . "</t_$field_name>\n";
+				$xml_text .= "\t\t\t<t_$field_name>" . xml_character_encode($item{"t_" . $field_name}) . "</t_$field_name>\n";
 			}
 
 			if (($field_name == "data_input_field_id") && (!empty($item{$field_name}))) {
@@ -228,7 +228,7 @@ function &data_template_to_xml($data_template_id) {
 		$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
 
 		$xml_text .= "\t\t\t<data_input_field_id>hash_" . get_hash_version("data_input_field") . get_hash_data_input($item{"data_input_field_id"}, "data_input_field") . "</data_input_field_id>\n";
-		$xml_text .= "\t\t\t<t_value>" . $item{"t_value"} . "</t_value>\n";
+		$xml_text .= "\t\t\t<t_value>" . xml_character_encode($item{"t_value"}) . "</t_value>\n";
 		$xml_text .= "\t\t\t<value>" . xml_character_encode($item{"value"}) . "</value>\n";
 
 		$xml_text .= "\t\t</item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
@@ -586,7 +586,7 @@ function &data_query_to_xml($data_query_id) {
 
 			$xml_text .= "\t\t\t\t<hash_" . $hash["data_query_sv_graph"] . ">\n";
 
-			$xml_text .= "\t\t\t\t\t<field_name>" . $item2{"field_name"} . "</field_name>\n";
+			$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{"field_name"}) . "</field_name>\n";
 			$xml_text .= "\t\t\t\t\t<sequence>" . $item2{"sequence"} . "</sequence>\n";
 			$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{"text"}) . "</text>\n";
 
@@ -609,7 +609,7 @@ function &data_query_to_xml($data_query_id) {
 
 			$xml_text .= "\t\t\t\t<hash_" . $hash["data_query_sv_data_source"] . ">\n";
 
-			$xml_text .= "\t\t\t\t\t<field_name>" . $item2{"field_name"} . "</field_name>\n";
+			$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{"field_name"}) . "</field_name>\n";
 			$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version("data_template") . get_hash_data_template($item2{"data_template_id"}) . "</data_template_id>\n";
 			$xml_text .= "\t\t\t\t\t<sequence>" . $item2{"sequence"} . "</sequence>\n";
 			$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{"text"}) . "</text>\n";
@@ -813,7 +813,14 @@ function get_item_xml($type, $id, $follow_deps) {
 }
 
 function xml_character_encode($text) {
-	return str_replace("&", "&amp;", htmlentities($text, ENT_NOQUOTES));
+
+	$text = str_replace("&", "&amp;", $text);
+	$text = str_replace(">", "&gt;", $text);
+	$text = str_replace("<", "&lt;", $text);
+	$text = str_replace("\"", "&#34", $text);
+	$text = str_replace("\'", "&#39", $text);
+
+	return $text;
 }
 
 ?>
