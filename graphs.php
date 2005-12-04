@@ -935,9 +935,13 @@ function graph_edit() {
 				<?php
 				if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
 					$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
+					$graph_data_array["print_source"] = 1;
 					?>
 					<td>
+						<span class="textInfo">RRDTool Command:</span><br>
+						<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
 						<span class="textInfo">RRDTool Says:</span><br>
+						<?php unset($graph_data_array["print_source"]);?>
 						<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
 					</td>
 					<?php
