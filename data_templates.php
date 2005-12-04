@@ -682,7 +682,7 @@ function template() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 				?>
 				<td>
-					<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
+					<a class="linkEditMain" href="data_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template["name"]);?></a>
 				</td>
 				<td>
 					<?php print (empty($template["data_input_method"]) ? "<em>None</em>": $template["data_input_method"]);?>

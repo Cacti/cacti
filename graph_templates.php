@@ -483,7 +483,7 @@ function template() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 				?>
 			<td>
-				<a class="linkEditMain" href="graph_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print $template["name"];?></a>
+				<a class="linkEditMain" href="graph_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template["name"]);?></a>
 			</td>
 			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
