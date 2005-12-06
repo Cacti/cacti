@@ -66,6 +66,12 @@ $settings = array(
 			"method" => "textbox",
 			"max_length" => "255"
 			),
+		"path_snmpgetnext" => array(
+			"friendly_name" => "snmpgetnext Binary Path",
+			"description" => "The path to your snmpgetnext binary.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
 		"path_rrdtool" => array(
 			"friendly_name" => "RRDTool Binary Path",
 			"description" => "The path to the rrdtool binary.",

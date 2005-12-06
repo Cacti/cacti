@@ -52,8 +52,8 @@ if ($old_cacti_version == $config["cacti_version"]) {
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>You have created a new database, but have not yet imported
 		the 'cacti.sql' file. At the command line, execute the following to continue:</p>
 		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>
-		<p>This error may also be generated if the cacti database user does not have correct permissions on the cacti database.  
-		Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX 
+		<p>This error may also be generated if the cacti database user does not have correct permissions on the cacti database.
+		Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX
 		on the cacti database.</p>";
 	exit;
 }
@@ -157,7 +157,7 @@ if ($config["cacti_server_os"] == "unix") {
 if ($config["cacti_server_os"] == "unix") {
 	$input["path_snmpbulkwalk"] = $settings["path"]["path_snmpbulkwalk"];
 
-	$which_snmpget = find_best_path("snmpbulkwalk");
+	$which_snmpbulkwalk = find_best_path("snmpbulkwalk");
 
 	if (config_value_exists("path_snmpbulkwalk")) {
 		$input["path_snmpbulkwalk"]["default"] = read_config_option("path_snmpbulkwalk");
@@ -165,6 +165,21 @@ if ($config["cacti_server_os"] == "unix") {
 		$input["path_snmpbulkwalk"]["default"] = $which_snmpbulkwalk;
 	}else{
 		$input["path_snmpbulkwalk"]["default"] = "/usr/local/bin/snmpbulkwalk";
+	}
+}
+
+/* snmpgetnext Binary Path */
+if ($config["cacti_server_os"] == "unix") {
+	$input["path_snmpgetnext"] = $settings["path"]["path_snmpgetnext"];
+
+	$which_snmpgetnext = find_best_path("snmpgetnext");
+
+	if (config_value_exists("path_snmpgetnext")) {
+		$input["path_snmpgetnext"]["default"] = read_config_option("path_snmpgetnext");
+	}else if (!empty($which_snmpgetnext)) {
+		$input["path_snmpgetnext"]["default"] = $which_snmpgetnext;
+	}else{
+		$input["path_snmpgetnext"]["default"] = "/usr/local/bin/snmpgetnext";
 	}
 }
 
