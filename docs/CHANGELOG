@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.6h
 -bug#0000383: Add more verbose rrdtool debug output from Graph Management
+-bug#0000522: Take 'oid_index_parse' into consideration when handling 'OID/REGEXP:' data query fields
 -bug#0000528: Allow template_import.php to return without error when xml file is invalid in PHP 4.4 and above.
 -bug#0000557: Changing filter value resulted in invalid page/row selection.
 -bug#0000572: Added $database_port to config.php
@@ -13,7 +14,7 @@ Cacti CHANGELOG
 -bug#0000599: Add filtering to graphs and data templates
 -bug#0000601: Add ability to add multiple hosts to a tree
 -bug#0000603: user_log.ip field not ipv6 compatible
--bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement 
+-bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement
 -bug#0000615: Minor host.php tweak
 -bug#0000619: Host Templates not alphabetized on device creation form
 -bug#0000625: Cannot modify/create a user with a period in the username
