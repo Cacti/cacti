@@ -234,7 +234,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				for ($i=0; $i<sizeof($snmp_data); $i++) {
 					$value = ereg_replace(str_replace("OID/REGEXP:", "", $field_array["source"]), "\\1", $snmp_data[$i]["oid"]);
 
-					if ((isset($snmp_data[$i]["value"])) && ($snmp_data[$i]["value"] != "")) {
+					if (isset($snmp_queries["oid_index_parse"])) {
+						$snmp_index = ereg_replace($index_parse_regexp, "\\1", $snmp_data[$i]["oid"]);
+					}else if ((isset($snmp_data[$i]["value"])) && ($snmp_data[$i]["value"] != "")) {
 						$snmp_index = $snmp_data[$i]["value"];
 					}
 
