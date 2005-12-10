@@ -24,7 +24,6 @@
  +-------------------------------------------------------------------------+
 */
 
-
 /* exec_poll - executes a command and returns its output
    @arg $command - the command to execute
    @returns - the output of $command after execution */
