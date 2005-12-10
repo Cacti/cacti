@@ -3510,20 +3510,20 @@ disk /</userinput></screen>
 					</para>
 				</example>
 			</sect2>
-			<sect2 id="variable_95th_percentile">
-				<title>95th Percentile</title>
-				<screen><userinput>|95:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate):[0-9]|</userinput></screen>
+			<sect2 id="variable_Nth_percentile">
+				<title>Nth Percentile</title>
+				<screen><userinput>|[0-9]:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate):[0-9]|</userinput></screen>
 				<para>
-					95th percentile is often used by hosting providers to bill customers based on their peak traffic usage while
+					Nth percentile is often used by hosting providers to bill customers based on their peak traffic usage while
 					ignoring their top 5 percent. This way if a customer has a fairly consistent traffic pattern and decides to
-					download a huge file one day, the large spike will be ignored.
+					download a huge file one day, the large spike will be ignored.  Common Nth percentile is 95.
 				</para>
 				<para>
-					In Cacti, 95th percentile works just like any other graph variable. To use this variable you must give it four
+					In Cacti, Nth percentile works just like any other graph variable. To use this variable you must give it five
 					arguments:
 				</para>
 				<table frame='all'>
-					<title>95th Percentile Argument Description</title>
+					<title>Nth Percentile Argument Description</title>
 					<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 						<colspec colnum="1">
 						<colspec colwidth="3*" colnum="2">
@@ -3535,16 +3535,20 @@ disk /</userinput></screen>
 						</thead>
 						<tbody>
 							<row>
+								<entry><function>Nth</function></entry>
+								<entry>The first argument is a number between 1 and 99.  This number represents the Nth percentile that you would like to calculate.</entry>
+							</row>
+							<row>
 								<entry><function>(bits|bytes)</function></entry>
-								<entry>Choose whether you want to represent your 95th percentile in bits or bytes. The only valid values for this field are 'bits' and 'bytes'.</entry>
+								<entry>Choose whether you want to represent your Nth percentile in bits or bytes. The only valid values for this field are 'bits' and 'bytes'.</entry>
 							</row>
 							<row>
 								<entry><function>[0-9]</function></entry>
-								<entry>This field determines the power of 10 divisor that will be applied to your 95th percentile number. Enter '0' to leave the number alone, '3' for kilo or '6' for mega, etc.</entry>
+								<entry>This field determines the power of 10 divisor that will be applied to your Nth percentile number. Enter '0' to leave the number alone, '3' for kilo or '6' for mega, etc.</entry>
 							</row>
 							<row>
 								<entry><function>( current | total | max | total_peak | all_max_current | all_max_peak | aggregate_max | aggregate_sum | aggregate )</function></entry>
-								<entry>95th Percentile Type - Refer to 95th Types</entry>
+								<entry>Nth Percentile Type - Refer to Nth Types</entry>
 							</row>
 							<row>
 								<entry><function>[0-9]</function></entry>
@@ -3554,7 +3558,7 @@ disk /</userinput></screen>
 					</tgroup>
 				</table>
 				<table frame='all'>
-					<title>95th Percentile Types</title>
+					<title>Nth Percentile Types</title>
 					<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 						<colspec colnum="1">
 						<colspec colwidth="3*" colnum="2">
@@ -3567,48 +3571,48 @@ disk /</userinput></screen>
 						<tbody>
 							<row>
 								<entry><function>current</function></entry>
-								<entry>Calculates the 95th percentile based off the selected data source on the graph item wich the variable is used.   This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
+								<entry>Calculates the Nth percentile based off the selected data source on the graph item wich the variable is used.   This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
 							</row>
 							<row>
 								<entry><function>total</function></entry>
-								<entry>Calculates the 95th percentile based off the selected data source on the graph item wich the variable is used.  But unlike current, this function totals the 95th percentile results of all same named data source names on the graph.  Example, all traffic_in would have their 95th percentile calculated and then totaled.  This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
+								<entry>Calculates the Nth percentile based off the selected data source on the graph item wich the variable is used.  But unlike current, this function totals the Nth percentile results of all same named data source names on the graph.  Example, all traffic_in would have their Nth percentile calculated and then totaled.  This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
 							</row>
 							<row>
 								<entry><function>max</function></entry>
-								<entry>Calculates the 95th percentile based off the selected data source on the graph item which the variable is used, but it is important to note that it selects the higher of the values for each row in data source and then uses the resulting set to calculate the 95th percentile.  Example, you have selected a interface data source for traffic_in, this will evaluate traffic_out and traffic_in for that selected data source (rrdtool file) and select the higher of the two values for each row of data.  The resulting max values are used to calculate the 95th percentile value.  This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
+								<entry>Calculates the Nth percentile based off the selected data source on the graph item which the variable is used, but it is important to note that it selects the higher of the values for each row in data source and then uses the resulting set to calculate the Nth percentile.  Example, you have selected a interface data source for traffic_in, this will evaluate traffic_out and traffic_in for that selected data source (rrdtool file) and select the higher of the two values for each row of data.  The resulting max values are used to calculate the Nth percentile value.  This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
 							</row>
 							<row>
 								<entry><function>total_peak</function></entry>
-								<entry>Calculates the 95th percentile based on the max for each data source defined on the graph.  Example, the max is taken for each data source defined on the graph, but it's the max of traffic_in or traffic_out for that data source (rrdtool file).  The resulting max values are summed and returned.</entry>
+								<entry>Calculates the Nth percentile based on the max for each data source defined on the graph.  Example, the max is taken for each data source defined on the graph, but it's the max of traffic_in or traffic_out for that data source (rrdtool file).  The resulting max values are summed and returned.</entry>
 							</row>
 							<row>
 								<entry><function>all_max_current</function></entry>
-								<entry>Calculates the 95th percentile based off the selected data source on the graph item which the variable is used, but it only selects the highest (max) value of all the data source items on the graph. Example, there are 3 data sources defined on the graph, the selected data source is traffic_in, all data sources for traffic_in will be compared against each other and the highest 95th value of all graph items will be selected as the result.  This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
+								<entry>Calculates the Nth percentile based off the selected data source on the graph item which the variable is used, but it only selects the highest (max) value of all the data source items on the graph. Example, there are 3 data sources defined on the graph, the selected data source is traffic_in, all data sources for traffic_in will be compared against each other and the highest Nth value of all graph items will be selected as the result.  This type requires a selected Data Source Item in the graph item in which it is defined.</entry>
 							</row>
 							<row>
 								<entry><function>all_max_peak</function></entry>
-								<entry>Calculates the 95th percentile by selecting the highest (max) calculated max 95th percentile value for each data source (rrdtool file) selected on the graph.  Example, 3 data sources are defined on the graph, for each data source, the max 95th percentile is calculated, and out of the resulting set of values, the highest value is selected and returned.</entry>
+								<entry>Calculates the Nth percentile by selecting the highest (max) calculated max Nth percentile value for each data source (rrdtool file) selected on the graph.  Example, 3 data sources are defined on the graph, for each data source, the max Nth percentile is calculated, and out of the resulting set of values, the highest value is selected and returned.</entry>
 							</row>
 							<row>
 								<entry><function>aggregate_max</function></entry>
-								<entry>Calculates the 95th percentile by selecting the highest value for each summed value of like data sources and selecting the maximum value of that set to calculate the 95th percentile value.  Example, you have a graph with 5 traffic_in and 18 traffic_out data sources.  The traffic_in rows are summed together, then the traffic_out rows are summed together, then for each row, the higher of the 2 values is selected.  The 95th percentile is calculated from the resulting maximum values.</entry>
+								<entry>Calculates the Nth percentile by selecting the highest value for each summed value of like data sources and selecting the maximum value of that set to calculate the Nth percentile value.  Example, you have a graph with 5 traffic_in and 18 traffic_out data sources.  The traffic_in rows are summed together, then the traffic_out rows are summed together, then for each row, the higher of the 2 values is selected.  The Nth percentile is calculated from the resulting maximum values.</entry>
 							</row>
 							<row>
 								<entry><function>aggregate_sum</function></entry>
-								<entry>Calculates the 95th percentile by summing all data sources on the graph row for row and calculates the 95th value on the resulting summed data.  Example, you have a graph with 4 traffic_in and 3 traffic_out data sources defined.  All the defined traffic_in and traffic_out are summed together and then the 95th percentile value is calculated from that set.</entry>
+								<entry>Calculates the Nth percentile by summing all data sources on the graph row for row and calculates the Nth value on the resulting summed data.  Example, you have a graph with 4 traffic_in and 3 traffic_out data sources defined.  All the defined traffic_in and traffic_out are summed together and then the Nth percentile value is calculated from that set.</entry>
 							</row>
 							<row>
 								<entry><function>aggregate</function></entry>
-								<entry>Calculates the 95th percentile by summing like data source names row for row from each data source defined on the graph and then returning the highest 95th percent value calculated for like data source names.  Example, you have a graph with 3 traffic_out and 5 traffic_in data sources defined.  The traffic_in and traffic_out are summed then the 95th value is calculated and the higher of the 2 values is returned as the variable.</entry>
+								<entry>Calculates the Nth percentile by summing like data source names row for row from each data source defined on the graph and then returning the highest Nth percent value calculated for like data source names.  Example, you have a graph with 3 traffic_out and 5 traffic_in data sources defined.  The traffic_in and traffic_out are summed then the Nth value is calculated and the higher of the 2 values is returned as the variable.</entry>
 							</row>
 						</tbody>
 					</tgroup>
 				</table>
-				<note><title>Concerning aggregate 95th percentile functions and rra definitions</title>
-				<para>All data sources used in a graph MUST have the same rra definitions.  If the number of rows do not match when calculations are attempted, the results may produce errors and invalid results.</para>
+				<note><title>Concerning aggregate Nth percentile functions and rra definitions</title>
+				<para>All data sources used in a graph MUST have the same rra definitions.  If the number of rows do not match when calculations are attempted, the results may produce errors and invalid results.  Please also be aware the aggregate functions take more memory and processor power when used.  Recommended minimum of 64 megs memory limit for php when querying large ranges or graphs with a large ammount of aggregated data sources.</para>
 				</note>
 				<example>
-					<title>Output in the following format: 42.58 mbit</title>
+					<title>Output in the following format, for 95th percentile: 42.58 mbit</title>
 					<para>
 						<userinput>|95:bits:6:max:2|</userinput>
 					</para>

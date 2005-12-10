@@ -415,7 +415,7 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 	if (isset($fetch_array["data_source_names"])) {
 		$next_index = count($fetch_array["data_source_names"]);
 
-		$fetch_array["data_source_names"][$next_index] = "ninety_fifth_percentile_maximum";
+		$fetch_array["data_source_names"][$next_index] = "nth_percentile_maximum";
 
 		/* calculate the max for each row */
 		for ($i=0; $i<count($max_array); $i++) {
@@ -825,10 +825,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 				}
 
-				/* 95th percentile */
-				if (preg_match_all("/\|95:(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
+				/* Nth percentile */
+				if (preg_match_all("/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate)(:(\d))?\|/", $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
-						$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_ninety_fifth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
+						$graph_variables[$field_name][$graph_item_id] = str_replace($match[0], variable_nth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end), $graph_variables[$field_name][$graph_item_id]);
 					}
 				}
 

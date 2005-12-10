@@ -38,7 +38,8 @@ Cacti CHANGELOG
 -feature: Add IPv6 support to lib/ping.php
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
--feature: Added support for new 95th Percentile Variables: aggregate, aggregate_max, aggregate_sum
+-feature; Now have support for Nth percentile functions, not just 95th.
+-feature: Added support for new Nth Percentile Variables: aggregate, aggregate_max, aggregate_sum
 -feature: Allow additional filtering for graph item adding while creating graphs
 -feature: Command line script to copy users
 
