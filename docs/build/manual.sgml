@@ -216,48 +216,48 @@ $database_password = "cacti";</userinput></screen>
 			<title>Software Compoents Required</title>
 			<listitem>
 				<para>
-					(Optional) <b>Apache</b> - This software is optional if running Windows Internet Information Server.
+					(Optional) Apache> - This software is optional if running Windows Internet Information Server.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<b>Cacti</b> - Install from the zip distribution and intstall in the web root or your choice.
+					Cacti> - Install from the zip distribution and intstall in the web root or your choice.
 					Many choose to install into a "Cacti" sub folder.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<b>Cactid</b> - Install from the zip distribution into the <filename>c:\cacti</filename>
+					Cactid - Install from the zip distribution into the <filename>c:\cacti</filename>
 					directory.  Make sure your <filename>cactid.conf.dist</filename> is located in that directory as well.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<b>RRDTool</b> - Install from the Cacti website.  Install it into the <filename>c:\cacti</filename> directory.
+					RRDTool - Install from the Cacti website.  Install it into the <filename>c:\cacti</filename> directory.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<b>PHP 4.3.6+ or 5.x</b> - Install into the <filename>c:\php</filename> folder.  If you choose
+					PHP 4.3.6+ or 5.x - Install into the <filename>c:\php</filename> folder.  If you choose
 					to install into <filename>c:\Program Files\php</filename>, you will have to use 8.3 filenames
 					to reference it's binaries in Cacti.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<b>MySQL 4.x or MySQL 5.x</b> - Install into the default location.  This is typically
+					MySQL 4.x or MySQL 5.x - Install into the default location.  This is typically
 					<filename>c:\Program Files\MySQL\MySQL Server X.XX</filename>.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					(Optional) <b>Cygwin</b> - Download and execute <filename>setup.exe</filename> from the Cygwin
+					(Optional) Cygwin - Download and execute <filename>setup.exe</filename> from the Cygwin
 					website.  Keep the <filename>setup.exe</filename> file for later use.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					(Optional) <b>Net-SNMP</b> - Install to the <filename>c:\net-snmp</filename> directory.  If you
+					(Optional) Net-SNMP - Install to the <filename>c:\net-snmp</filename> directory.  If you
 					choose to use <filename>c:\Program Files\net-snmp</filename> you will have tu use 8.3 filenames
 					to reference it's binaries in Cacti.
 				</para>
@@ -338,7 +338,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Give the user who will be running the scheduled task, <b>modify</b> rights to the <filename>.index</filename>
+					Give the user who will be running the scheduled task, modify rights to the <filename>.index</filename>
 					file in the location pointed to by the <userinput>MIBDIRS</userinput> Windows System environment variable.
 				</para>
 			</listitem>
@@ -389,7 +389,7 @@ $database_password = "cacti";</userinput></screen>
 			<title>Configure the Webserver (IIS)</title>
 			<listitem>
 				<para>
-					Start the Internet Information Services (IIS) Manager, right click on the <guilabel>Default Web Site</guilabel> (in most cases) and select <giulabel>Properties</guilabel>.
+					Start the Internet Information Services (IIS) Manager, right click on the <guilabel>Default Web Site</guilabel> (in most cases) and select <guilabel>Properties</guilabel>.
 				</para>
 			</listitem>
 			<listitem>
@@ -414,20 +414,20 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					If using IIS6, goto <guilable>Web Service Extensions</guilabel> and add a new Web Service Extension.
+					If using IIS6, goto <guilabel>Web Service Extensions</guilabel> and add a new Web Service Extension.
 					Name the extension "php", and click <guilabel>Add</guilabel> and browse to the <filename>php4isapi.dll</filename>
 					or <filename>php5isapi.dll</filename> file, enable <guilabel>Set Extension</guilabel> status to Enable, and click OK.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					Give the IUSR_XXXX and IIS_WPG users <b>read & execute</b> permissions to the file <filename>%windir%\system32\cmd.exe</filename>.
+					Give the IUSR_XXXX and IIS_WPG users read & execute permissions to the file <filename>%windir%\system32\cmd.exe</filename>.
 					They will also need read permissions on <filename>cacti_web_root/cacti</filename> and it's subfolders.
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					If using IIS6, give the IIS_WPG user <b>modify</b> permissions to the folders <filename>cacti_web_root/cacti/log</filename>
+					If using IIS6, give the IIS_WPG user modify permissions to the folders <filename>cacti_web_root/cacti/log</filename>
 					and <filename>cacti_web_root/cacti/rrd</filename>.
 				</para>
 			</listitem>
@@ -553,7 +553,7 @@ $database_password = "cacti";</userinput></screen>
 					the Start Parameter field.  Start it again once it has been added.
 				</para>
 				<screen>
-					<userinput>--old-password</password>
+					<userinput>--old-password</userinput>
 				</screen>
 				<para>
 					You will also need to update the cactiuser account with the old password style.
@@ -683,9 +683,9 @@ $database_password = "cacti";</userinput></screen>
 				<para>
                     Log into the user account you'll be using  for the scheduled task and  verify starting a Cacti
 					polling cycle works.  Do this by running the following from the command prompt:
-				<para>
+				</para>
 				<screen>
-					<userinput>php c:/cacti_web_root/cacti/poller.php</userinput)
+					<userinput>php c:/cacti_web_root/cacti/poller.php</userinput>
 				</screen>
 				<para>
 					The output should look something like the following:
