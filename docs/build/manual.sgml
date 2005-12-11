@@ -3515,8 +3515,9 @@ disk /</userinput></screen>
 				<screen><userinput>|[0-9]:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate):[0-9]|</userinput></screen>
 				<para>
 					Nth percentile is often used by hosting providers to bill customers based on their peak traffic usage while
-					ignoring their top 5 percent. This way if a customer has a fairly consistent traffic pattern and decides to
-					download a huge file one day, the large spike will be ignored.  Common Nth percentile is 95.
+					ignoring their top (100 - Nth) percent. This way if a customer has a fairly consistent traffic pattern and 
+					decides to download a huge file one day, the large spike will be ignored.  Common Nth percentile is 95, which 
+					would cut off the top 5% of the traffic.
 				</para>
 				<para>
 					In Cacti, Nth percentile works just like any other graph variable. To use this variable you must give it five
@@ -3535,7 +3536,7 @@ disk /</userinput></screen>
 						</thead>
 						<tbody>
 							<row>
-								<entry><function>Nth</function></entry>
+								<entry><function>[0-9]</function></entry>
 								<entry>The first argument is a number between 1 and 99.  This number represents the Nth percentile that you would like to calculate.</entry>
 							</row>
 							<row>
