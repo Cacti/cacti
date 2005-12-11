@@ -1846,10 +1846,10 @@ CREATE TABLE host (
   status_fail_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_rec_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_last_error varchar(50) default '',
-  min_time decimal(7,5) default '9.99999',
-  max_time decimal(7,5) default '0.00000',
-  cur_time decimal(7,5) default '0.00000',
-  avg_time decimal(7,5) default '0.00000',
+  min_time decimal(10,5) default '9.99999',
+  max_time decimal(10,5) default '0.00000',
+  cur_time decimal(10,5) default '0.00000',
+  avg_time decimal(10,5) default '0.00000',
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
   availability decimal(7,5) NOT NULL default '100.00000',
@@ -2572,7 +2572,7 @@ CREATE TABLE user_log (
   user_id mediumint(8) NOT NULL default '0',
   time datetime NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
-  ip varchar(15) NOT NULL default '',
+  ip varchar(40) NOT NULL default '',
   PRIMARY KEY  (username,user_id,time)
 ) TYPE=MyISAM;
 
