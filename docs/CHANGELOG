@@ -20,24 +20,22 @@ Cacti CHANGELOG
 -bug#0000625: Cannot modify/create a user with a period in the username
 -bug#0000631: Invalid information concerning delimiter for index_order in SNMP Query documentation
 -bug: Stop MySQL connect messages from appearing in user interface
--bug: Allow primary keys other than "ID" from saving properly in function sql_save
--bug: Allow primary keys other than "ID" to be handled properly using the html code
--bug: Make PHP timeout more rapidly, allow more time for concurrent PHP poller processes to start
+-bug: Allow primary keys other than "ID" to work in sql_save and in HTML code
 -bug: Save statistics even when the poller times out.
 -bug: Only call poller_commands.php or poller_export.php if they require calling.
 -bug: Incorporate a timeout to ss_fping.php so that a host that takes to long to finish at least returns data
 -bug: Correct the display of custom data in data input methods to follow the proper order
 -bug: Change the default behavior of ping.php to mark a host as up if either snmp or ping are successful.
 -bug: Don't allow graph_export to delete your web site.
--bug: Correct issue where snmp was not returning hex data and some text data.
+-bug: Correct issue where snmp was not returning both hex and text data under certain circumstances.
 -bug: Prevent a never ending table lock in lib/tree.php
 -bug: Correct issue where either AREA or LINEx without color were causing RRD_NL without any elements in rrdtool_graph.
--bug: Fix ordering issues with Data Input methods and Graph Creation for Custom Data
--bug: Allow hostname to include TCP: or UDP: an keep tcp, icmp, udp ping functional
+-bug: Allow hostname to include the TCP: prefix for TCP based snmp and keep tcp, icmp, udp ping functional
 -bug: Better error reporting for Clear Cacti Log File in Utilties
 -feature: Add IPv6 support to lib/ping.php
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
--feature: Incorporate snmpbulkwalk binary to user interface to speed snmpv2 & snmpv3 walk calls.
+-feature: Incorporate snmpbulkwalk binary path to user interface to speed snmpv2 & snmpv3 walk calls.
+-feature: Incorporate snmpgetnext binary path to user interface to make available for certain plugins.
 -feature; Now have support for Nth percentile functions, not just 95th.
 -feature: Added support for new Nth Percentile Variables: aggregate, aggregate_max, aggregate_sum
 -feature: Allow additional filtering for graph item adding while creating graphs
