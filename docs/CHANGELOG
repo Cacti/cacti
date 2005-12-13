@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -bug#0000571: Misleading diagnositc error messages during install have been updated
 -bug#0000582: Ampersand present in graph template graph name causes xml import to fail
 -bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
+-bug#0000586: Remove static reference to RRA ID #1
 -bug#0000596: Proper excape of ' in graph titles
 -bug#0000599: Add filtering to graphs and data templates
 -bug#0000601: Add ability to add multiple hosts to a tree
