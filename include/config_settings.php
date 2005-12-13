@@ -658,7 +658,7 @@ $settings_graphs = array(
 			"description" => "The default RRA to use when thumbnail graphs are not being displayed or when 'Thumbnail Timespan' is set to '0'.",
 			"method" => "drop_sql",
 			"sql" => "select id,name from rra order by timespan",
-			"default" => "Default"
+			"default" => "1"
 			),
 		"default_view_mode" => array(
 			"friendly_name" => "Default View Mode",
