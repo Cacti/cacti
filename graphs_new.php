@@ -722,7 +722,7 @@ function graphs() {
 	form_hidden_box("host_id", $host["id"], "0");
 	form_hidden_box("host_template_id", $host["host_template_id"], "0");
 
-	form_save_button("graphs_new.php");
+	form_save_button((isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
 
 	print "<script type='text/javascript'>dq_update_selection_indicators();</script>\n";
 	print "<script type='text/javascript'>gt_update_selection_indicators();</script>\n";

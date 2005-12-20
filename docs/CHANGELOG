@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -bug#0000619: Host Templates not alphabetized on device creation form
 -bug#0000625: Cannot modify/create a user with a period in the username
 -bug#0000631: Invalid information concerning delimiter for index_order in SNMP Query documentation
+-bug#0000650: Clicking Cancel in Create Graphs for this Host does nothing
 -bug: Stop MySQL connect messages from appearing in user interface
 -bug: Allow primary keys other than "ID" to work in sql_save and in HTML code
 -bug: Save statistics even when the poller times out.
