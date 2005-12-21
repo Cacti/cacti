@@ -6,7 +6,9 @@ if ($ARGV[0] eq "") {
 	$log_path = $ARGV[0];
 }
 
-$webhits = `wc -l $log_path`;
+open(PROCESS,"wc -l $log_path |");
+$webhits = <PROCESS>;
+close(PROCESS);
 $webhits =~ s/[\s]*([0-9]+).*//;
 
 print $1;

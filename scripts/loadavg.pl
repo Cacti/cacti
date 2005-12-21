@@ -1,8 +1,10 @@
 #!/usr/bin/perl
 
 #get load avg for 5;15;30 min
-$avg = `uptime`;
-$avg =~ s/.*://;
+open(PROCESS,"uptime |");
+$avg = <PROCESS>;
+$avg =~ s/.*:\s*//;
+close(PROCESS);
 
 if ($ARGV[0] eq "5") {
 	$avg = `echo "$avg" | awk '\{print \$1 \}'`;

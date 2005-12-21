@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
-$output = `ps ax | grep -c :`;
+open(PROCESS, "ps ax | grep -c : |");
+$output = <PROCESS>;
+close(PROCESS);
 chomp($output);
 print $output;
