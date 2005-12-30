@@ -71,6 +71,7 @@ function db_install_execute($cacti_version, $sql) {
 }
 
 function find_best_path($binary_name) {
+	global $config;
 	if ($config["cacti_server_os"] == "win32") {
 		$search_paths = array("c:/usr/bin", "c:/net-snmp/bin", "c:/progra~1/net-snmp/bin", "d:/usr/bin", "d:/net-snmp/bin", "d:/progra~1/net-snmp/bin");
 	}else{
