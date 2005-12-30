@@ -34,5 +34,8 @@ function upgrade_to_0_8_6h() {
 	/* Changes to user_log */
 	db_install_execute("0.8.6h", "ALTER TABLE `user_log` MODIFY COLUMN `ip` VARCHAR(40);");
 
+	/* Fixes broken graphs that have graph items with legend text but no color assigned */
+	db_install_execute("0.8.6h", "UPDATE graph_templates_item SET text_format = '' WHERE local_graph_id <> 0 AND color_id = 0 AND graph_type_id IN(4,5,6,7,8) AND text_format <> '';");
+
  }
 ?>
