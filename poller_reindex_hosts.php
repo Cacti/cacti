@@ -86,13 +86,15 @@ if ($host_id == "All") {
 }else if (is_numeric($host_id)) {
 	$sql_where = " WHERE host_id = '$host_id'";
 }else{
-	print "ERROR: You must specify either a host_id or 'All' to proceed.";
+	print "ERROR: You must specify either a host_id or 'All' to proceed.\n";
 	display_help();
 	exit;
 }
 
+/* determine data queries to rerun */
 $data_queries = db_fetch_assoc("SELECT host_id, snmp_query_id FROM host_snmp_query" . $sql_where);
 
+/* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Reindexing can take quite some time\n";
 debug("There are '" . sizeof($data_queries) . "' data queries to run");
 
@@ -109,10 +111,10 @@ foreach ($data_queries as $data_query) {
 function display_help () {
 	print "Cacti Reindex Host Script 1.0, Copyright 2005 - The Cacti Group\n\n";
 	print "usage: poller_reindex_hosts.php -id=[host_id|All] [-d] [-h] [--help] [-v] [--version]\n\n";
-	print "-id=host_id   - the host_id to have data queries reindex or 'All' to reindex all hosts\n";
+	print "-id=host_id   - The host_id to have data queries reindexed or 'All' to reindex all hosts\n";
 	print "-d            - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";
-	print "-h --help     - display this help message\n";
+	print "-h --help     - Display this help message\n";
 }
 
 function debug($message) {
