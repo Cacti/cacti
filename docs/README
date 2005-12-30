@@ -28,6 +28,17 @@ Debian Linux
 SuSE Linux 7.3
 AIX 4.3
 
+A Note About RRDtool:
+
+RRDTool is available in 2 versions, 1.0.x and 1.2.x, both are supported 
+by Cacti.  Please remember to confirm your Cacti settings for the RRDtool
+version if you having problem rendering graphs.
+
+Also important to note in version Cacti 0.8.6h and above, graph items with 
+no color assigned are now properly presented to RRDTool.  The upgraded 
+will fix graph items that will cause your graphs not to render, but as 
+always, please remember to backup before you proceed to upgrade.
+
 A Note About Debian:
 
 Under Debian Linux, the PHP binary is available as the php4-cgi package.
