@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -bug: Allow hostname to include the TCP: prefix for TCP based snmp and keep tcp, icmp, udp ping functional
 -bug: Better error reporting for Clear Cacti Log File in Utilties
 -bug: Graphs with items having Legend text defined but no color will fail under rrdtool 1.2.x
+-feature: MySQL 5.x support
 -feature: Add IPv6 support to lib/ping.php
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary path to user interface to speed snmpv2 & snmpv3 walk calls.
