@@ -34,31 +34,90 @@ $no_http_headers = true;
 include(dirname(__FILE__) . "/include/config.php");
 include_once("./lib/utility.php");
 
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
+
+$debug = FALSE;
+
+foreach($parms as $parameter) {
+	@list($arg, $value) = @explode("=", $parameter);
+
+	switch ($arg) {
+	case "-d":
+		$debug = TRUE;
+		break;
+	case "-h":
+		display_help();
+		exit;
+	case "-v":
+		display_help();
+		exit;
+	case "--version":
+		display_help();
+		exit;
+	case "--help":
+		display_help();
+		exit;
+	default:
+		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+		display_help();
+		exit;
+	}
+}
+
 /* obtain timeout settings */
 $max_execution = ini_get("max_execution_time");
 $max_memory = ini_get("memory_limit");
 
+/* set new timeout and memory settings */
 ini_set("max_execution_time", "0");
 ini_set("memory_limit", "64M");
 
+/* clear the poller cache first */
 db_execute("truncate table poller_item");
 
+/* get the data_local Id's for the poller cache */
 $poller_data = db_fetch_assoc("select id from data_local");
 
+/* initialize some variables */
 $current_ds = 1;
 $total_ds = sizeof($poller_data);
 
-print "There are '" . sizeof($poller_data) . "' data source elements to update.\n";
+/* issue warnings and start message if applicable */
+print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
+debug("There are '" . sizeof($poller_data) . "' data source elements to update.");
 
+/* start rebuilding the poller cache */
 if (sizeof($poller_data) > 0) {
 	foreach ($poller_data as $data) {
+		if (!$debug) print ".";
 		update_poller_cache($data["id"], true);
-		print "Data Source Item '$current_ds' of '$total_ds' updated\n";
+		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
 	}
 }
 
+/* poller cache rebuilt, restore runtime parameters */
 ini_set("max_execution_time", $max_execution);
 ini_set("memory_limit", $max_memory);
+
+/*	display_help - displays the usage of the function */
+function display_help () {
+	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2005 - The Cacti Group\n\n";
+	print "usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]\n\n";
+	print "-d            - Display verbose output during execution\n";
+	print "-v --version  - Display this help message\n";
+	print "-h --help     - Display this help message\n";
+}
+
+function debug($message) {
+	global $debug;
+
+	if ($debug) {
+		print("DEBUG: " . $message . "\n");
+	}
+}
+
 
 ?>
