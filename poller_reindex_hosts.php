@@ -30,7 +30,7 @@ if (!isset($_SERVER["argv"][0])) {
 }
 
 ini_set("max_execution_time", "0");
-ini_set("memory_limit", "32M");
+ini_set("memory_limit", "64M");
 
 $no_http_headers = true;
 
@@ -38,16 +38,89 @@ include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/snmp.php");
 include_once($config["base_path"] . "/lib/data_query.php");
 
-$data_queries = db_fetch_assoc("SELECT host_id, snmp_query_id FROM host_snmp_query");
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
 
-print "There are '" . sizeof($data_queries) . "' data queries to run\n";
+/* utility requires input parameters */
+if (sizeof($parms) == 0) {
+	print "ERROR: You must supply input parameters\n\n";
+	display_help();
+	exit;
+}
+
+$debug = FALSE;
+
+foreach($parms as $parameter) {
+	@list($arg, $value) = @explode("=", $parameter);
+
+	switch ($arg) {
+	case "-id":
+		$host_id = $value;
+		break;
+	case "-d":
+		$debug = TRUE;
+		break;
+	case "-h":
+		display_help();
+		exit;
+	case "-v":
+		display_help();
+		exit;
+	case "--version":
+		display_help();
+		exit;
+	case "--help":
+		display_help();
+		exit;
+	default:
+		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+		display_help();
+		exit;
+	}
+}
+
+/* determine the hosts to reindex */
+if ($host_id == "All") {
+	$sql_where = "";
+}else if (is_numeric($host_id)) {
+	$sql_where = " WHERE host_id = '$host_id'";
+}else{
+	print "ERROR: You must specify either a host_id or 'All' to proceed.";
+	display_help();
+	exit;
+}
+
+$data_queries = db_fetch_assoc("SELECT host_id, snmp_query_id FROM host_snmp_query" . $sql_where);
+
+print "WARNING: Do not interrupt this script.  Reindexing can take quite some time\n";
+debug("There are '" . sizeof($data_queries) . "' data queries to run");
 
 $i = 1;
 foreach ($data_queries as $data_query) {
-	print "Data query number '" . $i . "' starting\n";
+	if (!$debug) print ".";
+	debug("Data query number '" . $i . "' starting");
 	run_data_query($data_query["host_id"], $data_query["snmp_query_id"]);
-	print "Data query number '" . $i . "' ending\n";
+	debug("Data query number '" . $i . "' ending");
 	$i++;
+}
+
+/*	display_help - displays the usage of the function */
+function display_help () {
+	print "Cacti Reindex Host Script 1.0, Copyright 2005 - The Cacti Group\n\n";
+	print "usage: poller_reindex_hosts.php -id=[host_id|All] [-d] [-h] [--help] [-v] [--version]\n\n";
+	print "-id=host_id   - the host_id to have data queries reindex or 'All' to reindex all hosts\n";
+	print "-d            - Display verbose output during execution\n";
+	print "-v --version  - Display this help message\n";
+	print "-h --help     - display this help message\n";
+}
+
+function debug($message) {
+	global $debug;
+
+	if ($debug) {
+		print("DEBUG: " . $message . "\n");
+	}
 }
 
 ?>
