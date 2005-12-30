@@ -43,7 +43,9 @@ Cacti CHANGELOG
 -feature; Now have support for Nth percentile functions, not just 95th.
 -feature: Added support for new Nth Percentile Variables: aggregate, aggregate_max, aggregate_sum
 -feature: Allow additional filtering for graph item adding while creating graphs
--feature: Command line script to copy users
+-feature: Command line script to copy users: copy_cacti_user.php
+-feature: Command line script to reindex hosts: poller_reindex_hosts.php
+-feature: Command line script to rebuild the poller cache: rebuild_poller_cache.php
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.
