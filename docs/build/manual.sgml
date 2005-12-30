@@ -475,7 +475,7 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Add <filename>c:\wingwin\bin</filename> to your Windows System PATH environment variable.
+					Add <filename>c:\cygwin\bin</filename> to your Windows System PATH environment variable.
 				</para>
 			</listitem>
 			<listitem>
@@ -645,11 +645,12 @@ $database_password = "cacti";</userinput></screen>
 				</para>
 				<screen>c:/cacti/rrdtool.exe</screen>
 				<para>
-					<emphasis>SNMPGET, SNMPWALK, SNMPBULKWALK Paths:</emphasis>
+					<emphasis>SNMPGET, SNMPWALK, SNMPBULKWALK, SNMPGETNEXT Paths:</emphasis>
 				</para>
 					<screen>c:/progra~1/net-snmp/bin/snmpget.exe</screen>
-					<screen>c:/progra~1/net-snmp/bin/snmpget.exe</screen>
+					<screen>c:/progra~1/net-snmp/bin/snmpwalk.exe</screen>
 					<screen>c:/progra~1/net-snmp/bin/snmpbulkwalk.exe</screen>
+					<screen>c:/progra~1/net-snmp/bin/snmpgetnext.exe</screen>
 				<para>
 					<emphasis>Cacti Logfile Path:</emphasis>
 				</para>
@@ -870,15 +871,15 @@ $database_password = "cacti";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Copy any custom scripts from the old Cacti directory.
+					Copy any relevant custom scripts from the old Cacti directory.  Some script are updated between versions.  Therefore, make sure you only over write if the scripts either don't exist or are newer than the distribution's.
 				</para>
-				<screen><prompt>shell&gt;</prompt> <userinput>cp cacti_old/scripts/* cacti/scripts/</userinput></screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>cp -u cacti_old/scripts/* cacti/scripts/</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Copy any custom resources from the old Cacti directory.  It is important to note that you don't overwrite resource files that come with cacti.
+					Copy any relevant custom resource XML files from the old Cacti directory.  Some resource XML files are updated between versions.  Therefore, make sure you only over write if the XML files either don't exist or are newer than the distribution's.
 				</para>
-				<screen><prompt>shell&gt;</prompt> <userinput>cp -R cacti_old/resource/* cacti/resource/</userinput></screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>cp -u -R cacti_old/resource/* cacti/resource/</userinput></screen>
 			</listitem>
 
 			<listitem>
@@ -3515,8 +3516,8 @@ disk /</userinput></screen>
 				<screen><userinput>|[0-9]:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate):[0-9]|</userinput></screen>
 				<para>
 					Nth percentile is often used by hosting providers to bill customers based on their peak traffic usage while
-					ignoring their top (100 - Nth) percent. This way if a customer has a fairly consistent traffic pattern and 
-					decides to download a huge file one day, the large spike will be ignored.  Common Nth percentile is 95, which 
+					ignoring their top (100 - Nth) percent. This way if a customer has a fairly consistent traffic pattern and
+					decides to download a huge file one day, the large spike will be ignored.  Common Nth percentile is 95, which
 					would cut off the top 5% of the traffic.
 				</para>
 				<para>
