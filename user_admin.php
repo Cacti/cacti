@@ -527,14 +527,6 @@ function user_realms_edit() {
 			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"section\",this.checked)'></td>\n
 		</tr>\n";
 
-	$realms = db_fetch_assoc("select
-		user_auth_realm.user_id,
-		user_realm.id,
-		user_realm.name
-		from user_realm
-		left join user_auth_realm on (user_realm.id=user_auth_realm.realm_id and user_auth_realm.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . ")
-		order by user_realm.name");
-
 	?>
 
 	<tr>
