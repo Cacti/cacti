@@ -1,52 +1,52 @@
 Cacti CHANGELOG
 
 0.8.6h
--bug#0000383: Add more verbose rrdtool debug output from Graph Management
--bug#0000522: Take 'oid_index_parse' into consideration when handling 'OID/REGEXP:' data query fields
--bug#0000528: Allow template_import.php to return without error when xml file is invalid in PHP 4.4 and above.
+-bug#0000383: Add more verbose RRDtool debug output from Graph Management.
+-bug#0000522: Take 'oid_index_parse' into consideration when handling 'OID/REGEXP:' data query fields.
+-bug#0000528: Allow template_import.php to return without error when XML file is invalid in PHP 4.4 and above.
 -bug#0000557: Changing filter value resulted in invalid page/row selection.
--bug#0000572: Added $database_port to config.php
--bug#0000570: Grammer edit for text about already up-to-date
--bug#0000571: Misleading diagnositc error messages during install have been updated
--bug#0000582: Ampersand present in graph template graph name causes xml import to fail
--bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color
--bug#0000586: Remove static reference to RRA ID #1
--bug#0000596: Proper excape of ' in graph titles
--bug#0000599: Add filtering to graphs and data templates
--bug#0000601: Add ability to add multiple hosts to a tree
--bug#0000603: user_log.ip field not ipv6 compatible
--bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement
--bug#0000615: Minor host.php tweak
--bug#0000619: Host Templates not alphabetized on device creation form
--bug#0000625: Cannot modify/create a user with a period in the username
--bug#0000631: Invalid information concerning delimiter for index_order in SNMP Query documentation
--bug#0000650: Clicking Cancel in Create Graphs for this Host does nothing
--bug#0000656: Perl scripts using back ticks is not portable
--bug: Stop MySQL connect messages from appearing in user interface
--bug: Allow primary keys other than "ID" to work in sql_save and in HTML code
+-bug#0000572: Added $database_port to config.php.
+-bug#0000570: Grammar edit for text about already up-to-date.
+-bug#0000571: Misleading diagnostic error messages during install have been updated.
+-bug#0000582: Ampersand present in graph template graph name causes XML import to fail.
+-bug#0000585: Graphing fails using AREA/STACK/LINE/HRULE/VRULE without defined color.
+-bug#0000586: Remove static reference to RRA ID #1.
+-bug#0000596: Proper escape of ' in graph titles.
+-bug#0000599: Add filtering to graphs and data templates.
+-bug#0000601: Add ability to add multiple hosts to a tree.
+-bug#0000603: user_log.ip field not ipv6 compatible.
+-bug#0000608: Minor coding error in lib/poller.php with a erroneous pclose statement.
+-bug#0000615: Add sysContact and sysLocation output to device edit page.
+-bug#0000619: Host templates not alphabetized on device creation form.
+-bug#0000625: Cannot modify/create a user with a period in the username.
+-bug#0000631: Invalid information concerning delimiter for index_order in SNMP Query documentation.
+-bug#0000650: Clicking Cancel in Create Graphs for this Host does nothing.
+-bug#0000656: Perl scripts using back ticks is not portable.
+-bug: Stop MySQL connect messages from appearing in user interface.
+-bug: Allow primary keys other than "ID" to work in sql_save and in HTML code.
 -bug: Save statistics even when the poller times out.
 -bug: Only call poller_commands.php or poller_export.php if they require calling.
--bug: Incorporate a timeout to ss_fping.php so that a host that takes to long to finish at least returns data
--bug: Correct the display of custom data in data input methods to follow the proper order
--bug: Change the default behavior of ping.php to mark a host as up if either snmp or ping are successful.
+-bug: Incorporate a timeout to ss_fping.php so that a host that takes to long to finish at least returns data.
+-bug: Correct the display of custom data under data input methods to follow the proper order.
+-bug: Change the default behavior of ping.php to mark a host as up if either SNMP or ping are successful.
 -bug: Don't allow graph_export to delete your web site.
--bug: Correct issue where snmp was not returning both hex and text data under certain circumstances.
--bug: Prevent a never ending table lock in lib/tree.php
+-bug: Correct issue where SNMP was not returning both hex and text data under certain circumstances.
+-bug: Prevent a never ending table lock in lib/tree.php.
 -bug: Correct issue where either AREA or LINEx without color were causing RRD_NL without any elements in rrdtool_graph.
 -bug: Allow hostname to include the TCP: prefix for TCP based snmp and keep tcp, icmp, udp ping functional
--bug: Better error reporting for Clear Cacti Log File in Utilties
--bug: Graphs with items having Legend text defined but no color will fail under rrdtool 1.2.x
--feature: MySQL 5.x support
--feature: Add IPv6 support to lib/ping.php
+-bug: Better error reporting for Clear Cacti Log File in Utilities
+-bug: Graphs with items having Legend text defined but no color will fail under RRDtool 1.2.x.
+-feature: Add MySQL 5.x support.
+-feature: Add IPv6 support to lib/ping.php.
 -feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
--feature: Incorporate snmpbulkwalk binary path to user interface to speed snmpv2 & snmpv3 walk calls.
+-feature: Incorporate snmpbulkwalk binary path to user interface to speed snmpv2 and snmpv3 walk calls.
 -feature: Incorporate snmpgetnext binary path to user interface to make available for certain plugins.
--feature; Now have support for Nth percentile functions, not just 95th.
--feature: Added support for new Nth Percentile Variables: aggregate, aggregate_max, aggregate_sum
--feature: Allow additional filtering for graph item adding while creating graphs
--feature: Command line script to copy users: copy_cacti_user.php
--feature: Command line script to reindex hosts: poller_reindex_hosts.php
--feature: Command line script to rebuild the poller cache: rebuild_poller_cache.php
+-feature; Add support for Nth percentile functions, not just 95th.
+-feature: Add support for new Nth percentile variables: aggregate, aggregate_max, aggregate_sum.
+-feature: Allow additional filtering for graph item adding while creating graphs.
+-feature: Add Command line script to copy users: copy_cacti_user.php.
+-feature: Add Command line script to reindex hosts: poller_reindex_hosts.php.
+-feature: Add Command line script to rebuild the poller cache: rebuild_poller_cache.php.
 
 0.8.6g
 -bug#0000351: Fix zooming capability in Safari.
