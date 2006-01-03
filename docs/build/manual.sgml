@@ -302,22 +302,18 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					If using PHP 4 add/uncomment the following lines.
 				</para>
-				<screen>
-					<userinput>extension_dir = c:\php\extensions</userinput>
-					<userinput>extension=php_snmp.dll</userinput>
-					<userinput>extension=php_sockets.dll</userinput>
-					<userinput>cgi.force_redirect = 0</userinput>
-				</screen>
+				<screen><userinput>extension_dir = c:\php\extensions
+extension=php_snmp.dll
+extension=php_sockets.dll
+cgi.force_redirect = 0</userinput></screen>
 				<para>
 					If using PHP 5 uncomment the following lines.
 				</para>
-				<screen>
-					<userinput>extension_dir = c:\php\ext</userinput>
-					<userinput>extension=php_mysql.dll</userinput>
-					<userinput>extension=php_snmp.dll</userinput>
-					<userinput>extension=php_sockets.dll</userinput>
-					<userinput>cgi.force_redirect = 0</userinput>
-				</screen>
+				<screen><userinput>extension_dir = c:\php\ext
+extension=php_mysql.dll
+extension=php_snmp.dll
+extension=php_sockets.dll
+cgi.force_redirect = 0</userinput></screen>
 				<para>
 					If using PHP 4.3.5 or less include the following line.  If using 4.3.6 or greater, you should remove this line if present.
 				</para>
@@ -361,28 +357,22 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					If using Apache 1.3.x and PHP 4, then add the following lines:
 				</para>
-				<screen>
-					<userinput>LoadModule php4_module c:\php\sapi\php4apache.dll</userinput>
-					<userinput>AddModule mod_php4.c</userinput>
-					<userinput>AddType application/x-httpd-php .php</userinput>
-					<userinput>DirectoryIndex index.html index.htm index.php</userinput>
-				</screen>
+				<screen><userinput>LoadModule php4_module c:\php\sapi\php4apache.dll
+AddModule mod_php4.c
+AddType application/x-httpd-php .php
+DirectoryIndex index.html index.htm index.php</userinput></screen>
 				<para>
 					If using Apache 2.x and PHP 4, then add the following lines:
 				</para>
-				<screen>
-					<userinput>LoadModule php4_module c:\php\sapi\php4apache2.dll</userinput>
-					<userinput>AddType application/x-httpd-php .php</userinput>
-					<userinput>DirectoryIndex index.html index.htm index.php</userinput>
-				</screen>
+				<screen><userinput>LoadModule php4_module c:\php\sapi\php4apache2.dll
+AddType application/x-httpd-php .php
+DirectoryIndex index.html index.htm index.php</userinput></screen>
 				<para>
 					If using Apache 2.x and PHP 5, then add the following lines.
 				</para>
-				<screen>
-					<userinput>LoadModule php5_module c:\php\php5apache2.dll</userinput>
-					<userinput>AddType application/x-httpd-php .php</userinput>
-					<userinput>DirectoryIndex index.html index.htm index.php</userinput>
-				</screen>
+				<screen><userinput>LoadModule php5_module c:\php\php5apache2.dll
+AddType application/x-httpd-php .php
+DirectoryIndex index.html index.htm index.php</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
@@ -435,10 +425,8 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					Completely stop and start the IIS service using the following commands:
 				</para>
-				<screen>
-					<userinput>net stop iisadmin</userinput>
-					<userinput>net start w3svc</userinput>
-				</screen>
+				<screen><userinput>net stop iisadmin
+net start w3svc</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
@@ -459,19 +447,17 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					Once you reach the portion of setup entitled Select Packages, install the following:
 				</para>
-				<screen>
-					<userinput>Base (include all items)</userinput>
-					<userinput>Libs</userinput>
-					<userinput>	libart_lgpl</userinput>
-					<userinput>	libfreetype26</userinput>
-					<userinput>	libpng12</userinput>
-					<userinput>	zlib</userinput>
-					<userinput>	openssl</userinput>
-					<userinput>Utils</userinput>
-					<userinput>	patch</userinput>
-					<userinput>Web</userinput>
-					<userinput>	wget</userinput>
-				</screen>
+				<screen><userinput>Base (include all items)
+Libs
+	libart_lgpl
+	libfreetype26
+	libpng12
+	zlib
+	openssl
+Utils
+	patch
+Web
+	wget</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
@@ -514,37 +500,29 @@ $database_password = "cacti";</userinput></screen>
 				<para>
 					Set a password for the root user
 				</para>
-				<screen>
-					<prompt>shell&gt;</prompt> <userinput>cd mysql\bin</userinput>
-					<prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root password somepassword</userinput>
-					<prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password reload</userinput>
-				</screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>cd mysql\bin</userinput>
+<prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root password somepassword</userinput>
+<prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password reload</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
 					Create the MySQL database:
 				</para>
-				<screen>
-					<prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password create cacti</userinput>
-				</screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password create cacti</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
 					Import the default Cacti database:
 				</para>
-				<screen>
-					<prompt>shell&gt;</prompt> <userinput>mysql --user=root --password cacti &lt; c:\apache2\htdocs\cacti\cacti.sql</userinput>
-				</screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root --password cacti &lt; c:\apache2\htdocs\cacti\cacti.sql</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
 					Create a MySQL username and password for Cacti.
 				</para>
-				<screen>
-					<prompt>shell&gt;</prompt> <userinput>mysql --user=root --password mysql</userinput>
-					<prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
-					<prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput>
-				</screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root --password mysql</userinput>
+<prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
+<prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
@@ -552,16 +530,12 @@ $database_password = "cacti";</userinput></screen>
 					to authenticate with Cacti.  To make this change, stop the MySQL service and add the following to
 					the Start Parameter field.  Start it again once it has been added.
 				</para>
-				<screen>
-					<userinput>--old-password</userinput>
-				</screen>
+				<screen><userinput>--old-password</userinput></screen>
 				<para>
 					You will also need to update the cactiuser account with the old password style.
 				</para>
-				<screen>
-					<prompt>shell&gt;</prompt> <userinput>UPDATE mysql.user SET Password = OLD_PASSWORD('cactipwd') WHERE Host = 'localhost' AND User = 'cactiuser';</userinput>
-					<prompt>mysql&gt;</prompt> <userinput>FLUSH PRIVILEGES;</userinput>
-				</screen>
+				<screen><prompt>shell&gt;</prompt> <userinput>UPDATE mysql.user SET Password = OLD_PASSWORD('cactipwd') WHERE Host = 'localhost' AND User = 'cactiuser';</userinput>
+<prompt>mysql&gt;</prompt> <userinput>FLUSH PRIVILEGES;</userinput></screen>
 			</listitem>
 		</orderedlist>
 		<orderedlist>
@@ -583,13 +557,11 @@ $database_password = "cacti";</userinput></screen>
 					Extract the Cactid zip file to <filename>c:\cacti</filename> and modify the <filename>cactid.conf.dist</filename> file to
 					include the following statements.
 				</para>
-				<screen>
-					<userinput>DB_Host	127.0.0.1 or hostname (not localhost)</userinput>
-					<userinput>DB_Database	cacti</userinput>
-					<userinput>DB_User	cactiuser</userinput>
-					<userinput>DB_Password	cacti</userinput>
-					<userinput>DB_Port	3306</userinput>
-				</screen>
+				<screen><userinput>DB_Host	127.0.0.1 or hostname (not localhost)
+DB_Database	cacti
+DB_User		cactiuser
+DB_Password	cacti
+DB_Port		3306</userinput></screen>
 				<para>
 					All other pre 0.8.6 settings are obsolete.
 				</para>
@@ -609,21 +581,17 @@ $database_password = "cacti";</userinput></screen>
 					Edit <filename>cacti_web_root/cacti/include/config.php</filename> and specify the MySQL user,
 					password, database, and database port for your Cacti configuration.
 				</para>
-				<screen>
-					<userinput>$database_default = "cacti";</userinput>
-					<userinput>$database_hostname = "localhost";</userinput>
-					<userinput>$database_username = "cactiuser";</userinput>
-					<userinput>$database_password = "cacti";</userinput>
-					<userinput>$database_port = "3306";</userinput>
-				</screen>
+				<screen><userinput>$database_default = "cacti";
+$database_hostname = "localhost";
+$database_username = "cactiuser";
+$database_password = "cacti";
+$database_port = "3306";</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Pint your web browser to:
+					Point your web browser to:
 				</para>
-				<screen>
-					http://your-server/cacti/
-				</screen>
+				<screen>http://your-server/cacti/</screen>
 				<para>
 					Log in using the username and password of admin/admin.  You will be required to change this
 					password immediately.
@@ -665,11 +633,9 @@ $database_password = "cacti";</userinput></screen>
 					Click on Devices.  Delete the Localhost devices as it intended for Linux environments  In the upper
 					right corner, click Add.  Fill in the following information and then click Add.
 				</para>
-				<screen>
-					<userinput>Description: My Windows localhost</userinput>
-					<userinput>Hostname: localhost</userinput>
-					<userinput>Host Template: Windows 2000/XP</userinput>
-				</screen>
+				<screen><userinput>Description: My Windows localhost
+Hostname: localhost
+Host Template: Windows 2000/XP</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
@@ -685,21 +651,16 @@ $database_password = "cacti";</userinput></screen>
                     Log into the user account you'll be using  for the scheduled task and  verify starting a Cacti
 					polling cycle works.  Do this by running the following from the command prompt:
 				</para>
-				<screen>
-					<userinput>php c:/cacti_web_root/cacti/poller.php</userinput>
-				</screen>
+				<screen><userinput>php c:/cacti_web_root/cacti/poller.php</userinput></screen>
 				<para>
 					The output should look something like the following:
 				</para>
-				<screen>
-					<userinput>C:\>php c:\inetpub\wwwroot\cacti\poller.php</userinput>
-					<userinput>OK u:0.00 s:0.06 r:1.32</userinput>
-					<userinput>OK u:0.00 s:0.06 r:1.32</userinput>
-					<userinput>OK u:0.00 s:0.16 r:2.59</userinput>
-					<userinput>OK u:0.00 s:0.17 r:2.62</userinput>
-					<userinput>10/28/2005 04:57:12 PM - SYSTEM STATS: Time:4.7272 Method:cmd.php Processes:1
-						Threads:N/A Hosts:1 HostsPerProcess:2 DataSources:4 RRDsProcessed:2</userinput>
-				</screen>
+				<screen><userinput>C:\>php c:\inetpub\wwwroot\cacti\poller.php
+OK u:0.00 s:0.06 r:1.32
+OK u:0.00 s:0.06 r:1.32
+OK u:0.00 s:0.16 r:2.59
+OK u:0.00 s:0.17 r:2.62
+10/28/2005 04:57:12 PM - SYSTEM STATS: Time:4.7272 Method:cmd.php Processes:1 Threads:N/A Hosts:1 HostsPerProcess:2 DataSources:4 RRDsProcessed:2</userinput></screen>
 				<para>
 					After this has ran once, you should have <filename>cacti.log</filename> in <filename>/cacti/log/</filename>
 					and rrd files in /cacti/rra/.
@@ -742,17 +703,13 @@ $database_password = "cacti";</userinput></screen>
 						<para>
 							When entering a username and password make sure the user has read and write access to the following directories:
 						</para>
-						<screen>
-							<userinput>cacti_web_root/cacti/rra</userinput>
-							<userinput>cacti_web_root/log</userinput>
-						</screen>
+						<screen><userinput>cacti_web_root/cacti/rra
+cacti_web_root/log</userinput></screen>
 						<para>
 							Make sure the user has read, write, and execute access to the following directories:
 						</para>
-						<screen>
-							<userinput>c:\php</userinput>
-							<userinput>c:\php\sapi</userinput>
-						</screen>
+						<screen><userinput>c:\php
+c:\php\sapi</userinput></screen>
 					</listitem>
 					<listitem>
 						<para>
