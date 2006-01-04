@@ -79,7 +79,7 @@ function find_best_path($binary_name) {
 	}
 
 	for ($i=0; $i<count($search_paths); $i++) {
-		if ((file_exists($search_paths[$i] . "/" . $binary_name)) && (is_executable($search_paths[$i] . "/" . $binary_name))) {
+		if ((file_exists($search_paths[$i] . "/" . $binary_name)) && (is_readable($search_paths[$i] . "/" . $binary_name))) {
 			return $search_paths[$i] . "/" . $binary_name;
 		}
 	}
