@@ -31,6 +31,20 @@ function escape_command($command) {
 	return ereg_replace("(\\\$|`)", "", $command);
 }
 
+function escape_colons($string) {
+	$sublen = strlen($string);
+	$new_string = "";
+	for($i=0; $i<$sublen; $i++) {
+		if ($string[$i] == ":") {
+			$new_string .= "\\" . $string[$i];
+		}else{
+			$new_string .= $string[$i];
+		}
+	}
+
+	return $new_string;
+}
+
 function rrd_init() {
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
@@ -445,7 +459,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
-		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
+		if (file_exists(read_config_option("path_rrdtool_default_font"))) {
+			putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
+		}
 	}
 
 	/* before we do anything; make sure the user has permission to view this graph,
@@ -682,13 +698,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if ((isset($graph_data_array["graph_start"])) && (isset($graph_data_array["graph_end"]))) {
 		if (($graph_data_array["graph_start"] < 0) && ($graph_data_array["graph_end"] < 0)) {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-				$graph_legend .= "COMMENT:\"From " . str_replace(":", "\:", date($graph_date, time()+$graph_data_array["graph_start"])) . " To " . str_replace(":", "\:", date($graph_date, time()+$graph_data_array["graph_end"])) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
+				$graph_legend .= "COMMENT:\"From " . escape_colons(date($graph_date, time()+$graph_data_array["graph_start"])) . " To " . escape_colons(date($graph_date, time()+$graph_data_array["graph_end"])) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
 			}else {
 				$graph_legend .= "COMMENT:\"From " . date($graph_date, time()+$graph_data_array["graph_start"]) . " To " . date($graph_date, time()+$graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
 			}
 		}else if (($graph_data_array["graph_start"] >= 0) && ($graph_data_array["graph_end"] >= 0)) {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-				$graph_legend .= "COMMENT:\"From " . str_replace(":", "\:", date($graph_date, $graph_data_array["graph_start"])) . " To " . str_replace(":", "\:", date($graph_date, $graph_data_array["graph_end"])) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
+				$graph_legend .= "COMMENT:\"From " . escape_colons(date($graph_date, $graph_data_array["graph_start"])) . " To " . escape_colons(date($graph_date, $graph_data_array["graph_end"])) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
 			}else {
 				$graph_legend .= "COMMENT:\"From " . date($graph_date, $graph_data_array["graph_start"]) . " To " . date($graph_date, $graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
 			}
@@ -722,6 +738,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_opts .= "--font TITLE:" . read_graph_config_option("title_size") . ":" . read_graph_config_option("title_font") . RRD_NL;
 		}elseif (file_exists(read_config_option("title_font"))) {
 			$graph_opts .= "--font TITLE:" . read_config_option("title_size") . ":" . read_config_option("title_font") . RRD_NL;
+		}else{
+			$graph_opts .= "--font TITLE:" . "10:" . read_config_option("path_rrdtool_default_font") . RRD_NL;
 		}
 
 		/* axis fonts */
@@ -729,6 +747,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_opts .= "--font AXIS:" . read_graph_config_option("axis_size") . ":" . read_graph_config_option("axis_font") . RRD_NL;
 		}elseif (file_exists(read_config_option("axis_font"))) {
 			$graph_opts .= "--font AXIS:" . read_config_option("axis_size") . ":" . read_config_option("axis_font") . RRD_NL;
+		}else{
+			$graph_opts .= "--font AXIS:" . "8:" . read_config_option("path_rrdtool_default_font") . RRD_NL;
 		}
 
 		/* legend fonts */
@@ -736,6 +756,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_opts .= "--font LEGEND:" . read_graph_config_option("legend_size") . ":" . read_graph_config_option("legend_font") . RRD_NL;
 		}elseif (file_exists(read_config_option("legend_font"))) {
 			$graph_opts .= "--font LEGEND:" . read_config_option("legend_size") . ":" . read_config_option("legend_font") . RRD_NL;
+		}else{
+			$graph_opts .= "--font LEGEND:" . "8:" . read_config_option("path_rrdtool_default_font") . RRD_NL;
 		}
 
 		/* unit fonts */
@@ -743,6 +765,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_opts .= "--font UNIT:" . read_graph_config_option("unit_size") . ":" . read_graph_config_option("unit_font") . RRD_NL;
 		}elseif (file_exists(read_config_option("unit_font"))) {
 			$graph_opts .= "--font UNIT:" . read_config_option("unit_size") . ":" . read_config_option("unit_font") . RRD_NL;
+		}else{
+			$graph_opts .= "--font UNIT:" . "8:" . read_config_option("path_rrdtool_default_font") . RRD_NL;
 		}
 	}
 
@@ -1032,7 +1056,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . escape_colons($graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
 			}else {
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 			}
