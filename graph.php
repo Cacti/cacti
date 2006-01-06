@@ -130,13 +130,13 @@ case 'zoom':
 	$timespan = -($rra["timespan"]);
 
 	/* find the step and how often this graph is updated with new data */
-	$ds_step = db_fetch_cell("select
+	$ds_step = db_fetch_cell("SELECT
 		data_template_data.rrd_step
-		from (data_template_data,data_template_rrd,graph_templates_item)
-		where graph_templates_item.task_item_id=data_template_rrd.id
-		and data_template_rrd.local_data_id=data_template_data.local_data_id
-		and graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] .
-		"limit 0,1");
+		FROM (data_template_data,data_template_rrd,graph_templates_item)
+		WHERE graph_templates_item.task_item_id=data_template_rrd.id
+		AND data_template_rrd.local_data_id=data_template_data.local_data_id
+		AND graph_templates_item.local_graph_id=" . $_GET["local_graph_id"] .
+		" LIMIT 0,1");
 	$ds_step = empty($ds_step) ? 300 : $ds_step;
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 
