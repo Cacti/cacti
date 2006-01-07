@@ -726,17 +726,17 @@ function host() {
 		unset($_REQUEST["host_status"]);
 	}
 
-	if (!empty($_SESSION["sess_host_status"])) {
-		if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
-			$_REQUEST["page"] = 1;
-		}
-	}
-
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_device_current_page", "1");
 	load_current_session_value("filter", "sess_device_filter", "");
 	load_current_session_value("host_template_id", "sess_device_host_template_id", "-1");
 	load_current_session_value("host_status", "sess_host_status", "-1");
+
+	if (!empty($_SESSION["sess_host_status"])) {
+		if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
+			$_REQUEST["page"] = 1;
+		}
+	}
 
 	html_start_box("<strong>Devices</strong>", "98%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
 
