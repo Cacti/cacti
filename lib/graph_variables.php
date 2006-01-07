@@ -300,82 +300,93 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 
 	$nth = 0;
 
+
+	print "<pre>";
+	print_r($nth_cache);
+	print "</pre>";
+
 	/* format the output according to args passed to the variable */
 	if ($regexp_match_array[4] == "current") {
-		$nth = $nth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
-		$nth = ($regexp_match_array[2] == "bits") ? $nth * 8 : $nth;
-		$nth /= pow(10,intval($regexp_match_array[3]));
+		if (! empty($nth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]})) {
+			$nth = $nth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+			$nth = ($regexp_match_array[2] == "bits") ? $nth * 8 : $nth;
+			$nth /= pow(10,intval($regexp_match_array[3]));
+		}
 	}elseif ($regexp_match_array[4] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-				$local_nth = $nth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
-				$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10,intval($regexp_match_array[3]));
-
-				$nth += $local_nth;
+				if (! empty($nth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]})) {
+					$local_nth = $nth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+					$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
+					$local_nth /= pow(10,intval($regexp_match_array[3]));
+	
+					$nth += $local_nth;
+				}
 
 			}
 		}
 	}elseif ($regexp_match_array[4] == "max") {
-		$nth = $nth_cache{$graph_item["local_data_id"]}["nth_percentile_maximum"];
-		$nth = ($regexp_match_array[2] == "bits") ? $nth * 8 : $nth;
-		$nth /= pow(10,intval($regexp_match_array[3]));
+		if (! empty($nth_cache{$graph_item["local_data_id"]}["nth_percentile_maximum"])) {
+			$nth = $nth_cache{$graph_item["local_data_id"]}["nth_percentile_maximum"];
+			$nth = ($regexp_match_array[2] == "bits") ? $nth * 8 : $nth;
+			$nth /= pow(10,intval($regexp_match_array[3]));
+		}
 	}elseif ($regexp_match_array[4] == "total_peak") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-				$local_nth = $nth_cache{$graph_items[$t]["local_data_id"]}["nth_percentile_maximum"];
-				$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10,intval($regexp_match_array[3]));
+				if (! empty($nth_cache{$graph_items[$t]["local_data_id"]}["nth_percentile_maximum"])) {
+					$local_nth = $nth_cache{$graph_items[$t]["local_data_id"]}["nth_percentile_maximum"];
+					$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
+					$local_nth /= pow(10,intval($regexp_match_array[3]));
 
-				$nth += $local_nth;
+					$nth += $local_nth;
+				}
 			}
 		}
 	}elseif ($regexp_match_array[4] == "all_max_current") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-				$local_nth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
-				$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10,intval($regexp_match_array[3]));
+				if (! empty($ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]})) {
+					$local_nth = $ninety_fifth_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+					$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
+					$local_nth /= pow(10,intval($regexp_match_array[3]));
 
-				if ($local_nth > $nth) {
-					$nth = $local_nth;
+					if ($local_nth > $nth) {
+						$nth = $local_nth;
+					}
 				}
 			}
 		}
 	}elseif ($regexp_match_array[4] == "all_max_peak") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-				$local_nth = $nth_cache{$graph_items[$t]["local_data_id"]}["nth_percentile_maximum"];
-				$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10,intval($regexp_match_array[3]));
+				if (! empty($nth_cache{$graph_items[$t]["local_data_id"]}["nth_percentile_maximum"])) {
+					$local_nth = $nth_cache{$graph_items[$t]["local_data_id"]}["nth_percentile_maximum"];
+					$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
+					$local_nth /= pow(10,intval($regexp_match_array[3]));
 
-				if ($local_nth > $nth) {
-					$nth = $local_nth;
+					if ($local_nth > $nth) {
+						$nth = $local_nth;
+					}
 				}
 			}
 		}
 	}elseif ($regexp_match_array[4] == "aggregate") {
-		if (empty($nth_cache{0}["nth_percentile_aggregate_total"])) {
-			$nth = 0;
-		}else{
+		if (! empty($nth_cache{0}["nth_percentile_aggregate_total"])) {
 			$local_nth = $nth_cache{0}["nth_percentile_aggregate_total"];
 			$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
 			$local_nth /= pow(10,intval($regexp_match_array[3]));
 			$nth = $local_nth;
 		}
 	}elseif ($regexp_match_array[4] == "aggregate_max") {
-		if (empty($nth_cache{0}["nth_percentile_aggregate_max"])) {
-			$nth = 0;
-		}else{
+		if (! empty($nth_cache{0}["nth_percentile_aggregate_max"])) {
 			$local_nth = $nth_cache{0}["nth_percentile_aggregate_max"];
 			$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
 			$local_nth /= pow(10,intval($regexp_match_array[3]));
 			$nth = $local_nth;
 		}
 	}elseif ($regexp_match_array[4] == "aggregate_sum") {
-		if (empty($nth_cache{0}["nth_percentile_aggregate_sum"])) {
-			$nth = 0;
-		}else{
+		if (! empty($nth_cache{0}["nth_percentile_aggregate_sum"])) {
 			$local_nth = $nth_cache{0}["nth_percentile_aggregate_sum"];
 			$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
 			$local_nth /= pow(10,intval($regexp_match_array[3]));
