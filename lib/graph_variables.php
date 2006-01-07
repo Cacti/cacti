@@ -300,11 +300,6 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 
 	$nth = 0;
 
-
-	print "<pre>";
-	print_r($nth_cache);
-	print "</pre>";
-
 	/* format the output according to args passed to the variable */
 	if ($regexp_match_array[4] == "current") {
 		if (! empty($nth_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]})) {
