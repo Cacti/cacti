@@ -1,9 +1,3 @@
--- MySQL dump 9.09
---
--- Host: localhost    Database: cacti_dev_RELEASE_0_8_6
----------------------------------------------------------
--- Server version	4.0.15-standard
-
 --
 -- Table structure for table `cdef`
 --
@@ -1852,7 +1846,7 @@ CREATE TABLE host (
   avg_time decimal(10,5) default '0.00000',
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
-  availability decimal(7,5) NOT NULL default '100.00000',
+  availability decimal(8,5) NOT NULL default '100.00000',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -2593,4 +2587,4 @@ CREATE TABLE version (
 -- Dumping data for table `version`
 --
 
-INSERT INTO version VALUES ('0.8.6h');
+INSERT INTO version VALUES ('new_install');

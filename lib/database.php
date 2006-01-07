@@ -214,14 +214,14 @@ function db_replace($table_name, $array_items, $keyCols) {
    @arg $table_name - the name of the table to make the replacement in
    @arg $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
-function sql_save($array_items, $table_name, $key_cols = "id") {
+function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE) {
 	global $cnn_id;
 
 	while (list ($key, $value) = each ($array_items)) {
 		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
-	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, false)) { return 0; }
+	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc)) { return 0; }
 
 	/* get the last AUTO_ID and return it */
 	if ($cnn_id->Insert_ID() == "0") {

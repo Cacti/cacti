@@ -188,7 +188,6 @@ function change_data_template($local_data_id, $data_template_id) {
 	$save["data_source_path"] = $data["data_source_path"];
 
 	$data_template_data_id = sql_save($save, "data_template_data");
-
 	$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
 	$template_rrds_list = (($data_template_id == "0") ? $data_rrds_list : db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id"));
 
@@ -643,10 +642,16 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 					/* if there are no '|' characters, all of the substitutions were successful */
 					if (!strstr($subs_string, "|query")) {
-						db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . addslashes($suggested_value["text"]) . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+						if (sizeof(db_fetch_row("show columns from data_template_data like '" . $suggested_value["field_name"] . "'"))) {
+							db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . addslashes($suggested_value["text"]) . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+						}
 
 						/* once we find a working value, stop */
 						$suggested_values_ds{$data_template["id"]}{$suggested_value["field_name"]} = true;
+
+						if (sizeof(db_fetch_row("show columns from data_template_rrd like '" . $suggested_value["field_name"] . "'"))) {
+							db_execute("update data_template_rrd set " . $suggested_value["field_name"] . "='" . $subs_string . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+						}
 					}
 				}
 			}
