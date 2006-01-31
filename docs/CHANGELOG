@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentil
+-bug#0000672: When creating a device, the Host Template was not properly validated
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
 -bug: PHP 5.1 snmpwalks utilize the bulk method by default.  Therefore, prefer them over the bulkwalk binary.

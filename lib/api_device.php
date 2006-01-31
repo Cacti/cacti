@@ -65,7 +65,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	$save["id"] = $id;
-	$save["host_template_id"] = $host_template_id;
+	$save["host_template_id"] = form_input_validate($host_template_id, "host_template_id", "^[0-9]+$", false, 3);
 	$save["description"] = form_input_validate($description, "description", "", false, 3);
 	$save["hostname"] = form_input_validate($hostname, "hostname", "", false, 3);
 	$save["snmp_community"] = form_input_validate($snmp_community, "snmp_community", "", true, 3);
