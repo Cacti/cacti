@@ -936,7 +936,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$item_count = 0;
 
 				for ($t=0;($t<count($graph_items));$t++) {
-					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"])) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"]) && ($graph_item["graph_templates_item_id"] != $graph_items[$t]["graph_templates_item_id"])) {
+					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"])) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) && (!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]}))) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
