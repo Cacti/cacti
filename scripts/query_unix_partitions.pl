@@ -5,7 +5,7 @@ if (($ARGV[0] ne "query") && ($ARGV[0] ne "get") && ($ARGV[0] ne "index")) {
 	exit;
 }
 
-open(DF, "/bin/df -P|");
+open(DF, "/bin/df -P -k|");
 
 while (<DF>) {
 	#/dev/hda2             20157744  18553884    579860  97% /var
