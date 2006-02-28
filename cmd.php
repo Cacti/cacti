@@ -221,11 +221,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
-						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] <= trim($output))) {
+						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] < trim($output))) {
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
-						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] >= trim($output))) {
+						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] > trim($output))) {
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("insert into poller_command (poller_id,time,action,command) values (0,NOW()," . POLLER_COMMAND_REINDEX . ",'" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
