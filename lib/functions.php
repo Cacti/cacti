@@ -64,13 +64,13 @@ function read_default_graph_config_option($config_name) {
    @arg $config_name - the name of the configuration setting as specified $settings_graphs array
      in 'include/config_settings.php'
    @returns - the current value of the graph configuration option */
-function read_graph_config_option($config_name) {
+function read_graph_config_option($config_name, $force = FALSE) {
 	/* users must have cacti user auth turned on to use this */
 	if ((read_config_option("global_auth") != "on") || (!isset($_SESSION["sess_user_id"]))) {
 		return read_default_graph_config_option($config_name);
 	}
 
-	if (isset($_SESSION["sess_graph_config_array"])) {
+	if ((isset($_SESSION["sess_graph_config_array"]) || ($force))) {
 		$graph_config_array = $_SESSION["sess_graph_config_array"];
 	}
 
@@ -1314,23 +1314,6 @@ function draw_navigation_text() {
 		"host.php:" => array("title" => "Devices", "mapping" => "index.php:", "url" => "host.php", "level" => "1"),
 		"host.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,host.php:", "url" => "", "level" => "2"),
 		"host.php:actions" => array("title" => "Actions", "mapping" => "index.php:,host.php:", "url" => "", "level" => "2"),
-		"mactrack_devices.php:" => array("title" => "Mac Track Devices", "mapping" => "index.php:", "url" => "mactrack_devices.php", "level" => "1"),
-		"mactrack_devices.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,mactrack_devices.php:", "url" => "", "level" => "2"),
-		"mactrack_devices.php:import" => array("title" => "(Import)", "mapping" => "index.php:,mactrack_devices.php:", "url" => "", "level" => "2"),
-		"mactrack_devices.php:actions" => array("title" => "Actions", "mapping" => "index.php:,mactrack_devices.php:", "url" => "", "level" => "2"),
-		"mactrack_device_types.php:" => array("title" => "Mac Track Device Types", "mapping" => "index.php:", "url" => "mactrack_device_types.php", "level" => "1"),
-		"mactrack_device_types.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,mactrack_device_types.php:", "url" => "", "level" => "2"),
-		"mactrack_device_types.php:import" => array("title" => "(Import)", "mapping" => "index.php:,mactrack_device_types.php:", "url" => "", "level" => "2"),
-		"mactrack_device_types.php:actions" => array("title" => "Actions", "mapping" => "index.php:,mactrack_device_types.php:", "url" => "", "level" => "2"),
-		"mactrack_sites.php:" => array("title" => "Mac Track Sites", "mapping" => "index.php:", "url" => "mactrack_sites.php", "level" => "1"),
-		"mactrack_sites.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,mactrack_sites.php:", "url" => "", "level" => "2"),
-		"mactrack_sites.php:actions" => array("title" => "Actions", "mapping" => "index.php:,mactrack_sites.php:", "url" => "", "level" => "2"),
-		"mactrack_utilities.php:" => array("title" => "Device Tracking Utilities", "mapping" => "index.php:", "url" => "mactrack_utilities.php", "level" => "1"),
-		"mactrack_utilities.php:mactrack_utilities_perform_db_maint" => array("title" => "Perform Database Maintenance", "mapping" => "index.php:,mactrack_utilities.php:", "url" => "mactrack_utilities.php", "level" => "2"),
-		"mactrack_utilities.php:mactrack_utilities_purge_scanning_funcs" => array("title" => "Refresh Scanning Functions", "mapping" => "index.php:,mactrack_utilities.php:", "url" => "mactrack_utilities.php", "level" => "2"),
-		"mactrack_utilities.php:mactrack_utilities_truncate_ports_table" => array("title" => "Truncate Port Results Table", "mapping" => "index.php:,mactrack_utilities.php:", "url" => "mactrack_utilities.php", "level" => "2"),
-		"mactrack_utilities.php:mactrack_view_proc_status" => array("title" => "View MacTrack Process Status", "mapping" => "index.php:,mactrack_utilities.php:", "url" => "mactrack_utilities.php", "level" => "2"),
-		"mactrack_view.php:" => array("title" => "Mac Track Viewer", "mapping" => "index.php:", "url" => "mactrack_view.php", "level" => "1"),
 		"rra.php:" => array("title" => "Round Robin Archives", "mapping" => "index.php:", "url" => "rra.php", "level" => "1"),
 		"rra.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
 		"rra.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
