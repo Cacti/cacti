@@ -62,7 +62,7 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 function db_execute($sql) {
 	global $cnn_id;
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: SQL Exec: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
@@ -84,7 +84,7 @@ function db_execute($sql) {
 function db_fetch_cell($sql,$col_name = '') {
 	global $cnn_id;
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: SQL Cell: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
@@ -116,7 +116,7 @@ function db_fetch_row($sql, $log = TRUE) {
 	global $cnn_id;
 
 	if ($log) {
-		if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+		if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
 			cacti_log("DEBUG: SQL Row: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"\n", FALSE);
 		}
 	}
@@ -139,7 +139,7 @@ function db_fetch_row($sql, $log = TRUE) {
 function db_fetch_assoc($sql) {
 	global $cnn_id;
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: SQL Assoc: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
