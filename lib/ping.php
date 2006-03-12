@@ -73,16 +73,37 @@ class Net_Ping
 	}
 
 	function build_icmp_packet() {
+		$seq_low = rand(0,255);
+		$seq_high = rand(0,255);
+
 		$data = "cacti-monitoring-system"; // the actual test data
 		$type = "\x08"; // 8 echo message; 0 echo reply message
 		$code = "\x00"; // always 0 for this program
-		$chksm = "\xCE\x96"; // generate checksum for icmp request
-		$id = "\x40\x00"; // we will have to work with this later
-		$sqn = "\x00\x00"; // we will have to work with this later
+		$chksm = "\x00\x00"; // generate checksum for icmp request
+		$id = "\x00\x00";
+		$sqn = chr($seq_high) . chr($seq_low);
 
 		// now lets build the actual icmp packet
 		$this->request = $type.$code.$chksm.$id.$sqn.$data;
+		$chksm = $this->get_checksum($this->request);
+
+		$this->request = $type.$code.$chksm.$id.$sqn.$data;
 		$this->request_len = strlen($this->request);
+	}
+
+	function get_checksum($data) {
+		if (strlen($data)%2) {
+			$data .= "\x00";
+		}
+
+		$bit = unpack('n*', $data);
+		$sum = array_sum($bit);
+
+		while ($sum>>16) {
+			$sum = ($sum >> 16) + ($sum & 0xffff);
+		}
+
+		return pack('n*', ~$sum);
 	}
 
 	function ping_icmp() {
@@ -117,7 +138,7 @@ class Net_Ping
 				$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
 			}
 			socket_set_block($this->socket);
-			
+
 			if (!(@socket_connect($this->socket, $host_ip, NULL))) {
 				$this->ping_response = "Cannot connect to host";
 				$this->ping_status   = "down";
