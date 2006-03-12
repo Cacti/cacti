@@ -221,6 +221,8 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE) 
 		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
+	if (is_array($key_cols)) $autoinc = FALSE;
+
 	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc)) { return 0; }
 
 	/* get the last AUTO_ID and return it */
