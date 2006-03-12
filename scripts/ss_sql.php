@@ -3,7 +3,7 @@
 $no_http_headers = true;
 
 /* display ALL errors */
-error_reporting(E_ALL);
+error_reporting(0);
 
 if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . "/../include/config.php");

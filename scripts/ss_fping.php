@@ -5,7 +5,7 @@
 $no_http_headers = true;
 
 /* display No errors */
-error_reporting(E_ERROR);
+error_reporting(0);
 
 include_once(dirname(__FILE__) . "/../include/config.php");
 include_once(dirname(__FILE__) . "/../lib/snmp.php");
