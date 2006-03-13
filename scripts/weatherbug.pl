@@ -2,7 +2,7 @@
 
 $output = `/bin/bash -c 'wget --quiet -O - \"http:\/\/wisapidata.weatherbug.com\/WxDataISAPI\/WxDataISAPI.dll?Magic=10991&RegNum=3647055&ZipCode=17241&StationID=NWVLL&Units=0&Version=2.7&Fore=1&t=1015084854\/"'`;
 
-$output =~ s/[^-0-9|\|]*//gi;
+$output =~ s/[^-0-9|\|.]*//gi;
 
 @weather = split(/\|/, $output);
 

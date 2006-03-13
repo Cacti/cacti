@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+-bug#0000584: Barometer does not display decimal
 -bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentile
 -bug#0000672: When creating a device, the Host Template was not properly validated
 -bug#0000698: Make arguments to 'df' more compatible with FreeBSD 6.0 in the "Get Unix Partitions" data query.
