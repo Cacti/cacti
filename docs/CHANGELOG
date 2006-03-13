@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0000672: When creating a device, the Host Template was not properly validated
 -bug#0000698: Make arguments to 'df' more compatible with FreeBSD 6.0 in the "Get Unix Partitions" data query.
 -bug#0000705: Fix problem with the current selected data source item and SIMILAR_DATA_SOURCES_NODUPS (again).
+-bug#0000721: SNMPv2 Query has issues with ifAlias & ifName when none present
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
 -bug: PHP 5.1 snmpwalks utilize the bulk method by default.  Therefore, prefer them over the bulkwalk binary.
