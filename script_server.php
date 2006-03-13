@@ -172,10 +172,6 @@ while (1) {
 			fputs(STDOUT, $result . "\n");
 			fflush(STDOUT);
 		}
-
-		if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-			cacti_log("SERVER: " . $in_string . " output " . $result, false, "PHPSVR");
-		}
 	} else {
 		cacti_log("WARNING: Function does not exist\n", false, "PHPSVR");
 		fputs(STDOUT, "WARNING: Function does not exist\n");
