@@ -124,6 +124,9 @@ class Net_Ping
 			/* determine the host's ip address */
 			$host_ip = gethostbyname($this->host["hostname"]);
 
+			/* set the effective user of root if unix */
+			$cacti_poller_account = $this->seteuid();
+
 			/* initilize the socket */
 			if (substr_count($host_ip,":") > 0) {
 				if (defined("AF_INET6")) {
@@ -132,6 +135,9 @@ class Net_Ping
 					$this->ping_response = "PHP version does not support IPv6";
 					$this->ping_status   = "down";
 					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+
+					/* return to real user account */
+					$this->setuid($cacti_poller_account);
 					return false;
 				}
 			}else{
@@ -142,6 +148,9 @@ class Net_Ping
 			if (!(@socket_connect($this->socket, $host_ip, NULL))) {
 				$this->ping_response = "Cannot connect to host";
 				$this->ping_status   = "down";
+
+				/* return to real user account */
+				$this->setuid($cacti_poller_account);
 				return false;
 			}
 
@@ -159,6 +168,8 @@ class Net_Ping
 					}
 					$this->close_socket();
 
+					/* return to real user account */
+					$this->setuid($cacti_poller_account);
 					return false;
 				}
 
@@ -183,6 +194,10 @@ class Net_Ping
 					$this->ping_response = "Host is alive";
 
 					$this->close_socket();
+
+					/* return to real user account */
+					$this->setuid($cacti_poller_account);
+
 					return true;
 				case 0:
 					/* timeout */
@@ -192,10 +207,31 @@ class Net_Ping
 
 				$retry_count++;
 			}
-		} else {
+		}else{
 			$this->ping_status = "down";
 			$this->ping_response = "Destination address not specified";
 			return false;
+		}
+	}
+
+	function seteuid() {
+		$cacti_user = "";
+
+		/* if we are unix, set the effective userid to root and then create */
+		if (($config["cacti_server_os"] == "unix") &&
+			(function_exists("posix_getuid"))) {
+			$cacti_user = posix_getuid();
+			posix_seteuid(0);
+		}
+
+		return $cacti_user;
+	}
+
+	function setuid($cacti_poller_account) {
+		/* if we are unix, set the effective userid to root and then create */
+		if (($config["cacti_server_os"] == "unix") &&
+			(function_exists("posix_getuid"))) {
+			posix_seteuid($cacti_poller_account);
 		}
 	}
 
