@@ -1,5 +1,7 @@
 Cacti CHANGELOG
 
+-bug#0000731: Add Host to Tree from Device page incomplete
+-bug#0000643: host.php tweak (correct display of a device's uptime)
 -bug#0000584: Barometer does not display decimal
 -bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentile
 -bug#0000672: When creating a device, the Host Template was not properly validated
