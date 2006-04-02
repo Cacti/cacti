@@ -278,7 +278,7 @@ function form_actions() {
 				input_validate_input_number(get_request_var_post("tree_item_id"));
 				/* ==================================================== */
 
-				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 0, 0, false);
+				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
 			}
 		}
 
@@ -510,6 +510,12 @@ function host_edit() {
 
 							print "<strong>System:</strong> $snmp_system<br>\n";
 							print "<strong>Uptime:</strong> $snmp_uptime<br>\n";
+							$days = intval($snmp_uptime / (60*60*24*100));
+							$remainder = $snmp_uptime % (60*60*24*100);
+							$hours = intval($remainder / (60*60*100));
+							$remainder = $remainder % (60*60*100);
+							$minutes = intval($remainder / (60*100));
+							print "&nbsp;($days days, $hours hours, $minutes minutes)<br>\n";
 							print "<strong>Hostname:</strong> $snmp_hostname<br>\n";
 							print "<strong>Location:</strong> $snmp_location<br>\n";
 							print "<strong>Contact:</strong> $snmp_contact<br>\n";
