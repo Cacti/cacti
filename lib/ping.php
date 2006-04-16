@@ -215,6 +215,7 @@ class Net_Ping
 	}
 
 	function seteuid() {
+		global $config;
 		$cacti_user = "";
 
 		/* if we are unix, set the effective userid to root and then create */
@@ -228,6 +229,8 @@ class Net_Ping
 	}
 
 	function setuid($cacti_poller_account) {
+		global $config;
+
 		/* if we are unix, set the effective userid to root and then create */
 		if (($config["cacti_server_os"] == "unix") &&
 			(function_exists("posix_getuid"))) {
