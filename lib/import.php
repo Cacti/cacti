@@ -341,7 +341,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 			$save["t_value"] = $item_array["t_value"];
 			$save["value"] = addslashes(xml_character_decode($item_array["value"]));
 
-			sql_save($save, "data_input_data", array("data_template_data_id", "data_input_field_id"));
+			sql_save($save, "data_input_data", array("data_template_data_id", "data_input_field_id"), false);
 		}
 	}
 
@@ -419,7 +419,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$save["data_template_rrd_id"] = resolve_hash_to_id($sub_item_array["data_template_rrd_id"], $hash_cache);
 					$save["snmp_field_name"] = $sub_item_array["snmp_field_name"];
 
-					sql_save($save, "snmp_query_graph_rrd", array("snmp_query_graph_id", "data_template_id", "data_template_rrd_id"));
+					sql_save($save, "snmp_query_graph_rrd", array("snmp_query_graph_id", "data_template_id", "data_template_rrd_id"), false);
 				}
 			}
 

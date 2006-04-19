@@ -40,25 +40,25 @@ function user_copy($template_user, $new_user, $new_realm=0) {
 	$user_auth_perms = db_fetch_assoc("select * from user_auth_perms where user_id = '$old_id'");
 	foreach ($user_auth_perms as $row) {
 		$row['user_id'] = $new_id;
-		sql_save($row, 'user_auth_perms', array('user_id', 'item_id', 'type'));
+		sql_save($row, 'user_auth_perms', array('user_id', 'item_id', 'type'), false);
 	}
 
 	$user_auth_realm = db_fetch_assoc("select * from user_auth_realm where user_id = '$old_id'");
 	foreach ($user_auth_realm as $row) {
 		$row['user_id'] = $new_id;
-		sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'));
+		sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'), false);
 	}
 
 	$settings_graphs = db_fetch_assoc("select * from settings_graphs where user_id = '$old_id'");
 	foreach ($settings_graphs as $row) {
 		$row['user_id'] = $new_id;
-		sql_save($row, 'settings_graphs', array('user_id', 'name'));
+		sql_save($row, 'settings_graphs', array('user_id', 'name'), false);
 	}
 
 	$settings_tree = db_fetch_assoc("select * from settings_tree where user_id = '$old_id'");
 	foreach ($settings_tree as $row) {
 		$row['user_id'] = $new_id;
-		sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'));
+		sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'), false);
 	}
 }
 

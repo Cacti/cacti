@@ -214,24 +214,27 @@ function db_replace($table_name, $array_items, $keyCols) {
    @arg $table_name - the name of the table to make the replacement in
    @arg $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
-function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE) {
+function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = true) {
 	global $cnn_id;
 
 	while (list ($key, $value) = each ($array_items)) {
 		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
-	if (is_array($key_cols)) $autoinc = FALSE;
+	$replace_result = $cnn_id->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
 
-	if (!$cnn_id->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc)) { return 0; }
+	if ($replace_result == 0) {
+		return 0;
+	}
 
 	/* get the last AUTO_ID and return it */
-	if ($cnn_id->Insert_ID() == "0") {
+	if (($cnn_id->Insert_ID() == "0") || ($replace_result == 1)) {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
 				return str_replace("\"", "", $array_items[$key_cols]);
 			}
 		}
+
 		return 0;
 	}else{
 		return $cnn_id->Insert_ID();
