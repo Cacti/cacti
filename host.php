@@ -719,17 +719,37 @@ function host() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up sort_column */
+	if (isset($_REQUEST["host_sort_column"])) {
+		$_REQUEST["host_sort_column"] = sanitize_search_string(get_request_var("host_sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["host_sort_direction"])) {
+		$_REQUEST["host_sort_direction"] = sanitize_search_string(get_request_var("host_sort_direction"));
+	}
+
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_device_current_page");
 		kill_session_var("sess_device_filter");
 		kill_session_var("sess_device_host_template_id");
 		kill_session_var("sess_host_status");
+		kill_session_var("sess_host_sort_column");
+		kill_session_var("sess_host_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_template_id"]);
 		unset($_REQUEST["host_status"]);
+		unset($_REQUEST["host_sort_column"]);
+		unset($_REQUEST["host_sort_direction"]);
+	}
+
+	if (!empty($_SESSION["sess_host_status"])) {
+		if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
+			$_REQUEST["page"] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -737,12 +757,8 @@ function host() {
 	load_current_session_value("filter", "sess_device_filter", "");
 	load_current_session_value("host_template_id", "sess_device_host_template_id", "-1");
 	load_current_session_value("host_status", "sess_host_status", "-1");
-
-	if (!empty($_SESSION["sess_host_status"])) {
-		if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
-			$_REQUEST["page"] = 1;
-		}
-	}
+	load_current_session_value("host_sort_column", "sess_host_sort_column", "description");
+	load_current_session_value("host_sort_direction", "sess_host_sort_direction", "ASC");
 
 	html_start_box("<strong>Devices</strong>", "98%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
 
@@ -776,7 +792,7 @@ function host() {
 		from host
 		$sql_where");
 
-	$hosts = db_fetch_assoc("select
+	$hosts = db_fetch_assoc("SELECT
 		host.id,
 		host.disabled,
 		host.status,
@@ -787,10 +803,10 @@ function host() {
 		host.cur_time,
 		host.avg_time,
 		host.availability
-		from host
+		FROM host
 		$sql_where
-		order by host.description
-		limit " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+		ORDER BY " . $_REQUEST["host_sort_column"] . " " . $_REQUEST["host_sort_direction"] . "
+		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
 
 	/* generate page list */
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
@@ -815,7 +831,15 @@ function host() {
 
 	print $nav;
 
-	html_header_checkbox(array("Description", "Status", "Hostname", "Current (ms)", "Average (ms)", "Availability"));
+	$display_text = array(
+		"description" => array("Description", "ASC"),
+		"status" => array("Status", "DESC"),
+		"hostname" => array("Hostname", "ASC"),
+		"cur_time" => array("Current (ms)", "DESC"),
+		"avg_time" => array("Average (ms>", "DESC"),
+		"availability" => array("Availability", "ASC"));
+
+	html_header_sort_checkbox($display_text, "host_sort_column", "host_sort_direction", "host.php");
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {

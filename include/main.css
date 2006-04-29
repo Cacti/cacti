@@ -68,7 +68,7 @@ a:hover {
 	color: #ffffff;
 }
 
-.textSubHeaderDark {
+.textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 10px;
 	color: #ffffff;
 	font-weight: bold;

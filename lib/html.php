@@ -202,6 +202,97 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
 	<?php
 }
 
+/* html_header_sort - draws a header row suitable for display inside of a box element.  When
+     a user selects a column header, the collback function "filename" will be called to handle
+     the sort the column and display the altered results.
+   @arg $header_items - an array containing a list of column items to display.  The
+        format is similar to the html_header, with the exception that it has three
+        dimensions associated with each element (db_column => display_text, default_sort_order)
+   @arg $sort_column - the name of a current valid $_REQUEST variable that contains the name of the
+        current sort column.
+   @arg $sort_direction - the name of a current valid $_REQUEST variable that contains the current
+        sort direction.  The actual sort direction will be opposite this direction if the user selects
+        the same named column.
+   @arg $filename - the html file to reference in the sort action.
+   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+function html_header_sort($header_items, $sort_column, $sort_direction, $filename, $last_item_colspan = 1) {
+	global $colors;
+
+	/* reverse the sort direction */
+	if ($_REQUEST[$sort_direction] == "ASC") {
+		$new_sort_direction = "DESC";
+	}else{
+		$new_sort_direction = "ASC";
+	}
+
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+
+	$i = sizeof($header_items);
+	foreach ($header_items as $db_column => $display_text) {
+		/* by default, you will always sort ascending, with the exception of an already sorted column */
+		if ($_REQUEST[$sort_column] == $db_column) {
+			$direction = $new_sort_direction;
+			$display_text = $display_array[0] . "**";
+		}else{
+			$display_text = $display_array[0];
+			$direction = $display_array[1];
+
+		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
+		print "<a class='textSubHeaderDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a>";
+		print "</td>\n";
+	}
+
+	print "</tr>\n";
+}
+
+/* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
+     suitable for display inside of a box element.  When a user selects a column header,
+     the collback function "filename" will be called to handle the sort the column and display
+     the altered results.
+   @arg $header_items - an array containing a list of column items to display.  The
+        format is similar to the html_header, with the exception that it has three
+        dimensions associated with each element (db_column => display_text, default_sort_order)
+   @arg $sort_column - the name of a current valid $_REQUEST variable that contains the name of the
+        current sort column.
+   @arg $sort_direction - the name of a current valid $_REQUEST variable that contains the current
+        sort direction.  The actual sort direction will be opposite this direction if the user selects
+        the same named column.
+   @arg $filename - the html file to reference in the sort action.
+   @arg $form_action - the url to post the 'select all' form to */
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $filename, $form_action = "") {
+	global $colors;
+
+	/* reverse the sort direction */
+	if ($_REQUEST[$sort_direction] == "ASC") {
+		$new_sort_direction = "DESC";
+	}else{
+		$new_sort_direction = "ASC";
+	}
+
+	/* default to the 'current' file */
+	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
+
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+
+	foreach($header_items as $db_column => $display_array) {
+		/* by default, you will always sort ascending, with the exception of an already sorted column */
+		if ($_REQUEST[$sort_column] == $db_column) {
+			$direction = $new_sort_direction;
+			$display_text = $display_array[0] . "**";
+		}else{
+			$display_text = $display_array[0];
+			$direction = $display_array[1];
+		}
+
+		print "<td>";
+		print "<a class='textSubHeaderDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a>";
+		print "</td>\n";
+	}
+
+	print "<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n<form name='chk' method='post' action='$form_action'>\n";
+	print "</tr>\n";
+}
+
 /* html_header - draws a header row suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
