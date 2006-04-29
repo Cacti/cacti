@@ -236,6 +236,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $filenam
 		}else{
 			$display_text = $display_array[0];
 			$direction = $display_array[1];
+		}
 
 		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
 		print "<a class='textSubHeaderDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a>";
