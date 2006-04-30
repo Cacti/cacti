@@ -767,7 +767,7 @@ function host() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-    $sql_where = "where (host.hostname like '%%" . $_REQUEST["filter"] . "%%' OR host.description like '%%" . $_REQUEST["filter"] . "%%')";
+	$sql_where = "where (host.hostname like '%%" . $_REQUEST["filter"] . "%%' OR host.description like '%%" . $_REQUEST["filter"] . "%%')";
 
 	if ($_REQUEST["host_status"] == "-1") {
 		/* Show all items */
@@ -836,7 +836,7 @@ function host() {
 		"status" => array("Status", "DESC"),
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),
-		"avg_time" => array("Average (ms>", "DESC"),
+		"avg_time" => array("Average (ms)", "DESC"),
 		"availability" => array("Availability", "ASC"));
 
 	html_header_sort_checkbox($display_text, "host_sort_column", "host_sort_direction", "host.php");

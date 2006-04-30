@@ -239,7 +239,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $filenam
 		}
 
 		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
-		print "<a class='textSubHeaderDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a>";
+		print "<strong><a class='linkOverDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a></strong>";
 		print "</td>\n";
 	}
 
@@ -286,7 +286,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		print "<td>";
-		print "<a class='textSubHeaderDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a>";
+		print "<strong><a class='linkOverDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a></strong>";
 		print "</td>\n";
 	}
 
