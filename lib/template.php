@@ -649,7 +649,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						/* once we find a working value, stop */
 						$suggested_values_ds{$data_template["id"]}{$suggested_value["field_name"]} = true;
 
-						if (sizeof(db_fetch_row("show columns from data_template_rrd like '" . $suggested_value["field_name"] . "'"))) {
+						if ((sizeof(db_fetch_row("show columns from data_template_rrd like '" . $suggested_value["field_name"] . "'"))) &&
+							(!substr_count($subs_string, "|"))) {
 							db_execute("update data_template_rrd set " . $suggested_value["field_name"] . "='" . $subs_string . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 						}
 					}
