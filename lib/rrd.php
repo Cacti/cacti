@@ -560,6 +560,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* define some variables */
 	$scale = "";
 	$rigid = "";
+	$unit_value = "";
 	$unit_exponent_value = "";
 	$graph_legend = "";
 	$graph_defs = "";
@@ -589,7 +590,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (!empty($graph["unit_value"])) {
-		$unit_value = "--unit=" . $graph["unit_value"] . RRD_NL;
+		if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+			$unit_value = "--y-grid=" . $graph["unit_value"] . RRD_NL;
+		}else{
+			$unit_value = "--unit=" . $graph["unit_value"] . RRD_NL;
+		}
 	}
 
 	if (ereg("^[0-9]+$", $graph["unit_exponent_value"])) {
@@ -706,6 +711,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"--height=$graph_height" . RRD_NL .
 		"--width=$graph_width" . RRD_NL .
 		"$scale" .
+		"$unit_value" .
 		"$unit_exponent_value" .
 		"$graph_legend" .
 		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;

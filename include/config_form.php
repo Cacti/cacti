@@ -442,12 +442,13 @@ $struct_graph = array(
 		"description" => "Should be set to 1024 for memory and 1000 for traffic measurements."
 		),
 	"unit_value" => array(
-		"friendly_name" => "Unit Value",
+		"friendly_name" => "Unit Grid Value",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "",
-		"description" => "(--unit) Sets the exponent value on the Y-axis for numbers. Note: This option was
-			recently added in rrdtool 1.0.36."
+		"description" => "(--unit/--y-grid) Sets the xponent value on the Y-axis for numbers. Note: This option was
+			added in rrdtool 1.0.36 and depricated in 1.2.x.  In RRDtool 1.2.x, this value is replaced by the --y-grid option.
+			In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines."
 		),
 	"unit_exponent_value" => array(
 		"friendly_name" => "Unit Exponent Value",
