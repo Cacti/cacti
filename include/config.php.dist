@@ -154,7 +154,7 @@ include_once($config["include_path"] . "/config_arrays.php");
 include_once($config["include_path"] . "/config_settings.php");
 
 /* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type);
+db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
 
 /* include additional modules */
 include_once($config["include_path"] . "/config_form.php");
