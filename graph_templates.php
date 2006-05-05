@@ -416,18 +416,35 @@ function template() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up sort_column string */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up sort_direction string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_graph_template_current_page");
 		kill_session_var("sess_graph_template_filter");
+		kill_session_var("sess_graph_template_sort_column");
+		kill_session_var("sess_graph_template_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_graph_template_current_page", "1");
 	load_current_session_value("filter", "sess_graph_template_filter", "");
+	load_current_session_value("sort_column", "sess_graph_template_sort_column", "name");
+	load_current_session_value("sort_direction", "sess_graph_template_sort_direction", "ASC");
 
 	html_start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
 
@@ -436,21 +453,21 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "where (graph_templates.name like '%%" . $_REQUEST["filter"] . "%%')";
+	$sql_where = "WHERE (graph_templates.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
 
 	html_start_box("", "98%", $colors["header"], "3", "center", "");
 
-	$total_rows = db_fetch_cell("select
+	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates.id)
-		from graph_templates
+		FROM graph_templates
 		$sql_where");
 
-	$template_list = db_fetch_assoc("select
+	$template_list = db_fetch_assoc("SELECT
 		graph_templates.id,graph_templates.name
-		from graph_templates
+		FROM graph_templates
 		$sql_where
-		order by name
-		limit " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
 
 	/* generate page list */
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "graph_templates.php?filter=" . $_REQUEST["filter"]);
@@ -475,7 +492,10 @@ function template() {
 
 	print $nav;
 
-	html_header_checkbox(array("Template Title"));
+	$display_text = array(
+		"name" => array("Template Title", "ASC"));
+
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {

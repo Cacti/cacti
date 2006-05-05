@@ -1005,20 +1005,36 @@ function graph() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up sort_column string */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up sort_direction string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_graph_current_page");
 		kill_session_var("sess_graph_filter");
+		kill_session_var("sess_graph_sort_column");
+		kill_session_var("sess_graph_sort_direction");
 		kill_session_var("sess_graph_host_id");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
 		unset($_REQUEST["host_id"]);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_graph_current_page", "1");
 	load_current_session_value("filter", "sess_graph_filter", "");
+	load_current_session_value("sort_column", "sess_graph_sort_column", "title_cache");
+	load_current_session_value("sort_direction", "sess_graph_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_graph_host_id", "-1");
 
 	html_start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
@@ -1040,13 +1056,13 @@ function graph() {
 
 	html_start_box("", "98%", $colors["header"], "3", "center", "");
 
-	$total_rows = db_fetch_cell("select
+	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates_graph.id)
-		from (graph_local,graph_templates_graph)
-		where graph_local.id=graph_templates_graph.local_graph_id
+		FROM (graph_local,graph_templates_graph)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where");
 
-	$graph_list = db_fetch_assoc("select
+	$graph_list = db_fetch_assoc("SELECT
 		graph_templates_graph.id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
@@ -1054,12 +1070,12 @@ function graph() {
 		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id
-		from (graph_local,graph_templates_graph)
-		left join graph_templates on (graph_local.graph_template_id=graph_templates.id)
-		where graph_local.id=graph_templates_graph.local_graph_id
+		FROM (graph_local,graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where
-		order by graph_templates_graph.title_cache,graph_local.host_id
-		limit " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
 
 	/* generate page list */
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_graph"), $total_rows, "graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
@@ -1084,7 +1100,12 @@ function graph() {
 
 	print $nav;
 
-	html_header_checkbox(array("Graph Title", "Template Name", "Size"));
+	$display_text = array(
+		"title_cache" => array("Graph Title", "ASC"),
+		"name" => array("Template Name", "ASC"),
+		"height" => array("Size", "ASC"));
+
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$i = 0;
 	if (sizeof($graph_list) > 0) {

@@ -208,18 +208,15 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
         dimensions associated with each element (db_column => display_text, default_sort_order)
-   @arg $sort_column - the name of a current valid $_REQUEST variable that contains the name of the
-        current sort column.
-   @arg $sort_direction - the name of a current valid $_REQUEST variable that contains the current
-        sort direction.  The actual sort direction will be opposite this direction if the user selects
-        the same named column.
-   @arg $filename - the html file to reference in the sort action.
+   @arg $sort_column - the value of current sort column.
+   @arg $sort_direction - the value the current sort direction.  The actual sort direction
+        will be opposite this direction if the user selects the same named column.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
-function html_header_sort($header_items, $sort_column, $sort_direction, $filename, $last_item_colspan = 1) {
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1) {
 	global $colors;
 
 	/* reverse the sort direction */
-	if ($_REQUEST[$sort_direction] == "ASC") {
+	if ($sort_direction == "ASC") {
 		$new_sort_direction = "DESC";
 	}else{
 		$new_sort_direction = "ASC";
@@ -227,10 +224,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $filenam
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
 
-	$i = sizeof($header_items);
-	foreach ($header_items as $db_column => $display_text) {
+	$i = 1;
+	foreach ($header_items as $db_column => $display_array) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		if ($_REQUEST[$sort_column] == $db_column) {
+		if ($sort_column == $db_column) {
 			$direction = $new_sort_direction;
 			$display_text = $display_array[0] . "**";
 		}else{
@@ -238,9 +235,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $filenam
 			$direction = $display_array[1];
 		}
 
-		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
-		print "<strong><a class='linkOverDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a></strong>";
+		print "<td " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
+		print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
 		print "</td>\n";
+		$i++;
 	}
 
 	print "</tr>\n";
@@ -253,18 +251,15 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $filenam
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
         dimensions associated with each element (db_column => display_text, default_sort_order)
-   @arg $sort_column - the name of a current valid $_REQUEST variable that contains the name of the
-        current sort column.
-   @arg $sort_direction - the name of a current valid $_REQUEST variable that contains the current
-        sort direction.  The actual sort direction will be opposite this direction if the user selects
-        the same named column.
-   @arg $filename - the html file to reference in the sort action.
+   @arg $sort_column - the value of current sort column.
+   @arg $sort_direction - the value the current sort direction.  The actual sort direction
+        will be opposite this direction if the user selects the same named column.
    @arg $form_action - the url to post the 'select all' form to */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $filename, $form_action = "") {
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "") {
 	global $colors;
 
 	/* reverse the sort direction */
-	if ($_REQUEST[$sort_direction] == "ASC") {
+	if ($sort_direction == "ASC") {
 		$new_sort_direction = "DESC";
 	}else{
 		$new_sort_direction = "ASC";
@@ -277,7 +272,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	foreach($header_items as $db_column => $display_array) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		if ($_REQUEST[$sort_column] == $db_column) {
+		if ($sort_column == $db_column) {
 			$direction = $new_sort_direction;
 			$display_text = $display_array[0] . "**";
 		}else{
@@ -286,7 +281,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		print "<td>";
-		print "<strong><a class='linkOverDark' href=" . $filename . "?" . $sort_column ."=" . $db_column . "&" . $sort_direction . "=" . $direction . ">" . $display_text . "</a></strong>";
+		print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
 		print "</td>\n";
 	}
 

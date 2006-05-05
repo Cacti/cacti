@@ -363,13 +363,32 @@ function template_edit() {
 function template() {
 	global $colors, $host_actions;
 
+	/* clean up sort_column */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("sort_column", "sess_host_template_column", "name");
+	load_current_session_value("sort_direction", "sess_host_template_sort_direction", "ASC");
+
 	display_output_messages();
 
 	html_start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 
-	html_header_checkbox(array("Template Title"));
+	$display_text = array(
+		"name" => array("Template Title", "ASC"));
 
-	$host_templates = db_fetch_assoc("select * from host_template order by name");
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 3);
+
+	$host_templates = db_fetch_assoc("SELECT *
+		FROM host_template
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
 
 	$i = 0;
 	if (sizeof($host_templates) > 0) {

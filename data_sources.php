@@ -955,20 +955,36 @@ function ds() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up sort_column string */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up sort_direction string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_ds_current_page");
 		kill_session_var("sess_ds_filter");
+		kill_session_var("sess_ds_sort_column");
+		kill_session_var("sess_ds_sort_direction");
 		kill_session_var("sess_ds_host_id");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
 		unset($_REQUEST["host_id"]);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_ds_current_page", "1");
 	load_current_session_value("filter", "sess_ds_filter", "");
+	load_current_session_value("sort_column", "sess_ds_sort_column", "name_cache");
+	load_current_session_value("sort_direction", "sess_ds_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_ds_host_id", "-1");
 
 	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
@@ -990,27 +1006,27 @@ function ds() {
 		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];
 	}
 
-	$total_rows = sizeof(db_fetch_assoc("select
+	$total_rows = sizeof(db_fetch_assoc("SELECT
 		data_local.id
-		from (data_local,data_template_data)
-		where data_local.id=data_template_data.local_data_id
+		FROM (data_local,data_template_data)
+		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where"));
-	$data_sources = db_fetch_assoc("select
+	$data_sources = db_fetch_assoc("SELECT
 		data_template_data.local_data_id,
 		data_template_data.name_cache,
 		data_template_data.active,
 		data_input.name as data_input_name,
 		data_template.name as data_template_name,
 		data_local.host_id
-		from (data_local,data_template_data)
-		left join data_input
-		on (data_input.id=data_template_data.data_input_id)
-		left join data_template
-		on (data_local.data_template_id=data_template.id)
-		where data_local.id=data_template_data.local_data_id
+		FROM (data_local,data_template_data)
+		LEFT JOIN data_input
+		ON (data_input.id=data_template_data.data_input_id)
+		LEFT JOIN data_template
+		ON (data_local.data_template_id=data_template.id)
+		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where
-		order by data_template_data.name_cache,data_local.host_id
-		limit " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
+		ORDER BY ". $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
 
 	html_start_box("", "98%", $colors["header"], "3", "center", "");
 
@@ -1037,7 +1053,13 @@ function ds() {
 
 	print $nav;
 
-	html_header_checkbox(array("Name", "Data Input Method", "Active", "Template Name"));
+	$display_text = array(
+		"name_cache" => array("Name", "ASC"),
+		"data_input_name" => array("Data Input Method", "ASC"),
+		"active" => array("Active", "ASC"),
+		"data_template_name" => array("Template Name", "ASC"));
+
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$i = 0;
 	if (sizeof($data_sources) > 0) {

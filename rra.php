@@ -150,16 +150,38 @@ function rra_edit() {
 function rra() {
 	global $colors;
 
+	/* clean up sort_column */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("sort_column", "sess_rra_sort_column", "timespan");
+	load_current_session_value("sort_direction", "sess_rra_sort_direction", "ASC");
+
 	html_start_box("<strong>Round Robin Archives</strong>", "98%", $colors["header"], "3", "center", "rra.php?action=edit");
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Steps",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Rows",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Timespan",$colors["header_text"],2);
-	print "</tr>";
+	$display_text = array(
+		"name" => array("Name", "ASC"),
+		"steps" => array("Steps", "ASC"),
+		"rows" => array("Rows", "ASC"),
+		"timespan" => array("Timespan", "ASC"));
 
-	$rras = db_fetch_assoc("select id,name,rows,steps,timespan from rra order by timespan");
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 4);
+
+	$rras = db_fetch_assoc("SELECT
+		id,
+		name,
+		rows,
+		steps,
+		timespan
+		FROM rra
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
 
 	$i = 0;
 	if (sizeof($rras) > 0) {

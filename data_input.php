@@ -391,15 +391,29 @@ function data_edit() {
 function data() {
 	global $colors, $input_types;
 
+	/* clean up sort_column */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("sort_column", "sess_data_input_sort_column", "name");
+	load_current_session_value("sort_direction", "sess_data_input_sort_direction", "ASC");
+
 	html_start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Data Input Method",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-	print "</tr>";
+	$display_text = array(
+		"name" => array("Name", "ASC"),
+		"type_id" => array("Data Input Method", "ASC"));
 
-	$data_inputs = db_fetch_assoc("select * from data_input order by name");
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 3);
+
+	$data_inputs = db_fetch_assoc("SELECT * FROM data_input ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
 
 	$i = 0;
 	if (sizeof($data_inputs) > 0) {

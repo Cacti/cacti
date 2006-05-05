@@ -631,20 +631,34 @@ function data_query_edit() {
 function data_query() {
 	global $colors;
 
+	/* clean up sort_column */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("sort_column", "sess_data_queries_sort_column", "description");
+	load_current_session_value("sort_direction", "sess_data_queries_sort_direction", "ASC");
+
 	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Data Input Method",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-	print "</tr>";
+	$display_text = array(
+		"name" => array("Name", "ASC"),
+		"data_input_method" => array("Data Input Method", "ASC"));
+
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 3);
 
 	$snmp_queries = db_fetch_assoc("SELECT
 			snmp_query.id,
 			snmp_query.name,
 			data_input.name AS data_input_method
 			FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id = data_input.id)
-			ORDER BY snmp_query.name");
+			ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
 
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {

@@ -609,18 +609,35 @@ function template() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up sort_column string */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up sort_direction string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_data_template_current_page");
 		kill_session_var("sess_data_template_filter");
+		kill_session_var("sess_data_template_sort_column");
+		kill_session_var("sess_data_template_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_data_template_current_page", "1");
 	load_current_session_value("filter", "sess_data_template_filter", "");
+	load_current_session_value("sort_column", "sess_data_template_sort_column", "name");
+	load_current_session_value("sort_direction", "sess_data_template_sort_direction", "ASC");
+
 
 	html_start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 
@@ -633,23 +650,23 @@ function template() {
 
 	html_start_box("", "98%", $colors["header"], "3", "center", "");
 
-	$total_rows = db_fetch_cell("select
+	$total_rows = db_fetch_cell("SELECT
 		COUNT(data_template.id)
-		from data_template
+		FROM data_template
 		$sql_where");
 
-	$template_list = db_fetch_assoc("select
+	$template_list = db_fetch_assoc("SELECT
 		data_template.id,
 		data_template.name,
-		data_input.name as data_input_method,
-		data_template_data.active as active
-		from (data_template,data_template_data)
-		left join data_input on (data_template_data.data_input_id = data_input.id)
+		data_input.name AS data_input_method,
+		data_template_data.active AS active
+		FROM (data_template,data_template_data)
+		LEFT JOIN data_input ON (data_template_data.data_input_id = data_input.id)
 		$sql_where
-		and data_template.id = data_template_data.data_template_id
-		and data_template_data.local_data_id = 0
-		order by data_template.name
-		limit " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+		AND data_template.id = data_template_data.data_template_id
+		AND data_template_data.local_data_id = 0
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
 
 	/* generate page list */
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "data_templates.php?filter=" . $_REQUEST["filter"]);
@@ -674,7 +691,12 @@ function template() {
 
 	print $nav;
 
-	html_header_checkbox(array("Template Name", "Data Input Method", "Status"));
+	$display_text = array(
+		"name" => array("Template Name", "ASC"),
+		"data_input_method" => array("Data Input Method", "ASC"),
+		"active" => array("Status", "ASC"));
+
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {

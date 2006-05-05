@@ -41,7 +41,7 @@ switch ($_REQUEST["action"]) {
 	case 'user_remove':
 		user_remove();
 
-			header("Location: user_admin.php");
+		header("Location: user_admin.php");
 		break;
 	case 'user_realms_edit':
 		include_once("include/top_header.php");
@@ -717,11 +717,42 @@ function user_edit() {
 function user() {
 	global $colors, $auth_realms;
 
+	/* clean up sort_column */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("sort_column", "sess_user_admin_sort_column", "username");
+	load_current_session_value("sort_direction", "sess_user_admin_sort_direction", "ASC");
+
 	html_start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 
-	html_header(array("User Name", "Full Name", "Realm", "Default Graph Policy", "Last Login"), 2);
+	$display_text = array(
+		"username" => array("User Name", "ASC"),
+		"full_name" => array("Full Name", "ASC"),
+		"realm" => array("Realm", "ASC"),
+		"policy_graphs" => array("Default Graph Policy", "ASC"),
+		"time" => array("Last Login", "DESC"));
 
-	$user_list = db_fetch_assoc("select id, user_auth.username, full_name, realm, policy_graphs, DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time from user_auth left join user_log on (user_auth.id = user_log.user_id) group by id");
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 6);
+
+	$user_list = db_fetch_assoc("SELECT
+		id,
+		user_auth.username,
+		full_name,
+		realm,
+		policy_graphs,
+		DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time
+		FROM user_auth
+		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
+		GROUP BY id
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
 
 	$i = 0;
 	if (sizeof($user_list) > 0) {
