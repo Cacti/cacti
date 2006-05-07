@@ -326,10 +326,11 @@ $rrd_fetch_cache = array();
    @arg $end_time - the end time to use for the data calculation. this value can
      either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
+   @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
    @returns - (array) an array containing all data in this data source broken down
      by each data source item. the maximum of all data source items is included in
      an item called 'ninety_fifth_percentile_maximum' */
-function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0) {
+function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = 0) {
 	global $rrd_fetch_cache;
 
 	if (empty($local_data_id)) {
@@ -338,7 +339,7 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 	}
 
 	/* the cache hash is used to identify unique items in the cache */
-	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution);
+	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution . $show_unknown);
 
 	/* return the cached entry if available */
 	if (isset($rrd_fetch_cache[$current_hash_cache])) {
@@ -380,7 +381,11 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 				the exponent to 3 digits, rather than 2 on every Unix version that I have
 				ever seen */
 				if ($j == $i) {
-					$regexps[$i] .= '([\-]?[0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})';
+					if ($show_unknown == 1) {
+						$regexps[$i] .= '([\-]?[0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})|(nan)|(NaN)';
+					} else {
+						$regexps[$i] .= '([\-]?[0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})';
+					}
 				}else{
 					$regexps[$i] .= '[\-]?[0-9]{1}\.[0-9]+e[\+-][0-9]{2,3}';
 				}
@@ -405,14 +410,22 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 		if (preg_match_all($regexps[$i], $output, $matches)) {
 			for ($j=0; ($j < count($matches[1])); $j++) {
 				$line = ($matches[1][$j] * (pow(10,(float)$matches[2][$j])));
-				array_push($fetch_array["values"][$i], ($line * 1));
-
-				$max_array[$j][$i] = $line;
+				if ((($line == "NaN") || ($line == "nan")) && ($show_unknown == 1)) { 
+					array_push($fetch_array["values"][$i], "U");
+					$max_array[$j][$i] = "U";
+				} else {
+					array_push($fetch_array["values"][$i], ($line * 1));
+					$max_array[$j][$i] = $line;
+				}
 			}
 		}
 	}
 
-	if (isset($fetch_array["data_source_names"])) {
+
+	/* nth_percentile_maximun is removed if Unknown values are requested in the output.  This
+	is because the max_array function will give unpredictable results when there is a mix
+	of number and text data */
+	if ((isset($fetch_array["data_source_names"])) && ($show_unknown  == 0)) {
 		$next_index = count($fetch_array["data_source_names"]);
 
 		$fetch_array["data_source_names"][$next_index] = "nth_percentile_maximum";
