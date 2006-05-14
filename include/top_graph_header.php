@@ -44,15 +44,28 @@ if (read_config_option("global_auth") == "on") {
 }
 
 /* use cached url if available and applicable */
-if ((isset($_SESSION["sess_graph_view_url_cache"])) && (empty($_REQUEST["action"])) && (basename($_SERVER["PHP_SELF"]) == "graph_view.php") && (ereg("action=(tree|preview|list)", $_SESSION["sess_graph_view_url_cache"]))) {
+if ((isset($_SESSION["sess_graph_view_url_cache"])) &&
+	(empty($_REQUEST["action"])) &&
+	(basename($_SERVER["PHP_SELF"]) == "graph_view.php") &&
+	(ereg("action=(tree|preview|list)", $_SESSION["sess_graph_view_url_cache"]))) {
+
 	header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
 }
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST["action"])) {
+	$_REQUEST["action"] = "";
+}
+
+/* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
+if ($_REQUEST["action"] == "zoom") {
+	$_SESSION["sess_nav_level_cache"][2]["url"] = "graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all";
+}
 
 /* set the default action if none has been set */
-if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER["PHP_SELF"]) == "graph_view.php")) {
+if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) &&
+	(basename($_SERVER["PHP_SELF"]) == "graph_view.php")) {
+
 	if (read_graph_config_option("default_view_mode") == "1") {
 		$_REQUEST["action"] = "tree";
 	}elseif (read_graph_config_option("default_view_mode") == "2") {
@@ -63,7 +76,10 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) && (basename($_SERVER[
 }
 
 /* setup tree selection defaults if the user has not been here before */
-if ((read_graph_config_option("default_tree_view_mode") == "2") && ($_REQUEST["action"] == "tree") && (!isset($_SESSION["sess_has_viewed_graphs"]))) {
+if ((read_graph_config_option("default_tree_view_mode") == "2") &&
+	($_REQUEST["action"] == "tree") &&
+	(!isset($_SESSION["sess_has_viewed_graphs"]))) {
+
 	$_SESSION["sess_has_viewed_graphs"] = true;
 
 	$first_branch = find_first_folder_url();
