@@ -270,8 +270,9 @@ $settings = array(
 			"array" => array(
 						"disabled" => "Disabled (no exporting)",
 						"local" => "Classic (local path)",
-						"ftp_php" => "Ftp (remote) - use php functions",
-						"ftp_ncftpput" => "Ftp (remote) - use ncftpput"
+						"ftp_php" => "FTP (remote) - use php functions",
+						"ftp_ncftpput" => "FTP (remote) - use ncftpput",
+						"sftp_php" => "SFTP (remote) - use ssh php functions"
 						),
 			),
 		"export_presentation" => array(
@@ -289,8 +290,14 @@ $settings = array(
 			"method" => "spacer",
 			),
 		"path_html_export" => array(
-			"friendly_name" => "Export Path (both local and ftp)",
+			"friendly_name" => "Export Base Path (both local and ftp)",
 			"description" => "If you want Cacti to write static PNG's and HTML files to a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"export_temporary_directory" => array(
+			"friendly_name" => "Temporary Export Base Path (ftp only)",
+			"description" => "This is the a directory that cacti will temporarily store output prior to sending to the remove site via ftp.  The contents of this directory will be deleted after the ftp is completed.",
 			"method" => "textbox",
 			"max_length" => "255"
 			),

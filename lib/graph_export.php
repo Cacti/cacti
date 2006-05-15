@@ -95,18 +95,33 @@ function config_graph_export() {
 		case "local":
 			$total_graphs_created = export();
 			break;
+		case "sftp_php":
+			if (!function_exists("ftp_ssl_connect")) {
+				export_fatal("Secure FTP Function does not exist.  Export can not continue.");
+			}
 		case "ftp_php":
-			// set the temp directory
-			$stExportDir = $_ENV["TMP"].'/cacti-ftp-temp';
+			/* set the temp directory */
+			if (strlen(read_config_option("export_temporary_directory")) == 0) {
+				$stExportDir = $_ENV["TMP"] . '/cacti-ftp-temp';
+			}else{
+				$stExportDir = read_config_option("export_temporary_directory") . '/cacti-ftp-temp';
+			}
+
 			$total_graphs_created = export_pre_ftp_upload($stExportDir);
 			export_log("Using PHP built-in FTP functions.");
-			export_ftp_php_execute($stExportDir);
+			export_ftp_php_execute($stExportDir, read_config_option("export_type"));
 			export_post_ftp_upload($stExportDir);
 			break;
 		case "ftp_ncftpput":
 			if (strstr(PHP_OS, "WIN")) export_fatal("ncftpput only available in unix environment!  Export can not continue.");
-			// set the temp directory
-			$stExportDir = $_ENV["TMP"].'/cacti-ftp-temp';
+
+			/* set the temp directory */
+			if (strlen(read_config_option("export_temporary_directory")) == 0) {
+				$stExportDir = $_ENV["TMP"] . '/cacti-ftp-temp';
+			}else{
+				$stExportDir = read_config_option("export_temporary_directory") . '/cacti-ftp-temp';
+			}
+
 			$total_graphs_created = export_pre_ftp_upload($stExportDir);
 			export_log("Using ncftpput.");
 			export_ftp_ncftpput_execute($stExportDir);
@@ -115,8 +130,7 @@ function config_graph_export() {
 		case "disabled":
 			break;
 		default:
-			export_log("Export method not specified. Updated config to use local exporting.");
-			db_execute("insert into settings (name,value) values ('export_type','local')");
+			export_log("Export method not specified. Updated config to use a valid export mechanism.");
 	}
 
 	return $total_graphs_created;
@@ -162,12 +176,12 @@ function export_pre_ftp_upload($stExportDir) {
 
 	$aFtpExport['server'] = read_config_option('export_ftp_host');
 	if (empty($aFtpExport['server'])) {
-		die("EXPORT (fatal): FTP Hostname is not expected to be blank!");
+		export_fatal("FTP Hostname is not expected to be blank!");
 	}
 
 	$aFtpExport['remotedir'] = read_config_option('path_html_export');
 	if (empty($aFtpExport['remotedir'])) {
-		die("EXPORT (fatal): FTP Remote export path is not expected to be blank!");
+		export_fatal("FTP Remote export path is not expected to be blank!");
 	}
 
 	$aFtpExport['port'] = read_config_option('export_ftp_port');
@@ -193,16 +207,31 @@ function export_pre_ftp_upload($stExportDir) {
 	return $total_graphs_created;
 }
 
-function export_ftp_php_execute($stExportDir) {
+function export_ftp_php_execute($stExportDir, $stFtpType = "ftp_php") {
 	global $aFtpExport;
 
-	$oFtpConnection = ftp_connect($aFtpExport['server'], $aFtpExport['port']);
-	if (!$oFtpConnection) {
-		export_fatal("FTP Connection failed! Check hostname and port.  Export can not continue.");
-	}else {
-		export_log("Conection to remote server was successful.");
+	/* connect to foreign system */
+	switch($stFtpType) {
+	case "ftp_php":
+		$oFtpConnection = ftp_connect($aFtpExport['server'], $aFtpExport['port']);
+		if (!$oFtpConnection) {
+			export_fatal("FTP Connection failed! Check hostname and port.  Export can not continue.");
+		}else {
+			export_log("Conection to remote server was successful.");
+		}
+		break;
+	case "sftp_php":
+		$oFtpConnection = ftp_ssl_connect($aFtpExport['server'], $aFtpExport['port']);
+
+		if (!$oFtpConnection) {
+			export_fatal("FTP Connection failed! Check hostname and port.  Export can not continue.");
+		}else {
+			export_log("Conection to remote server was successful.");
+		}
+		break;
 	}
 
+	/* login to foreign system */
 	if (!ftp_login($oFtpConnection, $aFtpExport['username'], $aFtpExport['password'])) {
 		ftp_close($oFtpConnection);
 		export_fatal("FTP Login failed! Check username and password.  Export can not continue.");
@@ -210,80 +239,165 @@ function export_ftp_php_execute($stExportDir) {
 		export_log("Remote login was successful.");
 	}
 
+	/* set connection type */
 	if ($aFtpExport['passive']) {
 		ftp_pasv($oFtpConnection, TRUE);
 	}else {
 		ftp_pasv($oFtpConnection, FALSE);
 	}
 
+	/* change directories into the remote upload directory */
 	if (!@ftp_chdir($oFtpConnection, $aFtpExport['remotedir'])) {
 		ftp_close($oFtpConnection);
 		export_fatal("FTP Remote directory '" . $aFtpExport['remotedir'] . "' does not exist!.  Export can not continue.");
 	}
 
-	/* sanitize remote path */
+	/* sanitize the remote location if the user has asked so */
 	if (read_config_option('export_ftp_sanitize') == 'on') {
 		export_log("Deleting remote files.");
+
+		/* get rid of the files first */
 		$aFtpRemoteFiles = ftp_nlist($oFtpConnection, $aFtpExport['remotedir']);
+
 		if (is_array($aFtpRemoteFiles)) {
 			foreach ($aFtpRemoteFiles as $stFile) {
-				ftp_delete($oFtpConnection, $aFtpExport['remotedir'].'/'.$stFile);
+				export_log("Deleting remote file '" . $stFile . "'");
+				@ftp_delete($oFtpConnection, $stFile);
 			}
+		}
+
+		/* if the presentation is tree, you will have some directories too */
+		if (read_config_option("export_presentation") == "tree") {
+			$aFtpRemoteDirs = ftp_nlist($oFtpConnection, $aFtpExport['remotedir']);
+
+			foreach ($aFtpRemoteDirs as $remote_dir) {
+				if (ftp_chdir($oFtpConnection, addslashes($remote_dir))) {
+					$aFtpRemoteFiles = ftp_nlist($oFtpConnection, ".");
+					if (is_array($aFtpRemoteFiles)) {
+						foreach ($aFtpRemoteFiles as $stFile) {
+							export_log("Deleting Remote File '" . $stFile . "'");
+							ftp_delete($oFtpConnection, $stFile);
+						}
+					}
+					ftp_chdir($oFtpConnection, "..");
+
+					export_log("Removing Remote Directory '" . $remote_dir . "'");
+					ftp_rmdir($oFtpConnection, $remote_dir);
+				}else{
+					ftp_close($oFtpConnection);
+					export_fatal("Unable to cd on remote system");
+				}
+			}
+		}
+
+		$aFtpRemoteFiles = ftp_nlist($oFtpConnection, $aFtpExport['remotedir']);
+		if (sizeof($aFtpRemoteFiles) > 0) {
+			ftp_close($oFtpConnection);
+			export_fatal("Problem sanitizing remote ftp location, must exit.");
 		}
 	}
 
-	if ($dh = opendir($stExportDir)) {
+	/* upload files to remote system */
+	export_log("Uploading files to remote location.");
+	ftp_chdir($oFtpConnection, $aFtpExport['remotedir']);
+	export_ftp_php_uploaddir($stExportDir,$oFtpConnection);
+
+	/* end connection */
+	export_log("Closing ftp connection.");
+	ftp_close($oFtpConnection);
+}
+
+function export_ftp_php_uploaddir($dir,$oFtpConnection) {
+	global $aFtpExport;
+
+	export_log("Uploading directory: '$dir' to remote location.");
+	if($dh = opendir($dir)) {
 		export_log("Uploading files to remote location.");
-		while (($file = readdir($dh)) !== false) {
-			$filePath = $stExportDir."/".$file;
-			if ($file != "." && $file != ".." && !is_dir($filePath)) {
-				if (!ftp_put($oFtpConnection, $aFtpExport['remotedir'].'/'.$file, $filePath, FTP_BINARY)) {
-				export_log("Failed to upload '$file'.");
+		while(($file = readdir($dh)) !== false) {
+			$filePath = $dir . "/" . $file;
+			if($file != "." && $file != ".." && !is_dir($filePath)) {
+				if(!ftp_put($oFtpConnection, $file, $filePath, FTP_BINARY)) {
+					export_log("Failed to upload '$file'.");
 				}
+			}
+
+			if (($file != ".") &&
+				($file != "..") &&
+				(is_dir($filePath))) {
+
+				export_log("Create remote directory: '$file'.");
+				ftp_mkdir($oFtpConnection,$file);
+
+				export_log("Change remote directory to: '$file'.");
+				ftp_chdir($oFtpConnection,$file);
+				export_ftp_php_uploaddir($filePath,$oFtpConnection);
+
+				export_log("Change remote directory: one up.");
+				ftp_cdup($oFtpConnection);
 			}
 		}
 		closedir($dh);
 	}
-	ftp_close($oFtpConnection);
-	export_log("Closed ftp connection.");
 }
 
 function export_ftp_ncftpput_execute($stExportDir) {
 	global $aFtpExport;
 
 	chdir($stExportDir);
-	$stExecute = 'ncftpput -V -r 1 -u '.$aFtpExport['username'].' -p '.$aFtpExport['password'];
+
+	/* set the initial command structure */
+	$stExecute = 'ncftpput -R -V -r 1 -u '.$aFtpExport['username'].' -p '.$aFtpExport['password'];
+
+	/* if the user requested passive mode, use it */
 	if ($aFtpExport['passive']) {
 		$stExecute .= ' -F ';
 	}
-	$stExecute .= ' -P '.$aFtpExport['port'].' '.$aFtpExport['server'].' '.$aFtpExport['remotedir'];
 
-	if ($dh = opendir($stExportDir)) {
-		while (($file = readdir($dh)) !== false) {
-			if ($file != "." && $file != ".." && !is_dir($stExportDir."/".$file)) {
-				$stExecute .= " $file";
-			}
-		}
-		closedir($dh);
-		system($stExecute, $iExecuteReturns);
+	/* setup the port, server, remote directory and all files */
+	$stExecute .= ' -P ' . $aFtpExport['port'] . ' ' . $aFtpExport['server'] . ' ' . $aFtpExport['remotedir'] . ".";
 
-		$aNcftpputStatusCodes = array ('Success.', 'Could not connect to remote host.', 'Could not connect to remote host - timed out.', 'Transfer failed.', 'Transfer failed - timed out.', 'Directory change failed.', 'Directory change failed - timed out.', 'Malformed URL.', 'Usage error.', 'Error in login configuration file.', 'Library initialization failed.', 'Session initialization failed.');
+	/* run the command */
+	system($stExecute, $iExecuteReturns);
 
-		export_log('Ncftpput returned: '.$aNcftpputStatusCodes[$iExecuteReturns]);
-	}
+	$aNcftpputStatusCodes = array (
+		'Success.',
+		'Could not connect to remote host.',
+		'Could not connect to remote host - timed out.',
+		'Transfer failed.',
+		'Transfer failed - timed out.',
+		'Directory change failed.',
+		'Directory change failed - timed out.',
+		'Malformed URL.',
+		'Usage error.',
+		'Error in login configuration file.',
+		'Library initialization failed.',
+		'Session initialization failed.');
+
+	export_log('Ncftpput returned: ' . $aNcftpputStatusCodes[$iExecuteReturns]);
 }
 
 function export_post_ftp_upload($stExportDir) {
 	/* clean-up after ftp-put */
 	if ($dh = opendir($stExportDir)) {
 		while (($file = readdir($dh)) !== false) {
-			$filePath = $stExportDir."/".$file;
+			$filePath = $stExportDir . "/" . $file;
 			if ($file != "." && $file != ".." && !is_dir($filePath)) {
+				export_log("Removing Local File '" . $file . "'");
 				unlink($filePath);
+			}
+
+			/* if the directory turns out to be a sub-directory, delete it too */
+			if ($file != "." && $file != ".." && is_dir($filePath)) {
+				export_log("Removing Local Directory '" . $filePath . "'");
+				export_post_ftp_upload($filePath);
 			}
 		}
 		closedir($dh);
-		rmdir($stExportDir);
+
+		/* don't delete the root of the temporary export directory */
+		if (read_config_option("export_temporary_directory") != $stExportDir) {
+			rmdir($stExportDir);
+		}
 	}
 }
 
@@ -293,19 +407,50 @@ function export() {
 	/* count how many graphs are created */
 	$total_graphs_created = 0;
 
-	if (!file_exists(read_config_option("path_html_export"))) {
-		export_fatal("Export path '" . read_config_option("path_html_export") . "' does not exist!  Export can not continue.");
-	}
-
-	export_log("Running graph export");
-
 	$cacti_root_path = $config["base_path"];
 	$cacti_export_path = read_config_option("path_html_export");
 
-	if (substr_count($cacti_root_path, $cacti_export_path) ||
-		(substr_count($cacti_export_path, $cacti_root_path))) {
-		export_fatal("Export path '" . read_config_option("path_html_export") . "' is to closely related to the Cacti web root.  You must be out of your mind.");
+	/* if the path is not a directory, don't continue */
+	if (!is_dir($cacti_export_path)) {
+		export_fatal("Export path '" . $cacti_export_path . "' does not exist!  Export can not continue.");
 	}
+
+	/* blank paths are not good */
+	if (strlen($cacti_export_path) == 0) {
+		export_fatal("Export path is null!  Export can not continue.");
+	}
+
+	/* can not be the web root */
+	if ((strcasecmp($cacti_root_path, $cacti_export_path) == 0) &&
+		(read_config_option("export_type") == "local")) {
+		export_fatal("Export path '" . $cacti_export_path . "' is the Cacti web root.  Can not continue.");
+	}
+
+	/* can not be a parent of the Cacti web root */
+	if (strncasecmp($cacti_root_path, $cacti_export_path, strlen($cacti_export_path))== 0) {
+		export_fatal("Export path '" . $cacti_export_path . "' is a parent folder from the Cacti web root.  Can not continue.");
+	}
+
+	/* check for bad directories within the cacti path */
+	if (strcasecmp($cacti_root_path, $cacti_export_path) < 0) {
+		$cacti_system_paths = array("include", "lib", "install", "rra", "log", "scripts", "plugins", "images", "resource");
+
+		foreach($cacti_system_paths as $cacti_system_path) {
+			if (substr_count(strtolower($cacti_export_path), strtolower($cacti_system_path)) > 0) {
+				export_fatal("Export path '" . $cacti_export_path . "' is potentially within a Cacti system path '" . $cacti_system_path . "'.  Can not continue.");
+			}
+		}
+	}
+
+	/* don't allow to export to system paths */
+	$system_paths = array("/boot", "/lib", "/usr", "/bin", "/sbin", "/root", "/etc", "windows", "winnt", "program files");
+	foreach($system_paths as $system_path) {
+		if (substr_count(strtolower($cacti_export_path), strtolower($system_path)) > 0) {
+			export_fatal("Export path '" . $cacti_export_path . "' is within a system path '" . $system_path . "'.  Can not continue.");
+		}
+	}
+
+	export_log("Running graph export");
 
 	/* delete all files and directories in the cacti_export_path */
 	del_directory($cacti_export_path, false);
@@ -485,7 +630,7 @@ function export_build_tree($path, $filename, $tree_id, $parent_tree_item_id) {
 	$total_graphs_created = 0;
 
 	/* open pointer to the new file */
-	$fp = fopen($cacti_export_path."/".$path."/".$filename, "w");
+	$fp = fopen($cacti_export_path . "/" . $path . "/" . $filename, "w");
 
 	/* write the html header data to the file */
 	fwrite($fp, HTML_HEADER_TREE);
@@ -496,10 +641,10 @@ function export_build_tree($path, $filename, $tree_id, $parent_tree_item_id) {
 	/* write the associated graphs for this graph_tree_item or graph_tree*/
 	fwrite($fp, HTML_GRAPH_HEADER_ONE_TREE);
 	if ($parent_tree_item_id == 0)  {
-		fwrite($fp, "<strong>".$path." - Associated Graphs</strong>");
+		fwrite($fp, "<strong>" . $path . " - Associated Graphs</strong>");
 	}else {
 		$title=get_tree_item_title($parent_tree_item_id);
-		fwrite($fp, "<strong>".$title." - Associated Graphs</strong>");
+		fwrite($fp, "<strong>" . $title . " - Associated Graphs</strong>");
 	}
 
 	fwrite($fp, HTML_GRAPH_HEADER_TWO);
@@ -508,6 +653,7 @@ function export_build_tree($path, $filename, $tree_id, $parent_tree_item_id) {
 
 	/* write the html footer to the file */
 	fwrite($fp, HTML_FOOTER_TREE);
+	fclose($fp);
 
 	$total_graphs_created += explore_tree($path,$tree_id,$parent_tree_item_id);
 
@@ -516,18 +662,24 @@ function export_build_tree($path, $filename, $tree_id, $parent_tree_item_id) {
 
 function explore_tree($path, $tree_id, $parent_tree_item_id) {
 	/* seek graph_tree_items of the tree_id which are NOT graphs but headers */
-	$links = db_fetch_assoc("SELECT id, title, host_id FROM graph_tree_items WHERE rra_id = 0 AND graph_tree_id =".$tree_id);
+	$links = db_fetch_assoc("SELECT
+		id,
+		title,
+		host_id
+		FROM graph_tree_items
+		WHERE rra_id = 0
+		AND graph_tree_id = " . $tree_id);
 
 	$total_graphs_created = 0;
 
 	foreach( $links as $link) {
 		/* this test gives us the parent of the curent graph_tree_item */
-		if (get_parent_id($link["id"], "graph_tree_items","graph_tree_id = ".$tree_id) == $parent_tree_item_id) {
+		if (get_parent_id($link["id"], "graph_tree_items", "graph_tree_id = " . $tree_id) == $parent_tree_item_id) {
 			if (get_tree_item_type($link["id"]) == "host") {
-				$total_graphs_created = export_build_tree($path,get_host_description($link["host_id"])."_".$link["id"].".html",$tree_id, $link["id"]);
+				$total_graphs_created = export_build_tree($path, get_host_description($link["host_id"]) . "_" . $link["id"] . ".html", $tree_id, $link["id"]);
 			}else {
 				/*now, this graph_tree_item is the parent of others graph_tree_items*/
-				$total_graphs_created = export_build_tree($path,$link["title"]."_".$link["id"].".html",$tree_id, $link["id"]);
+				$total_graphs_created = export_build_tree($path, $link["title"] . "_" . $link["id"] . ".html", $tree_id, $link["id"]);
 			}
 		}
 	}
@@ -776,18 +928,18 @@ function create_dhtml_tree_export($tree_id) {
 	$i = 2;
 
     $i++;
-	$heirarchy = db_fetch_assoc("select
+	$heirarchy = db_fetch_assoc("SELECT
 		graph_tree_items.id,
 		graph_tree_items.title,
 		graph_tree_items.order_key,
 		graph_tree_items.host_id,
 		graph_tree_items.host_grouping_type,
-		host.description as hostname
-		from graph_tree_items
-		left join host on (host.id=graph_tree_items.host_id)
-		where graph_tree_items.graph_tree_id=" . $tree_id . "
-		and graph_tree_items.local_graph_id = 0
-		order by graph_tree_items.order_key");
+		host.description AS hostname
+		FROM graph_tree_items
+		LEFT JOIN host ON (host.id=graph_tree_items.host_id)
+		WHERE graph_tree_items.graph_tree_id=" . $tree_id . "
+		AND graph_tree_items.local_graph_id = 0
+		ORDER BY graph_tree_items.order_key");
 
 	$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . get_tree_name($tree_id) . "\", \"index.html\"))\n";
 
@@ -801,31 +953,35 @@ function create_dhtml_tree_export($tree_id) {
 
 			if (read_graph_config_option("expand_hosts") == "on") {
 				if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
-					$graph_templates = db_fetch_assoc("select
+					$graph_templates = db_fetch_assoc("SELECT
 						graph_templates.id,
-						graph_templates.name
-						from (graph_local,graph_templates,graph_templates_graph)
-						where graph_local.id=graph_templates_graph.local_graph_id
-						and graph_templates_graph.graph_template_id=graph_templates.id
-						and graph_local.host_id=" . $leaf["host_id"] . "
-						group by graph_templates.id
-						order by graph_templates.name");
+						graph_templates.name,
+						graph_templates_graph.local_graph_id,
+						graph_templates_graph.title_cache
+						FROM (graph_local,graph_templates,graph_templates_graph)
+						WHERE graph_local.id=graph_templates_graph.local_graph_id
+						AND graph_templates_graph.graph_template_id=graph_templates.id
+						AND graph_local.host_id=" . $leaf["host_id"] . "
+						GROUP BY graph_templates.id
+						ORDER BY graph_templates.name");
 
 				 	if (sizeof($graph_templates) > 0) {
 						foreach ($graph_templates as $graph_template) {
 							$i++;
+							$leaf["title"] = "title" . $i;
 							$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"".$leaf["title"]."_".$leaf["id"]. ".html\"))\n";
+							create_expanded_hosts_dhtml();
 						}
 					}
 				}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
-					$data_queries = db_fetch_assoc("select
+					$data_queries = db_fetch_assoc("SELECT
 						snmp_query.id,
 						snmp_query.name
-						from (graph_local,snmp_query)
-						where graph_local.snmp_query_id=snmp_query.id
-						and graph_local.host_id=" . $leaf["host_id"] . "
-						group by snmp_query.id
-						order by snmp_query.name");
+						FROM (graph_local,snmp_query)
+						WHERE graph_local.snmp_query_id=snmp_query.id
+						AND graph_local.host_id=" . $leaf["host_id"] . "
+						GROUP BY snmp_query.id
+						ORDER BY snmp_query.name");
 
 					array_push($data_queries, array(
 						"id" => "0",
@@ -835,26 +991,33 @@ function create_dhtml_tree_export($tree_id) {
 					if (sizeof($data_queries) > 0) {
 					foreach ($data_queries as $data_query) {
 						$i++;
-						$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\"".$leaf["title"]."_".$leaf["id"]. ".html\"))\n";
+						$leaf["title"] = "title" . $i;
+
+						$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
+						create_expanded_hosts_dhtml();
 
 						/* fetch a list of field names that are sorted by the preferred sort field */
 						$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
 
 						while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
 							$i++;
-							$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\"".$leaf["title"]."_".$leaf["id"]. ".html\"))\n";
+							$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
+							create_expanded_hosts_dhtml();
 						}
 					}
 					}
 				}
 			}
 		}else {
-			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"".$leaf["title"]."_".$leaf["id"]. ".html\"))\n";
+			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"" . $leaf["title"] . "_" . $leaf["id"]. ".html\"))\n";
 		}
 	}
 	}
 
 	return $dhtml_tree;
+}
+
+function create_expanded_hosts_dhtml() {
 }
 
 define("HTML_GRAPH_HEADER_ONE_TREE", "
@@ -888,7 +1051,7 @@ define("HTML_HEADER_TREE", "
 				<table width='100%' cellspacing='0' cellpadding='0'>
 					<tr>
 						<td valign='bottom'>
-							&nbsp;<a href='http://www.raxnet.net/products/cacti/'><img src='tab_cacti.gif' alt='Cacti - http://www.raxnet.net/products/cacti/' align='absmiddle' border='0'></a>
+							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='absmiddle' border='0'></a>
 						</td>
 						<td align='right'>
 							<img src='cacti_backdrop.gif' align='absmiddle'>
@@ -969,7 +1132,7 @@ define("HTML_HEADER", "
 				<table width='100%' cellspacing='0' cellpadding='0'>
 					<tr>
 						<td valign='bottom'>
-							&nbsp;<a href='http://www.raxnet.net/products/cacti/'><img src='tab_cacti.gif' alt='Cacti - http://www.raxnet.net/products/cacti/' align='absmiddle' border='0'></a>
+							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='absmiddle' border='0'></a>
 						</td>
 						<td align='right'>
 							<img src='cacti_backdrop.gif' align='absmiddle'>
