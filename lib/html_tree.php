@@ -309,7 +309,7 @@ function grow_dhtml_trees() {
 		$_SESSION['dhtml_tree'] = $dhtml_tree;
 	}else{
 		$dhtml_tree = $_SESSION['dhtml_tree'];
-		if (($dhtml_tree[0] + read_graph_config_option("page_refresh") < $current_time) || ($expand_hosts != $dhtml_tree[2])) {
+		if (($dhtml_tree[0] + read_graph_config_option("page_refresh") < $current_time) || ($expand_hosts != $dhtml_tree[1])) {
 			$dhtml_tree = create_dhtml_tree();
 			$_SESSION['dhtml_tree'] = $dhtml_tree;
 		}else{
