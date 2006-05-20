@@ -73,21 +73,6 @@ function graph_export() {
 	}
 }
 
-function config_export_stats($start, $total_graphs_created) {
-	/* take time to log performance data */
-	list($micro,$seconds) = split(" ", microtime());
-	$end = $seconds + $micro;
-
-	$export_stats = sprintf(
-		"ExportTime:%01.4f TotalGraphs:%s",
-		round($end - $start,4), $total_graphs_created);
-
-	cacti_log("STATS: " . $export_stats, true, "EXPORT");
-
-	/* insert poller stats into the settings table */
-	db_execute("replace into settings (name,value) values ('stats_export','$export_stats')");
-}
-
 function config_graph_export() {
 	$total_graphs_created = 0;
 
@@ -130,10 +115,25 @@ function config_graph_export() {
 		case "disabled":
 			break;
 		default:
-			export_log("Export method not specified. Updated config to use a valid export mechanism.");
+			export_fatal("Export method not specified. Exporting can not continue.  Please set method properly in Cacti configuration.");
 	}
 
 	return $total_graphs_created;
+}
+
+function config_export_stats($start, $total_graphs_created) {
+	/* take time to log performance data */
+	list($micro,$seconds) = split(" ", microtime());
+	$end = $seconds + $micro;
+
+	$export_stats = sprintf(
+		"ExportTime:%01.4f TotalGraphs:%s",
+		round($end - $start,4), $total_graphs_created);
+
+	cacti_log("STATS: " . $export_stats, true, "EXPORT");
+
+	/* insert poller stats into the settings table */
+	db_execute("replace into settings (name,value) values ('stats_export','$export_stats')");
 }
 
 function export_fatal($stMessage) {
@@ -155,15 +155,7 @@ function export_pre_ftp_upload($stExportDir) {
 
 	/* clean-up after last cacti instance */
 	if (is_dir($stExportDir)) {
-		if ($dh = opendir($stExportDir)) {
-			while (($file = readdir($dh)) !== false) {
-				$filePath = $stExportDir."/".$file;
-				if ($file != "." && $file != ".." && !is_dir($filePath)) {
-					unlink($filePath);
-				}
-			}
-			closedir($dh);
-		}
+		del_directory($stExportDir, FALSE);
 	}else {
 		@mkdir($stExportDir);
 	}
@@ -214,6 +206,7 @@ function export_ftp_php_execute($stExportDir, $stFtpType = "ftp_php") {
 	switch($stFtpType) {
 	case "ftp_php":
 		$oFtpConnection = ftp_connect($aFtpExport['server'], $aFtpExport['port']);
+
 		if (!$oFtpConnection) {
 			export_fatal("FTP Connection failed! Check hostname and port.  Export can not continue.");
 		}else {
@@ -224,7 +217,7 @@ function export_ftp_php_execute($stExportDir, $stFtpType = "ftp_php") {
 		$oFtpConnection = ftp_ssl_connect($aFtpExport['server'], $aFtpExport['port']);
 
 		if (!$oFtpConnection) {
-			export_fatal("FTP Connection failed! Check hostname and port.  Export can not continue.");
+			export_fatal("SFTP Connection failed! Check hostname and port.  Export can not continue.");
 		}else {
 			export_log("Conection to remote server was successful.");
 		}
@@ -433,7 +426,16 @@ function export() {
 
 	/* check for bad directories within the cacti path */
 	if (strcasecmp($cacti_root_path, $cacti_export_path) < 0) {
-		$cacti_system_paths = array("include", "lib", "install", "rra", "log", "scripts", "plugins", "images", "resource");
+		$cacti_system_paths = array(
+			"include",
+			"lib",
+			"install",
+			"rra",
+			"log",
+			"scripts",
+			"plugins",
+			"images",
+			"resource");
 
 		foreach($cacti_system_paths as $cacti_system_path) {
 			if (substr_count(strtolower($cacti_export_path), strtolower($cacti_system_path)) > 0) {
@@ -443,7 +445,18 @@ function export() {
 	}
 
 	/* don't allow to export to system paths */
-	$system_paths = array("/boot", "/lib", "/usr", "/bin", "/sbin", "/root", "/etc", "windows", "winnt", "program files");
+	$system_paths = array(
+		"/boot",
+		"/lib",
+		"/usr",
+		"/bin",
+		"/sbin",
+		"/root",
+		"/etc",
+		"windows",
+		"winnt",
+		"program files");
+
 	foreach($system_paths as $system_path) {
 		if (substr_count(strtolower($cacti_export_path), strtolower($system_path)) > 0) {
 			export_fatal("Export path '" . $cacti_export_path . "' is within a system path '" . $system_path . "'.  Can not continue.");
@@ -460,74 +473,96 @@ function export() {
 		export_log("Running graph export with tree organization");
 		$total_graphs_created = tree_export();
 	}else {
-		/* copy the css/images on the first time */
-		if (file_exists("$cacti_export_path/main.css") == false) {
-			copy("$cacti_root_path/include/main.css", "$cacti_export_path/main.css");
-			copy("$cacti_root_path/images/tab_cacti.gif", "$cacti_export_path/tab_cacti.gif");
-			copy("$cacti_root_path/images/cacti_backdrop.gif", "$cacti_export_path/cacti_backdrop.gif");
-			copy("$cacti_root_path/images/transparent_line.gif", "$cacti_export_path/transparent_line.gif");
-			copy("$cacti_root_path/images/shadow.gif", "$cacti_export_path/shadow.gif");
-		}
+		export_log("Running graph export with legacy organization");
+		$total_graphs_created = classical_export($cacti_root_path, $cacti_export_path);
+	}
 
-		/* if the index file already exists, delete it */
-		check_remove($cacti_export_path . "/index.html");
+	return $total_graphs_created;
+}
 
-		/* open pointer to the new index file */
-		$fp_index = fopen($cacti_export_path . "/index.html", "w");
+function classical_export($cacti_root_path, $cacti_export_path) {
+	global $config;
 
-		/* get a list of all graphs that need exported */
-		$graphs = db_fetch_assoc("select
-			graph_templates_graph.id,
-			graph_templates_graph.local_graph_id,
-			graph_templates_graph.height,
-			graph_templates_graph.width,
-			graph_templates_graph.title_cache,
-			graph_templates.name,
-			graph_local.host_id
-			from graph_templates_graph
-			left join graph_templates on (graph_templates_graph.graph_template_id=graph_templates.id)
-			left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
-			where graph_templates_graph.local_graph_id!=0 and graph_templates_graph.export='on'
-			order by graph_templates_graph.title_cache");
+	$total_graphs_created = 0;
 
-		$rras = db_fetch_assoc("select
-			rra.id,
-			rra.name
-			from rra
-			order by steps");
+	/* copy the css/images on the first time */
+	if (file_exists("$cacti_export_path/main.css") == false) {
+		copy("$cacti_root_path/include/main.css", "$cacti_export_path/main.css");
+		copy("$cacti_root_path/images/tab_cacti.gif", "$cacti_export_path/tab_cacti.gif");
+		copy("$cacti_root_path/images/cacti_backdrop.gif", "$cacti_export_path/cacti_backdrop.gif");
+		copy("$cacti_root_path/images/transparent_line.gif", "$cacti_export_path/transparent_line.gif");
+		copy("$cacti_root_path/images/shadow.gif", "$cacti_export_path/shadow.gif");
+	}
 
-		/* write the html header data to the index file */
-		fwrite($fp_index, HTML_HEADER);
-		fwrite($fp_index, HTML_GRAPH_HEADER_ONE);
-		fwrite($fp_index, "<strong>Displaying " . sizeof($graphs) . " Exported Graph" . ((sizeof($graphs) > 1) ? "s" : "") . "</strong>");
-		fwrite($fp_index, HTML_GRAPH_HEADER_TWO);
+	/* create the base directory */
+	if (!mkdir("$cacti_export_path/graphs", 0755)) {
+		export_fatal("Create directory '$cacti_export_paths/graphs' failed.  Can not continue");
+	}
 
-		/* open a pipe to rrdtool for writing */
-		$rrdtool_pipe = rrd_init();
+	/* if the index file already exists, delete it */
+	check_remove($cacti_export_path . "/index.html");
 
-		/* for each graph... */
-		$i = 0; $k = 0;
-		if ((sizeof($graphs) > 0) && (sizeof($rras) > 0)) {
+	/* open pointer to the new index file */
+	$fp_index = fopen($cacti_export_path . "/index.html", "w");
+
+	/* get a list of all graphs that need exported */
+	$graphs = db_fetch_assoc("SELECT
+		graph_templates_graph.id,
+		graph_templates_graph.local_graph_id,
+		graph_templates_graph.height,
+		graph_templates_graph.width,
+		graph_templates_graph.title_cache,
+		graph_templates.name,
+		graph_local.host_id
+		FROM graph_templates_graph
+		LEFT JOIN graph_templates
+		ON (graph_templates_graph.graph_template_id=graph_templates.id)
+		LEFT JOIN graph_local
+		ON (graph_templates_graph.local_graph_id=graph_local.id)
+		WHERE graph_templates_graph.local_graph_id!=0
+		AND graph_templates_graph.export='on'
+		ORDER BY graph_templates_graph.title_cache");
+
+	$rras = db_fetch_assoc("SELECT
+		rra.id,
+		rra.name
+		FROM rra
+		ORDER BY steps");
+
+  	/* write the html header data to the index file */
+	fwrite($fp_index, HTML_HEADER_CLASSIC);
+	fwrite($fp_index, HTML_GRAPH_HEADER_ONE_CLASSIC);
+	fwrite($fp_index, "<strong>Displaying " . sizeof($graphs) . " Exported Graph" . ((sizeof($graphs) > 1) ? "s" : "") . "</strong>");
+	fwrite($fp_index, HTML_GRAPH_HEADER_TWO_CLASSIC);
+
+	/* open a pipe to rrdtool for writing */
+	$rrdtool_pipe = rrd_init();
+
+	/* for each graph... */
+	$i = 0; $k = 0;
+	if ((sizeof($graphs) > 0) && (sizeof($rras) > 0)) {
 		foreach ($graphs as $graph) {
-			check_remove($cacti_export_path . "/thumb_" . $graph["local_graph_id"] . ".png");
-			check_remove($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html");
+			check_remove($cacti_export_path . "graphs/thumb_" . $graph["local_graph_id"] . ".png");
+			check_remove($cacti_export_path . "graph_" . $graph["local_graph_id"] . ".html");
 
 			/* settings for preview graphs */
-			$graph_data_array["graph_height"] = "100";
-			$graph_data_array["graph_width"] = "300";
+			$graph_data_array["graph_height"] = read_config_option("export_default_height");
+			$graph_data_array["graph_width"] = read_config_option("export_default_width");
 			$graph_data_array["graph_nolegend"] = true;
 			$graph_data_array["export"] = true;
-			$graph_data_array["export_filename"] = "thumb_" . $graph["local_graph_id"] . ".png";
+			$graph_data_array["export_filename"] = "graphs/thumb_" . $graph["local_graph_id"] . ".png";
+
 			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
+
 			$total_graphs_created++;
 
 			/* generate html files for each graph */
 			$fp_graph_index = fopen($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html", "w");
 
-			fwrite($fp_graph_index, HTML_HEADER);
-			fwrite($fp_graph_index, HTML_GRAPH_HEADER_ONE);
+			fwrite($fp_graph_index, HTML_HEADER_CLASSIC);
+			fwrite($fp_graph_index, HTML_GRAPH_HEADER_ONE_CLASSIC);
 			fwrite($fp_graph_index, "<strong>Graph - " . $graph["title_cache"] . "</strong>");
-			fwrite($fp_graph_index, HTML_GRAPH_HEADER_TWO);
+			fwrite($fp_graph_index, HTML_GRAPH_HEADER_TWO_CLASSIC);
 			fwrite($fp_graph_index, "<td>");
 
 			/* reset vars for actual graph image creation */
@@ -537,23 +572,24 @@ function export() {
 			/* generate graphs for each rra */
 			foreach ($rras as $rra) {
 				$graph_data_array["export"] = true;
-				$graph_data_array["export_filename"] = "graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
+				$graph_data_array["export_filename"] = "graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 
 				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
+
 				$total_graphs_created++;
 
 				/* write image related html */
-				fwrite($fp_graph_index, "<div align=center><img src='graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
+				fwrite($fp_graph_index, "<div align=center><img src='graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
 					<div align=center><strong>" . $rra["name"] . "</strong></div><br>");
 			}
 
-			fwrite($fp_graph_index, "</td>");
-			fwrite($fp_graph_index, HTML_GRAPH_FOOTER);
-			fwrite($fp_graph_index, HTML_FOOTER);
+			fwrite($fp_graph_index, "</td></table>");
+			fwrite($fp_graph_index, HTML_GRAPH_FOOTER_CLASSIC);
+			fwrite($fp_graph_index, HTML_FOOTER_CLASSIC);
 			fclose($fp_graph_index);
 
 			/* main graph page html */
-			fwrite($fp_index, "<td align='center' width='" . (98 / 2) . "%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
+			fwrite($fp_index, "<tr><td align='center' width='42%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
 
 			$i++;
 			$k++;
@@ -562,59 +598,125 @@ function export() {
 				$i = 0;
 				fwrite($fp_index, "</tr><tr>");
 			}
+  		}
+	}else{
+		fwrite($fp_index, "<td><em>No Graphs Found.</em></td>");
+	}
 
+	/* close the rrdtool pipe */
+	rrd_close($rrdtool_pipe);
+
+	fwrite($fp_index, HTML_GRAPH_FOOTER_CLASSIC);
+	fwrite($fp_index, HTML_FOOTER_CLASSIC);
+	fclose($fp_index);
+
+	return $total_graphs_created;
+}
+
+function tree_export() {
+	global $config;
+
+	$total_graphs_created = 0;
+
+	/* set the user to utilize for establishing export permissions */
+	$_SESSION["sess_user_id"] = read_config_option("export_user_id");
+
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id='" . $_SESSION["sess_user_id"] . "'");
+
+	$cacti_root_path   = $config["base_path"];
+	$cacti_export_path = read_config_option("path_html_export");
+
+	/* if the selected user has default rights, show all the graphs */
+	if ($current_user["policy_trees"] == 1) {
+       	$trees = db_fetch_assoc("SELECT
+       		id,
+       		name
+       		FROM graph_tree");
+	}else{
+		/* otherwise, show only those tree's that the user has access to */
+		$trees = db_fetch_assoc("SELECT
+			graph_tree.id AS id,
+			graph_tree.name AS name
+			FROM user_auth_perms
+			INNER JOIN graph_tree
+			ON (user_auth_perms.item_id = graph_tree.id)
+			WHERE user_auth_perms.user_id ='" . $current_user["id"] . "'");
+	}
+
+	/* if tree isolation is off, create the treeview and graphs directories for the initial hierarchy */
+	if (read_config_option("export_tree_isolation") == "off") {
+		create_export_directory_structure($cacti_root_path, $cacti_export_path);
+
+		/* construction */
+		$total_graphs_created = export_build_tree("", "index.html", 0, 0);
+	}
+
+	/* now let's populate all the sub trees */
+	foreach ($trees as $tree) {
+		/* create the base directory */
+		if (!is_dir("$cacti_export_path/" . $tree["name"])) {
+			if (!mkdir("$cacti_export_path/" . $tree["name"], 0755)) {
+				export_fatal("Create directory '" . $tree["name"] . "' failed.  Can not continue");
+			}
 		}
-		}else{ fwrite($fp_index, "<td><em>No Graphs Found.</em></td>");
+
+		/* create the treeview and graphs directories */
+		if (read_config_option("export_tree_isolation") == "on") {
+			create_export_directory_structure($cacti_root_path, $cacti_export_path . "/" . $tree["name"]);
 		}
 
-		/* close the rrdtool pipe */
-		rrd_close($rrdtool_pipe);
-
-		fwrite($fp_index, HTML_GRAPH_FOOTER);
-		fwrite($fp_index, HTML_FOOTER);
-		fclose($fp_index);
+		/* construction */
+		$total_graphs_created += export_build_tree($tree["name"], "index.html", $tree["id"], 0);
 	}
 
 	return $total_graphs_created;
 }
-function tree_export() {
-	global $config;
-	$_SESSION["sess_user_id"]=1;
-	$cacti_root_path = $config["base_path"];
-	$cacti_export_path = read_config_option("path_html_export");
 
-	/* build the 1st level of the tree */
-	$directories = db_fetch_assoc("select id, name from graph_tree");
-	foreach ($directories as $dir) {
-		/* create the directory */
-		if ( ! mkdir("$cacti_export_path/".$dir["name"], 0755)) {
-			print "Create directory ".$dir["name"]." failed\n";
+/* create_export_directory_structure - builds the export directory strucutre and copies
+   graphics and treeview scripts to those directories.
+   @arg $cacti_root_path - the directory where Cacti is installed
+        $dir - the export directory where graphs will either be staged or located.
+*/
+function create_export_directory_structure($cacti_root_path, $dir) {
+	/* create the treeview sub-directory */
+	if (!is_dir("$dir/treeview")) {
+		if (!mkdir("$dir/treeview", 0755)) {
+			export_fatal("Create directory '" . $dir . "/treeview' failed.  Can not continue");
 		}
-		/* css */
-		copy("$cacti_root_path/include/main.css", "$cacti_export_path/".$dir["name"]."/main.css");
-		/* images for html */
-		copy("$cacti_root_path/images/tab_cacti.gif", "$cacti_export_path/".$dir["name"]."/tab_cacti.gif");
-		copy("$cacti_root_path/images/cacti_backdrop.gif", "$cacti_export_path/".$dir["name"]."/cacti_backdrop.gif");
-		copy("$cacti_root_path/images/transparent_line.gif", "$cacti_export_path/".$dir["name"]."/transparent_line.gif");
-		copy("$cacti_root_path/images/shadow.gif", "$cacti_export_path/".$dir["name"]."/shadow.gif");
-		/* java scripts for the tree */
-		copy("$cacti_root_path/include/treeview/ftiens4_export.js", "$cacti_export_path/".$dir["name"]."/ftiens4.js");
-		copy("$cacti_root_path/include/treeview/ua.js", "$cacti_export_path/".$dir["name"]."/ua.js");
-		/* images for the tree */
-		copy("$cacti_root_path/include/treeview/ftv2blank.gif", "$cacti_export_path/".$dir["name"]."/ftv2blank.gif");
-		copy("$cacti_root_path/include/treeview/ftv2lastnode.gif", "$cacti_export_path/".$dir["name"]."/ftv2lastnode.gif");
-		copy("$cacti_root_path/include/treeview/ftv2mlastnode.gif", "$cacti_export_path/".$dir["name"]."/ftv2mlastnode.gif");
-		copy("$cacti_root_path/include/treeview/ftv2mnode.gif", "$cacti_export_path/".$dir["name"]."/ftv2mnode.gif");
-		copy("$cacti_root_path/include/treeview/ftv2node.gif", "$cacti_export_path/".$dir["name"]."/ftv2node.gif");
-		copy("$cacti_root_path/include/treeview/ftv2plastnode.gif", "$cacti_export_path/".$dir["name"]."/ftv2plastnode.gif");
-		copy("$cacti_root_path/include/treeview/ftv2pnode.gif", "$cacti_export_path/".$dir["name"]."/ftv2pnode.gif");
-		copy("$cacti_root_path/include/treeview/ftv2vertline.gif", "$cacti_export_path/".$dir["name"]."/ftv2vertline.gif");
-
-		/* construction */
-		$total_graphs_created = export_build_tree($dir["name"],"index.html",$dir["id"],0);
 	}
 
-	return $total_graphs_created;
+	/* create the graphs sub-directory */
+	if (!is_dir("$dir/graphs")) {
+		if (!mkdir("$dir/graphs", 0755)) {
+			export_fatal("Create directory '" . $dir . "/graphs' failed.  Can not continue");
+		}
+	}
+
+	$treeview_dir = $dir . "/treeview";
+
+	/* css */
+	copy("$cacti_root_path/include/main.css", "$dir/main.css");
+
+	/* images for html */
+	copy("$cacti_root_path/images/tab_cacti.gif", "$dir/tab_cacti.gif");
+	copy("$cacti_root_path/images/cacti_backdrop.gif", "$dir/cacti_backdrop.gif");
+	copy("$cacti_root_path/images/transparent_line.gif", "$dir/transparent_line.gif");
+	copy("$cacti_root_path/images/shadow.gif", "$dir/shadow.gif");
+	copy("$cacti_root_path/images/shadow_gray.gif", "$dir/shadow_gray.gif");
+
+	/* java scripts for the tree */
+	copy("$cacti_root_path/include/treeview/ftiens4_export.js", "$treeview_dir/ftiens4.js");
+	copy("$cacti_root_path/include/treeview/ua.js", "$treeview_dir/ua.js");
+
+	/* images for the tree */
+	copy("$cacti_root_path/include/treeview/ftv2blank.gif", "$treeview_dir/ftv2blank.gif");
+	copy("$cacti_root_path/include/treeview/ftv2lastnode.gif", "$treeview_dir/ftv2lastnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2mlastnode.gif", "$treeview_dir/ftv2mlastnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2mnode.gif", "$treeview_dir/ftv2mnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2node.gif", "$treeview_dir/ftv2node.gif");
+	copy("$cacti_root_path/include/treeview/ftv2plastnode.gif", "$treeview_dir/ftv2plastnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2pnode.gif", "$treeview_dir/ftv2pnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2vertline.gif", "$treeview_dir/ftv2vertline.gif");
 }
 
 /* export_build_tree - build the complete exported files for a graph_tree
@@ -630,7 +732,11 @@ function export_build_tree($path, $filename, $tree_id, $parent_tree_item_id) {
 	$total_graphs_created = 0;
 
 	/* open pointer to the new file */
-	$fp = fopen($cacti_export_path . "/" . $path . "/" . $filename, "w");
+	if (read_config_option("export_tree_isolation") == "on") {
+		$fp = fopen($cacti_export_path . "/" . $path . "/" . $filename, "w");
+	}else{
+		$fp = fopen($cacti_export_path . "/" . $filename, "w");
+	}
 
 	/* write the html header data to the file */
 	fwrite($fp, HTML_HEADER_TREE);
@@ -641,15 +747,17 @@ function export_build_tree($path, $filename, $tree_id, $parent_tree_item_id) {
 	/* write the associated graphs for this graph_tree_item or graph_tree*/
 	fwrite($fp, HTML_GRAPH_HEADER_ONE_TREE);
 	if ($parent_tree_item_id == 0)  {
-		fwrite($fp, "<strong>" . $path . " - Associated Graphs</strong>");
+		fwrite($fp, "<strong>Tree:</strong> - " . get_tree_name($tree_id) . "</td></tr>");
 	}else {
 		$title=get_tree_item_title($parent_tree_item_id);
-		fwrite($fp, "<strong>" . $title . " - Associated Graphs</strong>");
+		fwrite($fp, "<strong>" . $title . "</strong> - Associated Graphs" . "</td></tr>");
 	}
 
-	fwrite($fp, HTML_GRAPH_HEADER_TWO);
-	$total_graphs_created += export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id);
-	fwrite($fp, HTML_GRAPH_FOOTER_TREE);
+	fwrite($fp, "<tr>");
+	if ($tree_id != 0) {
+		$total_graphs_created += export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id);
+	}
+//	fwrite($fp, HTML_GRAPH_FOOTER_TREE);
 
 	/* write the html footer to the file */
 	fwrite($fp, HTML_FOOTER_TREE);
@@ -701,48 +809,60 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 
 	$req="";
 	if (get_tree_item_type($parent_tree_item_id)=="host")  {
-		$req="select distinct
-				graph_templates_graph.id,
-				graph_templates_graph.local_graph_id,
-				graph_templates_graph.height,
-				graph_templates_graph.width,
-				graph_templates_graph.title_cache,
-				graph_templates.name,
-				graph_local.host_id
-			from graph_templates_graph
-				left join graph_templates on (graph_templates_graph.graph_template_id=graph_templates.id)
-			    left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
-			where graph_local.host_id=".get_host_id($parent_tree_item_id)."
-			  and graph_templates_graph.local_graph_id!=0
-			  and graph_templates_graph.export='on'
-			order by graph_templates_graph.title_cache";
+		$req="SELECT DISTINCT
+			graph_templates_graph.id,
+			graph_templates_graph.local_graph_id,
+			graph_templates_graph.height,
+			graph_templates_graph.width,
+			graph_templates_graph.title_cache,
+			graph_templates.name,
+			graph_local.host_id
+			FROM graph_templates_graph
+			LEFT JOIN graph_templates
+			ON (graph_templates_graph.graph_template_id=graph_templates.id)
+			LEFT JOIN graph_local
+			ON (graph_templates_graph.local_graph_id=graph_local.id)
+			WHERE graph_local.host_id=".get_host_id($parent_tree_item_id)."
+			AND graph_templates_graph.local_graph_id!=0
+			AND graph_templates_graph.export='on'
+			ORDER BY graph_templates_graph.title_cache";
 	}else {
 		/* searching for the graph_tree_items of the tree_id which are graphs */
-		$req="select distinct
-				graph_templates_graph.id,
-				graph_templates_graph.local_graph_id,
-				graph_templates_graph.height,
-				graph_templates_graph.width,
-				graph_templates_graph.title_cache,
-				graph_templates.name,
-				graph_local.host_id,
-				graph_tree_items.id as gtid
-			from graph_templates_graph
-				left join graph_tree_items on (graph_templates_graph.local_graph_id=graph_tree_items.local_graph_id)
-			    left join graph_templates on (graph_templates_graph.graph_template_id=graph_templates.id)
-			    left join graph_local on (graph_templates_graph.local_graph_id=graph_local.id)
-			where graph_tree_items.graph_tree_id =".$tree_id."
-			  and graph_templates_graph.local_graph_id!=0
-			  and graph_templates_graph.export='on'
-			order by graph_templates_graph.title_cache";
+		if ($tree_id == 0) {
+        	$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+				AND graph_templates_graph.export='on'";
+		}else{
+        	$sql_where = "WHERE graph_tree_items.graph_tree_id =" . $tree_id . "
+			AND graph_templates_graph.local_graph_id!=0
+			AND graph_templates_graph.export='on'";
+        }
+
+		$req="SELECT DISTINCT
+			graph_templates_graph.id,
+			graph_templates_graph.local_graph_id,
+			graph_templates_graph.height,
+			graph_templates_graph.width,
+			graph_templates_graph.title_cache,
+			graph_templates.name,
+			graph_local.host_id,
+			graph_tree_items.id as gtid
+			FROM graph_templates_graph
+			LEFT JOIN graph_tree_items
+			ON (graph_templates_graph.local_graph_id=graph_tree_items.local_graph_id)
+			LEFT JOIN graph_templates
+			ON (graph_templates_graph.graph_template_id=graph_templates.id)
+			LEFT JOIN graph_local
+			ON (graph_templates_graph.local_graph_id=graph_local.id)
+			$sql_where
+			ORDER BY graph_templates_graph.title_cache";
 	}
 
 	$graphs=db_fetch_assoc($req);
-	$rras = db_fetch_assoc("select
+	$rras = db_fetch_assoc("SELECT
 		rra.id,
 		rra.name
-		from rra
-		order by timespan");
+		FROM rra
+		ORDER BY timespan");
 
 	/* open a pipe to rrdtool for writing */
 	$rrdtool_pipe = rrd_init();
@@ -751,26 +871,41 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 	$i = 0;
 	foreach($graphs as $graph)  {
 		/* this test gives us the graph_tree_items which are just under the parent_graph_tree_item */
-		if (((get_tree_item_type($parent_tree_item_id)=="header") || ($parent_tree_item_id == 0)) && (get_parent_id($graph["gtid"], "graph_tree_items","graph_tree_id = ".$tree_id) != $parent_tree_item_id))  {
+		if (((get_tree_item_type($parent_tree_item_id)=="header") ||
+			($parent_tree_item_id == 0)) &&
+			(get_parent_id($graph["gtid"], "graph_tree_items", "graph_tree_id = " . $tree_id) != $parent_tree_item_id))  {
 			/* do nothing */
 		}else {
 			/* settings for preview graphs */
-			$graph_data_array["graph_height"] = "100";
-			$graph_data_array["graph_width"] = "300";
+			$graph_data_array["graph_height"] = read_config_option("export_default_height");
+			$graph_data_array["graph_width"] = read_config_option("export_default_width");
 			$graph_data_array["graph_nolegend"] = true;
 			$graph_data_array["export"] = true;
-			$graph_data_array["export_filename"] = "'".$path."'/thumb_".$graph["local_graph_id"].".png";
 
-			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
-			$total_graphs_created++;
+			if (read_config_option("export_tree_isolation") == "on") {
+				$graph_data_array["export_filename"] = "'" . $path . "'/graphs/thumb_" . $graph["local_graph_id"] . ".png";
+			}else{
+				$graph_data_array["export_filename"] = "/graphs/thumb_" . $graph["local_graph_id"] . ".png";
+			}
+
+			if (!file_exists($cacti_export_path . "/" . $graph_data_array["export_filename"])) {
+				rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
+				$total_graphs_created++;
+			}else{
+				export_log("Duplicate file write attempted");
+			}
 
 			/* generate html files for each graph */
-			$fp_graph_index = fopen($cacti_export_path."/".$path."/graph_".$graph["local_graph_id"].".html", "w");
+			if (read_config_option("export_tree_isolation") == "on") {
+				$fp_graph_index = fopen($cacti_export_path . "/" . $path ."/graph_" . $graph["local_graph_id"] . ".html", "w");
+			}else{
+				$fp_graph_index = fopen($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html", "w");
+			}
+
 			fwrite($fp_graph_index, HTML_HEADER_TREE);
-			draw_html_left_tree($fp_graph_index,$tree_id);
 			fwrite($fp_graph_index, HTML_GRAPH_HEADER_ONE_TREE);
-			fwrite($fp_graph_index, "<strong>Graph - " . $graph["title_cache"] . "</strong>");
-			fwrite($fp_graph_index, HTML_GRAPH_HEADER_TWO);
+			fwrite($fp_graph_index, "<strong>Graph - " . $graph["title_cache"] . "</strong></td>");
+			fwrite($fp_graph_index, HTML_GRAPH_HEADER_TWO_TREE);
 			fwrite($fp_graph_index, "<td>");
 
 			/* reset vars for actual graph image creation */
@@ -780,13 +915,22 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 			/* generate graphs for each rra */
 			foreach ($rras as $rra) {
 				$graph_data_array["export"] = true;
-				$graph_data_array["export_filename"] = "'".$path."'/graph_".$graph["local_graph_id"]."_".$rra["id"].".png";
 
-				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
-				$total_graphs_created++;
+				if (read_config_option("export_tree_isolation") == "on") {
+					$graph_data_array["export_filename"] = "'" . $path . "'/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
+				}else{
+					$graph_data_array["export_filename"] = "/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
+				}
+
+				if (!file_exists($cacti_export_path . "/" . $graph_data_array["export_filename"])) {
+					rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
+					$total_graphs_created++;
+				}else{
+                	export_log("Duplicate file write attempted.");
+				}
 
 				/* write image related html */
-				fwrite($fp_graph_index, "<div align=center><img src='graph_".$graph["local_graph_id"]."_".$rra["id"].".png' border=0></div>\n
+				fwrite($fp_graph_index, "<div align=center><img src='graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
 					<div align=center><strong>".$rra["name"]."</strong></div><br>");
 			}
 
@@ -795,7 +939,7 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 			fclose($fp_graph_index);
 
 			/* main graph page html */
-			fwrite($fp, "<td align='center' width='\" . (98 / 2) . \"%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
+			fwrite($fp, "<td align='center' width='42%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
 			$i++;
 			if (($i == 2)) {
 				$i = 0;
@@ -816,69 +960,69 @@ function check_remove($filename) {
 	}
 }
 
-function get_host_description($host_id)  {
+function get_host_description($host_id) {
 	$host=db_fetch_row("SELECT description FROM host WHERE id='".$host_id."'");
-	return($host["description"]);
+	return $host["description"];
 }
 
-function get_host_id($tree_item_id)  {
+function get_host_id($tree_item_id) {
 	$graph_tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
-	return($graph_tree_item["host_id"]);
+	return $graph_tree_item["host_id"];
 }
-function get_tree_name($tree_id)  {
+
+function get_tree_name($tree_id) {
 	$graph_tree=db_fetch_row("SELECT id, name FROM graph_tree WHERE id='".$tree_id."'");
-	return($graph_tree["name"]);
+	return $graph_tree["name"];
 }
 
 function get_tree_item_title($tree_item_id) {
 	if (get_tree_item_type($tree_item_id) == "host")  {
 		$tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
 		return get_host_description($tree_item["host_id"]);
-	}
-	else  {
+	}else{
 		$tree_item=db_fetch_row("SELECT title FROM graph_tree_items WHERE id='".$tree_item_id."'");
 		return $tree_item["title"];
 	}
 }
 
+/* $path to the directory to delete or clean */
+/* $deldir (optionnal parameter, true as default) delete the diretory (true) or just clean it (false) */
 function del_directory($path, $deldir = true) {
-	/* $path to the directory to delete or clean */
-    /* $deldir (optionnal parameter, true as default) delete the diretory (true) or just clean it (false) */
+	/* check if the directory name have a "/" at the end, add if not */
+	if ($path[strlen($path)-1] != "/") {
+		$path .= "/";
+	}
 
-    /* check if the directory name have a "/" at the end, add if not */
-    if ($path[strlen($path)-1] != "/")
-	    $path .= "/";
-    if (is_dir($path)) {
-	    $d = opendir($path);
-        while ($f = readdir($d)) {
-	        if ($f != "." && $f != "..") {
-		        $rf = $path . $f;
+	/* cascade through the directory structure(s) until they are all delected */
+	if (is_dir($path)) {
+		$d = opendir($path);
+		while ($f = readdir($d)) {
+			if ($f != "." && $f != "..") {
+				$rf = $path . $f;
 
-				 /* if it is a directory, recursive call to the function */
-                if (is_dir($rf)) {
-                    del_directory($rf);
-                }else {
-                    unlink($rf);
+				/* if it is a directory, recursive call to the function */
+				if (is_dir($rf)) {
+					del_directory($rf);
+				}else {
+					unlink($rf);
 				}
-            }
-        }
-        closedir($d);
+			}
+		}
+		closedir($d);
 
 		/* if $deldir is true, remove the directory */
-        if ($deldir) {
-            rmdir($path);
+		if ($deldir) {
+			rmdir($path);
 		}
- 	}
+	}
 }
 
 function draw_html_left_tree($fp,$tree_id)  {
-	/* write the code for the tree at the left */
-	fwrite($fp,"<table width='98%' border: 1px solid #bbbbbb;' align='center'><tr>\n");
-	fwrite($fp,"<td valign=\"top\" style=\"padding: 5px; border-right: #aaaaaa 1px solid;\" bgcolor='#efefef' width='20%'>\n");
-	fwrite($fp,"<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style=\"font-size:7pt;text-decoration:none;color:silver\" href=\"http://www.treemenu.net/\" target=_blank></a></font></td></tr></table>\n");
+	/* create the treeview representation for the html data */
 	grow_dhtml_trees_export($fp,$tree_id);
-	fwrite($fp,"<script type=\"text/javascript\">initializeDocument();</script>\n");
-	fwrite($fp,"<script type=\"text/javascript\">\n");
+
+	fwrite($fp,"<script type='text/javascript'>initializeDocument();</script>\n");
+	fwrite($fp,"<script type='text/javascript'>\n");
 	fwrite($fp,"var obj;\n");
 	fwrite($fp,"obj = findObj(1);\n");
 	fwrite($fp,"if (!obj.isOpen) {\n");
@@ -886,7 +1030,8 @@ function draw_html_left_tree($fp,$tree_id)  {
 	fwrite($fp,"}\n");
 	fwrite($fp,"clickOnLink(2,'','main');\n");
 	fwrite($fp,"</script>\n");
-	fwrite($fp,"</td><td>\n");
+    fwrite($fp,"</td>\n");
+	fwrite($fp,"<td valign='top'>\n");
 }
 
 function grow_dhtml_trees_export($fp,$tree_id) {
@@ -894,17 +1039,24 @@ function grow_dhtml_trees_export($fp,$tree_id) {
 	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/data_query.php");
 
-	fwrite($fp, "<script type=\"text/javascript\">");
+	fwrite($fp, "<script type='text/javascript'>\n");
 	fwrite($fp,"<!--
 			USETEXTLINKS = 1
 			STARTALLOPEN = 0
 			USEFRAMES = 0
 			USEICONS = 0
 			WRAPTEXT = 1
+			ICONPATH = 'treeview/'
 			PERSERVESTATE = 1
 			HIGHLIGHT = 1\n");
 
-	$dhtml_tree = create_dhtml_tree_export($tree_id);
+	if (read_config_option("export_tree_isolation") == "off") {
+    	$dhtml_tree_base = 0;
+    }else{
+    	$dhtml_tree_base = $tree_id;
+    }
+
+	$dhtml_tree = create_dhtml_tree_export($dhtml_tree_base);
 
 	$total_tree_items = sizeof($dhtml_tree) - 1;
 	for ($i = 2; $i <= $total_tree_items; $i++) {
@@ -928,28 +1080,44 @@ function create_dhtml_tree_export($tree_id) {
 	$i = 2;
 
     $i++;
-	$heirarchy = db_fetch_assoc("SELECT
-		graph_tree_items.id,
-		graph_tree_items.title,
-		graph_tree_items.order_key,
-		graph_tree_items.host_id,
-		graph_tree_items.host_grouping_type,
-		host.description AS hostname
-		FROM graph_tree_items
-		LEFT JOIN host ON (host.id=graph_tree_items.host_id)
-		WHERE graph_tree_items.graph_tree_id=" . $tree_id . "
-		AND graph_tree_items.local_graph_id = 0
-		ORDER BY graph_tree_items.order_key");
 
-	$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . get_tree_name($tree_id) . "\", \"index.html\"))\n";
+	if ($tree_id == 0) {
+    	$sql_where = "WHERE graph_tree_items.local_graph_id = 0";
+    }else{
+    	$sql_where = "WHERE graph_tree_items.graph_tree_id=" . $tree_id . "
+			AND graph_tree_items.local_graph_id = 0";
+    }
+
+    $heirarchy = db_fetch_assoc("SELECT
+    	graph_tree.name,
+    	graph_tree.id AS tree_id,
+    	graph_tree_items.id,
+    	graph_tree_items.title,
+    	graph_tree_items.order_key,
+    	graph_tree_items.host_id,
+    	graph_tree_items.host_grouping_type,
+    	host.description AS hostname
+		FROM graph_tree
+		INNER JOIN (graph_tree_items LEFT JOIN host
+		ON graph_tree_items.host_id = host.id)
+		ON graph_tree.id = graph_tree_items.graph_tree_id
+		$sql_where
+		ORDER BY graph_tree.name, graph_tree_items.order_key");
+
+	$dhtml_tree_id = 0;
 
     if (sizeof($heirarchy) > 0) {
 	foreach ($heirarchy as $leaf) {
+		if ($dhtml_tree_id <> $leaf["tree_id"]) {
+			$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . get_tree_name($leaf["tree_id"]) . "\", \"index.html\"))\n";
+		}
+		$dhtml_tree_id = $leaf["tree_id"];
+
 		$i++;
 		$tier = tree_tier($leaf["order_key"]);
 
 		if ($leaf["host_id"] > 0) {  //It's a host
-			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"".$leaf["hostname"]."_".$leaf["id"]. ".html\"))\n";
+			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . $leaf["hostname"] . "\", \"" . $leaf["hostname"] . "_" . $leaf["id"] . ".html\"))\n";
 
 			if (read_graph_config_option("expand_hosts") == "on") {
 				if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
@@ -969,7 +1137,7 @@ function create_dhtml_tree_export($tree_id) {
 						foreach ($graph_templates as $graph_template) {
 							$i++;
 							$leaf["title"] = "title" . $i;
-							$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"".$leaf["title"]."_".$leaf["id"]. ".html\"))\n";
+							$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"" . $leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
 							create_expanded_hosts_dhtml();
 						}
 					}
@@ -993,7 +1161,7 @@ function create_dhtml_tree_export($tree_id) {
 						$i++;
 						$leaf["title"] = "title" . $i;
 
-						$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"" . $leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
 						create_expanded_hosts_dhtml();
 
 						/* fetch a list of field names that are sorted by the preferred sort field */
@@ -1001,7 +1169,7 @@ function create_dhtml_tree_export($tree_id) {
 
 						while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
 							$i++;
-							$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
+							$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"" . $leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"] . ".html\"))\n";
 							create_expanded_hosts_dhtml();
 						}
 					}
@@ -1009,7 +1177,7 @@ function create_dhtml_tree_export($tree_id) {
 				}
 			}
 		}else {
-			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"" . $leaf["title"] . "_" . $leaf["id"]. ".html\"))\n";
+			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"" . $leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"]. ".html\"))\n";
 		}
 	}
 	}
@@ -1020,18 +1188,91 @@ function create_dhtml_tree_export($tree_id) {
 function create_expanded_hosts_dhtml() {
 }
 
+define("HTML_HEADER_TREE",
+"<html>
+<head>
+	<title>cacti</title>
+	<link href='main.css' rel='stylesheet'>
+	<meta http-equiv=refresh content='300'; url='index.html'>
+	<meta http-equiv=Pragma content=no-cache>
+	<meta http-equiv=cache-control content=no-cache>
+	<script type=\"text/javascript\" src=\"./treeview/ua.js\"></script>
+	<script type=\"text/javascript\" src=\"./treeview/ftiens4.js\"></script>
+</head>
+
+<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0'>
+
+<table width='100%' height='100%' cellspacing='0' cellpadding='0'>
+	<tr height='37' bgcolor='#a9a9a9'>
+		<td colspan='2' valign='bottom' nowrap>
+			<table width='100%' cellspacing='0' cellpadding='0'>
+				<tr>
+					<td nowrap>
+						&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='absmiddle' border='0'></a>
+					</td>
+					<td align='right'>
+						<img src='cacti_backdrop.gif' align='absmiddle'>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr height='2' colspan='2' bgcolor='#183c8f'>
+		<td colspan='2'>
+			<img src='transparent_line.gif' width='170' height='2' border='0'><br>
+		</td>
+	</tr>
+	<tr height='5' bgcolor='#e9e9e9'>
+		<td colspan='2'>
+			<table width='100%'>
+				<tr>
+					<td>
+						Exported Graphs
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor='#efefef' colspan='1' height='8' style='background-image: url(shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;'>
+			<img src='transparent_line.gif' width='200' height='2' border='0'><br>
+		</td>
+		<td bgcolor='#ffffff' colspan='1' height='8' style='background-image: url(shadow.gif); background-repeat: repeat-x;'>
+		</td>
+	</tr>
+	<tr>
+		<td valign='top' style='padding: 5px; border-right: #aaaaaa 1px solid;' bgcolor='#efefef' width='200'>
+			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style='font-size:7pt;text-decoration:none;color:silver' href='http://www.treemenu.net/' target=_blank></a></font></td></tr></table>\n"
+);
+
 define("HTML_GRAPH_HEADER_ONE_TREE", "
-	<table width='100%' height='100%' topmargin='0' style='background-color: #f5f5f5; border: 0px solid #bbbbbb;' align='center'>
-		<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td colspan='2'>
-				<table width='100%' topmargin='0' cellspacing='0' cellpadding='3' border='0'>
-					<tr>
-						<td align='center' class='textHeaderDark'>");
+<table width='98%' align='center' cellpadding='3'><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
+<tr bgcolor='#6d88ad'><td width='390' colspan='3' class='textHeaderDark'>");
+
+define("HTML_GRAPH_HEADER_TWO_TREE", "
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>"
+);
+
+define("HTML_GRAPH_HEADER_ICE_TREE", "</td></tr></table><br><br>			<br>
+		</td>
+	</tr>
+</table>\n");
 
 define("HTML_GRAPH_FOOTER_TREE", "
-	</tr></table>\n");
+	</tr></table>\n"
+);
 
-define("HTML_HEADER_TREE", "
+define("HTML_FOOTER_TREE", "
+</body>
+</html>"
+);
+
+/* HTML header for the Classic Presentation */
+define("HTML_HEADER_CLASSIC", "
 	<html>
 	<head>
 		<title>cacti</title>
@@ -1039,8 +1280,6 @@ define("HTML_HEADER_TREE", "
 		<meta http-equiv=refresh content='300'; url='index.html'>
 		<meta http-equiv=Pragma content=no-cache>
 		<meta http-equiv=cache-control content=no-cache>
-		<script type=\"text/javascript\" src=\"./ua.js\"></script>
-		<script type=\"text/javascript\" src=\"./ftiens4.js\"></script>
 	</head>
 
 	<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0'>
@@ -1083,94 +1322,37 @@ define("HTML_HEADER_TREE", "
 		</tr>\n
 	</table>
 
-	<br>");
+	<br>"
+);
 
-define("HTML_FOOTER_TREE", "
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-</body>
-</html>");
-
-define("HTML_GRAPH_HEADER_ONE", "
+/* Traditional Graph Export Representation Graph Headers */
+define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
 	<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 		<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td colspan='2'>
 				<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 					<tr>
-						<td align='center' class='textHeaderDark'>");
+						<td align='center' class='textHeaderDark'>"
+);
 
-define("HTML_GRAPH_HEADER_TWO", "
-						</td>
+define("HTML_GRAPH_HEADER_TWO_CLASSIC", "
 					</tr>
 				</table>
 			</td>
 		</tr>
-		<tr>");
+		<tr>"
+);
 
-define("HTML_GRAPH_FOOTER", "
+define("HTML_GRAPH_FOOTER_CLASSIC", "
 	</tr></table>\n
-	<br><br>");
+	<br><br>"
+);
 
-define("HTML_HEADER", "
-	<html>
-	<head>
-		<title>cacti</title>
-		<link href='main.css' rel='stylesheet'>
-		<meta http-equiv=refresh content='300'; url='index.html'>
-		<meta http-equiv=Pragma content=no-cache>
-		<meta http-equiv=cache-control content=no-cache>
-	</head>
-
-	<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0'>
-
-	<table width='100%' cellspacing='0' cellpadding='0'>
-		<tr height='37' bgcolor='#a9a9a9'>
-			<td valign='bottom' colspan='3' nowrap>
-				<table width='100%' cellspacing='0' cellpadding='0'>
-					<tr>
-						<td valign='bottom'>
-							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='absmiddle' border='0'></a>
-						</td>
-						<td align='right'>
-							<img src='cacti_backdrop.gif' align='absmiddle'>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>\n
-		<tr height='2' bgcolor='#183c8f'>
-			<td colspan='3'>
-				<img src='transparent_line.gif' width='170' height='2' border='0'><br>
-			</td>
-		</tr>\n
-		<tr height='5' bgcolor='#e9e9e9'>
-			<td colspan='3'>
-				<table width='100%'>
-					<tr>
-						<td>
-							Exported Graphs
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>\n
-		<tr>
-			<td colspan='3' height='8' style='background-image: url(shadow.gif); background-repeat: repeat-x;' bgcolor='#ffffff'>
-
-			</td>
-		</tr>\n
-	</table>
-
-	<br>");
-
-define("HTML_FOOTER", "
+define("HTML_FOOTER_CLASSIC", "
 	<br>
 
 	</body>
-	</html>");
-
+	</html>"
+);
 
 ?>

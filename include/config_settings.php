@@ -276,7 +276,7 @@ $settings = array(
 						),
 			),
 		"export_presentation" => array(
-			"friendly_name" => "Exported Files Presentation",
+			"friendly_name" => "Presentation Method",
 			"description" => "Choose which presentation would you want for the html generated pages. If you choose classical presentation, the graphs will be in a only-one-html page. If you choose tree presentation, the graph tree architecture will be kept in the static html pages",
 			"method" => "drop_array",
 			"default" => "disabled",
@@ -285,18 +285,64 @@ $settings = array(
 						"tree" => "Tree Presentation",
 						),
 			),
+		"export_tree_options" => array(
+			"friendly_name" => "Tree Settings",
+			"method" => "spacer",
+			),
+		"export_tree_isolation" => array(
+			"friendly_name" => "Tree Isolation",
+			"description" => "This feature determines if the entire tree is treated as a single hierarchy or as separate hierarchies.  If they are treated separately, graphs will be isolated from one another.",
+			"method" => "drop_array",
+			"default" => "off",
+			"array" => array(
+						"off" => "Single Tree Representation",
+						"on" => "Multiple Tree Representation"
+						),
+			),
+		"export_user_id" => array(
+			"friendly_name" => "Effective User Name",
+			"description" => "The user name to utilize for establishing export permissions.  This user name will be used to determine which graphs/tree's are exported.",
+			"method" => "drop_sql",
+			"sql" => "SELECT id, username AS name FROM user_auth ORDER BY name",
+			"default" => "1"
+			),
+		"export_thumb_options" => array(
+			"friendly_name" => "Thumbnail Settings",
+			"method" => "spacer",
+			),
+		"export_default_height" => array(
+			"friendly_name" => "Thumbnail Height",
+			"description" => "The height of thumbnail graphs in pixels.",
+			"method" => "textbox",
+			"default" => "100",
+			"max_length" => "10"
+			),
+		"export_default_width" => array(
+			"friendly_name" => "Thumbnail Width",
+			"description" => "The width of thumbnail graphs in pixels.",
+			"method" => "textbox",
+			"default" => "300",
+			"max_length" => "10"
+			),
+		"export_num_columns" => array(
+			"friendly_name" => "Thumbnail Columns",
+			"description" => "The number of columns to use when displaying thumbnail graphs.",
+			"method" => "textbox",
+			"default" => "2",
+			"max_length" => "5"
+			),
 		"export_hdr_paths" => array(
 			"friendly_name" => "Paths",
 			"method" => "spacer",
 			),
 		"path_html_export" => array(
-			"friendly_name" => "Export Base Path (both local and ftp)",
-			"description" => "If you want Cacti to write static PNG's and HTML files to a directory when data is gathered, specify the location here. This feature is similar to MRTG, graphs do not have to be generated on the fly this way.",
+			"friendly_name" => "Export Directory (both local and ftp)",
+			"description" => "This is the directory, either on the local system or on the remote system, that will contain the exported data.",
 			"method" => "textbox",
 			"max_length" => "255"
 			),
 		"export_temporary_directory" => array(
-			"friendly_name" => "Temporary Export Base Path (ftp only)",
+			"friendly_name" => "Local Scratch Directory (ftp only)",
 			"description" => "This is the a directory that cacti will temporarily store output prior to sending to the remove site via ftp.  The contents of this directory will be deleted after the ftp is completed.",
 			"method" => "textbox",
 			"max_length" => "255"
