@@ -198,8 +198,10 @@ function utilities_clear_logfile() {
 	html_start_box("<strong>Clear Cacti Log File</strong>", "98%", $colors["header"], "1", "center", "");
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
-			unlink($logfile);
-			touch($logfile);
+			$timestamp = date("m/d/Y h:i:s A");
+			$log_fh = fopen($logfile, "w");
+			fwrite($log_fh, $timestamp . " - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+			fclose($log_fh);
 			print "<tr><td>Cacti Log File Cleared</td></tr>";
 		}else{
 			print "<tr><td><font color='red'><b>Error: Unable to clear log, no write permissions.<b></font></td></tr>";
