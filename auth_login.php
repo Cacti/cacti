@@ -36,7 +36,7 @@ case 'login':
 
 		if ($ldap_conn) {
 			$ldap_dn = str_replace("<username>",$_POST["login_username"],read_config_option("ldap_dn"));
-			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$_POST["login_password"]);
+			$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,stripslashes($_POST["login_password"]));
 
 			if ($ldap_response) {
 				$ldap_auth = true;
