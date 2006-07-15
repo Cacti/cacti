@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentile
 -bug#0000672: When creating a device, the Host Template was not properly validated
 -bug#0000678: Can't graph export to subdir 
+-bug#0000681: poller_item arg1, arg2, arg3 fields too small 
 -bug#0000692: Tree graph export fails 
 -bug#0000698: Make arguments to 'df' more compatible with FreeBSD 6.0 in the "Get Unix Partitions" data query.
 -bug#0000705: Fix problem with the current selected data source item and SIMILAR_DATA_SOURCES_NODUPS (again).
