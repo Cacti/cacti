@@ -2108,6 +2108,7 @@ CREATE TABLE poller_reindex (
 
 CREATE TABLE poller_time (
   id mediumint(8) unsigned NOT NULL auto_increment,
+  pid int(11) unsigned NOT NULL default '0',
   poller_id smallint(5) unsigned NOT NULL default '0',
   start_time datetime NOT NULL default '0000-00-00 00:00:00',
   end_time datetime NOT NULL default '0000-00-00 00:00:00',
