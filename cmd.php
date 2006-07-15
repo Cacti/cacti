@@ -210,7 +210,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						/* do the check */
 						switch ($index_item["action"]) {
 						case POLLER_ACTION_SNMP: /* snmp */
-							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], SNMP_CMDPHP);
+							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							$output = exec_poll($index_item["arg1"]);
@@ -266,7 +266,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					cacti_log("Host[$host_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout);
 					$output = "U";
 				}else {
-					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], SNMP_CMDPHP);
+					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 
 					/* remove any quotes from string */
 					$output = strip_quotes($output);
