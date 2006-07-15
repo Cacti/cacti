@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -bug#0000739: "Unit value" parameter in template options ignored 
 -bug#0000741: Links get mismatched after using Zoom on graph 
 -bug#0000746: Clearing Cacti log file from web interface does not preserve Cacti log file permissions
+-bug#0000752: Problem with OID truncation with cactid and from within the database structure one limitation is that reindex table must be limited to 255 characters
 -bug#0000758: LDAP user with non-Alphanumeric characters in the password fail to authenicate
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
