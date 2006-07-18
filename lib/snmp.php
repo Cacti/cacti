@@ -42,7 +42,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	global $config;
 
 	/* determine default retries */
-	if ($retries == 0) {
+	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
 		if ($retries == "") $retries = 3;
 	}
@@ -107,7 +107,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$temp_array = array();
 
 	/* determine default retries */
-	if ($retries == 0) {
+	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
 		if ($retries == "") $retries = 3;
 	}
