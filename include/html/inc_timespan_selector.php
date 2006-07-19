@@ -43,9 +43,9 @@
 	}
 </script>
 
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
 		<form name="form_timespan_selector" method="post">
-		<td>
+		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="textHeader" nowrap>

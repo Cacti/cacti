@@ -1,10 +1,10 @@
 	<?php if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
 	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; } ?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
 		<form name="form_graph_id" method="post">
-		<td>
+		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
-				<tr>
+				<tr class="noprint">
 					<td width="120" class="textHeader">
 						Filter by host:&nbsp;
 					</td>

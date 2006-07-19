@@ -103,7 +103,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 							<td>
 								<a href='graph.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
 							</td>
-							<td valign='top' style='padding: 3px;'>
+							<td valign='top' style='padding: 3px;' class='noprint'>
 								<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
 							</td>
 						</tr>
@@ -182,7 +182,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
      <PAGE> will be substituted with the correct page number if included */
 function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page, $total_rows, $nav_url) {
 	?>
-	<tr bgcolor='#<?php print $background_color;?>'>
+	<tr bgcolor='#<?php print $background_color;?>' class='noprint'>
 		<td colspan='<?php print $colspan;?>'>
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>

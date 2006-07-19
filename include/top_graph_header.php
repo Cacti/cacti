@@ -113,7 +113,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
 <table width="100%" height="100%" cellspacing="0" cellpadding="0">
-	<tr height="37" bgcolor="#a9a9a9">
+	<tr height="37" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
@@ -130,12 +130,12 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 			</table>
 		</td>
 	</tr>
-	<tr height="2" colspan="2" bgcolor="#183c8f">
+	<tr height="2" colspan="2" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
 			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
 		</td>
 	</tr>
-	<tr height="5" bgcolor="#e9e9e9">
+	<tr height="5" bgcolor="#e9e9e9" class="noprint">
 		<td colspan="2">
 			<table width="100%">
 				<tr>
@@ -151,7 +151,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 			</table>
 		</td>
 	</tr>
-	<tr>
+	<tr class="noprint">
 		<td bgcolor="#efefef" colspan="1" height="8" style="background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
 			<img src="images/transparent_line.gif" width="<?php print read_graph_config_option("default_dual_pane_width");?>" height="2" border="0"><br>
 		</td>
@@ -184,7 +184,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 
 	<tr>
 		<?php if ((read_graph_config_option("default_tree_view_mode") == "2") && (($_REQUEST["action"] == "tree") || ((isset($_REQUEST["view_type"]) ? $_REQUEST["view_type"] : "") == "tree"))) { ?>
-		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='<?php print read_graph_config_option("default_dual_pane_width");?>'>
+		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='<?php print read_graph_config_option("default_dual_pane_width");?>' class='noprint'>
 			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></font></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
 			<script type="text/javascript">initializeDocument();</script>
