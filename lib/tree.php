@@ -159,11 +159,11 @@ function move_branch($dir, $order_key, $table, $field, $where) {
 		$old_root = substr($order_key, 0, ($tier * CHARS_PER_TIER));
 		$new_root = substr($displaced_row[$field], 0, ($tier * CHARS_PER_TIER));
 
-		db_execute("LOCK TABLES $table WRITE");
+//		db_execute("LOCK TABLES $table WRITE");
 		db_execute("UPDATE $table SET $field = CONCAT('" . str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1).")) WHERE $field LIKE '$new_root%'$where");
 		db_execute("UPDATE $table SET $field = CONCAT('$new_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '$old_root%' $where");
 		db_execute("UPDATE $table SET $field = CONCAT('$old_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '".str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "%' $where");
-		db_execute("UNLOCK TABLES");
+//		db_execute("UNLOCK TABLES");
 	}
 }
 

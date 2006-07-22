@@ -749,9 +749,9 @@ function get_data_source_item_name($data_template_rrd_id) {
 function get_data_source_path($local_data_id, $expand_paths) {
 	global $config;
 
-	    if (empty($local_data_id)) { return ""; }
+	if (empty($local_data_id)) { return ""; }
 
-	    $data_source = db_fetch_row("select name,data_source_path from data_template_data where local_data_id=$local_data_id");
+	$data_source = db_fetch_row("select name,data_source_path from data_template_data where local_data_id=$local_data_id");
 
 	if (sizeof($data_source) > 0) {
 		if (empty($data_source["data_source_path"])) {

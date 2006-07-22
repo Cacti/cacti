@@ -410,7 +410,7 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 		if (preg_match_all($regexps[$i], $output, $matches)) {
 			for ($j=0; ($j < count($matches[1])); $j++) {
 				$line = ($matches[1][$j] * (pow(10,(float)$matches[2][$j])));
-				if ((($line == "NaN") || ($line == "nan")) && ($show_unknown == 1)) { 
+				if ((($line == "NaN") || ($line == "nan")) && ($show_unknown == 1)) {
 					array_push($fetch_array["values"][$i], "U");
 					$max_array[$j][$i] = "U";
 				} else {
