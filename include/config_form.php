@@ -762,14 +762,14 @@ $fields_rra_edit = array(
 		"friendly_name" => "Rows",
 		"description" => "How many generations data is kept in the RRA.",
 		"value" => "|arg1:rows|",
-		"max_length" => "8",
+		"max_length" => "12",
 		),
 	"timespan" => array(
 		"method" => "textbox",
 		"friendly_name" => "Timespan",
 		"description" => "How many seconds to display in graph for this RRA.",
 		"value" => "|arg1:timespan|",
-		"max_length" => "8",
+		"max_length" => "12",
 		),
 	"id" => array(
 		"method" => "hidden_zero",
