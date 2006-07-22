@@ -250,14 +250,14 @@ function item_edit() {
 			left join host on (data_local.host_id=host.id)
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id ";
-		# Make sure we don't limit the list so that the selected DS isn't in the list
+		# Make sure we don't limit the list so that the selected DS isn't in the list in edit mode
 		if (strlen($sql_where) > 0) {
+			$sql_where = substr($sql_where,0,-5);
 			if (!empty($_REQUEST["id"])) {
-				$selected = db_fetch_cell("select task_item_id from graph_templates_item where id = " . $_REQUEST["id"]);
-				$sql_where = substr($sql_where,0,-5);
-				$sql_where .= ") or (data_template_rrd.id = " . $selected . ") ";
+				$struct_graph_item["task_item_id"]["sql"] .= " and ((" . $sql_where .  ") or (data_template_rrd.id = " .  $template_item["task_item_id"] . "))";
+			} else {
+				$struct_graph_item["task_item_id"]["sql"] .= " and (" . $sql_where . ")";
 			}
-			$struct_graph_item["task_item_id"]["sql"] .= " and ((" . $sql_where . ")";
 		}
 		$struct_graph_item["task_item_id"]["sql"] .= " order by name";
 	}
