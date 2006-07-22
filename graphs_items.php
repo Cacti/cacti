@@ -210,17 +210,17 @@ function item_edit() {
 	if ($_REQUEST["ds_host_id"] == "-1") {
 		$sql_where = "";
 	}elseif ($_REQUEST["ds_host_id"] == "0") {
-		$sql_where = " and data_local.host_id=0";
+		$sql_where = " data_local.host_id=0 and ";
 	}elseif (!empty($_REQUEST["ds_host_id"])) {
-		$sql_where = " and data_local.host_id=" . $_REQUEST["ds_host_id"];
+		$sql_where = " data_local.host_id=" . $_REQUEST["ds_host_id"] . " and ";
 	}
 
 	if ($_REQUEST["ds_data_template_id"] == "-1") {
 		$sql_where .= "";
 	}elseif ($_REQUEST["ds_data_template_id"] == "0") {
-		$sql_where .= " and data_local.data_template_id=0";
+		$sql_where .= " data_local.data_template_id=0 and ";
 	}elseif (!empty($_REQUEST["ds_data_template_id"])) {
-		$sql_where .= " and data_local.data_template_id=" . $_REQUEST["ds_data_template_id"];
+		$sql_where .= " data_local.data_template_id=" . $_REQUEST["ds_data_template_id"] . " and ";
 	}
 
 	if (!empty($_REQUEST["id"])) {
@@ -249,9 +249,17 @@ function item_edit() {
 			from (data_template_data,data_template_rrd,data_local)
 			left join host on (data_local.host_id=host.id)
 			where data_template_rrd.local_data_id=data_local.id
-			and data_template_data.local_data_id=data_local.id
-			$sql_where
-			order by name";
+			and data_template_data.local_data_id=data_local.id ";
+		# Make sure we don't limit the list so that the selected DS isn't in the list
+		if (strlen($sql_where) > 0) {
+			if (!empty($_REQUEST["id"])) {
+				$selected = db_fetch_cell("select task_item_id from graph_templates_item where id = " . $_REQUEST["id"]);
+				$sql_where = substr($sql_where,0,-5);
+				$sql_where .= ") or (data_template_rrd.id = " . $selected . ") ";
+			}
+			$struct_graph_item["task_item_id"]["sql"] .= " and ((" . $sql_where . ")";
+		}
+		$struct_graph_item["task_item_id"]["sql"] .= " order by name";
 	}
 
 	$form_array = array();
