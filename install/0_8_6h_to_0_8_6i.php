@@ -30,6 +30,9 @@ function upgrade_to_0_8_6i() {
 	db_install_execute("0.8.6i", "ALTER TABLE `poller_reindex` MODIFY COLUMN `arg1` VARCHAR(255) NOT NULL;");
 	db_install_execute("0.8.6i", "ALTER TABLE `host_snmp_cache` MODIFY COLUMN `oid` TEXT NOT NULL;");
 
+	/* let's add more graph tree items for those larger installations */
+	db_install_execute("0.8.6i", "ALTER TABLE `graph_tree_items` MODIFY COLUMN `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;");
+
 	/* let's keep track of an important statistical value */
 	db_install_execute("0.8.6i", "ALTER TABLE `poller_time` ADD COLUMN `pid` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `id`;");
  }

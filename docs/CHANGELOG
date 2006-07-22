@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -bug#0000752: Problem with OID truncation with cactid and from within the database structure one limitation is that reindex table must be limited to 255 characters
 -bug#0000758: LDAP user with non-Alphanumeric characters in the password fail to authenicate
 -bug#0000761: RRA Input fields timespan and rows do not match the field size in the database
+-bug#0000766: graph_tree_items ID field need to change to mediumint 
 -bug: Use of the Data Source filter on the Graph Items Editor can clear the selected Data Source
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
