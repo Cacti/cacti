@@ -127,8 +127,8 @@ function config_export_stats($start, $total_graphs_created) {
 	$end = $seconds + $micro;
 
 	$export_stats = sprintf(
-		"ExportTime:%01.4f TotalGraphs:%s",
-		round($end - $start,4), $total_graphs_created);
+		"ExportDate:%s ExportDuration:%01.4f TotalGraphsExported:%s",
+		date("Y-m-d_G:i:s"), round($end - $start,4), $total_graphs_created);
 
 	cacti_log("STATS: " . $export_stats, true, "EXPORT");
 
@@ -677,53 +677,6 @@ function tree_export() {
 	return $total_graphs_created;
 }
 
-/* create_export_directory_structure - builds the export directory strucutre and copies
-   graphics and treeview scripts to those directories.
-   @arg $cacti_root_path - the directory where Cacti is installed
-        $dir - the export directory where graphs will either be staged or located.
-*/
-function create_export_directory_structure($cacti_root_path, $dir) {
-	/* create the treeview sub-directory */
-	if (!is_dir("$dir/treeview")) {
-		if (!mkdir("$dir/treeview", 0755)) {
-			export_fatal("Create directory '" . $dir . "/treeview' failed.  Can not continue");
-		}
-	}
-
-	/* create the graphs sub-directory */
-	if (!is_dir("$dir/graphs")) {
-		if (!mkdir("$dir/graphs", 0755)) {
-			export_fatal("Create directory '" . $dir . "/graphs' failed.  Can not continue");
-		}
-	}
-
-	$treeview_dir = $dir . "/treeview";
-
-	/* css */
-	copy("$cacti_root_path/include/main.css", "$dir/main.css");
-
-	/* images for html */
-	copy("$cacti_root_path/images/tab_cacti.gif", "$dir/tab_cacti.gif");
-	copy("$cacti_root_path/images/cacti_backdrop.gif", "$dir/cacti_backdrop.gif");
-	copy("$cacti_root_path/images/transparent_line.gif", "$dir/transparent_line.gif");
-	copy("$cacti_root_path/images/shadow.gif", "$dir/shadow.gif");
-	copy("$cacti_root_path/images/shadow_gray.gif", "$dir/shadow_gray.gif");
-
-	/* java scripts for the tree */
-	copy("$cacti_root_path/include/treeview/ftiens4_export.js", "$treeview_dir/ftiens4.js");
-	copy("$cacti_root_path/include/treeview/ua.js", "$treeview_dir/ua.js");
-
-	/* images for the tree */
-	copy("$cacti_root_path/include/treeview/ftv2blank.gif", "$treeview_dir/ftv2blank.gif");
-	copy("$cacti_root_path/include/treeview/ftv2lastnode.gif", "$treeview_dir/ftv2lastnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2mlastnode.gif", "$treeview_dir/ftv2mlastnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2mnode.gif", "$treeview_dir/ftv2mnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2node.gif", "$treeview_dir/ftv2node.gif");
-	copy("$cacti_root_path/include/treeview/ftv2plastnode.gif", "$treeview_dir/ftv2plastnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2pnode.gif", "$treeview_dir/ftv2pnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2vertline.gif", "$treeview_dir/ftv2vertline.gif");
-}
-
 /* export_build_tree_single - build the complete exported files for a graph_tree
    @arg $path - the directory where the graph tree is exported
         $filename - the filename of the html file that will be generated
@@ -754,10 +707,10 @@ function export_build_tree_single($path, $filename, $tree_id, $parent_tree_item_
 	if (($parent_tree_item_id == 0) && ($tree_id != 0)) {
 		fwrite($fp, "<strong>Tree:</strong> - " . get_tree_name($tree_id) . "</td></tr>");
 	}else if ($tree_id == 0) {
-		fwrite($fp, "<strong>Exported Graphs Last Updated on :</strong> - " . get_tree_name($tree_id) . "</td></tr>");
+		fwrite($fp, "<strong>Exported Graphs Last Updated on :<br>" . str_replace("_", " ", str_replace(" ", "<br>", read_config_option("stats_export"))) . "</td></tr>");
 	}else {
 		$title = get_tree_item_title($parent_tree_item_id);
-		fwrite($fp, "<strong>" . $title . "</strong> - Associated Graphs" . "</td></tr>");
+		fwrite($fp, "<strong>Tree:</strong> - " . get_tree_name($tree_id) . "<strong>" . $title . ":</strong> - Associated Graphs" . "</td></tr>");
 	}
 
 	fwrite($fp, "<tr>");
@@ -825,7 +778,7 @@ function explore_tree($path, $tree_id, $parent_tree_item_id) {
 
 	$total_graphs_created = 0;
 
-	foreach( $links as $link) {
+	foreach($links as $link) {
 		/* this test gives us the parent of the curent graph_tree_item */
 		if (get_parent_id($link["id"], "graph_tree_items", "graph_tree_id = " . $tree_id) == $parent_tree_item_id) {
 			if (get_tree_item_type($link["id"]) == "host") {
@@ -879,25 +832,6 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 			AND graph_local.host_id=" . get_host_id($parent_tree_item_id) . "
 			AND ((graph_templates_graph.export)='on'))
 			ORDER BY graph_templates_graph.title_cache";
-
-// Original code
-//		$req="SELECT DISTINCT
-//			graph_templates_graph.id,
-//			graph_templates_graph.local_graph_id,
-//			graph_templates_graph.height,
-//			graph_templates_graph.width,
-//			graph_templates_graph.title_cache,
-//			graph_templates.name,
-//			graph_local.host_id
-//			FROM graph_templates_graph
-//			LEFT JOIN graph_templates
-//			ON (graph_templates_graph.graph_template_id=graph_templates.id)
-//			LEFT JOIN graph_local
-//			ON (graph_templates_graph.local_graph_id=graph_local.id)
-//			WHERE graph_local.host_id=".get_host_id($parent_tree_item_id)."
-//			AND graph_templates_graph.local_graph_id!=0
-//			AND graph_templates_graph.export='on'
-//			ORDER BY graph_templates_graph.title_cache";
 	}else{
 		/* searching for the graph_tree_items of the tree_id which are graphs */
 		if ($tree_id == 0) {
@@ -925,26 +859,6 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 			ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 			$sql_where
 			ORDER BY graph_templates_graph.title_cache";
-
-// Original code
-//		$req="SELECT DISTINCT
-//			graph_templates_graph.id,
-//			graph_templates_graph.local_graph_id,
-//			graph_templates_graph.height,
-//			graph_templates_graph.width,
-//			graph_templates_graph.title_cache,
-//			graph_templates.name,
-//			graph_local.host_id,
-//			graph_tree_items.id as gtid
-//			FROM graph_templates_graph
-//			LEFT JOIN graph_tree_items
-//			ON (graph_templates_graph.local_graph_id=graph_tree_items.local_graph_id)
-//			LEFT JOIN graph_templates
-//			ON (graph_templates_graph.graph_template_id=graph_templates.id)
-//			LEFT JOIN graph_local
-//			ON (graph_templates_graph.local_graph_id=graph_local.id)
-//			$sql_where
-//			ORDER BY graph_templates_graph.title_cache";
 	}
 
 	$graphs=db_fetch_assoc($req);
@@ -1056,81 +970,6 @@ function export_build_graphs($fp, $path, $tree_id, $parent_tree_item_id)  {
 	return $total_graphs_created;
 }
 
-function check_remove($filename) {
-	if (file_exists($filename) == true) {
-		unlink($filename);
-	}
-}
-
-function get_host_description($host_id) {
-	$host = db_fetch_row("SELECT description FROM host WHERE id='".$host_id."'");
-	return $host["description"];
-}
-
-function get_host_id($tree_item_id) {
-	$graph_tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
-	return $graph_tree_item["host_id"];
-}
-
-function get_tree_name($tree_id) {
-	$graph_tree=db_fetch_row("SELECT id, name FROM graph_tree WHERE id='".$tree_id."'");
-	return $graph_tree["name"];
-}
-
-function get_tree_item_title($tree_item_id) {
-	if (get_tree_item_type($tree_item_id) == "host")  {
-		$tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
-		return get_host_description($tree_item["host_id"]);
-	}else{
-		$tree_item=db_fetch_row("SELECT title FROM graph_tree_items WHERE id='".$tree_item_id."'");
-		return $tree_item["title"];
-	}
-}
-
-/* clean_up_export_name - runs a string through a series of regular expressions designed to
-     eliminate "bad" characters
-   @arg $string - the string to modify/clean
-   @returns - the modified string */
-function clean_up_export_name($string) {
-	$string = preg_replace("/[\s\ ]+/", "_", $string);
-	$string = preg_replace("/[^a-zA-Z0-9_.]+/", "", $string);
-	$string = preg_replace("/_{2,}/", "_", $string);
-
-	return $string;
-}
-
-/* $path to the directory to delete or clean */
-/* $deldir (optionnal parameter, true as default) delete the diretory (true) or just clean it (false) */
-function del_directory($path, $deldir = true) {
-	/* check if the directory name have a "/" at the end, add if not */
-	if ($path[strlen($path)-1] != "/") {
-		$path .= "/";
-	}
-
-	/* cascade through the directory structure(s) until they are all delected */
-	if (is_dir($path)) {
-		$d = opendir($path);
-		while ($f = readdir($d)) {
-			if ($f != "." && $f != "..") {
-				$rf = $path . $f;
-
-				/* if it is a directory, recursive call to the function */
-				if (is_dir($rf)) {
-					del_directory($rf);
-				}else {
-					unlink($rf);
-				}
-			}
-		}
-		closedir($d);
-
-		/* if $deldir is true, remove the directory */
-		if ($deldir) {
-			rmdir($path);
-		}
-	}
-}
-
 function draw_html_left_tree($fp, $tree_id)  {
 	/* create the treeview representation for the html data */
 	grow_dhtml_trees_export($fp,$tree_id);
@@ -1237,7 +1076,7 @@ function create_dhtml_tree_export($tree_id) {
 		if ($leaf["host_id"] > 0) {  //It's a host
 			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . htmlentities($leaf["hostname"], ENT_QUOTES) . "\", \"" . clean_up_export_name($leaf["hostname"] . "_" . $leaf["id"]) . ".html\"))\n";
 
-			if (read_graph_config_option("expand_hosts") == "on") {
+			if (read_config_option("export_tree_expand_hosts") == "on") {
 				if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
 					$graph_templates = db_fetch_assoc("SELECT
 						graph_templates.id,
@@ -1254,8 +1093,7 @@ function create_dhtml_tree_export($tree_id) {
 				 	if (sizeof($graph_templates) > 0) {
 						foreach ($graph_templates as $graph_template) {
 							$i++;
-							$leaf["title"] = htmlentities("title" . $i, ENT_QUOTES);
-							$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"" . clean_up_export_name($leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $i . ".html\"))\n";
+							$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_gt_" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $graph_template["id"] . ".html\"))\n";
 						}
 					}
 				}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -1270,35 +1108,157 @@ function create_dhtml_tree_export($tree_id) {
 
 					array_push($data_queries, array(
 						"id" => "0",
-						"name" => "(Non Indexed)"
+						"name" => "Graph Template Based"
 						));
 
 					if (sizeof($data_queries) > 0) {
 					foreach ($data_queries as $data_query) {
 						$i++;
-						$leaf["title"] = htmlentities("title" . $i, ENT_QUOTES);
 
-						$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"" . clean_up_export_name($leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $i . ".html\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_dqi_" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $data_query["id"] . ".html\"))\n";
 
 						/* fetch a list of field names that are sorted by the preferred sort field */
 						$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
 
-						while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-							$i++;
-							$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"" . clean_up_export_name($leaf["name"] . "/" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $i . ".html\"))\n";
+						if ($data_query["id"] > 0) {
+							while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+								$i++;
+								$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"" . clean_up_export_name($leaf["hostname"] . "_dqi_" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $snmp_index . ".html\"))\n";
+							}
 						}
 					}
 					}
 				}
 			}
 		}else {
-//			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . htmlentities($leaf["title"], ENT_QUOTES) . "\", \"" . $leaf["name"] . "/" . htmlentities($leaf["title"], ENT_QUOTES) . "_" . $leaf["id"]. ".html\"))\n";
 			$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . htmlentities($leaf["title"], ENT_QUOTES) . "\", \"" . clean_up_export_name($leaf["title"] . "_" . $leaf["id"]). ".html\"))\n";
 		}
 	}
 	}
 
 	return $dhtml_tree;
+}
+
+/* create_export_directory_structure - builds the export directory strucutre and copies
+   graphics and treeview scripts to those directories.
+   @arg $cacti_root_path - the directory where Cacti is installed
+        $dir - the export directory where graphs will either be staged or located.
+*/
+function create_export_directory_structure($cacti_root_path, $dir) {
+	/* create the treeview sub-directory */
+	if (!is_dir("$dir/treeview")) {
+		if (!mkdir("$dir/treeview", 0755)) {
+			export_fatal("Create directory '" . $dir . "/treeview' failed.  Can not continue");
+		}
+	}
+
+	/* create the graphs sub-directory */
+	if (!is_dir("$dir/graphs")) {
+		if (!mkdir("$dir/graphs", 0755)) {
+			export_fatal("Create directory '" . $dir . "/graphs' failed.  Can not continue");
+		}
+	}
+
+	$treeview_dir = $dir . "/treeview";
+
+	/* css */
+	copy("$cacti_root_path/include/main.css", "$dir/main.css");
+
+	/* images for html */
+	copy("$cacti_root_path/images/tab_cacti.gif", "$dir/tab_cacti.gif");
+	copy("$cacti_root_path/images/cacti_backdrop.gif", "$dir/cacti_backdrop.gif");
+	copy("$cacti_root_path/images/transparent_line.gif", "$dir/transparent_line.gif");
+	copy("$cacti_root_path/images/shadow.gif", "$dir/shadow.gif");
+	copy("$cacti_root_path/images/shadow_gray.gif", "$dir/shadow_gray.gif");
+
+	/* java scripts for the tree */
+	copy("$cacti_root_path/include/treeview/ftiens4_export.js", "$treeview_dir/ftiens4.js");
+	copy("$cacti_root_path/include/treeview/ua.js", "$treeview_dir/ua.js");
+
+	/* images for the tree */
+	copy("$cacti_root_path/include/treeview/ftv2blank.gif", "$treeview_dir/ftv2blank.gif");
+	copy("$cacti_root_path/include/treeview/ftv2lastnode.gif", "$treeview_dir/ftv2lastnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2mlastnode.gif", "$treeview_dir/ftv2mlastnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2mnode.gif", "$treeview_dir/ftv2mnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2node.gif", "$treeview_dir/ftv2node.gif");
+	copy("$cacti_root_path/include/treeview/ftv2plastnode.gif", "$treeview_dir/ftv2plastnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2pnode.gif", "$treeview_dir/ftv2pnode.gif");
+	copy("$cacti_root_path/include/treeview/ftv2vertline.gif", "$treeview_dir/ftv2vertline.gif");
+}
+
+function get_host_description($host_id) {
+	$host = db_fetch_row("SELECT description FROM host WHERE id='".$host_id."'");
+	return $host["description"];
+}
+
+function get_host_id($tree_item_id) {
+	$graph_tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
+	return $graph_tree_item["host_id"];
+}
+
+function get_tree_name($tree_id) {
+	$graph_tree=db_fetch_row("SELECT id, name FROM graph_tree WHERE id='".$tree_id."'");
+	return $graph_tree["name"];
+}
+
+function get_tree_item_title($tree_item_id) {
+	if (get_tree_item_type($tree_item_id) == "host")  {
+		$tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
+		return get_host_description($tree_item["host_id"]);
+	}else{
+		$tree_item=db_fetch_row("SELECT title FROM graph_tree_items WHERE id='".$tree_item_id."'");
+		return $tree_item["title"];
+	}
+}
+
+/* clean_up_export_name - runs a string through a series of regular expressions designed to
+     eliminate "bad" characters
+   @arg $string - the string to modify/clean
+   @returns - the modified string */
+function clean_up_export_name($string) {
+	$string = preg_replace("/[\s\ ]+/", "_", $string);
+	$string = preg_replace("/[^a-zA-Z0-9_.]+/", "", $string);
+	$string = preg_replace("/_{2,}/", "_", $string);
+
+	return $string;
+}
+
+/* $path to the directory to delete or clean */
+/* $deldir (optionnal parameter, true as default) delete the diretory (true) or just clean it (false) */
+function del_directory($path, $deldir = true) {
+	/* check if the directory name have a "/" at the end, add if not */
+	if ($path[strlen($path)-1] != "/") {
+		$path .= "/";
+	}
+
+	/* cascade through the directory structure(s) until they are all delected */
+	if (is_dir($path)) {
+		$d = opendir($path);
+		while ($f = readdir($d)) {
+			if ($f != "." && $f != "..") {
+				$rf = $path . $f;
+
+				/* if it is a directory, recursive call to the function */
+				if (is_dir($rf)) {
+					del_directory($rf);
+				}else {
+					unlink($rf);
+				}
+			}
+		}
+		closedir($d);
+
+		/* if $deldir is true, remove the directory */
+		if ($deldir) {
+			rmdir($path);
+		}
+	}
+}
+
+function check_remove($filename) {
+	if (file_exists($filename) == true) {
+		unlink($filename);
+	}
 }
 
 define("HTML_HEADER_TREE",

@@ -291,7 +291,7 @@ $settings = array(
 			),
 		"export_tree_isolation" => array(
 			"friendly_name" => "Tree Isolation",
-			"description" => "This feature determines if the entire tree is treated as a single hierarchy or as separate hierarchies.  If they are treated separately, graphs will be isolated from one another.",
+			"description" => "This setting determines if the entire tree is treated as a single hierarchy or as separate hierarchies.  If they are treated separately, graphs will be isolated from one another.",
 			"method" => "drop_array",
 			"default" => "off",
 			"array" => array(
@@ -301,10 +301,20 @@ $settings = array(
 			),
 		"export_user_id" => array(
 			"friendly_name" => "Effective User Name",
-			"description" => "The user name to utilize for establishing export permissions.  This user name will be used to determine which graphs/tree's are exported.",
+			"description" => "The user name to utilize for establishing export permissions.  This user name will be used to determine which graphs/tree's are exported.  This setting works in conjunction with the current on/off behavior available within the current templates.",
 			"method" => "drop_sql",
 			"sql" => "SELECT id, username AS name FROM user_auth ORDER BY name",
 			"default" => "1"
+			),
+		"export_tree_expand_hosts" => array(
+			"friendly_name" => "Expand Tree Hosts",
+			"description" => "This settings determines if the tree hosts will be expanded or not.  If set to expanded, each host will have a sub-folder containing either data templates or data query items.",
+			"method" => "drop_array",
+			"default" => "off",
+			"array" => array(
+						"off" => "Off",
+						"on" => "On"
+						),
 			),
 		"export_thumb_options" => array(
 			"friendly_name" => "Thumbnail Settings",
