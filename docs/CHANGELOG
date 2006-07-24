@@ -1,7 +1,9 @@
 Cacti CHANGELOG
 
 -bug#0000188: Add Ability to Sort Columns by Selecting column headers 
--bug#0000313: Dont print menu/titlebar by using CSS class noprint
+-bug#0000199: Exported thumb graphics shows limited time range only 
+-bug#0000286: Exported graphs all contain same total bandwidth figures 
+-bug#0000313/#0000561: Dont print menu/titlebar by using CSS class noprint
 -bug#0000316: unit_value is not taken into account
 -bug#0000395: Advanced graph export FTP function not working in Unix environment
 -bug#0000584: Barometer does not display decimal
@@ -11,11 +13,13 @@ Cacti CHANGELOG
 -bug#0000678: Can't graph export to subdir
 -bug#0000681: poller_item arg1, arg2, arg3 fields too small
 -bug#0000692: Tree graph export fails
+-bug#0000693: Export Tree corrupt when using the "Expand Hosts" option 
 -bug#0000698: Make arguments to 'df' more compatible with FreeBSD 6.0 in the "Get Unix Partitions" data query.
 -bug#0000705: Fix problem with the current selected data source item and SIMILAR_DATA_SOURCES_NODUPS (again).
 -bug#0000709: Configuration => Settings => Graph Export:: Problem using FTP (remote) export with Tree Presentation.
 -bug#0000720: undefined variable in script_server.php line 177
 -bug#0000721: SNMPv2 Query has issues with ifAlias & ifName when none present
+-bug#0000727: Graph Export runs long and can not take a users graph permissions into account
 -bug#0000730: Non-standard port ignored
 -bug#0000731: Add Host to Tree from Device page incomplete
 -bug#0000739: "Unit value" parameter in template options ignored
