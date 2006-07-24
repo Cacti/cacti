@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug#0000313/#0000561: Dont print menu/titlebar by using CSS class noprint
 -bug#0000316: unit_value is not taken into account
 -bug#0000395: Advanced graph export FTP function not working in Unix environment
+-bug#0000527: Cannot adjust RRA for graph default view 
 -bug#0000584: Barometer does not display decimal
 -bug#0000643: host.php tweak (correct display of a device's uptime)
 -bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentile
