@@ -1087,18 +1087,14 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		}
 	}
 
-	$rras = db_fetch_assoc("SELECT
-		rra.id,
-		rra.name
-		FROM rra
-		ORDER BY timespan");
-
 	/* open a pipe to rrdtool for writing */
 	$rrdtool_pipe = rrd_init();
 
 	/* for each graph... */
 	$i = 0;
 	foreach($graphs as $graph)  {
+		$rras = get_associated_rras($graph["local_graph_id"]);
+
 		/* settings for preview graphs */
 		$graph_data_array["graph_height"] = read_config_option("export_default_height");
 		$graph_data_array["graph_width"] = read_config_option("export_default_width");
