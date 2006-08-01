@@ -746,7 +746,7 @@ function host() {
 		unset($_REQUEST["sort_direction"]);
 	}
 
-	if (!empty($_SESSION["sess_host_status"])) {
+	if ((!empty($_SESSION["sess_host_status"])) && (!empty($_REQUEST["host_status"]))) {
 		if ($_SESSION["sess_host_status"] != $_REQUEST["host_status"]) {
 			$_REQUEST["page"] = 1;
 		}
