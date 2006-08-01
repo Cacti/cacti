@@ -29,6 +29,7 @@ include_once("./lib/utility.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (isset($_REQUEST["sort_direction"])) { $_REQUEST["action"] = "view_poller_cache"; }
 
 switch ($_REQUEST["action"]) {
 	case 'clear_poller_cache':
@@ -46,7 +47,6 @@ switch ($_REQUEST["action"]) {
 		ini_set("max_execution_time", $max_execution);
 		ini_set("memory_limit", $max_memory);
 
-		utilities();
 		utilities_view_poller_cache();
 
 		include_once("./include/bottom_footer.php");
@@ -62,7 +62,6 @@ switch ($_REQUEST["action"]) {
 	case 'view_poller_cache':
 		include_once("./include/top_header.php");
 
-		utilities();
 		utilities_view_poller_cache();
 
 		include_once("./include/bottom_footer.php");
@@ -256,42 +255,156 @@ function utilities_view_snmp_cache() {
 }
 
 function utilities_view_poller_cache() {
-	global $colors;
+	global $colors, $poller_actions;
 
-	$poller_cache = db_fetch_assoc("select
+	define("MAX_DISPLAY_PAGES", 21);
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("poller_action"));
+	/* ==================================================== */
+
+	/* clean up sort_column */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	if ((!empty($_SESSION["sess_poller_action"])) && (!empty($_REQUEST["poller_action"]))) {
+		if ($_SESSION["sess_poller_poller_action"] != $_REQUEST["poller_action"]) {
+			$_REQUEST["page"] = 1;
+		}
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_poller_current_page", "1");
+	load_current_session_value("host_id", "sess_poller_host_id", "-1");
+	load_current_session_value("poller_action", "sess_poller_poller_action", "-1");
+	load_current_session_value("sort_column", "sess_poller_sort_column", "hostname");
+	load_current_session_value("sort_direction", "sess_poller_sort_direction", "ASC");
+
+	html_start_box("<strong>Poller Cache Items</strong>", "98%", $colors["header"], "3", "center");
+
+	include("./include/html/inc_poller_item_filter_table.php");
+
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "WHERE poller_item.local_data_id=data_template_data.local_data_id";
+
+	if ($_REQUEST["poller_action"] == "-1") {
+		/* Show all items */
+	}else {
+		$sql_where .= " AND poller_item.action='" . $_REQUEST["poller_action"] . "'";
+	}
+
+	if ($_REQUEST["host_id"] == "-1") {
+		/* Show all items */
+	}elseif ($_REQUEST["host_id"] == "0") {
+		$sql_where .= " AND poller_item.host_id=0";
+	}elseif (!empty($_REQUEST["host_id"])) {
+		$sql_where .= " AND poller_item.host_id=" . $_REQUEST["host_id"];
+	}
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(*)
+		FROM data_template_data
+		INNER JOIN (poller_item
+		INNER JOIN host
+		ON poller_item.host_id = host.id)
+		ON data_template_data.local_data_id = poller_item.local_data_id
+		$sql_where");
+
+	$poller_sql = "SELECT
 		poller_item.*,
 		data_template_data.name_cache,
-		data_local.host_id
-		from (poller_item,data_template_data,data_local)
-		where poller_item.local_data_id=data_template_data.local_data_id
-		and data_template_data.local_data_id=data_local.id");
+		host.description
+		FROM data_template_data
+		INNER JOIN (poller_item
+		INNER JOIN host
+		ON poller_item.host_id = host.id)
+		ON data_template_data.local_data_id = poller_item.local_data_id
+		$sql_where
+		ORDER BY " . $_REQUEST["sort_column"] . " " . $_REQUEST["sort_direction"] . ", action ASC
+		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device");
 
-	html_start_box("<strong>View Poller Cache</strong> [" . sizeof($poller_cache) . " Item" . ((sizeof($poller_cache) > 0) ? "s" : "") . "]", "98%", $colors["header"], "3", "center", "");
+	$poller_cache = db_fetch_assoc($poller_sql);
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "utilities.php?action=view_poller_cache&host_id=" . $_REQUEST["host_id"] . "&poller_action=" . $_REQUEST["poller_action"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='7'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='left' class='textHeaderDark'>
+							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_poller_cache&host_id=" . $_REQUEST["host_id"] . "&poller_action=" . $_REQUEST["poller_action"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						</td>\n
+						<td align='center' class='textHeaderDark'>
+							Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+						</td>\n
+						<td align='right' class='textHeaderDark'>
+							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_poller_cache&host_id=" . $_REQUEST["host_id"] . "&poller_action=" . $_REQUEST["poller_action"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+						</td>\n
+					</tr>
+				</table>
+			</td>
+		</tr>\n";
+
+	print $nav;
+
+	$display_text = array(
+		"data_template_data.name_cache" => array("Data Source<br>Name", "ASC"),
+		"" => array("Details", "ASC"));
+
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$i = 0;
 	if (sizeof($poller_cache) > 0) {
 	foreach ($poller_cache as $item) {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-		?>
+			?>
+			<td width="375">
+				<a class="linkEditMain" href="data_sources.php?action=ds_edit&id=<?php print $item["local_data_id"];?>"><?php print $item["name_cache"];?></a>
+			</td>
+
 			<td>
-				Data Source: <?php print $item["name_cache"];?>
+			<?php
+			if ($item["action"] == 0) {
+				if ($item["snmp_version"] != 3) {
+					$details = "SNMP Version: " . $item["snmp_version"] . ", Community: " . $item["snmp_community"] . ", OID: " . $item["arg1"];
+				}else{
+					$details = "SNMP Version: " . $item["snmp_version"] . ", User: " . $item["snmp_username"] . ", OID: " . $item["arg1"];
+				}
+			}elseif ($item["action"] == 1) {
+					$details = "Script: " . $item["arg1"];
+			}else{
+					$details = "Script Server: " . $item["arg1"];
+			}
+
+			print $details;
+			?>
 			</td>
 		</tr>
 		<?php
+
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 		?>
+            <td>
+            </td>
 			<td>
 				RRD: <?php print $item["rrd_path"];?>
 			</td>
 		</tr>
 		<?php
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-		?>
-			<td>
-				Action: <?php print $item["action"];?>, <?php print ((($item["action"] == "1") || ($item["action"] == "2")) ? "Script: " . $item["arg1"] : "OID: " . $item["arg1"] . " (Host: " . $item["hostname"] . ", Community: " . $item["snmp_community"] . ")");?>
-			</td>
-		</tr>
-		<?php
+		$i++;
 	}
 	}
 

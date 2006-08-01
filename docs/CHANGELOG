@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -bug#0000761: RRA Input fields timespan and rows do not match the field size in the database
 -bug#0000766: graph_tree_items ID field need to change to mediumint 
 -bug#0000769: Graph Export Is Not Sensitive to Actual RRA Used By Graphs
+-bug#0000775: View SNMP Cache display nothing 
 -bug: Use of the Data Source filter on the Graph Items Editor can clear the selected Data Source
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
