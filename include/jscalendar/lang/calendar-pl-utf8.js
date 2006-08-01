@@ -57,8 +57,8 @@ Calendar._TT["INFO"] = "O kalendarzu";
 
 Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
-"(c) dynarch.com 2002-2003\n" + // don't translate this this ;-)
-"Aby pobrać najnowszą wersję, odwiedź: http://dynarch.com/mishoo/calendar.epl\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
+"Aby pobrać najnowszą wersję, odwiedź: http://www.dynarch.com/projects/calendar/\n" +
 "Dostępny na licencji GNU LGPL. Zobacz szczegóły na http://gnu.org/licenses/lgpl.html." +
 "\n\n" +
 "Wybór daty:\n" +

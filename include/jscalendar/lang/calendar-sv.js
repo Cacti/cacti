@@ -1,7 +1,7 @@
 // ** I18N
 
 // Calendar SV language (Swedish, svenska)
-// Author: Mihai Bazon, <mishoo@infoiasi.ro>
+// Author: Mihai Bazon, <mihai_bazon@yahoo.com>
 // Translation team: <sv@li.org>
 // Translator: Leonard Norrgård <leonard.norrgard@refactor.fi>
 // Last translator: Leonard Norrgård <leonard.norrgard@refactor.fi>
@@ -58,8 +58,8 @@ Calendar._TT["INFO"] = "Om kalendern";
 
 Calendar._TT["ABOUT"] =
 "DHTML Datum/tid-väljare\n" +
-"(c) dynarch.com 2002-2003\n" + // don't translate this this ;-)
-"För senaste version gå till: http://dynarch.com/mishoo/calendar.epl\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
+"För senaste version gå till: http://www.dynarch.com/projects/calendar/\n" +
 "Distribueras under GNU LGPL.  Se http://gnu.org/licenses/lgpl.html för detaljer." +
 "\n\n" +
 "Val av datum:\n" +

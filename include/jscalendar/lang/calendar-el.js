@@ -53,8 +53,8 @@ Calendar._TT["INFO"] = "Για το ημερολόγιο";
 
 Calendar._TT["ABOUT"] =
 "Επιλογέας ημερομηνίας/ώρας σε DHTML\n" +
-"(c) dynarch.com 2002-2003\n" + // don't translate this this ;-)
-"Για τελευταία έκδοση: http://dynarch.com/mishoo/calendar.epl\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
+"Για τελευταία έκδοση: http://www.dynarch.com/projects/calendar/\n" +
 "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
 "\n\n" +
 "Επιλογή ημερομηνίας:\n" +

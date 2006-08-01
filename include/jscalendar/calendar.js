@@ -1,10 +1,12 @@
-/*  Copyright Mihai Bazon, 2002, 2003  |  http://dynarch.com/mishoo/
- * ------------------------------------------------------------------
+/*  Copyright Mihai Bazon, 2002-2005  |  www.bazon.net/mishoo
+ * -----------------------------------------------------------
  *
- * The DHTML Calendar, version 0.9.6 "Keep cool but don't freeze"
+ * The DHTML Calendar, version 1.0 "It is happening again"
  *
  * Details and latest version at:
- * http://dynarch.com/mishoo/calendar.epl
+ * www.dynarch.com/projects/calendar
+ *
+ * This script is developed by Dynarch.com.  Visit us at www.dynarch.com.
  *
  * This script is distributed under the GNU Lesser General Public License.
  * Read the entire license text here: http://www.gnu.org/licenses/lgpl.html
@@ -18,6 +20,8 @@ Calendar = function (firstDayOfWeek, dateStr, onSelected, onClose) {
 	this.activeDiv = null;
 	this.currentDateEl = null;
 	this.getDateStatus = null;
+	this.getDateToolTip = null;
+	this.getDateText = null;
 	this.timeout = null;
 	this.onSelected = onSelected || null;
 	this.onClose = onClose || null;
@@ -29,13 +33,15 @@ Calendar = function (firstDayOfWeek, dateStr, onSelected, onClose) {
 	this.ttDateFormat = Calendar._TT["TT_DATE_FORMAT"];
 	this.isPopup = true;
 	this.weekNumbers = true;
-	this.firstDayOfWeek = firstDayOfWeek; // 0 for Sunday, 1 for Monday, etc.
+	this.firstDayOfWeek = typeof firstDayOfWeek == "number" ? firstDayOfWeek : Calendar._FD; // 0 for Sunday, 1 for Monday, etc.
 	this.showsOtherMonths = false;
 	this.dateStr = dateStr;
 	this.ar_days = null;
 	this.showsTime = false;
 	this.time24 = true;
 	this.yearStep = 2;
+	this.hiliteToday = true;
+	this.multiple = null;
 	// HTML elements
 	this.table = null;
 	this.element = null;
@@ -146,20 +152,19 @@ Calendar.addClass = function(el, className) {
 	el.className += " " + className;
 };
 
+// FIXME: the following 2 functions totally suck, are useless and should be replaced immediately.
 Calendar.getElement = function(ev) {
-	if (Calendar.is_ie) {
-		return window.event.srcElement;
-	} else {
-		return ev.currentTarget;
-	}
+	var f = Calendar.is_ie ? window.event.srcElement : ev.currentTarget;
+	while (f.nodeType != 1 || /^div$/i.test(f.tagName))
+		f = f.parentNode;
+	return f;
 };
 
 Calendar.getTargetElement = function(ev) {
-	if (Calendar.is_ie) {
-		return window.event.srcElement;
-	} else {
-		return ev.target;
-	}
+	var f = Calendar.is_ie ? window.event.srcElement : ev.target;
+	while (f.nodeType != 1)
+		f = f.parentNode;
+	return f;
 };
 
 Calendar.stopEvent = function(ev) {
@@ -295,7 +300,7 @@ Calendar.showYearsCombo = function (fwd) {
 	var show = false;
 	for (var i = 12; i > 0; --i) {
 		if (Y >= cal.minYear && Y <= cal.maxYear) {
-			yr.firstChild.data = Y;
+			yr.innerHTML = Y;
 			yr.year = Y;
 			yr.style.display = "block";
 			show = true;
@@ -416,7 +421,7 @@ Calendar.tableMouseOver = function (ev) {
 			} else if ( ++i >= range.length )
 				i = 0;
 		var newval = range[i];
-		el.firstChild.data = newval;
+		el.innerHTML = newval;
 
 		cal.onUpdateTime();
 	}
@@ -504,7 +509,7 @@ Calendar.dayMouseDown = function(ev) {
 	Calendar._C = cal;
 	if (el.navtype != 300) with (Calendar) {
 		if (el.navtype == 50) {
-			el._current = el.firstChild.data;
+			el._current = el.innerHTML;
 			addEvent(document, "mousemove", tableMouseOver);
 		} else
 			addEvent(document, Calendar.is_ie5 ? "mousemove" : "mouseover", tableMouseOver);
@@ -541,7 +546,7 @@ Calendar.dayMouseOver = function(ev) {
 		if (el.ttip.substr(0, 1) == "_") {
 			el.ttip = el.caldate.print(el.calendar.ttDateFormat) + el.ttip.substr(1);
 		}
-		el.calendar.tooltips.firstChild.data = el.ttip;
+		el.calendar.tooltips.innerHTML = el.ttip;
 	}
 	if (el.navtype != 300) {
 		Calendar.addClass(el, "hilite");
@@ -555,14 +560,13 @@ Calendar.dayMouseOver = function(ev) {
 Calendar.dayMouseOut = function(ev) {
 	with (Calendar) {
 		var el = getElement(ev);
-		if (isRelated(el, ev) || _C || el.disabled) {
+		if (isRelated(el, ev) || _C || el.disabled)
 			return false;
-		}
 		removeClass(el, "hilite");
-		if (el.caldate) {
+		if (el.caldate)
 			removeClass(el.parentNode, "rowhilite");
-		}
-		el.calendar.tooltips.firstChild.data = _TT["SEL_DATE"];
+		if (el.calendar)
+			el.calendar.tooltips.innerHTML = _TT["SEL_DATE"];
 		return stopEvent(ev);
 	}
 };
@@ -577,17 +581,23 @@ Calendar.cellClick = function(el, ev) {
 	var newdate = false;
 	var date = null;
 	if (typeof el.navtype == "undefined") {
-		Calendar.removeClass(cal.currentDateEl, "selected");
-		Calendar.addClass(el, "selected");
-		closing = (cal.currentDateEl == el);
-		if (!closing) {
-			cal.currentDateEl = el;
+		if (cal.currentDateEl) {
+			Calendar.removeClass(cal.currentDateEl, "selected");
+			Calendar.addClass(el, "selected");
+			closing = (cal.currentDateEl == el);
+			if (!closing) {
+				cal.currentDateEl = el;
+			}
 		}
-		cal.date = new Date(el.caldate);
+		cal.date.setDateOnly(el.caldate);
 		date = cal.date;
-		newdate = true;
+		var other_month = !(cal.dateClicked = !el.otherMonth);
+		if (!other_month && !cal.currentDateEl)
+			cal._toggleMultipleDate(new Date(date));
+		else
+			newdate = !el.disabled;
 		// a date was clicked
-		if (!(cal.dateClicked = !el.otherMonth))
+		if (other_month)
 			cal._init(cal.firstDayOfWeek, date);
 	} else {
 		if (el.navtype == 200) {
@@ -595,7 +605,9 @@ Calendar.cellClick = function(el, ev) {
 			cal.callCloseHandler();
 			return;
 		}
-		date = (el.navtype == 0) ? new Date() : new Date(cal.date);
+		date = new Date(cal.date);
+		if (el.navtype == 0)
+			date.setDateOnly(new Date()); // TODAY
 		// unless "today" was clicked, we assume no date was clicked so
 		// the selected handler will know not to close the calenar when
 		// in single-click mode.
@@ -622,7 +634,7 @@ Calendar.cellClick = function(el, ev) {
 				text = "Help and about box text is not translated into this language.\n" +
 					"If you know this language and you feel generous please update\n" +
 					"the corresponding file in \"lang\" subdir to match calendar-en.js\n" +
-					"and send it back to <mishoo@infoiasi.ro> to get it into the distribution  ;-)\n\n" +
+					"and send it back to <mihai_bazon@yahoo.com> to get it into the distribution  ;-)\n\n" +
 					"Thank you!\n" +
 					"http://dynarch.com/mishoo/calendar.epl\n";
 			}
@@ -659,7 +671,7 @@ Calendar.cellClick = function(el, ev) {
 			return;
 		    case 50:
 			var range = el._range;
-			var current = el.firstChild.data;
+			var current = el.innerHTML;
 			for (var i = range.length; --i >= 0;)
 				if (range[i] == current)
 					break;
@@ -669,15 +681,13 @@ Calendar.cellClick = function(el, ev) {
 			} else if ( ++i >= range.length )
 				i = 0;
 			var newval = range[i];
-			el.firstChild.data = newval;
+			el.innerHTML = newval;
 			cal.onUpdateTime();
 			return;
 		    case 0:
 			// TODAY will bring us here
-			if ((typeof cal.getDateStatus == "function") && cal.getDateStatus(date, date.getFullYear(), date.getMonth(), date.getDate())) {
-				// remember, "date" was previously set to new
-				// Date() if TODAY was clicked; thus, it
-				// contains today date.
+			if ((typeof cal.getDateStatus == "function") &&
+			    cal.getDateStatus(date, date.getFullYear(), date.getMonth(), date.getDate())) {
 				return false;
 			}
 			break;
@@ -685,14 +695,15 @@ Calendar.cellClick = function(el, ev) {
 		if (!date.equalsTo(cal.date)) {
 			cal.setDate(date);
 			newdate = true;
-		}
+		} else if (el.navtype == 0)
+			newdate = closing = true;
 	}
 	if (newdate) {
-		cal.callHandler();
+		ev && cal.callHandler();
 	}
 	if (closing) {
 		Calendar.removeClass(el, "hilite");
-		cal.callCloseHandler();
+		ev && cal.callCloseHandler();
 	}
 };
 
@@ -749,13 +760,7 @@ Calendar.prototype.create = function (_par) {
 		Calendar._add_evs(cell);
 		cell.calendar = cal;
 		cell.navtype = navtype;
-		if (text.substr(0, 1) != "&") {
-			cell.appendChild(document.createTextNode(text));
-		}
-		else {
-			// FIXME: dirty hack for entities
-			cell.innerHTML = text;
-		}
+		cell.innerHTML = "<div unselectable='on'>" + text + "</div>";
 		return cell;
 	};
 
@@ -797,11 +802,10 @@ Calendar.prototype.create = function (_par) {
 	if (this.weekNumbers) {
 		cell = Calendar.createElement("td", row);
 		cell.className = "name wn";
-		cell.appendChild(document.createTextNode(Calendar._TT["WK"]));
+		cell.innerHTML = Calendar._TT["WK"];
 	}
 	for (var i = 7; i > 0; --i) {
 		cell = Calendar.createElement("td", row);
-		cell.appendChild(document.createTextNode(""));
 		if (!i) {
 			cell.navtype = 100;
 			cell.calendar = this;
@@ -818,11 +822,9 @@ Calendar.prototype.create = function (_par) {
 		row = Calendar.createElement("tr", tbody);
 		if (this.weekNumbers) {
 			cell = Calendar.createElement("td", row);
-			cell.appendChild(document.createTextNode(""));
 		}
 		for (var j = 7; j > 0; --j) {
 			cell = Calendar.createElement("td", row);
-			cell.appendChild(document.createTextNode(""));
 			cell.calendar = this;
 			Calendar._add_evs(cell);
 		}
@@ -845,7 +847,7 @@ Calendar.prototype.create = function (_par) {
 			function makeTimePart(className, init, range_start, range_end) {
 				var part = Calendar.createElement("span", cell);
 				part.className = className;
-				part.appendChild(document.createTextNode(init));
+				part.innerHTML = init;
 				part.calendar = cal;
 				part.ttip = Calendar._TT["TIME_PART"];
 				part.navtype = 50;
@@ -870,7 +872,7 @@ Calendar.prototype.create = function (_par) {
 			if (t12 && pm) hrs -= 12;
 			var H = makeTimePart("hour", hrs, t12 ? 1 : 0, t12 ? 12 : 23);
 			var span = Calendar.createElement("span", cell);
-			span.appendChild(document.createTextNode(":"));
+			span.innerHTML = ":";
 			span.className = "colon";
 			var M = makeTimePart("minute", mins, 0, 59);
 			var AP = null;
@@ -883,30 +885,32 @@ Calendar.prototype.create = function (_par) {
 				cell.innerHTML = "&nbsp;";
 
 			cal.onSetTime = function() {
-				var hrs = this.date.getHours();
-				var mins = this.date.getMinutes();
-				var pm = (hrs > 12);
-				if (pm && t12) hrs -= 12;
-				H.firstChild.data = (hrs < 10) ? ("0" + hrs) : hrs;
-				M.firstChild.data = (mins < 10) ? ("0" + mins) : mins;
-				if (t12)
-					AP.firstChild.data = pm ? "pm" : "am";
+				var pm, hrs = this.date.getHours(),
+					mins = this.date.getMinutes();
+				if (t12) {
+					pm = (hrs >= 12);
+					if (pm) hrs -= 12;
+					if (hrs == 0) hrs = 12;
+					AP.innerHTML = pm ? "pm" : "am";
+				}
+				H.innerHTML = (hrs < 10) ? ("0" + hrs) : hrs;
+				M.innerHTML = (mins < 10) ? ("0" + mins) : mins;
 			};
 
 			cal.onUpdateTime = function() {
 				var date = this.date;
-				var h = parseInt(H.firstChild.data, 10);
+				var h = parseInt(H.innerHTML, 10);
 				if (t12) {
-					if (/pm/i.test(AP.firstChild.data) && h < 12)
+					if (/pm/i.test(AP.innerHTML) && h < 12)
 						h += 12;
-					else if (/am/i.test(AP.firstChild.data) && h == 12)
+					else if (/am/i.test(AP.innerHTML) && h == 12)
 						h = 0;
 				}
 				var d = date.getDate();
 				var m = date.getMonth();
 				var y = date.getFullYear();
 				date.setHours(h);
-				date.setMinutes(parseInt(M.firstChild.data, 10));
+				date.setMinutes(parseInt(M.innerHTML, 10));
 				date.setFullYear(y);
 				date.setMonth(m);
 				date.setDate(d);
@@ -938,7 +942,7 @@ Calendar.prototype.create = function (_par) {
 		var mn = Calendar.createElement("div");
 		mn.className = Calendar.is_ie ? "label-IEfix" : "label";
 		mn.month = i;
-		mn.appendChild(document.createTextNode(Calendar._SMN[i]));
+		mn.innerHTML = Calendar._SMN[i];
 		div.appendChild(mn);
 	}
 
@@ -948,7 +952,6 @@ Calendar.prototype.create = function (_par) {
 	for (i = 12; i > 0; --i) {
 		var yr = Calendar.createElement("div");
 		yr.className = Calendar.is_ie ? "label-IEfix" : "label";
-		yr.appendChild(document.createTextNode(""));
 		div.appendChild(yr);
 	}
 
@@ -958,14 +961,14 @@ Calendar.prototype.create = function (_par) {
 
 /** keyboard navigation, only for popup calendars */
 Calendar._keyEvent = function(ev) {
-	if (!window.calendar) {
+	var cal = window._dynarch_popupCalendar;
+	if (!cal || cal.multiple)
 		return false;
-	}
 	(Calendar.is_ie) && (ev = window.event);
-	var cal = window.calendar;
-	var act = (Calendar.is_ie || ev.type == "keypress");
+	var act = (Calendar.is_ie || ev.type == "keypress"),
+		K = ev.keyCode;
 	if (ev.ctrlKey) {
-		switch (ev.keyCode) {
+		switch (K) {
 		    case 37: // KEY left
 			act && Calendar.cellClick(cal._nav_pm);
 			break;
@@ -981,7 +984,7 @@ Calendar._keyEvent = function(ev) {
 		    default:
 			return false;
 		}
-	} else switch (ev.keyCode) {
+	} else switch (K) {
 	    case 32: // KEY space (now)
 		Calendar.cellClick(cal._nav_now);
 		break;
@@ -993,48 +996,78 @@ Calendar._keyEvent = function(ev) {
 	    case 39: // KEY right
 	    case 40: // KEY down
 		if (act) {
-			var date = cal.date.getDate() - 1;
-			var el = cal.currentDateEl;
-			var ne = null;
-			var prev = (ev.keyCode == 37) || (ev.keyCode == 38);
-			switch (ev.keyCode) {
-			    case 37: // KEY left
-				(--date >= 0) && (ne = cal.ar_days[date]);
-				break;
-			    case 38: // KEY up
-				date -= 7;
-				(date >= 0) && (ne = cal.ar_days[date]);
-				break;
-			    case 39: // KEY right
-				(++date < cal.ar_days.length) && (ne = cal.ar_days[date]);
-				break;
-			    case 40: // KEY down
-				date += 7;
-				(date < cal.ar_days.length) && (ne = cal.ar_days[date]);
-				break;
-			}
-			if (!ne) {
-				if (prev) {
-					Calendar.cellClick(cal._nav_pm);
-				} else {
-					Calendar.cellClick(cal._nav_nm);
-				}
-				date = (prev) ? cal.date.getMonthDays() : 1;
+			var prev, x, y, ne, el, step;
+			prev = K == 37 || K == 38;
+			step = (K == 37 || K == 39) ? 1 : 7;
+			function setVars() {
 				el = cal.currentDateEl;
-				ne = cal.ar_days[date - 1];
+				var p = el.pos;
+				x = p & 15;
+				y = p >> 4;
+				ne = cal.ar_days[y][x];
+			};setVars();
+			function prevMonth() {
+				var date = new Date(cal.date);
+				date.setDate(date.getDate() - step);
+				cal.setDate(date);
+			};
+			function nextMonth() {
+				var date = new Date(cal.date);
+				date.setDate(date.getDate() + step);
+				cal.setDate(date);
+			};
+			while (1) {
+				switch (K) {
+				    case 37: // KEY left
+					if (--x >= 0)
+						ne = cal.ar_days[y][x];
+					else {
+						x = 6;
+						K = 38;
+						continue;
+					}
+					break;
+				    case 38: // KEY up
+					if (--y >= 0)
+						ne = cal.ar_days[y][x];
+					else {
+						prevMonth();
+						setVars();
+					}
+					break;
+				    case 39: // KEY right
+					if (++x < 7)
+						ne = cal.ar_days[y][x];
+					else {
+						x = 0;
+						K = 40;
+						continue;
+					}
+					break;
+				    case 40: // KEY down
+					if (++y < cal.ar_days.length)
+						ne = cal.ar_days[y][x];
+					else {
+						nextMonth();
+						setVars();
+					}
+					break;
+				}
+				break;
 			}
-			Calendar.removeClass(el, "selected");
-			Calendar.addClass(ne, "selected");
-			cal.date = new Date(ne.caldate);
-			cal.callHandler();
-			cal.currentDateEl = ne;
+			if (ne) {
+				if (!ne.disabled)
+					Calendar.cellClick(ne);
+				else if (prev)
+					prevMonth();
+				else
+					nextMonth();
+			}
 		}
 		break;
 	    case 13: // KEY enter
-		if (act) {
-			cal.callHandler();
-			cal.hide();
-		}
+		if (act)
+			Calendar.cellClick(cal.currentDateEl, ev);
 		break;
 	    default:
 		return false;
@@ -1046,7 +1079,10 @@ Calendar._keyEvent = function(ev) {
  *  (RE)Initializes the calendar to the given date and firstDayOfWeek
  */
 Calendar.prototype._init = function (firstDayOfWeek, date) {
-	var today = new Date();
+	var today = new Date(),
+		TY = today.getFullYear(),
+		TM = today.getMonth(),
+		TD = today.getDate();
 	this.table.style.visibility = "hidden";
 	var year = date.getFullYear();
 	if (year < this.minYear) {
@@ -1074,21 +1110,24 @@ Calendar.prototype._init = function (firstDayOfWeek, date) {
 
 	var row = this.tbody.firstChild;
 	var MN = Calendar._SMN[month];
-	var ar_days = new Array();
+	var ar_days = this.ar_days = new Array();
 	var weekend = Calendar._TT["WEEKEND"];
+	var dates = this.multiple ? (this.datesCells = {}) : null;
 	for (var i = 0; i < 6; ++i, row = row.nextSibling) {
 		var cell = row.firstChild;
 		if (this.weekNumbers) {
 			cell.className = "day wn";
-			cell.firstChild.data = date.getWeekNumber();
+			cell.innerHTML = date.getWeekNumber();
 			cell = cell.nextSibling;
 		}
 		row.className = "daysrow";
-		var hasdays = false;
-		for (var j = 0; j < 7; ++j, cell = cell.nextSibling, date.setDate(date.getDate() + 1)) {
-			var iday = date.getDate();
+		var hasdays = false, iday, dpos = ar_days[i] = [];
+		for (var j = 0; j < 7; ++j, cell = cell.nextSibling, date.setDate(iday + 1)) {
+			iday = date.getDate();
 			var wday = date.getDay();
 			cell.className = "day";
+			cell.pos = i << 4 | j;
+			dpos[j] = cell;
 			var current_month = (date.getMonth() == month);
 			if (!current_month) {
 				if (this.showsOtherMonths) {
@@ -1105,9 +1144,16 @@ Calendar.prototype._init = function (firstDayOfWeek, date) {
 				hasdays = true;
 			}
 			cell.disabled = false;
-			cell.firstChild.data = iday;
-			if (typeof this.getDateStatus == "function") {
+			cell.innerHTML = this.getDateText ? this.getDateText(date, iday) : iday;
+			if (dates)
+				dates[date.print("%Y%m%d")] = cell;
+			if (this.getDateStatus) {
 				var status = this.getDateStatus(date, year, month, iday);
+				if (this.getDateToolTip) {
+					var toolTip = this.getDateToolTip(date, year, month, iday);
+					if (toolTip)
+						cell.title = toolTip;
+				}
 				if (status === true) {
 					cell.className += " disabled";
 					cell.disabled = true;
@@ -1118,33 +1164,66 @@ Calendar.prototype._init = function (firstDayOfWeek, date) {
 				}
 			}
 			if (!cell.disabled) {
-				ar_days[ar_days.length] = cell;
 				cell.caldate = new Date(date);
 				cell.ttip = "_";
-				if (current_month && iday == mday) {
+				if (!this.multiple && current_month
+				    && iday == mday && this.hiliteToday) {
 					cell.className += " selected";
 					this.currentDateEl = cell;
 				}
-				if (date.getFullYear() == today.getFullYear() &&
-				    date.getMonth() == today.getMonth() &&
-				    iday == today.getDate()) {
+				if (date.getFullYear() == TY &&
+				    date.getMonth() == TM &&
+				    iday == TD) {
 					cell.className += " today";
 					cell.ttip += Calendar._TT["PART_TODAY"];
 				}
-				if (weekend.indexOf(wday.toString()) != -1) {
+				if (weekend.indexOf(wday.toString()) != -1)
 					cell.className += cell.otherMonth ? " oweekend" : " weekend";
-				}
 			}
 		}
 		if (!(hasdays || this.showsOtherMonths))
 			row.className = "emptyrow";
 	}
-	this.ar_days = ar_days;
-	this.title.firstChild.data = Calendar._MN[month] + ", " + year;
+	this.title.innerHTML = Calendar._MN[month] + ", " + year;
 	this.onSetTime();
 	this.table.style.visibility = "visible";
+	this._initMultipleDates();
 	// PROFILE
-	// this.tooltips.firstChild.data = "Generated in " + ((new Date()) - today) + " ms";
+	// this.tooltips.innerHTML = "Generated in " + ((new Date()) - today) + " ms";
+};
+
+Calendar.prototype._initMultipleDates = function() {
+	if (this.multiple) {
+		for (var i in this.multiple) {
+			var cell = this.datesCells[i];
+			var d = this.multiple[i];
+			if (!d)
+				continue;
+			if (cell)
+				cell.className += " selected";
+		}
+	}
+};
+
+Calendar.prototype._toggleMultipleDate = function(date) {
+	if (this.multiple) {
+		var ds = date.print("%Y%m%d");
+		var cell = this.datesCells[ds];
+		if (cell) {
+			var d = this.multiple[ds];
+			if (!d) {
+				Calendar.addClass(cell, "selected");
+				this.multiple[ds] = date;
+			} else {
+				Calendar.removeClass(cell, "selected");
+				delete this.multiple[ds];
+			}
+		}
+	}
+};
+
+Calendar.prototype.setDateToolTipHandler = function (unaryFunction) {
+	this.getDateToolTip = unaryFunction;
 };
 
 /**
@@ -1209,7 +1288,7 @@ Calendar.prototype.destroy = function () {
 	var el = this.element.parentNode;
 	el.removeChild(this.element);
 	Calendar._C = null;
-	window.calendar = null;
+	window._dynarch_popupCalendar = null;
 };
 
 /**
@@ -1226,14 +1305,15 @@ Calendar.prototype.reparent = function (new_parent) {
 // document, if the calendar is shown.  If the click was outside the open
 // calendar this function closes it.
 Calendar._checkCalendar = function(ev) {
-	if (!window.calendar) {
+	var calendar = window._dynarch_popupCalendar;
+	if (!calendar) {
 		return false;
 	}
 	var el = Calendar.is_ie ? Calendar.getElement(ev) : Calendar.getTargetElement(ev);
 	for (; el != null && el != calendar.element; el = el.parentNode);
 	if (el == null) {
 		// calls closeHandler which should hide the calendar.
-		window.calendar.callCloseHandler();
+		window._dynarch_popupCalendar.callCloseHandler();
 		return Calendar.stopEvent(ev);
 	}
 };
@@ -1254,7 +1334,7 @@ Calendar.prototype.show = function () {
 	this.element.style.display = "block";
 	this.hidden = false;
 	if (this.isPopup) {
-		window.calendar = this;
+		window._dynarch_popupCalendar = this;
 		Calendar.addEvent(document, "keydown", Calendar._keyEvent);
 		Calendar.addEvent(document, "keypress", Calendar._keyEvent);
 		Calendar.addEvent(document, "mousedown", Calendar._checkCalendar);
@@ -1344,8 +1424,8 @@ Calendar.prototype.showAtElement = function (el, opts) {
 		    case "L": p.x -= w; break;
 		    case "R": p.x += el.offsetWidth; break;
 		    case "C": p.x += (el.offsetWidth - w) / 2; break;
-		    case "r": p.x += el.offsetWidth - w; break;
-		    case "l": break; // already there
+		    case "l": p.x += el.offsetWidth - w; break;
+		    case "r": break; // already there
 		}
 		p.width = w;
 		p.height = h + 40;
@@ -1373,157 +1453,67 @@ Calendar.prototype.setTtDateFormat = function (str) {
  *  Tries to identify the date represented in a string.  If successful it also
  *  calls this.setDate which moves the calendar to the given date.
  */
-Calendar.prototype.parseDate = function (str, fmt) {
-	var y = 0;
-	var m = -1;
-	var d = 0;
-	var a = str.split(/\W+/);
-	if (!fmt) {
+Calendar.prototype.parseDate = function(str, fmt) {
+	if (!fmt)
 		fmt = this.dateFormat;
-	}
-	var b = fmt.match(/%./g);
-	var i = 0, j = 0;
-	var hr = 0;
-	var min = 0;
-	for (i = 0; i < a.length; ++i) {
-		if (!a[i])
-			continue;
-		switch (b[i]) {
-		    case "%d":
-		    case "%e":
-			d = parseInt(a[i], 10);
-			break;
-
-		    case "%m":
-			m = parseInt(a[i], 10) - 1;
-			break;
-
-		    case "%Y":
-		    case "%y":
-			y = parseInt(a[i], 10);
-			(y < 100) && (y += (y > 29) ? 1900 : 2000);
-			break;
-
-		    case "%b":
-		    case "%B":
-			for (j = 0; j < 12; ++j) {
-				if (Calendar._MN[j].substr(0, a[i].length).toLowerCase() == a[i].toLowerCase()) { m = j; break; }
-			}
-			break;
-
-		    case "%H":
-		    case "%I":
-		    case "%k":
-		    case "%l":
-			hr = parseInt(a[i], 10);
-			break;
-
-		    case "%P":
-		    case "%p":
-			if (/pm/i.test(a[i]) && hr < 12)
-				hr += 12;
-			break;
-
-		    case "%M":
-			min = parseInt(a[i], 10);
-			break;
-		}
-	}
-	if (y != 0 && m != -1 && d != 0) {
-		this.setDate(new Date(y, m, d, hr, min, 0));
-		return;
-	}
-	y = 0; m = -1; d = 0;
-	for (i = 0; i < a.length; ++i) {
-		if (a[i].search(/[a-zA-Z]+/) != -1) {
-			var t = -1;
-			for (j = 0; j < 12; ++j) {
-				if (Calendar._MN[j].substr(0, a[i].length).toLowerCase() == a[i].toLowerCase()) { t = j; break; }
-			}
-			if (t != -1) {
-				if (m != -1) {
-					d = m+1;
-				}
-				m = t;
-			}
-		} else if (parseInt(a[i], 10) <= 12 && m == -1) {
-			m = a[i]-1;
-		} else if (parseInt(a[i], 10) > 31 && y == 0) {
-			y = parseInt(a[i], 10);
-			(y < 100) && (y += (y > 29) ? 1900 : 2000);
-		} else if (d == 0) {
-			d = a[i];
-		}
-	}
-	if (y == 0) {
-		var today = new Date();
-		y = today.getFullYear();
-	}
-	if (m != -1 && d != 0) {
-		this.setDate(new Date(y, m, d, hr, min, 0));
-	}
+	this.setDate(Date.parseDate(str, fmt));
 };
 
 Calendar.prototype.hideShowCovered = function () {
-	var self = this;
-	Calendar.continuation_for_the_fucking_khtml_browser = function() {
-		function getVisib(obj){
-			var value = obj.style.visibility;
-			if (!value) {
-				if (document.defaultView && typeof (document.defaultView.getComputedStyle) == "function") { // Gecko, W3C
-					if (!Calendar.is_khtml)
-						value = document.defaultView.
-							getComputedStyle(obj, "").getPropertyValue("visibility");
-					else
-						value = '';
-				} else if (obj.currentStyle) { // IE
-					value = obj.currentStyle.visibility;
-				} else
+	if (!Calendar.is_ie && !Calendar.is_opera)
+		return;
+	function getVisib(obj){
+		var value = obj.style.visibility;
+		if (!value) {
+			if (document.defaultView && typeof (document.defaultView.getComputedStyle) == "function") { // Gecko, W3C
+				if (!Calendar.is_khtml)
+					value = document.defaultView.
+						getComputedStyle(obj, "").getPropertyValue("visibility");
+				else
 					value = '';
-			}
-			return value;
-		};
+			} else if (obj.currentStyle) { // IE
+				value = obj.currentStyle.visibility;
+			} else
+				value = '';
+		}
+		return value;
+	};
 
-		var tags = new Array("applet", "iframe", "select");
-		var el = self.element;
+	var tags = new Array("applet", "iframe", "select");
+	var el = this.element;
 
-		var p = Calendar.getAbsolutePos(el);
-		var EX1 = p.x;
-		var EX2 = el.offsetWidth + EX1;
-		var EY1 = p.y;
-		var EY2 = el.offsetHeight + EY1;
+	var p = Calendar.getAbsolutePos(el);
+	var EX1 = p.x;
+	var EX2 = el.offsetWidth + EX1;
+	var EY1 = p.y;
+	var EY2 = el.offsetHeight + EY1;
 
-		for (var k = tags.length; k > 0; ) {
-			var ar = document.getElementsByTagName(tags[--k]);
-			var cc = null;
+	for (var k = tags.length; k > 0; ) {
+		var ar = document.getElementsByTagName(tags[--k]);
+		var cc = null;
 
-			for (var i = ar.length; i > 0;) {
-				cc = ar[--i];
+		for (var i = ar.length; i > 0;) {
+			cc = ar[--i];
 
-				p = Calendar.getAbsolutePos(cc);
-				var CX1 = p.x;
-				var CX2 = cc.offsetWidth + CX1;
-				var CY1 = p.y;
-				var CY2 = cc.offsetHeight + CY1;
+			p = Calendar.getAbsolutePos(cc);
+			var CX1 = p.x;
+			var CX2 = cc.offsetWidth + CX1;
+			var CY1 = p.y;
+			var CY2 = cc.offsetHeight + CY1;
 
-				if (self.hidden || (CX1 > EX2) || (CX2 < EX1) || (CY1 > EY2) || (CY2 < EY1)) {
-					if (!cc.__msh_save_visibility) {
-						cc.__msh_save_visibility = getVisib(cc);
-					}
-					cc.style.visibility = cc.__msh_save_visibility;
-				} else {
-					if (!cc.__msh_save_visibility) {
-						cc.__msh_save_visibility = getVisib(cc);
-					}
-					cc.style.visibility = "hidden";
+			if (this.hidden || (CX1 > EX2) || (CX2 < EX1) || (CY1 > EY2) || (CY2 < EY1)) {
+				if (!cc.__msh_save_visibility) {
+					cc.__msh_save_visibility = getVisib(cc);
 				}
+				cc.style.visibility = cc.__msh_save_visibility;
+			} else {
+				if (!cc.__msh_save_visibility) {
+					cc.__msh_save_visibility = getVisib(cc);
+				}
+				cc.style.visibility = "hidden";
 			}
 		}
-	};
-	if (Calendar.is_khtml)
-		setTimeout("Calendar.continuation_for_the_fucking_khtml_browser()", 10);
-	else
-		Calendar.continuation_for_the_fucking_khtml_browser();
+	}
 };
 
 /** Internal function; it displays the bar with the names of the weekday. */
@@ -1544,7 +1534,7 @@ Calendar.prototype._displayWeekdays = function () {
 		if (weekend.indexOf(realday.toString()) != -1) {
 			Calendar.addClass(cell, "weekend");
 		}
-		cell.firstChild.data = Calendar._SDN[(i + fdow) % 7];
+		cell.innerHTML = Calendar._SDN[(i + fdow) % 7];
 		cell = cell.nextSibling;
 	}
 };
@@ -1591,6 +1581,98 @@ Date.HOUR   = 60 * Date.MINUTE;
 Date.DAY    = 24 * Date.HOUR;
 Date.WEEK   =  7 * Date.DAY;
 
+Date.parseDate = function(str, fmt) {
+	var today = new Date();
+	var y = 0;
+	var m = -1;
+	var d = 0;
+	var a = str.split(/\W+/);
+	var b = fmt.match(/%./g);
+	var i = 0, j = 0;
+	var hr = 0;
+	var min = 0;
+	for (i = 0; i < a.length; ++i) {
+		if (!a[i])
+			continue;
+		switch (b[i]) {
+		    case "%d":
+		    case "%e":
+			d = parseInt(a[i], 10);
+			break;
+
+		    case "%m":
+			m = parseInt(a[i], 10) - 1;
+			break;
+
+		    case "%Y":
+		    case "%y":
+			y = parseInt(a[i], 10);
+			(y < 100) && (y += (y > 29) ? 1900 : 2000);
+			break;
+
+		    case "%b":
+		    case "%B":
+			for (j = 0; j < 12; ++j) {
+				if (Calendar._MN[j].substr(0, a[i].length).toLowerCase() == a[i].toLowerCase()) { m = j; break; }
+			}
+			break;
+
+		    case "%H":
+		    case "%I":
+		    case "%k":
+		    case "%l":
+			hr = parseInt(a[i], 10);
+			break;
+
+		    case "%P":
+		    case "%p":
+			if (/pm/i.test(a[i]) && hr < 12)
+				hr += 12;
+			else if (/am/i.test(a[i]) && hr >= 12)
+				hr -= 12;
+			break;
+
+		    case "%M":
+			min = parseInt(a[i], 10);
+			break;
+		}
+	}
+	if (isNaN(y)) y = today.getFullYear();
+	if (isNaN(m)) m = today.getMonth();
+	if (isNaN(d)) d = today.getDate();
+	if (isNaN(hr)) hr = today.getHours();
+	if (isNaN(min)) min = today.getMinutes();
+	if (y != 0 && m != -1 && d != 0)
+		return new Date(y, m, d, hr, min, 0);
+	y = 0; m = -1; d = 0;
+	for (i = 0; i < a.length; ++i) {
+		if (a[i].search(/[a-zA-Z]+/) != -1) {
+			var t = -1;
+			for (j = 0; j < 12; ++j) {
+				if (Calendar._MN[j].substr(0, a[i].length).toLowerCase() == a[i].toLowerCase()) { t = j; break; }
+			}
+			if (t != -1) {
+				if (m != -1) {
+					d = m+1;
+				}
+				m = t;
+			}
+		} else if (parseInt(a[i], 10) <= 12 && m == -1) {
+			m = a[i]-1;
+		} else if (parseInt(a[i], 10) > 31 && y == 0) {
+			y = parseInt(a[i], 10);
+			(y < 100) && (y += (y > 29) ? 1900 : 2000);
+		} else if (d == 0) {
+			d = a[i];
+		}
+	}
+	if (y == 0)
+		y = today.getFullYear();
+	if (m != -1 && d != 0)
+		return new Date(y, m, d, hr, min, 0);
+	return today;
+};
+
 /** Returns the number of days in the current month */
 Date.prototype.getMonthDays = function(month) {
 	var year = this.getFullYear();
@@ -1623,13 +1705,22 @@ Date.prototype.getWeekNumber = function() {
 	return Math.round((ms - d.valueOf()) / (7 * 864e5)) + 1;
 };
 
-/** Checks dates equality (ignores time) */
+/** Checks date and time equality */
 Date.prototype.equalsTo = function(date) {
 	return ((this.getFullYear() == date.getFullYear()) &&
 		(this.getMonth() == date.getMonth()) &&
 		(this.getDate() == date.getDate()) &&
 		(this.getHours() == date.getHours()) &&
 		(this.getMinutes() == date.getMinutes()));
+};
+
+/** Set only the year, month, date parts (keep existing time) */
+Date.prototype.setDateOnly = function(date) {
+	var tmp = new Date(date);
+	this.setDate(1);
+	this.setFullYear(tmp.getFullYear());
+	this.setMonth(tmp.getMonth());
+	this.setDate(tmp.getDate());
 };
 
 /** Prints the date in a string according to the given format. */
@@ -1684,7 +1775,7 @@ Date.prototype.print = function (str) {
 	s["%%"] = "%";		// a literal '%' character
 
 	var re = /%./g;
-	if (!Calendar.is_ie5)
+	if (!Calendar.is_ie5 && !Calendar.is_khtml)
 		return str.replace(re, function (par) { return s[par] || par; });
 
 	var a = str.match(re);
@@ -1712,4 +1803,4 @@ Date.prototype.setFullYear = function(y) {
 
 
 // global object that remembers the calendar
-window.calendar = null;
+window._dynarch_popupCalendar = null;

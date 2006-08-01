@@ -71,7 +71,8 @@ Calendar.setup = function (params) {
 	param_default("singleClick",    true);
 	param_default("disableFunc",    null);
 	param_default("dateStatusFunc", params["disableFunc"]);	// takes precedence if both are defined
-	param_default("firstDay",       0); // defaults to "Sunday" first
+	param_default("dateText",       null);
+	param_default("firstDay",       null);
 	param_default("align",          "Br");
 	param_default("range",          [1900, 2999]);
 	param_default("weekNumbers",    true);
@@ -88,6 +89,7 @@ Calendar.setup = function (params) {
 	param_default("position",       null);
 	param_default("cache",          false);
 	param_default("showOthers",     false);
+	param_default("multiple",       null);
 
 	var tmp = ["inputField", "displayArea", "button"];
 	for (var i in tmp) {
@@ -95,7 +97,7 @@ Calendar.setup = function (params) {
 			params[tmp[i]] = document.getElementById(params[tmp[i]]);
 		}
 	}
-	if (!(params.flat || params.inputField || params.displayArea || params.button)) {
+	if (!(params.flat || params.multiple || params.inputField || params.displayArea || params.button)) {
 		alert("Calendar.setup:\n  Nothing to setup (no fields found).  Please check your code");
 		return false;
 	}
@@ -103,13 +105,6 @@ Calendar.setup = function (params) {
 	function onSelect(cal) {
 		var p = cal.params;
 		var update = (cal.dateClicked || p.electric);
-		if (update && p.flat) {
-			if (typeof p.flatCallback == "function")
-				p.flatCallback(cal);
-			else
-				alert("No flatCallback given -- doing nothing.");
-			return false;
-		}
 		if (update && p.inputField) {
 			p.inputField.value = cal.date.print(p.ifFormat);
 			if (typeof p.inputField.onchange == "function")
@@ -117,10 +112,14 @@ Calendar.setup = function (params) {
 		}
 		if (update && p.displayArea)
 			p.displayArea.innerHTML = cal.date.print(p.daFormat);
-		if (update && p.singleClick && cal.dateClicked)
-			cal.callCloseHandler();
 		if (update && typeof p.onUpdate == "function")
 			p.onUpdate(cal);
+		if (update && p.flat) {
+			if (typeof p.flatCallback == "function")
+				p.flatCallback(cal);
+		}
+		if (update && p.singleClick && cal.dateClicked)
+			cal.callCloseHandler();
 	};
 
 	if (params.flat != null) {
@@ -131,12 +130,20 @@ Calendar.setup = function (params) {
 			return false;
 		}
 		var cal = new Calendar(params.firstDay, params.date, params.onSelect || onSelect);
+		cal.showsOtherMonths = params.showOthers;
 		cal.showsTime = params.showsTime;
 		cal.time24 = (params.timeFormat == "24");
 		cal.params = params;
 		cal.weekNumbers = params.weekNumbers;
 		cal.setRange(params.range[0], params.range[1]);
 		cal.setDateStatusHandler(params.dateStatusFunc);
+		cal.getDateText = params.dateText;
+		if (params.ifFormat) {
+			cal.setDateFormat(params.ifFormat);
+		}
+		if (params.inputField && typeof params.inputField.value == "string") {
+			cal.parseDate(params.inputField.value);
+		}
 		cal.create(params.flat);
 		cal.show();
 		return false;
@@ -148,6 +155,8 @@ Calendar.setup = function (params) {
 		var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
 		var mustCreate = false;
 		var cal = window.calendar;
+		if (dateEl)
+			params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 		if (!(cal && params.cache)) {
 			window.calendar = cal = new Calendar(params.firstDay,
 							     params.date,
@@ -162,15 +171,23 @@ Calendar.setup = function (params) {
 				cal.setDate(params.date);
 			cal.hide();
 		}
+		if (params.multiple) {
+			cal.multiple = {};
+			for (var i = params.multiple.length; --i >= 0;) {
+				var d = params.multiple[i];
+				var ds = d.print("%Y%m%d");
+				cal.multiple[ds] = d;
+			}
+		}
 		cal.showsOtherMonths = params.showOthers;
 		cal.yearStep = params.step;
 		cal.setRange(params.range[0], params.range[1]);
 		cal.params = params;
 		cal.setDateStatusHandler(params.dateStatusFunc);
+		cal.getDateText = params.dateText;
 		cal.setDateFormat(dateFmt);
 		if (mustCreate)
 			cal.create();
-		cal.parseDate(dateEl.value || dateEl.innerHTML);
 		cal.refresh();
 		if (!params.position)
 			cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
@@ -178,4 +195,6 @@ Calendar.setup = function (params) {
 			cal.showAt(params.position[0], params.position[1]);
 		return false;
 	};
+
+	return cal;
 };

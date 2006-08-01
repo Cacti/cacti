@@ -1,7 +1,7 @@
 // ** I18N
 
 // Calendar EN language
-// Author: Mihai Bazon, <mishoo@infoiasi.ro>
+// Author: Mihai Bazon, <mihai_bazon@yahoo.com>
 // Translation: Yourim Yi <yyi@yourim.net>
 // Encoding: EUC-KR
 // lang : ko
@@ -82,9 +82,9 @@ Calendar._TT["INFO"] = "calendar 에 대해서";
 
 Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
-"(c) dynarch.com 2002-2003\n" + // don't translate this this ;-)
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
 "\n"+
-"최신 버전을 받으시려면 http://dynarch.com/mishoo/calendar.epl 에 방문하세요\n" +
+"최신 버전을 받으시려면 http://www.dynarch.com/projects/calendar/ 에 방문하세요\n" +
 "\n"+
 "GNU LGPL 라이센스로 배포됩니다. \n"+
 "라이센스에 대한 자세한 내용은 http://gnu.org/licenses/lgpl.html 을 읽으세요." +
