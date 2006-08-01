@@ -288,7 +288,7 @@ function utilities_view_poller_cache() {
 	load_current_session_value("sort_column", "sess_poller_sort_column", "hostname");
 	load_current_session_value("sort_direction", "sess_poller_sort_direction", "ASC");
 
-	html_start_box("<strong>Poller Cache Items</strong>", "98%", $colors["header"], "3", "center");
+	html_start_box("<strong>Poller Cache Items</strong>", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_poller_item_filter_table.php");
 
