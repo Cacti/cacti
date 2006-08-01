@@ -235,9 +235,14 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			$direction = $display_array[1];
 		}
 
-		print "<td " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
-		print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
-		print "</td>\n";
+		if ($db_column == "") {
+			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='textSubHeaderDark'>" . $display_text . "</td>\n";
+		}else{
+			print "<td " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
+			print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
+			print "</td>\n";
+		}
+
 		$i++;
 	}
 
@@ -280,9 +285,13 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			$direction = $display_array[1];
 		}
 
-		print "<td>";
-		print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
-		print "</td>\n";
+		if ($db_column == "") {
+			print "<td class='textSubHeaderDark'>" . $display_text . "</td>\n";
+		}else{
+			print "<td>";
+			print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
+			print "</td>\n";
+		}
 	}
 
 	print "<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n<form name='chk' method='post' action='$form_action'>\n";
