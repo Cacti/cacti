@@ -738,9 +738,31 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
 		/* title fonts */
 		if (file_exists(read_graph_config_option("title_font"))) {
-			$graph_opts .= "--font TITLE:" . read_graph_config_option("title_size") . ":" . read_graph_config_option("title_font") . RRD_NL;
+			$title_size = read_graph_config_option("title_size");
+			if (!empty($graph_data_array["graph_nolegend"])) {
+				if ($title_size > 0) {
+					$title_size = $title_size * .70;
+				}else{
+					$title_size = 10;
+				}
+			}elseif (($title_size <= 0) || ($title_size == "")) {
+				$title_size = 12;
+			}
+
+			$graph_opts .= "--font TITLE:" . $title_size . ":" . read_graph_config_option("title_font") . RRD_NL;
 		}elseif (file_exists(read_config_option("title_font"))) {
-			$graph_opts .= "--font TITLE:" . read_config_option("title_size") . ":" . read_config_option("title_font") . RRD_NL;
+			$title_size = read_config_option("title_size");
+			if (!empty($graph_data_array["graph_nolegend"])) {
+				if ($title_size > 0) {
+					$title_size = $title_size * .70;
+				}else{
+					$title_size = 10;
+				}
+			}elseif (($title_size <= 0) || ($title_size == "")) {
+				$title_size = 12;
+			}
+
+    		$graph_opts .= "--font TITLE:" . $title_size . ":" . read_config_option("title_font") . RRD_NL;
 		}
 
 		/* axis fonts */
