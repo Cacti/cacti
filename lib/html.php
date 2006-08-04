@@ -475,10 +475,15 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 }
 
 /* draw_menu - draws the cacti menu for display in the console */
-function draw_menu() {
+/* draw_menu - draws the cacti menu for display in the console */
+function draw_menu($user_menu = "") {
 	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames;
 
 	include($config["include_path"] . "/config_arrays.php");
+
+	if (strlen($user_menu == 0)) {
+		$user_menu = $menu;
+	}
 
 	/* list all realms that this user has access to */
 	if (read_config_option("global_auth") == "on") {
@@ -491,7 +496,7 @@ function draw_menu() {
 	print "<tr><td width='100%'><table cellpadding='3' cellspacing='0' border='0' width='100%'>\n";
 
 	/* loop through each header */
-	while (list($header_name, $header_array) = each($menu)) {
+	while (list($header_name, $header_array) = each($user_menu)) {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
 		while (list($item_url, $item_title) = each($header_array)) {
@@ -526,6 +531,8 @@ function draw_menu() {
 					}
 
 					while (list($item_sub_url, $item_sub_title) = each($item_title)) {
+						$item_sub_url = $config['url_path'] . $item_sub_url;
+
 						/* indent sub-items */
 						if ($i > 0) {
 							$prepend_string = "---&nbsp;";
@@ -535,7 +542,7 @@ function draw_menu() {
 
 						/* do not put a line between each sub-item */
 						if (($i == 0) || ($draw_sub_items == false)) {
-							$background = "images/menu_line.gif";
+							$background = $config['url_path'] . "images/menu_line.gif";
 						}else{
 							$background = "";
 						}
@@ -564,17 +571,18 @@ function draw_menu() {
 			}else{
 				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* draw normal (non sub-item) menu item */
+					$item_url = $config['url_path'] . $item_url;
 					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
-						print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
+						print "<tr><td class='textMenuItemSelected' background='" . $config['url_path'] . "images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
 					}else{
-						print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
+						print "<tr><td class='textMenuItem' background='" . $config['url_path'] . "images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
 					}
 				}
 			}
 		}
 	}
 
-	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
+	print "<tr><td class='textMenuItem' background='" . $config['url_path'] . "images/menu_line.gif'></td></tr>\n";
 
 	print '</table></td></tr>';
 }
