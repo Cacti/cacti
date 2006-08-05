@@ -531,8 +531,6 @@ function draw_menu($user_menu = "") {
 					}
 
 					while (list($item_sub_url, $item_sub_title) = each($item_title)) {
-						$item_sub_url = $config['url_path'] . $item_sub_url;
-
 						/* indent sub-items */
 						if ($i > 0) {
 							$prepend_string = "---&nbsp;";
