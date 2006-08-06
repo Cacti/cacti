@@ -540,7 +540,7 @@ function draw_menu($user_menu = "") {
 
 						/* do not put a line between each sub-item */
 						if (($i == 0) || ($draw_sub_items == false)) {
-							$background = $config['url_path'] . "images/menu_line.gif";
+							$background = "images/menu_line.gif";
 						}else{
 							$background = "";
 						}
@@ -569,18 +569,17 @@ function draw_menu($user_menu = "") {
 			}else{
 				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* draw normal (non sub-item) menu item */
-					$item_url = $config['url_path'] . $item_url;
 					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
-						print "<tr><td class='textMenuItemSelected' background='" . $config['url_path'] . "images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
+						print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
 					}else{
-						print "<tr><td class='textMenuItem' background='" . $config['url_path'] . "images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
+						print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
 					}
 				}
 			}
 		}
 	}
 
-	print "<tr><td class='textMenuItem' background='" . $config['url_path'] . "images/menu_line.gif'></td></tr>\n";
+	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
 
 	print '</table></td></tr>';
 }
