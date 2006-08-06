@@ -791,7 +791,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (sizeof($graph_items > 0)) {
 
 		foreach ($graph_items as $graph_item) {
-			if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) && ($graph_item["data_source_name"] != "")) {
+			/* mimic the old behavior: LINE[123], AREA, and STACK items use the CF specified in the graph item */
+			if (($graph_item["graph_type_id"] == 4) || ($graph_item["graph_type_id"] == 5) || ($graph_item["graph_type_id"] == 6) || ($graph_item["graph_type_id"] == 7) || ($graph_item["graph_type_id"] == 8)) {
+				$graph_cf = $graph_item["consolidation_function_id"];
+			/* all other types are based on the AVERAGE CF */
+			}else{
+				$graph_cf = 1;
+			}
+
+			if ((!empty($graph_item["local_data_id"])) && (!isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf]))) {
 				/* use a user-specified ds path if one is entered */
 				$data_source_path = get_data_source_path($graph_item["local_data_id"], true);
 
@@ -803,10 +811,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . $graph_item["data_source_name"] . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . RRD_NL;
+					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . $graph_item["data_source_name"] . ":" . $consolidation_functions[$graph_cf] . RRD_NL;
 
-					//print "ds: " . $graph_item["data_template_rrd_id"] . "<br>";
-					$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["consolidation_function_id"]} = "$i";
+					$cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf] = "$i";
 
 					$i++;
 				}
