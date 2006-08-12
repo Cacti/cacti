@@ -45,6 +45,7 @@ Cacti CHANGELOG
 -bug: Correct issue where dhtml caching was not working with expand hosts enabled
 -bug: Add snmp retries to cacti's snmp functions
 -bug: Once Graph Export has been enabled, cacti attempts to continue to run even after it has been disabled
+-bug: Correct alphabetic sorting to be more natural
 
 0.8.6h
 -bug#0000383: Add more verbose RRDtool debug output from Graph Management.

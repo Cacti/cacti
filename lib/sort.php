@@ -8,7 +8,7 @@
  | as published by the Free Software Foundation; either version 2          |
  | of the License, or (at your option) any later version.                  |
  |                                                                         |
- | This program is distributed in the hope that it will be useful,        
+ | This program is distributed in the hope that it will be useful,
  | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
@@ -35,7 +35,7 @@
 function usort_data_query_index($a, $b) {
 	$arr_a = split("\/", $a);
 	$arr_b = split("\/", $b);
-	
+
 	for ($i=0; $i<min(count($arr_a), count($arr_b)); $i++) {
 		if ((is_numeric($arr_a[$i])) && (is_numeric($arr_b[$i]))) {
 			if (intval($arr_a[$i]) > intval($arr_b[$i])) {
@@ -45,19 +45,19 @@ function usort_data_query_index($a, $b) {
 			}
 		}else{
 			$cmp = strcmp(strval($arr_a[$i]), strval($arr_b[$i]));
-			
+
 			if (($cmp > 0) || ($cmp < 0)) {
 				return $cmp;
 			}
 		}
 	}
-	
+
 	if (count($arr_a) < count($arr_b)) {
 		return 1;
 	}elseif (count($arr_a) > count($arr_b)) {
 		return -1;
 	}
-	
+
 	return 0;
 }
 
@@ -82,7 +82,7 @@ function usort_numeric($a, $b) {
    @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
      $b is equal to $b */
 function usort_alphabetic($a, $b) {
-	return strcmp($a, $b);
+	return strnatcmp($a, $b);
 }
 
 ?>
