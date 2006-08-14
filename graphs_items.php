@@ -250,7 +250,7 @@ function item_edit() {
 			left join host on (data_local.host_id=host.id)
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id ";
-		# Make sure we don't limit the list so that the selected DS isn't in the list in edit mode
+		/* Make sure we don't limit the list so that the selected DS isn't in the list in edit mode */
 		if (strlen($sql_where) > 0) {
 			$sql_where = substr($sql_where,0,-5);
 			if (!empty($_REQUEST["id"])) {
