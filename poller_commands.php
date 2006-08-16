@@ -81,16 +81,6 @@ if (sizeof($poller_commands) > 0) {
 				cacti_log("Host[$host_id] RECACHE: Re-cache successful.", true, "PCOMMAND");
 			}
 			break;
-		case POLLER_COMMAND_RRDPURGE:
-			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] PURGE: Unused RRDfile removed from system '$command'", true, "PCOMMAND");
-			}
-
-			if (file_exists($command)) {
-				@unlink($command);
-			}
-
-			break;
 		default:
 			cacti_log("ERROR: Unknown poller command issued", true, "PCOMMAND");
 		}
