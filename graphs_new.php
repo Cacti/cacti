@@ -640,6 +640,8 @@ function graphs() {
 					usort($snmp_query_indexes, "usort_numeric");
 				}else if ($xml_array["index_order_type"] == "alphabetic") {
 					usort($snmp_query_indexes, "usort_alphabetic");
+				}else if ($xml_array["index_order_type"] == "natural") {
+					usort($snmp_query_indexes, "usort_natural");
 				}
 			}
 

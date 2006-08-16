@@ -239,6 +239,8 @@ function sort_tree($sort_type, $item_id, $sort_style) {
 				uasort($leaf_sort_array[$_tier_key][$_search_key], "usort_numeric");
 			}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 				uasort($leaf_sort_array[$_tier_key][$_search_key], "usort_alphabetic");
+			}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+				uasort($leaf_sort_array[$_tier_key][$_search_key], "usort_natural");
 			}
 		}
 	}
