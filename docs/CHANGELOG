@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 -bug#0000188: Add Ability to Sort Columns by Selecting column headers
 -bug#0000199: Exported thumb graphics shows limited time range only
+-bug#0000207: Wrong unit size displayed in 'Localhost - Memory Usage'
 -bug#0000286: Exported graphs all contain same total bandwidth figures
 -bug#0000313/#0000561: Dont print menu/titlebar by using CSS class noprint
 -bug#0000316: unit_value is not taken into account
