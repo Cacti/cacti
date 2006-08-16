@@ -1172,10 +1172,14 @@ function exec_into_array($command_line) {
 /* get_web_browser - determines the current web browser in use by the client
    @returns - ('ie' or 'moz' or 'other') */
 function get_web_browser() {
-	if (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla") && (!(stristr($_SERVER["HTTP_USER_AGENT"], "compatible")))) {
-		return "moz";
-	}elseif (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
-		return "ie";
+	if (!empty($_SERVER["HTTP_USER_AGENT"])) {
+		if (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla") && (!(stristr($_SERVER["HTTP_USER_AGENT"], "compatible")))) {
+			return "moz";
+		}elseif (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
+			return "ie";
+		}else{
+			return "other";
+		}
 	}else{
 		return "other";
 	}
