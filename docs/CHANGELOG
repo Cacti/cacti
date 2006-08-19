@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug#0000316: unit_value is not taken into account
 -bug#0000395: Advanced graph export FTP function not working in Unix environment
 -bug#0000430: Manual Sorting Interface Enhancement 
+-bug#0000433: Unable to acquire Data from php script with cmd.php 
 -bug#0000488: Lack of User-Agent HTTP header generates error
 -bug#0000527: Cannot adjust RRA for graph default view
 -bug#0000584: Barometer does not display decimal

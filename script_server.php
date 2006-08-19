@@ -43,17 +43,6 @@ if (php_sapi_name() != "cli") {
 error_reporting(0);
 include_once(dirname(__FILE__) . "/include/config.php");
 
-/* PHP Bug.  Not yet logged */
-if ($config["cacti_server_os"] == "win32") {
-	$guess = substr(__FILE__,0,2);
-	if ($guess == strtoupper($guess)) {
-		$response = "ERROR: The PHP Script Server MUST be started using the full path to the file and in lower case.  This is a PHP Bug!!!";
-		print "\n";
-		cacti_log($response, true, "PHPSVR");
-		exit(-1);
-	}
-}
-
 /* Record the calling environment */
 if ($_SERVER["argc"] >= 2) {
 	if ($_SERVER["argv"][1] == "cactid")
