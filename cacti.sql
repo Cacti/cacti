@@ -459,6 +459,8 @@ INSERT INTO data_input_fields VALUES (35,'172b4b0eacee4948c6479f587b62e512',12,'
 INSERT INTO data_input_fields VALUES (36,'30fb5d5bcf3d66bb5abe88596f357c26',12,'Index Value','index_value','in','',0,'index_value','','');
 INSERT INTO data_input_fields VALUES (37,'31112c85ae4ff821d3b288336288818c',12,'Output Type ID','output_type','in','',0,'output_type','','');
 INSERT INTO data_input_fields VALUES (38,'5be8fa85472d89c621790b43510b5043',12,'Output Value','output','out','on',0,'','','');
+INSERT INTO data_input_fields VALUES (39,'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');
+INSERT INTO data_input_fields VALUES (40,'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');
 
 --
 -- Table structure for table `data_local`
