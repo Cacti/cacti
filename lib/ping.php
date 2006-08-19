@@ -80,8 +80,10 @@ class Net_Ping
 		$type = "\x08"; // 8 echo message; 0 echo reply message
 		$code = "\x00"; // always 0 for this program
 		$chksm = "\x00\x00"; // generate checksum for icmp request
-		$id = "\x00\x00";
+//		$id = "\x00\x00";
+		$id = chr($seq_high) . chr($seq_low);
 		$sqn = chr($seq_high) . chr($seq_low);
+		$this->sqn = $sqn;
 
 		// now lets build the actual icmp packet
 		$this->request = $type.$code.$chksm.$id.$sqn.$data;
@@ -127,38 +129,42 @@ class Net_Ping
 			/* set the effective user of root if unix */
 			$cacti_poller_account = $this->seteuid();
 
-			/* initilize the socket */
-			if (substr_count($host_ip,":") > 0) {
-				if (defined("AF_INET6")) {
-					$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
+			$retry_count = 0;
+			while (1) {
+				/* initilize the socket */
+				if (substr_count($host_ip,":") > 0) {
+					if (defined("AF_INET6")) {
+						$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
+					}else{
+						$this->ping_response = "PHP version does not support IPv6";
+						$this->ping_status   = "down";
+						cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+
+						/* return to real user account */
+						$this->setuid($cacti_poller_account);
+						return false;
+					}
 				}else{
-					$this->ping_response = "PHP version does not support IPv6";
+					$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
+				}
+				socket_set_block($this->socket);
+				socket_bind($this->socket, $host_ip);
+
+				if (!(@socket_connect($this->socket, $host_ip, NULL))) {
+					$this->ping_response = "Cannot connect to host";
 					$this->ping_status   = "down";
-					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
 
 					/* return to real user account */
 					$this->setuid($cacti_poller_account);
 					return false;
 				}
-			}else{
-				$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
-			}
-			socket_set_block($this->socket);
 
-			if (!(@socket_connect($this->socket, $host_ip, NULL))) {
-				$this->ping_response = "Cannot connect to host";
-				$this->ping_status   = "down";
+				/* set socket receive timeout as appropriate */
+				socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => $to_sec, "usec" => $to_usec));
 
-				/* return to real user account */
-				$this->setuid($cacti_poller_account);
-				return false;
-			}
+				/* build the packet */
+				$this->build_icmp_packet();
 
-			/* build the packet */
-			$this->build_icmp_packet();
-
-			$retry_count = 0;
-			while (1) {
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
 					if ($error == "timeout") {
@@ -189,18 +195,33 @@ class Net_Ping
 					/* get the end time */
 					$this->time = $this->get_time($this->precision);
 
-					/* set the return message */
-					$this->ping_status = $this->time * 1000;
-					$this->ping_response = "Host is alive";
+					$result = socket_read($this->socket, 512);
 
-					$this->close_socket();
+					$sqn = substr($result,26,2);
 
-					/* return to real user account */
-					$this->setuid($cacti_poller_account);
+					/* compare sequence numbers, if they do not match, then it must be from another host */
+					if ($sqn != $this->sqn) {
+						/* timeout */
+						$this->close_socket();
 
-					return true;
+						$error = "timeout";
+						break;
+					}else{
+						/* set the return message */
+						$this->ping_status = $this->time * 1000;
+						$this->ping_response = "Host is alive";
+
+						$this->close_socket();
+
+						/* return to real user account */
+						$this->setuid($cacti_poller_account);
+
+						return true;
+					}
 				case 0:
 					/* timeout */
+					$this->close_socket();
+
 					$error = "timeout";
 					break;
 				}
