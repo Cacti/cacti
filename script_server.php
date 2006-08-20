@@ -64,8 +64,8 @@ if ($_SERVER["argc"] >= 2) {
 
 if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 	cacti_log("DEBUG: SERVER: " . $environ, false, "PHPSVR");
-	cacti_log("DEBUG: GETCWD: " . strtolower(strtr(getcwd(),"\\","/")), false, "PHPSVR");
-	cacti_log("DEBUG: DIRNAM: " . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
+	cacti_log("DEBUG: GETCWD: " . strtr(getcwd(),"\\","/"), false, "PHPSVR");
+	cacti_log("DEBUG: DIRNAM: " . strtr(dirname(__FILE__),"\\","/"), false, "PHPSVR");
 	cacti_log("DEBUG: FILENM: " . __FILE__, false, "PHPSVR");
 }
 
@@ -132,7 +132,7 @@ while (1) {
 		if (file_exists($include_file)) {
 			/* quirk in php R5.0RC3, believe it or not.... */
 			/* path must be lower case */
-			$include_file = strtolower($include_file);
+			$include_file = $include_file;
 
 			/* set this variable so the calling script can determine if it was called
 			 * by the script server or stand-alone */
