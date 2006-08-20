@@ -129,41 +129,50 @@ class Net_Ping
 			/* set the effective user of root if unix */
 			$cacti_poller_account = $this->seteuid();
 
+			$error = "none";
+
 			$retry_count = 0;
 			while (1) {
-				/* initilize the socket */
-				if (substr_count($host_ip,":") > 0) {
-					if (defined("AF_INET6")) {
-						$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
+				if ($error <> "bad_seq") {
+					/* initilize the socket */
+					if (substr_count($host_ip,":") > 0) {
+						if (defined("AF_INET6")) {
+							$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
+						}else{
+							$this->ping_response = "PHP version does not support IPv6";
+							$this->ping_status   = "down";
+							cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+
+							/* return to real user account */
+							$this->setuid($cacti_poller_account);
+							return false;
+						}
 					}else{
-						$this->ping_response = "PHP version does not support IPv6";
+						$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
+					}
+					socket_set_block($this->socket);
+
+					if (!(@socket_connect($this->socket, $host_ip, NULL))) {
+						$this->ping_response = "Cannot connect to host";
 						$this->ping_status   = "down";
-						cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
 
 						/* return to real user account */
 						$this->setuid($cacti_poller_account);
 						return false;
 					}
-				}else{
-					$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
+
+					/* set socket receive timeout as appropriate */
+					socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => $to_sec, "usec" => $to_usec));
+
+					/* build the packet */
+					$this->build_icmp_packet();
+
+					/* get start time */
+					$this->start_time();
+
+					/* write to the socket */
+					socket_write($this->socket, $this->request, $this->request_len);
 				}
-				socket_set_block($this->socket);
-				socket_bind($this->socket, $host_ip);
-
-				if (!(@socket_connect($this->socket, $host_ip, NULL))) {
-					$this->ping_response = "Cannot connect to host";
-					$this->ping_status   = "down";
-
-					/* return to real user account */
-					$this->setuid($cacti_poller_account);
-					return false;
-				}
-
-				/* set socket receive timeout as appropriate */
-				socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => $to_sec, "usec" => $to_usec));
-
-				/* build the packet */
-				$this->build_icmp_packet();
 
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
@@ -179,17 +188,13 @@ class Net_Ping
 					return false;
 				}
 
-				/* get start time */
-				$this->start_time();
-
-				/* write to the socket */
-				socket_write($this->socket, $this->request, $this->request_len);
-
 				/* get the socket response */
 				switch(socket_select($r = array($this->socket), $w = NULL, $f = NULL, $to_sec, $to_usec)) {
 				case 2:
 					/* connection refused */
 					$error = "refused";
+					$retry_count++;
+
 					break;
 				case 1:
 					/* get the end time */
@@ -201,10 +206,17 @@ class Net_Ping
 
 					/* compare sequence numbers, if they do not match, then it must be from another host */
 					if ($sqn != $this->sqn) {
-						/* timeout */
-						$this->close_socket();
+						/* establish modified timeout value */
+						$to_sec = floor(($this->timeout-($this->time*1000))/1000);
+						$to_usec = (($this->timeout-($this->time*1000))%1000)*1000;
 
-						$error = "timeout";
+						if (($to_sec < 0) || ($to_usec <= 0)) {
+							$error = "timeout";
+							$retry_count++;
+						}else{
+							$error = "bad_seq";
+						}
+
 						break;
 					}else{
 						/* set the return message */
@@ -223,10 +235,10 @@ class Net_Ping
 					$this->close_socket();
 
 					$error = "timeout";
+					$retry_count++;
+
 					break;
 				}
-
-				$retry_count++;
 			}
 		}else{
 			$this->ping_status = "down";
@@ -336,7 +348,6 @@ class Net_Ping
 
 			socket_set_nonblock($this->socket);
 			socket_connect($this->socket, $host_ip, $this->port);
-			socket_set_nonblock($this->socket);
 
 			/* format packet */
 			$this->build_udp_packet();
@@ -372,10 +383,7 @@ class Net_Ping
 					$this->time = $this->get_time($this->precision);
 
 					/* get packet response */
-					echo $code = @socket_recv($this->socket, $this->reply, 256, 0);
-					echo "->";
-
-					if (empty($code)) { echo "refused"; }
+					$code = @socket_recv($this->socket, $this->reply, 256, 0);
 
 					/* get the error, if applicable */
 					$err = socket_last_error($this->socket);
@@ -438,7 +446,6 @@ class Net_Ping
 				$this->start_time();
 
 				/* allow immediate return */
-				socket_set_nonblock($this->socket);
 				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
 
