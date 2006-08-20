@@ -64,8 +64,15 @@ if ($_SERVER["argc"] >= 2) {
 
 if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 	cacti_log("DEBUG: SERVER: " . $environ, false, "PHPSVR");
-	cacti_log("DEBUG: GETCWD: " . strtr(getcwd(),"\\","/"), false, "PHPSVR");
-	cacti_log("DEBUG: DIRNAM: " . strtr(dirname(__FILE__),"\\","/"), false, "PHPSVR");
+
+	if ($config["cacti_server_os"] == "win32") {
+		cacti_log("DEBUG: GETCWD: " . strtolower(strtr(getcwd(),"\\","/")), false, "PHPSVR");
+		cacti_log("DEBUG: DIRNAM: " . strtolower(strtr(dirname(__FILE__),"\\","/")), false, "PHPSVR");
+	}else{
+		cacti_log("DEBUG: GETCWD: " . strtr(getcwd(),"\\","/"), false, "PHPSVR");
+		cacti_log("DEBUG: DIRNAM: " . strtr(dirname(__FILE__),"\\","/"), false, "PHPSVR");
+	}
+
 	cacti_log("DEBUG: FILENM: " . __FILE__, false, "PHPSVR");
 }
 
@@ -130,6 +137,12 @@ while (1) {
 	/* validate the existance of the function, and include if applicable */
 	if (!function_exists($function)) {
 		if (file_exists($include_file)) {
+			/* quirk in php on Windows, believe it or not.... */
+			/* path must be lower case */
+			if ($config["cacti_server_os"] == "win32") {
+				$include_file = strtolower($include_file);
+			}
+
 			/* set this variable so the calling script can determine if it was called
 			 * by the script server or stand-alone */
 			$called_by_script_server = true;
