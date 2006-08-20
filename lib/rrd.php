@@ -788,7 +788,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	$i = 0; $j = 0;
-	if (sizeof($graph_items > 0)) {
+	if (sizeof($graph_items) > 0) {
 
 		foreach ($graph_items as $graph_item) {
 			/* mimic the old behavior: LINE[123], AREA, and STACK items use the CF specified in the graph item */
