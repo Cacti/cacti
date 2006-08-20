@@ -255,8 +255,6 @@ class Net_Ping
 			(function_exists("posix_getuid"))) {
 			$cacti_user = posix_getuid();
 			posix_seteuid(0);
-		}else{
-			print "bitchen\n";
 		}
 
 		return $cacti_user;
