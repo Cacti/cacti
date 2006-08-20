@@ -80,7 +80,6 @@ class Net_Ping
 		$type = "\x08"; // 8 echo message; 0 echo reply message
 		$code = "\x00"; // always 0 for this program
 		$chksm = "\x00\x00"; // generate checksum for icmp request
-//		$id = "\x00\x00";
 		$id = chr($seq_high) . chr($seq_low);
 		$sqn = chr($seq_high) . chr($seq_low);
 		$this->sqn = $sqn;
@@ -499,8 +498,13 @@ class Net_Ping
 
 		/* do parameter checking before call */
 		/* apply defaults if parameters are spooky */
-		if ((int)$avail_method <= 0) $avail_method=AVAIL_SNMP;
-		if ((int)$ping_type <= 0) $ping_type=PING_UDP;
+		if ((int)$avail_method <= 0) $avail_method = AVAIL_SNMP;
+		if ((int)$ping_type <= 0) $ping_type = PING_UDP;
+
+		if (!function_exists("socket_create")) {
+			$avail_method = AVAIL_SNMP;
+			cacti_log("WARNING: sockets support not enabled in PHP, falling back to SNMP ping");
+		}
 
 		if (((int)$retries <= 0) || ((int)$retries > 5))
 			$this->retries = 2;
@@ -508,7 +512,7 @@ class Net_Ping
 			$this->retries = $retries;
 
 		if ((int)$timeout <= 0)
-			$this->timeout=500;
+			$this->timeout = 500;
 		else
 			$this->timeout=$timeout;
 
