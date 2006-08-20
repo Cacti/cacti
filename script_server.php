@@ -130,10 +130,6 @@ while (1) {
 	/* validate the existance of the function, and include if applicable */
 	if (!function_exists($function)) {
 		if (file_exists($include_file)) {
-			/* quirk in php R5.0RC3, believe it or not.... */
-			/* path must be lower case */
-			$include_file = $include_file;
-
 			/* set this variable so the calling script can determine if it was called
 			 * by the script server or stand-alone */
 			$called_by_script_server = true;
