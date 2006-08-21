@@ -390,7 +390,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	}
 
 	/* determine the floating point precision */
-	if ((isset($regexp_match_array[5])) && (ereg("^[0-9]+$", $regexp_match_array[5]))) {
+	if (is_numeric($regexp_match_array[5])) {
 		$round_to = $regexp_match_array[5];
 	}else{
 		$round_to = 2;
