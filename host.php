@@ -773,6 +773,8 @@ function host() {
 		/* Show all items */
 	}elseif ($_REQUEST["host_status"] == "-2") {
 		$sql_where .= " and host.disabled='on'";
+	}elseif ($_REQUEST["host_status"] == "-3") {
+		$sql_where .= " and host.disabled=''";
 	}else {
 		$sql_where .= " and (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')";
 	}
@@ -836,7 +838,7 @@ function host() {
 		"status" => array("Status", "ASC"),
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),
-		"avg_time" => array("Average (ms)", "DESC"),
+		"avg_time" => array("Average (ms>", "DESC"),
 		"availability" => array("Availability", "ASC"));
 
 	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
