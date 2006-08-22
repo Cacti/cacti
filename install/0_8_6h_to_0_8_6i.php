@@ -35,5 +35,22 @@ function upgrade_to_0_8_6i() {
 
 	/* let's keep track of an important statistical value */
 	db_install_execute("0.8.6i", "ALTER TABLE `poller_time` ADD COLUMN `pid` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `id`;");
- }
+
+	/* add some missing information from default/system data input methods */
+	/* first we must see if the user was smart enough to add it themselves */
+	$snmp_get = db_fetch_cell("SELECT id FROM data_input_fields WHERE data_name='snmp_port' AND data_input_id='1'");
+	$snmp_index = db_fetch_cell("SELECT id FROM data_input_fields WHERE data_name='snmp_port' AND data_input_id='2'");
+
+	if ($snmp_index > 0) {
+		db_install_execute("0.8.6i", "REPLACE INTO `data_input_fields` VALUES ($snmp_index, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
+	}else{
+		db_install_execute("0.8.6i", "REPLACE INTO `data_input_fields` VALUES (0, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
+	}
+
+	if ($snmp_get > 0) {
+		db_install_execute("0.8.6i", "REPLACE INTO `data_input_fields` VALUES ($snmp_get, 'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
+	}else{
+		db_install_execute("0.8.6i", "REPLACE INTO `data_input_fields` VALUES (0, 'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
+	}
+}
 ?>

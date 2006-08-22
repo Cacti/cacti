@@ -319,7 +319,7 @@ function data_edit() {
 			DrawMatrixHeaderItem("Friendly Name",$colors["header_text"],2);
 		print "</tr>";
 
-		$fields = db_fetch_assoc("select id,data_name,name,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='in' order by sequence");
+		$fields = db_fetch_assoc("select id,data_name,name,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='in' order by sequence, data_name");
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
@@ -354,7 +354,7 @@ function data_edit() {
 			DrawMatrixHeaderItem("Update RRA",$colors["header_text"],2);
 		print "</tr>";
 
-		$fields = db_fetch_assoc("select id,name,data_name,update_rra,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' order by sequence");
+		$fields = db_fetch_assoc("select id,name,data_name,update_rra,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' order by sequence, data_name");
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
