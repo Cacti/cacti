@@ -996,19 +996,25 @@ function ds() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "and data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'";
+	$sql_where = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+		" OR data_template.name like '%%" . $_REQUEST["filter"] . "%%'" .
+		" OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
 
 	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["host_id"] == "0") {
-		$sql_where .= " and data_local.host_id=0";
+		$sql_where .= " AND data_local.host_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " and data_local.host_id=" . $_REQUEST["host_id"];
+		$sql_where .= " AND data_local.host_id=" . $_REQUEST["host_id"];
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
 		data_local.id
 		FROM (data_local,data_template_data)
+		LEFT JOIN data_input
+		ON (data_input.id=data_template_data.data_input_id)
+		LEFT JOIN data_template
+		ON (data_local.data_template_id=data_template.id)
 		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where"));
 	$data_sources = db_fetch_assoc("SELECT
@@ -1064,19 +1070,20 @@ function ds() {
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
+			$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
 					<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>' title='<?php print $data_source["name_cache"];?>'><?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source"))); }else{ print title_trim($data_source["name_cache"], read_config_option("max_title_data_source")); } ?></a>
 				</td>
 				<td>
-					<?php print $data_source["data_input_name"];?>
+					<?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source["data_input_name"]); }else{ print $data_source["data_input_name"]; } ?></a>
 				</td>
 				<td>
 					<?php print (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>");?>
 				</td>
 				<td>
-					<?php print ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);?>
+					<?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_template_name); }else{ print $data_template_name; } ?></a>
 				</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name_cache"];?>">

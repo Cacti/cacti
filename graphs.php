@@ -1044,14 +1044,15 @@ function graph() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'";
+	$sql_where = "AND (graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+				" OR graph_templates.name like '%%" . $_REQUEST["filter"] . "%%')";
 
 	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["host_id"] == "0") {
-		$sql_where .= " and graph_local.host_id=0";
+		$sql_where .= " AND graph_local.host_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " and graph_local.host_id=" . $_REQUEST["host_id"];
+		$sql_where .= " AND graph_local.host_id=" . $_REQUEST["host_id"];
 	}
 
 	html_start_box("", "98%", $colors["header"], "3", "center", "");
@@ -1059,6 +1060,7 @@ function graph() {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates_graph.id)
 		FROM (graph_local,graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
 		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where");
 
@@ -1110,13 +1112,15 @@ function graph() {
 	$i = 0;
 	if (sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
+			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]);
+
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
 					<a class="linkEditMain" href="graphs.php?action=graph_edit&id=<?php print $graph["local_graph_id"];?>" title="<?php print htmlspecialchars($graph["title_cache"]);?>"><?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))); }else{ print title_trim($graph["title_cache"], read_config_option("max_title_graph")); } ?></a>
 				</td>
 				<td>
-					<?php print ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]); ?>
+					<?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name); }else{ print $template_name; } ?></a>
 				</td>
 				<td>
 					<?php print $graph["height"];?>x<?php print $graph["width"];?>
