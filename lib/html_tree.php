@@ -417,20 +417,30 @@ function create_dhtml_tree() {
 
 								array_push($data_queries, array(
 									"id" => "0",
-									"name" => "(Non Indexed)"
+									"name" => "Non Query Based"
 								));
 
 								if (sizeof($data_queries) > 0) {
 									foreach ($data_queries as $data_query) {
-										$i++;
-										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($data_query["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
-
 										/* fetch a list of field names that are sorted by the preferred sort field */
 										$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
+										if ($data_query["id"] == 0) {
+											$non_template_graphs = db_fetch_cell("SELECT COUNT(*) FROM graph_local WHERE host_id='" . $leaf["host_id"] . "' AND snmp_query_id='0'");
+										}else{
+											$non_template_grpahs = 0;
+										}
 
-										while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+										if ((($data_query["id"] == 0) && ($non_template_graphs > 0)) ||
+											(($data_query["id"] > 0) && (sizeof($sort_field_data) > 0))) {
 											$i++;
-											$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . addslashes($sort_field_value) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
+											$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($data_query["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
+
+											if ($data_query["id"] > 0) {
+												while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+													$i++;
+													$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . addslashes($sort_field_value) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
+												}
+											}
 										}
 									}
 								}
@@ -493,10 +503,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$host_group_data_name = "<strong>Graph Template:</strong> " . db_fetch_cell("select name from graph_templates where id=" . $host_group_data_array[1]);
 		$graph_template_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == "data_query") {
-		$host_group_data_name = "<strong>Data Query:</strong> " . (empty($host_group_data_array[1]) ? "(Non Indexed)" : db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]));
+		$host_group_data_name = "<strong>Graph Template:</strong> " . (empty($host_group_data_array[1]) ? "Non Query Based" : db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1]));
 		$data_query_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == "data_query_index") {
-		$host_group_data_name = "<strong>Data Query:</strong> " . (empty($host_group_data_array[1]) ? "(Non Indexed) " : db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1])) . "-> " . (empty($host_group_data_array[2]) ? "Unknown Index" : get_formatted_data_query_index($leaf["host_id"], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = "<strong>Graph Template:</strong> " . (empty($host_group_data_array[1]) ? "Non Query Based" : db_fetch_cell("select name from snmp_query where id=" . $host_group_data_array[1])) . "-> " . (empty($host_group_data_array[2]) ? "Template Based" : get_formatted_data_query_index($leaf["host_id"], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
@@ -600,7 +610,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (empty($data_query_id)) {
 				array_push($data_queries, array(
 					"id" => "0",
-					"name" => "(Non Indexed)"
+					"name" => "Non Query Based"
 					));
 			}
 

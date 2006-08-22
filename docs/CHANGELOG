@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -bug#0000769: Graph Export Is Not Sensitive to Actual RRA Used By Graphs
 -bug#0000775: View SNMP Cache display nothing
 -bug#0000779: When Viewing Thumbnails, Graph Text Should be Scaled Down
+-bug#0000785: Issue with Graph Tree View and Data Query Index Sorting showing "Non Indexed" even if empty 
 -bug#0000789: Use of Action In Image Button Incompatible with Newer Opera Browsers and HTML4
 -bug#0000797: Graphs and Data Sources Dont Allow Filter to Search Multiple Fields
 -bug: Use of the Data Source filter on the Graph Items Editor can clear the selected Data Source
