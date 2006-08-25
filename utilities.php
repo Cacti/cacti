@@ -86,6 +86,14 @@ switch ($_REQUEST["action"]) {
 
 		include_once("./include/bottom_footer.php");
 		break;
+	case 'clear_user_log':
+		include_once("./include/top_header.php");
+
+		utilities();
+		utilities_clear_user_log();
+
+		include_once("./include/bottom_footer.php");
+		break;
 	default:
 		include_once("./include/top_header.php");
 
@@ -98,6 +106,17 @@ switch ($_REQUEST["action"]) {
 /* -----------------------
     Utilities Functions
    ----------------------- */
+
+function utilities_clear_user_log() {
+	$users = db_fetch_assoc("SELECT DISTINCT username FROM user_log");
+	if (!isset($users[0]))
+		return;
+	foreach ($users as $user) {
+		$total_rows = db_fetch_cell("SELECT COUNT(username) FROM user_log WHERE username = '" . $user['username'] . "'");
+		if ($total_rows > 1)
+			db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' ORDER BY time LIMIT " . ($total_rows - 1));
+	}
+}
 
 function utilities_view_logfile() {
 	global $colors;
@@ -446,6 +465,17 @@ function utilities() {
 		</td>
 		<td class="textArea">
 			<p>The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.</p>
+		</td>
+	</tr>
+
+	<?php html_header(array("User Log Administration"), 2);?>
+
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><a href='utilities.php?action=clear_user_log'>Clear User Log</a></p>
+		</td>
+		<td class="textArea">
+			<p>The User Log stores an entry for each time a user logs into Cacti.  Clearing this log will purge all entries except the last login for each user.</p>
 		</td>
 	</tr>
 
