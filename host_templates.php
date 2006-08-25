@@ -384,7 +384,7 @@ function template() {
 	$display_text = array(
 		"name" => array("Template Title", "ASC"));
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 3);
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$host_templates = db_fetch_assoc("SELECT *
 		FROM host_template
