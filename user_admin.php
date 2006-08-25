@@ -748,7 +748,8 @@ function user() {
 		full_name,
 		realm,
 		policy_graphs,
-		DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as time
+		time,
+		DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as dtime
 		FROM user_auth
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		GROUP BY id
@@ -772,7 +773,7 @@ function user() {
 				<?php if ($user["policy_graphs"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
 			</td>
 			<td>
-				<?php print $user["time"];?>
+				<?php print $user["dtime"];?>
 			</td>
 			<td align="right">
 				<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
