@@ -749,7 +749,7 @@ function user() {
 		realm,
 		policy_graphs,
 		time,
-		DATE_FORMAT(max(time),'%M %e %Y %H:%i:%s') as dtime
+		max(time) as dtime
 		FROM user_auth
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		GROUP BY id
@@ -758,6 +758,12 @@ function user() {
 	$i = 0;
 	if (sizeof($user_list) > 0) {
 	foreach ($user_list as $user) {
+		if (empty($user["dtime"]) || ($user["dtime"] == "12/31/1969")) {
+			$last_login = "N/A";
+		}else{
+			$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
+		}
+
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
@@ -773,7 +779,7 @@ function user() {
 				<?php if ($user["policy_graphs"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
 			</td>
 			<td>
-				<?php print $user["dtime"];?>
+				<?php print $last_login;?>
 			</td>
 			<td align="right">
 				<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
