@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -bug#0000789: Use of Action In Image Button Incompatible with Newer Opera Browsers and HTML4
 -bug#0000797: Graphs and Data Sources Dont Allow Filter to Search Multiple Fields
 -bug#0000809: Add an option to "purge" the user_log table
+-bug#0000814: If Database Permissions Are Not Correct Apache Segfaults
 -bug: Use of the Data Source filter on the Graph Items Editor can clear the selected Data Source
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.

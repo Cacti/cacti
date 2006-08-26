@@ -128,7 +128,7 @@ function db_fetch_row($sql, $log = TRUE) {
 		if (!$query->EOF) {
 			return($query->fields);
 		}
-	}else{
+	}else if ($log) {
 		cacti_log("ERROR: SQL Row Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
