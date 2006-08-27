@@ -498,6 +498,17 @@ $settings = array(
 			"default" => "30",
 			"max_length" => "10"
 			),
+		"logmgmt_header" => array(
+			"friendly_name" => "Log Management",
+			"method" => "spacer",
+			),
+		"num_rows_log" => array(
+			"friendly_name" => "Default Log File Tail Lines",
+			"description" => "How many lines of the Cacti log file to you want to tail, by default.",
+			"method" => "drop_array",
+			"default" => 50,
+			"array" => $log_tail_lines,
+			),
 		"fonts_header" => array(
 			"friendly_name" => "Default RRDtool 1.2 Fonts",
 			"method" => "spacer",

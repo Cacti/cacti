@@ -265,6 +265,15 @@ $menu = array(
 		"logout.php" => "Logout User"
 	));
 
+$log_tail_lines = array(
+	10 => "10 Lines",
+	20 => "20 Lines",
+	50 => "50 Lines",
+	100 => "100 Lines",
+	200 => "200 Lines",
+	-1	=> "All Lines"
+	);
+
 $user_auth_realms = array(
 	1 => "User Administration",
 	2 => "Data Input",

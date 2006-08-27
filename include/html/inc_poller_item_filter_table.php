@@ -33,6 +33,17 @@
 							<option value="utilities.php?action=view_poller_cache&poller_action=2&host_id=<?php print $_REQUEST['host_id'];?>"<?php if ($_REQUEST['poller_action'] == '2') {?> selected<?php }?>>Script Server</option>
 						</select>
 					</td>
+					<td width="5"></td>
+					<td width="20">
+						Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+					</td>
+					<td>
+						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+					</td>
 				</tr>
 			</table>
 		</td>

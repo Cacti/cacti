@@ -379,6 +379,56 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	}
 }
 
+/* tail_file - Emulates the tail function with PHP native functions.
+	  It is used in 0.8.6 to speed the viewing of the Cacti log file, which
+	  can be problematic in the 0.8.6 branch.
+
+	@arg $file_name - (char constant) the name of the file to tail
+		 $line_cnt  - (int constant)  the number of lines to count
+	     $line_size - (int constant)  the average line size to use estimate bytes
+									  to seek up from EOF.  Defaults to 256 bytes */
+function tail_file($file_name, $number_of_lines, $line_size = 256) {
+	$file_array = array();
+
+	if (file_exists($file_name)) {
+		if ($number_of_lines > 0) {
+			$fp = fopen($file_name, "r");
+
+			/* reset back the number of bytes */
+			$total_bytes = fseek($fp, -($number_of_lines * $line_size), SEEK_END);
+
+			/* load up the lines into an array */
+			$i = 0;
+			while (!feof($fp)) {
+				$file_array[$i] = fgets($fp);
+				$i++;
+			}
+
+			if ($i > $number_of_lines) {
+				$file_array = array_reverse($file_array);
+
+				$i = 0;
+				foreach($file_array as $line) {
+					$new_file_array[$i] = $line;
+					$i++;
+
+					if ($i > $number_of_lines) break;
+				}
+
+				$file_array = array_reverse($new_file_array);
+			}
+
+			fclose($fp);
+        }else{
+			$file_array = file($file_name);
+		}
+	}else{
+		touch($file_name);
+	}
+
+	return $file_array;
+}
+
 /* update_host_status - updates the host table with informaton about it's status.
 	  It will also output to the appropriate log file when an event occurs.
 
@@ -1337,6 +1387,7 @@ function draw_navigation_text() {
 		"utilities.php:clear_poller_cache" => array("title" => "Clear Poller Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_logfile" => array("title" => "View Cacti Log File", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:clear_logfile" => array("title" => "Clear Cacti Log File", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:view_user_log" => array("title" => "View User Log File", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:clear_user_log" => array("title" => "Clear User Log File", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"settings.php:" => array("title" => "Cacti Settings", "mapping" => "index.php:", "url" => "settings.php", "level" => "1"),
 		"user_admin.php:" => array("title" => "User Management", "mapping" => "index.php:", "url" => "user_admin.php", "level" => "1"),
