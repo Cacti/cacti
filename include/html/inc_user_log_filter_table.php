@@ -7,14 +7,14 @@
 						Username:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_user_id" onChange="window.location=document.form_userlog.cbo_user_id.options[document.form_userlog.cbo_user_id.selectedIndex].value">
-							<option value="utilities.php?action=view_user_log&user_id=-1"<?php if ($_REQUEST["user_id"] == "-1") {?> selected<?php }?>>All</option>
+						<select name="cbo_username" onChange="window.location=document.form_userlog.cbo_username.options[document.form_userlog.cbo_username.selectedIndex].value">
+							<option value="utilities.php?action=view_user_log&username=-1"<?php if ($_REQUEST["username"] == "-1") {?> selected<?php }?>>All</option>
 							<?php
-							$users = db_fetch_assoc("SELECT DISTINCT user_id,username FROM user_log ORDER BY username");
+							$users = db_fetch_assoc("SELECT DISTINCT username FROM user_log ORDER BY username");
 
 							if (sizeof($users) > 0) {
 							foreach ($users as $user) {
-								print "<option value='utilities.php?action=view_user_log&user_id=" . $user["user_id"] . "&page=1'"; if ($_REQUEST["user_id"] == $user["user_id"]) { print " selected"; } print ">" . $user["username"] . "</option>\n";
+								print "<option value='utilities.php?action=view_user_log&username=" . $user["username"] . "&page=1'"; if ($_REQUEST["username"] == $user["username"]) { print " selected"; } print ">" . $user["username"] . "</option>\n";
 							}
 							}
 							?>

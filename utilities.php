@@ -140,10 +140,14 @@ function utilities_view_user_log() {
 	define("MAX_DISPLAY_PAGES", 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("user_id"));
 	input_validate_input_number(get_request_var_request("result"));
 	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
+
+	/* clean up username */
+	if (isset($_REQUEST["username"])) {
+		$_REQUEST["username"] = sanitize_search_string(get_request_var("username"));
+	}
 
 	/* clean up search filter */
 	if (isset($_REQUEST["filter"])) {
@@ -163,7 +167,7 @@ function utilities_view_user_log() {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_userlog_current_page");
-		kill_session_var("sess_userlog_user_id");
+		kill_session_var("sess_userlog_username");
 		kill_session_var("sess_userlog_result");
 		kill_session_var("sess_userlog_filter");
 		kill_session_var("sess_userlog_sort_column");
@@ -172,14 +176,14 @@ function utilities_view_user_log() {
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["result"]);
 		unset($_REQUEST["filter"]);
-		unset($_REQUEST["user_id"]);
+		unset($_REQUEST["username"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_userlog_current_page", "1");
-	load_current_session_value("user_id", "sess_userlog_user_id", "-1");
+	load_current_session_value("username", "sess_userlog_username", "-1");
 	load_current_session_value("result", "sess_userlog_result", "-1");
 	load_current_session_value("filter", "sess_userlog_filter", "");
 	load_current_session_value("sort_column", "sess_userlog_sort_column", "time");
@@ -194,10 +198,10 @@ function utilities_view_user_log() {
 	$sql_where = "";
 
 	/* filter by host */
-	if ($_REQUEST["user_id"] == "-1") {
+	if ($_REQUEST["username"] == "-1") {
 		/* Show all items */
-	}elseif (!empty($_REQUEST["user_id"])) {
-		$sql_where .= "WHERE user_log.user_id=" . $_REQUEST["user_id"];
+	}elseif (!empty($_REQUEST["username"])) {
+		$sql_where .= "WHERE user_log.username=" . $_REQUEST["username"];
 	}
 
 	/* filter by search string */
@@ -217,7 +221,7 @@ function utilities_view_user_log() {
 		COUNT(*)
 		FROM user_auth
 		RIGHT JOIN user_log
-		ON user_auth.id = user_log.user_id
+		ON user_auth.username = user_log.username
 		$sql_where");
 
 	$user_log_sql = "SELECT
@@ -228,7 +232,7 @@ function utilities_view_user_log() {
 		user_log.ip
 		FROM user_auth
 		RIGHT JOIN user_log
-		ON user_auth.id = user_log.user_id
+		ON user_auth.username = user_log.username
 		$sql_where
 		ORDER BY " . $_REQUEST["sort_column"] . " " . $_REQUEST["sort_direction"] . "
 		LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source");
@@ -238,7 +242,7 @@ function utilities_view_user_log() {
 	$user_log = db_fetch_assoc($user_log_sql);
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_user_log&user_id=" . $_REQUEST["user_id"] . "&filter=" . $_REQUEST["filter"]);
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_user_log&username=" . $_REQUEST["username"] . "&filter=" . $_REQUEST["filter"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='7'>
@@ -284,7 +288,7 @@ function utilities_view_user_log() {
 			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"]);?>
 		</td>
 		<td>
-			<?php print  $item["result"];?>
+			<?php print $item["result"] == 0 ? "FAILED" : "SUCCESS";?>
 		</td>
 		<td>
 			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"]);?>
