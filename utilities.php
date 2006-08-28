@@ -45,7 +45,7 @@ if ((isset($_REQUEST["clear_x"])) || (isset($_REQUEST["go_x"]))) {
 		$_REQUEST["action"] = "view_snmp_cache";
 	}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
 		$_REQUEST["action"] = "view_poller_cache";
-	}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
+	}else if (substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
 		$_REQUEST["action"] = "view_user_log";
 	}else{
 		$_REQUEST["action"] = "view_logfile";
