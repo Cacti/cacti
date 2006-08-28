@@ -8,7 +8,7 @@
 					</td>
 					<td width="1">
 						<select name="cbo_user_id" onChange="window.location=document.form_userlog.cbo_user_id.options[document.form_userlog.cbo_user_id.selectedIndex].value">
-							<option value="utilities.php?action=view_user_log&user_id=-1"<?php if ($_REQUEST["user_id"] == "-1") {?> "selected<?php }?>>All</option>
+							<option value="utilities.php?action=view_user_log&user_id=-1"<?php if ($_REQUEST["user_id"] == "-1") {?> selected<?php }?>>All</option>
 							<?php
 							$users = db_fetch_assoc("SELECT DISTINCT user_id,username FROM user_log ORDER BY username");
 

@@ -291,6 +291,7 @@ function utilities_view_user_log() {
 		</td>
 		</tr>
 		<?php
+		$i++;
 	}
 	}
 
@@ -298,13 +299,18 @@ function utilities_view_user_log() {
 }
 
 function utilities_clear_user_log() {
-	$users = db_fetch_assoc("SELECT DISTINCT username FROM user_log");
-	if (!isset($users[0]))
-		return;
-	foreach ($users as $user) {
-		$total_rows = db_fetch_cell("SELECT COUNT(username) FROM user_log WHERE username = '" . $user['username'] . "'");
-		if ($total_rows > 1)
-			db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' ORDER BY time LIMIT " . ($total_rows - 1));
+	$users = db_fetch_assoc("SELECT DISTINCT username FROM user_auth");
+
+	if (sizeof($users)) {
+		/* remove active users */
+		foreach ($users as $user) {
+			$total_rows = db_fetch_cell("SELECT COUNT(username) FROM user_log WHERE username = '" . $user['username'] . "'");
+			if ($total_rows > 1)
+				db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' ORDER BY time LIMIT " . ($total_rows - 1));
+		}
+
+		/* delete inactive users */
+		db_execute("DELETE FROM user_log WHERE username NOT IN (SELECT username FROM user_auth)");
 	}
 }
 
