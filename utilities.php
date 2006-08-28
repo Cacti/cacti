@@ -95,11 +95,8 @@ switch ($_REQUEST["action"]) {
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'view_logfile':
-		include_once("./include/top_header.php");
-
 		utilities_view_logfile();
 
-		include_once("./include/bottom_footer.php");
 		break;
 	case 'clear_logfile':
 		include_once("./include/top_header.php");
@@ -312,7 +309,7 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $colors, $log_tail_lines;
+	global $colors, $log_tail_lines, $page_refresh_interval;
 
 	$logfile = read_config_option("path_cactilog");
 
@@ -325,6 +322,7 @@ function utilities_view_logfile() {
 
 	input_validate_input_number(get_request_var_request("tail_files"));
 	input_validate_input_number(get_request_var_request("message_type"));
+	input_validate_input_number(get_request_var_request("refresh"));
 
 	/* clean up search filter */
 	if (isset($_REQUEST["filter"])) {
@@ -336,17 +334,28 @@ function utilities_view_logfile() {
 		kill_session_var("sess_logfile_tail_lines");
 		kill_session_var("sess_logfile_message_type");
 		kill_session_var("sess_logfile_filter");
+		kill_session_var("sess_logfile_refresh");
+		kill_session_var("sess_logfile_reverse");
 
 		unset($_REQUEST["tail_lines"]);
 		unset($_REQUEST["message_type"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["refresh"]);
+		unset($_REQUEST["reverse"]);
 	}
 
-	load_current_session_value("tail_lines", "sess_logfile_tail_lines", read_config_option("tail_lines"));
+	load_current_session_value("tail_lines", "sess_logfile_tail_lines", read_config_option("num_rows_log"));
 	load_current_session_value("message_type", "sess_logfile_message_type", "-1");
 	load_current_session_value("filter", "sess_logfile_filter", "");
+	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
+	load_current_session_value("reverse", "sess_logfile_reverse", 1);
 
-	html_start_box("<strong>Cacti Log File</strong>", "98%", $colors["header"], "3", "center", "");
+	$refresh["seconds"] = $_REQUEST["refresh"];
+	$refresh["page"] = "utilities.php?action=view_logfile";
+
+	include_once("./include/top_header.php");
+
+	html_start_box("<strong>Log File Filters</strong>", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_view_logfile_table.php");
 
@@ -355,7 +364,9 @@ function utilities_view_logfile() {
 	/* read logfile into an array and display */
 	$logcontents = tail_file($logfile, $_REQUEST["tail_lines"]);
 
-	$logcontents = array_reverse($logcontents);
+	if ($_REQUEST["reverse"] == 1) {
+		$logcontents = array_reverse($logcontents);
+	}
 
 	if ($_REQUEST["message_type"] > 0) {
 		$start_string = "<strong>Log File</strong> [Total Lines: " . sizeof($logcontents) . " - Non-Matching Items Hidden]";
@@ -366,7 +377,7 @@ function utilities_view_logfile() {
 	html_start_box($start_string, "98%", $colors["header"], "3", "center", "");
 
 	$i = 0;
-	$linecolor = False;
+	$linecolor = false;
 	foreach ($logcontents as $item) {
         $host_start = strpos($item, "Host[");
         $ds_start = strpos($item, "DS[");
@@ -395,9 +406,18 @@ function utilities_view_logfile() {
 			}
 		}
 
+		/* determine if we are to display the line */
 		switch ($_REQUEST["message_type"]) {
 		case -1: /* all */
 			$display = true;
+			break;
+		case 5: /* sql calls */
+			if (substr_count($new_item, " SQL ")) {
+				$display=true;
+			}else{
+				$display=false;
+			}
+
 			break;
 		case 1: /* stats */
 			if (substr_count($new_item, "STATS")) {
@@ -405,6 +425,7 @@ function utilities_view_logfile() {
 			}else{
 				$display=false;
 			}
+
 			break;
 		case 2: /* warnings */
 			if (substr_count($new_item, "WARN")) {
@@ -412,6 +433,7 @@ function utilities_view_logfile() {
 			}else{
 				$display=false;
 			}
+
 			break;
 		case 3: /* errors */
 			if (substr_count($new_item, "ERROR")) {
@@ -419,6 +441,7 @@ function utilities_view_logfile() {
 			}else{
 				$display=false;
 			}
+
 			break;
 		case 4: /* debug */
 			if (substr_count($new_item, "DEBUG")) {
@@ -426,46 +449,53 @@ function utilities_view_logfile() {
 			}else{
 				$display=false;
 			}
+
+			if (substr_count($new_item, " SQL ")) {
+				$display=false;
+			}
+
+			break;
+		default: /* all other lines */
+			$display=true;
 			break;
 		}
 
-		if ($i == 0) $display = false;
+		/* get the background color */
+		if ((substr_count($new_item, "ERROR")) || (substr_count($new_item, "FATAL"))) {
+			$bgcolor = "FF3932";
+		}elseif (substr_count($new_item, "WARN")) {
+			$bgcolor = "EACC00";
+		}elseif (substr_count($new_item, " SQL ")) {
+			$bgcolor = "6DC8FE";
+		}elseif (substr_count($new_item, "DEBUG")) {
+			$bgcolor = "C4FD3D";
+		}elseif (substr_count($new_item, "STATS")) {
+			$bgcolor = "96E78A";
+		}else{
+			if ($linecolor) {
+				$bgcolor = "CCCCCC";
+			}else{
+				$bgcolor = "FFFFFF";
+			}
+			$linecolor = !$linecolor;
+		}
 
 		if ($display) {
-			switch ($linecolor) {
-				case True:
-					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-					?>
-					<td>
+			?>
+			<tr bgcolor='#<?php print $bgcolor;?>'>
+				<td>
 					<?php print $new_item;?>
-					</td>
-					</tr>
-					<?php
-					break;
-				case False:
-					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-					?>
-					<td>
-					<?php print $new_item;?>
-					</td>
-					</tr>
-					<?php
-					break;
-			}
-
-			if (strpos($item,":") <> 0) {
-				if ($linecolor = True) {
-					$linecolor = False;
-				}else{
-					$linecolor = True;
-				}
-			}
+				</td>
+			</tr>
+			<?php
 		}
 
 		$i++;
 	}
 
 	html_end_box();
+
+	include_once("./include/bottom_footer.php");
 }
 
 function utilities_clear_logfile() {
@@ -840,13 +870,35 @@ function utilities() {
 
 	html_start_box("<strong>Cacti System Utilities</strong>", "98%", $colors["header"], "3", "center", "");
 
-	html_header(array("Poller Cache Administration"), 2);
-
 	?>
 	<colgroup span="3">
 		<col valign="top" width="20"></col>
 		<col valign="top" width="10"></col>
 	</colgroup>
+
+	<?php html_header(array("System Log Administration"), 2);?>
+
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><a href='utilities.php?action=view_logfile'>View Cacti Log File</a></p>
+		</td>
+		<td class="textArea">
+			<p>The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.</p>
+		</td>
+	</tr>
+
+	<?php html_header(array("User Log Administration"), 2);?>
+
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><a href='utilities.php?action=view_user_log'>View User Log</a></p>
+		</td>
+		<td class="textArea">
+			<p>Allows Administrators to browse the user log.  Administrators can filter and export the log as well.</p>
+		</td>
+	</tr>
+
+	<?php html_header(array("Poller Cache Administration"), 2); ?>
 
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
@@ -870,28 +922,6 @@ function utilities() {
 		</td>
 		<td class="textArea">
 			<p>The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.</p>
-		</td>
-	</tr>
-
-	<?php html_header(array("User Log Administration"), 2);?>
-
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-		<td class="textArea">
-			<p><a href='utilities.php?action=view_user_log'>View User Log</a></p>
-		</td>
-		<td class="textArea">
-			<p>Allows Administrators to browse the user log.  Administrators can filter and export the log as well.</p>
-		</td>
-	</tr>
-
-	<?php html_header(array("System Log Administration"), 2);?>
-
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-		<td class="textArea">
-			<p><a href='utilities.php?action=view_logfile'>View Cacti Log File</a></p>
-		</td>
-		<td class="textArea">
-			<p>The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.</p>
 		</td>
 	</tr>
 	<?php

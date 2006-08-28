@@ -509,6 +509,13 @@ $settings = array(
 			"default" => 50,
 			"array" => $log_tail_lines,
 			),
+		"log_refresh_interval" => array(
+			"friendly_name" => "Log File Tail Refresh",
+			"description" => "How many often do you want the Cacti log display to update.",
+			"method" => "drop_array",
+			"default" => 20,
+			"array" => $page_refresh_interval,
+			),
 		"fonts_header" => array(
 			"friendly_name" => "Default RRDtool 1.2 Fonts",
 			"method" => "spacer",

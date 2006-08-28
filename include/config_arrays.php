@@ -266,13 +266,24 @@ $menu = array(
 	));
 
 $log_tail_lines = array(
+	-1	=> "All Lines",
 	10 => "10 Lines",
+	15 => "15 Lines",
 	20 => "20 Lines",
 	50 => "50 Lines",
 	100 => "100 Lines",
 	200 => "200 Lines",
-	-1	=> "All Lines"
+	500 => "500 Lines",
+	1000 => "1000 Lines"
 	);
+
+$page_refresh_interval = array(
+	5 => "5 Seconds",
+	10 => "10 Seconds",
+	20 => "20 Seconds",
+	30 => "30 Seconds",
+	60 => "1 Minute",
+	300 => "5 Minutes");
 
 $user_auth_realms = array(
 	1 => "User Administration",

@@ -399,9 +399,15 @@ function tail_file($file_name, $number_of_lines, $line_size = 256) {
 
 			/* load up the lines into an array */
 			$i = 0;
-			while (!feof($fp)) {
-				$file_array[$i] = fgets($fp);
-				$i++;
+			while (1) {
+				$line = fgets($fp);
+
+				if (feof($fp)) {
+					break;
+				}else{
+					$file_array[$i] = $line;
+					$i++;
+				}
 			}
 
 			if ($i > $number_of_lines) {
@@ -412,7 +418,7 @@ function tail_file($file_name, $number_of_lines, $line_size = 256) {
 					$new_file_array[$i] = $line;
 					$i++;
 
-					if ($i > $number_of_lines) break;
+					if ($i >= $number_of_lines) break;
 				}
 
 				$file_array = array_reverse($new_file_array);
