@@ -27,41 +27,35 @@
 include("./include/auth.php");
 include_once("./lib/utility.php");
 
+load_current_session_value("page_referrer", "page_referrer", "");
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 if (isset($_REQUEST["sort_direction"])) {
-	if (isset($_SERVER["HTTP_REFERER"])) {
-		if (substr_count($_SERVER["HTTP_REFERER"], "view_snmp_cache")) {
-			$_REQUEST["action"] = "view_snmp_cache";
-		}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
-			$_REQUEST["action"] = "view_poller_cache";
-		}else{
-			$_REQUEST["action"] = "view_user_log";
-		}
+	if ($_REQUEST['page_referrer'] == "view_snmp_cache") {
+		$_REQUEST["action"] = "view_snmp_cache";
+	}else if ($_REQUEST['page_referrer'] == "view_poller_cache") {
+		$_REQUEST["action"] = "view_poller_cache";
 	}else{
 		$_REQUEST["action"] = "view_user_log";
 	}
 }
 
 if ((isset($_REQUEST["clear_x"])) || (isset($_REQUEST["go_x"]))) {
-	if (isset($_SERVER["HTTP_REFERER"])) {
-		if (substr_count($_SERVER["HTTP_REFERER"], "view_snmp_cache")) {
-			$_REQUEST["action"] = "view_snmp_cache";
-		}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
-			$_REQUEST["action"] = "view_poller_cache";
-		}else if (substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
-			$_REQUEST["action"] = "view_user_log";
-		}else{
-			$_REQUEST["action"] = "view_logfile";
-		}
+	if ($_REQUEST['page_referrer'] == "view_snmp_cache") {
+		$_REQUEST["action"] = "view_snmp_cache";
+	}else if ($_REQUEST['page_referrer'] == "view_poller_cache") {
+		$_REQUEST["action"] = "view_poller_cache";
+	}else if ($_REQUEST['page_referrer'] == "view_user_log") {
+		$_REQUEST["action"] = "view_user_log";
 	}else{
 		$_REQUEST["action"] = "view_logfile";
 	}
 }
 
 if (isset($_REQUEST["purge_x"])) {
-	if (isset($_SERVER["HTTP_REFERER"]) && substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
+	if ($_REQUEST['page_referrer'] == "view_user_log") {
 		$_REQUEST["action"] = "clear_user_log";
 	}else{
 		$_REQUEST["action"] = "clear_logfile";
@@ -196,6 +190,9 @@ function utilities_view_user_log() {
 	load_current_session_value("filter", "sess_userlog_filter", "");
 	load_current_session_value("sort_column", "sess_userlog_sort_column", "time");
 	load_current_session_value("sort_direction", "sess_userlog_sort_direction", "DESC");
+
+	$_REQUEST['page_referrer'] = 'view_user_log';
+	load_current_session_value('page_referrer', 'page_referrer', 'view_user_log');
 
 	html_start_box("<strong>User Login History</strong>", "98%", $colors["header"], "3", "center", "");
 
@@ -368,6 +365,9 @@ function utilities_view_logfile() {
 	load_current_session_value("filter", "sess_logfile_filter", "");
 	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
 	load_current_session_value("reverse", "sess_logfile_reverse", 1);
+
+	$_REQUEST['page_referrer'] = 'view_logfile';
+	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
 	$refresh["seconds"] = $_REQUEST["refresh"];
 	$refresh["page"] = "utilities.php?action=view_logfile";
@@ -579,6 +579,9 @@ function utilities_view_snmp_cache() {
 	load_current_session_value("snmp_query_id", "sess_snmp_snmp_query_id", "-1");
 	load_current_session_value("filter", "sess_snmp_filter", "");
 
+	$_REQUEST['page_referrer'] = 'view_snmp_cache';
+	load_current_session_value('page_referrer', 'page_referrer', 'view_snmp_cache');
+
 	html_start_box("<strong>SNMP Cache Items</strong>", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_snmp_cache_filter_table.php");
@@ -745,6 +748,9 @@ function utilities_view_poller_cache() {
 	load_current_session_value("filter", "sess_poller_filter", "");
 	load_current_session_value("sort_column", "sess_poller_sort_column", "data_template_data.name_cache");
 	load_current_session_value("sort_direction", "sess_poller_sort_direction", "ASC");
+
+	$_REQUEST['page_referrer'] = 'view_poller_cache';
+	load_current_session_value('page_referrer', 'page_referrer', 'view_poller_cache');
 
 	html_start_box("<strong>Poller Cache Items</strong>", "98%", $colors["header"], "3", "center", "");
 
