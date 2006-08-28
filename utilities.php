@@ -323,6 +323,7 @@ function utilities_view_logfile() {
 	input_validate_input_number(get_request_var_request("tail_files"));
 	input_validate_input_number(get_request_var_request("message_type"));
 	input_validate_input_number(get_request_var_request("refresh"));
+	input_validate_input_number(get_request_var_request("reverse"));
 
 	/* clean up search filter */
 	if (isset($_REQUEST["filter"])) {
