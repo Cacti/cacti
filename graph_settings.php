@@ -36,7 +36,11 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	default:
+
+		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
+		$_SESSION['custom'] = 1;
 		include_once("./include/top_graph_header.php");
+		unset($_SESSION['custom']);
 
 		settings();
 
