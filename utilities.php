@@ -31,29 +31,37 @@ include_once("./lib/utility.php");
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 if (isset($_REQUEST["sort_direction"])) {
-	if (substr_count($_SERVER["HTTP_REFERER"], "view_snmp_cache")) {
-		$_REQUEST["action"] = "view_snmp_cache";
-	}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
-		$_REQUEST["action"] = "view_poller_cache";
+	if (isset($_SERVER["HTTP_REFERER"])) {
+		if (substr_count($_SERVER["HTTP_REFERER"], "view_snmp_cache")) {
+			$_REQUEST["action"] = "view_snmp_cache";
+		}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
+			$_REQUEST["action"] = "view_poller_cache";
+		}else{
+			$_REQUEST["action"] = "view_user_log";
+		}
 	}else{
 		$_REQUEST["action"] = "view_user_log";
 	}
 }
 
 if ((isset($_REQUEST["clear_x"])) || (isset($_REQUEST["go_x"]))) {
-	if (substr_count($_SERVER["HTTP_REFERER"], "view_snmp_cache")) {
-		$_REQUEST["action"] = "view_snmp_cache";
-	}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
-		$_REQUEST["action"] = "view_poller_cache";
-	}else if (substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
-		$_REQUEST["action"] = "view_user_log";
+	if (isset($_SERVER["HTTP_REFERER"])) {
+		if (substr_count($_SERVER["HTTP_REFERER"], "view_snmp_cache")) {
+			$_REQUEST["action"] = "view_snmp_cache";
+		}else if (substr_count($_SERVER["HTTP_REFERER"], "view_poller_cache")) {
+			$_REQUEST["action"] = "view_poller_cache";
+		}else if (substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
+			$_REQUEST["action"] = "view_user_log";
+		}else{
+			$_REQUEST["action"] = "view_logfile";
+		}
 	}else{
 		$_REQUEST["action"] = "view_logfile";
 	}
 }
 
 if (isset($_REQUEST["purge_x"])) {
-	if (substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
+	if (isset($_SERVER["HTTP_REFERER"]) && substr_count($_SERVER["HTTP_REFERER"], "view_user_log")) {
 		$_REQUEST["action"] = "clear_user_log";
 	}else{
 		$_REQUEST["action"] = "clear_logfile";
