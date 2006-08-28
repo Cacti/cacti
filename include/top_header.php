@@ -32,7 +32,7 @@ global $colors;
 	<link href="include/main.css" rel="stylesheet">
 	<script type="text/javascript" src="include/layout.js"></script>
 	<?php if (isset($refresh)) {
-	print "<meta http-equiv=refresh content='" . $refresh["seconds"] . "'; url='" . $refresh["page"] . "'>";
+	print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
 	}?>
 </style>
 </head>
