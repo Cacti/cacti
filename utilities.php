@@ -101,8 +101,6 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'clear_logfile':
-		include_once("./include/top_header.php");
-
 		utilities_clear_logfile();
 		utilities_view_logfile();
 
@@ -519,6 +517,13 @@ function utilities_view_logfile() {
 
 function utilities_clear_logfile() {
 	global $colors;
+
+	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
+
+	$refresh["seconds"] = $_REQUEST["refresh"];
+	$refresh["page"] = "utilities.php?action=view_logfile";
+
+	include_once("./include/top_header.php");
 
 	$logfile = read_config_option("path_cactilog");
 
