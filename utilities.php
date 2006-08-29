@@ -217,9 +217,11 @@ function utilities_view_user_log() {
 	if ($_REQUEST["filter"] <> "") {
 		if (strlen($sql_where)) {
 			$sql_where .= " AND (user_log.username LIKE '%%" . $_REQUEST["filter"] . "%%'
+				OR user_log.time LIKE '%%" . $_REQUEST["filter"] . "%%'
 				OR user_log.ip LIKE '%%" . $_REQUEST["filter"] . "%%')";
 		}else{
 			$sql_where .= "WHERE (user_log.username LIKE '%%" . $_REQUEST["filter"] . "%%'
+				OR user_log.time LIKE '%%" . $_REQUEST["filter"] . "%%'
 				OR user_log.ip LIKE '%%" . $_REQUEST["filter"] . "%%')";
 		}
 	}
@@ -297,7 +299,7 @@ function utilities_view_user_log() {
 			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"]);?>
 		</td>
 		<td>
-			<?php print $item["result"] == 0 ? "FAILED" : "SUCCESS";?>
+			<?php print $item["result"] == 0 ? "Failed" : "Success";?>
 		</td>
 		<td>
 			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"]);?>
