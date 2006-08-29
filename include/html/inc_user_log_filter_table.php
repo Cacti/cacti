@@ -28,7 +28,7 @@
 						<select name="cbo_result" onChange="window.location=document.form_userlog.cbo_result.options[document.form_userlog.cbo_result.selectedIndex].value">
 							<option value="utilities.php?action=view_user_log&result=-1"<?php if ($_REQUEST['result'] == '-1') {?> selected<?php }?>>Any</option>
 							<option value="utilities.php?action=view_user_log&result=1"<?php if ($_REQUEST['result'] == '1') {?> selected<?php }?>>Success</option>
-							<option value="utilities.php?action=view_user_log&result=2"<?php if ($_REQUEST['result'] == '2') {?> selected<?php }?>>Failed</option>
+							<option value="utilities.php?action=view_user_log&result=0"<?php if ($_REQUEST['result'] == '0') {?> selected<?php }?>>Failed</option>
 						</select>
 					</td>
 					<td width="5"></td>

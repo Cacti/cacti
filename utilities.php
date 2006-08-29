@@ -208,15 +208,9 @@ function utilities_view_user_log() {
 	}
 
 	/* filter by result */
-	if ($_REQUEST["result"] == "-1") {
-		/* Show all items */
-	}elseif (!empty($_REQUEST["result"])) {
-		if (strlen($sql_where)) {
-			$sql_where .= ' AND ';
-		} else {
-			$sql_where .= 'WHERE ';
-		}
-		$sql_where .= "user_log.result='" . $_REQUEST["result"] . "'";
+	if ($_REQUEST["result"] > -1) {
+		(strlen($sql_where) ? $sql_where .= ' AND ' : $sql_where = 'WHERE ');
+		$sql_where .= "user_log.result=" . $_REQUEST["result"];
 	}
 
 	/* filter by search string */
