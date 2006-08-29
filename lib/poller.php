@@ -142,8 +142,8 @@ function update_reindex_cache($host_id, $data_query_id) {
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
-	$host = db_fetch_row("select hostname,snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,snmp_timeout from host where id=$host_id");
-	$data_query = db_fetch_row("select reindex_method,sort_field from host_snmp_query where host_id=$host_id and snmp_query_id=$data_query_id");
+	$host = db_fetch_row("select hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_port, snmp_timeout from host where id=$host_id");
+	$data_query = db_fetch_row("select reindex_method, sort_field from host_snmp_query where host_id=$host_id and snmp_query_id=$data_query_id");
 	$data_query_type = db_fetch_cell("select data_input.type_id from (data_input,snmp_query) where data_input.id=snmp_query.data_input_id and snmp_query.id=$data_query_id");
 	$data_query_xml = get_data_query_array($data_query_id);
 
@@ -175,11 +175,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 			if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
 				if (isset($data_query_xml["oid_num_indexes"])) {
-					array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'=','$assert_value','" . $data_query_xml["oid_num_indexes"] . "')");
+					array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "')");
 				}
 			}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
 				if (isset($data_query_xml["arg_num_indexes"])) {
-					array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,1,'=','$assert_value','" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')");
+					array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')");
 				}
 			}
 
@@ -192,9 +192,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$assert_value = $index["field_value"];
 
 					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'=','$assert_value','" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "')");
+						array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "')");
 					}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,1,'=','$assert_value','" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $host_id) . "')");
+						array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $host_id) . "')");
 					}
 				}
 			}
