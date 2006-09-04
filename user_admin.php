@@ -738,7 +738,7 @@ function user() {
 		"full_name" => array("Full Name", "ASC"),
 		"realm" => array("Realm", "ASC"),
 		"policy_graphs" => array("Default Graph Policy", "ASC"),
-		"time" => array("Last Login", "DESC"));
+		"dtime" => array("Last Login", "DESC"));
 
 	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 6);
 
