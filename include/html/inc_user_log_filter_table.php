@@ -9,8 +9,9 @@
 					<td width="1">
 						<select name="cbo_username" onChange="window.location=document.form_userlog.cbo_username.options[document.form_userlog.cbo_username.selectedIndex].value">
 							<option value="utilities.php?action=view_user_log&username=-1"<?php if ($_REQUEST["username"] == "-1") {?> selected<?php }?>>All</option>
+							<option value="utilities.php?action=view_user_log&username=-2"<?php if ($_REQUEST["username"] == "-2") {?> selected<?php }?>>Deleted/Invalid</option>
 							<?php
-							$users = db_fetch_assoc("SELECT DISTINCT username FROM user_log ORDER BY username");
+							$users = db_fetch_assoc("SELECT DISTINCT username FROM user_auth ORDER BY username");
 
 							if (sizeof($users) > 0) {
 							foreach ($users as $user) {

@@ -203,14 +203,21 @@ function utilities_view_user_log() {
 	/* filter by host */
 	if ($_REQUEST["username"] == "-1") {
 		/* Show all items */
+	}elseif ($_REQUEST["username"] == "-2") {
+		$sql_where = "WHERE user_log.username NOT IN (SELECT DISTINCT username from user_auth)";
 	}elseif (!empty($_REQUEST["username"])) {
-		$sql_where .= "WHERE user_log.username='" . $_REQUEST["username"] . "'";
+		$sql_where = "WHERE user_log.username='" . $_REQUEST["username"] . "'";
 	}
 
 	/* filter by result */
-	if ($_REQUEST["result"] > -1) {
-		(strlen($sql_where) ? $sql_where .= ' AND ' : $sql_where = 'WHERE ');
-		$sql_where .= "user_log.result=" . $_REQUEST["result"];
+	if ($_REQUEST["result"] == "-1") {
+		/* Show all items */
+	}else{
+		if (strlen($sql_where)) {
+			$sql_where = "WHERE user_log.result=" . $_REQUEST["result"];
+		}else{
+			$sql_where .= " AND user_log.result=" . $_REQUEST["result"];
+		}
 	}
 
 	/* filter by search string */
@@ -220,7 +227,7 @@ function utilities_view_user_log() {
 				OR user_log.time LIKE '%%" . $_REQUEST["filter"] . "%%'
 				OR user_log.ip LIKE '%%" . $_REQUEST["filter"] . "%%')";
 		}else{
-			$sql_where .= "WHERE (user_log.username LIKE '%%" . $_REQUEST["filter"] . "%%'
+			$sql_where = "WHERE (user_log.username LIKE '%%" . $_REQUEST["filter"] . "%%'
 				OR user_log.time LIKE '%%" . $_REQUEST["filter"] . "%%'
 				OR user_log.ip LIKE '%%" . $_REQUEST["filter"] . "%%')";
 		}
