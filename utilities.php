@@ -214,9 +214,9 @@ function utilities_view_user_log() {
 		/* Show all items */
 	}else{
 		if (strlen($sql_where)) {
-			$sql_where = "WHERE user_log.result=" . $_REQUEST["result"];
-		}else{
 			$sql_where .= " AND user_log.result=" . $_REQUEST["result"];
+		}else{
+			$sql_where = "WHERE user_log.result=" . $_REQUEST["result"];
 		}
 	}
 
