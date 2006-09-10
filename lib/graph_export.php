@@ -33,13 +33,13 @@ function graph_export() {
 		switch (read_config_option("export_timing")) {
 			case "classic":
 				if (read_config_option("path_html_export_ctr") >= read_config_option("path_html_export_skip")) {
-					db_execute("update settings set value='1' where name='path_html_export_ctr'");
+					db_execute("UPDATE settings SET value='1' WHERE name='path_html_export_ctr'");
 					$total_graphs_created = config_graph_export();
 					config_export_stats($start, $total_graphs_created);
 				} elseif (read_config_option("path_html_export_ctr") == "") {
-					db_execute("delete from settings where name='path_html_export_ctr' or name='path_html_export_skip'");
-					db_execute("insert into settings (name,value) values ('path_html_export_ctr','1')");
-					db_execute("insert into settings (name,value) values ('path_html_export_skip','1')");
+					db_execute("DELETE FROM settings WHERE name='path_html_export_ctr' OR name='path_html_export_skip'");
+					db_execute("REPLACE INTO settings (name,value) VALUES ('path_html_export_ctr','1')");
+					db_execute("REPLACE INTO settings (name,value) VALUES ('path_html_export_skip','1')");
 				} else {
 					db_execute("update settings set value='" . (read_config_option("path_html_export_ctr") + 1) . "' where name='path_html_export_ctr'");
 				}
@@ -47,7 +47,7 @@ function graph_export() {
 			case "export_hourly":
 				$export_minute = read_config_option('export_hourly');
 				if (empty($export_minute)) {
-					db_execute("insert into settings (name,value) values ('export_hourly','0')");
+					db_execute("REPLACE INTO settings (name,value) VALUES ('export_hourly','0')");
 				} elseif (floor((date('i') / 5)) == floor((read_config_option('export_hourly') / 5))) {
 					$total_graphs_created = config_graph_export();
 					config_export_stats($start, $total_graphs_created);
@@ -63,12 +63,12 @@ function graph_export() {
 						}
 					}
 				} else {
-					db_execute("insert into settings (name,value) values ('export_daily','00:00')");
+					db_execute("REPLACE INTO settings (name,value) VALUES ('export_daily','00:00')");
 				}
 				break;
 			default:
 				export_log("Export timing not specified. Updated config to disable exporting.");
-				db_execute("insert into settings (name,value) values ('export_timing','disabled')");
+				db_execute("REPLACE INTO settings (name,value) VALUES ('export_timing','disabled')");
 		}
 	}
 }
