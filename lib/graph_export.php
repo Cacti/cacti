@@ -1016,10 +1016,28 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 
 	$cacti_export_path = read_config_option("path_html_export");
 
+	/* auth check for hosts on the trees */
+	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+
+		$sql_join = "LEFT JOIN user_auth_perms ON (host_id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+
+		if ($current_user["policy_hosts"] == "1") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
+		}elseif ($current_user["policy_hosts"] == "2") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
+		}
+	}else{
+		$sql_join = "";
+		$sql_where = "";
+	}
+
 	$hosts = db_fetch_assoc("SELECT
 				host_id
 				FROM graph_tree_items
-				WHERE graph_tree_id='$tree_id'");
+				$sql_join
+				WHERE graph_tree_id='$tree_id'
+				$sql_where");
 
 	$graphs = array();
 
@@ -1034,11 +1052,13 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			graph_templates.name,
 			graph_local.host_id
 			FROM graph_tree_items
-			RIGHT JOIN ((graph_templates_graph
+			RIGHT JOIN (((graph_templates_graph
 			INNER JOIN graph_templates ON graph_templates_graph.graph_template_id = graph_templates.id)
 			INNER JOIN graph_local ON graph_templates_graph.local_graph_id = graph_local.id)
+			$sql_join)
 			ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 			WHERE (((graph_templates_graph.local_graph_id)<>0)
+			$sql_where
 			AND ((graph_templates_graph.export)='on'))
 			ORDER BY graph_templates_graph.title_cache");
 
@@ -1055,9 +1075,11 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 	/* now get the list of graphs placed within the tree */
 	if ($tree_id == 0) {
 		$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+			$sql_where
 			AND graph_templates_graph.export='on'";
 	}else{
 		$sql_where = "WHERE graph_tree_items.graph_tree_id =" . $tree_id . "
+			$sql_where
 			AND graph_templates_graph.local_graph_id!=0
 			AND graph_templates_graph.export='on'";
 	}
@@ -1072,9 +1094,10 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		graph_local.host_id,
 		graph_tree_items.id AS gtid
 		FROM graph_tree_items
-		RIGHT JOIN ((graph_templates_graph
+		RIGHT JOIN (((graph_templates_graph
 		INNER JOIN graph_templates ON graph_templates_graph.graph_template_id = graph_templates.id)
 		INNER JOIN graph_local ON graph_templates_graph.local_graph_id = graph_local.id)
+		$sql_join)
 		ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 		$sql_where
 		ORDER BY graph_templates_graph.title_cache");
@@ -1092,6 +1115,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 
 	/* for each graph... */
 	$i = 0;
+	if (sizeof($graphs) > 0) {
 	foreach($graphs as $graph)  {
 		$rras = get_associated_rras($graph["local_graph_id"]);
 
@@ -1166,6 +1190,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			fclose($fp_graph_index);
 
 		}
+	}
 	}
 
 	/* close the rrdtool pipe */
