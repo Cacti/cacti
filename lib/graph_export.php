@@ -658,10 +658,12 @@ function tree_export() {
 
 		/* build base index files first */
 		build_html_file(0, "index");
+
 		foreach($trees as $tree) {
 			$leaf["tree_id"] = $tree["id"];
 			$leaf["title"] = "";
 			$leaf["name"] = $tree["name"];
+
 			build_html_file($leaf, "tree");
 
 			/* build remainder of html files */
@@ -685,6 +687,7 @@ function tree_export() {
 			$leaf["tree_id"] = $tree["id"];
 			$leaf["title"] = "";
 			$leaf["name"] = $tree["name"];
+
 			build_html_file($leaf, "tree");
 
 			$total_graphs_created += export_tree_graphs_and_graph_html(clean_up_export_name($tree["name"]), $tree["id"]);
@@ -696,10 +699,28 @@ function tree_export() {
 }
 
 function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
+	/* auth check for hosts on the trees */
+	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+
+		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+
+		if ($current_user["policy_hosts"] == "1") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
+		}elseif ($current_user["policy_hosts"] == "2") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
+		}
+	}else{
+		$sql_join = "";
+		$sql_where = "";
+	}
+
 	if ($tree_id == 0) {
-		$sql_where = "WHERE graph_tree_items.local_graph_id = 0";
+		$sql_where = "WHERE graph_tree_items.local_graph_id = 0
+			$sql_where";
 	}else{
 		$sql_where = "WHERE graph_tree_items.graph_tree_id=" . $tree_id . "
+			$sql_where
 			AND graph_tree_items.local_graph_id = 0";
 	}
 
@@ -713,8 +734,9 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 		graph_tree_items.host_grouping_type,
 		host.description AS hostname
 		FROM graph_tree
-		INNER JOIN (graph_tree_items LEFT JOIN host
-		ON graph_tree_items.host_id = host.id)
+		INNER JOIN (graph_tree_items
+		LEFT JOIN host ON (graph_tree_items.host_id = host.id)
+		$sql_join)
 		ON graph_tree.id = graph_tree_items.graph_tree_id
 		$sql_where
 		ORDER BY graph_tree.name, graph_tree_items.order_key");
@@ -783,6 +805,22 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index = "") {
 	$cacti_export_path = read_config_option("path_html_export");
 
+	/* auth check for hosts on the trees */
+	if (read_config_option("global_auth") == "on") {
+		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+
+		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+
+		if ($current_user["policy_hosts"] == "1") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
+		}elseif ($current_user["policy_hosts"] == "2") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
+		}
+	}else{
+		$sql_join = "";
+		$sql_where = "";
+	}
+
 	switch ($type) {
 	case "index":
 		$sql_where = "";
@@ -791,9 +829,12 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 
 		break;
 	case "tree":
+		$sql_join = "LEFT JOIN user_auth_perms ON (graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+
 		/* searching for the graph_tree_items of the tree_id which are graphs */
 		if ($leaf["tree_id"] == 0) {
 			$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+				$sql_where
 				AND graph_templates_graph.export='on'";
 
 			$filename = "index.html";
@@ -806,6 +847,8 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 			}
 
 			$sql_where = "WHERE graph_tree_items.graph_tree_id=" . $leaf["tree_id"] . "
+				$sql_where
+				AND user_auth_perms.item_id=graph_tree_items.local_graph_id
 				AND graph_templates_graph.local_graph_id!=0
 				AND graph_templates_graph.export='on'
 				AND graph_tree_items.order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'";
@@ -815,9 +858,12 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 
 		break;
 	case "leaf":
+		$sql_join = "LEFT JOIN user_auth_perms ON (graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+
 		/* searching for the graph_tree_items of the tree_id which are graphs */
 		if ($leaf["tree_id"] == 0) {
 			$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+				$sql_where
 				AND graph_templates_graph.export='on'";
 
 			$filename = "index.html";
@@ -830,6 +876,8 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 			}
 
 			$sql_where = "WHERE graph_tree_items.graph_tree_id=" . $leaf["tree_id"] . "
+				$sql_where
+				AND user_auth_perms.item_id=graph_tree_items.local_graph_id
 				AND graph_templates_graph.local_graph_id!=0
 				AND graph_templates_graph.export='on'
 				AND graph_tree_items.order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'";
@@ -844,6 +892,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		break;
 	case "host":
 		$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+			$sql_where
 			AND graph_local.host_id=" . $leaf["host_id"] . "
 			AND graph_templates_graph.export='on'";
 
@@ -852,6 +901,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		break;
 	case "gt":
 		$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+			$sql_where
 			AND graph_local.host_id=" . $leaf["host_id"] . "
 			AND graph_templates_graph.export='on'
 			AND graph_templates_graph.graph_template_id=" . $array_data["id"];
@@ -861,6 +911,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		break;
 	case "dq":
 		$sql_where = "WHERE graph_templates_graph.local_graph_id!=0
+			$sql_where
 			AND graph_local.host_id=" . $leaf["host_id"] . "
 			AND graph_local.snmp_query_id=" . $array_data["id"] . "
 			AND graph_templates_graph.export='on'";
@@ -870,6 +921,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		break;
 	case "dqi":
 		$sql_where = "WHERE graph_templates_graph.local_graph_id<>0
+			$sql_where
 			AND graph_local.host_id=" . $leaf["host_id"] . "
 			AND graph_local.snmp_query_id=" . $array_data["id"] . "
 			AND graph_local.snmp_index=" . $snmp_index . "
@@ -889,9 +941,11 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		graph_templates.name,
 		graph_local.host_id
 		FROM graph_tree_items
-		RIGHT JOIN ((graph_templates_graph
+		RIGHT JOIN ((((graph_templates_graph
 		INNER JOIN graph_templates ON graph_templates_graph.graph_template_id = graph_templates.id)
 		INNER JOIN graph_local ON graph_templates_graph.local_graph_id = graph_local.id)
+		INNER JOIN host ON host.id=graph_local.host_id)
+		$sql_join)
 		ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 		$sql_where
 		ORDER BY graph_templates_graph.title_cache";
