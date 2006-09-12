@@ -940,14 +940,13 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id
-		FROM graph_tree_items
-		RIGHT JOIN ((((graph_templates_graph
-		INNER JOIN graph_templates ON graph_templates_graph.graph_template_id = graph_templates.id)
-		INNER JOIN graph_local ON graph_templates_graph.local_graph_id = graph_local.id)
-		INNER JOIN host ON host.id=graph_local.host_id)
-		$sql_join)
-		ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
+		FROM (graph_tree_items, graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id = graph_templates.id)
+		LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id = graph_local.id)
+		LEFT JOIN host ON (host.id=graph_local.host_id)
+		$sql_join
 		$sql_where
+		AND graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 		ORDER BY graph_templates_graph.title_cache";
 
 	if ($type == "index") {
@@ -1067,6 +1066,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 
 	/* start the count of graphs */
 	$total_graphs_created = 0;
+	$exported_files = array();
 
 	$cacti_export_path = read_config_option("path_html_export");
 
@@ -1074,7 +1074,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 	if (read_config_option("global_auth") == "on") {
 		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-		$sql_join = "LEFT JOIN user_auth_perms ON (host_id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+		$sql_join = "LEFT JOIN user_auth_perms ON (graph_tree_items.host_id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
 		if ($current_user["policy_hosts"] == "1") {
 			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
@@ -1105,15 +1105,14 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			graph_templates_graph.title_cache,
 			graph_templates.name,
 			graph_local.host_id
-			FROM graph_tree_items
-			RIGHT JOIN (((graph_templates_graph
-			INNER JOIN graph_templates ON graph_templates_graph.graph_template_id = graph_templates.id)
-			INNER JOIN graph_local ON graph_templates_graph.local_graph_id = graph_local.id)
-			$sql_join)
-			ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
-			WHERE (((graph_templates_graph.local_graph_id)<>0)
+			FROM (graph_tree_items, graph_templates_graph)
+			LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id = graph_templates.id)
+			LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id = graph_local.id)
+			$sql_join
+			WHERE ((graph_templates_graph.local_graph_id<>0)
 			$sql_where
-			AND ((graph_templates_graph.export)='on'))
+			AND graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
+			AND (graph_templates_graph.export='on'))
 			ORDER BY graph_templates_graph.title_cache");
 
 		if (sizeof($host_graphs)) {
@@ -1147,13 +1146,12 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		graph_templates.name,
 		graph_local.host_id,
 		graph_tree_items.id AS gtid
-		FROM graph_tree_items
-		RIGHT JOIN (((graph_templates_graph
-		INNER JOIN graph_templates ON graph_templates_graph.graph_template_id = graph_templates.id)
-		INNER JOIN graph_local ON graph_templates_graph.local_graph_id = graph_local.id)
-		$sql_join)
-		ON graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
+		FROM (graph_tree_items, graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id = graph_templates.id)
+		LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id = graph_local.id)
+		$sql_join
 		$sql_where
+		AND graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 		ORDER BY graph_templates_graph.title_cache");
 
 	if (sizeof($non_host_graphs)) {
@@ -1187,7 +1185,11 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			$export_filename = $cacti_export_path . "/graphs/thumb_" . $graph["local_graph_id"] . ".png";
 		}
 
-		if (!file_exists($export_filename)) {
+		if (!array_search($export_filename, $exported_files)) {
+			/* add the graph to the exported list */
+			array_push($exported_files, $export_filename);
+
+			/* generate the graph */
 			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 			$total_graphs_created++;
 
@@ -1222,12 +1224,8 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 					$graph_data_array["export_filename"] = "/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 				}
 
-				if (!file_exists($cacti_export_path . "/" . $graph_data_array["export_filename"])) {
-					rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
-					$total_graphs_created++;
-				}else{
-					export_log("Duplicate file write attempted.");
-				}
+				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
+				$total_graphs_created++;
 
 				/* write image related html */
 				if (read_config_option("export_tree_isolation") == "off") {
