@@ -496,7 +496,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 
 	/* create the base directory */
 	if (!mkdir("$cacti_export_path/graphs", 0755)) {
-		export_fatal("Create directory '$cacti_export_paths/graphs' failed.  Can not continue");
+		export_fatal("Create directory '$cacti_export_path/graphs' failed.  Can not continue");
 	}
 
 	/* if the index file already exists, delete it */
