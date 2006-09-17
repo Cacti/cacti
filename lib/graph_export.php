@@ -701,7 +701,7 @@ function tree_export() {
 function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 	/* auth check for hosts on the trees */
 	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+		$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
 		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
@@ -806,19 +806,28 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* auth check for hosts on the trees */
-	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+//		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+//		$sql_where = (empty($sql_where) ? "" : "AND (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
+//		$sql_join = "LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id=graph_local.id)
+//			LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
+//			LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id
+//			AND user_auth_perms.type=1
+//			AND user_auth_perms.user_id=" . $current_user["id"] . ")
+//			OR (host.id=user_auth_perms.item_id
+//			AND user_auth_perms.type=3
+//			AND user_auth_perms.user_id=" . $current_user["id"] . ")
+//			OR (graph_templates.id=user_auth_perms.item_id
+//			AND user_auth_perms.type=4
+//			AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
-		if ($current_user["policy_hosts"] == "1") {
-			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
-		}elseif ($current_user["policy_hosts"] == "2") {
-			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
-		}
-	}else{
-		$sql_join = "";
-		$sql_where = "";
+	$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+
+	if ($current_user["policy_hosts"] == "1") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
+	}elseif ($current_user["policy_hosts"] == "2") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
 	}
 
 	switch ($type) {
@@ -932,7 +941,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		break;
 	}
 
-	$request = "SELECT
+	$request = "SELECT DISTINCT
 		graph_templates_graph.id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
@@ -946,7 +955,6 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		LEFT JOIN host ON (host.id=graph_local.host_id)
 		$sql_join
 		$sql_where
-		AND graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
 		ORDER BY graph_templates_graph.title_cache";
 
 	if ($type == "index") {
@@ -1071,33 +1079,30 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* auth check for hosts on the trees */
-	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-		$sql_join = "LEFT JOIN user_auth_perms ON (graph_tree_items.host_id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+	$sql_join = "LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id=graph_local.id)
+		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
+		LEFT JOIN user_auth_perms ON (graph_tree_items.host_id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
-		if ($current_user["policy_hosts"] == "1") {
-			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
-		}elseif ($current_user["policy_hosts"] == "2") {
-			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
-		}
-	}else{
-		$sql_join = "";
-		$sql_where = "";
+	if ($current_user["policy_hosts"] == "1") {
+		$sql_where = "AND (user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
+	}elseif ($current_user["policy_hosts"] == "2") {
+		$sql_where = "AND (user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
 	}
-
-	$hosts = db_fetch_assoc("SELECT
-				host_id
-				FROM graph_tree_items
-				$sql_join
-				WHERE graph_tree_id='$tree_id'
-				$sql_where");
 
 	$graphs = array();
 
+	if ($tree_id == 0) {
+		$hosts = db_fetch_assoc("SELECT DISTINCT host_id FROM graph_tree_items");
+	}else{
+		$hosts = db_fetch_assoc("SELECT DISTINCT host_id FROM graph_tree_items WHERE graph_tree_id=" . $tree_id);
+	}
+
 	/* get a list of host graphs first */
-	foreach ($hosts AS $host) {
-		$host_graphs = db_fetch_assoc("SELECT
+	if (sizeof($hosts)) {
+	foreach ($hosts as $host) {
+		$hosts_sql = "SELECT DISTINCT
 			graph_templates_graph.id,
 			graph_templates_graph.local_graph_id,
 			graph_templates_graph.height,
@@ -1106,14 +1111,14 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			graph_templates.name,
 			graph_local.host_id
 			FROM (graph_tree_items, graph_templates_graph)
-			LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id = graph_templates.id)
-			LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id = graph_local.id)
 			$sql_join
 			WHERE ((graph_templates_graph.local_graph_id<>0)
 			$sql_where
-			AND graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
+			AND (graph_local.host_id=" . $host["host_id"] . ")
 			AND (graph_templates_graph.export='on'))
-			ORDER BY graph_templates_graph.title_cache");
+			ORDER BY graph_templates_graph.title_cache";
+
+		$host_graphs = db_fetch_assoc($hosts_sql);
 
 		if (sizeof($host_graphs)) {
 			if (sizeof($graphs)) {
@@ -1123,7 +1128,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			}
 		}
 	}
-
+	}
 
 	/* now get the list of graphs placed within the tree */
 	if ($tree_id == 0) {
@@ -1137,7 +1142,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			AND graph_templates_graph.export='on'";
 	}
 
-	$non_host_graphs = db_fetch_assoc("SELECT
+	$non_host_sql = "SELECT
 		graph_templates_graph.id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
@@ -1147,12 +1152,12 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		graph_local.host_id,
 		graph_tree_items.id AS gtid
 		FROM (graph_tree_items, graph_templates_graph)
-		LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id = graph_templates.id)
-		LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id = graph_local.id)
 		$sql_join
 		$sql_where
 		AND graph_tree_items.local_graph_id = graph_templates_graph.local_graph_id
-		ORDER BY graph_templates_graph.title_cache");
+		ORDER BY graph_templates_graph.title_cache";
+
+	$non_host_graphs = db_fetch_assoc($non_host_sql);
 
 	if (sizeof($non_host_graphs)) {
 		if (sizeof($graphs)) {
@@ -1355,6 +1360,7 @@ function create_dhtml_tree_export($tree_id) {
 	/* record start time */
 	list($micro,$seconds) = split(" ", microtime());
 	$start = $seconds + $micro;
+	$search_key = "";
 
 	$dhtml_tree = array();
 	$dhtml_tree[0] = $start;
@@ -1365,39 +1371,36 @@ function create_dhtml_tree_export($tree_id) {
 	$tree_list = get_graph_tree_array_export();
 
 	/* auth check for hosts on the trees */
-	if (read_config_option("global_auth") == "on") {
-		$current_user = db_fetch_row("SELECT policy_hosts FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
+	$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ")";
 
-		if ($current_user["policy_hosts"] == "1") {
-			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
-		}elseif ($current_user["policy_hosts"] == "2") {
-			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
-		}
-	}else{
-		$sql_join = "";
-		$sql_where = "";
+	if ($current_user["policy_hosts"] == "1") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id > 0)";
+	}elseif ($current_user["policy_hosts"] == "2") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id > 0)";
 	}
 
 	if (sizeof($tree_list) > 0) {
 	foreach ($tree_list as $tree) {
         $i++;
 
-        $heirarchy = db_fetch_assoc("SELECT
-			graph_tree_items.id,
-			graph_tree_items.title,
-			graph_tree_items.order_key,
-			graph_tree_items.host_id,
-			graph_tree_items.host_grouping_type,
-			host.description as hostname
-			FROM graph_tree_items
-			LEFT JOIN host ON (host.id=graph_tree_items.host_id)
-			$sql_join
-			WHERE graph_tree_items.graph_tree_id=" . $tree["id"] . "
-			$sql_where
-			AND graph_tree_items.local_graph_id = 0
-			ORDER BY graph_tree_items.order_key");
+		$heir_sql = "SELECT
+				graph_tree_items.id,
+				graph_tree_items.title,
+				graph_tree_items.order_key,
+				graph_tree_items.host_id,
+				graph_tree_items.host_grouping_type,
+				host.description as hostname
+				FROM graph_tree_items
+				LEFT JOIN host ON (host.id=graph_tree_items.host_id)
+				$sql_join
+				WHERE graph_tree_items.graph_tree_id=" . $tree["id"] . "
+				$sql_where
+				AND graph_tree_items.local_graph_id = 0
+				ORDER BY graph_tree_items.order_key";
+
+		$heirarchy = db_fetch_assoc($heir_sql);
 
 		$dhtml_tree_id = 0;
 
