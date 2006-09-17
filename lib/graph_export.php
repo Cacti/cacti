@@ -808,20 +808,6 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 	/* auth check for hosts on the trees */
 	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-//		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-//		$sql_where = (empty($sql_where) ? "" : "AND (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
-//		$sql_join = "LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id=graph_local.id)
-//			LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-//			LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id
-//			AND user_auth_perms.type=1
-//			AND user_auth_perms.user_id=" . $current_user["id"] . ")
-//			OR (host.id=user_auth_perms.item_id
-//			AND user_auth_perms.type=3
-//			AND user_auth_perms.user_id=" . $current_user["id"] . ")
-//			OR (graph_templates.id=user_auth_perms.item_id
-//			AND user_auth_perms.type=4
-//			AND user_auth_perms.user_id=" . $current_user["id"] . "))";
-
 	$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
 	if ($current_user["policy_hosts"] == "1") {
