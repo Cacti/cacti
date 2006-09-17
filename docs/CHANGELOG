@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -bug#0000814: If Database Permissions Are Not Correct Apache Segfaults
 -bug#0000815: Viewing the Log File Can Be Problematic Due to Large Log Size
 -bug#0000821: Missing file include/menuarrow.gif
+-bug#0000823: Creating data template destroys input methods of data sources
 -bug: Use of the Data Source filter on the Graph Items Editor can clear the selected Data Source
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
