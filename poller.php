@@ -91,7 +91,7 @@ if (read_config_option("poller_enabled") == "on") {
 
     /* Exit poller if cactid is selected and file does not exist */
     if (($poller == "2") && (!file_exists(read_config_option("path_cactid")))) {
-		cacti_log("ERROR: The path: " . read_config_option("path_cactid") . " is invalid.  Can not continue\n", true, "POLLER");
+		cacti_log("ERROR: The path: " . read_config_option("path_cactid") . " is invalid.  Can not continue", true, "POLLER");
 		exit;
 	}
 

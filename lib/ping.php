@@ -140,7 +140,7 @@ class Net_Ping
 						}else{
 							$this->ping_response = "PHP version does not support IPv6";
 							$this->ping_status   = "down";
-							cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+							cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
 
 							/* return to real user account */
 							$this->setuid($cacti_poller_account);
@@ -338,7 +338,7 @@ class Net_Ping
 				}else{
 					$this->ping_response = "PHP version does not support IPv6";
 					$this->ping_status   = "down";
-					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
 					return false;
 				}
 			}else{
@@ -433,7 +433,7 @@ class Net_Ping
 				}else{
 					$this->ping_response = "PHP binary does not support IPv6";
 					$this->ping_status   = "down";
-					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6\n");
+					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
 					return false;
 				}
 			}else{

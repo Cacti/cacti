@@ -171,7 +171,7 @@ while (1) {
 			fflush(STDOUT);
 		}
 	} else {
-		cacti_log("WARNING: Function does not exist\n", false, "PHPSVR");
+		cacti_log("WARNING: Function does not exist", false, "PHPSVR");
 		fputs(STDOUT, "WARNING: Function does not exist\n");
 	}
 }
