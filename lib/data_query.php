@@ -345,7 +345,7 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 }
 
 /* update_data_query_cache - updates the local data query cache for each graph and data
-     source tied to this host/data query
+	source tied to this host/data query
    @arg $host_id - the id of the host to refresh
    @arg $data_query_id - the id of the data query to refresh */
 function update_data_query_cache($host_id, $data_query_id) {
@@ -539,13 +539,13 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 
 		for ($i=0; $i<count($index_order_array); $i++) {
 			if (in_array($index_order_array[$i], $xml_outputs)) {
-				$return_array{$index_order_array[$i]} = $index_order_array[$i] . " (" . $raw_xml["fields"]{$index_order_array[$i]}["name"] . ")";
+				$return_array[] = $index_order_array[$i];
 			}
 		}
 	/* the xml file does not contain a field list, ignore the order */
 	}else{
 		for ($i=0; $i<count($xml_outputs); $i++) {
-			$return_array{$xml_outputs[$i]} = $xml_outputs[$i] . " (" . $raw_xml["fields"]{$xml_outputs[$i]}["name"] . ")";
+			$return_array[] = $xml_outputs[$i];
 		}
 	}
 
@@ -569,7 +569,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 		$sort_field = "";
 	}else{
 		/* grab the first field off the list */
-		list($sort_field, $sort_field_formatted) = each($valid_index_types);
+		$sort_field = $valid_index_types[0];
 	}
 
 	/* substitute variables */
