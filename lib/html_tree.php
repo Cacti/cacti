@@ -670,19 +670,32 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 }
 
 function find_first_folder_url() {
-	$tree_list = get_graph_tree_array();
+	$default_tree_id = read_graph_config_option("default_tree_id");
 
-	if (sizeof($tree_list) > 0) {
+	/* see if the user selected a default graph tree */
+	$use_tree_id = 0;
+	if (empty($default_tree_id)) {
+		$tree_list = get_graph_tree_array();
+
+		if (sizeof($tree_list) > 0) {
+			$use_tree_id = $tree_list[0]["id"];
+		}
+	}else{
+		$use_tree_id = $default_tree_id;
+	}
+
+	if (!empty($use_tree_id)) {
+		/* find the first clickable item in the tree */
 		$heirarchy = db_fetch_assoc("select
 			graph_tree_items.id,
 			graph_tree_items.host_id
 			from graph_tree_items
-			where graph_tree_items.graph_tree_id=" . $tree_list[0]["id"] . "
+			where graph_tree_items.graph_tree_id=$use_tree_id
 			and graph_tree_items.local_graph_id = 0
 			order by graph_tree_items.order_key");
 
 		if (sizeof($heirarchy) > 0) {
-			return "graph_view.php?action=tree&tree_id=" . $tree_list[0]["id"] . "&leaf_id=" . $heirarchy[0]["id"] . "&select_first=true";
+			return "graph_view.php?action=tree&tree_id=$use_tree_id&leaf_id=" . $heirarchy[0]["id"] . "&select_first=true";
 		}
 	}
 
