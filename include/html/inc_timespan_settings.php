@@ -116,7 +116,7 @@ function process_user_input(&$timespan) {
 		}
 	}else {
 		if ((isset($_GET["predefined_timespan"]) && ($_GET["predefined_timespan"] != GT_CUSTOM)) ||
-			(!isset($_GET["predefined_timespan"]) && ($_SESSION["custom"] == 0)) ||
+			(!isset($_GET["predefined_timespan"]) && ((isset($_SESSION["custom"])) && ($_SESSION["custom"] == 0))) ||
 			(!isset($_SESSION["sess_current_date1"]))) {
 			set_preset_timespan($timespan);
 		}else {
