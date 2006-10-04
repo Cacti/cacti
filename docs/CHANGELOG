@@ -1,68 +1,69 @@
 Cacti CHANGELOG
 
--bug#0000188: Add Ability to Sort Columns by Selecting column headers
--bug#0000199: Exported thumb graphics shows limited time range only
--bug#0000207: Wrong unit size displayed in 'Localhost - Memory Usage'
--bug#0000286: Exported graphs all contain same total bandwidth figures
--bug#0000313/#0000561: Dont print menu/titlebar by using CSS class noprint
--bug#0000316: unit_value is not taken into account
--bug#0000395: Advanced graph export FTP function not working in Unix environment
--bug#0000430: Manual Sorting Interface Enhancement 
--bug#0000433: Unable to acquire Data from php script with cmd.php 
--bug#0000488: Lack of User-Agent HTTP header generates error
--bug#0000527: Cannot adjust RRA for graph default view
--bug#0000584: Barometer does not display decimal
--bug#0000624: Generate DEFs for graph items other than AREA, STACK, and LINE
--bug#0000643: host.php tweak (correct display of a device's uptime)
--bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentile
--bug#0000672: When creating a device, the Host Template was not properly validated
--bug#0000678: Can't graph export to subdir
--bug#0000681: poller_item arg1, arg2, arg3 fields too small
--bug#0000692: Tree graph export fails
--bug#0000693: Export Tree corrupt when using the "Expand Hosts" option
+0.8.6i
+-bug#0000188: Add ability to sort columns by selecting column headers.
+-bug#0000199: Exported thumbnail graphics shows limited time range only.
+-bug#0000207: Correct unit size displayed in the default 'Localhost - Memory Usage' graph.
+-bug#0000286: Fix issue with bandwidth summation on exported graphs.
+-bug#0000313/#0000561: Don't print menu/titlebar by using CSS class noprint.
+-bug#0000316: Take the unit value field into account when creating graphs.
+-bug#0000395: Fix graph export FTP functionality in Unix environments.
+-bug#0000430: Add natural sort order option for graph trees.
+-bug#0000433: Remove script server restriction on varying case path names.
+-bug#0000488: Remove reliance on HTTP_USER_AGENT to prevent possible notices.
+-bug#0000527: Fix issue updating the RRA for a graph tree item.
+-bug#0000584: Add barometer decimal fix to scripts/weatherbug.pl.
+-bug#0000624: Generate DEFs for graph items other than AREA, STACK, and LINE.
+-bug#0000643: Always display a human readable sysUpTime in the device edit page.
+-bug#0000665: Invalid index error on empty or 0 return set from rrdfetch with Nth Percentile.
+-bug#0000672: When creating a device, the Host Template was not properly validated.
+-bug#0000678: Allow graph export to a Cacti sub directory.
+-bug#0000681: Increase the size of the arg1, arg2, and arg3 fields in the poller_item table.
+-bug#0000692: Fix problems with FTP and the tree export method.
+-bug#0000693: Fix problems with the "Expand Host" option and the tree export method.
 -bug#0000698: Make arguments to 'df' more compatible with FreeBSD 6.0 in the "Get Unix Partitions" data query.
 -bug#0000705: Fix problem with the current selected data source item and SIMILAR_DATA_SOURCES_NODUPS (again).
--bug#0000709: Configuration => Settings => Graph Export:: Problem using FTP (remote) export with Tree Presentation.
--bug#0000720: undefined variable in script_server.php line 177
--bug#0000721: SNMPv2 Query has issues with ifAlias & ifName when none present
--bug#0000727: Graph Export runs long and can not take a users graph permissions into account
--bug#0000730: Non-standard port ignored
--bug#0000731: Add Host to Tree from Device page incomplete
--bug#0000739: "Unit value" parameter in template options ignored
--bug#0000741: Links get mismatched after using Zoom on graph
--bug#0000746: Clearing Cacti log file from web interface does not preserve Cacti log file permissions
--bug#0000752: Problem with OID truncation with cactid and from within the database structure one limitation is that reindex table must be limited to 255 characters
--bug#0000758: LDAP user with non-Alphanumeric characters in the password fail to authenicate
--bug#0000761: RRA Input fields timespan and rows do not match the field size in the database
--bug#0000766: graph_tree_items ID field need to change to mediumint
--bug#0000769: Graph Export Is Not Sensitive to Actual RRA Used By Graphs
--bug#0000775: View SNMP Cache display nothing
--bug#0000779: When Viewing Thumbnails, Graph Text Should be Scaled Down
--bug#0000781: Add a "enabled" filter status item in device management
--bug#0000785: Issue with Graph Tree View and Data Query Index Sorting showing "Non Indexed" even if empty 
--bug#0000786: different port numbers
--bug#0000789: Use of Action In Image Button Incompatible with Newer Opera Browsers and HTML4
--bug#0000797: Graphs and Data Sources Dont Allow Filter to Search Multiple Fields
--bug#0000809: Add an option to "purge" the user_log table
--bug#0000814: If Database Permissions Are Not Correct Apache Segfaults
--bug#0000815: Viewing the Log File Can Be Problematic Due to Large Log Size
--bug#0000821: Missing file include/menuarrow.gif
--bug#0000823: Creating data template destroys input methods of data sources
--bug: Use of the Data Source filter on the Graph Items Editor can clear the selected Data Source
+-bug#0000709: Fix problems with FTP and the tree export method (duplicate).
+-bug#0000720: Fix undefined variable message in script_server.php.
+-bug#0000721: SNMPv2 Query has issues with ifAlias & ifName when none present.
+-bug#0000727: Allow a user with specific graph permissions to be used when exporting graphs.
+-bug#0000730: Allow non-standard MySQL ports to be specified.
+-bug#0000731: Use proper defaults when adding a device to a tree from the Devices page.
+-bug#0000739: Stop ignoring the "Unit value" parameter in the graph template.
+-bug#0000741: Fix issue with links getting mismatched after using zoom on a graph.
+-bug#0000746: Make sure clearing Cacti log file from web interface preserves file permissions.
+-bug#0000752: Allow OID's greater than 255 characters except for the index OID because of MySQL index limitations.
+-bug#0000758: LDAP user with non-alphanumeric characters in the password failed to authenticate.
+-bug#0000761: Correct input validation to allow all possible numbers in the RRAs form.
+-bug#0000766: Increase the size of the id field in the graph tree items table.
+-bug#0000769: Use only selected RRA's when exporting graphs.
+-bug#0000775: Add pagination to the SNMP cache viewer to handle large numbers of items.
+-bug#0000779: Scale down the size of text when viewing thumbnail graphs.
+-bug#0000781: Add an "enabled" filter status item in the devices list.
+-bug#0000785: Fix issue with Graph Tree View and Data Query Index Sorting showing "Non Indexed" even if empty. 
+-bug#0000786: Expose the SNMP port field to data sources that use SNMP. 
+-bug#0000789: Remove use of "action" attribute on graph tree image which is incompatible with newer Opera browsers and HTML4.
+-bug#0000797: Fix issue with filtering on multiple fields on the Data Sources and Graph Management pages.
+-bug#0000809: Add an option to "purge" the user_log table.
+-bug#0000814: Prevent Apache from segfaulting if the database permissions are not correct.
+-bug#0000815: Paginated the Cacti log file viewer to handle large numbers of items.
+-bug#0000821: Add missing menuarrow.gif image.
+-bug#0000823: Prevent Cacti from overwriting data during the creation of a new data template.
+-bug: Do not allow the device filter on the graph items editor to clear the selected data source.
 -bug: SQL Query in Graphs was not set write causing graph failures in preview mode and other modes.
 -bug: Setting a host template filter in devices, followed by moving off and then back on the page generated an error.
 -bug: PHP 5.1 snmpwalks utilize the bulk method by default.  Therefore, prefer them over the bulkwalk binary.
 -bug: Allow read_config_option to force a database refresh when one is wanted.
 -bug: Fix issue with the script server where a function called where a data query without the <extra_args> does not work.
 -bug: Make load average script compatible with Mac OS X systems.
--bug: Correct an issue where under certain circumstances, |query_ifSize| was being implemented as the maximum value for an rrd
--bug: Correct issue where dhtml caching was not working with expand hosts enabled
--bug: Add snmp retries to cacti's snmp functions
--bug: Once Graph Export has been enabled, cacti attempts to continue to run even after it has been disabled
--bug: Correct alphabetic sorting to be more natural
--bug: Meta Refresh Tags using improper syntax for the url
--bug: The Graph Settings Page was using the graph refresh interval, which caused it to refresh while the user is inputting data
--bug: Suggested data query index ordering with the "index_order" field is not always respected
+-bug: Correct an issue where under certain circumstances, |query_ifSize| was being implemented as the maximum value for an RRD.
+-bug: Correct issue where DHTML caching was not working with expand hosts enabled.
+-bug: Add SNMP retries option to Cacti's SNMP functions.
+-bug: Once Graph Export has been enabled, do not allow Cacti to run even after it has been disabled.
+-bug: Correct alphabetic tree sorting to be more natural.
+-bug: Fix meta refresh tags to use proper URL syntax.
+-bug: Do not allow the graphs setting page to use the refresh interval, which can cause it to refresh while the user is inputting data.
+-bug: Make sure that data query index ordering with the "index_order" XML field is always respected.
 
 0.8.6h
 -bug#0000383: Add more verbose RRDtool debug output from Graph Management.
