@@ -1,6 +1,6 @@
 Summary: The complete RRDTool-based graphing solution.
 Name: cacti
-Version: 0.8.6h
+Version: 0.8.6i
 Release: 1
 License: GPL
 Group: Application/System
@@ -64,6 +64,9 @@ fi
 %{_localstatedir}/www/html/cacti/rra/
 
 %changelog
+* Thu Oct 5 2006 Ian Berry <iberry@raxnet.net> - 0.8.6i-1
+- Updated to release 0.8.6i.
+
 * Wed Jan 3 2006 Ian Berry <iberry@raxnet.net> - 0.8.6h-1
 - Updated to release 0.8.6h.
 
