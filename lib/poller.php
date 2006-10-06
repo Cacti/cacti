@@ -230,7 +230,8 @@ function process_poller_output($rrdtool_pipe) {
 		poller_item.rrd_name,
 		poller_item.rrd_num
 		from (poller_output,poller_item)
-		where (poller_output.local_data_id=poller_item.local_data_id and poller_output.rrd_name=poller_item.rrd_name)");
+		where (poller_output.local_data_id=poller_item.local_data_id and poller_output.rrd_name=poller_item.rrd_name)
+		limit 10000");
 
 	if (sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
