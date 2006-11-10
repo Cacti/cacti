@@ -213,13 +213,19 @@ function update_reindex_cache($host_id, $data_query_id) {
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDTool for processing
    @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool */
-function process_poller_output($rrdtool_pipe) {
+function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
 	global $config;
 
 	include_once($config["library_path"] . "/rrd.php");
 
 	/* let's count the number of rrd files we processed */
 	$rrds_processed = 0;
+
+	if ($remainder) {
+		$limit = "";
+	}else{
+		$limit = "LIMIT 10000";
+	}
 
 	/* create/update the rrd files */
 	$results = db_fetch_assoc("select
