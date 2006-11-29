@@ -282,9 +282,16 @@ function data_remove() {
 	}
 
 	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
+		$data_input_fields = db_fetch_assoc("select id from data_input_fields where data_input_id=" . $_GET["id"]);
+
+		if (is_array($data_input_fields)) {
+			foreach ($data_input_fields as $data_input_field) {
+				db_execute("delete from data_input_data where data_input_field_id=" . $data_input_field["id"]);
+			}
+		}
+
 		db_execute("delete from data_input where id=" . $_GET["id"]);
 		db_execute("delete from data_input_fields where data_input_id=" . $_GET["id"]);
-		db_execute("delete from data_input_data where data_input_id=" . $_GET["id"]);
 	}
 }
 
