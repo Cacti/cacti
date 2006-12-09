@@ -237,6 +237,8 @@ function display_output_messages() {
 					break;
 				}
 			}
+		}else{
+			display_custom_error_message($_SESSION["sess_messages"]);
 		}
 	}
 
