@@ -70,6 +70,10 @@ if ( $_SERVER["argc"] == 1 ) {
 	$print_data_to_stdout = false;
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
+
+			$_SERVER["argv"][1] = input_validate_input_number($_SERVER["argv"][1]);
+			$_SERVER["argv"][2] = input_validate_input_number($_SERVER["argv"][2]);
+
 			$hosts = db_fetch_assoc("select * from host where (disabled = '' and " .
 					"id >= " .
 					$_SERVER["argv"][1] .
