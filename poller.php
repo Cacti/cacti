@@ -96,7 +96,7 @@ if (read_config_option("poller_enabled") == "on") {
 	}
 
 	/* Determine Command Name */
-	if (($config["cacti_server_os"] == "unix") and ($poller == "2")) {
+	if ($poller == "2") {
 		$command_string = read_config_option("path_cactid");
 		$extra_args = "";
 		$method = "cactid";
@@ -105,11 +105,6 @@ if (read_config_option("poller_enabled") == "on") {
 		$command_string = read_config_option("path_php_binary");
 		$extra_args = "-q " . $config["base_path"] . "/cmd.php";
 		$method = "cmd.php";
-	}else if ($poller == "2") {
-		$command_string = read_config_option("path_cactid");
-		$extra_args = "";
-		$method = "cactid";
-		chdir(dirname(read_config_option("path_cactid")));
 	}else{
 		$command_string = read_config_option("path_php_binary");
 		$extra_args = "-q " . strtolower($config["base_path"] . "/cmd.php");
@@ -160,7 +155,6 @@ if (read_config_option("poller_enabled") == "on") {
 	/* open a pipe to rrdtool for writing */
 	$rrdtool_pipe = rrd_init();
 
-	$loop_count = 0;
 	$rrds_processed = 0;
 	while (1) {
 		$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id = 0");
@@ -240,7 +234,6 @@ if (read_config_option("poller_enabled") == "on") {
 			}
 
 			sleep(1);
-			$loop_count++;
 		}
 	}
 

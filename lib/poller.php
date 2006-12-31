@@ -212,7 +212,8 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDTool for processing
-   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool */
+  @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
+  @arg $remainder - don't use LIMIT if TRUE */
 function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
 	global $config;
 
