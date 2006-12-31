@@ -642,7 +642,7 @@ function data_query() {
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("sort_column", "sess_data_queries_sort_column", "description");
+	load_current_session_value("sort_column", "sess_data_queries_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_queries_sort_direction", "ASC");
 
 	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
