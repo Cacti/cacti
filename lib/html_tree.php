@@ -194,7 +194,6 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	$tree = db_fetch_assoc("select
 		graph_tree_items.id,
 		graph_tree_items.title,
-		graph_tree_items.graph_tree_id,
 		graph_tree_items.local_graph_id,
 		graph_tree_items.host_id,
 		graph_tree_items.order_key,
@@ -205,14 +204,11 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		left join host on (host.id=graph_tree_items.host_id)
 		where graph_tree_items.graph_tree_id=$tree_id
-		order by graph_tree_id, graph_tree_items.order_key");
+		order by graph_tree_items.order_key");
 
 	print "<!-- <P>Building Heirarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
 
 	##  Here we go.  Starting the main tree drawing loop.
-
-	/* change the visibility session variable if applicable */
-	set_tree_visibility_status();
 
 	$i = 0;
 	if (sizeof($tree) > 0) {
@@ -223,153 +219,32 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
 
-		$visible = get_visibility($leaf);
-
 		if ($leaf["local_graph_id"] > 0) {
-			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'>" . $leaf["graph_title"] . "</a></td>\n";
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
-			}
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'>" . $leaf["graph_title"] . "</a></td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
 		}elseif ($leaf["title"] != "") {
-			$icon = get_icon($leaf["graph_tree_id"], $leaf["order_key"]);
-			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change'><img src='" . $icon . "' border='0'></a><a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Heading</td>";
-			}
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'><strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Heading</td>";
 		}elseif ($leaf["host_id"] > 0) {
-			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a></td>\n";
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
-			}
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a></td>\n";
+			print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
 		}
 
-		if ($visible) {
-			if ( ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != TREE_ORDERING_NONE)) || ($tree_sorting_type != TREE_ORDERING_NONE) )  {
-				print "<td bgcolor='#$row_color' width='80'></td>\n";
-			}else{
-				print "<td bgcolor='#$row_color' width='80' align='center'>\n
-					<a href='tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
-					<a href='tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
-					</td>\n";
-			}
-
-			print 	"<td bgcolor='#$row_color' align='right'>\n
-				<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
-				</td></tr>\n";
-		}
-	}
-	}else{
-		print "<tr><td><em>No Graph Tree Items</em></td></tr>";
-	}
-}
-
-function set_tree_visibility_status() {
-	if (!isset($_REQUEST["subaction"])) {
-		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . $_REQUEST["id"] . "'");
-
-		foreach ($headers as $header) {
-			$variable = "sess_tree_leaf_expand_" . $header["graph_tree_id"] . "_" . tree_tier_string($header["order_key"]);
-
-			if (!isset($_SESSION[$variable])) {
-				$_SESSION[$variable] = true;
-			}
-		}
-	}else if (($_REQUEST["subaction"] == "expand_all") ||
-		($_REQUEST["subaction"] == "colapse_all")) {
-
-		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . $_REQUEST["id"] . "'");
-
-		foreach ($headers as $header) {
-			$variable = "sess_tree_leaf_expand_" . $header["graph_tree_id"] . "_" . tree_tier_string($header["order_key"]);
-
-			if ($_REQUEST["subaction"] == "expand_all") {
-				$_SESSION[$variable] = true;
-			}else{
-				$_SESSION[$variable] = false;
-			}
-		}
-	}else{
-		$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_REQUEST["leaf_id"]);
-		$variable = "sess_tree_leaf_expand_" . $_REQUEST["id"] . "_" . tree_tier_string($order_key);
-
-		if (isset($_SESSION[$variable])) {
-			if ($_SESSION[$variable]) {
-				$_SESSION[$variable] = false;
-			}else{
-				$_SESSION[$variable] = true;
-			}
+		if ( ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != TREE_ORDERING_NONE)) || ($tree_sorting_type != TREE_ORDERING_NONE) )  {
+			print "<td bgcolor='#$row_color' width='80'></td>\n";
 		}else{
-			$_SESSION[$variable] = true;
+			print 	"<td bgcolor='#$row_color' width='80' align='center'>\n
+				<a href='tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
+				<a href='tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
+				</td>\n";
 		}
+
+		print 	"<td bgcolor='#$row_color' align='right'>\n
+			<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
+			</td></tr>\n";
 	}
-}
-
-function get_visibility($leaf) {
-	$tier = tree_tier($leaf["order_key"]);
-
-	$tier_string = tree_tier_string($leaf["order_key"]);
-
-	$variable = "sess_tree_leaf_expand_" . $leaf["graph_tree_id"] . "_" . $tier_string;
-
-	/* you must always show the base tier */
-	if ($tier <= 1) {
-		return true;
+	}else{ print "<tr><td><em>No Graph Tree Items</em></td></tr>";
 	}
-
-	/* get the default status */
-    $default = true;
-	if (isset($_SESSION[$variable])) {
-		$default = $_SESSION[$variable];
-	}
-
-	/* now work backwards to get the current visibility stauts */
-	$i = $tier;
-	$effective = $default;
-	while ($i > 1) {
-		$i--;
-
-		$parent_tier = substr($tier_string, 0, $i * CHARS_PER_TIER);
-		$parent_variable = "sess_tree_leaf_expand_" . $leaf["graph_tree_id"] . "_" . $parent_tier;
-
-		$effective = @$_SESSION[$parent_variable];
-
-		if (!$effective) {
-			return $effective;
-		}
-	}
-
-	return $effective;
-}
-
-function get_icon($graph_tree_id, $order_key) {
-	$variable = "sess_tree_leaf_expand_" . $graph_tree_id . "_" . tree_tier_string($order_key);
-
-	if (isset($_SESSION[$variable])) {
-		if ($_SESSION[$variable]) {
-			$icon = "images/hide.gif";
-		}else{
-			$icon = "images/show.gif";
-		}
-	}else{
-		$icon = "images/hide.gif";
-	}
-
-	return $icon;
-}
-
-/* tree_tier_string - returns the tier key information to be used to determine
-   visibility status of the tree item.
-   @arg $order_key - the order key of the branch to fetch the depth for
-   @arg $chars_per_tier - the number of characters dedicated to each branch
-     depth (tier). this is typically '3' in cacti.
-   @returns - the string representing the leaf position
-*/
-function tree_tier_string($order_key, $chars_per_tier = CHARS_PER_TIER) {
-	$root_test = str_pad('', $chars_per_tier, '0');
-
-	$new_string = preg_replace("/0+$/",'',$order_key);
-
-	return $new_string;
 }
 
 function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
@@ -486,8 +361,8 @@ function create_dhtml_tree() {
 
 	if (sizeof($tree_list) > 0) {
 		foreach ($tree_list as $tree) {
-			$i++;
-		 	$heirarchy = db_fetch_assoc("select
+		        $i++;
+		        $heirarchy = db_fetch_assoc("select
 				graph_tree_items.id,
 				graph_tree_items.title,
 				graph_tree_items.order_key,
@@ -580,6 +455,10 @@ function create_dhtml_tree() {
 	}
 
 	return $dhtml_tree;
+}
+
+function naturaly_sort_graphs($a, $b) {
+	return strnatcasecmp($a['title_cache'], $b['title_cache']);
 }
 
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
@@ -711,6 +590,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					and graph_local.host_id=" . $leaf["host_id"] . "
 					$sql_where
 					order by graph_templates_graph.title_cache");
+
+				/* let's sort the graphs naturally */
+				usort($graphs, 'naturaly_sort_graphs');
 
 				if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
 					html_graph_thumbnail_area($graphs, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end(), "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");

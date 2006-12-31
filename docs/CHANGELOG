@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6j
+-bug#0000864: Just don't sort Tree's Naturaly, sort graphs as well.
 -bug#0000883: Exploit in cmd.php with register globals enabled in php
 -bug#0000848: Poller[0] ERROR: PHP Script Server communications lost.
 -bug#0000870: Change Graph Template: Template list not sorted
