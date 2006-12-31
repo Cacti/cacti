@@ -34,6 +34,13 @@ case 'save':
 	while (list($field_name, $field_array) = each($settings{$_POST["tab"]})) {
 		if (($field_array["method"] == "header") || ($field_array["method"] == "spacer" )){
 				/* do nothing */
+		}elseif ($field_array["method"] == "textbox_password") {
+			if ($_POST[$field_name] != $_POST[$field_name."_confirm"]) {
+				raise_message(4);
+				break;
+			}else{
+				db_execute("replace into settings (name,value) values ('$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+			}
 		}elseif ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
 				db_execute("replace into settings (name,value) values ('$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
