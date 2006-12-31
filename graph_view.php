@@ -257,6 +257,8 @@ case 'preview':
 		html_graph_area($graphs, "", "graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
 
+	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), $_REQUEST["page"], ROWS_PER_PAGE, $total_rows, $nav_url);
+
 	html_graph_end_box();
 
 	print "<br><br>";
