@@ -71,6 +71,7 @@ if ( $_SERVER["argc"] == 1 ) {
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
 
+			/* address potential exploits */
 			$_SERVER["argv"][1] = input_validate_input_number($_SERVER["argv"][1]);
 			$_SERVER["argv"][2] = input_validate_input_number($_SERVER["argv"][2]);
 
