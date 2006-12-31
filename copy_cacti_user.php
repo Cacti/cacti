@@ -25,9 +25,10 @@
 */
 
 /* do NOT run this script through a web browser */
-if (! isset($_SERVER["argv"][0])) {
-	die("This script is only meant to run at the command line.\n");
+if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+   die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
+
 if (empty($_SERVER["argv"][2])) {
 	die("\nSyntax:\n php copy_cacti_user.php <template user> <new user>\n\n");
 }
