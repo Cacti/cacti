@@ -186,7 +186,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
      user
    @returns - (bool) whether the messages array contains an error or not */
 function is_error_message() {
-	global $config;
+	global $config, $messages;
 
 	include($config["include_path"] . "/config_arrays.php");
 

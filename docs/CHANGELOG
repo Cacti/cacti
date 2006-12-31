@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -bug#0000867: Ceanup poller.php and lib/poller.php
 -bug#0000885: When Exporting/Importing Data Input Methods, Space between arguments is removed
 -bug: Data Queries were not sorted properly during initial display.
+-bug: Graph changes required for Boost plugin
 
 0.8.6i
 -bug#0000188: Add ability to sort columns by selecting column headers.
