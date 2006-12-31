@@ -436,7 +436,7 @@ function form_actions() {
 					the following graphs. Be aware that all warnings will be suppressed during the
 					conversion, so graph data loss is possible.</p>
 					<p>$graph_list</p>
-					<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates"),"name","id","","","0"); print "</p>
+					<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
 				</td>
 			</tr>\n
 			";
@@ -930,7 +930,7 @@ function graph_edit() {
 		<table width="98%" align="center">
 			<tr>
 				<td align="center" class="textInfo" colspan="2">
-					<img src="graph_image.php?local_graph_id=<?php print $_GET["id"];?>&rra_id=<?php print read_graph_config_option("default_rra_id");?>" alt="">
+					<img src="graph_image.php?action=edit&local_graph_id=<?php print $_GET["id"];?>&rra_id=<?php print read_graph_config_option("default_rra_id");?>" alt="">
 				</td>
 				<?php
 				if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {

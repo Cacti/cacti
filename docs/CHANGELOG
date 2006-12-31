@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+0.8.6j
+-bug#0000848: Poller[0] ERROR: PHP Script Server communications lost.
+-bug#0000870: Change Graph Template: Template list not sorted
+
 0.8.6i
 -bug#0000188: Add ability to sort columns by selecting column headers.
 -bug#0000199: Exported thumbnail graphics shows limited time range only.
