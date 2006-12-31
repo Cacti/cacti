@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0000883: Exploit in cmd.php with register globals enabled in php
 -bug#0000848: Poller[0] ERROR: PHP Script Server communications lost.
 -bug#0000870: Change Graph Template: Template list not sorted
+-bug#0000882: Add "collapsable" brances in the graph trees view
 
 0.8.6i
 -bug#0000188: Add ability to sort columns by selecting column headers.

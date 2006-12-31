@@ -380,6 +380,11 @@ function tree_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
+	/* clean up subaction */
+	if (isset($_REQUEST["subaction"])) {
+		$_REQUEST["subaction"] = sanitize_search_string(get_request_var("subaction"));
+	}
+
 	if (!empty($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree where id=" . $_GET["id"]);
 		$header_label = "[edit: " . $tree["name"] . "]";
@@ -398,6 +403,13 @@ function tree_edit() {
 
 	if (!empty($_GET["id"])) {
 		html_start_box("<strong>Tree Items</strong>", "98%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"] . "&parent_id=0");
+
+		?>
+		<td>
+		<a href='tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=expand_all'><img src='images/button_expand_all.gif' border='0' alt='Expand All'></a>
+		<a href='tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=colapse_all'><img src='images/button_colapse_all.gif' border='0' alt='Colapse All'></a>
+		</td>
+		<?php
 
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Item",$colors["header_text"],1);
@@ -422,7 +434,7 @@ function tree() {
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
 
-	$trees = db_fetch_assoc("select * from graph_tree order by name");
+	$trees = db_fetch_assoc("SELECT * FROM graph_tree ORDER BY name");
 
 	$i = 0;
 	if (sizeof($trees) > 0) {

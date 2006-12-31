@@ -147,8 +147,12 @@ function move_branch($dir, $order_key, $table, $field, $where) {
 
 	if ($where != '') { $where = " AND $where"; }
 
+	$tree_order = $dir == 'up' ? 'ORDER BY order_key ASC' : 'ORDER BY order_key DESC';
 	$arrow = $dir == 'up' ? '<' : '>';
 	$order = $dir == 'up' ? 'DESC' : 'ASC';
+
+	/* take a peek at the current tree structure */
+	$pre_tree = db_fetch_assoc("SELECT * FROM graph_tree_items WHERE local_graph_id='0' AND host_id='0' $tree_order");
 
 	$sql = "SELECT * FROM $table WHERE $field $arrow '$order_key' AND $field LIKE '%" . substr($order_key, ($tier * CHARS_PER_TIER))."'
 		AND $field NOT LIKE '%" . str_repeat('0', CHARS_PER_TIER) . substr($order_key, ($tier * CHARS_PER_TIER)) . "' $where ORDER BY $field $order";
@@ -159,11 +163,47 @@ function move_branch($dir, $order_key, $table, $field, $where) {
 		$old_root = substr($order_key, 0, ($tier * CHARS_PER_TIER));
 		$new_root = substr($displaced_row[$field], 0, ($tier * CHARS_PER_TIER));
 
-//		db_execute("LOCK TABLES $table WRITE");
 		db_execute("UPDATE $table SET $field = CONCAT('" . str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1).")) WHERE $field LIKE '$new_root%'$where");
 		db_execute("UPDATE $table SET $field = CONCAT('$new_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '$old_root%' $where");
 		db_execute("UPDATE $table SET $field = CONCAT('$old_root',SUBSTRING($field," . (($tier * CHARS_PER_TIER) + 1) . ")) WHERE $field LIKE '".str_pad('', ($tier * CHARS_PER_TIER), 'Z') . "%' $where");
-//		db_execute("UNLOCK TABLES");
+	}
+
+	/* move session variables around */
+	reset_session_variables($pre_tree);
+}
+
+function reset_session_variables($pre_tree) {
+	/* get the current settings */
+	$i = 0;
+	if (sizeof($pre_tree)) {
+	foreach($pre_tree as $leaf) {
+		$tier = tree_tier($leaf["order_key"]);
+
+		$tier_string = tree_tier_string($leaf["order_key"]);
+
+		$variable = "sess_tree_leaf_expand_" . $leaf["graph_tree_id"] . "_" . $tier_string;
+
+		if (isset($_SESSION[$variable])) {
+			$pre_tree[$i]["visibility"] = $_SESSION[$variable];
+			unset($_SESSION[$variable]);
+		}else{
+			$pre_tree[$i]["visibility"] = true;
+		}
+
+		$i++;
+	}
+
+	foreach($pre_tree as $leaf) {
+		$new_leaf = db_fetch_row("SELECT * FROM graph_tree_items WHERE id='" . $leaf['id'] . "'");
+
+		$tier = tree_tier($new_leaf["order_key"]);
+
+		$tier_string = tree_tier_string($new_leaf["order_key"]);
+
+		$variable = "sess_tree_leaf_expand_" . $new_leaf["graph_tree_id"] . "_" . $tier_string;
+
+		$_SESSION[$variable] = $leaf["visibility"];
+	}
 	}
 }
 
