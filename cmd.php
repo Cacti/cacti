@@ -75,28 +75,30 @@ if ( $_SERVER["argc"] == 1 ) {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
 
 			/* address potential exploits */
-			$_SERVER["argv"][1] = input_validate_input_number($_SERVER["argv"][1]);
-			$_SERVER["argv"][2] = input_validate_input_number($_SERVER["argv"][2]);
+			input_validate_input_number($_SERVER["argv"][1]);
+			input_validate_input_number($_SERVER["argv"][2]);
 
-			$hosts = db_fetch_assoc("select * from host where (disabled = '' and " .
-					"id >= " .
-					$_SERVER["argv"][1] .
-					" and id <= " .
-					$_SERVER["argv"][2] . ") ORDER by id");
+			$hosts = db_fetch_assoc("
+					SELECT * FROM host
+					WHERE (disabled = ''
+					AND id >= " . $_SERVER["argv"][1] . "
+					AND id <= " . $_SERVER["argv"][2] . ")
+					ORDER by id");
 			$hosts = array_rekey($hosts,"id",$host_struc);
 			$host_count = sizeof($hosts);
 
-			$polling_items = db_fetch_assoc("SELECT * from poller_item " .
-					"WHERE (host_id >= " .
-					$_SERVER["argv"][1] .
-					" and host_id <= " .
-					$_SERVER["argv"][2] . ") ORDER by host_id");
+			$polling_items = db_fetch_assoc("
+					SELECT * from poller_item
+					WHERE (host_id >= " . $_SERVER["argv"][1] . "
+					AND host_id <= " . $_SERVER["argv"][2] . ")
+					ORDER by host_id");
 
-			$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item " .
-					"WHERE (action=2 AND (host_id >= " .
-					$_SERVER["argv"][1] .
-					" and host_id <= " .
-					$_SERVER["argv"][2] . "))");
+			$script_server_calls = db_fetch_cell("
+				SELECT count(*)
+				FROM poller_item
+				WHERE (action=2
+				AND (host_id >= " . $_SERVER["argv"][1] . "
+				AND host_id <= " . $_SERVER["argv"][2] . "))");
 		}else{
 			print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
 			print "USAGE: CMD.PHP [[first_host] [second_host]]\n";
