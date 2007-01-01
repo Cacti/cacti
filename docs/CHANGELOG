@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0000882: Add "collapsable" brances in the graph trees view
 -bug#0000867: Ceanup poller.php and lib/poller.php
 -bug#0000885: When Exporting/Importing Data Input Methods, Space between arguments is removed
+-bug#0000861: Downed Host Detection on non-SNMP devices wrong
 -bug: Data Queries were not sorted properly during initial display.
 -bug: Graph changes required for Boost plugin
 

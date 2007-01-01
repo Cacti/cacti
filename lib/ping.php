@@ -545,6 +545,11 @@ class Net_Ping
 
 		switch ($avail_method) {
 			case AVAIL_SNMP_AND_PING:
+				if ($this->host["snmp_community"] == "")
+					if ($ping_result)
+						return true;
+					else
+						return false;
 				if ($snmp_result)
 					return true;
 				if ($ping_result)
