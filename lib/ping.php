@@ -281,6 +281,7 @@ class Net_Ping
 
 		/* poll sysUptime for status */
 		$retry_count = 0;
+		$oid = ".1";
 		while (1) {
 			if ($retry_count >= $this->retries) {
 				$this->snmp_status   = "down";
@@ -288,9 +289,9 @@ class Net_Ping
 				return false;
 			}
 
-			$output = cacti_snmp_get($this->host["hostname"],
+			$output = cacti_snmp_getnext($this->host["hostname"],
 				$this->host["snmp_community"],
-				".1.3.6.1.2.1.1.3.0" ,
+				$oid,
 				$this->host["snmp_version"],
 				$this->host["snmp_username"],
 				$this->host["snmp_password"],
@@ -307,6 +308,12 @@ class Net_Ping
 				$this->snmp_status = $this->time*1000;
 				$this->snmp_response = "Host responded to SNMP";
 				return true;
+			}
+
+			if ($retry_count == 0) {
+				$oid = ".1.3.6.1.2.1.1.3.0";
+			}else{
+				$oid = ".1.3.6.1.2.1.1.1.0";
 			}
 
 			$retry_count++;

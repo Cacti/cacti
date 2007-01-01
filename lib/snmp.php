@@ -58,9 +58,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		snmp_set_quick_print(0);
 
 		if ($version == "1") {
-			$snmp_value = @snmpget("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmpget("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}elseif ($version == "2") {
-			$snmp_value = @snmp2_get("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp2_get("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}else{
 			$snmp_value = @snmp3_get("$hostname:$port", $username, "authNoPriv", "MD5", $password, "", "", $oid, ($timeout * 1000), $retries);
 		}
@@ -84,6 +84,68 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			exec(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
 		}else {
 			exec(read_config_option("path_snmpget") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
+		}
+	}
+
+	if (isset($snmp_value)) {
+		/* fix for multi-line snmp output */
+		if (is_array($snmp_value)) {
+			$snmp_value = implode(" ", $snmp_value);
+		}
+	}
+
+	/* strip out non-snmp data */
+	$snmp_value = format_snmp_string($snmp_value);
+
+	return $snmp_value;
+}
+
+function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
+	global $config;
+
+	/* determine default retries */
+	if (($retries == 0) || (!is_numeric($retries))) {
+		$retries = read_config_option("snmp_retries");
+		if ($retries == "") $retries = 3;
+	}
+
+	/* do not attempt to poll invalid combinations */
+	if (($version == 0) || (($community == "") && ($version != 3))) {
+		return "U";
+	}
+
+	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
+		/* make sure snmp* is verbose so we can see what types of data
+		we are getting back */
+		snmp_set_quick_print(0);
+
+		if ($version == "1") {
+			$snmp_value = @snmpgetnext("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
+		}elseif ($version == "2") {
+			$snmp_value = @snmp2_getnext("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
+		}else{
+			$snmp_value = @snmp3_getnext("$hostname:$port", $username, "authNoPriv", "MD5", $password, "", "", $oid, ($timeout * 1000), $retries);
+		}
+	}else {
+		/* ucd/net snmp want the timeout in seconds */
+		$timeout = ceil($timeout / 1000);
+
+		if ($version == "1") {
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER : "-c " . SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER; /* v1/v2 - community string */
+		}elseif ($version == "2") {
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER : "-c " . SNMP_ESCAPE_CHARACTER . $community . SNMP_ESCAPE_CHARACTER; /* v1/v2 - community string */
+			$version = "2c"; /* ucd/net snmp prefers this over '2' */
+		}elseif ($version == "3") {
+			$snmp_auth = "-u $username -l authNoPriv -a MD5 -A $password"; /* v3 - username/password */
+		}
+
+		/* no valid snmp version has been set, get out */
+		if (empty($snmp_auth)) { return; }
+
+		if (read_config_option("snmp_version") == "ucd-snmp") {
+			exec(read_config_option("path_snmpgetnext") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
+		}else {
+			exec(read_config_option("path_snmpgetnext") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
 		}
 	}
 
@@ -129,9 +191,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		snmp_set_quick_print(0);
 
 		if ($version == "1") {
-			$temp_array = @snmprealwalk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = @snmprealwalk("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}elseif ($version == "2") {
-			$temp_array = @snmp2_real_walk("$hostname:$port", $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = @snmp2_real_walk("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}else{
 			$temp_array = @snmp3_real_walk("$hostname:$port", $username, "authNoPriv", "MD5", $password, "", "", $oid, ($timeout * 1000), $retries);
 		}

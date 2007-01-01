@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -bug#0000867: Ceanup poller.php and lib/poller.php
 -bug#0000885: When Exporting/Importing Data Input Methods, Space between arguments is removed
 -bug#0000861: Downed Host Detection on non-SNMP devices wrong
+-bug#0000886: SNMP Ping to Utilize The snmpgetnext instead of snmpget 
 -bug: Data Queries were not sorted properly during initial display.
 -bug: Graph changes required for Boost plugin
 
