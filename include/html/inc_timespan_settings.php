@@ -24,6 +24,20 @@
  +-------------------------------------------------------------------------+
 */
 
+/* ================= input validation ================= */
+input_validate_input_number(get_request_var_request("predefined_timespan"));
+/* ==================================================== */
+
+/* clean up date1 string */
+if (isset($_REQUEST["date1"])) {
+	$_REQUEST["date1"] = sanitize_search_string(get_request_var("date1"));
+}
+
+/* clean up date2 string */
+if (isset($_REQUEST["date2"])) {
+	$_REQUEST["date2"] = sanitize_search_string(get_request_var("date2"));
+}
+
 /* initialize the timespan array */
 $timespan = array();
 
