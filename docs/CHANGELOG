@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.6j
+-bug#0000890: dec-vulnerability-poller patch breaks graph_view.php
 -bug#0000892: Sorting by Hostname
 -bug#0000842: SNMP v3 password fields does not check if entered passwords match 
 -bug#0000877: PHP 5.2.0 breaks Windows cmd.php poller

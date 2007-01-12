@@ -42,6 +42,16 @@
 		calendar = null;
 	}
 </script>
+<script type="text/javascript">
+<!--
+
+	function applyTimespanFilterChange(objForm) {
+		strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
+		document.location = strURL;
+	}
+
+-->
+</script>
 
 	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
 		<form name="form_timespan_selector" method="post">
@@ -50,7 +60,7 @@
 				<tr>
 					<td class="textHeader" nowrap>
 						Presets:&nbsp;
-						<select name='predefined_timespan' onChange="window.location=document.form_timespan_selector.predefined_timespan.options[document.form_timespan_selector.predefined_timespan.selectedIndex].value">
+						<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 							<?php
 							if ($_SESSION["custom"]) {
 								$graph_timespans[GT_CUSTOM] = "Custom";
@@ -67,7 +77,7 @@
 
 							if (sizeof($graph_timespans) > 0) {
 								for ($value=$start_val; $value < $end_val; $value++) {
-									print "<option value='" . $_SESSION["urlval"] . (strstr($_SESSION["urlval"], "?") ? "&" : "?") . "predefined_timespan=" . $value . "'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+									print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
 								}
 							}
 							?>
