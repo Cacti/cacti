@@ -794,6 +794,11 @@ function host() {
 		from host
 		$sql_where");
 
+	$sortby = $_REQUEST["sort_column"];
+	if ($sortby=="hostname") {
+		$sortby = "INET_ATON(hostname)";
+	}
+
 	$hosts = db_fetch_assoc("SELECT
 		host.id,
 		host.disabled,
@@ -807,7 +812,7 @@ function host() {
 		host.availability
 		FROM host
 		$sql_where
-		ORDER BY " . $_REQUEST["sort_column"] . " " . $_REQUEST["sort_direction"] . "
+		ORDER BY " . $sortby . " " . $_REQUEST["sort_direction"] . "
 		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
 
 	/* generate page list */
