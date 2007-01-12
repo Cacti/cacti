@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -bug#0000886: SNMP Ping to Utilize The snmpgetnext instead of snmpget 
 -bug: Data Queries were not sorted properly during initial display.
 -bug: Graph changes required for Boost plugin
+-bug: If you system has no hosts or graphs, you would get a warning when creating new graphs
 
 0.8.6i
 -bug#0000188: Add ability to sort columns by selecting column headers.
