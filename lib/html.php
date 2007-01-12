@@ -40,7 +40,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 			<td>
 				<table cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 bgcolor="#<?php print $colors["form_background_dark"];?>" width="100%">
 					<?php if ($title != "") {?><tr>
-						<td bgcolor="#<?php print $background_color;?>" style="padding: 3px;" colspan="50">
+						<td bgcolor="#<?php print $background_color;?>" style="padding: 3px;" colspan="100">
 							<table width="100%" cellpadding="0" cellspacing="0">
 								<tr>
 									<td bgcolor="#<?php print $background_color;?>" class="textHeaderDark"><?php print $title;?></td>
