@@ -127,7 +127,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			);
 
 		if (function_exists("proc_open")) {
-			$cactiphp = proc_open(read_config_option("path_php_binary") . " " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
+			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
 			$output = fgets($pipes[1], 1024);
 			if (substr_count($output, "Started") != 0) {
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
