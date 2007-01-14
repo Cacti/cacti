@@ -326,9 +326,11 @@ function utilities_clear_user_log() {
 	if (sizeof($users)) {
 		/* remove active users */
 		foreach ($users as $user) {
-			$total_rows = db_fetch_cell("SELECT COUNT(username) FROM user_log WHERE username = '" . $user['username'] . "'");
-			if ($total_rows > 1)
-				db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' ORDER BY time LIMIT " . ($total_rows - 1));
+			$total_rows = db_fetch_cell("SELECT COUNT(username) FROM user_log WHERE username = '" . $user['username'] . "' AND result = 1");
+			if ($total_rows > 1) {
+				db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' AND result = 1 ORDER BY time LIMIT " . ($total_rows - 1));
+			}
+			db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' AND result = 0");
 		}
 
 		/* delete inactive users */
