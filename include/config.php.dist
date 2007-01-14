@@ -38,6 +38,7 @@ $database_port = "3306";
 $no_http_header_files = array(
 	"poller.php",
 	"cmd.php",
+	"copy_cacti_user.php",
 	"query_host_cpu.php",
 	"query_host_partitions.php",
 	"poller_reindex_hosts.php",
