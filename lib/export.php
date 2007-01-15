@@ -817,8 +817,8 @@ function xml_character_encode($text) {
 	$text = str_replace("&", "&amp;", $text);
 	$text = str_replace(">", "&gt;", $text);
 	$text = str_replace("<", "&lt;", $text);
-	$text = str_replace("\"", "&#34", $text);
-	$text = str_replace("\'", "&#39", $text);
+	$text = str_replace("\"", "&quot;", $text);
+	$text = str_replace("\'", "&apos;", $text);
 
 	return $text;
 }

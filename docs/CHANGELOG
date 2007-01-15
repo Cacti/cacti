@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -bug#0000885: When Exporting/Importing Data Input Methods, Space between arguments is removed
 -bug#0000861: Downed Host Detection on non-SNMP devices wrong
 -bug#0000886: SNMP Ping to Utilize The snmpgetnext instead of snmpget 
+-bug: Template export produces invalid XML escaped character encoding
 -bug: Data Queries were not sorted properly during initial display.
 -bug: Graph changes required for Boost plugin
 -bug: If you system has no hosts or graphs, you would get a warning when creating new graphs
