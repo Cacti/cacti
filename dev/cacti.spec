@@ -64,6 +64,9 @@ fi
 %{_localstatedir}/www/html/cacti/rra/
 
 %changelog
+* Wed Jan 17 2007 Ian Berry <iberry@raxnet.net> - 0.8.6j-1
+- Updated to release 0.8.6j.
+
 * Thu Oct 5 2006 Ian Berry <iberry@raxnet.net> - 0.8.6i-1
 - Updated to release 0.8.6i.
 
