@@ -1,27 +1,27 @@
 Cacti CHANGELOG
 
 0.8.6j
--bug#0000890: dec-vulnerability-poller patch breaks graph_view.php
--bug#0000892: Sorting by Hostname
--bug#0000859: User log "purge" now keeps the last successful login
--bug#0000894: poller.php does not give any output with mysql disabled in cli's php.ini
--bug#0000842: SNMP v3 password fields does not check if entered passwords match 
--bug#0000877: PHP 5.2.0 breaks Windows cmd.php poller
--bug#0000884: graph_view.php lacks bottom nav bar
--bug#0000864: Just don't sort Tree's Naturaly, sort graphs as well.
--bug#0000883: Exploit in cmd.php with register globals enabled in php
--bug#0000848: Poller[0] ERROR: PHP Script Server communications lost.
--bug#0000870: Change Graph Template: Template list not sorted
--bug#0000882: Add "collapsable" brances in the graph trees view
--bug#0000867: Ceanup poller.php and lib/poller.php
--bug#0000885: When Exporting/Importing Data Input Methods, Space between arguments is removed
--bug#0000861: Downed Host Detection on non-SNMP devices wrong
--bug#0000886: SNMP Ping to Utilize The snmpgetnext instead of snmpget 
--bug: Template export produces invalid XML escaped character encoding
--bug: Data Queries were not sorted properly during initial display.
--bug: Graph changes required for Boost plugin
--bug: If you system has no hosts or graphs, you would get a warning when creating new graphs
--bug: If using the CGI version of PHP, the script server risked not starting properly
+-bug#0000842: SNMPv3 password field does not check if entered passwords match.
+-bug#0000848: Fix "PHP Script Server communications lost" error in the poller under high network load.
+-bug#0000859: User log "purge" now keeps the last successful login.
+-bug#0000861: Use downed host detection even when the SNMP community is blank.
+-bug#0000864: Apply natural sort to graph items in the tree.
+-bug#0000867: Apply various cleanups to poller.php and lib/poller.php.
+-bug#0000870: Add sorting to the graph templates list on the "Change Graph Template" page.
+-bug#0000877: Fix issue that caused PHP 5.2.0 to break the Windows cmd.php poller.
+-bug#0000882: Add "collapsible" branches to the graph tree editor.
+-bug#0000883: Fix exploit in cmd.php with register_argc_argv enabled in PHP.
+-bug#0000884: Add bottom navigation bar to graph viewing.
+-bug#0000885: Fix issue causing spaces to be removed when importing/exporting data input methods.
+-bug#0000886: Allow SNMP ping to utilize the snmpgetnext call instead of snmpget.
+-bug#0000890: Fix issue with dec-vulnerability-poller patch breaking graph_view.php.
+-bug#0000892: Fix hostname sorting on the devices page for IP addresses.
+-bug#0000894: poller.php does not give any output with MySQL disabled in CLI's php.ini.
+-bug: Template export produces invalid XML escaped character encoding.
+-bug: Data queries were not sorted properly during initial display.
+-bug: Apply various graph changes required for Boost plugin.
+-bug: If your system has no hosts or graphs, you would get a warning when creating new graphs.
+-bug: If using the CGI version of PHP, the script server risked not starting properly.
 
 0.8.6i
 -bug#0000188: Add ability to sort columns by selecting column headers.
@@ -63,8 +63,8 @@ Cacti CHANGELOG
 -bug#0000775: Add pagination to the SNMP cache viewer to handle large numbers of items.
 -bug#0000779: Scale down the size of text when viewing thumbnail graphs.
 -bug#0000781: Add an "enabled" filter status item in the devices list.
--bug#0000785: Fix issue with Graph Tree View and Data Query Index Sorting showing "Non Indexed" even if empty. 
--bug#0000786: Expose the SNMP port field to data sources that use SNMP. 
+-bug#0000785: Fix issue with Graph Tree View and Data Query Index Sorting showing "Non Indexed" even if empty.
+-bug#0000786: Expose the SNMP port field to data sources that use SNMP.
 -bug#0000789: Remove use of "action" attribute on graph tree image which is incompatible with newer Opera browsers and HTML4.
 -bug#0000797: Fix issue with filtering on multiple fields on the Data Sources and Graph Management pages.
 -bug#0000809: Add an option to "purge" the user_log table.
