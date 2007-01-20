@@ -60,6 +60,7 @@ function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
 	if ((!isset($_SESSION["sess_current_timespan"])) || (isset($_POST["button_clear_x"]))) {
 		$_SESSION["sess_current_timespan"] = read_graph_config_option("default_timespan");
+		$_REQUEST["predefined_timespan"] = read_graph_config_option("default_timespan");
 		$_SESSION["custom"] = 0;
 	}
 
