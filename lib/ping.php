@@ -281,7 +281,14 @@ class Net_Ping
 
 		/* poll sysUptime for status */
 		$retry_count = 0;
-		$oid = ".1";
+
+		/* getnext does not work in php versions less than 5 */
+		if (version_compare("5.0", phpversion(), ">=")) {
+			$oid = ".1";
+		}else{
+			$oid = ".1.3.6.1.2.1.1.3.0";
+		}
+
 		while (1) {
 			if ($retry_count >= $this->retries) {
 				$this->snmp_status   = "down";
@@ -289,15 +296,28 @@ class Net_Ping
 				return false;
 			}
 
-			$output = cacti_snmp_getnext($this->host["hostname"],
-				$this->host["snmp_community"],
-				$oid,
-				$this->host["snmp_version"],
-				$this->host["snmp_username"],
-				$this->host["snmp_password"],
-				$this->host["snmp_port"],
-				$this->host["snmp_timeout"],
-				SNMP_CMDPHP);
+			/* getnext does not work in php versions less than 5 */
+			if (version_compare("5.0", phpversion(), ">=")) {
+				$output = cacti_snmp_getnext($this->host["hostname"],
+					$this->host["snmp_community"],
+					$oid,
+					$this->host["snmp_version"],
+					$this->host["snmp_username"],
+					$this->host["snmp_password"],
+					$this->host["snmp_port"],
+					$this->host["snmp_timeout"],
+					SNMP_CMDPHP);
+			}else{
+				$output = cacti_snmp_get($this->host["hostname"],
+					$this->host["snmp_community"],
+					$oid,
+					$this->host["snmp_version"],
+					$this->host["snmp_username"],
+					$this->host["snmp_password"],
+					$this->host["snmp_port"],
+					$this->host["snmp_timeout"],
+					SNMP_CMDPHP);
+			}
 
 			/* determine total time +- ~10% */
 			$this->time = $this->get_time($this->precision);
