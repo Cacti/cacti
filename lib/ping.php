@@ -283,7 +283,7 @@ class Net_Ping
 		$retry_count = 0;
 
 		/* getnext does not work in php versions less than 5 */
-		if (version_compare("5.0", phpversion(), ">=")) {
+		if (version_compare("5", phpversion(), "<")) {
 			$oid = ".1";
 		}else{
 			$oid = ".1.3.6.1.2.1.1.3.0";
@@ -297,7 +297,7 @@ class Net_Ping
 			}
 
 			/* getnext does not work in php versions less than 5 */
-			if (version_compare("5.0", phpversion(), ">=")) {
+			if (version_compare("5", phpversion(), "<")) {
 				$output = cacti_snmp_getnext($this->host["hostname"],
 					$this->host["snmp_community"],
 					$oid,
