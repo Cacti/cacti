@@ -762,7 +762,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$title_size = 12;
 			}
 
-    		$graph_opts .= "--font TITLE:" . $title_size . ":" . read_config_option("title_font") . RRD_NL;
+			$graph_opts .= "--font TITLE:" . $title_size . ":" . read_config_option("title_font") . RRD_NL;
 		}
 
 		/* axis fonts */
@@ -1080,9 +1080,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
+				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
+				if (trim($comment_string) != "COMMENT:\"\"") {
+					$txt_graph_items .= $comment_string;
+				}
 			}else {
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				if (trim($command_string) != "COMMENT:\"\"") {
+					$txt_graph_items .= $comment_string;
+				}
 			}
 		}elseif (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && (!isset($graph_data_array["graph_nolegend"]))) {
 			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */

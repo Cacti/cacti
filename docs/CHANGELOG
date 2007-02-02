@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 
+-bug#0000912: 95th Percentile Thumbnail Graphs Fail with RRDtool 1.2.15, 1.2.18 
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset 
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0 
 -bug#0000906: Every Tenth Host Does Not Show on Tree During Console Edit 
