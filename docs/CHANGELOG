@@ -5,6 +5,8 @@ Cacti CHANGELOG
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset 
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0 
 -bug#0000906: Every Tenth Host Does Not Show on Tree During Console Edit 
+-bug: ss_sql.php was never tested and causes the script server to crash.
+-bug: In an effort to make the current version of Cacti supportable, add Timeshifter.  Thanks Gandolf!
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
