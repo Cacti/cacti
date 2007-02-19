@@ -47,6 +47,7 @@
 
 	function applyTimespanFilterChange(objForm) {
 		strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
+		strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 		document.location = strURL;
 	}
 
@@ -58,8 +59,10 @@
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td class="textHeader" nowrap>
-						Presets:&nbsp;
+					<td width='55'>
+						&nbsp;<strong>Presets:</strong>&nbsp;
+					</td>
+					<td width='130'>
 						<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 							<?php
 							if ($_SESSION["custom"]) {
@@ -82,15 +85,37 @@
 							}
 							?>
 						</select>
-
-						<strong>&nbsp;From:&nbsp;</strong>
-						<input type='text' name='date1' id='date1' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
-
-						<strong>To:&nbsp;</strong>
-						<input type='text' name='date2' id='date2' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
-
+					</td>
+					<td width='30'>
+						&nbsp;<strong>From:</strong>&nbsp;
+					</td>
+					<td width='140' nowrap>
+						<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
+						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
+					</td>
+					<td width='30'>
+						&nbsp;<strong>To:</strong>&nbsp;
+					</td>
+					<td width='140' nowrap>
+						<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
+						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' title='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
+					</td>
+					<td width='140' nowrap>
+						&nbsp;&nbsp;<input type='image' name='move_left' src='images/move_left.gif' alt='Left' border='0' align='absmiddle' title='Shift Left'>
+						<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
+							<?php
+							$start_val = 1;
+							$end_val = sizeof($graph_timeshifts)+1;
+							if (sizeof($graph_timeshifts) > 0) {
+								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+									print "<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+						<input type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
+					</td>
+					<td nowrap>
 						&nbsp;&nbsp;<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' value='refresh'>
 						<input type='image' name='button_clear' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle'>
 					</td>

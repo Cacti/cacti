@@ -104,8 +104,51 @@ define("GT_LAST_4_MONTHS", 16);
 define("GT_LAST_6_MONTHS", 17);
 define("GT_LAST_YEAR", 18);
 define("GT_LAST_2_YEARS", 19);
+define("GT_DAY_SHIFT", 20);
+define("GT_THIS_DAY", 21);
+define("GT_THIS_WEEK", 22);
+define("GT_THIS_MONTH", 23);
+define("GT_THIS_YEAR", 24);
+define("GT_PREV_DAY", 25);
+define("GT_PREV_WEEK", 26);
+define("GT_PREV_MONTH", 27);
+define("GT_PREV_YEAR", 28);
+
 
 define("DEFAULT_TIMESPAN", 86400);
+
+# graph timeshifts
+define("GTS_CUSTOM", 0);
+define("GTS_HALF_HOUR", 1);
+define("GTS_1_HOUR", 2);
+define("GTS_2_HOURS", 3);
+define("GTS_4_HOURS", 4);
+define("GTS_6_HOURS", 5);
+define("GTS_12_HOURS", 6);
+define("GTS_1_DAY", 7);
+define("GTS_2_DAYS", 8);
+define("GTS_3_DAYS", 9);
+define("GTS_4_DAYS", 10);
+define("GTS_1_WEEK", 11);
+define("GTS_2_WEEKS", 12);
+define("GTS_1_MONTH", 13);
+define("GTS_2_MONTHS", 14);
+define("GTS_3_MONTHS", 15);
+define("GTS_4_MONTHS", 16);
+define("GTS_6_MONTHS", 17);
+define("GTS_1_YEAR", 18);
+define("GTS_2_YEARS", 19);
+
+define("DEFAULT_TIMESHIFT", 86400);
+
+# weekdays according to date("w") builtin function
+define("WD_SUNDAY", 	date("w",strtotime("sunday")));
+define("WD_MONDAY", 	date("w",strtotime("monday")));
+define("WD_TUESDAY", 	date("w",strtotime("tuesday")));
+define("WD_WEDNESDAY", 	date("w",strtotime("wednesday")));
+define("WD_THURSDAY", 	date("w",strtotime("thursday")));
+define("WD_FRIDAY", 	date("w",strtotime("friday")));
+define("WD_SATURDAY", 	date("w",strtotime("saturday")));
 
 define("GD_MO_D_Y", 0);
 define("GD_MN_D_Y", 1);

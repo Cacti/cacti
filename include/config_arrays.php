@@ -336,7 +336,8 @@ $user_auth_realm_filenames = array(
 	"smtp_servers.php" => 8,
 	"email_templates.php" => 8,
 	"event_queue.php" => 8,
-	"smtp_queue.php" => 8
+	"smtp_queue.php" => 8,
+	"poller-perf.php" => 8
 	);
 
 $hash_type_codes = array(
@@ -435,8 +436,51 @@ $graph_timespans = array(
 	GT_LAST_4_MONTHS =>"Last 4 Months",
 	GT_LAST_6_MONTHS =>"Last 6 Months",
 	GT_LAST_YEAR =>"Last Year",
-	GT_LAST_2_YEARS =>"Last 2 Years"
+	GT_LAST_2_YEARS =>"Last 2 Years",
+	GT_DAY_SHIFT 	=> "Day Shift",
+	GT_THIS_DAY 	=> "This Day",
+	GT_THIS_WEEK 	=> "This Week",
+	GT_THIS_MONTH 	=> "This Month",
+	GT_THIS_YEAR 	=> "This Year",
+	GT_PREV_DAY 	=> "Previous Day",
+	GT_PREV_WEEK 	=> "Previous Week",
+	GT_PREV_MONTH 	=> "Previous Month",
+	GT_PREV_YEAR 	=> "Previous Year"
 	);
+
+$graph_timeshifts = array(
+	GTS_HALF_HOUR 	=> "Half Hour",
+	GTS_1_HOUR 		=> "1 Hour",
+	GTS_2_HOURS 	=> "2 Hours",
+	GTS_4_HOURS 	=> "4 Hours",
+	GTS_6_HOURS 	=> "6 Hours",
+	GTS_12_HOURS 	=> "12 Hours",
+	GTS_1_DAY 		=> "1 Day",
+	GTS_2_DAYS 		=> "2 Days",
+	GTS_3_DAYS 		=> "3 Days",
+	GTS_4_DAYS 		=> "4 Days",
+	GTS_1_WEEK 		=> "1 Week",
+	GTS_2_WEEKS 	=> "2 Weeks",
+	GTS_1_MONTH 	=> "1 Month",
+	GTS_2_MONTHS 	=> "2 Months",
+	GTS_3_MONTHS 	=> "3 Months",
+	GTS_4_MONTHS 	=> "4 Months",
+	GTS_6_MONTHS 	=> "6 Months",
+	GTS_1_YEAR 		=> "1 Year",
+	GTS_2_YEARS 	=> "2 Years"
+	);
+
+
+$graph_weekdays = array(
+	WD_SUNDAY	 	=> date("l", strtotime("Sunday")),
+	WD_MONDAY 		=> date("l", strtotime("Monday")),
+	WD_TUESDAY	 	=> date("l", strtotime("Tuesday")),
+	WD_WEDNESDAY 	=> date("l", strtotime("Wednesday")),
+	WD_THURSDAY 	=> date("l", strtotime("Thursday")),
+	WD_FRIDAY	 	=> date("l", strtotime("Friday")),
+	WD_SATURDAY		=> date("l", strtotime("Saturday"))
+	);
+ 
 
 $graph_dateformats = array(
 	GD_MO_D_Y =>"Month Number, Day, Year",

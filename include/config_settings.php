@@ -761,6 +761,40 @@ $settings_graphs = array(
 			"method" => "checkbox",
 			"default" => "on"
 		),
+		"default_timeshift" => array(
+			"friendly_name" => "Default Graph View Timeshift",
+			"description" => "The default timeshift you wish to be displayed when you display graphs",
+			"method" => "drop_array",
+			"array" => $graph_timeshifts,
+			"default" => GTS_1_DAY
+			),
+		"allow_graph_dates_in_future" => array(
+			"friendly_name" => "Allow Graph to extend to Future",
+			"description" => "When displaying Graphs, allow Graph Dates to extend 'to future'",
+			"method" => "checkbox",
+			"default" => "on"
+		),
+		"first_weekdayid" => array(
+			"friendly_name" => "First Day of the Week",
+			"description" => "The first Day of the Week for weekly Graph Displays",
+			"method" => "drop_array",
+			"array" => $graph_weekdays,
+			"default" => WD_MONDAY
+			),
+		"day_shift_start" => array(
+			"friendly_name" => "Start of Daily Shift",
+			"description" => "Start Time of the Daily Shift.",
+			"method" => "textbox",
+			"default" => "07:00",
+			"max_length" => "5"
+			),
+		"day_shift_end" => array(
+			"friendly_name" => "End of Daily Shift",
+			"description" => "End Time of the Daily Shift.",
+			"method" => "textbox",
+			"default" => "18:00",
+			"max_length" => "5"
+			),
 		"default_date_format" => array(
 			"friendly_name" => "Graph Date Display Format",
 			"description" => "The date format to use for graphs",
