@@ -336,8 +336,7 @@ $user_auth_realm_filenames = array(
 	"smtp_servers.php" => 8,
 	"email_templates.php" => 8,
 	"event_queue.php" => 8,
-	"smtp_queue.php" => 8,
-	"poller-perf.php" => 8
+	"smtp_queue.php" => 8
 	);
 
 $hash_type_codes = array(
@@ -480,7 +479,7 @@ $graph_weekdays = array(
 	WD_FRIDAY	 	=> date("l", strtotime("Friday")),
 	WD_SATURDAY		=> date("l", strtotime("Saturday"))
 	);
- 
+
 
 $graph_dateformats = array(
 	GD_MO_D_Y =>"Month Number, Day, Year",
