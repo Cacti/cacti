@@ -65,9 +65,18 @@ function read_default_graph_config_option($config_name) {
      in 'include/config_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
-	/* users must have cacti user auth turned on to use this */
+	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	if ((read_config_option("global_auth") != "on") || (!isset($_SESSION["sess_user_id"]))) {
-		return read_default_graph_config_option($config_name);
+		/* first attempt to get the db setting for guest */
+		$guest_uid = db_fetch_cell("SELECT id FROM user_auth WHERE username='guest'");
+
+		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $guest_uid);
+
+		if (isset($db_setting["value"])) {
+			return $db_setting["value"];
+		}else{
+			return read_default_graph_config_option($config_name);
+		}
 	}
 
 	if ((isset($_SESSION["sess_graph_config_array"]) || ($force))) {

@@ -78,6 +78,7 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) &&
 /* setup tree selection defaults if the user has not been here before */
 if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 	($_REQUEST["action"] == "tree") &&
+	(!isset($_GET["leaf_id"])) &&
 	(!isset($_SESSION["sess_has_viewed_graphs"]))) {
 
 	$_SESSION["sess_has_viewed_graphs"] = true;
