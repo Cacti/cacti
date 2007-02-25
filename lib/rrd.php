@@ -1012,8 +1012,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef_string = str_replace("CURRENT_GRAPH_MINIMUM_VALUE", (empty($graph["lower_limit"]) ? "0" : $graph["lower_limit"]), $cdef_string);
 			$cdef_string = str_replace("CURRENT_GRAPH_MAXIMUM_VALUE", (empty($graph["upper_limit"]) ? "0" : $graph["upper_limit"]), $cdef_string);
 
+			/* replace query variables in cdefs */
+			if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $cdef_string)) {
+				/* default to the graph data query information from the graph */
+				if (empty($graph_item["local_data_id"])) {
+					$cdef_string = substitute_snmp_query_data($cdef_string, $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
+				/* use the data query information from the data source if possible */
+				}else{
+					$data_local = db_fetch_row("select snmp_index,snmp_query_id,host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
+					$cdef_string = substitute_snmp_query_data($cdef_string, $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+				}
+			}
+
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
 			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
+
 			$cdef_graph_defs .= $cdef_string;
 			$cdef_graph_defs .= " \\\n";
 
@@ -1082,12 +1095,24 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
 				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
 				if (trim($comment_string) != "COMMENT:\"\"") {
-					$txt_graph_items .= $comment_string;
+					$txt_graph_items .= substitute_host_data($comment_string, '|','|', $graph["host_id"]);
 				}
 			}else {
 				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
 				if (trim($command_string) != "COMMENT:\"\"") {
-					$txt_graph_items .= $comment_string;
+					$txt_graph_items .= substitute_host_data($comment_string, '|','|', $graph["host_id"]);
+				}
+			}
+
+			/* replace query variables in comments */
+			if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $txt_graph_items)) {
+				/* default to the graph data query information from the graph */
+				if (empty($graph_item["local_data_id"])) {
+					$txt_graph_items = substitute_snmp_query_data($txt_graph_items, $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
+				/* use the data query information from the data source if possible */
+				}else{
+					$data_local = db_fetch_row("select snmp_index,snmp_query_id,host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
+					$txt_graph_items = substitute_snmp_query_data($txt_graph_items, $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
 				}
 			}
 		}elseif (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && (!isset($graph_data_array["graph_nolegend"]))) {
