@@ -51,43 +51,43 @@ $settings = array(
 		"path_snmpwalk" => array(
 			"friendly_name" => "snmpwalk Binary Path",
 			"description" => "The path to your snmpwalk binary.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"path_snmpget" => array(
 			"friendly_name" => "snmpget Binary Path",
 			"description" => "The path to your snmpget binary.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"path_snmpbulkwalk" => array(
 			"friendly_name" => "snmpbulkwalk Binary Path",
 			"description" => "The path to your snmpbulkwalk binary.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"path_snmpgetnext" => array(
 			"friendly_name" => "snmpgetnext Binary Path",
 			"description" => "The path to your snmpgetnext binary.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"path_rrdtool" => array(
 			"friendly_name" => "RRDTool Binary Path",
 			"description" => "The path to the rrdtool binary.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"path_rrdtool_default_font" => array(
 			"friendly_name" => "RRDTool Default Font Path",
 			"description" => "The path to the rrdtool default true type font for version 1.2 and above.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"path_php_binary" => array(
 			"friendly_name" => "PHP Binary Path",
 			"description" => "The path to your PHP binary file (may require a php recompile to get this file).",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			),
 		"logging_header" => array(
@@ -97,7 +97,7 @@ $settings = array(
 		"path_cactilog" => array(
 			"friendly_name" => "Cacti Log File Path",
 			"description" => "The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti.log)",
-			"method" => "textbox",
+			"method" => "filepath",
 			"default" => $config["base_path"] . "/log/cacti.log",
 			"max_length" => "255"
 			),
@@ -108,7 +108,7 @@ $settings = array(
 		"path_cactid" => array(
 			"friendly_name" => "Cactid Poller File Path",
 			"description" => "The path to Cactid binary.",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "255"
 			)
 		),
@@ -348,7 +348,7 @@ $settings = array(
 		"path_html_export" => array(
 			"friendly_name" => "Export Directory (both local and ftp)",
 			"description" => "This is the directory, either on the local system or on the remote system, that will contain the exported data.",
-			"method" => "textbox",
+			"method" => "dirpath",
 			"max_length" => "255"
 			),
 		"export_temporary_directory" => array(

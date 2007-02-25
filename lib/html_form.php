@@ -102,6 +102,12 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'textbox':
 		form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
 		break;
+	case 'filepath':
+		form_filepath_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+		break;
+	case 'dirpath':
+		form_dirpath_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "text", ((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+		break;
 	case 'textbox_password':
 		form_text_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), $field_array["max_length"], ((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
 		print "<br>";
@@ -168,6 +174,92 @@ function draw_edit_control($field_name, &$field_array) {
 		form_hidden_box($field_name, $field_array["value"], "");
 		break;
 	}
+}
+
+/* form_filepath_box - draws a standard html textbox and provides status of a files existence
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available
+   @arg $form_max_length - the maximum number of characters that can be entered
+     into this textbox
+   @arg $form_size - the size (width) of the textbox
+   @arg $type - the type of textbox, either 'text' or 'password'
+   @arg $current_id - used to determine if a current value for this form element
+     exists or not. a $current_id of '0' indicates that no current value exists,
+     a non-zero value indicates that a current value does exist */
+function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+	if (($form_previous_value == "") && (empty($current_id))) {
+		$form_previous_value = $form_default_value;
+	}
+
+	print "<input type='$type'";
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			print "class='txtErrorTextBox'";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
+		}
+	}
+
+	if (is_file($form_previous_value)) {
+		$extra_data = "<span style='color:green'>&nbsp;[OK: FILE FOUND]";
+	}else if (is_dir($form_previous_value)) {
+		$extra_data = "<span style='color:red'>&nbsp;[ERROR: IS DIR]";
+	}else{
+		$extra_data = "<span style='color:red'>&nbsp;[ERROR: FILE NOT FOUND]";
+	}
+
+	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+}
+
+/* form_dirpath_box - draws a standard html textbox and provides status of a directories existence
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available
+   @arg $form_max_length - the maximum number of characters that can be entered
+     into this textbox
+   @arg $form_size - the size (width) of the textbox
+   @arg $type - the type of textbox, either 'text' or 'password'
+   @arg $current_id - used to determine if a current value for this form element
+     exists or not. a $current_id of '0' indicates that no current value exists,
+     a non-zero value indicates that a current value does exist */
+function form_dirpath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+	if (($form_previous_value == "") && (empty($current_id))) {
+		$form_previous_value = $form_default_value;
+	}
+
+	print "<input type='$type'";
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			print "class='txtErrorTextBox'";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
+		}
+	}
+
+	if (is_dir($form_previous_value)) {
+		$extra_data = "<span style='color:green'>&nbsp;[OK: DIR FOUND]";
+	}else if (is_file($form_previous_value)) {
+		$extra_data = "<span style='color:red'>&nbsp;[ERROR: IS FILE]";
+	}else{
+		$extra_data = "<span style='color:red'>&nbsp;[ERROR: DIR NOT FOUND]";
+	}
+
+	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_text_box - draws a standard html textbox
