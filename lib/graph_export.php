@@ -499,6 +499,9 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 		export_fatal("Create directory '$cacti_export_path/graphs' failed.  Can not continue");
 	}
 
+	/* determine the number of columns to write */
+	$classic_columns = read_config_option("export_num_columns");
+
 	/* if the index file already exists, delete it */
 	check_remove($cacti_export_path . "/index.html");
 
@@ -593,14 +596,12 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			fclose($fp_graph_index);
 
 			/* main graph page html */
-			fwrite($fp_index, "<tr><td align='center' width='42%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
+			fwrite($fp_index, "<td align='center' width='" . round(100 / $classic_columns,0) . "%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
 
 			$i++;
 			$k++;
 
-			if (($i == 2) && ($k < count($graphs))) {
-				$i = 0;
-
+			if ((($i % $classic_columns) == 0) && ($k < count($graphs))) {
 				fwrite($fp_index, "</tr><tr>");
 			}
   		}
@@ -1733,7 +1734,7 @@ define("HTML_HEADER_CLASSIC", "
 define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
 	<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 		<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td colspan='2'>
+			<td colspan='" . read_config_option("export_num_columns") . "'>
 				<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 					<tr>
 						<td align='center' class='textHeaderDark'>"
