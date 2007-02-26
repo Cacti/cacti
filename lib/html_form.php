@@ -212,6 +212,8 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$extra_data = "<span style='color:green'>&nbsp;[OK: FILE FOUND]";
 	}else if (is_dir($form_previous_value)) {
 		$extra_data = "<span style='color:red'>&nbsp;[ERROR: IS DIR]";
+	}else if (strlen($form_previous_value) == 0) {
+		$extra_data = "";
 	}else{
 		$extra_data = "<span style='color:red'>&nbsp;[ERROR: FILE NOT FOUND]";
 	}
@@ -255,6 +257,8 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 		$extra_data = "<span style='color:green'>&nbsp;[OK: DIR FOUND]";
 	}else if (is_file($form_previous_value)) {
 		$extra_data = "<span style='color:red'>&nbsp;[ERROR: IS FILE]";
+	}else if (strlen($form_previous_value) == 0) {
+		$extra_data = "";
 	}else{
 		$extra_data = "<span style='color:red'>&nbsp;[ERROR: DIR NOT FOUND]";
 	}
