@@ -530,7 +530,7 @@ $settings = array(
 		"title_font" => array(
 			"friendly_name" => "Title Font File",
 			"description" => "The font file to use for Graph Titles",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "100"
 			),
 		"legend_size" => array(
@@ -543,7 +543,7 @@ $settings = array(
 		"legend_font" => array(
 			"friendly_name" => "Legend Font File",
 			"description" => "The font file to be used for Graph Legend items",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "100"
 			),
 		"axis_size" => array(
@@ -556,7 +556,7 @@ $settings = array(
 		"axis_font" => array(
 			"friendly_name" => "Axis Font File",
 			"description" => "The font file to be used for Graph Axis items",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "100"
 			),
 		"unit_size" => array(
@@ -568,8 +568,8 @@ $settings = array(
 			),
 		"unit_font" => array(
 			"friendly_name" => "Unit Font File",
-			"description" => "The size of the font used for Graph Unit items",
-			"method" => "textbox",
+			"description" => "The font file to be used for Graph Unit items",
+			"method" => "filepath",
 			"max_length" => "100"
 			)
 		),
@@ -917,7 +917,7 @@ $settings_graphs = array(
 		"title_font" => array(
 			"friendly_name" => "Title Font File",
 			"description" => "The font file to use for Graph Titles",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "100"
 			),
 		"legend_size" => array(
@@ -930,7 +930,7 @@ $settings_graphs = array(
 		"legend_font" => array(
 			"friendly_name" => "Legend Font File",
 			"description" => "The font file to be used for Graph Legend items",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "100"
 			),
 		"axis_size" => array(
@@ -943,7 +943,7 @@ $settings_graphs = array(
 		"axis_font" => array(
 			"friendly_name" => "Axis Font File",
 			"description" => "The font file to be used for Graph Axis items",
-			"method" => "textbox",
+			"method" => "filepath",
 			"max_length" => "100"
 			),
 		"unit_size" => array(
@@ -955,8 +955,8 @@ $settings_graphs = array(
 			),
 		"unit_font" => array(
 			"friendly_name" => "Unit Font File",
-			"description" => "The size of the font used for Graph Unit items",
-			"method" => "textbox",
+			"description" => "The font file to be used for Graph Unit items",
+			"method" => "filepath",
 			"max_length" => "100"
 			)
 		)
