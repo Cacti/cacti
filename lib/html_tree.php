@@ -710,6 +710,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					$sql_where
 					order by graph_templates_graph.title_cache");
 
+				/* let's sort the graphs naturally */
+				usort($graphs, 'naturally_sort_graphs');
+
 				if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
 					html_graph_thumbnail_area($graphs, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end(), "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $graph_template["name"] . "</td></tr>");
 				}else{
@@ -760,6 +763,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				/* re-key the results on data query index */
 				if (sizeof($graphs) > 0) {
 					print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query:</strong> " . $data_query["name"] . "</td></tr>";
+
+					/* let's sort the graphs naturally */
+					usort($graphs, 'naturally_sort_graphs');
 
 					foreach ($graphs as $graph) {
 						$snmp_index_to_graph{$graph["snmp_index"]}{$graph["local_graph_id"]} = $graph["title_cache"];
@@ -976,4 +982,9 @@ function draw_tree_dropdown($current_tree_id) {
 
 	return $html;
 }
+
+function naturally_sort_graphs($a, $b) {
+	return strnatcasecmp($a['title_cache'], $b['title_cache']);
+}
+
 ?>
