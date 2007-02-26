@@ -1026,7 +1026,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
 			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
-
 			$cdef_graph_defs .= $cdef_string;
 			$cdef_graph_defs .= " \\\n";
 
@@ -1099,7 +1098,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 			}else {
 				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
-				if (trim($command_string) != "COMMENT:\"\"") {
+				if (trim($comment_string) != "COMMENT:\"\"") {
 					$txt_graph_items .= substitute_host_data($comment_string, '|','|', $graph["host_id"]);
 				}
 			}
