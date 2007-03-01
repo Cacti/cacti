@@ -46,7 +46,7 @@ include_once($config["base_path"] . "/lib/ping.php");
 /* Correct for a Windows PHP Bug. Fixed in 5.2.0 */
 if ($config["cacti_server_os"] == "win32") {
 	/* check PHP versions first, we know 5.2.0 and above is fixed */
-	if (version_compare("5.2.0", PHP_VERSION, "<")) {
+	if (version_compare("5.2.0", PHP_VERSION, ">=")) {
 		$guess = substr(__FILE__,0,2);
 		if ($guess == strtoupper($guess)) {
 			$response = "ERROR: The PHP Script: CMD.PHP Must be started using the full path to the file and in lower case.  This is a PHP Bug!!!";
