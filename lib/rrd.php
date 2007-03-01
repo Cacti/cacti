@@ -83,6 +83,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 	if ($config["cacti_server_os"] == "unix") {
 		/* an empty $rrd_struc array means no fp is available */
 		if (sizeof($rrd_struc) == 0) {
+			session_write_close();
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 		}else{
 			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n");
@@ -91,6 +92,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 	}elseif ($config["cacti_server_os"] == "win32") {
 		/* an empty $rrd_struc array means no fp is available */
 		if (sizeof($rrd_struc) == 0) {
+			session_write_close();
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
 		}else{
 			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n");
