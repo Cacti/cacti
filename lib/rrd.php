@@ -31,13 +31,23 @@ function escape_command($command) {
 	return ereg_replace("(\\\$|`)", "", $command);
 }
 
-function rrd_init() {
+function rrd_init($output_to_term = TRUE) {
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
 	}
 
-	$rrd_struc["fd"] = popen(read_config_option("path_rrdtool") . " -", "w");
+	if ($output_to_term) {
+		$command = read_config_option("path_rrdtool") . " - ";
+	}else{
+		if ($config["cacti_server_os"] == "win32") {
+			$command = read_config_option("path_rrdtool") . " - > nul";
+		}else{
+			$command = read_config_option("path_rrdtool") . " - > /dev/null 2>&1";
+		}
+	}
+
+	$rrd_struc["fd"] = popen($command, "w");
 
 	return $rrd_struc;
 }
