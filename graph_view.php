@@ -380,8 +380,8 @@ case 'list':
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="120" class="textHeader">
-						Filter by host:&nbsp;
+					<td width="120">
+						&nbsp;<strong>Filter by host:</strong>&nbsp;
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyFilterChange(document.form_graph_id)">
