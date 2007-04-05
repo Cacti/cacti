@@ -57,7 +57,7 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 /* db_execute - run an sql query and do not return any output
    @arg $sql - the sql query to execute
    @returns - '1' for success, '0' for error */
-function db_execute($sql) {
+function db_execute($sql, $log = TRUE) {
 	global $cnn_id;
 
 	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
@@ -68,7 +68,7 @@ function db_execute($sql) {
 
 	if ($query) {
 		return(1);
-	}else{
+	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Exec Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 		return(0);
 	}
@@ -79,7 +79,7 @@ function db_execute($sql) {
    @arg $sql - the sql query to execute
    @arg $col_name - use this column name instead of the first one
    @returns - (bool) the output of the sql query as a single variable */
-function db_fetch_cell($sql,$col_name = '') {
+function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 	global $cnn_id;
 
 	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
@@ -102,7 +102,7 @@ function db_fetch_cell($sql,$col_name = '') {
 				return($query->fields[0]);
 			}
 		}
-	}else{
+	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Cell Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
@@ -113,10 +113,8 @@ function db_fetch_cell($sql,$col_name = '') {
 function db_fetch_row($sql, $log = TRUE) {
 	global $cnn_id;
 
-	if ($log) {
-		if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
-			cacti_log("DEBUG: SQL Row: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"\n", FALSE);
-		}
+	if (($log) && (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("DEBUG: SQL Row: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"\n", FALSE);
 	}
 
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -126,7 +124,7 @@ function db_fetch_row($sql, $log = TRUE) {
 		if (!$query->EOF) {
 			return($query->fields);
 		}
-	}else if ($log) {
+	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Row Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
@@ -134,7 +132,7 @@ function db_fetch_row($sql, $log = TRUE) {
 /* db_fetch_assoc - run a 'select' sql query and return all rows found
    @arg $sql - the sql query to execute
    @returns - the entire result set as a multi-dimensional hash */
-function db_fetch_assoc($sql) {
+function db_fetch_assoc($sql, $log = TRUE) {
 	global $cnn_id;
 
 	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
@@ -151,7 +149,7 @@ function db_fetch_assoc($sql) {
 			$query->MoveNext();
 		}
 		return($data);
-	}else{
+	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Assoc Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}
 }
