@@ -823,6 +823,8 @@ function find_first_folder_url() {
 
 		if (sizeof($heirarchy) > 0) {
 			return "graph_view.php?action=tree&tree_id=$use_tree_id&leaf_id=" . $heirarchy[0]["id"] . "&select_first=true";
+		}else{
+			return "graph_view.php?action=tree&tree_id=$use_tree_id&select_first=true";
 		}
 	}
 
