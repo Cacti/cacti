@@ -356,6 +356,8 @@ function graphs() {
 	}else{
 		if (isset($_SESSION["sess_graphs_new_host_id"])) {
 			$_REQUEST["host_id"] = $_SESSION["sess_graphs_new_host_id"];
+		}else{
+			$_REQUEST["host_id"] = 0;
 		}
 	}
 
