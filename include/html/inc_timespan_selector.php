@@ -89,14 +89,14 @@
 					<td width='30'>
 						&nbsp;<strong>From:</strong>&nbsp;
 					</td>
-					<td width='140' nowrap>
+					<td width='150' nowrap>
 						<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
 					</td>
 					<td width='30'>
 						&nbsp;<strong>To:</strong>&nbsp;
 					</td>
-					<td width='140' nowrap>
+					<td width='150' nowrap>
 						<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='End date selector' title='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
 					</td>
