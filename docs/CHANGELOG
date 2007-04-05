@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -bug: In an effort to make the current version of Cacti supportable, add Timeshifter.  Thanks Gandolf!
 -bug: Allow query_ and host_ substitution in COMMENT and CDEF's.
 -bug: Cacti does not have any way to mass add devices, graphs, tree's and permissions.
+-bug: Correct index error when creating graphs when you have no hosts on your system.
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
