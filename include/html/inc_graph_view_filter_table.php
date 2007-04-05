@@ -5,8 +5,8 @@
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
-					<td width="120" class="textHeader">
-						Filter by host:&nbsp;
+					<td width="100">
+						&nbsp;<strong>Filter by host:</strong>&nbsp;
 					</td>
 					<td width="1">
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
