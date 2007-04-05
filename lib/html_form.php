@@ -207,13 +207,13 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	}
 
 	if (is_file($form_previous_value)) {
-		$extra_data = "<span style='color:green'>&nbsp;[OK: FILE FOUND]";
+		$extra_data = "<span style='color:green'><br>[OK: FILE FOUND]";
 	}else if (is_dir($form_previous_value)) {
-		$extra_data = "<span style='color:red'>&nbsp;[ERROR: IS DIR]";
+		$extra_data = "<span style='color:red'><br>[ERROR: IS DIR]";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = "";
 	}else{
-		$extra_data = "<span style='color:red'>&nbsp;[ERROR: FILE NOT FOUND]";
+		$extra_data = "<span style='color:red'><br>[ERROR: FILE NOT FOUND]";
 	}
 
 	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
@@ -252,13 +252,13 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	}
 
 	if (is_dir($form_previous_value)) {
-		$extra_data = "<span style='color:green'>&nbsp;[OK: DIR FOUND]";
+		$extra_data = "<span style='color:green'><br>[OK: DIR FOUND]";
 	}else if (is_file($form_previous_value)) {
-		$extra_data = "<span style='color:red'>&nbsp;[ERROR: IS FILE]";
+		$extra_data = "<span style='color:red'><br>[ERROR: IS FILE]";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = "";
 	}else{
-		$extra_data = "<span style='color:red'>&nbsp;[ERROR: DIR NOT FOUND]";
+		$extra_data = "<span style='color:red'><br>[ERROR: DIR NOT FOUND]";
 	}
 
 	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
