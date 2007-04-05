@@ -1777,12 +1777,6 @@ INSERT INTO graph_templates_item VALUES (408,'c9e8cbdca0215b434c902e68755903ea',
 INSERT INTO graph_templates_item VALUES (409,'dab91d7093e720841393feea5bdcba85',0,0,34,96,0,9,0,1,'Average:','','',2,3);
 INSERT INTO graph_templates_item VALUES (410,'03e5bd2151fea3c90843eb1130b84458',0,0,34,96,0,9,0,3,'Maximum:','','on',2,4);
 
-
-
-
-
-
-
 --
 -- Table structure for table `graph_tree`
 --
