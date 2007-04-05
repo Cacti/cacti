@@ -467,7 +467,6 @@ $graph_timeshifts = array(
 	GTS_2_YEARS 	=> "2 Years"
 	);
 
-
 $graph_weekdays = array(
 	WD_SUNDAY	 	=> date("l", strtotime("Sunday")),
 	WD_MONDAY 		=> date("l", strtotime("Monday")),
@@ -477,7 +476,6 @@ $graph_weekdays = array(
 	WD_FRIDAY	 	=> date("l", strtotime("Friday")),
 	WD_SATURDAY		=> date("l", strtotime("Saturday"))
 	);
-
 
 $graph_dateformats = array(
 	GD_MO_D_Y =>"Month Number, Day, Year",

@@ -112,7 +112,6 @@ define("GT_PREV_WEEK", 26);
 define("GT_PREV_MONTH", 27);
 define("GT_PREV_YEAR", 28);
 
-
 define("DEFAULT_TIMESPAN", 86400);
 
 # graph timeshifts
