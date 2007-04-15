@@ -219,9 +219,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
 		}else {
 			if (file_exists($path_snmpbulkwalk) && ($version > 1)) {
-				$temp_array = exec_into_array($path_snmpbulkwalk . " -O n $snmp_auth -v $version -t $timeout -r $retries -Cr50 $hostname:$port $oid");
+				$temp_array = exec_into_array($path_snmpbulkwalk . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr50 $hostname:$port $oid");
 			}else{
-				$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O n $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+				$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O Qn $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
 			}
 		}
 
