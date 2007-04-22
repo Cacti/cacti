@@ -117,7 +117,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr>
 					<td nowrap>
-						&nbsp;<?php if ($show_console_tab == true) {?><a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a>&nbsp;
+						&nbsp;<?php if ($show_console_tab == true) {?><a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="graph_view.php"><img src="images/tab_graphs<?php if (substr(basename($_SERVER["PHP_SELF"]),0,10) == "graph_view") { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a>&nbsp;
 					</td>
 					<td>
 						<img src="images/cacti_backdrop2.gif" align="absmiddle">
