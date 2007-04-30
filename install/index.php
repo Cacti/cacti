@@ -496,7 +496,8 @@ if ($_REQUEST["step"] == "4") {
 								the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
 								$form_check_string = "";
 
-								if ($array["method"] == "textbox") {
+								if (($array["method"] == "textbox") ||
+									($array["method"] == "filepath")) {
 									if (@file_exists($current_value)) {
 										$form_check_string = "<font color='#008000'>[FOUND]</font> ";
 									}else{
@@ -518,6 +519,9 @@ if ($_REQUEST["step"] == "4") {
 								switch ($array["method"]) {
 								case 'textbox':
 									form_text_box($name, $current_value, "", "", "40", "text");
+									break;
+								case 'filepath':
+									form_filepath_box($name, $current_value, "", "", "40", "text");
 									break;
 								case 'drop_array':
 									form_dropdown($name, $array["array"], "", "", $current_value, "", "");
