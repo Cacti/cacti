@@ -351,7 +351,7 @@ $settings = array(
 			),
 		"export_temporary_directory" => array(
 			"friendly_name" => "Local Scratch Directory (ftp only)",
-			"description" => "This is the a directory that cacti will temporarily store output prior to sending to the remove site via ftp.  The contents of this directory will be deleted after the ftp is completed.",
+			"description" => "This is the a directory that cacti will temporarily store output prior to sending to the remote site via ftp.  The contents of this directory will be deleted after the ftp is completed.",
 			"method" => "dirpath",
 			"max_length" => "255"
 			),
