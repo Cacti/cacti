@@ -227,7 +227,8 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		if ((sizeof($temp_array) == 0) ||
 			(substr_count($temp_array[0], "No Such Object")) ||
-			(substr_count($temp_array[0], "No more variables"))) {
+			(substr_count($temp_array[0], "No more variables")) ||
+			(substr_count($temp_array[0], "Wrong Type"))) {
 			return array();
 		}
 
@@ -250,6 +251,16 @@ function format_snmp_string($string) {
 	$string = str_replace(">", "", $string);
 	$string = str_replace("<", "", $string);
 	$string = str_replace("\\", "", $string);
+
+	/* Account for invalid type messages */
+	if (substr_count($string, "Wrong Type")) {
+		$string = strrev($string);
+		if ($position = strpos($string, ":")) {
+			$string = trim(strrev(substr($string, 0, $position)));
+		}else{
+			$string = trim(strrev($string));
+		}
+	}
 
 	/* Remove invalid chars */
 	$k = strlen($string);
