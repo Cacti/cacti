@@ -49,7 +49,7 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 		usleep(40000);
 	}
 
-	cacti_log("FATAL: Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL database name in 'include/config.php'.", TRUE);
+	die("FATAL: Cannot connect to MySQL server on '$host'. Please make sure you have specified a valid MySQL database name in 'include/config.php'\n");
 
 	return(0);
 }
