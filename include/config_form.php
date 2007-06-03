@@ -371,7 +371,7 @@ $struct_graph = array(
 		"friendly_name" => "Slope Mode",
 		"method" => "checkbox",
 		"default" => "on",
-		"description" => "Using Slope Mode in RRDtool 1.2.x and above, evens out the shape of the graphs at the expense of
+		"description" => "Using Slope Mode, in RRDtool 1.2.x and above, evens out the shape of the graphs at the expense of
 			some on screen resolution."
 		),
 	"auto_scale" => array(
