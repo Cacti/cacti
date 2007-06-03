@@ -157,7 +157,11 @@ while (1) {
 						/* set this variable so the calling script can determine if it was called
 						 * by the script server or stand-alone */
 						$called_by_script_server = true;
+
+						/* turn on output buffering to avoid problems with nasty scripts */
+						ob_start();
 						include_once($include_file);
+						ob_end_clean();
 					} else {
 						cacti_log("WARNING: PHP Script File to be included, does not exist", false, "PHPSVR");
 					}
