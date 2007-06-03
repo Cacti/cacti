@@ -389,7 +389,7 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.6i") {
 			include ("0_8_6h_to_0_8_6i.php");
 			upgrade_to_0_8_6i();
-		}elseif ($cacti_versions[$i] == "0.8.6j") {
+		}elseif ($cacti_versions[$i] == "0.8.6k") {
 			include ("0_8_6j_to_0_8_6k.php");
 			upgrade_to_0_8_6k();
 		}
