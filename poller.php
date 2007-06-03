@@ -27,21 +27,21 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
 
-/* We are not talking to the browser */
+/* we are not talking to the browser */
 $no_http_headers = true;
 
-/* Start Initialization Section */
+/* start initialization section */
 include(dirname(__FILE__) . "/include/config.php");
 include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
-/* Record Start Time */
+/* record the start time */
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
 
-/* Get number of polling items from the database */
+/* get number of polling items from the database */
 $polling_interval = read_config_option("poller_interval");
 
 if (isset($polling_interval)) {
@@ -52,42 +52,59 @@ if (isset($polling_interval)) {
 	define("MAX_POLLER_RUNTIME", 292);
 }
 
-/* Let PHP only run 1 second longer than the max runtime */
+/* let PHP only run 1 second longer than the max runtime */
 ini_set("max_execution_time", MAX_POLLER_RUNTIME + 1);
 
 $polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("select id from host where disabled = '' order by id"));
 
-/* Retreive the number of concurrent process settings */
+/* retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
 
-/* Initialize counters for script file handling */
+/* initialize counters for script file handling */
 $host_count = 1;
 
-/* Initialize file creation flags */
+/* initialize file creation flags */
 $change_files = False;
 
-/* Initialize file and host count pointers */
+/* initialize file and host count pointers */
 $process_file_number = 0;
 $first_host = 0;
 $last_host = 0;
 
-/* Update web paths for the poller */
+/* update web paths for the poller */
 db_execute("replace into settings (name,value) values ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
 
-// Obtain some defaults from the database
+/* obtain some defaults from the database */
 $poller = read_config_option("poller_type");
 $max_threads = read_config_option("max_threads");
 
-// Initialize poller_time and poller_output tables
-db_execute("truncate table poller_time");
+/* initialize poller_time and poller_output tables, check poller_output for issues */
+db_execute("TRUNCATE TABLE poller_time");
 
-// Enter Mainline Processing
+$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output");
+if (sizeof($issues)) {
+	$issue_list = "";
+	$count = 0;
+	foreach($issues as $issue) {
+		if ($count == 0) {
+			$issue_list .= $issue["rrd_name"] . "(" . $issue["local_data_id"] . ")";
+		}else{
+			$issue_list .= ", " . $issue["rrd_name"] . "(" . $issue["local_data_id"] . ")";
+		}
+		$count++;
+	}
+
+	cacti_log("WARNING: Poller Output Table not Empty.  Potential Data Source Issues for Data Sources: $issue_list", FALSE, "POLLER");
+	db_execute("TRUNCATE TABLE poller_output");
+}
+
+/* mainline */
 if (read_config_option("poller_enabled") == "on") {
-	/* Determine the number of hosts to process per file */
+	/* determine the number of hosts to process per file */
 	$hosts_per_file = ceil(sizeof($polling_hosts) / $concurrent_processes );
 
-    /* Exit poller if cactid is selected and file does not exist */
-    if (($poller == "2") && (!file_exists(read_config_option("path_cactid")))) {
+	/* exit poller if cactid is selected and file does not exist */
+	if (($poller == "2") && (!file_exists(read_config_option("path_cactid")))) {
 		cacti_log("ERROR: The path: " . read_config_option("path_cactid") . " is invalid.  Can not continue", true, "POLLER");
 		exit;
 	}
@@ -185,7 +202,6 @@ if (read_config_option("poller_enabled") == "on") {
 
 			/* insert poller stats into the settings table */
 			db_execute("replace into settings (name,value) values ('stats_poller','$cacti_stats')");
-			db_execute("truncate table poller_output");
 
 			break;
 		}else {
