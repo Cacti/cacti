@@ -310,42 +310,6 @@ function strip_newlines($string) {
 	return strtr(strtr($string, "\n", "\0"), "\r","\0");
 }
 
-/* cacti_log_medium - a quick wrapper for cacti_log to simplify call's within funtions
-   @arg $string - the string to append to the log file
-   @arg $output - (bool) whether to output the log line to the browser using pring() or not
-   @arg $environ - (string) tell's from where the script was called from */
-function cacti_log_medium($string, $output = false, $environ = "CMDPHP") {
-	global $config;
-
-	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-		cacti_log($string, $output, $environ);
-	}
-}
-
-/* cacti_log_high - a quick wrapper for cacti_log to simplify call's within funtions
-   @arg $string - the string to append to the log file
-   @arg $output - (bool) whether to output the log line to the browser using pring() or not
-   @arg $environ - (string) tell's from where the script was called from */
-function cacti_log_high($string, $output = false, $environ = "CMDPHP") {
-	global $config;
-
-	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-		cacti_log($string, $output, $environ);
-	}
-}
-
-/* cacti_log_debug - a quick wrapper for cacti_log to simplify call's within funtions
-   @arg $string - the string to append to the log file
-   @arg $output - (bool) whether to output the log line to the browser using pring() or not
-   @arg $environ - (string) tell's from where the script was called from */
-function cacti_log_debug($string, $output = false, $environ = "CMDPHP") {
-	global $config;
-
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log($string, $output, $environ);
-	}
-}
-
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using pring() or not
