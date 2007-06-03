@@ -536,6 +536,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		graph_local.snmp_index,
 		graph_templates_graph.title_cache,
 		graph_templates_graph.vertical_label,
+		graph_templates_graph.slope_mode,
 		graph_templates_graph.auto_scale,
 		graph_templates_graph.auto_scale_opts,
 		graph_templates_graph.auto_scale_log,
@@ -741,7 +742,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* rrdtool 1.2.x does not provide smooth lines, let's force it */
 	if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
-		$graph_opts .= "--slope-mode" . RRD_NL;
+		if ($graph["slope_mode"] == "on") {
+			$graph_opts .= "--slope-mode" . RRD_NL;
+		}
 	}
 
 	/* rrdtool 1.2 font options */
