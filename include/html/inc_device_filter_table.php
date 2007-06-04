@@ -22,7 +22,7 @@
 						</select>
 					</td>
 					<td width="5"></td>
-    				<td width="20">
+					<td width="20">
 						Status:&nbsp;
 					</td>
 					<td width="1">
@@ -30,6 +30,7 @@
 							<option value="host.php?host_status=-1&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="host.php?host_status=-3&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-3") {?> selected<?php }?>>Enabled</option>
 							<option value="host.php?host_status=-2&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-2") {?> selected<?php }?>>Disabled</option>
+							<option value="host.php?host_status=-4&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "-4") {?> selected<?php }?>>Not Up</option>
 							<option value="host.php?host_status=3&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "3") {?> selected<?php }?>>Up</option>
 							<option value="host.php?host_status=1&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "1") {?> selected<?php }?>>Down</option>
 							<option value="host.php?host_status=2&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "2") {?> selected<?php }?>>Recovering</option>

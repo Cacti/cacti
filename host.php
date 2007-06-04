@@ -782,6 +782,8 @@ function host() {
 		$sql_where .= " and host.disabled='on'";
 	}elseif ($_REQUEST["host_status"] == "-3") {
 		$sql_where .= " and host.disabled=''";
+	}elseif ($_REQUEST["host_status"] == "-3") {
+		$sql_where .= " and (host.status!='3' or host.disabled='on')";
 	}else {
 		$sql_where .= " and (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')";
 	}

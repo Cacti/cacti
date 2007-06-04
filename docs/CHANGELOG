@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 
 -bug#0000873: Poller not working correctly
+-bug#0000876: Be able to look for not up host 
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset 
 -bug#0000899: Have settings path page check paths
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0 
