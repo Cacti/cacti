@@ -501,21 +501,26 @@ function host_edit() {
 					}else{
 						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
 
+						/* modify for some system descriptions */
+						if (substr_count($snmp_system, "00:")) {
+							$snmp_system = str_replace("00:", "", $snmp_system);
+							$snmp_system = str_replace(":", " ", $snmp_system);
+						}
+
 						if ($snmp_system == "") {
 							print "<span style='color: #ff0000; font-weight: bold;'>SNMP error</span>\n";
 						}else{
-							$snmp_uptime = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+							$snmp_uptime   = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 							$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 							$snmp_location = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.6.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
-							$snmp_contact = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
-
+							$snmp_contact  = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 							print "<strong>System:</strong> $snmp_system<br>\n";
-							$days = intval($snmp_uptime / (60*60*24*100));
+							$days      = intval($snmp_uptime / (60*60*24*100));
 							$remainder = $snmp_uptime % (60*60*24*100);
-							$hours = intval($remainder / (60*60*100));
+							$hours     = intval($remainder / (60*60*100));
 							$remainder = $remainder % (60*60*100);
-							$minutes = intval($remainder / (60*100));
+							$minutes   = intval($remainder / (60*100));
 							print "<strong>Uptime:</strong> $snmp_uptime";
 							print "&nbsp;($days days, $hours hours, $minutes minutes)<br>\n";
 							print "<strong>Hostname:</strong> $snmp_hostname<br>\n";
