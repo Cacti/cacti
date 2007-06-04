@@ -28,5 +28,8 @@ function upgrade_to_0_8_6k() {
 
 	/* change the width of the last error field */
 	db_install_execute("0.8.6k", "ALTER TABLE `host` MODIFY COLUMN `status_last_error` VARCHAR(255)");
+
+	/* fix rrd min and max values for data templates */
+	db_install_execute("0.8.6k", "ALTER TABLE `data_template_rrd` MODIFY COLUMN `rrd_maximum` VARCHAR(20) NOT NULL DEFAULT 0, MODIFY COLUMN `rrd_minimum` VARCHAR(20) NOT NULL DEFAULT 0");
 }
 ?>
