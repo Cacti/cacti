@@ -217,6 +217,12 @@ case 'preview':
 	$total_rows = count(db_fetch_assoc("select
 		graph_templates_graph.local_graph_id
 		$sql_base"));
+
+	/* reset the page if you have changed some settings */
+	if (ROWS_PER_PAGE * ($_REQUEST["page"]-1) >= $total_rows) {
+		$_REQUEST["page"] = "1";
+	}
+
 	$graphs = db_fetch_assoc("select
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title_cache
@@ -479,7 +485,7 @@ case 'list':
 		strAdd = strAdd.substring(0,strAdd.length - 1);
 		strDel = strDel.substring(0,strDel.length - 1);
 		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
-                return strNavURL + strURL;
+		return strNavURL + strURL;
 	}
 	function url_go(strURL) {
 		document.location = strURL;
