@@ -833,7 +833,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-			$data_source_path = str_replace('<path_rra>', $config['rra_path'], $data_source_path);
+			$data_source_path = str_replace("<path_rra>", $config["base_path"] . "/rra", $data_source_path);
 		}
 
 		return $data_source_path;
@@ -1388,6 +1388,7 @@ function draw_navigation_text() {
 		"rra.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
 		"rra.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
 		"data_input.php:" => array("title" => "Data Input Methods", "mapping" => "index.php:", "url" => "data_input.php", "level" => "1"),
+		"data_input.php:actions" => array("title" => "Actions", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
 		"data_input.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
 		"data_input.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,data_input.php:", "url" => "", "level" => "2"),
 		"data_input.php:field_edit" => array("title" => "Data Input Fields", "mapping" => "index.php:,data_input.php:,data_input.php:edit", "url" => "", "level" => "3"),

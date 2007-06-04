@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -bug: Improve logging in cmd.php and poller.php when parameters are not specified correctly.
 -feature: Add rra_path as a config.php config variable
 -feature: Add drop down actions to data queries
+-feature: Add drop down actions to data input methods.  Hide system methods
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.

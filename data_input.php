@@ -24,12 +24,22 @@
 
 include ("./include/auth.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
+$di_actions = array(
+	1 => "Delete"
+	);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
+
+		break;
+	case 'actions':
+		form_actions();
 
 		break;
 	case 'field_remove':
@@ -43,11 +53,6 @@ switch ($_REQUEST["action"]) {
 		field_edit();
 
 		include_once("./include/bottom_footer.php");
-		break;
-	case 'remove':
-		data_remove();
-
-		header("Location: data_input.php");
 		break;
 	case 'edit':
 		include_once("./include/top_header.php");
@@ -144,6 +149,85 @@ function form_save() {
 			header("Location: data_input.php?action=edit&id=" . $_POST["data_input_id"]);
 		}
 	}
+}
+
+function form_actions() {
+	global $colors, $di_actions;
+
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+
+		if ($_POST["drp_action"] == "1") { /* delete */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				 data_remove($selected_items[$i]);
+			}
+		}
+
+		header("Location: data_input.php");
+		exit;
+	}
+
+	/* setup some variables */
+	$di_list = ""; $i = 0;
+
+	/* loop through each of the data queries and process them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "<br>";
+			$di_array[$i] = $matches[1];
+		}
+
+		$i++;
+	}
+
+	include_once("./include/top_header.php");
+
+	html_start_box("<strong>" . $di_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+
+	print "<form action='data_input.php' method='post'>\n";
+
+	if ($_POST["drp_action"] == "1") { /* delete */
+		$graphs = array();
+
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following data input methods?</p>
+					<p>$di_list</p>
+				</td>
+			</tr>\n";
+	}
+
+	if (!isset($di_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+	}
+
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($dq_array) ? serialize($dq_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='data_input.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";
+
+	html_end_box();
+
+	include_once("./include/bottom_footer.php");
 }
 
 /* --------------------------
@@ -267,30 +351,17 @@ function field_edit() {
     Data Input Functions
    ----------------------- */
 
-function data_remove() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
+function data_remove($id) {
+	$data_input_fields = db_fetch_assoc("select id from data_input_fields where data_input_id=" . $id);
 
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the data input method <strong>'" . db_fetch_cell("select name from data_input where id=" . $_GET["id"]) . "'</strong>?", "data_input.php", "data_input.php?action=remove&id=" . $_GET["id"]);
-		include("./include/bottom_footer.php");
-		exit;
-	}
-
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		$data_input_fields = db_fetch_assoc("select id from data_input_fields where data_input_id=" . $_GET["id"]);
-
-		if (is_array($data_input_fields)) {
-			foreach ($data_input_fields as $data_input_field) {
-				db_execute("delete from data_input_data where data_input_field_id=" . $data_input_field["id"]);
-			}
+	if (is_array($data_input_fields)) {
+		foreach ($data_input_fields as $data_input_field) {
+			db_execute("delete from data_input_data where data_input_field_id=" . $data_input_field["id"]);
 		}
-
-		db_execute("delete from data_input where id=" . $_GET["id"]);
-		db_execute("delete from data_input_fields where data_input_id=" . $_GET["id"]);
 	}
+
+	db_execute("delete from data_input where id=" . $id);
+	db_execute("delete from data_input_fields where data_input_id=" . $id);
 }
 
 function data_edit() {
@@ -394,7 +465,7 @@ function data_edit() {
 }
 
 function data() {
-	global $colors, $input_types;
+	global $colors, $input_types, $di_actions;
 
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
@@ -416,30 +487,45 @@ function data() {
 		"name" => array("Name", "ASC"),
 		"type_id" => array("Data Input Method", "ASC"));
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 3);
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$data_inputs = db_fetch_assoc("SELECT * FROM data_input ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
 
 	$i = 0;
 	if (sizeof($data_inputs) > 0) {
-	foreach ($data_inputs as $data_input) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-			?>
-			<td>
-				<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print $data_input["name"];?></a>
-			</td>
-			<td>
-				<?php print $input_types{$data_input["type_id"]};?>
-			</td>
-			<td align="right">
-				<a href="data_input.php?action=remove&id=<?php print $data_input["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
-			</td>
-		</tr>
-	<?php
-	}
+		foreach ($data_inputs as $data_input) {
+			/* hide system types */
+			if ((substr_count($data_input["name"], "Get Script Data (Indexed)")) ||
+				(substr_count($data_input["name"], "Get Script Server Data (Indexed)")) ||
+				(substr_count($data_input["name"], "Get SNMP Data")) ||
+				(substr_count($data_input["name"], "Get SNMP Data (Indexed)"))) {
+				/* do nothing */
+			}else{
+				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+					?>
+					<td>
+						<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print $data_input["name"];?></a>
+					</td>
+					<td>
+						<?php print $input_types{$data_input["type_id"]};?>
+					</td>
+					<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+						<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_input["id"];?>' title="<?php print $data_input["name"];?>">
+					</td>
+				</tr>
+			<?php
+			}
+		}
 	}else{
 		print "<tr><td><em>No Data Input Methods</em></td></tr>";
 	}
+
 	html_end_box();
+
+	/* draw the dropdown containing a list of available actions for this form */
+	draw_actions_dropdown($di_actions);
+
+	print "</form>\n";
+
 }
 ?>
