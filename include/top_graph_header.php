@@ -102,6 +102,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 	?>
 	<link href="include/main.css" rel="stylesheet">
 
+	<script type="text/javascript" src="include/layout.js"></script>
 	<script type="text/javascript" src="include/treeview/ua.js"></script>
 	<script type="text/javascript" src="include/treeview/ftiens4.js"></script>
 	<script type="text/javascript" src="include/jscalendar/calendar.js"></script>

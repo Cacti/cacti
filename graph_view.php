@@ -531,6 +531,17 @@ case 'list':
 			</table>
 		</td>
 	</tr>
+	<tr bgcolor='#6d88ad'>
+		<td colspan='3'>
+			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
+				<tr>
+					<?php
+					print "<td width='1%' align='right' style=' class='textHeaderDark'" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
+					?>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	<?php
 
 	$i = 0;
@@ -554,13 +565,25 @@ case 'list':
 		}
 	}
 
-	?>	</table>
-		<table align='center' width='98%'>
-			<tr>
-				<td width='1'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
-				<td><input type='image' src='images/button_view.gif' alt='View'></td>
-			</tr>
-		</table>
+	?>
+	<tr bgcolor='#6d88ad'>
+		<td colspan='3'>
+			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
+				<tr>
+					<?php
+					print "<td width='1%' align='right' style=' class='textHeaderDark'" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
+					?>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+	<table align='center' width='98%'>
+		<tr>
+			<td width='1'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
+			<td><input type='image' src='images/button_view.gif' alt='View'></td>
+		</tr>
+	</table>
 	<input type='hidden' name='page' value='1'>
 	<input type='hidden' name='style' value='selective'>
 	<input type='hidden' name='action' value='preview'>
