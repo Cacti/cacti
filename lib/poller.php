@@ -137,8 +137,14 @@ function exec_background($filename, $args = "") {
      for errors in certain versions of php.
    @arg $filename - the name of the file to be tested. */
 function file_exists_2gb($filename) {
-	system("test -f $filename", $rval);
-	return ($rval == 0);
+	global $config;
+
+	if ($config["cacti_server_os"] != "win32") {
+		system("test -f $filename", $rval);
+		return ($rval == 0);
+	}else{
+		return 0;
+	}
 }
 
 /* update_reindex_cache - builds a cache that is used by the poller to determine if the
