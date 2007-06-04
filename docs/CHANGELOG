@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -bug: Correct index error when creating graphs when you have no hosts on your system.
 -bug: More recent versions of net-snmp broke SNMP walk functions.
 -bug: Adjust for problematic responses from some SNMPT Agents.
+-bug: Improve logging in cmd.php and poller.php when parameters are not specified correctly.
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.

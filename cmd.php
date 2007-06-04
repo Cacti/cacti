@@ -30,7 +30,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $start = date("Y-n-d H:i:s"); // for runtime measurement
 
 ini_set("max_execution_time", "0");
-ini_set("memory_limit", "32M");
+ini_set("memory_limit", "64M");
 
 $no_http_headers = true;
 
@@ -40,7 +40,7 @@ include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/ping.php");
 
-/* Correct for a Windows PHP Bug. Fixed in 5.2.0 */
+/* correct for a windows PHP bug. fixed in 5.2.0 */
 if ($config["cacti_server_os"] == "win32") {
 	/* check PHP versions first, we know 5.2.0 and above is fixed */
 	if (version_compare("5.2.0", PHP_VERSION, ">=")) {
@@ -49,28 +49,36 @@ if ($config["cacti_server_os"] == "win32") {
 			$response = "ERROR: The PHP Script: CMD.PHP Must be started using the full path to the file and in lower case.  This is a PHP Bug!!!";
 			print "\n";
 			cacti_log($response,true);
-			exit(-1);
+
+			record_cmdphp_done();
+			exit("-1");
 		}
 	}
 }
 
-/* Record Start Time */
+/* record the start time */
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
 
+/* initialize the polling items */
+$polling_items = array();
+
+/* check arguments */
 if ( $_SERVER["argc"] == 1 ) {
-	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
 	$print_data_to_stdout = true;
-	/* Get number of polling items from the database */
+
+	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
+
+	/* get the number of polling items from the database */
 	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
 	$hosts = array_rekey($hosts,"id",$host_struc);
 	$host_count = sizeof($hosts);
 	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
 }else{
 	$print_data_to_stdout = false;
+
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
-
 			/* address potential exploits */
 			input_validate_input_number($_SERVER["argv"][1]);
 			input_validate_input_number($_SERVER["argv"][2]);
@@ -100,9 +108,17 @@ if ( $_SERVER["argc"] == 1 ) {
 			print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
 			print "USAGE: CMD.PHP [[first_host] [second_host]]\n";
 			cacti_log("ERROR: Invalid Arguments.  This rist argument must be less than or equal to the first.");
+
+			/* record the process as having completed */
+			record_cmdphp_done();
+			exit("-1");
 		}
 	}else{
 		cacti_log("ERROR: Invalid Number of Arguments.  You must specify 0 or 2 arguments.",$print_data_to_stdout);
+
+		/* record the process as having completed */
+		record_cmdphp_done();
+		exit("-1");
 	}
 }
 
@@ -112,10 +128,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$new_host  = true;
 	$last_host = ""; $current_host = "";
 
-	// create new ping socket for host pinging
+	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
 
-	// startup Cacti php polling server and include the include file for script processing
+	/* startup Cacti php polling server and include the include file for script processing */
 	if ($script_server_calls > 0) {
 		$cactides = array(
 			0 => array("pipe", "r"), // stdin is a pipe that the child will read from
@@ -382,12 +398,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			round($end-$start,4),
 			$host_count),$print_data_to_stdout);
 	}
-
 }else{
 	cacti_log("ERROR: Either there are no items in the cache or polling is disabled",$print_data_to_stdout);
 }
 
-/* Let the poller server know about cmd.php being finished */
-db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
+/* record the process as having completed */
+record_cmdphp_done();
+
+function record_cmdphp_done() {
+	/* let the poller server know about cmd.php being finished */
+	db_execute("insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
+}
 
 ?>

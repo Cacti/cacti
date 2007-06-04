@@ -171,7 +171,7 @@ if (read_config_option("poller_enabled") == "on") {
 
 	$rrds_processed = 0;
 	while (1) {
-		$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id = 0");
+		$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id=0");
 
 		if (sizeof($polling_items) == $process_file_number) {
 			$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
