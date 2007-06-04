@@ -25,12 +25,22 @@
 include("./include/auth.php");
 include_once("./lib/data_query.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
+$dq_actions = array(
+	1 => "Delete"
+	);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
+
+		break;
+	case 'actions':
+		form_actions();
 
 		break;
 	case 'item_moveup_dssv':
@@ -188,6 +198,85 @@ function form_save() {
 			header("Location: data_queries.php?action=edit&id=" . $_POST["snmp_query_id"]);
 		}
 	}
+}
+
+function form_actions() {
+	global $colors, $dq_actions;
+
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+
+		if ($_POST["drp_action"] == "1") { /* delete */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				 data_query_remove($selected_items[$i]);
+			}
+		}
+
+		header("Location: data_queries.php");
+		exit;
+	}
+
+	/* setup some variables */
+	$dq_list = ""; $i = 0;
+
+	/* loop through each of the data queries and process them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			$dq_list .= "<li>" . db_fetch_cell("SELECT snmp_query.name FROM snmp_query WHERE id='" . $matches[1] . "'") . "<br>";
+			$dq_array[$i] = $matches[1];
+		}
+
+		$i++;
+	}
+
+	include_once("./include/top_header.php");
+
+	html_start_box("<strong>" . $dq_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+
+	print "<form action='data_queries.php' method='post'>\n";
+
+	if ($_POST["drp_action"] == "1") { /* delete */
+		$graphs = array();
+
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following data queries?</p>
+					<p>$dq_list</p>
+				</td>
+			</tr>\n";
+	}
+
+	if (!isset($dq_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data query.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+	}
+
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($dq_array) ? serialize($dq_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='data_queries.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";
+
+	html_end_box();
+
+	include_once("./include/bottom_footer.php");
 }
 
 /* ----------------------------
@@ -513,33 +602,20 @@ function data_query_item_edit() {
     Data Query Functions
    --------------------- */
 
-function data_query_remove() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
+function data_query_remove($id) {
+	$snmp_query_graph = db_fetch_assoc("select id from snmp_query_graph where snmp_query_id=" . $id);
 
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query <strong>'" . db_fetch_cell("select name from snmp_query where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php", "data_queries.php?action=remove&id=" . $_GET["id"]);
-		include("./include/bottom_footer.php");
-		exit;
+	if (sizeof($snmp_query_graph) > 0) {
+	foreach ($snmp_query_graph as $item) {
+		db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=" . $item["id"]);
+	}
 	}
 
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		$snmp_query_graph = db_fetch_assoc("select id from snmp_query_graph where snmp_query_id=" . $_GET["id"]);
-
-		if (sizeof($snmp_query_graph) > 0) {
-		foreach ($snmp_query_graph as $item) {
-			db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=" . $item["id"]);
-		}
-		}
-
-		db_execute("delete from snmp_query where id=" . $_GET["id"]);
-		db_execute("delete from snmp_query_graph where snmp_query_id=" . $_GET["id"]);
-		db_execute("delete from host_template_snmp_query where snmp_query_id=" . $_GET["id"]);
-		db_execute("delete from host_snmp_query where snmp_query_id=" . $_GET["id"]);
-		db_execute("delete from host_snmp_cache where snmp_query_id=" . $_GET["id"]);
-	}
+	db_execute("delete from snmp_query where id=" . $id);
+	db_execute("delete from snmp_query_graph where snmp_query_id=" . $id);
+	db_execute("delete from host_template_snmp_query where snmp_query_id=" . $id);
+	db_execute("delete from host_snmp_query where snmp_query_id=" . $id);
+	db_execute("delete from host_snmp_cache where snmp_query_id=" . $id);
 }
 
 function data_query_edit() {
@@ -627,7 +703,7 @@ function data_query_edit() {
 }
 
 function data_query() {
-	global $colors;
+	global $colors, $dq_actions;
 
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
@@ -649,7 +725,7 @@ function data_query() {
 		"name" => array("Name", "ASC"),
 		"data_input_method" => array("Data Input Method", "ASC"));
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 3);
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$snmp_queries = db_fetch_assoc("SELECT
 			snmp_query.id,
@@ -660,22 +736,30 @@ function data_query() {
 
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
-	foreach ($snmp_queries as $snmp_query) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-			?>
-			<td>
-				<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
-			</td>
-			<td>
-				<?php print $snmp_query["data_input_method"]; ?>
-			</td>
-			<td align="right">
-				<a href="data_queries.php?action=remove&id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
-			</td>
-		</tr>
-	<?php
+		foreach ($snmp_queries as $snmp_query) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				?>
+				<td>
+					<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
+				</td>
+				<td>
+					<?php print $snmp_query["data_input_method"]; ?>
+				</td>
+				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $snmp_query["id"];?>' title="<?php print $snmp_query["name"];?>">
+				</td>
+			</tr>
+		<?php
+		}
+	}else{
+		print "<tr><td><em>No Data Queries</em></td></tr>";
 	}
-	}
+
 	html_end_box();
+
+	/* draw the dropdown containing a list of available actions for this form */
+	draw_actions_dropdown($dq_actions);
+
+	print "</form>\n";
 }
 ?>
