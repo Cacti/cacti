@@ -666,7 +666,7 @@ $fields_host_edit = array(
 		"max_length" => "50",
 		),
 	"snmp_password" => array(
-		"method" => "textbox",
+		"method" => "textbox_password",
 		"friendly_name" => "SNMP Password (v3)",
 		"description" => "Fill in the SNMP v3 password for this device.",
 		"value" => "|arg1:snmp_password|",

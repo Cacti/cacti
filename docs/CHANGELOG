@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0000921: cactid and ping.pl script error
 -bug#0000927: Classic export does not recognize thumbnail columns properly
 -bug#0000925: Support for host_* variables in the legend
+-bug#0000953: SNMP Passphrase displayed in cleartext 
 -bug#0000957: Script Server Output's Beginning/Trailing Data During "Include" Causing a Synchronization Issue
 -bug#0000958: Slope Mode is Not Selectable  
 -bug#0000959: Add Alarming When Poller Output Table is Not Empty 

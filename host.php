@@ -141,9 +141,13 @@ function form_save() {
 	}
 
 	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_y"]))) {
-		$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"], $_POST["hostname"],
-			$_POST["snmp_community"], $_POST["snmp_version"], $_POST["snmp_username"], $_POST["snmp_password"],
-			$_POST["snmp_port"], $_POST["snmp_timeout"], (isset($_POST["disabled"]) ? $_POST["disabled"] : ""));
+		if ($_POST["snmp_password"] != $_POST["snmp_password_confirm"]) {
+			raise_message(4);
+		}else{
+			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"], $_POST["hostname"],
+				$_POST["snmp_community"], $_POST["snmp_version"], $_POST["snmp_username"], $_POST["snmp_password"],
+				$_POST["snmp_port"], $_POST["snmp_timeout"], (isset($_POST["disabled"]) ? $_POST["disabled"] : ""));
+		}
 
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
 			header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
