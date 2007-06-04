@@ -63,6 +63,7 @@ $config["php_snmp_support"] = function_exists("snmpget");
 $config["base_path"] = strtr(ereg_replace("(.*)[\/\\]include", "\\1", dirname(__FILE__)), "\\", "/");
 $config["library_path"] = ereg_replace("(.*[\/\\])include", "\\1lib", dirname(__FILE__));
 $config["include_path"] = dirname(__FILE__);
+$config["rra_path"] = $config["base_path"] . '/rra';
 
 /* colors */
 $colors["dark_outline"] = "454E53";

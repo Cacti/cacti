@@ -833,7 +833,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-			$data_source_path = str_replace("<path_rra>", $config["base_path"] . "/rra", $data_source_path);
+			$data_source_path = str_replace('<path_rra>', $config['rra_path'], $data_source_path);
 		}
 
 		return $data_source_path;
