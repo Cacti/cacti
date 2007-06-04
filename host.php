@@ -502,6 +502,7 @@ function host_edit() {
 						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
 
 						/* modify for some system descriptions */
+						/* 0000937: System output in hosts.php poor for Alcatel */
 						if (substr_count($snmp_system, "00:")) {
 							$snmp_system = str_replace("00:", "", $snmp_system);
 							$snmp_system = str_replace(":", " ", $snmp_system);
