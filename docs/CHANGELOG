@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0 
 -bug#0000906: Every Tenth Host Does Not Show on Tree During Console Edit 
 -bug#0000907: Sorting of Datasources, when interface numbers are used without leading zeros interfaces are incorrectly sorted 
+-bug#0000920: handling of rrdtool --font parameter
 -bug#0000921: cactid and ping.pl script error
 -bug#0000925: Support for host_* variables in the legend
 -bug#0000927: Classic export does not recognize thumbnail columns properly
