@@ -470,6 +470,7 @@ class Net_Ping
 				$this->start_time();
 
 				/* allow immediate return */
+				socket_set_nonblock($this->socket);
 				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
 
