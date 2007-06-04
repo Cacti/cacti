@@ -1841,7 +1841,7 @@ CREATE TABLE host (
   status_event_count mediumint(8) unsigned NOT NULL default '0',
   status_fail_date datetime NOT NULL default '0000-00-00 00:00:00',
   status_rec_date datetime NOT NULL default '0000-00-00 00:00:00',
-  status_last_error varchar(50) default '',
+  status_last_error varchar(255) default '',
   min_time decimal(10,5) default '9.99999',
   max_time decimal(10,5) default '0.00000',
   cur_time decimal(10,5) default '0.00000',
