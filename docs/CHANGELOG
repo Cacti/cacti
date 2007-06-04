@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.6k
 -bug#0000480: error when making a change to graphs displayed per page
+-bug#0000833: favicon.ico support
 -bug#0000850: Select All for list view
 -bug#0000873: Poller not working correctly
 -bug#0000876: Be able to look for not up host 
