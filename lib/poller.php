@@ -124,7 +124,21 @@ function exec_background($filename, $args = "") {
 		}else{
 			exec($filename . " " . $args . " > /dev/null &");
 		}
+	}elseif file_exists_2gb($filename) {
+		if ($config["cacti_server_os"] == "win32") {
+			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, "r"));
+		}else{
+			exec($filename . " " . $args . " > /dev/null &");
+		}
 	}
+}
+
+/* file_exists_2gb - fail safe version of the file exists function to correct
+     for errors in certain versions of php.
+   @arg $filename - the name of the file to be tested. */
+function file_exists_2gb($filename) {
+	system("test -f $filename", $rval);
+	return ($rval == 0);
 }
 
 /* update_reindex_cache - builds a cache that is used by the poller to determine if the

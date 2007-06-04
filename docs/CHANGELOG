@@ -1,14 +1,15 @@
 Cacti CHANGELOG
 
 
--bug#0000913: patch for direct linking to specific graph pages
--bug#0000912: 95th Percentile Thumbnail Graphs Fail with RRDtool 1.2.15, 1.2.18 
+-bug#0000873: Poller not working correctly
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset 
 -bug#0000899: Have settings path page check paths
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0 
 -bug#0000906: Every Tenth Host Does Not Show on Tree During Console Edit 
 -bug#0000907: Sorting of Datasources, when interface numbers are used without leading zeros interfaces are incorrectly sorted 
 -bug#0000910: cacti complains when trying to set the data source "maximum value" to any number with a decimal point 
+-bug#0000912: 95th Percentile Thumbnail Graphs Fail with RRDtool 1.2.15, 1.2.18 
+-bug#0000913: patch for direct linking to specific graph pages
 -bug#0000919: Problem with ping_tcp function in 8.6j and possible fix.
 -bug#0000920: handling of rrdtool --font parameter
 -bug#0000921: cactid and ping.pl script error

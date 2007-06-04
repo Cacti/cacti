@@ -509,8 +509,7 @@ class Net_Ping
 		}
 	} /* end ping_tcp */
 
-	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = ICMP_PING, $timeout=500, $retries=3)
-	{
+	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
 		/* initialize variables */
 		$ping_ping = true;
 		$ping_snmp = true;
