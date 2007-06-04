@@ -124,12 +124,8 @@ function exec_background($filename, $args = "") {
 		}else{
 			exec($filename . " " . $args . " > /dev/null &");
 		}
-	}elseif file_exists_2gb($filename) {
-		if ($config["cacti_server_os"] == "win32") {
-			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, "r"));
-		}else{
-			exec($filename . " " . $args . " > /dev/null &");
-		}
+	}elseif (file_exists_2gb($filename)) {
+		exec($filename . " " . $args . " > /dev/null &");
 	}
 }
 
