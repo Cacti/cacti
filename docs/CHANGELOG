@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -bug#0000904: Data Source creation fails without php-snmp 
 -bug#0000906: Every Tenth Host Does Not Show on Tree During Console Edit 
 -bug#0000907: Sorting of Datasources, when interface numbers are used without leading zeros interfaces are incorrectly sorted 
+-bug#0000902: cmd.php doesn't work with PHP 4.4.1 under windows
 -bug#0000910: cacti complains when trying to set the data source "maximum value" to any number with a decimal point 
 -bug#0000912: 95th Percentile Thumbnail Graphs Fail with RRDtool 1.2.15, 1.2.18 
 -bug#0000913: patch for direct linking to specific graph pages
