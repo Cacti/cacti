@@ -117,8 +117,8 @@ class Net_Ping
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
-			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
-			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
+			$this->host["hostname"] = str_replace("tcp:", "", strtolower($this->host["hostname"]));
+			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
 			/* determine the host's ip address */
 			$host_ip = gethostbyname($this->host["hostname"]);
@@ -350,8 +350,8 @@ class Net_Ping
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
-			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
-			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
+			$this->host["hostname"] = str_replace("tcp:", "", strtolower($this->host["hostname"]));
+			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
 			/* determine the host's ip address */
 			$host_ip = gethostbyname($this->host["hostname"]);
@@ -445,8 +445,8 @@ class Net_Ping
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
-			$this->host["hostname"] = str_replace("TCP:", "", $this->host["hostname"]);
-			$this->host["hostname"] = str_replace("UDP:", "", $this->host["hostname"]);
+			$this->host["hostname"] = str_replace("tcp:", "", strtolower($this->host["hostname"]));
+			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
 			/* determine the host's ip address */
 			$host_ip = gethostbyname($this->host["hostname"]);
