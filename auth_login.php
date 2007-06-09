@@ -41,7 +41,7 @@ case 'login':
 				/* copy template user's settings */
 				if (read_config_option("webbasic_template") == "") {
 					print "Error: User profile does not exist for " . $username;
-
+					exit;
 				} else {
 					user_copy(read_config_option("webbasic_template"), $username,2);
 				} 
