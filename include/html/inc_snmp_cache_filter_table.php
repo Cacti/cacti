@@ -7,9 +7,9 @@
 						Host:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_host_id" onChange="window.location=document.form_snmpcache.cbo_host_id.options[document.form_snmpcache.cbo_host_id.selectedIndex].value">
-							<option value="utilities.php?action=view_snmp_cache&host_id=-1&snmp_query_id=<?php print $_REQUEST['snmp_query_id'];?>&filter=<?php print $_REQUEST['filter'];?>"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
-							<option value="utilities.php?action=view_snmp_cache&host_id=0&snmp_query_id=<?php print $_REQUEST['snmp_query_id'];?>&filter=<?php print $_REQUEST['filter'];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
+						<select name="host_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
 							if ($_REQUEST["snmp_query_id"] == -1) {
 								$hosts = db_fetch_assoc("SELECT DISTINCT
@@ -33,7 +33,7 @@
 							}
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='utilities.php?action=view_snmp_cache&host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "&page=1'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["description"] . "</option>\n";
+								print "<option value='" . $host["id"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["description"] . "</option>\n";
 							}
 							}
 							?>
@@ -44,8 +44,8 @@
 						Query Name:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_snmp_query_id" onChange="window.location=document.form_snmpcache.cbo_snmp_query_id.options[document.form_snmpcache.cbo_snmp_query_id.selectedIndex].value">
-							<option value="utilities.php?action=view_snmp_cache&snmp_query_id=-1&filter=<?php print $_REQUEST['filter'];?>&host_id=<?php print $_REQUEST['host_id'];?>"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
+						<select name="snmp_query_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
 							<?php
 							if ($_REQUEST["host_id"] == -1) {
 								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
@@ -67,7 +67,7 @@
 							}
 							if (sizeof($snmp_queries) > 0) {
 							foreach ($snmp_queries as $snmp_query) {
-								print "<option value='utilities.php?action=view_snmp_cache&snmp_query_id=" . $snmp_query["id"] . "&filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=1'"; if ($_REQUEST["snmp_query_id"] == $snmp_query["id"]) { print " selected"; } print ">" . $snmp_query["name"] . "</option>\n";
+								print "<option value='" . $snmp_query["id"] . "'"; if ($_REQUEST["snmp_query_id"] == $snmp_query["id"]) { print " selected"; } print ">" . $snmp_query["name"] . "</option>\n";
 							}
 							}
 							?>
@@ -88,5 +88,6 @@
 			</table>
 		</td>
 		<input type='hidden' name='page' value='1'>
+		<input type='hidden' name='action' value='view_snmp_cache'>
 		</form>
 	</tr>

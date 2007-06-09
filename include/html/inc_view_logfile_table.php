@@ -7,10 +7,10 @@
 						Tail Lines:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_tail_lines" onChange="window.location=document.form_logfile.cbo_tail_lines.options[document.form_logfile.cbo_tail_lines.selectedIndex].value">
+						<select name="tail_lines" onChange="applyViewLogFilterChange(document.form_logfile)">
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='utilities.php?action=view_logfile&tail_lines=" . $tail_lines . "'"; if ($_REQUEST["tail_lines"] == $tail_lines) { print " selected"; } print ">" . $display_text . "</option>\n";
+								print "<option value='" . $tail_lines . "'"; if ($_REQUEST["tail_lines"] == $tail_lines) { print " selected"; } print ">" . $display_text . "</option>\n";
 							}
 							?>
 						</select>
@@ -20,13 +20,13 @@
 						Message Type:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_message_type" onChange="window.location=document.form_logfile.cbo_message_type.options[document.form_logfile.cbo_message_type.selectedIndex].value">
-							<option value="utilities.php?action=view_logfile&message_type=-1"<?php if ($_REQUEST['message_type'] == '-1') {?> selected<?php }?>>All</option>
-							<option value="utilities.php?action=view_logfile&message_type=1"<?php if ($_REQUEST['message_type'] == '1') {?> selected<?php }?>>Stats</option>
-							<option value="utilities.php?action=view_logfile&message_type=2"<?php if ($_REQUEST['message_type'] == '2') {?> selected<?php }?>>Warnings</option>
-							<option value="utilities.php?action=view_logfile&message_type=3"<?php if ($_REQUEST['message_type'] == '3') {?> selected<?php }?>>Errors</option>
-							<option value="utilities.php?action=view_logfile&message_type=4"<?php if ($_REQUEST['message_type'] == '4') {?> selected<?php }?>>Debug</option>
-							<option value="utilities.php?action=view_logfile&message_type=5"<?php if ($_REQUEST['message_type'] == '5') {?> selected<?php }?>>SQL Calls</option>
+						<select name="message_type" onChange="applyViewLogFilterChange(document.form_logfile)">
+							<option value="-1"<?php if ($_REQUEST['message_type'] == '-1') {?> selected<?php }?>>All</option>
+							<option value="1"<?php if ($_REQUEST['message_type'] == '1') {?> selected<?php }?>>Stats</option>
+							<option value="2"<?php if ($_REQUEST['message_type'] == '2') {?> selected<?php }?>>Warnings</option>
+							<option value="3"<?php if ($_REQUEST['message_type'] == '3') {?> selected<?php }?>>Errors</option>
+							<option value="4"<?php if ($_REQUEST['message_type'] == '4') {?> selected<?php }?>>Debug</option>
+							<option value="5"<?php if ($_REQUEST['message_type'] == '5') {?> selected<?php }?>>SQL Calls</option>
 						</select>
 					</td>
 					<td>
@@ -40,27 +40,38 @@
 						Refresh:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_refresh" onChange="window.location=document.form_logfile.cbo_refresh.options[document.form_logfile.cbo_refresh.selectedIndex].value">
+						<select name="refresh" onChange="applyViewLogFilterChange(document.form_logfile)">
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='utilities.php?action=view_logfile&refresh=" . $seconds . "'"; if ($_REQUEST["refresh"] == $seconds) { print " selected"; } print ">" . $display_text . "</option>\n";
+								print "<option value='" . $seconds . "'"; if ($_REQUEST["refresh"] == $seconds) { print " selected"; } print ">" . $display_text . "</option>\n";
 							}
 							?>
 						</select>
 					</td>
 					<td width="5"></td>
-    				<td width="100">
+					<td width="100">
 						Display Order:&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_reverse" onChange="window.location=document.form_logfile.cbo_reverse.options[document.form_logfile.cbo_reverse.selectedIndex].value">
-							<option value="utilities.php?action=view_logfile&reverse=1"<?php if ($_REQUEST['reverse'] == '1') {?> selected<?php }?>>Newest First</option>
-							<option value="utilities.php?action=view_logfile&reverse=2"<?php if ($_REQUEST['reverse'] == '2') {?> selected<?php }?>>Oldest First</option>
+						<select name="reverse" onChange="applyViewLogFilterChange(document.form_logfile)">
+							<option value="1"<?php if ($_REQUEST['reverse'] == '1') {?> selected<?php }?>>Newest First</option>
+							<option value="2"<?php if ($_REQUEST['reverse'] == '2') {?> selected<?php }?>>Oldest First</option>
 						</select>
+					</td>
+				</tr>
+			</table>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="80">
+						Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 				</tr>
 			</table>
 		</td>
 		<input type='hidden' name='page' value='1'>
+		<input type='hidden' name='action' value='view_logfile'>
 		</form>
 	</tr>

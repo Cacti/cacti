@@ -190,6 +190,21 @@ function utilities_view_user_log() {
 	$_REQUEST['page_referrer'] = 'view_user_log';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_user_log');
 
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyViewLogFilterChange(objForm) {
+		strURL = '?username=' + objForm.username.value;
+		strURL = strURL + '&result=' + objForm.result.value;
+		strURL = strURL + '&action=view_user_log';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+
 	html_start_box("<strong>User Login History</strong>", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_user_log_filter_table.php");
@@ -387,6 +402,24 @@ function utilities_view_logfile() {
 
 	include_once("./include/top_header.php");
 
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyViewLogFilterChange(objForm) {
+		strURL = '?tail_lines=' + objForm.tail_lines.value;
+		strURL = strURL + '&message_type=' + objForm.message_type.value;
+		strURL = strURL + '&refresh=' + objForm.refresh.value;
+		strURL = strURL + '&reverse=' + objForm.reverse.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&action=view_logfile';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+
 	html_start_box("<strong>Log File Filters</strong>", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_view_logfile_table.php");
@@ -411,17 +444,17 @@ function utilities_view_logfile() {
 	$i = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
-        $host_start = strpos($item, "Host[");
-        $ds_start = strpos($item, "DS[");
+		$host_start = strpos($item, "Host[");
+		$ds_start = strpos($item, "DS[");
 
-        $new_item = "";
+		$new_item = "";
 
 		if ((!$host_start) && (!$ds_start)) {
 			$new_item = $item;
 		}else{
-	        if ($host_start) {
-    	    	$host_end = strpos($item, "]", $host_start);
-        		$host_id = substr($item, $host_start+5, $host_end-($host_start+5));
+			if ($host_start) {
+				$host_end = strpos($item, "]", $host_start);
+				$host_id = substr($item, $host_start+5, $host_end-($host_start+5));
 				$new_item = $new_item . substr($item, 0, $host_start + 5) . "<a href='host.php?action=edit&id=" . $host_id . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 5)) . "</a>";
 				$item = substr($item, $host_end);
 			}
@@ -492,6 +525,15 @@ function utilities_view_logfile() {
 			break;
 		}
 
+		/* match any lines that match the search string */
+		if (strlen($_REQUEST["filter"])) {
+			if (substr_count(strtolower($new_item), strtolower($_REQUEST["filter"]))) {
+				$display=true;
+			}else{
+				$display=false;
+			}
+		}
+
 		/* get the background color */
 		if ((substr_count($new_item, "ERROR")) || (substr_count($new_item, "FATAL"))) {
 			$bgcolor = "FF3932";
@@ -523,6 +565,18 @@ function utilities_view_logfile() {
 		}
 
 		$i++;
+
+		if ($i > 1000) {
+			?>
+			<tr bgcolor='#EACC00'>
+				<td>
+					<?php print ">>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<";?>
+				</td>
+			</tr>
+			<?php
+
+			break;
+		}
 	}
 
 	html_end_box();
@@ -601,6 +655,22 @@ function utilities_view_snmp_cache() {
 
 	$_REQUEST['page_referrer'] = 'view_snmp_cache';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_snmp_cache');
+
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyViewSNMPFilterChange(objForm) {
+		strURL = '?host_id=' + objForm.host_id.value;
+		strURL = strURL + '&snmp_query_id=' + objForm.snmp_query_id.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&action=view_snmp_cache';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
 
 	html_start_box("<strong>SNMP Cache Items</strong>", "98%", $colors["header"], "3", "center", "");
 
@@ -772,6 +842,22 @@ function utilities_view_poller_cache() {
 	$_REQUEST['page_referrer'] = 'view_poller_cache';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_poller_cache');
 
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyPItemFilterChange(objForm) {
+		strURL = '?poller_action=' + objForm.poller_action.value;
+		strURL = strURL + '&host_id=' + objForm.host_id.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&action=view_poller_cache';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+
 	html_start_box("<strong>Poller Cache Items</strong>", "98%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_poller_item_filter_table.php");
@@ -896,8 +982,8 @@ function utilities_view_poller_cache() {
 
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 		?>
-            <td>
-            </td>
+			<td>
+			</td>
 			<td>
 				RRD: <?php print $item["rrd_path"];?>
 			</td>
