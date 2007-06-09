@@ -3,7 +3,7 @@
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
-					<td width="55">
+					<td width="60">
 						Search:&nbsp;
 					</td>
 					<td width="1">

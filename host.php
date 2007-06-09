@@ -775,7 +775,7 @@ function host() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-    $sql_where = "where (host.hostname like '%%" . $_REQUEST["filter"] . "%%' OR host.description like '%%" . $_REQUEST["filter"] . "%%')";
+	$sql_where = "where (host.hostname like '%%" . $_REQUEST["filter"] . "%%' OR host.description like '%%" . $_REQUEST["filter"] . "%%')";
 
 	if ($_REQUEST["host_status"] == "-1") {
 		/* Show all items */

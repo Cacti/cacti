@@ -273,7 +273,11 @@ $log_tail_lines = array(
 	100 => "100 Lines",
 	200 => "200 Lines",
 	500 => "500 Lines",
-	1000 => "1000 Lines"
+	1000 => "1000 Lines",
+	2000 => "2000 Lines",
+	3000 => "3000 Lines",
+	5000 => "5000 Lines",
+	10000 => "10000 Lines"
 	);
 
 $page_refresh_interval = array(
