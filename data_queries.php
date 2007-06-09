@@ -705,6 +705,11 @@ function data_query_edit() {
 function data_query() {
 	global $colors, $dq_actions;
 
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+//		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
@@ -715,11 +720,72 @@ function data_query() {
 		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
 	}
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_data_queries_filter");
+		kill_session_var("sess_data_queries_sort_column");
+		kill_session_var("sess_data_queries_sort_direction");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+		$_REQUEST["page"] = 1;
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("sort_column", "sess_data_queries_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_queries_sort_direction", "ASC");
+	load_current_session_value("page", "sess_data_queries_current_page", "1");
+	load_current_session_value("filter", "sess_data_queries_filter", "");
 
 	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
+
+	include("./include/html/inc_dq_view_filter_table.php");
+
+	html_end_box();
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "where (snmp_query.name like '%%" . $_REQUEST["filter"] . "%%' OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+
+	$total_rows = db_fetch_cell("SELECT
+		count(*)
+		FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id=data_input.id)
+		$sql_where");
+
+	$snmp_queries = db_fetch_assoc("SELECT
+		snmp_query.id,
+		snmp_query.name,
+		data_input.name AS data_input_method
+		FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id=data_input.id)
+		$sql_where
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] . "
+		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "data_queries.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='7'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='left' class='textHeaderDark'>
+							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='data_queries.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						</td>\n
+						<td align='center' class='textHeaderDark'>
+							Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+						</td>\n
+						<td align='right' class='textHeaderDark'>
+							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_queries.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+						</td>\n
+					</tr>
+				</table>
+			</td>
+		</tr>\n";
+
+	print $nav;
 
 	$display_text = array(
 		"name" => array("Name", "ASC"),
@@ -727,23 +793,16 @@ function data_query() {
 
 	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
-	$snmp_queries = db_fetch_assoc("SELECT
-			snmp_query.id,
-			snmp_query.name,
-			data_input.name AS data_input_method
-			FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id = data_input.id)
-			ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
-
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print $snmp_query["name"];?></a>
+					<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["name"]);?></a>
 				</td>
 				<td>
-					<?php print $snmp_query["data_input_method"]; ?>
+					<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]); ?>
 				</td>
 				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
 					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $snmp_query["id"];?>' title="<?php print $snmp_query["name"];?>">
@@ -751,6 +810,8 @@ function data_query() {
 			</tr>
 		<?php
 		}
+
+		print $nav;
 	}else{
 		print "<tr><td><em>No Data Queries</em></td></tr>";
 	}
@@ -759,7 +820,5 @@ function data_query() {
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($dq_actions);
-
-	print "</form>\n";
 }
 ?>

@@ -467,6 +467,11 @@ function data_edit() {
 function data() {
 	global $colors, $input_types, $di_actions;
 
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+//		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
@@ -477,11 +482,74 @@ function data() {
 		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
 	}
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_data_input_filter");
+		kill_session_var("sess_data_input_sort_column");
+		kill_session_var("sess_data_input_sort_direction");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+		$_REQUEST["page"] = 1;
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("filter", "sess_data_input_filter", "");
 	load_current_session_value("sort_column", "sess_data_input_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_input_sort_direction", "ASC");
+	load_current_session_value("page", "sess_data_input_current_page", "1");
 
 	html_start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
+
+	include("./include/html/inc_dq_view_filter_table.php");
+
+	html_end_box();
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "WHERE (data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+
+	$sql_where .= " AND (data_input.name!='Get Script Data (Indexed)'
+		AND data_input.name!='Get Script Server Data (Indexed)'
+		AND data_input.name!='Get SNMP Data'
+		AND data_input.name!='Get SNMP Data (Indexed)')";
+
+	$total_rows = db_fetch_cell("SELECT
+		count(*)
+		FROM data_input
+		$sql_where");
+
+	$data_inputs = db_fetch_assoc("SELECT *
+		FROM data_input
+		$sql_where
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] . "
+		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "data_input.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='7'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='left' class='textHeaderDark'>
+							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='data_input.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						</td>\n
+						<td align='center' class='textHeaderDark'>
+							Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+						</td>\n
+						<td align='right' class='textHeaderDark'>
+							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_input.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+						</td>\n
+					</tr>
+				</table>
+			</td>
+		</tr>\n";
+
+	print $nav;
 
 	$display_text = array(
 		"name" => array("Name", "ASC"),
@@ -489,33 +557,26 @@ function data() {
 
 	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
-	$data_inputs = db_fetch_assoc("SELECT * FROM data_input ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
-
 	$i = 0;
 	if (sizeof($data_inputs) > 0) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
-			if ((substr_count($data_input["name"], "Get Script Data (Indexed)")) ||
-				(substr_count($data_input["name"], "Get Script Server Data (Indexed)")) ||
-				(substr_count($data_input["name"], "Get SNMP Data")) ||
-				(substr_count($data_input["name"], "Get SNMP Data (Indexed)"))) {
-				/* do nothing */
-			}else{
-				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-					?>
-					<td>
-						<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print $data_input["name"];?></a>
-					</td>
-					<td>
-						<?php print $input_types{$data_input["type_id"]};?>
-					</td>
-					<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-						<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_input["id"];?>' title="<?php print $data_input["name"];?>">
-					</td>
-				</tr>
-			<?php
-			}
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				?>
+				<td>
+					<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input["name"]);?></a>
+				</td>
+				<td>
+					<?php print $input_types{$data_input["type_id"]};?>
+				</td>
+				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
+					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_input["id"];?>' title="<?php print $data_input["name"];?>">
+				</td>
+			</tr>
+		<?php
 		}
+
+		print $nav;
 	}else{
 		print "<tr><td><em>No Data Input Methods</em></td></tr>";
 	}

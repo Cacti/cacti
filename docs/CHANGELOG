@@ -43,6 +43,8 @@ Cacti CHANGELOG
 -feature: Add rra_path as a config.php config variable
 -feature: Add drop down actions to data queries
 -feature: Add drop down actions to data input methods.  Hide system methods
+-feature: Add filtering to data queries
+-feature: Add filterint to data input methods
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
