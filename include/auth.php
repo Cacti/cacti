@@ -32,7 +32,7 @@ if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
 
 if (read_config_option("global_auth") == "on") {
 	/* handle change password dialog */
-	if (isset($_SESSION['sess_change_password'])) {
+	if ((isset($_SESSION['sess_change_password'])) && (read_config_option("webbasic_enabled") != "on")) {
 		header ("Location: auth_changepassword.php?ref=" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
 		exit;
 	}
@@ -91,7 +91,7 @@ if (read_config_option("global_auth") == "on") {
 					need access to this particular section, please contact the Cacti administrator.</td>
 				</tr>
 				<tr>
-					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'>Return</a> | <a href='logout.php'>Login</a> )</td>
+					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'>Return</a> | <a href='index.php'>Login</a> )</td>
 				</tr>
 			</table>
 

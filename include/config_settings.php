@@ -694,10 +694,17 @@ $settings = array(
 			),
 		"ldap_enabled" => array(
 			"friendly_name" => "Use LDAP Authentication",
-			"description" => "This will allow users to use their LDAP credentials with cacti.",
+			"description" => "This will allow users to use their LDAP credentials with cacti. Builtin Authenication must be enabled.",
 			"method" => "checkbox",
 			"tab" => "authentication"
 			),
+		"webbasic_enabled" => array(
+			"friendly_name" => "Use Web Basic Authentication",
+			"description" => "This will allow users to use their Web Server credentials with cacti. Builtin Authenication must be enabled.",
+			"method" => "checkbox",
+			"tab" => "authentication"
+			),
+
 		"guest_user" => array(
 			"friendly_name" => "Guest User",
 			"description" => "The name of the guest user for viewing graphs; is \"guest\" by default.",
@@ -723,10 +730,20 @@ $settings = array(
 			),
 		"ldap_template" => array(
 			"friendly_name" => "LDAP Cacti Template User",
-			"description" => "This is the user that cacti will use as a template for new LDAP users.",
+			"description" => "This is the user that cacti will use as a template for new LDAP users. Leave empty to disable.",
 			"method" => "textbox",
 			"max_length" => "100"
-			)
+			),
+		"webbasic_header" => array(
+			"friendly_name" => "Web Basic Settings",
+			"method" => "spacer",
+			),
+		"webbasic_template" => array(
+			"friendly_name" => "Web Basic Cacti Template User",
+			"description" => "This is the user that cacti will use as a template for new Web Basic users. Leave empty to disable.",
+			"method" => "textbox",
+			"max_length" => "100"
+			),
 		)
 	);
 

@@ -189,7 +189,8 @@ $graph_tree_views = array(1 =>
 
 $auth_realms = array(0 =>
 	"Local",
-	"LDAP");
+	"LDAP",
+	"Web Basic");
 
 $snmp_implimentations = array(
 	"ucd-snmp" => "UCD-SNMP 4.x",
@@ -334,7 +335,8 @@ $user_auth_realm_filenames = array(
 	"smtp_servers.php" => 8,
 	"email_templates.php" => 8,
 	"event_queue.php" => 8,
-	"smtp_queue.php" => 8
+	"smtp_queue.php" => 8,
+	"logout.php" => 7
 	);
 
 $hash_type_codes = array(
