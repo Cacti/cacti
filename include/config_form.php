@@ -975,6 +975,14 @@ $fields_user_user_edit_host = array(
 				)
 			)
 		),
+	"realm" => array(
+		"method" => "drop_array",
+		"friendly_name" => "Authenication Realm",
+		"description" => "Only used if you have LDAP or Web Basic authenication enabled.",
+		"value" => "|arg1:realm|",
+		"default" => 1,
+		"array" => $auth_realms,
+		),
 	"id" => array(
 		"method" => "hidden_zero",
 		"value" => "|arg1:id|"

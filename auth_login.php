@@ -32,6 +32,7 @@ if (read_config_option("webbasic_enabled") == "on") {
 switch ($_REQUEST["action"]) {
 case 'login':
 	$username =  $_POST["login_username"];
+	$guest_user = false;
 	$webbasic_auth = false;
 	if (read_config_option("webbasic_enabled") == "on") {
 		if (isset($_SERVER['PHP_AUTH_USER'])) {
@@ -40,14 +41,13 @@ case 'login':
 			if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $username . "' and realm = 2")) == 0) {
 				/* copy template user's settings */
 				if (read_config_option("webbasic_template") == "") {
-					print "Error: User profile does not exist for " . $username;
-					exit;
+					$guest_user = true;
 				} else {
 					user_copy(read_config_option("webbasic_template"), $username,2);
 				} 
 			}
 		} else {
-			print "Error: Web Basic Authentication enabled, but no username was passed by the web server";
+			print "Error: Web Basic Authentication enabled, but no username was passed by the web server.";
 			exit;
 		}
 	}
@@ -63,19 +63,27 @@ case 'login':
 			if ($ldap_response) {
 				$ldap_auth = true;
 				if (sizeof(db_fetch_assoc("select * from user_auth where username='" . $username . "' and realm = 1")) == 0) {
-					/* copy template user's settings */
-					user_copy(read_config_option("ldap_template"), $username, 1);
+					if (read_config_option("ldap_template") == "") {
+						$guest_user = true;
+					} else {
+						user_copy(read_config_option("ldap_template"), $username, 1);
+					}	 
 				}
 			}
 		}
 	}
 
-	if ($webbasic_auth) {
-		$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 2");
-	} elseif ($ldap_auth) {
-		$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 1");
+	if ($guest_user) {
+		$username = read_config_option("guest_user");
+		$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 0");
 	} else {
-		$user = db_fetch_row("select * from user_auth where username='" . $username . "' and password = '" . md5($_POST["login_password"]) . "' and realm = 0");
+		if ($webbasic_auth) {
+			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 2");
+		} elseif ($ldap_auth) {
+			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 1");
+		} else {
+			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and password = '" . md5($_POST["login_password"]) . "' and realm = 0");
+		}
 	}
 
 	if (sizeof($user)) {
@@ -113,7 +121,38 @@ case 'login':
 	}
 }
 
+if (read_config_option("webbasic_enabled") == "on") {
 ?>
+<html>
+<head>
+	<title>Login to Cacti</title>
+	<STYLE TYPE="text/css">
+	<!--
+		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
+		A {text-decoration: none;}
+		A:active { text-decoration: none;}
+		A:hover {text-decoration: underline; color: #333333;}
+		A:visited {color: Blue;}
+	-->
+	</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<table align="center">
+	<tr>
+		<td><img src="images/auth_deny.gif" border="0" alt=""></td>
+	</tr>
+	<tr>
+		<td align="center"><span style="text-decoration: none; color: #EE0000; font-size: 14px; align: center; font-weight: bold;">Unable to locate valid profile for user <?php print $_SERVER['PHP_AUTH_USER']; ?></span></td>
+	</tr>
+</table>
+
+</body>
+</html>
+
+<?php } else { ?>
+
 <html>
 <head>
 	<title>Login to Cacti</title>
@@ -182,3 +221,4 @@ case 'login':
 
 </body>
 </html>
+<?php } ?>

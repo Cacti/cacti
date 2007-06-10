@@ -45,7 +45,8 @@ Cacti CHANGELOG
 -feature: Add drop down actions to data input methods.  Hide system methods
 -feature: Add filtering to data queries
 -feature: Add filterint to data input methods
--feature: Added Web Basic Authentication 
+-feature: Add Web Basic authentication 
+-feature: Add authenication realm to modifiable user parameters
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.

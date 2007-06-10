@@ -730,7 +730,7 @@ $settings = array(
 			),
 		"ldap_template" => array(
 			"friendly_name" => "LDAP Cacti Template User",
-			"description" => "This is the user that cacti will use as a template for new LDAP users. Leave empty to disable.",
+			"description" => "This is the user that cacti will use as a template for new LDAP users. Leave empty to disable, if guest user defined, will be logged in as that user.",
 			"method" => "textbox",
 			"max_length" => "100"
 			),
@@ -740,7 +740,7 @@ $settings = array(
 			),
 		"webbasic_template" => array(
 			"friendly_name" => "Web Basic Cacti Template User",
-			"description" => "This is the user that cacti will use as a template for new Web Basic users. Leave empty to disable.",
+			"description" => "This is the user that cacti will use as a template for new Web Basic users. Leave empty to disable, if guest user defined, will be logged in as that user.",
 			"method" => "textbox",
 			"max_length" => "100"
 			),
