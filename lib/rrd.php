@@ -30,6 +30,8 @@ function escape_command($command) {
 }
 
 function rrd_init($output_to_term = TRUE) {
+	global $config;
+
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
