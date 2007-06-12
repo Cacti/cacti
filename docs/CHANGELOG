@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -bug: More recent versions of net-snmp broke SNMP walk functions.
 -bug: Adjust for problematic responses from some SNMPT Agents.
 -bug: Improve logging in cmd.php and poller.php when parameters are not specified correctly.
+-bug: Reduce the total number of SQL queries called by half
 -feature: Add rra_path as a config.php config variable
 -feature: Add drop down actions to data queries
 -feature: Add drop down actions to data input methods.  Hide system methods

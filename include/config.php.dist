@@ -145,6 +145,11 @@ if ((bool)ini_get("register_globals")) {
 /* display ALL errors */
 error_reporting(E_ALL);
 
+/* Reset this for on the fly changing of the Logging Verbosity */
+if (isset($_SESSION['sess_config_array']['log_verbosity'])) {
+	unset($_SESSION['sess_config_array']['log_verbosity']);
+}
+
 /* include base modules */
 include($config["library_path"] . "/adodb/adodb.inc.php");
 include($config["library_path"] . "/database.php");

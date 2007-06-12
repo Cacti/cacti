@@ -56,11 +56,12 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 
 /* db_execute - run an sql query and do not return any output
    @arg $sql - the sql query to execute
+   @arg $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute($sql, $log = TRUE) {
 	global $cnn_id;
 
-	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: SQL Exec: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
@@ -68,7 +69,7 @@ function db_execute($sql, $log = TRUE) {
 
 	if ($query) {
 		return(1);
-	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
+	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Exec Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 		return(0);
 	}
@@ -77,12 +78,13 @@ function db_execute($sql, $log = TRUE) {
 /* db_fetch_cell - run a 'select' sql query and return the first column of the
      first row found
    @arg $sql - the sql query to execute
+   @arg $log - whether to log error messages, defaults to true
    @arg $col_name - use this column name instead of the first one
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 	global $cnn_id;
 
-	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: SQL Cell: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
@@ -102,18 +104,19 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 				return($query->fields[0]);
 			}
 		}
-	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
+	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Cell Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
 /* db_fetch_row - run a 'select' sql query and return the first row found
    @arg $sql - the sql query to execute
+   @arg $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row($sql, $log = TRUE) {
 	global $cnn_id;
 
-	if (($log) && (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
+	if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("DEBUG: SQL Row: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"\n", FALSE);
 	}
 
@@ -124,18 +127,19 @@ function db_fetch_row($sql, $log = TRUE) {
 		if (!$query->EOF) {
 			return($query->fields);
 		}
-	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
+	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Row Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
 /* db_fetch_assoc - run a 'select' sql query and return all rows found
    @arg $sql - the sql query to execute
+   @arg $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql, $log = TRUE) {
 	global $cnn_id;
 
-	if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: SQL Assoc: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
@@ -149,7 +153,7 @@ function db_fetch_assoc($sql, $log = TRUE) {
 			$query->MoveNext();
 		}
 		return($data);
-	}else if (($log) || (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG)) {
+	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Assoc Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}
 }
