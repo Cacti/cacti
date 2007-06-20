@@ -42,10 +42,12 @@ include_once($config["base_path"]."/lib/snmp.php");
 include_once($config["base_path"]."/lib/data_query.php");
 include_once($config["base_path"]."/lib/api_device.php");
 
-if ($_SERVER["argc"] == 1) {
-	usage();
-	return 1;
-}else{
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
+
+if (sizeof($parms)) {
+	/* setup defaults */
 	$graph_type    = "";
 	$templateGraph = array();
 	$dsGraph       = array();
@@ -59,57 +61,60 @@ if ($_SERVER["argc"] == 1) {
 	$templateId = 0;
 	$force      = 0;
 
+	$listHosts       = 0;
 	$listSNMPFields  = 0;
 	$listSNMPValues  = 0;
 	$listQueryTypes  = 0;
 	$listSNMPQueries = 0;
 
-	for ($i = 1; $i < $_SERVER["argc"]; $i++) {
-		switch($_SERVER["argv"][$i]) {
+	foreach($parms as $parameter) {
+		@list($arg, $value) = @explode("=", $parameter);
+
+		switch($arg) {
 		case "--graph-type":
 			$i++;
-			$graph_type = $_SERVER["argv"][$i];
+			$graph_type = $value;
 
 			break;
 		case "--graph-title":
 			$i++;
-			$graphTitle = $_SERVER["argv"][$i];
+			$graphTitle = $value;
 
 			break;
 		case "--graph-template-id":
 			$i++;
-			$templateId = $_SERVER["argv"][$i];
+			$templateId = $value;
 
 			break;
 		case "--host-id":
 			$i++;
-			$hostId = $_SERVER["argv"][$i];
+			$hostId = $value;
 
 			break;
 		case "--snmp-query-id":
 			$i++;
-			$dsGraph["snmpQueryId"] = $_SERVER["argv"][$i];
+			$dsGraph["snmpQueryId"] = $value;
 
 			break;
 		case "--snmp-query-type-id":
 			$i++;
-			$dsGraph["snmpQueryType"] = $_SERVER["argv"][$i];
+			$dsGraph["snmpQueryType"] = $value;
 
 			break;
 		case "--snmp-field":
 			$i++;
-			$dsGraph["snmpField"] = $_SERVER["argv"][$i];
+			$dsGraph["snmpField"] = $value;
 
 			break;
 		case "--snmp-value":
 			$i++;
-			$dsGraph["snmpValue"] = $_SERVER["argv"][$i];
+			$dsGraph["snmpValue"] = $value;
 
 			break;
 		case "--list-hosts":
-			displayHosts($hosts);
+			$listHosts = 1;
 
-			return 0;
+			break;
 		case "--list-snmp-fields":
 			$listSNMPFields = 1;
 
@@ -135,10 +140,16 @@ if ($_SERVER["argc"] == 1) {
 
 			return 0;
 		default:
-			usage();
+			display_help();
 
 			return 0;
 		}
+	}
+
+	if ($listHosts) {
+		displayHosts($hosts);
+
+		return 0;
 	}
 
 	/* get the existing snmp queries */
@@ -242,7 +253,7 @@ if ($_SERVER["argc"] == 1) {
 	if ((!isset($templateId)) || (!isset($hostId))) {
 		echo "Must have at least a host-id and a graph-template-id\n\n";
 
-		usage();
+		display_help();
 
 		return 1;
 	}
@@ -253,6 +264,11 @@ if ($_SERVER["argc"] == 1) {
 		$empty = array(); /* Suggested Values are not been implemented */
 
 		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId");
+		$dataSourceId = db_fetch_cell("SELECT DISTINCT
+			data_template_rrd.local_data_id
+			FROM graph_templates_item, data_template_rrd
+			WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
+			AND graph_templates_item.task_item_id = data_template_rrd.id");
 
 		if ((isset($existsAlready)) &&
 			($existsAlready > 0) &&
@@ -267,7 +283,7 @@ if ($_SERVER["argc"] == 1) {
 		if ((!isset($dsGraph["snmpQueryId"])) || (!isset($dsGraph["snmpQueryType"])) || (!isset($dsGraph["snmpField"])) || (!isset($dsGraph["snmpValue"]))) {
 			echo "For graph-type of 'ds' you must supply more options\n";
 
-			usage();
+			display_help();
 
 			return 1;
 		}
@@ -332,21 +348,28 @@ if ($_SERVER["argc"] == 1) {
 	echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
 
 	return 0;
+}else{
+	display_help();
+
+	return 1;
 }
 
-function usage() {
+}
+
+function display_help() {
 	echo "Usage:\n";
-	echo "add_graphs.php --graph-type [cg|ds]  --graph-template-id [ID] --host-id [ID] [--graph-title title ] [graph options] [--force]\n\n";
-	echo "For cg graphs: [--force]\n";
+	echo "add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]\n";
+	echo "  --host-id=[ID] [--graph-title=title] [graph options] [--force]\n\n";
+	echo "For cg graphs: [--force]\n\n";
 	echo "--force is optional - if you set this flag, then new cg graphs will be created, even though they may already exist.\n\n";
-	echo "For ds graphs: --snmp-query-id [ID] --snmp-query-type-id [ID] --snmp-field [SNMP Field] --snmp-value [SNMP Value]\n\n";
-	echo "--graph-title is optional - it defaults to what ever is in the graph template/data-source template.\n";
+	echo "For ds graphs: --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]\n\n";
+	echo "--graph-title is optional - it defaults to what ever is in the graph template/data-source template.\n\n";
 	echo "List Options:  --list-hosts\n";
 	echo "               --list-graph-templates\n";
 	echo "               --list-snmp-queries\n";
 	echo "               --snmp-query-id [ID] --list-query-types\n";
-	echo "               --host-id [ID] --list-snmp-fields\n";
-	echo "               --host-id [ID] --snmp-field [Field] --list-snmp-values\n\n";
+	echo "               --host-id=[ID] --list-snmp-fields\n";
+	echo "               --host-id=[ID] --snmp-field=[Field] --list-snmp-values\n\n";
 	echo "'cg' graphs are for things like CPU temp/fan speed, while 'ds' graphs are for data-source based graphs (interface stats etc.)\n";
 }
 
