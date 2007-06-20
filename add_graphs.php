@@ -1,8 +1,9 @@
 #!/usr/bin/php -q
 <?php
 /*
-  Written By Bradley Kite <bradley[-a-t-]kitefamily.co.uk>
  +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2007 The Cacti Group                                 |
+ |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
  | as published by the Free Software Foundation; either version 2          |
@@ -13,7 +14,12 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | cacti: Graph Importing Script                                           |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -51,6 +57,7 @@ if ($_SERVER["argc"] == 1) {
 
 	$hostId     = 0;
 	$templateId = 0;
+	$force      = 0;
 
 	$listSNMPFields  = 0;
 	$listSNMPValues  = 0;
@@ -119,6 +126,10 @@ if ($_SERVER["argc"] == 1) {
 			$listSNMPQueries = 1;
 
 			break;
+		case "--force":
+			$force = 1;
+
+			break;
 		case "--list-graph-templates":
 			displayGraphTemplates($graphTemplates);
 
@@ -130,6 +141,7 @@ if ($_SERVER["argc"] == 1) {
 		}
 	}
 
+	/* get the existing snmp queries */
 	$snmpQueries = getSNMPQueries();
 
 	if ($listSNMPQueries == 1) {
@@ -147,6 +159,7 @@ if ($_SERVER["argc"] == 1) {
 			return 1;
 		}
 
+		/* get the snmp query types for comparison */
 		$snmp_query_types = getSNMPQueryTypes($dsGraph["snmpQueryId"]);
 
 		if ($listQueryTypes == 1) {
@@ -166,6 +179,7 @@ if ($_SERVER["argc"] == 1) {
 	}
 
 
+	/* Verify the host's existance */
 	if (!isset($hosts[$hostId]) || $hostId == 0) {
 		echo "Unknown Host ID ($hostId)\n";
 		echo "Try --list-hosts\n";
@@ -173,6 +187,7 @@ if ($_SERVER["argc"] == 1) {
 		return 1;
 	}
 
+	/* process the snmp fields */
 	$snmpFields = getSNMPFields($hostId);
 
 	if ($listSNMPFields == 1) {
@@ -181,9 +196,9 @@ if ($_SERVER["argc"] == 1) {
 		return 0;
 	}
 
-
 	$snmpValues = array();
 
+	/* More sanity checking */
 	if (isset($dsGraph["snmpField"])) {
 		if (!isset($snmpFields[$dsGraph["snmpField"]])) {
 			echo "Unknwon snmp-field " . $dsGraph["snmpField"] . " for host $hostId\n";
@@ -236,7 +251,18 @@ if ($_SERVER["argc"] == 1) {
 
 	if ($graph_type == "cg") {
 		$empty = array(); /* Suggested Values are not been implemented */
-		$returnArray = create_complete_graph_from_template($templateId, $hostId, "", $empty);
+
+		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId");
+
+		if ((isset($existsAlready)) &&
+			($existsAlready > 0) &&
+			(!$force)) {
+			echo "Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
+
+			return 1;
+		}else{
+			$returnArray = create_complete_graph_from_template($templateId, $hostId, "", $empty);
+		}
 	}elseif ($graph_type == "ds") {
 		if ((!isset($dsGraph["snmpQueryId"])) || (!isset($dsGraph["snmpQueryType"])) || (!isset($dsGraph["snmpField"])) || (!isset($dsGraph["snmpValue"]))) {
 			echo "For graph-type of 'ds' you must supply more options\n";
@@ -251,7 +277,7 @@ if ($_SERVER["argc"] == 1) {
 		$snmp_query_array["snmp_index_on"]       = $dsGraph["snmpField"];
 		$snmp_query_array["snmp_query_graph_id"] = $dsGraph["snmpQueryType"];
 
-		$snmp_query_array["snmp_index"] = db_fetch_cell("select snmp_index from host_snmp_cache WHERE host_id = " . $hostId . " and snmp_query_id = " . $dsGraph["snmpQueryId"] . " and field_name = '" . $dsGraph["snmpField"] . "' and field_value = '" . $dsGraph["snmpValue"] . "'");
+		$snmp_query_array["snmp_index"] = db_fetch_cell("select snmp_index from host_snmp_cache WHERE host_id=" . $hostId . " and snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND field_name='" . $dsGraph["snmpField"] . "' AND field_value='" . $dsGraph["snmpValue"] . "'");
 
 		if (!isset($snmp_query_array["snmp_index"])) {
 			echo "Could not find snmp-field " . $dsGraph["snmpField"] . " (" . $dsGraph["snmpValue"] . ") for host-id " . $hostId . " (" . $hosts[$hostId] . ")\n";
@@ -260,7 +286,7 @@ if ($_SERVER["argc"] == 1) {
 			return 1;
 		}
 
-		$existsAlready = db_fetch_cell("select id from graph_local where graph_template_id = $templateId AND host_id = $hostId AND snmp_query_id = " . $dsGraph["snmpQueryId"] . " AND snmp_index = " . $snmp_query_array["snmp_index"]);
+		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId AND snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND snmp_index=" . $snmp_query_array["snmp_index"]);
 
 		if (isset($existsAlready) && $existsAlready > 0) {
 			if ($graphTitle != "") {
@@ -288,7 +314,9 @@ if ($_SERVER["argc"] == 1) {
 	}
 
 	if ($graphTitle != "") {
-		db_execute("update graph_templates_graph set title = \"$graphTitle\" where local_graph_id = " . $returnArray["local_graph_id"]);
+		db_execute("UPDATE graph_templates_graph
+			SET title=\"$graphTitle\"
+			WHERE local_graph_id=" . $returnArray["local_graph_id"]);
 
 		update_graph_title_cache($returnArray["local_graph_id"]);
 	}
@@ -308,10 +336,11 @@ if ($_SERVER["argc"] == 1) {
 
 function usage() {
 	echo "Usage:\n";
-	echo "add_graphs.php --graph-type [cg|ds]  --graph-template-id [ID] --host-id [ID] [--graph-title title ] [graph options]\n\n";
-	echo "For cg graphs: No further options are required\n";
+	echo "add_graphs.php --graph-type [cg|ds]  --graph-template-id [ID] --host-id [ID] [--graph-title title ] [graph options] [--force]\n\n";
+	echo "For cg graphs: [--force]\n";
+	echo "--force is optional - if you set this flag, then new cg graphs will be created, even though they may already exist.\n\n";
 	echo "For ds graphs: --snmp-query-id [ID] --snmp-query-type-id [ID] --snmp-field [SNMP Field] --snmp-value [SNMP Value]\n\n";
-	echo "--graph-title is optional - it defaults to what ever is in the graph template/data-source template.\n\n";
+	echo "--graph-title is optional - it defaults to what ever is in the graph template/data-source template.\n";
 	echo "List Options:  --list-hosts\n";
 	echo "               --list-graph-templates\n";
 	echo "               --list-snmp-queries\n";
