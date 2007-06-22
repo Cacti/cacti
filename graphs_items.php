@@ -187,6 +187,8 @@ function item_edit() {
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("graph_template_id"));
 	input_validate_input_number(get_request_var_request("local_graph_id"));
 	input_validate_input_number(get_request_var_request("ds_host_id"));
 	input_validate_input_number(get_request_var_request("ds_data_template_id"));
