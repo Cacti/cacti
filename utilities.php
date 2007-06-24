@@ -368,11 +368,6 @@ function utilities_view_logfile() {
 	input_validate_input_number(get_request_var_request("refresh"));
 	input_validate_input_number(get_request_var_request("reverse"));
 
-	/* clean up search filter */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
-	}
-
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_logfile_tail_lines");
@@ -527,7 +522,8 @@ function utilities_view_logfile() {
 
 		/* match any lines that match the search string */
 		if (strlen($_REQUEST["filter"])) {
-			if (substr_count(strtolower($new_item), strtolower($_REQUEST["filter"]))) {
+			if ((substr_count(strtolower($new_item), strtolower($_REQUEST["filter"]))) ||
+				(preg_match($_REQUEST["filter"], $new_item))) {
 				$display=true;
 			}else{
 				$display=false;
