@@ -506,7 +506,7 @@ function create_dhtml_tree() {
 					$tier = tree_tier($leaf["order_key"]);
 
 					if ($leaf["host_id"] > 0) {
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"<strong>Host:</strong> " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"<strong>Host:</strong> " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
 
 						if (read_graph_config_option("expand_hosts") == "on") {
 							if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
@@ -568,7 +568,7 @@ function create_dhtml_tree() {
 							}
 						}
 					}else{
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . addslashes($leaf["title"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . addslashes($leaf["title"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
 					}
 				}
 			}
