@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -bug#0000931: new rrdtool chokes on empty comment 
 -bug#0000934: Column 'status_last_error' in table 'host' too short.
 -bug#0000937: System output in hosts.php poor for Alcatel
+-bug#0000946: Timetick 0 returns down for device
 -bug#0000953: SNMP Passphrase displayed in cleartext 
 -bug#0000955: Possibility to create a denial of service by modifying graph image url
 -bug#0000957: Script Server Output's Beginning/Trailing Data During "Include" Causing a Synchronization Issue
