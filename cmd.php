@@ -76,7 +76,6 @@ if ( $_SERVER["argc"] == 1 ) {
 	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
 }else{
 	$print_data_to_stdout = false;
-
 	if ($_SERVER["argc"] == "3") {
 		if ($_SERVER["argv"][1] <= $_SERVER["argv"][2]) {
 			/* address potential exploits */
