@@ -154,6 +154,7 @@ function get_hosts() {
 }
 
 function getHosts() {
+	$hosts    = array();
 	$tmpArray = db_fetch_assoc("select id, hostname from host order by id");
 
 	foreach ($tmpArray as $host) {
@@ -165,7 +166,7 @@ function getHosts() {
 
 function get_addresses() {
 	$addresses = array();
-	$tmparray = db_fetch_assoc("select id, hostname from host order by hostname");
+	$tmparray  = db_fetch_assoc("select id, hostname from host order by hostname");
 
 	foreach ($tmparray as $tmp) {
 		$addresses[$tmp["hostname"]] = $tmp["id"];
@@ -175,7 +176,8 @@ function get_addresses() {
 }
 
 function getSNMPFields($hostId) {
-	$tmpArray = db_fetch_assoc("select distinct field_name from host_snmp_cache where host_id = " . $hostId . " order by field_name");
+	$fieldNames = array();
+	$tmpArray   = db_fetch_assoc("select distinct field_name from host_snmp_cache where host_id = " . $hostId . " order by field_name");
 
 	foreach ($tmpArray as $f) {
 		$fieldNames[$f["field_name"]] = 1;
@@ -185,6 +187,7 @@ function getSNMPFields($hostId) {
 }
 
 function getSNMPValues($hostId, $field) {
+	$values   = array();
 	$tmpArray = db_fetch_assoc("select field_value from host_snmp_cache where host_id = " . $hostId . " and field_name = '" . $field . "' order by field_value");
 
 	foreach ($tmpArray as $v) {
@@ -195,6 +198,7 @@ function getSNMPValues($hostId, $field) {
 }
 
 function getSNMPQueries() {
+	$queries  = array();
 	$tmpArray = db_fetch_assoc("select id, name from snmp_query order by id");
 
 	foreach ($tmpArray as $q) {
@@ -205,6 +209,7 @@ function getSNMPQueries() {
 }
 
 function getSNMPQueryTypes($snmpQueryId) {
+	$types    = array();
 	$tmpArray = db_fetch_assoc("select id, name from snmp_query_graph where snmp_query_id = " . $snmpQueryId . " order by id");
 
 	foreach ($tmpArray as $type) {
@@ -223,7 +228,8 @@ function displayQueryTypes($types) {
 }
 
 function getGraphTemplates() {
-	$tmpArray = db_fetch_assoc("select id, name from graph_templates order by id");
+	$graph_templates = array();
+	$tmpArray        = db_fetch_assoc("select id, name from graph_templates order by id");
 
 	foreach ($tmpArray as $t) {
 		$graph_templates[$t["id"]] = $t["name"];
@@ -252,14 +258,6 @@ function display_communities() {
 	}
 
 	echo "\n";
-}
-
-function displayHosts($hosts) {
-	echo "Known Hosts:(id, hostname)\n";
-
-	while (list($id, $host) = each ($hosts)) {
-		echo "\t" . $id . "\t" . $host . "\n";
-	}
 }
 
 function displaySNMPFields($fields, $hostId) {
