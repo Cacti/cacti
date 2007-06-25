@@ -65,13 +65,27 @@ function db_execute($sql, $log = TRUE) {
 		cacti_log("DEBUG: SQL Exec: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 
-	$query = $cnn_id->Execute($sql);
+	$errors = 0;
+	while (1) {
+		$query = $cnn_id->Execute($sql);
 
-	if ($query) {
-		return(1);
-	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Exec Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
-		return(0);
+		if ($query) {
+			return(1);
+		}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
+			if ((substr_count($cnn_id->ErrorMsg(), "Deadlock")) || ($cnn_id->ErrorNo() == 1213) || ($cnn_id->ErrorNo() == 1205)) {
+				$errors++;
+				if ($errors > 30) {
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) ."'", TRUE);
+					return(0);
+				}else{
+					usleep(500000);
+					continue;
+				}
+			}else{
+				cacti_log("ERROR: A database exec failed! Error:'" . $cnn_id->ErrorNo() . "', SQL:'" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
+				return(0);
+			}
+		}
 	}
 }
 
