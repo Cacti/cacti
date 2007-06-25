@@ -233,7 +233,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			$direction = $display_array[1];
 		}
 
-		if ($db_column == "") {
+		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
 			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='textSubHeaderDark'>" . $display_text . "</td>\n";
 		}else{
 			print "<td " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
@@ -283,7 +283,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			$direction = $display_array[1];
 		}
 
-		if ($db_column == "") {
+		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
 			print "<td class='textSubHeaderDark'>" . $display_text . "</td>\n";
 		}else{
 			print "<td>";
