@@ -87,9 +87,9 @@ if (sizeof($issues)) {
 	$count = 0;
 	foreach($issues as $issue) {
 		if ($count == 0) {
-			$issue_list .= $issue["rrd_name"] . "(" . $issue["local_data_id"] . ")";
+			$issue_list .= $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
 		}else{
-			$issue_list .= ", " . $issue["rrd_name"] . "(" . $issue["local_data_id"] . ")";
+			$issue_list .= ", " . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
 		}
 		$count++;
 	}
@@ -140,7 +140,7 @@ if (read_config_option("poller_enabled") == "on") {
 
 		if ($change_files) {
 			exec_background($command_string, "$extra_args $first_host $last_host");
-			sleep(1);
+			usleep(100000);
 
 			$host_count = 1;
 			$change_files = False;
@@ -154,7 +154,7 @@ if (read_config_option("poller_enabled") == "on") {
 		$last_host = $item["id"];
 
 		exec_background($command_string, "$extra_args $first_host $last_host");
-		sleep(1);
+		usleep(100000);
 
 		$process_file_number++;
 	}
