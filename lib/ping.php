@@ -321,7 +321,7 @@ class Net_Ping
 			$this->time = $this->get_time($this->precision);
 
 			/* check result for uptime */
-			if ((!empty($output)) || ($output == "0")) {
+			if (strlen($output)) {
 				/* calculte total time */
 				$this->snmp_status = $this->time*1000;
 				$this->snmp_response = "Host responded to SNMP";

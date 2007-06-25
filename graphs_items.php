@@ -190,16 +190,16 @@ function item_edit() {
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("graph_template_id"));
 	input_validate_input_number(get_request_var_request("local_graph_id"));
-	input_validate_input_number(get_request_var_request("ds_host_id"));
-	input_validate_input_number(get_request_var_request("ds_data_template_id"));
+	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("data_template_id"));
 	/* ==================================================== */
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("local_graph_id", "sess_local_graph_id", "");
-	load_current_session_value("ds_host_id", "sess_ds_host_id", "-1");
-	load_current_session_value("ds_data_template_id", "sess_data_template_id", "-1");
+	load_current_session_value("host_id", "sess_ds_host_id", "-1");
+	load_current_session_value("data_template_id", "sess_data_template_id", "-1");
 
-	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["ds_host_id"]);
+	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
 
 	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "98%", $colors["header"], "3", "center", "");
 
@@ -207,20 +207,20 @@ function item_edit() {
 
 	html_end_box();
 
-	if ($_REQUEST["ds_host_id"] == "-1") {
+	if ($_REQUEST["host_id"] == "-1") {
 		$sql_where = "";
-	}elseif ($_REQUEST["ds_host_id"] == "0") {
+	}elseif ($_REQUEST["host_id"] == "0") {
 		$sql_where = " data_local.host_id=0 and ";
-	}elseif (!empty($_REQUEST["ds_host_id"])) {
-		$sql_where = " data_local.host_id=" . $_REQUEST["ds_host_id"] . " and ";
+	}elseif (!empty($_REQUEST["host_id"])) {
+		$sql_where = " data_local.host_id=" . $_REQUEST["host_id"] . " and ";
 	}
 
-	if ($_REQUEST["ds_data_template_id"] == "-1") {
+	if ($_REQUEST["data_template_id"] == "-1") {
 		$sql_where .= "";
-	}elseif ($_REQUEST["ds_data_template_id"] == "0") {
+	}elseif ($_REQUEST["data_template_id"] == "0") {
 		$sql_where .= " data_local.data_template_id=0 and ";
-	}elseif (!empty($_REQUEST["ds_data_template_id"])) {
-		$sql_where .= " data_local.data_template_id=" . $_REQUEST["ds_data_template_id"] . " and ";
+	}elseif (!empty($_REQUEST["data_template_id"])) {
+		$sql_where .= " data_local.data_template_id=" . $_REQUEST["data_template_id"] . " and ";
 	}
 
 	if (!empty($_REQUEST["id"])) {
