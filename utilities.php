@@ -437,6 +437,7 @@ function utilities_view_logfile() {
 	html_start_box($start_string, "98%", $colors["header"], "3", "center", "");
 
 	$i = 0;
+	$j = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, "Host[");
@@ -558,11 +559,12 @@ function utilities_view_logfile() {
 				</td>
 			</tr>
 			<?php
+			$j++;
 		}
 
 		$i++;
 
-		if ($i > 1000) {
+		if ($j > 1000) {
 			?>
 			<tr bgcolor='#EACC00'>
 				<td>
