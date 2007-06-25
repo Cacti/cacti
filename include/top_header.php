@@ -28,6 +28,7 @@ global $colors;
 <head>
 	<title>cacti</title>
 	<link href="include/main.css" rel="stylesheet">
+	<link href="images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="include/layout.js"></script>
 	<?php if (isset($refresh)) {
 	print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
