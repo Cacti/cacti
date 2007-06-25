@@ -257,7 +257,7 @@ function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
 	if (sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
-			$value = rtrim(strtr(strtr($item["output"],'\r',''),'\n',''));
+			$value = trim($item["output"]);
 			$unix_time = strtotime($item["time"]);
 
 			$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
