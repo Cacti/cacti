@@ -673,7 +673,7 @@ function strip_quotes($result) {
    @returns - (int) either to result is valid or not */
 function validate_result($result) {
 	$delim_cnt = 0;
-   $space_cnt = 0;
+	$space_cnt = 0;
 
 	$valid_result = false;
 	$checked = false;
@@ -686,7 +686,7 @@ function validate_result($result) {
 			$valid_result = true;
 		} else if (is_float($result)) {
 			$valid_result = true;
-  		} else {
+		} else {
 			$valid_result = false;
 		}
 	}
@@ -718,7 +718,6 @@ function validate_result($result) {
 	}
 
 	/* default handling */
-
 	if (!$checked) {
 		if (is_numeric($result)) {
 			$valid_result = true;
