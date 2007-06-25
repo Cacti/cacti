@@ -37,9 +37,9 @@ case 'changepassword':
 	if (($_POST["password"] == $_POST["confirm"]) && ($_POST["password"] != "")) {
 		db_execute("insert into user_log (username,result,ip) values('" . $user["username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
 		db_execute("update user_auth set must_change_password='',password='" . md5($_POST["password"]) . "' where id=" . $_SESSION["sess_user_id"]);
-		
+
 		kill_session_var("sess_change_password");
-		
+
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 
@@ -56,14 +56,14 @@ case 'changepassword':
 					header("Location: graph_view.php"); break;
 			}
 		}else{
-			header("Location: graph_view.php"); 
+			header("Location: graph_view.php");
 		}
 		exit;
 
 	}else{
 		$bad_password = true;
 	}
-	
+
 	break;
 }
 ?>
@@ -71,7 +71,7 @@ case 'changepassword':
 <head>
 	<title>Login to cacti</title>
 	<STYLE TYPE="text/css">
-	<!--	
+	<!--
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
 		A {text-decoration: none;}
 		A:active { text-decoration: none;}
