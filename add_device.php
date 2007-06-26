@@ -222,15 +222,15 @@ function display_help() {
 	echo "Required:\n";
 	echo "    - description: the name that will be displayed by Cacti in the graphs\n";
 	echo "    - ip: self explanatory (can also be a FQDN)\n";
-	echo "    - template is a number (read below to get a list of templates)\n";
+	echo "    - template is a number (read below to get a list of templates)\n\n";
 	echo "Optional:\n";
-	echo "    - disable: 0, 1 to add this host but to disable checks and 0 to enable it\n\n";
+	echo "    - disable: 0, 1 to add this host but to disable checks and 0 to enable it\n";
 	echo "    - version: 1, 1|2|3, snmp version\n";
 	echo "    - community: '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
 	echo "    - username: '', snmp username for snmpv3\n";
 	echo "    - password: '', snmp password for snmpv3\n";
-	echo "    - port: 1, 1|2|3\n\n";
-	echo "    - timeout: 1, 1|2|3\n\n";
+	echo "    - port: 161\n";
+	echo "    - timeout: 500\n\n";
 	echo "List Options:  --list-templates\n";
 	echo "               --list-communities\n\n";
 }
