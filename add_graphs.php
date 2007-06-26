@@ -354,8 +354,6 @@ if (sizeof($parms)) {
 	return 1;
 }
 
-}
-
 function display_help() {
 	echo "Usage:\n";
 	echo "add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]\n";
