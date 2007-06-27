@@ -590,6 +590,13 @@ $settings = array(
 			"default" => 1,
 			"array" => $poller_options,
 			),
+		"poller_interval" => array(
+			"friendly_name" => "Interval",
+			"description" => "The polling interval in use.  This setting will take effect how often rrd's are updated.  To change the actual polling interval, you must change the schedule in cron.",
+			"method" => "drop_array",
+			"default" => 300,
+			"array" => $poller_intervals,
+			),
 		"concurrent_processes" => array(
 			"friendly_name" => "Maximum Concurrent Poller Processes",
 			"description" => "The number of concurrent processes to execute.  Using a higher number when using cmd.php will improve performance.  Performance improvements in cactid are best resolved with the threads parameter",

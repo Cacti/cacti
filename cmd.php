@@ -63,17 +63,31 @@ $start = $seconds + $micro;
 /* initialize the polling items */
 $polling_items = array();
 
+/* determine how often the poller runs from settings */
+$polling_interval = read_config_option("poller_interval");
+
 /* check arguments */
 if ( $_SERVER["argc"] == 1 ) {
+	if (isset($polling_interval)) {
+		$polling_items = db_fetch_assoc("SELECT * FROM poller_item WHERE rrd_next_step<=0 ORDER by host_id");
+		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=2 AND rrd_next_step<=0)");
+	}else{
+		$polling_items = db_fetch_assoc("SELECT * FROM poller_item ORDER by host_id");
+		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=2)");
+	}
+
 	$print_data_to_stdout = true;
-
-	$polling_items = db_fetch_assoc("SELECT * from poller_item ORDER by host_id");
-
 	/* get the number of polling items from the database */
 	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
 	$hosts = array_rekey($hosts,"id",$host_struc);
 	$host_count = sizeof($hosts);
 	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
+
+	/* setup next polling interval */
+	if (isset($polling_interval)) {
+		db_execute("UPDATE poller_item SET rrd_next_step=rrd_next_step-" . $polling_interval);
+		db_execute("UPDATE poller_item SET rrd_next_step=rrd_step-" . $polling_interval . " WHERE rrd_next_step < 0");
+	}
 }else{
 	$print_data_to_stdout = false;
 	if ($_SERVER["argc"] == "3") {
@@ -88,21 +102,46 @@ if ( $_SERVER["argc"] == 1 ) {
 					AND id >= " . $_SERVER["argv"][1] . "
 					AND id <= " . $_SERVER["argv"][2] . ")
 					ORDER by id");
-			$hosts = array_rekey($hosts,"id",$host_struc);
+			$hosts      = array_rekey($hosts,"id",$host_struc);
 			$host_count = sizeof($hosts);
 
-			$polling_items = db_fetch_assoc("
-					SELECT * from poller_item
+			if (isset($polling_interval)) {
+				$polling_items = db_fetch_assoc("SELECT * 
+					FROM poller_item
 					WHERE (host_id >= " . $_SERVER["argv"][1] . "
-					AND host_id <= " . $_SERVER["argv"][2] . ")
+					AND host_id <= " .    $_SERVER["argv"][2] . " 
+					AND rrd_next_step <= 0) 
 					ORDER by host_id");
 
-			$script_server_calls = db_fetch_cell("
-				SELECT count(*)
-				FROM poller_item
-				WHERE (action=2
-				AND (host_id >= " . $_SERVER["argv"][1] . "
-				AND host_id <= " . $_SERVER["argv"][2] . "))");
+				$script_server_calls = db_fetch_cell("SELECT count(*) 
+					FROM poller_item
+					WHERE (action=2 
+					AND host_id >= " . $_SERVER["argv"][1] . "
+					AND host_id <= " . $_SERVER["argv"][2] . "
+					AND rrd_next_step <= 0)");
+
+				/* setup next polling interval */
+				db_execute("UPDATE poller_item 
+					SET rrd_next_step = rrd_next_step - " . $polling_interval . "
+					WHERE (host_id >= " . $_SERVER["argv"][1] . " 
+					AND host_id <= " . $_SERVER["argv"][2] . ")");
+
+				db_execute("UPDATE poller_item 
+					SET rrd_next_step = rrd_step - " . $polling_interval . "
+					WHERE (rrd_next_step < 0 
+					AND host_id >= " . $_SERVER["argv"][1] . "
+					AND host_id <= " . $_SERVER["argv"][2] . ")");
+			}else{
+				$polling_items = db_fetch_assoc("SELECT * from poller_item" .
+						" WHERE (host_id >= " .	$_SERVER["argv"][1] . " and host_id <= " .
+						$_SERVER["argv"][2] . ") ORDER by host_id");
+
+				$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item " .
+						"WHERE (action=2 AND (host_id >= " .
+						$_SERVER["argv"][1] .
+						" and host_id <= " .
+						$_SERVER["argv"][2] . "))");
+			}
 		}else{
 			print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
 			print "USAGE: CMD.PHP [[first_host] [second_host]]\n";

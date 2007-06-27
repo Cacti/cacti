@@ -175,6 +175,14 @@ $poller_options = array(1 =>
 	"cmd.php",
 	"cactid");
 
+$poller_intervals = array(
+	10 => "Every 10 Seconds",
+	15 => "Every 15 Seconds",
+	20 => "Every 20 Seconds",
+	30 => "Every 30 Seconds",
+	60 => "Every Minute",
+	300 => "Every 5 Minutes");
+
 $registered_cacti_names = array(
 	"path_cacti");
 
