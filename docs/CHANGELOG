@@ -8,11 +8,12 @@ Cacti CHANGELOG
 -bug#0000876: Be able to look for not up host 
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset 
 -bug#0000899: Have settings path page check paths
+-bug#0000902: cmd.php doesn't work with PHP 4.4.1 under windows
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0 
 -bug#0000904: Data Source creation fails without php-snmp 
 -bug#0000906: Every Tenth Host Does Not Show on Tree During Console Edit 
 -bug#0000907: Sorting of Datasources, when interface numbers are used without leading zeros interfaces are incorrectly sorted 
--bug#0000902: cmd.php doesn't work with PHP 4.4.1 under windows
+-bug#0000908: Graphs created by SNMP data queries are losing their specific names if the template is modified
 -bug#0000910: cacti complains when trying to set the data source "maximum value" to any number with a decimal point 
 -bug#0000912: 95th Percentile Thumbnail Graphs Fail with RRDtool 1.2.15, 1.2.18 
 -bug#0000913: patch for direct linking to specific graph pages

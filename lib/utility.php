@@ -70,19 +70,25 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
-		 ($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
-		 ($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
+		($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+		($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
 		if (($data_input["type_id"] != DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) &&
 			(empty($field))) { return; }
+
+		if (strlen($field["output_type"])) {
+			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"];
+		}else{
+			$output_type_sql = "";
+		}
 
 		$outputs = db_fetch_assoc("select
 			snmp_query_graph_rrd.snmp_field_name,
 			data_template_rrd.id as data_template_rrd_id
 			from (snmp_query_graph_rrd,data_template_rrd)
 			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
-			and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"] . "
+			$output_type_sql
 			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
 			and data_template_rrd.local_data_id=$local_data_id");
 	}
