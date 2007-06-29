@@ -61,8 +61,10 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 function db_execute($sql, $log = TRUE) {
 	global $cnn_id;
 
+	$sql = str_replace("  ", " ", str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))));
+
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("DEBUG: SQL Exec: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("DEBUG: SQL Exec: \"" . $sql . "\"", FALSE);
 	}
 
 	$errors = 0;
@@ -98,8 +100,10 @@ function db_execute($sql, $log = TRUE) {
 function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 	global $cnn_id;
 
+	$sql = str_replace("  ", " ", str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))));
+
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("DEBUG: SQL Cell: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("DEBUG: SQL Cell: \"" . $sql . "\"", FALSE);
 	}
 
 	if ($col_name != '') {
@@ -130,8 +134,10 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 function db_fetch_row($sql, $log = TRUE) {
 	global $cnn_id;
 
+	$sql = str_replace("  ", " ", str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))));
+
 	if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("DEBUG: SQL Row: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"\n", FALSE);
+		cacti_log("DEBUG: SQL Row: \"" . $sql . "\"\n", FALSE);
 	}
 
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -153,8 +159,10 @@ function db_fetch_row($sql, $log = TRUE) {
 function db_fetch_assoc($sql, $log = TRUE) {
 	global $cnn_id;
 
+	$sql = str_replace("  ", " ", str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))));
+
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("DEBUG: SQL Assoc: \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("DEBUG: SQL Assoc: \"" . $sql . "\"", FALSE);
 	}
 
 	$data = array();

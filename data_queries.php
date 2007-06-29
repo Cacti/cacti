@@ -748,7 +748,11 @@ function data_query() {
 	html_start_box("", "98%", $colors["header"], "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "where (snmp_query.name like '%%" . $_REQUEST["filter"] . "%%' OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen($_REQUEST["filter"])) {
+		$sql_where = "where (snmp_query.name like '%%" . $_REQUEST["filter"] . "%%' OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+	}else{
+		$sql_where = "";
+	}
 
 	$total_rows = db_fetch_cell("SELECT
 		count(*)

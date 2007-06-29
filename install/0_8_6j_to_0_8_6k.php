@@ -30,6 +30,24 @@ function upgrade_to_0_8_6k() {
 	db_install_execute("0.8.6k", "ALTER TABLE `host` MODIFY COLUMN `status_last_error` VARCHAR(255);");
 
 	/* fix rrd min and max values for data templates */
-	db_install_execute("0.8.6k", "ALTER TABLE `data_template_rrd` MODIFY COLUMN `rrd_maximum` VARCHAR(20) NOT NULL DEFAULT 0, MODIFY COLUMN `rrd_minimum` VARCHAR(20) NOT NULL DEFAULT 0;");
+	db_install_execute("0.8.6k", "ALTER TABLE `data_template_rrd` MODIFY COLUMN `rrd_maximum` VARCHAR(20) NOT NULL DEFAULT 0, MODIFY COLUMN `rrd_minimum` VARCHAR(20) NOT NULL DEFAULT 0");
+
+	/* speed up the poller */
+	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD INDEX `disabled`(`disabled`)");
+
+	/* speed up the poller */
+	db_install_execute("0.8.6k", "ALTER TABLE `poller_item` ADD INDEX `rrd_next_step`(`rrd_next_step`)");
+
+	/* speed up the UI */
+	db_install_execute("0.8.6k", "ALTER TABLE `poller_item` ADD INDEX `action`(`action`)");
+
+	/* speed up the UI */
+	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD INDEX `username`(`username`)");
+
+	/* speed up the UI */
+	db_install_execute("0.8.6k", "ALTER TABLE `user_log` ADD INDEX `username`(`username`)");
+
+	/* speed up the UI */
+	db_install_execute("0.8.6k", "ALTER TABLE `data_input` ADD INDEX `name`(`name`)");
 }
 ?>

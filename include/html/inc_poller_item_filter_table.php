@@ -7,7 +7,7 @@
 						Host:&nbsp;
 					</td>
 					<td width="1">
-						<select name="host_id" onChange="applyPItemFilterChange(document.form_pollercace)">
+						<select name="host_id" onChange="applyPItemFilterChange(document.form_pollercache)">
 							<option value="-1"<?php if ($_REQUEST["host_id"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php

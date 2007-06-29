@@ -775,26 +775,30 @@ function host() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "where (host.hostname like '%%" . $_REQUEST["filter"] . "%%' OR host.description like '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen($_REQUEST["filter"])) {
+		$sql_where = "where (host.hostname like '%%" . $_REQUEST["filter"] . "%%' OR host.description like '%%" . $_REQUEST["filter"] . "%%')";
+	}else{
+		$sql_where = "";
+	}
 
 	if ($_REQUEST["host_status"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["host_status"] == "-2") {
-		$sql_where .= " and host.disabled='on'";
+		$sql_where .= (strlen($sql_where) ? " and host.disabled='on'" : "where host.disabled='on'");
 	}elseif ($_REQUEST["host_status"] == "-3") {
-		$sql_where .= " and host.disabled=''";
+		$sql_where .= (strlen($sql_where) ? " and host.disabled=''" : "where host.disabled=''");
 	}elseif ($_REQUEST["host_status"] == "-3") {
-		$sql_where .= " and (host.status!='3' or host.disabled='on')";
+		$sql_where .= (strlen($sql_where) ? " and (host.status!='3' or host.disabled='on')" : "where (host.status!='3' or host.disabled='on')");
 	}else {
-		$sql_where .= " and (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')";
+		$sql_where .= (strlen($sql_where) ? " and (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')" : "where (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')");
 	}
 
 	if ($_REQUEST["host_template_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["host_template_id"] == "0") {
-		$sql_where .= " and host.host_template_id=0";
+		$sql_where .= (strlen($sql_where) ? " and host.host_template_id=0" : "where host.host_template_id=0");
 	}elseif (!empty($_REQUEST["host_template_id"])) {
-		$sql_where .= " and host.host_template_id=" . $_REQUEST["host_template_id"];
+		$sql_where .= (strlen($sql_where) ? " and host.host_template_id=" . $_REQUEST["host_template_id"] : "where host.host_template_id=" . $_REQUEST["host_template_id"]);
 	}
 
 	html_start_box("", "98%", $colors["header"], "3", "center", "");

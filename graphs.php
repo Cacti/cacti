@@ -1043,8 +1043,12 @@ function graph() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "AND (graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'" .
-				" OR graph_templates.name like '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen($_REQUEST["filter"])) {
+		$sql_where = "AND (graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+			" OR graph_templates.name like '%%" . $_REQUEST["filter"] . "%%')";
+	}else{
+		$sql_where = "";
+	}
 
 	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */

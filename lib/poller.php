@@ -314,7 +314,7 @@ function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
 	}
 
-    return $rrds_processed;
+	return $rrds_processed;
 }
 
 ?>

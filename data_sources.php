@@ -994,9 +994,13 @@ function ds() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
-		" OR data_template.name like '%%" . $_REQUEST["filter"] . "%%'" .
-		" OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen($_REQUEST["filter"])) {
+		$sql_where = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+			" OR data_template.name like '%%" . $_REQUEST["filter"] . "%%'" .
+			" OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+	}else{
+		$sql_where = "";
+	}
 
 	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */
