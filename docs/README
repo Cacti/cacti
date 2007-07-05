@@ -4,13 +4,14 @@ REQUIREMENTS:
 Cacti should be able to run on any Unix-based operating system with
 the following requirements:
 
-PHP 4.1+
-MySQL 3.22+
+PHP 4.3.6+
+MySQL 3.22+ or 4.1.x or 5.x
+RRDTool 1.0.49+ or 1.2.x
+NET-SNMP 5.1.2+
+
 
 PHP Must also be compiled as a standalone cgi binary. This is required
-for data gathering in crontab. This requirement may go away in the future
-if I decide to replace it with a small C program. If anyone wishes to
-do this, please contact me first; that would be much appreciated.
+for data gathering in crontab. 
 
 Cacti has been successfully run on the following operating systems:
 
@@ -19,14 +20,22 @@ Redhat 8.0 (Linux 2.4.18-14)
 Redhat 7.3 (Linux 2.4.18-3)
 Redhat 7.2 (Linux 2.4.9-13)
 Redhat 7.1 (Linux 2.4.9-6)
+Fedora Core 4
+Fedora Core 5
+Fedora Core 6
 FreeBSD 4.2
 FreeBSD 4.8
+FreeBSD 5.x
 Windows 2000 Professional/Server
 Windows XP Professional
+Windows 2003 Professional/Server
 Slackware 8.0
 Debian Linux
-SuSE Linux 7.3
+SuSE Linux 
 AIX 4.3
+AIX 5.x
+Solaris 9
+Solaris 10
 
 A Note About RRDtool:
 
