@@ -524,7 +524,7 @@ function utilities_view_logfile() {
 		/* match any lines that match the search string */
 		if (strlen($_REQUEST["filter"])) {
 			if ((substr_count(strtolower($new_item), strtolower($_REQUEST["filter"]))) ||
-				(preg_match($_REQUEST["filter"], $new_item))) {
+				(@preg_match($_REQUEST["filter"], $new_item))) {
 				$display=true;
 			}else{
 				$display=false;
