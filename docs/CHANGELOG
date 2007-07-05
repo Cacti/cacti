@@ -53,6 +53,7 @@ Cacti CHANGELOG
 -feature: Add Web Basic authentication 
 -feature: Add authenication realm to modifiable user parameters
 -feature: Add multiple polling intervals
+-feature: Moved command line scripts to cli sub directory
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
