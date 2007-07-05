@@ -54,6 +54,40 @@ The SNMP support that comes with PHP 4.0.6 does not appear to work correctly
 under SuSE Linux 7.3. It is recommended that you go to http://www.php.net/, 
 download the newest source and compile a new PHP-binary with SNMP support.
 
+
+
+IMPORTANT INFORMATION ABOUT RELEASE 0.8.6k
+
+Major changes to the configuration structure have been made to simplify 
+upgrades and packaging of Cacti.  The include/config.php file now only 
+contains the database configuration for Cacti.  All other code that was
+in the include/config.php has been moved to include/global.php.  All 
+include/config_*.php have been renamed to include/global_*.php.
+
+Script server scripts will need to be modifed to include include/global.php
+instead of include/config.php.
+
+It is important to note that the command line interface scripts have been 
+moved to the "cli" directory of the Cacti installation. 
+
+
+
+COMMAND LINE INTERFACE SCRIPTS
+
+The command line interface scripts are as follows:
+
+  add_device.php - Add devices
+  add_graphs.php - Add graphs
+  add_perms.php -Add permissions to a user
+  add_tree.php - Add graphs to a tree
+  copy_cacti_user.php - Copies users
+  poller_output_empty.php - Process orphaned items in the poller_output
+                            table
+  poller_reindex_hosts.php - Cause data query reindex on hosts
+  rebuild_poller_cache.php - Rebuilds the poller cache
+
+
+
 INFORMATION ABOUT CACTI:
 
 Cacti is a complete frontend to RRDTool, it stores all of the necessary 
@@ -106,3 +140,6 @@ through the use of templates. This allows the creation of a single graph or
 data source template which defines any graph or data source associated with it. 
 Host templates enable you to define the capabilities of a host so cacti can 
 poll it for information upon the addition of a new host.
+
+
+
