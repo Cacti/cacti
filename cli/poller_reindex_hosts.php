@@ -32,7 +32,7 @@ ini_set("memory_limit", "64M");
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/include/config.php");
+include(dirname(__FILE__) . "/../include/global.php");
 include_once($config["base_path"] . "/lib/snmp.php");
 include_once($config["base_path"] . "/lib/data_query.php");
 
@@ -107,7 +107,7 @@ foreach ($data_queries as $data_query) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Reindex Host Script 1.0, Copyright 2005 - The Cacti Group\n\n";
+print "Cacti Reindex Host Script 1.0, Copyright 2007 - The Cacti Group\n\n";
 	print "usage: poller_reindex_hosts.php -id=[host_id|All] [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "-id=host_id   - The host_id to have data queries reindexed or 'All' to reindex all hosts\n";
 	print "-d            - Display verbose output during execution\n";

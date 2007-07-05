@@ -30,7 +30,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/include/config.php");
+include(dirname(__FILE__)."/../include/global.php");
 
 if ($_SERVER["argc"] == 1) {
 	usage();

@@ -29,8 +29,8 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/include/config.php");
-include_once("./lib/utility.php");
+include(dirname(__FILE__) . "/../include/global.php");
+include_once($config["base_path"] . "/lib/utility.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -95,6 +95,7 @@ if (sizeof($poller_data) > 0) {
 		$current_ds++;
 	}
 }
+if (!$debug) print "\n";
 
 /* poller cache rebuilt, restore runtime parameters */
 ini_set("max_execution_time", $max_execution);
@@ -102,7 +103,7 @@ ini_set("memory_limit", $max_memory);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2005 - The Cacti Group\n\n";
+	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2007 - The Cacti Group\n\n";
 	print "usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "-d            - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";

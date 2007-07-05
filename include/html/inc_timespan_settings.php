@@ -239,7 +239,7 @@ function finalize_timespan(&$timespan) {
 /* establish graph timeshift from either a user select or the default */
 function set_timeshift() {
 	global $config;
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 	
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION["sess_current_timeshift"])) || 

@@ -33,7 +33,7 @@ if (empty($_SERVER["argv"][2])) {
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/include/config.php");
+include(dirname(__FILE__) . "/../include/global.php");
 include_once($config["base_path"] . "/lib/auth.php");
 
 $template_user = $_SERVER["argv"][1];

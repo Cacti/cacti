@@ -13,7 +13,7 @@ error_reporting(0);
 include_once(dirname(__FILE__) . "/../lib/snmp.php");
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . "/../include/config.php");
+	include_once(dirname(__FILE__) . "/../include/global.php");
 
 	array_shift($_SERVER["argv"]);
 

@@ -28,7 +28,7 @@
 function get_cdef_item_name($cdef_item_id) 	{
 	global $config;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	$cdef_item = db_fetch_row("select type,value from cdef_items where id=$cdef_item_id");
 	$current_cdef_value = $cdef_item["value"];

@@ -54,6 +54,8 @@ Cacti CHANGELOG
 -feature: Add authenication realm to modifiable user parameters
 -feature: Add multiple polling intervals
 -feature: Moved command line scripts to cli sub directory
+-feature: include/config.php now only includes database configuration
+-feature: include/config_* have been renamed to include/global_*. Note: Script servers need to be updated.
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.

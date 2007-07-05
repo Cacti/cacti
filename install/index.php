@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include("../include/config.php");
+include("../include/global.php");
 
 /* allow the upgrade script to run for as long as it needs to */
 ini_set("max_execution_time", "0");

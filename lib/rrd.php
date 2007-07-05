@@ -152,7 +152,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 	global $config;
 
-	include ($config["include_path"] . "/config_arrays.php");
+	include ($config["include_path"] . "/global_arrays.php");
 
 	$data_source_path = get_data_source_path($local_data_id, true);
 
@@ -291,7 +291,7 @@ function rrdtool_function_update($update_cache_array, $rrd_struc) {
 function rrdtool_function_tune($rrd_tune_array) {
 	global $config;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array["data_source_id"]);
 	$data_source_type = $data_source_types{$rrd_tune_array["data-source-type"]};
@@ -466,7 +466,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {

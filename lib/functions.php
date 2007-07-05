@@ -136,7 +136,7 @@ function read_default_config_option($config_name) {
 
 /* read_config_option - finds the current value of a Cacti configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
-     in 'include/config_settings.php'
+     in 'include/global_settings.php'
    @returns - the current value of the configuration option */
 function read_config_option($config_name, $force = FALSE) {
 	if (isset($_SESSION["sess_config_array"])) {
@@ -165,7 +165,7 @@ function read_config_option($config_name, $force = FALSE) {
    @arg $regexp_match - (optionally) enter a regular expression to match the value against
    @arg $allow_nulls - (bool) whether to allow an empty string as a value or not
    @arg $custom_message - (int) the ID of the message to raise upon an error which is defined in the
-     $messages array in 'include/config_arrays.php'
+     $messages array in 'include/global_arrays.php'
    @returns - the original $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	/* write current values to the "field_values" array so we can retain them */
@@ -195,7 +195,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 function is_error_message() {
 	global $config, $messages;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	if (isset($_SESSION["sess_messages"])) {
 		if (is_array($_SESSION["sess_messages"])) {
@@ -209,7 +209,7 @@ function is_error_message() {
 }
 
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
-   @arg $message_id - the ID of the message to raise as defined in $messages in 'include/config_arrays.php' */
+   @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id) {
 	$_SESSION["sess_messages"][$message_id] = $message_id;
 }

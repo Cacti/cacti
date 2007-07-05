@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/config.php");
+include("./include/global.php");
 
 /* check to see if this is a new installation */
 if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {

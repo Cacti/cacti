@@ -25,7 +25,7 @@
 function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	global $colors, $current_user, $config;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 	include_once($config["library_path"] . "/tree.php");
 
 	$search_key = "";
@@ -581,7 +581,7 @@ function create_dhtml_tree() {
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	global $current_user, $colors, $config;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 	include_once($config["library_path"] . "/data_query.php");
 	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/html_utility.php");

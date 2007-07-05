@@ -384,7 +384,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $colors, $config;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
@@ -476,7 +476,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 function draw_menu($user_menu = "") {
 	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames;
 
-	include($config["include_path"] . "/config_arrays.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;

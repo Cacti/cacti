@@ -31,7 +31,7 @@ $no_http_headers = true;
 
 /* used for includes */
 error_reporting(0);
-include_once(dirname(__FILE__) . "/include/config.php");
+include_once(dirname(__FILE__) . "/include/global.php");
 
 /* define STDOUT/STDIN file descriptors if not running under CLI */
 if (php_sapi_name() != "cli") {

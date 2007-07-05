@@ -11,7 +11,7 @@ $no_http_headers = true;
 /* display No errors */
 error_reporting(0);
 
-include_once(dirname(__FILE__) . "/../include/config.php");
+include_once(dirname(__FILE__) . "/../include/global.php");
 include_once(dirname(__FILE__) . "/../lib/snmp.php");
 include_once(dirname(__FILE__) . "/../lib/ping.php");
 
