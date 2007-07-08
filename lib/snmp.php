@@ -272,7 +272,37 @@ function format_snmp_string($string) {
 	}
 	$string = trim($string);
 
-	if (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
+	if (substr_count($string, "Hex-STRING:")) {
+		/* strip of the 'Hex-STRING:' */
+		$string = eregi_replace("Hex-STRING: ?", "", $string);
+
+		$string_array = split(" ", $string);
+
+		/* loop through each string character and make ascii */
+		$string = "";
+		$ishex  = false;
+		for ($i=0;($i<sizeof($string_array));$i++) {
+			if (strlen($string_array[$i])) {
+				$string .= chr(hexdec($string_array[$i]));
+
+				$hexval .= str_pad($string_array[$i], 2, "0", STR_PAD_LEFT);
+
+				if (($i+1) < count($string_array)) {
+					$hexval .= ":";
+				}
+
+				if ((hexdec($string_array[$i]) <= 31) || (hexdec($string_array[$i]) >= 127)) {
+					if ((($i+1) == sizeof($string_array)) && ($string_array[$i] == 0)) {
+						/* do nothing */
+					}else{
+						$ishex = true;
+					}
+				}
+			}
+		}
+
+		if ($ishex) $string = $hexval;
+	}elseif (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
 		$octet = "";
 
 		/* strip of the 'hex:' */
