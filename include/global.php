@@ -33,6 +33,11 @@ $database_port = "3306";
 /* Include configuration */
 include(dirname(__FILE__) . "/config.php");
 
+if (isset($config["cacti_version"])) {
+	die("Invalid include/config.php file detected.");
+	exit;
+}
+
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
 	"poller.php",
