@@ -37,6 +37,39 @@ function api_device_remove($device_id) {
 	db_execute("update graph_local set host_id=0 where host_id=$device_id");
 }
 
+/* api_device_remove_multi - removes multiple devices in one call
+   @arg $device_ids - an array of device id's to remove */
+function api_device_remove_multi($device_ids) {
+	$devices_to_delete = "";
+	$i = 0;
+
+	if (sizeof($device_ids)) {
+		/* build the list */
+		foreach($device_ids as $device_id) {
+			if ($i == 0) {
+				$devices_to_delete .= $device_id;
+			}else{
+				$devices_to_delete .= ", " . $device_id;
+			}
+
+			$i++;
+		}
+
+		db_execute("DELETE FROM host WHERE id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_graph WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_snmp_query WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_snmp_cache WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM poller_item WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM poller_reindex WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM graph_tree_items WHERE host_id IN ($devices_to_delete)");
+
+		/* for people who choose to leave data sources around */
+		db_execute("UPDATE data_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
+		db_execute("UPDATE graph_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
+
+	}
+}
+
 /* api_device_dq_remove - removes a device->data query mapping
    @arg $device_id - the id of the device which contains the mapping
    @arg $data_query_id - the id of the data query to remove the mapping for */

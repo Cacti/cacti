@@ -33,6 +33,30 @@ function api_graph_remove($local_graph_id) {
 	db_execute("delete from graph_local where id=$local_graph_id");
 }
 
+function api_graph_remove_multi($local_graph_ids) {
+	/* initialize variables */
+	$ids_to_delete = "";
+	$i = 0;
+
+	/* build the array */
+	if (sizeof($local_graph_ids)) {
+		foreach($local_graph_ids as $local_graph_id) {
+			if ($i == 0) {
+				$ids_to_delete .= $local_graph_id;
+			}else{
+				$ids_to_delete .= ", " . $local_graph_id;
+			}
+
+			$i++;
+		}
+
+		db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
+		db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
+		db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
+		db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
+	}
+}
+
 /* api_resize_graphs - resizes the selected graph, overriding the template value
    @arg $graph_templates_graph_id - the id of the graph to resize
    @arg $graph_width - the width of the resized graph

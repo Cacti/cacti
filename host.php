@@ -223,55 +223,58 @@ function form_actions() {
 						where id = '" . $selected_items[$i] . "'");
 			}
 		}elseif ($_POST["drp_action"] == "1") { /* delete */
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
+
+			$data_sources_to_act_on = array();
+			$graphs_to_act_on       = array();
+			$devices_to_act_on      = array();
+
 			for ($i=0; $i<count($selected_items); $i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
+				$data_sources = db_fetch_assoc("select
+					data_local.id as local_data_id
+					from data_local
+					where " . array_to_sql_or($selected_items, "data_local.host_id"));
 
-				switch ($_POST["delete_type"]) {
-					case '1': /* leave graphs and data_sources in place, but disable the data sources */
-						$data_sources = db_fetch_assoc("select
-							data_local.id as local_data_id
-							from data_local
-							where " . array_to_sql_or($selected_items, "data_local.host_id"));
-
-						if (sizeof($data_sources) > 0) {
-							foreach ($data_sources as $data_source) {
-								api_data_source_disable($data_source["local_data_id"]);
-							}
-						}
-
-						break;
-					case '2': /* delete graphs/data sources tied to this device */
-						$data_sources = db_fetch_assoc("select
-							data_local.id as local_data_id
-							from data_local
-							where " . array_to_sql_or($selected_items, "data_local.host_id"));
-
-						if (sizeof($data_sources) > 0) {
-							foreach ($data_sources as $data_source) {
-								api_data_source_remove($data_source["local_data_id"]);
-							}
-						}
-
-						$graphs = db_fetch_assoc("select
-							graph_local.id as local_graph_id
-							from graph_local
-							where " . array_to_sql_or($selected_items, "graph_local.host_id"));
-
-						if (sizeof($graphs) > 0) {
-							foreach ($graphs as $graph) {
-								api_graph_remove($graph["local_graph_id"]);
-							}
-						}
-
-						break;
+				if (sizeof($data_sources) > 0) {
+				foreach ($data_sources as $data_source) {
+					$data_sources_to_act_on[] = $data_source["local_data_id"];
+				}
 				}
 
-				api_device_remove($selected_items[$i]);
+				if ($_POST["delete_type"] == 2) {
+					$graphs = db_fetch_assoc("select
+						graph_local.id as local_graph_id
+						from graph_local
+						where " . array_to_sql_or($selected_items, "graph_local.host_id"));
+
+					if (sizeof($graphs) > 0) {
+					foreach ($graphs as $graph) {
+						$graphs_to_act_on[] = $graph["local_graph_id"];
+					}
+					}
+				}
+
+				$devices_to_act_on[] = $selected_items[$i];
 			}
+
+			switch ($_POST["delete_type"]) {
+				case '1': /* leave graphs and data_sources in place, but disable the data sources */
+					api_data_source_disable_multi($data_sources_to_act_on);
+
+					break;
+				case '2': /* delete graphs/data sources tied to this device */
+					api_data_source_remove_multi($data_sources_to_act_on);
+
+					api_graph_remove_multi($graphs_to_act_on);
+
+					break;
+			}
+
+			api_device_remove_multi($devices_to_act_on);
 		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
