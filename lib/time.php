@@ -28,7 +28,7 @@
  * 							  leap years, daylight savings and weekdays ... 
    @arg $span				- array &$timespan (begin_now, end_now)
    @arg $curr_time	 		- base date (time since epoch)
-   @arg $timespan_given		- timespan as given by config_arrays.php($graph_timespans) 
+   @arg $timespan_given		- timespan as given by global_arrays.php($graph_timespans) 
    @arg $first_weekdayid	- first weekday (numeric representation) */
 function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	# unless changed later, $span["end_now"] is always $curr_time

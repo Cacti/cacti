@@ -982,7 +982,7 @@ function generate_graph_def_name($graph_item_id) {
 function generate_data_input_field_sequences($string, $data_input_id, $inout) {
 	global $config;
 
-	include ($config["include_path"] . "/config_arrays.php");
+	include ($config["include_path"] . "/global_arrays.php");
 
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $string, $matches)) {
 		$j = 0;
