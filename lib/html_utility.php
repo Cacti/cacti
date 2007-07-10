@@ -25,16 +25,16 @@
 /* inject_form_variables - replaces all variables contained in $form_array with
      their actual values
    @arg $form_array - an array that contains all of the information needed to draw
-     the html form. see the arrays contained in include/config_settings.php
+     the html form. see the arrays contained in include/global_settings.php
      for the extact syntax of this array
    @arg $arg1 - an array that represents the |arg1:| variable (see
-     include/config_form.php for more details)
+     include/global_form.php for more details)
    @arg $arg2 - an array that represents the |arg2:| variable (see
-     include/config_form.php for more details)
+     include/global_form.php for more details)
    @arg $arg3 - an array that represents the |arg3:| variable (see
-     include/config_form.php for more details)
+     include/global_form.php for more details)
    @arg $arg4 - an array that represents the |arg4:| variable (see
-     include/config_form.php for more details)
+     include/global_form.php for more details)
    @returns - $form_array with all available variables substituted with their
      proper values */
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
@@ -198,7 +198,7 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
 /* get_colored_device_status - given a device's status, return the colored text in HTML
      format suitable for display
    @arg $disabled (bool) - true if the device is disabled, false is it is not
-   @arg $status - the status type of the device as defined in config_constants.php
+   @arg $status - the status type of the device as defined in global_constants.php
    @returns - a string containing html that represents the device's current status */
 function get_colored_device_status($disabled, $status) {
 	$disabled_color = "a1a1a1";

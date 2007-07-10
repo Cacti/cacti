@@ -39,7 +39,7 @@ function title_trim($text, $max_length) {
 
 /* read_default_graph_config_option - finds the default value of a graph configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
-     in 'include/config_settings.php'
+     in 'include/global_settings.php'
    @returns - the default value of the configuration option */
 function read_default_graph_config_option($config_name) {
 	global $config, $settings_graphs;
@@ -60,7 +60,7 @@ function read_default_graph_config_option($config_name) {
 
 /* read_graph_config_option - finds the current value of a graph configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings_graphs array
-     in 'include/config_settings.php'
+     in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
@@ -98,7 +98,7 @@ function read_graph_config_option($config_name, $force = FALSE) {
 
 /* config_value_exists - determines if a value exists for the current user/setting specified
    @arg $config_name - the name of the configuration setting as specified $settings array
-     in 'include/config_settings.php'
+     in 'include/global_settings.php'
    @returns (bool) - true if a value exists, false if a value does not exist */
 function config_value_exists($config_name) {
 	return sizeof(db_fetch_assoc("select value from settings where name='$config_name'"));
@@ -106,7 +106,7 @@ function config_value_exists($config_name) {
 
 /* graph_config_value_exists - determines if a value exists for the current user/setting specified
    @arg $config_name - the name of the configuration setting as specified $settings_graphs array
-     in 'include/config_settings.php'
+     in 'include/global_settings.php'
    @arg $user_id - the id of the user to check the configuration value for
    @returns (bool) - true if a value exists, false if a value does not exist */
 function graph_config_value_exists($config_name, $user_id) {
@@ -115,7 +115,7 @@ function graph_config_value_exists($config_name, $user_id) {
 
 /* read_default_config_option - finds the default value of a Cacti configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
-     in 'include/config_settings.php'
+     in 'include/global_settings.php'
    @returns - the default value of the configuration option */
 function read_default_config_option($config_name) {
 	global $config, $settings;
