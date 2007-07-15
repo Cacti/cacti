@@ -57,7 +57,9 @@ Cacti CHANGELOG
 -feature: Moved command line scripts to cli sub directory
 -feature: include/config.php now only includes database configuration
 -feature: include/config_* have been renamed to include/global_*. Note: Script servers need to be updated.
+-feature: Allow VRULE's in Cacti to specify an absolute timestamp in addition to [+/-]HH:MM
 -feature: Add 1 minute RRA and graph templates
+
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
 -bug#0000848: Fix "PHP Script Server communications lost" error in the poller under high network load.

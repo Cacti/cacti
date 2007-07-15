@@ -1092,12 +1092,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "VRULE") {
 				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 
-				$value_array = explode(":", $graph_item["value"]);
+				if (substr_count($graph_item["value"], ":")) {
+					$value_array = explode(":", $graph_item["value"]);
 
-				if ($value_array[0] < 0) {
-					$value = date("U") - (-3600 * $value_array[0]) - 60 * $value_array[1];
-				}else{
-					$value = date("U", mktime($value_array[0],$value_array[1],0));
+					if ($value_array[0] < 0) {
+						$value = date("U") - (-3600 * $value_array[0]) - 60 * $value_array[1];
+					}else{
+						$value = date("U", mktime($value_array[0],$value_array[1],0));
+					}
+				}else if (is_numeric($graph_item["value"])) {
+					$value = $graph_item["value"];
 				}
 
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
