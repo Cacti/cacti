@@ -24,6 +24,8 @@
 
 include("./include/auth.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -716,30 +718,63 @@ function user_edit() {
 function user() {
 	global $colors, $auth_realms;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
 	}
 
-	/* clean up search string */
+	/* clean up sort_direction string */
 	if (isset($_REQUEST["sort_direction"])) {
 		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
 	}
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_user_admin_current_page");
+		kill_session_var("sess_user_admin_filter");
+		kill_session_var("sess_user_admin_sort_column");
+		kill_session_var("sess_user_admin_sort_direction");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_user_admin_current_page", "1");
+	load_current_session_value("filter", "sess_user_admin_filter", "");
 	load_current_session_value("sort_column", "sess_user_admin_sort_column", "username");
 	load_current_session_value("sort_direction", "sess_user_admin_sort_direction", "ASC");
 
 	html_start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 
-	$display_text = array(
-		"username" => array("User Name", "ASC"),
-		"full_name" => array("Full Name", "ASC"),
-		"realm" => array("Realm", "ASC"),
-		"policy_graphs" => array("Default Graph Policy", "ASC"),
-		"dtime" => array("Last Login", "DESC"));
+	include("./include/html/inc_user_admin_filter_table.php");
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 6);
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	if (strlen($_REQUEST["filter"])) {
+		$sql_where = "where (user_auth.username like '%%" . $_REQUEST["filter"] . "%%' OR user_auth.full_name like '%%" . $_REQUEST["filter"] . "%%')";
+	}else{
+		$sql_where = "";
+	}
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(user_auth.id)
+		FROM user_auth
+		$sql_where");
 
 	$user_list = db_fetch_assoc("SELECT
 		id,
@@ -751,42 +786,79 @@ function user() {
 		max(time) as dtime
 		FROM user_auth
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
+		$sql_where
 		GROUP BY id
-		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host_templates.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		<td colspan='7'>
+			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+					</td>\n
+					<td align='center' class='textHeaderDark'>
+						Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+					</td>\n
+					<td align='right' class='textHeaderDark'>
+						<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+					</td>\n
+				</tr>
+			</table>
+		</td>
+		</tr>\n";
+
+	print $nav;
+
+	$display_text = array(
+		"username" => array("User Name", "ASC"),
+		"full_name" => array("Full Name", "ASC"),
+		"realm" => array("Realm", "ASC"),
+		"policy_graphs" => array("Default Graph Policy", "ASC"),
+		"dtime" => array("Last Login", "DESC"));
+
+	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 6);
 
 	$i = 0;
 	if (sizeof($user_list) > 0) {
-	foreach ($user_list as $user) {
-		if (empty($user["dtime"]) || ($user["dtime"] == "12/31/1969")) {
-			$last_login = "N/A";
-		}else{
-			$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
+		foreach ($user_list as $user) {
+			if (empty($user["dtime"]) || ($user["dtime"] == "12/31/1969")) {
+				$last_login = "N/A";
+			}else{
+				$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
+			}
+
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				?>
+				<td>
+					<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?php print $user["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]);?></a>
+				</td>
+				<td>
+					<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]);?></a>
+				</td>
+				<td>
+					<?php print $auth_realms[$user["realm"]];?>
+				</td>
+				<td>
+					<?php if ($user["policy_graphs"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
+				</td>
+				<td>
+					<?php print $last_login;?>
+				</td>
+				<td align="right">
+					<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+				</td>
+			</tr>
+		<?php
 		}
 
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-			?>
-			<td>
-				<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?php print $user["id"];?>"><?php print $user["username"];?></a>
-			</td>
-			<td>
-				<?php print $user["full_name"];?>
-			</td>
-			<td>
-				<?php print $auth_realms[$user["realm"]];?>
-			</td>
-			<td>
-				<?php if ($user["policy_graphs"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
-			</td>
-			<td>
-				<?php print $last_login;?>
-			</td>
-			<td align="right">
-				<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
-			</td>
-		</tr>
-	<?php
-	$i++;
-	}
+		print $nav;
+	}else{
+		print "<tr><td><em>No Users</em></td></tr>";
 	}
 	html_end_box();
 }
