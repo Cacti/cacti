@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -bug#0000965: When setting filters under utilities, pressing enter takes you back to the main page
 -bug#0000966: Log file viewing utility has no ability to filter
 -bug#0000969: In some versions of PHP, the graph tree will not view properly 
+-bug#0000970: Incorrect debug messages in lib/ping.php for failed UDP ping
 -bug: ss_sql.php causes the script server to crash
 -bug: Timeshifter added to base code.
 -bug: Allow query_ and host_ substitution in COMMENT and CDEF's.

@@ -174,9 +174,9 @@ class Net_Ping
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
 					if ($error == "timeout") {
-						$this->response = "ICMP ping Timed out";
+						$this->ping_response = "ICMP ping Timed out";
 					}else{
-						$this->response = "ICMP ping Refused";
+						$this->ping_response = "ICMP ping Refused";
 					}
 					$this->close_socket();
 
@@ -381,9 +381,9 @@ class Net_Ping
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
 					if ($error == "timeout") {
-						$this->response = "UDP ping Timed out";
+						$this->ping_response = "UDP ping Timed out";
 					}else{
-						$this->response = "UDP ping Refused";
+						$this->ping_response = "UDP ping Refused";
 					}
 					$this->close_socket();
 
