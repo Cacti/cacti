@@ -25,6 +25,8 @@
 include("./include/auth.php");
 include_once("./lib/utility.php");
 
+define("MAX_DISPLAY_PAGES", 21);
+
 $host_actions = array(
 	1 => "Delete",
 	2 => "Duplicate"
@@ -361,47 +363,114 @@ function template_edit() {
 function template() {
 	global $colors, $host_actions;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
 	}
 
-	/* clean up search string */
+	/* clean up sort_direction string */
 	if (isset($_REQUEST["sort_direction"])) {
 		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
 	}
 
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_host_template_current_page");
+		kill_session_var("sess_host_template_filter");
+		kill_session_var("sess_host_template_sort_column");
+		kill_session_var("sess_host_template_sort_direction");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}
+
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("sort_column", "sess_host_template_column", "name");
+	load_current_session_value("page", "sess_host_template_current_page", "1");
+	load_current_session_value("filter", "sess_host_template_filter", "");
+	load_current_session_value("sort_column", "sess_host_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_host_template_sort_direction", "ASC");
 
 	display_output_messages();
 
 	html_start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 
+	include("./include/html/inc_graph_template_filter_table.php");
+
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "WHERE (host_template.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
+
+	html_start_box("", "98%", $colors["header"], "3", "center", "");
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(host_template.id)
+		FROM host_template
+		$sql_where");
+
+	$template_list = db_fetch_assoc("SELECT
+		host_template.id,host_template.name
+		FROM host_template
+		$sql_where
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host_templates.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		<td colspan='7'>
+			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+					</td>\n
+					<td align='center' class='textHeaderDark'>
+						Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+					</td>\n
+					<td align='right' class='textHeaderDark'>
+						<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+					</td>\n
+				</tr>
+			</table>
+		</td>
+		</tr>\n";
+
+	print $nav;
+
 	$display_text = array(
 		"name" => array("Template Title", "ASC"));
 
 	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
-	$host_templates = db_fetch_assoc("SELECT *
-		FROM host_template
-		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
-
 	$i = 0;
-	if (sizeof($host_templates) > 0) {
-	foreach ($host_templates as $host_template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-			?>
+	if (sizeof($template_list) > 0) {
+		foreach ($template_list as $template) {
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+				?>
 			<td>
-				<a class="linkEditMain" href="host_templates.php?action=edit&id=<?php print $host_template["id"];?>"><?php print $host_template["name"];?></a>
+				<a class="linkEditMain" href="host_templates.php?action=template_edit&id=<?php print $template["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template["name"]);?></a>
 			</td>
 			<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host_template["id"];?>' title="<?php print $host_template["name"];?>">
+				<input type='checkbox' style='margin: 0px;' name='chk_<?php print $template["id"];?>' title="<?php print $template["name"];?>">
 			</td>
-		</tr>
-	<?php
-	}
+			</tr>
+			<?php
+			$i++;
+		}
+		/* put the nav bar on the bottom as well */
+		print $nav;
 	}else{
 		print "<tr><td><em>No Host Templates</em></td></tr>\n";
 	}
