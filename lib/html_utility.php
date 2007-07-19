@@ -73,17 +73,44 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
    @arg $row_color2 - the second color to use
    @arg $row_value - the value of the row which will be used to evaluate which color
      to display for this particular row. must be an integer
+   @arg $row_id - used to allow js and ajax actions on this object
    @returns - the background color used for this particular row */
-function form_alternate_row_color($row_color1, $row_color2, $row_value) {
+function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = "") {
 	if (($row_value % 2) == 1) {
 		$current_color = $row_color1;
 	}else{
 		$current_color = $row_color2;
 	}
 
-	print "<tr bgcolor='#$current_color'>\n";
+	if (strlen($row_id)) {
+		print "<tr id='line$row_id' bgcolor='#$current_color'>\n";
+	}else{
+		print "<tr bgcolor='#$current_color'>\n";
+	}
 
 	return $current_color;
+}
+
+/* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
+   @arg $contents - the readable portion of the
+   @arg $id - the id of the object that will be highlighted
+   @arg $width - the width of the table element
+   @arg $style - the style to apply to the table element */
+function form_selectable_cell($contents, $id, $width="", $style="") {
+	print "<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line(" . $id . ")'><span id='text" . $id . "_0'>" . $contents . "</span></td>";
+}
+
+/* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
+   @arg $title - the text that will be displayed if your hover over the checkbox */
+function form_checkbox_cell($title, $id) {
+	print "<td style='" . get_checkbox_style() . "' width='1%' align='right'>
+					<input type='checkbox' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "' title='" . $title . "'>
+	</td>";
+}
+
+/* form_end_row - ends a table row that is started with form_alternate_row */
+function form_end_row() {
+	print "</tr>";
 }
 
 /* html_boolean - returns the boolean equivalent of an HTML checkbox value

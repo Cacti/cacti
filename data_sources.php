@@ -1073,25 +1073,13 @@ function ds() {
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
 			$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				?>
-				<td>
-					<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=<?php print $data_source["local_data_id"];?>' title='<?php print $data_source["name_cache"];?>'><?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source"))); }else{ print title_trim($data_source["name_cache"], read_config_option("max_title_data_source")); } ?></a>
-				</td>
-				<td>
-					<?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source["data_input_name"]); }else{ print $data_source["data_input_name"]; } ?></a>
-				</td>
-				<td>
-					<?php print (($data_source["active"] == "on") ? "Yes" : "<span style='color: red;'>No</span>");?>
-				</td>
-				<td>
-					<?php if ($_REQUEST["filter"] != "") { print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_template_name); }else{ print $data_template_name; } ?></a>
-				</td>
-				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_source["local_data_id"];?>' title="<?php print $data_source["name_cache"];?>">
-				</td>
-			</tr>
-			<?php
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i, $data_source["local_data_id"]); $i++;
+			form_selectable_cell("<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "' title='" . $data_source["name_cache"] . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source"))) : title_trim($data_source["name_cache"], read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_input_name']) : $data_source['data_input_name']) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell($data_source['active'], $data_source["local_data_id"]);
+			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']) : $data_source['data_template_name']) . "</a>", $data_source["local_data_id"]);
+			form_checkbox_cell($data_source["name_cache"], $data_source["local_data_id"]);
+			form_end_row();
 		}
 
 		/* put the nav bar on the bottom as well */

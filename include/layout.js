@@ -103,6 +103,40 @@ function gt_reset_deps(num_columns) {
 	}
 }
 
+/* general id based selects */
+function update_selection_indicators() {
+	if (document.getElementById) {
+		there_are_any_unchecked_ones = false;
+
+		for (var j = 0; j < document.chk.elements.length; j++) {
+			if( document.chk.elements[j].name.substr( 0, 4 ) == 'chk_') {
+				if (document.chk.elements[j].checked == false) {
+					there_are_any_unchecked_ones = true;
+				}
+
+				lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(4));
+
+				if (document.chk.elements[j].checked) {
+					lineid.style.backgroundColor = 'khaki';
+				}else{
+					lineid.style.backgroundColor = '';
+				}
+			}
+		}
+	}
+}
+
+function select_line(id, update) {
+	if (document.getElementById) {
+		msgid = document.getElementById('chk_' + id);
+		lineid = document.getElementById('line'+ id);
+
+		if (!update) msgid.checked = !msgid.checked;
+
+		update_selection_indicators();
+	}
+}
+
 /* data query stuff */
 function dq_update_selection_indicators() {
 	if (document.getElementById) {
@@ -195,6 +229,14 @@ function SelectAll(prefix, checkbox_state) {
 	for (var i = 0; i < document.chk.elements.length; i++) {
 		if ((document.chk.elements[i].name.substr(0, prefix.length) == prefix) && (document.chk.elements[i].style.visibility != 'hidden')) {
 			document.chk.elements[i].checked = checkbox_state;
+		}
+
+		lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
+
+		if (document.chk.elements[i].checked) {
+			lineid.style.backgroundColor = 'khaki';
+		}else{
+			lineid.style.backgroundColor = '';
 		}
 	}
 }

@@ -868,21 +868,16 @@ function host() {
 	$i = 0;
 	if (sizeof($hosts) > 0) {
 		foreach ($hosts as $host) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				?>
-				<td width=250>
-					<a class="linkEditMain" href="host.php?action=edit&id=<?php print $host["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]);?></a>
-				</td>
-				<td><?php print get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]);?></td>
-				<td><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["hostname"]);?></td>
-				<td><?php print round(($host["cur_time"]), 2);?></td>
-				<td><?php print round(($host["avg_time"]), 2);?></td>
-				<td><?php print round($host["availability"], 2);?>%</td>
-				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $host["id"];?>' title="<?php print $host["description"];?>">
-				</td>
-			</tr>
-			<?php
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i, $host["id"]); $i++;
+			form_selectable_cell("<a class='linkEditMain' href='host.php?action=edit&id=" . $host["id"] . "'>" .
+				eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]) . "</a>", $host["id"], 250);
+			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
+			form_selectable_cell(eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["hostname"]), $host["id"]);
+			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
+			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);
+			form_selectable_cell(round($host["availability"], 2), $host["id"]);
+			form_checkbox_cell($host["description"], $host["id"]);
+			form_end_row();
 		}
 
 		/* put the nav bar on the bottom as well */

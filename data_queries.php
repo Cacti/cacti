@@ -800,19 +800,11 @@ function data_query() {
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				?>
-				<td>
-					<a class="linkEditMain" href="data_queries.php?action=edit&id=<?php print $snmp_query["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["name"]);?></a>
-				</td>
-				<td>
-					<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]); ?>
-				</td>
-				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $snmp_query["id"];?>' title="<?php print $snmp_query["name"];?>">
-				</td>
-			</tr>
-		<?php
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$snmp_query["id"]); $i++;
+			form_selectable_cell("<a class='linkEditMain' href='data_queries.php?action=edit&id=" . $snmp_query["id"] . "'>" . eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["name"]) . "</a>", $snmp_query["id"]);
+			form_selectable_cell(eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]), $snmp_query["id"]);
+			form_checkbox_cell($snmp_query["name"], $snmp_query["id"]);
+			form_end_row();
 		}
 
 		print $nav;

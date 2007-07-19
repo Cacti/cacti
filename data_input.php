@@ -561,19 +561,11 @@ function data() {
 	if (sizeof($data_inputs) > 0) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				?>
-				<td>
-					<a class="linkEditMain" href="data_input.php?action=edit&id=<?php print $data_input["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input["name"]);?></a>
-				</td>
-				<td>
-					<?php print $input_types{$data_input["type_id"]};?>
-				</td>
-				<td style="<?php print get_checkbox_style();?>" width="1%" align="right">
-					<input type='checkbox' style='margin: 0px;' name='chk_<?php print $data_input["id"];?>' title="<?php print $data_input["name"];?>">
-				</td>
-			</tr>
-		<?php
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$data_input["id"]); $i++;
+			form_selectable_cell("<a class='linkEditMain' href='data_input.php?action=edit&id=" . $data_input["id"] . "'>" . eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input["name"]) . "</a>", $data_input["id"]);
+			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
+			form_checkbox_cell($data_input["name"], $data_input["id"]);
+			form_end_row();
 		}
 
 		print $nav;
