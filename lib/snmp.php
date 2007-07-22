@@ -272,14 +272,17 @@ function format_snmp_string($string) {
 	}
 	$string = trim($string);
 
-	if (substr_count($string, "Hex-STRING:")) {
+	if ((substr_count($string, "Hex-STRING:")) ||
+		(substr_count($string, "Hex:"))) {
 		/* strip of the 'Hex-STRING:' */
 		$string = eregi_replace("Hex-STRING: ?", "", $string);
+		$string = eregi_replace("Hex: ?", "", $string);
 
 		$string_array = split(" ", $string);
 
 		/* loop through each string character and make ascii */
 		$string = "";
+		$hexval = "";
 		$ishex  = false;
 		for ($i=0;($i<sizeof($string_array));$i++) {
 			if (strlen($string_array[$i])) {

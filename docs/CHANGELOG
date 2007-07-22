@@ -63,6 +63,7 @@ Cacti CHANGELOG
 -feature: Allow VRULE's in Cacti to specify an absolute timestamp in addition to [+/-]HH:MM
 -feature: Add 1 minute RRA and graph templates
 -feature: Add item select hilighting to main pages
+-compat: Add additional checking due to php-snmp changes in Windows
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
