@@ -806,7 +806,7 @@ function graphs() {
 						while (list($field_name, $field_array) = each($xml_array["fields"])) {
 							if ($field_array["direction"] == "input") {
 								if (isset($row[$field_name])) {
-									print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $row[$field_name]) . "</span></td>";
+									print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
 								}
 
 								$column_counter++;
