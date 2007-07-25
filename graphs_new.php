@@ -457,6 +457,7 @@ function graphs() {
 			</td>
 			<td>
 				<select name="graph_type" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
+				<option value="-2"<?php if ($_REQUEST["graph_type"] == "-2") {?> selected<?php }?>>All</option>
 				<option value="-1"<?php if ($_REQUEST["graph_type"] == "-1") {?> selected<?php }?>>Graph Template Based</option>
 				<?php
 
@@ -509,7 +510,7 @@ function graphs() {
 
 	$i = 0;
 
-	if ($_REQUEST["graph_type"] == -1) {
+	if ($_REQUEST["graph_type"] < 0) {
 		html_start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
 
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
@@ -584,15 +585,16 @@ function graphs() {
 			</tr>";
 
 		html_end_box();
-	}else{
+	}
+	if ($_REQUEST["graph_type"] != -1) {
 		$snmp_queries = db_fetch_assoc("SELECT
 			snmp_query.id,
 			snmp_query.name,
 			snmp_query.xml_path
 			FROM (snmp_query,host_snmp_query)
 			WHERE host_snmp_query.snmp_query_id=snmp_query.id
-			AND host_snmp_query.host_id=" . $host["id"] . "
-			AND snmp_query.id=" . $_REQUEST["graph_type"] . "
+			AND host_snmp_query.host_id=" . $host["id"] . 
+			($_REQUEST["graph_type"] != -2 ? " AND snmp_query.id=" . $_REQUEST["graph_type"] : '') . "
 			ORDER BY snmp_query.name");
 
 		print "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
