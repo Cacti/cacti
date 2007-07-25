@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -bug: Reduce the total number of SQL queries called
 -bug: Replace inefficient strip function in process_poller_output
 -bug: Some php_snmp implementations return strings as "Hex-STRING:".  In these cases properly resolve the string
+-feature: Paginate the Graph Creation Page
 -feature: Add rra_path as a global.php config variable
 -feature: Add drop down actions to data queries
 -feature: Add drop down actions to data input methods

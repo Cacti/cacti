@@ -36,7 +36,7 @@ function gt_update_selection_indicators() {
 					lineid = document.getElementById('gt_line' + document.chk.elements[j].name.substr(3));
 
 					if (document.chk.elements[j].checked) {
-						lineid.style.backgroundColor = 'gold';
+						lineid.style.backgroundColor = 'khaki';
 					}else{
 						lineid.style.backgroundColor = '';
 					}
@@ -151,7 +151,7 @@ function dq_update_selection_indicators() {
 				lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(3));
 
 				if (document.chk.elements[j].checked) {
-					lineid.style.backgroundColor = 'gold';
+					lineid.style.backgroundColor = 'khaki';
 				}else{
 					lineid.style.backgroundColor = '';
 				}
