@@ -362,11 +362,9 @@ function graphs() {
 		kill_session_var("sess_graphs_new_host_id");
 		kill_session_var("sess_graphs_new_graph_type");
 		kill_session_var("sess_graphs_new_filter");
-		kill_session_var("sess_graphs_new_page");
 
 		unset($_REQUEST["host_id"]);
 		unset($_REQUEST["graph_type"]);
-		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 	}else{
 		/* if any of the settings changed, reset the page number */
@@ -374,19 +372,14 @@ function graphs() {
 		$changed += check_changed("host_id",    "sess_graphs_new_host_id");
 		$changed += check_changed("graph_type", "sess_graphs_new_graph_type");
 		$changed += check_changed("filter",     "sess_graphs_new_filter");
-
-		if ($changed) {
-			$_REQUEST["page"] = "1";
-		}
 	}
 
 	load_current_session_value("host_id",    "sess_graphs_new_host_id",    db_fetch_cell("select id from host order by description,hostname limit 1"));
-	load_current_session_value("graph_type", "sess_graphs_new_graph_type", "-1");
+	load_current_session_value("graph_type", "sess_graphs_new_graph_type", read_config_option("default_graphs_new_dropdown"));
 	load_current_session_value("filter",     "sess_graphs_new_filter",     "");
-	load_current_session_value("page",       "sess_graphs_new_page",       "1");
 
 	$host      = db_fetch_row("select id,description,hostname,host_template_id from host where id=" . $_REQUEST["host_id"]);
-	$row_limit = read_config_option("num_rows_graph");
+	$row_limit = read_config_option("num_rows_data_query");
 	$debug_log = debug_log_return("new_graphs");
 
 	?>
@@ -510,6 +503,14 @@ function graphs() {
 
 	$i = 0;
 
+	if ($_REQUEST["graph_type"] > 0) {
+		load_current_session_value("page" . $_REQUEST["graph_type"],       "sess_graphs_new_page" . $_REQUEST["graph_type"],       "1");
+	}else if ($_REQUEST["graph_type"] == -2) {
+		foreach($snmp_queries as $query) {
+			load_current_session_value("page" . $query["id"],       "sess_graphs_new_page" . $query["id"],       "1");
+		}
+	}
+
 	if ($_REQUEST["graph_type"] < 0) {
 		html_start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
 
@@ -593,7 +594,7 @@ function graphs() {
 			snmp_query.xml_path
 			FROM (snmp_query,host_snmp_query)
 			WHERE host_snmp_query.snmp_query_id=snmp_query.id
-			AND host_snmp_query.host_id=" . $host["id"] . 
+			AND host_snmp_query.host_id=" . $host["id"] .
 			($_REQUEST["graph_type"] != -2 ? " AND snmp_query.id=" . $_REQUEST["graph_type"] : '') . "
 			ORDER BY snmp_query.name");
 
@@ -602,6 +603,8 @@ function graphs() {
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			unset($total_rows);
+
+			$page = $_REQUEST["page" . $snmp_query["id"]];
 
 			$xml_array = get_data_query_array($snmp_query["id"]);
 
@@ -681,20 +684,20 @@ function graphs() {
 
 				if ($total_rows > $row_limit) {
 					/* generate page list */
-					$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $row_limit, $total_rows, "graphs_new.php?");
+					$url_page_select = get_page_list($page, MAX_DISPLAY_PAGES, $row_limit, $total_rows, "graphs_new.php?", "page" . $snmp_query["id"]);
 
 					$nav = "<tr bgcolor='#" . $colors["header"] . "' class='noprint'>
 								<td colspan='15'>
 									<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 										<tr>
 											<td align='left' class='textHeaderDark'>
-												<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+												<strong>&lt;&lt; "; if ($page > 1) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page-1) . "'>"; } $nav .= "Previous"; if ($page > 1) { $nav .= "</a>"; } $nav .= "</strong>
 											</td>\n
 											<td align='center' class='textHeaderDark'>
-												Showing Rows " . (($row_limit*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < $row_limit) || ($total_rows < ($row_limit*$_REQUEST["page"]))) ? $total_rows : ($row_limit*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+												Showing Rows " . (($row_limit*($page-1))+1) . " to " . ((($total_rows < $row_limit) || ($total_rows < ($row_limit*$page))) ? $total_rows : ($row_limit*$page)) . " of $total_rows [$url_page_select]
 											</td>\n
 											<td align='right' class='textHeaderDark'>
-												<strong>"; if (($_REQUEST["page"] * $row_limit) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * $row_limit) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+												<strong>"; if (($page * $row_limit) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page+1) . "'>"; } $nav .= "Next"; if (($page * $row_limit) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 											</td>\n
 										</tr>
 									</table>
@@ -770,7 +773,7 @@ function graphs() {
 						$sql_where
 						GROUP BY host_id, snmp_query_id, snmp_index
 						$sql_order
-						LIMIT " . ($row_limit*($_REQUEST["page"]-1)) . "," . $row_limit;
+						LIMIT " . ($row_limit*($page-1)) . "," . $row_limit;
 
 					$snmp_query_indexes = db_fetch_assoc($sql_query);
 
@@ -809,9 +812,9 @@ function graphs() {
 							if ($field_array["direction"] == "input") {
 								if (isset($row[$field_name])) {
 									print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
+								$column_counter++;
 								}
 
-								$column_counter++;
 							}
 						}
 
@@ -849,7 +852,7 @@ function graphs() {
 							</td>
 							<td align='right'>
 								<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
-								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields . ");'>
+								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . $column_counter . ");'>
 									"; html_create_list($data_query_graphs,"name","id","0"); print "
 								</select>
 							</td>

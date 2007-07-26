@@ -231,14 +231,17 @@ function SelectAll(prefix, checkbox_state) {
 			document.chk.elements[i].checked = checkbox_state;
 		}
 
-		lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
+		if (prefix == "chk_") {
+			lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
 
-		if (document.chk.elements[i].checked) {
-			lineid.style.backgroundColor = 'khaki';
-		}else{
-			lineid.style.backgroundColor = '';
+			if (document.chk.elements[i].checked) {
+				lineid.style.backgroundColor = 'khaki';
+			}else{
+				lineid.style.backgroundColor = '';
+			}
 		}
 	}
+
 }
 
 function SelectAllGraphs(prefix, checkbox_state) {

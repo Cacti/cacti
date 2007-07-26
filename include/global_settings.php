@@ -460,11 +460,22 @@ $settings = array(
 			"default" => "15",
 			"max_length" => "10"
 			),
-		"max_data_query_javascript_rows" => array(
-			"friendly_name" => "Maximum JavaScript Rows",
-			"description" => "The maximum number of data query rows to display with JavaScript on the 'New Graphs' page.",
+		"graphs_new_header" => array(
+			"friendly_name" => "Graph Creation",
+			"method" => "spacer",
+			),
+		"default_graphs_new_dropdown" => array(
+			"friendly_name" => "Default Dropdown Selector",
+			"description" => "When creating graphs, how would you like the page to appear by default",
+			"method" => "drop_array",
+			"default" => "-1",
+			"array" => array("-2" => "All Types", "-1" => "By Template/Data Query"),
+			),
+		"num_rows_data_query" => array(
+			"friendly_name" => "Data Query Graph Rows",
+			"description" => "The maximum number Data Query rows to place on a page per Data Query.  This applies to the 'New Graphs' page.",
 			"method" => "textbox",
-			"default" => "96",
+			"default" => "20",
 			"max_length" => "10"
 			),
 		"datasources_header" => array(
