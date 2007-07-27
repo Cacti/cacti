@@ -799,7 +799,9 @@ function graphs() {
 							</tr>\n";
 					}
 
-					$row_counter = 0;
+					$row_counter    = 0;
+					$column_counter = 0;
+					$fields         = array_rekey($field_names, "field_name", "field_name");
 					if (sizeof($snmp_query_indexes) > 0) {
 					foreach($snmp_query_indexes as $row) {
 						$query_row = $snmp_query["id"] . "_" . encode_data_query_index($row["snmp_index"]);
@@ -810,11 +812,15 @@ function graphs() {
 						reset($xml_array["fields"]);
 						while (list($field_name, $field_array) = each($xml_array["fields"])) {
 							if ($field_array["direction"] == "input") {
-								if (isset($row[$field_name])) {
-									print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
-								$column_counter++;
-								}
+								if (in_array($field_name, $fields)) {
+									if (isset($row[$field_name])) {
+										print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
+									}else{
+										print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+									}
 
+									$column_counter++;
+								}
 							}
 						}
 
