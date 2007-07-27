@@ -106,29 +106,29 @@ if ( $_SERVER["argc"] == 1 ) {
 			$host_count = sizeof($hosts);
 
 			if (isset($polling_interval)) {
-				$polling_items = db_fetch_assoc("SELECT * 
+				$polling_items = db_fetch_assoc("SELECT *
 					FROM poller_item
 					WHERE (host_id >= " . $_SERVER["argv"][1] . "
-					AND host_id <= " .    $_SERVER["argv"][2] . " 
-					AND rrd_next_step <= 0) 
+					AND host_id <= " .    $_SERVER["argv"][2] . "
+					AND rrd_next_step <= 0)
 					ORDER by host_id");
 
-				$script_server_calls = db_fetch_cell("SELECT count(*) 
+				$script_server_calls = db_fetch_cell("SELECT count(*)
 					FROM poller_item
-					WHERE (action=2 
+					WHERE (action=2
 					AND host_id >= " . $_SERVER["argv"][1] . "
 					AND host_id <= " . $_SERVER["argv"][2] . "
 					AND rrd_next_step <= 0)");
 
 				/* setup next polling interval */
-				db_execute("UPDATE poller_item 
+				db_execute("UPDATE poller_item
 					SET rrd_next_step = rrd_next_step - " . $polling_interval . "
-					WHERE (host_id >= " . $_SERVER["argv"][1] . " 
+					WHERE (host_id >= " . $_SERVER["argv"][1] . "
 					AND host_id <= " . $_SERVER["argv"][2] . ")");
 
-				db_execute("UPDATE poller_item 
+				db_execute("UPDATE poller_item
 					SET rrd_next_step = rrd_step - " . $polling_interval . "
-					WHERE (rrd_next_step < 0 
+					WHERE (rrd_next_step < 0
 					AND host_id >= " . $_SERVER["argv"][1] . "
 					AND host_id <= " . $_SERVER["argv"][2] . ")");
 			}else{
@@ -436,8 +436,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			round($end-$start,4),
 			$host_count),$print_data_to_stdout);
 	}
-}else{
-	cacti_log("ERROR: Either there are no items in the cache or polling is disabled",$print_data_to_stdout);
+}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+	cacti_log("NOTE: There are no items in your poller for this polling cycle!", TRUE, "POLLER");
 }
 
 /* record the process as having completed */
