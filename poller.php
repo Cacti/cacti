@@ -56,7 +56,7 @@ if (isset($poller_interval)) {
 		$last_poll_interval = $poller_interval;
 	}
 
-	if (isset($last_poll_interval) && ($last_poller_interval > 300)) {
+	if (isset($last_poll_interval) && ($last_poll_interval > 300)) {
 		$last_poll_interval = 300;
 	}
 
