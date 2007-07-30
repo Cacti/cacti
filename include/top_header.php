@@ -55,7 +55,7 @@ global $colors;
 	</tr>
 	<tr height="2" bgcolor="#183c8f">
 		<td colspan="3">
-			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
+			<img src="images/transparent_line.gif" height="2" border="0"><br>
 		</td>
 	</tr>
 	<tr height="5" bgcolor="#e9e9e9">
@@ -82,8 +82,8 @@ global $colors;
 
 		</td>
 	</tr>
-	<tr height="5">
-		<td valign="top" rowspan="2" width="135" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#f5f5f5'>
+	<tr>
+		<td valign="top" colspan="1" rowspan="2" width="135" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#f5f5f5'>
 			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0">
 				<?php draw_menu();?>
 			</table>
@@ -92,8 +92,5 @@ global $colors;
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
 			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
 		</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td width="135" height="500"></td>
-		<td width="100%" valign="top"><?php display_output_messages();?>
+		<td width="100%" colspan="2" valign="top" style="padding-top: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#f5f5f5'><?php display_output_messages();?>
+
