@@ -542,7 +542,7 @@ case 'list':
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
 					<?php
-					print "<td width='1%' align='right' style=' class='textHeaderDark'" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
+					print "<td width='1%' align='right' class='textHeaderDark' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
 					?>
 				</tr>
 			</table>
@@ -577,7 +577,7 @@ case 'list':
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
 					<?php
-					print "<td width='1%' align='right' style=' class='textHeaderDark'" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
+					print "<td width='1%' align='right' class='textHeaderDark' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
 					?>
 				</tr>
 			</table>
