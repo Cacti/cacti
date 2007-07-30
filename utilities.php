@@ -703,7 +703,7 @@ function utilities_view_snmp_cache() {
 			OR host_snmp_cache.oid LIKE '%%" . $_REQUEST["filter"] . "%%')";
 	}
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -856,7 +856,7 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Poller Cache Items</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Poller Cache Items</strong>", "100%", $colors["header"], "3", "center", "");
 
 	include("./include/html/inc_poller_item_filter_table.php");
 
@@ -887,7 +887,7 @@ function utilities_view_poller_cache() {
 			OR poller_item.rrd_path  LIKE '%%" . $_REQUEST["filter"] . "%%')";
 	}
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -997,7 +997,7 @@ function utilities_view_poller_cache() {
 function utilities() {
 	global $colors;
 
-	html_start_box("<strong>Cacti System Utilities</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Cacti System Utilities</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
 	<colgroup span="3">

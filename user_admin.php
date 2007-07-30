@@ -429,7 +429,7 @@ function graph_perms_edit() {
 	html_end_box(false);
 
 	?>
-	<table align='center' width='98%'>
+	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Graph Template:&nbsp;
 				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id","","","");?>
@@ -443,7 +443,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: tree permissions */
-	html_start_box("<strong>Tree Permissions</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Tree Permissions</strong>", "100%", $colors["header"], "3", "center", "");
 
 	$trees = db_fetch_assoc("select
 		graph_tree.id,
@@ -488,7 +488,7 @@ function graph_perms_edit() {
 	html_end_box(false);
 
 	?>
-	<table align='center' width='98%'>
+	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Tree:&nbsp;
 				<?php form_dropdown("perm_trees",db_fetch_assoc("select id,name from graph_tree order by name"),"name","id","","","");?>
@@ -512,7 +512,7 @@ function user_realms_edit() {
 	/* ==================================================== */
 
 	?>
-	<table width='98%' align='center' cellpadding="5">
+	<table width='100%' align='center' cellpadding="5">
 		<tr>
 			<td>
 				<span style='font-size: 12px; font-weight: bold;'>Realm permissions control which sections of Cacti this user will have access to.</span>
@@ -521,7 +521,7 @@ function user_realms_edit() {
 	</table>
 	<?php
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	print "	<tr bgcolor='#" . $colors["header"] . "'>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong></td>
@@ -575,7 +575,7 @@ function graph_settings_edit() {
 	/* ==================================================== */
 
 	?>
-	<table width='98%' align='center' cellpadding="5">
+	<table width='100%' align='center' cellpadding="5">
 		<tr>
 			<td>
 				<span style='font-size: 12px; font-weight: bold;'>Graph settings control how graphs are displayed for this user.</span>
@@ -584,7 +584,7 @@ function graph_settings_edit() {
 	</table>
 	<?php
 
-	html_start_box("<strong>Graph Settings</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Settings</strong>", "100%", $colors["header"], "3", "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
@@ -670,7 +670,7 @@ function user_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>User Management</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>User Management</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk"),
@@ -682,7 +682,7 @@ function user_edit() {
 	if (!empty($_GET["id"])) {
 		/* draw user admin nav tabs */
 		?>
-		<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
+		<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
 			<tr>
 				<td width='1'></td>
 				<td <?php print ((($_GET["action"] == "user_realms_edit") || ($_GET["action"] == "user_edit")) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
@@ -756,7 +756,7 @@ function user() {
 	load_current_session_value("sort_column", "sess_user_admin_sort_column", "username");
 	load_current_session_value("sort_direction", "sess_user_admin_sort_direction", "ASC");
 
-	html_start_box("<strong>User Management</strong>", "98%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
+	html_start_box("<strong>User Management</strong>", "100%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 
 	include("./include/html/inc_user_admin_filter_table.php");
 
@@ -769,7 +769,7 @@ function user() {
 		$sql_where = "";
 	}
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(user_auth.id)
