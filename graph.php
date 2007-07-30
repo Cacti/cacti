@@ -172,7 +172,7 @@ case 'zoom':
 	if ((read_config_option("rrdtool_version")) == "rrd-1.2.x") {
 		if (read_graph_config_option("title_font") == "") {
 			if (read_config_option("title_font") == "") {
-                $title_font_size = 10;
+				$title_font_size = 10;
 			}else {
 				$title_font_size = read_config_option("title_size");
 			}
@@ -189,8 +189,8 @@ case 'zoom':
 			<strong>Zooming Graph</strong> '<?php print $graph_title;?>'
 		</td>
 	</tr>
-	<div id='zoomBox' style='position:absolute; overflow:none; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
-	<div id='zoomSensitiveZone' style='position:absolute; overflow:none; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
+	<div id='zoomBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
+	<div id='zoomSensitiveZone' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
 	<STYLE MEDIA="print">
 	/*Turn off the zoomBox*/
 	div#zoomBox, div#zoomSensitiveZone {display: none}
