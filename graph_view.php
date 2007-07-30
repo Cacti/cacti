@@ -77,7 +77,7 @@ case 'tree':
 	if ((!empty($tree_dropdown_html)) && (read_graph_config_option("default_tree_view_mode") == "1")) {
 		print "
 		<br>
-		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
+		<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
 			<tr>
 				$tree_dropdown_html
 			</tr>
@@ -584,7 +584,7 @@ case 'list':
 		</td>
 	</tr>
 	</table>
-	<table align='center' width='98%'>
+	<table align='center' width='100%'>
 		<tr>
 			<td width='1'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
 			<td><input type='image' src='images/button_view.gif' alt='View'></td>

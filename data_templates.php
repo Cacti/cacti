@@ -418,7 +418,7 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -427,7 +427,7 @@ function template_edit() {
 
 	html_end_box();
 
-	html_start_box("<strong>Data Source</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Source</strong>", "100%", $colors["header"], "3", "center", "");
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source["data_source_path"]);
@@ -482,7 +482,7 @@ function template_edit() {
 		if (sizeof($template_data_rrds) > 1) {
 
 		/* draw the data source tabs on the top of the page */
-		print "	<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'>
+		print "	<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
 				<tr>\n";
 
 				foreach ($template_data_rrds as $template_data_rrd) {
@@ -503,7 +503,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	print "	<tr>
 			<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark'>
@@ -558,7 +558,7 @@ function template_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by sequence");
 
-		html_start_box("<strong>Custom Data</strong> [data input: " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Custom Data</strong> [data input: " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "100%", $colors["header"], "3", "center", "");
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -637,7 +637,7 @@ function template() {
 	load_current_session_value("sort_direction", "sess_data_template_sort_direction", "ASC");
 
 
-	html_start_box("<strong>Data Templates</strong>", "98%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
+	html_start_box("<strong>Data Templates</strong>", "100%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 
 	include("./include/html/inc_data_template_filter_table.php");
 
@@ -646,7 +646,7 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "where (data_template.name like '%%" . $_REQUEST["filter"] . "%%')";
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(data_template.id)

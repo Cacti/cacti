@@ -373,7 +373,7 @@ function data_query_item_edit() {
 	$snmp_query = db_fetch_row("select name,xml_path from snmp_query where id=" . $_GET["snmp_query_id"]);
 	$header_label = "[edit: " . $snmp_query["name"] . "]";
 
-	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -383,7 +383,7 @@ function data_query_item_edit() {
 	html_end_box();
 
 	if (!empty($snmp_query_item["id"])) {
-		html_start_box("<strong>Associated Data Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Data Templates</strong>", "100%", $colors["header"], "3", "center", "");
 
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
@@ -463,7 +463,7 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box("<strong>Suggested Values</strong>", "98%", $colors["header"], "0", "center", "");
+		html_start_box("<strong>Suggested Values</strong>", "100%", $colors["header"], "0", "center", "");
 
 		reset($data_templates);
 
@@ -632,7 +632,7 @@ function data_query_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Queries</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Queries</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -652,12 +652,12 @@ function data_query_edit() {
 			$xml_file_exists = false;
 		}
 
-		html_start_box("", "98%", "aaaaaa", "3", "center", "");
+		html_start_box("", "100%", "aaaaaa", "3", "center", "");
 		print "<tr bgcolor='#f5f5f5'><td>$text</td></tr>";
 		html_end_box();
 
 		if ($xml_file_exists == true) {
-			html_start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+			html_start_box("<strong>Associated Graph Templates</strong>", "100%", $colors["header"], "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
 
 			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 					<td><span style='color: white; font-weight: bold;'>Name</span></td>
@@ -739,13 +739,13 @@ function data_query() {
 	load_current_session_value("page", "sess_data_queries_current_page", "1");
 	load_current_session_value("filter", "sess_data_queries_filter", "");
 
-	html_start_box("<strong>Data Queries</strong>", "98%", $colors["header"], "3", "center", "data_queries.php?action=edit");
+	html_start_box("<strong>Data Queries</strong>", "100%", $colors["header"], "3", "center", "data_queries.php?action=edit");
 
 	include("./include/html/inc_dq_view_filter_table.php");
 
 	html_end_box();
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST["filter"])) {

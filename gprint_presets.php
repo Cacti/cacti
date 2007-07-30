@@ -118,7 +118,7 @@ function gprint_presets_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>GPRINT Presets</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>GPRINT Presets</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -133,7 +133,7 @@ function gprint_presets_edit() {
 function gprint_presets() {
 	global $colors;
 
-	html_start_box("<strong>GPRINT Presets</strong>", "98%", $colors["header"], "3", "center", "gprint_presets.php?action=edit");
+	html_start_box("<strong>GPRINT Presets</strong>", "100%", $colors["header"], "3", "center", "gprint_presets.php?action=edit");
 
 	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td colspan='2' class='textSubHeaderDark'>GPRINT Preset Title</td>

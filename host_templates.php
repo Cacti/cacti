@@ -246,7 +246,7 @@ function template_edit() {
 		$_GET["id"] = 0;
 	}
 
-	html_start_box("<strong>Host Templates</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Host Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -256,7 +256,7 @@ function template_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
 
 		$selected_graph_templates = db_fetch_assoc("select
 			graph_templates.id,
@@ -306,7 +306,7 @@ function template_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Data Queries</strong>", "100%", $colors["header"], "3", "center", "");
 
 		$selected_data_queries = db_fetch_assoc("select
 			snmp_query.id,
@@ -403,7 +403,7 @@ function template() {
 
 	display_output_messages();
 
-	html_start_box("<strong>Host Templates</strong>", "98%", $colors["header"], "3", "center", "host_templates.php?action=edit");
+	html_start_box("<strong>Host Templates</strong>", "100%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 
 	include("./include/html/inc_graph_template_filter_table.php");
 
@@ -412,7 +412,7 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (host_template.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(host_template.id)

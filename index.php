@@ -26,12 +26,12 @@ include("./include/auth.php");
 include("./include/top_header.php");
 
 ?>
-<table width="98%" align="center">
+<table width="100%" align="center">
 	<tr>
 		<td class="textArea">
-			<strong>You are now logged into <a href="about.php">Cacti</a>. You can follow these basic steps to get 
+			<strong>You are now logged into <a href="about.php">Cacti</a>. You can follow these basic steps to get
 			started.</strong>
-			
+
 			<ul>
 				<li><a href="host.php">Create devices</a> for network</li>
 				<li><a href="graphs_new.php">Create graphs</a> for your new devices</li>

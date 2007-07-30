@@ -1647,7 +1647,7 @@ define("HTML_HEADER_TREE",
 );
 
 define("HTML_GRAPH_HEADER_ONE_TREE", "
-	<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
+	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
 		<tr bgcolor='#6d88ad'>
 			<td width='390' colspan='3' class='textHeaderDark'>");
 
@@ -1730,7 +1730,7 @@ define("HTML_HEADER_CLASSIC", "
 
 /* Traditional Graph Export Representation Graph Headers */
 define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
-	<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
+	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 		<tr bgcolor='#" . $colors["header_panel"] . "'>
 			<td colspan='" . read_config_option("export_num_columns") . "'>
 				<table width='100%' cellspacing='0' cellpadding='3' border='0'>

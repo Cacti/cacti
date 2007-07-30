@@ -133,7 +133,7 @@ function rra_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Round Robin Archives</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Round Robin Archives</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -162,7 +162,7 @@ function rra() {
 	load_current_session_value("sort_column", "sess_rra_sort_column", "timespan");
 	load_current_session_value("sort_direction", "sess_rra_sort_direction", "ASC");
 
-	html_start_box("<strong>Round Robin Archives</strong>", "98%", $colors["header"], "3", "center", "rra.php?action=edit");
+	html_start_box("<strong>Round Robin Archives</strong>", "100%", $colors["header"], "3", "center", "rra.php?action=edit");
 
 	$display_text = array(
 		"name" => array("Name", "ASC"),

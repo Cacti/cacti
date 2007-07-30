@@ -61,9 +61,9 @@ if (read_config_option("global_auth") == "on") {
 $graph_title = get_graph_title($_GET["local_graph_id"]);
 
 if ($_REQUEST["view_type"] == "tree") {
-	print "<table width='98%' style='background-color: #ffffff; border: 1px solid #ffffff;' align='center' cellpadding='3'>";
+	print "<table width='100%' style='background-color: #ffffff; border: 1px solid #ffffff;' align='center' cellpadding='3'>";
 }else{
-	print "<br><table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
+	print "<br><table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
 }
 
 $rras = get_associated_rras($_GET["local_graph_id"]);
@@ -87,7 +87,7 @@ case 'view':
 				<table width='1' cellpadding='0'>
 					<tr>
 						<td>
-							<img src='graph_image.php?action=view&local_graph_id=<?php print $_GET["local_graph_id"];?>&rra_id=<?php print $rra["id"];?>' border='0' alt='<?php print $graph_title;?>'>
+							<img class='graphimage' id='graph_<?php print $_GET["local_graph_id"] ?>' src='graph_image.php?action=view&local_graph_id=<?php print $_GET["local_graph_id"];?>&rra_id=<?php print $rra["id"];?>' border='0' alt='<?php print $graph_title;?>'>
 						</td>
 						<td valign='top' style='padding: 3px;' class='noprint'>
 							<a href='graph.php?action=zoom&local_graph_id=<?php print $_GET["local_graph_id"];?>&rra_id=<?php print $rra["id"];?>&view_type=<?php print $_REQUEST["view_type"];?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>

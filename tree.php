@@ -161,7 +161,7 @@ function item_edit() {
 
 	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . $_GET["tree_id"] . "'");
 
-	html_start_box("<strong>Tree Items</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Tree Items</strong>", "100%", $colors["header"], "3", "center", "");
 
 	print "<form method='post' action='tree.php' name='form_tree'>\n";
 
@@ -390,7 +390,7 @@ function tree_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Graph Trees</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Trees</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -400,7 +400,7 @@ function tree_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Tree Items</strong>", "98%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"] . "&parent_id=0");
+		html_start_box("<strong>Tree Items</strong>", "100%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"] . "&parent_id=0");
 
 		?>
 		<td>
@@ -425,7 +425,7 @@ function tree_edit() {
 function tree() {
 	global $colors;
 
-	html_start_box("<strong>Graph Trees</strong>", "98%", $colors["header"], "3", "center", "tree.php?action=edit");
+	html_start_box("<strong>Graph Trees</strong>", "100%", $colors["header"], "3", "center", "tree.php?action=edit");
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],1);

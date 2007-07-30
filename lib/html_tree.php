@@ -637,7 +637,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = "-> "; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = "-> "; }
 
-	print "<table width='98%' align='center' cellpadding='3'>";
+	print "<table width='100%' align='center' cellpadding='3'>";
 
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
@@ -889,7 +889,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 	/* print out the actual graph html */
 	if (read_graph_config_option("thumbnail_section_tree_1") == "on") {
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title'
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
 				src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
@@ -898,7 +898,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 				print "</tr><tr>\n";
 			}
 		}else{
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title'
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
 				src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
@@ -909,10 +909,10 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 		}
 	}else{
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
 			print "</tr><tr>\n";
 		}else{
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
 			print "</tr><tr>\n";
 		}
 	}

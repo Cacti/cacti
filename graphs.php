@@ -570,7 +570,7 @@ function item() {
 		$add_text = "";
 	}
 
-	html_start_box("<strong>Graph Items</strong> $header_label", "98%", $colors["header"], "3", "center", $add_text);
+	html_start_box("<strong>Graph Items</strong> $header_label", "100%", $colors["header"], "3", "center", $add_text);
 	draw_graph_items_list($template_item_list, "graphs_items.php", "local_graph_id=" . $_GET["id"], (empty($graph_template_id) ? false : true));
 	html_end_box();
 }
@@ -634,7 +634,7 @@ function graph_diff() {
 	}
 
 	?>
-	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
+	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="100%" align="center">
 		<tr>
 			<td class="textArea">
 				The template you have selected requires some changes to be made to the structure of
@@ -646,7 +646,7 @@ function graph_diff() {
 	<br>
 	<?php
 
-	html_start_box("<strong>Graph Preview</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Preview</strong>", "100%", $colors["header"], "3", "center", "");
 
 	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
 
@@ -786,7 +786,7 @@ function graph_diff() {
 
 	?>
 	<form action="graphs.php" method="post">
-	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="98%" align="center">
+	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="100%" align="center">
 		<tr>
 			<td class="textArea">
 				<input type='radio' name='type' value='1' checked>&nbsp;<?php print $user_message;?><br>
@@ -843,7 +843,7 @@ function graph_edit() {
 
 	if (!empty($_GET["id"])) {
 		?>
-		<table width="98%" align="center">
+		<table width="100%" align="center">
 			<tr>
 				<td class="textInfo" colspan="2" valign="top">
 					<?php print get_graph_title($_GET["id"]);?>
@@ -857,7 +857,7 @@ function graph_edit() {
 		<?php
 	}
 
-	html_start_box("<strong>Graph Template Selection</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Template Selection</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	$form_array = array(
 		"graph_template_id" => array(
@@ -909,7 +909,7 @@ function graph_edit() {
 
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
-		html_start_box("<strong>Supplemental Graph Template Data</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Supplemental Graph Template Data</strong>", "100%", $colors["header"], "3", "center", "");
 
 		print "<form method='post' action='graphs.php'>\n";
 
@@ -926,7 +926,7 @@ function graph_edit() {
 
 	if (!empty($_GET["id"])) {
 		?>
-		<table width="98%" align="center">
+		<table width="100%" align="center">
 			<tr>
 				<td align="center" class="textInfo" colspan="2">
 					<img src="graph_image.php?action=edit&local_graph_id=<?php print $_GET["id"];?>&rra_id=<?php print read_graph_config_option("default_rra_id");?>" alt="">
@@ -953,7 +953,7 @@ function graph_edit() {
 	}
 
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
-		html_start_box("<strong>Graph Configuration</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Graph Configuration</strong>", "100%", $colors["header"], "3", "center", "");
 
 		$form_array = array();
 
@@ -1036,7 +1036,7 @@ function graph() {
 	load_current_session_value("sort_direction", "sess_graph_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_graph_host_id", "-1");
 
-	html_start_box("<strong>Graph Management</strong>", "98%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
+	html_start_box("<strong>Graph Management</strong>", "100%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
 
 	include("./include/html/inc_graph_filter_table.php");
 
@@ -1058,7 +1058,7 @@ function graph() {
 		$sql_where .= " AND graph_local.host_id=" . $_REQUEST["host_id"];
 	}
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates_graph.id)

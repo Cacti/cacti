@@ -68,7 +68,7 @@ default:
 	}
 
 	/* draw the categories tabs on the top of the page */
-	print "<table class='tabs' width='98%' cellspacing='0' cellpadding='3' align='center'><tr>\n";
+	print "<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'><tr>\n";
 
 	if (sizeof($tabs) > 0) {
 	foreach (array_keys($tabs) as $tab_short_name) {
@@ -81,7 +81,7 @@ default:
 
 	print "<td></td>\n</tr></table>\n";
 
-	html_start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "100%", $colors["header"], "3", "center", "");
 
 	$form_array = array();
 

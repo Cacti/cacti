@@ -254,7 +254,7 @@ function graph_perms_edit() {
 	}
 
 	?>
-	<table width='98%' align='center' cellpadding="5">
+	<table width='100%' align='center' cellpadding="5">
 		<tr>
 			<td>
 				<span style='font-size: 12px; font-weight: bold;'>Graph policies will be evaluated in the order shown until a match is found.</span>
@@ -264,7 +264,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: graph permissions */
-	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "100%", $colors["header"], "3", "center", "");
 
 	$graphs = db_fetch_assoc("select
 		graph_templates_graph.local_graph_id,
@@ -311,7 +311,7 @@ function graph_perms_edit() {
 	html_end_box(false);
 
 	?>
-	<table align='center' width='98%'>
+	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Graph:&nbsp;
 				<?php form_dropdown("perm_graphs",db_fetch_assoc("select local_graph_id,title_cache from graph_templates_graph where local_graph_id>0 order by title_cache"),"title_cache","local_graph_id","","","");?>
@@ -325,7 +325,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: host permissions */
-	html_start_box("<strong>Graph Permissions (By Host)</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Permissions (By Host)</strong>", "100%", $colors["header"], "3", "center", "");
 
 	$hosts = db_fetch_assoc("select
 		host.id,
@@ -370,7 +370,7 @@ function graph_perms_edit() {
 	html_end_box(false);
 
 	?>
-	<table align='center' width='98%'>
+	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Host:&nbsp;
 				<?php form_dropdown("perm_hosts",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","");?>
@@ -384,7 +384,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: graph template permissions */
-	html_start_box("<strong>Graph Permissions (By Graph Template)</strong>", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Permissions (By Graph Template)</strong>", "100%", $colors["header"], "3", "center", "");
 
 	$graph_templates = db_fetch_assoc("select
 		graph_templates.id,

@@ -232,7 +232,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			if ($form_type == "cg") {
 				$graph_template_id = $form_id1;
 
-				html_start_box("<strong>Create Graph from '" . db_fetch_cell("select name from graph_templates where id=$graph_template_id") . "'", "98%", $colors["header"], "3", "center", "");
+				html_start_box("<strong>Create Graph from '" . db_fetch_cell("select name from graph_templates where id=$graph_template_id") . "'", "100%", $colors["header"], "3", "center", "");
 			}elseif ($form_type == "sg") {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					/* ================= input validation ================= */
@@ -253,7 +253,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				}
 
 				/* DRAW: Data Query */
-				html_start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from '" . db_fetch_cell("select name from snmp_query where id=$snmp_query_id") . "'", "98%", $colors["header"], "3", "center", "");
+				html_start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from '" . db_fetch_cell("select name from snmp_query where id=$snmp_query_id") . "'", "100%", $colors["header"], "3", "center", "");
 			}
 
 			/* ================= input validation ================= */
@@ -400,7 +400,7 @@ function graphs() {
 	if (!empty($debug_log)) {
 		debug_log_clear("new_graphs");
 		?>
-		<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
+		<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 			<tr bgcolor="<?php print $colors["light"];?>">
 				<td style="padding: 3px; font-family: monospace;">
 					<?php print $debug_log;?>
@@ -413,9 +413,9 @@ function graphs() {
 	?>
 
 	<form name="form_graphs_new">
-	<table width="98%" cellpadding="4" align="center">
+	<table width="100%" cellpadding="4" align="center">
 		<tr>
-			<td width="30%" class="textInfo">
+			<td nowrap style='white-space: nowrap;' width="30%" class="textInfo">
 				<?php print $host["description"];?> (<?php print $host["hostname"];?>)
 			</td>
 			<td align="left" class="textInfo" colspan="2" style="color: #aaaaaa;">
@@ -427,9 +427,9 @@ function graphs() {
 			</td>
 		</tr>
 	</table>
-	<table width="98%" cellpadding="0" align="center">
+	<table width="100%" cellpadding="0" align="center">
 		<tr>
-			<td width="55" class="textArea">
+			<td nowrap style='white-space: nowrap;' width="55" class="textArea">
 				Host:&nbsp;
 			</td>
 			<td width="1">
@@ -445,10 +445,10 @@ function graphs() {
 				?>
 				</select>
 			</td>
-			<td width="90" class="textArea">
-				Graph Types:&nbsp;
+			<td nowrap style='white-space: nowrap;' width="100" class="textArea">
+				&nbsp;Graph Types:&nbsp;
 			</td>
-			<td>
+			<td width="1">
 				<select name="graph_type" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
 				<option value="-2"<?php if ($_REQUEST["graph_type"] == "-2") {?> selected<?php }?>>All</option>
 				<option value="-1"<?php if ($_REQUEST["graph_type"] == "-1") {?> selected<?php }?>>Graph Template Based</option>
@@ -471,22 +471,22 @@ function graphs() {
 				?>
 				</select>
 			</td>
-			<td class="textInfo" rowspan="2" valign="top">
-				<span style="color: #c16921;">*</span><a href="host.php?action=edit&id=<?php print $_REQUEST["host_id"];?>">Edit this Host</a><br>
-				<span style="color: #c16921;">*</span><a href="host.php?action=edit">Create New Host</a>
+			<td nowrap style='white-space: nowrap;' class="textInfo" align="center" valign="top">
+				<span style="white-space: nowrap; color: #c16921;">*</span><a href="host.php?action=edit&id=<?php print $_REQUEST["host_id"];?>">Edit this Host</a><br>
+				<span style="white-space: nowrap; color: #c16921;">*</span><a href="host.php?action=edit">Create New Host</a>
 			</td>
 		</tr>
 	</table>
 	<?php if ($_REQUEST["graph_type"] > 0) {?>
-	<table width="98%" cellpadding="0" align="center">
+	<table width="100%" cellpadding="0" align="center">
 		<tr>
-			<td width="55" class="textArea">
+			<td nowrap style='white-space: nowrap;' width="55" class="textArea">
 				Search:&nbsp;
 			</td>
-			<td width="1" colspan="2">
-				<input type="text" name="filter" size="50" value="<?php print $_REQUEST["filter"];?>">
+			<td nowrap style='white-space: nowrap;' width="200">
+				<input type="text" name="filter" size="30" width="200" value="<?php print $_REQUEST["filter"];?>">
 			</td>
-			<td>
+			<td align="left" nowrap style='white-space: nowrap;'>
 				&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
 				<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 			</td>
@@ -504,15 +504,15 @@ function graphs() {
 	$i = 0;
 
 	if ($_REQUEST["graph_type"] > 0) {
-		load_current_session_value("page" . $_REQUEST["graph_type"],       "sess_graphs_new_page" . $_REQUEST["graph_type"],       "1");
+		load_current_session_value("page" . $_REQUEST["graph_type"], "sess_graphs_new_page" . $_REQUEST["graph_type"], "1");
 	}else if ($_REQUEST["graph_type"] == -2) {
 		foreach($snmp_queries as $query) {
-			load_current_session_value("page" . $query["id"],       "sess_graphs_new_page" . $query["id"],       "1");
+			load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
 		}
 	}
 
 	if ($_REQUEST["graph_type"] < 0) {
-		html_start_box("<strong>Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
 
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
 				<td class='textSubHeaderDark'>Graph Template Name</td>
@@ -662,7 +662,7 @@ function graphs() {
 				print "//-->\n</script>\n";
 			}
 
-			print "	<table width='98%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
+			print "	<table width='100%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
 					<tr>
 						<td bgcolor='#" . $colors["header"] . "' colspan='" . ($num_input_fields+1) . "'>
 							<table  cellspacing='0' cellpadding='0' width='100%' >
@@ -681,6 +681,12 @@ function graphs() {
 			if ($xml_array != false) {
 				$html_dq_header = "";
 				$snmp_query_indexes = array();
+
+				if (($page-1) * $row_limit > $total_rows) {
+					$page = 1;
+					$_REQUEST["page" . $query["id"]] = $page;
+					load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
+				}
 
 				if ($total_rows > $row_limit) {
 					/* generate page list */
@@ -851,7 +857,7 @@ function graphs() {
 			if (sizeof($data_query_graphs) == 1) {
 				form_hidden_box("sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"], $data_query_graphs[0]["id"], "");
 			}elseif (sizeof($data_query_graphs) > 1) {
-				print "	<table align='center' width='98%'>
+				print "	<table align='center' width='100%'>
 						<tr>
 							<td width='1' valign='top'>
 								<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;

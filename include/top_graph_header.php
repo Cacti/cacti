@@ -203,4 +203,4 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 			<?php } ?>
 		</td>
 		<?php } ?>
-		<td valign="top">
+		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;">

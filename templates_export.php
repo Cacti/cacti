@@ -77,7 +77,7 @@ function form_save() {
 
 		if ($_POST["output_format"] == "1") {
 			include_once("./include/top_header.php");
-			print "<table width='98%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
+			print "<table width='100%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
 			include_once("./include/bottom_footer.php");
 		}elseif ($_POST["output_format"] == "2") {
 			header("Content-type: application/xml");
@@ -104,7 +104,7 @@ function export() {
 
 	?>
 	<form name="form_graph_id">
-	<table width='98%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
+	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 		<tr bgcolor="<?php print $colors["light"];?>">
 			<td class="textArea" style="padding: 3px;">
 				What would you like to export?&nbsp;
@@ -123,7 +123,7 @@ function export() {
 	<form method="post" action="templates_export.php">
 	<?php
 
-	html_start_box("<strong>Export Template</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Export Template</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "100%", $colors["header"], "3", "center", "");
 
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">

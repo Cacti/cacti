@@ -311,7 +311,7 @@ function field_edit() {
 		return;
 	}
 
-	html_start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "100%", $colors["header"], "3", "center", "");
 
 	$form_array = array();
 
@@ -378,7 +378,7 @@ function data_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Input Methods</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Input Methods</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -388,7 +388,7 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Input Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>Input Fields</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
@@ -422,7 +422,7 @@ function data_edit() {
 		}
 		html_end_box();
 
-		html_start_box("<strong>Output Fields</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>Output Fields</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
@@ -501,13 +501,13 @@ function data() {
 	load_current_session_value("sort_direction", "sess_data_input_sort_direction", "ASC");
 	load_current_session_value("page", "sess_data_input_current_page", "1");
 
-	html_start_box("<strong>Data Input Methods</strong>", "98%", $colors["header"], "3", "center", "data_input.php?action=edit");
+	html_start_box("<strong>Data Input Methods</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=edit");
 
 	include("./include/html/inc_dq_view_filter_table.php");
 
 	html_end_box();
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (data_input.name like '%%" . $_REQUEST["filter"] . "%%')";

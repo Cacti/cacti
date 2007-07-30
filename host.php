@@ -487,7 +487,7 @@ function host_edit() {
 
 	if (!empty($host["id"])) {
 		?>
-		<table width="98%" align="center">
+		<table width="100%" align="center">
 			<tr>
 				<td class="textInfo" colspan="2">
 					<?php print $host["description"];?> (<?php print $host["hostname"];?>)
@@ -544,7 +544,7 @@ function host_edit() {
 		<?php
 	}
 
-	html_start_box("<strong>Devices</strong> $header_label", "98%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Devices</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	/* preserve the host template id if passed in via a GET variable */
 	if (!empty($_GET["host_template_id"])) {
@@ -559,7 +559,7 @@ function host_edit() {
 	html_end_box();
 
 	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
-		html_start_box("<strong>Data Query Debug Information</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Data Query Debug Information</strong>", "100%", $colors["header"], "3", "center", "");
 
 		print "<tr><td><span style='font-family: monospace;'>" . debug_log_return("data_query") . "</span></td></tr>";
 
@@ -567,7 +567,7 @@ function host_edit() {
 	}
 
 	if (!empty($host["id"])) {
-		html_start_box("<strong>Associated Graph Templates</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
 
 		html_header(array("Graph Template Name", "Status"), 2);
 
@@ -626,7 +626,7 @@ function host_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box("<strong>Associated Data Queries</strong>", "98%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Data Queries</strong>", "100%", $colors["header"], "3", "center", "");
 
 		html_header(array("Data Query Name", "Debugging", "Re-Index Method", "Status"), 2);
 
@@ -771,7 +771,7 @@ function host() {
 	load_current_session_value("sort_column", "sess_host_sort_column", "description");
 	load_current_session_value("sort_direction", "sess_host_sort_direction", "ASC");
 
-	html_start_box("<strong>Devices</strong>", "98%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
+	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
 
 	include("./include/html/inc_device_filter_table.php");
 
@@ -804,7 +804,7 @@ function host() {
 		$sql_where .= (strlen($sql_where) ? " and host.host_template_id=" . $_REQUEST["host_template_id"] : "where host.host_template_id=" . $_REQUEST["host_template_id"]);
 	}
 
-	html_start_box("", "98%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("select
 		COUNT(host.id)

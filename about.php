@@ -25,7 +25,7 @@
 include("./include/auth.php");
 include("./include/top_header.php");
 
-html_start_box("<strong>About Cacti</strong>", "98%", $colors["header"], "3", "center", "");
+html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "center", "");
 ?>
 
 <tr>

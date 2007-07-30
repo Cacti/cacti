@@ -544,7 +544,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 		$alt = "Create";
 	}
 	?>
-	<table align='center' width='98%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
+	<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
 			 <td bgcolor="#f5f5f5" align="right">
 				<input type='hidden' name='action' value='save'>
