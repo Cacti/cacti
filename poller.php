@@ -48,20 +48,29 @@ $poller_interval = read_config_option("poller_interval");
 /* retreive the last time the poller ran */
 $poller_lastrun = read_config_option('poller_lastrun');
 
+/* detect the cron/scheduled task interval */
+if (isset($poller_lastrun)) {
+	$cron_interval = floor(($poller_start - $poller_lastrun)/60)*60;
+
+	if ($cron_interval == 0) {
+		$cron_interval = 60;
+	}
+}else{
+	if ($poller_interval < 60) {
+		$cron_interval = 60;
+	}else{
+		$cron_interval = $poller_interval;
+	}
+}
+
+if (isset($cron_interval) && ($cron_interval > 300)) {
+	$cron_interval = 300;
+}
+
 /* assume a scheduled task of either 60 or 300 seconds */
 if (isset($poller_interval)) {
-	if (isset($poller_lastrun)) {
-		$last_poll_interval = $poller_start - $poller_lastrun;
-	}else{
-		$last_poll_interval = $poller_interval;
-	}
-
-	if (isset($last_poll_interval) && ($last_poll_interval > 300)) {
-		$last_poll_interval = 300;
-	}
-
 	$num_polling_items = db_fetch_cell("select count(*) from poller_item where rrd_next_step<=0");
-	$poller_runs       = ceil(($poller_start - $poller_lastrun) / $poller_interval);
+	$poller_runs       = $cron_interval / $poller_interval;
 
 	define("MAX_POLLER_RUNTIME", $poller_runs * $poller_interval - 2);
 }else{
@@ -72,30 +81,34 @@ if (isset($poller_interval)) {
 }
 
 if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-	echo "The number of runs is '" . $poller_runs . "'.\n";
+	cacti_log("DEBUG: Poller Interval: '$poller_interval', Cron Interval:  '$cron_interval', Poller Runs:    '$poller_runs'", TRUE, "POLLER");;
+}
+
+if ($config["cacti_server_os"] == "unix") {
+	$task_type = "Cron";
+}else{
+	$task_type = "Scheduled Task";
+}
+
+if ($poller_interval <= 60) {
+	$min_period = "60";
+}else{
+	$min_period = "300";
 }
 
 /* get to see if we are polling faster than reported by the settings, if so, exit */
 if (isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) {
-	if ($seconds - $poller_lastrun + 5 < MAX_POLLER_RUNTIME) {
-		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
-			if ($config["cacti_server_os"] == "unix") {
-				cacti_log("NOTE: Cron entry is configured to run too often!  The Cacti Poller Interval is $poller_interval seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the last polling.', true, 'POLLER');
-			}else{
-				cacti_log("NOTE: Windows Scheduled Task is configured to run too often!  The Cacti Poller Interval is $poller_interval seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the last polling.', true, 'POLLER');
-			}
-		}
+	if (($seconds - $poller_lastrun) < MAX_POLLER_RUNTIME) {
+//		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+			cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER');
+//		}
 		exit;
 	}
 }
 
 /* check to see whether we have the poller interval set lower than the poller is actually ran, if so, issue a warning */
-if (($seconds - $poller_lastrun - 5 > MAX_POLLER_RUNTIME) && $poller_lastrun > 0) {
-	if ($config["cacti_server_os"] == "unix") {
-		cacti_log("WARNING: Cron entry is out of sync with Cacti Poller Interval!  The Poller Interval is $poller_interval seconds, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
-	}else{
-		cacti_log("WARNING: Windows Scheduled Task is out of sync with Cacti Poller Interval!  The Poller Interval is $poller_interval seconds, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
-	}
+if ((($seconds - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
+	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '300' second $task_type, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
 db_execute("replace into settings (name,value) values ('poller_lastrun'," . $seconds . ')');
@@ -233,7 +246,7 @@ while ($poller_runs_completed < $poller_runs) {
 		while (1) {
 			$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id=0");
 
-			if (sizeof($polling_items) == $process_file_number) {
+			if (sizeof($polling_items) >= $process_file_number) {
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
 
 				/* take time and log performance data */
