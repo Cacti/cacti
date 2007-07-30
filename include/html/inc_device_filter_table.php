@@ -3,7 +3,7 @@
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="20">
+					<td nowrap style='white-space: nowrap;' width="50">
 						Type:&nbsp;
 					</td>
 					<td width="1">
@@ -21,9 +21,8 @@
 							?>
 						</select>
 					</td>
-					<td width="5"></td>
-					<td width="20">
-						Status:&nbsp;
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Status:&nbsp;
 					</td>
 					<td width="1">
 						<select name="cbo_host_status" onChange="window.location=document.form_devices.cbo_host_status.options[document.form_devices.cbo_host_status.selectedIndex].value">
@@ -37,14 +36,13 @@
 							<option value="host.php?host_status=0&host_template_id=<?php print $_REQUEST["host_template_id"];?>&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_status"] == "0") {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
-					<td width="5"></td>
-					<td width="20">
-						Search:&nbsp;
+					<td nowrap style='white-space: nowrap;' width="20">
+						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
 					</td>
-					<td>
+					<td nowrap>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>

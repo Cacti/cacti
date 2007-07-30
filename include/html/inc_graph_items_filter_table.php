@@ -10,7 +10,7 @@
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr width="100%">
-					<td>
+					<td nowrap style='white-space: nowrap;' width="50">
 						Host:&nbsp;
 					</td>
 					<td>
@@ -31,7 +31,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td nowrap style='white-space: nowrap;' width="100">
 						Data Template:&nbsp;
 					</td>
 					<td>

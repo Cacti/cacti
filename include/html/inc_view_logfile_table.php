@@ -3,7 +3,7 @@
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="80">
+					<td nowrap style='white-space: nowrap;' width="80">
 						Tail Lines:&nbsp;
 					</td>
 					<td width="1">
@@ -15,9 +15,8 @@
 							?>
 						</select>
 					</td>
-					<td width="5"></td>
-    				<td width="100">
-						Message Type:&nbsp;
+					<td nowrap style='white-space: nowrap;' width="100">
+						&nbsp;Message Type:&nbsp;
 					</td>
 					<td width="1">
 						<select name="message_type" onChange="applyViewLogFilterChange(document.form_logfile)">
@@ -29,14 +28,14 @@
 							<option value="5"<?php if ($_REQUEST['message_type'] == '5') {?> selected<?php }?>>SQL Calls</option>
 						</select>
 					</td>
-					<td>
+					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 						<input type="image" src="images/button_purge.gif" name="purge" alt="Purge" border="0" align="absmiddle">
 					</td>
 				</tr>
 				<tr>
-					<td width="80">
+					<td nowrap style='white-space: nowrap;' width="80">
 						Refresh:&nbsp;
 					</td>
 					<td width="1">
@@ -48,9 +47,8 @@
 							?>
 						</select>
 					</td>
-					<td width="5"></td>
-					<td width="100">
-						Display Order:&nbsp;
+					<td nowrap style='white-space: nowrap;' width="100">
+						&nbsp;Display Order:&nbsp;
 					</td>
 					<td width="1">
 						<select name="reverse" onChange="applyViewLogFilterChange(document.form_logfile)">
@@ -62,7 +60,7 @@
 			</table>
 			<table cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="80">
+					<td nowrap style='white-space: nowrap;' width="80">
 						Search:&nbsp;
 					</td>
 					<td width="1">

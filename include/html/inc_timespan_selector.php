@@ -59,10 +59,10 @@
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width='55'>
+					<td nowrap style='white-space: nowrap;' width='55'>
 						&nbsp;<strong>Presets:</strong>&nbsp;
 					</td>
-					<td width='130'>
+					<td nowrap style='white-space: nowrap;' width='130'>
 						<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 							<?php
 							if ($_SESSION["custom"]) {
@@ -86,14 +86,14 @@
 							?>
 						</select>
 					</td>
-					<td width='30'>
+					<td nowrap style='white-space: nowrap;' width='30'>
 						&nbsp;<strong>From:</strong>&nbsp;
 					</td>
 					<td width='150' nowrap style='white-space: nowrap;'>
 						<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
 						&nbsp;<input type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
 					</td>
-					<td width='20'>
+					<td nowrap style='white-space: nowrap;' width='20'>
 						&nbsp;<strong>To:</strong>&nbsp;
 					</td>
 					<td width='150' nowrap style='white-space: nowrap;'>
@@ -115,7 +115,7 @@
 						</select>
 						<input type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
 					</td>
-					<td nowrap>
+					<td nowrap style='white-space: nowrap;'>
 						&nbsp;&nbsp;<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' value='refresh'>
 						<input type='image' name='button_clear' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle'>
 					</td>

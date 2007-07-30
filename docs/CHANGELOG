@@ -66,6 +66,9 @@ Cacti CHANGELOG
 -feature: Add 1 minute RRA and graph templates
 -feature: Add item select hilighting to main pages
 -feature: Let poller.php be more intelligent about poller intervals less than 60 seconds
+-feature: Add consistency to Filters by adding nowrap to td items
+-feature: Add Graph and Data Source counts to Device page
+-feature: Add Poller Interval to Data Sources page
 -compat: Add additional checking due to php-snmp changes in Windows
 
 0.8.6j

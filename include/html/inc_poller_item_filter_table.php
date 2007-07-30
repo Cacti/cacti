@@ -3,7 +3,7 @@
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="20">
+					<td nowrap style='white-space: nowrap;' width="50">
 						Host:&nbsp;
 					</td>
 					<td width="1">
@@ -21,9 +21,8 @@
 							?>
 						</select>
 					</td>
-					<td width="5"></td>
-    				<td width="20">
-						Action:&nbsp;
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Action:&nbsp;
 					</td>
 					<td width="1">
 						<select name="poller_action" onChange="applyPItemFilterChange(document.form_pollercache)">
@@ -33,14 +32,13 @@
 							<option value="2"<?php if ($_REQUEST['poller_action'] == '2') {?> selected<?php }?>>Script Server</option>
 						</select>
 					</td>
-					<td width="5"></td>
-					<td width="20">
-						Search:&nbsp;
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
-					<td>
+					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>

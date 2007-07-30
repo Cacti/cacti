@@ -816,6 +816,9 @@ function host() {
 		$sortby = "INET_ATON(hostname)";
 	}
 
+	$host_graphs       = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id"), "host_id", "graphs");
+	$host_data_sources = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id"), "host_id", "data_sources");
+
 	$hosts = db_fetch_assoc("SELECT
 		host.id,
 		host.disabled,
@@ -836,7 +839,7 @@ function host() {
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='7'>
+			<td colspan='9'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -857,6 +860,8 @@ function host() {
 
 	$display_text = array(
 		"description" => array("Description", "ASC"),
+		"nosort1" => array("Graphs", "ASC"),
+		"nosort2" => array("Data<br>Sources", "ASC"),
 		"status" => array("Status", "ASC"),
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),
@@ -871,6 +876,8 @@ function host() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i, $host["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='host.php?action=edit&id=" . $host["id"] . "'>" .
 				(strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]) : $host["description"]) . "</a>", $host["id"], 250);
+			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
+			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
 			form_selectable_cell((strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["hostname"]) : $host["hostname"]), $host["id"]);
 			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
