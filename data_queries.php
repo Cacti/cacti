@@ -707,7 +707,7 @@ function data_query() {
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
-//		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
 	/* clean up sort_column */

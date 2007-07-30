@@ -1,5 +1,5 @@
 	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_id" method="post">
+		<form name="form_graph_id" method="get">
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
