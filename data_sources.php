@@ -941,12 +941,14 @@ function ds_edit() {
 }
 
 function get_poller_interval($seconds) {
-	if ($seconds < 60) {
-		return $seconds . " Seconds";
+	if ($seconds == 0) {
+		return "<em>External</em>";
+	}else if ($seconds < 60) {
+		return "<em>" . $seconds . " Seconds</em>";
 	}else if ($seconds == 60) {
 		return "1 Minute";
 	}else{
-		return ($seconds / 60) . " Minutes";
+		return "<em>" . ($seconds / 60) . " Minutes</em>";
 	}
 }
 
@@ -1030,42 +1032,32 @@ function ds() {
 		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where"));
 
-	$data_sources = db_fetch_assoc("SELECT data_template_data.local_data_id,
+	$poller_intervals = array_rekey(db_fetch_assoc("SELECT data_template_data.local_data_id AS id,
+		Min(data_template_data.rrd_step*rra.steps) AS poller_interval
+		FROM data_template
+		INNER JOIN (data_local
+		INNER JOIN ((data_template_data_rra
+		INNER JOIN data_template_data ON data_template_data_rra.data_template_data_id=data_template_data.id)
+		INNER JOIN rra ON data_template_data_rra.rra_id = rra.id) ON data_local.id = data_template_data.local_data_id) ON data_template.id = data_template_data.data_template_id
+		$sql_where
+		GROUP BY data_template_data.local_data_id"), "id", "poller_interval");
+
+	$data_sources = db_fetch_assoc("SELECT
+		data_template_data.local_data_id,
 		data_template_data.name_cache,
 		data_template_data.active,
-		data_input.name AS data_input_name,
-		data_template.name AS data_template_name,
-		data_local.host_id,
-		Min(data_template_data.rrd_step*rra.steps) AS poller_interval
-		FROM (data_template_data_rra
-		INNER JOIN ((data_local
-		INNER JOIN data_template ON data_local.data_template_id = data_template.id)
-		INNER JOIN (data_template_data
-		INNER JOIN data_input ON data_template_data.data_input_id = data_input.id)
-		ON data_local.id = data_template_data.local_data_id)
-		ON data_template_data_rra.data_template_data_id = data_template_data.id)
-		INNER JOIN rra ON data_template_data_rra.rra_id = rra.id
+		data_input.name as data_input_name,
+		data_template.name as data_template_name,
+		data_local.host_id
+		FROM (data_local,data_template_data)
+		LEFT JOIN data_input
+		ON (data_input.id=data_template_data.data_input_id)
+		LEFT JOIN data_template
+		ON (data_local.data_template_id=data_template.id)
+		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where
-		GROUP BY data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active, data_input.name, data_template.name, data_local.host_id
-		ORDER BY ". $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] . "
-		LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
-
-//	$data_sources = db_fetch_assoc("SELECT
-//		data_template_data.local_data_id,
-//		data_template_data.name_cache,
-//		data_template_data.active,
-//		data_input.name as data_input_name,
-//		data_template.name as data_template_name,
-//		data_local.host_id
-//		FROM (data_local,data_template_data)
-//		LEFT JOIN data_input
-//		ON (data_input.id=data_template_data.data_input_id)
-//		LEFT JOIN data_template
-//		ON (data_local.data_template_id=data_template.id)
-//		WHERE data_local.id=data_template_data.local_data_id
-//		$sql_where
-//		ORDER BY ". $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
-//		" LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
+		ORDER BY ". $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -1095,7 +1087,7 @@ function ds() {
 	$display_text = array(
 		"name_cache" => array("Name", "ASC"),
 		"data_input_name" => array("Data Input Method", "ASC"),
-		"poller_interval" => array("Poller<br>Interval", "ASC"),
+		"nosort" => array("Poller<br>Interval", "ASC"),
 		"active" => array("Active", "ASC"),
 		"data_template_name" => array("Template Name", "ASC"));
 
@@ -1105,10 +1097,12 @@ function ds() {
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
 			$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);
+			$data_input_name    = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : $data_source["data_input_name"]);
+			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i, $data_source["local_data_id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "' title='" . $data_source["name_cache"] . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($data_source["name_cache"], read_config_option("max_title_data_source"))) : title_trim($data_source["name_cache"], read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
-			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_input_name']) : $data_source['data_input_name']) . "</a>", $data_source["local_data_id"]);
-			form_selectable_cell(get_poller_interval($data_source['poller_interval']), $data_source["local_data_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input_name) : $data_input_name) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);
 			form_selectable_cell($data_source['active'], $data_source["local_data_id"]);
 			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']) : $data_source['data_template_name']) . "</a>", $data_source["local_data_id"]);
 			form_checkbox_cell($data_source["name_cache"], $data_source["local_data_id"]);
