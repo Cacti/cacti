@@ -68,7 +68,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			}
 		}
 
-        $rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
+		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
 		return db_execute("insert into poller_item (local_data_id,host_id,action,hostname,
 			snmp_community,snmp_version,snmp_timeout,snmp_username,snmp_password,snmp_port,rrd_name,rrd_path,

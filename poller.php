@@ -48,7 +48,7 @@ $poller_interval = read_config_option("poller_interval");
 /* retreive the last time the poller ran */
 $poller_lastrun = read_config_option('poller_lastrun');
 
-/* detect the cron/scheduled task interval */
+/* detect, as best we can, the cron/scheduled task interval */
 if (isset($poller_lastrun)) {
 	$cron_interval = floor(($poller_start - $poller_lastrun)/60)*60;
 
@@ -80,16 +80,18 @@ if (isset($poller_interval)) {
 	define("MAX_POLLER_RUNTIME", 298);
 }
 
-if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-	cacti_log("DEBUG: Poller Interval: '$poller_interval', Cron Interval:  '$cron_interval', Poller Runs:    '$poller_runs'", TRUE, "POLLER");;
+if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+	cacti_log("DEBUG: Poller Interval: '$poller_interval', Cron Interval: '$cron_interval', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
 }
 
+/* some text formatting for platform specific vocabulary */
 if ($config["cacti_server_os"] == "unix") {
 	$task_type = "Cron";
 }else{
 	$task_type = "Scheduled Task";
 }
 
+/* our cron can run at either 1 or 5 minute intervals */
 if ($poller_interval <= 60) {
 	$min_period = "60";
 }else{
@@ -99,9 +101,9 @@ if ($poller_interval <= 60) {
 /* get to see if we are polling faster than reported by the settings, if so, exit */
 if (isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) {
 	if (($seconds - $poller_lastrun) < MAX_POLLER_RUNTIME) {
-//		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
 			cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER');
-//		}
+		}
 		exit;
 	}
 }
@@ -113,8 +115,9 @@ if ((($seconds - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun 
 
 db_execute("replace into settings (name,value) values ('poller_lastrun'," . $seconds . ')');
 
-/* let PHP only run 1 second longer than the max runtime */
+/* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
 ini_set("max_execution_time", MAX_POLLER_RUNTIME + 1);
+ini_set("memory_limit", "256M");
 
 $poller_runs_completed = 0;
 
@@ -141,14 +144,14 @@ while ($poller_runs_completed < $poller_runs) {
 
 	/* initialize file and host count pointers */
 	$process_file_number = 0;
-	$first_host = 0;
-	$last_host = 0;
+	$first_host          = 0;
+	$last_host           = 0;
 
 	/* update web paths for the poller */
 	db_execute("replace into settings (name,value) values ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
 
 	/* obtain some defaults from the database */
-	$poller = read_config_option("poller_type");
+	$poller      = read_config_option("poller_type");
 	$max_threads = read_config_option("max_threads");
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
@@ -185,17 +188,17 @@ while ($poller_runs_completed < $poller_runs) {
 		/* Determine Command Name */
 		if ($poller == "2") {
 			$command_string = read_config_option("path_cactid");
-			$extra_args = "";
-			$method = "cactid";
+			$extra_args     = "";
+			$method         = "cactid";
 			chdir(dirname(read_config_option("path_cactid")));
 		}else if ($config["cacti_server_os"] == "unix") {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args = "-q " . $config["base_path"] . "/cmd.php";
-			$method = "cmd.php";
+			$extra_args     = "-q " . $config["base_path"] . "/cmd.php";
+			$method         = "cmd.php";
 		}else{
 			$command_string = read_config_option("path_php_binary");
-			$extra_args = "-q " . strtolower($config["base_path"] . "/cmd.php");
-			$method = "cmd.php";
+			$extra_args     = "-q " . strtolower($config["base_path"] . "/cmd.php");
+			$method         = "cmd.php";
 		}
 
 		/* Populate each execution file with appropriate information */
@@ -205,7 +208,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			if ($host_count == $hosts_per_file) {
-				$last_host = $item["id"];
+				$last_host    = $item["id"];
 				$change_files = True;
 			}
 
@@ -215,13 +218,14 @@ while ($poller_runs_completed < $poller_runs) {
 				exec_background($command_string, "$extra_args $first_host $last_host");
 				usleep(100000);
 
-				$host_count = 1;
+				$host_count   = 1;
 				$change_files = False;
+				$first_host   = 0;
+				$last_host    = 0;
+
 				$process_file_number++;
-				$first_host = 0;
-				$last_host = 0;
-			} /* End change_files */
-		} /* End For Each */
+			} /* end change_files */
+		} /* end for each */
 
 		if ($host_count > 1) {
 			$last_host = $item["id"];
@@ -374,6 +378,5 @@ while ($poller_runs_completed < $poller_runs) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
 	}
 }
-// End Mainline Processing
 
 ?>
