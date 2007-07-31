@@ -236,7 +236,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			}
 		}elseif ($leaf["host_id"] > 0) {
 			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a></td>\n";
+				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='host.php?action=edit&id=" . $leaf["host_id"] . "'>(Edit host)</a></td>\n";
 				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
 			}
 		}

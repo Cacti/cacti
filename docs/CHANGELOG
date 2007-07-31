@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -bug#0000946: Timetick of zero returns down for device
 -bug#0000953: SNMP Passphrase displayed in cleartext
 -bug#0000955: Fixed possible denial of service attack by modifying graph image url
+-bug#0000956: Patch for tree management
 -bug#0000957: Script server output's beginning/trailing data during "Include" causing a synchronization issue
 -bug#0000958: Slope Mode is now selectable
 -bug#0000959: Alarming added when poller output table is not empty
