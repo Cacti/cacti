@@ -587,6 +587,7 @@ function graphs() {
 
 		html_end_box();
 	}
+
 	if ($_REQUEST["graph_type"] != -1) {
 		$snmp_queries = db_fetch_assoc("SELECT
 			snmp_query.id,
@@ -682,37 +683,6 @@ function graphs() {
 				$html_dq_header = "";
 				$snmp_query_indexes = array();
 
-				if (($page-1) * $row_limit > $total_rows) {
-					$page = 1;
-					$_REQUEST["page" . $query["id"]] = $page;
-					load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
-				}
-
-				if ($total_rows > $row_limit) {
-					/* generate page list */
-					$url_page_select = get_page_list($page, MAX_DISPLAY_PAGES, $row_limit, $total_rows, "graphs_new.php?", "page" . $snmp_query["id"]);
-
-					$nav = "<tr bgcolor='#" . $colors["header"] . "' class='noprint'>
-								<td colspan='15'>
-									<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-										<tr>
-											<td align='left' class='textHeaderDark'>
-												<strong>&lt;&lt; "; if ($page > 1) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page-1) . "'>"; } $nav .= "Previous"; if ($page > 1) { $nav .= "</a>"; } $nav .= "</strong>
-											</td>\n
-											<td align='center' class='textHeaderDark'>
-												Showing Rows " . (($row_limit*($page-1))+1) . " to " . ((($total_rows < $row_limit) || ($total_rows < ($row_limit*$page))) ? $total_rows : ($row_limit*$page)) . " of $total_rows [$url_page_select]
-											</td>\n
-											<td align='right' class='textHeaderDark'>
-												<strong>"; if (($page * $row_limit) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page+1) . "'>"; } $nav .= "Next"; if (($page * $row_limit) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
-											</td>\n
-										</tr>
-									</table>
-								</td>
-							</tr>\n";
-
-					print $nav;
-				}
-
 				reset($xml_array["fields"]);
 
 				/* if there is a where clause, get the matching snmp_indexes */
@@ -758,7 +728,7 @@ function graphs() {
 						AND snmp_query_id=" . $snmp_query["id"]);
 
 					/* build magic query */
-					$sql_query = "SELECT host_id, snmp_query_id, snmp_index, ";
+					$sql_query  = "SELECT host_id, snmp_query_id, snmp_index, ";
 					$num_visible_fields = sizeof($field_names);
 					$i = 0;
 					foreach($field_names as $column) {
@@ -781,7 +751,46 @@ function graphs() {
 						$sql_order
 						LIMIT " . ($row_limit*($page-1)) . "," . $row_limit;
 
+					$rows_query = "SELECT host_id, snmp_query_id, snmp_index FROM host_snmp_cache
+						WHERE host_id=" . $host["id"] . "
+						AND snmp_query_id=" . $snmp_query["id"] . "
+						$sql_where
+						GROUP BY host_id, snmp_query_id, snmp_index";
+
 					$snmp_query_indexes = db_fetch_assoc($sql_query);
+
+					$total_rows = sizeof(db_fetch_assoc($rows_query));
+
+					if (($page-1) * $row_limit > $total_rows) {
+						$page = 1;
+						$_REQUEST["page" . $query["id"]] = $page;
+						load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
+					}
+
+					if ($total_rows > $row_limit) {
+						/* generate page list */
+						$url_page_select = get_page_list($page, MAX_DISPLAY_PAGES, $row_limit, $total_rows, "graphs_new.php?", "page" . $snmp_query["id"]);
+
+						$nav = "<tr bgcolor='#" . $colors["header"] . "' class='noprint'>
+									<td colspan='15'>
+										<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+											<tr>
+												<td align='left' class='textHeaderDark'>
+													<strong>&lt;&lt; "; if ($page > 1) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page-1) . "'>"; } $nav .= "Previous"; if ($page > 1) { $nav .= "</a>"; } $nav .= "</strong>
+												</td>\n
+												<td align='center' class='textHeaderDark'>
+													Showing Rows " . (($row_limit*($page-1))+1) . " to " . ((($total_rows < $row_limit) || ($total_rows < ($row_limit*$page))) ? $total_rows : ($row_limit*$page)) . " of $total_rows [$url_page_select]
+												</td>\n
+												<td align='right' class='textHeaderDark'>
+													<strong>"; if (($page * $row_limit) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page+1) . "'>"; } $nav .= "Next"; if (($page * $row_limit) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+												</td>\n
+											</tr>
+										</table>
+									</td>
+								</tr>\n";
+
+						print $nav;
+					}
 
 					while (list($field_name, $field_array) = each($xml_array["fields"])) {
 						if ($field_array["direction"] == "input") {
