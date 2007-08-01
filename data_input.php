@@ -98,7 +98,7 @@ function form_save() {
 				if (!empty($_POST["id"])) {
 					db_execute("update data_input_fields set sequence=0 where data_input_id=" . $_POST["id"]);
 
-					generate_data_input_field_sequences($_POST["input_string"], $_POST["id"], "in");
+					generate_data_input_field_sequences($_POST["input_string"], $_POST["id"]);
 				}
 			}else{
 				raise_message(2);
@@ -135,8 +135,8 @@ function form_save() {
 			if ($data_input_field_id) {
 				raise_message(1);
 
-				if (!empty($data_input_field_id)) {
-					generate_data_input_field_sequences(db_fetch_cell("select " . $_POST["input_output"] . "put_string from data_input where id=" . $_POST["data_input_id"]), $_POST["data_input_id"], $_POST["input_output"]);
+				if ((!empty($data_input_field_id)) && ($_POST["input_output"] == "in")) {
+					generate_data_input_field_sequences(db_fetch_cell("select input_string from data_input where id=" . $_POST["data_input_id"]), $_POST["data_input_id"]);
 				}
 			}else{
 				raise_message(2);
@@ -257,11 +257,11 @@ function field_remove() {
 		db_execute("delete from data_input_data where data_input_field_id=" . $_GET["id"]);
 
 		/* when a field is deleted; we need to re-order the field sequences */
-		if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select " . $field["input_output"] . "put_string from data_input where id=" . $field["data_input_id"]), $matches)) {
+		if (($field["input_output"] == "in") && (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select input_string from data_input where id=" . $field["data_input_id"]), $matches))) {
 			$j = 0;
 			for ($i=0; ($i < count($matches[1])); $i++) {
 				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-					$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $field["data_input_id"] . " and input_output='" .  $field["input_output"]. "' and data_name='" . $matches[1][$i] . "'");
+					$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=" . $field["data_input_id"] . " and input_output='in' and data_name='" . $matches[1][$i] . "'");
 				}
 			}
 		}
@@ -296,7 +296,7 @@ function field_edit() {
 	$data_input = db_fetch_row("select type_id,name from data_input where id=" . $_GET["data_input_id"]);
 
 	/* obtain a list of available fields for this given field type (input/output) */
-	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select $current_field_type" . "put_string from data_input where id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches)) {
+	if (($current_field_type == "in") && (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select input_string from data_input where id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches))) {
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];

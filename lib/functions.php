@@ -977,9 +977,8 @@ function generate_graph_def_name($graph_item_id) {
 /* generate_data_input_field_sequences - re-numbers the sequences of each field associated
      with a particular data input method based on its position within the input string
    @arg $string - the input string that contains the field variables in a certain order
-   @arg $data_input_id - (int) the ID of the data input method
-   @arg $inout - ('in' or 'out') whether these fields are from the input or output string */
-function generate_data_input_field_sequences($string, $data_input_id, $inout) {
+   @arg $data_input_id - (int) the ID of the data input method */
+function generate_data_input_field_sequences($string, $data_input_id) {
 	global $config;
 
 	include ($config["include_path"] . "/global_arrays.php");
@@ -988,7 +987,7 @@ function generate_data_input_field_sequences($string, $data_input_id, $inout) {
 		$j = 0;
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-				$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=$data_input_id and input_output='$inout' and data_name='" . $matches[1][$i] . "'");
+				$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=$data_input_id and input_output='in' and data_name='" . $matches[1][$i] . "'");
 			}
 		}
 	}
