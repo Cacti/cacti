@@ -92,5 +92,5 @@ global $colors;
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
 			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
 		</td>
-		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#f5f5f5'><?php display_output_messages();?>
+		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?>
 
