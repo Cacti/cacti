@@ -91,7 +91,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 ?>
 <html>
 <head>
-	<title>cacti</title>
+	<title>Cacti</title>
 	<?php if (isset($_SESSION["custom"])) {
 		if ($_SESSION["custom"]) {
 			print "<meta http-equiv=refresh content='99999'>\r\n";

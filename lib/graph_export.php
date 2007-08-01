@@ -1592,7 +1592,7 @@ function check_remove($filename) {
 define("HTML_HEADER_TREE",
 "<html>
 <head>
-	<title>cacti</title>
+	<title>Cacti</title>
 	<link href='main.css' rel='stylesheet'>
 	<meta http-equiv=refresh content='300'; url='index.html'>
 	<meta http-equiv=Pragma content=no-cache>

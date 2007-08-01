@@ -26,7 +26,7 @@ global $colors;
 ?>
 <html>
 <head>
-	<title>cacti</title>
+	<title>Cacti</title>
 	<link href="include/main.css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="include/layout.js"></script>
