@@ -68,7 +68,7 @@ Cacti CHANGELOG
 -feature: include/config_* have been renamed to include/global_*. Note: Script servers need to be updated.
 -feature: Allow VRULE's in Cacti to specify an absolute timestamp in addition to [+/-]HH:MM
 -feature: Add 1 minute RRA and graph templates
--feature: Add item select hilighting to main pages
+-feature: Add item select highlighting to main pages
 -feature: Let poller.php be more intelligent about poller intervals less than 60 seconds
 -feature: Add consistency to Filters by adding nowrap to td items
 -feature: Add Graph and Data Source counts to Device page
