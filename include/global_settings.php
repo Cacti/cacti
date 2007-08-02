@@ -468,7 +468,7 @@ $settings = array(
 			"friendly_name" => "Default Dropdown Selector",
 			"description" => "When creating graphs, how would you like the page to appear by default",
 			"method" => "drop_array",
-			"default" => "-1",
+			"default" => "-2",
 			"array" => array("-2" => "All Types", "-1" => "By Template/Data Query"),
 			),
 		"num_rows_data_query" => array(
