@@ -50,7 +50,7 @@ $poller_lastrun = read_config_option('poller_lastrun');
 
 /* detect, as best we can, the cron/scheduled task interval */
 if (isset($poller_lastrun)) {
-	$cron_interval = floor(($poller_start - $poller_lastrun)/60)*60;
+	$cron_interval = ceil(($poller_start - $poller_lastrun)/60)*60;
 
 	if ($cron_interval == 0) {
 		$cron_interval = 60;
@@ -81,7 +81,7 @@ if (isset($poller_interval)) {
 }
 
 if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
-	cacti_log("DEBUG: Poller Interval: '$poller_interval', Cron Interval: '$cron_interval', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
+	cacti_log("DEBUG: Poller Interval: '$poller_interval', Cron Interval: '$cron_interval', Max Poller Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
 }
 
 /* some text formatting for platform specific vocabulary */
