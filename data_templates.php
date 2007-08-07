@@ -222,7 +222,7 @@ function form_save() {
 
 						if ((!empty($form_value)) || (!empty($_POST{"t_value_" . $input_field["data_name"]}))) {
 							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','" . $_POST[$form_value] . "')");
+								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','" . trim($_POST[$form_value]) . "')");
 						}
 					}
 				}
