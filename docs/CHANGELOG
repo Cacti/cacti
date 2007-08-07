@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -bug: Replace inefficient strip function in process_poller_output
 -bug: Some php_snmp implementations return strings as "Hex-STRING:".  In these cases properly resolve the string
 -bug: Correctly assign right and left click actions for Opera
+-bug: Fix SQL error when viewing an invalid Data Source via the Log Viewer
 -feature: Paginate the Graph Creation Page
 -feature: Add rra_path as a global.php config variable
 -feature: Add drop down actions to data queries

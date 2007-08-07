@@ -76,11 +76,8 @@ switch ($_REQUEST["action"]) {
 		header ("Location: data_sources.php");
 		break;
 	case 'ds_edit':
-		include_once("./include/top_header.php");
-
 		ds_edit();
 
-		include_once("./include/bottom_footer.php");
 		break;
 	default:
 		include_once("./include/top_header.php");
@@ -668,9 +665,13 @@ function ds_edit() {
 		$data_local = db_fetch_row("select host_id,data_template_id from data_local where id='" . $_GET["id"] . "'");
 		$data = db_fetch_row("select * from data_template_data where local_data_id='" . $_GET["id"] . "'");
 
-		if (!empty($data_local["data_template_id"])) {
+		if (isset($data_local["data_template_id"]) && $data_local["data_template_id"] > 0) {
 			$data_template = db_fetch_row("select id,name from data_template where id='" . $data_local["data_template_id"] . "'");
 			$data_template_data = db_fetch_row("select * from data_template_data where data_template_id='" . $data_local["data_template_id"] . "' and local_data_id=0");
+		} else {
+			$_SESSION["sess_messages"] = 'Data Source "' . $_GET["id"] . '" does not exist.';
+			header ("Location: data_sources.php");
+			exit;
 		}
 
 		$header_label = "[edit: " . get_data_source_title($_GET["id"]) . "]";
@@ -692,6 +693,8 @@ function ds_edit() {
 			$_SESSION["ds_debug_mode"] = true;
 		}
 	}
+
+	include_once("./include/top_header.php");
 
 	if (!empty($_GET["id"])) {
 		?>
@@ -938,6 +941,9 @@ function ds_edit() {
 	}
 
 	form_save_button("data_sources.php");
+
+	include_once("./include/bottom_footer.php");
+
 }
 
 function get_poller_interval($seconds) {
