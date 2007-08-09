@@ -42,7 +42,7 @@ input_validate_input_number(get_request_var("rra_id"));
 header("Content-type: image/png");
 
 /* flush the headers now */
-ob_end_flush();
+ob_end_clean();
 
 session_write_close();
 
