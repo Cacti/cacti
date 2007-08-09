@@ -26,10 +26,19 @@ include("./include/auth.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
+$user_actions = array(
+	1 => "Delete",
+	2 => "Copy"
+	);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
+	case 'actions':
+		form_actions();
+
+		break;
 	case 'save':
 		form_save();
 
@@ -37,11 +46,6 @@ switch ($_REQUEST["action"]) {
 	case 'perm_remove':
 		perm_remove();
 
-		break;
-	case 'user_remove':
-		user_remove();
-
-		header("Location: user_admin.php");
 		break;
 	case 'user_realms_edit':
 		include_once("include/top_header.php");
@@ -81,7 +85,133 @@ switch ($_REQUEST["action"]) {
 }
 
 /* --------------------------
-    The Save Function
+    Actions Function
+   -------------------------- */
+
+function form_actions() {
+	global $colors, $user_actions;
+
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		if ($_POST["drp_action"] != "2") {
+			$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		}
+
+		if ($_POST["drp_action"] == "1") { /* delete */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				user_remove($selected_items[$i]);
+			}
+		}
+
+		if ($_POST["drp_action"] == "2") { /* copy */
+			/* ================= input validation ================= */
+			input_validate_input_number($_POST["selected_items"]);
+			/* ==================================================== */
+
+			$new_username = get_request_var_post("new_username");
+			if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username='" . $new_username . "'")) == 0) {
+				user_copy(db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $_POST["selected_items"]), $new_username);
+			} else {
+				raise_message(19);
+			}
+		}
+
+		header("Location: user_admin.php");
+		exit;
+	}
+
+	/* loop through each of the users and process them */
+	$user_list = "";
+	$user_array = array();
+	$i = 0;
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			if ($_POST["drp_action"] != "2") {
+				$user_list .= "<li>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1]) . "<br>";
+			}
+			$user_array[$i] = $matches[1];
+		}
+
+		$i++;
+	}
+
+	include_once("./include/top_header.php");
+
+	html_start_box("<strong>" . $user_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+
+	print "<form action='user_admin.php' method='post'>\n";
+
+	if ($_POST["drp_action"] == "1") { /* delete */
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<p>Are you sure you want to delete the following users?</p>
+					<p>$user_list</p>
+				</td>
+			</tr>\n";
+	}
+	$user_id = "";
+	if ($_POST["drp_action"] == "2") { /* copy */
+		$user_id = $user_array[0];
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					Would you like to copy this user?<br><br>
+				</td>
+			</tr><tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					Template Username: <i>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $user_id) . "</i>
+				</td>
+			</tr><tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					New Username: <input name='new_username' type='text' size='20'>
+				</td>
+			</tr>\n";
+	}
+
+	if (!isset($user_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+	}
+
+	print " <tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>";
+	if ($_POST["drp_action"] == "2") { /* copy */
+		print "				<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
+	}else{
+		print "				<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
+	}
+	print "				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='user_admin.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";
+
+	html_end_box();
+
+	include_once("./include/bottom_footer.php");
+
+
+
+}
+
+
+
+
+/* --------------------------
+    Save Function
    -------------------------- */
 
 function form_save() {
@@ -636,24 +766,16 @@ function graph_settings_edit() {
     User Administration
    -------------------------- */
 
-function user_remove() {
+function user_remove($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number($user_id);
 	/* ==================================================== */
 
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the user <strong>'" . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "'</strong>?", "user_admin.php", "user_admin.php?action=user_remove&id=" . $_GET["id"]);
-		include("./include/bottom_footer.php");
-		exit;
-	}
+	db_execute("delete from user_auth where id=" . $user_id);
+	db_execute("delete from user_auth_realm where user_id=" . $user_id);
+	db_execute("delete from user_auth_perms where user_id=" . $user_id);
+	db_execute("delete from settings_graphs where user_id=" . $user_id);
 
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from user_auth where id=" . $_GET["id"]);
-		db_execute("delete from user_auth_realm where user_id=" . $_GET["id"]);
-		db_execute("delete from user_auth_perms where user_id=" . $_GET["id"]);
-		db_execute("delete from settings_graphs where user_id=" . $_GET["id"]);
-	}
 }
 
 function user_edit() {
@@ -716,7 +838,7 @@ function user_edit() {
 }
 
 function user() {
-	global $colors, $auth_realms;
+	global $colors, $auth_realms, $user_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -821,7 +943,8 @@ function user() {
 		"policy_graphs" => array("Default Graph Policy", "ASC"),
 		"dtime" => array("Last Login", "DESC"));
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], 6);
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
+
 
 	$i = 0;
 	if (sizeof($user_list) > 0) {
@@ -832,34 +955,29 @@ function user() {
 				$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
 			}
 
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-				?>
-				<td>
-					<a class="linkEditMain" href="user_admin.php?action=user_edit&id=<?php print $user["id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]);?></a>
-				</td>
-				<td>
-					<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]);?></a>
-				</td>
-				<td>
-					<?php print $auth_realms[$user["realm"]];?>
-				</td>
-				<td>
-					<?php if ($user["policy_graphs"] == "1") { print "ALLOW"; }else{ print "DENY"; }?>
-				</td>
-				<td>
-					<?php print $last_login;?>
-				</td>
-				<td align="right">
-					<a href="user_admin.php?action=user_remove&id=<?php print $user["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
-				</td>
-			</tr>
-		<?php
+			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$user["id"]); $i++;
+			form_selectable_cell("<a class='linkEditMain' href='user_admin.php?action=user_edit&id=" . $user["id"] . "'>" . 
+			(strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
+			, $user["id"]);
+			form_selectable_cell((strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
+			form_selectable_cell($auth_realms[$user["realm"]], $user["id"]);
+			if ($user["policy_graphs"] == "1") {
+				form_selectable_cell("ALLOW", $user["id"]);
+			}else{
+				form_selectable_cell("DENY", $user["id"]);
+			}
+			form_selectable_cell($last_login, $user["id"]);
+			form_checkbox_cell($user["username"], $user["id"]);
+			form_end_row();
 		}
 
 		print $nav;
 	}else{
 		print "<tr><td><em>No Users</em></td></tr>";
 	}
-	html_end_box();
+	html_end_box(false);
+
+	draw_actions_dropdown($user_actions);
+
 }
 ?>

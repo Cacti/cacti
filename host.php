@@ -101,9 +101,9 @@ function add_tree_names_to_actions_array() {
 	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
 
 	if (sizeof($trees) > 0) {
-	foreach ($trees as $tree) {
-		$device_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
-	}
+		foreach ($trees as $tree) {
+			$device_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
+		}
 	}
 }
 

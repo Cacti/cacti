@@ -30,6 +30,7 @@ function user_copy($template_user, $new_user, $new_realm=0) {
 	$user_auth = db_fetch_row("select * from user_auth where username = '$template_user'");
 	$user_auth['username'] = $new_user;
 	$user_auth['realm'] = $new_realm;
+	$user_auth['password'] = "!";
 	$old_id = $user_auth['id'];
 	$user_auth['id'] = 0;
 

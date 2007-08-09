@@ -58,6 +58,9 @@ $messages = array(
 		"type" => "error"),
 	18 => array(
 		"message" => 'XML: Cannot locate type code.',
+		"type" => "error"),
+	19 => array(
+		"message" => 'Username already exists',
 		"type" => "error")
 		);
 
