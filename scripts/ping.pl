@@ -6,8 +6,9 @@ close(PROCESS);
 $ping =~ m/(.*time=)(.*) (ms|usec)/;
 
 if ($2 == "") {
-	print "0";
+	print "U"; 		# avoid cacti errors, but do not fake rrdtool stats
+}elsif ($3 eq "usec") {
+	print $2/1000;	# re-calculate in units of "ms"
 }else{
 	print $2;
 }
-
