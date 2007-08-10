@@ -59,7 +59,7 @@ Cacti CHANGELOG
 -feature: Add rra_path as a global.php config variable
 -feature: Add drop down actions to data queries
 -feature: Add drop down actions to data input methods
--feature: Add drop down actions to user adminitrator
+-feature: Add drop down actions to user administration
 -feature: Add filtering and pagination to data queries
 -feature: Add filtering and pagination to data input methods
 -feature: Add filtering and pagination to host templates
