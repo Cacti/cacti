@@ -34,20 +34,12 @@ function upgrade_to_0_8_6k() {
 
 	/* speed up the poller */
 	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD INDEX `disabled`(`disabled`)");
-
-	/* speed up the poller */
 	db_install_execute("0.8.6k", "ALTER TABLE `poller_item` ADD INDEX `rrd_next_step`(`rrd_next_step`)");
 
 	/* speed up the UI */
 	db_install_execute("0.8.6k", "ALTER TABLE `poller_item` ADD INDEX `action`(`action`)");
-
-	/* speed up the UI */
 	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD INDEX `username`(`username`)");
-
-	/* speed up the UI */
 	db_install_execute("0.8.6k", "ALTER TABLE `user_log` ADD INDEX `username`(`username`)");
-
-	/* speed up the UI */
 	db_install_execute("0.8.6k", "ALTER TABLE `data_input` ADD INDEX `name`(`name`)");
 	
 	/* Add enable/disable to users */
@@ -55,7 +47,6 @@ function upgrade_to_0_8_6k() {
 	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD INDEX `enabled`(`enabled`)");
 
 	/* Add 1 min poller templates */
-
 	db_install_execute("0.8.6k", "INSERT INTO data_template VALUES (DEFAULT, '86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min')");
 	$data_temp_id = mysql_insert_id();
 	db_install_execute("0.8.6k", "INSERT INTO data_template_data VALUES (DEFAULT,0,0,$data_temp_id,2,'on','|host_description| - Traffic','',NULL,'','on','',60,'')");

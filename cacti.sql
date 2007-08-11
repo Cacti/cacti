@@ -1887,7 +1887,8 @@ CREATE TABLE host (
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY disabled (disabled)
 ) TYPE=MyISAM;
 
 --
@@ -2098,7 +2099,9 @@ CREATE TABLE poller_item (
   arg3 varchar(255) default NULL,
   PRIMARY KEY  (local_data_id,rrd_name),
   KEY local_data_id (local_data_id),
-  KEY host_id (host_id)
+  KEY host_id (host_id),
+  KEY rrd_next_step (rrd_next_step),
+  KEY action (action)
 ) TYPE=MyISAM;
 
 --
@@ -2564,7 +2567,9 @@ CREATE TABLE user_auth (
   policy_hosts tinyint(1) unsigned NOT NULL default '1',
   policy_graph_templates tinyint(1) unsigned NOT NULL default '1',
   enabled char(2) NOT NULL DEFAULT 'on',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY username (username),
+  KEY enabled (enabled)
 ) TYPE=MyISAM;
 
 --
@@ -2634,7 +2639,8 @@ CREATE TABLE user_log (
   time datetime NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
   ip varchar(40) NOT NULL default '',
-  PRIMARY KEY  (username,user_id,time)
+  PRIMARY KEY  (username,user_id,time),
+  KEY username (username)
 ) TYPE=MyISAM;
 
 --
