@@ -910,6 +910,13 @@ $fields_user_user_edit_host = array(
 		"value" => "",
 		"max_length" => "255"
 		),
+	"enabled" => array(
+		"method" => "checkbox",
+		"friendly_name" => "Enabled",
+		"description" => "Determines if user is able to login.",
+		"value" => "|arg1:enabled|",
+		"default" => ""
+		),
 	"grp1" => array(
 		"friendly_name" => "Account Options",
 		"method" => "checkbox_group",

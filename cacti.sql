@@ -2563,6 +2563,7 @@ CREATE TABLE user_auth (
   policy_trees tinyint(1) unsigned NOT NULL default '1',
   policy_hosts tinyint(1) unsigned NOT NULL default '1',
   policy_graph_templates tinyint(1) unsigned NOT NULL default '1',
+  enabled char(2) NOT NULL DEFAULT 'on',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 

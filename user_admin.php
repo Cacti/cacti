@@ -28,7 +28,9 @@ define("MAX_DISPLAY_PAGES", 21);
 
 $user_actions = array(
 	1 => "Delete",
-	2 => "Copy"
+	2 => "Copy",
+	3 => "Enable",
+	4 => "Disable"
 	);
 
 /* set default action */
@@ -120,6 +122,26 @@ function form_actions() {
 			}
 		}
 
+		if ($_POST["drp_action"] == "3") { /* enable */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				user_enable($selected_items[$i]);
+			}
+		}
+
+		if ($_POST["drp_action"] == "4") { /* disable */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				user_disable($selected_items[$i]);
+			}
+		}
+
 		header("Location: user_admin.php");
 		exit;
 	}
@@ -177,6 +199,26 @@ function form_actions() {
 			</tr>\n";
 	}
 
+	if ($_POST["drp_action"] == "3") { /* enable */
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<p>Are you sure you want to enable the following users?</p>
+					<p>$user_list</p>
+				</td>
+			</tr>\n";
+	}
+
+	if ($_POST["drp_action"] == "4") { /* disable */
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<p>Are you sure you want to disable the following users?</p>
+					<p>$user_list</p>
+				</td>
+			</tr>\n";
+	}
+
 	if (!isset($user_array)) {
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
 		$save_html = "";
@@ -203,11 +245,7 @@ function form_actions() {
 
 	include_once("./include/bottom_footer.php");
 
-
-
 }
-
-
 
 
 /* --------------------------
@@ -289,6 +327,7 @@ function form_save() {
 		$save["policy_hosts"] = form_input_validate((isset($_POST["policy_hosts"]) ? $_POST["policy_hosts"] : $_POST["_policy_hosts"]), "policy_hosts", "", true, 3);
 		$save["policy_graph_templates"] = form_input_validate((isset($_POST["policy_graph_templates"]) ? $_POST["policy_graph_templates"] : $_POST["_policy_graph_templates"]), "policy_graph_templates", "", true, 3);
 		$save["realm"] = form_input_validate($_POST["realm"], "realm", "", true, 3);
+		$save["enabled"] = form_input_validate($_POST["enabled"], "enabled", "", true, 3);
 
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
@@ -778,6 +817,24 @@ function user_remove($user_id) {
 
 }
 
+function user_disable($user_id) {
+	/* ================= input validation ================= */
+	input_validate_input_number($user_id);
+	/* ==================================================== */
+
+	db_execute("UPDATE user_auth SET enabled = '' where id=" . $user_id);
+
+}
+
+function user_enable($user_id) {
+	/* ================= input validation ================= */
+	input_validate_input_number($user_id);
+	/* ==================================================== */
+
+	db_execute("UPDATE user_auth SET enabled = 'on' where id=" . $user_id);
+
+}
+
 function user_edit() {
 	global $colors, $fields_user_user_edit_host;
 
@@ -903,6 +960,7 @@ function user() {
 		user_auth.username,
 		full_name,
 		realm,
+		enabled,
 		policy_graphs,
 		time,
 		max(time) as dtime
@@ -939,6 +997,7 @@ function user() {
 	$display_text = array(
 		"username" => array("User Name", "ASC"),
 		"full_name" => array("Full Name", "ASC"),
+		"enabled" => array("Enabled", "ASC"),
 		"realm" => array("Realm", "ASC"),
 		"policy_graphs" => array("Default Graph Policy", "ASC"),
 		"dtime" => array("Last Login", "DESC"));
@@ -954,12 +1013,18 @@ function user() {
 			}else{
 				$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
 			}
+			if ($user["enabled"] == "on") {
+				$enabled = "Yes"; 
+			}else{
+				$enabled = "No";
+			} 
 
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$user["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='user_admin.php?action=user_edit&id=" . $user["id"] . "'>" . 
 			(strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
 			, $user["id"]);
 			form_selectable_cell((strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
+			form_selectable_cell($enabled, $user["id"]);
 			form_selectable_cell($auth_realms[$user["realm"]], $user["id"]);
 			if ($user["policy_graphs"] == "1") {
 				form_selectable_cell("ALLOW", $user["id"]);

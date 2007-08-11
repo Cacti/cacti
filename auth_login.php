@@ -78,11 +78,11 @@ case 'login':
 		$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 0");
 	} else {
 		if ($webbasic_auth) {
-			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 2");
+			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 2 and enabled = 'on'");
 		} elseif ($ldap_auth) {
-			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 1");
+			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and realm = 1 and enabled = 'on'");
 		} else {
-			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and password = '" . md5($_POST["login_password"]) . "' and realm = 0");
+			$user = db_fetch_row("select * from user_auth where username='" . $username . "' and password = '" . md5($_POST["login_password"]) . "' and realm = 0 and enabled = 'on'");
 		}
 	}
 

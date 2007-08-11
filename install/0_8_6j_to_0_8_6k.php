@@ -50,6 +50,10 @@ function upgrade_to_0_8_6k() {
 	/* speed up the UI */
 	db_install_execute("0.8.6k", "ALTER TABLE `data_input` ADD INDEX `name`(`name`)");
 	
+	/* Add enable/disable to users */
+	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD COLUMN `enabled` CHAR(2) DEFAULT 'on'");
+	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD INDEX `enabled`(`enabled`)");
+
 	/* Add 1 min poller templates */
 
 	db_install_execute("0.8.6k", "INSERT INTO data_template VALUES (DEFAULT, '86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min')");
