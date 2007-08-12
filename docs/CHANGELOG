@@ -79,6 +79,7 @@ Cacti CHANGELOG
 -feature: Add Poller Interval to Data Sources page
 -feature: Keep filters aligned with main page content on window resize
 -feature: Add Enable/Disable user
+-feature: Reduce ADODB memory consumption during polling
 -compat: Add additional checking due to php-snmp changes in Windows
 
 0.8.6j

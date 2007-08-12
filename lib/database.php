@@ -54,6 +54,14 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 	return(0);
 }
 
+/* db_close - closes the open connection
+   @returns - the result of the close command */
+function db_close() {
+	global $cnn_id;
+
+	return $cnn_id->Close();
+}
+
 /* db_execute - run an sql query and do not return any output
    @arg $sql - the sql query to execute
    @arg $log - whether to log error messages, defaults to true
@@ -117,10 +125,14 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 	if ($query) {
 		if (!$query->EOF) {
 			if ($col_name != '') {
-				return($query->fields[$col_name]);
+				$column = $query->fields[$col_name];
 			}else{
-				return($query->fields[0]);
+				$column = $query->fields[0];
 			}
+
+			$query->close();
+
+			return($column);
 		}
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
@@ -145,7 +157,11 @@ function db_fetch_row($sql, $log = TRUE) {
 
 	if ($query) {
 		if (!$query->EOF) {
-			return($query->fields);
+			$fields = $query->fields;
+
+			$query->close();
+
+			return($fields);
 		}
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Row Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
@@ -174,6 +190,9 @@ function db_fetch_assoc($sql, $log = TRUE) {
 			$data{sizeof($data)} = $query->fields;
 			$query->MoveNext();
 		}
+
+		$query->close();
+
 		return($data);
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
