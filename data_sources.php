@@ -663,10 +663,10 @@ function ds_edit() {
 
 	if (!empty($_GET["id"])) {
 		$data_local = db_fetch_row("select host_id,data_template_id from data_local where id='" . $_GET["id"] . "'");
-		$data = db_fetch_row("select * from data_template_data where local_data_id='" . $_GET["id"] . "'");
+		$data       = db_fetch_row("select * from data_template_data where local_data_id='" . $_GET["id"] . "'");
 
-		if (isset($data_local["data_template_id"]) && $data_local["data_template_id"] > 0) {
-			$data_template = db_fetch_row("select id,name from data_template where id='" . $data_local["data_template_id"] . "'");
+		if (isset($data_local["data_template_id"]) && $data_local["data_template_id"] >= 0) {
+			$data_template      = db_fetch_row("select id,name from data_template where id='" . $data_local["data_template_id"] . "'");
 			$data_template_data = db_fetch_row("select * from data_template_data where data_template_id='" . $data_local["data_template_id"] . "' and local_data_id=0");
 		} else {
 			$_SESSION["sess_messages"] = 'Data Source "' . $_GET["id"] . '" does not exist.';
