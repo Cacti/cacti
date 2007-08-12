@@ -84,7 +84,7 @@ function db_execute($sql, $log = TRUE) {
 					continue;
 				}
 			}else{
-				cacti_log("ERROR: A database exec failed! Error:'" . $cnn_id->ErrorNo() . "', SQL:'" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
+				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
 				return(0);
 			}
 		}
@@ -123,7 +123,7 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 			}
 		}
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Cell Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -148,7 +148,7 @@ function db_fetch_row($sql, $log = TRUE) {
 			return($query->fields);
 		}
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Row Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("ERROR: SQL Row Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -176,7 +176,7 @@ function db_fetch_assoc($sql, $log = TRUE) {
 		}
 		return($data);
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Assoc Failed \"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
+		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}
 }
 
