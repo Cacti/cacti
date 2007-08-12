@@ -41,10 +41,15 @@ function upgrade_to_0_8_6k() {
 	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD INDEX `username`(`username`)");
 	db_install_execute("0.8.6k", "ALTER TABLE `user_log` ADD INDEX `username`(`username`)");
 	db_install_execute("0.8.6k", "ALTER TABLE `data_input` ADD INDEX `name`(`name`)");
-	
+
 	/* Add enable/disable to users */
 	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD COLUMN `enabled` CHAR(2) DEFAULT 'on'");
 	db_install_execute("0.8.6k", "ALTER TABLE `user_auth` ADD INDEX `enabled`(`enabled`)");
+
+	/* add additional fields to the host table */
+	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD COLUMN `availability_method` SMALLINT(5) UNSIGNED NOT NULL default '1' AFTER `snmp_timeout`");
+	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD COLUMN `ping_method` SMALLINT(5) UNSIGNED default '0' AFTER `availability_method`");
+	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD COLUMN `max_oids` INT(12) UNSIGNED default '10' AFTER `ping_method`");
 
 	/* Add 1 min poller templates */
 	db_install_execute("0.8.6k", "INSERT INTO data_template VALUES (DEFAULT, '86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min')");
@@ -91,7 +96,7 @@ function upgrade_to_0_8_6k() {
 	db_install_execute("0.8.6k", "INSERT INTO graph_templates_item VALUES (DEFAULT,'ed7df282e81ca6f1de37c1f8d084e3d0',0,0,$graph_temp_id,$data_temp_rrd,0,9,2,1,'Average:','','',2,7)");
 	db_install_execute("0.8.6k", "INSERT INTO graph_templates_item VALUES (DEFAULT,'af94e71eb62ebd6cd1b396ae81c5e1eb',0,0,$graph_temp_id,$data_temp_rrd,0,9,2,3,'Maximum:','','',2,8)");
 	db_install_execute("0.8.6k", "INSERT INTO graph_template_input_defs VALUES ($graph_temp_input_id,$graph_temp_item_id),($graph_temp_input_id,($graph_temp_item_id+1)),($graph_temp_input_id,($graph_temp_item_id+2)),($graph_temp_input_id,($graph_temp_item_id+3))");
-	
+
 	db_install_execute("0.8.6k", "INSERT INTO snmp_query_graph_rrd_sv VALUES (DEFAULT,'746e652267ce5528c09166d2a4059a50',$snmp_query_graph1,$data_temp_id,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|'),(DEFAULT,'ab0490c6e63f7208da173e8c5e2c7be5',$snmp_query_graph1,$data_temp_id,2,'name','|host_description| - Traffic - |query_ifName|'),(DEFAULT,'1e856751952bd953b5f42bd8440c74d7',$snmp_query_graph1,$data_temp_id,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|'),(DEFAULT,'10bf3e80f6eb9006be58efd5c86f6b3c',$snmp_query_graph1,$data_temp_id,4,'name','|host_description| - Traffic - |query_ifDescr|'),(DEFAULT,'611b272ef90bbb1aab6275df61668776',$snmp_query_graph1,$data_temp_id,5,'rrd_maximum','|query_ifSpeed|'),(DEFAULT,'cf040e3920956ee6876610d5a053370a',$snmp_query_graph2,$data_temp_id,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|'),(DEFAULT,'4d58f061af99afb868605438c4fb85eb',$snmp_query_graph2,$data_temp_id,2,'name','|host_description| - Traffic - |query_ifName|'),(DEFAULT,'98696b64f95b6fdbcc2f3007067e525d',$snmp_query_graph2,$data_temp_id,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|'),(DEFAULT,'5723c88453f577a4c399bbc3e4486a26',$snmp_query_graph2,$data_temp_id,4,'name','|host_description| - Traffic - |query_ifDescr|'),(DEFAULT,'be8210af674da28db58093cab87a70b0',$snmp_query_graph2,$data_temp_id,5,'rrd_maximum','|query_ifSpeed|')");
 
 	db_install_execute("0.8.6k", "INSERT INTO snmp_query_graph_sv VALUES (DEFAULT,'6867508d4c21bc223065e5fcec0ae4be',$snmp_query_graph1,1,'title','|host_description| - Traffic - |query_ifName|'),(DEFAULT,'40560a33ba2742df87c9f5b448a09514',$snmp_query_graph1,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)'),(DEFAULT,'478b957031bd4a2ba3ca61ffe6bc75ed',$snmp_query_graph1,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|'),(DEFAULT,'b372d29eb28c33e83e87029f208f30f8',$snmp_query_graph2,1,'title','|host_description| - Traffic - |query_ifName|'),(DEFAULT,'5fd05f44e69bac16b98796cc945ac060',$snmp_query_graph2,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)'),(DEFAULT,'6ffb207bd1bdb6d64989eea7a26a1323',$snmp_query_graph2,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|')");
