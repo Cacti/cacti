@@ -43,7 +43,7 @@ case 'login':
 				if (read_config_option("webbasic_template") == "") {
 					$guest_user = true;
 				} else {
-					user_copy(read_config_option("webbasic_template"), $username, 2);
+					user_copy(read_config_option("webbasic_template"), $username, 0, 2);
 				} 
 			}
 		} else {
@@ -66,7 +66,7 @@ case 'login':
 					if (read_config_option("ldap_template") == "") {
 						$guest_user = true;
 					} else {
-						user_copy(read_config_option("ldap_template"), $username, 1);
+						user_copy(read_config_option("ldap_template"), $username, 0, 1);
 					}	 
 				}
 			}

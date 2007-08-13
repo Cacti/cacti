@@ -708,19 +708,16 @@ $settings = array(
 			"description" => "By default Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti. You can optionally turn this off if you are using other other means of authentication.",
 			"method" => "checkbox",
 			"default" => "on",
-			"tab" => "authentication"
 			),
 		"ldap_enabled" => array(
 			"friendly_name" => "Use LDAP Authentication",
 			"description" => "This will allow users to use their LDAP credentials with cacti. Builtin Authenication must be enabled.",
 			"method" => "checkbox",
-			"tab" => "authentication"
 			),
 		"webbasic_enabled" => array(
 			"friendly_name" => "Use Web Basic Authentication",
 			"description" => "This will allow users to use their Web Server credentials with cacti. Builtin Authenication must be enabled.",
 			"method" => "checkbox",
-			"tab" => "authentication"
 			),
 
 		"guest_user" => array(
@@ -748,7 +745,7 @@ $settings = array(
 			),
 		"ldap_template" => array(
 			"friendly_name" => "LDAP Cacti Template User",
-			"description" => "This is the user that cacti will use as a template for new LDAP users. Leave empty to disable, if guest user defined, will be logged in as that user.",
+			"description" => "This is the Local Cacti user that will be used as a template for new LDAP users. Leave empty to disable, if guest user defined, will be logged in as that user.",
 			"method" => "textbox",
 			"max_length" => "100"
 			),
@@ -758,7 +755,7 @@ $settings = array(
 			),
 		"webbasic_template" => array(
 			"friendly_name" => "Web Basic Cacti Template User",
-			"description" => "This is the user that cacti will use as a template for new Web Basic users. Leave empty to disable, if guest user defined, will be logged in as that user.",
+			"description" => "This is the Local Cacti user that will be used as a template for new Web Basic users. Leave empty to disable, if guest user defined, will be logged in as that user.",
 			"method" => "textbox",
 			"max_length" => "100"
 			),
