@@ -34,10 +34,7 @@ $user_actions = array(
 	5 => "Batch Copy"
 	);
 
-/* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
-
-switch ($_REQUEST["action"]) {
+switch (get_request_var_request("action")) {
 	case 'actions':
 		form_actions();
 		break;
@@ -90,11 +87,11 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		if ($_POST["drp_action"] != "2") {
-			$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		if (get_request_var_post("drp_action") != "2") {
+			$selected_items = unserialize(stripslashes(get_request_var_post("selected_items")));
 		}
 
-		if ($_POST["drp_action"] == "1") { /* delete */
+		if (get_request_var_post("drp_action") == "1") { /* delete */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -104,15 +101,15 @@ function form_actions() {
 			}
 		}
 
-		if ($_POST["drp_action"] == "2") { /* copy */
+		if (get_request_var_post("drp_action") == "2") { /* copy */
 			/* ================= input validation ================= */
-			input_validate_input_number($_POST["selected_items"]);
-			input_validate_input_number($_POST["new_realm"]);
+			input_validate_input_number(get_request_var_post("selected_items"));
+			input_validate_input_number(get_request_var_post("new_realm"));
 			/* ==================================================== */
 
 			$new_username = get_request_var_post("new_username");
 			$new_realm = get_request_var_post("new_realm", 0);
-			$template_user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $_POST["selected_items"]);
+			$template_user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("selected_items"));
 			$overwrite = array( "full_name" => get_request_var_post("new_fullname") );
 
 			if (strlen($new_username)) {
@@ -128,7 +125,7 @@ function form_actions() {
 			}
 		}
 
-		if ($_POST["drp_action"] == "3") { /* enable */
+		if (get_request_var_post("drp_action") == "3") { /* enable */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -138,7 +135,7 @@ function form_actions() {
 			}
 		}
 
-		if ($_POST["drp_action"] == "4") { /* disable */
+		if (get_request_var_post("drp_action") == "4") { /* disable */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -148,13 +145,16 @@ function form_actions() {
 			}
 		}
 
-		if ($_POST["drp_action"] == "5") { /* batch copy */
+		if (get_request_var_post("drp_action") == "5") { /* batch copy */
+			/* ================= input validation ================= */
+			input_validate_input_number(get_request_var_post("template_user"));
+			/* ==================================================== */
+
 			$copy_error = false;
 			$template = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("template_user"));
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number($_POST["template_user"]);
 				/* ==================================================== */
 				
 				$user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $selected_items[$i]);
@@ -186,7 +186,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			if ($_POST["drp_action"] != "2") {
+			if (get_request_var_post("drp_action") != "2") {
 				$user_list .= "<li>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1]) . "<br>";
 			}
 			$user_array[$i] = $matches[1];
@@ -197,11 +197,11 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $user_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
 	print "<form action='user_admin.php' method='post'>\n";
 
-	if (($_POST["drp_action"] == "1") && (sizeof($user_array))) { /* delete */
+	if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -211,7 +211,7 @@ function form_actions() {
 			</tr>\n";
 	}
 	$user_id = "";
-	if (($_POST["drp_action"] == "2") && (sizeof($user_array))) { /* copy */
+	if ((get_request_var_post("drp_action") == "2") && (sizeof($user_array))) { /* copy */
 		$user_id = $user_array[0];
 		$user_realm = db_fetch_cell("SELECT realm FROM user_auth WHERE id = " . $user_id);
 		
@@ -226,29 +226,24 @@ function form_actions() {
 				</td>
 			</tr><tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					New Username: <input name='new_username' type='text' size='20'>
-				</td>
+				New Username: ";
+		print form_text_box("new_username", "", "", 25);
+		print "				</td>
 			</tr><tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					New Full Name: <input name='new_fullname' type='text' size='35'>
-				</td>
+					New Full Name: ";
+		print form_text_box("new_fullname", "", "", 35);
+		print "				</td>
 			</tr><tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					New Realm: <select name='new_realm' type='select'>\n";
-		foreach ($auth_realms as $key => $realm) {
-			print "					<option value='" . $key . "'";
-			if ($key == $user_realm) {
-				print " selected";
-			}
-			print ">" . $realm . "</option>\n";
-		}
-		print "					</select>\n";
+					New Realm: \n";
+		print form_dropdown("new_realm", $auth_realms, "", "", $user_realm, "", 0);
 		print "				</td>
 
 			</tr>\n";
 	}
 
-	if (($_POST["drp_action"] == "3") && (sizeof($user_array))) { /* enable */
+	if ((get_request_var_post("drp_action") == "3") && (sizeof($user_array))) { /* enable */
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -258,7 +253,7 @@ function form_actions() {
 			</tr>\n";
 	}
 
-	if (($_POST["drp_action"] == "4") && (sizeof($user_array))) { /* disable */
+	if ((get_request_var_post("drp_action") == "4") && (sizeof($user_array))) { /* disable */
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -268,18 +263,17 @@ function form_actions() {
 			</tr>\n";
 	}
 
-	if (($_POST["drp_action"] == "5") && (sizeof($user_array))) { /* batch copy */
-		$usernames = db_fetch_assoc("SELECT id,username FROM user_auth ORDER BY username");
+	if ((get_request_var_post("drp_action") == "5") && (sizeof($user_array))) { /* batch copy */
+		$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>Are you sure you want to overwrite the selected users with the selected template users settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained all other fields will be overwritten from template user.<br><br></td>
 			</tr><tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					Template User: <select name='template_user'>";
-		foreach ($usernames as $user) {
-			print "<option value='" . $user["id"] . "'>" . $user["username"] . "</option>";	
-		}	
-		print "</select>\n				</td>
+					Template User: \n";
+		print form_dropdown("template_user", $usernames, "username", "id", "", "", 0);
+		print "		</td>
+
 			</tr><tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 					<p>Users to update:
@@ -299,12 +293,12 @@ function form_actions() {
 	print " <tr>
 			<td align='right' bgcolor='#eaeaea'>
 				<input type='hidden' name='action' value='actions'>";
-	if ($_POST["drp_action"] == "2") { /* copy */
+	if (get_request_var_post("drp_action") == "2") { /* copy */
 		print "				<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
 	}else{
 		print "				<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
 	}
-	print "				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+	print "				<input type='hidden' name='drp_action' value='" . get_request_var_post("drp_action") . "'>
 				$save_html
 			</td>
 		</tr>
@@ -332,26 +326,30 @@ function form_save() {
 		input_validate_input_number(get_request_var_post("perm_trees"));
 		input_validate_input_number(get_request_var_post("perm_hosts"));
 		input_validate_input_number(get_request_var_post("perm_graph_templates"));
+		input_validate_input_number(get_request_var_post("policy_graphs"));
+		input_validate_input_number(get_request_var_post("policy_trees"));
+		input_validate_input_number(get_request_var_post("policy_hosts"));
+		input_validate_input_number(get_request_var_post("policy_graph_templates"));
 		/* ==================================================== */
 
 		$add_button_clicked = false;
 
 		if (isset($_POST["add_graph_y"])) {
-			db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $_POST["id"] . "," . $_POST["perm_graphs"] . ",1)");
+			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_graphs") . ",1)");
 			$add_button_clicked = true;
 		}elseif (isset($_POST["add_tree_y"])) {
-			db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $_POST["id"] . "," . $_POST["perm_trees"] . ",2)");
+			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_trees") . ",2)");
 			$add_button_clicked = true;
 		}elseif (isset($_POST["add_host_y"])) {
-			db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $_POST["id"] . "," . $_POST["perm_hosts"] . ",3)");
+			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_hosts") . ",3)");
 			$add_button_clicked = true;
 		}elseif (isset($_POST["add_graph_template_y"])) {
-			db_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $_POST["id"] . "," . $_POST["perm_graph_templates"] . ",4)");
+			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_graph_templates") . ",4)");
 			$add_button_clicked = true;
 		}
 
 		if ($add_button_clicked == true) {
-			header("Location: user_admin.php?action=graph_perms_edit&id=" . $_POST["id"]);
+			header("Location: user_admin.php?action=graph_perms_edit&id=" . get_request_var_post("id"));
 			exit;
 		}
 	}
@@ -360,43 +358,46 @@ function form_save() {
 	if (isset($_POST["save_component_user"])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("realm"));
 		/* ==================================================== */
 
-		if (($_POST["password"] == "") && ($_POST["password_confirm"] == "")) {
-			$password = db_fetch_cell("select password from user_auth where id=" . $_POST["id"]);
+		if ((get_request_var_post("password") == "") && (get_request_var_post("password_confirm") == "")) {
+			$password = db_fetch_cell("SELECT password FROM user_auth WHERE id = " . get_request_var_post("id"));
 		}else{
-			$password = md5($_POST["password"]);
+			$password = md5(get_request_var_post("password"));
 		}
 
 		/* check duplicate username */
-		if (sizeof(db_fetch_row("select * from user_auth where realm = 0 and username = '" . $_POST["username"] . "' and id != '" . $_POST["id"] . "'"))) {
+		if (sizeof(db_fetch_row("select * from user_auth where realm = " . get_request_var_post("realm") . " and username = '" . get_request_var_post("username") . "' and id != " . get_request_var_post("id")))) {
 			raise_message(12);
 		}
 
 		/* check to make sure the passwords match; if not error */
-		if ($_POST["password"] != $_POST["password_confirm"]) {
+		if (get_request_var_post("password") != get_request_var_post("password_confirm")) {
 			raise_message(4);
 		}
 
-		form_input_validate($_POST["password"], "password", "" . preg_quote($_POST["password_confirm"]) . "", true, 4);
-		form_input_validate($_POST["password_confirm"], "password_confirm", "" . preg_quote($_POST["password"]) . "", true, 4);
+		form_input_validate(get_request_var_post("password"), "password", "" . preg_quote(get_request_var_post("password_confirm")) . "", true, 4);
+		form_input_validate(get_request_var_post("password_confirm"), "password_confirm", "" . preg_quote(get_request_var_post("password")) . "", true, 4);
 
-		$save["id"] = $_POST["id"];
-		$save["username"] = form_input_validate($_POST["username"], "username", "^[A-Za-z0-9\._\-]+$", false, 3);
-		$save["full_name"] = form_input_validate($_POST["full_name"], "full_name", "", true, 3);
+		$save["id"] = get_request_var_post("id");
+		$save["username"] = form_input_validate(get_request_var_post("username"), "username", "^[A-Za-z0-9\._\-]+$", false, 3);
+		$save["full_name"] = form_input_validate(get_request_var_post("full_name"), "full_name", "", true, 3);
 		$save["password"] = $password;
-		$save["must_change_password"] = form_input_validate((isset($_POST["must_change_password"]) ? $_POST["must_change_password"] : ""), "must_change_password", "", true, 3);
-		$save["show_tree"] = form_input_validate((isset($_POST["show_tree"]) ? $_POST["show_tree"] : ""), "show_tree", "", true, 3);
-		$save["show_list"] = form_input_validate((isset($_POST["show_list"]) ? $_POST["show_list"] : ""), "show_list", "", true, 3);
-		$save["show_preview"] = form_input_validate((isset($_POST["show_preview"]) ? $_POST["show_preview"] : ""), "show_preview", "", true, 3);
-		$save["graph_settings"] = form_input_validate((isset($_POST["graph_settings"]) ? $_POST["graph_settings"] : ""), "graph_settings", "", true, 3);
-		$save["login_opts"] = form_input_validate($_POST["login_opts"], "login_opts", "", true, 3);
-		$save["policy_graphs"] = form_input_validate((isset($_POST["policy_graphs"]) ? $_POST["policy_graphs"] : $_POST["_policy_graphs"]), "policy_graphs", "", true, 3);
-		$save["policy_trees"] = form_input_validate((isset($_POST["policy_trees"]) ? $_POST["policy_trees"] : $_POST["_policy_trees"]), "policy_trees", "", true, 3);
-		$save["policy_hosts"] = form_input_validate((isset($_POST["policy_hosts"]) ? $_POST["policy_hosts"] : $_POST["_policy_hosts"]), "policy_hosts", "", true, 3);
-		$save["policy_graph_templates"] = form_input_validate((isset($_POST["policy_graph_templates"]) ? $_POST["policy_graph_templates"] : $_POST["_policy_graph_templates"]), "policy_graph_templates", "", true, 3);
-		$save["realm"] = form_input_validate($_POST["realm"], "realm", "", true, 3);
-		$save["enabled"] = form_input_validate($_POST["enabled"], "enabled", "", true, 3);
+		$save["must_change_password"] = form_input_validate(get_request_var_post("must_change_password", ""), "must_change_password", "", true, 3);
+		$save["show_tree"] = form_input_validate(get_request_var_post("show_tree", ""), "show_tree", "", true, 3);
+		$save["show_list"] = form_input_validate(get_request_var_post("show_list", ""), "show_list", "", true, 3);
+		$save["show_preview"] = form_input_validate(get_request_var_post("show_preview", ""), "show_preview", "", true, 3);
+		$save["graph_settings"] = form_input_validate(get_request_var_post("graph_settings", ""), "graph_settings", "", true, 3);
+		$save["login_opts"] = form_input_validate(get_request_var_post("login_opts"), "login_opts", "", true, 3);
+		$save["policy_graphs"] = form_input_validate(get_request_var_post("policy_graphs", get_request_var_post("_policy_graphs")), "policy_graphs", "", true, 3);
+		$save["policy_trees"] = form_input_validate(get_request_var_post("policy_trees", get_request_var_post("_policy_trees")), "policy_trees", "", true, 3);
+		$save["policy_hosts"] = form_input_validate(get_request_var_post("policy_hosts", get_request_var_post("_policy_hosts")), "policy_hosts", "", true, 3);
+		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("_policy_graph_templates")), "policy_graph_templates", "", true, 3);
+		$save["realm"] = get_request_var_post("realm", 0);
+		$save["enabled"] = form_input_validate(get_request_var_post("enabled", ""), "enabled", "", true, 3);
+
+print_r($save);
 
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
@@ -408,12 +409,12 @@ function form_save() {
 			}
 
 			if (isset($_POST["save_component_realm_perms"])) {
-				db_execute("delete from user_auth_realm where user_id=$user_id");
+				db_execute("DELETE FROM user_auth_realm WHERE user_id = " . $user_id);
 
 				while (list($var, $val) = each($_POST)) {
 					if (eregi("^[section]", $var)) {
 						if (substr($var, 0, 7) == "section") {
-						    db_execute("replace into user_auth_realm (user_id,realm_id) values($user_id," . substr($var, 7) . ")");
+						    db_execute("REPLACE INTO user_auth_realm (user_id,realm_id) VALUES (" . $user_id . "," . substr($var, 7) . ")");
 						}
 					}
 				}
@@ -422,10 +423,10 @@ function form_save() {
 					while (list($field_name, $field_array) = each($tab_fields)) {
 						if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 							while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-								db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
+								db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . (!empty($user_id) ? $user_id : get_request_var_post("id")) . ",'$sub_field_name', '" . get_request_var_post($sub_field_name, "") . "')");
 							}
 						}else{
-							db_execute("replace into settings_graphs (user_id,name,value) values (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+							db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . get_request_var_post($field_name) . "')");
 						}
 					}
 				}
@@ -433,12 +434,12 @@ function form_save() {
 				/* reset local settings cache so the user sees the new settings */
 				kill_session_var("sess_graph_config_array");
 			}elseif (isset($_POST["save_component_graph_perms"])) {
-				db_execute("update user_auth set
-					policy_graphs='" . $_POST["policy_graphs"] . "',
-					policy_trees='" . $_POST["policy_trees"] . "',
-					policy_hosts='" . $_POST["policy_hosts"] . "',
-					policy_graph_templates='" . $_POST["policy_graph_templates"] . "'
-					where id=" . $_POST["id"]);
+				db_execute("UPDATE user_auth SET
+					policy_graphs = " . get_request_var_post("policy_graphs") . ",
+					policy_trees = " . get_request_var_post("policy_trees") . ",
+					policy_hosts = " . get_request_var_post("policy_hosts") . ",
+					policy_graph_templates = " . get_request_var_post("policy_graph_templates") . "
+					WHERE id = " . get_request_var_post("id"));
 			}
 		}
 	}
@@ -461,17 +462,17 @@ function perm_remove() {
 	input_validate_input_number(get_request_var("user_id"));
 	/* ==================================================== */
 
-	if ($_GET["type"] == "graph") {
-		db_execute("delete from user_auth_perms where type=1 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
-	}elseif ($_GET["type"] == "tree") {
-		db_execute("delete from user_auth_perms where type=2 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
-	}elseif ($_GET["type"] == "host") {
-		db_execute("delete from user_auth_perms where type=3 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
-	}elseif ($_GET["type"] == "graph_template") {
-		db_execute("delete from user_auth_perms where type=4 and user_id=" . $_GET["user_id"] . " and item_id=" . $_GET["id"]);
+	if (get_request_var("type") == "graph") {
+		db_execute("DELETE FROM user_auth_perms WHERE type = 1 AND user_id = " . get_request_var("user_id") . " AND item_id = " . get_request_var("id"));
+	}elseif (get_request_var("type") == "tree") {
+		db_execute("DELETE FROM user_auth_perms WHERE type = 2 AND user_id = " . get_request_var("user_id") . " AND item_id = " . get_request_var("id"));
+	}elseif (get_request_var("type") == "host") {
+		db_execute("DELETE FROM user_auth_perms WHERE type = 3 AND user_id = " . get_request_var("user_id") . " AND item_id = " . get_request_var("id"));
+	}elseif (get_request_var("type") == "graph_template") {
+		db_execute("DELETE FROM user_auth_perms WHERE type = 4 AND user_id=" . get_request_var("user_id") . " and item_id = " . get_request_var("id"));
 	}
 
-	header("Location: user_admin.php?action=graph_perms_edit&id=" . $_GET["user_id"]);
+	header("Location: user_admin.php?action=graph_perms_edit&id=" . get_request_var("user_id"));
 }
 
 function graph_perms_edit() {
@@ -486,9 +487,9 @@ function graph_perms_edit() {
 		2 => "Deny");
 
 	if (!empty($_GET["id"])) {
-		$policy = db_fetch_row("select policy_graphs,policy_trees,policy_hosts,policy_graph_templates from user_auth where id=" . $_GET["id"]);
+		$policy = db_fetch_row("SELECT policy_graphs,policy_trees,policy_hosts,policy_graph_templates FROM user_auth WHERE id = " . get_request_var("id"));
 
-		$header_label = "[edit: " . db_fetch_cell("select username from user_auth where id=" . $_GET["id"]) . "]";
+		$header_label = "[edit: " . db_fetch_cell("SELECT username FROM user_auth WHERE id = " . get_request_var("id")) . "]";
 	}
 
 	?>
@@ -504,14 +505,14 @@ function graph_perms_edit() {
 	/* box: graph permissions */
 	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "100%", $colors["header"], "3", "center", "");
 
-	$graphs = db_fetch_assoc("select
+	$graphs = db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title_cache
-		from graph_templates_graph
-		left join user_auth_perms on (graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1)
-		where graph_templates_graph.local_graph_id > 0
-		and user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
-		order by graph_templates_graph.title_cache");
+		FROM graph_templates_graph
+		LEFT JOIN user_auth_perms ON (graph_templates_graph.local_graph_id = user_auth_perms.item_id AND user_auth_perms.type = 1)
+		WHERE graph_templates_graph.local_graph_id > 0
+		AND user_auth_perms.user_id = " . get_request_var("id", 0) . "
+		ORDER BY graph_templates_graph.title_cache");
 
 	?>
 	<form method="post" action="user_admin.php">
@@ -552,7 +553,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Graph:&nbsp;
-				<?php form_dropdown("perm_graphs",db_fetch_assoc("select local_graph_id,title_cache from graph_templates_graph where local_graph_id>0 order by title_cache"),"title_cache","local_graph_id","","","");?>
+				<?php form_dropdown("perm_graphs",db_fetch_assoc("SELECT local_graph_id,title_cache FROM graph_templates_graph WHERE local_graph_id > 0 ORDER BY title_cache"),"title_cache","local_graph_id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph" align="absmiddle">
@@ -562,16 +563,16 @@ function graph_perms_edit() {
 	<br>
 	<?php
 
-	/* box: host permissions */
-	html_start_box("<strong>Graph Permissions (By Host)</strong>", "100%", $colors["header"], "3", "center", "");
+	/* box: device permissions */
+	html_start_box("<strong>Graph Permissions (By Device)</strong>", "100%", $colors["header"], "3", "center", "");
 
-	$hosts = db_fetch_assoc("select
+	$hosts = db_fetch_assoc("SELECT
 		host.id,
-		CONCAT_WS('',host.description,' (',host.hostname,')') as name
-		from host
-		left join user_auth_perms on (host.id=user_auth_perms.item_id and user_auth_perms.type=3)
-		where user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
-		order by host.description,host.hostname");
+		CONCAT('',host.description,' (',host.hostname,')') as name
+		FROM host
+		LEFT JOIN user_auth_perms ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3)
+		WHERE user_auth_perms.user_id = " . get_request_var("id", 0) . "
+		ORDER BY host.description,host.hostname");
 
 	?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
@@ -589,14 +590,15 @@ function graph_perms_edit() {
 				<?php
 				$i = 0;
 				if (sizeof($hosts) > 0) {
-				foreach ($hosts as $item) {
-					$i++;
-					print "	<tr>
+					foreach ($hosts as $item) {
+						$i++;
+						print "	<tr>
 							<td><span style='font-weight: bold; color: " . (($policy["policy_hosts"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
 							<td align='right'><a href='user_admin.php?action=perm_remove&type=host&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
-				}
-				}else{ print "<tr><td><em>No Hosts</em></td></tr>";
+					}
+				}else{ 
+					print "<tr><td><em>No Devices</em></td></tr>";
 				}
 				?>
 			</table>
@@ -611,7 +613,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Host:&nbsp;
-				<?php form_dropdown("perm_hosts",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","");?>
+				<?php form_dropdown("perm_hosts",db_fetch_assoc("SELECT id,CONCAT('',description,' (',hostname,')') AS name FROM host ORDER BY description,hostname"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_host" align="absmiddle">
@@ -624,13 +626,13 @@ function graph_perms_edit() {
 	/* box: graph template permissions */
 	html_start_box("<strong>Graph Permissions (By Graph Template)</strong>", "100%", $colors["header"], "3", "center", "");
 
-	$graph_templates = db_fetch_assoc("select
+	$graph_templates = db_fetch_assoc("SELECT
 		graph_templates.id,
 		graph_templates.name
 		from graph_templates
-		left join user_auth_perms on (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4)
-		where user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
-		order by graph_templates.name");
+		LEFT JOIN user_auth_perms ON (graph_templates.id = user_auth_perms.item_id AND user_auth_perms.type = 4)
+		WHERE user_auth_perms.user_id = " . get_request_var("id", 0) . "
+		ORDER BY graph_templates.name");
 
 	?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
@@ -670,7 +672,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Graph Template:&nbsp;
-				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("select id,name from graph_templates order by name"),"name","id","","","");?>
+				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("SELECT id,name FROM graph_templates ORDER BY name"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph_template" align="absmiddle">
@@ -683,13 +685,13 @@ function graph_perms_edit() {
 	/* box: tree permissions */
 	html_start_box("<strong>Tree Permissions</strong>", "100%", $colors["header"], "3", "center", "");
 
-	$trees = db_fetch_assoc("select
+	$trees = db_fetch_assoc("SELECT
 		graph_tree.id,
 		graph_tree.name
 		from graph_tree
-		left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2)
-		where user_auth_perms.user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . "
-		order by graph_tree.name");
+		LEFT JOIN user_auth_perms ON (graph_tree.id = user_auth_perms.item_id AND user_auth_perms.type = 2)
+		WHERE user_auth_perms.user_id = " . get_request_var("id", 0) . "
+		ORDER BY graph_tree.name");
 
 	?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
@@ -729,7 +731,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Tree:&nbsp;
-				<?php form_dropdown("perm_trees",db_fetch_assoc("select id,name from graph_tree order by name"),"name","id","","","");?>
+				<?php form_dropdown("perm_trees",db_fetch_assoc("SELECT id,name FROM graph_tree ORDER BY name"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_tree" align="absmiddle">
@@ -776,7 +778,7 @@ function user_realms_edit() {
 						<?php
 						$i = 0;
 						while (list($realm_id, $realm_name) = each($user_auth_realms)) {
-							if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . (empty($_GET["id"]) ? "0" : $_GET["id"]) . " and realm_id=$realm_id")) > 0) {
+							if (sizeof(db_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE user_id = " . get_request_var("id", 0) . " AND realm_id = " . $realm_id)) > 0) {
 								$old_value = "on";
 							}else{
 								$old_value = "";
@@ -844,7 +846,7 @@ function graph_settings_edit() {
 						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
 					}
 
-					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_GET["id"]);
+					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("SELECT value FROM settings_graphs WHERE name = '" . $sub_field_name . "' AND user_id = " . get_request_var("id"));
 				}
 			}else{
 				if (graph_config_value_exists($field_name, $_GET["id"])) {
@@ -882,7 +884,7 @@ function user_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$user = db_fetch_row("select * from user_auth where id=" . $_GET["id"]);
+		$user = db_fetch_row("SELECT * FROM user_auth WHERE id = " . get_request_var("id"));
 		$header_label = "[edit: " . $user["username"] . "]";
 	}else{
 		$header_label = "[new]";
@@ -903,15 +905,15 @@ function user_edit() {
 		<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
 			<tr>
 				<td width='1'></td>
-				<td <?php print ((($_GET["action"] == "user_realms_edit") || ($_GET["action"] == "user_edit")) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+				<td <?php print (((get_request_var("action") == "user_realms_edit") || (get_request_var("action") == "user_edit")) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
 					<span class='textHeader'><a href='user_admin.php?action=user_realms_edit&id=<?php print $_GET["id"];?>'>Realm Permissions</a></span>
 				</td>
 				<td width='1'></td>
-				<td <?php print (($_GET["action"] == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+				<td <?php print ((get_request_var("action") == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
 					<span class='textHeader'><a href='user_admin.php?action=graph_perms_edit&id=<?php print $_GET["id"];?>'>Graph Permissions</a></span>
 				</td>
 				<td width='1'></td>
-				<td <?php print (($_GET["action"] == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
+				<td <?php print ((get_request_var("action") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
 					<span class='textHeader'><a href='user_admin.php?action=graph_settings_edit&id=<?php print $_GET["id"];?>'>Graph Settings</a></span>
 				</td>
 				<td></td>
@@ -920,11 +922,11 @@ function user_edit() {
 		<?php
 	}
 
-	if ($_GET["action"] == "graph_settings_edit") {
+	if (get_request_var("action") == "graph_settings_edit") {
 		graph_settings_edit();
-	}elseif ($_GET["action"] == "user_realms_edit") {
+	}elseif (get_request_var("action") == "user_realms_edit") {
 		user_realms_edit();
-	}elseif ($_GET["action"] == "graph_perms_edit") {
+	}elseif (get_request_var("action") == "graph_perms_edit") {
 		graph_perms_edit();
 	}else{
 		user_realms_edit();
@@ -982,7 +984,7 @@ function user() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST["filter"])) {
-		$sql_where = "where (user_auth.username like '%%" . $_REQUEST["filter"] . "%%' OR user_auth.full_name like '%%" . $_REQUEST["filter"] . "%%')";
+		$sql_where = "WHERE (user_auth.username LIKE '%" . get_request_var_request("filter") . "%' OR user_auth.full_name LIKE '%" . get_request_var_request("filter") . "%')";
 	}else{
 		$sql_where = "";
 	}
@@ -1007,24 +1009,24 @@ function user() {
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		$sql_where
 		GROUP BY id
-		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
-		" LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
+		" LIMIT " . (read_config_option("num_rows_device") * (get_request_var_request("page") - 1)) . "," . read_config_option("num_rows_device"));
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host_templates.php?filter=" . $_REQUEST["filter"]);
+	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "user_admin.php?filter=" . get_request_var_request("filter"));
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 		<td colspan='7'>
 			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='user_admin.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page") - 1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 					</td>\n
 					<td align='center' class='textHeaderDark'>
-						Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+						Showing Rows " . ((read_config_option("num_rows_device") * (get_request_var_request("page") - 1)) + 1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device") * get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device") * get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 					</td>\n
 					<td align='right' class='textHeaderDark'>
-						<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='user_admin.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page") + 1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 					</td>\n
 				</tr>
 			</table>
@@ -1041,7 +1043,7 @@ function user() {
 		"policy_graphs" => array("Default Graph Policy", "ASC"),
 		"dtime" => array("Last Login", "DESC"));
 
-	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
 
 	$i = 0;
@@ -1060,9 +1062,9 @@ function user() {
 
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$user["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='user_admin.php?action=user_edit&id=" . $user["id"] . "'>" . 
-			(strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
+			(strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
 			, $user["id"]);
-			form_selectable_cell((strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
+			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
 			form_selectable_cell($enabled, $user["id"]);
 			form_selectable_cell($auth_realms[$user["realm"]], $user["id"]);
 			if ($user["policy_graphs"] == "1") {
