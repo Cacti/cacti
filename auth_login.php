@@ -43,7 +43,7 @@ case 'login':
 				if (read_config_option("webbasic_template") == "") {
 					$guest_user = true;
 				} else {
-					user_copy(read_config_option("webbasic_template"), $username,2);
+					user_copy(read_config_option("webbasic_template"), $username, 2);
 				} 
 			}
 		} else {

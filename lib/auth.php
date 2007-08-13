@@ -22,44 +22,144 @@
  +-------------------------------------------------------------------------+
 */
 
-/* user_copy - copies a user account
-   @arg $template_user - username of account that should be used as the template
-   @arg $new_user - username of the account to be created
-   @arg $new_realm - the realm the new account should be a member of */
-function user_copy($template_user, $new_user, $new_realm=0) {
-	$user_auth = db_fetch_row("select * from user_auth where username = '$template_user'");
-	$user_auth['username'] = $new_user;
-	$user_auth['realm'] = $new_realm;
-	$user_auth['password'] = "!";
-	$old_id = $user_auth['id'];
-	$user_auth['id'] = 0;
 
+/* user_copy - copies user account
+   @arg $template_user - username of the user account that should be used as the template
+   @arg $new_user - new username of the account to be created/overwritten
+   @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
+   @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm 
+   @arg $data_override - Array of user_auth field and values to override on the new user
+   @return - True on copy, False on no copy */
+function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
+
+	/* ================= input validation ================= */
+	input_validate_input_number($template_realm);
+	input_validate_input_number($new_realm);
+	/* ==================================================== */
+
+	/* Check get template users array */
+	$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = " . $template_realm);
+	if (! isset($user_auth)) {
+		return false;
+	}
+	$template_id = $user_auth["id"];
+
+	/* Create update/insert for new/existing user */
+	$user_exist = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $new_user . "' AND realm = " . $new_realm);
+	if ((isset($user_exist)) && ($overwrite )) {
+		/* Overwrite existing user */
+		$user_auth["id"] = $user_exist["id"];
+		$user_auth["username"] = $user_exist["username"];
+		$user_auth["password"] = $user_exist["password"];
+		$user_auth["realm"] = $user_exist["realm"];
+		$user_auth["full_name"] = $user_exist["full_name"];
+		$user_auth["must_change_password"] = $user_exist["must_change_password"];
+		$user_auth["enabled"] = $user_exist["enabled"];
+
+	} else {
+		/* new user */
+		$user_auth["id"] = 0;
+		$user_auth["username"] = $new_user;
+		$user_auth["password"] = "!";
+		$user_auth["realm"] = $new_realm;
+	}
+
+	/* Update data_override fields */
+	if (is_array($data_override)) {
+		foreach ($data_override as $field => $value) {
+			if ((isset($user_auth[$field])) && ($field != "id") && ($field != "username")) {
+				$user_auth[$field] = $value;
+			}
+		}
+	}
+
+	/* Save the user */
 	$new_id = sql_save($user_auth, 'user_auth');
 
-	$user_auth_perms = db_fetch_assoc("select * from user_auth_perms where user_id = '$old_id'");
-	foreach ($user_auth_perms as $row) {
-		$row['user_id'] = $new_id;
-		sql_save($row, 'user_auth_perms', array('user_id', 'item_id', 'type'), false);
+	/* Create/Update permissions and settings */
+	if ((isset($user_exist)) && ($overwrite )) {
+		print "Deleting Perms and Settings\n";
+		db_execute("DELETE FROM user_auth_perms WHERE user_id = " . $user_exist["id"]);
+		db_execute("DELETE FROM user_auth_realm WHERE user_id = " . $user_exist["id"]);
+		db_execute("DELETE FROM settings_graphs WHERE user_id = " . $user_exist["id"]);
+		db_execute("DELETE FROM settings_tree WHERE user_id = " . $user_exist["id"]);
 	}
 
-	$user_auth_realm = db_fetch_assoc("select * from user_auth_realm where user_id = '$old_id'");
-	foreach ($user_auth_realm as $row) {
-		$row['user_id'] = $new_id;
-		sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'), false);
+	$user_auth_perms = db_fetch_assoc("SELECT * FROM user_auth_perms WHERE user_id = " . $template_id);
+	if (isset($user_auth_perms)) {
+		foreach ($user_auth_perms as $row) {
+			$row['user_id'] = $new_id;
+			sql_save($row, 'user_auth_perms', array('user_id', 'item_id', 'type'), false);
+		}
 	}
 
-	$settings_graphs = db_fetch_assoc("select * from settings_graphs where user_id = '$old_id'");
-	foreach ($settings_graphs as $row) {
-		$row['user_id'] = $new_id;
-		sql_save($row, 'settings_graphs', array('user_id', 'name'), false);
+	$user_auth_realm = db_fetch_assoc("SELECT * FROM user_auth_realm WHERE user_id = " . $template_id);
+	if (isset($user_auth_realm)) {
+		foreach ($user_auth_realm as $row) {
+			$row['user_id'] = $new_id;
+			sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'), false);
+		}
 	}
 
-	$settings_tree = db_fetch_assoc("select * from settings_tree where user_id = '$old_id'");
-	foreach ($settings_tree as $row) {
-		$row['user_id'] = $new_id;
-		sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'), false);
+	$settings_graphs = db_fetch_assoc("SELECT * FROM settings_graphs WHERE user_id = " . $template_id);
+	if (isset($settings_graphs)) {
+		foreach ($settings_graphs as $row) {
+			$row['user_id'] = $new_id;
+			sql_save($row, 'settings_graphs', array('user_id', 'name'), false);
+		}
 	}
+
+	$settings_tree = db_fetch_assoc("SELECT * FROM settings_tree WHERE user_id = " . $template_id);
+	if (isset($settings_tree)) {
+		foreach ($settings_tree as $row) {
+			$row['user_id'] = $new_id;
+			sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'), false);
+		}
+	}
+
+	return true;
+
 }
+
+
+/* user_remove - remove a user account
+   @arg $user_id - Id os the user account to remove */
+function user_remove($user_id) {
+	/* ================= input validation ================= */
+	input_validate_input_number($user_id);
+	/* ==================================================== */
+
+	db_execute("delete from user_auth where id=" . $user_id);
+	db_execute("delete from user_auth_realm where user_id=" . $user_id);
+	db_execute("delete from user_auth_perms where user_id=" . $user_id);
+	db_execute("delete from settings_graphs where user_id=" . $user_id);
+
+}       
+
+
+/* user_disable - disable a user account
+   @arg $user_id - Id of the user account to disable */
+function user_disable($user_id) {
+	/* ================= input validation ================= */
+	input_validate_input_number($user_id);
+	/* ==================================================== */
+
+	db_execute("UPDATE user_auth SET enabled = '' where id=" . $user_id);
+
+}
+
+
+/* user_enable - enable a user account
+   @arg $user_id - Id of the user account to enable */
+function user_enable($user_id) {
+	/* ================= input validation ================= */
+	input_validate_input_number($user_id);
+	/* ==================================================== */
+
+	db_execute("UPDATE user_auth SET enabled = 'on' where id=" . $user_id);
+
+}   
+
 
 /* get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph
      template policies

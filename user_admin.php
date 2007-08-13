@@ -30,7 +30,8 @@ $user_actions = array(
 	1 => "Delete",
 	2 => "Copy",
 	3 => "Enable",
-	4 => "Disable"
+	4 => "Disable",
+	5 => "Batch Copy"
 	);
 
 /* set default action */
@@ -39,49 +40,43 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'actions':
 		form_actions();
-
 		break;
+
 	case 'save':
 		form_save();
-
 		break;
+
 	case 'perm_remove':
 		perm_remove();
-
 		break;
+
 	case 'user_realms_edit':
 		include_once("include/top_header.php");
-
 		user_edit();
-
 		include_once("include/bottom_footer.php");
 		break;
+
 	case 'graph_settings_edit':
 		include_once("include/top_header.php");
-
 		user_edit();
-
 		include_once("include/bottom_footer.php");
 		break;
+
 	case 'graph_perms_edit':
 		include_once("include/top_header.php");
-
 		user_edit();
-
 		include_once("include/bottom_footer.php");
 		break;
+
 	case 'user_edit':
 		include_once("include/top_header.php");
-
 		user_edit();
-
 		include_once("include/bottom_footer.php");
 		break;
+
 	default:
 		include_once("include/top_header.php");
-
 		user();
-
 		include_once("include/bottom_footer.php");
 		break;
 }
@@ -91,7 +86,7 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_actions() {
-	global $colors, $user_actions;
+	global $colors, $user_actions, $auth_realms;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -112,13 +107,24 @@ function form_actions() {
 		if ($_POST["drp_action"] == "2") { /* copy */
 			/* ================= input validation ================= */
 			input_validate_input_number($_POST["selected_items"]);
+			input_validate_input_number($_POST["new_realm"]);
 			/* ==================================================== */
 
 			$new_username = get_request_var_post("new_username");
-			if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username='" . $new_username . "'")) == 0) {
-				user_copy(db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $_POST["selected_items"]), $new_username);
-			} else {
-				raise_message(19);
+			$new_realm = get_request_var_post("new_realm", 0);
+			$template_user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $_POST["selected_items"]);
+			$overwrite = array( "full_name" => get_request_var_post("new_fullname") );
+
+			if (strlen($new_username)) {
+				if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username = '" . $new_username . "' AND realm = " . $new_realm))) {
+					raise_message(19);
+				} else {
+					if (user_copy($template_user["username"], $new_username, $template_user["realm"], $new_realm, false, $overwrite) === false) {
+						raise_message(2);
+					} else {
+						raise_message(1);
+					}
+				}
 			}
 		}
 
@@ -141,6 +147,30 @@ function form_actions() {
 				user_disable($selected_items[$i]);
 			}
 		}
+
+		if ($_POST["drp_action"] == "5") { /* batch copy */
+			$copy_error = false;
+			$template = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("template_user"));
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				input_validate_input_number($_POST["template_user"]);
+				/* ==================================================== */
+				
+				$user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $selected_items[$i]);
+				if ((isset($user)) && (isset($template))) {
+					if (user_copy($template["username"], $user["username"], $template["realm"], $user["realm"], true) === false) {
+						$copy_error = true;
+					}
+				}
+			}
+			if ($copy_error) {
+				raise_message(2);
+			} else {
+				raise_message(1);
+			}
+		}
+
 
 		header("Location: user_admin.php");
 		exit;
@@ -171,7 +201,7 @@ function form_actions() {
 
 	print "<form action='user_admin.php' method='post'>\n";
 
-	if ($_POST["drp_action"] == "1") { /* delete */
+	if (($_POST["drp_action"] == "1") && (sizeof($user_array))) { /* delete */
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -181,8 +211,10 @@ function form_actions() {
 			</tr>\n";
 	}
 	$user_id = "";
-	if ($_POST["drp_action"] == "2") { /* copy */
+	if (($_POST["drp_action"] == "2") && (sizeof($user_array))) { /* copy */
 		$user_id = $user_array[0];
+		$user_realm = db_fetch_cell("SELECT realm FROM user_auth WHERE id = " . $user_id);
+		
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -196,10 +228,27 @@ function form_actions() {
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 					New Username: <input name='new_username' type='text' size='20'>
 				</td>
+			</tr><tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					New Full Name: <input name='new_fullname' type='text' size='35'>
+				</td>
+			</tr><tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					New Realm: <select name='new_realm' type='select'>\n";
+		foreach ($auth_realms as $key => $realm) {
+			print "					<option value='" . $key . "'";
+			if ($key == $user_realm) {
+				print " selected";
+			}
+			print ">" . $realm . "</option>\n";
+		}
+		print "					</select>\n";
+		print "				</td>
+
 			</tr>\n";
 	}
 
-	if ($_POST["drp_action"] == "3") { /* enable */
+	if (($_POST["drp_action"] == "3") && (sizeof($user_array))) { /* enable */
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -209,7 +258,7 @@ function form_actions() {
 			</tr>\n";
 	}
 
-	if ($_POST["drp_action"] == "4") { /* disable */
+	if (($_POST["drp_action"] == "4") && (sizeof($user_array))) { /* disable */
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -219,11 +268,32 @@ function form_actions() {
 			</tr>\n";
 	}
 
-	if (!isset($user_array)) {
+	if (($_POST["drp_action"] == "5") && (sizeof($user_array))) { /* batch copy */
+		$usernames = db_fetch_assoc("SELECT id,username FROM user_auth ORDER BY username");
+		print "
+			<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>Are you sure you want to overwrite the selected users with the selected template users settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained all other fields will be overwritten from template user.<br><br></td>
+			</tr><tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					Template User: <select name='template_user'>";
+		foreach ($usernames as $user) {
+			print "<option value='" . $user["id"] . "'>" . $user["username"] . "</option>";	
+		}	
+		print "</select>\n				</td>
+			</tr><tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<p>Users to update:
+					$user_list</p>
+				</td>
+			</tr>\n";
+	}
+
+	if (sizeof($user_array) == 0) {
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
-		$save_html = "";
+		$save_html = "<a href='user_admin.php'><img src='images/button_cancel.gif' alt='Cancel' align='absmiddle' border='0'></a>";
+
 	}else{
-		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+		$save_html = "<a href='user_admin.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a> <input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
 	}
 
 	print " <tr>
@@ -235,7 +305,6 @@ function form_actions() {
 		print "				<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
 	}
 	print "				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='user_admin.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				$save_html
 			</td>
 		</tr>
@@ -804,36 +873,6 @@ function graph_settings_edit() {
 /* --------------------------
     User Administration
    -------------------------- */
-
-function user_remove($user_id) {
-	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
-	/* ==================================================== */
-
-	db_execute("delete from user_auth where id=" . $user_id);
-	db_execute("delete from user_auth_realm where user_id=" . $user_id);
-	db_execute("delete from user_auth_perms where user_id=" . $user_id);
-	db_execute("delete from settings_graphs where user_id=" . $user_id);
-
-}
-
-function user_disable($user_id) {
-	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
-	/* ==================================================== */
-
-	db_execute("UPDATE user_auth SET enabled = '' where id=" . $user_id);
-
-}
-
-function user_enable($user_id) {
-	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
-	/* ==================================================== */
-
-	db_execute("UPDATE user_auth SET enabled = 'on' where id=" . $user_id);
-
-}
 
 function user_edit() {
 	global $colors, $fields_user_user_edit_host;

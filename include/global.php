@@ -40,20 +40,26 @@ if (isset($config["cacti_version"])) {
 
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
-	"poller.php",
 	"cmd.php",
-	"copy_cacti_user.php",
+	"poller.php",
+	"poller_commands.php",
+	"script_server.php",
 	"query_host_cpu.php",
 	"query_host_partitions.php",
-	"poller_reindex_hosts.php",
-	"poller_export.php",
-	"poller_commands.php",
-	"rebuild_poller_cache.php",
-	"script_server.php",
 	"sql.php",
 	"ss_host_cpu.php",
 	"ss_host_disk.php",
-	"ss_sql.php"
+	"ss_sql.php",
+	"add_device.php",
+	"add_graphs.php",
+	"add_perms.php",
+	"add_tree.php",
+	"copy_user.php",
+	"poller_export.php",
+	"poller_graphs_reapply_names.php",
+	"poller_output_empty.php",
+	"poller_reindex_hosts.php",
+	"rebuild_poller_cache.php"
 );
 
 $config = array();

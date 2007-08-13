@@ -28,8 +28,10 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 }
 
 if (empty($_SERVER["argv"][2])) {
-	die("\nSyntax:\n php copy_cacti_user.php <template user> <new user>\n\n");
+	print "\nIt is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.\n\n";
+	print "Syntax:\n php copy_cacti_user.php <template user> <new user>\n\n");
 }
+
 
 $no_http_headers = true;
 
@@ -39,28 +41,29 @@ include_once($config["base_path"] . "/lib/auth.php");
 $template_user = $_SERVER["argv"][1];
 $new_user = $_SERVER["argv"][2];
 
+print "\nIt is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.\n\n";
 print "Cacti User Copy Utility\n";
 print "Template User: " . $template_user . "\n";
 print "New User: " . $new_user . "\n";
 
 /* Check that user exists */
-$user_auth = db_fetch_row("select * from user_auth where username = '$template_user'");
+$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = 0");
 if (! isset($user_auth)) {
 	die("Error: Template user does not exist!\n\n");
 }
 
 print "\nCopying User...\n";
 
-@user_copy($template_user, $new_user);
+if (user_copy($template_user, $new_user) === false) {
+	die("Error: User not copied!\n\n");
+}
 
-$user_auth = db_fetch_row("select * from user_auth where username = '$new_user'");
+$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $new_user . "' AND realm = 0");
 if (! isset($user_auth)) {
 	die("Error: User not copied!\n\n");
 }
 
 print "User copied...\n";
-
-
 
 
 ?>

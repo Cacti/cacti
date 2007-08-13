@@ -55,6 +55,7 @@ Cacti CHANGELOG
 -bug: Some php_snmp implementations return strings as "Hex-STRING:".  In these cases properly resolve the string
 -bug: Correctly assign right and left click actions for Opera
 -bug: Fix SQL error when viewing an invalid Data Source via the Log Viewer
+-bug: Fix command line user copy utility
 -feature: Paginate the Graph Creation Page
 -feature: Add rra_path as a global.php config variable
 -feature: Add drop down actions to data queries
@@ -79,6 +80,7 @@ Cacti CHANGELOG
 -feature: Add Poller Interval to Data Sources page
 -feature: Keep filters aligned with main page content on window resize
 -feature: Add Enable/Disable user
+-feature: Add copy and batch copy of users
 -feature: Reduce ADODB memory consumption during polling
 -compat: Add additional checking due to php-snmp changes in Windows
 
