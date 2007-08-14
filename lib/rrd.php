@@ -1137,6 +1137,393 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rrd_struc = array()) {
+	global $config;
+
+	include_once($config["library_path"] . "/cdef.php");
+	include_once($config["library_path"] . "/graph_variables.php");
+	include($config["include_path"] . "/global_arrays.php");
+
+	/* before we do anything; make sure the user has permission to view this graph,
+	if not then get out */
+	if ((read_config_option("global_auth") == "on") && (isset($_SESSION["sess_user_id"]))) {
+		$access_denied = !(is_graph_allowed($local_graph_id));
+
+		if ($access_denied == true) {
+			return "GRAPH ACCESS DENIED";
+		}
+	}
+
+	/* find the step and how often this graph is updated with new data */
+	$ds_step = db_fetch_cell("select
+		data_template_data.rrd_step
+		from (data_template_data,data_template_rrd,graph_templates_item)
+		where graph_templates_item.task_item_id=data_template_rrd.id
+		and data_template_rrd.local_data_id=data_template_data.local_data_id
+		and graph_templates_item.local_graph_id=$local_graph_id
+		limit 0,1");
+	$ds_step = empty($ds_step) ? 300 : $ds_step;
+
+	/* if no rra was specified, we need to figure out which one RRDTool will choose using
+	 * "best-fit" resolution fit algorithm */
+	if (empty($rra_id)) {
+		if ((empty($xport_data_array["graph_start"])) || (empty($xport_data_array["graph_end"]))) {
+			$rra["rows"] = 600;
+			$rra["steps"] = 1;
+			$rra["timespan"] = 86400;
+		}else{
+			/* get a list of RRAs related to this graph */
+			$rras = get_associated_rras($local_graph_id);
+
+			if (sizeof($rras) > 0) {
+				foreach ($rras as $unchosen_rra) {
+					/* the timespan specified in the RRA "timespan" field may not be accurate */
+					$real_timespan = ($ds_step * $unchosen_rra["steps"] * $unchosen_rra["rows"]);
+
+					/* make sure the current start/end times fit within each RRA's timespan */
+					if ( (($xport_data_array["graph_end"] - $xport_data_array["graph_start"]) <= $real_timespan) && ((time() - $xport_data_array["graph_start"]) <= $real_timespan) ) {
+						/* is this RRA better than the already chosen one? */
+						if ((isset($rra)) && ($unchosen_rra["steps"] < $rra["steps"])) {
+							$rra = $unchosen_rra;
+						}else if (!isset($rra)) {
+							$rra = $unchosen_rra;
+						}
+					}
+				}
+			}
+
+			if (!isset($rra)) {
+				$rra["rows"] = 600;
+				$rra["steps"] = 1;
+			}
+		}
+	}else{
+		$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
+	}
+
+	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
+
+	$graph = db_fetch_row("select
+		graph_local.host_id,
+		graph_local.snmp_query_id,
+		graph_local.snmp_index,
+		graph_templates_graph.title_cache,
+		graph_templates_graph.vertical_label,
+		graph_templates_graph.slope_mode,
+		graph_templates_graph.auto_scale,
+		graph_templates_graph.auto_scale_opts,
+		graph_templates_graph.auto_scale_log,
+		graph_templates_graph.auto_scale_rigid,
+		graph_templates_graph.auto_padding,
+		graph_templates_graph.base_value,
+		graph_templates_graph.upper_limit,
+		graph_templates_graph.lower_limit,
+		graph_templates_graph.height,
+		graph_templates_graph.width,
+		graph_templates_graph.image_format_id,
+		graph_templates_graph.unit_value,
+		graph_templates_graph.unit_exponent_value,
+		graph_templates_graph.export
+		from (graph_templates_graph,graph_local)
+		where graph_local.id=graph_templates_graph.local_graph_id
+		and graph_templates_graph.local_graph_id=$local_graph_id");
+
+	/* lets make that sql query... */
+	$xport_items = db_fetch_assoc("select
+		graph_templates_item.id as graph_templates_item_id,
+		graph_templates_item.cdef_id,
+		graph_templates_item.text_format,
+		graph_templates_item.value,
+		graph_templates_item.hard_return,
+		graph_templates_item.consolidation_function_id,
+		graph_templates_item.graph_type_id,
+		graph_templates_gprint.gprint_text,
+		colors.hex,
+		data_template_rrd.id as data_template_rrd_id,
+		data_template_rrd.local_data_id,
+		data_template_rrd.rrd_minimum,
+		data_template_rrd.rrd_maximum,
+		data_template_rrd.data_source_name,
+		data_template_rrd.local_data_template_rrd_id
+		from graph_templates_item
+		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+		left join colors on (graph_templates_item.color_id=colors.id)
+		left join graph_templates_gprint on (graph_templates_item.gprint_id=graph_templates_gprint.id)
+		where graph_templates_item.local_graph_id=$local_graph_id
+		order by graph_templates_item.sequence");
+
+	/* +++++++++++++++++++++++ XPORT OPTIONS +++++++++++++++++++++++ */
+
+	/* override: graph start time */
+	if ((!isset($xport_data_array["graph_start"])) || ($xport_data_array["graph_start"] == "0")) {
+		$xport_start = -($rra["timespan"]);
+	}else{
+		$xport_start = $xport_data_array["graph_start"];
+	}
+
+	/* override: graph end time */
+	if ((!isset($xport_data_array["graph_end"])) || ($xport_data_array["graph_end"] == "0")) {
+		$xport_end = -($seconds_between_graph_updates);
+	}else{
+		$xport_end = $xport_data_array["graph_end"];
+	}
+
+	/* basic export options */
+	$xport_opts =
+		"--start=$xport_start" . RRD_NL .
+		"--end=$xport_end" . RRD_NL;
+
+	$xport_defs = "";
+
+	$i = 0; $j = 0;
+	if (sizeof($xport_items) > 0) {
+		foreach ($xport_items as $xport_item) {
+			/* mimic the old behavior: LINE[123], AREA, and STACK items use the CF specified in the graph item */
+			if (($xport_item["graph_type_id"] == 4) ||
+				($xport_item["graph_type_id"] == 5) ||
+				($xport_item["graph_type_id"] == 6) ||
+				($xport_item["graph_type_id"] == 7) ||
+				($xport_item["graph_type_id"] == 8)) {
+				$xport_cf = $xport_item["consolidation_function_id"];
+			/* all other types are based on the AVERAGE CF */
+			}else{
+				$xport_cf = 1;
+			}
+
+			if ((!empty($xport_item["local_data_id"])) &&
+				(!isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$xport_cf]))) {
+				/* use a user-specified ds path if one is entered */
+				$data_source_path = get_data_source_path($xport_item["local_data_id"], true);
+
+				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
+				$data_source_path = str_replace(":", "\:", $data_source_path);
+
+				if (!empty($data_source_path)) {
+					/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
+					to a function that matches the digits with letters. rrdtool likes letters instead
+					of numbers in DEF names; especially with CDEF's. cdef's are created
+					the same way, except a 'cdef' is put on the beginning of the hash */
+					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . $xport_item["data_source_name"] . ":" . $consolidation_functions[$xport_cf] . RRD_NL;
+
+					$cf_ds_cache{$xport_item["data_template_rrd_id"]}[$xport_cf] = "$i";
+
+					$i++;
+				}
+			}
+
+			/* cache cdef value here to support data query variables in the cdef string */
+			if (empty($xport_item["cdef_id"])) {
+				$xport_item["cdef_cache"] = "";
+				$xport_items[$j]["cdef_cache"] = "";
+			}else{
+				$xport_item["cdef_cache"] = get_cdef($xport_item["cdef_id"]);
+				$xport_items[$j]["cdef_cache"] = get_cdef($xport_item["cdef_id"]);
+			}
+
+			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
+
+			/* note the current item_id for easy access */
+			$xport_item_id = $xport_item["graph_templates_item_id"];
+
+			/* the following fields will be searched for graph variables */
+			$variable_fields = array(
+				"text_format" => array(
+					"process_no_legend" => false
+					),
+				"value" => array(
+					"process_no_legend" => true
+					),
+				"cdef_cache" => array(
+					"process_no_legend" => true
+					)
+				);
+
+			/* loop through each field that we want to substitute values for:
+			currently: text format and value */
+			while (list($field_name, $field_array) = each($variable_fields)) {
+				/* certain fields do not require values when the legend is not to be shown */
+				if (($field_array["process_no_legend"] == false) && (isset($xport_data_array["graph_nolegend"]))) {
+					continue;
+				}
+
+				$xport_variables[$field_name][$xport_item_id] = $xport_item[$field_name];
+
+				/* date/time substitution */
+				if (strstr($xport_variables[$field_name][$xport_item_id], "|date_time|")) {
+					$xport_variables[$field_name][$xport_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $xport_variables[$field_name][$xport_item_id]);
+				}
+
+				/* data query variables */
+				$xport_variables[$field_name][$xport_item_id] = rrd_substitute_host_query_data($xport_variables[$field_name][$xport_item_id], $graph, $xport_item);
+
+				/* Nth percentile */
+				if (preg_match_all("/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
+					foreach ($matches as $match) {
+						$xport_variables[$field_name][$xport_item_id] = str_replace($match[0], variable_nth_percentile($match, $xport_item, $xport_items, $graph_start, $graph_end), $xport_variables[$field_name][$xport_item_id]);
+					}
+				}
+
+				/* bandwidth summation */
+				if (preg_match_all("/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
+					foreach ($matches as $match) {
+						$xport_variables[$field_name][$xport_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $xport_item, $xport_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $xport_variables[$field_name][$xport_item_id]);
+					}
+				}
+			}
+
+			$j++;
+		}
+	}
+
+	/* +++++++++++++++++++++++ CDEF's +++++++++++++++++++++++ */
+
+	$i = 0;
+	reset($xport_items);
+
+	$xport_item_stack_type = "";
+	$txt_xport_items       = "";
+
+	if (sizeof($xport_items) > 0) {
+	foreach ($xport_items as $xport_item) {
+		/* first we need to check if there is a DEF for the current data source/cf combination. if so,
+		we will use that */
+		if (isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}{$xport_item["consolidation_function_id"]})) {
+			$cf_id = $xport_item["consolidation_function_id"];
+		}else{
+		/* if there is not a DEF defined for the current data source/cf combination, then we will have to
+		improvise. choose the first available cf in the following order: AVERAGE, MAX, MIN, LAST */
+			if (isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[1])) {
+				$cf_id = 1; /* CF: AVERAGE */
+			}elseif (isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[3])) {
+				$cf_id = 3; /* CF: MAX */
+			}elseif (isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[2])) {
+				$cf_id = 2; /* CF: MIN */
+			}elseif (isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[4])) {
+				$cf_id = 4; /* CF: LAST */
+			}else{
+				$cf_id = 1; /* CF: AVERAGE */
+			}
+		}
+
+		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
+		data source of global cdef, but is unique when those two variables combine. */
+		$cdef_xport_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = "";
+
+		if ((!empty($xport_item["cdef_id"])) && (!isset($cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id]))) {
+			$cdef_string = $xport_variables["cdef_cache"]{$xport_item["graph_templates_item_id"]};
+
+			/* create cdef string for "total all data sources" if requested */
+			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
+				$item_count = 0;
+				for ($t=0;($t<count($xport_items));$t++) {
+					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"]))) {
+						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
+						if (isset($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id])) {
+							$def_name = generate_graph_def_name(strval($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]));
+							$cdef_total_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+							$item_count++;
+						}
+					}
+				}
+
+				/* if there is only one item to total, don't even bother with the summation. otherwise
+				cdef=a,b,c,+,+ is fine. */
+				if ($item_count > 1) {
+					$cdef_total_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
+				}
+			}
+
+			/* create cdef string for "total similar data sources" if requested */
+			if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
+				$sources_seen = array();
+				$item_count = 0;
+
+				for ($t=0;($t<count($xport_items));$t++) {
+					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"])) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
+						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
+						if (isset($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]) && (!isset($sources_seen{$xport_items[$t]["data_template_rrd_id"]}))) {
+							$def_name = generate_graph_def_name(strval($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]));
+							$cdef_similar_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+							$sources_seen{$xport_items[$t]["data_template_rrd_id"]} = 1;
+							$item_count++;
+						}
+					}
+				}
+
+				/* if there is only one item to total, don't even bother with the summation. otherwise
+				cdef=a,b,c,+,+ is fine. */
+				if ($item_count > 1) {
+					$cdef_similar_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
+				}
+			}
+
+			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds, $cdef_string);
+			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds, $cdef_string);
+
+			/* data source item variables */
+			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($xport_item["rrd_minimum"]) ? "0" : $xport_item["rrd_minimum"]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_DS_MAXIMUM_VALUE", (empty($xport_item["rrd_maximum"]) ? "0" : $xport_item["rrd_maximum"]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_GRAPH_MINIMUM_VALUE", (empty($graph["lower_limit"]) ? "0" : $graph["lower_limit"]), $cdef_string);
+			$cdef_string = str_replace("CURRENT_GRAPH_MAXIMUM_VALUE", (empty($graph["upper_limit"]) ? "0" : $graph["upper_limit"]), $cdef_string);
+
+			/* replace query variables in cdefs */
+			$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $xport_item);
+
+			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
+			$cdef_xport_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
+			$cdef_xport_defs .= $cdef_string;
+			$cdef_xport_defs .= " \\\n";
+
+			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
+			$cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id] = "$i";
+		}
+
+		/* add the cdef string to the end of the def string */
+		$xport_defs .= $cdef_xport_defs;
+
+		/* note the current item_id for easy access */
+		$xport_item_id = $xport_item["graph_templates_item_id"];
+
+		/* IF this graph item has a data source... get a DEF name for it, or the cdef if that applies
+		to this graph item */
+		if ($xport_item["cdef_id"] == "0") {
+			if (isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id])) {
+				$data_source_name = generate_graph_def_name(strval($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id]));
+			}else{
+				$data_source_name = "";
+			}
+		}else{
+			$data_source_name = "cdef" . generate_graph_def_name(strval($cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id]));
+		}
+
+		/* +++++++++++++++++++++++ XPORT ITEMS +++++++++++++++++++++++ */
+
+		$need_rrd_nl = TRUE;
+		if (ereg("^(AREA|LINE[123]|STACK)$", $graph_item_types{$xport_item["graph_type_id"]})) {
+			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . $xport_variables["text_format"][$xport_item_id] . "\"";
+		}else{
+			$need_rrd_nl = FALSE;
+		}
+
+		$i++;
+
+		if (($i < sizeof($xport_items)) && ($need_rrd_nl)) {
+			$txt_xport_items .= RRD_NL;
+		}
+	}
+	}
+
+	/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
+	if (isset($xport_data_array["output_flag"])) {
+		$output_flag = $xport_data_array["output_flag"];
+	}else{
+		$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
+	}
+
+	return rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrd_struc);
+}
+
 function rrdtool_set_font($type, $no_legend = "") {
 	global $config;
 
