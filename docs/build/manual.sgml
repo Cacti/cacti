@@ -3506,7 +3506,7 @@ disk /</userinput></screen>
 								<entry>This field determines the power of 10 divisor that will be applied to your Nth percentile number. Enter '0' to leave the number alone, '3' for kilo or '6' for mega, etc.</entry>
 							</row>
 							<row>
-								<entry><function>( current | total | max | total_peak | all_max_current | all_max_peak | aggregate_max | aggregate_sum | aggregate )</function></entry>
+								<entry><function>( current | total | max | total_peak | all_max_current | all_max_peak | aggregate_max | aggregate_sum | aggregate_current | aggregate )</function></entry>
 								<entry>Nth Percentile Type - Refer to Nth Types</entry>
 							</row>
 							<row>
@@ -3560,6 +3560,11 @@ disk /</userinput></screen>
 								<entry><function>aggregate_sum</function></entry>
 								<entry>Calculates the Nth percentile by summing all data sources on the graph row for row and calculates the Nth value on the resulting summed data.  Example, you have a graph with 4 traffic_in and 3 traffic_out data sources defined.  All the defined traffic_in and traffic_out are summed together and then the Nth percentile value is calculated from that set.</entry>
 							</row>
+							<row>
+								<entry><function>aggregate_current</function></entry>
+								<entry>Calculates the Nth percentile by summing items matching the selected data source name row for row from each data source defined on the graph with the same data source name and then returning the Nth percent value calculated.  Example, you have a graph with 3 traffic_out and 5 traffic_in data sources defined.  The traffic_in is selected on the graph item where this variable is used, so all graph items for traffic_in are summed and then the Nth value is calculated and returned as the variable.</entry>
+							</row>
+
 							<row>
 								<entry><function>aggregate</function></entry>
 								<entry>Calculates the Nth percentile by summing like data source names row for row from each data source defined on the graph and then returning the highest Nth percent value calculated for like data source names.  Example, you have a graph with 3 traffic_out and 5 traffic_in data sources defined.  The traffic_in and traffic_out are summed then the Nth value is calculated and the higher of the 2 values is returned as the variable.</entry>

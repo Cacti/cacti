@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -bug#0000969: In some versions of PHP, the graph tree will not view properly
 -bug#0000970: Incorrect debug messages in lib/ping.php for failed UDP ping
 -bug#0000974: No graphs on Fedora core6 using sunone/iplanet 6.1 SP5
+-bug#0000975: Add Nth Percentile aggregate_current - Summing Multiple Data Sources with like names for Nth Percentile
 -bug#0000982: Remove invalid references to the "output_string" column in the "data_input" table
 -bug#0000983: Bad SQL: snmp_query_graph_rrd.snmp_query_graph_id=
 -bug#0000984: Poller does not correctly flush poller_output table after a memory error

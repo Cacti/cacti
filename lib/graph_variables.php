@@ -27,6 +27,7 @@
    @arg $local_data_id - the data source to perform the Nth percentile calculation
    @arg $start_seconds - start seconds of time range
    @arg $stop_seconds - stop seconds of time range
+   @arg $percentile - Nth Percentile to calculate, integer between 1 and 99
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing each data source item, and its 95th percentile */
 function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0) {
@@ -294,6 +295,18 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			}
 		}
                 $nth_cache{0} = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1]);
+	} elseif ($regexp_match_array[4] == "aggregate_current") {
+		$local_data_array = array();
+		if (!empty($graph_item["data_source_name"])) {
+			for ($t=0;($t<count($graph_items));$t++) {
+				if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && 
+					(!empty($graph_items[$t]["data_template_rrd_id"])) && 
+					($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
+					$local_data_array[$graph_items[$t]["local_data_id"]][] = $graph_items[$t]["data_source_name"];
+				}
+			}
+			$nth_cache{0} = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1]);
+		}
 	}
 
 	$nth = 0;
@@ -364,7 +377,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 				}
 			}
 		}
-	}elseif ($regexp_match_array[4] == "aggregate") {
+	}elseif (($regexp_match_array[4] == "aggregate") || ($regexp_match_array[4] == "aggregate_current")) {
 		if (! empty($nth_cache{0}["nth_percentile_aggregate_total"])) {
 			$local_nth = $nth_cache{0}["nth_percentile_aggregate_total"];
 			$local_nth = ($regexp_match_array[2] == "bits") ? $local_nth * 8 : $local_nth;
