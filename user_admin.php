@@ -397,8 +397,6 @@ function form_save() {
 		$save["realm"] = get_request_var_post("realm", 0);
 		$save["enabled"] = form_input_validate(get_request_var_post("enabled", ""), "enabled", "", true, 3);
 
-print_r($save);
-
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
 
