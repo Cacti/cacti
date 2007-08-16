@@ -39,7 +39,7 @@ input_validate_input_number(get_request_var("local_graph_id"));
 input_validate_input_number(get_request_var("rra_id"));
 /* ==================================================== */
 
-header("Content-type: application/xml");
+header("Content-type: application/vnd.ms-excel");
 header("Content-Disposition: attachment; filename=graph_xport.csv");
 
 /* flush the headers now */
