@@ -64,7 +64,7 @@ function read_default_graph_config_option($config_name) {
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	if ((read_config_option("global_auth") != "on") || (!isset($_SESSION["sess_user_id"]))) {
+	if ((read_config_option("auth_method") == 0) || (!isset($_SESSION["sess_user_id"]))) {
 		/* first attempt to get the db setting for guest */
 		$guest_uid = db_fetch_cell("SELECT id FROM user_auth WHERE username='guest'");
 
@@ -325,7 +325,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	$logfile        = read_config_option("path_cactilog");
 
 	/* format the message */
-	if (($environ != "SYSTEM") && ($environ != "EXPORT") && ($environ != "RECACHE")) {
+	if (($environ != "SYSTEM") && ($environ != "EXPORT") && ($environ != "RECACHE") && ($environ != "AUTH")) {
 		$message = "$date - " . $environ . ": Poller[0] " . $string . "\n";
 	}else {
 		$message = "$date - " . $environ . " " . $string . "\n";
@@ -1265,7 +1265,7 @@ function get_graph_tree_array($return_sql = false, $force_refresh = false) {
 	if (!isset($_SESSION["tree_array"]) || ($force_refresh) ||
 		(($_SESSION["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
 
-		if (read_config_option("global_auth") == "on") {
+		if (read_config_option("auth_method") != 0) {
 			$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 			if ($current_user["policy_trees"] == "1") {
@@ -1302,7 +1302,7 @@ function get_graph_tree_array($return_sql = false, $force_refresh = false) {
 /* get_host_array - returns a list of hosts taking permissions into account if necessary
    @returns - (array) an array containing a list of hosts */
 function get_host_array() {
-	if (read_config_option("global_auth") == "on") {
+	if (read_config_option("auth_method") != 0) {
 		$current_user = db_fetch_row("select policy_hosts from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 		if ($current_user["policy_hosts"] == "1") {

@@ -66,7 +66,7 @@ global $colors;
 						<?php draw_navigation_text();?>
 					</td>
 					<td align="right">
-						<?php if (read_config_option("global_auth") == "on") { ?>
+						<?php if (read_config_option("auth_method") != 0) { ?>
 						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="logout.php">Logout</a>)&nbsp;
 						<?php } ?>
 					</td>

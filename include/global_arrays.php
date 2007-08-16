@@ -198,10 +198,32 @@ $graph_tree_views = array(1 =>
 	"Single Pane",
 	"Dual Pane");
 
+$auth_methods = array(
+	0 => "None",
+	1 => "Builtin Authentication",
+	2 => "Web Basic Authentication",
+	3 => "LDAP Authentication");
+
+
 $auth_realms = array(0 =>
 	"Local",
 	"LDAP",
 	"Web Basic");
+
+$ldap_versions = array(
+	2 => "Version 2",
+	3 => "Version 3"
+	);
+
+$ldap_encryption = array(
+	0 => "None",
+	1 => "SSL",
+	2 => "TLS"); 
+
+$ldap_modes = array(
+	0 => "No Searching",
+	1 => "Anonymous Searching",
+	2 => "Specific Searching");
 
 $snmp_implimentations = array(
 	"ucd-snmp" => "UCD-SNMP 4.x",

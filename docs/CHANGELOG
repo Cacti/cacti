@@ -67,6 +67,7 @@ Cacti CHANGELOG
 -feature: Add filtering and pagination to data input methods
 -feature: Add filtering and pagination to host templates
 -feature: Add filtering and pagination to user administration
+-feature: Add extended LDAP authentication support
 -feature: Add Web Basic authentication
 -feature: Add authenication realm to modifiable user parameters
 -feature: Add multiple polling intervals

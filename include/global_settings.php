@@ -703,62 +703,111 @@ $settings = array(
 			"friendly_name" => "General",
 			"method" => "spacer",
 			),
-		"global_auth" => array(
-			"friendly_name" => "Use Cacti's Builtin Authentication",
-			"description" => "By default Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti. You can optionally turn this off if you are using other other means of authentication.",
-			"method" => "checkbox",
-			"default" => "on",
+		"auth_method" => array(
+			"friendly_name" => _("Authentication Method"),
+			"description" => _("<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Builtin Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.</blockquote>"),
+			"method" => "drop_array",
+			"default" => 1,
+			"array" => $auth_methods
 			),
-		"ldap_enabled" => array(
-			"friendly_name" => "Use LDAP Authentication",
-			"description" => "This will allow users to use their LDAP credentials with cacti. Builtin Authenication must be enabled.",
-			"method" => "checkbox",
-			),
-		"webbasic_enabled" => array(
-			"friendly_name" => "Use Web Basic Authentication",
-			"description" => "This will allow users to use their Web Server credentials with cacti. Builtin Authenication must be enabled.",
-			"method" => "checkbox",
-			),
-
 		"guest_user" => array(
 			"friendly_name" => "Guest User",
-			"description" => "The name of the guest user for viewing graphs; is \"guest\" by default.",
-			"method" => "textbox",
-			"default" => "guest",
-			"max_length" => "100"
+			"description" => "The name of the guest user for viewing graphs; is \"No User\" by default.",
+			"method" => "drop_sql",
+			"none_value" => "No User",
+			"sql" => "select username as id, username as name from user_auth where realm = 0 order by username",
+			"default" => "0"
+			),
+		"user_template" => array(
+			"friendly_name" => "User Template",
+			"description" => "The name of the user that cacti will use as a template for new Web Basic and LDAP users; is \"guest\" by default.",
+			"method" => "drop_sql",
+			"none_value" => "No User",
+			"sql" => "select username as id, username as name from user_auth where realm = 0 order by username",
+			"default" => "0"
 			),
 		"ldap_header" => array(
 			"friendly_name" => "LDAP Settings",
-			"method" => "spacer",
+			"method" => "spacer"
 			),
 		"ldap_server" => array(
-			"friendly_name" => "LDAP Server",
-			"description" => "The dns hostname or ip address of the server you wish to tie authentication from.",
+			"friendly_name" => "Server",
+			"description" => "The dns hostname or ip address of the server.",
 			"method" => "textbox",
-			"max_length" => "100"
+			"max_length" => "255"
+			),
+		"ldap_port" => array(
+			"friendly_name" => "Port Standard",
+			"description" => "TCP/UDP port for Non SSL comminications.",
+			"method" => "textbox",
+			"max_length" => "5",
+			"default" => "389"
+			),
+		"ldap_port_ssl" => array(
+			"friendly_name" => "Port SSL",
+			"description" => "TCP/UDP port for SSL comminications.",
+			"method" => "textbox",
+			"max_length" => "5",
+			"default" => "636"
+			),
+		"ldap_version" => array(
+			"friendly_name" => "Protocol Version",
+			"description" => "Protocol Version that the server supports.",
+			"method" => "drop_array",
+			"default" => "3",
+			"array" => $ldap_versions
+			),
+		"ldap_encryption" => array(
+			"friendly_name" => "Encryption",
+			"description" => "Encryption that the server supports. TLS is only supported by Protocol Version 3.",
+			"method" => "drop_array",
+			"default" => "0",
+			"array" => $ldap_encryption
+			),
+		"ldap_referrals" => array(
+			"friendly_name" => "Referrals",
+			"description" => "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.",
+			"method" => "drop_array",
+			"default" => "0",
+			"array" => array( "0" => "Disabled", "1" => "Enable")
+			),
+		"ldap_mode" => array(
+			"friendly_name" => "Mode",
+		"description" => "Mode which cacti will attempt to authenicate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).",
+			"method" => "drop_array",
+			"default" => "0",
+			"array" => $ldap_modes
 			),
 		"ldap_dn" => array(
-			"friendly_name" => "LDAP DN",
-			"description" => "This is the Distinguished Name syntax, such as &lt;username&gt;@win2kdomain.lcl.",
+			"friendly_name" => "Distinguished Name (DN)",
+			"description" => "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode.",
 			"method" => "textbox",
-			"max_length" => "100"
+			"max_length" => "255"
 			),
-		"ldap_template" => array(
-			"friendly_name" => "LDAP Cacti Template User",
-			"description" => "This is the Local Cacti user that will be used as a template for new LDAP users. Leave empty to disable, if guest user defined, will be logged in as that user.",
+		"ldap_search_base" => array(
+			"friendly_name" => "Search Base",
+			"description" => "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>.",
 			"method" => "textbox",
-			"max_length" => "100"
+			"max_length" => "255"
 			),
-		"webbasic_header" => array(
-			"friendly_name" => "Web Basic Settings",
-			"method" => "spacer",
-			),
-		"webbasic_template" => array(
-			"friendly_name" => "Web Basic Cacti Template User",
-			"description" => "This is the Local Cacti user that will be used as a template for new Web Basic users. Leave empty to disable, if guest user defined, will be logged in as that user.",
+		"ldap_search_filter" => array(
+			"friendly_name" => "Search Filter",
+			"description" => "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt. ",
 			"method" => "textbox",
-			"max_length" => "100"
+			"max_length" => "255"
 			),
+		"ldap_specific_dn" => array(
+			"friendly_name" => "Search Distingished Name (DN)",
+			"description" => "Distinguished Name for Specific Searching binding to the LDAP directory.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"ldap_specific_password" => array(
+			"friendly_name" => "Search Password",
+			"description" => "Password for Specific Searching binding to the LDAP directory.",
+			"method" => "textbox_password",
+			"max_length" => "255"
+			)
 		)
 	);
 
@@ -993,3 +1042,4 @@ $settings_graphs = array(
 	);
 
 ?>
+

@@ -43,7 +43,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	}
 
 	/* graph permissions */
-	if (read_config_option("global_auth") == "on") {
+	if (read_config_option("auth_method") != 0) {
 		/* get policy information for the sql where clause */
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
@@ -465,7 +465,7 @@ function create_dhtml_tree() {
 	$tree_list = get_graph_tree_array();
 
 	/* auth check for hosts on the trees */
-	if (read_config_option("global_auth") == "on") {
+	if (read_config_option("auth_method") != 0) {
 		$current_user = db_fetch_row("select policy_hosts from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 		$sql_join = "left join user_auth_perms on (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
@@ -603,7 +603,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	/* graph permissions */
-	if (read_config_option("global_auth") == "on") {
+	if (read_config_option("auth_method") != 0) {
 		/* get policy information for the sql where clause */
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and $sql_where");

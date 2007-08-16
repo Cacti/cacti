@@ -28,7 +28,7 @@ include("./include/auth.php");
 setcookie(session_name(),"",time() - 3600,"/");
 
 /* Check to see if we are using Web Basic Auth */
-if (read_config_option("webbasic_enabled") == "on") {
+if (read_config_option("auth_method") == "2") {
 
 	?>
 <html>
