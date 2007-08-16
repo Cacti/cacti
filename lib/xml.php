@@ -25,31 +25,31 @@
 function xml2array($data) {
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
-	to be used for data retrieval(result-structure is Data oriented) */  
+	to be used for data retrieval(result-structure is Data oriented) */
 	$p = xml_parser_create();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
-	
+
 	$tree = array();
 	$i = 0;
 	$tree = get_children($vals, $i);
-	
+
 	return $tree;
 }
 
 function get_children($vals, &$i) {
 	$children = array();
-	
+
 	if (isset($vals[$i]['value'])) {
 		if ($vals[$i]['value']) array_push($children, $vals[$i]['value']);
 	}
-	
+
 	$prevtag = ""; $j = 0;
-	
-	while (++$i < count($vals)) {      
-		switch ($vals[$i]['type']) {      
+
+	while (++$i < count($vals)) {
+		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);
 			break;
@@ -61,17 +61,105 @@ function get_children($vals, &$i) {
 			}else{
 				$children{($vals[$i]['tag'])} = "";
 			}
-			
+
 			break;
 		case 'open':
 			$j++;
-			
+
 			if ($prevtag <> $vals[$i]['tag']) {
 				$j = 0;
 				$prevtag = $vals[$i]['tag'];
 			}
-			
+
 			$children{($vals[$i]['tag'])} = get_children($vals,$i);
+			break;
+		case 'close':
+			return $children;
+		}
+	}
+}
+
+function rrdxport2array($data) {
+	/* mvo voncken@mailandnews.com
+	original ripped from  on the php-manual:gdemartini@bol.com.br
+	to be used for data retrieval(result-structure is Data oriented) */
+	$p = xml_parser_create();
+	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
+	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+	xml_parse_into_struct($p, $data, $vals, $index);
+	xml_parser_free($p);
+
+	$tree = array();
+	$i = 0;
+	$column = 0;
+	$row = 0;
+	$tree = get_rrd_children($vals, $i, $column, $row);
+
+	return $tree;
+}
+
+function get_rrd_children($vals, &$i, &$column, &$row) {
+	$children = array();
+
+	if (isset($vals[$i]['value'])) {
+		if ($vals[$i]['value']) array_push($children, $vals[$i]['value']);
+	}
+
+	$prevtag = ""; $j = 0;
+
+	while (++$i < count($vals)) {
+		switch ($vals[$i]['type']) {
+		case 'cdata':
+			array_push($children, $vals[$i]['value']);
+			break;
+		case 'complete':
+			/* if the value is an empty string, php doesn't include the 'value' key
+			in its array, so we need to check for this first */
+			if (isset($vals[$i]['value'])) {
+				switch($vals[$i]['tag']) {
+					case "entry":
+						$column++;
+						$children["col" . $column] = $vals[$i]['value'];
+						break;
+					case "t":
+						$children["timestamp"] = $vals[$i]['value'];
+						break;
+					case "v":
+						$column++;
+						$children["col" . $column] = $vals[$i]['value'];
+						break;
+					default:
+						$children{($vals[$i]['tag'])} = $vals[$i]['value'];
+				}
+			}else{
+				$children{($vals[$i]['tag'])} = "";
+			}
+
+			break;
+		case 'open':
+			$j++;
+
+			if ($prevtag <> $vals[$i]['tag']) {
+				$j = 0;
+				$prevtag = $vals[$i]['tag'];
+			}
+
+			switch($vals[$i]['tag']) {
+				case "meta":
+				case "xport":
+				case "legend":
+					$children{($vals[$i]['tag'])} = get_rrd_children($vals,$i,$column,$row);
+					break;
+				case "data":
+					break;
+				case "row":
+					$row++;
+					$column=0;
+					$children["data"][$row] = get_rrd_children($vals,$i,$column,$row);
+
+					break;
+			}
+
 			break;
 		case 'close':
 			return $children;

@@ -1142,6 +1142,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rr
 
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
+	include_once($config["library_path"] . "/xml.php");
 	include($config["include_path"] . "/global_arrays.php");
 
 	/* before we do anything; make sure the user has permission to view this graph,
@@ -1514,14 +1515,16 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rr
 	}
 	}
 
-	/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
-	if (isset($xport_data_array["output_flag"])) {
-		$output_flag = $xport_data_array["output_flag"];
-	}else{
-		$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
-	}
+	$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-	return rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrd_struc);
+	$xport_array = rrdxport2array(rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrd_struc));
+
+	$xport_array["meta"]["title_cache"]    = $graph["title_cache"];
+	$xport_array["meta"]["vertical_label"] = $graph["vertical_label"];
+	$xport_array["meta"]["local_graph_id"] = $local_graph_id;
+	$xport_array["meta"]["host_id"]        = $graph["host_id"];
+
+	return $xport_array;
 }
 
 function rrdtool_set_font($type, $no_legend = "") {

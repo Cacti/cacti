@@ -58,6 +58,7 @@ Cacti CHANGELOG
 -bug: Fix SQL error when viewing an invalid Data Source via the Log Viewer
 -bug: Fix command line user copy utility
 -feature: Paginate the Graph Creation Page
+-feature: Allow CSV Export from the various Graphs page
 -feature: Add rra_path as a global.php config variable
 -feature: Add drop down actions to data queries
 -feature: Add drop down actions to data input methods
