@@ -38,8 +38,12 @@ include("./include/top_header.php");
 				<li><a href="graph_view.php">View</a> your new graphs</li>
 			</ul>
 		</td>
+		<td class="textArea" align="right" valign="top">
+			<strong>Version <?php print $config["cacti_version"];?></strong>
+		</td>
 	</tr>
 </table>
+
 <?php
 
 include("./include/bottom_footer.php");
