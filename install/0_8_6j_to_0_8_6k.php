@@ -51,6 +51,21 @@ function upgrade_to_0_8_6k() {
 	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD COLUMN `ping_method` SMALLINT(5) UNSIGNED default '0' AFTER `availability_method`");
 	db_install_execute("0.8.6k", "ALTER TABLE `host` ADD COLUMN `max_oids` INT(12) UNSIGNED default '10' AFTER `ping_method`");
 
+
+        /* Convert to new authentication system */
+	if (db_fetch_cell("SELECT `value` FROM `settings` WHERE `name` = 'global_auth'") == "on") {
+		if (db_fetch_cell("SELECT `value` FROM `settings` WHERE `name` = 'ldap_enable'") == "on") {
+			db_install_execute("0.8.6k", "INSERT INTO settings VALUES ('auth_method','3')");
+		}else{
+			db_install_execute("0.8.6k", "INSERT INTO settings VALUES ('auth_method','1')");
+		}
+	}else{
+		db_install_execute("0.8.6k", "INSERT INTO settings VALUES ('auth_method','0')");
+	}
+	db_install_execute("0.8.6k", "UPDATE `settings` SET name = 'user_template' WHERE name = 'ldap_template'");
+	db_install_execute("0.8.6k", "DELETE FROM `settings` WHERE name = 'global_auth'");
+	db_install_execute("0.8.6k", "DELETE FROM `settings` WHERE name = 'ldap_enabled'");
+	
 	/* Add 1 min poller templates */
 	db_install_execute("0.8.6k", "INSERT INTO data_template VALUES (DEFAULT, '86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min')");
 	$data_temp_id = mysql_insert_id();
