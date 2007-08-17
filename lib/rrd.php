@@ -1137,7 +1137,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rrd_struc = array()) {
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $xport_meta, $rrd_struc = array()) {
 	global $config;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -1203,6 +1203,20 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rr
 	}
 
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
+
+	/* override: graph start time */
+	if ((!isset($graph_data_array["graph_start"])) || ($graph_data_array["graph_start"] == "0")) {
+		$graph_start = -($rra["timespan"]);
+	}else{
+		$graph_start = $graph_data_array["graph_start"];
+	}
+
+	/* override: graph end time */
+	if ((!isset($graph_data_array["graph_end"])) || ($graph_data_array["graph_end"] == "0")) {
+		$graph_end = -($seconds_between_graph_updates);
+	}else{
+		$graph_end = $graph_data_array["graph_end"];
+	}
 
 	$graph = db_fetch_row("select
 		graph_local.host_id,
@@ -1359,15 +1373,21 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rr
 
 				/* Nth percentile */
 				if (preg_match_all("/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
+					$k = 0;
 					foreach ($matches as $match) {
 						$xport_variables[$field_name][$xport_item_id] = str_replace($match[0], variable_nth_percentile($match, $xport_item, $xport_items, $graph_start, $graph_end), $xport_variables[$field_name][$xport_item_id]);
+						$xport_meta["NThPercent"][$k][$field_name] =$xport_variables[$field_name][$xport_item_id];
+						$k++;
 					}
 				}
 
 				/* bandwidth summation */
 				if (preg_match_all("/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
+					$k = 0;
 					foreach ($matches as $match) {
 						$xport_variables[$field_name][$xport_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $xport_item, $xport_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $xport_variables[$field_name][$xport_item_id]);
+						$xport_meta["Bandwidth"][$k][$field_name] = $xport_variables[$field_name][$xport_item_id];
+						$k++;
 					}
 				}
 			}
@@ -1519,6 +1539,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $rr
 
 	$xport_array = rrdxport2array(rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrd_struc));
 
+	/* add host and graph information */
 	$xport_array["meta"]["title_cache"]    = $graph["title_cache"];
 	$xport_array["meta"]["vertical_label"] = $graph["vertical_label"];
 	$xport_array["meta"]["local_graph_id"] = $local_graph_id;
