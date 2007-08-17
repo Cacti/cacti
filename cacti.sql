@@ -1876,6 +1876,7 @@ CREATE TABLE host (
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   availability_method smallint(5) unsigned NOT NULL default '1',
   ping_method smallint(5) unsigned default '0',
+  ping_port int(12) unsigned default '0',
   max_oids int(12) unsigned default '10',
   disabled char(2) default NULL,
   status tinyint(2) NOT NULL default '0',

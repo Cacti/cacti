@@ -1042,4 +1042,3 @@ $settings_graphs = array(
 	);
 
 ?>
-
