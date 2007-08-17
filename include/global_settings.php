@@ -665,6 +665,13 @@ $settings = array(
 			"default" => PING_UDP,
 			"array" => $ping_methods,
 			),
+		"ping_port" => array(
+			"friendly_name" => "Ping Port",
+			"description" => "When choosing either TCP or UDP Ping, which port should be checked for availability of the host prior to polling.",
+			"method" => "textbox",
+			"default" => "23",
+			"max_length" => "10"
+			),
 		"ping_timeout" => array(
 			"friendly_name" => "Ping Timeout Value",
 			"description" => "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.",

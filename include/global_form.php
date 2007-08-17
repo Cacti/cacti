@@ -644,6 +644,36 @@ $fields_host_edit = array(
 		"default" => "",
 		"form_id" => false
 		),
+	"avalaibility_header" => array(
+		"method" => "spacer",
+		"friendly_name" => "Availability/Reachability Options"
+		),
+	"availability_method" => array(
+		"friendly_name" => "Downed Device Detection",
+		"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
+		"value" => "|arg1:availability_method|",
+		"method" => "drop_array",
+		"default" => read_config_option("availability_method"),
+		"array" => $availability_options
+		),
+	"ping_method" => array(
+		"friendly_name" => "Ping Method",
+		"description" => "The type of ping packet to sent.  NOTE: ICMP on Linux/UNIX requires root privileges.",
+		"value" => "|arg1:ping_method|",
+		"method" => "drop_array",
+		"default" => read_config_option("ping_method"),
+		"array" => $ping_methods
+		),
+	"ping_port" => array(
+		"method" => "textbox",
+		"friendly_name" => "Ping Port",
+		"value" => "|arg1:ping_port|",
+		"description" => "Fill in the SNMP v3 username for this device.",
+		"value" => "|arg1:snmp_username|",
+		"default" => read_config_option("snmp_username"),
+		"max_length" => "50",
+		"size" => "15"
+		),
 	"spacer1" => array(
 		"method" => "spacer",
 		"friendly_name" => "SNMP Options"

@@ -159,12 +159,15 @@ $logfile_options = array(1 =>
 	"Syslog/Eventlog Only");
 
 $availability_options = array(
-	AVAIL_SNMP_AND_PING => "Ping and SNMP - Most Recommended",
-	AVAIL_SNMP => "SNMP - Reliable",
-	AVAIL_PING => "Ping - Faster Option with Risk");
+	AVAIL_NONE => "None",
+	AVAIL_SNMP_AND_PING => "Ping and SNMP",
+	AVAIL_SNMP => "SNMP",
+	AVAIL_PING => "Ping");
 
 $ping_methods = array(
+	PING_NONE => "None",
 	PING_ICMP => "ICMP Ping",
+	PING_TCP => "TCP Ping",
 	PING_UDP => "UDP Ping");
 
 $logfile_verbosity = array(
@@ -218,7 +221,7 @@ $ldap_versions = array(
 $ldap_encryption = array(
 	0 => "None",
 	1 => "SSL",
-	2 => "TLS"); 
+	2 => "TLS");
 
 $ldap_modes = array(
 	0 => "No Searching",

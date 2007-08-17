@@ -63,9 +63,48 @@ function upgrade_to_0_8_6k() {
 		db_install_execute("0.8.6k", "INSERT INTO settings VALUES ('auth_method','0')");
 	}
 
+	/* settings for ldap */
 	db_install_execute("0.8.6k", "UPDATE `settings` SET name = 'user_template' WHERE name = 'ldap_template'");
 	db_install_execute("0.8.6k", "DELETE FROM `settings` WHERE name = 'global_auth'");
 	db_install_execute("0.8.6k", "DELETE FROM `settings` WHERE name = 'ldap_enabled'");
+
+	/* settings for availability */
+	$ping_method = read_config_option("ping_method");
+	$availability_method = read_config_option("availability_method");
+
+	$hosts = db_fetch_assoc("SELECT id, snmp_community FROM host");
+
+	if (sizeof($hosts)) {
+		foreach($hosts as $host) {
+			if (strlen($host["snmp_community"] == 0)) {
+				if ($availability_method == AVAIL_SNMP) {
+					db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_NONE . "', ping_method='" . PING_NONE . "' WHERE id='" . $host["id"] . "'");
+				}else{
+					if ($ping_method == PING_ICMP) {
+						db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "' WHERE id='" . $host["id"] . "'");
+					}else{
+						db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "', ping_port='33439' WHERE id='" . $host["id"] . "'");
+					}
+				}
+			}else{
+				if ($availability_method == AVAIL_SNMP) {
+					db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_SNMP . "', ping_method='" . PING_NONE . "' WHERE id='" . $host["id"] . "'");
+				}else if ($availability_method == AVAIL_SNMP_AND_PING) {
+					if ($ping_method == PING_ICMP) {
+						db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_SNMP_AND_PING . "', ping_method='" . $ping_method . "' WHERE id='" . $host["id"] . "'");
+					}else{
+						db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_SNMP_AND_PING . "', ping_method='" . $ping_method . "', ping_port='33439' WHERE id='" . $host["id"] . "'");
+					}
+				}else{
+					if ($ping_method == PING_ICMP) {
+						db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "' WHERE id='" . $host["id"] . "'");
+					}else{
+						db_install_execute("0.8.6k", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "', ping_port='33439' WHERE id='" . $host["id"] . "'");
+					}
+				}
+			}
+		}
+	}
 
 	/* Add 1 min poller templates */
 	db_install_execute("0.8.6k", "INSERT INTO data_template VALUES (DEFAULT, '86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min')");

@@ -39,7 +39,8 @@ $device_actions = array(
 	2 => "Enable",
 	3 => "Disable",
 	4 => "Change SNMP Options",
-	5 => "Clear Statistics"
+	5 => "Clear Statistics",
+	6 => "Change Availability Options"
 	);
 
 /* set default action */
@@ -146,7 +147,8 @@ function form_save() {
 		}else{
 			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"], $_POST["hostname"],
 				$_POST["snmp_community"], $_POST["snmp_version"], $_POST["snmp_username"], $_POST["snmp_password"],
-				$_POST["snmp_port"], $_POST["snmp_timeout"], (isset($_POST["disabled"]) ? $_POST["disabled"] : ""));
+				$_POST["snmp_port"], $_POST["snmp_timeout"], (isset($_POST["disabled"]) ? $_POST["disabled"] : ""),
+				$_POST["availability_method"], $_POST["ping_method"], $_POST["ping_port"]);
 		}
 
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
@@ -221,6 +223,21 @@ function form_actions() {
 				db_execute("update host set min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = '" . $selected_items[$i] . "'");
+			}
+		}elseif ($_POST["drp_action"] == "6") { /* change availability options */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				reset($fields_host_edit);
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (isset($_POST["t_$field_name"])) {
+						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+					}
+				}
+
+				push_out_host($selected_items[$i]);
 			}
 		}elseif ($_POST["drp_action"] == "1") { /* delete */
 			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
@@ -342,6 +359,36 @@ function form_actions() {
 				$form_array = array();
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (ereg("^snmp_", $field_name)) {
+						$form_array += array($field_name => $fields_host_edit[$field_name]);
+
+						$form_array[$field_name]["value"] = "";
+						$form_array[$field_name]["description"] = "";
+						$form_array[$field_name]["form_id"] = 0;
+						$form_array[$field_name]["sub_checkbox"] = array(
+							"name" => "t_" . $field_name,
+							"friendly_name" => "Update this Field",
+							"value" => ""
+							);
+					}
+				}
+
+				draw_edit_form(
+					array(
+						"config" => array("no_form_tag" => true),
+						"fields" => $form_array
+						)
+					);
+	}elseif ($_POST["drp_action"] == "6") { /* change availability options */
+		print "	<tr>
+				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>To change SNMP parameters for the following devices, check the box next to the fields
+					you want to update, fill in the new value, and click Save.</p>
+					<p>$host_list</p>
+				</td>
+				</tr>";
+				$form_array = array();
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (ereg("(availability_method|ping_method|ping_port)", $field_name)) {
 						$form_array += array($field_name => $fields_host_edit[$field_name]);
 
 						$form_array[$field_name]["value"] = "";
