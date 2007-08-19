@@ -16,9 +16,9 @@
 			<surname>Adams</surname>
 		</author>
 	</authorgroup>
-	<pubdate>2005</pubdate>
+	<pubdate>2007</pubdate>
 	<copyright>
-		<year>2005</year>
+		<year>2007</year>
 		<holder>The Cacti Group</holder>
 	</copyright>
 
@@ -57,12 +57,12 @@
 			</listitem>
 			<listitem>
 				<para>
-					<application>MySQL</application> 3.23 or greater, 4.0.20d or greater highly recommended for advanced features
+					<application>MySQL</application> 3.23 or greater, 4.1.x or 5.x or greater 
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>PHP</application> 4.1 or greater, 4.3.6 or greater highly recommended for advanced features
+					<application>PHP</application> 4.3.6 or greater, 5.x greater highly recommended for advanced features
 				</para>
 			</listitem>
 		</itemizedlist>
@@ -1160,6 +1160,10 @@ $database_password = "cacti";</userinput></screen>
 						<row>
 							<entry>Login Options</entry>
 							<entry>These options dictate what occurs immediately after the user logs in. The first option, 'Show the page that user pointed their browser to.' will point the user to whatever page they were heading to before being interrupted by the login page. The 'Show the default console screen.' option will always point the user to 'index.php' after a successful login. The last option, 'Show the default graph screen.' will point the user to 'graph_view.php' after a successful login.</entry>
+						</row>
+						<row>
+							<entry>Authenication Realm</entry>
+							<entry>Multiple types of users can exist in Cacti.  This setting allows you to specify a user for use with Local, Web Basic or LDAP authenication.  Template users must be Local.  </entry>
 						</row>
 					</tbody>
 				</tgroup>
@@ -3470,7 +3474,7 @@ disk /</userinput></screen>
 			</sect2>
 			<sect2 id="variable_Nth_percentile">
 				<title>Nth Percentile</title>
-				<screen><userinput>|[0-9]:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate):[0-9]|</userinput></screen>
+				<screen><userinput>|[0-9]:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):[0-9]|</userinput></screen>
 				<para>
 					Nth percentile is often used by hosting providers to bill customers based on their peak traffic usage while
 					ignoring their top (100 - Nth) percent. This way if a customer has a fairly consistent traffic pattern and
