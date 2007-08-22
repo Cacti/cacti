@@ -119,6 +119,13 @@ switch ($_REQUEST["action"]) {
 
 		include_once("./include/bottom_footer.php");
 		break;
+	case 'view_tech':
+		include_once("./include/top_header.php");
+
+		utilities_view_tech();
+
+		include_once("./include/bottom_footer.php");
+		break;
 	default:
 		include_once("./include/top_header.php");
 
@@ -131,6 +138,53 @@ switch ($_REQUEST["action"]) {
 /* -----------------------
     Utilities Functions
    ----------------------- */
+
+
+function utilities_view_tech() {
+	global $colors, $config;
+
+	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
+	html_header(array("Cacti Information"), 2);
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>Date</td>\n";
+	print "		<td class='textArea'>" . date("r") . "</td>\n";
+	print "</tr>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>Cacti Version</td>\n";
+	print "		<td class='textArea'>" . $config["cacti_version"] . "</td>\n";
+	print "</tr>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>Cacti OS</td>\n";
+	print "		<td class='textArea'>" . $config["cacti_server_os"] . "</td>\n";
+	print "</tr>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>PHP Version</td>\n";
+	print "		<td class='textArea'>" . phpversion() . "</td>\n";
+	print "</tr>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>PHP OS</td>\n";
+	print "		<td class='textArea'>" . PHP_OS . "</td>\n";
+	print "</tr>\n";
+	if (function_exists("php_uname")) {
+		print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+		print "		<td class='textArea'>PHP uname</td>\n";
+		print "		<td class='textArea'>" . php_uname() . "</td>\n";
+		print "</tr>\n";
+	}
+	html_header(array("PHP Information"), 2);
+	print "		<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>max_execution_time</td>\n";
+	print "		<td class='textArea'>" . ini_get("max_execution_time") . "</td>\n";
+	print "</tr>\n";
+	print "		<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>memory_limit</td>\n";
+	print "		<td class='textArea'>" . ini_get("memory_limit") . "</td>\n";
+	print "</tr>\n";
+
+	html_end_box();
+
+}
+
 
 function utilities_view_user_log() {
 	global $colors, $poller_actions;
@@ -1053,6 +1107,16 @@ function utilities() {
 			<p>The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.</p>
 		</td>
 	</tr>
+	<?php html_header(array("Technical Support"), 2); ?>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><a href='utilities.php?action=view_tech'>Technical Support Output</a></p>
+		</td>
+		<td class="textArea">
+			<p>Cacti technical support output.  Used by developers and technical support persons to assist with issues in Cacti.</p>
+		</td>
+	</tr>
+
 	<?php
 
 	html_end_box();
