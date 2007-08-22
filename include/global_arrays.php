@@ -204,9 +204,10 @@ $graph_tree_views = array(1 =>
 $auth_methods = array(
 	0 => "None",
 	1 => "Builtin Authentication",
-	2 => "Web Basic Authentication",
-	3 => "LDAP Authentication");
-
+	2 => "Web Basic Authentication");
+if (function_exists("ldap_connect")) {
+	$auth_methods[3] = "LDAP Authentication";
+}
 
 $auth_realms = array(0 =>
 	"Local",
