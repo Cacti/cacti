@@ -71,22 +71,22 @@ class Net_Ping
 	}
 
 	function build_icmp_packet() {
-		$seq_low = rand(0,255);
-		$seq_high = rand(0,255);
+		$seq_low   = rand(0,255);
+		$seq_high  = rand(0,255);
 
-		$data = "cacti-monitoring-system"; // the actual test data
-		$type = "\x08"; // 8 echo message; 0 echo reply message
-		$code = "\x00"; // always 0 for this program
-		$chksm = "\x00\x00"; // generate checksum for icmp request
-		$id = chr($seq_high) . chr($seq_low);
-		$sqn = chr($seq_high) . chr($seq_low);
+		$data      = "cacti-monitoring-system"; // the actual test data
+		$type      = "\x08";                    // 8 echo message; 0 echo reply message
+		$code      = "\x00";                    // always 0 for this program
+		$chksm     = "\x00\x00";                // generate checksum for icmp request
+		$id        = chr($seq_high) . chr($seq_low);
+		$sqn       = chr($seq_high) . chr($seq_low);
 		$this->sqn = $sqn;
 
 		// now lets build the actual icmp packet
 		$this->request = $type.$code.$chksm.$id.$sqn.$data;
-		$chksm = $this->get_checksum($this->request);
+		$chksm         = $this->get_checksum($this->request);
 
-		$this->request = $type.$code.$chksm.$id.$sqn.$data;
+		$this->request     = $type.$code.$chksm.$id.$sqn.$data;
 		$this->request_len = strlen($this->request);
 	}
 
@@ -109,11 +109,11 @@ class Net_Ping
 		/* ping me */
 		if ($this->host["hostname"]) {
 			/* initialize variables */
-			$this->ping_status = "down";
+			$this->ping_status   = "down";
 			$this->ping_response = "ICMP Ping timed out";
 
 			/* establish timeout variables */
-			$to_sec = floor($this->timeout/1000);
+			$to_sec  = floor($this->timeout/1000);
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
@@ -196,10 +196,8 @@ class Net_Ping
 				case 1:
 					/* get the end time */
 					$this->time = $this->get_time($this->precision);
-
-					$result = socket_read($this->socket, 512);
-
-					$sqn = substr($result,26,2);
+					$result     = socket_read($this->socket, 512);
+					$sqn        = substr($result,26,2);
 
 					/* compare sequence numbers, if they do not match, then it must be from another host */
 					if ($sqn != $this->sqn) {
@@ -238,8 +236,9 @@ class Net_Ping
 				}
 			}
 		}else{
-			$this->ping_status = "down";
+			$this->ping_status   = "down";
 			$this->ping_response = "Destination address not specified";
+
 			return false;
 		}
 	}
@@ -270,9 +269,9 @@ class Net_Ping
 
 	function ping_snmp() {
 		/* initialize variables */
-		$this->snmp_status = "down";
+		$this->snmp_status   = "down";
 		$this->snmp_response = "Host did not respond to SNMP";
-		$output = "";
+		$output              = "";
 
 		/* get start time */
 		$this->start_time();
@@ -291,6 +290,7 @@ class Net_Ping
 			if ($retry_count >= $this->retries) {
 				$this->snmp_status   = "down";
 				$this->snmp_response = "Host did not respond to SNMP";
+
 				return false;
 			}
 
@@ -323,8 +323,9 @@ class Net_Ping
 			/* check result for uptime */
 			if (strlen($output)) {
 				/* calculte total time */
-				$this->snmp_status = $this->time*1000;
+				$this->snmp_status   = $this->time*1000;
 				$this->snmp_response = "Host responded to SNMP";
+
 				return true;
 			}
 
@@ -346,7 +347,7 @@ class Net_Ping
 			$this->ping_response = "default";
 
 			/* establish timeout variables */
-			$to_sec = floor($this->timeout/1000);
+			$to_sec  = floor($this->timeout/1000);
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
@@ -364,6 +365,7 @@ class Net_Ping
 					$this->ping_response = "PHP version does not support IPv6";
 					$this->ping_status   = "down";
 					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
+
 					return false;
 				}
 			}else{
@@ -429,6 +431,7 @@ class Net_Ping
 		} else {
 			$this->ping_response = "Destination address not specified";
 			$this->ping_status   = "down";
+
 			return false;
 		}
 	} /* end ping_udp */
@@ -441,7 +444,7 @@ class Net_Ping
 			$this->ping_response = "default";
 
 			/* establish timeout variables */
-			$to_sec = floor($this->timeout/1000);
+			$to_sec  = floor($this->timeout/1000);
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
@@ -459,6 +462,7 @@ class Net_Ping
 					$this->ping_response = "PHP binary does not support IPv6";
 					$this->ping_status   = "down";
 					cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
+
 					return false;
 				}
 			}else{
@@ -481,6 +485,7 @@ class Net_Ping
 					$this->ping_status   = "down";
 
 					$this->close_socket();
+
 					return false;
 				case 1:
 					/* connected, so calculate the total time and return */
@@ -492,6 +497,7 @@ class Net_Ping
 					}
 
 					$this->close_socket();
+
 					return true;
 				case 0:
 					/* timeout */
@@ -499,12 +505,14 @@ class Net_Ping
 					$this->ping_status   = "down";
 
 					$this->close_socket();
+
 					return false;
 				}
 			}
 		} else {
 			$this->ping_response = "Destination address not specified";
 			$this->ping_status   = "down";
+
 			return false;
 		}
 	} /* end ping_tcp */
@@ -537,7 +545,7 @@ class Net_Ping
 		if ((int)$timeout <= 0)
 			$this->timeout = 500;
 		else
-			$this->timeout=$timeout;
+			$this->timeout = $timeout;
 
 		/* decimal precision is 0.0000 */
 		$this->precision = 5;
@@ -591,6 +599,8 @@ class Net_Ping
 					return true;
 				else
 					return false;
+			case AVAIL_NONE:
+				return true;
 			default:
 				return false;
 		}
