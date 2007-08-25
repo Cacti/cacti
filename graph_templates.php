@@ -500,7 +500,7 @@ function template() {
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$template["id"]);$i++;
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $template["id"]);$i++;
 			form_selectable_cell("<a class='linkEditMain' href='graph_templates.php?action=template_edit&id=" . $template["id"] . "'>" . (strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);
 			form_end_row();

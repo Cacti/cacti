@@ -83,7 +83,7 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 	}
 
 	if (strlen($row_id)) {
-		print "<tr id='line$row_id' bgcolor='#$current_color'>\n";
+		print "<tr id='$row_id' bgcolor='#$current_color'>\n";
 	}else{
 		print "<tr bgcolor='#$current_color'>\n";
 	}

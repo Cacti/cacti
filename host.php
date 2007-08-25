@@ -920,7 +920,7 @@ function host() {
 	$i = 0;
 	if (sizeof($hosts) > 0) {
 		foreach ($hosts as $host) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i, $host["id"]); $i++;
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $host["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='host.php?action=edit&id=" . $host["id"] . "'>" .
 				(strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]) : $host["description"]) . "</a>", $host["id"], 250);
 			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);

@@ -1117,7 +1117,7 @@ function graph() {
 		foreach ($graph_list as $graph) {
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]);
 
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i, $graph["local_graph_id"]); $i++;
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='graphs.php?action=graph_edit&id=" . $graph["local_graph_id"] . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))) : title_trim($graph["title_cache"], read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);

@@ -156,7 +156,7 @@ function form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-				
+
 				$user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $selected_items[$i]);
 				if ((isset($user)) && (isset($template))) {
 					if (user_copy($template["username"], $user["username"], $template["realm"], $user["realm"], true) === false) {
@@ -214,7 +214,7 @@ function form_actions() {
 	if ((get_request_var_post("drp_action") == "2") && (sizeof($user_array))) { /* copy */
 		$user_id = $user_array[0];
 		$user_realm = db_fetch_cell("SELECT realm FROM user_auth WHERE id = " . $user_id);
-		
+
 		print "
 			<tr>
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -595,7 +595,7 @@ function graph_perms_edit() {
 							<td align='right'><a href='user_admin.php?action=perm_remove&type=host&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 					}
-				}else{ 
+				}else{
 					print "<tr><td><em>No Devices</em></td></tr>";
 				}
 				?>
@@ -1053,13 +1053,13 @@ function user() {
 				$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
 			}
 			if ($user["enabled"] == "on") {
-				$enabled = "Yes"; 
+				$enabled = "Yes";
 			}else{
 				$enabled = "No";
-			} 
+			}
 
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i,$user["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='user_admin.php?action=user_edit&id=" . $user["id"] . "'>" . 
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $user["id"]); $i++;
+			form_selectable_cell("<a class='linkEditMain' href='user_admin.php?action=user_edit&id=" . $user["id"] . "'>" .
 			(strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
 			, $user["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
