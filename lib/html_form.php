@@ -59,12 +59,12 @@ function draw_edit_form($array) {
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}elseif ($field_array["method"] == "spacer") {
-				print "<tr bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["friendly_name"] . "</td></tr>\n";
+				print "<tr id='$field_name' bgcolor='" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["friendly_name"] . "</td></tr>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
-					print "<tr bgcolor='#" . $config_array["force_row_color"] . "'>";
+					print "<tr id='$field_name' bgcolor='#" . $config_array["force_row_color"] . "'>";
 				}else{
-					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+					form_alternate_row_color($colors["form_alternate1"], $colors["form_alternate2"], $i, $field_name);
 				}
 
 				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
@@ -216,7 +216,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$extra_data = "<span style='color:red'><br>[ERROR: FILE NOT FOUND]</span>";
 	}
 
-	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_dirpath_box - draws a standard html textbox and provides status of a directories existence
@@ -261,7 +261,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 		$extra_data = "<span style='color:red'><br>[ERROR: DIR NOT FOUND]";
 	}
 
-	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_text_box - draws a standard html textbox
@@ -296,7 +296,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
 }
 
 /* form_hidden_box - draws a standard html hidden element
@@ -309,7 +309,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='hidden' name='$form_name' value='$form_previous_value'>\n";
+	print "<input type='hidden' id='$form_name' name='$form_name' value='$form_previous_value'>\n";
 }
 
 /* form_dropdown - draws a standard html dropdown box
@@ -340,7 +340,7 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		}
 	}
 
-	print "<select name='$form_name' style='$css_style'>";
+	print "<select id='$form_name' name='$form_name' style='$css_style'>";
 
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? " selected" : "") . ">$form_none_entry</option>\n";
@@ -371,7 +371,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		}
 	}
 
-	print "<input type='checkbox' name='$form_name' id='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
+	print "<input type='checkbox' id='$form_name' name='$form_name' id='$form_name'" . (($form_previous_value == "on") ? " checked" : "") . "> $form_caption\n";
 }
 
 /* form_text_box - draws a standard html radio button
@@ -392,7 +392,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		}
 	}
 
-	print "<input type='radio' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption\n";
+	print "<input type='radio' id='$form_name' name='$form_name' value='$form_current_value'" . (($form_previous_value == $form_current_value) ? " checked" : "") . "> $form_caption\n";
 }
 
 /* form_text_box - draws a standard html text area box
@@ -413,7 +413,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		}
 	}
 
-	print "<textarea cols='$form_columns' rows='$form_rows' name='$form_name'>" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
+	print "<textarea cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'>" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
@@ -426,7 +426,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
      $array[0][$column_id] = key
    @arg $column_id - the name of the key used to reference the keys above */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id) {
-	print "<select name='$form_name" . "[]' multiple>\n";
+	print "<select id='$form_name' name='$form_name" . "[]' multiple>\n";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
@@ -463,7 +463,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$colors_list = db_fetch_assoc("select id,hex from colors order by hex desc");
 
-	print "<select name='$form_name'>\n";
+	print "<select id='$form_name' name='$form_name'>\n";
 
 	if ($form_none_entry != "") {
 		print "<option value='0'>$form_none_entry</option>\n";
