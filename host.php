@@ -605,6 +605,199 @@ function host_edit() {
 
 	html_end_box();
 
+	?>
+	<script type="text/javascript">
+	<!--
+
+	// default snmp information
+	var snmp_community = document.getElementById('snmp_community').value;
+	var snmp_username  = document.getElementById('snmp_username').value;
+	var snmp_password  = document.getElementById('snmp_password').value;
+	var snmp_port      = document.getElementById('snmp_port').value;
+	var snmp_timeout   = document.getElementById('snmp_timeout').value;
+
+	// default ping methods
+	var ping_method    = document.getElementById('ping_method').value;
+	var ping_port      = document.getElementById('ping_port').value;
+
+	var availability_methods = document.getElementById('availability_method').options;
+	var num_methods          = document.getElementById('availability_method').length;
+	var selectedIndex        = document.getElementById('availability_method').selectedIndex;
+
+	function formActionInit() {
+		changeSNMP();
+		changeAvailability();
+	}
+
+	function setPingVisibility() {
+		ping_method = document.getElementById('ping_method').value;
+
+		switch(ping_method) {
+		case "1": // ping icmp
+			document.getElementById('row_ping_port').style.visibility    = "collapse";
+
+			break;
+		case "2": // ping udp
+		case "3": // ping tcp
+			document.getElementById('row_ping_port').style.visibility    = "visible";
+
+			break;
+		}
+	}
+
+	function addSelectItem(item, formObj, position) {
+		var index=formObj.options[position];
+
+		try {
+			formObj.add(item,null); // standards compliant
+		}
+		catch(ex) {
+			formObj.add(item); // IE only
+		}
+	}
+
+	function setAvailabilityOptions() {
+		var am=document.getElementById('availability_method');
+		snmp_version = document.getElementById('snmp_version').value;
+
+		if (snmp_version == 0) {
+			selectedIndes = document.getElementById('availability_method').selectedIndex;
+
+			if (am.length == 4) {
+				am.remove(1);
+				am.remove(1);
+			}
+		}else{
+			if (am.length == 2) {
+				am.remove(0);
+				am.remove(0);
+
+				var a=document.createElement('option');
+				var b=document.createElement('option');
+				var c=document.createElement('option');
+				var d=document.createElement('option');
+
+				for (var j = 0; j < num_methods; j++) {
+					a.value="0";
+					a.text="None";
+					addSelectItem(a,am);
+
+					b.value="1";
+					b.text="Ping and SNMP";
+					addSelectItem(b,am);
+
+					c.value="2";
+					c.text="SNMP";
+					addSelectItem(c,am);
+
+					d.value="3";
+					d.text="Ping";
+					addSelectItem(d,am);
+
+					am.selectedIndex = selectedIndex;
+				}
+			}
+		}
+	}
+
+	function changeAvailability() {
+		availability_method = document.getElementById('availability_method').value;
+
+		setAvailabilityOptions();
+		setPingVisibility();
+
+		switch(availability_method) {
+		case "0": // availability none
+			document.getElementById('row_ping_method').style.visibility  = "collapse";
+			document.getElementById('row_ping_port').style.visibility    = "collapse";
+
+			document.getElementById('ping_method').value  = 0;
+			document.getElementById('ping_port').value    = 0;
+
+			break;
+		case "1": // ping and snmp
+			document.getElementById('row_ping_method').style.visibility  = "visible";
+
+			document.getElementById('ping_method').value  = ping_method;
+			document.getElementById('ping_port').value    = ping_port;
+
+			break;
+		case "2": // snmp
+			document.getElementById('row_ping_method').style.visibility  = "collapse";
+			document.getElementById('row_ping_port').style.visibility    = "collapse";
+
+			document.getElementById('ping_method').value  = 0;
+			document.getElementById('ping_port').value    = 0;
+
+			break;
+		case "3": // ping
+			document.getElementById('row_ping_method').style.visibility  = "visible";
+
+			document.getElementById('ping_method').value  = ping_method;
+			document.getElementById('ping_port').value    = ping_port;
+
+			break;
+		}
+	}
+
+	function changeSNMP() {
+		snmp_version = document.getElementById('snmp_version').value;
+
+		setAvailabilityOptions();
+		setPingVisibility();
+
+		switch(snmp_version) {
+		case "0":
+			document.getElementById('row_snmp_username').style.visibility  = "collapse";
+			document.getElementById('row_snmp_password').style.visibility  = "collapse";
+			document.getElementById('row_snmp_community').style.visibility = "collapse";
+			document.getElementById('row_snmp_port').style.visibility      = "collapse";
+			document.getElementById('row_snmp_timeout').style.visibility   = "collapse";
+
+			document.getElementById('snmp_username').value  = "";
+			document.getElementById('snmp_password').value  = "";
+			document.getElementById('snmp_community').value = "";
+			document.getElementById('snmp_port').value      = "";
+			document.getElementById('snmp_timeout').value   = "";
+
+			break;
+		case "1":
+		case "2":
+			document.getElementById('row_snmp_username').style.visibility  = "collapse";
+			document.getElementById('row_snmp_password').style.visibility  = "collapse";
+			document.getElementById('row_snmp_community').style.visibility = "visible";
+			document.getElementById('row_snmp_port').style.visibility      = "visible";
+			document.getElementById('row_snmp_timeout').style.visibility   = "visible";
+
+			document.getElementById('snmp_username').value  = "";
+			document.getElementById('snmp_password').value  = "";
+			document.getElementById('snmp_community').value = snmp_community;
+			document.getElementById('snmp_port').value      = snmp_port;
+			document.getElementById('snmp_timeout').value   = snmp_timeout;
+
+			break;
+		case "3":
+			document.getElementById('row_snmp_username').style.visibility  = "visible";
+			document.getElementById('row_snmp_password').style.visibility  = "visible";
+			document.getElementById('row_snmp_community').style.visibility = "collapse";
+			document.getElementById('row_snmp_port').style.visibility      = "visible";
+			document.getElementById('row_snmp_timeout').style.visibility   = "visible";
+
+			document.getElementById('snmp_username').value  = snmp_username;
+			document.getElementById('snmp_password').value  = snmp_password;
+			document.getElementById('snmp_community').value = "";
+			document.getElementById('snmp_port').value      = snmp_port;
+			document.getElementById('snmp_timeout').value   = snmp_timeout;
+
+			break;
+		}
+	}
+
+	window.onload = formActionInit();
+	-->
+	</script>
+	<?php
+
 	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
 		html_start_box("<strong>Data Query Debug Information</strong>", "100%", $colors["header"], "3", "center", "");
 
@@ -687,10 +880,10 @@ function host_edit() {
 			order by snmp_query.name");
 
 		$available_data_queries = db_fetch_assoc("select
-							snmp_query.id,
-							snmp_query.name
-							from snmp_query
-							order by snmp_query.name");
+			snmp_query.id,
+			snmp_query.name
+			from snmp_query
+			order by snmp_query.name");
 
 		$keeper = array();
 		foreach ($available_data_queries as $item) {

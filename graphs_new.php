@@ -581,7 +581,7 @@ function graphs() {
 		print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
 				<td colspan='2' width='60' nowrap>
 					<strong>Create:</strong>&nbsp;";
-					form_dropdown("cg_g", $available_graph_templates, "name", "id", "", "(Select a graph type to create)", "", "font-size: 10px;");
+					form_dropdown("cg_g", $available_graph_templates, "name", "id", "", "(Select a graph type to create)", "", "textArea");
 		print "		</td>
 			</tr>";
 

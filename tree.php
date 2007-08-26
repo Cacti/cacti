@@ -235,7 +235,7 @@ function item_edit() {
 					Propagate all options on this form (except for 'Title') to all child 'Header' items.
 				</td>
 				<td>
-					<?php form_checkbox("propagate_changes", "", "Propagate Changes", "", 0);?>
+					<?php form_checkbox("propagate_changes", "", "Propagate Changes", "", "", "", 0);?>
 				</td>
 			</tr>
 			<?php

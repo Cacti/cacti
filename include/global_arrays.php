@@ -148,7 +148,8 @@ $image_types = array(1 =>
 	"PNG",
 	"GIF");
 
-$snmp_versions = array(1 =>
+$snmp_versions = array(0 =>
+	"Not In Use",
 	"Version 1",
 	"Version 2",
 	"Version 3");
@@ -165,7 +166,6 @@ $availability_options = array(
 	AVAIL_PING => "Ping");
 
 $ping_methods = array(
-	PING_NONE => "None",
 	PING_ICMP => "ICMP Ping",
 	PING_TCP => "TCP Ping",
 	PING_UDP => "UDP Ping");

@@ -574,7 +574,7 @@ function template_edit() {
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
 				<td width="50%">
 					<strong><?php print $field["name"];?></strong><br>
-					<?php form_checkbox("t_value_" . $field["data_name"],$data_input_data["t_value"],"Use Per-Data Source Value (Ignore this Value)","",$_GET["id"]);?>
+					<?php form_checkbox("t_value_" . $field["data_name"], $data_input_data["t_value"], "Use Per-Data Source Value (Ignore this Value)", "", "", $_GET["id"]);?>
 				</td>
 				<td>
 					<?php form_text_box("value_" . $field["data_name"],$old_value,"","");?>

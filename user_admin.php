@@ -788,7 +788,7 @@ function user_realms_edit() {
 								print "</td><td valign='top' width='50%'>";
 							}
 
-							form_checkbox("section" . $realm_id, $old_value, $realm_name, "", (!empty($_GET["id"]) ? 1 : 0)); print "<br>";
+							form_checkbox("section" . $realm_id, $old_value, $realm_name, "", "", "", (!empty($_GET["id"]) ? 1 : 0)); print "<br>";
 
 							$i++;
 						}

@@ -651,6 +651,7 @@ $fields_host_edit = array(
 	"availability_method" => array(
 		"friendly_name" => "Downed Device Detection",
 		"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
+		"on_change" => "changeAvailability()",
 		"value" => "|arg1:availability_method|",
 		"method" => "drop_array",
 		"default" => read_config_option("availability_method"),
@@ -659,6 +660,7 @@ $fields_host_edit = array(
 	"ping_method" => array(
 		"friendly_name" => "Ping Method",
 		"description" => "The type of ping packet to sent.  NOTE: ICMP on Linux/UNIX requires root privileges.",
+		"on_change" => "changeAvailability()",
 		"value" => "|arg1:ping_method|",
 		"method" => "drop_array",
 		"default" => read_config_option("ping_method"),
@@ -677,6 +679,15 @@ $fields_host_edit = array(
 	"spacer1" => array(
 		"method" => "spacer",
 		"friendly_name" => "SNMP Options"
+		),
+	"snmp_version" => array(
+		"method" => "drop_array",
+		"friendly_name" => "SNMP Version",
+		"description" => "Choose the SNMP version for this host.",
+		"on_change" => "changeSNMP()",
+		"value" => "|arg1:snmp_version|",
+		"default" => read_config_option("snmp_ver"),
+		"array" => $snmp_versions,
 		),
 	"snmp_community" => array(
 		"method" => "textbox",
@@ -702,14 +713,6 @@ $fields_host_edit = array(
 		"value" => "|arg1:snmp_password|",
 		"default" => read_config_option("snmp_password"),
 		"max_length" => "50",
-		),
-	"snmp_version" => array(
-		"method" => "drop_array",
-		"friendly_name" => "SNMP Version",
-		"description" => "Choose the SNMP version for this host.",
-		"value" => "|arg1:snmp_version|",
-		"default" => read_config_option("snmp_ver"),
-		"array" => $snmp_versions,
 		),
 	"snmp_port" => array(
 		"method" => "textbox",

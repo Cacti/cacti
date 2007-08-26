@@ -212,7 +212,7 @@ function input_edit() {
 			}
 
 			$name = "$start_bold Item #" . ($i+1) . ": " . $graph_item_types{$item["graph_type_id"]} . " (" . $consolidation_functions{$item["consolidation_function_id"]} . ")$end_bold";
-			form_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name,"",$_GET["graph_template_id"],true); print "<br>";
+			form_checkbox("i_" . $item["graph_templates_item_id"], $old_value, $name, "", "", $_GET["graph_template_id"]); print "<br>";
 
 			$i++;
 		}
