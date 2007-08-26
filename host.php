@@ -624,6 +624,9 @@ function host_edit() {
 	var num_methods          = document.getElementById('availability_method').length;
 	var selectedIndex        = document.getElementById('availability_method').selectedIndex;
 
+	var agent = navigator.userAgent;
+	agent = agent.match("MSIE");
+
 	function formActionInit() {
 		changeSNMP();
 		changeAvailability();
@@ -631,23 +634,30 @@ function host_edit() {
 
 	function setPingVisibility() {
 		ping_method = document.getElementById('ping_method').value;
+		am          = document.getElementById('ping_method').value;
 
 		switch(ping_method) {
 		case "1": // ping icmp
-			document.getElementById('row_ping_port').style.visibility    = "collapse";
+			if (agent == "MSIE") {
+				document.getElementById('row_ping_port').style.display="none";
+			}else{
+				document.getElementById('row_ping_port').style.visibility="collapse";
+			}
 
 			break;
 		case "2": // ping udp
 		case "3": // ping tcp
-			document.getElementById('row_ping_port').style.visibility    = "visible";
+			if (agent == "MSIE") {
+				document.getElementById('row_ping_port').style.display="";
+			}else{
+				document.getElementById('row_ping_port').style.visibility="visible";
+			}
 
 			break;
 		}
 	}
 
-	function addSelectItem(item, formObj, position) {
-		var index=formObj.options[position];
-
+	function addSelectItem(item, formObj) {
 		try {
 			formObj.add(item,null); // standards compliant
 		}
@@ -661,7 +671,19 @@ function host_edit() {
 		snmp_version = document.getElementById('snmp_version').value;
 
 		if (snmp_version == 0) {
-			selectedIndes = document.getElementById('availability_method').selectedIndex;
+			selectedIndex = document.getElementById('availability_method').selectedIndex;
+
+			if (am.value == 1 || am.value == 2) {
+				if (agent == "MSIE") {
+					document.getElementById('row_ping_method').style.display="none";
+					document.getElementById('row_ping_port').style.display="none";
+				}else{
+					document.getElementById('row_ping_method').style.visibility="collapse";
+					document.getElementById('row_ping_port').style.visibility="collapse";
+				}
+
+				document.getElementById('availability_method').selectedIndex=0;
+			}
 
 			if (am.length == 4) {
 				am.remove(1);
@@ -708,33 +730,47 @@ function host_edit() {
 
 		switch(availability_method) {
 		case "0": // availability none
-			document.getElementById('row_ping_method').style.visibility  = "collapse";
-			document.getElementById('row_ping_port').style.visibility    = "collapse";
+			if (agent == "MSIE") {
+				document.getElementById('row_ping_method').style.display="none";
+				document.getElementById('row_ping_port').style.display="none";
+			}else{
+				document.getElementById('row_ping_method').style.visibility="collapse";
+				document.getElementById('row_ping_port').style.visibility="collapse";
+			}
 
-			document.getElementById('ping_method').value  = 0;
-			document.getElementById('ping_port').value    = 0;
+			document.getElementById('ping_method').value=0;
+			document.getElementById('ping_port').value=0;
 
 			break;
 		case "1": // ping and snmp
-			document.getElementById('row_ping_method').style.visibility  = "visible";
+			if (agent == "MSIE") {
+				document.getElementById('row_ping_method').style.display="";
+			}else{
+				document.getElementById('row_ping_method').style.visibility="visible";
+			}
 
-			document.getElementById('ping_method').value  = ping_method;
-			document.getElementById('ping_port').value    = ping_port;
+			document.getElementById('ping_method').value=ping_method;
+			document.getElementById('ping_port').value=ping_port;
 
 			break;
 		case "2": // snmp
-			document.getElementById('row_ping_method').style.visibility  = "collapse";
-			document.getElementById('row_ping_port').style.visibility    = "collapse";
+			if (agent == "MSIE") {
+				document.getElementById('row_ping_method').style.display="none";
+				document.getElementById('row_ping_port').style.display="none";
+			}else{
+				document.getElementById('row_ping_method').style.visibility="collapse";
+				document.getElementById('row_ping_port').style.visibility="collapse";
+			}
 
-			document.getElementById('ping_method').value  = 0;
-			document.getElementById('ping_port').value    = 0;
+			document.getElementById('ping_method').value=0;
+			document.getElementById('ping_port').value=0;
 
 			break;
 		case "3": // ping
-			document.getElementById('row_ping_method').style.visibility  = "visible";
+			document.getElementById('row_ping_method').style.visibility="visible";
 
-			document.getElementById('ping_method').value  = ping_method;
-			document.getElementById('ping_port').value    = ping_port;
+			document.getElementById('ping_method').value=ping_method;
+			document.getElementById('ping_port').value=ping_port;
 
 			break;
 		}
@@ -748,46 +784,70 @@ function host_edit() {
 
 		switch(snmp_version) {
 		case "0":
-			document.getElementById('row_snmp_username').style.visibility  = "collapse";
-			document.getElementById('row_snmp_password').style.visibility  = "collapse";
-			document.getElementById('row_snmp_community').style.visibility = "collapse";
-			document.getElementById('row_snmp_port').style.visibility      = "collapse";
-			document.getElementById('row_snmp_timeout').style.visibility   = "collapse";
+			if (agent == "MSIE") {
+				document.getElementById('row_snmp_username').style.display="none";
+				document.getElementById('row_snmp_password').style.display="none";
+				document.getElementById('row_snmp_community').style.display="none";
+				document.getElementById('row_snmp_port').style.display="none";
+				document.getElementById('row_snmp_timeout').style.display="none";
+			}else{
+				document.getElementById('row_snmp_username').style.visibility="collapse";
+				document.getElementById('row_snmp_password').style.visibility="collapse";
+				document.getElementById('row_snmp_community').style.visibility="collapse";
+				document.getElementById('row_snmp_port').style.visibility="collapse";
+				document.getElementById('row_snmp_timeout').style.visibility="collapse";
+			}
 
-			document.getElementById('snmp_username').value  = "";
-			document.getElementById('snmp_password').value  = "";
-			document.getElementById('snmp_community').value = "";
-			document.getElementById('snmp_port').value      = "";
-			document.getElementById('snmp_timeout').value   = "";
+			document.getElementById('snmp_username').value="";
+			document.getElementById('snmp_password').value="";
+			document.getElementById('snmp_community').value="";
+			document.getElementById('snmp_port').value="";
+			document.getElementById('snmp_timeout').value="";
 
 			break;
 		case "1":
 		case "2":
-			document.getElementById('row_snmp_username').style.visibility  = "collapse";
-			document.getElementById('row_snmp_password').style.visibility  = "collapse";
-			document.getElementById('row_snmp_community').style.visibility = "visible";
-			document.getElementById('row_snmp_port').style.visibility      = "visible";
-			document.getElementById('row_snmp_timeout').style.visibility   = "visible";
+			if (agent == "MSIE") {
+				document.getElementById('row_snmp_username').style.display="none";
+				document.getElementById('row_snmp_password').style.display="none";
+				document.getElementById('row_snmp_community').style.display="";
+				document.getElementById('row_snmp_port').style.display="";
+				document.getElementById('row_snmp_timeout').style.display="";
+			}else{
+				document.getElementById('row_snmp_username').style.visibility="collapse";
+				document.getElementById('row_snmp_password').style.visibility="collapse";
+				document.getElementById('row_snmp_community').style.visibility="visible";
+				document.getElementById('row_snmp_port').style.visibility="visible";
+				document.getElementById('row_snmp_timeout').style.visibility="visible";
+			}
 
-			document.getElementById('snmp_username').value  = "";
-			document.getElementById('snmp_password').value  = "";
-			document.getElementById('snmp_community').value = snmp_community;
-			document.getElementById('snmp_port').value      = snmp_port;
-			document.getElementById('snmp_timeout').value   = snmp_timeout;
+			document.getElementById('snmp_username').value="";
+			document.getElementById('snmp_password').value="";
+			document.getElementById('snmp_community').value=snmp_community;
+			document.getElementById('snmp_port').value=snmp_port;
+			document.getElementById('snmp_timeout').value=snmp_timeout;
 
 			break;
 		case "3":
-			document.getElementById('row_snmp_username').style.visibility  = "visible";
-			document.getElementById('row_snmp_password').style.visibility  = "visible";
-			document.getElementById('row_snmp_community').style.visibility = "collapse";
-			document.getElementById('row_snmp_port').style.visibility      = "visible";
-			document.getElementById('row_snmp_timeout').style.visibility   = "visible";
+			if (agent == "MSIE") {
+				document.getElementById('row_snmp_username').style.display="";
+				document.getElementById('row_snmp_password').style.display="";
+				document.getElementById('row_snmp_community').style.display="none";
+				document.getElementById('row_snmp_port').style.display="";
+				document.getElementById('row_snmp_timeout').style.display="";
+			}else{
+				document.getElementById('row_snmp_username').style.visibility="visible";
+				document.getElementById('row_snmp_password').style.visibility="visible";
+				document.getElementById('row_snmp_community').style.visibility="collapse";
+				document.getElementById('row_snmp_port').style.visibility="visible";
+				document.getElementById('row_snmp_timeout').style.visibility="visible";
+			}
 
-			document.getElementById('snmp_username').value  = snmp_username;
-			document.getElementById('snmp_password').value  = snmp_password;
-			document.getElementById('snmp_community').value = "";
-			document.getElementById('snmp_port').value      = snmp_port;
-			document.getElementById('snmp_timeout').value   = snmp_timeout;
+			document.getElementById('snmp_username').value=snmp_username;
+			document.getElementById('snmp_password').value=snmp_password;
+			document.getElementById('snmp_community').value="";
+			document.getElementById('snmp_port').value=snmp_port;
+			document.getElementById('snmp_timeout').value=snmp_timeout;
 
 			break;
 		}
