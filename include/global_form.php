@@ -671,9 +671,24 @@ $fields_host_edit = array(
 		"friendly_name" => "Ping Port",
 		"value" => "|arg1:ping_port|",
 		"description" => "Fill in the SNMP v3 username for this device.",
-		"value" => "|arg1:snmp_username|",
-		"default" => read_config_option("snmp_username"),
+		"default" => read_config_option("ping_port"),
 		"max_length" => "50",
+		"size" => "15"
+		),
+	"ping_timeout" => array(
+		"friendly_name" => "Ping Timeout Value",
+		"description" => "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.",
+		"method" => "textbox",
+		"default" => read_config_option("ping_timeout"),
+		"max_length" => "10",
+		"size" => "15"
+		),
+	"ping_retries" => array(
+		"friendly_name" => "Ping Retry Count",
+		"description" => "The number of times Cacti will attempt to ping a host before failing.",
+		"method" => "textbox",
+		"default" => read_config_option("ping_retries"),
+		"max_length" => "10",
 		"size" => "15"
 		),
 	"spacer1" => array(
@@ -697,6 +712,7 @@ $fields_host_edit = array(
 		"form_id" => "|arg1:id|",
 		"default" => read_config_option("snmp_community"),
 		"max_length" => "100",
+		"size" => "15"
 		),
 	"snmp_username" => array(
 		"method" => "textbox",
@@ -705,6 +721,7 @@ $fields_host_edit = array(
 		"value" => "|arg1:snmp_username|",
 		"default" => read_config_option("snmp_username"),
 		"max_length" => "50",
+		"size" => "15"
 		),
 	"snmp_password" => array(
 		"method" => "textbox_password",
@@ -713,6 +730,7 @@ $fields_host_edit = array(
 		"value" => "|arg1:snmp_password|",
 		"default" => read_config_option("snmp_password"),
 		"max_length" => "50",
+		"size" => "15"
 		),
 	"snmp_port" => array(
 		"method" => "textbox",
@@ -730,6 +748,16 @@ $fields_host_edit = array(
 		"value" => "|arg1:snmp_timeout|",
 		"max_length" => "8",
 		"default" => read_config_option("snmp_timeout"),
+		"size" => "15"
+		),
+	"max_oids" => array(
+		"method" => "textbox",
+		"friendly_name" => "Maximum OID's Per Get Request",
+		"description" => "Specified the number of OID's that can be obtained in a single SNMP Get request.  <u><b>NOTE:
+		This feature only works when using Cactid</b></u>",
+		"value" => "|arg1:max_oids|",
+		"max_length" => "8",
+		"default" => read_config_option("max_get_size"),
 		"size" => "15"
 		),
 	"id" => array(
