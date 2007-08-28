@@ -78,6 +78,11 @@ a:hover {
 	font-size: 12px;
 }
 
+.textAreaNotes {
+	font-size: 12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
 .textEditTitle {
 	font-size: 10px;
 	font-weight: bold;

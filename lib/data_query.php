@@ -133,7 +133,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	include_once($config["library_path"] . "/snmp.php");
 
-	$host = db_fetch_row("select hostname,snmp_community,snmp_version,snmp_username,snmp_password,snmp_port,snmp_timeout from host where id='$host_id'");
+	$host = db_fetch_row("SELECT
+		hostname,
+		snmp_community,
+		snmp_version,
+		snmp_username,
+		snmp_password,
+		snmp_auth_protocol,
+		snmp_priv_passphrase,
+		snmp_priv_protocol,
+		snmp_port,
+		snmp_timeout
+		FROM host
+		WHERE id='$host_id'");
 
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
@@ -151,8 +163,10 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	debug_log_insert("data_query", "XML file parsed ok.");
 
 	/* fetch specified index at specified OID */
-	$snmp_index = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"], $host["snmp_version"],
-		$host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+	$snmp_index = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"],
+		$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+		$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+		$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "'");
 
@@ -182,7 +196,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				debug_log_insert("data_query", "Inserting index data [value='" . $snmp_index[$i]["value"] . "']");
 
 				db_execute("replace into host_snmp_cache
-					(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
+					(host_id, snmp_query_id, field_name, field_value, snmp_index, oid)
 					values ('$host_id','$snmp_query_id','$field_name','" . $snmp_index[$i]["value"] . "','" . $snmp_index[$i]["value"] . "','')");
 			}
 		}else if (($field_array["method"] == "get") && ($field_array["direction"] == "input")) {
@@ -192,7 +206,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				for ($i=0; $i<sizeof($snmp_index); $i++) {
 					$oid = $field_array["oid"] .  "." . $snmp_index[$i]["value"];
 
-					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid, $host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid,
+						$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+						$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
 						$host["snmp_port"], $host["snmp_timeout"], SNMP_WEBUI);
 
 					debug_log_insert("data_query", "Executing SNMP get for data @ '$oid' [value='$value']");
@@ -206,7 +222,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			debug_log_insert("data_query", "Located input field '$field_name' [walk]");
 
 			$snmp_data = array();
-			$snmp_data = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $field_array["oid"], $host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+			$snmp_data = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $field_array["oid"],
+				$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+				$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
 				$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 			debug_log_insert("data_query", "Executing SNMP walk for data @ '" . $field_array["oid"] . "'");

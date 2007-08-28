@@ -53,6 +53,15 @@ function upgrade_to_0_8_7() {
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `ping_timeout` INT(12) UNSIGNED default '500' AFTER `ping_port`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `ping_retries` INT(12) UNSIGNED default '2' AFTER `ping_timeout`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `max_oids` INT(12) UNSIGNED default '10' AFTER `ping_retries`");
+	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `notes` TEXT AFTER `hostname`");
+	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_auth_protocol` CHAR(5) default '' AFTER `snmp_password`");
+	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_priv_passphrase` varchar(200) default '' AFTER `snmp_auth_protocol`");
+	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_priv_protocol` CHAR(6) default '' AFTER `snmp_priv_passphrase`");
+
+	/* additional poller items fields required */
+	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_auth_protocol` CHAR(5) default '' AFTER `snmp_password`");
+	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_priv_passphrase` varchar(200) default '' AFTER `snmp_auth_protocol`");
+	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_priv_protocol` CHAR(6) default '' AFTER `snmp_priv_passphrase`");
 
 	/* Convert to new authentication system */
 	if (db_fetch_cell("SELECT `value` FROM `settings` WHERE `name` = 'global_auth'") == "on") {
@@ -107,6 +116,14 @@ function upgrade_to_0_8_7() {
 			}
 		}
 	}
+
+	/* Add SNMPv3 to SNMP Input Methods */
+	db_install_execute("0.8.7", "INSERT INTO data_input_fields VALUES (DEFAULT, '20832ce12f099c8e54140793a091af90',1,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','')");
+	db_install_execute("0.8.7", "INSERT INTO data_input_fields VALUES (DEFAULT, 'c60c9aac1e1b3555ea0620b8bbfd82cb',1,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','')");
+	db_install_execute("0.8.7", "INSERT INTO data_input_fields VALUES (DEFAULT, 'feda162701240101bc74148415ef415a',1,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','')");
+	db_install_execute("0.8.7", "INSERT INTO data_input_fields VALUES (DEFAULT, '2cf7129ad3ff819a7a7ac189bee48ce8',2,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','')");
+	db_install_execute("0.8.7", "INSERT INTO data_input_fields VALUES (DEFAULT, '6b13ac0a0194e171d241d4b06f913158',2,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','')");
+	db_install_execute("0.8.7", "INSERT INTO data_input_fields VALUES (DEFAULT, '3a33d4fc65b8329ab2ac46a36da26b72',2,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','')");
 
 	/* Add 1 min poller templates */
 	db_install_execute("0.8.7", "INSERT INTO data_template VALUES (DEFAULT, '86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min')");

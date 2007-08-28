@@ -23,7 +23,7 @@
 */
 
 if (!defined("VALID_HOST_FIELDS")) {
-	define("VALID_HOST_FIELDS", "(hostname|snmp_community|snmp_username|snmp_password|snmp_version|snmp_port|snmp_timeout)");
+	define("VALID_HOST_FIELDS", "(hostname|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_version|snmp_port|snmp_timeout)");
 }
 
 /* file: cdef.php, action: edit */
@@ -154,7 +154,7 @@ $fields_data_input_field_edit = array(
 	"type_code" => array(
 		"method" => "textbox",
 		"friendly_name" => "Special Type Code",
-		"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'snmp_community', 'snmp_username', 'snmp_password', 'snmp_port', 'snmp_timeout', and 'snmp_version'.",
+		"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'snmp_community', 'snmp_username', 'snmp_password', 'snmp_auth_protocol', 'snmp_priv_passphrase', 'snmp_priv_protocol', 'snmp_port', 'snmp_timeout', and 'snmp_version'.",
 		"value" => "|arg1:type_code|",
 		"max_length" => "40"
 		),
@@ -636,6 +636,15 @@ $fields_host_edit = array(
 		"none_value" => "None",
 		"sql" => "select id,name from host_template order by name",
 		),
+	"notes" => array(
+		"method" => "textarea",
+		"friendly_name" => "Notes",
+		"description" => "Enter notes to this host.",
+		"class" => "textAreaNotes",
+		"value" => "|arg1:notes|",
+		"textarea_rows" => "5",
+		"textarea_cols" => "90"
+		),
 	"disabled" => array(
 		"method" => "checkbox",
 		"friendly_name" => "Disable Host",
@@ -651,7 +660,7 @@ $fields_host_edit = array(
 	"availability_method" => array(
 		"friendly_name" => "Downed Device Detection",
 		"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
-		"on_change" => "changeAvailability()",
+		"on_change" => "changeHostForm()",
 		"value" => "|arg1:availability_method|",
 		"method" => "drop_array",
 		"default" => read_config_option("availability_method"),
@@ -660,7 +669,7 @@ $fields_host_edit = array(
 	"ping_method" => array(
 		"friendly_name" => "Ping Method",
 		"description" => "The type of ping packet to sent.  NOTE: ICMP on Linux/UNIX requires root privileges.",
-		"on_change" => "changeAvailability()",
+		"on_change" => "changeHostForm()",
 		"value" => "|arg1:ping_method|",
 		"method" => "drop_array",
 		"default" => read_config_option("ping_method"),
@@ -679,6 +688,7 @@ $fields_host_edit = array(
 		"friendly_name" => "Ping Timeout Value",
 		"description" => "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.",
 		"method" => "textbox",
+		"value" => "|arg1:ping_timeout|",
 		"default" => read_config_option("ping_timeout"),
 		"max_length" => "10",
 		"size" => "15"
@@ -687,6 +697,7 @@ $fields_host_edit = array(
 		"friendly_name" => "Ping Retry Count",
 		"description" => "The number of times Cacti will attempt to ping a host before failing.",
 		"method" => "textbox",
+		"value" => "|arg1:ping_retries|",
 		"default" => read_config_option("ping_retries"),
 		"max_length" => "10",
 		"size" => "15"
@@ -699,7 +710,7 @@ $fields_host_edit = array(
 		"method" => "drop_array",
 		"friendly_name" => "SNMP Version",
 		"description" => "Choose the SNMP version for this host.",
-		"on_change" => "changeSNMP()",
+		"on_change" => "changeHostForm()",
 		"value" => "|arg1:snmp_version|",
 		"default" => read_config_option("snmp_ver"),
 		"array" => $snmp_versions,
@@ -731,6 +742,31 @@ $fields_host_edit = array(
 		"default" => read_config_option("snmp_password"),
 		"max_length" => "50",
 		"size" => "15"
+		),
+	"snmp_auth_protocol" => array(
+		"method" => "drop_array",
+		"friendly_name" => "SNMP Auth Protocol (v3)",
+		"description" => "Choose the SNMPv3 Authorization Protocol.",
+		"value" => "|arg1:snmp_auth_protocol|",
+		"default" => read_config_option("snmp_auth_protocol"),
+		"array" => $snmp_auth_protocols,
+		),
+	"snmp_priv_passphrase" => array(
+		"method" => "textbox",
+		"friendly_name" => "SNMP Privacy Passphrase (v3)",
+		"description" => "Choose the SNMPv3 Privacy Passphrase.",
+		"value" => "|arg1:snmp_priv_passphrase|",
+		"default" => read_config_option("snmp_priv_passphrase"),
+		"max_length" => "200",
+		"size" => "40"
+		),
+	"snmp_priv_protocol" => array(
+		"method" => "drop_array",
+		"friendly_name" => "SNMP Privacy Protocol (v3)",
+		"description" => "Choose the SNMPv3 Privacy Protocol.",
+		"value" => "|arg1:snmp_priv_protocol|",
+		"default" => read_config_option("snmp_priv_protocol"),
+		"array" => $snmp_priv_protocols,
 		),
 	"snmp_port" => array(
 		"method" => "textbox",

@@ -223,6 +223,28 @@ $settings = array(
 			"default" => "",
 			"max_length" => "100",
 			),
+		"snmp_auth_protocol" => array(
+			"method" => "drop_array",
+			"friendly_name" => "SNMP Auth Protocol (v3)",
+			"description" => "Choose the SNMPv3 Authorization Protocol.",
+			"default" => "MD5",
+			"array" => $snmp_auth_protocols,
+			),
+		"snmp_priv_passphrase" => array(
+			"method" => "textbox",
+			"friendly_name" => "SNMP Privacy Passphrase (v3)",
+			"description" => "Choose the SNMPv3 Privacy Passphrase.",
+			"default" => "",
+			"max_length" => "200",
+			"size" => "80"
+			),
+		"snmp_priv_protocol" => array(
+			"method" => "drop_array",
+			"friendly_name" => "SNMP Privacy Protocol (v3)",
+			"description" => "Choose the SNMPv3 Privacy Protocol.",
+			"default" => "DES",
+			"array" => $snmp_priv_protocols,
+			),
 		"snmp_timeout" => array(
 			"friendly_name" => "SNMP Timeout",
 			"description" => "Default SNMP timeout in milli-seconds.",

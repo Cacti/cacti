@@ -145,10 +145,14 @@ function form_save() {
 		if ($_POST["snmp_password"] != $_POST["snmp_password_confirm"]) {
 			raise_message(4);
 		}else{
-			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"], $_POST["hostname"],
-				$_POST["snmp_community"], $_POST["snmp_version"], $_POST["snmp_username"], $_POST["snmp_password"],
-				$_POST["snmp_port"], $_POST["snmp_timeout"], (isset($_POST["disabled"]) ? $_POST["disabled"] : ""),
-				$_POST["availability_method"], $_POST["ping_method"], $_POST["ping_port"]);
+			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"],
+				$_POST["hostname"], $_POST["snmp_community"], $_POST["snmp_version"],
+				$_POST["snmp_username"], $_POST["snmp_password"],
+				$_POST["snmp_port"], $_POST["snmp_timeout"],
+				(isset($_POST["disabled"]) ? $_POST["disabled"] : ""),
+				$_POST["availability_method"], $_POST["ping_method"],
+				$_POST["ping_port"], $_POST["ping_timeout"], $_POST["ping_retries"], $_POST["notes"],
+				$_POST["snmp_auth_protocol"], $_POST["snmp_priv_passphrase"], $_POST["snmp_priv_protocol"]);
 		}
 
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
@@ -358,7 +362,8 @@ function form_actions() {
 				</tr>";
 				$form_array = array();
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
-					if (ereg("^snmp_", $field_name)) {
+					if ((ereg("^snmp_", $field_name)) ||
+						($field_name == "max_oids")) {
 						$form_array += array($field_name => $fields_host_edit[$field_name]);
 
 						$form_array[$field_name]["value"] = "";
@@ -549,7 +554,10 @@ function host_edit() {
 					if (($host["snmp_community"] == "") && ($host["snmp_username"] == "")) {
 						print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
 					}else{
-						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
+						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
+							$host["snmp_username"], $host["snmp_password"],
+							$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+							$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
 
 						/* modify for some system descriptions */
 						/* 0000937: System output in hosts.php poor for Alcatel */
@@ -561,10 +569,25 @@ function host_edit() {
 						if ($snmp_system == "") {
 							print "<span style='color: #ff0000; font-weight: bold;'>SNMP error</span>\n";
 						}else{
-							$snmp_uptime   = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
-							$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
-							$snmp_location = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.6.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
-							$snmp_contact  = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"], $host["snmp_username"], $host["snmp_password"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+							$snmp_uptime   = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+
+							$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+
+							$snmp_location = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.6.0", $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+
+							$snmp_contact  = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 							print "<strong>System:</strong> $snmp_system<br>\n";
 							$days      = intval($snmp_uptime / (60*60*24*100));
@@ -610,15 +633,21 @@ function host_edit() {
 	<!--
 
 	// default snmp information
-	var snmp_community = document.getElementById('snmp_community').value;
-	var snmp_username  = document.getElementById('snmp_username').value;
-	var snmp_password  = document.getElementById('snmp_password').value;
-	var snmp_port      = document.getElementById('snmp_port').value;
-	var snmp_timeout   = document.getElementById('snmp_timeout').value;
+	var snmp_community       = document.getElementById('snmp_community').value;
+	var snmp_username        = document.getElementById('snmp_username').value;
+	var snmp_password        = document.getElementById('snmp_password').value;
+	var snmp_auth_protocol   = document.getElementById('snmp_auth_protocol').value;
+	var snmp_priv_passphrase = document.getElementById('snmp_priv_passphrase').value;
+	var snmp_priv_protocol   = document.getElementById('snmp_priv_protocol').value;
+	var snmp_port            = document.getElementById('snmp_port').value;
+	var snmp_timeout         = document.getElementById('snmp_timeout').value;
+	var max_oids             = document.getElementById('max_oids').value;
 
 	// default ping methods
 	var ping_method    = document.getElementById('ping_method').value;
 	var ping_port      = document.getElementById('ping_port').value;
+	var ping_timeout   = document.getElementById('ping_timeout').value;
+	var ping_retries   = document.getElementById('ping_retries').value;
 
 	var availability_methods = document.getElementById('availability_method').options;
 	var num_methods          = document.getElementById('availability_method').length;
@@ -628,29 +657,45 @@ function host_edit() {
 	agent = agent.match("MSIE");
 
 	function formActionInit() {
-		changeSNMP();
-		changeAvailability();
+		changeHostForm();
 	}
 
 	function setPingVisibility() {
-		ping_method = document.getElementById('ping_method').value;
-		am          = document.getElementById('ping_method').value;
+		availability_method = document.getElementById('availability_method').value;
+		ping_method         = document.getElementById('ping_method').value;
 
-		switch(ping_method) {
-		case "1": // ping icmp
-			if (agent == "MSIE") {
-				document.getElementById('row_ping_port').style.display="none";
-			}else{
-				document.getElementById('row_ping_port').style.visibility="collapse";
-			}
+		switch(availability_method) {
+		case "0": // none
+			document.getElementById('row_ping_method').style.display  = "none";
+			document.getElementById('row_ping_port').style.display    = "none";
+			document.getElementById('row_ping_timeout').style.display = "none";
+			document.getElementById('row_ping_retries').style.display = "none";
 
 			break;
-		case "2": // ping udp
-		case "3": // ping tcp
-			if (agent == "MSIE") {
-				document.getElementById('row_ping_port').style.display="";
-			}else{
-				document.getElementById('row_ping_port').style.visibility="visible";
+		case "2": // snmp
+			document.getElementById('row_ping_method').style.display  = "none";
+			document.getElementById('row_ping_port').style.display    = "none";
+			document.getElementById('row_ping_timeout').style.display = "";
+			document.getElementById('row_ping_retries').style.display = "";
+
+			break;
+		default: // ping ok
+			switch(ping_method) {
+			case "1": // ping icmp
+				document.getElementById('row_ping_method').style.display  = "";
+				document.getElementById('row_ping_port').style.display    = "none";
+				document.getElementById('row_ping_timeout').style.display = "";
+				document.getElementById('row_ping_retries').style.display = "";
+
+				break;
+			case "2": // ping udp
+			case "3": // ping tcp
+				document.getElementById('row_ping_method').style.display  = "";
+				document.getElementById('row_ping_port').style.display    = "";
+				document.getElementById('row_ping_timeout').style.display = "";
+				document.getElementById('row_ping_retries').style.display = "";
+
+				break;
 			}
 
 			break;
@@ -666,30 +711,29 @@ function host_edit() {
 		}
 	}
 
-	function setAvailabilityOptions() {
+	function setAvailability(type) {
+		/* get the availability structure */
 		var am=document.getElementById('availability_method');
-		snmp_version = document.getElementById('snmp_version').value;
 
-		if (snmp_version == 0) {
-			selectedIndex = document.getElementById('availability_method').selectedIndex;
+		/* get current selectedIndex */
+		selectedIndex = document.getElementById('availability_method').selectedIndex;
 
-			if (am.value == 1 || am.value == 2) {
-				if (agent == "MSIE") {
-					document.getElementById('row_ping_method').style.display="none";
-					document.getElementById('row_ping_port').style.display="none";
-				}else{
-					document.getElementById('row_ping_method').style.visibility="collapse";
-					document.getElementById('row_ping_port').style.visibility="collapse";
-				}
-
-				document.getElementById('availability_method').selectedIndex=0;
-			}
-
+		switch(type) {
+		case "NoSNMP":
+			/* remove snmp options */
 			if (am.length == 4) {
 				am.remove(1);
 				am.remove(1);
 			}
-		}else{
+
+			/* set the index to something valid, like "ping" */
+			if (selectedIndex > 1) {
+				document.getElementById('availability_method').selectedIndex=1;
+			}
+
+			break;
+		case "All":
+			/* restore all options */
 			if (am.length == 2) {
 				am.remove(0);
 				am.remove(0);
@@ -699,155 +743,148 @@ function host_edit() {
 				var c=document.createElement('option');
 				var d=document.createElement('option');
 
-				for (var j = 0; j < num_methods; j++) {
-					a.value="0";
-					a.text="None";
-					addSelectItem(a,am);
+				a.value="0";
+				a.text="None";
+				addSelectItem(a,am);
 
-					b.value="1";
-					b.text="Ping and SNMP";
-					addSelectItem(b,am);
+				b.value="1";
+				b.text="Ping and SNMP";
+				addSelectItem(b,am);
 
-					c.value="2";
-					c.text="SNMP";
-					addSelectItem(c,am);
+				c.value="2";
+				c.text="SNMP";
+				addSelectItem(c,am);
 
-					d.value="3";
-					d.text="Ping";
-					addSelectItem(d,am);
+				d.value="3";
+				d.text="Ping";
+				addSelectItem(d,am);
 
-					am.selectedIndex = selectedIndex;
+				/* restore the correct index number */
+				if (selectedIndex == 0) {
+					am.selectedIndex = 0;
+				}else{
+					am.selectedIndex = 3;
 				}
 			}
-		}
-	}
-
-	function changeAvailability() {
-		availability_method = document.getElementById('availability_method').value;
-
-		setAvailabilityOptions();
-		setPingVisibility();
-
-		switch(availability_method) {
-		case "0": // availability none
-			if (agent == "MSIE") {
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('row_ping_port').style.display="none";
-			}else{
-				document.getElementById('row_ping_method').style.visibility="collapse";
-				document.getElementById('row_ping_port').style.visibility="collapse";
-			}
-
-			document.getElementById('ping_method').value=0;
-			document.getElementById('ping_port').value=0;
 
 			break;
-		case "1": // ping and snmp
-			if (agent == "MSIE") {
+		}
+
+		setAvailabilityVisibility(type, am.selectedIndex);
+	}
+
+	function setAvailabilityVisibility(type, selectedIndex) {
+		switch(type) {
+		case "NoSNMP":
+			switch(selectedIndex) {
+			case 0: // availability none
+				document.getElementById('row_ping_method').style.display="none";
+				document.getElementById('ping_method').value=0;
+				setPingVisibility();
+
+				break;
+			case 1: // ping
 				document.getElementById('row_ping_method').style.display="";
-			}else{
-				document.getElementById('row_ping_method').style.visibility="visible";
+				document.getElementById('ping_method').value=ping_method;
+				setPingVisibility();
+
+				break;
 			}
-
-			document.getElementById('ping_method').value=ping_method;
-			document.getElementById('ping_port').value=ping_port;
-
-			break;
-		case "2": // snmp
-			if (agent == "MSIE") {
+		case "All":
+			switch(selectedIndex) {
+			case 0: // availability none
 				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('row_ping_port').style.display="none";
-			}else{
-				document.getElementById('row_ping_method').style.visibility="collapse";
-				document.getElementById('row_ping_port').style.visibility="collapse";
+				document.getElementById('ping_method').value=0;
+				setPingVisibility();
+
+				break;
+			case 1: // ping and snmp
+				if (document.getElementById('ping_method').display == "none") {
+					document.getElementById('ping_method').value             = ping_method;
+					document.getElementById('row_ping_method').style.display = "";
+				}
+				setPingVisibility();
+
+				break;
+			case 2: // snmp
+				document.getElementById('row_ping_method').style.display="none";
+				document.getElementById('ping_method').value="0";
+				setPingVisibility();
+
+				break;
+			case 3: // ping
+				if (document.getElementById('ping_method').display == "none") {
+					document.getElementById('ping_method').value             = ping_method;
+					document.getElementById('row_ping_method').style.display = "";
+				}
+
+				setPingVisibility();
+
+				break;
 			}
-
-			document.getElementById('ping_method').value=0;
-			document.getElementById('ping_port').value=0;
-
-			break;
-		case "3": // ping
-			document.getElementById('row_ping_method').style.visibility="visible";
-
-			document.getElementById('ping_method').value=ping_method;
-			document.getElementById('ping_port').value=ping_port;
-
-			break;
 		}
 	}
 
-	function changeSNMP() {
-		snmp_version = document.getElementById('snmp_version').value;
-
-		setAvailabilityOptions();
-		setPingVisibility();
+	function changeHostForm() {
+		snmp_version        = document.getElementById('snmp_version').value;
+		availability_method = document.getElementById('availability_method').value;
 
 		switch(snmp_version) {
 		case "0":
-			if (agent == "MSIE") {
-				document.getElementById('row_snmp_username').style.display="none";
-				document.getElementById('row_snmp_password').style.display="none";
-				document.getElementById('row_snmp_community').style.display="none";
-				document.getElementById('row_snmp_port').style.display="none";
-				document.getElementById('row_snmp_timeout').style.display="none";
-			}else{
-				document.getElementById('row_snmp_username').style.visibility="collapse";
-				document.getElementById('row_snmp_password').style.visibility="collapse";
-				document.getElementById('row_snmp_community').style.visibility="collapse";
-				document.getElementById('row_snmp_port').style.visibility="collapse";
-				document.getElementById('row_snmp_timeout').style.visibility="collapse";
-			}
-
-			document.getElementById('snmp_username').value="";
-			document.getElementById('snmp_password').value="";
-			document.getElementById('snmp_community').value="";
-			document.getElementById('snmp_port').value="";
-			document.getElementById('snmp_timeout').value="";
+			setAvailability("NoSNMP");
+			setSNMP("None");
 
 			break;
 		case "1":
 		case "2":
-			if (agent == "MSIE") {
-				document.getElementById('row_snmp_username').style.display="none";
-				document.getElementById('row_snmp_password').style.display="none";
-				document.getElementById('row_snmp_community').style.display="";
-				document.getElementById('row_snmp_port').style.display="";
-				document.getElementById('row_snmp_timeout').style.display="";
-			}else{
-				document.getElementById('row_snmp_username').style.visibility="collapse";
-				document.getElementById('row_snmp_password').style.visibility="collapse";
-				document.getElementById('row_snmp_community').style.visibility="visible";
-				document.getElementById('row_snmp_port').style.visibility="visible";
-				document.getElementById('row_snmp_timeout').style.visibility="visible";
-			}
-
-			document.getElementById('snmp_username').value="";
-			document.getElementById('snmp_password').value="";
-			document.getElementById('snmp_community').value=snmp_community;
-			document.getElementById('snmp_port').value=snmp_port;
-			document.getElementById('snmp_timeout').value=snmp_timeout;
+			setAvailability("All");
+			setSNMP("v1v2");
 
 			break;
 		case "3":
-			if (agent == "MSIE") {
-				document.getElementById('row_snmp_username').style.display="";
-				document.getElementById('row_snmp_password').style.display="";
-				document.getElementById('row_snmp_community').style.display="none";
-				document.getElementById('row_snmp_port').style.display="";
-				document.getElementById('row_snmp_timeout').style.display="";
-			}else{
-				document.getElementById('row_snmp_username').style.visibility="visible";
-				document.getElementById('row_snmp_password').style.visibility="visible";
-				document.getElementById('row_snmp_community').style.visibility="collapse";
-				document.getElementById('row_snmp_port').style.visibility="visible";
-				document.getElementById('row_snmp_timeout').style.visibility="visible";
-			}
+			setAvailability("All");
+			setSNMP("v3");
 
-			document.getElementById('snmp_username').value=snmp_username;
-			document.getElementById('snmp_password').value=snmp_password;
-			document.getElementById('snmp_community').value="";
-			document.getElementById('snmp_port').value=snmp_port;
-			document.getElementById('snmp_timeout').value=snmp_timeout;
+			break;
+		}
+	}
+
+	function setSNMP(snmp_type) {
+		switch(snmp_type) {
+		case "None":
+			document.getElementById('row_snmp_username').style.display        = "none";
+			document.getElementById('row_snmp_password').style.display        = "none";
+			document.getElementById('row_snmp_community').style.display       = "none";
+			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
+			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
+			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
+			document.getElementById('row_snmp_port').style.display            = "none";
+			document.getElementById('row_snmp_timeout').style.display         = "none";
+			document.getElementById('row_max_oids').style.display             = "none";
+
+			break;
+		case "v1v2":
+			document.getElementById('row_snmp_username').style.display        = "none";
+			document.getElementById('row_snmp_password').style.display        = "none";
+			document.getElementById('row_snmp_community').style.display       = "";
+			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
+			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
+			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
+			document.getElementById('row_snmp_port').style.display            = "";
+			document.getElementById('row_snmp_timeout').style.display         = "";
+			document.getElementById('row_max_oids').style.display             = "";
+
+			break;
+		case "v3":
+			document.getElementById('row_snmp_username').style.display        = "";
+			document.getElementById('row_snmp_password').style.display        = "";
+			document.getElementById('row_snmp_community').style.display       = "none";
+			document.getElementById('row_snmp_auth_protocol').style.display   = "";
+			document.getElementById('row_snmp_priv_passphrase').style.display = "";
+			document.getElementById('row_snmp_priv_protocol').style.display   = "";
+			document.getElementById('row_snmp_port').style.display            = "";
+			document.getElementById('row_snmp_timeout').style.display         = "";
+			document.getElementById('row_max_oids').style.display             = "";
 
 			break;
 		}

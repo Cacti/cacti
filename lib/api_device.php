@@ -88,7 +88,9 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
-	$availability_method, $ping_method, $ping_port) {
+	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol) {
+
 	/* fetch some cache variables */
 	if (empty($id)) {
 		$_host_template_id = 0;
@@ -97,19 +99,30 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	$save["id"] = $id;
-	$save["host_template_id"]    = form_input_validate($host_template_id, "host_template_id", "^[0-9]+$", false, 3);
-	$save["description"]         = form_input_validate($description, "description", "", false, 3);
-	$save["hostname"]            = form_input_validate($hostname, "hostname", "", false, 3);
-	$save["snmp_community"]      = form_input_validate($snmp_community, "snmp_community", "", true, 3);
-	$save["snmp_version"]        = form_input_validate($snmp_version, "snmp_version", "", true, 3);
-	$save["snmp_username"]       = form_input_validate($snmp_username, "snmp_username", "", true, 3);
-	$save["snmp_password"]       = form_input_validate($snmp_password, "snmp_password", "", true, 3);
-	$save["snmp_port"]           = form_input_validate($snmp_port, "snmp_port", "^[0-9]+$", false, 3);
-	$save["snmp_timeout"]        = form_input_validate($snmp_timeout, "snmp_timeout", "^[0-9]+$", false, 3);
+	$save["host_template_id"]     = form_input_validate($host_template_id, "host_template_id", "^[0-9]+$", false, 3);
+	$save["description"]          = form_input_validate($description, "description", "", false, 3);
+	$save["hostname"]             = form_input_validate($hostname, "hostname", "", false, 3);
+	$save["notes"]                = form_input_validate($notes, "notes", "", true, 3);
+
+	$save["snmp_version"]         = form_input_validate($snmp_version, "snmp_version", "", true, 3);
+	$save["snmp_community"]       = form_input_validate($snmp_community, "snmp_community", "", true, 3);
+
+	$save["snmp_username"]        = form_input_validate($snmp_username, "snmp_username", "", true, 3);
+	$save["snmp_password"]        = form_input_validate($snmp_password, "snmp_password", "", true, 3);
+	$save["snmp_auth_protocol"]   = form_input_validate($snmp_auth_protocol, "snmp_auth_protocol", "", true, 3);
+	$save["snmp_priv_passphrase"] = form_input_validate($snmp_priv_passphrase, "snmp_priv_passphrase", "", true, 3);
+	$save["snmp_priv_protocol"]   = form_input_validate($snmp_priv_protocol, "snmp_priv_protocol", "", true, 3);
+
+	$save["snmp_port"]            = form_input_validate($snmp_port, "snmp_port", "^[0-9]+$", false, 3);
+	$save["snmp_timeout"]         = form_input_validate($snmp_timeout, "snmp_timeout", "^[0-9]+$", false, 3);
+
 	$save["disabled"]            = form_input_validate($disabled, "disabled", "", true, 3);
+
 	$save["availability_method"] = form_input_validate($availability_method, "availability_method", "^[0-9]+$", false, 3);
 	$save["ping_method"]         = form_input_validate($ping_method, "ping_method", "^[0-9]+$", false, 3);
 	$save["ping_port"]           = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
+	$save["ping_timeout"]        = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
+	$save["ping_retries"]        = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
 
 	$host_id = 0;
 

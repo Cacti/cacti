@@ -154,6 +154,15 @@ $snmp_versions = array(0 =>
 	"Version 2",
 	"Version 3");
 
+$snmp_auth_protocols = array(
+	"MD5" => "MD5 (default)",
+	"SHA" => "SHA");
+
+$snmp_priv_protocols = array(
+	"[None]" => "[None]",
+	"DES" => "DES (default)",
+	"AES128" => "AES");
+
 $logfile_options = array(1 =>
 	"Logfile Only",
 	"Logfile and Syslog/Eventlog",
@@ -438,12 +447,22 @@ $host_struc = array(
 	"host_template_id",
 	"description",
 	"hostname",
+	"notes",
 	"snmp_community",
 	"snmp_version",
 	"snmp_username",
 	"snmp_password",
+	"snmp_auth_protocol",
+	"snmp_priv_passphrase",
+	"snmp_priv_protocol",
 	"snmp_port",
 	"snmp_timeout",
+	"max_oids",
+	"availability_method",
+	"ping_method",
+	"ping_port",
+	"ping_timeout",
+	"ping_retries",
 	"disabled",
 	"status",
 	"status_event_count",

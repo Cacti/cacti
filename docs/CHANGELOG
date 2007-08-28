@@ -58,6 +58,10 @@ Cacti CHANGELOG
 -bug: Fix SQL error when viewing an invalid Data Source via the Log Viewer
 -bug: Fix command line user copy utility
 -feature: Paginate the Graph Creation Page
+-feature: Add SNMPv3 Support to Cacti
+-feature: Add a Notes field to the Device that can contain arbitrary information
+-feature: Add Availability Methods to Cacti including per Host Ping Methods and Timeouts
+-feature: Add Max OID's to te Host Level
 -feature: Allow CSV Export from the various Graphs page
 -feature: Add rra_path as a global.php config variable
 -feature: Add drop down actions to data queries

@@ -141,7 +141,9 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'textarea':
 		form_text_area($field_name, $field_array["value"], $field_array["textarea_rows"],
 			$field_array["textarea_cols"],
-			((isset($field_array["default"])) ? $field_array["default"] : ""));
+			((isset($field_array["default"])) ? $field_array["default"] : ""),
+			((isset($field_array["class"])) ? $field_array["class"] : ""),
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
 
 		break;
 	case 'drop_array':

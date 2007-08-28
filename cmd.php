@@ -215,13 +215,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		$host_id = $item["host_id"];
 
 		if (($new_host) && (!empty($host_id))) {
-			$ping->host["hostname"]       = $item["hostname"];
-			$ping->host["snmp_community"] = $item["snmp_community"];
-			$ping->host["snmp_version"]   = $item["snmp_version"];
-			$ping->host["snmp_username"]  = $item["snmp_username"];
-			$ping->host["snmp_password"]  = $item["snmp_password"];
-			$ping->host["snmp_port"]      = $item["snmp_port"];
-			$ping->host["snmp_timeout"]   = $item["snmp_timeout"];
+			$ping->host = $item;
 
 			if ((!function_exists("socket_create")) || (phpversion() < "4.3")) {
 				/* the ping test will fail under PHP < 4.3 without socket support */
@@ -271,7 +265,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						/* do the check */
 						switch ($index_item["action"]) {
 						case POLLER_ACTION_SNMP: /* snmp */
-							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
+							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"],
+								$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
+								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
+								$item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							$output = exec_poll($index_item["arg1"]);
@@ -327,7 +324,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					cacti_log("Host[$host_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout);
 					$output = "U";
 				}else {
-					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"], $item["snmp_version"], $item["snmp_username"], $item["snmp_password"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
+					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"],
+						$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
+						$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
+						$item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 
 					/* remove any quotes from string */
 					$output = strip_quotes($output);
