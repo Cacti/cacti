@@ -1874,6 +1874,7 @@ CREATE TABLE host (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(250) default NULL,
+  notes text,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
   snmp_username varchar(50) default NULL,
