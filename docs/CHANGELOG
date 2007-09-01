@@ -90,6 +90,7 @@ Cacti CHANGELOG
 -feature: Add copy and batch copy of users
 -feature: Reduce ADODB memory consumption during polling
 -feature: Add new RRDtool Function to facilitate CSV export
+-feature: Add the ability to ignore custom RRA settings when importing templates and use this behavior by default
 -compat: Add additional checking due to php-snmp changes in Windows
 
 0.8.6j

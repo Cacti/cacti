@@ -235,8 +235,7 @@ $settings = array(
 			"friendly_name" => "SNMP Privacy Passphrase (v3)",
 			"description" => "Choose the SNMPv3 Privacy Passphrase.",
 			"default" => "",
-			"max_length" => "200",
-			"size" => "80"
+			"max_length" => "200"
 			),
 		"snmp_priv_protocol" => array(
 			"method" => "drop_array",
@@ -250,21 +249,21 @@ $settings = array(
 			"description" => "Default SNMP timeout in milli-seconds.",
 			"method" => "textbox",
 			"default" => "500",
-			"max_length" => "100",
+			"max_length" => "100"
 			),
 		"snmp_port" => array(
 			"friendly_name" => "SNMP Port Number",
 			"description" => "Default UDP port to be used for SNMP Calls.  Typically 161.",
 			"method" => "textbox",
 			"default" => "161",
-			"max_length" => "100",
+			"max_length" => "100"
 			),
 		"snmp_retries" => array(
 			"friendly_name" => "SNMP Retries",
 			"description" => "The number times the SNMP poller will attempt to reach the host before failing.",
 			"method" => "textbox",
 			"default" => "3",
-			"max_length" => "100",
+			"max_length" => "100"
 			),
 		"other_header" => array(
 			"friendly_name" => "Other Defaults",
