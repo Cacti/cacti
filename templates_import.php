@@ -60,8 +60,14 @@ function form_save() {
 			header("Location: templates_import.php"); exit;
 		}
 
+		if ($_POST["import_rra"] == "1") {
+			$import_custom_rra_settings = false;
+		}else{
+			$import_custom_rra_settings = true;
+		}
+
 		/* obtain debug information if it's set */
-		$debug_data = import_xml_data($xml_data);
+		$debug_data = import_xml_data($xml_data, $import_custom_rra_settings);
 		if(sizeof($debug_data) > 0) {
 			$_SESSION["import_debug_info"] = $debug_data;
 		}
@@ -152,6 +158,19 @@ function import() {
 		</td>
 		<td>
 			<?php form_text_area("import_text", "", "10	", "50", "");?>
+		</td>
+	</tr>
+
+	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		<td width="50%">
+			<font class="textEditTitle">Import RRA Settings</font><br>
+			Choose whether to allow Cacti to import custom RRA settings from imported templates or whether to use the defaults for this installation.
+		</td>
+		<td>
+			<?php
+			form_radio_button("import_rra", 1, 1, "Use defaults for this installation (Recommended)", 1); echo "<br />";
+			form_radio_button("import_rra", 1, 2, "Use custom RRA settings from the template", 1);
+			?>
 		</td>
 	</tr>
 

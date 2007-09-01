@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function &import_xml_data(&$xml_data) {
+function &import_xml_data(&$xml_data, $import_custom_rra_settings) {
 	global $config, $hash_type_codes, $hash_version_codes;
 
 	include_once($config["library_path"] . "/xml.php");
@@ -68,7 +68,7 @@ function &import_xml_data(&$xml_data) {
 					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
 					break;
 				case 'data_template':
-					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
+					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache, $import_custom_rra_settings);
 					break;
 				case 'host_template':
 					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
@@ -86,11 +86,15 @@ function &import_xml_data(&$xml_data) {
 					$hash_cache += xml_to_cdef($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
 					break;
 				case 'round_robin_archive':
-					$hash_cache += xml_to_round_robin_archive($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
+					if ($import_custom_rra_settings === true) {
+						$hash_cache += xml_to_round_robin_archive($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
+					}
 					break;
 				}
 
-				$info_array[$type]{isset($info_array[$type]) ? count($info_array[$type]) : 0} = $_SESSION["import_debug_info"];
+				if (isset($_SESSION["import_debug_info"])) {
+					$info_array[$type]{isset($info_array[$type]) ? count($info_array[$type]) : 0} = $_SESSION["import_debug_info"];
+				}
 
 				kill_session_var("import_debug_info");
 			}
@@ -236,7 +240,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
+function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings) {
 	global $struct_data_source, $struct_data_source_item;
 
 	/* import into: data_template */
@@ -272,21 +276,38 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
+	/* use the polling interval as the step if we are to use the default rra settings */
+	if ($import_custom_rra_settings === false) {
+		$save["rrd_step"] = read_config_option("poller_interval");
+	}
+
 	$data_template_data_id = sql_save($save, "data_template_data");
 
-	/* import into: data_template_data_rra */
-	$hash_items = explode("|", $xml_array["ds"]["rra_items"]);
+	/* use custom rra settings from the xml */
+	if ($import_custom_rra_settings === true) {
+		/* import into: data_template_data_rra */
+		$hash_items = explode("|", $xml_array["ds"]["rra_items"]);
 
-	if (!empty($hash_items[0])) {
-		for ($i=0; $i<count($hash_items); $i++) {
-			/* parse information from the hash */
-			$parsed_hash = parse_xml_hash($hash_items[$i]);
+		if (!empty($hash_items[0])) {
+			for ($i=0; $i<count($hash_items); $i++) {
+				/* parse information from the hash */
+				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
-			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+				/* invalid/wrong hash */
+				if ($parsed_hash == false) { return false; }
 
-			if (isset($hash_cache["round_robin_archive"]{$parsed_hash["hash"]})) {
-				db_execute("replace into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $hash_cache["round_robin_archive"]{$parsed_hash["hash"]} . ")");
+				if (isset($hash_cache["round_robin_archive"]{$parsed_hash["hash"]})) {
+					db_execute("replace into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $hash_cache["round_robin_archive"]{$parsed_hash["hash"]} . ")");
+				}
+			}
+		}
+	/* use all rras by default */
+	}else{
+		$rras = db_fetch_assoc("select id from rra");
+
+		if (is_array($rras)) {
+			foreach ($rras as $rra) {
+				db_execute("replace into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $rra["id"] . ")");
 			}
 		}
 	}
@@ -322,6 +343,11 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache) {
 						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
 					}
 				}
+			}
+
+			/* use the polling interval * 2 as the heartbeat if we are to use the default rra settings */
+			if ($import_custom_rra_settings === false) {
+				$save["rrd_heartbeat"] = read_config_option("poller_interval") * 2;
 			}
 
 			$data_template_rrd_id = sql_save($save, "data_template_rrd");
