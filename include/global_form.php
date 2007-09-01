@@ -643,7 +643,7 @@ $fields_host_edit = array(
 		"class" => "textAreaNotes",
 		"value" => "|arg1:notes|",
 		"textarea_rows" => "5",
-		"textarea_cols" => "90"
+		"textarea_cols" => "40"
 		),
 	"disabled" => array(
 		"method" => "checkbox",

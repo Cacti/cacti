@@ -121,8 +121,8 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["availability_method"] = form_input_validate($availability_method, "availability_method", "^[0-9]+$", false, 3);
 	$save["ping_method"]         = form_input_validate($ping_method, "ping_method", "^[0-9]+$", false, 3);
 	$save["ping_port"]           = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
-	$save["ping_timeout"]        = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
-	$save["ping_retries"]        = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
+	$save["ping_timeout"]        = form_input_validate($ping_timeout, "ping_timeout", "^[0-9]+$", true, 3);
+	$save["ping_retries"]        = form_input_validate($ping_retries, "ping_retries", "^[0-9]+$", true, 3);
 
 	$host_id = 0;
 

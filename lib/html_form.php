@@ -484,7 +484,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
    @arg $form_caption - the text to display to the right of the checkbox
    @arg $form_default_value - the value of this form element to use if there is
      no current value available */
-function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value, $sytle = "", $on_change = "") {
+function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value, $class = "", $on_change = "") {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
