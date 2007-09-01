@@ -396,15 +396,6 @@ INSERT INTO data_input_data VALUES (5,34,'','');
 INSERT INTO data_input_data VALUES (6,34,'','.1.3.6.1.4.1.2021.4.6.0');
 INSERT INTO data_input_data VALUES (20,17,'','');
 INSERT INTO data_input_data VALUES (20,65,NULL,'');
-INSERT INTO data_input_data VALUES (39,70,'','');
-INSERT INTO data_input_data VALUES (14,70,'on','');
-INSERT INTO data_input_data VALUES (13,70,'on','');
-INSERT INTO data_input_data VALUES (12,70,'on','');
-INSERT INTO data_input_data VALUES (11,70,'','');
-INSERT INTO data_input_data VALUES (10,70,'','');
-INSERT INTO data_input_data VALUES (9,70,'','');
-INSERT INTO data_input_data VALUES (8,70,'','');
-INSERT INTO data_input_data VALUES (7,70,'','');
 
 --
 -- Table structure for table `data_input_fields`
@@ -531,19 +522,18 @@ INSERT INTO data_template VALUES (17,'c221c2164c585b6da378013a7a6a2c13','Unix - 
 INSERT INTO data_template VALUES (18,'a30a81cb1de65b52b7da542c8df3f188','Unix - Ping Host');
 INSERT INTO data_template VALUES (19,'0de466a1b81dfe581d44ac014b86553a','Netware - Total Users');
 INSERT INTO data_template VALUES (20,'bbe2da0708103029fbf949817d3a4537','Netware - Total Logins');
-INSERT INTO data_template VALUES (45,'f383db441d1c246cff8482f15e184e5f','Host MIB - Processes');
 INSERT INTO data_template VALUES (22,'e4ac5d5fe73e3c773671c6d0498a8d9d','Netware - File System Reads');
 INSERT INTO data_template VALUES (23,'f29f8c998425eedd249be1e7caf90ceb','Netware - File System Writes');
 INSERT INTO data_template VALUES (24,'7a6216a113e19881e35565312db8a371','Netware - Cache Checks');
 INSERT INTO data_template VALUES (25,'1dbd1251c8e94b334c0e6aeae5ca4b8d','Netware - Cache Hits');
 INSERT INTO data_template VALUES (26,'1a4c5264eb27b5e57acd3160af770a61','Netware - Open Files');
 INSERT INTO data_template VALUES (27,'e9def3a0e409f517cb804dfeba4ccd90','Cisco Router - 5 Minute CPU');
-INSERT INTO data_template VALUES (35,'6ce4ab04378f9f3b03ee0623abb6479f','Netware - Volumes');
 INSERT INTO data_template VALUES (30,'9b82d44eb563027659683765f92c9757','ucd/net - Load Average - 1 Minute');
 INSERT INTO data_template VALUES (31,'87847714d19f405ff3c74f3341b3f940','ucd/net - Load Average - 5 Minute');
 INSERT INTO data_template VALUES (32,'308ac157f24e2763f8cd828a80b3e5ff','ucd/net - Load Average - 15 Minute');
 INSERT INTO data_template VALUES (33,'797a3e92b0039841b52e441a2823a6fb','ucd/net - Memory - Buffers');
 INSERT INTO data_template VALUES (34,'fa15932d3cab0da2ab94c69b1a9f5ca7','ucd/net - Memory - Free');
+INSERT INTO data_template VALUES (35,'6ce4ab04378f9f3b03ee0623abb6479f','Netware - Volumes');
 INSERT INTO data_template VALUES (36,'03060555fab086b8412bbf9951179cd9','Netware - Directory Entries');
 INSERT INTO data_template VALUES (37,'e4ac6919d4f6f21ec5b281a1d6ac4d4e','Unix - Hard Drive Space');
 INSERT INTO data_template VALUES (38,'36335cd98633963a575b70639cd2fdad','Interface - Errors/Discards');
@@ -553,10 +543,11 @@ INSERT INTO data_template VALUES (41,'6632e1e0b58a565c135d7ff90440c335','Interfa
 INSERT INTO data_template VALUES (42,'1d17325f416b262921a0b55fe5f7e31d','Netware - CPU Utilization');
 INSERT INTO data_template VALUES (43,'d814fa3b79bd0f8933b6e0834d3f16d0','Host MIB - Hard Drive Space');
 INSERT INTO data_template VALUES (44,'f6e7d21c19434666bbdac00ccef9932f','Host MIB - CPU Utilization');
+INSERT INTO data_template VALUES (45,'f383db441d1c246cff8482f15e184e5f','Host MIB - Processes');
 INSERT INTO data_template VALUES (46,'2ef027cc76d75720ee5f7a528f0f1fda','Host MIB - Logged in Users');
 INSERT INTO data_template VALUES (47,'a274deec1f78654dca6c446ba75ebca4','ucd/net - Memory - Cache');
 INSERT INTO data_template VALUES (48,'d429e4a6019c91e6e84562593c1968ca','SNMP - Generic OID Template');
-INSERT INTO data_template VALUES (49,'86b2eabe1ce5be31326a8ec84f827380','Interface - Traffic 1 min');
+
 --
 -- Table structure for table `data_template_data`
 --
@@ -601,15 +592,12 @@ INSERT INTO data_template_data VALUES (17,0,0,17,5,'','|host_description| - Logg
 INSERT INTO data_template_data VALUES (18,0,0,18,10,'','|host_description| - Ping Host','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (19,0,0,19,1,'','|host_description| - Total Users','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (20,0,0,20,1,'','|host_description| - Total Logins','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (58,0,0,45,1,'','|host_description| - Processes','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (22,0,0,22,1,'','|host_description| - File System Reads','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (23,0,0,23,1,'','|host_description| - File System Writes','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (24,0,0,24,1,'','|host_description| - Cache Checks','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (25,0,0,25,1,'','|host_description| - Cache Hits','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (26,0,0,26,1,'','|host_description| - Open Files','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (27,0,0,27,1,'','|host_description| - 5 Minute CPU','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (69,0,0,48,1,'on','|host_description| -','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (68,0,0,47,1,'','|host_description| - Memory - Cache','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (30,0,0,30,1,'','|host_description| - Load Average - 1 Minute','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (31,0,0,31,1,'','|host_description| - Load Average - 5 Minute','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (32,0,0,32,1,'','|host_description| - Load Average - 15 Minute','',NULL,'','on','',300,'');
@@ -625,13 +613,15 @@ INSERT INTO data_template_data VALUES (41,0,0,41,2,'on','|host_description| - Tr
 INSERT INTO data_template_data VALUES (55,0,0,42,2,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (56,0,0,43,12,'','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (57,0,0,44,12,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (58,0,0,45,1,'','|host_description| - Processes','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (59,0,0,46,1,'','|host_description| - Logged in Users','',NULL,'','on','',300,'');
 INSERT INTO data_template_data VALUES (62,13,3,13,6,NULL,'|host_description| - Memory - Free','Localhost - Memory - Free','<path_rra>/localhost_mem_buffers_3.rrd',NULL,'on',NULL,300,NULL);
 INSERT INTO data_template_data VALUES (63,15,4,15,6,NULL,'|host_description| - Memory - Free Swap','Localhost - Memory - Free Swap','<path_rra>/localhost_mem_swap_4.rrd',NULL,'on',NULL,300,NULL);
 INSERT INTO data_template_data VALUES (64,11,5,11,4,NULL,'|host_description| - Load Average','Localhost - Load Average','<path_rra>/localhost_load_1min_5.rrd',NULL,'on',NULL,300,NULL);
 INSERT INTO data_template_data VALUES (65,17,6,17,5,NULL,'|host_description| - Logged in Users','Localhost - Logged in Users','<path_rra>/localhost_users_6.rrd',NULL,'on',NULL,300,NULL);
 INSERT INTO data_template_data VALUES (66,16,7,16,7,NULL,'|host_description| - Processes','Localhost - Processes','<path_rra>/localhost_proc_7.rrd',NULL,'on',NULL,300,NULL);
-INSERT INTO data_template_data VALUES (70,0,0,49,2,'on','|host_description| - Traffic','',NULL,'','on','',60,'');
+INSERT INTO data_template_data VALUES (68,0,0,47,1,'','|host_description| - Memory - Cache','',NULL,'','on','',300,'');
+INSERT INTO data_template_data VALUES (69,0,0,48,1,'on','|host_description| -','',NULL,'','on','',300,'');
 
 --
 -- Table structure for table `data_template_data_rra`
@@ -832,11 +822,6 @@ INSERT INTO data_template_data_rra VALUES (69,1);
 INSERT INTO data_template_data_rra VALUES (69,2);
 INSERT INTO data_template_data_rra VALUES (69,3);
 INSERT INTO data_template_data_rra VALUES (69,4);
-INSERT INTO data_template_data_rra VALUES (70,1);
-INSERT INTO data_template_data_rra VALUES (70,2);
-INSERT INTO data_template_data_rra VALUES (70,3);
-INSERT INTO data_template_data_rra VALUES (70,4);
-INSERT INTO data_template_data_rra VALUES (70,5);
 
 --
 -- Table structure for table `data_template_rrd`
@@ -888,7 +873,6 @@ INSERT INTO data_template_rrd VALUES (20,'46a5afe8e6c0419172c76421dc9e304a',0,0,
 INSERT INTO data_template_rrd VALUES (21,'962fd1994fe9cae87fb36436bdb8a742',0,0,18,'',5000,'',0,'',600,'',1,'','ping','',30);
 INSERT INTO data_template_rrd VALUES (22,'7a8dd1111a8624369906bf2cd6ea9ca9',0,0,19,'',100000,'',0,'',600,'',1,'','total_users','',0);
 INSERT INTO data_template_rrd VALUES (23,'ddb6e74d34d2f1969ce85f809dbac23d',0,0,20,'',100000,'',0,'',600,'',1,'','total_logins','',0);
-INSERT INTO data_template_rrd VALUES (80,'50ccbe193c6c7fc29fb9f726cd6c48ee',0,0,45,'',1000,'',0,'',600,'',1,'','proc','',0);
 INSERT INTO data_template_rrd VALUES (25,'289311d10336941d33d9a1c48a7b11ee',0,0,22,'',10000000,'',0,'',600,'',2,'','fs_reads','',0);
 INSERT INTO data_template_rrd VALUES (26,'02216f036cca04655ee2f67fedb6f4f0',0,0,23,'',10000000,'',0,'',600,'',2,'','fs_writes','',0);
 INSERT INTO data_template_rrd VALUES (27,'9e402c0f29131ef7139c20bd500b4e8a',0,0,24,'',10000000,'',0,'',600,'',2,'','cache_checks','',0);
@@ -906,7 +890,6 @@ INSERT INTO data_template_rrd VALUES (40,'dceedc84718dd93a5affe4b190bca810',0,0,
 INSERT INTO data_template_rrd VALUES (42,'93330503f1cf67db00d8fe636035e545',0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_total','',0);
 INSERT INTO data_template_rrd VALUES (43,'6b0fe4aa6aaf22ef9cfbbe96d87fa0d7',0,0,36,'',100000000000,'',0,'',600,'',1,'','dir_used','',0);
 INSERT INTO data_template_rrd VALUES (44,'4c82df790325d789d304e6ee5cd4ab7d',0,0,37,'',0,'',0,'',600,'',1,'','hdd_free','',0);
-INSERT INTO data_template_rrd VALUES (54,'2df25c57022b0c7e7d0be4c035ada1a0',0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (46,'c802e2fd77f5b0a4c4298951bf65957c',0,0,38,'',10000000,'',0,'',600,'',2,'','errors_in','',0);
 INSERT INTO data_template_rrd VALUES (47,'4e2a72240955380dc8ffacfcc8c09874',0,0,38,'',10000000,'',0,'',600,'',2,'','discards_in','',0);
 INSERT INTO data_template_rrd VALUES (48,'636672962b5bb2f31d86985e2ab4bdfe',0,0,39,'',1000000000,'',0,'',600,'',2,'','unicast_in','',0);
@@ -915,12 +898,13 @@ INSERT INTO data_template_rrd VALUES (50,'13ebb33f9cbccfcba828db1075a8167c',0,0,
 INSERT INTO data_template_rrd VALUES (51,'31399c3725bee7e09ec04049e3d5cd17',0,0,38,'',10000000,'',0,'',600,'',2,'','errors_out','',0);
 INSERT INTO data_template_rrd VALUES (52,'7be68cbc4ee0b2973eb9785f8c7a35c7',0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_out','',0);
 INSERT INTO data_template_rrd VALUES (53,'93e2b6f59b10b13f2ddf2da3ae98b89a',0,0,40,'',1000000000,'',0,'',600,'',2,'','nonunicast_in','',0);
+INSERT INTO data_template_rrd VALUES (54,'2df25c57022b0c7e7d0be4c035ada1a0',0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (55,'721c0794526d1ac1c359f27dc56faa49',0,0,41,'on',100000000,'',0,'',600,'',2,'','traffic_out','',0);
 INSERT INTO data_template_rrd VALUES (56,'07175541991def89bd02d28a215f6fcc',0,0,37,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (76,'07492e5cace6d74e7db3cb1fc005a3f3',0,0,42,'',100,'',0,'',600,'',1,'','cpu','',0);
-INSERT INTO data_template_rrd VALUES (92,'165a0da5f461561c85d092dfe96b9551',0,0,43,'',0,'',0,'',600,'',1,'','hdd_total','',0);
 INSERT INTO data_template_rrd VALUES (78,'0ee6bb54957f6795a5369a29f818d860',0,0,43,'',0,'',0,'',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (79,'9825aaf7c0bdf1554c5b4b86680ac2c0',0,0,44,'',100,'',0,'',600,'',1,'','cpu','',0);
+INSERT INTO data_template_rrd VALUES (80,'50ccbe193c6c7fc29fb9f726cd6c48ee',0,0,45,'',1000,'',0,'',600,'',1,'','proc','',0);
 INSERT INTO data_template_rrd VALUES (81,'9464c91bcff47f23085ae5adae6ab987',0,0,46,'',5000,'',0,'',600,'',1,'','users','',0);
 INSERT INTO data_template_rrd VALUES (84,'',16,3,13,NULL,0,NULL,0,NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
 INSERT INTO data_template_rrd VALUES (85,'',18,4,15,NULL,0,NULL,0,NULL,600,NULL,1,NULL,'mem_swap',NULL,23);
@@ -929,10 +913,9 @@ INSERT INTO data_template_rrd VALUES (87,'',13,5,11,NULL,500,NULL,0,NULL,600,NUL
 INSERT INTO data_template_rrd VALUES (88,'',14,5,11,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'load_15min',NULL,19);
 INSERT INTO data_template_rrd VALUES (89,'',20,6,17,NULL,500,NULL,0,NULL,600,NULL,1,NULL,'users',NULL,21);
 INSERT INTO data_template_rrd VALUES (90,'',19,7,16,NULL,1000,NULL,0,NULL,600,NULL,1,NULL,'proc',NULL,24);
+INSERT INTO data_template_rrd VALUES (92,'165a0da5f461561c85d092dfe96b9551',0,0,43,'',0,'',0,'',600,'',1,'','hdd_total','',0);
 INSERT INTO data_template_rrd VALUES (95,'7a6ca455bbeff99ca891371bc77d5cf9',0,0,47,'',10000000,'',0,'',600,'',1,'','mem_cache','',0);
 INSERT INTO data_template_rrd VALUES (96,'224b83ea73f55f8a861bcf4c9bea0472',0,0,48,'on',100,'',0,'',600,'on',1,'','snmp_oid','',0);
-INSERT INTO data_template_rrd VALUES (97, '0b099ce689bd7f86c57ef3dbc5d8c796', 0, 0, 49, '', '100000000', '', '0', '', 120, '', 2, '', 'traffic_in', '', 0);
-INSERT INTO data_template_rrd VALUES (98, '05c88d9ea799f6fd1cf707aa9a5412b4', 0, 0, 49, '', '100000000', '', '0', '', 120, '', 2, '', 'traffic_out', '', 0);
 
 --
 -- Table structure for table `graph_local`
@@ -1002,8 +985,6 @@ INSERT INTO graph_template_input VALUES (24,'bd4a57adf93c884815b25a8036b67f98',1
 INSERT INTO graph_template_input VALUES (25,'d7cdb63500c576e0f9f354de42c6cf3a',11,'1 Minute Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (26,'a23152f5ec02e7762ca27608c0d89f6c',11,'5 Minute Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (27,'2cc5d1818da577fba15115aa18f64d85',11,'15 Minute Data Source','','task_item_id');
-INSERT INTO graph_template_input VALUES (77,'f28013abf8e5813870df0f4111a5e695',32,'Outbound Data Source','','task_item_id');
-INSERT INTO graph_template_input VALUES (76,'69a23877302e7d142f254b208c58b596',32,'Inbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (30,'6273c71cdb7ed4ac525cdbcf6180918c',12,'Free Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (31,'5e62dbea1db699f1bda04c5863e7864d',12,'Swap Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (32,'4d52e112a836d4c9d451f56602682606',4,'System CPU Data Source','','task_item_id');
@@ -1017,16 +998,15 @@ INSERT INTO graph_template_input VALUES (39,'2c4d561ee8132a8dda6de1104336a6ec',1
 INSERT INTO graph_template_input VALUES (40,'6e1cf7addc0cc419aa903552e3eedbea',16,'File System Reads Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (41,'7ea2aa0656f7064d25a36135dd0e9082',16,'File System Writes Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (42,'63480bca78a38435f24a5b5d5ed050d7',17,'Current Logins Data Source','','task_item_id');
-INSERT INTO graph_template_input VALUES (73,'69ad68fc53af03565aef501ed5f04744',30,'Open Files Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (44,'31fed1f9e139d4897d0460b10fb7be94',15,'Legend Color','','color_id');
 INSERT INTO graph_template_input VALUES (45,'bb9d83a02261583bc1f92d9e66ea705d',18,'CPU Usage Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (46,'51196222ed37b44236d9958116028980',18,'Legend Color','','color_id');
 INSERT INTO graph_template_input VALUES (47,'fd26b0f437b75715d6dff983e7efa710',19,'Free Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (48,'a463dd46862605c90ea60ccad74188db',19,'Total Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (49,'9977dd7a41bcf0f0c02872b442c7492e',19,'Freeable Space Data Source','','task_item_id');
-INSERT INTO graph_template_input VALUES (53,'940beb0f0344e37f4c6cdfc17d2060bc',21,'Available Disk Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (51,'a7a69bbdf6890d6e6eaa7de16e815ec6',20,'Used Directory Entries Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (52,'0072b613a33f1fae5ce3e5903dec8fdb',20,'Available Directory Entries Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (53,'940beb0f0344e37f4c6cdfc17d2060bc',21,'Available Disk Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (54,'7b0674dd447a9badf0d11bec688028a8',21,'Used Disk Space Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (55,'fa83cd3a3b4271b644cb6459ea8c35dc',22,'Discards In Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (56,'7946e8ee1e38a65462b85e31a15e35e5',22,'Errors In Data Source','','task_item_id');
@@ -1046,16 +1026,17 @@ INSERT INTO graph_template_input VALUES (69,'37d09fb7ce88ecec914728bdb20027f3',2
 INSERT INTO graph_template_input VALUES (70,'699bd7eff7ba0c3520db3692103a053d',28,'Legend Color','','color_id');
 INSERT INTO graph_template_input VALUES (71,'df905e159d13a5abed8a8a7710468831',29,'Processes Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (72,'8ca9e3c65c080dbf74a59338d64b0c14',29,'Legend Color','','color_id');
+INSERT INTO graph_template_input VALUES (73,'69ad68fc53af03565aef501ed5f04744',30,'Open Files Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (74,'562726cccdb67d5c6941e9e826ef4ef5',31,'Inbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (75,'82426afec226f8189c8928e7f083f80f',31,'Outbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (76,'69a23877302e7d142f254b208c58b596',32,'Inbound Data Source','','task_item_id');
+INSERT INTO graph_template_input VALUES (77,'f28013abf8e5813870df0f4111a5e695',32,'Outbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (78,'8644b933b6a09dde6c32ff24655eeb9a',33,'Outbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (79,'49c4b4800f3e638a6f6bb681919aea80',33,'Inbound Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (80,'e0b395be8db4f7b938d16df7ae70065f',13,'Cache Memory Data Source','','task_item_id');
 INSERT INTO graph_template_input VALUES (81,'2dca37011521501b9c2b705d080db750',34,'Data Source [snmp_oid]',NULL,'task_item_id');
 INSERT INTO graph_template_input VALUES (82,'b8d8ade5f5f3dd7b12f8cc56bbb4083e',34,'Legend Color','','color_id');
 INSERT INTO graph_template_input VALUES (83,'ac2355b4895c37e14df827f969f31c12',34,'Legend Text','','text_format');
-INSERT INTO graph_template_input VALUES (86,'a77087e2c9f879bebb3b1af78461b5e8',35,'Inbound Data Source','','task_item_id');
-INSERT INTO graph_template_input VALUES (87,'07caac9f9df540d543e0efe4b074b31b',35,'Outbound Data Source','','task_item_id');
 
 --
 -- Table structure for table `graph_template_input_defs`
@@ -1329,14 +1310,6 @@ INSERT INTO graph_template_input_defs VALUES (81,409);
 INSERT INTO graph_template_input_defs VALUES (81,410);
 INSERT INTO graph_template_input_defs VALUES (82,407);
 INSERT INTO graph_template_input_defs VALUES (83,407);
-INSERT INTO graph_template_input_defs VALUES (86,411);
-INSERT INTO graph_template_input_defs VALUES (86,412);
-INSERT INTO graph_template_input_defs VALUES (86,413);
-INSERT INTO graph_template_input_defs VALUES (86,414);
-INSERT INTO graph_template_input_defs VALUES (87,415);
-INSERT INTO graph_template_input_defs VALUES (87,416);
-INSERT INTO graph_template_input_defs VALUES (87,417);
-INSERT INTO graph_template_input_defs VALUES (87,418);
 
 --
 -- Table structure for table `graph_templates`
@@ -1387,7 +1360,7 @@ INSERT INTO graph_templates VALUES (30,'e3780a13b0f7a3f85a44b70cd4d2fd36','Netwa
 INSERT INTO graph_templates VALUES (31,'1742b2066384637022d178cc5072905a','Interface - Traffic (bits/sec, 95th Percentile)');
 INSERT INTO graph_templates VALUES (32,'13b47e10b2d5db45707d61851f69c52b','Interface - Traffic (bits/sec, Total Bandwidth)');
 INSERT INTO graph_templates VALUES (33,'8ad6790c22b693680e041f21d62537ac','Interface - Traffic (bytes/sec, Total Bandwidth)');
-INSERT INTO graph_templates VALUES (35,'9f30faece8c389d16c457e9ea7395c7c','Interface - Traffic (bits/sec) 1 min');
+
 --
 -- Table structure for table `graph_templates_gprint`
 --
@@ -1501,7 +1474,6 @@ INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description
 INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (47,0,0,34,'',1,'on','|host_description| -','','',120,'',500,'',100,'','','on',0,'on','','','on','',2,'','','','','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (48,0,0,35,'',1,'on','|host_description| - Traffic','','',120,'',500,'','100','','0','','bits per second','','on','','on','',2,'','','','on','','on','',1000,'0','','','on','','','','');
 
 --
 -- Table structure for table `graph_templates_item`
@@ -1610,13 +1582,6 @@ INSERT INTO graph_templates_item VALUES (83,'b5b7d9b64e7640aa51dbf58c69b86d15',0
 INSERT INTO graph_templates_item VALUES (84,'2ec10edf4bfaa866b7efd544d4c3f446',0,0,11,35,9,8,0,1,'15 Minute Average','','',2,5);
 INSERT INTO graph_templates_item VALUES (85,'b65666f0506c0c70966f493c19607b93',0,0,11,35,0,9,0,4,'Current:','','on',4,6);
 INSERT INTO graph_templates_item VALUES (86,'6c73575c74506cfc75b89c4276ef3455',0,0,11,0,1,4,12,1,'Total','','',2,7);
-INSERT INTO graph_templates_item VALUES (380,'0e715933830112c23c15f7e3463f77b6',0,0,32,55,0,9,2,3,'Maximum:','','',2,11);
-INSERT INTO graph_templates_item VALUES (379,'979fff9d691ca35e3f4b3383d9cae43f',0,0,32,55,0,9,2,1,'Average:','','',2,8);
-INSERT INTO graph_templates_item VALUES (378,'5bff63207c7bf076d76ff3036b5dad54',0,0,32,55,0,9,2,4,'Current:','','',2,7);
-INSERT INTO graph_templates_item VALUES (377,'4a381a8e87d4db1ac99cf8d9078266d3',0,0,32,55,20,4,2,1,'Outbound','','',2,6);
-INSERT INTO graph_templates_item VALUES (376,'88d3094d5dc2164cbf2f974aeb92f051',0,0,32,54,0,9,2,3,'Maximum:','','',2,4);
-INSERT INTO graph_templates_item VALUES (375,'54782f71929e7d1734ed5ad4b8dda50d',0,0,32,54,0,9,2,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (374,'55083351cd728b82cc4dde68eb935700',0,0,32,54,0,9,2,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (95,'5fa7c2317f19440b757ab2ea1cae6abc',0,0,12,16,41,7,14,1,'Free','','',2,9);
 INSERT INTO graph_templates_item VALUES (96,'b1d18060bfd3f68e812c508ff4ac94ed',0,0,12,16,0,9,14,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (97,'780b6f0850aaf9431d1c246c55143061',0,0,12,16,0,9,14,1,'Average:','','',2,11);
@@ -1657,9 +1622,6 @@ INSERT INTO graph_templates_item VALUES (131,'facfeeb6fc2255ba2985b2d2f695d78a',
 INSERT INTO graph_templates_item VALUES (132,'2470e43034a5560260d79084432ed14f',0,0,17,23,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (133,'e9e645f07bde92b52d93a7a1f65efb30',0,0,17,23,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (134,'bdfe0d66103211cfdaa267a44a98b092',0,0,17,23,0,9,0,3,'Maximum:','','on',3,4);
-INSERT INTO graph_templates_item VALUES (360,'5258970186e4407ed31cca2782650c45',0,0,30,29,0,9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (359,'da26dd92666cb840f8a70e2ec5e90c07',0,0,30,29,0,9,0,4,'Current:','','',3,2);
-INSERT INTO graph_templates_item VALUES (358,'803b96bcaec33148901b4b562d9d2344',0,0,30,29,89,7,0,1,'Open Files','','',2,1);
 INSERT INTO graph_templates_item VALUES (139,'098b10c13a5701ddb7d4d1d2e2b0fdb7',0,0,18,30,9,7,0,1,'CPU Usage','','',2,1);
 INSERT INTO graph_templates_item VALUES (140,'1dbda412a9926b0ee5c025aa08f3b230',0,0,18,30,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (141,'725c45917146807b6a4257fc351f2bae',0,0,18,30,0,9,0,1,'Average:','','',3,3);
@@ -1780,6 +1742,9 @@ INSERT INTO graph_templates_item VALUES (354,'',65,4,8,90,48,7,0,1,'Running Proc
 INSERT INTO graph_templates_item VALUES (355,'',66,4,8,90,0,9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (356,'',67,4,8,90,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (357,'',68,4,8,90,0,9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (358,'803b96bcaec33148901b4b562d9d2344',0,0,30,29,89,7,0,1,'Open Files','','',2,1);
+INSERT INTO graph_templates_item VALUES (359,'da26dd92666cb840f8a70e2ec5e90c07',0,0,30,29,0,9,0,4,'Current:','','',3,2);
+INSERT INTO graph_templates_item VALUES (360,'5258970186e4407ed31cca2782650c45',0,0,30,29,0,9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (361,'7d08b996bde9cdc7efa650c7031137b4',0,0,30,29,0,9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (362,'918e6e7d41bb4bae0ea2937b461742a4',0,0,31,54,22,7,2,1,'Inbound','','',2,1);
 INSERT INTO graph_templates_item VALUES (363,'f19fbd06c989ea85acd6b4f926e4a456',0,0,31,54,0,9,2,4,'Current:','','',2,2);
@@ -1792,8 +1757,15 @@ INSERT INTO graph_templates_item VALUES (369,'2302f80c2c70b897d12182a1fc11ecd6',
 INSERT INTO graph_templates_item VALUES (370,'4ffc7af8533d103748316752b70f8e3c',0,0,31,0,0,1,0,1,'','','on',2,9);
 INSERT INTO graph_templates_item VALUES (371,'64527c4b6eeeaf627acc5117ff2180fd',0,0,31,55,9,2,0,1,'95th Percentile','|95:bits:0:max:2|','',2,10);
 INSERT INTO graph_templates_item VALUES (372,'d5bbcbdbf83ae858862611ac6de8fc62',0,0,31,55,0,1,0,1,'(|95:bits:6:max:2| mbit in+out)','','',2,11);
-INSERT INTO graph_templates_item VALUES (384,'db7c15d253ca666601b3296f2574edc9',0,0,32,55,0,1,0,1,'Total Out: |sum:auto:current:2:auto|','','',2,12);
+INSERT INTO graph_templates_item VALUES (374,'55083351cd728b82cc4dde68eb935700',0,0,32,54,0,9,2,4,'Current:','','',2,2);
+INSERT INTO graph_templates_item VALUES (375,'54782f71929e7d1734ed5ad4b8dda50d',0,0,32,54,0,9,2,1,'Average:','','',2,3);
+INSERT INTO graph_templates_item VALUES (376,'88d3094d5dc2164cbf2f974aeb92f051',0,0,32,54,0,9,2,3,'Maximum:','','',2,4);
+INSERT INTO graph_templates_item VALUES (377,'4a381a8e87d4db1ac99cf8d9078266d3',0,0,32,55,20,4,2,1,'Outbound','','',2,6);
+INSERT INTO graph_templates_item VALUES (378,'5bff63207c7bf076d76ff3036b5dad54',0,0,32,55,0,9,2,4,'Current:','','',2,7);
+INSERT INTO graph_templates_item VALUES (379,'979fff9d691ca35e3f4b3383d9cae43f',0,0,32,55,0,9,2,1,'Average:','','',2,8);
+INSERT INTO graph_templates_item VALUES (380,'0e715933830112c23c15f7e3463f77b6',0,0,32,55,0,9,2,3,'Maximum:','','',2,11);
 INSERT INTO graph_templates_item VALUES (383,'5b43e4102600ad75379c5afd235099c4',0,0,32,54,0,1,0,1,'Total In:  |sum:auto:current:2:auto|','','on',2,5);
+INSERT INTO graph_templates_item VALUES (384,'db7c15d253ca666601b3296f2574edc9',0,0,32,55,0,1,0,1,'Total Out: |sum:auto:current:2:auto|','','',2,12);
 INSERT INTO graph_templates_item VALUES (385,'fdaec5b9227522c758ad55882c483a83',0,0,33,55,0,9,0,3,'Maximum:','','',2,11);
 INSERT INTO graph_templates_item VALUES (386,'6824d29c3f13fe1e849f1dbb8377d3f1',0,0,33,55,0,9,0,1,'Average:','','',2,8);
 INSERT INTO graph_templates_item VALUES (387,'54e3971b3dd751dd2509f62721c12b41',0,0,33,55,0,9,0,4,'Current:','','',2,7);
@@ -1812,14 +1784,6 @@ INSERT INTO graph_templates_item VALUES (407,'41316670b1a36171de2bda91a0cc2364',
 INSERT INTO graph_templates_item VALUES (408,'c9e8cbdca0215b434c902e68755903ea',0,0,34,96,0,9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (409,'dab91d7093e720841393feea5bdcba85',0,0,34,96,0,9,0,1,'Average:','','',2,3);
 INSERT INTO graph_templates_item VALUES (410,'03e5bd2151fea3c90843eb1130b84458',0,0,34,96,0,9,0,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (411,'52fdeefafb7750bddbe7f09197ca5f49',0,0,35,97,22,7,2,1,'Inbound','','',2,1);
-INSERT INTO graph_templates_item VALUES (412,'1ea3f40c7dda74e2d2532b1112a907cb',0,0,35,97,0,9,2,4,'Current:','','',2,2);
-INSERT INTO graph_templates_item VALUES (413,'f474e072aab78dff22974cc023d4b330',0,0,35,97,0,9,2,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (414,'189515e66a3c4d184cfa6f39f93a1705',0,0,35,97,0,9,2,3,'Maximum:','','on',2,4);
-INSERT INTO graph_templates_item VALUES (415,'4a77b7575e55317abd9346eee4db1532',0,0,35,98,20,4,2,1,'Outbound','','',2,5);
-INSERT INTO graph_templates_item VALUES (416,'4cdb0517f55e0dc2ef14f44f1261fc50',0,0,35,98,0,9,2,4,'Current:','','',2,6);
-INSERT INTO graph_templates_item VALUES (417,'ed7df282e81ca6f1de37c1f8d084e3d0',0,0,35,98,0,9,2,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (418,'af94e71eb62ebd6cd1b396ae81c5e1eb',0,0,35,98,0,9,2,3,'Maximum:','','',2,8);
 
 --
 -- Table structure for table `graph_tree`
@@ -2227,8 +2191,6 @@ INSERT INTO rra_cf VALUES (3,1);
 INSERT INTO rra_cf VALUES (3,3);
 INSERT INTO rra_cf VALUES (4,1);
 INSERT INTO rra_cf VALUES (4,3);
-INSERT INTO `rra_cf` VALUES (5,1);
-INSERT INTO `rra_cf` VALUES (5,3);
 
 --
 -- Table structure for table `settings`
@@ -2342,8 +2304,6 @@ INSERT INTO snmp_query_graph VALUES (19,'4a515b61441ea5f27ab7dee6c3cb7818',9,'Ge
 INSERT INTO snmp_query_graph VALUES (20,'ed7f68175d7bb83db8ead332fc945720',1,'In/Out Bits with 95th Percentile',31);
 INSERT INTO snmp_query_graph VALUES (21,'f85386cd2fc94634ef167c7f1e5fbcd0',1,'In/Out Bits with Total Bandwidth',32);
 INSERT INTO snmp_query_graph VALUES (22,'7d309bf200b6e3cdb59a33493c2e58e0',1,'In/Out Bytes with Total Bandwidth',33);
-INSERT INTO snmp_query_graph VALUES (23,'ab9be2ac012a0459f838a95338fe6c8b',1,'In/Out Bits 1 min',35);
-INSERT INTO snmp_query_graph VALUES (24,'d8149dc09ac2eef48e24a65b8dda4a03',1,'In/Out Bits 1 min (64-bit Counters)',35);
 
 --
 -- Table structure for table `snmp_query_graph_rrd`
@@ -2401,10 +2361,6 @@ INSERT INTO snmp_query_graph_rrd VALUES (21,41,55,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (21,41,54,'ifInOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (22,41,55,'ifOutOctets');
 INSERT INTO snmp_query_graph_rrd VALUES (22,41,54,'ifInOctets');
-INSERT INTO snmp_query_graph_rrd VALUES (23,49,97,'ifInOctets');
-INSERT INTO snmp_query_graph_rrd VALUES (23,49,98,'ifOutOctets');
-INSERT INTO snmp_query_graph_rrd VALUES (24,49,97,'ifHCInOctets');
-INSERT INTO snmp_query_graph_rrd VALUES (24,49,98,'ifHCOutOctets');
 
 --
 -- Table structure for table `snmp_query_graph_rrd_sv`
@@ -2431,11 +2387,6 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (11,'d0b49af67a83c258ef1eab3780f7b3dc
 INSERT INTO snmp_query_graph_rrd_sv VALUES (12,'bf6b966dc369f3df2ea640a90845e94c',7,8,1,'name','|host_description| - Wireless Signal Level - |query_kbWirelessStationName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (13,'5c3616603a7ac9d0c1cb9556b377a74f',8,10,1,'name','|host_description| - Wireless Re-Transmissions - |query_kbWirelessStationName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (14,'080f0022f77044a512b083e3a8304e8b',8,9,1,'name','|host_description| - Wireless Transmissions - |query_kbWirelessStationName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (88,'e1be83d708ed3c0b8715ccb6517a0365',9,41,2,'name','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (86,'c582d3b37f19e4a703d9bf4908dc6548',9,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (82,'8d820d091ec1a9683cfa74a462f239ee',14,41,2,'name','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (81,'2e8b27c63d98249096ad5bc320787f43',14,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (79,'2347e9f53564a54d43f3c00d4b60040d',16,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (30,'8132fa9c446e199732f0102733cb1714',11,36,1,'name','|host_description| - Directories - |query_nwVolPhysicalName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (29,'8fc9a94a5f6ef902a3de0fa7549e7476',10,35,1,'name','|host_description| - Volumes - |query_nwVolPhysicalName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (80,'27eb220995925e1a5e0e41b2582a2af6',16,41,1,'rrd_maximum','|query_ifSpeed|');
@@ -2443,13 +2394,6 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (85,'e85ddc56efa677b70448f9e931360b77
 INSERT INTO snmp_query_graph_rrd_sv VALUES (84,'37bb8c5b38bb7e89ec88ea7ccacf44d4',14,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (83,'62a47c18be10f273a5f5a13a76b76f54',14,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (32,'',12,37,1,'name','|host_description| - Partition - |query_dskDevice|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (78,'3a0f707d1c8fd0e061b70241541c7e2e',16,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (77,'8ef8ae2ef548892ab95bb6c9f0b3170e',16,41,2,'name','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (76,'c7ee2110bf81639086d2da03d9d88286',16,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (75,'7e093c535fa3d810fa76fc3d8c80c94b',13,41,1,'rrd_maximum','|query_ifSpeed|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (74,'084efd82bbddb69fb2ac9bd0b0f16ac6',13,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (72,'14aa2dead86bbad0f992f1514722c95e',13,41,2,'name','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (73,'70390712158c3c5052a7d830fb456489',13,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (49,'6537b3209e0697fbec278e94e7317b52',2,38,1,'name','|host_description| - Errors - |query_ifIP| - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (50,'6d3f612051016f48c951af8901720a1c',2,38,2,'name','|host_description| - Errors - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (51,'62bc981690576d0b2bd0041ec2e4aa6f',2,38,3,'name','|host_description| - Errors - |query_ifIP|/|query_ifDescr|');
@@ -2462,8 +2406,20 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (59,'ce7769b97d80ca31d21f83dc18ba93c2
 INSERT INTO snmp_query_graph_rrd_sv VALUES (60,'1ee1f9717f3f4771f7f823ca5a8b83dd',4,39,2,'name','|host_description| - Unicast Packets - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (61,'a7dbd54604533b592d4fae6e67587e32',4,39,3,'name','|host_description| - Unicast Packets - |query_ifIP|/|query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (62,'b148fa7199edcf06cd71c89e5c5d7b63',4,39,4,'name','|host_description| - Unicast Packets - |query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (70,'87a659326af8c75158e5142874fd74b0',13,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (69,'cb09784ba05e401a3f1450126ed1e395',15,37,1,'name','|host_description| - Free Space - |query_dskDevice|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (70,'87a659326af8c75158e5142874fd74b0',13,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (72,'14aa2dead86bbad0f992f1514722c95e',13,41,2,'name','|host_description| - Traffic - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (73,'70390712158c3c5052a7d830fb456489',13,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (74,'084efd82bbddb69fb2ac9bd0b0f16ac6',13,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (75,'7e093c535fa3d810fa76fc3d8c80c94b',13,41,1,'rrd_maximum','|query_ifSpeed|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (76,'c7ee2110bf81639086d2da03d9d88286',16,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (77,'8ef8ae2ef548892ab95bb6c9f0b3170e',16,41,2,'name','|host_description| - Traffic - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (78,'3a0f707d1c8fd0e061b70241541c7e2e',16,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (79,'2347e9f53564a54d43f3c00d4b60040d',16,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (81,'2e8b27c63d98249096ad5bc320787f43',14,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (82,'8d820d091ec1a9683cfa74a462f239ee',14,41,2,'name','|host_description| - Traffic - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (86,'c582d3b37f19e4a703d9bf4908dc6548',9,41,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
+INSERT INTO snmp_query_graph_rrd_sv VALUES (88,'e1be83d708ed3c0b8715ccb6517a0365',9,41,2,'name','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (89,'57a9ae1f197498ca8dcde90194f61cbc',9,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (90,'0110e120981c7ff15304e4a85cb42cbe',9,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (91,'ce0b9c92a15759d3ddbd7161d26a98b7',9,41,1,'rrd_maximum','|query_ifSpeed|');
@@ -2485,16 +2441,6 @@ INSERT INTO snmp_query_graph_rrd_sv VALUES (106,'940e57d24b2623849c77b59ed05931b
 INSERT INTO snmp_query_graph_rrd_sv VALUES (107,'0f045eab01bbc4437b30da568ed5cb03',22,41,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (108,'bd70bf71108d32f0bf91b24c85b87ff0',22,41,4,'name','|host_description| - Traffic - |query_ifDescr|');
 INSERT INTO snmp_query_graph_rrd_sv VALUES (109,'fdc4cb976c4b9053bfa2af791a21c5b5',22,41,1,'rrd_maximum','|query_ifSpeed|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (110,'746e652267ce5528c09166d2a4059a50',23,49,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (111,'ab0490c6e63f7208da173e8c5e2c7be5',23,49,2,'name','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (112,'1e856751952bd953b5f42bd8440c74d7',23,49,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (113,'10bf3e80f6eb9006be58efd5c86f6b3c',23,49,4,'name','|host_description| - Traffic - |query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (114,'611b272ef90bbb1aab6275df61668776',23,49,5,'rrd_maximum','|query_ifSpeed|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (115,'cf040e3920956ee6876610d5a053370a',24,49,1,'name','|host_description| - Traffic - |query_ifIP| - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (116,'4d58f061af99afb868605438c4fb85eb',24,49,2,'name','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (117,'98696b64f95b6fdbcc2f3007067e525d',24,49,3,'name','|host_description| - Traffic - |query_ifIP|/|query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (118,'5723c88453f577a4c399bbc3e4486a26',24,49,4,'name','|host_description| - Traffic - |query_ifDescr|');
-INSERT INTO snmp_query_graph_rrd_sv VALUES (119,'be8210af674da28db58093cab87a70b0',24,49,5,'rrd_maximum','|query_ifSpeed|');
 
 --
 -- Table structure for table `snmp_query_graph_sv`
@@ -2518,9 +2464,6 @@ CREATE TABLE snmp_query_graph_sv (
 INSERT INTO snmp_query_graph_sv VALUES (7,'437918b8dcd66a64625c6cee481fff61',6,1,'title','|host_description| - Disk Space - |query_dskPath|');
 INSERT INTO snmp_query_graph_sv VALUES (5,'2ddc61ff4bd9634f33aedce9524b7690',7,1,'title','|host_description| - Wireless Levels (|query_kbWirelessStationName|)');
 INSERT INTO snmp_query_graph_sv VALUES (6,'c72e2da7af2cdbd6b44a5eb42c5b4758',8,1,'title','|host_description| - Wireless Transmissions (|query_kbWirelessStationName|)');
-INSERT INTO snmp_query_graph_sv VALUES (33,'809c2e80552d56b65ca496c1c2fff398',16,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
-INSERT INTO snmp_query_graph_sv VALUES (32,'e403f5a733bf5c8401a110609683deb3',16,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
-INSERT INTO snmp_query_graph_sv VALUES (31,'7fb4a267065f960df81c15f9022cd3a4',16,1,'title','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_sv VALUES (11,'a412c5dfa484b599ec0f570979fdbc9e',10,1,'title','|host_description| - Volume Information - |query_nwVolPhysicalName|');
 INSERT INTO snmp_query_graph_sv VALUES (12,'48f4792dd49fefd7d640ec46b1d7bdb3',11,1,'title','|host_description| - Directory Information - |query_nwVolPhysicalName|');
 INSERT INTO snmp_query_graph_sv VALUES (14,'',12,1,'title','|host_description| - Disk Space - |query_dskDevice|');
@@ -2540,12 +2483,15 @@ INSERT INTO snmp_query_graph_sv VALUES (27,'48ceaba62e0c2671a810a7f1adc5f751',4,
 INSERT INTO snmp_query_graph_sv VALUES (28,'d6258884bed44abe46d264198adc7c5d',4,2,'title','|host_description| - Unicast Packets - |query_ifIP| (|query_ifDescr|)');
 INSERT INTO snmp_query_graph_sv VALUES (29,'6eb58d9835b2b86222306d6ced9961d9',4,3,'title','|host_description| - Unicast Packets - |query_ifDescr|/|query_ifIndex|');
 INSERT INTO snmp_query_graph_sv VALUES (30,'f21b23df740bc4a2d691d2d7b1b18dba',15,1,'title','|host_description| - Disk Space - |query_dskDevice|');
+INSERT INTO snmp_query_graph_sv VALUES (31,'7fb4a267065f960df81c15f9022cd3a4',16,1,'title','|host_description| - Traffic - |query_ifName|');
+INSERT INTO snmp_query_graph_sv VALUES (32,'e403f5a733bf5c8401a110609683deb3',16,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
+INSERT INTO snmp_query_graph_sv VALUES (33,'809c2e80552d56b65ca496c1c2fff398',16,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
 INSERT INTO snmp_query_graph_sv VALUES (34,'0a5eb36e98c04ad6be8e1ef66caeed3c',9,1,'title','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_sv VALUES (35,'4c4386a96e6057b7bd0b78095209ddfa',9,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
 INSERT INTO snmp_query_graph_sv VALUES (36,'fd3a384768b0388fa64119fe2f0cc113',9,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
-INSERT INTO snmp_query_graph_sv VALUES (40,'d99f8db04fd07bcd2260d246916e03da',17,1,'title','|host_description| - CPU Utilization - CPU|query_nwhrProcessorNum|');
 INSERT INTO snmp_query_graph_sv VALUES (38,'9852782792ede7c0805990e506ac9618',18,1,'title','|host_description| - Used Space - |query_hrStorageDescr|');
 INSERT INTO snmp_query_graph_sv VALUES (39,'fa2f07ab54fce72eea684ba893dd9c95',19,1,'title','|host_description| - CPU Utilization - CPU|query_hrProcessorFrwID|');
+INSERT INTO snmp_query_graph_sv VALUES (40,'d99f8db04fd07bcd2260d246916e03da',17,1,'title','|host_description| - CPU Utilization - CPU|query_nwhrProcessorNum|');
 INSERT INTO snmp_query_graph_sv VALUES (41,'f434ec853c479d424276f367e9806a75',20,1,'title','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_sv VALUES (42,'9b085245847444c5fb90ebbf4448e265',20,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
 INSERT INTO snmp_query_graph_sv VALUES (43,'5977863f28629bd8eb93a2a9cbc3e306',20,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
@@ -2555,12 +2501,6 @@ INSERT INTO snmp_query_graph_sv VALUES (46,'82edeea1ec249c9818773e3145836492',21
 INSERT INTO snmp_query_graph_sv VALUES (47,'87522150ee8a601b4d6a1f6b9e919c47',22,1,'title','|host_description| - Traffic - |query_ifName|');
 INSERT INTO snmp_query_graph_sv VALUES (48,'993a87c04f550f1209d689d584aa8b45',22,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
 INSERT INTO snmp_query_graph_sv VALUES (49,'183bb486c92a566fddcb0585ede37865',22,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
-INSERT INTO snmp_query_graph_sv VALUES (50,'6867508d4c21bc223065e5fcec0ae4be',23,1,'title','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_sv VALUES (51,'40560a33ba2742df87c9f5b448a09514',23,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
-INSERT INTO snmp_query_graph_sv VALUES (52,'478b957031bd4a2ba3ca61ffe6bc75ed',23,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
-INSERT INTO snmp_query_graph_sv VALUES (53,'b372d29eb28c33e83e87029f208f30f8',24,1,'title','|host_description| - Traffic - |query_ifName|');
-INSERT INTO snmp_query_graph_sv VALUES (54,'5fd05f44e69bac16b98796cc945ac060',24,2,'title','|host_description| - Traffic - |query_ifIP| (|query_ifDescr|)');
-INSERT INTO snmp_query_graph_sv VALUES (55,'6ffb207bd1bdb6d64989eea7a26a1323',24,3,'title','|host_description| - Traffic - |query_ifDescr|/|query_ifIndex|');
 
 --
 -- Table structure for table `user_auth`
