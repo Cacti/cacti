@@ -79,7 +79,7 @@ function db_execute($sql, $log = TRUE) {
 	while (1) {
 		$query = $cnn_id->Execute($sql);
 
-		if ($query) {
+		if (($query) || ($cnn_id->ErrorNo() == 1032)) {
 			return(1);
 		}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 			if ((substr_count($cnn_id->ErrorMsg(), "Deadlock")) || ($cnn_id->ErrorNo() == 1213) || ($cnn_id->ErrorNo() == 1205)) {
@@ -122,7 +122,7 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 
 	$query = $cnn_id->Execute($sql);
 
-	if ($query) {
+	if (($query) || ($cnn_id->ErrorNo() == 1032)) {
 		if (!$query->EOF) {
 			if ($col_name != '') {
 				$column = $query->fields[$col_name];
@@ -155,7 +155,7 @@ function db_fetch_row($sql, $log = TRUE) {
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
 
-	if ($query) {
+	if (($query) || ($cnn_id->ErrorNo() == 1032)) {
 		if (!$query->EOF) {
 			$fields = $query->fields;
 
@@ -185,7 +185,7 @@ function db_fetch_assoc($sql, $log = TRUE) {
 	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $cnn_id->Execute($sql);
 
-	if ($query) {
+	if (($query) || ($cnn_id->ErrorNo() == 1032)) {
 		while ((!$query->EOF) && ($query)) {
 			$data{sizeof($data)} = $query->fields;
 			$query->MoveNext();
