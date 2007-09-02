@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -bug#0000982: Remove invalid references to the "output_string" column in the "data_input" table
 -bug#0000983: Bad SQL: snmp_query_graph_rrd.snmp_query_graph_id=
 -bug#0000984: Poller does not correctly flush poller_output table after a memory error
+-bug#0000989: hyphen - host description used with Data Source Path
 -bug: ss_sql.php causes the script server to crash
 -bug: Timeshifter added to base code.
 -bug: Allow query_ and host_ substitution in COMMENT and CDEF's.

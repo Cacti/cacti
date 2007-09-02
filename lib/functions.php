@@ -869,6 +869,18 @@ function clean_up_name($string) {
 	return $string;
 }
 
+/* clean_up_file name - runs a string through a series of regular expressions designed to
+     eliminate "bad" characters
+   @arg $string - the string to modify/clean
+   @returns - the modified string */
+function clean_up_file_name($string) {
+	$string = preg_replace("/[\s\.]+/", "_", $string);
+	$string = preg_replace("/[^a-zA-Z0-9_-]+/", "", $string);
+	$string = preg_replace("/_{2,}/", "_", $string);
+
+	return $string;
+}
+
 /* clean_up_path - takes any path and makes sure it contains the correct directory
      separators based on the current operating system
    @arg $path - the path to modify
@@ -937,14 +949,14 @@ function generate_data_source_path($local_data_id) {
 	$host_name = db_fetch_cell("select host.description from (host,data_local) where data_local.host_id=host.id and data_local.id=$local_data_id");
 
 	if (!empty($host_name)) {
-		$host_part = strtolower(clean_up_name($host_name)) . "_";
+		$host_part = strtolower(clean_up_file_name($host_name)) . "_";
 	}
 
 	/* then try and use the internal DS name to identify it */
 	$data_source_rrd_name = db_fetch_cell("select data_source_name from data_template_rrd where local_data_id=$local_data_id order by id");
 
 	if (!empty($data_source_rrd_name)) {
-		$ds_part = strtolower(clean_up_name($data_source_rrd_name));
+		$ds_part = strtolower(clean_up_file_name($data_source_rrd_name));
 	}else{
 		$ds_part = "ds";
 	}
