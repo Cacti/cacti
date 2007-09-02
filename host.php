@@ -629,7 +629,7 @@ function host_edit() {
 	html_end_box();
 
 	?>
-	<script type="text/javascript">
+	<script onload="formActionInit()" type="text/javascript">
 	<!--
 
 	// default snmp information
@@ -890,7 +890,6 @@ function host_edit() {
 		}
 	}
 
-	window.onload = formActionInit();
 	-->
 	</script>
 	<?php
