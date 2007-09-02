@@ -39,9 +39,6 @@ input_validate_input_number(get_request_var("local_graph_id"));
 input_validate_input_number(get_request_var("rra_id"));
 /* ==================================================== */
 
-header("Content-type: application/vnd.ms-excel");
-header("Content-Disposition: attachment; filename=graph_xport.csv");
-
 /* flush the headers now */
 ob_end_clean();
 
@@ -84,7 +81,18 @@ $graph_info = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_grap
 /* for bandwidth, NThPercentile */
 $xport_meta = array();
 
+/* Get graph export */
 $xport_array = rrdtool_function_xport($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array, &$xport_meta);
+
+/* Make graph title the suggested file name */
+if (is_array($xport_array["meta"])) {
+	$filename = $xport_array["meta"]["title_cache"] . ".csv";
+} else {
+	$filename = "graph_export.csv";
+}
+
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
 
 if (is_array($xport_array["meta"])) {
 	print '"Title:","'          . $xport_array["meta"]["title_cache"]                . '"' . "\n";
@@ -96,12 +104,11 @@ if (is_array($xport_array["meta"])) {
 	print '"Graph ID:","'       . $xport_array["meta"]["local_graph_id"]             . '"' . "\n";
 	print '"Host ID:","'        . $xport_array["meta"]["host_id"]                    . '"' . "\n";
 
-	if (isset($xport_meta["NThPercent"])) {
-		foreach($xport_meta["NThPercent"] as $item) {
-			print '"NThPercent:","' . $item["value"] . '","' . $item["text_format"] . '"' . "\n";
+	if (isset($xport_meta["NthPercentile"])) {
+		foreach($xport_meta["NthPercentile"] as $item) {
+			print '"Nth Percentile:","' . $item["value"] . '","' . $item["text_format"] . '"' . "\n";
 		}
 	}
-
 	if (isset($xport_meta["Bandwidth"])) {
 		foreach($xport_meta["Bandwidth"] as $item) {
 			print '"Bandwidth:","' . $item["value"] . '","' . $item["text_format"] . '"' . "\n";

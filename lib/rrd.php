@@ -1375,8 +1375,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $xp
 				if (preg_match_all("/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
 					$k = 0;
 					foreach ($matches as $match) {
-						$xport_variables[$field_name][$xport_item_id] = str_replace($match[0], variable_nth_percentile($match, $xport_item, $xport_items, $graph_start, $graph_end), $xport_variables[$field_name][$xport_item_id]);
-						$xport_meta["NThPercent"][$k][$field_name] =$xport_variables[$field_name][$xport_item_id];
+						$xport_meta["NthPercentile"][$k][$field_name] = str_replace($match[0], variable_nth_percentile($match, $xport_item, $xport_items, $graph_start, $graph_end), $xport_variables[$field_name][$xport_item_id]);
 						$k++;
 					}
 				}
@@ -1385,8 +1384,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $xp
 				if (preg_match_all("/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
 					$k = 0;
 					foreach ($matches as $match) {
-						$xport_variables[$field_name][$xport_item_id] = str_replace($match[0], variable_bandwidth_summation($match, $xport_item, $xport_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $xport_variables[$field_name][$xport_item_id]);
-						$xport_meta["Bandwidth"][$k][$field_name] = $xport_variables[$field_name][$xport_item_id];
+						$xport_meta["Bandwidth"][$k][$field_name] = str_replace($match[0], variable_bandwidth_summation($match, $xport_item, $xport_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $xport_variables[$field_name][$xport_item_id]);
 						$k++;
 					}
 				}
