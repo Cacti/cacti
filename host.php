@@ -629,7 +629,7 @@ function host_edit() {
 	html_end_box();
 
 	?>
-	<script onload="formActionInit()" type="text/javascript">
+	<script type="text/javascript">
 	<!--
 
 	// default snmp information
@@ -656,13 +656,13 @@ function host_edit() {
 	var agent = navigator.userAgent;
 	agent = agent.match("MSIE");
 
-	function formActionInit() {
-		changeHostForm();
-	}
-
 	function setPingVisibility() {
 		availability_method = document.getElementById('availability_method').value;
 		ping_method         = document.getElementById('ping_method').value;
+
+		/* debugging, uncomment as required */
+		//alert("The availability method is '" + availability_method + "'");
+		//alert("The ping method is '" + ping_method + "'");
 
 		switch(availability_method) {
 		case "0": // none
@@ -703,11 +703,10 @@ function host_edit() {
 	}
 
 	function addSelectItem(item, formObj) {
-		try {
+		if (agent != "MSIE") {
 			formObj.add(item,null); // standards compliant
-		}
-		catch(ex) {
-			formObj.add(item); // IE only
+		}else{
+			formObj.add(item);      // IE only
 		}
 	}
 
@@ -717,6 +716,10 @@ function host_edit() {
 
 		/* get current selectedIndex */
 		selectedIndex = document.getElementById('availability_method').selectedIndex;
+
+		/* debugging uncomment as required */
+		//alert("The selectedIndex is '" + selectedIndex + "'");
+		//alert("The array length is '" + am.length + "'");
 
 		switch(type) {
 		case "NoSNMP":
@@ -728,7 +731,7 @@ function host_edit() {
 
 			/* set the index to something valid, like "ping" */
 			if (selectedIndex > 1) {
-				document.getElementById('availability_method').selectedIndex=1;
+				am.selectedIndex=1;
 			}
 
 			break;
@@ -771,54 +774,43 @@ function host_edit() {
 		}
 
 		setAvailabilityVisibility(type, am.selectedIndex);
+		setPingVisibility();
 	}
 
 	function setAvailabilityVisibility(type, selectedIndex) {
 		switch(type) {
 		case "NoSNMP":
 			switch(selectedIndex) {
-			case 0: // availability none
+			case "0": // availability none
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value=0;
-				setPingVisibility();
 
 				break;
-			case 1: // ping
+			case "1": // ping
 				document.getElementById('row_ping_method').style.display="";
 				document.getElementById('ping_method').value=ping_method;
-				setPingVisibility();
 
 				break;
 			}
 		case "All":
 			switch(selectedIndex) {
-			case 0: // availability none
+			case "0": // availability none
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value=0;
-				setPingVisibility();
 
 				break;
-			case 1: // ping and snmp
-				if (document.getElementById('ping_method').display == "none") {
-					document.getElementById('ping_method').value             = ping_method;
-					document.getElementById('row_ping_method').style.display = "";
+			case "1": // ping and snmp
+			case 3: // ping
+				if ((document.getElementById('row_ping_method').style.display == "none") ||
+					(document.getElementById('row_ping_method').style.display == undefined)) {
+					document.getElementById('ping_method').value=ping_method;
+					document.getElementById('row_ping_method').style.display="";
 				}
-				setPingVisibility();
 
 				break;
-			case 2: // snmp
+			case "2": // snmp
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value="0";
-				setPingVisibility();
-
-				break;
-			case 3: // ping
-				if (document.getElementById('ping_method').display == "none") {
-					document.getElementById('ping_method').value             = ping_method;
-					document.getElementById('row_ping_method').style.display = "";
-				}
-
-				setPingVisibility();
 
 				break;
 			}
@@ -827,7 +819,6 @@ function host_edit() {
 
 	function changeHostForm() {
 		snmp_version        = document.getElementById('snmp_version').value;
-		availability_method = document.getElementById('availability_method').value;
 
 		switch(snmp_version) {
 		case "0":
@@ -889,6 +880,8 @@ function host_edit() {
 			break;
 		}
 	}
+
+	window.onload = changeHostForm();
 
 	-->
 	</script>
