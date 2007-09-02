@@ -120,9 +120,11 @@ switch ($_REQUEST["action"]) {
 		include_once("./include/bottom_footer.php");
 		break;
 	case 'view_tech':
+		$php_info = utilities_php_modules();
+
 		include_once("./include/top_header.php");
 
-		utilities_view_tech();
+		utilities_view_tech($php_info);
 
 		include_once("./include/bottom_footer.php");
 		break;
@@ -139,8 +141,32 @@ switch ($_REQUEST["action"]) {
     Utilities Functions
    ----------------------- */
 
+function utilities_php_modules() {
 
-function utilities_view_tech() {
+	/* Gather phpinfo into a string variable */
+	ob_start();
+	phpinfo(INFO_MODULES);
+	$php_info = ob_get_contents();
+	ob_end_clean();
+
+	/* Remove nasty style sheets, links and other junk */
+	$php_info = str_replace("\n", "", $php_info);
+	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
+	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
+	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
+	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
+
+
+	return $php_info;
+
+}
+
+
+
+
+function utilities_view_tech($php_info = "") {
 	global $colors, $config;
 
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
@@ -171,14 +197,30 @@ function utilities_view_tech() {
 		print "		<td class='textArea'>" . php_uname() . "</td>\n";
 		print "</tr>\n";
 	}
-	html_header(array("PHP Information"), 2);
-	print "		<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>PHP SNMP</td>\n";
+	print "		<td class='textArea'>";
+	if (function_exists("snmpget")) {
+		print "Installed";
+	} else {
+		print "Not Installed";
+	}
+	print "</td>\n";
+	print "</tr>\n";
+
+	html_header(array("PHP Settings"), 2);
+	print "	<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>max_execution_time</td>\n";
 	print "		<td class='textArea'>" . ini_get("max_execution_time") . "</td>\n";
 	print "</tr>\n";
-	print "		<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "	<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>memory_limit</td>\n";
 	print "		<td class='textArea'>" . ini_get("memory_limit") . "</td>\n";
+	print "</tr>\n";
+
+	html_header(array("PHP Module Information"), 2);
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea' colspan='2'>" . $php_info . "</td>\n";
 	print "</tr>\n";
 
 	html_end_box();
