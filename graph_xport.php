@@ -106,12 +106,12 @@ if (is_array($xport_array["meta"])) {
 
 	if (isset($xport_meta["NthPercentile"])) {
 		foreach($xport_meta["NthPercentile"] as $item) {
-			print '"Nth Percentile:","' . $item["value"] . '","' . $item["text_format"] . '"' . "\n";
+			print '"Nth Percentile:","' . $item["text_format"] . '"' . "\n";
 		}
 	}
-	if (isset($xport_meta["Bandwidth"])) {
-		foreach($xport_meta["Bandwidth"] as $item) {
-			print '"Bandwidth:","' . $item["value"] . '","' . $item["text_format"] . '"' . "\n";
+	if (isset($xport_meta["Summation"])) {
+		foreach($xport_meta["Summation"] as $item) {
+			print '"Summation:","' . $item["text_format"] . '"' . "\n";
 		}
 	}
 
