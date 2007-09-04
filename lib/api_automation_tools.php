@@ -53,13 +53,13 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 		}
 	}
 
-	$save["id"] = $id;
-	$save["graph_tree_id"] = $tree_id;
-	$save["title"] = form_input_validate($title, "title", "", ($type == TREE_ITEM_TYPE_HEADER ? false : true), 3);
-	$save["order_key"] = $order_key;
-	$save["local_graph_id"] = form_input_validate($local_graph_id, "local_graph_id", "", true, 3);
-	$save["rra_id"]	= form_input_validate($rra_id, "rra_id", "", true, 3);
-	$save["host_id"] = form_input_validate($host_id, "host_id", "", true, 3);
+	$save["id"]                 = $id;
+	$save["graph_tree_id"]      = $tree_id;
+	$save["title"]              = form_input_validate($title, "title", "", ($type == TREE_ITEM_TYPE_HEADER ? false : true), 3);
+	$save["order_key"]          = $order_key;
+	$save["local_graph_id"]     = form_input_validate($local_graph_id, "local_graph_id", "", true, 3);
+	$save["rra_id"]	            = form_input_validate($rra_id, "rra_id", "", true, 3);
+	$save["host_id"]            = form_input_validate($host_id, "host_id", "", true, 3);
 	$save["host_grouping_type"] = form_input_validate($host_grouping_type, "host_grouping_type", "", true, 3);
 	$save["sort_children_type"] = form_input_validate($sort_children_type, "sort_children_type", "", true, 3);
 
@@ -142,7 +142,7 @@ function get_host_templates() {
 	return $host_templates;
 }
 
-function get_hosts() {
+function get_hosts_by_description() {
 	$hosts = array();
 	$tmparray = db_fetch_assoc("select id, description from host order by description");
 
@@ -155,10 +155,10 @@ function get_hosts() {
 
 function getHosts() {
 	$hosts    = array();
-	$tmpArray = db_fetch_assoc("select id, hostname from host order by id");
+	$tmpArray = db_fetch_assoc("select * from host order by id");
 
 	foreach ($tmpArray as $host) {
-		$hosts[$host["id"]] = $host["hostname"];
+		$hosts[$host["id"]] = $host;
 	}
 
 	return $hosts;
@@ -293,10 +293,12 @@ function displayGraphTemplates($templates) {
 }
 
 function displayHosts($hosts) {
-	echo "Known Hosts:(id, hostname)\n";
+	echo "Known Hosts: (id, hostname, template, description)\n";
 
-	while (list($id, $host) = each ($hosts)) {
-		echo "\t" . $id . "\t" . $host . "\n";
+	if (sizeof($hosts)) {
+		foreach($hosts as $host) {
+			echo "\t" . $host["id"] . "\t" . $host["hostname"] . "\t" . $host["host_template_id"] . "\t" . $host["description"] . "\n";
+		}
 	}
 }
 

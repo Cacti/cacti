@@ -188,7 +188,7 @@ if (sizeof($parms)) {
 
 	/* process the various lists into validation arrays */
 	$host_templates = get_host_templates();
-	$hosts          = get_hosts();
+	$hosts          = get_hosts_by_description();
 	$addresses      = get_addresses();
 
 	/* process templates */
@@ -200,7 +200,7 @@ if (sizeof($parms)) {
 
 	/* process host description */
 	if (isset($hosts[$description])) {
-		db_execute("update host set hostname = '$ip' where id = " . $hosts[$description]);
+		db_execute("update host set hostname='$ip' where id=" . $hosts[$description]);
 		echo "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
 		return 1;
 	}

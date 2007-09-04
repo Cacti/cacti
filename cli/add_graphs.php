@@ -296,7 +296,7 @@ if (sizeof($parms)) {
 		$snmp_query_array["snmp_index"] = db_fetch_cell("select snmp_index from host_snmp_cache WHERE host_id=" . $hostId . " and snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND field_name='" . $dsGraph["snmpField"] . "' AND field_value='" . $dsGraph["snmpValue"] . "'");
 
 		if (!isset($snmp_query_array["snmp_index"])) {
-			echo "Could not find snmp-field " . $dsGraph["snmpField"] . " (" . $dsGraph["snmpValue"] . ") for host-id " . $hostId . " (" . $hosts[$hostId] . ")\n";
+			echo "Could not find snmp-field " . $dsGraph["snmpField"] . " (" . $dsGraph["snmpValue"] . ") for host-id " . $hostId . " (" . $hosts[$hostId]["hostname"] . ")\n";
 			echo "Try --host-id " . $hostId . " --list-snmp-fields\n";
 
 			return 1;
