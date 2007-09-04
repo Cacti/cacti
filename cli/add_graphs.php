@@ -72,42 +72,34 @@ if (sizeof($parms)) {
 
 		switch($arg) {
 		case "--graph-type":
-			$i++;
 			$graph_type = $value;
 
 			break;
 		case "--graph-title":
-			$i++;
 			$graphTitle = $value;
 
 			break;
 		case "--graph-template-id":
-			$i++;
 			$templateId = $value;
 
 			break;
 		case "--host-id":
-			$i++;
 			$hostId = $value;
 
 			break;
 		case "--snmp-query-id":
-			$i++;
 			$dsGraph["snmpQueryId"] = $value;
 
 			break;
 		case "--snmp-query-type-id":
-			$i++;
 			$dsGraph["snmpQueryType"] = $value;
 
 			break;
 		case "--snmp-field":
-			$i++;
 			$dsGraph["snmpField"] = $value;
 
 			break;
 		case "--snmp-value":
-			$i++;
 			$dsGraph["snmpValue"] = $value;
 
 			break;
