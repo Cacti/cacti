@@ -52,10 +52,19 @@ if (sizeof($parms)) {
 	$community     = "";
 	$snmp_ver      = 1;
 	$disable       = 0;
-	$snmp_username = "";
-	$snmp_password = "";
-	$snmp_port     = 161;
-	$snmp_timeout  = 500;
+
+	$snmp_username        = "";
+	$snmp_password        = "";
+	$snmp_auth_protocol   = "";
+	$snmp_priv_passphrase = "";
+	$snmp_priv_protocol   = "";
+	$snmp_port            = 161;
+	$snmp_timeout         = 500;
+
+	$avail       = 1;
+	$ping_method = 3;
+	$ping_port   = "";
+	$notes       = "";
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -79,6 +88,9 @@ if (sizeof($parms)) {
 		case "--version":
 			$snmp_ver = trim($value);
 			break;
+		case "--notes":
+			$notes = trim($value);
+			break;
 		case "--disable":
 			$disable  = $value;
 			break;
@@ -88,12 +100,64 @@ if (sizeof($parms)) {
 		case "--password":
 			$snmp_password = trim($value);
 			break;
+		case "--authproto":
+			$snmp_auth_protocol = trim($value);
+			break;
+		case "--authproto":
+			$snmp_auth_protocol = trim($value);
+			break;
+		case "--privpass":
+			$snmp_priv_passphrase = trim($value);
+			break;
 		case "--port":
 			$snmp_port     = $value;
 			break;
 		case "--timeout":
 			$snmp_timeout  = $value;
 			break;
+		case "--avail":
+			switch($value) {
+			case "none":
+				$avail = 0;
+				break;
+			case "ping":
+				$avail = 3;
+				break;
+			case "snmp":
+				$avail = 2;
+			case "pingsnmp":
+				$avail = 1;
+				break;
+			default:
+				print "ERROR: Invalid Availability Parameter " . $value . "\n\n";
+				display_help();
+				return 1;
+			}
+			break;
+		case "--ping_method":
+			switch(strtolower($value)) {
+			case "icmp":
+				$ping_method = 1;
+				break;
+			case "tcp":
+				$ping_method = 3;
+				break;
+			case "udp":
+				$ping_method = 2;
+				break;
+			default:
+				print "ERROR: Invalid Ping Method " . $value . "\n\n";
+				display_help();
+				return 1;
+			}
+		case "--ping_port":
+			if (is_numeric($value) && ($value > 0)) {
+				$ping_port = $value;
+			}else{
+				print "ERROR: Invalid Ping Port " . $value . "\n\n";
+				display_help();
+				return 1;
+			}
 		case "-h":
 			display_help();
 			return 0;
@@ -200,7 +264,9 @@ if (sizeof($parms)) {
 
 	$host_id = api_device_save(0, $template_id, $description, $ip,
 				$community, $snmp_ver, $snmp_username, $snmp_password,
-				$snmp_port, $snmp_timeout, $disable);
+				$snmp_port, $snmp_timeout, $disable, $avail_method, $ping_method,
+				$ping_port, $ping_timeout, $ping_retries, $notes,
+				$snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol);
 
 	if (is_error_message()) {
 		echo "Failed to add this device\n";
@@ -217,20 +283,29 @@ if (sizeof($parms)) {
 
 function display_help() {
 	echo "Usage:\n";
-	echo "add_device.php --description=[description] --ip=[IP] --template=[ID] [--disable]\n";
-	echo "   [--version=[1|2|3]] [--community=] [--username= --password=] [--port=161] [--timeout=500]\n\n";
+	echo "add_device.php --description=[description] --ip=[IP] --notes=\"[]\" --template=[ID] [--disable]\n";
+	echo "   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534]\n";
+	echo "   [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
+	echo "   [--username= --password=] [--authproto=] [--privpass= --privproto=]\n\n";
 	echo "Required:\n";
 	echo "    - description: the name that will be displayed by Cacti in the graphs\n";
-	echo "    - ip: self explanatory (can also be a FQDN)\n";
-	echo "    - template is a number (read below to get a list of templates)\n\n";
+	echo "    - ip:          self explanatory (can also be a FQDN)\n";
+	echo "    - template:    is a number (read below to get a list of templates)\n";
+	echo "    - avail:       [ping][none, snmp, pingsnmp]\n";
 	echo "Optional:\n";
-	echo "    - disable: 0, 1 to add this host but to disable checks and 0 to enable it\n";
-	echo "    - version: 1, 1|2|3, snmp version\n";
-	echo "    - community: '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
-	echo "    - username: '', snmp username for snmpv3\n";
-	echo "    - password: '', snmp password for snmpv3\n";
-	echo "    - port: 161\n";
-	echo "    - timeout: 500\n\n";
+	echo "    - notes:       '', General information about this host.  Must be enclosed using double quotes.\n";
+	echo "    - disable:     0, 1 to add this host but to disable checks and 0 to enable it\n";
+	echo "    - ping_method: icmp, icmp, tcp, udp\n";
+	echo "    - ping_port:   '', 1-65534\n";
+	echo "    - version:     1, 1|2|3, snmp version\n";
+	echo "    - community:   '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
+	echo "    - username:    '', snmp username for snmpv3\n";
+	echo "    - password:    '', snmp password for snmpv3\n";
+	echo "    - authproto:   '', snmp authentication protocol for snmpv3\n";
+	echo "    - privpass:    '', snmp privacy passphrase for snmpv3\n";
+	echo "    - privproto:   '', snmp privacy protocol for snmpv3\n";
+	echo "    - port:        161\n";
+	echo "    - timeout:     500\n\n";
 	echo "List Options:  --list-templates\n";
 	echo "               --list-communities\n\n";
 }
