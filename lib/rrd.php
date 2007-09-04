@@ -1137,7 +1137,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $xport_meta, $rrd_struc = array()) {
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $rrd_struc = array()) {
 	global $config;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -1291,6 +1291,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $xp
 	$xport_defs = "";
 
 	$i = 0; $j = 0;
+	$nth = 0; $sum = 0;
 	if (sizeof($xport_items) > 0) {
 		foreach ($xport_items as $xport_item) {
 			/* mimic the old behavior: LINE[123], AREA, and STACK items use the CF specified in the graph item */
@@ -1373,19 +1374,23 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, $xp
 
 				/* Nth percentile */
 				if (preg_match_all("/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
-					$k = 0;
 					foreach ($matches as $match) {
-						$xport_meta["NthPercentile"][][$field_name] = str_replace($match[0], variable_nth_percentile($match, $xport_item, $xport_items, $graph_start, $graph_end), $xport_variables[$field_name][$xport_item_id]);
-						$k++;
+						if ($field_name == "value") {
+							$xport_meta["NthPercentile"][$nth]["format"] = $match[0];
+							$xport_meta["NthPercentile"][$nth]["value"]  = str_replace($match[0], variable_nth_percentile($match, $xport_item, $xport_items, $graph_start, $graph_end), $xport_variables[$field_name][$xport_item_id]);
+							$nth++;
+						}
 					}
 				}
 
 				/* bandwidth summation */
 				if (preg_match_all("/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/", $xport_variables[$field_name][$xport_item_id], $matches, PREG_SET_ORDER)) {
-					$k = 0;
 					foreach ($matches as $match) {
-						$xport_meta["Summation"][][$field_name] = str_replace($match[0], variable_bandwidth_summation($match, $xport_item, $xport_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $xport_variables[$field_name][$xport_item_id]);
-						$k++;
+						if ($field_name == "text_format") {
+							$xport_meta["Summation"][$sum]["format"] = $match[0];
+							$xport_meta["Summation"][$sum]["value"]  = str_replace($match[0], variable_bandwidth_summation($match, $xport_item, $xport_items, $graph_start, $graph_end, $rra["steps"], $ds_step), $xport_variables[$field_name][$xport_item_id]);
+							$sum++;
+						}
 					}
 				}
 			}
