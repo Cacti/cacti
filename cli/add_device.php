@@ -53,6 +53,8 @@ if (sizeof($parms)) {
 	$snmp_ver      = 1;
 	$disable       = 0;
 
+	$notes         = "";
+
 	$snmp_username        = "";
 	$snmp_password        = "";
 	$snmp_auth_protocol   = "";
@@ -61,10 +63,11 @@ if (sizeof($parms)) {
 	$snmp_port            = 161;
 	$snmp_timeout         = 500;
 
-	$avail       = 1;
-	$ping_method = 3;
-	$ping_port   = "";
-	$notes       = "";
+	$avail        = 1;
+	$ping_method  = 3;
+	$ping_port    = 23;
+	$ping_timeout = 500;
+	$ping_retries = 2;
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -153,8 +156,18 @@ if (sizeof($parms)) {
 		case "--ping_port":
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_port = $value;
+				break;
 			}else{
 				print "ERROR: Invalid Ping Port " . $value . "\n\n";
+				display_help();
+				return 1;
+			}
+		case "--ping_retries":
+			if (is_numeric($value) && ($value > 0)) {
+				$ping_retries = $value;
+				break;
+			}else{
+				print "ERROR: Invalid Ping Retries " . $value . "\n\n";
 				display_help();
 				return 1;
 			}
@@ -227,8 +240,8 @@ if (sizeof($parms)) {
 		echo "Invalid snmp version ($snmp_ver)\n";
 		return 1;
 	}else{
-		if ($snmp_port <= 0 || $snmp_port > 65535) {
-			echo "Invalid port.  Valid values are from 1-65535\n";
+		if ($snmp_port <= 1 || $snmp_port > 65534) {
+			echo "Invalid port.  Valid values are from 1-65534\n";
 			return 1;
 		}
 
@@ -284,29 +297,30 @@ if (sizeof($parms)) {
 function display_help() {
 	echo "Usage:\n";
 	echo "add_device.php --description=[description] --ip=[IP] --notes=\"[]\" --template=[ID] [--disable]\n";
-	echo "   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534]\n";
+	echo "   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
 	echo "   [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	echo "   [--username= --password=] [--authproto=] [--privpass= --privproto=]\n\n";
 	echo "Required:\n";
-	echo "    - description: the name that will be displayed by Cacti in the graphs\n";
-	echo "    - ip:          self explanatory (can also be a FQDN)\n";
-	echo "    - template:    is a number (read below to get a list of templates)\n";
-	echo "    - avail:       [ping][none, snmp, pingsnmp]\n";
+	echo "    - description:  the name that will be displayed by Cacti in the graphs\n";
+	echo "    - ip:           self explanatory (can also be a FQDN)\n";
+	echo "    - template:     is a number (read below to get a list of templates)\n";
+	echo "    - avail:        [ping][none, snmp, pingsnmp]\n";
 	echo "Optional:\n";
-	echo "    - notes:       '', General information about this host.  Must be enclosed using double quotes.\n";
-	echo "    - disable:     0, 1 to add this host but to disable checks and 0 to enable it\n";
-	echo "    - ping_method: icmp, icmp, tcp, udp\n";
-	echo "    - ping_port:   '', 1-65534\n";
-	echo "    - version:     1, 1|2|3, snmp version\n";
-	echo "    - community:   '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
-	echo "    - username:    '', snmp username for snmpv3\n";
-	echo "    - password:    '', snmp password for snmpv3\n";
-	echo "    - authproto:   '', snmp authentication protocol for snmpv3\n";
-	echo "    - privpass:    '', snmp privacy passphrase for snmpv3\n";
-	echo "    - privproto:   '', snmp privacy protocol for snmpv3\n";
-	echo "    - port:        161\n";
-	echo "    - timeout:     500\n\n";
-	echo "List Options:  --list-templates\n";
+	echo "    - notes:        '', General information about this host.  Must be enclosed using double quotes.\n";
+	echo "    - disable:      0, 1 to add this host but to disable checks and 0 to enable it\n";
+	echo "    - ping_method:  icmp, icmp, tcp, udp\n";
+	echo "    - ping_port:    '', 1-65534\n";
+	echo "    - ping_retries: 2, the number of time to attempt to communicate with a host\n";
+	echo "    - version:      1, 1|2|3, snmp version\n";
+	echo "    - community:    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
+	echo "    - username:     '', snmp username for snmpv3\n";
+	echo "    - password:     '', snmp password for snmpv3\n";
+	echo "    - authproto:    '', snmp authentication protocol for snmpv3\n";
+	echo "    - privpass:     '', snmp privacy passphrase for snmpv3\n";
+	echo "    - privproto:    '', snmp privacy protocol for snmpv3\n";
+	echo "    - port:         161\n";
+	echo "    - timeout:      500\n\n";
+	echo "List Options:  --list-host-templates\n";
 	echo "               --list-communities\n\n";
 }
 
