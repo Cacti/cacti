@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0000480: error when making a change to graphs displayed per page
 -bug#0000833: favicon.ico support
 -bug#0000850: Select All for list view
+-bug#0000854: Move "Downed Host Detection" to each device
 -bug#0000873: Poller hangs in certain situations
 -bug#0000876: Ability to search for host with a not UP status
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset
