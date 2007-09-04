@@ -584,27 +584,31 @@ class Net_Ping
 
 		switch ($avail_method) {
 			case AVAIL_SNMP_AND_PING:
-				if ($this->host["snmp_community"] == "")
-					if ($ping_result)
+				if ($this->host["snmp_community"] == "") {
+					if ($ping_result) {
 						return true;
-					else
+					}else{
 						return false;
-				if ($snmp_result)
+					}
+				}elseif ($snmp_result) {
 					return true;
-				if ($ping_result)
+				}elseif ($ping_result) {
 					return true;
-				else
+				}else{
 					return false;
+				}
 			case AVAIL_SNMP:
-				if ($snmp_result)
+				if ($snmp_result) {
 					return true;
-				else
+				}else{
 					return false;
+				}
 			case AVAIL_PING:
-				if ($ping_result)
+				if ($ping_result) {
 					return true;
-				else
+				}else{
 					return false;
+				}
 			case AVAIL_NONE:
 				return true;
 			default:

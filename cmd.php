@@ -217,30 +217,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 		if (($new_host) && (!empty($host_id))) {
 			$ping->host = $item;
 
-			if ((!function_exists("socket_create")) || (phpversion() < "4.3")) {
-				/* the ping test will fail under PHP < 4.3 without socket support */
-				$ping_availability = AVAIL_SNMP;
-			}else{
-				$ping_availability = read_config_option("availability_method");
-			}
-
-			/* if we are only allowed to use an snmp check and this host does not support snnp, we
-			must assume that this host is up */
-			if (($ping_availability == AVAIL_SNMP) && ($item["snmp_community"] == "")) {
+			/* perform the appropriate ping check of the host */
+			if ($ping->ping($item["availability_method"], $item["ping_method"], $item["ping_timeout"], $item["ping_retries"])) {
 				$host_down = false;
-				update_host_status(HOST_UP, $host_id, $hosts, $ping, $ping_availability, $print_data_to_stdout);
-
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$host_id] No host availability check possible for '" . $item["hostname"] . "'.", $print_data_to_stdout);
-				}
+				update_host_status(HOST_UP, $host_id, $hosts, $ping, $item["availability_method"], $print_data_to_stdout);
 			}else{
-				if ($ping->ping($ping_availability, read_config_option("ping_method"), read_config_option("ping_timeout"), read_config_option("ping_retries"))) {
-					$host_down = false;
-					update_host_status(HOST_UP, $host_id, $hosts, $ping, $ping_availability, $print_data_to_stdout);
-				}else{
-					$host_down = true;
-					update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $ping_availability, $print_data_to_stdout);
-				}
+				$host_down = true;
+				update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $item["availability_method"], $print_data_to_stdout);
 			}
 
 			if (!$host_down) {
