@@ -212,7 +212,7 @@ function utilities_view_tech($php_info = "") {
 	print "		<td class='textArea'>RRDTool Version</td>\n";
 	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version];
 	if ($rrdtool_version != read_config_option("rrdtool_version")) {
-		print "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='http://cacti/cacti086/settings.php?tab=general'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font>";
+		print "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='settings.php?tab=general'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font>";
 	}
 	print "</td>\n";
 	print "</tr>\n";
