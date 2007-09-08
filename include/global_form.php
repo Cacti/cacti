@@ -659,7 +659,7 @@ $fields_host_edit = array(
 		),
 	"availability_method" => array(
 		"friendly_name" => "Downed Device Detection",
-		"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
+		"description" => "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>",
 		"on_change" => "changeHostForm()",
 		"value" => "|arg1:availability_method|",
 		"method" => "drop_array",
@@ -668,7 +668,7 @@ $fields_host_edit = array(
 		),
 	"ping_method" => array(
 		"friendly_name" => "Ping Method",
-		"description" => "The type of ping packet to sent.  NOTE: ICMP on Linux/UNIX requires root privileges.",
+		"description" => "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>",
 		"on_change" => "changeHostForm()",
 		"value" => "|arg1:ping_method|",
 		"method" => "drop_array",
@@ -789,8 +789,7 @@ $fields_host_edit = array(
 	"max_oids" => array(
 		"method" => "textbox",
 		"friendly_name" => "Maximum OID's Per Get Request",
-		"description" => "Specified the number of OID's that can be obtained in a single SNMP Get request.  <u><b>NOTE:
-		This feature only works when using Cactid</b></u>",
+		"description" => "Specified the number of OID's that can be obtained in a single SNMP Get request.  <br><i>NOTE: This feature only works when using Cactid</i>",
 		"value" => "|arg1:max_oids|",
 		"max_length" => "8",
 		"default" => read_config_option("max_get_size"),

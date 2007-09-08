@@ -47,7 +47,7 @@ function upgrade_to_0_8_7() {
 	db_install_execute("0.8.7", "ALTER TABLE `user_auth` ADD INDEX `enabled`(`enabled`)");
 
 	/* add additional fields to the host table */
-	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `availability_method` SMALLINT(5) UNSIGNED NOT NULL default '1' AFTER `snmp_timeout`");
+	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `availability_method` SMALLINT(5) UNSIGNED NOT NULL default '2' AFTER `snmp_timeout`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `ping_method` SMALLINT(5) UNSIGNED default '0' AFTER `availability_method`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `ping_port` INT(12) UNSIGNED default '0' AFTER `ping_method`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `ping_timeout` INT(12) UNSIGNED default '500' AFTER `ping_port`");

@@ -674,14 +674,14 @@ $settings = array(
 			),
 		"availability_method" => array(
 			"friendly_name" => "Downed Host Detection",
-			"description" => "The method Cacti will use to determine if a host is available for polling.  NOTE: It is recommended that, at a minimum, SNMP always be selected.",
+			"description" => "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>",
 			"method" => "drop_array",
 			"default" => AVAIL_SNMP,
 			"array" => $availability_options,
 			),
 		"ping_method" => array(
 			"friendly_name" => "Ping Type",
-			"description" => "The type of ping packet to sent.  NOTE: ICMP requires that the Cacti Service ID have root privilages in Unix.",
+			"description" => "The type of ping packet to sent.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privilages in Unix.</i>",
 			"method" => "drop_array",
 			"default" => PING_UDP,
 			"array" => $ping_methods,
