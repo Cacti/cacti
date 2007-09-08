@@ -167,10 +167,29 @@ function utilities_php_modules() {
 
 
 function utilities_view_tech($php_info = "") {
-	global $colors, $config;
+	global $colors, $config, $rrdtool_versions;
 
+	/* Get table status */
 	$table_status = db_fetch_assoc("SHOW TABLE STATUS");
 
+	/* Get RRDtool version */
+	if ((file_exists(read_config_option("path_rrdtool"))) && (($config["cacti_server_os"] == "win32") || (is_executable(read_config_option("path_rrdtool"))))) {
+		$rrdtool_version = "Unknown";
+
+		$out_array = array();
+		exec(read_config_option("path_rrdtool"), $out_array);
+	
+		if (sizeof($out_array) > 0) {
+			if (ereg("^RRDtool 1\.2", $out_array[0])) {
+				$rrdtool_version = "rrd-1.2.x";
+			}else if (ereg("^RRDtool 1\.0\.", $out_array[0])) {
+				$rrdtool_version = "rrd-1.0.x";
+			}
+		}
+	}
+
+
+	/* Display tech information */
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
 	html_header(array("Cacti Information"), 2);
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
@@ -189,6 +208,15 @@ function utilities_view_tech($php_info = "") {
 	print "		<td class='textArea'>Poller Interval</td>\n";
 	print "		<td class='textArea'>" . read_config_option("poller_interval") . "</td>\n";
 	print "</tr>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>RRDTool Version</td>\n";
+	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version];
+	if ($rrdtool_version != read_config_option("rrdtool_version")) {
+		print " - <font color='red'>ERROR: Installed RRDTool version does not match configured version</font>";
+	}
+	print "</td>\n";
+	print "</tr>\n";
+
 
 	html_header(array("PHP Information"), 2);
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
