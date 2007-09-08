@@ -169,6 +169,8 @@ function utilities_php_modules() {
 function utilities_view_tech($php_info = "") {
 	global $colors, $config;
 
+	$table_status = db_fetch_assoc("SHOW TABLE STATUS");
+
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
 	html_header(array("Cacti Information"), 2);
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
@@ -183,6 +185,12 @@ function utilities_view_tech($php_info = "") {
 	print "		<td class='textArea'>Cacti OS</td>\n";
 	print "		<td class='textArea'>" . $config["cacti_server_os"] . "</td>\n";
 	print "</tr>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea'>Poller Interval</td>\n";
+	print "		<td class='textArea'>" . read_config_option("poller_interval") . "</td>\n";
+	print "</tr>\n";
+
+	html_header(array("PHP Information"), 2);
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>PHP Version</td>\n";
 	print "		<td class='textArea'>" . phpversion() . "</td>\n";
@@ -207,15 +215,42 @@ function utilities_view_tech($php_info = "") {
 	}
 	print "</td>\n";
 	print "</tr>\n";
-
-	html_header(array("PHP Settings"), 2);
-	print "	<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>max_execution_time</td>\n";
 	print "		<td class='textArea'>" . ini_get("max_execution_time") . "</td>\n";
 	print "</tr>\n";
-	print "	<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>memory_limit</td>\n";
 	print "		<td class='textArea'>" . ini_get("memory_limit") . "</td>\n";
+	print "</tr>\n";
+
+	html_header(array("MySQL Table Information"), 2);
+	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
+	print "		<td class='textArea' colspan='2' align='center'>";
+	if (sizeof($table_status) > 0) {
+		print "<table border='1' cellpadding='2' cellspacing='0'>\n";
+		print "<tr>\n";
+		print "  <th>Name</th>\n";
+		print "  <th>Rows</th>\n";
+		print "  <th>Engine</th>\n";
+		print "  <th>Collation</th>\n";
+		print "  <th>Check Status</th>\n";
+		print "</tr>\n";
+		foreach ($table_status as $item) {
+			print "<tr>\n";
+			print "  <td>" . $item["Name"] . "</td>\n";
+			print "  <td>" . $item["Rows"] . "</td>\n";
+			print "  <td>" . $item["Engine"] . "</td>\n";
+			print "  <td>" . $item["Collation"] . "</td>\n";
+			print "  <td>" . db_fetch_cell("CHECK TABLE " . $item["Name"], "Msg_text") . "</td>\n";
+			print "</tr>\n";
+		}
+		print "</table>\n";
+	}else{
+		print "Unable to retrieve table status";
+	}
+
+	print "</td>\n";
 	print "</tr>\n";
 
 	html_header(array("PHP Module Information"), 2);
