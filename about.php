@@ -65,7 +65,7 @@ html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "
 
 		<p><strong>Thanks</a></strong><br>
 		<ul type="disc">
-			<li>A very special thanks to <a href="http://ee-staff.ethz.ch/~oetiker/"><strong>Tobi Oetiker</strong></a>,
+			<li>A very special thanks to <a href="http://tobi.oetiker.ch/"><strong>Tobi Oetiker</strong></a>,
 				the creator of <a href="http://www.mrtg.org/">RRDTool</a> and the very popular
 				<a href="http://www.mrtg.org">MRTG</a>.</li>
 			<li><strong>Brady Alleman</strong>, creator of NetMRG and
@@ -75,7 +75,7 @@ html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "
 			<li><strong>Andy Blyler</strong>, for ideas, code, and that much needed overall support
 				during really lengthy coding sessions.</li>
 			<li><strong>The users of Cacti</strong>! Especially anyone who has taken the time to create a bug report, or otherwise
-				help me fix a Cacti-related problem. Also to anyone who has purchased an item from my amazon.com
+				help fix a Cacti-related problem. Also to anyone who has purchased an item from a developers amazon.com
 				wishlist or donated money to the project.</li>
 
 		</ul>
