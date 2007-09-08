@@ -39,6 +39,7 @@ function upgrade_to_0_8_7() {
 	/* speed up the UI */
 	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD INDEX `action`(`action`)");
 	db_install_execute("0.8.7", "ALTER TABLE `user_auth` ADD INDEX `username`(`username`)");
+	db_install_execute("0.8.7", "ALTER TABLE `user_auth` ADD INDEX `realm`(`realm`)");
 	db_install_execute("0.8.7", "ALTER TABLE `user_log` ADD INDEX `username`(`username`)");
 	db_install_execute("0.8.7", "ALTER TABLE `data_input` ADD INDEX `name`(`name`)");
 
@@ -64,8 +65,8 @@ function upgrade_to_0_8_7() {
 	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_priv_protocol` CHAR(6) default '' AFTER `snmp_priv_passphrase`");
 
 	/* Convert to new authentication system */
-	if (db_fetch_cell("SELECT `value` FROM `settings` WHERE `name` = 'global_auth'") == "on") {
-		if (db_fetch_cell("SELECT `value` FROM `settings` WHERE `name` = 'ldap_enable'") == "on") {
+	if (read_config_option("global_auth") == "on") {
+		if (read_config_option("ldap_enable") == "on") {
 			db_install_execute("0.8.7", "INSERT INTO settings VALUES ('auth_method','3')");
 		}else{
 			db_install_execute("0.8.7", "INSERT INTO settings VALUES ('auth_method','1')");
@@ -77,38 +78,38 @@ function upgrade_to_0_8_7() {
 	db_install_execute("0.8.7", "DELETE FROM `settings` WHERE name = 'global_auth'");
 	db_install_execute("0.8.7", "DELETE FROM `settings` WHERE name = 'ldap_enabled'");
 
-	/* settings for availability */
+	/* host settings for availability */
 	$ping_method = read_config_option("ping_method");
+	$ping_retries = read_config_option("ping_retries");
+	$ping_timeout = read_config_option("ping_timeout");
 	$availability_method = read_config_option("availability_method");
-
 	$hosts = db_fetch_assoc("SELECT id, snmp_community FROM host");
-
 	if (sizeof($hosts)) {
 		foreach($hosts as $host) {
 			if (strlen($host["snmp_community"] == 0)) {
 				if ($availability_method == AVAIL_SNMP) {
-					db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_NONE . "', ping_method='" . PING_NONE . "' WHERE id='" . $host["id"] . "'");
+					db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_NONE . ", ping_method = " . PING_NONE . ",ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 				}else{
 					if ($ping_method == PING_ICMP) {
-						db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "' WHERE id='" . $host["id"] . "'");
+						db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_PING . ", ping_method = " . $ping_method . ", ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 					}else{
-						db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "', ping_port='33439' WHERE id='" . $host["id"] . "'");
+						db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_PING . ", ping_method='" . $ping_method . ", ping_port = 33439, ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 					}
 				}
 			}else{
 				if ($availability_method == AVAIL_SNMP) {
-					db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_SNMP . "', ping_method='" . PING_NONE . "' WHERE id='" . $host["id"] . "'");
+					db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_SNMP . ", ping_method = " . PING_NONE . ", ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 				}else if ($availability_method == AVAIL_SNMP_AND_PING) {
 					if ($ping_method == PING_ICMP) {
-						db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_SNMP_AND_PING . "', ping_method='" . $ping_method . "' WHERE id='" . $host["id"] . "'");
+						db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_SNMP_AND_PING . ", ping_method = " . $ping_method . ", ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 					}else{
-						db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_SNMP_AND_PING . "', ping_method='" . $ping_method . "', ping_port='33439' WHERE id='" . $host["id"] . "'");
+						db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_SNMP_AND_PING . ", ping_method = " . $ping_method . ", ping_port = 33439, ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 					}
 				}else{
 					if ($ping_method == PING_ICMP) {
-						db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "' WHERE id='" . $host["id"] . "'");
+						db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_PING . ", ping_method = " . $ping_method . ", ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 					}else{
-						db_install_execute("0.8.7", "UPDATE host SET availability_method='" . AVAIL_PING . "', ping_method='" . $ping_method . "', ping_port='33439' WHERE id='" . $host["id"] . "'");
+						db_install_execute("0.8.7", "UPDATE host SET availability_method = " . AVAIL_PING . ", ping_method = " . $ping_method . ", ping_port = 33439, ping_timeout = " . $ping_timeout . ", ping_retries = " . $ping_retries . " WHERE id = " . $host["id"]);
 					}
 				}
 			}
