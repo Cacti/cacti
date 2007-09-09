@@ -79,7 +79,7 @@ function settings() {
 	global $colors, $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user, $graph_tree_views;
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") == 0) {
 		raise_message(6);
 		display_output_messages();
 		return;
