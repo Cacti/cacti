@@ -11,7 +11,7 @@ NET-SNMP 5.1.2+
 
 
 PHP Must also be compiled as a standalone cgi binary. This is required
-for data gathering in crontab. 
+for data gathering in crontab.
 
 Cacti has been successfully run on the following operating systems:
 
@@ -31,7 +31,7 @@ Windows XP Professional
 Windows 2003 Professional/Server
 Slackware 8.0
 Debian Linux
-SuSE Linux 
+SuSE Linux
 AIX 4.3
 AIX 5.x
 Solaris 9
@@ -39,19 +39,19 @@ Solaris 10
 
 A Note About RRDtool:
 
-RRDTool is available in 2 versions, 1.0.x and 1.2.x, both are supported 
+RRDTool is available in 2 versions, 1.0.x and 1.2.x, both are supported
 by Cacti.  Please remember to confirm your Cacti settings for the RRDtool
 version if you having problem rendering graphs.
 
-Also important to note in version Cacti 0.8.6h and above, graph items with 
-no color assigned are now properly presented to RRDTool.  The upgraded 
-will fix graph items that will cause your graphs not to render, but as 
+Also important to note in version Cacti 0.8.6h and above, graph items with
+no color assigned are now properly presented to RRDTool.  The upgraded
+will fix graph items that will cause your graphs not to render, but as
 always, please remember to backup before you proceed to upgrade.
 
 A Note About Debian:
 
 Under Debian Linux, the PHP binary is available as the php4-cgi package.
-This package creates a separate php.ini, so you must edit your 
+This package creates a separate php.ini, so you must edit your
 'php4/cgi/php.ini' file and add line that says 'extension=mysql.so'.
 
 If you get cacti running on other operating systems, please contact me, I
@@ -60,24 +60,24 @@ will add the names to the list.
 A Note About SuSE 7.3:
 
 The SNMP support that comes with PHP 4.0.6 does not appear to work correctly
-under SuSE Linux 7.3. It is recommended that you go to http://www.php.net/, 
+under SuSE Linux 7.3. It is recommended that you go to http://www.php.net/,
 download the newest source and compile a new PHP-binary with SNMP support.
 
 
 
-IMPORTANT INFORMATION ABOUT RELEASE 0.8.6k
+IMPORTANT INFORMATION ABOUT RELEASE 0.8.7
 
-Major changes to the configuration structure have been made to simplify 
-upgrades and packaging of Cacti.  The include/config.php file now only 
+Major changes to the configuration structure have been made to simplify
+upgrades and packaging of Cacti.  The include/config.php file now only
 contains the database configuration for Cacti.  All other code that was
-in the include/config.php has been moved to include/global.php.  All 
+in the include/config.php has been moved to include/global.php.  All
 include/config_*.php have been renamed to include/global_*.php.
 
 Script server scripts will need to be modifed to include include/global.php
 instead of include/config.php.
 
-It is important to note that the command line interface scripts have been 
-moved to the "cli" directory of the Cacti installation. 
+It is important to note that the command line interface scripts have been
+moved to the "cli" directory of the Cacti installation.
 
 
 
@@ -99,55 +99,55 @@ The command line interface scripts are as follows:
 
 INFORMATION ABOUT CACTI:
 
-Cacti is a complete frontend to RRDTool, it stores all of the necessary 
-information to create graphs and populate them with data in a MySQL database. 
-The frontend is completely PHP driven. Along with being able to maintain 
-Graphs, Data Sources, and Round Robin Archives in a database, cacti handles 
-the data gathering. There is also SNMP support for those used to creating 
+Cacti is a complete frontend to RRDTool, it stores all of the necessary
+information to create graphs and populate them with data in a MySQL database.
+The frontend is completely PHP driven. Along with being able to maintain
+Graphs, Data Sources, and Round Robin Archives in a database, cacti handles
+the data gathering. There is also SNMP support for those used to creating
 traffic graphs with MRTG.
 
 Data Sources
 
-To handle data gathering, you can feed cacti the paths to any external 
-script/command along with any data that the user will need to "fill in", 
-cacti will then gather this data in a cron-job and populate a MySQL 
+To handle data gathering, you can feed cacti the paths to any external
+script/command along with any data that the user will need to "fill in",
+cacti will then gather this data in a cron-job and populate a MySQL
 database/the round robin archives.
 
-Data Sources can also be created, which correspond to actual data on the 
-graph. For instance, if a user would want to graph the ping times to a host, 
-you could create a data source utilizing a script that pings a host and returns 
-it's value in milliseconds. After defining options for RRDTool such as how to 
-store the data you will be able to define any additional information that the 
-data input source requires, such as a host to ping in this case. Once a data 
+Data Sources can also be created, which correspond to actual data on the
+graph. For instance, if a user would want to graph the ping times to a host,
+you could create a data source utilizing a script that pings a host and returns
+it's value in milliseconds. After defining options for RRDTool such as how to
+store the data you will be able to define any additional information that the
+data input source requires, such as a host to ping in this case. Once a data
 source is created, it is automatically maintained at 5 minute intervals.
 
 Graphs
 
-Once one or more data sources are defined, an RRDTool graph can be created 
-using the data. Cacti allows you to create almost any imaginable RRDTool graph 
-using all of the standard RRDTool graph types and consolidation functions. 
-A color selection area and automatic text padding function also aid in the 
+Once one or more data sources are defined, an RRDTool graph can be created
+using the data. Cacti allows you to create almost any imaginable RRDTool graph
+using all of the standard RRDTool graph types and consolidation functions.
+A color selection area and automatic text padding function also aid in the
 creation of graphs to make the process easier.
 
-Not only can you create RRDTool based graphs in cacti, but there are many 
-ways to display them. Along with a standard "list view" and a "preview mode", 
-which resembles the RRDTool frontend 14all, there is a "tree view", which 
+Not only can you create RRDTool based graphs in cacti, but there are many
+ways to display them. Along with a standard "list view" and a "preview mode",
+which resembles the RRDTool frontend 14all, there is a "tree view", which
 allows you to put graphs onto a hierarchical tree for organizational purposes.
 
 User Management
 
-Due to the many functions of cacti, a user based management tool is built in 
-so you can add users and give them rights to certain areas of cacti. This would 
-allow someone to create some users that can change graph parameters, while 
-others can only view graphs. Each user also maintains their own settings when 
+Due to the many functions of cacti, a user based management tool is built in
+so you can add users and give them rights to certain areas of cacti. This would
+allow someone to create some users that can change graph parameters, while
+others can only view graphs. Each user also maintains their own settings when
 it comes to viewing graphs.
 
 Templating
 
-Lastly, cacti is able to scale to a large number of data sources and graphs 
-through the use of templates. This allows the creation of a single graph or 
-data source template which defines any graph or data source associated with it. 
-Host templates enable you to define the capabilities of a host so cacti can 
+Lastly, cacti is able to scale to a large number of data sources and graphs
+through the use of templates. This allows the creation of a single graph or
+data source template which defines any graph or data source associated with it.
+Host templates enable you to define the capabilities of a host so cacti can
 poll it for information upon the addition of a new host.
 
 
