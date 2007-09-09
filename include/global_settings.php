@@ -669,7 +669,7 @@ $settings = array(
 			"max_length" => "10"
 			),
 		"availability_header" => array(
-			"friendly_name" => "Poller Host Availability Settings",
+			"friendly_name" => "Host Availability Settings",
 			"method" => "spacer",
 			),
 		"availability_method" => array(
