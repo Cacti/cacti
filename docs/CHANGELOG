@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-0.8.6k
+0.8.7
 -bug#0000480: error when making a change to graphs displayed per page
 -bug#0000833: favicon.ico support
 -bug#0000850: Select All for list view
