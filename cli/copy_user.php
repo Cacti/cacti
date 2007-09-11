@@ -29,7 +29,8 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 
 if (empty($_SERVER["argv"][2])) {
 	print "\nIt is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.\n\n";
-	print "Syntax:\n php copy_cacti_user.php <template user> <new user>\n\n");
+	print "Syntax:\n php copy_cacti_user.php <template user> <new user>\n\n";
+	exit;
 }
 
 
