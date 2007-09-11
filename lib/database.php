@@ -259,7 +259,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = true) 
 	global $cnn_id;
 
 	while (list ($key, $value) = each ($array_items)) {
-		$array_items[$key] = $cnn_id->qstr($value);
+		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
 	$replace_result = $cnn_id->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
@@ -287,7 +287,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = true) 
    @return - fixed value */
 function sql_sanitize($value) {
 	//$value = str_replace("'", "''", $value);
-	$value = str_replace(";", "", $value);
+	$value = str_replace(";", "\;", $value);
 
 	return $value;
 }
