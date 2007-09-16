@@ -1035,6 +1035,22 @@ function graph() {
 	load_current_session_value("sort_column", "sess_graph_sort_column", "title_cache");
 	load_current_session_value("sort_direction", "sess_graph_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_graph_host_id", "-1");
+	load_current_session_value("template_id", "sess_graph_template_id", "-1");
+
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyGraphsFilterChange(objForm) {
+		strURL = '?host_id=' + objForm.host_id.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&template_id=' + objForm.template_id.value;
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
 
 	html_start_box("<strong>Graph Management</strong>", "100%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . $_REQUEST["host_id"]);
 
@@ -1056,6 +1072,14 @@ function graph() {
 		$sql_where .= " AND graph_local.host_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " AND graph_local.host_id=" . $_REQUEST["host_id"];
+	}
+
+	if ($_REQUEST["template_id"] == "-1") {
+		/* Show all items */
+	}elseif ($_REQUEST["template_id"] == "0") {
+		$sql_where .= " AND graph_templates_graph.graph_template_id=0";
+	}elseif (!empty($_REQUEST["template_id"])) {
+		$sql_where .= " AND graph_templates_graph.graph_template_id=" . $_REQUEST["template_id"];
 	}
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
