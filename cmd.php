@@ -286,7 +286,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 							db_execute("update poller_reindex set assert_value='$output' where host_id='$host_id' and data_query_id='" . $index_item["data_query_id"] . "' and arg1='" . $index_item["arg1"] . "'");
 
 							/* spike kill logic */
-							if (($assert_fail) && ($index_item["arg1"] == ".1.3.6.1.2.1.1.3.0")) {
+							if (($assert_fail) &&
+								(($index_item["op"] == "<") || ($index_item["arg1"] == ".1.3.6.1.2.1.1.3.0"))) {
 								/* don't spike kill unless we are certain */
 								if (!empty($output)) {
 									$set_spike_kill = true;

@@ -142,6 +142,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		snmp_auth_protocol,
 		snmp_priv_passphrase,
 		snmp_priv_protocol,
+		snmp_context,
 		snmp_port,
 		snmp_timeout
 		FROM host
@@ -236,8 +237,15 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$oid = $field_array["oid"] . ".$snmp_index";
 
 					if ($field_name == "ifOperStatus") {
-						if ($snmp_data[$i]["value"] == "down(2)") $snmp_data[$i]["value"] = "Down";
-						if ($snmp_data[$i]["value"] == "up(1)") $snmp_data[$i]["value"] = "Up";
+						if (($snmp_data[$i]["value"] == "down(2)") ||
+							($snmp_data[$i]["value"] == "2")) {
+							$snmp_data[$i]["value"] = "Down";
+						}else if (($snmp_data[$i]["value"] == "up(1)") ||
+							($snmp_data[$i]["value"] == "1")) {
+							$snmp_data[$i]["value"] = "Up";
+						}else{
+							$snmp_data[$i]["value"] = "Testing";
+						}
 					}
 
 					debug_log_insert("data_query", "Found item [$field_name='" . $snmp_data[$i]["value"] . "'] index: $snmp_index [from value]");

@@ -156,10 +156,10 @@ function update_reindex_cache($host_id, $data_query_id) {
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
-	$host = db_fetch_row("select hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_port, snmp_timeout from host where id=$host_id");
-	$data_query = db_fetch_row("select reindex_method, sort_field from host_snmp_query where host_id=$host_id and snmp_query_id=$data_query_id");
+	$host            = db_fetch_row("select hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout from host where id=$host_id");
+	$data_query      = db_fetch_row("select reindex_method, sort_field from host_snmp_query where host_id=$host_id and snmp_query_id=$data_query_id");
 	$data_query_type = db_fetch_cell("select data_input.type_id from (data_input,snmp_query) where data_input.id=snmp_query.data_input_id and snmp_query.id=$data_query_id");
-	$data_query_xml = get_data_query_array($data_query_id);
+	$data_query_xml  = get_data_query_array($data_query_id);
 
 	switch ($data_query["reindex_method"]) {
 		case DATA_QUERY_AUTOINDEX_NONE:
@@ -168,21 +168,27 @@ function update_reindex_cache($host_id, $data_query_id) {
 			/* the uptime backwards method requires snmp, so make sure snmp is actually enabled
 			 * on this device first */
 			if ($host["snmp_community"] != "") {
+				if (isset($data_query_xml["oid_uptime"])) {
+					$oid_uptime = $data_query_xml["uptime_oid"];
+				}else{
+					$oid_uptime = ".1.3.6.1.2.1.1.3.0";
+				}
+
 				$assert_value = cacti_snmp_get($host["hostname"],
 					$host["snmp_community"],
-					".1.3.6.1.2.1.1.3.0",
+					$oid_uptime,
 					$host["snmp_version"],
 					$host["snmp_username"],
 					$host["snmp_password"],
 					$host["snmp_auth_protocol"],
 					$host["snmp_priv_passphrase"],
 					$host["snmp_priv_protocol"],
-                    $host["snmp_context"],
+					$host["snmp_context"],
 					$host["snmp_port"],
 					$host["snmp_timeout"],
 					SNMP_POLLER);
 
-				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'<','$assert_value','.1.3.6.1.2.1.1.3.0')");
+				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'<','$assert_value','$oid_uptime')");
 			}
 
 			break;
