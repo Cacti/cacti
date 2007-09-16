@@ -996,6 +996,7 @@ function graph() {
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("template_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
 
@@ -1021,12 +1022,14 @@ function graph() {
 		kill_session_var("sess_graph_sort_column");
 		kill_session_var("sess_graph_sort_direction");
 		kill_session_var("sess_graph_host_id");
+		kill_session_var("sess_graph_template_id");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 		unset($_REQUEST["host_id"]);
+		unset($_REQUEST["template_id"]);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
