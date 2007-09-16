@@ -196,6 +196,16 @@ function utilities_view_tech($php_info = "") {
 		}
 	}
 
+	/* Check RRDTool issues */
+	$rrdtool_error = "";	
+	if ($rrdtool_version != read_config_option("rrdtool_version")) {
+		$rrdtool_error .= "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='settings.php?tab=general'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font><br>";
+	}
+	$graph_gif_count = db_fetch_cell("SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2");
+	if (($graph_gif_count > 0) && (read_config_option("rrdtool_version") == "rrd-1.2.x")) {
+		$rrdtool_error .= "<br><font color='red'>ERROR: RRDTool 1.2.x does not support the GIF images format, but " . $graph_gif_count . " graph(s) and/or templates have GIF set as the image format.</font><br>";
+	}
+
 	/* Display tech information */
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
 	html_header(array("General Information"), 2);
@@ -218,11 +228,7 @@ function utilities_view_tech($php_info = "") {
 
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>RRDTool Version</td>\n";
-	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version];
-	if ($rrdtool_version != read_config_option("rrdtool_version")) {
-		print "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='settings.php?tab=general'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font>";
-	}
-	print "</td>\n";
+	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version] . " " . $rrdtool_error . "</td>\n";
 	print "</tr>\n";
 	print "<tr bgcolor='" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>Hosts</td>\n";
