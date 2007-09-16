@@ -521,10 +521,23 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		$hosts[$host_id]["total_polls"]++;
 		$hosts[$host_id]["availability"] = 100 * ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
+		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
+			($ping_availability == AVAIL_SNMP)) &&
+			(!is_numeric($snmp_status))) {
+			cacti_log("WARNING: Poller[0] Host[$host_id] SNMP Time was not numeric", TRUE, "POLLER");
+			$snmp_status = 0.000;
+		}
+
+		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
+			($ping_availability == AVAIL_PING)) &&
+			(!is_numeric($ping_status))) {
+			cacti_log("WARNING: Poller[0] Host[$host_id] Ping Time was not numeric", TRUE, "POLLER");
+			$ping_status = 0.000;
+		}
 		/* determine the ping statistic to set and do so */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
 			if ($hosts[$host_id]["snmp_community"] == "") {
-				$ping_time = $ping->ping_status;
+				$ping_time = 0.000;
 			}else {
 				/* calculate the average of the two times */
 				$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
@@ -535,7 +548,9 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			}else {
 				$ping_time = $ping->snmp_status;
 			}
-		}else {
+		}elseif ($ping_availability = AVAIL_NONE) {
+			$ping_time = 0.000;
+		}else{
 			$ping_time = $ping->ping_status;
 		}
 

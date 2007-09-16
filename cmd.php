@@ -162,12 +162,16 @@ if ( $_SERVER["argc"] == 1 ) {
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on")) {
 	$failure_type = "";
-	$host_down = false;
-	$new_host  = true;
-	$last_host = ""; $current_host = "";
+	$host_down    = false;
+	$new_host     = true;
+	$last_host    = "";
+	$current_host = "";
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
+
+	/* rework the hosts array to be searchable */
+	$hosts = array_rekey($hosts, "id");
 
 	/* startup Cacti php polling server and include the include file for script processing */
 	if ($script_server_calls > 0) {
@@ -218,7 +222,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			$ping->host = $item;
 
 			/* perform the appropriate ping check of the host */
-			if ($ping->ping($item["availability_method"], $item["ping_method"], $item["ping_timeout"], $item["ping_retries"])) {
+			if ($ping->ping($hosts[$host_id]["availability_method"], $hosts[$host_id]["ping_method"],
+				$hosts[$host_id]["ping_timeout"], $hosts[$host_id]["ping_retries"])) {
 				$host_down = false;
 				update_host_status(HOST_UP, $host_id, $hosts, $ping, $item["availability_method"], $print_data_to_stdout);
 			}else{
