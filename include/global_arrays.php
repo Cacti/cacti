@@ -146,6 +146,7 @@ $graph_item_types = array(1 =>
 
 $image_types = array(1 =>
 	"PNG",
+	"GIF",
 	"SVG");
 
 $snmp_versions = array(0 =>
