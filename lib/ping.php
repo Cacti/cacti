@@ -305,6 +305,7 @@ class Net_Ping
 					$this->host["snmp_auth_protocol"],
 					$this->host["snmp_priv_passphrase"],
 					$this->host["snmp_priv_protocol"],
+					$this->host["snmp_context"],
 					$this->host["snmp_port"],
 					$this->host["snmp_timeout"],
 					SNMP_CMDPHP);
@@ -318,6 +319,7 @@ class Net_Ping
 					$this->host["snmp_auth_protocol"],
 					$this->host["snmp_priv_passphrase"],
 					$this->host["snmp_priv_protocol"],
+					$this->host["snmp_context"],
 					$this->host["snmp_port"],
 					$this->host["snmp_timeout"],
 					SNMP_CMDPHP);

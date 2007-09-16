@@ -36,7 +36,7 @@ if ($config["cacti_server_os"] == "unix") {
 	define("SNMP_ESCAPE_CHARACTER", "\"");
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
+function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
 	/* determine default retries */
@@ -90,7 +90,13 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 				$priv_pass = "";
 			}
 
-			$snmp_auth = "-u $username -l $proto -a $auth_proto -A $password $priv_pass"; /* v3 - username/password */
+            if (strlen($context)) {
+            	$context = "-n \"$context\"";
+            }else{
+            	$context = "";
+            }
+
+			$snmp_auth = trim("-u $username -l $proto -a $auth_proto -A $password $priv_pass $context"); /* v3 - username/password */
 		}
 
 		/* no valid snmp version has been set, get out */
@@ -116,7 +122,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	return $snmp_value;
 }
 
-function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
+function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
 	/* determine default retries */
@@ -170,7 +176,13 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 				$priv_pass = "";
 			}
 
-			$snmp_auth = "-u $username -l $proto -a $auth_proto -A $password $priv_pass"; /* v3 - username/password */
+            if (strlen($context)) {
+            	$context = "-n \"$context\"";
+            }else{
+            	$context = "";
+            }
+
+			$snmp_auth = trim("-u $username -l $proto -a $auth_proto -A $password $priv_pass $context"); /* v3 - username/password */
 		}
 
 		/* no valid snmp version has been set, get out */
@@ -196,7 +208,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
 	$snmp_array = array();
@@ -266,7 +278,13 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				$priv_pass = "";
 			}
 
-			$snmp_auth = "-u $username -l $proto -a $auth_proto -A $password $priv_pass"; /* v3 - username/password */
+            if (strlen($context)) {
+            	$context = "-n \"$context\"";
+            }else{
+            	$context = "";
+            }
+
+			$snmp_auth = trim("-u $username -l $proto -a $auth_proto -A $password $priv_pass $context"); /* v3 - username/password */
 		}
 
 		if (read_config_option("snmp_version") == "ucd-snmp") {

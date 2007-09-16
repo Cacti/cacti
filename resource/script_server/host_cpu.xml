@@ -3,7 +3,7 @@
 	<script_path>|path_cacti|/scripts/ss_host_cpu.php</script_path>
 	<script_function>ss_host_cpu</script_function>
 	<script_server>php</script_server>
-	<arg_prepend>|host_hostname| |host_id| |host_snmp_version|:|host_snmp_port|:|host_snmp_timeout|:|host_snmp_community|:|host_snmp_username|:|host_snmp_password|:|host_snmp_auth_protocol|:|host_snmp_priv_passphrase|:|host_snmp_priv_protocol|</arg_prepend>
+	<arg_prepend>|host_hostname| |host_id| |host_snmp_version|:|host_snmp_port|:|host_snmp_timeout|:|host_snmp_community|:|host_snmp_username|:|host_snmp_password|:|host_snmp_auth_protocol|:|host_snmp_priv_passphrase|:|host_snmp_priv_protocol|:]host_snmp_context}</arg_prepend>
 	<arg_index>index</arg_index>
 	<arg_query>query</arg_query>
 	<arg_get>get</arg_get>

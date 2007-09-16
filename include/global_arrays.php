@@ -455,6 +455,7 @@ $host_struc = array(
 	"snmp_auth_protocol",
 	"snmp_priv_passphrase",
 	"snmp_priv_protocol",
+	"snmp_context",
 	"snmp_port",
 	"snmp_timeout",
 	"max_oids",

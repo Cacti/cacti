@@ -177,6 +177,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$host["snmp_auth_protocol"],
 					$host["snmp_priv_passphrase"],
 					$host["snmp_priv_protocol"],
+                    $host["snmp_context"],
 					$host["snmp_port"],
 					$host["snmp_timeout"],
 					SNMP_POLLER);

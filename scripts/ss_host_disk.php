@@ -23,22 +23,22 @@ if (!isset($called_by_script_server)) {
 function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 = "") {
 	$snmp = explode(":", $snmp_auth);
 	$snmp_version = $snmp[0];
-	$snmp_port = $snmp[1];
+	$snmp_port    = $snmp[1];
 	$snmp_timeout = $snmp[2];
 
-	$snmpv3_auth_username = "";
-	$snmpv3_auth_password = "";
-	$snmpv3_auth_protocol = "";
-	$snmpv3_priv_passphrase = "";
-	$snmpv3_priv_protocol = "";
+	$snmp_auth_username   = "";
+	$snmp_auth_password   = "";
+	$snmp_auth_protocol   = "";
+	$snmp_priv_passphrase = "";
+	$snmp_priv_protocol   = "";
 	$snmp_community = "";
 
 	if ($snmp_version == 3) {
-		$snmpv3_auth_username = $snmp[4];
-		$snmpv3_auth_password = $snmp[5];
-		$snmpv3_auth_protocol = $snmp[6];
-		$snmpv3_priv_passphrase = $snmp[7];
-		$snmpv3_priv_protocol = $snmp[8];
+		$snmp_auth_username   = $snmp[4];
+		$snmp_auth_password   = $snmp[5];
+		$snmp_auth_protocol   = $snmp[6];
+		$snmp_priv_passphrase = $snmp[7];
+		$snmp_priv_protocol   = $snmp[8];
 	}else{
 		$snmp_community = $snmp[3];
 	}
@@ -53,7 +53,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 		);
 
 	if ($cmd == "index") {
-		$return_arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER));
+		$return_arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER));
 
 		for ($i=0;($i<sizeof($return_arr));$i++) {
 			print $return_arr[$i] . "\n";
@@ -61,8 +61,8 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 	}elseif ($cmd == "query") {
 		$arg = $arg1;
 
-		$arr_index = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER));
-		$arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmpv3_auth_protocol, $snmpv3_priv_passphrase, $snmpv3_priv_protocol, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER));
+		$arr_index = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER));
+		$arr = ss_host_disk_reindex(cacti_snmp_walk($hostname, $snmp_community, $oids[$arg], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER));
 
 		for ($i=0;($i<sizeof($arr_index));$i++) {
 			print $arr_index[$i] . "!" . $arr[$i] . "\n";
@@ -75,9 +75,9 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 			/* get hrStorageAllocationUnits from the snmp cache since it is faster */
 			$sau = eregi_replace("[^0-9]", "", db_fetch_cell("select field_value from host_snmp_cache where host_id=$host_id and field_name='hrStorageAllocationUnits' and snmp_index='$index'"));
 
-			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER) * $sau;
+			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_context, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER) * $sau;
 		}else{
-			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmpv3_auth_username, $snmpv3_auth_password, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER);
+			return cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_context, $snmp_port, $snmp_timeout, read_config_option("snmp_retries"), SNMP_POLLER);
 		}
 	}
 }

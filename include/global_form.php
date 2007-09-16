@@ -23,7 +23,7 @@
 */
 
 if (!defined("VALID_HOST_FIELDS")) {
-	define("VALID_HOST_FIELDS", "(hostname|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_version|snmp_port|snmp_timeout)");
+	define("VALID_HOST_FIELDS", "(hostname|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)");
 }
 
 /* file: cdef.php, action: edit */
@@ -767,6 +767,15 @@ $fields_host_edit = array(
 		"value" => "|arg1:snmp_priv_protocol|",
 		"default" => read_config_option("snmp_priv_protocol"),
 		"array" => $snmp_priv_protocols,
+		),
+	"snmp_context" => array(
+		"method" => "textbox",
+		"friendly_name" => "SNMP Context",
+		"description" => "Enter the SNMP Context to use for this device.",
+		"value" => "|arg1:snmp_context|",
+		"default" => "",
+		"max_length" => "64",
+		"size" => "25"
 		),
 	"snmp_port" => array(
 		"method" => "textbox",

@@ -89,7 +89,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol) {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context) {
 
 	/* fetch some cache variables */
 	if (empty($id)) {
@@ -112,17 +112,18 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["snmp_auth_protocol"]   = form_input_validate($snmp_auth_protocol, "snmp_auth_protocol", "", true, 3);
 	$save["snmp_priv_passphrase"] = form_input_validate($snmp_priv_passphrase, "snmp_priv_passphrase", "", true, 3);
 	$save["snmp_priv_protocol"]   = form_input_validate($snmp_priv_protocol, "snmp_priv_protocol", "", true, 3);
+	$save["snmp_context"]         = form_input_validate($snmp_context, "snmp_context", "", true, 3);
 
 	$save["snmp_port"]            = form_input_validate($snmp_port, "snmp_port", "^[0-9]+$", false, 3);
 	$save["snmp_timeout"]         = form_input_validate($snmp_timeout, "snmp_timeout", "^[0-9]+$", false, 3);
 
-	$save["disabled"]            = form_input_validate($disabled, "disabled", "", true, 3);
+	$save["disabled"]             = form_input_validate($disabled, "disabled", "", true, 3);
 
-	$save["availability_method"] = form_input_validate($availability_method, "availability_method", "^[0-9]+$", false, 3);
-	$save["ping_method"]         = form_input_validate($ping_method, "ping_method", "^[0-9]+$", false, 3);
-	$save["ping_port"]           = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
-	$save["ping_timeout"]        = form_input_validate($ping_timeout, "ping_timeout", "^[0-9]+$", true, 3);
-	$save["ping_retries"]        = form_input_validate($ping_retries, "ping_retries", "^[0-9]+$", true, 3);
+	$save["availability_method"]  = form_input_validate($availability_method, "availability_method", "^[0-9]+$", false, 3);
+	$save["ping_method"]          = form_input_validate($ping_method, "ping_method", "^[0-9]+$", false, 3);
+	$save["ping_port"]            = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
+	$save["ping_timeout"]         = form_input_validate($ping_timeout, "ping_timeout", "^[0-9]+$", true, 3);
+	$save["ping_retries"]         = form_input_validate($ping_retries, "ping_retries", "^[0-9]+$", true, 3);
 
 	$host_id = 0;
 

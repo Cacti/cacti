@@ -60,6 +60,7 @@ if (sizeof($parms)) {
 	$snmp_auth_protocol   = "";
 	$snmp_priv_passphrase = "";
 	$snmp_priv_protocol   = "";
+	$snmp_context         = "";
 	$snmp_port            = 161;
 	$snmp_timeout         = 500;
 
@@ -279,7 +280,8 @@ if (sizeof($parms)) {
 				$community, $snmp_ver, $snmp_username, $snmp_password,
 				$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 				$ping_port, $ping_timeout, $ping_retries, $notes,
-				$snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol);
+				$snmp_auth_protocol, $snmp_priv_passphrase,
+				$snmp_priv_protocol, $snmp_context);
 
 	if (is_error_message()) {
 		echo "Failed to add this device\n";
@@ -299,7 +301,7 @@ function display_help() {
 	echo "add_device.php --description=[description] --ip=[IP] --notes=\"[]\" --template=[ID] [--disable]\n";
 	echo "   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
 	echo "   [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
-	echo "   [--username= --password=] [--authproto=] [--privpass= --privproto=]\n\n";
+	echo "   [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n\n";
 	echo "Required:\n";
 	echo "    - description:  the name that will be displayed by Cacti in the graphs\n";
 	echo "    - ip:           self explanatory (can also be a FQDN)\n";
@@ -318,6 +320,7 @@ function display_help() {
 	echo "    - authproto:    '', snmp authentication protocol for snmpv3\n";
 	echo "    - privpass:     '', snmp privacy passphrase for snmpv3\n";
 	echo "    - privproto:    '', snmp privacy protocol for snmpv3\n";
+	echo "    - context:      '', snmp context for snmpv3\n";
 	echo "    - port:         161\n";
 	echo "    - timeout:      500\n\n";
 	echo "List Options:  --list-host-templates\n";

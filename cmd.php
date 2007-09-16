@@ -251,7 +251,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"],
 								$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
-								$item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
+								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							$output = exec_poll($index_item["arg1"]);
@@ -310,7 +310,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"],
 						$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
 						$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
-						$item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
+						$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 
 					/* remove any quotes from string */
 					$output = strip_quotes($output);

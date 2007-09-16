@@ -58,11 +58,13 @@ function upgrade_to_0_8_7() {
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_auth_protocol` CHAR(5) default '' AFTER `snmp_password`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_priv_passphrase` varchar(200) default '' AFTER `snmp_auth_protocol`");
 	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_priv_protocol` CHAR(6) default '' AFTER `snmp_priv_passphrase`");
+	db_install_execute("0.8.7", "ALTER TABLE `host` ADD COLUMN `snmp_context` VARCHAR(64) default '' AFTER `snmp_priv_protocol`");
 
 	/* additional poller items fields required */
 	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_auth_protocol` CHAR(5) default '' AFTER `snmp_password`");
 	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_priv_passphrase` varchar(200) default '' AFTER `snmp_auth_protocol`");
 	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_priv_protocol` CHAR(6) default '' AFTER `snmp_priv_passphrase`");
+	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_context` VARCHAR(64) default '' AFTER `snmp_priv_protocol`");
 
 	/* Convert to new authentication system */
 	if (read_config_option("global_auth") == "on") {

@@ -131,6 +131,7 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 					or data_input_fields.type_code='snmp_auth_protocol'
 					or data_input_fields.type_code='snmp_priv_passphrase'
 					or data_input_fields.type_code='snmp_priv_protocol'
+					or data_input_fields.type_code='snmp_context'
 					or data_input_fields.type_code='snmp_version'
 					or data_input_fields.type_code='snmp_port'
 					or data_input_fields.type_code='snmp_timeout')
