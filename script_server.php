@@ -59,8 +59,8 @@ ini_set("max_execution_time", MAX_POLLER_RUNTIME + 1);
 
 /* Record the calling environment */
 if ($_SERVER["argc"] >= 2) {
-	if ($_SERVER["argv"][1] == "cactid")
-		$environ = "cactid";
+	if ($_SERVER["argv"][1] == "spine")
+		$environ = "spine";
 	else
 		if (($_SERVER["argv"][1] == "cmd.php") || ($_SERVER["argv"][1] == "cmd"))
 			$environ = "cmd";

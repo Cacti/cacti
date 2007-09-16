@@ -151,8 +151,10 @@ function form_save() {
 				$_POST["snmp_port"], $_POST["snmp_timeout"],
 				(isset($_POST["disabled"]) ? $_POST["disabled"] : ""),
 				$_POST["availability_method"], $_POST["ping_method"],
-				$_POST["ping_port"], $_POST["ping_timeout"], $_POST["ping_retries"], $_POST["notes"],
-				$_POST["snmp_auth_protocol"], $_POST["snmp_priv_passphrase"], $_POST["snmp_priv_protocol"]);
+				$_POST["ping_port"], $_POST["ping_timeout"],
+				$_POST["ping_retries"], $_POST["notes"],
+				$_POST["snmp_auth_protocol"], $_POST["snmp_priv_passphrase"],
+				$_POST["snmp_priv_protocol"], $_POST["snmp_context"]);
 		}
 
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
@@ -557,7 +559,7 @@ function host_edit() {
 						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
 							$host["snmp_username"], $host["snmp_password"],
 							$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-							$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
+							$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
 
 						/* modify for some system descriptions */
 						/* 0000937: System output in hosts.php poor for Alcatel */
@@ -572,22 +574,22 @@ function host_edit() {
 							$snmp_uptime   = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"],
 								$host["snmp_username"], $host["snmp_password"],
 								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 							$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"],
 								$host["snmp_username"], $host["snmp_password"],
 								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 							$snmp_location = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.6.0", $host["snmp_version"],
 								$host["snmp_username"], $host["snmp_password"],
 								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 							$snmp_contact  = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"],
 								$host["snmp_username"], $host["snmp_password"],
 								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
 
 							print "<strong>System:</strong> $snmp_system<br>\n";
 							$days      = intval($snmp_uptime / (60*60*24*100));

@@ -179,18 +179,18 @@ while ($poller_runs_completed < $poller_runs) {
 		/* determine the number of hosts to process per file */
 		$hosts_per_file = ceil(sizeof($polling_hosts) / $concurrent_processes );
 
-		/* exit poller if cactid is selected and file does not exist */
-		if (($poller == "2") && (!file_exists(read_config_option("path_cactid")))) {
-			cacti_log("ERROR: The path: " . read_config_option("path_cactid") . " is invalid.  Can not continue", true, "POLLER");
+		/* exit poller if spine is selected and file does not exist */
+		if (($poller == "2") && (!file_exists(read_config_option("path_spine")))) {
+			cacti_log("ERROR: The path: " . read_config_option("path_spine") . " is invalid.  Can not continue", true, "POLLER");
 			exit;
 		}
 
 		/* Determine Command Name */
 		if ($poller == "2") {
-			$command_string = read_config_option("path_cactid");
+			$command_string = read_config_option("path_spine");
 			$extra_args     = "";
-			$method         = "cactid";
-			chdir(dirname(read_config_option("path_cactid")));
+			$method         = "spine";
+			chdir(dirname(read_config_option("path_spine")));
 		}else if ($config["cacti_server_os"] == "unix") {
 			$command_string = read_config_option("path_php_binary");
 			$extra_args     = "-q " . $config["base_path"] . "/cmd.php";
@@ -343,7 +343,7 @@ while ($poller_runs_completed < $poller_runs) {
 			exec_background($command_string, "$extra_args");
 		}
 
-		if ($method == "cactid") {
+		if ($method == "spine") {
 			chdir(read_config_option("path_webroot"));
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {

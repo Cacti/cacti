@@ -103,9 +103,9 @@ $settings = array(
 			"friendly_name" => "Alternate Poller Path",
 			"method" => "spacer",
 			),
-		"path_cactid" => array(
-			"friendly_name" => "Cactid Poller File Path",
-			"description" => "The path to Cactid binary.",
+		"path_spine" => array(
+			"friendly_name" => "Spine Poller File Path",
+			"description" => "The path to Spine binary.",
 			"method" => "filepath",
 			"max_length" => "255"
 			)
@@ -631,25 +631,25 @@ $settings = array(
 			),
 		"concurrent_processes" => array(
 			"friendly_name" => "Maximum Concurrent Poller Processes",
-			"description" => "The number of concurrent processes to execute.  Using a higher number when using cmd.php will improve performance.  Performance improvements in cactid are best resolved with the threads parameter",
+			"description" => "The number of concurrent processes to execute.  Using a higher number when using cmd.php will improve performance.  Performance improvements in spine are best resolved with the threads parameter",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
 			),
-		"cactid_header" => array(
-			"friendly_name" => "Cactid Specific Execution Parameters",
+		"spine_header" => array(
+			"friendly_name" => "Spine Specific Execution Parameters",
 			"method" => "spacer",
 			),
 		"max_threads" => array(
 			"friendly_name" => "Maximum Threads per Process",
-			"description" => "The maximum threads allowed per process.  Using a higher number when using cactid will improve performance.",
+			"description" => "The maximum threads allowed per process.  Using a higher number when using Spine will improve performance.",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"
 			),
 		"php_servers" => array(
 			"friendly_name" => "Number of PHP Script Servers",
-			"description" => "The number of concurrent script server processes to run per Cactid process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts.",
+			"description" => "The number of concurrent script server processes to run per Spine process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts.",
 			"method" => "textbox",
 			"default" => "1",
 			"max_length" => "10"

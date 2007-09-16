@@ -71,7 +71,7 @@ function db_install_execute($cacti_version, $sql) {
 function find_best_path($binary_name) {
 	global $config;
 	if ($config["cacti_server_os"] == "win32") {
-		$search_paths = array("c:/usr/bin", "c:/cacti", "c:/rrdtool", "c:/cactid", "c:/php", "c:/progra~1/php", "c:/net-snmp/bin", "c:/progra~1/net-snmp/bin", "d:/usr/bin", "d:/net-snmp/bin", "d:/progra~1/net-snmp/bin", "d:/cacti", "d:/rrdtool", "d:/cactid", "d:/php", "d:/progra~1/php");
+		$search_paths = array("c:/usr/bin", "c:/cacti", "c:/rrdtool", "c:/spine", "c:/php", "c:/progra~1/php", "c:/net-snmp/bin", "c:/progra~1/net-snmp/bin", "d:/usr/bin", "d:/net-snmp/bin", "d:/progra~1/net-snmp/bin", "d:/cacti", "d:/rrdtool", "d:/spine", "d:/php", "d:/progra~1/php");
 	}else{
 		$search_paths = array("/bin", "/sbin", "/usr/bin", "/usr/sbin", "/usr/local/bin", "/usr/local/sbin");
 	}

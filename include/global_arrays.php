@@ -188,7 +188,7 @@ $logfile_verbosity = array(
 
 $poller_options = array(1 =>
 	"cmd.php",
-	"cactid");
+	"spine");
 
 $poller_intervals = array(
 	10 => "Every 10 Seconds",
