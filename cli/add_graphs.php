@@ -174,7 +174,7 @@ if (sizeof($parms)) {
 		if (isset($dsGraph["snmpQueryType"])) {
 			if (!isset($snmp_query_types[$dsGraph["snmpQueryType"]])) {
 				echo "Unknown snmp-query-type-id (" . $dsGraph["snmpQueryType"] . ")\n";
-				echo "Try --snmp-query-id " . $dsGraph["snmpQueryId"] . " --list-query-types\n";
+				echo "Try --snmp-query-id=" . $dsGraph["snmpQueryId"] . " --list-query-types\n";
 
 				return 1;
 			}
@@ -215,7 +215,7 @@ if (sizeof($parms)) {
 		if (isset($dsGraph["snmpValue"])) {
 			if(!isset($snmpValues[$dsGraph["snmpValue"]])) {
 				echo "Unknown snmp-value for field " . $dsGraph["snmpField"] . " - " . $dsGraph["snmpValue"] . "\n";
-				echo "Try --snmp-field " . $dsGraph["snmpField"] . " --list-snmp-values\n";
+				echo "Try --snmp-field=" . $dsGraph["snmpField"] . " --list-snmp-values\n";
 
 				return 1;
 			}
@@ -289,7 +289,7 @@ if (sizeof($parms)) {
 
 		if (!isset($snmp_query_array["snmp_index"])) {
 			echo "Could not find snmp-field " . $dsGraph["snmpField"] . " (" . $dsGraph["snmpValue"] . ") for host-id " . $hostId . " (" . $hosts[$hostId]["hostname"] . ")\n";
-			echo "Try --host-id " . $hostId . " --list-snmp-fields\n";
+			echo "Try --host-id=" . $hostId . " --list-snmp-fields\n";
 
 			return 1;
 		}
