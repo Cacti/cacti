@@ -963,6 +963,8 @@ function ds() {
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("template_id"));
+	input_validate_input_number(get_request_var_request("method_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
 
@@ -988,12 +990,16 @@ function ds() {
 		kill_session_var("sess_ds_sort_column");
 		kill_session_var("sess_ds_sort_direction");
 		kill_session_var("sess_ds_host_id");
+		kill_session_var("sess_ds_template_id");
+		kill_session_var("sess_ds_method_id");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 		unset($_REQUEST["host_id"]);
+		unset($_REQUEST["template_id"]);
+		unset($_REQUEST["method_id"]);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -1002,8 +1008,26 @@ function ds() {
 	load_current_session_value("sort_column", "sess_ds_sort_column", "name_cache");
 	load_current_session_value("sort_direction", "sess_ds_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_ds_host_id", "-1");
+	load_current_session_value("template_id", "sess_ds_template_id", "-1");
+	load_current_session_value("method_id", "sess_ds_method_id", "-1");
 
 	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
+
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyDSFilterChange(objForm) {
+		strURL = '?host_id=' + objForm.host_id.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&template_id=' + objForm.template_id.value;
+		strURL = strURL + '&method_id=' + objForm.method_id.value;
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
 
 	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "100%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . $_REQUEST["host_id"]);
 
@@ -1026,6 +1050,22 @@ function ds() {
 		$sql_where .= " AND data_local.host_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " AND data_local.host_id=" . $_REQUEST["host_id"];
+	}
+
+	if ($_REQUEST["template_id"] == "-1") {
+		/* Show all items */
+	}elseif ($_REQUEST["template_id"] == "0") {
+		$sql_where .= " AND data_template_data.data_template_id=0";
+	}elseif (!empty($_REQUEST["host_id"])) {
+		$sql_where .= " AND data_template_data.data_template_id=" . $_REQUEST["template_id"];
+	}
+
+	if ($_REQUEST["method_id"] == "-1") {
+		/* Show all items */
+	}elseif ($_REQUEST["method_id"] == "0") {
+		$sql_where .= " AND data_template_data.data_input_id=0";
+	}elseif (!empty($_REQUEST["method_id"])) {
+		$sql_where .= " AND data_template_data.data_input_id=" . $_REQUEST["method_id"];
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
