@@ -641,6 +641,7 @@ function host_edit() {
 	var snmp_auth_protocol   = document.getElementById('snmp_auth_protocol').value;
 	var snmp_priv_passphrase = document.getElementById('snmp_priv_passphrase').value;
 	var snmp_priv_protocol   = document.getElementById('snmp_priv_protocol').value;
+	var snmp_context         = document.getElementById('snmp_context').value;
 	var snmp_port            = document.getElementById('snmp_port').value;
 	var snmp_timeout         = document.getElementById('snmp_timeout').value;
 	var max_oids             = document.getElementById('max_oids').value;
@@ -851,6 +852,7 @@ function host_edit() {
 			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
 			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
 			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
+			document.getElementById('row_snmp_context').style.display         = "none";
 			document.getElementById('row_snmp_port').style.display            = "none";
 			document.getElementById('row_snmp_timeout').style.display         = "none";
 			document.getElementById('row_max_oids').style.display             = "none";
@@ -863,6 +865,7 @@ function host_edit() {
 			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
 			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
 			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
+			document.getElementById('row_snmp_context').style.display         = "none";
 			document.getElementById('row_snmp_port').style.display            = "";
 			document.getElementById('row_snmp_timeout').style.display         = "";
 			document.getElementById('row_max_oids').style.display             = "";
@@ -875,6 +878,7 @@ function host_edit() {
 			document.getElementById('row_snmp_auth_protocol').style.display   = "";
 			document.getElementById('row_snmp_priv_passphrase').style.display = "";
 			document.getElementById('row_snmp_priv_protocol').style.display   = "";
+			document.getElementById('row_snmp_context').style.display         = "";
 			document.getElementById('row_snmp_port').style.display            = "";
 			document.getElementById('row_snmp_timeout').style.display         = "";
 			document.getElementById('row_max_oids').style.display             = "";
