@@ -79,7 +79,7 @@ if ( $_SERVER["argc"] == 1 ) {
 	$print_data_to_stdout = true;
 	/* get the number of polling items from the database */
 	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
-	$hosts = array_rekey($hosts,"id",$host_struc);
+
 	$host_count = sizeof($hosts);
 	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
 
@@ -171,7 +171,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	$ping = new Net_Ping;
 
 	/* rework the hosts array to be searchable */
-	$hosts = array_rekey($hosts, "id");
+	$hosts = array_rekey($hosts, "id", $host_struc);
 
 	/* startup Cacti php polling server and include the include file for script processing */
 	if ($script_server_calls > 0) {
@@ -225,7 +225,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			if ($ping->ping($hosts[$host_id]["availability_method"], $hosts[$host_id]["ping_method"],
 				$hosts[$host_id]["ping_timeout"], $hosts[$host_id]["ping_retries"])) {
 				$host_down = false;
-				update_host_status(HOST_UP, $host_id, $hosts, $ping, $item["availability_method"], $print_data_to_stdout);
+				update_host_status(HOST_UP, $host_id, $hosts, $ping, $hosts[$host_id]["availability_method"], $print_data_to_stdout);
 			}else{
 				$host_down = true;
 				update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $item["availability_method"], $print_data_to_stdout);
