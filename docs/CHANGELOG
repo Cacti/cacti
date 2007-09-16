@@ -83,7 +83,7 @@ Cacti CHANGELOG
 -feature: include/config.php now only includes database configuration
 -feature: include/config_* have been renamed to include/global_*. Note: Script servers need to be updated.
 -feature: Allow VRULE's in Cacti to specify an absolute timestamp in addition to [+/-]HH:MM
--feature: Add 1 minute RRA 
+-feature: Add 1 minute RRA
 -feature: Add item select highlighting to main pages
 -feature: Let poller.php be more intelligent about poller intervals less than 60 seconds
 -feature: Add consistency to Filters by adding nowrap to td items
@@ -97,6 +97,7 @@ Cacti CHANGELOG
 -feature: Add the ability to ignore custom RRA settings when importing templates and use this behavior by default
 -feature: Add technical support output to System Utilities
 -compat: Add additional checking due to php-snmp changes in Windows
+-compat:  Remove GIF as a supported file type for graphs and replace with SVG
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.

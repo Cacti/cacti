@@ -351,7 +351,7 @@ $struct_graph = array(
 		"method" => "drop_array",
 		"array" => $image_types,
 		"default" => "1",
-		"description" => "The type of graph that is generated; GIF or PNG."
+		"description" => "The type of graph that is generated; PNG or SVG."
 		),
 	"height" => array(
 		"friendly_name" => "Height",
