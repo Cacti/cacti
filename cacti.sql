@@ -1846,6 +1846,7 @@ CREATE TABLE host (
   snmp_auth_protocol char(5) default '',
   snmp_priv_passphrase varchar(200) default '',
   snmp_priv_protocol char(6) default '',
+  snmp_context varchar(64) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   availability_method smallint(5) unsigned NOT NULL default '1',
@@ -1875,7 +1876,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO `host` VALUES (1, 8, 'Localhost', '127.0.0.1', '', 'public', 0, '', '', 'MD5', '', 'DES', 161, 500, 3, 2, 23, 400, 1, 10, '', 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', 9.99999, 0.00000, 0.00000, 0.00000, 0, 0, 100.00000);
+INSERT INTO `host` VALUES (1, 8, 'Localhost', '127.0.0.1', '', 'public', 0, '', '', 'MD5', '', 'DES', '', 161, 500, 3, 2, 23, 400, 1, 10, '', 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', 9.99999, 0.00000, 0.00000, 0.00000, 0, 0, 100.00000);
 
 --
 -- Table structure for table `host_graph`
@@ -2067,9 +2068,10 @@ CREATE TABLE poller_item (
   snmp_version tinyint(1) unsigned NOT NULL default '0',
   snmp_username varchar(50) NOT NULL default '',
   snmp_password varchar(50) NOT NULL default '',
-  snmp_auth_protocol varchar(50) NOT NULL default '',
-  snmp_priv_passphrase varchar(50) NOT NULL default '',
-  snmp_priv_protocol varchar(50) NOT NULL default '',
+  snmp_auth_protocol varchar(5) NOT NULL default '',
+  snmp_priv_passphrase varchar(200) NOT NULL default '',
+  snmp_priv_protocol varchar(6) NOT NULL default '',
+  snmp_context varchar(64) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
