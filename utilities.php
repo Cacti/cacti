@@ -603,7 +603,8 @@ function utilities_clear_user_log() {
 		}
 
 		/* delete inactive users */
-		db_execute("DELETE FROM user_log WHERE username NOT IN (SELECT username FROM user_auth)");
+		db_execute("DELETE FROM user_log WHERE user_id NOT IN (SELECT id FROM user_auth)");
+
 	}
 }
 
