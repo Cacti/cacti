@@ -553,7 +553,8 @@ function host_edit() {
 
 					<span style="font-size: 10px; font-weight: normal; font-family: monospace;">
 					<?php
-					if (($host["snmp_community"] == "") && ($host["snmp_username"] == "")) {
+					if ((($host["snmp_community"] == "") && ($host["snmp_username"] == "")) ||
+						($host["snmp_version"] == 0)) {
 						print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
 					}else{
 						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
