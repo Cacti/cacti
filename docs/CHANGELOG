@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -bug#0000920: Improved handling of rrdtool --font parameter
 -bug#0000921: Improvement to ping.pl script
 -bug#0000925: Support for host_* variables in the legend
+-bug#0000926: Useful characters are removed when searching
 -bug#0000927: Classic export does not recognize thumbnail columns properly
 -bug#0000931: New rrdtool fails on empty comment
 -bug#0000934: Column 'status_last_error' in table 'host' too short.
