@@ -22,6 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+/* 
+   !!! IMPORTANT !!!
+
+   The following defaults are not to be altered.  Please refer to 
+   include/config.php for user configurable database settings. 
+
+*/
+
 /* Default database settings*/
 $database_type = "mysql";
 $database_default = "cacti";
@@ -29,6 +37,9 @@ $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 $database_port = "3306";
+
+/* Default session name - Session name must contain alpha characters */
+$cacti_session_name = "Cacti";
 
 /* Include configuration */
 include(dirname(__FILE__) . "/config.php");
@@ -104,6 +115,7 @@ if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && 
 	header("Pragma: no-cache");
 
 	/* initilize php session */
+	session_name($cacti_session_name);
 	session_start();
 
 	/* detect and handle get_magic_quotes */

@@ -30,4 +30,7 @@ $database_username = "cactiuser";
 $database_password = "cactiuser";
 $database_port = "3306";
 
+/* Default session name - Session name must contain alpha characters */
+#$cacti_session_name = "Cacti";
+
 ?>
