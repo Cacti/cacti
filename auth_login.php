@@ -228,7 +228,7 @@ function auth_display_custom_error_message($message) {
 	/* print error */
 	print "<html>\n<head>\n";
         print "     <title>" . "Cacti" . "</title>\n";
-        print "     <link href=\"" . html_get_theme_css() . "\" rel=\"stylesheet\">";
+        print "     <link href=\"include/main.css\" rel=\"stylesheet\">";
 	print "</head>\n";
 	print "<body leftmargin=\"0\" topmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">\n<br><br>\n";
 	display_custom_error_message($message);
