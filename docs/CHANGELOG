@@ -50,6 +50,7 @@ Cacti CHANGELOG
 -bug#0000989: hyphen - host description used with Data Source Path
 -bug#0001001: "Purge User Log" keeps invalid entries
 -bug#0001002: Cacti reports incomplete interface status
+-bug#0001007: SNMPv3 password field allows command injection
 -bug: ss_sql.php causes the script server to crash
 -bug: Timeshifter added to base code.
 -bug: Allow query_ and host_ substitution in COMMENT and CDEF's.
