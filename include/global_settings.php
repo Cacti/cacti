@@ -1014,6 +1014,13 @@ $settings_graphs = array(
 			)
 		),
 	"fonts" => array(
+		"custom_fonts" => array(
+			"friendly_name" => "Use Custom Fonts",
+			"description" => "Choose whether to use your own custom fonts and font sizes or utilize the system defaults.",
+			"method" => "checkbox",
+			"on_change" => "graphSettings()",
+			"default" => ""
+			),
 		"title_size" => array(
 			"friendly_name" => "Title Font Size",
 			"description" => "The size of the font used for Graph Titles",

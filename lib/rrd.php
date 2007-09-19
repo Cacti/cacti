@@ -1554,41 +1554,27 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 function rrdtool_set_font($type, $no_legend = "") {
 	global $config;
 
-	$font = read_graph_config_option($type."_name");
-	$size = read_graph_config_option($type."_size");
-
-	if (strlen($font)) {
-		if (!file_exists($font)) {
-			if (file_exists(read_config_option($type."_name"))) {
-				$font = read_config_option($type."_name");
-				if ($size <=0) {
-					$size = read_config_option($type."_size");
-				}
-			}else{
-				$font = "";
-			}
-		}
+	if (read_graph_config_option("custom_fonts") == "on") {
+		$font = read_graph_config_option($type . "_name");
+		$size = read_graph_config_option($type . "_size");
 	}else{
-		if (file_exists(read_config_option($type."_font"))) {
-			$font = read_config_option($type."_font");
-			if ($size <=0) {
-				$size = read_config_option($type."_size");
-			}
-		}else{
-			$font = "";
-		}
+		$font = read_config_option($type . "_name");
+		$size = read_config_option($type . "_size");
+	}
+
+	/* do some simple checks */
+	if (!file_exists($font)) {
+		$font = "";
 	}
 
 	if ($type == "title") {
 		if (!empty($no_legend)) {
-			if ($size > 0) {
-				$size = $size * .70;
-			}else{
-				$size = 10;
-			}
-		}elseif (($size <= 0) || ($size == "")) {
+			$size = $size * .70;
+		}elseif (($size <= 4) || ($size == "")) {
 			$size = 12;
 		}
+	}else if (($size <= 4) || ($size == "")) {
+		$size = 8;
 	}
 
 	return "--font " . strtoupper($type) . ":" . $size . ":" . $font . RRD_NL;
