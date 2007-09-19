@@ -1197,7 +1197,7 @@ function host() {
 	$display_text = array(
 		"description" => array("Description", "ASC"),
 		"nosort1" => array("Graphs", "ASC"),
-		"nosort2" => array("Data<br>Sources", "ASC"),
+		"nosort2" => array("Data Sources", "ASC"),
 		"status" => array("Status", "ASC"),
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),

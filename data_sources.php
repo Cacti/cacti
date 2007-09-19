@@ -1133,7 +1133,7 @@ function ds() {
 	$display_text = array(
 		"name_cache" => array("Name", "ASC"),
 		"data_input_name" => array("Data Input Method", "ASC"),
-		"nosort" => array("Poller<br>Interval", "ASC"),
+		"nosort" => array("Poller Interval", "ASC"),
 		"active" => array("Active", "ASC"),
 		"data_template_name" => array("Template Name", "ASC"));
 
@@ -1149,7 +1149,7 @@ function ds() {
 			form_selectable_cell("<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input_name) : $data_input_name) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);
-			form_selectable_cell($data_source['active'], $data_source["local_data_id"]);
+			form_selectable_cell(($data_source['active'] == "on" ? "Yes" : "No"), $data_source["local_data_id"]);
 			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']) : $data_source['data_template_name']) . "</a>", $data_source["local_data_id"]);
 			form_checkbox_cell($data_source["name_cache"], $data_source["local_data_id"]);
 			form_end_row();
