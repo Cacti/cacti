@@ -160,10 +160,43 @@ function utilities_php_modules() {
 
 
 	return $php_info;
-
 }
 
 
+function memory_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val{strlen($val)-1});
+    switch($last) {
+        // The 'G' modifier is available since PHP 5.1.0
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
+    }
+
+    return $val;
+}
+
+
+function memory_readable($val) {
+
+	if ($val < 1024) { 
+		$val_label = "bytes";
+	}elseif ($val < 1048576) {
+		$val_label = "K";
+		$val /= 1024;
+	}elseif ($val < 1073741824) {
+		$val_label = "M";
+		$val /= 1048576;
+	}else{
+		$val_label = "G";
+		$val /= 1073741824;
+	}
+
+    return $val . $val_label;
+}
 
 
 function utilities_view_tech($php_info = "") {
@@ -241,13 +274,13 @@ function utilities_view_tech($php_info = "") {
 	print "<tr bgcolor='" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>Data Sources</td>\n";
 	print "		<td class='textArea'>";
-	$total = 0;
+	$data_total = 0;
 	if (sizeof($data_count)) {
 		foreach ($data_count as $item) {
 			print $input_types[$item["type_id"]] . ": " . $item["total"] . "<br>";
-			$total += $item["total"];
+			$data_total += $item["total"];
 		}
-		print "Total: " . $total;
+		print "Total: " . $data_total;
 	}else{
 		print "<font color='red'>0</font>";
 	}
@@ -346,7 +379,24 @@ function utilities_view_tech($php_info = "") {
 	print "</tr>\n";
 	print "<tr bgcolor='" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>memory_limit</td>\n";
-	print "		<td class='textArea'>" . ini_get("memory_limit") . "</td>\n";
+	print "		<td class='textArea'>" . ini_get("memory_limit");
+
+	/* Calculate memory suggestion based off of data source count */
+	$memory_suggestion = $data_total * 32768;
+	/* Set minimum */
+	if ($memory_suggestion < 16777216) {
+		$memory_suggestion = 16777216;
+	}
+	/* Set maximum */
+	if ($memory_suggestion > 536870912) {
+		$memory_suggestion = 536870912;
+	}
+	/* Suggest values in 8M increments */
+	$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
+        if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
+		print "<br><font color='red'>It is highly suggested that you alter you php.ini memory_limit to " . memory_readable($memory_suggestion) . " or higher.  This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.</font><br>";
+        }
+        print "</td>\n";
 	print "</tr>\n";
 
 	html_header(array("MySQL Table Information"), 2);
@@ -1313,10 +1363,10 @@ function utilities() {
 	<?php html_header(array("Technical Support"), 2); ?>
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
-			<p><a href='utilities.php?action=view_tech'>Technical Support Output</a></p>
+			<p><a href='utilities.php?action=view_tech'>Technical Support</a></p>
 		</td>
 		<td class="textArea">
-			<p>Cacti technical support output.  Used by developers and technical support persons to assist with issues in Cacti.</p>
+			<p>Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Include checks for common configuration issues.</p>
 		</td>
 	</tr>
 
