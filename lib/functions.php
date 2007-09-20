@@ -523,16 +523,16 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
 			($ping_availability == AVAIL_SNMP)) &&
-			(!is_numeric($snmp_status))) {
+			(!is_numeric($ping->snmp_status))) {
 			cacti_log("WARNING: Poller[0] Host[$host_id] SNMP Time was not numeric", TRUE, "POLLER");
-			$snmp_status = 0.000;
+			$ping->snmp_status = 0.000;
 		}
 
 		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
 			($ping_availability == AVAIL_PING)) &&
-			(!is_numeric($ping_status))) {
+			(!is_numeric($ping->ping_status))) {
 			cacti_log("WARNING: Poller[0] Host[$host_id] Ping Time was not numeric", TRUE, "POLLER");
-			$ping_status = 0.000;
+			$ping->ping_status = 0.000;
 		}
 		/* determine the ping statistic to set and do so */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
