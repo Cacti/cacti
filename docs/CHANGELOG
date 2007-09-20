@@ -1,8 +1,8 @@
 Cacti CHANGELOG
 
 0.8.7
--bug#0000480: error when making a change to graphs displayed per page
--bug#0000740: Lack of unique session name conflicts with other PHP apps
+-bug#0000480: Error after altering graphs displayed per page
+-bug#0000740: Lack of unique session name conflicts with other PHP applications
 -bug#0000829: JVM, Spike detection and Poller
 -bug#0000833: favicon.ico support
 -bug#0000850: Select All for list view
@@ -20,7 +20,7 @@ Cacti CHANGELOG
 -bug#0000910: Cacti complains when trying to set the data source "maximum value" to any number with a decimal point
 -bug#0000912: Nth Percentile thumbnail graphs fail with RRDtool 1.2.15, 1.2.18
 -bug#0000913: Allow direct linking to specific graph pages
--bug#0000919: Problem with ping_tcp function in 8.6j and possible fix.
+-bug#0000919: Problem with ping_tcp function
 -bug#0000920: Improved handling of rrdtool --font parameter
 -bug#0000921: Improvement to ping.pl script
 -bug#0000925: Support for host_* variables in the legend
@@ -33,7 +33,7 @@ Cacti CHANGELOG
 -bug#0000947: Trailing blanK on oid in form causes problems
 -bug#0000953: SNMP Passphrase displayed in cleartext
 -bug#0000955: Fixed possible denial of service attack by modifying graph image url
--bug#0000956: Patch for tree management
+-bug#0000956: Additional editing help with tree management
 -bug#0000957: Script server output's beginning/trailing data during "Include" causing a synchronization issue
 -bug#0000958: Slope Mode is now selectable
 -bug#0000959: Alarming added when poller output table is not empty
@@ -52,7 +52,7 @@ Cacti CHANGELOG
 -bug#0001002: Cacti reports incomplete interface status
 -bug#0001007: SNMPv3 password field allows command injection
 -bug: ss_sql.php causes the script server to crash
--bug: Timeshifter added to base code.
+-bug: Timeshifter added to base code
 -bug: Allow query_ and host_ substitution in COMMENT and CDEF's.
 -bug: Command line interface scripts to add devices, graphs, tree's and permissions.
 -bug: Correct index error when creating graphs when you have no hosts on your system.
@@ -101,7 +101,7 @@ Cacti CHANGELOG
 -feature: Add the ability to ignore custom RRA settings when importing templates and use this behavior by default
 -feature: Add technical support output to System Utilities
 -compat: Add additional checking due to php-snmp changes in Windows
--compat:  Remove GIF as a supported file type for graphs and replace with SVG
+-compat: Remove GIF as a supported file type for RRDTool 1.2.x and added SVG file type
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
