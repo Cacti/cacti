@@ -80,6 +80,9 @@ if ( $_SERVER["argc"] == 1 ) {
 	/* get the number of polling items from the database */
 	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
 
+	/* rework the hosts array to be searchable */
+	$hosts = array_rekey($hosts, "id", $host_struc);
+
 	$host_count = sizeof($hosts);
 	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
 
@@ -169,9 +172,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
-
-	/* rework the hosts array to be searchable */
-	$hosts = array_rekey($hosts, "id", $host_struc);
 
 	/* startup Cacti php polling server and include the include file for script processing */
 	if ($script_server_calls > 0) {
