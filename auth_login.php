@@ -34,7 +34,7 @@ if (read_config_option("auth_method") == "2") {
 	/* Get the Web Basic Auth username and set action so we login right away */
 	$action = "login";
 	if (isset($_SERVER["PHP_AUTH_USER"])) {
-		$username = $_SERVER["PHP_AUTH_USER"];
+		$username = str_replace("\\", "\\\\", $_SERVER["PHP_AUTH_USER"]);
 	} else {
 		/* No user - Bad juju! */
 		$username = "";
@@ -177,7 +177,7 @@ if ($action == 'login') {
 		$_SESSION["sess_user_id"] = $user["id"];
 
 		/* handle "force change password" */
-		if ($user["must_change_password"] == "on") {
+		if (($user["must_change_password"] == "on") && (read_config_option("auth_method") == 1)) {
 			$_SESSION["sess_change_password"] = true;
 		}
 
