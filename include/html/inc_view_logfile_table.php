@@ -1,7 +1,7 @@
 	<tr bgcolor="<?php print $colors["panel"];?>">
 		<form name="form_logfile">
 		<td>
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="80">
 						Tail Lines:&nbsp;
@@ -58,7 +58,7 @@
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="80">
 						Search:&nbsp;
