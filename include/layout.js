@@ -128,7 +128,7 @@ function update_selection_indicators() {
 
 function select_line(id, update) {
 	if (document.getElementById) {
-		msgid = document.getElementById('chk_' + id);
+		msgid  = document.getElementById('chk_' + id);
 		lineid = document.getElementById('line'+ id);
 
 		if (!update) msgid.checked = !msgid.checked;
@@ -164,7 +164,7 @@ function dq_select_line(snmp_query_id, snmp_index, update) {
 	if (dq_is_disabled(snmp_query_id, snmp_index)) { return; }
 
 	if (document.getElementById) {
-		msgid = document.getElementById('sg_' + snmp_query_id + '_' + snmp_index);
+		msgid  = document.getElementById('sg_' + snmp_query_id + '_' + snmp_index);
 		lineid = document.getElementById('line'+ snmp_query_id + '_' + snmp_index);
 
 		if (!update) msgid.checked = !msgid.checked;
@@ -195,17 +195,17 @@ function dq_update_deps(snmp_query_id, num_columns) {
 	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
 		for (var j = 0; j < num_columns; j++) {
 			lineid = document.getElementById('text' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i] + '_' + j);
-			if (lineid) { lineid.style.color = '999999' };
+			if ( lineid ) { lineid.style.color = '999999' };
 		}
 
 		chkbx = document.getElementById('sg_' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
 		if ( chkbx ) {
 			chkbx.style.visibility = 'hidden';
-			chkbx.checked = false;
+			chkbx.checked          = false;
 		}
 
 		lineid = document.getElementById('line' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
-		if (lineid) { lineid.style.backgroundColor = '' };
+		if ( lineid ) { lineid.style.backgroundColor = '' };
 	}
 }
 
@@ -235,9 +235,9 @@ function SelectAll(prefix, checkbox_state) {
 			lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
 
 			if (document.chk.elements[i].checked) {
-				lineid.style.backgroundColor = 'khaki';
+				if ( lineid ) { lineid.style.backgroundColor = 'khaki'; }
 			}else{
-				lineid.style.backgroundColor = '';
+				if ( lineid ) { lineid.style.backgroundColor = ''; }
 			}
 		}
 	}

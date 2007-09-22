@@ -580,7 +580,7 @@ function draw_menu($user_menu = "") {
 
 	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
 
-	print '</table></td></tr>';
+	print "</table></td></tr>";
 }
 
 /* draw_actions_dropdown - draws a table the allows the user to select an action to perform
