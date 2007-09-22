@@ -182,7 +182,7 @@ function memory_bytes($val) {
 
 function memory_readable($val) {
 
-	if ($val < 1024) { 
+	if ($val < 1024) {
 		$val_label = "bytes";
 	}elseif ($val < 1048576) {
 		$val_label = "K";
@@ -219,7 +219,7 @@ function utilities_view_tech($php_info = "") {
 
 		$out_array = array();
 		exec(read_config_option("path_rrdtool"), $out_array);
-	
+
 		if (sizeof($out_array) > 0) {
 			if (ereg("^RRDtool 1\.2", $out_array[0])) {
 				$rrdtool_version = "rrd-1.2.x";
@@ -230,7 +230,7 @@ function utilities_view_tech($php_info = "") {
 	}
 
 	/* Check RRDTool issues */
-	$rrdtool_error = "";	
+	$rrdtool_error = "";
 	if ($rrdtool_version != read_config_option("rrdtool_version")) {
 		$rrdtool_error .= "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='settings.php?tab=general'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font><br>";
 	}
@@ -356,11 +356,11 @@ function utilities_view_tech($php_info = "") {
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>PHP uname</td>\n";
 	print "		<td class='textArea'>";
-	if (function_exists("php_uname")) {	
+	if (function_exists("php_uname")) {
        		print php_uname();
 	}else{
 		print "N/A";
-	}	
+	}
 	print "</td>\n";
 	print "</tr>\n";
 	print "<tr bgcolor='" . $colors["form_alternate2"] . "'>\n";

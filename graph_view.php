@@ -112,6 +112,7 @@ case 'preview':
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("graph_template_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
 
@@ -130,15 +131,16 @@ case 'preview':
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_graph_view_current_page");
 		kill_session_var("sess_graph_view_filter");
+		kill_session_var("sess_graph_view_graph_template");
 		kill_session_var("sess_graph_view_host");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_id"]);
+		unset($_REQUEST["graph_template_id"]);
 		unset($_REQUEST["graph_list"]);
 		unset($_REQUEST["graph_add"]);
 		unset($_REQUEST["graph_remove"]);
-
 	}
 
 	/* reset the page counter to '1' if a search in initiated */
@@ -147,6 +149,7 @@ case 'preview':
 	}
 
 	load_current_session_value("host_id", "sess_graph_view_host", "0");
+	load_current_session_value("graph_template_id", "sess_graph_view_graph_template", "0");
 	load_current_session_value("filter", "sess_graph_view_filter", "");
 	load_current_session_value("page", "sess_graph_view_current_page", "1");
 
@@ -193,10 +196,10 @@ case 'preview':
 
 			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
 				/* build sql string including each graph the user checked */
-				$sql_or = "and " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
+				$sql_or = "AND " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
 
 				/* clear the filter vars so they don't affect our results */
-				$_REQUEST["filter"] = "";
+				$_REQUEST["filter"]  = "";
 				$_REQUEST["host_id"] = "0";
 
 				/* Fix to avoid error in 'preview' after selection in 'list' : Notice: Undefined index: rra_id in C:\apache2\htdocs\cacti\graph_view.php on line 142 */
@@ -205,16 +208,17 @@ case 'preview':
 		}
 	}
 
-	$sql_base = "from (graph_templates_graph,graph_local)
+	$sql_base = "FROM (graph_templates_graph,graph_local)
 		$sql_join
 		$sql_where
-		" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
-		and graph_templates_graph.local_graph_id=graph_local.id
-		and graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
+		" . (empty($sql_where) ? "WHERE" : "AND") . "   graph_templates_graph.local_graph_id > 0
+		AND graph_templates_graph.local_graph_id=graph_local.id
+		AND graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
 		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
+		" . (empty($_REQUEST["graph_template_id"]) ? "" : " and graph_local.graph_template_id=" . $_REQUEST["graph_template_id"]) . "
 		$sql_or";
 
-	$total_rows = count(db_fetch_assoc("select
+	$total_rows = count(db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id
 		$sql_base"));
 
@@ -223,13 +227,29 @@ case 'preview':
 		$_REQUEST["page"] = "1";
 	}
 
-	$graphs = db_fetch_assoc("select
+	$graphs = db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title_cache
 		$sql_base
-		group by graph_templates_graph.local_graph_id
-		order by graph_templates_graph.title_cache
-		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+		GROUP BY graph_templates_graph.local_graph_id
+		ORDER BY graph_templates_graph.title_cache
+		LIMIT " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyGraphPreviewFilterChange(objForm) {
+		strURL = '?action=preview';
+		strURL = strURL + '&host_id=' + objForm.host_id.value;
+		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
 
 	/* include graph view filter selector */
 	html_graph_start_box(3, true);
@@ -280,6 +300,7 @@ case 'list':
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("graph_template_id"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -293,6 +314,7 @@ case 'list':
 	}
 
 	load_current_session_value("host_id", "sess_graph_view_list_host", "0");
+	load_current_session_value("graph_template_id", "sess_graph_view_list_graph_template", "0");
 	load_current_session_value("filter", "sess_graph_view_list_filter", "");
 	load_current_session_value("page", "sess_graph_view_list_current_page", "");
 
@@ -301,16 +323,17 @@ case 'list':
 		kill_session_var("sess_graph_view_list_current_page");
 		kill_session_var("sess_graph_view_list_filter");
 		kill_session_var("sess_graph_view_list_host");
+		kill_session_var("sess_graph_view_list_graph_template");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_id"]);
+		unset($_REQUEST["graph_template_id"]);
 		unset($_REQUEST["graph_list"]);
 		unset($_REQUEST["graph_add"]);
 		unset($_REQUEST["graph_remove"]);
 
 	}
-
 
 	/* make sure we have a page set */
 	if (! isset($_REQUEST["page"])) {
@@ -348,7 +371,7 @@ case 'list':
 		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>";
 	}
 
-	$nav_url = ereg_replace("(\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*|(\?|&)graph_add=[\,0-9]*|(\?|&)graph_remove=[\,0-9]*|(\?|&)graph_list=[\,0-9]*", "", $nav_url);
+	$nav_url = ereg_replace("(\?|&)host_id=[0-9]+|(\?|&)graph_template_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*|(\?|&)graph_add=[\,0-9]*|(\?|&)graph_remove=[\,0-9]*|(\?|&)graph_list=[\,0-9]*", "", $nav_url);
 	$graph_list_text = "";
 	if (! empty($graph_list)) {
 		foreach ($graph_list as $item => $value) {
@@ -364,12 +387,15 @@ case 'list':
 	html_graph_start_box(3, true);
 
 	if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
+	if (empty($_REQUEST["graph_template_id"])) { $_REQUEST["graph_template_id"] = 0; }
 	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; }
 	?>
 	<script type="text/javascript">
 	<!--
-	function applyFilterChange(objForm) {
-		strURL = 'graph_view.php?action=list&page=1&host_id=' + objForm.host_id[objForm.host_id.selectedIndex].value;
+	function applyGraphListFilterChange(objForm) {
+		strURL = 'graph_view.php?action=list&page=1';
+		strURL = strURL + '&host_id=' + objForm.host_id.value;
+		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
 		strURL = strURL + url_graph('');
 		document.location = strURL;
@@ -379,37 +405,62 @@ case 'list':
 	</script>
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_id" method="POST" onSubmit='form_graph(document.graphs,document.form_graph_id)'>
+		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.graphs,document.form_graph_list)'>
 		<input type='hidden' name='graph_list' value='<?php print $graph_list_text; ?>'>
 		<input type='hidden' name='graph_add' value=''>
 		<input type='hidden' name='graph_remove' value=''>
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="120">
-						&nbsp;<strong>Filter by host:</strong>&nbsp;
+					<td nowrap style='white-space: nowrap;' width="40">
+						&nbsp;<strong>Host:</strong>&nbsp;
 					</td>
 					<td width="1">
-						<select name="host_id" onChange="applyFilterChange(document.form_graph_id)">
+						<select name="host_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
 							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
 							<?php
-							$hosts = get_host_array();
+							$hosts = db_fetch_assoc("SELECT DISTINCT host.id, host.description as name
+								FROM host
+								INNER JOIN graph_local
+								ON host.id=graph_local.host_id" .
+								(($request["graph_template_id"] > 0) ? " WHERE graph_template_id=" . $_REQUEST["graph_template_id"] :"") . "
+								ORDER BY name");
 
 							if (sizeof($hosts) > 0) {
-								foreach ($hosts as $host) {
-									print "<option value=\"" . $host["id"] . "\"";
-									if ($_REQUEST["host_id"] == $host["id"]) {
-										print " selected";
-									}
-									print ">" . $host["name"] . "</option>\n";
-								}
+							foreach ($hosts as $host) {
+								print "<option value='" . $host["id"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+							}
 							}
 							?>
 						</select>
 					</td>
-					<td width="5"></td>
+					<td nowrap style='white-space: nowrap;' width="100">
+						&nbsp;<strong>Graph Template:</strong>&nbsp;
+					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+						<select name="graph_template_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
+							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
+							<?php
+							$graph_templates = db_fetch_assoc("SELECT graph_templates.*
+								FROM graph_templates
+								INNER JOIN graph_local
+								ON graph_templates.id=graph_local.graph_template_id" .
+								(($request["host_id"] > 0) ? " WHERE host_id=" . $_REQUEST["host_id"] :"") . "
+								ORDER BY name");
+
+							if (sizeof($graph_templates) > 0) {
+							foreach ($graph_templates as $template) {
+								print "<option value='" . $template["id"] . "'"; if ($_REQUEST["graph_template_id"] == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;<strong>Search:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
@@ -427,6 +478,7 @@ case 'list':
 	$sql_filter = "";
 	$sql_filter .= (empty($_REQUEST["filter"]) ? "" : " graph_templates_graph.title_cache like '%" . $_REQUEST["filter"] . "%'");
 	$sql_filter .= (empty($_REQUEST["host_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.host_id=" . $_REQUEST["host_id"]);
+	$sql_filter .= (empty($_REQUEST["graph_template_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.graph_template_id=" . $_REQUEST["graph_template_id"]);
 
 	/* graph permissions */
 	if (read_config_option("auth_method") != 0) {
@@ -447,7 +499,8 @@ case 'list':
 		" . (empty($sql_where) ? "where" : "and") . " graph_templates_graph.local_graph_id > 0
 		and graph_templates_graph.local_graph_id=graph_local.id
 		and graph_templates_graph.title_cache like '%" . $_REQUEST["filter"] . "%'
-		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]);
+		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
+		" . (empty($_REQUEST["graph_template_id"]) ? "" : " and graph_local.graph_template_id=" . $_REQUEST["graph_template_id"]);
 
 	$total_rows = count(db_fetch_assoc("select
 		graph_templates_graph.local_graph_id

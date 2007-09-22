@@ -1,33 +1,59 @@
-	<?php if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
-	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; } ?>
 	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_id" method="post">
+		<form name="form_graph_view" method="post">
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
-					<td nowrap style='white-space: nowrap;' width="100">
-						&nbsp;<strong>Filter by host:</strong>&nbsp;
+					<td nowrap style='white-space: nowrap;' width="40">
+						&nbsp;<strong>Host:</strong>&nbsp;
 					</td>
 					<td width="1">
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-							<option value="graph_view.php?action=preview&host_id=0&filter=<?php print $_REQUEST["filter"];?>"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
+						<select name="host_id" onChange="applyGraphPreviewFilterChange(document.form_graph_view)">
+							<option value="0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
 
 							<?php
-							$hosts = get_host_array();
+							$hosts = db_fetch_assoc("SELECT DISTINCT host.id, host.description as name
+								FROM host
+								INNER JOIN graph_local
+								ON host.id=graph_local.host_id" .
+								(($request["graph_template_id"] > 0) ? " WHERE graph_template_id=" . $_REQUEST["graph_template_id"] :"") . "
+								ORDER BY name");
 
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='graph_view.php?action=preview&host_id=" . $host["id"] . "&filter=" . $_REQUEST["filter"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+								print "<option value='" . $host["id"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="100">
+						&nbsp;<strong>Graph Template:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<select name="graph_template_id" onChange="applyGraphPreviewFilterChange(document.form_graph_view)">
+							<option value="0"<?php if ($_REQUEST["graph_template_id"] == "0") {?> selected<?php }?>>Any</option>
+
+							<?php
+							$graph_templates = db_fetch_assoc("SELECT graph_templates.*
+								FROM graph_templates
+								INNER JOIN graph_local
+								ON graph_templates.id=graph_local.graph_template_id" .
+								(($request["host_id"] > 0) ? " WHERE host_id=" . $_REQUEST["host_id"] :"") . "
+								ORDER BY name");
+
+							if (sizeof($graph_templates) > 0) {
+							foreach ($graph_templates as $template) {
+								print "<option value='" . $template["id"] . "'"; if ($_REQUEST["graph_template_id"] == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
 							}
 							}
 							?>
 						</select>
 					</td>
 					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Search&nbsp;
+						&nbsp;<strong>Search:</strong>&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">

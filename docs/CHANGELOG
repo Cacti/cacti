@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0000480: Error after altering graphs displayed per page
 -bug#0000740: Lack of unique session name conflicts with other PHP applications
 -bug#0000829: JVM, Spike detection and Poller
+-bug#0000830: Filter Graphs by Graph Template...
 -bug#0000833: favicon.ico support
 -bug#0000850: Select All for list view
 -bug#0000854: Move "Downed Host Detection" to each device
