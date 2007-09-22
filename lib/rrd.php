@@ -1555,10 +1555,10 @@ function rrdtool_set_font($type, $no_legend = "") {
 	global $config;
 
 	if (read_graph_config_option("custom_fonts") == "on") {
-		$font = read_graph_config_option($type . "_name");
+		$font = read_graph_config_option($type . "_font");
 		$size = read_graph_config_option($type . "_size");
 	}else{
-		$font = read_config_option($type . "_name");
+		$font = read_config_option($type . "_font");
 		$size = read_config_option($type . "_size");
 	}
 
