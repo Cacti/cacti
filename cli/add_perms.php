@@ -33,7 +33,7 @@ $no_http_headers = true;
 include(dirname(__FILE__)."/../include/global.php");
 
 if ($_SERVER["argc"] == 1) {
-	usage();
+	display_help();
 	return 1;
 }else{
 	$groupName = '';
@@ -66,14 +66,20 @@ if ($_SERVER["argc"] == 1) {
 			$itemId = $_SERVER["argv"][$i];
 
 			break;
+		case "--version":
+		case "-V":
+		case "-H":
+		case "--help":
+			display_help();
+			return 0;
 		default:
-			usage();
+			display_help();
 			return 1;
 		}
 	}
 
 	if ($itemType == 0 || $itemId == 0) {
-		usage();
+		display_help();
 		return 1;
 	}
 
@@ -94,7 +100,7 @@ if ($_SERVER["argc"] == 1) {
 	}
 }
 
-function usage() {
+function display_help() {
 	echo "Usage:\n";
 	echo "add_perms.php [ --group-name [Group Name] | --user-id [ID] ] --item-type --item-id\n\n";
 	echo "Where item-type is one of: graph, tree, host or graph_template\n";

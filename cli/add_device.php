@@ -70,6 +70,10 @@ if (sizeof($parms)) {
 	$ping_timeout = 500;
 	$ping_retries = 2;
 
+	$displayHostTemplates = FALSE;
+	$displayCommunities   = FALSE;
+	$quietMode            = FALSE;
+
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
 
@@ -172,27 +176,23 @@ if (sizeof($parms)) {
 				display_help();
 				return 1;
 			}
-		case "-h":
 			display_help();
 			return 0;
-		case "-v":
+		case "--version":
 		case "-V":
-			display_help();
-			return 0;
+		case "-H":
 		case "--help":
 			display_help();
 			return 0;
 		case "--list-communities":
-			display_communities();
-			return 0;
-		case "-h":
-		case "--h":
-		case "--help":
-			display_help();
-			return 0;
+			$displayCommunities = TRUE;
+			break;
 		case "--list-host-templates":
-			display_host_templates(get_host_templates());
-			return 0;
+			$displayHostTemplates = TRUE;
+			break;
+		case "--quiet":
+			$quietMode = TRUE;
+			break;
 		default:
 			print "ERROR: Invalid Parameter " . $parameter . "\n\n";
 			display_help();
@@ -200,10 +200,20 @@ if (sizeof($parms)) {
 		}
 	}
 
+	if ($displayCommunities) {
+		displayCommunities($quietMode);
+		return 0;
+	}
+
+	if ($displayHostTemplates) {
+		displayHostTemplates(getHostTemplates(), $quietMode);
+		return 0;
+	}
+
 	/* process the various lists into validation arrays */
-	$host_templates = get_host_templates();
-	$hosts          = get_hosts_by_description();
-	$addresses      = get_addresses();
+	$host_templates = getHostTemplates();
+	$hosts          = getHostsByDescription();
+	$addresses      = getAddresses();
 
 	/* process templates */
 	if (!isset($host_templates[$template_id])) {
@@ -324,7 +334,8 @@ function display_help() {
 	echo "    - port:         161\n";
 	echo "    - timeout:      500\n\n";
 	echo "List Options:  --list-host-templates\n";
-	echo "               --list-communities\n\n";
+	echo "               --list-communities\n";
+	echo "               --quiet - batch mode value return\n\n";
 }
 
 ?>

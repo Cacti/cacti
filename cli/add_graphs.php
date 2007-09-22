@@ -61,11 +61,13 @@ if (sizeof($parms)) {
 	$templateId = 0;
 	$force      = 0;
 
-	$listHosts       = 0;
-	$listSNMPFields  = 0;
-	$listSNMPValues  = 0;
-	$listQueryTypes  = 0;
-	$listSNMPQueries = 0;
+	$listHosts       = FALSE;
+	$listSNMPFields  = FALSE;
+	$listSNMPValues  = FALSE;
+	$listQueryTypes  = FALSE;
+	$listSNMPQueries = FALSE;
+
+	$quietMode       = FALSE;
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -104,32 +106,42 @@ if (sizeof($parms)) {
 
 			break;
 		case "--list-hosts":
-			$listHosts = 1;
+			$listHosts = TRUE;
 
 			break;
 		case "--list-snmp-fields":
-			$listSNMPFields = 1;
+			$listSNMPFields = TRUE;
 
 			break;
 		case "--list-snmp-values":
-			$listSNMPValues = 1;
+			$listSNMPValues = TRUE;
 
 			break;
 		case "--list-query-types":
-			$listQueryTypes = 1;
+			$listQueryTypes = TRUE;
 
 			break;
 		case "--list-snmp-queries":
-			$listSNMPQueries = 1;
+			$listSNMPQueries = TRUE;
 
 			break;
 		case "--force":
-			$force = 1;
+			$force = TRUE;
+
+			break;
+		case "--quiet":
+			$quietMode = TRUE;
 
 			break;
 		case "--list-graph-templates":
-			displayGraphTemplates($graphTemplates);
+			displayGraphTemplates($graphTemplates, $quietMode);
 
+			return 0;
+		case "--version":
+		case "-V":
+		case "-H":
+		case "--help":
+			display_help();
 			return 0;
 		default:
 			display_help();
@@ -139,7 +151,7 @@ if (sizeof($parms)) {
 	}
 
 	if ($listHosts) {
-		displayHosts($hosts);
+		displayHosts($hosts, $quietMode);
 
 		return 0;
 	}
@@ -147,8 +159,8 @@ if (sizeof($parms)) {
 	/* get the existing snmp queries */
 	$snmpQueries = getSNMPQueries();
 
-	if ($listSNMPQueries == 1) {
-		displaySNMPQueries($snmpQueries);
+	if ($listSNMPQueries) {
+		displaySNMPQueries($snmpQueries, $quietMode);
 
 		return 0;
 	}
@@ -165,8 +177,8 @@ if (sizeof($parms)) {
 		/* get the snmp query types for comparison */
 		$snmp_query_types = getSNMPQueryTypes($dsGraph["snmpQueryId"]);
 
-		if ($listQueryTypes == 1) {
-			displayQueryTypes($snmp_query_types);
+		if ($listQueryTypes) {
+			displayQueryTypes($snmp_query_types, $quietMode);
 
 			return 0;
 		}
@@ -193,8 +205,8 @@ if (sizeof($parms)) {
 	/* process the snmp fields */
 	$snmpFields = getSNMPFields($hostId);
 
-	if ($listSNMPFields == 1) {
-		displaySNMPFields($snmpFields, $hostId);
+	if ($listSNMPFields) {
+		displaySNMPFields($snmpFields, $hostId, $quietMode);
 
 		return 0;
 	}
@@ -222,7 +234,7 @@ if (sizeof($parms)) {
 		}
 	}
 
-	if ($listSNMPValues == 1)  {
+	if ($listSNMPValues)  {
 		if (!isset($dsGraph["snmpField"])) {
 			echo "You must supply an snmp-field before you can list its values\n";
 			echo "Try --list-snmp-fields\n";
@@ -230,7 +242,7 @@ if (sizeof($parms)) {
 			return 1;
 		}
 
-		displaySNMPValues($snmpValues, $hostId, $dsGraph["snmpField"]);
+		displaySNMPValues($snmpValues, $hostId, $dsGraph["snmpField"], $quietMode);
 
 		return 0;
 	}
@@ -360,6 +372,7 @@ function display_help() {
 	echo "               --snmp-query-id [ID] --list-query-types\n";
 	echo "               --host-id=[ID] --list-snmp-fields\n";
 	echo "               --host-id=[ID] --snmp-field=[Field] --list-snmp-values\n\n";
+	echo "               --quiet - batch mode value return\n\n";
 	echo "'cg' graphs are for things like CPU temp/fan speed, while 'ds' graphs are for data-source based graphs (interface stats etc.)\n";
 }
 

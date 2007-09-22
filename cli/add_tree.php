@@ -35,7 +35,7 @@ include_once($config["base_path"]."/lib/api_automation_tools.php");
 include_once($config["base_path"].'/lib/tree.php');
 
 if ($_SERVER["argc"] == 1) {
-	usage();
+	display_help();
 	return(1);
 }else{
 	$type       = '';  # tree or node
@@ -52,6 +52,9 @@ if ($_SERVER["argc"] == 1) {
 
 	$hostId         = 0;
 	$hostGroupStyle = 1; # 1 = Graph Template,  2 = Data Query Index
+
+	$quietMode      = FALSE;
+	$displayHosts   = FALSE;
 
 	$hosts          = getHosts();
 
@@ -93,17 +96,25 @@ if ($_SERVER["argc"] == 1) {
 			$i++;
 			$hostId = $_SERVER["argv"][$i];
 			break;
+		case "--quiet":
+			$quietMode = TRUE;
+			break;
 		case "--list-hosts":
-			displayHosts($hosts);
-			return 0;
+			$displayHosts = TRUE;
+			break;
 		case "--host-group-style":
 			$i++;
 			$hostGroupStyle = $_SERVER["argv"][$i];
 			break;
 		default:
-			usage();
+			display_help();
 			return 0;
 		}
+	}
+
+	if ($displayHosts) {
+		displayHosts($hosts, $quietMode);
+		return 1;
 	}
 
 	if ($type == 'tree') {
@@ -148,7 +159,7 @@ if ($_SERVER["argc"] == 1) {
 		if ($parentNode > 0) {
 			$parentNodeExists = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id = $treeId AND id = $parentNode");
 			if (!isset($parentNodeExists)) {
-				printf("parent-node %d does not exist\n");
+				echo "parent-node $parentNode does not exist\n";
 				return 1;
 			}
 		}
@@ -187,12 +198,12 @@ if ($_SERVER["argc"] == 1) {
 		return 0;
 	}else{
 		printf("Unknown type: $type\n");
-		usage();
+		display_help();
 		return 1;
 	}
 }
 
-function usage() {
+function display_help() {
 	echo "Usage:\n";
 	echo "add_tree.php --type [tree|node] [type-options]\n\n";
 	echo "tree options: --name [Tree Name] --sort-method [a|n|m]\n";

@@ -132,7 +132,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 	return $tree_item_id;
 }
 
-function get_host_templates() {
+function getHostTemplates() {
 	$tmparray = db_fetch_assoc("select id, name from host_template order by id");
 
 	foreach ($tmparray as $template) {
@@ -142,7 +142,7 @@ function get_host_templates() {
 	return $host_templates;
 }
 
-function get_hosts_by_description() {
+function getHostsByDescription() {
 	$hosts = array();
 	$tmparray = db_fetch_assoc("select id, description from host order by description");
 
@@ -164,7 +164,7 @@ function getHosts() {
 	return $hosts;
 }
 
-function get_addresses() {
+function getAddresses() {
 	$addresses = array();
 	$tmparray  = db_fetch_assoc("select id, hostname from host order by hostname");
 
@@ -219,14 +219,6 @@ function getSNMPQueryTypes($snmpQueryId) {
 	return $types;
 }
 
-function displayQueryTypes($types) {
-	echo "Known SNMP Query Types:(id, name)\n";
-
-	while (list($id, $name) = each ($types)) {
-		echo "\t" . $id . "\t" . $name . "\n";
-	}
-}
-
 function getGraphTemplates() {
 	$graph_templates = array();
 	$tmpArray        = db_fetch_assoc("select id, name from graph_templates order by id");
@@ -238,67 +230,122 @@ function getGraphTemplates() {
 	return $graph_templates;
 }
 
-function display_host_templates($host_templates) {
-	echo "Valid Host Templates:\n";
+function displayQueryTypes($types, $quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known SNMP Query Types: (id, name)\n";
+	}
+
+	while (list($id, $name) = each ($types)) {
+		echo $id . "\t" . $name . "\n";
+	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
+}
+
+function displayHostTemplates($host_templates, $quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Valid Host Templates: (id, name)\n";
+	}
 
 	foreach ($host_templates as $id => $name) {
-		echo "\t$id => $name\n";
+		echo "$id\t$name\n";
 	}
 
-	echo "\n";
+	if (!$quietMode) {
+		echo "\n";
+	}
 }
 
-function display_communities() {
-	echo "Known communities are:\n";
+function displayCommunities($quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known communities are: (community)\n";
+	}
 
-	$communities = db_fetch_assoc("select snmp_community from host group by snmp_community");
+	$communities = db_fetch_assoc("SELECT DISTINCT
+		snmp_community
+		FROM host
+		ORDER BY snmp_community");
 
 	foreach ($communities as $community) {
-		echo "\t".$community["snmp_community"]."\n";
+		echo $community["snmp_community"]."\n";
 	}
 
-	echo "\n";
+	if (!$quietMode) {
+		echo "\n";
+	}
 }
 
-function displaySNMPFields($fields, $hostId) {
-	echo "Known SNMP Fields for host-id $hostId\n";
+function displaySNMPFields($fields, $hostId, $quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known SNMP Fields for host-id $hostId: (name)\n";
+	}
 
 	while (list($field, $values) = each ($fields)) {
-		printf("%s\n", $field);
+		echo $field . "\n";
+	}
+
+	if (!$quietMode) {
+		echo "\n";
 	}
 }
 
-function displaySNMPValues($values, $hostId, $field) {
-	echo "Known values for $field (for host $hostId)\n";
+function displaySNMPValues($values, $hostId, $field, $quietMode) {
+	if (!$quietMode) {
+		echo "Known values for $field for host $hostId: (name)\n";
+	}
 
 	while (list($value, $foo) = each($values)) {
 		echo "$value\n";
 	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
 }
 
-function displaySNMPQueries($queries) {
-	echo "Known SNMP Queries:(id, name)\n";
+function displaySNMPQueries($queries, $quietMode) {
+	if (!$quietMode) {
+		echo "Known SNMP Queries:(id, name)\n";
+	}
 
 	while (list($id, $name) = each ($queries)) {
-		echo "\t" . $id . "\t" . $name . "\n";
+		echo $id . "\t" . $name . "\n";
+	}
+
+	if (!$quietMode) {
+		echo "\n";
 	}
 }
 
-function displayGraphTemplates($templates) {
-	echo "Known Graph Templates:(id, name)\n";
+function displayGraphTemplates($templates, $quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known Graph Templates:(id, name)\n";
+	}
 
 	while (list($id, $name) = each ($templates)) {
-		echo "\t" . $id . "\t" . $name . "\n";
+		echo $id . "\t" . $name . "\n";
+	}
+
+	if (!$quietMode) {
+		echo "\n";
 	}
 }
 
-function displayHosts($hosts) {
-	echo "Known Hosts: (id, hostname, template, description)\n";
+function displayHosts($hosts, $quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known Hosts: (id, hostname, template, description)\n";
+	}
 
 	if (sizeof($hosts)) {
 		foreach($hosts as $host) {
-			echo "\t" . $host["id"] . "\t" . $host["hostname"] . "\t" . $host["host_template_id"] . "\t" . $host["description"] . "\n";
+			echo $host["id"] . "\t" . $host["hostname"] . "\t" . $host["host_template_id"] . "\t" . $host["description"] . "\n";
 		}
+	}
+
+	if (!$quietMode) {
+		echo "\n";
 	}
 }
 
