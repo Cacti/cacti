@@ -597,7 +597,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if ($graph["auto_scale"] == "on") {
 		if ($graph["auto_scale_opts"] == "1") {
-			$scale = "--alt-autoscale --alt-y-grid" . RRD_NL;
+			$scale = "--alt-autoscale" . RRD_NL;
 		}elseif ($graph["auto_scale_opts"] == "2") {
 			$scale = "--alt-autoscale-max" . RRD_NL;
 			$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
