@@ -214,8 +214,8 @@ function utilities_view_tech($php_info = "") {
 	$data_count = db_fetch_assoc("SELECT i.type_id, COUNT(i.type_id) AS total FROM data_template_data AS d, data_input AS i WHERE d.data_input_id = i.id AND local_data_id <> 0 GROUP BY i.type_id");
 
 	/* Get RRDtool version */
+	$rrdtool_version = "Unknown";
 	if ((file_exists(read_config_option("path_rrdtool"))) && (($config["cacti_server_os"] == "win32") || (is_executable(read_config_option("path_rrdtool"))))) {
-		$rrdtool_version = "Unknown";
 
 		$out_array = array();
 		exec(read_config_option("path_rrdtool"), $out_array);
