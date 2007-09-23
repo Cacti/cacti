@@ -59,6 +59,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 			$user_auth["enabled"] = $user_exist["enabled"];
 		}else{
 			/* User already exists, duplicate users are bad */
+			raise_message(19);
 			return false;
 		}
 	} else {
