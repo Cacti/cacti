@@ -1366,7 +1366,7 @@ function utilities() {
 			<p><a href='utilities.php?action=view_tech'>Technical Support</a></p>
 		</td>
 		<td class="textArea">
-			<p>Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Include checks for common configuration issues.</p>
+			<p>Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.</p>
 		</td>
 	</tr>
 
