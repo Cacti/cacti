@@ -143,7 +143,12 @@ switch ($_REQUEST["action"]) {
 
 function utilities_php_modules() {
 
-	/* Gather phpinfo into a string variable */
+	/* 
+	   Gather phpinfo into a string variable - This has to be done before
+	   any headers are sent to the browser, as we are going to do some 
+	   output buffering fun 
+	*/
+
 	ob_start();
 	phpinfo(INFO_MODULES);
 	$php_info = ob_get_contents();
@@ -157,7 +162,6 @@ function utilities_php_modules() {
 	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
 	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
 	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
-
 
 	return $php_info;
 }
@@ -383,11 +387,11 @@ function utilities_view_tech($php_info = "") {
 
 	/* Calculate memory suggestion based off of data source count */
 	$memory_suggestion = $data_total * 32768;
-	/* Set minimum */
+	/* Set minimum - 16M */
 	if ($memory_suggestion < 16777216) {
 		$memory_suggestion = 16777216;
 	}
-	/* Set maximum */
+	/* Set maximum - 512M */
 	if ($memory_suggestion > 536870912) {
 		$memory_suggestion = 536870912;
 	}
@@ -439,7 +443,7 @@ function utilities_view_tech($php_info = "") {
 
 
 function utilities_view_user_log() {
-	global $colors, $poller_actions;
+	global $colors, $auth_realms;
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -564,6 +568,7 @@ function utilities_view_user_log() {
 	$user_log_sql = "SELECT
 		user_log.username,
 		user_auth.full_name,
+		user_auth.realm,
 		user_log.time,
 		user_log.result,
 		user_log.ip
@@ -604,6 +609,7 @@ function utilities_view_user_log() {
 	$display_text = array(
 		"username" => array("Username", "ASC"),
 		"full_name" => array("Full Name", "ASC"),
+		"realm" => array("Authenication Realm", "ASC"),
 		"time" => array("Date", "ASC"),
 		"result" => array("Result", "DESC"),
 		"ip" => array("IP Address", "DESC"));
@@ -612,28 +618,31 @@ function utilities_view_user_log() {
 
 	$i = 0;
 	if (sizeof($user_log) > 0) {
-	foreach ($user_log as $item) {
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-		?>
-		<td width='35%'>
-			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["username"]);?>
-		</td>
-		<td width='20%'>
-			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["full_name"]);?>
-		</td>
-		<td width='20%'>
-			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"]);?>
-		</td>
-		<td width='10%'>
-			<?php print $item["result"] == 0 ? "Failed" : "Success";?>
-		</td>
-		<td width='15%'>
-			<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"]);?>
-		</td>
-		</tr>
-		<?php
-		$i++;
-	}
+		foreach ($user_log as $item) {
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			?>
+			<td width='35%'>
+				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["username"]);?>
+			</td>
+			<td width='20%'>
+				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["full_name"]);?>
+			</td>
+			<td width='20%'>
+				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $auth_realms[$item["realm"]]);?>
+			</td>
+			<td width='20%'>
+				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"]);?>
+			</td>
+			<td width='10%'>
+				<?php print $item["result"] == 0 ? "Failed" : "Success";?>
+			</td>
+			<td width='15%'>
+				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"]);?>
+			</td>
+			</tr>
+			<?php
+			$i++;
+		}
 	}
 
 	html_end_box();
@@ -653,7 +662,7 @@ function utilities_clear_user_log() {
 		}
 
 		/* delete inactive users */
-		db_execute("DELETE FROM user_log WHERE user_id NOT IN (SELECT id FROM user_auth)");
+		db_execute("DELETE FROM user_log WHERE user_id NOT IN (SELECT id FROM user_auth) OR username NOT IN (SELECT username FROM user_auth)");
 
 	}
 }
@@ -1312,7 +1321,17 @@ function utilities() {
 		<col valign="top" width="10"></col>
 	</colgroup>
 
-	<?php html_header(array("System Log Administration"), 2);?>
+	<?php html_header(array("Technical Support"), 2); ?>
+	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<td class="textArea">
+			<p><a href='utilities.php?action=view_tech'>Technical Support</a></p>
+		</td>
+		<td class="textArea">
+			<p>Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.</p>
+		</td>
+	</tr>
+
+	<?php html_header(array("Log Administration"), 2);?>
 
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
@@ -1322,9 +1341,6 @@ function utilities() {
 			<p>The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.</p>
 		</td>
 	</tr>
-
-	<?php html_header(array("User Log Administration"), 2);?>
-
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td class="textArea">
 			<p><a href='utilities.php?action=view_user_log'>View User Log</a></p>
@@ -1358,15 +1374,6 @@ function utilities() {
 		</td>
 		<td class="textArea">
 			<p>The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.</p>
-		</td>
-	</tr>
-	<?php html_header(array("Technical Support"), 2); ?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
-		<td class="textArea">
-			<p><a href='utilities.php?action=view_tech'>Technical Support</a></p>
-		</td>
-		<td class="textArea">
-			<p>Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.</p>
 		</td>
 	</tr>
 
