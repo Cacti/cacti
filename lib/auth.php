@@ -134,6 +134,18 @@ function user_remove($user_id) {
 	input_validate_input_number($user_id);
 	/* ==================================================== */
 
+	/* check for guest or template user */
+	$username = db_fetch_cell("select username from user_auth where id = " . $user_id);
+	if ($username != get_request_var_post("username")) {
+		if ($username == read_config_option("user_template")) {
+			raise_message(21);
+			return;
+		}                                                                                                                                                                                                                if ($username == read_config_option("guest_user")) {
+			raise_message(21);
+			return;
+		}
+	}
+
 	db_execute("delete from user_auth where id=" . $user_id);
 	db_execute("delete from user_auth_realm where user_id=" . $user_id);
 	db_execute("delete from user_auth_perms where user_id=" . $user_id);

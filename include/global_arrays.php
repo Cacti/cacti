@@ -27,10 +27,10 @@ $messages = array(
 		"message" => 'Save Successful.',
 		"type" => "info"),
 	2  => array(
-		"message" => 'Save Failed',
+		"message" => 'Save Failed.',
 		"type" => "error"),
 	3  => array(
-		"message" => 'Save Failed: Field Input Error (Check Red Fields)',
+		"message" => 'Save Failed: Field Input Error (Check Red Fields).',
 		"type" => "error"),
 	4  => array(
 		"message" => 'Passwords do not match, please retype.',
@@ -60,8 +60,15 @@ $messages = array(
 		"message" => 'XML: Cannot locate type code.',
 		"type" => "error"),
 	19 => array(
-		"message" => 'Username already exists',
+		"message" => 'Username already exists.',
+		"type" => "error"),
+	20 => array(
+		"message" => 'Username change not permitted for designated template or guest user.',
+		"type" => "error"),
+	21 => array(
+		"message" => 'User delete not permitted for designated template or guest user.',
 		"type" => "error")
+
 		);
 
 $cdef_operators = array(1 =>

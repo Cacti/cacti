@@ -372,6 +372,17 @@ function form_save() {
 			raise_message(12);
 		}
 
+		/* check for guest or template user */
+		$username = db_fetch_cell("select username from user_auth where id = " . get_request_var_post("id"));
+		if ($username != get_request_var_post("username")) {
+			if ($username == read_config_option("user_template")) {
+				raise_message(20);
+			}	
+			if ($username == read_config_option("guest_user")) {
+				raise_message(20);
+			}	
+		}
+
 		/* check to make sure the passwords match; if not error */
 		if (get_request_var_post("password") != get_request_var_post("password_confirm")) {
 			raise_message(4);
