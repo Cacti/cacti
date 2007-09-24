@@ -82,7 +82,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password,
 			snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, rrd_name, rrd_path,
 			rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3)
-			VALUE
+			VALUES
 			($local_data_id, " . $host["id"] . ", $poller_action_id,'" . $host["hostname"] . "',
 			'" . $host["snmp_community"]       . "', '" . $host["snmp_version"]       . "', '" . $host["snmp_timeout"] . "',
 			'" . $host["snmp_username"]        . "', '" . $host["snmp_password"]      . "', '" . $host["snmp_auth_protocol"] . "',
