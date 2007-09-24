@@ -728,19 +728,15 @@ function graphs() {
 						AND snmp_query_id=" . $snmp_query["id"]);
 
 					/* build magic query */
-					$sql_query  = "SELECT host_id, snmp_query_id, snmp_index, ";
+					$sql_query  = "SELECT host_id, snmp_query_id, snmp_index";
 					$num_visible_fields = sizeof($field_names);
 					$i = 0;
-					foreach($field_names as $column) {
-						$field_name = $column["field_name"];
-
-						if ($i == ($num_visible_fields-1)) {
-							$sql_query .= "MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
-						}else{
-							$sql_query .= "MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name', ";
+					if (sizeof($field_names) > 0) {
+						foreach($field_names as $column) {
+							$field_name = $column["field_name"];
+							$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+							$i++;
 						}
-
-						$i++;
 					}
 
 					$sql_query .= " FROM host_snmp_cache
