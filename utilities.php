@@ -419,8 +419,16 @@ function utilities_view_tech($php_info = "") {
 			print "<tr>\n";
 			print "  <td>" . $item["Name"] . "</td>\n";
 			print "  <td>" . $item["Rows"] . "</td>\n";
-			print "  <td>" . $item["Engine"] . "</td>\n";
-			print "  <td>" . $item["Collation"] . "</td>\n";
+			if (isset($item["Engine"])) {
+				print "  <td>" . $item["Engine"] . "</td>\n";
+			}else{
+				print "  <td>Unknown</td>\n";
+			}
+			if (isset($item["Collation"])) {
+				print "  <td>" . $item["Collation"] . "</td>\n";
+			} else {
+				print "  <td>Unknown</td>\n";
+			}
 			print "  <td>" . db_fetch_cell("CHECK TABLE " . $item["Name"], "Msg_text") . "</td>\n";
 			print "</tr>\n";
 		}
