@@ -306,7 +306,7 @@ if (sizeof($parms)) {
 			return 1;
 		}
 
-		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId AND snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND snmp_index=" . $snmp_query_array["snmp_index"]);
+		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId AND snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND snmp_index='" . $snmp_query_array["snmp_index"] . "'");
 
 		if (isset($existsAlready) && $existsAlready > 0) {
 			if ($graphTitle != "") {
