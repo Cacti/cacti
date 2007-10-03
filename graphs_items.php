@@ -179,6 +179,10 @@ function item_moveup() {
 }
 
 function item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
 	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);
 }
 
