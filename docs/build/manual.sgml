@@ -197,8 +197,8 @@ extension=snmp.so</userinput></screen>
 					<screen><userinput>session.save_path=/tmp</userinput></screen>
 					<para>
 						If you want to allow template importing, uncomment the following line:
-						<screen><userinput>file_uploads = On</userinput></screen>
 					</para>
+					<screen><userinput>file_uploads = On</userinput></screen>
 			</sect1>
 			<sect1 id="unix_configure_httpd">
 				<title>Configure the Webserver (Apache)</title>
@@ -492,8 +492,8 @@ cgi.force_redirect = 0</userinput></screen>
 			<listitem>
 				<para>
 					If you want to allow template importing, uncomment the following line:
-					<screen><userinput>file_uploads = On</userinput></screen>
 				</para>
+				<screen><userinput>file_uploads = On</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
@@ -4311,8 +4311,8 @@ disk /</userinput></screen>
 			<para>Please have a look at your cacti log file.
 			Usually, you'll find it at <filename>&lt;path_cacti&gt;/log/cacti.log</filename>.
 			Else see <userinput>Settings</userinput>, <userinput>Paths</userinput>.
-			Check for this kind of error:
-			<screen>CACTID: Host[...] DS[....] WARNING: SNMP timeout detected [500 ms], ignoring host '........'</screen></para>
+			Check for this kind of error:</para>
+			<screen>CACTID: Host[...] DS[....] WARNING: SNMP timeout detected [500 ms], ignoring host '........'</screen>
 			<para>For "reasonable" timeouts, this may be related
 			to a snmpbulkwalk issue. To change this, see
 			<userinput>Settings</userinput>, <userinput>Poller</userinput>
@@ -4329,18 +4329,18 @@ disk /</userinput></screen>
 			<para>For scripts, run them as cactiuser from cli to
 			check basic functionality. E.g. for a perl script
 			named <filename>your-perl-script.pl</filename>
-			with parameters "p1 p2" under *nix this would look like:
+			with parameters "p1 p2" under *nix this would look like:</para>
 			<screen>su - cactiuser
 /full/path/to/perl your-perl-script.pl p1 p2
-... (check output)</screen></para>
+... (check output)</screen>
 			<para>For snmp, snmpget the _exact_ OID you're asking for,
 			using same community string and snmp version as defined
 			within cacti. For an OID of <userinput>.1.3.6.1.4.something</userinput>,
 			community string of <userinput>very-secret</userinput>
 			and version 2 for target host <userinput>target-host</userinput>
-			this would look like
+			this would look like</para>
 			<screen>snmpget -c very-secret -v 2c target-host .1.3.6.1.4.something
-.... (check output)</screen></para>
+.... (check output)</screen>
 		</sect1>
 		<sect1 id="check_cacti_poller">
 		<title>Check cacti's poller</title>
@@ -4362,8 +4362,8 @@ disk /</userinput></screen>
 			is given numerically, the &lt;id&gt; being a specific
 			number for that host. Find this &lt;id&gt;
 			from the <userinput>Devices</userinput> menue when
-			editing the host: The url contains a string like
-			<screen>id=&lt;id&gt;</screen></para>
+			editing the host: The url contains a string like</para>
+			<screen>id=&lt;id&gt;</screen>
 			<para>Check, whether the output is as expected.
 			If not, check your script (e.g. <filename>/full/path/to/perl</filename>).
 			If ok, proceed to next step</para>
@@ -4371,11 +4371,11 @@ disk /</userinput></screen>
 			poller manually for the failing host only.
 			To do so, you need the &lt;id&gt;, again.
 			If you're using cmd.php, set the DEBUG logging level as
-			defined above and run
-			<screen>php -q cmd.php &lt;id&gt; &lt;id&gt;</screen></para>
+			defined above and run</para>
+			<screen>php -q cmd.php &lt;id&gt; &lt;id&gt;</screen>
 			<para>If you're using cactid, you may override
-			logging level when calling the poller:
-			<screen>./cactid --verbosity=5 &lt;id&gt; &lt;id&gt;</screen></para>
+			logging level when calling the poller:</para>
+			<screen>./cactid --verbosity=5 &lt;id&gt; &lt;id&gt;</screen>
 			<para>All output is printed to STDOUT in both cases.
 			This procdure allows for repeated tests without waiting
 			for the next polling interval. And there's no need to manually
@@ -4396,9 +4396,9 @@ disk /</userinput></screen>
 		</sect1>
 		<sect1 id="check_rrd_updating">
 		<title>Check rrd file updating</title>
-			<para>Down in the same log, you should find some
+			<para>Down in the same log, you should find some</para>
 			<screen>rrdtool update &lt;filename&gt; --template ...</screen>
-			You should find exactly one update statement for each file.</para>
+			<para>You should find exactly one update statement for each file.</para>
 			<para>RRD files should be created by the poller.
 			If it does not create them, it will not fill them either.
 			If it does, please check your
@@ -4410,7 +4410,7 @@ disk /</userinput></screen>
 		<title>Check rrd file ownership</title>
 			<para>If rrd files were created e.g. with root ownership,
 			a poller running as cactiuser will not be able to update
-			those files
+			those files</para>
 			<screen>cd /var/www/html/cacti/rra
 ls -l localhost*
 -rw-r--r--  1 root      root      463824 May 31 12:40 localhost_load_1min_5.rrd
@@ -4419,7 +4419,8 @@ ls -l localhost*
 -rw-r--r--  1 cactiuser cactiuser 155584 Jun  1 17:10 localhost_proc_7.rrd
 -rw-r--r--  1 cactiuser cactiuser 155584 Jun  1 17:10 localhost_users_6.rrd</screen>
 
-			<screen>chown cactiuser:cactiuser *.rrd</screen> will help.</para>
+			<para>Run the following command to cure this problem</para>
+			<screen>chown cactiuser:cactiuser *.rrd</screen>
 		</sect1>
 		<sect1 id="check_rrd_numbers">
 		<title>Check rrd file numbers</title>
@@ -4429,17 +4430,17 @@ ls -l localhost*
 			that valid updates for rrd files are suppressed,
 			because MINIMUM was not reached or MAXIMUM was exceeded.</para>
 			<para>Assuming, you've got some valid
-			<userinput>rrdtool update</userinput> in step 3, perform a
+			<userinput>rrdtool update</userinput> in step 3, perform a</para>
 			<screen>rrdtool fetch &lt;rrd file&gt; AVERAGE</screen>
-			and look at the last 10-20 lines. If you find NaN's there,
-			perform
+			<para>and look at the last 10-20 lines. If you find NaN's there,
+			perform</para>
 			<screen>rrdtool info &lt;rrd file&gt;</screen>
-			and check the
+			<para>and check the
 			<userinput>ds[...].min</userinput> and
-			<userinput>ds[...].max</userinput> entries, e.g.
+			<userinput>ds[...].max</userinput> entries, e.g.</para>
 			<screen>ds[loss].min = 0.0000000000e+00
 ds[loss].max = 1.0000000000e+02</screen>
-			In this example, MINIMUM = 0 and MAXIMUM = 100. For a
+			<para>In this example, MINIMUM = 0 and MAXIMUM = 100. For a
 			<userinput>ds.[...].type=GAUGE</userinput>
 			verify, that e.g. the number returned by the script does
 			not exceed
@@ -4447,9 +4448,9 @@ ds[loss].max = 1.0000000000e+02</screen>
 			(same holds for MINIMUM, respectively).</para>
 			<para>If you run into this, please do not only update
 			the data source definition within the Data Template,
-			but perform a
+			but perform a</para>
 			<screen>rrdtool tune &lt;rrd file&gt; --maximum &lt;ds-name&gt;:&lt;new ds maximum&gt;</screen>
-			 for all existing rrd files belonging to that Data Template.</para>
+			 <para>for all existing rrd files belonging to that Data Template.</para>
 			<para>At this step, it is wise to check
 			<userinput>step</userinput> and <userinput>heartbeat</userinput>
 			of the rrd file as well. For standard 300 seconds
@@ -4483,11 +4484,11 @@ ds[loss].max = 1.0000000000e+02</screen>
 			<para>This is commonly due to php.ini's memory settings of
 			8MB default. Change this to at least 64 MB.</para>
 			<para>To check this, please run following sql from mysql
-			cli (or phpmyadmin or the like)
-			<screen>select count(*) from poller_output;</screen></para>
+			cli (or phpmyadmin or the like)</para>
+			<screen>select count(*) from poller_output;</screen>
 			<para>If the result is huge, you may get rid of those
-			stuff by
-			<screen>truncate table poller_output;</screen></para>
+			stuff by</para>
+			<screen>truncate table poller_output;</screen>
 			<para>As of current SVN code for upcoming cacti 0.9,
 			I saw measures were taken on both issues
 			(memory size, truncating poller_output).</para>
@@ -4508,9 +4509,9 @@ ds[loss].max = 1.0000000000e+02</screen>
 			<filename>/etc/cron.d/cacti</filename> to avoid problems
 			when updating rpm's. Mosten often, you won't remember this
 			item when updating lots of rpm's, so I felt more secure to
-			put it here. And I've made some slight modifications, see
+			put it here. And I've made some slight modifications, see</para>
 			<screen><prompt>shell&gt;</prompt> vi /etc/cron.d/cacti
-*/5 * * * *     cactiuser       /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen></para>
+*/5 * * * *     cactiuser       /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen>
 
 			<para>This will produce a file
 			<filename>/var/local/log/poller.log</filename>, which includes
@@ -4518,9 +4519,9 @@ ds[loss].max = 1.0000000000e+02</screen>
 			rrdtool errors. It occupies only some few bytes and will be
 			overwritten each time.</para>
 			<para>If you're using the crontab of user "cactiuser" instead,
-			this will look like
+			this will look like</para>
 			<screen><prompt>shell&gt;</prompt> crontab -e -u cactiuser
-*/5 * * * *     /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen></para>
+*/5 * * * *     /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen>
 		</sect1>
 
 		<sect1 id="check_zero_values">
