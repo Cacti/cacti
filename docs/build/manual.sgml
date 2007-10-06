@@ -2445,7 +2445,7 @@ $database_password = "cacti";</userinput></screen>
 							</row>
 							<row>
 								<entry>Image Format</entry>
-								<entry>Choose whether you would prefer to output your graph images in PNG or SVG. According to the <ulink url="http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> PNG is preferred because it is both smaller and faster.</entry>
+								<entry>Choose whether you would prefer to output your graph images in PNG or SVG. GIF is supported only with rrdtool 1.0.x and has been deleted from rrdtool 1.2.x and later</entry>
 							</row>
 							<row>
 								<entry>Height</entry>
@@ -4298,6 +4298,246 @@ disk /</userinput></screen>
 					</tgroup>
 				</table>
 			</sect2>
+		</sect1>
+	</chapter>
+	<chapter id=Debugging>
+		<title>Debugging</title>
+		<para>Cacti users sometimes complain about NaN's in their graphs.
+		Unfortunately, there are several reasons for this result.
+		The following is a step-by-step procedure recommended for debugging.</para>
+
+		<sect1 id="check_log_file">
+		<title>Check Cacti Log File</title>
+			<para>Please have a look at your cacti log file.
+			Usually, you'll find it at <filename>&lt;path_cacti&gt;/log/cacti.log</filename>.
+			Else see <userinput>Settings</userinput>, <userinput>Paths</userinput>.
+			Check for this kind of error:
+			<screen>CACTID: Host[...] DS[....] WARNING: SNMP timeout detected [500 ms], ignoring host '........'</screen></para>
+			<para>For "reasonable" timeouts, this may be related
+			to a snmpbulkwalk issue. To change this, see
+			<userinput>Settings</userinput>, <userinput>Poller</userinput>
+			and lower the value for
+			<userinput>The Maximum SNMP OID's Per SNMP Get Request</userinput>.
+			Start at a value of 1 and increase it again,
+			if the poller starts working.
+			Some agent's don't have the horsepower
+			to deliver that many OID's at a time. Therefore,
+			we can reduce the number for those older/underpowered devices.</para>
+		</sect1>
+		<sect1 id="check_data_gathering">
+		<title>Check Basic Data Gathering</title>
+			<para>For scripts, run them as cactiuser from cli to
+			check basic functionality. E.g. for a perl script
+			named <filename>your-perl-script.pl</filename>
+			with parameters "p1 p2" under *nix this would look like:
+			<screen>su - cactiuser
+/full/path/to/perl your-perl-script.pl p1 p2
+... (check output)</screen></para>
+			<para>For snmp, snmpget the _exact_ OID you're asking for,
+			using same community string and snmp version as defined
+			within cacti. For an OID of <userinput>.1.3.6.1.4.something</userinput>,
+			community string of <userinput>very-secret</userinput>
+			and version 2 for target host <userinput>target-host</userinput>
+			this would look like
+			<screen>snmpget -c very-secret -v 2c target-host .1.3.6.1.4.something
+.... (check output)</screen></para>
+		</sect1>
+		<sect1 id="check_cacti_poller">
+		<title>Check cacti's poller</title>
+			<para>First make sure that crontab always shows poller.php.
+			This program will either call cmd.php, the PHP based poller
+			 _or_ cactid, the fast alternative, written in C.
+			 Define the poller you're using at
+			 <userinput>Settings</userinput>, <userinput>Poller</userinput>.
+			 Cactid has to be implemented seperately, it does not
+			 come with cacti by default.</para>
+			<para>Now, clear <filename>./log/cacti.log</filename>
+			(or rename it to get a fresh start)</para>
+			<para>Then, change <userinput>Settings</userinput>, <userinput>Poller Logging Level</userinput>
+			to DEBUG for _one_ polling cycle. You may rename
+			this log as well to avoid more stuff added to it with
+			subsequent polling cycles.</para>
+			<para>Now, find the host/data source in question.
+			The <userinput>Host[&lt;id&gt;]</userinput>
+			is given numerically, the &lt;id&gt; being a specific
+			number for that host. Find this &lt;id&gt;
+			from the <userinput>Devices</userinput> menue when
+			editing the host: The url contains a string like
+			<screen>id=&lt;id&gt;</screen></para>
+			<para>Check, whether the output is as expected.
+			If not, check your script (e.g. <filename>/full/path/to/perl</filename>).
+			If ok, proceed to next step</para>
+			<para>This procedure may be replaced by running the
+			poller manually for the failing host only.
+			To do so, you need the &lt;id&gt;, again.
+			If you're using cmd.php, set the DEBUG logging level as
+			defined above and run
+			<screen>php -q cmd.php &lt;id&gt; &lt;id&gt;</screen></para>
+			<para>If you're using cactid, you may override
+			logging level when calling the poller:
+			<screen>./cactid --verbosity=5 &lt;id&gt; &lt;id&gt;</screen></para>
+			<para>All output is printed to STDOUT in both cases.
+			This procdure allows for repeated tests without waiting
+			for the next polling interval. And there's no need to manually
+			search for the failing host between hundreds of lines of output.</para>
+		</sect1>
+		<sect1 id="check_mysql_updating">
+		<title>Check MySQL updating</title>
+			<para>In most cases, this step make be skipped.
+			You may want to return to this step, if the next one
+			fails (e.g. no rrdtool update to be found)</para>
+			<para>From debug log, please find the MySQL update statement
+			for that host concerning table
+			<userinput>poller_output</userinput>.
+			On very rare occasions, this will fail. So please copy
+			that sql statement and paste it to a mysql session started
+			from cli. This may as well be done from some tool like
+			phpMyAdmin. Check the sql return code.</para>
+		</sect1>
+		<sect1 id="check_rrd_updating">
+		<title>Check rrd file updating</title>
+			<para>Down in the same log, you should find some
+			<screen>rrdtool update &lt;filename&gt; --template ...</screen>
+			You should find exactly one update statement for each file.</para>
+			<para>RRD files should be created by the poller.
+			If it does not create them, it will not fill them either.
+			If it does, please check your
+			<userinput>Poller Cache</userinput>
+			from Utilities and search for your target.
+			Does the query show up here?</para>
+		</sect1>
+		<sect1 id="check_rrd_owner">
+		<title>Check rrd file ownership</title>
+			<para>If rrd files were created e.g. with root ownership,
+			a poller running as cactiuser will not be able to update
+			those files
+			<screen>cd /var/www/html/cacti/rra
+ls -l localhost*
+-rw-r--r--  1 root      root      463824 May 31 12:40 localhost_load_1min_5.rrd
+-rw-r--r--  1 cactiuser cactiuser 155584 Jun  1 17:10 localhost_mem_buffers_3.rrd
+-rw-r--r--  1 cactiuser cactiuser 155584 Jun  1 17:10 localhost_mem_swap_4.rrd
+-rw-r--r--  1 cactiuser cactiuser 155584 Jun  1 17:10 localhost_proc_7.rrd
+-rw-r--r--  1 cactiuser cactiuser 155584 Jun  1 17:10 localhost_users_6.rrd</screen>
+
+			<screen>chown cactiuser:cactiuser *.rrd</screen> will help.</para>
+		</sect1>
+		<sect1 id="check_rrd_numbers">
+		<title>Check rrd file numbers</title>
+			<para>You're perhaps wondering about this step,
+			if the former was ok. But due to data sources
+			MINIMUM and MAXIMUM definitions, it is possible,
+			that valid updates for rrd files are suppressed,
+			because MINIMUM was not reached or MAXIMUM was exceeded.</para>
+			<para>Assuming, you've got some valid
+			<userinput>rrdtool update</userinput> in step 3, perform a
+			<screen>rrdtool fetch &lt;rrd file&gt; AVERAGE</screen>
+			and look at the last 10-20 lines. If you find NaN's there,
+			perform
+			<screen>rrdtool info &lt;rrd file&gt;</screen>
+			and check the
+			<userinput>ds[...].min</userinput> and
+			<userinput>ds[...].max</userinput> entries, e.g.
+			<screen>ds[loss].min = 0.0000000000e+00
+ds[loss].max = 1.0000000000e+02</screen>
+			In this example, MINIMUM = 0 and MAXIMUM = 100. For a
+			<userinput>ds.[...].type=GAUGE</userinput>
+			verify, that e.g. the number returned by the script does
+			not exceed
+			<userinput>ds[...].MAX</userinput>
+			(same holds for MINIMUM, respectively).</para>
+			<para>If you run into this, please do not only update
+			the data source definition within the Data Template,
+			but perform a
+			<screen>rrdtool tune &lt;rrd file&gt; --maximum &lt;ds-name&gt;:&lt;new ds maximum&gt;</screen>
+			 for all existing rrd files belonging to that Data Template.</para>
+			<para>At this step, it is wise to check
+			<userinput>step</userinput> and <userinput>heartbeat</userinput>
+			of the rrd file as well. For standard 300 seconds
+			polling intervals (step=300), it is wise to set
+			<userinput>minimal_heartbeat</userinput> to 600 seconds.
+			If a single update is missing and the next one occurs in
+			less than 600 seconds from the last one, rrdtool will
+			interpolate the missing update. Thus, gaps are
+			"filled" automatically by interpolation.
+			Be aware of the fact, that this is no "real" data!
+			Again, this must be done in the Data Template itself
+			and by using rrdtool tune for all existing rrd files
+			of this type.</para>
+		</sect1>
+		<sect1 id="check_rrd_graph">
+		<title>Check rrdtool graph statement</title>
+			<para>Last resort would be to check, that the correct
+			data sources are used.
+			Goto <userinput>Graph Management</userinput> and select
+			your Graph. Enable DEBUG Mode to find the whole
+			<userinput>rrdtool graph</userinput> statement. You should
+			notice the <userinput>DEF</userinput> statements. They specify
+			the rrd file and data source to be used. You may check, that
+			all of them are as wanted.</para>
+		</sect1>
+		<sect1 id="debug_miscellaneous">
+		<title>Miscellaneous</title>
+			<para>Up to current cacti 0.8.6h, table
+			<userinput>poller_output</userinput> may increase beyond
+			reasonable size.</para>
+			<para>This is commonly due to php.ini's memory settings of
+			8MB default. Change this to at least 64 MB.</para>
+			<para>To check this, please run following sql from mysql
+			cli (or phpmyadmin or the like)
+			<screen>select count(*) from poller_output;</screen></para>
+			<para>If the result is huge, you may get rid of those
+			stuff by
+			<screen>truncate table poller_output;</screen></para>
+			<para>As of current SVN code for upcoming cacti 0.9,
+			I saw measures were taken on both issues
+			(memory size, truncating poller_output).</para>
+		</sect1>
+
+		<sect1 id="debug_rpm_installation">
+		<title>RPM Installation?</title>
+			<para>Most rpm installations will setup the crontab entry now.
+			If you've followed the installation instructions to the
+			letter (which you should always do ;-) ),
+			you may now have two poller running. That's not a good thing,
+			though. Most rpm installations will setup cron in
+			<filename>/etc/cron.d/cacti</filename></para>
+			<para>Now, please check all your crontabs, especially
+			<filename>/etc/crontab</filename> and crontabs of
+			users root and cactiuser. Leave only one poller entry for
+			all of them. Personally, I've chosen
+			<filename>/etc/cron.d/cacti</filename> to avoid problems
+			when updating rpm's. Mosten often, you won't remember this
+			item when updating lots of rpm's, so I felt more secure to
+			put it here. And I've made some slight modifications, see
+			<screen><prompt>shell&gt;</prompt> vi /etc/cron.d/cacti
+*/5 * * * *     cactiuser       /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen></para>
+
+			<para>This will produce a file
+			<filename>/var/local/log/poller.log</filename>, which includes
+			some additional informations from each poller's run, such as
+			rrdtool errors. It occupies only some few bytes and will be
+			overwritten each time.</para>
+			<para>If you're using the crontab of user "cactiuser" instead,
+			this will look like
+			<screen><prompt>shell&gt;</prompt> crontab -e -u cactiuser
+*/5 * * * *     /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen></para>
+		</sect1>
+
+		<sect1 id="check_zero_values">
+		<title>Not NaN, but 0 (zero) values?</title>
+			<para>Pay attention to custom scripts. It is required,
+			that external commands called from there are in the <filename>$PATH</filename>
+			of the cactiuser running the poller. It is therefor recommended to provide
+			<filename>/full/path/to/external/command</filename></para>
+			<para>User "criggie" reported an issue with running smartctl.
+			It was complaining "you are not root" so a quick
+			<userinput>chmod +s</userinput> on the script fixed that
+			problem.</para>
+			<para>Secondly, the script was taking several seconds to run.
+			So cacti was logging a "U" for unparseable in the debug
+			output, and was recording NAN. So my fix there was to make
+			the script run faster - it has to complete in less than one
+			second, and the age of my box made it difficult to accomplish.</para>
 		</sect1>
 	</chapter>
 </part>
