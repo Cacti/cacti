@@ -39,6 +39,10 @@ if ($config["cacti_server_os"] == "unix") {
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
+	if ($version == 0) {
+		return array();
+	}
+
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
@@ -130,6 +134,10 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
+	if ($version == 0) {
+		return array();
+	}
+
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
@@ -220,6 +228,10 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
+
+	if ($version == 0) {
+		return array();
+	}
 
 	$snmp_array = array();
 	$temp_array = array();
