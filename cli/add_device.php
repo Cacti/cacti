@@ -308,7 +308,7 @@ if (sizeof($parms)) {
 
 function display_help() {
 	echo "Usage:\n";
-	echo "add_device.php --description=[description] --ip=[IP] --notes=\"[]\" --template=[ID] [--disable]\n";
+	echo "add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
 	echo "   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
 	echo "   [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	echo "   [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n\n";
@@ -316,23 +316,23 @@ function display_help() {
 	echo "    - description:  the name that will be displayed by Cacti in the graphs\n";
 	echo "    - ip:           self explanatory (can also be a FQDN)\n";
 	echo "    - template:     is a number (read below to get a list of templates)\n";
-	echo "    - avail:        [ping][none, snmp, pingsnmp]\n";
 	echo "Optional:\n";
 	echo "    - notes:        '', General information about this host.  Must be enclosed using double quotes.\n";
 	echo "    - disable:      0, 1 to add this host but to disable checks and 0 to enable it\n";
-	echo "    - ping_method:  icmp, icmp, tcp, udp\n";
+	echo "    - avail:        pingsnmp, [ping][none, snmp, pingsnmp]\n";
+	echo "    - ping_method:  tcp, icmp|tcp|udp\n";
 	echo "    - ping_port:    '', 1-65534\n";
 	echo "    - ping_retries: 2, the number of time to attempt to communicate with a host\n";
 	echo "    - version:      1, 1|2|3, snmp version\n";
 	echo "    - community:    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
+	echo "    - port:         161\n";
+	echo "    - timeout:      500\n";
 	echo "    - username:     '', snmp username for snmpv3\n";
 	echo "    - password:     '', snmp password for snmpv3\n";
 	echo "    - authproto:    '', snmp authentication protocol for snmpv3\n";
 	echo "    - privpass:     '', snmp privacy passphrase for snmpv3\n";
 	echo "    - privproto:    '', snmp privacy protocol for snmpv3\n";
-	echo "    - context:      '', snmp context for snmpv3\n";
-	echo "    - port:         161\n";
-	echo "    - timeout:      500\n\n";
+	echo "    - context:      '', snmp context for snmpv3\n\n";
 	echo "List Options:  --list-host-templates\n";
 	echo "               --list-communities\n";
 	echo "               --quiet - batch mode value return\n\n";
