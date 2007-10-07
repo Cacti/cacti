@@ -47,6 +47,8 @@ if (sizeof($parms) == 0) {
 }
 
 $debug = FALSE;
+$host_id = "";
+$filter = "";
 
 foreach($parms as $parameter) {
 	@list($arg, $value) = @explode("=", $parameter);
