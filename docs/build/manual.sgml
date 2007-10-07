@@ -4300,6 +4300,561 @@ disk /</userinput></screen>
 			</sect2>
 		</sect1>
 	</chapter>
+	<chapter id=Scripts>
+		<title>Command Line Scripts</title>
+			<para>Cacti support a number of command line scripts.
+			Please find them in the <filename>./cli</filename> directory.
+			As of current, following scripts are supported:</para>
+			<screen>add_device.php
+add_graphs.php
+add_perms.php
+add_tree.php
+copy_user.php
+poller_graphs_reapply_names.php
+poller_output_empty.php
+poller_reindex_hosts.php
+rebuild_poller_cache.php</screen>
+		<sect1 id="cli_rebuild_poller_cache">
+		<title>Rebuild Poller Cache</title>
+			<para>The poller cache holds all commands that cacti will issue during
+			the polling process in an internal format. It is possible, to review
+			the currenty contents of the poller cache by visiting <userinput>System Utilities</userinput>,
+			<userinput>View Poller Cache</userinput>. It is possible to apply filters
+			to this view; it will show up like</para>
+			<screen>Localhost - Hard Drive Space   	Script Server: /var/www/html/cacti/scripts/ss_host_disk.php ss_host_disk 127.0.0.1 1 1:161:500:somesecret:::::: get total 6
+	                        RRD: /var/www/html/cacti/rra/localhost_hdd_total_61.rrd
+Localhost - Load Average 	Script: /usr/bin/perl /var/www/html/cacti/scripts/loadavg_multi.pl
+	                        RRD: /var/www/html/cacti/rra/localhost_load_1min_5.rrd
+Localhost - Logged in Users 	Script: /usr/bin/perl /var/www/html/cacti/scripts/unix_users.pl
+	                        RRD: /var/www/html/cacti/rra/localhost_users_6.rrd
+Localhost - Memory - Free 	Script: /usr/bin/perl /var/www/html/cacti/scripts/linux_memory.pl MemFree:
+	                        RRD: /var/www/html/cacti/rra/localhost_mem_buffers_3.rrd
+Localhost - Memory - Free Swap 	Script: /usr/bin/perl /var/www/html/cacti/scripts/linux_memory.pl SwapFree:
+	                        RRD: /var/www/html/cacti/rra/localhost_mem_swap_4.rrd
+Localhost - mtaReceivedMessages SNMP Version: 1, Community: somesecret, OID: .1.3.6.1.2.1.28.1.1.1.1
+	                        RRD: /var/www/html/cacti/rra/localhost_mtareceivedmessages_47.rrd
+Localhost - mtaReceivedVolume 	SNMP Version: 1, Community: somesecret, OID: .1.3.6.1.2.1.28.1.1.4.1
+	                        RRD: /var/www/html/cacti/rra/localhost_mtareceivedvolume_49.rrd</screen>
+
+			<para>There are several circumstances, that may result in the poller cache
+			being out of sync. An example would be a change of the name of a script used in a
+			<userinput>Data Input Method</userinput>. This change is <emphasis>not</emphasis>
+			automatically propagated to the poller cache. It is required, to run
+			<application>php -q rebuild poller_cache.php</application> manually.</para>
+
+			<para>Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php --help
+Cacti Rebuild Poller Cache Script 1.0, Copyright 2007 - The Cacti Group
+
+usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]
+
+-d            - Display verbose output during execution
+-v --version  - Display this help message
+-h --help     - Display this help message</screen>
+			<para>Debug mode lists the data sources items that are worked upon.</para>
+			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php -d
+WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time
+DEBUG: There are '38' data source elements to update.
+DEBUG: Data Source Item '1' of '38' updated
+DEBUG: Data Source Item '2' of '38' updated
+DEBUG: Data Source Item '3' of '38' updated
+DEBUG: Data Source Item '4' of '38' updated
+....</screen>
+			<para>Without any parameter, some dots are shown as progress indicators.</para>
+			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php
+WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time
+......................................
+<prompt>shell&gt;</prompt></screen>
+			<caution><para>Rebuilding the poller cache interferes with the poller operation.
+			Please make sure, that the poller is not running and will not start
+			during a rebuild operation</para></caution>
+
+		</sect1>
+		<sect1 id="cli_poller_reindex_hosts">
+		<title>Re-Index Hosts</title>
+			<para>Re-Indexing is required only for SNMP/Script Data Queries.
+			Remember, that whan applying a Data Query to a Host, a
+			<userinput>Re-Index Method</userinput> has to be chosen. This reindex method
+			governs the automatic re-indexing based on specific events.</para>
+			<table frame='all'>
+				<title>Re_Index Methods</title>
+				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+					<colspec colnum="1">
+					<colspec colwidth="3*" colnum="2">
+					<thead>
+						<row>
+							<entry align="center">Re-Index Method</entry>
+							<entry align="center">Description</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>Uptime Goes Backwards</entry>
+							<entry>Refers to a system reboot. Cacti will detect
+							if the target has been rebootet by querying
+							sysUptime (.1.3.6.1.2.1.1.3.0).
+							If the current value for the uptime is lower
+							than the previous one (uptime goes backwards),
+							a reboot is assumed and a re-index is performed</entry>
+						</row>
+						<row>
+							<entry>Index Count Changed</entry>
+							<entry>Refers to a change of the number of indexed
+							items, e.g. interfaces, without checking sysUptime.
+							It is of particular interest in cases, where indexed
+							entries may change without the need of a reboot.
+							As modern operating systems seldom require reboots for
+							system configuration changes, you may want to consider
+							this setting for many cases (e.g. creating of a new
+							filesystem without a reboot). The index to be considered
+							is defined by the according XML file.</entry>
+						</row>
+						<row>
+							<entry>Verify All Fields</entry>
+							<entry>All index fields of the according XML file are checked
+							for changes. This is of particular interest e.g. in cases, where
+							the index is non-numeric (e.g. a MAC address).</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+			<para>If you feel the need for manual re-indexing, you may run it from cli.
+			Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --help
+Cacti Reindex Host Script 1.0, Copyright 2007 - The Cacti Group
+
+usage: poller_reindex_hosts.php -id=[host_id|All] [-d] [-h] [--help] [-v] [--version]
+
+-id=host_id   - The host_id to have data queries reindexed or 'All' to reindex all hosts
+-d            - Display verbose output during execution
+-v --version  - Display this help message
+-h --help     - Display this help message</screen>
+			<para>Running it in debug mode for the host with <userinput>id=2</userinput> may yield</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php -id=2 -d
+WARNING: Do not interrupt this script.  Reindexing can take quite some time
+DEBUG: There are '1' data queries to run
+DEBUG: Data query number '1' starting
+DEBUG: Data query number '1' ending</screen>
+			<para>A silent run for all devices is issued by</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php -id=All
+WARNING: Do not interrupt this script.  Reindexing can take quite some time
+.....<prompt>shell&gt;</prompt></screen>
+			<caution><para>Re-Indexing interferes with the poller operation.
+			Please make sure, that the poller is not running and will not start
+			during a reindex operation</para></caution>
+		</sect1>
+		<sect1 id="cli_poller_output_empty">
+		<title>Empty Poller Output Table</title>
+			<para>During normal poller operation, all retrieved results
+			are intermediately stored in the table named <structname>poller_output</structname>
+			After execution of <application>cmd.php</application> or <application>spine</application>,
+			this table holds all results. The <application>poller.php</application> finally
+			issues all <application>rrdtool update</application> operations. Thus,
+			after polling has completed, the table should be empty.</para>
+			<para>Conditions may arise, where the table is not (completely) emptied.
+			The most often known issue is lack of php memory. In those cases, the
+			table is bigger than the php memory size, thus not all items are handled
+			correctly. If that issue occurs, you may save all pending updates
+			<emphasis>after increasing PHP memory appropriately</emphasis> by running
+			this very script. Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php --help
+Cacti Empty Poller Output Table Script 1.0, Copyright 2007 - The Cacti Group
+
+usage: poller_output_empty.php [-h] [--help] [-v] [--version]
+
+-v --version  - Display this help message
+-h --help     - Display this help message</screen>
+			<para>You see, no parameter is required for operating successfully.
+			Under normal circumstances, running this script should yield</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php
+There were 0, RRD updates made this pass
+<prompt>shell&gt;</prompt></screen>
+			<para>In case, you hit the poller process or if the table was really
+			not fully processed, you may find</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.04
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.00 r:0.05
+OK u:0.00 s:0.01 r:0.06
+There were 21, RRD updates made this pass
+<prompt>shell&gt;</prompt></screen>
+			<para>If logging level verbosity was switched to <userinput>DEBUG</userinput>
+			you may find additional debug messages that usually show up in
+			<filename>cacti.log</filename></para>
+		</sect1>
+		<sect1 id="cli_poller_graphs_reapply_names">
+		<title>Reapply Suggested Names to Graphs</title>
+			<para>For a general understanding of suggested names used with data queries,
+			please see <xref linkend="data_queries_associated_graph_templates"/>.
+			Be aware, that changes to the <userinput>Suggested Names</userinput>
+			section of a data query will not automatically be propagated to
+			all existing graphs. This is, where <application>poller_graphs_reapply_names.php</application>
+			drops in. Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_graphs_reapply_names.php --help
+Cacti Reapply Graph Names Script 1.0, Copyright 2007 - The Cacti Group
+
+usage: poller_graphs_reapply_names.php -id=[host_id|All][host_id1|host_id2|...] [-s=[search_string] [-d] [-h] [--help] [-v] [--version]
+
+-id=host_id   - The host_id or 'All' or a pipe delimited list of host_id's
+-s=search_str - A graph template name or graph title to search for
+-d            - Display verbose output during execution
+-v --version  - Display this help message
+-h --help     - Display this help message</screen>
+			<para>Assume a situation, where the suggested names where changed
+			for the standard data query named <userinput>SNMP - Get Mounted Partitions</userinput>.
+			In this case, you will want to rework all graphs for this data query only. A verbose
+			run will yield</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_graphs_reapply_names.php -id=All -d -s="Used space"
+WARNING: Do not interrupt this script.  Interrupting during rename can cause issues
+DEBUG: There are '6' Graphs to rename
+DEBUG: Graph Name 'Localhost - Used Space - Memory Buffers' starting
+DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - Memory Buffers'
+DEBUG: Graph Name 'Localhost - Used Space - Real Memory' starting
+DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - Real Memory'
+DEBUG: Graph Name 'Localhost - Used Space - Swap Space' starting
+DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - Swap Space'
+DEBUG: Graph Name 'Localhost - Used Space - /' starting
+DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - /'
+DEBUG: Graph Name 'Localhost - Used Space - /sys' starting
+DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - /sys'
+DEBUG: Graph Name 'Localhost - Used Space - /boot' starting
+DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - /boot'</screen>
+			<para>Please notice my miss-spelling of the word <quote>Space</quote>.
+			The <userinput>-s=</userinput> option is not case sensitive.</para>
+		</sect1>
+		<sect1 id="cli_copy_user">
+		<title>Copy Local Cacti Users</title>
+			<para>For use and understanding the
+			limitation of this script, it is of importance to read <xref linkend="user_management">.
+			In case you're using local cacti user definitions, you may copy
+			a template user to a new user. Don't use this script for
+			<application>LDAP</application> users.</para>
+			<para>Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q copy_user.php --help
+
+It is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.
+
+Syntax:
+ php copy_cacti_user.php &lt;template user&gt; &lt;new user&gt;</screen>
+ 			<para>Now let's create a new user <userinput>Harry Potter</userinput> as follows</para>
+ 			<screen><prompt>shell&gt;</prompt>php -q copy_user.php guest "Harry Potter"
+
+It is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.
+
+Cacti User Copy Utility
+Template User: guest
+New User: Harry Potter
+
+Copying User...
+User copied...</screen>
+			<para>Find the results of this program call at <guimenu>User Management</guimenu></para>
+			<screen>User Name** 	Full Name 	Enabled 	Realm 	Default Graph Policy 	Last Login
+admin  	        Administrator  	Yes  		Local  	ALLOW  			Sunday, October 07, 2007 14:59:32
+guest 	        Guest Account 	Yes 		Local 	ALLOW 			N/A
+Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
+		</sect1>
+		<sect1 id="cli_add_device">
+		<title>Bulk Import of Devices</title>
+			<para>While it is an easy task to add a new device from the panels,
+			this would be a tedious task for creating dozens of hundreds of devices
+			in one turn. This is, where the script <filename>add_device.php</filename>
+			comes in. First, let's have a look at the whole list of features
+			it provides. Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
+
+Usage:
+add_device.php --description=[description] --ip=[IP] --notes="[]" --template=[ID] [--disable]
+   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]
+   [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]
+   [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]
+
+Required:
+    - description:  the name that will be displayed by Cacti in the graphs
+    - ip:           self explanatory (can also be a FQDN)
+    - template:     is a number (read below to get a list of templates)
+    - avail:        [ping][none, snmp, pingsnmp]
+Optional:
+    - notes:        '', General information about this host.  Must be enclosed using double quotes.
+    - disable:      0, 1 to add this host but to disable checks and 0 to enable it
+    - ping_method:  icmp, icmp, tcp, udp
+    - ping_port:    '', 1-65534
+    - ping_retries: 2, the number of time to attempt to communicate with a host
+    - version:      1, 1|2|3, snmp version
+    - community:    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community
+    - username:     '', snmp username for snmpv3
+    - password:     '', snmp password for snmpv3
+    - authproto:    '', snmp authentication protocol for snmpv3
+    - privpass:     '', snmp privacy passphrase for snmpv3
+    - privproto:    '', snmp privacy protocol for snmpv3
+    - context:      '', snmp context for snmpv3
+    - port:         161
+    - timeout:      500
+
+List Options:  --list-host-templates
+               --list-communities
+               --quiet - batch mode value return</screen>
+			<para>Wow, that's quite a lot of options. To better understand it's use,
+			let's first stick to the listing options</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_device.php --list-host-templates
+
+Valid Host Templates: (id, name)
+1       Generic SNMP-enabled Host
+3       ucd/net SNMP Host
+4       Karlnet Wireless Bridge
+5       Cisco Router
+6       Netware 4/5 Server
+7       Windows 2000/XP Host
+8       Local Linux Machine
+9       Sendmail Host</screen>
+			<para>Why are those <userinput>Host Templates</userinput> of such importance for this
+			script? Well, when using this script to add a new device, there are 3 required
+			parameters. The <userinput>description</userinput> and the <userinput>device ip address</userinput>
+			are of course left to you. But for assigning the correct <userinput>Host Template Id</userinput>,
+			you should first know the correct id of that very parameter. For the purpose of this
+			chapter we assume to add a device that will be associated to a <userinput>ucd/net SNMP Host</userinput>,
+			so the id of <userinput>3</userinput> is required.</para>
+			<para>Now, let's set up the most basic command to add a new device. The description shall be
+			<userinput>"Device Add Test"</userinput>, the ip will be given as a FQDN, <userinput>router.mydomain.com</userinput>.
+			As a SNMP enabled device, surely a community string has to be provided; in this case given
+			as <userinput>public</userinput>.
+			In total, this makes the following command</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_device.php --description="Device Add Test" --ip="router.mydomain.com" --template=3 --community="public"
+
+Adding Device Add Test (router.mydomain.com) as "ucd/net SNMP Host" using SNMP v1 with community "public"
+Success - new device-id: (11)</screen>
+			<para>Please visit <guimenu>Devices</guimenu> to see the result:</para>
+			<screen>Description** 		Graphs 	Data Sources 	Status 	Hostname 		Current (ms) 	Average (ms) 	Availability
+Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
+			<para>Please use any other combination of parameters in the same way
+			as via the web browser console. You may want to remember the new device id, <userinput>11</userinput>
+			in this case, for the next steps.</para>
+		</sect1>
+		<sect1 id="cli_add_graphs">
+		<title>Bulk Graph Creation</title>
+			<para>You won't stop now as you've just created a device from cli.
+			Surely, the task of setting up graphs is the next step. This is done using
+			<filename>add_graphs.php</filename>. Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --help
+
+Usage:
+add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]
+  --host-id=[ID] [--graph-title=title] [graph options] [--force]
+
+For cg graphs: [--force]
+
+--force is optional - if you set this flag, then new cg graphs will be created, even though they may already exist.
+
+For ds graphs: --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]
+
+--graph-title is optional - it defaults to what ever is in the graph template/data-source template.
+
+List Options:  --list-hosts
+               --list-graph-templates
+               --list-snmp-queries
+               --snmp-query-id [ID] --list-query-types
+               --host-id=[ID] --list-snmp-fields
+               --host-id=[ID] --snmp-field=[Field] --list-snmp-values
+
+               --quiet - batch mode value return</screen>
+			<para>Like the graph creation from the console, this task is split
+			into two different ones:</para>
+			<itemizedlist>
+				<listitem><para><guimenuitem>Associated Graph Templates</guimenuitem>:
+				These are named <userinput>cg</userinput> graph_type for this script.</para></listitem>
+				<listitem><para><guimenuitem>Associated Data Queries</guimenuitem>:
+				These are named <userinput>ds</userinput> graph_type for this script.
+				Additional SNMP parameters are required to define those graphs.</para></listitem>
+			</itemizedlist>
+			<caution>
+				<title>Exact typing required</title>
+				<para>When running this cli script, caution must be taken
+				to avoid typos. Sometimes, list options take an ending <quote>s</quote>,
+				where the option for graph creation comes without <quote>s</quote>.
+				Error messages are not issued to indicate this typo; instead you will
+				see the general help screen.</para>
+			</caution>
+			<sect2 id="cli_add_graphs_list_cg">
+			<title>List Options for Associated Graph Templates</title>
+				<para>The first list option, <userinput>--list-hosts</userinput>,
+				is required only if you do not know the <userinput>id</userinput>
+				of the device you want to add graphs for. It will produce output as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --list-hosts
+
+Known Hosts: (id, hostname, template, description)
+...
+11      router.mydomain.com 3       Device Add Test</screen>
+				<para>You surely recognize the device we've just added?</para>
+				<para>The next list option, <userinput>--list-graph-templates</userinput>,
+				is required to identify the number of an <userinput>Associated Graph Templates</userinput>.</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --list-graph-templates
+
+Known Graph Templates:(id, name)
+2       Interface - Traffic (bits/sec)
+3       ucd/net - Available Disk Space
+4       ucd/net - CPU Usage
+5       Karlnet - Wireless Levels
+6       Karlnet - Wireless Transmissions
+7       Unix - Ping Latency
+8       Unix - Processes
+9       Unix - Load Average
+...</screen>
+				<para>We will later need the graph template id of the <userinput>ucd/net - CPU Usage</userinput>
+				template. So note the number <userinput>4</userinput> for it.</para>
+			</sect2>
+			<sect2 id="cli_add_graphs_list_ds">
+			<title>List Options for Associated Data Queries</title>
+				<para>First task is to find all id's for available data queries.</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --host-id=2 --list-snmp-queries
+
+Known SNMP Queries:(id, name)
+1       SNMP - Interface Statistics
+2       ucd/net -  Get Monitored Partitions
+3       Karlnet - Wireless Bridge Statistics
+4       Netware - Get Available Volumes
+6       Unix - Get Mounted Partitions
+7       Netware - Get Processor Information
+8       SNMP - Get Mounted Partitions
+9       SNMP - Get Processor Information</screen>
+				<para>For standard interface statistics, we note the id of
+				<userinput>1</userinput></para>
+				<para>Next task is to find the query_type as done by issuing</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --snmp-query-id=1 --list-query-types
+
+Known SNMP Query Types: (id, name)
+2       In/Out Errors/Discarded Packets
+3       In/Out Non-Unicast Packets
+4       In/Out Unicast Packets
+9       In/Out Bytes (64-bit Counters)
+13      In/Out Bits
+14      In/Out Bits (64-bit Counters)
+16      In/Out Bytes
+20      In/Out Bits with 95th Percentile
+21      In/Out Bits with Total Bandwidth
+22      In/Out Bytes with Total Bandwidth
+23      In/Out Bits 1 min
+24      In/Out Bits 1 min (64-bit Counters)</screen>
+				<para>For a standard <userinput>In/Out Bits</userinput> type, we
+				note the id of <userinput>13</userinput></para>
+				<para>Next issue is to select the <userinput>SNMP Field</userinput>
+				that shall be used for a new graph.</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --host-id=11 --list-snmp-fields
+
+Known SNMP Fields for host-id 11: (name)
+ifAlias
+ifDescr
+ifHwAddr
+ifIndex
+ifIP
+ifName
+ifOperStatus
+ifSpeed
+ifType</screen>
+				<para>For our graph, we will use the field <userinput>ifOperStatus</userinput>
+				to select the correct interfaces.</para>
+				<para>In general, you will next determine the values available for the <userinput>SNMP Field</userinput>,
+				in our case <userinput>ifOperStatus</userinput>. This is done by</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --host-id=11 --snmp-field=ifOperStatus --list-snmp-values
+
+Known values for ifOperStatus for host 11: (name)
+Down
+Up</screen>
+				<para>This is no surprise, of course. Now, all paarmeters required for
+				creating a new graph are determined.</para>
+			</sect2>
+			<sect2 id="cli_add_graphs_cg">
+			<title>Non-Indexed Graphs</title>
+				<para>We will create a graph for <userinput>ucd/net - CPU Usage</userinput>. Above,
+				we've identified the graph template it to be <userinput>4</userinput>.
+				In total, that makes up for the following command</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --host-id=11 --graph-type=cg --graph-template-id=4
+
+Graph Added - graph-id: (39) - data-source-id: (63)</screen>
+				<para>Find the result when visiting <guimenu>Graph Management</guimenu></para>
+				<screen>Graph Title** 			Template Name 		Size
+Device Add Test - CPU Usage 	ucd/net - CPU Usage 	120x500</screen>
+			</sect2>
+			<sect2 id="cli_add_graphs_ds">
+			<title>Indexed Graphs</title>
+				<para>First, let's sum up the id's of all resources required for this
+				task:</para>
+				<table frame='all'>
+					<title>Parametes required for an Interface Traffic Graph</title>
+					<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+						<colspec colnum="2">
+						<colspec colwidth="1" colnum="2">
+						<colspec colwidth="3*" colnum="3">
+						<thead>
+							<row>
+								<entry align="center">Object</entry>
+								<entry align="center">Value</entry>
+								<entry align="center">Description</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>Graph Template Id</entry>
+								<entry align="right">2</entry>
+								<entry>Interface - Traffic (bits/sec)</entry>
+							</row>
+							<row>
+								<entry>SNMP Query Id</entry>
+								<entry align="right">1</entry>
+								<entry>SNMP - Interface Statistics</entry>
+							</row>
+							<row>
+								<entry>SNMP Query Type Id</entry>
+								<entry align="right">13</entry>
+								<entry>In/Out Bits</entry>
+							</row>
+							<row>
+								<entry>SNMP Field</entry>
+								<entry align="right">ifOperStatus</entry>
+								<entry></entry>
+							</row>
+							<row>
+								<entry>SNMP Value</entry>
+								<entry align="right">Up</entry>
+								<entry></entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+				<para>This will make up for the following command</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --host-id=11 --graph-type=ds --graph-template-id=2 --snmp-query-id=1 --snmp-query-type-id=13 --snmp-field=ifOperStatus --snmp-value=Up
+
+Graph Added - graph-id: (40) - data-source-id: (65)</screen>
+				<para>Find the result when visiting <guimenu>Graph Management</guimenu></para>
+				<screen>Graph Title** 				Template Name 				Size
+Device Add Test - CPU Usage 		ucd/net - CPU Usage 			120x500
+Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</screen>
+			</sect2>
+		</sect1>
+		<sect1 id="cli_add_tree">
+		<title>Add Graphs to a Tree</title>
+			<para>Not yet fully implemented</para>
+		</sect1>
+		<sect1 id="cli_add_perms">
+		<title>Add Permissions</title>
+			<para>Not yet fully implemented</para>
+		</sect1>
+	</chapter>
 	<chapter id=Debugging>
 		<title>Debugging</title>
 		<para>Cacti users sometimes complain about NaN's in their graphs.
