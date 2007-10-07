@@ -216,7 +216,7 @@ if (sizeof($parms)) {
 	/* More sanity checking */
 	if (isset($dsGraph["snmpField"])) {
 		if (!isset($snmpFields[$dsGraph["snmpField"]])) {
-			echo "Unknwon snmp-field " . $dsGraph["snmpField"] . " for host $hostId\n";
+			echo "Unknown snmp-field " . $dsGraph["snmpField"] . " for host $hostId\n";
 			echo "Try --list-snmp-fields\n";
 
 			return 1;
