@@ -37,6 +37,33 @@ include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
+
+foreach($parms as $parameter) {
+	@list($arg, $value) = @explode("=", $parameter);
+
+	switch ($arg) {
+	case "-h":
+		display_help();
+		exit;
+	case "-v":
+		display_help();
+		exit;
+	case "--version":
+		display_help();
+		exit;
+	case "--help":
+		display_help();
+		exit;
+	default:
+		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+		display_help();
+		exit;
+	}
+}
+
 /* record the start time */
 list($micro,$seconds) = split(" ", microtime());
 $start = $seconds + $micro;
@@ -53,5 +80,13 @@ while (db_fetch_cell("SELECT count(*) FROM poller_output") > 0) {
 echo "There were $rrds_processed, RRD updates made this pass\n";
 
 rrd_close($rrdtool_pipe);
+
+/*	display_help - displays the usage of the function */
+function display_help () {
+	print "Cacti Empty Poller Output Table Script 1.0, Copyright 2007 - The Cacti Group\n\n";
+	print "usage: poller_output_empty.php [-h] [--help] [-v] [--version]\n\n";
+	print "-v --version  - Display this help message\n";
+	print "-h --help     - Display this help message\n";
+}
 
 ?>
