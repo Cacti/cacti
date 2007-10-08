@@ -32,7 +32,11 @@ $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
 
-if ($_SERVER["argc"] == 1) {
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
+
+if (sizeof($parms) == 0) {
 	display_help();
 	return 1;
 }else{
@@ -41,29 +45,27 @@ if ($_SERVER["argc"] == 1) {
 
 	$itemTypes = array('graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4);
 
-	$itemType  = 0;
-	$itemId = 0;
+	$itemType = 0;
+	$itemId   = 0;
 
-	for ($i = 1; $i < $_SERVER["argc"]; $i++) {
-		switch ($_SERVER["argv"][$i]) {
+	foreach($parms as $parameter) {
+		@list($arg, $value) = @explode("=", $parameter);
+
+		switch ($arg) {
 		case "--user-id":
-			$i++;
-			$userId = $_SERVER["argv"][$i];
+			$userId = $value;
 
 			break;
 		case "--group-name":
-			$i++;
-			$groupName = $_SERVER["argv"][$i];
+			$groupName = $value;
 
 			break;
 		case "--item-type":
-			$i++;
-			$itemType = $itemTypes[$_SERVER["argv"][$i]];
+			$itemType = $itemTypes[$value];
 
 			break;
 		case "--item-id":
-			$i++;
-			$itemId = $_SERVER["argv"][$i];
+			$itemId = $value;
 
 			break;
 		case "--version":
@@ -102,7 +104,7 @@ if ($_SERVER["argc"] == 1) {
 
 function display_help() {
 	echo "Usage:\n";
-	echo "add_perms.php [ --group-name [Group Name] | --user-id [ID] ] --item-type --item-id\n\n";
+	echo "add_perms.php [ --group-name=[Group Name] | --user-id=[ID] ] --item-type --item-id\n\n";
 	echo "Where item-type is one of: graph, tree, host or graph_template\n";
 }
 
