@@ -268,6 +268,17 @@ $tree_sort_types = array(
 	TREE_ORDERING_NUMERIC => "Numeric Ordering"
 	);
 
+$tree_item_types = array(
+	TREE_ITEM_TYPE_HEADER => "Header",
+	TREE_ITEM_TYPE_GRAPH => "Graph",
+	TREE_ITEM_TYPE_HOST => "Host"
+	);
+
+$host_group_types = array(
+	HOST_GROUPING_GRAPH_TEMPLATE => "Graph Template",
+	HOST_GROUPING_DATA_QUERY_INDEX => "Data Query Index"
+	);
+
 $custom_data_source_types = array(
 	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
 	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
