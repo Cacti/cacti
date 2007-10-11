@@ -21,7 +21,7 @@
  +-------------------------------------------------------------------------+
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
-*/
+ */
 
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
@@ -34,20 +34,22 @@ include(dirname(__FILE__)."/../include/global.php");
 include_once($config["base_path"]."/lib/api_automation_tools.php");
 include_once($config["base_path"].'/lib/tree.php');
 
-if ($_SERVER["argc"] == 1) {
-	display_help();
-	return(1);
-}else{
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
+
+if (sizeof($parms)) {
+	/* setup defaults */
 	$type       = '';  # tree or node
 	$name       = '';  # Name of a tree or node
-	$sortMethod = 'a'; # a = alpha, n = numeric, m = manual
+	$sortMethod = 'alpha'; # manual, alpha, natural, numeric
 	$parentNode = 0;   # When creating a node, the parent node of this node (or zero for root-node)
 	$treeId     = 0;   # When creating a node, it has to go in a tree
-	$nodeType   = '';  #  Should be 'header', 'graph' or 'host' when creating a node
+	$nodeType   = '';  # Should be 'header', 'graph' or 'host' when creating a node
 	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
 	$rra_id     = 0;   # The rra_id for the graph to display: 1 = daily, 2 = weekly, 3 = monthly, 4 = yearly
 
-	$sortTypes = array('a' => 2, 'n' => 3, 'm' => 1);
+	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 3, 'numeric' => 4);
 	$nodeTypes = array('header' => 1, 'graph' => 2, 'host' => 3);
 
 	$hostId         = 0;
@@ -55,60 +57,68 @@ if ($_SERVER["argc"] == 1) {
 
 	$quietMode      = FALSE;
 	$displayHosts   = FALSE;
+	$displayTrees   = FALSE;
+	$displayNodes   = FALSE;
+	$displayRRAs    = FALSE;
 
 	$hosts          = getHosts();
 
-	for ($i = 1; $i < $_SERVER["argc"]; $i++) {
-		switch($_SERVER["argv"][$i]) {
-		case "--type":
-			$i++;
-			$type = $_SERVER["argv"][$i];
-			break;
-		case "--name":
-			$i++;
-			$name = $_SERVER["argv"][$i];
-			break;
-		case "--sort-method":
-			$i++;
-			$sortMethod = $_SERVER["argv"][$i];
-			break;
-		case "--parent-node":
-			$i++;
-			$parentNode = $_SERVER["argv"][$i];
-			break;
-		case "--tree-id":
-			$i++;
-			$treeId = $_SERVER["argv"][$i];
-			break;
-		case "--node-type":
-			$i++;
-			$nodeType = $_SERVER["argv"][$i];
-			break;
-		case "--graph-id":
-			$i++;
-			$graphId = $_SERVER["argv"][$i];
-			break;
-		case "--rra-id":
-			$i++;
-			$rra_id = $_SERVER["argv"][$i];
-			break;
-		case "--host-id":
-			$i++;
-			$hostId = $_SERVER["argv"][$i];
-			break;
-		case "--quiet":
-			$quietMode = TRUE;
-			break;
-		case "--list-hosts":
-			$displayHosts = TRUE;
-			break;
-		case "--host-group-style":
-			$i++;
-			$hostGroupStyle = $_SERVER["argv"][$i];
-			break;
-		default:
-			display_help();
-			return 0;
+	foreach($parms as $parameter) {
+		@list($arg, $value) = @explode("=", $parameter);
+
+		switch ($arg) {
+			case "--type":
+				$type = trim($value);
+				break;
+			case "--name":
+				$name = trim($value);
+				break;
+			case "--sort-method":
+				$sortMethod = trim($value);
+				break;
+			case "--parent-node":
+				$parentNode = $value;
+				break;
+			case "--tree-id":
+				$treeId = $value;
+				break;
+			case "--node-type":
+				$nodeType = trim($value);
+				break;
+			case "--graph-id":
+				$graphId = $value;
+				break;
+			case "--rra-id":
+				$rra_id = $value;
+				break;
+			case "--host-id":
+				$hostId = $value;
+				break;
+			case "--quiet":
+				$quietMode = TRUE;
+				break;
+			case "--list-hosts":
+				$displayHosts = TRUE;
+				break;
+			case "--list-trees":
+				$displayTrees = TRUE;
+				break;
+			case "--list-nodes":
+				$displayNodes = TRUE;
+				break;
+			case "--list-rras":
+				$displayRRAs = TRUE;
+				break;
+			case "--host-group-style":
+				$hostGroupStyle = trim($value);
+				break;
+			case "--quiet":
+				$quietMode = TRUE;
+
+				break;
+			default:
+				display_help();
+				return 0;
 		}
 	}
 
@@ -117,20 +127,47 @@ if ($_SERVER["argc"] == 1) {
 		return 1;
 	}
 
+	if ($displayTrees) {
+		displayTrees($quietMode);
+		return 1;
+	}
+
+	if ($displayNodes) {
+		if (!isset($treeId)) {
+			echo "You must supply a tree_id before you can list its nodes\n";
+			echo "Try --list-trees\n";
+
+			return 1;
+		}
+		displayTreeNodes($treeId, $quietMode);
+		return 1;
+	}
+
+	if ($displayRRAs) {
+		displayRRAs($quietMode);
+		return 1;
+	}
+
 	if ($type == 'tree') {
 		# Add a new tree
 		if (empty($name)) {
 			printf("You must supply a name with --name\n");
+			display_help();
 			return 1;
 		}
 
 		$treeOpts = array();
 		$treeOpts["id"]        = 0; # Zero means create a new one rather than save over an existing one
 		$treeOpts["name"]      = $name;
-		$treeOpts["sort_type"] = $sortTypes[$sortMethod];
 
-		if (!isset($treeOpts["sort_type"]) || empty($treeOpts["sort_type"])) {
+		if ($sortMethod == "manual"||
+			$sortMethod == "alpha" ||
+			$sortMethod == "numeric" ||
+			$sortMethod == "natural") {
+			$treeOpts["sort_type"] = $sortMethods[$sortMethod];
+		} else {
 			printf("Invalid sort-method: %s\n", $sortMethod);
+			display_help();
 			return 1;
 		}
 
@@ -149,22 +186,35 @@ if ($_SERVER["argc"] == 1) {
 		return 0;
 	}else if ($type == 'node') {
 		# Add a new node to a tree
-		$itemType = $nodeTypes[$nodeType];
-
-		if (!isset($itemType) || empty($itemType)) {
+		if ($nodeType == "header"||
+			$nodeType == "graph" ||
+			$nodeType == "host") {
+			$itemType = $nodeTypes[$nodeType];
+		} else {
 			printf("Invalid node-type: %s\n", $nodeType);
+			display_help();
 			return 1;
 		}
 
-		if ($parentNode > 0) {
+		if ($parentNode > 0 && is_numeric($parentNode)) {
 			$parentNodeExists = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id = $treeId AND id = $parentNode");
 			if (!isset($parentNodeExists)) {
 				echo "parent-node $parentNode does not exist\n";
 				return 1;
 			}
+		} else {
+			echo "parent-node $parentNode must be numeric > 0\n";
+			display_help();
+			return 1;
 		}
 
 		if ($nodeType == 'header') {
+			# Header --name must be given
+			if (empty($name)) {
+				printf("You must supply a name with --name\n");
+				display_help();
+				return 1;
+			}
 			# Blank out the graphId, rra_id, hostID and host_grouping_style  fields
 			$graphId        = 0;
 			$rra_id         = 0;
@@ -188,6 +238,7 @@ if ($_SERVER["argc"] == 1) {
 
 			if ($hostGroupStyle != 1 && $hostGroupStyle != 2) {
 				printf("Host Group Style must be 1 or 2 (Graph Template or Data Query Index)\n");
+				display_help();
 				return 1;
 			}
 		}
@@ -201,24 +252,36 @@ if ($_SERVER["argc"] == 1) {
 		display_help();
 		return 1;
 	}
+}else{
+	display_help();
+
+	return 0;
 }
+
 
 function display_help() {
 	echo "Usage:\n";
-	echo "add_tree.php --type [tree|node] [type-options]\n\n";
-	echo "tree options: --name [Tree Name] --sort-method [a|n|m]\n";
-	echo "(sort methods: a = Alphabetic, n = numeric, m = manual)\n\n";
-	echo "node options:        --node-type [header|graph|host] --tree-id [ID] --parent-node [ID] [Node Type Options]\n";
-	echo "header node options: --name [Name]\n";
-	echo "graph node options:  --graph-id [ID] --rra-id [ID]\n";
-	echo "host node options:   --host-id [ID] --host-group-style [1 | 2]\n";
-	echo "(Host group styles: 1 = Graph template, 2 = Data Query Index)\n\n";
-	echo "List Options: --list-hosts\n";
-	echo "              --list-trees *\n";
-	echo "              --tree-id [ID] --list-nodes *\n";
-	echo "              --list-rras *\n";
-	echo "              --host-id [ID] --list-graphs *\n\n";
-	echo "* = not yet implemented - sorry.\n";
+	echo "add_tree.php         --type=[tree|node] [type-options]\n\n";
+	echo "tree options:        --name=[Tree Name]\n";
+	echo "                     --sort-method=[manual|alpha|natural|numeric]\n\n";
+	echo "node options:        --node-type=[header|graph|host]\n";
+	echo "                     --tree-id=[ID]\n";
+	echo "                     --parent-node=[ID] [Node Type Options]\n\n";
+	echo "header node options: --name=[Name]\n\n";
+	echo "graph node options:  --graph-id=[ID]\n";
+	echo "                     --rra-id=[ID]\n";
+	echo "host node options:   --host-id=[ID]\n\n";
+	echo "                     --host-group-style=[1|2]\n";
+	echo "                      (host group styles:\n";
+	echo "                            1 = Graph Template,\n";
+	echo "                            2 = Data Query Index)\n\n";
+	echo "List Options:        --list-hosts\n";
+	echo "                     --list-trees\n";
+	echo "                     --tree-id=[ID] --list-nodes\n";
+	echo "                     --list-rras\n";
+	echo "                     --host-id=[ID] --list-graphs *\n";
+	echo "                     --quiet - batch mode value return\n\n";
+	echo "                       * = not yet implemented - sorry.\n\n";
 }
 
 ?>
