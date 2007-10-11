@@ -144,6 +144,7 @@ if (sizeof($parms)) {
 			display_help();
 			return 0;
 		default:
+			echo "ERROR: Unknown Argument '$arg'\n";
 			display_help();
 
 			return 0;
@@ -283,6 +284,24 @@ if (sizeof($parms)) {
 		}else{
 			$returnArray = create_complete_graph_from_template($templateId, $hostId, "", $empty);
 		}
+
+		if ($graphTitle != "") {
+			db_execute("UPDATE graph_templates_graph
+				SET title=\"$graphTitle\"
+				WHERE local_graph_id=" . $returnArray["local_graph_id"]);
+
+			update_graph_title_cache($returnArray["local_graph_id"]);
+		}
+
+		push_out_host($hostId,0);
+
+		$dataSourceId = db_fetch_cell("SELECT DISTINCT
+			data_template_rrd.local_data_id
+			FROM graph_templates_item, data_template_rrd
+			WHERE graph_templates_item.local_graph_id = " . $returnArray["local_graph_id"] . "
+			AND graph_templates_item.task_item_id = data_template_rrd.id");
+
+		echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
 	}elseif ($graph_type == "ds") {
 		if ((!isset($dsGraph["snmpQueryId"])) || (!isset($dsGraph["snmpQueryType"])) || (!isset($dsGraph["snmpField"])) || (!isset($dsGraph["snmpValue"]))) {
 			echo "For graph-type of 'ds' you must supply more options\n";
@@ -294,62 +313,80 @@ if (sizeof($parms)) {
 
 		$snmp_query_array = array();
 		$snmp_query_array["snmp_query_id"]       = $dsGraph["snmpQueryId"];
-		$snmp_query_array["snmp_index_on"]       = $dsGraph["snmpField"];
+		$snmp_query_array["snmp_index_on"]       = get_best_data_query_index_type($hostId, $dsGraph["snmpQueryId"]);
 		$snmp_query_array["snmp_query_graph_id"] = $dsGraph["snmpQueryType"];
 
-		$snmp_query_array["snmp_index"] = db_fetch_cell("select snmp_index from host_snmp_cache WHERE host_id=" . $hostId . " and snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND field_name='" . $dsGraph["snmpField"] . "' AND field_value='" . $dsGraph["snmpValue"] . "'");
+		$snmp_indexes = db_fetch_assoc("SELECT snmp_index 
+			FROM host_snmp_cache 
+			WHERE host_id=" . $hostId . " 
+			AND snmp_query_id=" . $dsGraph["snmpQueryId"] . " 
+			AND field_name='" . $dsGraph["snmpField"] . "' 
+			AND field_value='" . $dsGraph["snmpValue"] . "'");
 
-		if (!isset($snmp_query_array["snmp_index"])) {
+		if (sizeof($snmp_indexes)) {
+			foreach ($snmp_indexes as $snmp_index) {
+				$snmp_query_array["snmp_index"] = $snmp_index["snmp_index"];
+
+				$existsAlready = db_fetch_cell("SELECT id 
+					FROM graph_local 
+					WHERE graph_template_id=$templateId 
+					AND host_id=$hostId 
+					AND snmp_query_id=" . $dsGraph["snmpQueryId"] . " 
+					AND snmp_index='" . $snmp_query_array["snmp_index"] . "'");
+
+				if (isset($existsAlready) && $existsAlready > 0) {
+					if ($graphTitle != "") {
+						db_execute("UPDATE graph_templates_graph 
+							SET title = \"$graphTitle\" 
+							WHERE local_graph_id = $existsAlready");
+
+						update_graph_title_cache($existsAlready);
+					}
+
+					$dataSourceId = db_fetch_cell("SELECT DISTINCT
+						data_template_rrd.local_data_id
+						FROM graph_templates_item, data_template_rrd
+						WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
+						AND graph_templates_item.task_item_id = data_template_rrd.id");
+
+					echo "Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
+
+					continue;
+				}
+
+				$empty = array(); /* Suggested Values are not been implemented */
+
+				$returnArray = create_complete_graph_from_template($templateId, $hostId, $snmp_query_array, $empty);
+
+				if ($graphTitle != "") {
+					db_execute("UPDATE graph_templates_graph
+						SET title=\"$graphTitle\"
+						WHERE local_graph_id=" . $returnArray["local_graph_id"]);
+
+					update_graph_title_cache($returnArray["local_graph_id"]);
+				}
+
+				$dataSourceId = db_fetch_cell("SELECT DISTINCT
+					data_template_rrd.local_data_id
+					FROM graph_templates_item, data_template_rrd
+					WHERE graph_templates_item.local_graph_id = " . $returnArray["local_graph_id"] . "
+					AND graph_templates_item.task_item_id = data_template_rrd.id");
+
+				echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
+			}
+
+			push_out_host($hostId,0);
+		}else{
 			echo "Could not find snmp-field " . $dsGraph["snmpField"] . " (" . $dsGraph["snmpValue"] . ") for host-id " . $hostId . " (" . $hosts[$hostId]["hostname"] . ")\n";
 			echo "Try --host-id=" . $hostId . " --list-snmp-fields\n";
 
 			return 1;
 		}
-
-		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId AND snmp_query_id=" . $dsGraph["snmpQueryId"] . " AND snmp_index='" . $snmp_query_array["snmp_index"] . "'");
-
-		if (isset($existsAlready) && $existsAlready > 0) {
-			if ($graphTitle != "") {
-				db_execute("update graph_templates_graph set title = \"$graphTitle\" where local_graph_id = $existsAlready");
-				update_graph_title_cache($existsAlready);
-			}
-
-			$dataSourceId = db_fetch_cell("SELECT DISTINCT
-				data_template_rrd.local_data_id
-				FROM graph_templates_item, data_template_rrd
-				WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
-				AND graph_templates_item.task_item_id = data_template_rrd.id");
-
-			echo "Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
-
-			return 1;
-		}
-
-		$empty = array(); /* Suggested Values are not been implemented */
-		$returnArray = create_complete_graph_from_template($templateId, $hostId, $snmp_query_array, $empty);
 	}else{
 		echo "Graph Types must be either 'cg' or 'ds'\n";
 
 		return 1;
 	}
-
-	if ($graphTitle != "") {
-		db_execute("UPDATE graph_templates_graph
-			SET title=\"$graphTitle\"
-			WHERE local_graph_id=" . $returnArray["local_graph_id"]);
-
-		update_graph_title_cache($returnArray["local_graph_id"]);
-	}
-
-	push_out_host($hostId,0);
-
-	$dataSourceId = db_fetch_cell("SELECT DISTINCT
-		data_template_rrd.local_data_id
-		FROM graph_templates_item, data_template_rrd
-		WHERE graph_templates_item.local_graph_id = " . $returnArray["local_graph_id"] . "
-		AND graph_templates_item.task_item_id = data_template_rrd.id");
-
-	echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
 
 	return 0;
 }else{
