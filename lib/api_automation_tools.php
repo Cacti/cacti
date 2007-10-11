@@ -21,10 +21,10 @@
  +-------------------------------------------------------------------------+
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
-*/
+ */
 
 function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
-	$host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
+$host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
 	global $config;
 
 	include_once($config["library_path"] . "/tree.php");
@@ -91,7 +91,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 				if (($type == TREE_ITEM_TYPE_HEADER) && ($sort_children_type != TREE_ORDERING_NONE)) {
 					sort_tree(SORT_TYPE_TREE_ITEM, $tree_item_id, $sort_children_type);
 				}
-			/* tree ordering */
+				/* tree ordering */
 			}else{
 				/* potential speed savings for large trees */
 				if (tree_tier($save["order_key"]) == 1) {
@@ -341,6 +341,139 @@ function displayHosts($hosts, $quietMode = FALSE) {
 	if (sizeof($hosts)) {
 		foreach($hosts as $host) {
 			echo $host["id"] . "\t" . $host["hostname"] . "\t" . $host["host_template_id"] . "\t" . $host["description"] . "\n";
+		}
+	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
+}
+
+function displayTrees($quietMode = FALSE) {
+	global $tree_sort_types;
+
+	if (!$quietMode) {
+		echo "Known Trees:\nid\tsort method\t\t\tname\n";
+	}
+
+	$trees = db_fetch_assoc("SELECT
+		id,
+		sort_type,
+		name
+		FROM graph_tree
+		ORDER BY id");
+
+	if (sizeof($trees)) {
+		foreach ($trees as $tree) {
+			echo $tree["id"]."\t";
+			echo $tree_sort_types[$tree["sort_type"]]."\t";
+			echo $tree["name"]."\n";
+		}
+	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
+}
+
+function displayTreeNodes($tree_id, $quietMode = FALSE) {
+	global $tree_sort_types, $tree_item_types, $host_group_types;
+
+	if (!$quietMode) {
+		echo "Known Tree Nodes:\n";
+		echo "type\tid\ttext\n";
+	}
+
+	$nodes = db_fetch_assoc("SELECT
+		id,
+		local_graph_id,
+		rra_id,
+		title,
+		host_id,
+		host_grouping_type,
+		sort_children_type
+		FROM graph_tree_items
+		WHERE graph_tree_id=$tree_id
+		ORDER BY id");
+
+	if (sizeof($nodes)) {
+		foreach ($nodes as $node) {
+			/* taken from tree.php, funtion item_edit() */
+			$current_type = TREE_ITEM_TYPE_HEADER;
+			if ($node["local_graph_id"] > 0) { $current_type = TREE_ITEM_TYPE_GRAPH; }
+			if ($node["title"] != "") { $current_type = TREE_ITEM_TYPE_HEADER; }
+			if ($node["host_id"] > 0) { $current_type = TREE_ITEM_TYPE_HOST; }
+			echo $tree_item_types[$current_type]."\t";
+			echo $node["id"]."\t";
+
+
+			switch ($current_type) {
+				case TREE_ITEM_TYPE_HEADER:
+					echo $node["title"]."\t";
+					echo $tree_sort_types[$node["sort_children_type"]]."\t";
+					echo "\n";
+					break;
+
+				case TREE_ITEM_TYPE_GRAPH:
+					/* fetch the title for that graph */
+					$graph_title = db_fetch_cell("SELECT
+					graph_templates_graph.title_cache as name
+					FROM (
+						graph_templates_graph,
+						graph_local)
+					WHERE
+						graph_local.id=graph_templates_graph.local_graph_id and
+						local_graph_id = " . $node["local_graph_id"]);
+
+					$rra = db_fetch_cell("SELECT
+						name
+						FROM rra
+						WHERE id =" . $node["rra_id"]);
+
+					echo $graph_title ."\t";
+					echo $rra . "\t";
+					echo "\n";
+					break;
+
+				case TREE_ITEM_TYPE_HOST:
+					$name = db_fetch_cell("SELECT
+					hostname
+					FROM host
+					WHERE id = " . $node["host_id"]);
+					echo $name . "\t";
+					echo $host_group_types[$node["host_grouping_type"]]."\t";
+					echo "\n";
+				break;
+			}
+		}
+	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
+}
+
+function displayRRAs($quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known RRAs:\nid\tsteps\trows\ttimespan\tname\n";
+	}
+
+	$rras = db_fetch_assoc("SELECT
+		id,
+		name,
+		steps,
+		rows,
+		timespan
+		FROM rra
+		ORDER BY id");
+
+	if (sizeof($rras)) {
+		foreach ($rras as $rra) {
+			echo $rra["id"]."\t";
+			echo $rra["steps"]."\t";
+			echo $rra["rows"]."\t";
+			echo $rra["timespan"]."\t\t";
+			echo $rra["name"]."\n";
 		}
 	}
 
