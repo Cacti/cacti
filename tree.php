@@ -126,22 +126,12 @@ function form_save() {
 
 function item_edit() {
 	global $colors, $tree_sort_types;
+	global $tree_item_types, $host_group_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("tree_id"));
 	/* ==================================================== */
-
-	$tree_item_types = array(
-		TREE_ITEM_TYPE_HEADER => "Header",
-		TREE_ITEM_TYPE_GRAPH => "Graph",
-		TREE_ITEM_TYPE_HOST => "Host"
-		);
-
-	$host_group_types = array(
-		HOST_GROUPING_GRAPH_TEMPLATE => "Graph Template",
-		HOST_GROUPING_DATA_QUERY_INDEX => "Data Query Index"
-		);
 
 	if (!empty($_GET["id"])) {
 		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["id"]);
