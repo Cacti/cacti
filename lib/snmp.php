@@ -39,10 +39,6 @@ if ($config["cacti_server_os"] == "unix") {
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
-	if ($version == 0) {
-		return array();
-	}
-
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
@@ -64,8 +60,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}elseif ($version == "2") {
 			$snmp_value = @snmp2_get("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}else{
-			if ($auth_proto == "[None]") {
+			if ($priv_proto == "[None]") {
 				$proto = "authNoPriv";
+				$priv_proto = "";
 			}else{
 				$proto = "authPriv";
 			}
@@ -82,8 +79,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community) : "-c " . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
-			if ($auth_proto == "[None]") {
+			if ($priv_proto == "[None]") {
 				$proto = "authNoPriv";
+				$priv_proto = "";
 			}else{
 				$proto = "authPriv";
 			}
@@ -134,10 +132,6 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
-	if ($version == 0) {
-		return array();
-	}
-
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
@@ -159,8 +153,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		}elseif ($version == "2") {
 			$snmp_value = @snmp2_getnext("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}else{
-			if ($auth_proto == "[None]") {
+			if ($priv_proto == "[None]") {
 				$proto = "authNoPriv";
+				$priv_proto = "";
 			}else{
 				$proto = "authPriv";
 			}
@@ -177,8 +172,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
-			if ($auth_proto == "[None]") {
+			if ($priv_proto == "[None]") {
 				$proto = "authNoPriv";
+				$priv_proto = "";
 			}else{
 				$proto = "authPriv";
 			}
@@ -229,10 +225,6 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
-	if ($version == 0) {
-		return array();
-	}
-
 	$snmp_array = array();
 	$temp_array = array();
 
@@ -263,8 +255,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}elseif ($version == "2") {
 			$temp_array = @snmp2_real_walk("$hostname:$port", "$community", "$oid", ($timeout * 1000), $retries);
 		}else{
-			if ($auth_proto == "[None]") {
+			if ($priv_proto == "[None]") {
 				$proto = "authNoPriv";
+				$priv_proto = "";
 			}else{
 				$proto = "authPriv";
 			}
@@ -288,8 +281,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
-			if ($auth_proto == "[None]") {
+			if ($priv_proto == "[None]") {
 				$proto = "authNoPriv";
+				$priv_proto = "";
 			}else{
 				$proto = "authPriv";
 			}
