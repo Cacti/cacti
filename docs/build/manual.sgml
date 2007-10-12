@@ -4314,6 +4314,12 @@ poller_graphs_reapply_names.php
 poller_output_empty.php
 poller_reindex_hosts.php
 rebuild_poller_cache.php</screen>
+			<caution>
+				<title>Numbers may vary!</title>
+				<para>In the following examples, several numbers are shown
+				as output from various scripts. They will vary between different
+				installations. So don't bother, if your numbers will vary</para>
+			</caution>
 		<sect1 id="cli_rebuild_poller_cache">
 		<title>Rebuild Poller Cache</title>
 			<para>The poller cache holds all commands that cacti will issue during
@@ -4365,9 +4371,12 @@ DEBUG: Data Source Item '4' of '38' updated
 WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time
 ......................................
 <prompt>shell&gt;</prompt></screen>
-			<caution><para>Rebuilding the poller cache interferes with the poller operation.
-			Please make sure, that the poller is not running and will not start
-			during a rebuild operation</para></caution>
+			<caution>
+				<title>Stop the Poller when Rebuilding the Poller Cache</title>
+				<para>Rebuilding the poller cache interferes with the poller operation.
+				Please make sure, that the poller is not running and will not start
+				during a rebuild operation</para>
+			</caution>
 
 		</sect1>
 		<sect1 id="cli_poller_reindex_hosts">
@@ -4439,9 +4448,12 @@ DEBUG: Data query number '1' ending</screen>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php -id=All
 WARNING: Do not interrupt this script.  Reindexing can take quite some time
 .....<prompt>shell&gt;</prompt></screen>
-			<caution><para>Re-Indexing interferes with the poller operation.
-			Please make sure, that the poller is not running and will not start
-			during a reindex operation</para></caution>
+			<caution>
+				<title>Stop the Poller during Re-Indexing</title>
+				<para>Re-Indexing interferes with the poller operation.
+				Please make sure, that the poller is not running and will not start
+				during a reindex operation</para>
+			</caution>
 		</sect1>
 		<sect1 id="cli_poller_output_empty">
 		<title>Empty Poller Output Table</title>
@@ -4847,8 +4859,188 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 			</sect2>
 		</sect1>
 		<sect1 id="cli_add_tree">
-		<title>Add Graphs to a Tree</title>
-			<para>Not yet fully implemented</para>
+		<title>Add Items to a Tree</title>
+			<para>Now, that we've created some nice graphs, they should be put
+			the graph trees. This is done using <filename>add_tree.php</filename>.
+			As you will notice soon, it is possible to even add header items,
+			hosts and graphs to a tree as well as adding a new tree itself.
+			But let us first see the help output.
+			Calling the script with the parameter --help yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_tree.php --help
+
+Usage:
+add_tree.php         --type=[tree|node] [type-options]
+
+tree options:        --name=[Tree Name]
+                     --sort-method=[manual|alpha|natural|numeric]
+
+node options:        --node-type=[header|host|graph]
+                     --tree-id=[ID]
+     optional       [--parent-node=[ID] [Node Type Options]]
+
+header node options: --name=[Name]
+
+host node options:   --host-id=[ID]
+     optional       [--host-group-style=[1|2]]
+                      (host group styles:
+                            1 = Graph Template,
+                            2 = Data Query Index)
+
+graph node options:  --graph-id=[ID]
+     optional       [--rra-id=[ID]]
+
+List Options:        --list-hosts
+                     --list-trees
+                     --list-nodes --tree-id=[ID]
+                     --list-rras
+                     --list-graphs --host-id=[ID]
+                     --quiet - batch mode value return</screen>
+			<sect2 id="cli_add_tree_list_hosts">
+			<title>List Hosts</title>
+        		<para>The first try is dedicated to the list option
+	           <userinput>--list-hosts</userinput>. It goes like</para>
+    	       <screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-hosts
+
+Known Hosts: (id, hostname, template, description)
+1       127.0.0.1       	8       Localhost
+2       gandalf 		3       gandalf
+...
+11      router.mydomain.com	3       Device Add Test</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_list_trees">
+			<title>List Trees</title>
+        		<para>Now, let us
+	           <userinput>--list-trees</userinput>. It goes like</para>
+    	       <screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-trees
+
+Known Trees:
+id      sort method                     name
+1       Manual Ordering (No Sorting)    Default Tree</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_list_nodes">
+			<title>List Nodes</title>
+				<para>Listing all existend node of a given tree is done by</para
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-nodes --tree-id=1
+
+Known Tree Nodes:
+type    id      text
+Host    7       127.0.0.1       Graph Template
+Host    9       gandalf 	Graph Template
+Host    12      gandalf 	Graph Template</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_list_rras">
+			<title>List RRAs</title>
+				<para>For special tree add options, you will require the id of
+				the RRA definition to completly specify the add request. That's
+				why the corresponding <userinput>--list-rras</userinput> option is
+				implemented. It goes this way</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-rras
+
+Known RRAs:
+id      steps   rows    timespan        name
+1       1       600     86400           Daily (5 Minute Average)
+2       6       700     604800          Weekly (30 Minute Average)
+3       24      775     2678400         Monthly (2 Hour Average)
+4       288     797     33053184        Yearly (1 Day Average)</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_list_graphs">
+			<title>List Graphs for given Hosts</title>
+				<para>To be able to add a Graph, the id of that very graph is required.
+				Thus, a <userinput>--list-graphs --host-id=[id]</userinput> option was implemented</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-graphs --host-id=1
+
+Known Host Graphs: (id, name, template)
+1       Localhost - Memory Usage        	Linux - Memory Usage
+2       Localhost - Load Average        	Unix - Load Average
+3       Localhost - Logged in Users     	Unix - Logged in Users
+4       Localhost - Processes   		Unix - Processes
+5       Localhost - Traffic - eth0      	Interface - Traffic (bits/sec, 95th Percentile)
+33      Localhost - Used Space - Memory Buffers Host MIB - Available Disk Space
+34      Localhost - Used Space - Real Memory    Host MIB - Available Disk Space
+35      Localhost - Used Space - Swap Space     Host MIB - Available Disk Space
+36      Localhost - Used Space - /      	Host MIB - Available Disk Space
+37      Localhost - Used Space - /sys   	Host MIB - Available Disk Space
+38      Localhost - Used Space - /boot  	Host MIB - Available Disk Space</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_tree">
+			<title>Add a new Tree</title>
+				<para>Cacti comes with a single tree, named
+				<guimenuitem>Default Tree</guimenuitem>. Console entry
+				<guimenu>Graph Trees</guimenu> is used to add more trees. With
+				<filename>add_tree.php</filename>, you may now do so from command line as well:</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=tree --name="Test Tree Add" --sort-method=manual
+
+Tree Created - tree-id: (6)</screen>
+				<para>Verify this from console, <guimenu>Graph Trees</guimenu>
+				to find</para>
+				<screen>Default Tree
+Test Tree Add</screen>
+				<para>as expected.</para>
+			</sect2>
+			<sect2 id="cli_add_tree_header">
+			<title>Add a new Header Node to a Tree</title>
+				<para>Now, that a new tree has been created, you may want to add
+				a new header to that very tree. Use</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=header --tree-id=6 --name="Header Test"
+
+Added Node node-id: (21)</screen>
+				<para>You will want to save the id returned if willing to add further
+				nodes to exactly this new Header Node</para>
+				<para>Please pay attention, that it is currently not possible to
+				add another header with the same options even if this is possible
+				from console</para>
+				<para>But it is possible to add a subheader to an already defined header.
+				Even in this case, the <userinput>name</userinput> has to be unique</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=header --tree-id=6 --parent-node=21  --name="SubHeader Test"
+
+Added Node node-id: (22)</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_host">
+			<title>Add a new Host Node to a Tree</title>
+				<para>We will distinguish several options adding a host to a tree.
+				First, let's add a Host directly to a tree. For this example, we use
+				the tree id returned from adding our own <userinput>Test Tree Add</userinput>
+				known with <userinput>id=6</userinput></para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=host --tree-id=6 --host-id=1
+
+Added Node node-id: (23)</screen>
+				<para>As no <userinput>--parent-node</userinput> was given, this host
+				is directly added to the tree itself. If you wish to add a host to
+				a (sub)header, please specify as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=host --tree-id=6 --parent-node=21 --host-id=1
+
+Added Node node-id: (24)</screen>
+				<para>Both example come without a <userinput>--host-group-style</userinput> option.
+				For those cases, <userinput>Graph Template</userinput> host group style is default.
+				Here's an example for providing a host group option of
+				<userinput>Data Query Index</userinput> instead</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=host --tree-id=6 --parent-node=22 --host-id=1 --host-group-style=2
+
+Added Node node-id: (25)</screen>
+			</sect2>
+			<sect2 id="cli_add_tree_graph">
+			<title>Add a new Graph Node to a Tree</title>
+				<para>Like above, instead of hosts it is possible to add a single
+				graph to a tree or a (sub)header of any tree. Of course, you again will
+				require the <userinput>id</userinput> of the tree and optionally of the
+				<userinput>header</userinput>. This results in</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=graph --tree-id=6 --graph-id=5
+
+Added Node node-id: (26)</screen>
+				<para>Like above, this graph now was added directly to the tree itself.
+				To add a graph to a header, proceed as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=graph --tree-id=6 --parent-node=21 --graph-id=5
+
+Added Node node-id: (27)</screen>
+				<para>In both cases, no explicit <userinput>--rra-id</userinput>
+				was given. This will default to the <guimenuitem>Daily (5 Minute Average)</guimenuitem>.
+				Specify any other <userinput>--rra-id</userinput> as given</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --type=node --node-type=graph --tree-id=6 --parent-node=21 --graph-id=1 --rra-id=4
+
+Added Node node-id: (28)</screen>
+				<para>to provide the <userinput>--rra-id</userinput> for a rra of
+				<guimenuitem>Yearly (1 Day Average)</guimenuitem>.</para>
+			</sect2>
 		</sect1>
 		<sect1 id="cli_add_perms">
 		<title>Add Permissions</title>
