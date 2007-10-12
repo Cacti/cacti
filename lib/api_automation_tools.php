@@ -482,4 +482,34 @@ function displayRRAs($quietMode = FALSE) {
 	}
 }
 
+function displayHostGraphs($host_id, $quietMode = FALSE) {
+
+	if (!$quietMode) {
+		echo "Known Host Graphs: (id, name, template)\n";
+	}
+
+	$graphs = db_fetch_assoc("SELECT
+		graph_templates_graph.local_graph_id as id,
+		graph_templates_graph.title_cache as name,
+		graph_templates.name as template_name
+		FROM (graph_local,graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
+		AND graph_local.host_id=" . $host_id . "
+		ORDER BY graph_templates_graph.local_graph_id");
+
+	if (sizeof($graphs)) {
+		foreach ($graphs as $graph) {
+			echo $graph["id"] . "\t";
+			echo $graph["name"] . "\t";
+			echo $graph["template_name"] . "\t";
+			echo "\n";
+		}
+	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
+}
+
 ?>
