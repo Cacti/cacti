@@ -60,6 +60,7 @@ if (sizeof($parms)) {
 	$displayTrees   = FALSE;
 	$displayNodes   = FALSE;
 	$displayRRAs    = FALSE;
+	$displayGraphs  = FALSE;
 
 	$hosts          = getHosts();
 
@@ -109,6 +110,9 @@ if (sizeof($parms)) {
 			case "--list-rras":
 				$displayRRAs = TRUE;
 				break;
+			case "--list-graphs":
+				$displayGraphs = TRUE;
+				break;
 			case "--host-group-style":
 				$hostGroupStyle = trim($value);
 				break;
@@ -145,6 +149,17 @@ if (sizeof($parms)) {
 
 	if ($displayRRAs) {
 		displayRRAs($quietMode);
+		return 1;
+	}
+
+	if ($displayGraphs) {
+		if (!isset($hostId)) {
+			echo "You must supply a host_id before you can list its graphs\n";
+			echo "Try --list-hosts\n";
+
+			return 1;
+		}
+		displayHostGraphs($hostId, $quietMode);
 		return 1;
 	}
 
@@ -277,11 +292,10 @@ function display_help() {
 	echo "                            2 = Data Query Index)\n\n";
 	echo "List Options:        --list-hosts\n";
 	echo "                     --list-trees\n";
-	echo "                     --tree-id=[ID] --list-nodes\n";
+	echo "                     --list-nodes --tree-id=[ID]\n";
 	echo "                     --list-rras\n";
-	echo "                     --host-id=[ID] --list-graphs *\n";
+	echo "                     --list-graphs --host-id=[ID]\n";
 	echo "                     --quiet - batch mode value return\n\n";
-	echo "                       * = not yet implemented - sorry.\n\n";
 }
 
 ?>
