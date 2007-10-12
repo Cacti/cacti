@@ -47,7 +47,7 @@ if (sizeof($parms)) {
 	$treeId     = 0;   # When creating a node, it has to go in a tree
 	$nodeType   = '';  # Should be 'header', 'graph' or 'host' when creating a node
 	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
-	$rra_id     = 0;   # The rra_id for the graph to display: 1 = daily, 2 = weekly, 3 = monthly, 4 = yearly
+	$rra_id     = 1;   # The rra_id for the graph to display: 1 = daily, 2 = weekly, 3 = monthly, 4 = yearly
 
 	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 3, 'numeric' => 4);
 	$nodeTypes = array('header' => 1, 'graph' => 2, 'host' => 3);
@@ -176,9 +176,9 @@ if (sizeof($parms)) {
 		$treeOpts["name"]      = $name;
 
 		if ($sortMethod == "manual"||
-			$sortMethod == "alpha" ||
-			$sortMethod == "numeric" ||
-			$sortMethod == "natural") {
+		$sortMethod == "alpha" ||
+		$sortMethod == "numeric" ||
+		$sortMethod == "natural") {
 			$treeOpts["sort_type"] = $sortMethods[$sortMethod];
 		} else {
 			printf("Invalid sort-method: %s\n", $sortMethod);
@@ -199,7 +199,7 @@ if (sizeof($parms)) {
 		printf("Tree Created - tree-id: (%d)\n", $treeId);
 
 		return 0;
-	}else if ($type == 'node') {
+	} elseif ($type == 'node') {
 		# Add a new node to a tree
 		if ($nodeType == "header"||
 			$nodeType == "graph" ||
@@ -211,16 +211,16 @@ if (sizeof($parms)) {
 			return 1;
 		}
 
-		if ($parentNode > 0 && is_numeric($parentNode)) {
+		if (!is_numeric($parentNode)) {
+			echo "parent-node $parentNode must be numeric > 0\n";
+			display_help();
+			return 1;
+		} elseif ($parentNode > 0 ) {
 			$parentNodeExists = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id = $treeId AND id = $parentNode");
 			if (!isset($parentNodeExists)) {
 				echo "parent-node $parentNode does not exist\n";
 				return 1;
 			}
-		} else {
-			echo "parent-node $parentNode must be numeric > 0\n";
-			display_help();
-			return 1;
 		}
 
 		if ($nodeType == 'header') {
@@ -240,6 +240,18 @@ if (sizeof($parms)) {
 			$name           = '';
 			$hostId         = 0;
 			$hostGroupStyle = 1;
+			# verify rra-id
+			if (!is_numeric($rra_id)) {
+				echo "rra-id $rra_id must be numeric > 0\n";
+				display_help();
+				return 1;
+			} elseif ($rra_id > 0 ) {
+				$rraExists = db_fetch_cell("SELECT id FROM rra WHERE id = $rra_id");
+				if (!isset($rraExists)) {
+					echo "rra-id $rra_id does not exist\n";
+					return 1;
+				}
+			}
 		}else if ($nodeType == 'host') {
 			# Blank out graphId, rra_id, name fields
 			$graphId        = 0;
@@ -262,12 +274,12 @@ if (sizeof($parms)) {
 		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, 1, false);
 		printf("Added Node node-id: (%d)\n", $nodeId);
 		return 0;
-	}else{
+	} else {
 		printf("Unknown type: $type\n");
 		display_help();
 		return 1;
 	}
-}else{
+} else {
 	display_help();
 
 	return 0;
@@ -279,17 +291,17 @@ function display_help() {
 	echo "add_tree.php         --type=[tree|node] [type-options]\n\n";
 	echo "tree options:        --name=[Tree Name]\n";
 	echo "                     --sort-method=[manual|alpha|natural|numeric]\n\n";
-	echo "node options:        --node-type=[header|graph|host]\n";
+	echo "node options:        --node-type=[header|host|graph]\n";
 	echo "                     --tree-id=[ID]\n";
-	echo "                     --parent-node=[ID] [Node Type Options]\n\n";
+	echo "     optional       [--parent-node=[ID] [Node Type Options]]\n\n";
 	echo "header node options: --name=[Name]\n\n";
-	echo "graph node options:  --graph-id=[ID]\n";
-	echo "                     --rra-id=[ID]\n";
-	echo "host node options:   --host-id=[ID]\n\n";
-	echo "                     --host-group-style=[1|2]\n";
+	echo "host node options:   --host-id=[ID]\n";
+	echo "     optional       [--host-group-style=[1|2]]\n";
 	echo "                      (host group styles:\n";
 	echo "                            1 = Graph Template,\n";
 	echo "                            2 = Data Query Index)\n\n";
+	echo "graph node options:  --graph-id=[ID]\n";
+	echo "     optional       [--rra-id=[ID]]\n\n";
 	echo "List Options:        --list-hosts\n";
 	echo "                     --list-trees\n";
 	echo "                     --list-nodes --tree-id=[ID]\n";
