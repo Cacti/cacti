@@ -48,7 +48,7 @@ if (sizeof($parms)) {
 	/* setup defaults */
 	$description   = "";
 	$ip            = "";
-	$template_id   = -1;
+	$template_id   = 0;
 	$community     = "";
 	$snmp_ver      = 1;
 	$disable       = 0;
@@ -315,8 +315,8 @@ function display_help() {
 	echo "Required:\n";
 	echo "    - description:  the name that will be displayed by Cacti in the graphs\n";
 	echo "    - ip:           self explanatory (can also be a FQDN)\n";
-	echo "    - template:     is a number (read below to get a list of templates)\n";
 	echo "Optional:\n";
+	echo "    - template:     0, is a number (read below to get a list of templates)\n";
 	echo "    - notes:        '', General information about this host.  Must be enclosed using double quotes.\n";
 	echo "    - disable:      0, 1 to add this host but to disable checks and 0 to enable it\n";
 	echo "    - avail:        pingsnmp, [ping][none, snmp, pingsnmp]\n";

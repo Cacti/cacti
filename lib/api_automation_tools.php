@@ -135,6 +135,8 @@ $host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
 function getHostTemplates() {
 	$tmparray = db_fetch_assoc("select id, name from host_template order by id");
 
+	$host_templates[0] = "None";
+
 	foreach ($tmparray as $template) {
 		$host_templates[$template["id"]] = $template["name"];
 	}
@@ -162,6 +164,38 @@ function getHosts() {
 	}
 
 	return $hosts;
+}
+
+function getInputFields($templateId) {
+	$fields    = array();
+
+	$tmpArray = db_fetch_assoc("SELECT DISTINCT
+		data_input_fields.data_name AS `name`,
+		data_input_fields.name AS `description`,
+		data_input_data.value AS `default`,
+		data_template_data.data_template_id,
+		data_input_fields.id AS `data_input_field_id`
+		FROM data_input_data
+		INNER JOIN (((data_template_rrd
+		INNER JOIN (graph_templates
+		INNER JOIN graph_templates_item
+		ON graph_templates.id = graph_templates_item.graph_template_id)
+		ON data_template_rrd.id = graph_templates_item.task_item_id)
+		INNER JOIN data_template_data
+		ON data_template_rrd.data_template_id=data_template_data.data_template_id)
+		INNER JOIN data_input_fields
+		ON data_template_data.data_input_id=data_input_fields.data_input_id)
+		ON (data_input_data.data_template_data_id = data_template_data.id)
+		AND (data_input_data.data_input_field_id = data_input_fields.id)
+		WHERE (((graph_templates.id)=$templateId)
+		AND ((data_input_data.t_value)='on')
+		AND ((data_input_fields.input_output)='in'))");
+
+	foreach ($tmpArray as $row) {
+		$fields[$row["data_template_id"] . ":" . $row["name"]] = $row;
+	}
+
+	return $fields;
 }
 
 function getAddresses() {
@@ -312,6 +346,22 @@ function displaySNMPQueries($queries, $quietMode) {
 
 	while (list($id, $name) = each ($queries)) {
 		echo $id . "\t" . $name . "\n";
+	}
+
+	if (!$quietMode) {
+		echo "\n";
+	}
+}
+
+function displayInputFields($input_fields, $quietMode = FALSE) {
+	if (!$quietMode) {
+		echo "Known Input Fields:(name, default, description)\n";
+	}
+
+	if (sizeof($input_fields)) {
+	foreach ($input_fields as $row) {
+		echo $row["data_template_id"] . ":" . $row["name"] . "\t" . $row["default"] . "\t" . $row["description"] . "\n";
+	}
 	}
 
 	if (!$quietMode) {
