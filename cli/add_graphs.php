@@ -334,7 +334,7 @@ if (sizeof($parms)) {
 			}
 		}
 	}
-print_r($values["cg"]);
+
 	$returnArray = array();
 
 	if ($graph_type == "cg") {
