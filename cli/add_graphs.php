@@ -154,12 +154,14 @@ if (sizeof($parms)) {
 		case "-H":
 		case "--help":
 			display_help();
-			return 0;
-		default:
-			echo "ERROR: Unknown Argument '$arg'\n";
-			display_help();
 
 			return 0;
+		default:
+			print "ERROR: Invalid Argument '" . $arg . "'\n\n";
+
+			display_help();
+
+			return 1;
 		}
 	}
 
@@ -173,9 +175,11 @@ if (sizeof($parms)) {
 		} else {
 			echo "You must supply an graph-template-id before you can list its input fields\n";
 			echo "Try --graph-template-id=[ID] --list-input-fields\n";
+
+			return 1;
 		}
 
-		return 1;
+		return 0;
 	}
 
 	if ($listHosts) {
@@ -338,10 +342,8 @@ if (sizeof($parms)) {
 	$returnArray = array();
 
 	if ($graph_type == "cg") {
-		$empty = array(); /* Suggested Values are not been implemented */
-
 		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId");
-		$dataSourceId = db_fetch_cell("SELECT DISTINCT
+		$dataSourceId  = db_fetch_cell("SELECT DISTINCT
 			data_template_rrd.local_data_id
 			FROM graph_templates_item, data_template_rrd
 			WHERE graph_templates_item.local_graph_id = " . $existsAlready . "

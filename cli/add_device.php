@@ -80,133 +80,175 @@ if (sizeof($parms)) {
 		switch ($arg) {
 		case "-d":
 			$debug = TRUE;
+
 			break;
 		case "--description":
 			$description = trim($value);
+
 			break;
 		case "--ip":
 			$ip = trim($value);
+
 			break;
 		case "--template":
 			$template_id = $value;
+
 			break;
 		case "--community":
 			$community = trim($value);
+
 			break;
 		case "--version":
 			$snmp_ver = trim($value);
+
 			break;
 		case "--notes":
 			$notes = trim($value);
+
 			break;
 		case "--disable":
 			$disable  = $value;
+
 			break;
 		case "--username":
 			$snmp_username = trim($value);
+
 			break;
 		case "--password":
 			$snmp_password = trim($value);
+
 			break;
 		case "--authproto":
 			$snmp_auth_protocol = trim($value);
+
 			break;
 		case "--authproto":
 			$snmp_auth_protocol = trim($value);
+
 			break;
 		case "--privpass":
 			$snmp_priv_passphrase = trim($value);
+
 			break;
 		case "--port":
 			$snmp_port     = $value;
+
 			break;
 		case "--timeout":
 			$snmp_timeout  = $value;
+
 			break;
 		case "--avail":
 			switch($value) {
 			case "none":
 				$avail = 0;
+
 				break;
 			case "ping":
 				$avail = 3;
+
 				break;
 			case "snmp":
 				$avail = 2;
+
+				break;
 			case "pingsnmp":
 				$avail = 1;
+
 				break;
 			default:
 				print "ERROR: Invalid Availability Parameter " . $value . "\n\n";
+
 				display_help();
+
 				return 1;
 			}
+
 			break;
 		case "--ping_method":
 			switch(strtolower($value)) {
 			case "icmp":
 				$ping_method = 1;
+
 				break;
 			case "tcp":
 				$ping_method = 3;
+
 				break;
 			case "udp":
 				$ping_method = 2;
+
 				break;
 			default:
 				print "ERROR: Invalid Ping Method " . $value . "\n\n";
+
 				display_help();
+
 				return 1;
 			}
+
+			break;
 		case "--ping_port":
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_port = $value;
-				break;
 			}else{
 				print "ERROR: Invalid Ping Port " . $value . "\n\n";
+
 				display_help();
+
 				return 1;
 			}
+
+			break;
 		case "--ping_retries":
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_retries = $value;
-				break;
 			}else{
 				print "ERROR: Invalid Ping Retries " . $value . "\n\n";
+
 				display_help();
+
 				return 1;
 			}
-			display_help();
-			return 0;
+
+			break;
 		case "--version":
 		case "-V":
 		case "-H":
 		case "--help":
 			display_help();
+
 			return 0;
 		case "--list-communities":
 			$displayCommunities = TRUE;
+
 			break;
 		case "--list-host-templates":
 			$displayHostTemplates = TRUE;
+
 			break;
 		case "--quiet":
 			$quietMode = TRUE;
+
 			break;
 		default:
-			print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+			print "ERROR: Invalid Argument '" . $arg . "'\n\n";
+
 			display_help();
+
 			return 1;
 		}
 	}
 
 	if ($displayCommunities) {
 		displayCommunities($quietMode);
+
 		return 0;
 	}
 
 	if ($displayHostTemplates) {
 		displayHostTemplates(getHostTemplates(), $quietMode);
+
 		return 0;
 	}
 
@@ -225,39 +267,48 @@ if (sizeof($parms)) {
 	/* process host description */
 	if (isset($hosts[$description])) {
 		db_execute("update host set hostname='$ip' where id=" . $hosts[$description]);
+
 		echo "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
+
 		return 1;
 	}
 
 	if ($description == "") {
 		echo "You must supply a description for all hosts!\n";
+
 		return 1;
 	}
 
 	/* process ip */
 	if (isset($addresses[$ip])) {
 		db_execute("update host set description = '$description' where id = " . $addresses[$ip]);
+
 		echo "This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")\n";
+
 		return 1;
 	}
 
 	if ($ip == "") {
 		echo "You must supply an IP address for all hosts!\n";
+
 		return 1;
 	}
 
 	/* process snmp information */
 	if ($snmp_ver != "1" && $snmp_ver != "2" && $snmp_ver != "3") {
 		echo "Invalid snmp version ($snmp_ver)\n";
+
 		return 1;
 	}else{
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
 			echo "Invalid port.  Valid values are from 1-65534\n";
+
 			return 1;
 		}
 
 		if ($snmp_timeout <= 0 || $snmp_timeout > 20000) {
 			echo "Invalid timeout.  Valid values are from 1 to 20000\n";
+
 			return 1;
 		}
 	}
@@ -268,6 +319,7 @@ if (sizeof($parms)) {
 	}else{
 		if ($snmp_username == "" || $snmp_password == "") {
 			echo "When using snmpv3 you must supply an username and password\n";
+
 			return 1;
 		}
 	}
@@ -275,6 +327,7 @@ if (sizeof($parms)) {
 	/* validate the disable state */
 	if ($disable != 1 && $disable != 0) {
 		echo "Invalid disable flag ($disable)\n";
+
 		return 1;
 	}
 
@@ -295,9 +348,11 @@ if (sizeof($parms)) {
 
 	if (is_error_message()) {
 		echo "Failed to add this device\n";
+
 		return 1;
 	} else {
 		echo "Success - new device-id: ($host_id)\n";
+
 		return 0;
 	}
 }else{

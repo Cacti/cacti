@@ -50,7 +50,7 @@ if (sizeof($parms)) {
 	$rra_id     = 1;   # The rra_id for the graph to display: 1 = daily, 2 = weekly, 3 = monthly, 4 = yearly
 
 	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 3, 'numeric' => 4);
-	$nodeTypes = array('header' => 1, 'graph' => 2, 'host' => 3);
+	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3);
 
 	$hostId         = 0;
 	$hostGroupStyle = 1; # 1 = Graph Template,  2 = Data Query Index
@@ -68,72 +68,93 @@ if (sizeof($parms)) {
 		@list($arg, $value) = @explode("=", $parameter);
 
 		switch ($arg) {
-			case "--type":
-				$type = trim($value);
-				break;
-			case "--name":
-				$name = trim($value);
-				break;
-			case "--sort-method":
-				$sortMethod = trim($value);
-				break;
-			case "--parent-node":
-				$parentNode = $value;
-				break;
-			case "--tree-id":
-				$treeId = $value;
-				break;
-			case "--node-type":
-				$nodeType = trim($value);
-				break;
-			case "--graph-id":
-				$graphId = $value;
-				break;
-			case "--rra-id":
-				$rra_id = $value;
-				break;
-			case "--host-id":
-				$hostId = $value;
-				break;
-			case "--quiet":
-				$quietMode = TRUE;
-				break;
-			case "--list-hosts":
-				$displayHosts = TRUE;
-				break;
-			case "--list-trees":
-				$displayTrees = TRUE;
-				break;
-			case "--list-nodes":
-				$displayNodes = TRUE;
-				break;
-			case "--list-rras":
-				$displayRRAs = TRUE;
-				break;
-			case "--list-graphs":
-				$displayGraphs = TRUE;
-				break;
-			case "--host-group-style":
-				$hostGroupStyle = trim($value);
-				break;
-			case "--quiet":
-				$quietMode = TRUE;
+		case "--type":
+			$type = trim($value);
 
-				break;
-			default:
-				display_help();
-				return 0;
+			break;
+		case "--name":
+			$name = trim($value);
+
+			break;
+		case "--sort-method":
+			$sortMethod = trim($value);
+
+			break;
+		case "--parent-node":
+			$parentNode = $value;
+
+			break;
+		case "--tree-id":
+			$treeId = $value;
+
+			break;
+		case "--node-type":
+			$nodeType = trim($value);
+
+			break;
+		case "--graph-id":
+			$graphId = $value;
+
+			break;
+		case "--rra-id":
+			$rra_id = $value;
+
+			break;
+		case "--host-id":
+			$hostId = $value;
+
+			break;
+		case "--quiet":
+			$quietMode = TRUE;
+
+			break;
+		case "--list-hosts":
+			$displayHosts = TRUE;
+
+			break;
+		case "--list-trees":
+			$displayTrees = TRUE;
+
+			break;
+		case "--list-nodes":
+			$displayNodes = TRUE;
+
+			break;
+		case "--list-rras":
+			$displayRRAs = TRUE;
+
+			break;
+		case "--list-graphs":
+			$displayGraphs = TRUE;
+
+			break;
+		case "--host-group-style":
+			$hostGroupStyle = trim($value);
+
+			break;
+		case "--quiet":
+			$quietMode = TRUE;
+
+			break;
+		default:
+			print "ERROR: Invalid Argument '" . $arg . "'\n\n";
+
+			display_help();
+
+			return 1;
 		}
 	}
 
 	if ($displayHosts) {
 		displayHosts($hosts, $quietMode);
-		return 1;
+
+		return 0;
 	}
 
 	if ($displayTrees) {
 		displayTrees($quietMode);
-		return 1;
+
+		return 0;
 	}
 
 	if ($displayNodes) {
@@ -143,13 +164,16 @@ if (sizeof($parms)) {
 
 			return 1;
 		}
+
 		displayTreeNodes($treeId, $quietMode);
-		return 1;
+
+		return 0;
 	}
 
 	if ($displayRRAs) {
 		displayRRAs($quietMode);
-		return 1;
+
+		return 0;
 	}
 
 	if ($displayGraphs) {
@@ -159,15 +183,19 @@ if (sizeof($parms)) {
 
 			return 1;
 		}
+
 		displayHostGraphs($hostId, $quietMode);
-		return 1;
+
+		return 0;
 	}
 
 	if ($type == 'tree') {
 		# Add a new tree
 		if (empty($name)) {
 			printf("You must supply a name with --name\n");
+
 			display_help();
+
 			return 1;
 		}
 
@@ -176,19 +204,22 @@ if (sizeof($parms)) {
 		$treeOpts["name"]      = $name;
 
 		if ($sortMethod == "manual"||
-		$sortMethod == "alpha" ||
-		$sortMethod == "numeric" ||
-		$sortMethod == "natural") {
+			$sortMethod == "alpha" ||
+			$sortMethod == "numeric" ||
+			$sortMethod == "natural") {
 			$treeOpts["sort_type"] = $sortMethods[$sortMethod];
 		} else {
 			printf("Invalid sort-method: %s\n", $sortMethod);
+
 			display_help();
+
 			return 1;
 		}
 
 		$existsAlready = db_fetch_cell("select id from graph_tree where name = '$name'");
 		if ($existsAlready) {
 			printf("Not adding tree - it already exists - tree-id: (%d)\n", $existsAlready);
+
 			return 1;
 		}
 
@@ -207,18 +238,24 @@ if (sizeof($parms)) {
 			$itemType = $nodeTypes[$nodeType];
 		} else {
 			printf("Invalid node-type: %s\n", $nodeType);
+
 			display_help();
+
 			return 1;
 		}
 
 		if (!is_numeric($parentNode)) {
 			echo "parent-node $parentNode must be numeric > 0\n";
+
 			display_help();
+
 			return 1;
 		} elseif ($parentNode > 0 ) {
 			$parentNodeExists = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id = $treeId AND id = $parentNode");
+
 			if (!isset($parentNodeExists)) {
 				echo "parent-node $parentNode does not exist\n";
+
 				return 1;
 			}
 		}
@@ -227,9 +264,12 @@ if (sizeof($parms)) {
 			# Header --name must be given
 			if (empty($name)) {
 				printf("You must supply a name with --name\n");
+
 				display_help();
+
 				return 1;
 			}
+
 			# Blank out the graphId, rra_id, hostID and host_grouping_style  fields
 			$graphId        = 0;
 			$rra_id         = 0;
@@ -240,15 +280,20 @@ if (sizeof($parms)) {
 			$name           = '';
 			$hostId         = 0;
 			$hostGroupStyle = 1;
+
 			# verify rra-id
 			if (!is_numeric($rra_id)) {
 				echo "rra-id $rra_id must be numeric > 0\n";
+
 				display_help();
+
 				return 1;
 			} elseif ($rra_id > 0 ) {
 				$rraExists = db_fetch_cell("SELECT id FROM rra WHERE id = $rra_id");
+
 				if (!isset($rraExists)) {
 					echo "rra-id $rra_id does not exist\n";
+
 					return 1;
 				}
 			}
@@ -260,23 +305,30 @@ if (sizeof($parms)) {
 
 			if (!isset($hosts[$hostId])) {
 				printf("No such host-id (%s) exists. Try --list-hosts\n", $hostId);
+
 				return 1;
 			}
 
 			if ($hostGroupStyle != 1 && $hostGroupStyle != 2) {
 				printf("Host Group Style must be 1 or 2 (Graph Template or Data Query Index)\n");
+
 				display_help();
+
 				return 1;
 			}
 		}
 
 		# $nodeId could be a Header Node, a Graph Node, or a Host node.
 		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, 1, false);
+
 		printf("Added Node node-id: (%d)\n", $nodeId);
+
 		return 0;
 	} else {
 		printf("Unknown type: $type\n");
+
 		display_help();
+
 		return 1;
 	}
 } else {

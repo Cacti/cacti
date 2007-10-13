@@ -39,6 +39,7 @@ array_shift($parms);
 
 if (sizeof($parms) == 0) {
 	display_help();
+
 	return 1;
 }else{
 	$groupName = '';
@@ -89,24 +90,31 @@ if (sizeof($parms) == 0) {
 			break;
 		case "--host-id":
 			$hostId = $value;
+
 			break;
 		case "--list-groups":
 			$displayGroups = TRUE;
+
 			break;
 		case "--list-users":
 			$displayUsers = TRUE;
+
 			break;
 		case "--list-trees":
 			$displayTrees = TRUE;
+
 			break;
 		case "--list-hosts":
 			$displayHosts = TRUE;
+
 			break;
 		case "--list-graphs":
 			$displayGraphs = TRUE;
+
 			break;
 		case "--list-graph-templates":
 			$displayGraphTemplates = TRUE;
+
 			break;
 		case "--quiet":
 			$quietMode = TRUE;
@@ -117,9 +125,13 @@ if (sizeof($parms) == 0) {
 		case "-H":
 		case "--help":
 			display_help();
+
 			return 0;
 		default:
+			print "ERROR: Invalid Argument '" . $arg . "'\n\n";
+
 			display_help();
+
 			return 1;
 		}
 	}
