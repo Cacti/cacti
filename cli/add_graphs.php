@@ -146,7 +146,7 @@ if (sizeof($parms)) {
 
 			break;
 		case "--list-graph-templates":
-			displayGraphTemplates($templateId, $quietMode);
+			displayGraphTemplates($graphTemplates, $quietMode);
 
 			return 0;
 		case "--version":
@@ -480,11 +480,11 @@ function display_help() {
 	echo "--graph-title  - it defaults to what ever is in the graph template/data-source template.\n\n";
 	echo "List Options:  --list-hosts\n";
 	echo "               --list-graph-templates\n";
+	echo "               --list-input-fields --graph-template-id=[ID]\n";
 	echo "               --list-snmp-queries\n";
-	echo "               --graph-template-id=[ID] --list-input-fields\n";
-	echo "               --snmp-query-id [ID] --list-query-types\n";
-	echo "               --host-id=[ID] --list-snmp-fields\n";
-	echo "               --host-id=[ID] --snmp-field=[Field] --list-snmp-values\n\n";
+	echo "               --list-query-types  --snmp-query-id [ID]\n";
+	echo "               --list-snmp-fields  --host-id=[ID]\n";
+	echo "               --list-snmp-values  --host-id=[ID] --snmp-field=[Field]\n\n";
 	echo "               --quiet - batch mode value return\n\n";
 	echo "'cg' graphs are for things like CPU temp/fan speed, while 'ds' graphs are for data-source based graphs (interface stats etc.)\n";
 }
