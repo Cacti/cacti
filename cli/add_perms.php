@@ -31,6 +31,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
+include_once($config["base_path"]."/lib/api_automation_tools.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -43,10 +44,20 @@ if (sizeof($parms) == 0) {
 	$groupName = '';
 	$userId    = 0;
 
+	/* TODO replace magic numbers by global constants, treat user_admin as well */
 	$itemTypes = array('graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4);
 
 	$itemType = 0;
 	$itemId   = 0;
+	$hostId   = 0;
+
+	$quietMode				= FALSE;
+	$displayGroups			= FALSE;
+	$displayUsers			= FALSE;
+	$displayTrees			= FALSE;
+	$displayHosts			= FALSE;
+	$displayGraphs			= FALSE;
+	$displayGraphTemplates 	= FALSE;
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -61,11 +72,44 @@ if (sizeof($parms) == 0) {
 
 			break;
 		case "--item-type":
-			$itemType = $itemTypes[$value];
+			/* TODO replace magic numbers by global constants, treat user_admin as well */
+			if ( ($value == "graph") || ($value == "tree") || ($value == "host") || ($value == "graph_template")) {
+				$itemType = $itemTypes[$value];
+				break;
+			}else{
+				print "ERROR: Invalid Item Type " . $value . "\n\n";
+				display_help();
+				return 1;
+			}
 
 			break;
 		case "--item-id":
 			$itemId = $value;
+
+			break;
+		case "--host-id":
+			$hostId = $value;
+			break;
+		case "--list-groups":
+			$displayGroups = TRUE;
+			break;
+		case "--list-users":
+			$displayUsers = TRUE;
+			break;
+		case "--list-trees":
+			$displayTrees = TRUE;
+			break;
+		case "--list-hosts":
+			$displayHosts = TRUE;
+			break;
+		case "--list-graphs":
+			$displayGraphs = TRUE;
+			break;
+		case "--list-graph-templates":
+			$displayGraphTemplates = TRUE;
+			break;
+		case "--quiet":
+			$quietMode = TRUE;
 
 			break;
 		case "--version":
@@ -80,22 +124,119 @@ if (sizeof($parms) == 0) {
 		}
 	}
 
-	if ($itemType == 0 || $itemId == 0) {
-		display_help();
+	if ($displayGroups) {
+		displayGroups($quietMode);
 		return 1;
 	}
 
+	if ($displayUsers) {
+		displayUsers($quietMode);
+		return 1;
+	}
+
+	if ($displayTrees) {
+		displayTrees($quietMode);
+		return 1;
+	}
+
+	if ($displayHosts) {
+		$hosts = getHosts();
+		displayHosts($hosts, $quietMode);
+		return 1;
+	}
+
+	if ($displayGraphs) {
+		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell("SELECT id FROM host WHERE id=$hostId"))) {
+			echo "You must supply a valid host_id before you can list its graphs\n";
+			echo "Try --list-hosts\n";
+			display_help();
+			return 1;
+		} else {
+			displayHostGraphs($hostId, $quietMode);
+			return 1;
+		}
+	}
+
+	if ($displayGraphTemplates) {
+		$graphTemplates = getGraphTemplates();
+		displayGraphTemplates($graphTemplates, $quietMode);
+		return 1;
+	}
+
+	/* verify, that a valid userid is provided */
 	$userIds = array();
 
 	if (isset($groupName) && $groupName != '') {
 		$users = db_fetch_assoc("select id from user_auth where oss_group = \"$groupName\"");
 
-		foreach ($users as $u) {
-			array_push($userIds, $u["id"]);
+		/* verify array of users returned */
+		if (sizeof($users)) {
+			foreach ($users as $u) {
+				array_push($userIds, $u["id"]);
+			}
+		} else {
+			/* empty array */
+			print "ERROR: Invalid Group " . $value . "specified. No user found.\n\n";
+			display_help();
+			return 1;
 		}
-	}elseif(isset($userId) && $userId > 0) {
-		array_push($userIds, $userId);
+	} elseif (isset($userId) && $userId > 0) {
+		/* verify existing user id */
+		if ( db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId") ) {
+			array_push($userIds, $userId);
+		} else {
+			print "ERROR: Invalid Userid " . $value . "\n\n";
+			display_help();
+			return 1;
+		}
 	}
+	/* now, we should have at least one verified userid */
+
+	/* verify --item-id */
+	if ($itemType == 0) {
+		print "ERROR: --item-type missing. Please specify.\n\n";
+		display_help();
+		return 1;
+	}
+
+	if ($itemId == 0) {
+		print "ERROR: --item-id missing. Please specify.\n\n";
+		display_help();
+		return 1;
+	}
+
+	/* TODO replace magic numbers by global constants, treat user_admin as well */
+	switch ($itemType) {
+		case 1: /* graph */
+			if ( !db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId") ) {
+				print "ERROR: Invalid Graph item id " . $itemId . "\n\n";
+				display_help();
+				return 1;
+			}
+			break;
+		case 2: /* tree */
+			if ( !db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId") ) {
+				print "ERROR: Invalid Tree item id " . $itemId . "\n\n";
+				display_help();
+				return 1;
+			}
+			break;
+		case 3: /* host */
+			if ( !db_fetch_cell("SELECT id FROM host WHERE id=$itemId") ) {
+				print "ERROR: Invalid Host item id " . $itemId . "\n\n";
+				display_help();
+				return 1;
+			}
+			break;
+		case 4: /* graph_template */
+			if ( !db_fetch_cell("SELECT id FROM graph_templates WHERE id=$itemId") ) {
+				print "ERROR: Invalid Graph Template item id " . $itemId . "\n\n";
+				display_help();
+				return 1;
+			}
+			break;
+	}
+	/* verified item-id */
 
 	foreach ($userIds as $id) {
 		db_execute("replace into user_auth_perms (user_id, item_id, type) values ($id, $itemId, $itemType)");
@@ -104,8 +245,16 @@ if (sizeof($parms) == 0) {
 
 function display_help() {
 	echo "Usage:\n";
-	echo "add_perms.php [ --group-name=[Group Name] | --user-id=[ID] ] --item-type --item-id\n\n";
-	echo "Where item-type is one of: graph, tree, host or graph_template\n";
+	echo "add_perms.php [ --group-name=[Group Name] | --user-id=[ID] ]\n";
+    echo "                --item-type=[graph|tree|host|graph_template]\n";
+    echo "                --item-id\n\n";
+	echo "Where item-id is the id of the object of type item-type\n";
+	echo "List Options:   --list-groups\n";
+	echo "                --list-users\n";
+	echo "                --list-trees\n";
+	echo "                --list-graph-templates\n";
+	echo "                --list-graphs --host-id=[ID]\n";
+	echo "                --quiet - batch mode value return\n\n";
 }
 
 ?>
