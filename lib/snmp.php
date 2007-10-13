@@ -67,7 +67,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 				$proto = "authPriv";
 			}
 
-			$snmp_value = @snmp3_get("$hostname:$port", "$username", $proto, $auth_proto, "$password", "$priv_pass", $priv_proto, "$oid", ($timeout * 1000), $retries);
+			$snmp_value = @snmp3_get("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 	}else {
 		/* ucd/net snmp want the timeout in seconds */
@@ -160,7 +160,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 				$proto = "authPriv";
 			}
 
-			$snmp_value = @snmp3_getnext("$hostname:$port", "$username", $proto, $auth_proto, "$password", "$priv_pass", $priv_proto, "$oid", ($timeout * 1000), $retries);
+			$snmp_value = @snmp3_getnext("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 	}else {
 		/* ucd/net snmp want the timeout in seconds */
@@ -262,7 +262,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				$proto = "authPriv";
 			}
 
-			$temp_array = @snmp3_real_walk("$hostname:$port", "$username", $proto, $auth_proto, "$password", "$priv_pass", $priv_proto, "$oid", ($timeout * 1000), $retries);
+			$temp_array = @snmp3_real_walk("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 
 		$o = 0;
