@@ -1276,6 +1276,45 @@ $database_password = "cacti";</userinput></screen>
 							</para><para>NOTE: This feature only works when using Spine
 							</para><para>NOTE: Some devices do not support values &gt; 1</para></entry>
 						</row>
+						<row>
+							<entry><emphasis>Security Options for SNMP V3</emphasis></entry>
+							<entry></entry>
+						</row>
+						<row>
+							<entry>SNMP Username</entry>
+							<entry>The <userinput>username</userinput> of an SNMP V3 <userinput>createUser</userinput> statement
+							or equivalent</entry>
+						</row>
+						<row>
+							<entry>SNMP Password</entry>
+							<entry>The <userinput>authpassphrase</userinput> of an SNMP V3 <userinput>createUser</userinput> statement
+							or equivalent</entry>
+						</row>
+						<row>
+							<entry>SNMP Auth Protocol</entry>
+							<entry>The <userinput>authentication type</userinput> of an SNMP V3 <userinput>createUser</userinput> statement
+							or equivalent. Select either MD5 or SHA. This entry defaults to MD5.</entry>
+						</row>
+						<row>
+							<entry>SNMP Privacy Passphrase</entry>
+							<entry>The <userinput>privacy passphrase</userinput> of an SNMP V3 <userinput>createUser</userinput> statement
+							or equivalent.</entry>
+						</row>
+						<row>
+							<entry>SNMP Privacy Protocol</entry>
+							<entry>The <userinput>privacy protocol</userinput> of an SNMP V3 <userinput>createUser</userinput> statement
+							or equivalent. Select either DES or AES. This entry defaults to DES.</entry>
+						</row>
+						<row>
+							<entry>SNMP Context</entry>
+							<entry>When using the View-Based Access Control Model (VACM), it is possible to specify
+							an SNMP Context when mapping a community name to a security name with a
+							<userinput>com2sec</userinput> directive, with the <userinput>group</userinput>
+							directive and the <userinput>access</userinput> directive. This allows
+							for defining special access models. If using such a parameter with your
+							target's SNMP configuration, specify the context name to be used to access
+							that target here.</entry>
+						</row>
 					</tbody>
 				</tgroup>
 			</table>
@@ -1344,6 +1383,105 @@ $database_password = "cacti";</userinput></screen>
 						</tbody>
 					</tgroup>
 				</table>
+			</sect2>
+			<sect2 id='snmp_v3'>
+			<title>SNMP V3 Options Explained</title>
+				<para>SNMP supports authentication and encryption features
+				when using SNMP protocol version 3 known as
+				<emphasis>View-Based Access Control Model (VACM)</emphasis>.
+				This requires, that the
+				target device in question supports and is configured for
+				SNMP V3 use. In general, configuration of V3 options is
+				target type dependant. The following is cited from
+				<userinput>man snmpd.conf</userinput> concerning user definitions</para>
+				<para><screen><citation>   <emphasis>SNMPv3 Users</emphasis>
+       createUser [-e ENGINEID] username (MD5|SHA) authpassphrase [DES|AES] [privpassphrase]
+
+              MD5 and SHA are the authentication types to use.  DES and AES are the privacy  protocols  to  use.
+              If  the  privacy  passphrase  is not specified, it is assumed to be the same as the authentication
+              passphrase.  Note that the users created will be useless unless they are also added  to  the  VACM
+              access control tables described above.
+
+              SHA  authentication  and DES/AES privacy require OpenSSL to be installed and the agent to be built
+              with OpenSSL support.  MD5 authentication may be used without OpenSSL.
+
+              Warning: the minimum pass phrase length is 8 characters.</citation></screen></para>
+				<para>VACM directives are explained from
+				<userinput>man snmpd.conf</userinput> as follows</para>
+				<para><screen><citation>   <emphasis>VACM Configuration</emphasis>
+       The full flexibility of the VACM is available using four configuration directives - com2sec, group,  view
+       and access.  These provide direct configuration of the underlying VACM tables.
+
+       com2sec  [-Cn CONTEXT] SECNAME SOURCE COMMUNITY
+              map  an  SNMPv1 or SNMPv2c community string to a security name - either from a particular range of
+              source addresses, or globally ("default").  A restricted source can either be a specific  hostname
+              (or  address),  or  a  subnet - represented as IP/MASK (e.g. 10.10.10.0/255.255.255.0), or IP/BITS
+              (e.g. 10.10.10.0/24), or the IPv6 equivalents.
+
+              The same community string can be specified in several separate directives (presumably with differ-
+              ent  source  tokens), and the first source/community combination that matches the incoming request
+              will be selected.  Various source/community combinations can also map to the same security name.
+
+              If a CONTEXT is specified (using -Cn), the community string will be mapped to a security  name  in
+              the named SNMPv3 context. Otherwise the default context ("") will be used.
+
+       group GROUP {v1|v2c|usm} SECNAME
+              maps  a  security name (in the specified security model) into a named group.  Several group direc-
+              tives can specify the same group name, allowing a single access setting to apply to several  users
+              and/or community strings.
+
+              Note  that  groups must be set up for the two community-based models separately - a single com2sec
+              (or equivalent) directive will typically be accompanied by two group directives.
+
+       view VNAME TYPE OID [MASK]
+              defines a named "view" - a subset of the overall OID tree. This is most commonly a single subtree,
+              but  several view directives can be given with the same view name, to build up a more complex col-
+              lection of OIDs.  TYPE is either included or excluded, which can again define a more complex  view
+              (e.g by excluding certain sensitive objects from an otherwise accessible subtree).
+
+              MASK is a list of hex octets (separated by <quote>.</quote> or <quote>:</quote>) with the set bits indicating which subiden-
+              tifiers in the view OID to match against.  This can be used to define a view covering a particular
+              row  (or  rows) in a table.  If not specified, this defaults to matching the OID exactly (all bits
+              set), thus defining a simple OID subtree.
+
+       access GROUP CONTEXT {any|v1|v2c|usm} LEVEL PREFX READ WRITE NOTIFY
+              maps from a group of users/communities (with a particular  security  model  and  minimum  security
+              level, and in a specific context) to one of three views, depending on the request being processed.
+
+              LEVEL is one of noauth, auth, or priv.  PREFX specifies how CONTEXT should be matched against  the
+              context  of  the  incoming  request, either exact or prefix.  READ, WRITE and NOTIFY specifies the
+              view to be used for GET*, SET and TRAP/INFORM requests (althought the NOTIFY view is not currently
+              used).  For v1 or v2c access, LEVEL will need to be noauth.</citation></screen></para>
+
+              <para>As an example, following definitions in the snmpd configuration
+              create a set of definitions for use with SNMP V3</para>
+              <screen># sample configuration for SNMP V3
+
+# create an SNMP V3 user with an authpassphrase and a privacy passphrase
+##         username   authProto  authpassphrase  privProto  privpassphrase
+##         --------   ---------  --------------  ---------  --------------
+createUser gandalf    MD5        myauthpass      DES        myprivpass
+
+
+# Second, map the security name into a group name:
+##    groupName    securityModel  securityName
+##    ---------    -------------  ------------
+group groupv3      usm            gandalf
+
+
+# Third, create a view for us to let the group have rights to:
+##          incl/excl  subtree   mask
+##          ---------  -------   ----
+view    all included   .iso      80
+
+
+# Fourth, create the access for that group without context
+##                context sec.model sec.level prefix read   write  notif
+##                ------- --------- --------- ------ ----   -----  -----
+access groupv3    ""      any       auth      exact  all    all    all</screen>
+
+				<para>When adding this stuff to your snmp configuration, please
+				remember to restart the agent.</para>
 			</sect2>
 		</sect1>
 
@@ -4348,7 +4486,7 @@ Localhost - mtaReceivedVolume 	SNMP Version: 1, Community: somesecret, OID: .1.3
 			automatically propagated to the poller cache. It is required, to run
 			<application>php -q rebuild poller_cache.php</application> manually.</para>
 
-			<para>Calling the script with the parameter --help yields</para>
+			<para>Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php --help
 Cacti Rebuild Poller Cache Script 1.0, Copyright 2007 - The Cacti Group
 
@@ -4428,7 +4566,7 @@ WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take qui
 				</tgroup>
 			</table>
 			<para>If you feel the need for manual re-indexing, you may run it from cli.
-			Calling the script with the parameter --help yields</para>
+			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --help
 Cacti Reindex Host Script 1.0, Copyright 2007 - The Cacti Group
 
@@ -4468,7 +4606,7 @@ WARNING: Do not interrupt this script.  Reindexing can take quite some time
 			table is bigger than the php memory size, thus not all items are handled
 			correctly. If that issue occurs, you may save all pending updates
 			<emphasis>after increasing PHP memory appropriately</emphasis> by running
-			this very script. Calling the script with the parameter --help yields</para>
+			this very script. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php --help
 Cacti Empty Poller Output Table Script 1.0, Copyright 2007 - The Cacti Group
 
@@ -4518,7 +4656,7 @@ There were 21, RRD updates made this pass
 			Be aware, that changes to the <userinput>Suggested Names</userinput>
 			section of a data query will not automatically be propagated to
 			all existing graphs. This is, where <application>poller_graphs_reapply_names.php</application>
-			drops in. Calling the script with the parameter --help yields</para>
+			drops in. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_graphs_reapply_names.php --help
 Cacti Reapply Graph Names Script 1.0, Copyright 2007 - The Cacti Group
 
@@ -4558,7 +4696,7 @@ DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - /boot'</screen>
 			In case you're using local cacti user definitions, you may copy
 			a template user to a new user. Don't use this script for
 			<application>LDAP</application> users.</para>
-			<para>Calling the script with the parameter --help yields</para>
+			<para>Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q copy_user.php --help
 
 It is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.
@@ -4588,7 +4726,7 @@ Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 			this would be a tedious task for creating dozens of hundreds of devices
 			in one turn. This is, where the script <filename>add_device.php</filename>
 			comes in. First, let's have a look at the whole list of features
-			it provides. Calling the script with the parameter --help yields</para>
+			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
 
 Usage:
@@ -4662,7 +4800,7 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 		<title>Bulk Graph Creation</title>
 			<para>You won't stop now as you've just created a device from cli.
 			Surely, the task of setting up graphs is the next step. This is done using
-			<filename>add_graphs.php</filename>. Calling the script with the parameter --help yields</para>
+			<filename>add_graphs.php</filename>. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --help
 
 Usage:
@@ -4865,7 +5003,7 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 			As you will notice soon, it is possible to even add header items,
 			hosts and graphs to a tree as well as adding a new tree itself.
 			But let us first see the help output.
-			Calling the script with the parameter --help yields</para>
+			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_tree.php --help
 
 Usage:
@@ -4897,9 +5035,9 @@ List Options:        --list-hosts
                      --quiet - batch mode value return</screen>
 			<sect2 id="cli_add_tree_list_hosts">
 			<title>List Hosts</title>
-        		<para>The first try is dedicated to the list option
-	           <userinput>--list-hosts</userinput>. It goes like</para>
-    	       <screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-hosts
+	       		<para>The first try is dedicated to the list option
+				<userinput>--list-hosts</userinput>. It goes like</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-hosts
 
 Known Hosts: (id, hostname, template, description)
 1       127.0.0.1       	8       Localhost
@@ -5043,8 +5181,135 @@ Added Node node-id: (28)</screen>
 			</sect2>
 		</sect1>
 		<sect1 id="cli_add_perms">
-		<title>Add Permissions</title>
-			<para>Not yet fully implemented</para>
+		<title>Add Graph Permissions</title>
+			<para>This script is used to specify special graph permissions to users.
+			The list of parameters is displyed as usual when calling the script with
+			the parameter <userinput>--help</userinput></para>
+			<screen><prompt>shell&gt;</prompt>php -q add_perms.php --help
+
+Usage:
+add_perms.php [ --group-name=[Group Name] | --user-id=[ID] ]
+                --item-type=[graph|tree|host|graph_template]
+                --item-id
+
+Where item-id is the id of the object of type item-type
+List Options:   --list-groups
+                --list-users
+                --list-trees
+                --list-graph-templates
+                --list-graphs --host-id=[ID]
+                --quiet - batch mode value return</screen>
+			<sect2 id="cli_add_perms_list_groups">
+			<title>List Groups</title>
+	       		<para>The first try is dedicated to the list option
+				<userinput>--list-groups</userinput>. It goes like</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --list-groups
+</screen>
+			</sect2>
+			<sect2 id="cli_add_perms_list_users">
+			<title>List Users</title>
+	       		<para>The list of users is retrieved by calling the script with the parameter
+				<userinput>--list-users</userinput>. It goes like</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --list-users
+
+Known Users:
+id      username        full_name
+1       admin   Administrator
+3       guest   Guest Account</screen>
+			</sect2>
+			<sect2 id="cli_add_perms_list_trees">
+			<title>List Trees</title>
+	       		<para>The list of trees is retrieved by calling the script with the parameter
+				<userinput>--list-trees</userinput>. It goes like</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --list-trees
+
+Known Trees:
+id      sort method                     name
+1       Manual Ordering (No Sorting)    Default Tree</screen>
+			</sect2>
+			<sect2 id="cli_add_perms_list_graph_templates">
+			<title>List Graph Templates</title>
+	       		<para>The list of available graph templates is retrieved by calling the script with the parameter
+				<userinput>--list-graph-templates</userinput>. It goes like</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --list-graph-templates
+
+Known Graph Templates:(id, name)
+2       Interface - Traffic (bits/sec)
+3       ucd/net - Available Disk Space
+4       ucd/net - CPU Usage
+5       Karlnet - Wireless Levels
+6       Karlnet - Wireless Transmissions
+7       Unix - Ping Latency
+8       Unix - Processes
+9       Unix - Load Average
+...</screen>
+			</sect2>
+			<sect2 id="cli_add_perms_list_graphs">
+			<title>List Graphs for given Hosts</title>
+				<para>To be able to add a permissions to a specific Graph,
+				the id of that very graph is required.
+				Thus, a <userinput>--list-graphs --host-id=[id]</userinput> option was implemented</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --list-graphs --host-id=1
+
+Known Host Graphs: (id, name, template)
+1       Localhost - Memory Usage        	Linux - Memory Usage
+2       Localhost - Load Average        	Unix - Load Average
+3       Localhost - Logged in Users     	Unix - Logged in Users
+4       Localhost - Processes   		Unix - Processes
+5       Localhost - Traffic - eth0      	Interface - Traffic (bits/sec, 95th Percentile)
+33      Localhost - Used Space - Memory Buffers Host MIB - Available Disk Space
+34      Localhost - Used Space - Real Memory    Host MIB - Available Disk Space
+35      Localhost - Used Space - Swap Space     Host MIB - Available Disk Space
+36      Localhost - Used Space - /      	Host MIB - Available Disk Space
+37      Localhost - Used Space - /sys   	Host MIB - Available Disk Space
+38      Localhost - Used Space - /boot  	Host MIB - Available Disk Space</screen>
+			</sect2>
+			<sect2 id="cli_add_perms_user">
+			<title>Add Graph Permissions to specific Users</title>
+				<para>There are various ways to define graph permissions
+				to specific users. First, we will add graph permissions
+				for a given host. This is done using the parameter
+				<userinput>--item-type=host</userinput> as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --user-id=4 --item-type=host --item-id=1</screen>
+				<para><userinput>--user-id=4</userinput> must specify an existing users.
+				Else, an error message will be printed. As <userinput>--item-type=host</userinput> is given,
+				<userinput>--item-id=1</userinput> must specify a valid host. Again, if no host
+				with this specific id exists, an error message will be printed.
+				No output is produced on successful operations.</para>
+
+				<para>Next, we will add graph permissions
+				for a given tree. This is done using the parameter
+				<userinput>--item-type=tree</userinput> as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --user-id=4 --item-type=tree --item-id=1</screen>
+				<para><userinput>--user-id=4</userinput> must specify an existing users.
+				Else, an error message will be printed. As <userinput>--item-type=tree</userinput> is given,
+				<userinput>--item-id=1</userinput> must specify a valid tree (the <guimenuitem>Default Tree</guimenuitem>
+				in this case). Again, if no tree
+				with this specific id exists, an error message will be printed.
+				No output is produced on successful operations.</para>
+
+				<para>Adding graph permissions
+				for a given graph template is done using the parameter
+				<userinput>--item-type=graph_template</userinput> as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --user-id=4 --item-type=graph_template --item-id=25</screen>
+				<para><userinput>--user-id=4</userinput> must specify an existing users.
+				Else, an error message will be printed. As <userinput>--item-type=graph_template</userinput> is given,
+				<userinput>--item-id=1</userinput> must specify a valid graph_template (the <guimenuitem>Interface - Traffic (bytes/sec)</guimenuitem>
+				in this case). Again, if no graph template
+				with this specific id exists, an error message will be printed.
+				No output is produced on successful operations.</para>
+
+				<para>Last but not least we add graph permissions
+				for a given graph by using the parameter
+				<userinput>--item-type=graph</userinput> as follows</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --user-id=4 --item-type=graph --item-id=8</screen>
+				<para><userinput>--user-id=4</userinput> must specify an existing users.
+				Else, an error message will be printed. As <userinput>--item-type=graph</userinput> is given,
+				<userinput>--item-id=1</userinput> must specify a valid graph.
+				Again, if no graph template
+				with this specific id exists, an error message will be printed.
+				No output is produced on successful operations.</para>
+			</sect2>
 		</sect1>
 	</chapter>
 	<chapter id=Debugging>
