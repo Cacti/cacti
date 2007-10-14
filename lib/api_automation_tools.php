@@ -562,27 +562,6 @@ function displayHostGraphs($host_id, $quietMode = FALSE) {
 	}
 }
 
-function displayGroups($quietMode = FALSE) {
-	if (!$quietMode) {
-		echo "Known Groups:\ngroup\n";
-	}
-
-	$groups = db_fetch_assoc("SELECT DISTINCT
-				oss_group
-				FROM user_auth
-				ORDER BY oss_group");
-
-	if (sizeof($groups)) {
-		foreach ($groups as $group) {
-			echo $group["oss_group"]."\n";
-		}
-	}
-
-	if (!$quietMode) {
-		echo "\n";
-	}
-}
-
 function displayUsers($quietMode = FALSE) {
 	if (!$quietMode) {
 		echo "Known Users:\nid\tusername\tfull_name\n";

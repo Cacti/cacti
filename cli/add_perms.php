@@ -42,7 +42,6 @@ if (sizeof($parms) == 0) {
 
 	return 1;
 }else{
-	$groupName = '';
 	$userId    = 0;
 
 	/* TODO replace magic numbers by global constants, treat user_admin as well */
@@ -66,10 +65,6 @@ if (sizeof($parms) == 0) {
 		switch ($arg) {
 		case "--user-id":
 			$userId = $value;
-
-			break;
-		case "--group-name":
-			$groupName = $value;
 
 			break;
 		case "--item-type":
@@ -178,21 +173,7 @@ if (sizeof($parms) == 0) {
 	/* verify, that a valid userid is provided */
 	$userIds = array();
 
-	if (isset($groupName) && $groupName != '') {
-		$users = db_fetch_assoc("select id from user_auth where oss_group = \"$groupName\"");
-
-		/* verify array of users returned */
-		if (sizeof($users)) {
-			foreach ($users as $u) {
-				array_push($userIds, $u["id"]);
-			}
-		} else {
-			/* empty array */
-			print "ERROR: Invalid Group " . $value . "specified. No user found.\n\n";
-			display_help();
-			return 1;
-		}
-	} elseif (isset($userId) && $userId > 0) {
+	if (isset($userId) && $userId > 0) {
 		/* verify existing user id */
 		if ( db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId") ) {
 			array_push($userIds, $userId);
