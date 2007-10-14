@@ -319,7 +319,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		if ((sizeof($temp_array) == 0) ||
-			(substr_count($temp_array[0], "No Such Object")) ||
+			(substr_count($temp_array[0], "No Such")) ||
 			(substr_count($temp_array[0], "No more variables")) ||
 			(substr_count($temp_array[0], "End of MIB")) ||
 			(substr_count($temp_array[0], "Wrong Type"))) {

@@ -237,10 +237,10 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$oid = $field_array["oid"] . ".$snmp_index";
 
 					if ($field_name == "ifOperStatus") {
-						if (($snmp_data[$i]["value"] == "down(2)") ||
+						if ((substr_count(strtolower($snmp_data[$i]["value"]), "down")) ||
 							($snmp_data[$i]["value"] == "2")) {
 							$snmp_data[$i]["value"] = "Down";
-						}else if (($snmp_data[$i]["value"] == "up(1)") ||
+						}else if ((substr_count(strtolower($snmp_data[$i]["value"]), "up")) ||
 							($snmp_data[$i]["value"] == "1")) {
 							$snmp_data[$i]["value"] = "Up";
 						}else{
