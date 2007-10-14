@@ -238,12 +238,11 @@ if (sizeof($parms) == 0) {
 
 function display_help() {
 	echo "Usage:\n";
-	echo "add_perms.php [ --group-name=[Group Name] | --user-id=[ID] ]\n";
+	echo "add_perms.php [ --user-id=[ID] ]\n";
     echo "                --item-type=[graph|tree|host|graph_template]\n";
     echo "                --item-id\n\n";
 	echo "Where item-id is the id of the object of type item-type\n";
-	echo "List Options:   --list-groups\n";
-	echo "                --list-users\n";
+	echo "List Options:   --list-users\n";
 	echo "                --list-trees\n";
 	echo "                --list-graph-templates\n";
 	echo "                --list-graphs --host-id=[ID]\n";
