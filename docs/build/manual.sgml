@@ -1481,7 +1481,19 @@ view    all included   .iso      80
 access groupv3    ""      any       auth      exact  all    all    all</screen>
 
 				<para>When adding this stuff to your snmp configuration, please
-				remember to restart the agent.</para>
+				remember to restart the agent. Verify this setting using</para>
+				<screen><prompt>shell&gt;</prompt>snmpwalk -v 3 -a MD5 -A myauthpass -x DES -X myprivpass -u gandalf -l authpriv localhost interface
+IF-MIB::ifNumber.0 = INTEGER: 3
+IF-MIB::ifIndex.1 = INTEGER: 1
+IF-MIB::ifIndex.2 = INTEGER: 2
+IF-MIB::ifIndex.3 = INTEGER: 3
+IF-MIB::ifDescr.1 = STRING: lo
+IF-MIB::ifDescr.2 = STRING: irda0
+IF-MIB::ifDescr.3 = STRING: eth0
+IF-MIB::ifType.1 = INTEGER: softwareLoopback(24)
+IF-MIB::ifType.2 = INTEGER: other(1)
+IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
+...</screen>
 			</sect2>
 		</sect1>
 
@@ -4730,7 +4742,7 @@ Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
 
 Usage:
-add_device.php --description=[description] --ip=[IP] --notes="[]" --template=[ID] [--disable]
+add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes="[]"] [--disable]
    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]
    [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]
    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]
@@ -4738,24 +4750,24 @@ add_device.php --description=[description] --ip=[IP] --notes="[]" --template=[ID
 Required:
     - description:  the name that will be displayed by Cacti in the graphs
     - ip:           self explanatory (can also be a FQDN)
-    - template:     is a number (read below to get a list of templates)
-    - avail:        [ping][none, snmp, pingsnmp]
 Optional:
+    - template:     0, is a number (read below to get a list of templates)
     - notes:        '', General information about this host.  Must be enclosed using double quotes.
     - disable:      0, 1 to add this host but to disable checks and 0 to enable it
-    - ping_method:  icmp, icmp, tcp, udp
+    - avail:        pingsnmp, [ping][none, snmp, pingsnmp]
+    - ping_method:  tcp, icmp|tcp|udp
     - ping_port:    '', 1-65534
     - ping_retries: 2, the number of time to attempt to communicate with a host
     - version:      1, 1|2|3, snmp version
     - community:    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community
+    - port:         161
+    - timeout:      500
     - username:     '', snmp username for snmpv3
     - password:     '', snmp password for snmpv3
     - authproto:    '', snmp authentication protocol for snmpv3
     - privpass:     '', snmp privacy passphrase for snmpv3
     - privproto:    '', snmp privacy protocol for snmpv3
     - context:      '', snmp context for snmpv3
-    - port:         161
-    - timeout:      500
 
 List Options:  --list-host-templates
                --list-communities
@@ -4771,8 +4783,7 @@ Valid Host Templates: (id, name)
 5       Cisco Router
 6       Netware 4/5 Server
 7       Windows 2000/XP Host
-8       Local Linux Machine
-9       Sendmail Host</screen>
+8       Local Linux Machine</screen>
 			<para>Why are those <userinput>Host Templates</userinput> of such importance for this
 			script? Well, when using this script to add a new device, there are 3 required
 			parameters. The <userinput>description</userinput> and the <userinput>device ip address</userinput>
@@ -4780,6 +4791,9 @@ Valid Host Templates: (id, name)
 			you should first know the correct id of that very parameter. For the purpose of this
 			chapter we assume to add a device that will be associated to a <userinput>ucd/net SNMP Host</userinput>,
 			so the id of <userinput>3</userinput> is required.</para>
+			<para>If you do not want to associate the host to any <userinput>Host Template Id</userinput>, known
+			as host template <guimenuitem>None</guimenuitem>, please provide the parameter
+			<userinput>--template=0</userinput> or omit this parameter.</para>
 			<para>Now, let's set up the most basic command to add a new device. The description shall be
 			<userinput>"Device Add Test"</userinput>, the ip will be given as a FQDN, <userinput>router.mydomain.com</userinput>.
 			As a SNMP enabled device, surely a community string has to be provided; in this case given
@@ -4807,22 +4821,28 @@ Usage:
 add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]
   --host-id=[ID] [--graph-title=title] [graph options] [--force]
 
-For cg graphs: [--force]
+For cg graphs: [--input-fields="[data-template-id:]field-name=value ..."] [--force]
 
---force is optional - if you set this flag, then new cg graphs will be created, even though they may already exist.
+--input-fields - if your data template allows for custom input data, you may specify that
+                 here.  The data template id is optional and applies where two input fields
+                 have the same name.
+--force        - if you set this flag, then new cg graphs will be created, even though they may already exist.
 
 For ds graphs: --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]
 
---graph-title is optional - it defaults to what ever is in the graph template/data-source template.
+--graph-title  - it defaults to what ever is in the graph template/data-source template.
 
 List Options:  --list-hosts
                --list-graph-templates
+               --list-input-fields --graph-template-id=[ID]
                --list-snmp-queries
-               --snmp-query-id [ID] --list-query-types
-               --host-id=[ID] --list-snmp-fields
-               --host-id=[ID] --snmp-field=[Field] --list-snmp-values
+               --list-query-types  --snmp-query-id [ID]
+               --list-snmp-fields  --host-id=[ID]
+               --list-snmp-values  --host-id=[ID] --snmp-field=[Field]
 
-               --quiet - batch mode value return</screen>
+               --quiet - batch mode value return
+
+'cg' graphs are for things like CPU temp/fan speed, while 'ds' graphs are for data-source based graphs (interface stats etc.)</screen>
 			<para>Like the graph creation from the console, this task is split
 			into two different ones:</para>
 			<itemizedlist>
@@ -4851,6 +4871,7 @@ Known Hosts: (id, hostname, template, description)
 ...
 11      router.mydomain.com 3       Device Add Test</screen>
 				<para>You surely recognize the device we've just added?</para>
+
 				<para>The next list option, <userinput>--list-graph-templates</userinput>,
 				is required to identify the number of an <userinput>Associated Graph Templates</userinput>.</para>
 				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --list-graph-templates
@@ -4865,8 +4886,14 @@ Known Graph Templates:(id, name)
 8       Unix - Processes
 9       Unix - Load Average
 ...</screen>
-				<para>We will later need the graph template id of the <userinput>ucd/net - CPU Usage</userinput>
-				template. So note the number <userinput>4</userinput> for it.</para>
+				<para>We will need the graph template id of the <userinput>ucd/net - CPU Usage</userinput>
+				template later. So note the number <userinput>4</userinput> for it.</para>
+
+				<para>The list option, <userinput>--list-input-fields --graph-template-id=[ID]</userinput>,
+				is required to identify the input fields of an data input method related to an
+				<userinput>Associated Graph Template</userinput>. The example is build on
+				the graph template <userinput></userinput></para>
+				<screen><prompt>shell&gt;</prompt></screen>
 			</sect2>
 			<sect2 id="cli_add_graphs_list_ds">
 			<title>List Options for Associated Data Queries</title>
@@ -4929,7 +4956,7 @@ Up</screen>
 				creating a new graph are determined.</para>
 			</sect2>
 			<sect2 id="cli_add_graphs_cg">
-			<title>Non-Indexed Graphs</title>
+			<title>Add Non-Indexed Graphs</title>
 				<para>We will create a graph for <userinput>ucd/net - CPU Usage</userinput>. Above,
 				we've identified the graph template it to be <userinput>4</userinput>.
 				In total, that makes up for the following command</para>
@@ -4941,7 +4968,7 @@ Graph Added - graph-id: (39) - data-source-id: (63)</screen>
 Device Add Test - CPU Usage 	ucd/net - CPU Usage 	120x500</screen>
 			</sect2>
 			<sect2 id="cli_add_graphs_ds">
-			<title>Indexed Graphs</title>
+			<title>Add Indexed Graphs</title>
 				<para>First, let's sum up the id's of all resources required for this
 				task:</para>
 				<table frame='all'>
@@ -5188,24 +5215,16 @@ Added Node node-id: (28)</screen>
 			<screen><prompt>shell&gt;</prompt>php -q add_perms.php --help
 
 Usage:
-add_perms.php [ --group-name=[Group Name] | --user-id=[ID] ]
+add_perms.php [ --user-id=[ID] ]
                 --item-type=[graph|tree|host|graph_template]
                 --item-id
 
 Where item-id is the id of the object of type item-type
-List Options:   --list-groups
-                --list-users
+List Options:   --list-users
                 --list-trees
                 --list-graph-templates
                 --list-graphs --host-id=[ID]
                 --quiet - batch mode value return</screen>
-			<sect2 id="cli_add_perms_list_groups">
-			<title>List Groups</title>
-	       		<para>The first try is dedicated to the list option
-				<userinput>--list-groups</userinput>. It goes like</para>
-				<screen><prompt>shell&gt;</prompt>php -q add_perms.php --list-groups
-</screen>
-			</sect2>
 			<sect2 id="cli_add_perms_list_users">
 			<title>List Users</title>
 	       		<para>The list of users is retrieved by calling the script with the parameter
