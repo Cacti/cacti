@@ -136,6 +136,13 @@ if (sizeof($parms)) {
 			$quietMode = TRUE;
 
 			break;
+		case "--version":
+		case "-V":
+		case "-H":
+		case "--help":
+			display_help();
+
+			return 0;
 		default:
 			print "ERROR: Invalid Argument '" . $arg . "'\n\n";
 
