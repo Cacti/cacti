@@ -2361,6 +2361,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			By assigning the correct <emphasis>Host Template</emphasis> to each new Device,
 			you'll never forget to create all needed Graphs.
 		</para>
+		<para>There's no need to create all Templates on your own! Apart from the fact,
+		that many common templates are provided out-of-the-box, there's a very simple
+		machnism to <guimenu>Import Templates</guimenu> and to <guimenu>Export Templates</guimenu>.
 		<sect1 id="data_templates">
 			<title>Data Templates</title>
 			<para>
@@ -2855,6 +2858,60 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</mediaobject>
 				</figure>
 			</sect2>
+		</sect1>
+		<sect1 id="template_import">
+		<title>Import Templates</title>
+			<para>Assume, you're searching for a specific set of templates to
+			monitor a special type of device. Apart from designing templates
+			from scratch, there's a good chance to find a solution in the
+			<ulink url="http://forums.cacti.net/forum-12.html">Scripts and Templates Forum</ulink>.
+			The set of templates is usually provided as a single XML file holding all
+			required definitions for a data template and a grpah template. Depending on
+			the goal of the original author, he/she may have provided a host template
+			as well as part of this XML file<para>.
+				<figure id="img_import_templates">
+					<title>Import Templates</title>
+
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="images/import_template" format="PNG">
+						</imageobject>
+					</mediaobject>
+				</figure>
+			<para>If the XML file was downloaded, you may import it from the filesystem
+			via the search button. As an alternative, you may want to cut and paste
+			the XML into the textbox.</para>
+			<para>Please pay attention the the <emphasis>Import RRA Settings</emphasis>.
+			By default, current RRA settings will be preserved, even if the imported
+			XML file specifies different settings. This is recommended to avoid accidentally
+			overwriting these global RRA definitions. If you are sure, you may override
+			this default.</para>
+			<para>For a single OID based template, this will be all. For a script based
+			template, the author will provide the script that has to be downloaded
+			to the Cacti <filename>./scripts</filename> directory. For a SNMP/SCRIPT Data Query,
+			a second XML file holding the Data Query definitions will have to be downloaded
+			to the appropriate directory under <filename>./resources</filename>.</para>
+			<para>When importing templates, Cacti will perform a version check. All XML templates
+			hold the version of the Cacti system that generated this XML set. Cacti will
+			import only, if your current Cacti version equals or is higher than the exporting one.</para>
+		</sect1>
+		<sect1 id="template_export">
+		<title>Export Templates</title>
+			<para>Now that you know how to import, you may want to know in which way to
+			export as well. Selecting the <guimenu>Export Templates</guimenu> gives</para>
+				<figure id="img_export_templates">
+					<title>Export Templates</title>
+
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="images/export_template" format="PNG">
+						</imageobject>
+					</mediaobject>
+				</figure>
+			<para>You may select to export a graph template, a data template, a host template
+			or a data query. When selecting <userinput>Include Dependencies</userinput>, e.g. a host template
+			will include all referred templates (graph template, data template and, if defined,
+			data query). Output may be written to the browser or to a file for uploading.</para>
 		</sect1>
 	</chapter>
 	<chapter id="php_script_server">
