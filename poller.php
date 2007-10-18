@@ -40,23 +40,23 @@ include_once($config["base_path"] . "/lib/rrd.php");
 /* record the start time */
 list($micro,$seconds) = split(" ", microtime());
 $poller_start         = $seconds + $micro;
-$overhead_time = 0;
+$overhead_time        = 0;
 
 /* get number of polling items from the database */
 $poller_interval = read_config_option("poller_interval");
 
 /* retreive the last time the poller ran */
-$poller_lastrun = read_config_option('poller_lastrun');
+$poller_lastrun  = read_config_option('poller_lastrun');
 
 /* detect, as best we can, the cron/scheduled task interval */
 if (isset($poller_lastrun)) {
-	$cron_interval = ceil(($poller_start - $poller_lastrun)/60)*60;
+	$cron_interval = round(($poller_start - $poller_lastrun)/60, 0)*60;
 
 	if ($cron_interval == 0) {
 		$cron_interval = 60;
 	}
 }else{
-	if ($poller_interval < 60) {
+	if ($poller_interval <= 60) {
 		$cron_interval = 60;
 	}else{
 		$cron_interval = $poller_interval;
