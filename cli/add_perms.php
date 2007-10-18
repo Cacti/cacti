@@ -40,7 +40,7 @@ array_shift($parms);
 if (sizeof($parms) == 0) {
 	display_help();
 
-	return 1;
+	exit(1);
 }else{
 	$userId    = 0;
 
@@ -71,11 +71,10 @@ if (sizeof($parms) == 0) {
 			/* TODO replace magic numbers by global constants, treat user_admin as well */
 			if ( ($value == "graph") || ($value == "tree") || ($value == "host") || ($value == "graph_template")) {
 				$itemType = $itemTypes[$value];
-				break;
 			}else{
-				print "ERROR: Invalid Item Type " . $value . "\n\n";
+				echo "ERROR: Invalid Item Type: ($value)\n\n";
 				display_help();
-				return 1;
+				exit(1);
 			}
 
 			break;
@@ -120,54 +119,51 @@ if (sizeof($parms) == 0) {
 		case "-H":
 		case "--help":
 			display_help();
-
-			return 0;
+			exit(0);
 		default:
-			print "ERROR: Invalid Argument '" . $arg . "'\n\n";
-
+			echo "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
-
-			return 1;
+			exit(1);
 		}
 	}
 
 	if ($displayGroups) {
 		displayGroups($quietMode);
-		return 1;
+		exit(1);
 	}
 
 	if ($displayUsers) {
 		displayUsers($quietMode);
-		return 1;
+		exit(1);
 	}
 
 	if ($displayTrees) {
 		displayTrees($quietMode);
-		return 1;
+		exit(1);
 	}
 
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
-		return 1;
+		exit(1);
 	}
 
 	if ($displayGraphs) {
 		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell("SELECT id FROM host WHERE id=$hostId"))) {
-			echo "You must supply a valid host_id before you can list its graphs\n";
+			echo "ERROR: You must supply a valid host_id before you can list its graphs\n";
 			echo "Try --list-hosts\n";
 			display_help();
-			return 1;
+			exit(1);
 		} else {
 			displayHostGraphs($hostId, $quietMode);
-			return 1;
+			exit(1);
 		}
 	}
 
 	if ($displayGraphTemplates) {
 		$graphTemplates = getGraphTemplates();
 		displayGraphTemplates($graphTemplates, $quietMode);
-		return 1;
+		exit(1);
 	}
 
 	/* verify, that a valid userid is provided */
@@ -178,54 +174,54 @@ if (sizeof($parms) == 0) {
 		if ( db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId") ) {
 			array_push($userIds, $userId);
 		} else {
-			print "ERROR: Invalid Userid " . $value . "\n\n";
+			echo "ERROR: Invalid Userid: ($value)\n\n";
 			display_help();
-			return 1;
+			exit(1);
 		}
 	}
 	/* now, we should have at least one verified userid */
 
 	/* verify --item-id */
 	if ($itemType == 0) {
-		print "ERROR: --item-type missing. Please specify.\n\n";
+		echo "ERROR: --item-type missing. Please specify.\n\n";
 		display_help();
-		return 1;
+		exit(1);
 	}
 
 	if ($itemId == 0) {
-		print "ERROR: --item-id missing. Please specify.\n\n";
+		echo "ERROR: --item-id missing. Please specify.\n\n";
 		display_help();
-		return 1;
+		exit(1);
 	}
 
 	/* TODO replace magic numbers by global constants, treat user_admin as well */
 	switch ($itemType) {
 		case 1: /* graph */
 			if ( !db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId") ) {
-				print "ERROR: Invalid Graph item id " . $itemId . "\n\n";
+				echo "ERROR: Invalid Graph item id: ($itemId)\n\n";
 				display_help();
-				return 1;
+				exit(1);
 			}
 			break;
 		case 2: /* tree */
 			if ( !db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId") ) {
-				print "ERROR: Invalid Tree item id " . $itemId . "\n\n";
+				echo "ERROR: Invalid Tree item id: ($itemId)\n\n";
 				display_help();
-				return 1;
+				exit(1);
 			}
 			break;
 		case 3: /* host */
 			if ( !db_fetch_cell("SELECT id FROM host WHERE id=$itemId") ) {
-				print "ERROR: Invalid Host item id " . $itemId . "\n\n";
+				echo "ERROR: Invalid Host item id: ($itemId)\n\n";
 				display_help();
-				return 1;
+				exit(1);
 			}
 			break;
 		case 4: /* graph_template */
 			if ( !db_fetch_cell("SELECT id FROM graph_templates WHERE id=$itemId") ) {
-				print "ERROR: Invalid Graph Template item id " . $itemId . "\n\n";
+				print "ERROR: Invalid Graph Template item id: ($itemId)\n\n";
 				display_help();
-				return 1;
+				exit(1);
 			}
 			break;
 	}
@@ -237,16 +233,17 @@ if (sizeof($parms) == 0) {
 }
 
 function display_help() {
-	echo "Usage:\n";
-	echo "add_perms.php [ --user-id=[ID] ]\n";
-    echo "                --item-type=[graph|tree|host|graph_template]\n";
-    echo "                --item-id\n\n";
+	echo "Add Permissions Script 1.0, Copyright 2007 - The Cacti Group\n\n";
+	echo "A simple command line utility to add permissions to tree items in Cacti\n\n";
+	echo "usage: add_perms.php [ --user-id=[ID] ]\n";
+	echo "    --item-type=[graph|tree|host|graph_template]\n";
+	echo "    --item-id [--quiet]\n\n";
 	echo "Where item-id is the id of the object of type item-type\n";
-	echo "List Options:   --list-users\n";
-	echo "                --list-trees\n";
-	echo "                --list-graph-templates\n";
-	echo "                --list-graphs --host-id=[ID]\n";
-	echo "                --quiet - batch mode value return\n\n";
+	echo "List Options:\n";
+	echo "    --list-users\n";
+	echo "    --list-trees\n";
+	echo "    --list-graph-templates\n";
+	echo "    --list-graphs --host-id=[ID]\n";
 }
 
 ?>
