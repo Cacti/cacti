@@ -215,11 +215,6 @@ Include conf.d/*.conf</userinput></screen>
 					<para>
 						Now, please locate the PHP configuration file at
 						<filename>/etc/httpd/conf.d/php.conf</filename>
-						If using PHP 4, it should look like
-					</para>
-					<para>
-						FIXME php4 httpd conf
-						FIXME different for httpd 1.3 and 2.x?
 					</para>
 					<para>
 						If using PHP 5, then add the following lines.
@@ -318,23 +313,34 @@ $database_password = "cacti";</userinput></screen>
 				</orderedlist>
 			</sect1>
 			<sect1 id="unix_configure_spine">
-				<title>(Optional) Install and Configure Spine</title>
+				<title>(Optional) Install and Configure <application>Spine</application></title>
 				<para>
-					Spine is a very fast poller engine, written in C.
+					<application>Spine</application> is a very fast poller engine, written in C.
 					It is an optional replacement for cmd.php. If you decide
 					to use it, you will have to install it explicitely. It
 					does not come with cacti itself.
 				</para>
 				<para>
-					The easiest way is to install spine using rpm or ports.
-					You will find packages for spine at the main cacti site
+					The easiest way is to install <application>Spine</application> using rpm or ports.
+					You will find packages for <application>Spine</application> at the main cacti site
 					or from your distribution.
 				</para>
+				<para>To compile <application>Spine</application>, please download
+				it to any location of your liking. Then, please issue from the downloaded
+				directory following commands</para>
+				<screen><prompt>shell&gt;</prompt>aclocal</screen>
+				<screen><prompt>shell&gt;</prompt>libtoolize --force  (glibtoolize --force on Max OS)</screen>
+				<screen><prompt>shell&gt;</prompt>autoheader</screen>
+				<screen><prompt>shell&gt;</prompt>autoconf</screen>
+				<screen><prompt>shell&gt;</prompt>automake</screen>
+				<screen><prompt>shell&gt;</prompt>./configure</screen>
+				<screen><prompt>shell&gt;</prompt>make</screen>
+				<screen><prompt>shell&gt;</prompt>make install</screen>
 				<para>
-					Assuming, you've managed to install spine correctly,
+					Assuming, you've managed to install <application>Spine</application> correctly,
 					you will have to configure it. The configuration file
-					may be placed in the same directory as spine itself or
-					at /etc/spine.conf.
+					may be placed in the same directory as <application>Spine</application> itself or
+					at /etc/<application>Spine</application>.conf.
 				</para>
 				<screen><userinput>DB_Host	127.0.0.1 or hostname (not localhost)
 DB_Database	cacti
@@ -714,10 +720,10 @@ Web
 			</listitem>
 		</orderedlist>
 		<orderedlist>
-			<title>Install Spine</title>
+			<title>Install <application>Spine</application></title>
 			<listitem>
 				<para>
-					Extract the Spine zip file to <filename>c:\cacti</filename> and modify the <filename>spine.conf.dist</filename> file to
+					Extract the <application>Spine</application> zip file to <filename>c:\cacti</filename> and modify the <filename>spine.conf.dist</filename> file to
 					include the following statements.
 				</para>
 				<screen><userinput>DB_Host	127.0.0.1 or hostname (not localhost)
@@ -731,7 +737,7 @@ DB_Port		3306</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					Spine now comes with a binary distribution.  However, we strongly suggest that you install
+					<application>Spine</application> now comes with a binary distribution.  However, we strongly suggest that you install
 					Cygwin and then remove all the DLL files and <filename>sh.exe</filename> from the
 					<filename>c:\cacti</filename> directory.
 				</para>
@@ -764,7 +770,7 @@ $database_port = "3306";</userinput></screen>
 				<para>
 					From Cacti, go to <guilabel>Settings</guilabel>-&gt;<guilabel>Paths</guilabel> and verify/udate
 					your paths to point to the correct locations.  Recommended examples are posted below.  If you
-					plan on using Spine, then it is very important that all paths include forward slashes instead
+					plan on using <application>Spine</application>, then it is very important that all paths include forward slashes instead
 					of backslashes.
 				</para>
 				<para>
@@ -787,9 +793,9 @@ $database_port = "3306";</userinput></screen>
 				</para>
 					<screen>c:/mycacti/website/cacti/log/cacti.log</screen>
 				<para>
-					<emphasis>Spine Path:</emphasis>
+					<emphasis><application>Spine</application> Path:</emphasis>
 				</para>
-				<screen>c:/cacti/spine.exe</screen>
+				<screen>c:/cacti/<application>Spine</application>.exe</screen>
 			</listitem>
 			<listitem>
 				<para>
@@ -1273,7 +1279,7 @@ $database_password = "cacti";</userinput></screen>
 							<entry>Maximum OID's Per Get Request</entry>
 							<entry><para>This is a performance feature. Specifies the number of
 							OID's that can be obtained in a single SNMP Get request.
-							</para><para>NOTE: This feature only works when using Spine
+							</para><para>NOTE: This feature only works when using <application>Spine</application>
 							</para><para>NOTE: Some devices do not support values &gt; 1</para></entry>
 						</row>
 						<row>
@@ -1375,10 +1381,10 @@ $database_password = "cacti";</userinput></screen>
 								<entry>Web interface and PHP poller (poller.php)</entry>
 							</row>
 							<row>
-								<entry>Spine SNMP</entry>
+								<entry><application>Spine</application> SNMP</entry>
 								<entry>Links directly against net-snmp or ucd-snmp and calls the API directly.</entry>
 								<entry>All SNMP options</entry>
-								<entry>C-Based Poller (spine)</entry>
+								<entry>C-Based Poller (<application>Spine</application>)</entry>
 							</row>
 						</tbody>
 					</tgroup>
@@ -2363,7 +2369,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 		</para>
 		<para>There's no need to create all Templates on your own! Apart from the fact,
 		that many common templates are provided out-of-the-box, there's a very simple
-		machnism to <guimenu>Import Templates</guimenu> and to <guimenu>Export Templates</guimenu>.
+		machnism to <guimenu>Import Templates</guimenu> and to <guimenu>Export Templates</guimenu>.</para>
 		<sect1 id="data_templates">
 			<title>Data Templates</title>
 			<para>
@@ -2866,9 +2872,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			from scratch, there's a good chance to find a solution in the
 			<ulink url="http://forums.cacti.net/forum-12.html">Scripts and Templates Forum</ulink>.
 			The set of templates is usually provided as a single XML file holding all
-			required definitions for a data template and a grpah template. Depending on
+			required definitions for a data template and a graph template. Depending on
 			the goal of the original author, he/she may have provided a host template
-			as well as part of this XML file<para>.
+			as well as part of this XML file.</para>
 				<figure id="img_import_templates">
 					<title>Import Templates</title>
 
@@ -3206,26 +3212,26 @@ print $b;
 		</sect1>
 	</chapter>
 	<chapter id="using_spine">
-		<title>Spine</title>
+		<title><application>Spine</application></title>
 		<para>
-			Spine is the fast replacement for cmd.php. It is written in C to ensure ultimate
+			<application>Spine</application> is the fast replacement for cmd.php. It is written in C to ensure ultimate
 			performance for device polling. Expect a decrease in polling time of an order of magnitude.
 			Polling times far less than 60 seconds for about 20,000 data sources are achievable
 			e.g. on a dual XEON system supplied with 4 GB RAM and standard local disks.
 		</para>
 		<para>
-			When using Spine, don't change crontab settings! Always use poller.php with crontab!
-			To activate Spine instead of cmd.php, please visit <guilabel>Settings</guilabel>
-			and select the <guilabel>Poller</guilabel> tab. Select <application>spine</application>
-			and save. Now, poller.php will use spine on all subsequent polling cycles.
+			When using <application>Spine</application>, don't change crontab settings! Always use poller.php with crontab!
+			To activate <application>Spine</application> instead of cmd.php, please visit <guilabel>Settings</guilabel>
+			and select the <guilabel>Poller</guilabel> tab. Select <application>Spine</application>
+			and save. Now, poller.php will use <application>Spine</application> on all subsequent polling cycles.
 		</para>
 		<para>
-			While Spine is really fast, choosing the correct setup will ensure, that all processor
+			While <application>Spine</application> is really fast, choosing the correct setup will ensure, that all processor
 			resources are used. Required settings for <guilabel>Maximum Concurrent Poller Processes</guilabel>
-			are 1-2 times the number of CPU cores available for spine.
+			are 1-2 times the number of CPU cores available for <application>Spine</application>.
 		</para>
 		<table frame='all'>
-			<title>Spine Specific Execution Parameters</title>
+			<title><application>Spine</application> Specific Execution Parameters</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 				<colspec colnum="1">
 				<colspec colwidth="3*" colnum="2">
@@ -3239,13 +3245,13 @@ print $b;
 					<row>
 						<entry>Maximum Threads per Process</entry>
 						<entry>The maximum threads allowed per process.
-						Using a higher number when using spine will improve performance.
+						Using a higher number when using <application>Spine</application> will improve performance.
 						Required settings are 10-15. Values above 50 are most often insane
 						and may degrade preformance</entry>
 					</row>
 					<row>
 						<entry>Number of PHP Script Servers</entry>
-						<entry>The number of concurrent script server processes to run per Spine process.
+						<entry>The number of concurrent script server processes to run per <application>Spine</application> process.
 						Settings between 1 and 10 are accepted.
 						Script Servers will pre-load a PHP environment.
 						Then, the Script Server Scripts are included into that environment to
@@ -3253,7 +3259,7 @@ print $b;
 					</row>
 					<row>
 						<entry>Script and Script Server Timeout Value</entry>
-						<entry>The maximum time that Spine will wait on a script to complete, in units of seconds.
+						<entry>The maximum time that <application>Spine</application> will wait on a script to complete, in units of seconds.
 						If a Script Server Script is terminated due to timeout conditions,
 						the value entered into the rrd file will be NaN</entry>
 					</row>
@@ -4008,8 +4014,8 @@ print int(rand(10));</programlisting>
 					</question>
 					<answer>
 						<para>
-							Give spine, the fast replacement for poller.php a try. Unlike poller.php, spine is written in c and makes use
-							of pthreads. On a typical installation, it is not uncommon for spine to poll about 500 items in less then 10
+							Give <application>Spine</application>, the fast replacement for poller.php a try. Unlike poller.php, <application>Spine</application> is written in c and makes use
+							of pthreads. On a typical installation, it is not uncommon for <application>Spine</application> to poll about 500 items in less then 10
 							seconds.
 						</para>
 					</answer>
@@ -4666,7 +4672,7 @@ WARNING: Do not interrupt this script.  Reindexing can take quite some time
 		<title>Empty Poller Output Table</title>
 			<para>During normal poller operation, all retrieved results
 			are intermediately stored in the table named <structname>poller_output</structname>
-			After execution of <application>cmd.php</application> or <application>spine</application>,
+			After execution of <application>cmd.php</application> or <application>Spine</application>,
 			this table holds all results. The <application>poller.php</application> finally
 			issues all <application>rrdtool update</application> operations. Thus,
 			after polling has completed, the table should be empty.</para>
@@ -4790,7 +4796,7 @@ guest 	        Guest Account 	Yes 		Local 	ALLOW 			N/A
 Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 		</sect1>
 		<sect1 id="cli_add_device">
-		<title>Bulk Import of Devices</title>
+		<title>Add a New Device</title>
 			<para>While it is an easy task to add a new device from the panels,
 			this would be a tedious task for creating dozens of hundreds of devices
 			in one turn. This is, where the script <filename>add_device.php</filename>
@@ -4798,40 +4804,47 @@ Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
 
-Usage:
-add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes="[]"] [--disable]
-   [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]
-   [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]
-   [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]
+Add Device Script 1.0, Copyright 2007 - The Cacti Group
+
+A simple command line utility to add a device in Cacti
+
+usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes="[]"] [--disable]
+    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]
+    [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]
+    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]
+    [--quiet]
 
 Required:
-    - description:  the name that will be displayed by Cacti in the graphs
-    - ip:           self explanatory (can also be a FQDN)
+    --description  the name that will be displayed by Cacti in the graphs
+    --ip           self explanatory (can also be a FQDN)
 Optional:
-    - template:     0, is a number (read below to get a list of templates)
-    - notes:        '', General information about this host.  Must be enclosed using double quotes.
-    - disable:      0, 1 to add this host but to disable checks and 0 to enable it
-    - avail:        pingsnmp, [ping][none, snmp, pingsnmp]
-    - ping_method:  tcp, icmp|tcp|udp
-    - ping_port:    '', 1-65534
-    - ping_retries: 2, the number of time to attempt to communicate with a host
-    - version:      1, 1|2|3, snmp version
-    - community:    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community
-    - port:         161
-    - timeout:      500
-    - username:     '', snmp username for snmpv3
-    - password:     '', snmp password for snmpv3
-    - authproto:    '', snmp authentication protocol for snmpv3
-    - privpass:     '', snmp privacy passphrase for snmpv3
-    - privproto:    '', snmp privacy protocol for snmpv3
-    - context:      '', snmp context for snmpv3
+    --template     0, is a number (read below to get a list of templates)
+    --notes        '', General information about this host.  Must be enclosed using double quotes.
+    --disable      0, 1 to add this host but to disable checks and 0 to enable it
+    --avail        pingsnmp, [ping][none, snmp, pingsnmp]
+    --ping_method  tcp, icmp|tcp|udp
+    --ping_port    '', 1-65534
+    --ping_retries 2, the number of time to attempt to communicate with a host
+    --version      1, 1|2|3, snmp version
+    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community
+    --port         161
+    --timeout      500
+    --username     '', snmp username for snmpv3
+    --password     '', snmp password for snmpv3
+    --authproto    '', snmp authentication protocol for snmpv3
+    --privpass     '', snmp privacy passphrase for snmpv3
+    --privproto    '', snmp privacy protocol for snmpv3
+    --context      '', snmp context for snmpv3
 
-List Options:  --list-host-templates
-               --list-communities
-               --quiet - batch mode value return</screen>
+List Options:
+    --list-host-templates
+    --list-communities
+    --quiet - batch mode value return</screen>
 			<para>Wow, that's quite a lot of options. To better understand it's use,
 			let's first stick to the listing options</para>
-			<screen><prompt>shell&gt;</prompt>php -q add_device.php --list-host-templates
+			<sect2 id="cli_add_device_list_host_template">
+			<title>List all Host Templates</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_device.php --list-host-templates
 
 Valid Host Templates: (id, name)
 1       Generic SNMP-enabled Host
@@ -4841,65 +4854,85 @@ Valid Host Templates: (id, name)
 6       Netware 4/5 Server
 7       Windows 2000/XP Host
 8       Local Linux Machine</screen>
-			<para>Why are those <userinput>Host Templates</userinput> of such importance for this
-			script? Well, when using this script to add a new device, there are 3 required
-			parameters. The <userinput>description</userinput> and the <userinput>device ip address</userinput>
-			are of course left to you. But for assigning the correct <userinput>Host Template Id</userinput>,
-			you should first know the correct id of that very parameter. For the purpose of this
-			chapter we assume to add a device that will be associated to a <userinput>ucd/net SNMP Host</userinput>,
-			so the id of <userinput>3</userinput> is required.</para>
-			<para>If you do not want to associate the host to any <userinput>Host Template Id</userinput>, known
-			as host template <guimenuitem>None</guimenuitem>, please provide the parameter
-			<userinput>--template=0</userinput> or omit this parameter.</para>
-			<para>Now, let's set up the most basic command to add a new device. The description shall be
-			<userinput>"Device Add Test"</userinput>, the ip will be given as a FQDN, <userinput>router.mydomain.com</userinput>.
-			As a SNMP enabled device, surely a community string has to be provided; in this case given
-			as <userinput>public</userinput>.
-			In total, this makes the following command</para>
-			<screen><prompt>shell&gt;</prompt>php -q add_device.php --description="Device Add Test" --ip="router.mydomain.com" --template=3 --community="public"
+				<para>Why are those <userinput>Host Templates</userinput> of such importance for this
+				script? Well, when using this script to add a new device, there are 3 required
+				parameters. The <userinput>description</userinput> and the <userinput>device ip address</userinput>
+				are of course left to you. But for assigning the correct <userinput>Host Template Id</userinput>,
+				you should first know the correct id of that very parameter. For the purpose of this
+				chapter we assume to add a device that will be associated to a <userinput>ucd/net SNMP Host</userinput>,
+				so the id of <userinput>3</userinput> is required.</para>
+				<para>If you do not want to associate the host to any <userinput>Host Template Id</userinput>, known
+				as host template <guimenuitem>None</guimenuitem>, please provide the parameter
+				<userinput>--template=0</userinput> or omit this parameter.</para>
+			</sect2>
+			<sect2 id="cli_add_device_list_communities">
+			<title>List all Community Strings</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_device.php --list-communities
+
+Known communities are: (community)
+
+public
+snmp-get</screen>
+				<para>Of course, your list will vary</para>
+			</sect2>
+			<sect2 id="cli_add_device_simple">
+			<title>Create a New Device</title>
+				<para>Now, let's set up the most basic command to add a new device. The description shall be
+				<userinput>"Device Add Test"</userinput>, the ip will be given as a FQDN, <userinput>router.mydomain.com</userinput>.
+				As a SNMP enabled device, surely a community string has to be provided; in this case given
+				as <userinput>public</userinput>.
+				In total, this makes the following command</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_device.php --description="Device Add Test" --ip="router.mydomain.com" --template=3 --community="public"
 
 Adding Device Add Test (router.mydomain.com) as "ucd/net SNMP Host" using SNMP v1 with community "public"
 Success - new device-id: (11)</screen>
-			<para>Please visit <guimenu>Devices</guimenu> to see the result:</para>
-			<screen>Description** 		Graphs 	Data Sources 	Status 	Hostname 		Current (ms) 	Average (ms) 	Availability
+				<para>Please visit <guimenu>Devices</guimenu> to see the result:</para>
+				<screen>Description** 		Graphs 	Data Sources 	Status 	Hostname 		Current (ms) 	Average (ms) 	Availability
 Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
-			<para>Please use any other combination of parameters in the same way
-			as via the web browser console. You may want to remember the new device id, <userinput>11</userinput>
-			in this case, for the next steps.</para>
+				<para>Please use any other combination of parameters in the same way
+				as via the web browser console. You may want to remember the new device id, <userinput>11</userinput>
+				in this case, for the next steps.</para>
+			</sect2>
 		</sect1>
 		<sect1 id="cli_add_graphs">
-		<title>Bulk Graph Creation</title>
+		<title>Add a New Graph</title>
 			<para>You won't stop now as you've just created a device from cli.
 			Surely, the task of setting up graphs is the next step. This is done using
 			<filename>add_graphs.php</filename>. Calling the script with the parameter <userinput>--help</userinput> yields</para>
-			<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --help
+			<screen><prompt>shell&gt;</prompt>php -q add_graphs.php
 
-Usage:
-add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]
-  --host-id=[ID] [--graph-title=title] [graph options] [--force]
+Add Graphs Script 1.0, Copyright 2007 - The Cacti Group
 
-For cg graphs: [--input-fields="[data-template-id:]field-name=value ..."] [--force]
+A simple command line utility to add graphs in Cacti
 
---input-fields - if your data template allows for custom input data, you may specify that
-                 here.  The data template id is optional and applies where two input fields
-                 have the same name.
---force        - if you set this flag, then new cg graphs will be created, even though they may already exist.
+usage: add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]
+    --host-id=[ID] [--graph-title=title] [graph options] [--force] [--quiet]
 
-For ds graphs: --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]
+For cg graphs:
+    [--input-fields="[data-template-id:]field-name=value ..."] [--force]
 
---graph-title  - it defaults to what ever is in the graph template/data-source template.
+    --input-fields  If your data template allows for custom input data, you may specify that
+                    here.  The data template id is optional and applies where two input fields
+                    have the same name.
+    --force         If you set this flag, then new cg graphs will be created, even though they
+                    may already exist
 
-List Options:  --list-hosts
-               --list-graph-templates
-               --list-input-fields --graph-template-id=[ID]
-               --list-snmp-queries
-               --list-query-types  --snmp-query-id [ID]
-               --list-snmp-fields  --host-id=[ID]
-               --list-snmp-values  --host-id=[ID] --snmp-field=[Field]
+For ds graphs:
+    --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]
 
-               --quiet - batch mode value return
+    [--graph-title=] Defaults to what ever is in the graph template/data-source template.
 
-'cg' graphs are for things like CPU temp/fan speed, while 'ds' graphs are for data-source based graphs (interface stats etc.)</screen>
+List Options:
+    --list-hosts
+    --list-graph-templates
+    --list-input-fields --graph-template-id=[ID]
+    --list-snmp-queries
+    --list-query-types  --snmp-query-id [ID]
+    --list-snmp-fields  --host-id=[ID]
+    --list-snmp-values  --host-id=[ID] --snmp-field=[Field]
+
+'cg' graphs are for things like CPU temp/fan speed, while
+'ds' graphs are for data-source based graphs (interface stats etc.)</screen>
 			<para>Like the graph creation from the console, this task is split
 			into two different ones:</para>
 			<itemizedlist>
@@ -4945,12 +4978,6 @@ Known Graph Templates:(id, name)
 ...</screen>
 				<para>We will need the graph template id of the <userinput>ucd/net - CPU Usage</userinput>
 				template later. So note the number <userinput>4</userinput> for it.</para>
-
-				<para>The list option, <userinput>--list-input-fields --graph-template-id=[ID]</userinput>,
-				is required to identify the input fields of an data input method related to an
-				<userinput>Associated Graph Template</userinput>. The example is build on
-				the graph template <userinput></userinput></para>
-				<screen><prompt>shell&gt;</prompt></screen>
 			</sect2>
 			<sect2 id="cli_add_graphs_list_ds">
 			<title>List Options for Associated Data Queries</title>
@@ -5090,33 +5117,41 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_tree.php --help
 
-Usage:
-add_tree.php         --type=[tree|node] [type-options]
+Add Tree Script 1.0, Copyright 2007 - The Cacti Group
 
-tree options:        --name=[Tree Name]
-                     --sort-method=[manual|alpha|natural|numeric]
+A simple command line utility to add objects to a tree in Cacti
 
-node options:        --node-type=[header|host|graph]
-                     --tree-id=[ID]
-     optional       [--parent-node=[ID] [Node Type Options]]
+usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]
 
-header node options: --name=[Name]
+Tree options:
+    --name=[Tree Name]
+    --sort-method=[manual|alpha|natural|numeric]
 
-host node options:   --host-id=[ID]
-     optional       [--host-group-style=[1|2]]
-                      (host group styles:
-                            1 = Graph Template,
-                            2 = Data Query Index)
+Node options:
+    --node-type=[header|host|graph]
+    --tree-id=[ID]
+    [--parent-node=[ID] [Node Type Options]]
 
-graph node options:  --graph-id=[ID]
-     optional       [--rra-id=[ID]]
+Header node options:
+    --name=[Name]
 
-List Options:        --list-hosts
-                     --list-trees
-                     --list-nodes --tree-id=[ID]
-                     --list-rras
-                     --list-graphs --host-id=[ID]
-                     --quiet - batch mode value return</screen>
+Host node options:
+    --host-id=[ID]
+    [--host-group-style=[1|2]]
+    (host group styles:
+     1 = Graph Template,
+     2 = Data Query Index)
+
+Graph node options:
+    --graph-id=[ID]
+    [--rra-id=[ID]]
+
+List Options:
+    --list-hosts
+    --list-trees
+    --list-nodes --tree-id=[ID]
+    --list-rras
+    --list-graphs --host-id=[ID]</screen>
 			<sect2 id="cli_add_tree_list_hosts">
 			<title>List Hosts</title>
 	       		<para>The first try is dedicated to the list option
@@ -5271,17 +5306,20 @@ Added Node node-id: (28)</screen>
 			the parameter <userinput>--help</userinput></para>
 			<screen><prompt>shell&gt;</prompt>php -q add_perms.php --help
 
-Usage:
-add_perms.php [ --user-id=[ID] ]
-                --item-type=[graph|tree|host|graph_template]
-                --item-id
+Add Permissions Script 1.0, Copyright 2007 - The Cacti Group
+
+A simple command line utility to add permissions to tree items in Cacti
+
+usage: add_perms.php [ --user-id=[ID] ]
+    --item-type=[graph|tree|host|graph_template]
+    --item-id [--quiet]
 
 Where item-id is the id of the object of type item-type
-List Options:   --list-users
-                --list-trees
-                --list-graph-templates
-                --list-graphs --host-id=[ID]
-                --quiet - batch mode value return</screen>
+List Options:
+    --list-users
+    --list-trees
+    --list-graph-templates
+    --list-graphs --host-id=[ID]</screen>
 			<sect2 id="cli_add_perms_list_users">
 			<title>List Users</title>
 	       		<para>The list of users is retrieved by calling the script with the parameter
