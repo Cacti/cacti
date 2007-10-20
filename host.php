@@ -1126,7 +1126,7 @@ function host() {
 		$sql_where .= (strlen($sql_where) ? " and host.disabled='on'" : "where host.disabled='on'");
 	}elseif ($_REQUEST["host_status"] == "-3") {
 		$sql_where .= (strlen($sql_where) ? " and host.disabled=''" : "where host.disabled=''");
-	}elseif ($_REQUEST["host_status"] == "-3") {
+	}elseif ($_REQUEST["host_status"] == "-4") {
 		$sql_where .= (strlen($sql_where) ? " and (host.status!='3' or host.disabled='on')" : "where (host.status!='3' or host.disabled='on')");
 	}else {
 		$sql_where .= (strlen($sql_where) ? " and (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')" : "where (host.status=" . $_REQUEST["host_status"] . " AND host.disabled = '')");
@@ -1155,21 +1155,25 @@ function host() {
 	$host_graphs       = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id"), "host_id", "graphs");
 	$host_data_sources = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id"), "host_id", "data_sources");
 
-	$hosts = db_fetch_assoc("SELECT
-		host.id,
-		host.disabled,
-		host.status,
-		host.hostname,
-		host.description,
-		host.min_time,
-		host.max_time,
-		host.cur_time,
-		host.avg_time,
-		host.availability
-		FROM host
-		$sql_where
-		ORDER BY " . $sortby . " " . $_REQUEST["sort_direction"] . "
-		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+	$sql_query = "SELECT
+                host.id,
+                host.disabled,
+                host.status,
+                host.hostname,
+                host.description,
+                host.min_time,
+                host.max_time,
+                host.cur_time,
+                host.avg_time,
+                host.availability
+                FROM host
+                $sql_where
+                ORDER BY " . $sortby . " " . $_REQUEST["sort_direction"] . "
+		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device");
+
+	//print $sql_query;
+
+	$hosts = db_fetch_assoc($sql_query);
 
 	/* generate page list */
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
