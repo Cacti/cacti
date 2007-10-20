@@ -40,23 +40,23 @@ include_once($config["base_path"] . "/lib/rrd.php");
 /* record the start time */
 list($micro,$seconds) = split(" ", microtime());
 $poller_start         = $seconds + $micro;
-$overhead_time        = 0;
+$overhead_time = 0;
 
 /* get number of polling items from the database */
 $poller_interval = read_config_option("poller_interval");
 
 /* retreive the last time the poller ran */
-$poller_lastrun  = read_config_option('poller_lastrun');
+$poller_lastrun = read_config_option('poller_lastrun');
 
 /* detect, as best we can, the cron/scheduled task interval */
 if (isset($poller_lastrun)) {
-	$cron_interval = round(($poller_start - $poller_lastrun)/60, 0)*60;
+	$cron_interval = ceil(($poller_start - $poller_lastrun)/60)*60;
 
 	if ($cron_interval == 0) {
 		$cron_interval = 60;
 	}
 }else{
-	if ($poller_interval <= 60) {
+	if ($poller_interval < 60) {
 		$cron_interval = 60;
 	}else{
 		$cron_interval = $poller_interval;
@@ -80,15 +80,20 @@ if (isset($poller_interval)) {
 	define("MAX_POLLER_RUNTIME", 298);
 }
 
-if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
-	cacti_log("DEBUG: Poller Interval: '$poller_interval', Cron Interval: '$cron_interval', Max Poller Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
-}
-
 /* some text formatting for platform specific vocabulary */
 if ($config["cacti_server_os"] == "unix") {
 	$task_type = "Cron";
 }else{
 	$task_type = "Scheduled Task";
+}
+
+if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+	$poller_seconds_sincerun = "never";
+	if (isset($poller_lastrun)) {
+		$poller_seconds_sincerun = $seconds - $poller_lastrun;
+	}
+
+	cacti_log("DEBUG: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
 }
 
 /* our cron can run at either 1 or 5 minute intervals */
@@ -100,7 +105,8 @@ if ($poller_interval <= 60) {
 
 /* get to see if we are polling faster than reported by the settings, if so, exit */
 if (isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) {
-	if (($seconds - $poller_lastrun) < MAX_POLLER_RUNTIME) {
+	/* give the user some flexibility to run a little moe often */
+	if ((($seconds - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
 		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
 			cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER');
 		}
