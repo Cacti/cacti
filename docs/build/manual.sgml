@@ -1635,6 +1635,15 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			actions, as well as graph viewing settings. There are also two levels of permissions control, realm
 			permissions and graph permissions which enable you to control what the user can see and change.
 		</para>
+		<figure id="img_user_list">
+			<title>User Management</title>
+
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/user_management_list" format="PNG">
+				</imageobject>
+			</mediaobject>
+		</figure>
 		<para>
 			Out of the box, there are two users that come with every Cacti installation. The "admin" user, is the
 			main user that by default has access to see and change everything in Cacti. This is the user that you
@@ -1643,21 +1652,25 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			users. By default this user only has rights to view, but not change all graphs. This enables any
 			unauthenticated user to visit 'graph_view.php' and view your graphs. This behavior can be changed by
 			either changing the realm permissions for the "guest" user, or disabling the guest user altogether
-			under <guilabel>Cacti Settings</guilabel>.
+			under <guilabel>Cacti Settings</guilabel>.  By default in 0.8.7 and later, the "guest" user is not 
+			set in the setting, effectively disabling "guest" (Unauthenticated) access to Cacti.
 		</para>
-		<sect1 id="create_new_user">
-			<title>Creating a New User</title>
+
+
+
+		<sect1 id="edit_existing_user">
+			<title>Editing an existing User</title>
 			<para>
-				To create a new user, select the <guilabel>User Management</guilabel> item under the
+				To edit an existing user, select the <guilabel>User Management</guilabel> item under the
 				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen,
-				click <guilabel>Add</guilabel>. You will see a screen that looks similar to the image below.
+				click username of the user you wish to edit. You will see a screen that looks similar to the image below.
 			</para>
-			<figure id="img_user_new">
-				<title>Adding a User</title>
+			<figure id="img_user_edit">
+				<title>Editing a User</title>
 
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="images/user_management" format="PNG">
+						<imagedata fileref="images/user_management_edit" format="PNG">
 					</imageobject>
 				</mediaobject>
 			</figure>
@@ -1711,59 +1724,241 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</tbody>
 				</tgroup>
 			</table>
+			<sect2 id="realm_permissions">
+				<title>Realm Permissions</title>
+				<para>
+					Realm permissions control which areas of Cacti a user can access. You can edit a user's realm
+					permissions by selecting <guilabel>User Management</guilabel> and choosing the user you
+					want to edit the permissions for. The <guilabel>Realm Permissions</guilabel> box will be displayed
+					in the lower part of the screen. Each "realm" is a grouping that represents common tasks in Cacti,
+					making it easier to fine tune each user's access.
+				</para>
+				<para>
+					If you want to create a user that can only view graphs, you should select the <guilabel>View
+					Graphs</guilabel> realm and leave everything else unchecked. See the <guilabel>Graph
+					Permissions</guilabel> section for more information about how to fine tune this even more on a per-graph
+					basis. Conversely, if the user needs to access the console, they will need <guilabel>Console
+					Access</guilabel> and any additional realms that you see fit.
+				</para>
+			</sect2>
+			<sect2 id="graph_permissions">
+				<title>Graph Permissions</title>
+				<para>
+					Graph permissions control which graphs a user is allowed to view, it does not apply to editing graphs.
+					You can edit a user's graph permissions by selecting <guilabel>User Management</guilabel> and choosing
+					the user you want to edit the permissions for. Now select the <guilabel>Graph Permissions</guilabel> tab
+					to view this user's graph permissions. There are three different ways that you can apply graph permissions,
+					by graph, by host, or by graph template. This works by allowing or denying the user to all graphs associated
+					with the particular group. So you can deny a user to a single graph, all graphs associated with a particular
+					host, or all graphs associated with a particular graph template. Combining these three types of assigning
+					graph permissions results in a very powerful graph policy editor.
+				</para>
+				<para>
+					Each assignment type contains a <guilabel>Default Policy</guilabel> dropdown which can be used to control
+					whether the user should be allowed to view everything or be denied from everything by default in the particular
+					group. It is very important to remember that these policies are evaluated in the order: graph, host, graph
+					template. Therefore, if you set graph's default policy to <guilabel>Deny</guilabel>, but kept host and graph
+					template at <guilabel>Allow</guilabel>, the user's effective policy would be <guilabel>Deny</guilabel> since
+					the graph assignment type is evaluated first. You typically either want to set all default policies to
+					<guilabel>Deny</guilabel> for a restrictive user, or <guilabel>Allow</guilabel> for a non-restrictive user.
+					If you thoroughly understand Cacti's graph permissions system, these default policies can be combined to provide
+					very complex results.
+				</para>
+			</sect2>
+			<sect2 id="graph_settings">
+				<title>Graph Settings</title>
+				<para>
+					Cacti stores certain graph viewing settings for each user, which enables each user to view graphs in an optimal
+					way. These preferences controls things such as the preview graph size or the default graph viewing mode to use.
+					In addition to managing these settings here under user management, each user can change their own settings by
+					clicking on the <guilabel>Graphs</guilabel> tab and selecting the <guilabel>Settings</guilabel> tab on the
+					following page. If you want to prevent a user from being able to keep their own graph preferences, uncheck the
+					<guilabel>Allow this User to Keep Custom Graph Settings</guilabel> checkbox in user management. The user will be
+					presented with an "Access Denied" error message if they attempt to click the <guilabel>Settings</guilabel> tab
+					when this box is checked.
+				</para>
+			</sect2>
+	
 		</sect1>
-		<sect1 id="realm_permissions">
-			<title>Realm Permissions</title>
+		<sect1 id="create_new_user">
+			<title>Creating a New User</title>
 			<para>
-				Realm permissions control which areas of Cacti a user can access. You can edit a user's realm
-				permissions by selecting <guilabel>User Management</guilabel> and choosing the user you
-				want to edit the permissions for. The <guilabel>Realm Permissions</guilabel> box will be displayed
-				in the lower part of the screen. Each "realm" is a grouping that represents common tasks in Cacti,
-				making it easier to fine tune each user's access.
+				To create a new user, select the <guilabel>User Management</guilabel> item under the
+				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen,
+				click <guilabel>Add</guilabel>. 
 			</para>
+			<figure id="img_user_new">
+				<title>Adding a User</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_new" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
 			<para>
-				If you want to create a user that can only view graphs, you should select the <guilabel>View
-				Graphs</guilabel> realm and leave everything else unchecked. See the <guilabel>Graph
-				Permissions</guilabel> section for more information about how to fine tune this even more on a per-graph
-				basis. Conversely, if the user needs to access the console, they will need <guilabel>Console
-				Access</guilabel> and any additional realms that you see fit.
-			</para>
-		</sect1>
-		<sect1 id="graph_permissions">
-			<title>Graph Permissions</title>
-			<para>
-				Graph permissions control which graphs a user is allowed to view, it does not apply to editing graphs.
-				You can edit a user's graph permissions by selecting <guilabel>User Management</guilabel> and choosing
-				the user you want to edit the permissions for. Now select the <guilabel>Graph Permissions</guilabel> tab
-				to view this user's graph permissions. There are three different ways that you can apply graph permissions,
-				by graph, by host, or by graph template. This works by allowing or denying the user to all graphs associated
-				with the particular group. So you can deny a user to a single graph, all graphs associated with a particular
-				host, or all graphs associated with a particular graph template. Combining these three types of assigning
-				graph permissions results in a very powerful graph policy editor.
-			</para>
-			<para>
-				Each assignment type contains a <guilabel>Default Policy</guilabel> dropdown which can be used to control
-				whether the user should be allowed to view everything or be denied from everything by default in the particular
-				group. It is very important to remember that these policies are evaluated in the order: graph, host, graph
-				template. Therefore, if you set graph's default policy to <guilabel>Deny</guilabel>, but kept host and graph
-				template at <guilabel>Allow</guilabel>, the user's effective policy would be <guilabel>Deny</guilabel> since
-				the graph assignment type is evaluated first. You typically either want to set all default policies to
-				<guilabel>Deny</guilabel> for a restrictive user, or <guilabel>Allow</guilabel> for a non-restrictive user.
-				If you thoroughly understand Cacti's graph permissions system, these default policies can be combined to provide
-				very complex results.
+				At minimum, you must specify a <guilabel>User Name</guilabel> and
+				a <guilabel>Password</guilabel> for each user. Each user field is described in more detail
+				in the Editing an existing User section previous to this one. In addition to these fields, 
+				each user can have their own realm permissions", graph permissions, and graph settings. Each 
+				of these items are described in editing existing users section of the manual.
 			</para>
 		</sect1>
-		<sect1 id="graph_settings">
-			<title>Graph Settings</title>
+		<sect1 id="copying_user">
+			<title>Copying a user</title>
+			<figure id="img_user_copy_1">
+				<title>Copy a User Part 1</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_copy_1" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
 			<para>
-				Cacti stores certain graph viewing settings for each user, which enables each user to view graphs in an optimal
-				way. These preferences controls things such as the preview graph size or the default graph viewing mode to use.
-				In addition to managing these settings here under user management, each user can change their own settings by
-				clicking on the <guilabel>Graphs</guilabel> tab and selecting the <guilabel>Settings</guilabel> tab on the
-				following page. If you want to prevent a user from being able to keep their own graph preferences, uncheck the
-				<guilabel>Allow this User to Keep Custom Graph Settings</guilabel> checkbox in user management. The user will be
-				presented with an "Access Denied" error message if they attempt to click the <guilabel>Settings</guilabel> tab
-				when this box is checked.
+				To copy a user to a new user, select the <guilabel>User Management</guilabel> item under the
+				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen,
+				select the user you would like to copy from and select copy from the <guilabel>Action</guilabel> 
+				selection box, click <guilabel>Go</guilabel> to continue.  If you select multiple users, 
+				only the first selected user will be used as the source user.
+			</para>
+			<figure id="img_user_copy_2">
+				<title>Copy a User Part 2</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_copy_2" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				Specify the <guilabel>New Username</guilabel>, <guilabel>New Full Name</guilabel> and 
+				<guilabel>New Realm</guilabel> of the new user.  Click <guilabel>Yes</guilabel> to copy the 
+				selected template user to the the designated new user.  An error will be returned if you attempt
+				to copy over an existing user.  If you would like to copy over an existing user, use 
+				<guilabel>Batch Copy</guilabel>.
+			</para>
+		</sect1>
+		<sect1 id="enable_disable_users">
+			<title>Enable/Disable Users</title>
+			<figure id="img_user_enable_disable_1">
+				<title>Enable/Disable Users Part 1</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_enable_disable_1" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				To enable or disable a set of or a single user, select the <guilabel>User Management</guilabel> 
+				item under the <guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management 
+				screen, select the user(s) you would like to enable or disable and select enable or disable from the 
+				<guilabel>Action</guilabel> selection box, click <guilabel>Go</guilabel> to continue. 
+			</para>
+			<figure id="img_user_enable_disable_2">
+				<title>Enable/Disable Users Part 2</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_enable_disable_2" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				Confirm that you want to disable or enable the listed users. Click <guilabel>Yes</guilabel> to  
+				perform the action.  Disabling your own account is possible and not recommended, as once you logoff
+				you will not be able to return.
+			</para>
+		</sect1>
+		<sect1 id="batch_copy_users">
+			<title>Batch Copy Users</title>
+			<para>
+				Batch Copy is a helpful utility that helps Cacti Administrators maintain users.  Because Cacti 
+				does not yet support groups, it is important that there is some way to mass update users.  This 
+				what Batch Copy does for you. 
+			</para>
+			<figure id="img_user_batch_copy_1">
+				<title>Batch Copy Users Part 1</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_batch_copy_1" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				To Batch Copy a set of or a single user, select the <guilabel>User Management</guilabel> 
+				item under the <guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management 
+				screen, select the user(s) you would like to batch copy information to and select "Batch Copy" from the 
+				<guilabel>Action</guilabel> selection box, click <guilabel>Go</guilabel> to continue.
+			</para>
+			<figure id="img_user_batch_copy_2">
+				<title>Batch Copy Users Part 2</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_batch_copy_2" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				Select the <guilabel>Template User</guilabel> and confirm that you want to Batch Copy the listed users. 
+				Click <guilabel>Yes</guilabel> to perform the action. 
+			</para>
+			<para>
+				It is important to note that when using <guilabel>Batch Copy</guilabel> the original user(s) Full Name, 
+				Password, Realm and Enable status will be retained, all other fields will be overwritten with values from
+				the selected template user.
+			</para>
+		</sect1>
+		<sect1 id="delete_users">
+			<title>Delete Users</title>
+			<figure id="img_user_delete_1">
+				<title>Delete Users Part 1</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_delete_1" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				To delete a set of or a single user, select the <guilabel>User Management</guilabel> 
+				item under the <guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management 
+				screen, select the user(s) you would like to delete and select delete from the 
+				<guilabel>Action</guilabel> selection box, click <guilabel>Go</guilabel> to continue. 
+			</para>
+			<figure id="img_user_delete_2">
+				<title>Delete Users Part 2</title>
+
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/user_management_delete_2" format="PNG">
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>
+				Confirm that you want to delete the listed users. Click <guilabel>Yes</guilabel> to  
+				perform the action.  Deleting your own account is possible and not recommended.
+			</para>
+		</sect1>
+		<sect1 id="guest_access">
+			<title>Guest (Anonymous) Access </title>
+			<para>
+				By default in 0.8.7 and later of Cacti, Guest or Anonymous access is disabled.  This is 
+				shift from previous release that came with the "Guest" user enabled and set.
+			</para>
+			<para>
+				Enabling "Guest" access is easy.  But, you must understand that you should only allow the 
+				designated "Guest" user access to what you authorized.  It is not sugguested that you give 
+				the designated "Guest" user more than just access to graphs.  To enable guest access, first, 
+				need a designated "Guest" user.  Cacti by default comes with one already created that has 
+				access to only graphs.   It is important to note that the default guest user has access to all
+				graphs on the system.  Once you have created the "Guest" user, you need to tell Cacti what 
+				the "Guest" user is.  This is done by updating the Authenication Settings and selecting the 
+				"Guest" user you have designated.  The "Guest" user must be enabled and be set as the guest 
+				user for anonymous access to work.
 			</para>
 		</sect1>
 	</chapter>
@@ -4776,7 +4971,7 @@ DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - /boot'</screen>
 			limitation of this script, it is of importance to read <xref linkend="user_management">.
 			In case you're using local cacti user definitions, you may copy
 			a template user to a new user. Don't use this script for
-			<application>LDAP</application> users.</para>
+			<application>LDAP</application> or Web Basic users.</para>
 			<para>Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q copy_user.php --help
 
