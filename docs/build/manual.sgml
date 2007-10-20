@@ -2142,6 +2142,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			<programlisting>&lt;query&gt;
    &lt;name&gt;Get SNMP Interfaces&lt;/name&gt;
    &lt;description&gt;Queries a host for a list of monitorable interfaces&lt;/description&gt;
+   &lt;oid_uptime&gt;.1.3.x.x.x&lt;/oid_uptime&gt;
    &lt;oid_index&gt;.1.3.6.1.2.1.2.2.1.1&lt;/oid_index&gt;
    &lt;oid_index_parse&gt;OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3})$&lt;/oid_index_parse&gt;
    &lt;oid_num_indexes&gt;.1.3.6.1.2.1.2.1.0&lt;/oid_num_indexes&gt;
@@ -2178,6 +2179,11 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						<row>
 							<entry>query-&gt;description</entry>
 							<entry>(Optional) You can enter a description for the SNMP query here. It will not be used by Cacti, and is for identification only.</entry>
+						</row>
+						<row>
+							<entry>query-&gt;oid_uptime</entry>
+							<entry><para>New with 0.8.7: If you have another OID that contains timetics, say for example a Java VM.  Then, you can create a data query that specifies an alternate Uptime OID.  To implement this for a data query, simply add the oid_uptime
+							XML parameter to your XML file.  Then, if you select your re-index method to be Uptime Goes Backaward, Cacti will use that OID to detect whether it is time to re-index the host instead  of the standard snmp OID for uptime.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;oid_index</entry>
