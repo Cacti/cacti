@@ -31,7 +31,7 @@
 							<option value="0"<?php if ($_REQUEST["template_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
 
-							$templates = db_fetch_assoc("SELECT data_template.id, data_template.name
+							$templates = db_fetch_assoc("SELECT DISTINCT data_template.id, data_template.name
 								FROM data_template
 								INNER JOIN data_template_data
 								ON data_template.id=data_template_data.data_template_id
@@ -64,7 +64,7 @@
 							<option value="0"<?php if ($_REQUEST["method_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
 
-							$methods = db_fetch_assoc("SELECT data_input.id, data_input.name
+							$methods = db_fetch_assoc("SELECT DISTINCT data_input.id, data_input.name
 								FROM data_input
 								INNER JOIN data_template_data
 								ON data_input.id=data_template_data.data_input_id
