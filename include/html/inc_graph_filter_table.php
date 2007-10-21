@@ -29,7 +29,7 @@
 							<option value="-1"<?php if ($_REQUEST["template_id"] == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if ($_REQUEST["template_id"] == "0") {?> selected<?php }?>>None</option>
 							<?php
-							$templates = db_fetch_assoc("SELECT graph_templates.id, graph_templates.name
+							$templates = db_fetch_assoc("SELECT DISTINCT graph_templates.id, graph_templates.name
 								FROM graph_templates
 								INNER JOIN graph_templates_graph
 								ON graph_templates.id=graph_templates_graph.graph_template_id
