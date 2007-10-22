@@ -2196,6 +2196,8 @@ INSERT INTO rra_cf VALUES (3,1);
 INSERT INTO rra_cf VALUES (3,3);
 INSERT INTO rra_cf VALUES (4,1);
 INSERT INTO rra_cf VALUES (4,3);
+INSERT INTO rra_cf VALUES (5,1);
+INSERT INTO rra_cf VALUES (5,3);
 
 --
 -- Table structure for table `settings`

@@ -153,6 +153,9 @@ function upgrade_to_0_8_7() {
 
 	/* Add 1 min rra */
 	db_install_execute("0.8.7", "INSERT INTO rra VALUES (DEFAULT,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400)");
+	db_install_execute("0.8.7", "INSERT INTO rra_cf VALUES (5,1)");
+	db_install_execute("0.8.7", "INSERT INTO rra_cf VALUES (5,3)");
+
 
 	/* rename cactid path to spine path */
 	db_install_execute("0.8.7", "UPDATE settings SET name='path_spine' WHERE name='path_cactid'");
