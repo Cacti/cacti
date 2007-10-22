@@ -1,18 +1,18 @@
 Cacti CHANGELOG
 
 0.8.7
--bug#0000480: Error after altering graphs displayed per page
--bug#0000740: Lack of unique session name conflicts with other PHP applications
--bug#0000829: JVM, Spike detection and Poller
--bug#0000830: Filter Graphs by Graph Template...
--bug#0000833: favicon.ico support
--bug#0000850: Select All for list view
--bug#0000854: Move "Downed Host Detection" to each device
--bug#0000873: Poller hangs in certain situations
--bug#0000876: Ability to search for host with a not UP status
+-bug#0000480: Fix error after altering graphs displayed per page
+-bug#0000740: Add support for setting the PHP session name of Cacti
+-bug#0000829: Add support for an specifying an uptime OID for SNMP queries
+-bug#0000830: Add filtering graphs by Graph Template
+-bug#0000833: Add favicon.ico support
+-bug#0000850: Add Select All for graph list view
+-bug#0000854: Move "Downed Host Detection" into the device edit screen
+-bug#0000873: Fix issues with the poller hanging in certain situations
+-bug#0000876: Add ability to search for host with a not UP status
 -bug#0000898: Selecting a CUSTOM timespan and then CLEARing yields "LAST HALF HOUR" preset
--bug#0000899: Settings checks paths for existance
--bug#0000902: cmd.php doesn't work with PHP 4.4.1 under windows
+-bug#0000899: Add local checking to the Paths tab on the Settings page
+-bug#0000902: Fix issues with cmd.php and PHP 4.4.1 under windows
 -bug#0000903: snmpgetnext function does not exist in PHP less than 5.0
 -bug#0000904: Data Source creation fails without php-snmp
 -bug#0000906: Every tenth host does not show on tree during console edit
@@ -21,20 +21,20 @@ Cacti CHANGELOG
 -bug#0000910: Cacti complains when trying to set the data source "maximum value" to any number with a decimal point
 -bug#0000912: Nth Percentile thumbnail graphs fail with RRDtool 1.2.15, 1.2.18
 -bug#0000913: Allow direct linking to specific graph pages
--bug#0000919: Problem with ping_tcp function
+-bug#0000919: Fix problem with ping_tcp function
 -bug#0000920: Improved handling of rrdtool --font parameter
 -bug#0000921: Improvement to ping.pl script
 -bug#0000925: Support for host_* variables in the legend
--bug#0000926: Useful characters are removed when searching
+-bug#0000926: Stop removing useful characters when searching
 -bug#0000927: Classic export does not recognize thumbnail columns properly
 -bug#0000931: New rrdtool fails on empty comment
 -bug#0000934: Column 'status_last_error' in table 'host' too short.
 -bug#0000937: System output in hosts.php poor for Alcatel
 -bug#0000946: Timetick of zero returns down for device
--bug#0000947: Trailing blanK on oid in form causes problems
--bug#0000953: SNMP Passphrase displayed in cleartext
+-bug#0000947: Trailing blank on OID in form causes problems
+-bug#0000953: SNMP Passphrase is displayed in cleartext
 -bug#0000954: Y-grid lables are not informative when using --alt-autoscale
--bug#0000955: Fixed possible denial of service attack by modifying graph image url
+-bug#0000955: Fixed possible denial of service attack by modifying graph image URL
 -bug#0000956: Additional editing help with tree management
 -bug#0000957: Script server output's beginning/trailing data during "Include" causing a synchronization issue
 -bug#0000958: Slope Mode is now selectable
@@ -83,7 +83,7 @@ Cacti CHANGELOG
 -feature: Add filtering and pagination to user administration
 -feature: Add extended LDAP authentication support
 -feature: Add Web Basic authentication
--feature: Add authenication realm to modifiable user parameters
+-feature: Add authentication realm to modifiable user parameters
 -feature: Add multiple polling intervals
 -feature: Moved command line scripts to cli sub directory
 -feature: include/config.php now only includes database configuration
