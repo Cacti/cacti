@@ -89,10 +89,10 @@ function upgrade_to_0_8_7() {
 
 	if (sizeof($hosts)) {
 		foreach($hosts as $host) {
-			if (strlen($host["snmp_community"] == 0)) {
+			if (strlen($host["snmp_community"] != 0)) {
 				if ($host["snmp_version"] == "3") {
 					if ($availability_method == AVAIL_SNMP) {
-						db_install_execute("0.8.7", "UPDATE host SET snmp_priv_protocol='[None]', availability_method=" . AVAIL_SNMP . ", ping_method=" . PING_UDP . ",ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
+						db_install_execute("0.8.7", "UPDATE host SET snmp_priv_protocol='[None]', snmp_auth_protocol='MD5', availability_method=" . AVAIL_SNMP . ", ping_method=" . PING_UDP . ",ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
 					}else if ($availability_method == AVAIL_SNMP_AND_PING) {
 						if ($ping_method == PING_ICMP) {
 							db_install_execute("0.8.7", "UPDATE host SET snmp_priv_protocol='[None]', availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
@@ -153,7 +153,7 @@ function upgrade_to_0_8_7() {
 
 	/* Add 1 min rra */
 	db_install_execute("0.8.7", "INSERT INTO rra VALUES (DEFAULT,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400)");
-	$rrd_id = mysql_insert_id();   
+	$rrd_id = mysql_insert_id();
 	db_install_execute("0.8.7", "INSERT INTO `rra_cf` VALUES ($rrd_id,1), ($rrd_id,3)");
 
 	/* rename cactid path to spine path */
