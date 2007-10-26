@@ -31,6 +31,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 	$snmp_auth_protocol   = "";
 	$snmp_priv_passphrase = "";
 	$snmp_priv_protocol   = "";
+	$snmp_context         = "";
 	$snmp_community = "";
 
 	if ($snmp_version == 3) {
@@ -39,6 +40,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 =
 		$snmp_auth_protocol   = $snmp[6];
 		$snmp_priv_passphrase = $snmp[7];
 		$snmp_priv_protocol   = $snmp[8];
+		$snmp_context         = $snmp[9];
 	}else{
 		$snmp_community = $snmp[3];
 	}
