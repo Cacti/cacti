@@ -52,7 +52,7 @@ if ($cmd == "index") {
 }
 
 function get_cpu_usage($hostname, $snmp_community, $snmp_version) {
-	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", "", 161, 1000));
+	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", "", "", "", "", "", 161, 1000));
 	$return_arr = array();
 
 	$j = 0;
@@ -68,7 +68,7 @@ function get_cpu_usage($hostname, $snmp_community, $snmp_version) {
 }
 
 function get_indexes($hostname, $snmp_community, $snmp_version) {
-	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", "", 161, 1000));
+	$arr = reindex(cacti_snmp_walk($hostname, $snmp_community, ".1.3.6.1.2.1.25.3.3.1", $snmp_version, "", "", "", "", "", "", "", 161, 1000));
 	$return_arr = array();
 
 	$j = 0;
