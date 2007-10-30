@@ -718,7 +718,11 @@ function graphs() {
 							$sql_order = "ORDER BY snmp_index";
 						}else if ($xml_array["index_order_type"] == "natural") {
 							$sql_order = "ORDER BY INET_ATON(snmp_index)";
+						}else{
+							$sql_order = "";
 						}
+					}else{
+						$sql_order = "";
 					}
 
 					/* get the unique field values from the database */
