@@ -67,8 +67,20 @@ function upgrade_to_0_8_7() {
 	db_install_execute("0.8.7", "ALTER TABLE `poller_item` ADD COLUMN `snmp_context` VARCHAR(64) default '' AFTER `snmp_priv_protocol`");
 
 	/* Convert to new authentication system */
-	if (read_config_option("global_auth") == "on") {
-		if (read_config_option("ldap_enable") == "on") {
+        $global_auth = "on";
+	$global_auth_db = db_fetch_row("SELECT value FROM settings WHERE name = 'global_auth'");
+	if (sizeof($global_auth_db)) {
+		$global_auth = $global_auth_db["value"];
+
+	}
+        $ldap_enabled = "";
+	$ldap_enabled_db = db_fetch_row("SELECT value FROM settings WHERE name = 'ldap_enabled'");
+	if (sizeof($ldap_enabled_db)) {
+		$ldap_enabled = $ldap_enable_db["value"];
+
+	}
+	if ($global_auth == "on") {
+		if ($ldap_enabled == "on") {
 			db_install_execute("0.8.7", "INSERT INTO settings VALUES ('auth_method','3')");
 		}else{
 			db_install_execute("0.8.7", "INSERT INTO settings VALUES ('auth_method','1')");
