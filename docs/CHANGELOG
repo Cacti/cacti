@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+0.8.7a
+-bug#0001046: Upgrade from 0.8.6j to 0.8.7 defaults to Authentication Method NONE
+
 0.8.7
 -bug#0000480: Fix error after altering graphs displayed per page
 -bug#0000740: Add support for setting the PHP session name of Cacti
