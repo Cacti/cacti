@@ -25,6 +25,10 @@
 $using_guest_account = false;
 $show_console_tab = true;
 
+/* ================= input validation ================= */
+input_validate_input_number(get_request_var_request("local_graph_id"));
+/* ==================================================== */
+
 if (read_config_option("auth_method") != 0) {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
