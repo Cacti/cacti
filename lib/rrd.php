@@ -1525,7 +1525,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 		$need_rrd_nl = TRUE;
 		if (ereg("^(AREA|LINE[123]|STACK)$", $graph_item_types{$xport_item["graph_type_id"]})) {
-			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . $xport_variables["text_format"][$xport_item_id] . "\"";
+			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . str_replace(":", "", $xport_variables["text_format"][$xport_item_id]) . "\"";
 		}else{
 			$need_rrd_nl = FALSE;
 		}

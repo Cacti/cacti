@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0001043: Graph Templates drop down populates with duplicates
 -bug#0001046: Upgrade from 0.8.6j to 0.8.7 defaults to Authentication Method NONE
 -bug#0001058: Graph Filter Dropdowns to Not Respect Security Settings for User
+-bug#0001060: rrdtool 1.2.15 complain for garbage characters when rrdtool_function_xport is used
 -security#0001059: SQL injection
 
 0.8.7
