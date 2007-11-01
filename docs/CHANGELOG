@@ -1,7 +1,9 @@
 Cacti CHANGELOG
 
 0.8.7a
+-bug#0001043: Graph Templates drop down populates with duplicates
 -bug#0001046: Upgrade from 0.8.6j to 0.8.7 defaults to Authentication Method NONE
+-bug#0001058: Graph Filter Dropdowns to Not Respect Security Settings for User
 
 0.8.7
 -bug#0000480: Fix error after altering graphs displayed per page
