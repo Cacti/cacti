@@ -228,7 +228,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				update_host_status(HOST_UP, $host_id, $hosts, $ping, $hosts[$host_id]["availability_method"], $print_data_to_stdout);
 			}else{
 				$host_down = true;
-				update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $item["availability_method"], $print_data_to_stdout);
+				update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $hosts[$host_id]["availability_method"], $print_data_to_stdout);
 			}
 
 			if (!$host_down) {
