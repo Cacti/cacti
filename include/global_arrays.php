@@ -530,7 +530,7 @@ $graph_timespans = array(
 	);
 
 $graph_timeshifts = array(
-	GTS_HALF_HOUR 	=> "Half Hour",
+	GTS_HALF_HOUR 	=> "30 Min",
 	GTS_1_HOUR 		=> "1 Hour",
 	GTS_2_HOURS 	=> "2 Hours",
 	GTS_4_HOURS 	=> "4 Hours",
