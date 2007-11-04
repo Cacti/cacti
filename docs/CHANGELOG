@@ -4,12 +4,12 @@ Cacti CHANGELOG
 -bug#0001038: Data sources in RRAs have random order, messing up predefined CDEFs
 -bug#0001043: Graph Templates drop down populates with duplicates
 -bug#0001046: Upgrade from 0.8.6j to 0.8.7 defaults to Authentication Method NONE
--bug#0001055: "half hour" not the "gnu Date input formats'
--bug#0001058: Graph Filter Dropdowns to Not Respect Security Settings for User
--bug#0001060: rrdtool 1.2.15 complain for garbage characters when rrdtool_function_xport is used
+-bug#0001055: Invalid date format - "half hour" not the GNU Date format
+-bug#0001058: Graph Filter dropdowns do not respect user graph permissions
+-bug#0001060: RRDtool 1.2.15 complain for garbage characters when rrdtool_function_xport is used
 -bug#0001061: cmd.php: potential call to invalid "availability_method" key on wrong hash
--bug#0001064: speed up the logfile viewer and reduce the memory usage of it
--security#0001059: SQL injection
+-bug#0001064: Log file viewer inefficient filtering uses excess memory
+-bug#0001059: Potential SQL injection vulnerability
 
 0.8.7
 -bug#0000480: Fix error after altering graphs displayed per page
