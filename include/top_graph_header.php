@@ -115,6 +115,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name='page_top'></a>
 
 <table width="100%" height="100%" cellspacing="0" cellpadding="0">
 	<tr height="37" bgcolor="#a9a9a9" class="noprint">

@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0001061: cmd.php: potential call to invalid "availability_method" key on wrong hash
 -bug#0001064: Log file viewer inefficient filtering uses excess memory
 -bug#0001059: Potential SQL injection vulnerability
+-feature#0001065: Move to Top for List and Tree View. Omit boring scrolling
 
 0.8.7
 -bug#0000480: Fix error after altering graphs displayed per page
