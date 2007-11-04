@@ -69,7 +69,7 @@
 			</listitem>
 			<listitem>
 				<para>
-					<application>MySQL</application> 3.23 or greater, 4.1.x or 5.x or greater
+					<application>MySQL</application> 4.1.x or 5.x or greater
 				</para>
 			</listitem>
 			<listitem>
@@ -703,7 +703,8 @@ Web
 				<para>
 					You will also need to update the cactiuser account with the old password style.
 				</para>
-				<screen><prompt>shell&gt;</prompt> <userinput>UPDATE mysql.user SET Password = OLD_PASSWORD('cactipwd') WHERE Host = 'localhost' AND User = 'cactiuser';</userinput>
+				<screen><prompt>shell&gt;</prompt> <userinput>UPDATE mysql.user SET Password = OLD_PASSWORD('cactipwd') 
+				WHERE Host = 'localhost' AND User = 'cactiuser';</userinput>
 <prompt>mysql&gt;</prompt> <userinput>FLUSH PRIVILEGES;</userinput></screen>
 			</listitem>
 		</orderedlist>
@@ -1403,61 +1404,72 @@ $database_password = "cacti";</userinput></screen>
 				<para><screen><citation>   <emphasis>SNMPv3 Users</emphasis>
        createUser [-e ENGINEID] username (MD5|SHA) authpassphrase [DES|AES] [privpassphrase]
 
-              MD5 and SHA are the authentication types to use.  DES and AES are the privacy  protocols  to  use.
-              If  the  privacy  passphrase  is not specified, it is assumed to be the same as the authentication
-              passphrase.  Note that the users created will be useless unless they are also added  to  the  VACM
-              access control tables described above.
+              MD5 and SHA are the authentication types to use.  DES and AES are the privacy 
+              protocols  to  use. If  the  privacy  passphrase  is not specified, it is assumed 
+              to be the same as the authentication passphrase.  Note that the users created will 
+              be useless unless they are also added  to  the  VACM access control tables 
+              described above.
 
-              SHA  authentication  and DES/AES privacy require OpenSSL to be installed and the agent to be built
-              with OpenSSL support.  MD5 authentication may be used without OpenSSL.
+              SHA  authentication  and DES/AES privacy require OpenSSL to be installed and the 
+              agent to be built with OpenSSL support.  MD5 authentication may be used without 
+              OpenSSL.
 
               Warning: the minimum pass phrase length is 8 characters.</citation></screen></para>
 				<para>VACM directives are explained from
 				<userinput>man snmpd.conf</userinput> as follows</para>
 				<para><screen><citation>   <emphasis>VACM Configuration</emphasis>
-       The full flexibility of the VACM is available using four configuration directives - com2sec, group,  view
-       and access.  These provide direct configuration of the underlying VACM tables.
+       The full flexibility of the VACM is available using four configuration directives - 
+       com2sec, group,  view and access.  These provide direct configuration of the underlying 
+       VACM tables.
 
        com2sec  [-Cn CONTEXT] SECNAME SOURCE COMMUNITY
-              map  an  SNMPv1 or SNMPv2c community string to a security name - either from a particular range of
-              source addresses, or globally ("default").  A restricted source can either be a specific  hostname
-              (or  address),  or  a  subnet - represented as IP/MASK (e.g. 10.10.10.0/255.255.255.0), or IP/BITS
+              map  an  SNMPv1 or SNMPv2c community string to a security name - either from a 
+              particular range of source addresses, or globally ("default").  A restricted 
+              source can either be a specific  hostname (or  address),  or  a  subnet - 
+              represented as IP/MASK (e.g. 10.10.10.0/255.255.255.0), or IP/BITS 
               (e.g. 10.10.10.0/24), or the IPv6 equivalents.
 
-              The same community string can be specified in several separate directives (presumably with differ-
-              ent  source  tokens), and the first source/community combination that matches the incoming request
-              will be selected.  Various source/community combinations can also map to the same security name.
+              The same community string can be specified in several separate directives 
+              (presumably with different  source  tokens), and the first source/community 
+              combination that matches the incoming request will be selected.  Various 
+              source/community combinations can also map to the same security name.
 
-              If a CONTEXT is specified (using -Cn), the community string will be mapped to a security  name  in
-              the named SNMPv3 context. Otherwise the default context ("") will be used.
+              If a CONTEXT is specified (using -Cn), the community string will be mapped 
+              to a security  name  in the named SNMPv3 context. Otherwise the default 
+              context ("") will be used.
 
        group GROUP {v1|v2c|usm} SECNAME
-              maps  a  security name (in the specified security model) into a named group.  Several group direc-
-              tives can specify the same group name, allowing a single access setting to apply to several  users
-              and/or community strings.
+              maps  a  security name (in the specified security model) into a named group.  
+              Several group directives can specify the same group name, allowing a single 
+              access setting to apply to several  users and/or community strings.
 
-              Note  that  groups must be set up for the two community-based models separately - a single com2sec
-              (or equivalent) directive will typically be accompanied by two group directives.
+              Note  that  groups must be set up for the two community-based models separately - 
+              a single com2sec (or equivalent) directive will typically be accompanied by two 
+              group directives.
 
        view VNAME TYPE OID [MASK]
-              defines a named "view" - a subset of the overall OID tree. This is most commonly a single subtree,
-              but  several view directives can be given with the same view name, to build up a more complex col-
-              lection of OIDs.  TYPE is either included or excluded, which can again define a more complex  view
-              (e.g by excluding certain sensitive objects from an otherwise accessible subtree).
+              defines a named "view" - a subset of the overall OID tree. This is most commonly 
+              a single subtree, but  several view directives can be given with the same view 
+              name, to build up a more complex collection of OIDs.  TYPE is either included 
+              or excluded, which can again define a more complex view (e.g by excluding certain 
+              sensitive objects from an otherwise accessible subtree).
 
-              MASK is a list of hex octets (separated by <quote>.</quote> or <quote>:</quote>) with the set bits indicating which subiden-
-              tifiers in the view OID to match against.  This can be used to define a view covering a particular
-              row  (or  rows) in a table.  If not specified, this defaults to matching the OID exactly (all bits
-              set), thus defining a simple OID subtree.
+              MASK is a list of hex octets (separated by <quote>.</quote> or <quote>:</quote>) 
+              with the set bits indicating which subidentifiers in the view OID to match against.
+              This can be used to define a view covering a particular row  (or  rows) in a table.
+              If not specified, this defaults to matching the OID exactly (all bits set), thus 
+              defining a simple OID subtree.
 
        access GROUP CONTEXT {any|v1|v2c|usm} LEVEL PREFX READ WRITE NOTIFY
-              maps from a group of users/communities (with a particular  security  model  and  minimum  security
-              level, and in a specific context) to one of three views, depending on the request being processed.
+              maps from a group of users/communities (with a particular security model 
+              and  minimum  security level, and in a specific context) to one of three views, 
+              depending on the request being processed.
 
-              LEVEL is one of noauth, auth, or priv.  PREFX specifies how CONTEXT should be matched against  the
-              context  of  the  incoming  request, either exact or prefix.  READ, WRITE and NOTIFY specifies the
-              view to be used for GET*, SET and TRAP/INFORM requests (althought the NOTIFY view is not currently
-              used).  For v1 or v2c access, LEVEL will need to be noauth.</citation></screen></para>
+              LEVEL is one of noauth, auth, or priv.  PREFX specifies how CONTEXT should be 
+              matched against  the context  of  the  incoming  request, either exact or prefix.  
+              READ, WRITE and NOTIFY specifies the view to be used for GET*, SET and 
+              TRAP/INFORM requests (althought the NOTIFY view is not currently used).  For 
+              v1 or v2c access, LEVEL will need to be noauth.</citation></screen></para>
 
               <para>As an example, following definitions in the snmpd configuration
               create a set of definitions for use with SNMP V3</para>
@@ -1488,7 +1500,8 @@ access groupv3    ""      any       auth      exact  all    all    all</screen>
 
 				<para>When adding this stuff to your snmp configuration, please
 				remember to restart the agent. Verify this setting using</para>
-				<screen><prompt>shell&gt;</prompt>snmpwalk -v 3 -a MD5 -A myauthpass -x DES -X myprivpass -u gandalf -l authpriv localhost interface
+				<screen><prompt>shell&gt;</prompt>snmpwalk -v 3 -a MD5 -A myauthpass -x DES \
+-X myprivpass -u gandalf -l authpriv localhost interface
 IF-MIB::ifNumber.0 = INTEGER: 3
 IF-MIB::ifIndex.1 = INTEGER: 1
 IF-MIB::ifIndex.2 = INTEGER: 2

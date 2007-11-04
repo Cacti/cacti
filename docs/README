@@ -5,7 +5,7 @@ Cacti should be able to run on any Unix-based operating system with
 the following requirements:
 
 PHP 4.3.6+
-MySQL 3.22+ or 4.1.x or 5.x
+MySQL 4.1.x or 5.x
 RRDTool 1.0.49+ or 1.2.x
 NET-SNMP 5.1.2+
 

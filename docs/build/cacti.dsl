@@ -289,7 +289,7 @@
 			     (/  (string->number scale) 100)
 			     (if (and tex-backend
 				      (equal? graphic-format "PNG"))
-				  0.5 1)))
+				  0.8 1)))
 	 (graphic-align  (cond ((equal? align (normalize "center"))
 				'center)
 			       ((equal? align (normalize "right"))
