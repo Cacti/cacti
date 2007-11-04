@@ -196,14 +196,15 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 	$create_ds = RRD_NL . "--step ". $rras[0]["rrd_step"] . " " . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
-	$data_sources = db_fetch_assoc("select
+	$data_sources = db_fetch_assoc("SELECT
 		data_template_rrd.id,
 		data_template_rrd.rrd_heartbeat,
 		data_template_rrd.rrd_minimum,
 		data_template_rrd.rrd_maximum,
 		data_template_rrd.data_source_type_id
-		from data_template_rrd
-		where data_template_rrd.local_data_id=$local_data_id");
+		FROM data_template_rrd
+		WHERE data_template_rrd.local_data_id=$local_data_id
+		ORDER BY local_data_template_id");
 
 	/* ONLY make a new DS entry if:
 	- There is multiple data sources and this item is not the main one.
