@@ -623,11 +623,18 @@ $settings = array(
 			"array" => $poller_options,
 			),
 		"poller_interval" => array(
-			"friendly_name" => "Interval",
-			"description" => "The polling interval in use.  This setting will take effect how often rrd's are updated.  To change the actual polling interval, you must change the schedule in cron.",
+			"friendly_name" => "Poller Interval",
+			"description" => "The polling interval in use.  This setting will effect how often rrd's are checked and updated.",
 			"method" => "drop_array",
 			"default" => 300,
 			"array" => $poller_intervals,
+			),
+		"cron_interval" => array(
+			"friendly_name" => "Cron Interval",
+			"description" => "The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running.",
+			"method" => "drop_array",
+			"default" => 300,
+			"array" => $cron_intervals,
 			),
 		"concurrent_processes" => array(
 			"friendly_name" => "Maximum Concurrent Poller Processes",

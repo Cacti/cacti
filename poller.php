@@ -48,22 +48,10 @@ $poller_interval = read_config_option("poller_interval");
 /* retreive the last time the poller ran */
 $poller_lastrun = read_config_option('poller_lastrun');
 
-/* detect, as best we can, the cron/scheduled task interval */
-if (isset($poller_lastrun)) {
-	$cron_interval = ceil(($poller_start - $poller_lastrun)/60)*60;
+/* get the current cron interval from the database */
+$cron_interval = read_config_option("cron_interval");
 
-	if ($cron_interval == 0) {
-		$cron_interval = 60;
-	}
-}else{
-	if ($poller_interval < 60) {
-		$cron_interval = 60;
-	}else{
-		$cron_interval = $poller_interval;
-	}
-}
-
-if (isset($cron_interval) && ($cron_interval > 300)) {
+if ($cron_interval != 60) {
 	$cron_interval = 300;
 }
 

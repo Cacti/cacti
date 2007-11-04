@@ -206,6 +206,10 @@ $poller_intervals = array(
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
 
+$cron_intervals = array(
+	60 => "Every Minute",
+	300 => "Every 5 Minutes");
+
 $registered_cacti_names = array(
 	"path_cacti");
 
