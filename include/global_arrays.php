@@ -205,7 +205,7 @@ $poller_intervals = array(
 	30 => "Every 30 Seconds",
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
-
+	
 $cron_intervals = array(
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
