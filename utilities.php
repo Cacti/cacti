@@ -143,10 +143,10 @@ switch ($_REQUEST["action"]) {
 
 function utilities_php_modules() {
 
-	/* 
+	/*
 	   Gather phpinfo into a string variable - This has to be done before
-	   any headers are sent to the browser, as we are going to do some 
-	   output buffering fun 
+	   any headers are sent to the browser, as we are going to do some
+	   output buffering fun
 	*/
 
 	ob_start();
@@ -746,7 +746,7 @@ function utilities_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents = tail_file($logfile, $_REQUEST["tail_lines"]);
+	$logcontents = tail_file($logfile, $_REQUEST["tail_lines"], $_REQUEST["message_type"], $_REQUEST["filter"]);
 
 	if ($_REQUEST["reverse"] == 1) {
 		$logcontents = array_reverse($logcontents);
@@ -765,7 +765,7 @@ function utilities_view_logfile() {
 	$linecolor = false;
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, "Host[");
-		$ds_start = strpos($item, "DS[");
+		$ds_start   = strpos($item, "DS[");
 
 		$new_item = "";
 
@@ -781,77 +781,13 @@ function utilities_view_logfile() {
 
 			$ds_start = strpos($item, "DS[");
 			if ($ds_start) {
-				$ds_end = strpos($item, "]", $ds_start);
-				$ds_id = substr($item, $ds_start+3, $ds_end-($ds_start+3));
+				$ds_end   = strpos($item, "]", $ds_start);
+				$ds_id    = substr($item, $ds_start+3, $ds_end-($ds_start+3));
 				$new_item = $new_item . substr($item, 0, $ds_start + 3) . "<a href='data_sources.php?action=ds_edit&id=" . $ds_id . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . "</a>";
-				$item = substr($item, $ds_end);
+				$item     = substr($item, $ds_end);
 				$new_item = $new_item . $item;
 			}else{
 				$new_item = $new_item . $item;
-			}
-		}
-
-		/* determine if we are to display the line */
-		switch ($_REQUEST["message_type"]) {
-		case -1: /* all */
-			$display = true;
-			break;
-		case 5: /* sql calls */
-			if (substr_count($new_item, " SQL ")) {
-				$display=true;
-			}else{
-				$display=false;
-			}
-
-			break;
-		case 1: /* stats */
-			if (substr_count($new_item, "STATS")) {
-				$display=true;
-			}else{
-				$display=false;
-			}
-
-			break;
-		case 2: /* warnings */
-			if (substr_count($new_item, "WARN")) {
-				$display=true;
-			}else{
-				$display=false;
-			}
-
-			break;
-		case 3: /* errors */
-			if (substr_count($new_item, "ERROR")) {
-				$display=true;
-			}else{
-				$display=false;
-			}
-
-			break;
-		case 4: /* debug */
-			if (substr_count($new_item, "DEBUG")) {
-				$display=true;
-			}else{
-				$display=false;
-			}
-
-			if (substr_count($new_item, " SQL ")) {
-				$display=false;
-			}
-
-			break;
-		default: /* all other lines */
-			$display=true;
-			break;
-		}
-
-		/* match any lines that match the search string */
-		if (strlen($_REQUEST["filter"])) {
-			if ((substr_count(strtolower($new_item), strtolower($_REQUEST["filter"]))) ||
-				(@preg_match($_REQUEST["filter"], $new_item))) {
-				$display=true;
-			}else{
-				$display=false;
 			}
 		}
 
@@ -875,17 +811,14 @@ function utilities_view_logfile() {
 			$linecolor = !$linecolor;
 		}
 
-		if ($display) {
-			?>
-			<tr bgcolor='#<?php print $bgcolor;?>'>
-				<td>
-					<?php print $new_item;?>
-				</td>
-			</tr>
-			<?php
-			$j++;
-		}
-
+		?>
+		<tr bgcolor='#<?php print $bgcolor;?>'>
+			<td>
+				<?php print $new_item;?>
+			</td>
+		</tr>
+		<?php
+		$j++;
 		$i++;
 
 		if ($j > 1000) {

@@ -395,49 +395,102 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 
 	@arg $file_name - (char constant) the name of the file to tail
 		 $line_cnt  - (int constant)  the number of lines to count
-	     $line_size - (int constant)  the average line size to use estimate bytes
+		 $message_type - (int constant) the type of message to return
+		 $filter - (char) the filtering expression to search for
+		 $line_size - (int constant)  the average line size to use estimate bytes
 									  to seek up from EOF.  Defaults to 256 bytes */
-function tail_file($file_name, $number_of_lines, $line_size = 256) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = "", $line_size = 256) {
 	$file_array = array();
 
 	if (file_exists($file_name)) {
+		$fp = fopen($file_name, "r");
+
+		/* reset back the number of bytes */
 		if ($number_of_lines > 0) {
-			$fp = fopen($file_name, "r");
-
-			/* reset back the number of bytes */
 			$total_bytes = fseek($fp, -($number_of_lines * $line_size), SEEK_END);
-
-			/* load up the lines into an array */
-			$i = 0;
-			while (1) {
-				$line = fgets($fp);
-
-				if (feof($fp)) {
-					break;
-				}else{
-					$file_array[$i] = $line;
-					$i++;
-				}
-			}
-
-			if ($i > $number_of_lines) {
-				$file_array = array_reverse($file_array);
-
-				$i = 0;
-				foreach($file_array as $line) {
-					$new_file_array[$i] = $line;
-					$i++;
-
-					if ($i >= $number_of_lines) break;
-				}
-
-				$file_array = array_reverse($new_file_array);
-			}
-
-			fclose($fp);
-		}else{
-			$file_array = file($file_name);
 		}
+
+		/* load up the lines into an array */
+		$i = 0;
+		while (1) {
+			$line    = fgets($fp);
+			$display = true;
+
+			/* determine if we are to display the line */
+			switch ($message_type) {
+			case -1: /* all */
+				$display = true;
+				break;
+			case 5: /* sql calls */
+				if (substr_count($line, " SQL ")) {
+					$display=true;
+				}else{
+					$display=false;
+				}
+
+				break;
+			case 1: /* stats */
+				if (substr_count($line, "STATS")) {
+					$display=true;
+				}else{
+					$display=false;
+				}
+
+				break;
+			case 2: /* warnings */
+				if (substr_count($line, "WARN")) {
+					$display=true;
+				}else{
+					$display=false;
+				}
+
+				break;
+			case 3: /* errors */
+				if (substr_count($line, "ERROR")) {
+					$display=true;
+				}else{
+					$display=false;
+				}
+
+				break;
+			case 4: /* debug */
+				if (substr_count($line, "DEBUG")) {
+					$display=true;
+				}else{
+					$display=false;
+				}
+
+				if (substr_count($line, " SQL ")) {
+					$display=false;
+				}
+
+				break;
+			default: /* all other lines */
+				$display=true;
+				break;
+			}
+
+			/* match any lines that match the search string */
+			if (strlen($filter)) {
+				if ((substr_count(strtolower($line), strtolower($filter))) ||
+					(@preg_match($filter, $line))) {
+					$display=true;
+				}else{
+					$display=false;
+				}
+			}
+
+			if (feof($fp)) {
+				break;
+			}else if ($display) {
+				$file_array[$i] = $line;
+				$i++;
+			}
+		}
+
+		$file_array = array_slice($file_array, -$number_of_lines, count($file_array));
+
+		fclose($fp);
 	}else{
 		touch($file_name);
 	}
