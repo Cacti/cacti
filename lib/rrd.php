@@ -874,12 +874,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				of course it can be used in other situations, however may not work as intended.
 				If you have any additions to this small peice of code, feel free to send them to me. */
 				if ($graph["auto_padding"] == "on") {
-					/* only applies to AREA and STACK */
+					/* only applies to AREA, STACK and LINEs */
 					if (ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) {
-						$text_format_lengths{$graph_item["data_template_rrd_id"]} = strlen($graph_variables["text_format"][$graph_item_id]);
+						$text_format_length = strlen($graph_variables["text_format"][$graph_item_id]);
 
-						if ((strlen($graph_variables["text_format"][$graph_item_id]) > $greatest_text_format) && ($graph_item_types{$graph_item["graph_type_id"]} != "COMMENT")) {
-							$greatest_text_format = strlen($graph_variables["text_format"][$graph_item_id]);
+						if ($text_format_length > $greatest_text_format) {
+							$greatest_text_format = $text_format_length;
 						}
 					}
 				}
@@ -1001,17 +1001,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* if we are not displaying a legend there is no point in us even processing the auto padding,
 		text format stuff. */
-		if ((!isset($graph_data_array["graph_nolegend"])) && ($graph["auto_padding"] == "on") && (isset($text_format_lengths{$graph_item["data_template_rrd_id"]}))) {
-			/* we are basing how much to pad on area and stack text format,
-			not gprint. but of course the padding has to be displayed in gprint,
-			how fun! */
+		if ((!isset($graph_data_array["graph_nolegend"])) && ($graph["auto_padding"] == "on")) {
+			/* only applies to AREA, STACK and LINEs */
+			if (ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_item["graph_type_id"]})) {
+				$text_format_length = strlen($graph_variables["text_format"][$graph_item_id]);
 
-			$pad_number = ($greatest_text_format - $text_format_lengths{$graph_item["data_template_rrd_id"]});
-			//cacti_log("MAX: $greatest_text_format, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
-			$text_padding = str_pad("", $pad_number);
+				/* we are basing how much to pad on area and stack text format,
+				not gprint. but of course the padding has to be displayed in gprint,
+				how fun! */
+
+				$pad_number = ($greatest_text_format - $text_format_length);
+				//cacti_log("MAX: $greatest_text_format, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
+				$text_padding = str_pad("", $pad_number);
 
 			/* two GPRINT's in a row screws up the padding, lets not do that */
-			if (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && ($last_graph_type == "GPRINT")) {
+			} else if (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && ($last_graph_type == "GPRINT")) {
 				$text_padding = "";
 			}
 
