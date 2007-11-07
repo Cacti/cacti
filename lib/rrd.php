@@ -603,13 +603,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$scale = "--alt-autoscale-max" . RRD_NL;
 			$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
 		}
-
-		if ($graph["auto_scale_log"] == "on") {
-			$scale .= "--logarithmic" . RRD_NL;
-		}
 	}else{
 		$scale =  "--upper-limit=" . $graph["upper_limit"] . RRD_NL;
 		$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+	}
+
+	if ($graph["auto_scale_log"] == "on") {
+		$scale .= "--logarithmic" . RRD_NL;
 	}
 
 	if ($graph["auto_scale_rigid"] == "on") {

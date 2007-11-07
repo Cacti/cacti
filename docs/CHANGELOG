@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.7a
+-bug#0001035: Allow for --logarithmic scaling without autoscaling
 -bug#0001067: Fixed extra spaces in GPRINT. Better Alignment for Autopadding
 -bug#0001038: Data sources in RRAs have random order, messing up predefined CDEFs
 -bug#0001043: Graph Templates drop down populates with duplicates

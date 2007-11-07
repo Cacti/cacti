@@ -2845,7 +2845,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								<entry>Choose whether you would like to use --alt-autoscale or --alt-autoscale-max on the graph. The <ulink url="http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> says: <quote>Where --alt-autoscale will modify both the absolute maximum AND minimum values, this option will only affect the maximum value. The minimum value, if not defined on the command line, will be 0. This option can be useful when graphing router traffic when the WAN line uses compression, and thus the throughput may be higher than the WAN line speed</quote>.</entry>
 							</row>
 							<row>
-								<entry>Logarithmic Auto Scaling</entry>
+								<entry>Logarithmic Scaling</entry>
 								<entry>Choose if you want logarithmic y-axis scaling.</entry>
 							</row>
 							<row>
@@ -3820,7 +3820,7 @@ print int(rand(10));</programlisting>
 						</listitem>
 						<listitem>
 							<para>
-								Logarithmic Auto Scaling: unchecked
+								Logarithmic Scaling: unchecked
 							</para>
 						</listitem>
 						<listitem>

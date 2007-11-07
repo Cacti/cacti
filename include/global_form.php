@@ -399,7 +399,7 @@ $struct_graph = array(
 			)
 		),
 	"auto_scale_log" => array(
-		"friendly_name" => "Logarithmic Auto Scaling (--logarithmic)",
+		"friendly_name" => "Logarithmic Scaling (--logarithmic)",
 		"method" => "checkbox",
 		"default" => "",
 		"description" => "Use Logarithmic y-axis scaling"
