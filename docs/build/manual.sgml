@@ -377,6 +377,9 @@ patch -p1 -N < snmpwalk_fix.patch</userinput></screen>
 						You might need to reapply file/folder security
 						on the files patched. Double check they are correct.
 					</para>
+					<para>Please pay attention not to break cacti when using SELinux or using NTFS file security.
+					If you encounter</para><para><computeroutput>PHP Warning:  include_once(./lib/html_tree.php) [&lt;a href='function.include-once'&gt;function.include-once&lt;/a&gt;]: failed to open stream: Permission denied in /var/www/cacti/graphs.php on line 33, referer: http://localhost/cacti/graphs.php </computeroutput></para>
+					<para>or the like, it is very likely that your permissions are wrong.</para>
 			</sect1>
 	</chapter>
 	<chapter id="install_windows">

@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 0.8.7a
+-bug#0001068: doc change for patching cacti when running SELinux
+-bug#0001066: doc change for using COUNTERs as integers only
 -bug#0001029: Add --autoscale-min (rrdtool 1.2.x only) and --autoscale-max (using upper AND lower limit)
 -bug#0001035: Allow for --logarithmic scaling without autoscaling
 -bug#0001067: Fixed extra spaces in GPRINT. Better Alignment for Autopadding
