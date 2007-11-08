@@ -69,6 +69,7 @@ if (sizeof($parms)) {
 	$ping_port    = 23;
 	$ping_timeout = 500;
 	$ping_retries = 2;
+	$max_oids     = 10;
 
 	$displayHostTemplates = FALSE;
 	$displayCommunities   = FALSE;
@@ -204,6 +205,16 @@ if (sizeof($parms)) {
 			}
 
 			break;
+		case "--max_oids":
+			if (is_numeric($value) && ($value > 0)) {
+				$max_oids = $value;
+			}else{
+				echo "ERROR: Invalid Max OIDS: ($value)\n\n";
+				display_help();
+				exit(1);
+			}
+
+			break;
 		case "--version":
 		case "-V":
 		case "-H":
@@ -319,7 +330,7 @@ if (sizeof($parms)) {
 				$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 				$ping_port, $ping_timeout, $ping_retries, $notes,
 				$snmp_auth_protocol, $snmp_priv_passphrase,
-				$snmp_priv_protocol, $snmp_context);
+				$snmp_priv_protocol, $snmp_context, $max_oids);
 
 	if (is_error_message()) {
 		echo "ERROR: Failed to add this device\n";
@@ -361,7 +372,8 @@ function display_help() {
 	echo "    --authproto    '', snmp authentication protocol for snmpv3\n";
 	echo "    --privpass     '', snmp privacy passphrase for snmpv3\n";
 	echo "    --privproto    '', snmp privacy protocol for snmpv3\n";
-	echo "    --context      '', snmp context for snmpv3\n\n";
+	echo "    --context      '', snmp context for snmpv3\n";
+	echo "    --max_oids     10, 1-60, the number of OID's that can be obtained in a single SNMP Get request\n\n";
 	echo "List Options:\n";
 	echo "    --list-host-templates\n";
 	echo "    --list-communities\n";

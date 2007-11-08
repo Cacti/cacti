@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -bug#0001064: Log file viewer inefficient filtering uses excess memory
 -bug#0001059: Potential SQL injection vulnerability
 -bug#0001070: Cron interval detection causes multiple pollers to run
+-bug#0001073: Max OIDS is not saved in device view
 -feature#0001065: Move to Top for List and Tree View. Omit boring scrolling
 
 0.8.7

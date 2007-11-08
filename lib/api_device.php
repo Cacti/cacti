@@ -89,7 +89,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context) {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids) {
 
 	/* fetch some cache variables */
 	if (empty($id)) {
@@ -124,6 +124,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["ping_port"]            = form_input_validate($ping_port, "ping_port", "^[0-9]+$", true, 3);
 	$save["ping_timeout"]         = form_input_validate($ping_timeout, "ping_timeout", "^[0-9]+$", true, 3);
 	$save["ping_retries"]         = form_input_validate($ping_retries, "ping_retries", "^[0-9]+$", true, 3);
+	$save["max_oids"]             = form_input_validate($max_oids, "max_oids", "^[0-9]+$", true, 3);
 
 	$host_id = 0;
 

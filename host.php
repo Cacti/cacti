@@ -154,7 +154,7 @@ function form_save() {
 				$_POST["ping_port"], $_POST["ping_timeout"],
 				$_POST["ping_retries"], $_POST["notes"],
 				$_POST["snmp_auth_protocol"], $_POST["snmp_priv_passphrase"],
-				$_POST["snmp_priv_protocol"], $_POST["snmp_context"]);
+				$_POST["snmp_priv_protocol"], $_POST["snmp_context"], $_POST["max_oids"]);
 		}
 
 		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
