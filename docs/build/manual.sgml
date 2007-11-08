@@ -2037,7 +2037,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</row>
 					<row>
 						<entry>(Data Source) Data Source Type [snmp_oid]</entry>
-						<entry>How the data from the OID should be stored by RRDTool and interpreted on the graph. If the value of the OID represents the actual data, you should use <guilabel>GAUGE</guilabel> for this field. If the OID value is a constantly incrimenting number, you should use <guilabel>COUNTER</guilabel> for this field. The two remaining field values, <guilabel>DERIVE</guilabel> and <guilabel>ABSOLUTE</guilabel> can be ignored in most situations.</entry>
+						<entry>How the data from the OID should be stored by RRDTool and interpreted on the graph. If the value of the OID represents the actual data, you should use <guilabel>GAUGE</guilabel> for this field. If the OID value is a constantly incrementing number, you should use <guilabel>COUNTER</guilabel> for this field. The two remaining field values, <guilabel>DERIVE</guilabel> and <guilabel>ABSOLUTE</guilabel> can be ignored in most situations.</entry>
 					</row>
 					<row>
 						<entry>(Custom Data) OID</entry>
@@ -2720,11 +2720,13 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 									<entry>Data Source Type</entry>
 									<entry><para>Cacti currently supports four types of data that <application>RRDTool</application> can represent for any given data source:
 									</para><para>COUNTER: is for continuous incrementing counters like the ifInOctets counter in a router. The COUNTER
-									                   data source assumes that the counter never decreases, except when a counter overflows.  The
-                   										update function takes the overflow into account.  The counter is stored as a per-second rate.
-                   										When the counter overflows, <application>RRDTool</application> checks if the overflow happened at the 32bit or 64bit
+														data source assumes that the counter never decreases, except when a counter overflows. It is always a whole INTEGER,
+														floating point numbers are invalid.
+														The update function takes the overflow into account.  The counter is stored as a per-second rate.
+														When the counter overflows, <application>RRDTool</application> checks if the overflow happened at the 32bit or 64bit
                    										border and acts accordingly by adding an appropriate value to the result.
-									</para><para>GAUGE: numbers that are not continuously incrementing, e.g. a temperature reading
+									</para><para>GAUGE: numbers that are not continuously incrementing, e.g. a temperature reading.
+														Floating point numbers are accepted.
 									</para><para>ABSOLUTE: counters that are reset upon reading
 									</para><para>DERIVE: like COUNTER but without overflow checks</para></entry>
 								</row>
