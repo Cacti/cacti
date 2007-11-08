@@ -2842,7 +2842,42 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 							</row>
 							<row>
 								<entry>Auto Scale Options</entry>
-								<entry>Choose whether you would like to use --alt-autoscale or --alt-autoscale-max on the graph. The <ulink url="http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> says: <quote>Where --alt-autoscale will modify both the absolute maximum AND minimum values, this option will only affect the maximum value. The minimum value, if not defined on the command line, will be 0. This option can be useful when graphing router traffic when the WAN line uses compression, and thus the throughput may be higher than the WAN line speed</quote>.</entry>
+								<entry><para>Choose whether you would like to use
+								<itemizedlist>
+								<listitem><para>--alt-autoscale (ignoring given limits),</para></listitem>
+								<listitem><para>--alt-autoscale-max (accepting a lower limit),</para></listitem>
+								<listitem><para>--alt-autoscale-min (accepting an upper limit, requires rrdtool 1.2.x) or</para></listitem>
+								<listitem><para>--alt-autoscale (accepting both limits, rrdtool default) on the graph.</para></listitem></itemizedlist>
+								The <ulink url="http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> says:
+</para><para>       <emphasis>Limits</emphasis>
+</para><para>           [-u|--upper-limit value] [-l|--lower-limit value] [-r|--rigid]
+</para><para>
+           By default the graph will be autoscaling so that it will adjust the y-axis to the range of the data.
+           You can change this behaviour by explicitly setting the limits. The displayed y-axis will then range
+           at least from lower-limit to upper-limit. Autoscaling will still permit those boundaries to be
+           stretched unless the rigid option is set.
+
+</para><para>           [-A|--alt-autoscale]
+</para><para>
+           Sometimes the default algorithm for selecting the y-axis scale is not satisfactory. Normally the
+           scale is selected from a predefined set of ranges and this fails miserably when you need to graph
+           something like "260 + 0.001 * sin(x)". This option calculates the minimum and maximum y-axis from the
+           actual minimum and maximum data values. Our example would display slightly less than "260-0.001" to
+           slightly more than "260+0.001" (this feature was contributed by Sasha Mikheev).
+
+</para><para>           [-J|--alt-autoscale-min]
+</para><para>
+           Where "--alt-autoscale" will modify both the absolute maximum AND minimum values, this option will
+           only affect the minimum value. The maximum value, if not defined on the command line, will be 0. This
+           option can be useful when graphing router traffic when the WAN line uses compression, and thus the
+           throughput may be higher than the WAN line speed.
+
+</para><para>           [-M|--alt-autoscale-max]
+</para><para>
+           Where "--alt-autoscale" will modify both the absolute maximum AND minimum values, this option will
+           only affect the maximum value. The minimum value, if not defined on the command line, will be 0. This
+           option can be useful when graphing router traffic when the WAN line uses compression, and thus the
+           throughput may be higher than the WAN line speed.</para></entry>
 							</row>
 							<row>
 								<entry>Logarithmic Scaling</entry>

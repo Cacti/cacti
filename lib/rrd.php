@@ -597,11 +597,33 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	$last_graph_type = "";
 
 	if ($graph["auto_scale"] == "on") {
-		if ($graph["auto_scale_opts"] == "1") {
-			$scale = "--alt-autoscale" . RRD_NL;
-		}elseif ($graph["auto_scale_opts"] == "2") {
-			$scale = "--alt-autoscale-max" . RRD_NL;
-			$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+		switch ($graph["auto_scale_opts"]) {
+			case "1": /* autoscale ignores lower, upper limit */
+				$scale = "--alt-autoscale" . RRD_NL;
+				break;
+			case "2": /* autoscale-max, accepts a given lower limit */
+				$scale = "--alt-autoscale-max" . RRD_NL;
+				if ( is_numeric($graph["lower_limit"])) {
+					$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+				}
+				break;
+			case "3": /* autoscale-min, accepts a given upper limit */
+				if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+					$scale = "--alt-autoscale-min" . RRD_NL;
+					if ( is_numeric($graph["upper_limit"])) {
+						$scale .= "--upper-limit=" . $graph["upper_limit"] . RRD_NL;
+					}
+				}
+				break;
+			case "4": /* auto_scale with limits */
+				$scale = "--alt-autoscale" . RRD_NL;
+				if ( is_numeric($graph["upper_limit"])) {
+					$scale .= "--upper-limit=" . $graph["upper_limit"] . RRD_NL;
+				}
+				if ( is_numeric($graph["lower_limit"])) {
+					$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+				}
+				break;
 		}
 	}else{
 		$scale =  "--upper-limit=" . $graph["upper_limit"] . RRD_NL;

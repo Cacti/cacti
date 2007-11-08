@@ -385,16 +385,28 @@ $struct_graph = array(
 		"friendly_name" => "Auto Scale Options",
 		"method" => "radio",
 		"default" => "2",
-		"description" => "Use --alt-autoscale-max to scale to the maximum value, or --alt-autoscale to scale to the absolute
-			minimum and maximum.",
+		"description" => "Use <br>
+			--alt-autoscale to scale to the absolute minimum and maximum <br>
+		    --alt-autoscale-max to scale to the maximum value, using a given lower limit <br>
+		    --alt-autoscale-min to scale to the minimum value, using a given upper limit <br>
+			--alt-autoscale (with limits) to scale using both lower and upper limits (rrdtool default) <br>
+		    ",
 		"items" => array(
 			0 => array(
 				"radio_value" => "1",
-				"radio_caption" => "Use --alt-autoscale"
+				"radio_caption" => "Use --alt-autoscale (ignoring given limits)"
 				),
 			1 => array(
 				"radio_value" => "2",
-				"radio_caption" => "Use --alt-autoscale-max"
+				"radio_caption" => "Use --alt-autoscale-max (accepting a lower limit)"
+				),
+			2 => array(
+				"radio_value" => "3",
+				"radio_caption" => "Use --alt-autoscale-min (accepting an upper limit, requires rrdtool 1.2.x)"
+				),
+			3 => array(
+				"radio_value" => "4",
+				"radio_caption" => "Use --alt-autoscale (accepting both limits, rrdtool default)"
 				)
 			)
 		),
