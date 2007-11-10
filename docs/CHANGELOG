@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 0.8.7a
--bug#0001069: add opacity/alpha channel to graph items (rrdtool-1.2.x only).
 -bug#0001068: doc change for patching cacti when running SELinux
 -bug#0001066: doc change for using COUNTERs as integers only
 -bug#0001029: Add --autoscale-min (rrdtool 1.2.x only) and --autoscale-max (using upper AND lower limit)
@@ -20,6 +19,7 @@ Cacti CHANGELOG
 -bug#0001070: Cron interval detection causes multiple pollers to run
 -bug#0001073: Max OIDS is not saved in device view
 -bug#0001079: Dates are not stored in host table using correct format
+-feature#0001069: add opacity/alpha channel to graph items (rrdtool-1.2.x only).
 -feature#0001065: Move to Top for List and Tree View. Omit boring scrolling
 
 0.8.7
