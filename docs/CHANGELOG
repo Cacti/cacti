@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.7a
+-bug#0001069: add opacity/alpha channel to graph items (rrdtool-1.2.x only).
 -bug#0001068: doc change for patching cacti when running SELinux
 -bug#0001066: doc change for using COUNTERs as integers only
 -bug#0001029: Add --autoscale-min (rrdtool 1.2.x only) and --autoscale-max (using upper AND lower limit)

@@ -2024,7 +2024,11 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</row>
 					<row>
 						<entry>(Graph Items) Legend Color</entry>
-						<entry>The color that will be used to reprent the data on the graph.</entry>
+						<entry>The color that will be used to represent the data on the graph.</entry>
+					</row>
+					<row>
+						<entry>(Graph Items) Opacity/Alpha Channel</entry>
+						<entry>This optionally provides an opacity (not available with rrdtool-1.0.x) for a colored item.</entry>
 					</row>
 					<row>
 						<entry>(Graph Items) Legend Text</entry>
@@ -2989,6 +2993,11 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								<row>
 									<entry>Color</entry>
 									<entry>Depending on the graph item type, you can select a color for the graph item. This field only applies to the graph item types AREA, STACK, LINE1, LINE2, and LINE3.</entry>
+								</row>
+								<row>
+									<entry>Opacity/Alpha Channel</entry>
+									<entry>For a colored graph item, you may optionally select an opacity (alpha channel).
+									This option is not available with rrdtool-1.0.x.</entry>
 								</row>
 								<row>
 									<entry>Graph Item Type</entry>

@@ -505,7 +505,15 @@ $struct_graph_item = array(
 		"friendly_name" => "Color",
 		"method" => "drop_color",
 		"default" => "0",
+		"on_change" => "changeColorId()",
 		"description" => "The color to use for the legend."
+		),
+	"alpha" => array(
+		"friendly_name" => "Opacity/Alpha Channel",
+		"method" => "drop_array",
+		"default" => "FF",
+		"array" => $graph_color_alpha,
+		"description" => "The opacity/alpha channel of the color. Not available for rrdtool-1.0.x."
 		),
 	"graph_type_id" => array(
 		"friendly_name" => "Graph Item Type",

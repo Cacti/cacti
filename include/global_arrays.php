@@ -265,6 +265,20 @@ $cdef_item_types = array(
 	5 => "Another CDEF",
 	6 => "Custom String");
 
+$graph_color_alpha = array(
+		"00" => "  0%",
+		"19" => " 10%",
+		"33" => " 20%",
+		"4C" => " 30%",
+		"66" => " 40%",
+		"7F" => " 50%",
+		"99" => " 60%",
+		"B2" => " 70%",
+		"CC" => " 80%",
+		"E5" => " 90%",
+		"FF" => "100%"
+		);
+
 $tree_sort_types = array(
 	TREE_ORDERING_NONE => "Manual Ordering (No Sorting)",
 	TREE_ORDERING_ALPHABETIC => "Alphabetic Ordering",

@@ -569,6 +569,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		graph_templates_item.graph_type_id,
 		graph_templates_gprint.gprint_text,
 		colors.hex,
+		graph_templates_item.alpha,
 		data_template_rrd.id as data_template_rrd_id,
 		data_template_rrd.local_data_id,
 		data_template_rrd.rrd_minimum,
@@ -1098,6 +1099,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_item_color_code = "";
 			}else{
 				$graph_item_color_code = "#" . $graph_item["hex"];
+				if (read_config_option("rrdtool_version") == "rrd-1.2.x") {
+					$graph_item_color_code .= $graph_item["alpha"];
+				}
 			}
 
 			if (ereg("^(AREA|LINE[123])$", $graph_item_types{$graph_item["graph_type_id"]})) {
