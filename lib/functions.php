@@ -547,13 +547,13 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 				/* update the failure date only if the failure count is 1 */
 				if ($ping_failure_count == 1) {
-					$hosts[$host_id]["status_fail_date"] = date("Y-m-d h:i:s");
+					$hosts[$host_id]["status_fail_date"] = date("Y-m-d H:i:s");
 				}
 			/* host is down, but not ready to issue log message */
 			} else {
 				/* host down for the first time, set event date */
 				if ($hosts[$host_id]["status_event_count"] == 1) {
-					$hosts[$host_id]["status_fail_date"] = date("Y-m-d h:i:s");
+					$hosts[$host_id]["status_fail_date"] = date("Y-m-d H:i:s");
 				}
 			}
 		/* host is recovering, put back in failed state */
@@ -641,7 +641,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 				/* update the recovery date only if the recovery count is 1 */
 				if ($ping_recovery_count == 1) {
-					$hosts[$host_id]["status_rec_date"] = date("Y-m-d h:i:s");
+					$hosts[$host_id]["status_rec_date"] = date("Y-m-d H:i:s");
 				}
 
 				/* reset the event counter */
@@ -650,7 +650,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			} else {
 				/* host recovering for the first time, set event date */
 				if ($hosts[$host_id]["status_event_count"] == 1) {
-					$hosts[$host_id]["status_rec_date"] = date("Y-m-d h:i:s");
+					$hosts[$host_id]["status_rec_date"] = date("Y-m-d H:i:s");
 				}
 			}
 		} else {
