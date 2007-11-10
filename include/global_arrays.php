@@ -205,7 +205,7 @@ $poller_intervals = array(
 	30 => "Every 30 Seconds",
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
-	
+
 $cron_intervals = array(
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
@@ -461,7 +461,8 @@ $hash_version_codes = array(
 	"0.8.6h" => "0011",
 	"0.8.6i" => "0012",
 	"0.8.6j" => "0013",
-	"0.8.7"  => "0014"
+	"0.8.7"  => "0014",
+	"0.8.7a" => "0015"
 	);
 
 $hash_type_names = array(
