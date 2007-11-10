@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0001043: Graph Templates drop down populates with duplicates
 -bug#0001046: Upgrade from 0.8.6j to 0.8.7 defaults to Authentication Method NONE
 -bug#0001055: Invalid date format - "half hour" not the GNU Date format
+-bug#0001057: SQL error when using 'Auth Method' None when no 'guest' user exists
 -bug#0001058: Graph Filter dropdowns do not respect user graph permissions
 -bug#0001060: RRDtool 1.2.15 complain for garbage characters when rrdtool_function_xport is used
 -bug#0001061: cmd.php: potential call to invalid "availability_method" key on wrong hash
