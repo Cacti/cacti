@@ -13,6 +13,7 @@
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								/* get policy information for the sql where clause */
+								$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 								$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 
 								$hosts = db_fetch_assoc("SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
