@@ -69,7 +69,7 @@
 							?>
 						</select>
 					</td>
-					<td width="1" nowrap style='white-space: nowrap;'>
+					<td width="120" nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>
