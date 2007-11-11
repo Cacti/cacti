@@ -1293,7 +1293,6 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 		graph_templates_item.graph_type_id,
 		graph_templates_gprint.gprint_text,
 		colors.hex,
-		graph_templates_gprint.alpha,
 		data_template_rrd.id as data_template_rrd_id,
 		data_template_rrd.local_data_id,
 		data_template_rrd.rrd_minimum,
