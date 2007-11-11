@@ -64,7 +64,7 @@
 						Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="75" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 				</tr>
 			</table>
