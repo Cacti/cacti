@@ -115,6 +115,8 @@ function form_save() {
 		$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
 		$save2["t_auto_scale_log"] = form_input_validate((isset($_POST["t_auto_scale_log"]) ? $_POST["t_auto_scale_log"] : ""), "t_auto_scale_log", "", true, 3);
 		$save2["auto_scale_log"] = form_input_validate((isset($_POST["auto_scale_log"]) ? $_POST["auto_scale_log"] : ""), "auto_scale_log", "", true, 3);
+		$save2["t_scale_log_units"] = form_input_validate((isset($_POST["t_scale_log_units"]) ? $_POST["t_scale_log_units"] : ""), "t_scale_log_units", "", true, 3);
+		$save2["scale_log_units"] = form_input_validate((isset($_POST["scale_log_units"]) ? $_POST["scale_log_units"] : ""), "scale_log_units", "", true, 3);
 		$save2["t_auto_scale_rigid"] = form_input_validate((isset($_POST["t_auto_scale_rigid"]) ? $_POST["t_auto_scale_rigid"] : ""), "t_auto_scale_rigid", "", true, 3);
 		$save2["auto_scale_rigid"] = form_input_validate((isset($_POST["auto_scale_rigid"]) ? $_POST["auto_scale_rigid"] : ""), "auto_scale_rigid", "", true, 3);
 		$save2["t_auto_padding"] = form_input_validate((isset($_POST["t_auto_padding"]) ? $_POST["t_auto_padding"] : ""), "t_auto_padding", "", true, 3);
@@ -399,9 +401,42 @@ function template_edit() {
 			)
 		);
 
+	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
 	html_end_box();
 
 	form_save_button("graph_templates.php");
+
+//Now we need some javascript to make it dynamic
+?>
+<script language="JavaScript">
+
+dynamic();
+
+function dynamic() {
+	alert("RRDTool Version is '" + document.getElementById('rrdtool_version').value + "'");
+	alert("Log is '" + document.getElementById('auto_scale_log').checked + "'");
+	document.getElementById('t_scale_log_units').disabled=true;
+	document.getElementById('scale_log_units').disabled=true;
+	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
+		(document.getElementById('auto_scale_log').checked)) {
+		document.getElementById('t_scale_log_units').disabled=false;
+		document.getElementById('scale_log_units').disabled=false;
+	}
+}
+
+function changeScaleLog() {
+	alert("Log changed to '" + document.getElementById('auto_scale_log').checked + "'");
+	document.getElementById('t_scale_log_units').disabled=true;
+	document.getElementById('scale_log_units').disabled=true;
+	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
+		(document.getElementById('auto_scale_log').checked)) {
+		document.getElementById('t_scale_log_units').disabled=false;
+		document.getElementById('scale_log_units').disabled=false;
+	}
+}
+</script>
+<?php
+
 }
 
 function template() {

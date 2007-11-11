@@ -414,7 +414,15 @@ $struct_graph = array(
 		"friendly_name" => "Logarithmic Scaling (--logarithmic)",
 		"method" => "checkbox",
 		"default" => "",
+		"on_change" => "changeScaleLog()",
 		"description" => "Use Logarithmic y-axis scaling"
+		),
+	"scale_log_units" => array(
+		"friendly_name" => "SI Units for Logarithmic Scaling (--units=si)",
+		"method" => "checkbox",
+		"default" => "",
+		"description" => "Use SI Units for Logarithmic Scaling instead of using exponential notation (not available for rrdtool-1.0.x).<br>
+			Note: Linear graphs use SI notation by default."
 		),
 	"auto_scale_rigid" => array(
 		"friendly_name" => "Rigid Boundaries Mode (--rigid)",

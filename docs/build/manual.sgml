@@ -2893,6 +2893,13 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								<entry>Choose if you want logarithmic y-axis scaling.</entry>
 							</row>
 							<row>
+								<entry>Scientific Units for Logarithmic Scaling</entry>
+								<entry>This option is not available for rrdtool-1.0.x. For linear graphs,
+								scientific units (in magnitudes of k=kilo, M=mega, ...) is default. But
+								for logarithmic graphs, exponential notation is default.
+								Choose if you want logarithmic y-axis scaling and scientific units.</entry>
+							</row>
+							<row>
 								<entry>Rigid Boundaries Mode</entry>
 								<entry>From the RRDTool manual
 								<quote>Normally rrdgraph will automatically expand the lower and upper

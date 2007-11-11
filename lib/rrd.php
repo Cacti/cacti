@@ -543,6 +543,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		graph_templates_graph.auto_scale,
 		graph_templates_graph.auto_scale_opts,
 		graph_templates_graph.auto_scale_log,
+		graph_templates_graph.scale_log_units,
 		graph_templates_graph.auto_scale_rigid,
 		graph_templates_graph.auto_padding,
 		graph_templates_graph.base_value,
@@ -633,6 +634,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if ($graph["auto_scale_log"] == "on") {
 		$scale .= "--logarithmic" . RRD_NL;
+	}
+
+	/* --units=si only defined for logarithmic y-axis scaling, even if it doesn't hurt on linear graphs */
+	if (($graph["scale_log_units"] == "on") &&
+		($graph["auto_scale_log"] == "on")) {
+		$scale .= "--units=si" . RRD_NL;
 	}
 
 	if ($graph["auto_scale_rigid"] == "on") {
@@ -1259,6 +1266,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 		graph_templates_graph.auto_scale,
 		graph_templates_graph.auto_scale_opts,
 		graph_templates_graph.auto_scale_log,
+		graph_templates_graph.scale_log_units,
 		graph_templates_graph.auto_scale_rigid,
 		graph_templates_graph.auto_padding,
 		graph_templates_graph.base_value,
@@ -1285,6 +1293,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 		graph_templates_item.graph_type_id,
 		graph_templates_gprint.gprint_text,
 		colors.hex,
+		graph_templates_gprint.alpha,
 		data_template_rrd.id as data_template_rrd_id,
 		data_template_rrd.local_data_id,
 		data_template_rrd.rrd_minimum,
