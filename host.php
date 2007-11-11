@@ -29,6 +29,7 @@ include_once("./lib/api_tree.php");
 include_once("./lib/html_tree.php");
 include_once("./lib/api_graph.php");
 include_once("./lib/snmp.php");
+include_once("./lib/ping.php");
 include_once("./lib/data_query.php");
 include_once("./lib/api_device.php");
 
@@ -548,6 +549,7 @@ function host_edit() {
 				</td>
 			</tr>
 			<tr>
+				<?php if (($host["availability_method"] == AVAIL_SNMP) || ($host["availability_method"] == AVAIL_SNMP_AND_PING)) { ?>
 				<td class="textHeader">
 					SNMP Information<br>
 
@@ -608,6 +610,35 @@ function host_edit() {
 					?>
 					</span>
 				</td>
+				<?php }else if ($host["availability_method"] == AVAIL_PING) {
+					/* create new ping socket for host pinging */
+					$ping = new Net_Ping;
+
+					$ping->host = $host;
+					$ping->port = $host["ping_port"];
+
+					/* perform the appropriate ping check of the host */
+					if ($ping->ping($host["availability_method"], $host["ping_method"],
+						$host["ping_timeout"], $host["ping_retries"])) {
+						$host_down = false;
+						$color     = "#000000";
+					}else{
+						$host_down = true;
+						$color     = "#ff0000";
+					}
+
+				?>
+				<td class="textHeader">
+					Ping Results<br>
+					<span style="font-size: 10px; font-weight: normal; color: <?php print $color; ?>; font-family: monospace;">
+					<?php print $ping->ping_response; ?>
+					</span>
+				</td>
+				<?php }else{ ?>
+				<td class="textHeader">
+					No Availability Check In Use<br>
+				</td>
+				<?php } ?>
 				<td class="textInfo" valign="top">
 					<span style="color: #c16921;">*</span><a href="graphs_new.php?host_id=<?php print $host["id"];?>">Create Graphs for this Host</a>
 				</td>
