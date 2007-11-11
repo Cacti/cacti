@@ -37,6 +37,38 @@ include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
+
+if (sizeof($parms)) {
+foreach($parms as $parameter) {
+	@list($arg, $value) = @explode("=", $parameter);
+
+	switch ($arg) {
+	case "-d":
+	case "--debug":
+		$debug = TRUE;
+
+		break;
+	case "--force":
+		$force = TRUE;
+
+		break;
+	case "--version":
+	case "-V":
+	case "-H":
+	case "--help":
+		display_help();
+		exit(0);
+	default:
+		echo "ERROR: Invalid Argument: ($arg)\n\n";
+		display_help();
+		exit(1);
+	}
+}
+}
+
 /* record the start time */
 list($micro,$seconds) = split(" ", microtime());
 $poller_start         = $seconds + $micro;
@@ -92,7 +124,7 @@ if ($poller_interval <= 60) {
 }
 
 /* get to see if we are polling faster than reported by the settings, if so, exit */
-if (isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) {
+if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) && (!$force)) {
 	/* give the user some flexibility to run a little moe often */
 	if ((($seconds - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
 		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
@@ -373,6 +405,15 @@ while ($poller_runs_completed < $poller_runs) {
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
 	}
+}
+
+function display_help() {
+	echo "Cacti Poller Version " . db_fetch_cell("SELECT cacti FROM version") . ", Copyright 2007 - The Cacti Group\n\n";
+	echo "A simple command line utility to run the Cacti Poller.\n\n";
+	echo "usage: poller.php [--force] [--debug|-d]\n\n";
+	echo "Options:\n";
+	echo "    --force        Override poller overrun detection and force a poller run\n";
+	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
 ?>
