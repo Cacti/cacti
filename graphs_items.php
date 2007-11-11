@@ -99,13 +99,14 @@ function form_save() {
 			if (empty($_POST["sequence"])) {
 				$_POST["sequence"] = get_sequence($_POST["sequence"], "sequence", "graph_templates_item", "local_graph_id=" . $_POST["local_graph_id"]);
 			}
-
 			$save["id"] = $_POST["graph_template_item_id"];
 			$save["graph_template_id"] = $_POST["graph_template_id"];
 			$save["local_graph_template_item_id"] = $_POST["local_graph_template_item_id"];
 			$save["local_graph_id"] = $_POST["local_graph_id"];
 			$save["task_item_id"] = form_input_validate($_POST["task_item_id"], "task_item_id", "", true, 3);
 			$save["color_id"] = form_input_validate((isset($item["color_id"]) ? $item["color_id"] : $_POST["color_id"]), "color_id", "", true, 3);
+			/* if alpha is disabled, use invisible_alpha instead */
+			if (!isset($_POST["alpha"])) {$_POST["alpha"] = $_POST["invisible_alpha"];}
 			$save["alpha"] = form_input_validate((isset($item["alpha"]) ? $item["alpha"] : $_POST["alpha"]), "alpha", "", true, 3);
 			$save["graph_type_id"] = form_input_validate((isset($item["graph_type_id"]) ? $item["graph_type_id"] : $_POST["graph_type_id"]), "graph_type_id", "", true, 3);
 			$save["cdef_id"] = form_input_validate($_POST["cdef_id"], "cdef_id", "", true, 3);
@@ -291,6 +292,7 @@ function item_edit() {
 	form_hidden_box("sequence", (isset($template_item) ? $template_item["sequence"] : "0"), "");
 	form_hidden_box("_graph_type_id", (isset($template_item) ? $template_item["graph_type_id"] : "0"), "");
 	form_hidden_box("save_component_item", "1", "");
+	form_hidden_box("invisible_alpha", $form_array["alpha"]["value"], "FF");
 	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
 
 	html_end_box();
@@ -316,7 +318,8 @@ function dynamic() {
 
 function changeColorId() {
 	//alert("Selected Color Index is '" + document.getElementById('color_id').selectedIndex + "'");
-	if ((document.getElementById('color_id').selectedIndex != 0)) {
+	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
+		(document.getElementById('color_id').selectedIndex != 0)) {
 		document.getElementById('alpha').disabled=false;
 	}
 }
