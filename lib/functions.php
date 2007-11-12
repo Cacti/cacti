@@ -63,26 +63,45 @@ function read_default_graph_config_option($config_name) {
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
-	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	if ((read_config_option("auth_method") == 0) || (!isset($_SESSION["sess_user_id"]))) {
-		/* first attempt to get the db setting for guest */
-		$guest_uid = db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option("guest_user") . "'");
+	global $config;
 
-		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $guest_uid);
+	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+
+	if (isset($_SESSION["sess_user_id"])) {
+		$effective_uid = $_SESSION["sess_user_id"];
+	}else if (isset($config["config_options_array"]["export_user_id"])) {
+		$effective_uid = $config["config_options_array"]["export_user_id"];
+	}else if ((read_config_option("auth_method") == 0)) {
+		/* first attempt to get the db setting for guest */
+		$effective_uid = db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option("guest_user") . "'");
+
+		if (strlen($effective_uid) == 0) {
+			$effective_uid = 0;
+		}
+
+		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $effective_uid);
 
 		if (isset($db_setting["value"])) {
 			return $db_setting["value"];
 		}else{
 			return read_default_graph_config_option($config_name);
 		}
+	}else{
+		$effective_uid = 0;
 	}
 
-	if ((isset($_SESSION["sess_graph_config_array"]) || ($force))) {
-		$graph_config_array = $_SESSION["sess_graph_config_array"];
+	if (!$force) {
+		if (isset($_SESSION["sess_graph_config_array"])) {
+			$graph_config_array = $_SESSION["sess_graph_config_array"];
+		}else if (isset($config["config_options_array"]["export_user_id"])) {
+			if (isset($config["config_graph_settings_array"])) {
+				$graph_config_array = $config["config_graph_settings_array"];
+			}
+		}
 	}
 
 	if (!isset($graph_config_array[$config_name])) {
-		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $_SESSION["sess_user_id"]);
+		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $effective_uid);
 
 		if (isset($db_setting["value"])) {
 			$graph_config_array[$config_name] = $db_setting["value"];
@@ -90,7 +109,11 @@ function read_graph_config_option($config_name, $force = FALSE) {
 			$graph_config_array[$config_name] = read_default_graph_config_option($config_name);
 		}
 
-		$_SESSION["sess_graph_config_array"] = $graph_config_array;
+		if (isset($_SESSION)) {
+			$_SESSION["sess_graph_config_array"]   = $graph_config_array;
+		}else{
+			$config["config_graph_settings_array"] = $graph_config_array;
+		}
 	}
 
 	return $graph_config_array[$config_name];
@@ -139,8 +162,12 @@ function read_default_config_option($config_name) {
      in 'include/global_settings.php'
    @returns - the current value of the configuration option */
 function read_config_option($config_name, $force = FALSE) {
+	global $config;
+
 	if (isset($_SESSION["sess_config_array"])) {
 		$config_array = $_SESSION["sess_config_array"];
+	}else if (isset($config["config_options_array"])) {
+		$config_array = $config["config_options_array"];
 	}
 
 	if ((!isset($config_array[$config_name])) || ($force)) {
@@ -152,7 +179,11 @@ function read_config_option($config_name, $force = FALSE) {
 			$config_array[$config_name] = read_default_config_option($config_name);
 		}
 
-		$_SESSION["sess_config_array"] = $config_array;
+		if (isset($_SESSION)) {
+			$_SESSION["sess_config_array"]  = $config_array;
+		}else{
+			$config["config_options_array"] = $config_array;
+		}
 	}
 
 	return $config_array[$config_name];

@@ -146,10 +146,10 @@ function export_log($stMessage) {
 }
 
 function export_pre_ftp_upload($stExportDir) {
-	global $aFtpExport;
+	global $config, $aFtpExport;
 
 	/* export variable as global */
-	$_SESSION["sess_config_array"]["path_html_export"] = $stExportDir;
+	$config["config_options_array"]["path_html_export"] = $stExportDir;
 
 	/* clean-up after last cacti instance */
 	if (is_dir($stExportDir)) {
@@ -162,7 +162,7 @@ function export_pre_ftp_upload($stExportDir) {
 	$total_graphs_created = export();
 
 	/* force reaing of the variable from the database */
-	unset($_SESSION["sess_config_array"]["path_html_export"]);
+	unset($config["config_options_array"]["path_html_export"]);
 
 	$aFtpExport['server'] = read_config_option('export_ftp_host');
 	if (empty($aFtpExport['server'])) {
@@ -503,6 +503,8 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 	/* if the index file already exists, delete it */
 	check_remove($cacti_export_path . "/index.html");
 
+	export_log("Creating File  '" . $cacti_export_path . "/index.html'");
+
 	/* open pointer to the new index file */
 	$fp_index = fopen($cacti_export_path . "/index.html", "w");
 
@@ -553,12 +555,16 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			$graph_data_array["export"] = true;
 			$graph_data_array["export_filename"] = "graphs/thumb_" . $graph["local_graph_id"] . ".png";
 
+			export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
+
 			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 
 			$total_graphs_created++;
 
 			/* generate html files for each graph */
 			if (!file_exists($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html")) {
+				export_log("Creating File  '" . $cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html");
+
 				$fp_graph_index = fopen($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html", "w");
 
 				fwrite($fp_graph_index, HTML_HEADER_CLASSIC);
@@ -578,6 +584,8 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			foreach ($rras as $rra) {
 				$graph_data_array["export"] = true;
 				$graph_data_array["export_filename"] = "graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
+
+				export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
 
 				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 
@@ -623,9 +631,9 @@ function tree_export() {
 	$total_graphs_created = 0;
 
 	/* set the user to utilize for establishing export permissions */
-	$_SESSION["sess_user_id"] = read_config_option("export_user_id");
+	$export_user = read_config_option("export_user_id");
 
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id='" . $_SESSION["sess_user_id"] . "'");
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id='" . $export_user . "'");
 
 	$cacti_root_path   = $config["base_path"];
 	$cacti_export_path = read_config_option("path_html_export");
@@ -955,6 +963,8 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		$path = clean_up_export_name(get_tree_name($leaf["tree_id"]));
 	}
 
+	export_log("Creating File  '" . $cacti_export_path . "/" . $path . "/" . $filename . "'");
+
 	/* open pointer to the new file */
 	$fp = fopen($cacti_export_path . "/" . $path . "/" . $filename, "w");
 
@@ -1179,14 +1189,18 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			/* add the graph to the exported list */
 			array_push($exported_files, $export_filename);
 
+			export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
+
 			/* generate the graph */
 			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 			$total_graphs_created++;
 
 			/* generate html files for each graph */
 			if (read_config_option("export_tree_isolation") == "on") {
+				export_log("Creating File  '" . $cacti_export_path . "/" . $path ."/graph_" . $graph["local_graph_id"] . ".html'");
 				$fp_graph_index = fopen($cacti_export_path . "/" . $path ."/graph_" . $graph["local_graph_id"] . ".html", "w");
 			}else{
+				export_log("Creating File  '" . $cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html'");
 				$fp_graph_index = fopen($cacti_export_path . "/graph_" . $graph["local_graph_id"] . ".html", "w");
 			}
 
@@ -1213,6 +1227,8 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 				}else{
 					$graph_data_array["export_filename"] = "/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 				}
+
+				export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
 
 				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 				$total_graphs_created++;
@@ -1298,17 +1314,19 @@ function grow_dhtml_trees_export($fp, $tree_id) {
 	@arg $force_refresh - (bool) Force the refresh of the array from the database
    @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array_export($return_sql = false, $force_refresh = false) {
+	global $config;
+
 	/* set the tree update time if not already set */
-	if (!isset($_SESSION["tree_update_time"])) {
-		$_SESSION["tree_update_time"] = time();
+	if (!isset($config["config_options_array"]["tree_update_time"])) {
+		$config["config_options_array"]["tree_update_time"] = time();
 	}
 
 	/* build tree array */
-	if (!isset($_SESSION["tree_array"]) || ($force_refresh) ||
-		(($_SESSION["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
+	if (!isset($config["config_options_array"]["tree_array"]) || ($force_refresh) ||
+		(($config["config_options_array"]["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
 
 		if (read_config_option("auth_method") != 0) {
-			$current_user = db_fetch_row("SELECT policy_trees FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+			$current_user = db_fetch_row("SELECT id, policy_trees FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
 			if ($current_user["policy_trees"] == "1") {
 				$sql_where = "WHERE user_auth_perms.user_id IS NULL";
@@ -1321,17 +1339,17 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 				graph_tree.name,
 				user_auth_perms.user_id
 				FROM graph_tree
-				LEFT JOIN user_auth_perms ON (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+				LEFT JOIN user_auth_perms ON (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $current_user["id"] . ")
 				$sql_where
 				ORDER BY graph_tree.name";
 		}else{
 			$sql = "SELECT * FROM graph_tree ORDER BY name";
 		}
 
-		$_SESSION["tree_array"] = $sql;
-		$_SESSION["tree_update_time"] = time();
+		$config["config_options_array"]["tree_array"] = $sql;
+		$config["config_options_array"]["tree_update_time"] = time();
 	} else {
-		$sql = $_SESSION["tree_array"];
+		$sql = $config["config_options_array"]["tree_array"];
 	}
 
 	if ($return_sql == true) {

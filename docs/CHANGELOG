@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -bug#0001073: Max OIDS is not saved in device view
 -bug#0001078: Undefined variable: rra in graph.php on line 241
 -bug#0001079: Dates are not stored in host table using correct format
+-bug#0001080: Graph Export Generates SQL Errors
 -feature#0001035: Allow for --units=si on logarithmic scaled graphs (rrdtool-1.2.x only).
 -feature#0001069: add opacity/alpha channel to graph items (rrdtool-1.2.x only).
 -feature#0001065: Move to Top for List and Tree View. Omit boring scrolling
