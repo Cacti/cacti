@@ -113,7 +113,7 @@ if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
 		$poller_seconds_sincerun = $seconds - $poller_lastrun;
 	}
 
-	cacti_log("DEBUG: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
+	cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", TRUE, "POLLER");;
 }
 
 /* our cron can run at either 1 or 5 minute intervals */
