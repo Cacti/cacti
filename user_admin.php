@@ -392,7 +392,7 @@ function form_save() {
 		form_input_validate(get_request_var_post("password_confirm"), "password_confirm", "" . preg_quote(get_request_var_post("password")) . "", true, 4);
 
 		$save["id"] = get_request_var_post("id");
-		$save["username"] = form_input_validate(get_request_var_post("username"), "username", "^[A-Za-z0-9\._\-\\\@]+$", false, 3);
+		$save["username"] = form_input_validate(get_request_var_post("username"), "username", "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
 		$save["full_name"] = form_input_validate(get_request_var_post("full_name"), "full_name", "", true, 3);
 		$save["password"] = $password;
 		$save["must_change_password"] = form_input_validate(get_request_var_post("must_change_password", ""), "must_change_password", "", true, 3);
