@@ -25,16 +25,16 @@
 /* get_timespan		 		- returns start/end time for given date and timespan
  * 							  do NOT use absolute numbers of seconds but let php
  * 							  do all the time calculations to cover:
- * 							  leap years, daylight savings and weekdays ... 
+ * 							  leap years, daylight savings and weekdays ...
    @arg $span				- array &$timespan (begin_now, end_now)
    @arg $curr_time	 		- base date (time since epoch)
-   @arg $timespan_given		- timespan as given by global_arrays.php($graph_timespans) 
+   @arg $timespan_given		- timespan as given by global_arrays.php($graph_timespans)
    @arg $first_weekdayid	- first weekday (numeric representation) */
 function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	# unless changed later, $span["end_now"] is always $curr_time
 	$span["begin_now"] 	= $curr_time; # initialization only!
 	$span["end_now"] 	= $curr_time;
-	
+
 	switch ($timespan_given)  {
 		case GT_LAST_HALF_HOUR:
 			$span["begin_now"] = strtotime("-30 minutes", $curr_time);
@@ -96,7 +96,7 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 		case GT_DAY_SHIFT:
 			# take this day, start and end time fetched from config_settings
 			$span["begin_now"] = strtotime(date("Y-m-d", $curr_time) . " " . read_graph_config_option("day_shift_start"));
-			$span["end_now"] = strtotime(date("Y-m-d", $curr_time) . " " . read_graph_config_option("day_shift_end"));
+			$span["end_now"]   = strtotime(date("Y-m-d", $curr_time) . " " . read_graph_config_option("day_shift_end"));
 			break;
 		case GT_THIS_DAY:
 			# return Year-Month-Day for given 'time since epoch'
@@ -144,7 +144,7 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 			$span["begin_now"] = $curr_time - DEFAULT_TIMESPAN;
 			break;
 	}
-	
+
 	# reformat time-since-epoch start/end times to human readable format
 	$span["current_value_date1"] = date("Y-m-d H:i",$span["begin_now"]);
 	$span["current_value_date2"] = date("Y-m-d H:i",$span["end_now"]);
@@ -167,7 +167,7 @@ function check_month_boundaries(&$span) {
 	# check left boundary -----------------------------------------------
 	$begin_of_month = strtotime(date("Y-m-01", $span["begin_now"]));
 	$begin_match 	= ( $begin_of_month == $span["begin_now"]);
-	
+
 	# check right boundary ----------------------------------------------
 	# first, get a defined date of the month, $span["end_now"] belongs to
 	$begin_of_month = strtotime(date("Y-m-01", $span["end_now"]));
@@ -176,7 +176,7 @@ function check_month_boundaries(&$span) {
 
 	# accept end of month if no seconds given (adjust for 59 missing seconds)
 	$end_match = ( (($end_of_month - 59) <= $span["end_now"]) && ($span["end_now"] <= $end_of_month));
-	
+
 	return ( $begin_match && $end_match );
 }
 
@@ -206,7 +206,7 @@ function shift_time(&$span, $direction, $shift_size) {
 	# move left/right according to $direction
 	# amount to be moved is derived from $shift_size
 	# base dates are taken from array $span
-	
+
 	# is this a month shift AND current timespane is on month boundaries?
 	if ( month_shift($shift_size) && check_month_boundaries($span) ) {
 		# shift left boundary
@@ -218,11 +218,11 @@ function shift_time(&$span, $direction, $shift_size) {
 		$span["begin_now"] 	= strtotime($direction . $shift_size . " " . $span["current_value_date1"]);
 		$span["end_now"] 	= strtotime($direction . $shift_size . " " . $span["current_value_date2"]);
 	}
-	   
+
 	# convert to human readable format
 	$span["current_value_date1"] = date("Y-m-d H:i", $span["begin_now"]);
 	$span["current_value_date2"] = date("Y-m-d H:i", $span["end_now"]);
-	
+
 	# now custom time settings in effect
 	$_SESSION["sess_current_timespan"] = GT_CUSTOM;
 	$_SESSION["custom"] = 1;
