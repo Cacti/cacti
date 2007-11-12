@@ -137,13 +137,22 @@ function form_save() {
 			where data_input_id=" . $_POST["data_input_id"] . "
 			and input_output='in'");
 
-		/* pass#1 for validation */
+		/* pass 1 for validation */
 		if (sizeof($input_fields) > 0) {
 			foreach ($input_fields as $input_field) {
 				$form_value = "value_" . $input_field["data_name"];
 
 				if ((isset($_POST[$form_value])) && ($input_field["type_code"] == "")) {
-					form_input_validate($_POST[$form_value], "value_" . $input_field["data_name"], $input_field["regexp_match"], ($input_field["allow_nulls"] == "on" ? true : false), 3);
+					if ((isset($_POST["t_" . $form_value])) &&
+						($_POST["t_" . $form_value] == "on")) {
+						$not_required = true;
+					}else if ($input_field["allow_nulls"] == "on") {
+						$not_required = true;
+					}else{
+						$not_required = false;
+					}
+
+					form_input_validate($_POST[$form_value], "value_" . $input_field["data_name"], $input_field["regexp_match"], $not_required, 3);
 				}
 			}
 		}
