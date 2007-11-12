@@ -530,7 +530,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 		rra.id,
 		rra.name
 		FROM rra
-		ORDER BY steps");
+		ORDER BY timespan");
 
 	/* write the html header data to the index file */
 	fwrite($fp_index, HTML_HEADER_CLASSIC);
