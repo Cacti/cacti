@@ -204,7 +204,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 		data_template_rrd.data_source_type_id
 		FROM data_template_rrd
 		WHERE data_template_rrd.local_data_id=$local_data_id
-		ORDER BY local_data_template_id");
+		ORDER BY local_data_template_rrd_id");
 
 	/* ONLY make a new DS entry if:
 	- There is multiple data sources and this item is not the main one.
