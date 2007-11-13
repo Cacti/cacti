@@ -139,17 +139,18 @@ $data_source_types = array(1 =>
 	"DERIVE",
 	"ABSOLUTE");
 
-$graph_item_types = array(1 =>
-	"COMMENT",
-	"HRULE",
-	"VRULE",
-	"LINE1",
-	"LINE2",
-	"LINE3",
-	"AREA",
-	"STACK",
-	"GPRINT",
-	"LEGEND");
+$graph_item_types = array(
+	GRAPH_ITEM_TYPE_COMMENT => "COMMENT",
+	GRAPH_ITEM_TYPE_HRULE   => "HRULE",
+	GRAPH_ITEM_TYPE_VRULE   => "VRULE",
+	GRAPH_ITEM_TYPE_LINE1   => "LINE1",
+	GRAPH_ITEM_TYPE_LINE2   => "LINE2",
+	GRAPH_ITEM_TYPE_LINE3   => "LINE3",
+	GRAPH_ITEM_TYPE_AREA    => "AREA",
+	GRAPH_ITEM_TYPE_STACK   => "STACK",
+	GRAPH_ITEM_TYPE_GPRINT  => "GPRINT",
+	GRAPH_ITEM_TYPE_LEGEND  => "LEGEND"
+	);
 
 $image_types = array(1 =>
 	"PNG",

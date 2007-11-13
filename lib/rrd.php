@@ -799,12 +799,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (sizeof($graph_items) > 0) {
 
 		foreach ($graph_items as $graph_item) {
-			/* mimic the old behavior: LINE[123], AREA, and STACK items use the CF specified in the graph item */
-			if (($graph_item["graph_type_id"] == 4) || ($graph_item["graph_type_id"] == 5) || ($graph_item["graph_type_id"] == 6) || ($graph_item["graph_type_id"] == 7) || ($graph_item["graph_type_id"] == 8)) {
+			/* mimic the old behavior: LINE[123], AREA, STACK and GPRINT items use the CF specified in the graph item */
+			if (($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1) ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2) ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3) ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
 				$graph_cf = $graph_item["consolidation_function_id"];
-			/* all other types are based on the AVERAGE CF */
 			}else{
-				$graph_cf = 1;
+				/* all other types are based on the best matching CF */
+				$graph_cf = generate_graph_best_cf($graph_item["local_data_id"], $graph_item["consolidation_function_id"]);
 			}
 
 			if ((!empty($graph_item["local_data_id"])) && (!isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf]))) {
