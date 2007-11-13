@@ -102,9 +102,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 								<a href='graph.php?action=view&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
 							</td>
 							<td valign='top' style='padding: 3px;' class='noprint'>
-								<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 8px;'></a><br>
-								<a href='graph_xport.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 8px;'></a><br>
-								<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 8px;'></a><br>
+								<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
+								<a href='graph_xport.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
+								<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
 							</td>
 						</tr>
 					</table>
@@ -149,7 +149,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 						<td valign='top' style='padding: 3px;'>
 							<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
 							<a href='graph_xport.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
-							<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 8px;'></a><br>
+							<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
 						</td>
 					</tr>
 				</table>
