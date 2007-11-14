@@ -37,6 +37,10 @@ include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
+/* initialize some variables */
+$force = FALSE;
+$debug = FALSE;
+
 /* process calling arguments */
 $parms = $_SERVER["argv"];
 array_shift($parms);
