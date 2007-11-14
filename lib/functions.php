@@ -1076,29 +1076,30 @@ function generate_data_source_path($local_data_id) {
     @arg $requesed_cf
     @returns - the best cf to use */
 function generate_graph_best_cf($local_data_id, $requested_cf) {
-	$avail_cf_functions = db_fetch_assoc("SELECT DISTINCT
-		rra_cf.consolidation_function_id AS rra_cf
-		FROM (data_template_data
-		INNER JOIN data_template_data_rra ON data_template_data.id=data_template_data_rra.data_template_data_id)
-		INNER JOIN (rra INNER JOIN rra_cf ON rra.id=rra_cf.rra_id) ON data_template_data_rra.rra_id=rra.id
-		WHERE data_template_data.local_data_id=$local_data_id
-		ORDER BY rra_cf ASC");
+	if ($local_data_id > 0) {
+		$avail_cf_functions = db_fetch_assoc("SELECT DISTINCT
+			rra_cf.consolidation_function_id AS rra_cf
+			FROM (data_template_data
+			INNER JOIN data_template_data_rra ON data_template_data.id=data_template_data_rra.data_template_data_id)
+			INNER JOIN (rra INNER JOIN rra_cf ON rra.id=rra_cf.rra_id) ON data_template_data_rra.rra_id=rra.id
+			WHERE data_template_data.local_data_id=$local_data_id
+			ORDER BY rra_cf ASC");
 
-	if (sizeof($avail_cf_functions)) {
-		/* check through the cf's and get the best */
-		foreach($avail_cf_functions as $cf) {
-			if ($cf["rra_cf"] == $requested_cf) {
-				return $requested_cf;
+		if (sizeof($avail_cf_functions)) {
+			/* check through the cf's and get the best */
+			foreach($avail_cf_functions as $cf) {
+				if ($cf["rra_cf"] == $requested_cf) {
+					return $requested_cf;
+				}
 			}
-		}
 
-		/* if none was found, take the first */
-		return $avail_cf_functions[0]["rra_cf"];
-	}else{
-		/* return average when no else match */
-		return "1";
+			/* if none was found, take the first */
+			return $avail_cf_functions[0]["rra_cf"];
+		}
 	}
 
+	/* if you can not figure it out return average */
+	return "1";
 }
 
 /* generate_graph_def_name - takes a number and turns each digit into its letter-based
