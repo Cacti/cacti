@@ -1338,16 +1338,16 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	$nth = 0; $sum = 0;
 	if (sizeof($xport_items) > 0) {
 		foreach ($xport_items as $xport_item) {
-			/* mimic the old behavior: LINE[123], AREA, and STACK items use the CF specified in the graph item */
-			if (($xport_item["graph_type_id"] == 4) ||
-				($xport_item["graph_type_id"] == 5) ||
-				($xport_item["graph_type_id"] == 6) ||
-				($xport_item["graph_type_id"] == 7) ||
-				($xport_item["graph_type_id"] == 8)) {
+			/* mimic the old behavior: LINE[123], AREA, STACK and GPRINT items use the CF specified in the graph item */
+			if (($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1) ||
+				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2) ||
+				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3) ||
+				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
+				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
 				$xport_cf = $xport_item["consolidation_function_id"];
-			/* all other types are based on the AVERAGE CF */
 			}else{
-				$xport_cf = 1;
+				/* all other types are based on the best matching CF */
+				$xport_cf = generate_graph_best_cf($xport_item["local_data_id"], $xport_item["consolidation_function_id"]);
 			}
 
 			if ((!empty($xport_item["local_data_id"])) &&
@@ -1446,6 +1446,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	/* +++++++++++++++++++++++ CDEF's +++++++++++++++++++++++ */
 
 	$i = 0;
+	$j = 1;
 	reset($xport_items);
 
 	$xport_item_stack_type = "";
@@ -1569,7 +1570,15 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 		$need_rrd_nl = TRUE;
 		if (ereg("^(AREA|LINE[123]|STACK)$", $graph_item_types{$xport_item["graph_type_id"]})) {
-			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . str_replace(":", "", $xport_variables["text_format"][$xport_item_id]) . "\"";
+			/* give all export items a name */
+			if (trim($xport_variables["text_format"][$xport_item_id]) == "") {
+				$legend_name = "col" . $j . "-" . $data_source_name;
+			}else{
+				$legend_name = $xport_variables["text_format"][$xport_item_id];
+			}
+			$j++;
+
+			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . str_replace(":", "", $legend_name) . "\"";
 		}else{
 			$need_rrd_nl = FALSE;
 		}
