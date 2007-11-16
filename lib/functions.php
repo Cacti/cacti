@@ -1085,16 +1085,19 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
 			WHERE data_template_data.local_data_id=$local_data_id
 			ORDER BY rra_cf ASC");
 
-		if (sizeof($avail_cf_functions)) {
-			/* check through the cf's and get the best */
-			foreach($avail_cf_functions as $cf) {
-				if ($cf["rra_cf"] == $requested_cf) {
-					return $requested_cf;
+		/* workaround until we hae RRA presets in 0.8.8 */
+		if ($requested_cf != 4) {
+			if (sizeof($avail_cf_functions)) {
+				/* check through the cf's and get the best */
+				foreach($avail_cf_functions as $cf) {
+					if ($cf["rra_cf"] == $requested_cf) {
+						return $requested_cf;
+					}
 				}
-			}
 
-			/* if none was found, take the first */
-			return $avail_cf_functions[0]["rra_cf"];
+				/* if none was found, take the first */
+				return $avail_cf_functions[0]["rra_cf"];
+			}
 		}
 	}
 
