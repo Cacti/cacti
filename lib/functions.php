@@ -1077,32 +1077,84 @@ function generate_data_source_path($local_data_id) {
     @returns - the best cf to use */
 function generate_graph_best_cf($local_data_id, $requested_cf) {
 	if ($local_data_id > 0) {
-		$avail_cf_functions = db_fetch_assoc("SELECT DISTINCT
-			rra_cf.consolidation_function_id AS rra_cf
-			FROM (data_template_data
-			INNER JOIN data_template_data_rra ON data_template_data.id=data_template_data_rra.data_template_data_id)
-			INNER JOIN (rra INNER JOIN rra_cf ON rra.id=rra_cf.rra_id) ON data_template_data_rra.rra_id=rra.id
-			WHERE data_template_data.local_data_id=$local_data_id
-			ORDER BY rra_cf ASC");
+		$avail_cf_functions = get_rrd_cfs($local_data_id);
 
 		/* workaround until we hae RRA presets in 0.8.8 */
-		if ($requested_cf != 4) {
-			if (sizeof($avail_cf_functions)) {
-				/* check through the cf's and get the best */
-				foreach($avail_cf_functions as $cf) {
-					if ($cf["rra_cf"] == $requested_cf) {
-						return $requested_cf;
-					}
+		if (sizeof($avail_cf_functions)) {
+			/* check through the cf's and get the best */
+			foreach($avail_cf_functions as $cf) {
+				if ($cf["rra_cf"] == $requested_cf) {
+					return $requested_cf;
 				}
-
-				/* if none was found, take the first */
-				return $avail_cf_functions[0]["rra_cf"];
 			}
+
+			/* if none was found, take the first */
+			return $avail_cf_functions[0]["rra_cf"];
 		}
 	}
 
 	/* if you can not figure it out return average */
 	return "1";
+}
+
+/* get_rrd_cfs - reads the RRDfile and get's the RRA's stored in it.
+    @arg $local_data_id
+    @returns - array of the CF functions */
+function get_rrd_cfs($local_data_id) {
+	global $rrd_cfs;
+
+	$rrdfile = get_data_source_path($local_data_id, TRUE);
+
+	if (!isset($rrd_cfs)) {
+		$rrd_cfs = array();
+	}else if (array_key_exists($local_data_id, $rrd_cfs)) {
+		return $rrd_cfs[$local_data_id];
+	}
+
+	$cfs = array();
+
+	$output = rrdtool_execute("info $rrdfile", FALSE, RRDTOOL_OUTPUT_STDOUT);
+
+	if (strlen($output)) {
+		$output = explode("\n", $output);
+
+		if (sizeof($output)) {
+		foreach($output as $line) {
+			if (substr_count($line, ".cf")) {
+				$values = explode("=",$line);
+
+				if (!in_array(trim($values[1]), $cfs)) {
+					$cfs[] = trim($values[1]);
+				}
+			}
+		}
+		}
+	}
+
+	$new_cfs = array();
+
+	if (sizeof($cfs)) {
+	foreach($cfs as $cf) {
+		switch($cf) {
+		case "AVG":
+			$new_cfs[] = 1;
+			break;
+		case "MIN":
+			$new_cfs[] = 2;
+			break;
+		case "MAX":
+			$new_cfs[] = 3;
+			break;
+		case "LAST":
+			$new_cfs[] = 3;
+			break;
+		}
+	}
+	}
+
+	$rrd_cfs[$local_data_id] = $new_cfs;
+
+	return $new_cfs;
 }
 
 /* generate_graph_def_name - takes a number and turns each digit into its letter-based
