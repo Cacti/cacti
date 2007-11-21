@@ -1037,35 +1037,45 @@ function ds() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST["filter"])) {
-		$sql_where = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+		$sql_where1 = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
 			" OR data_template.name like '%%" . $_REQUEST["filter"] . "%%'" .
 			" OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
+
+		$sql_where2 = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+			" OR data_template.name like '%%" . $_REQUEST["filter"] . "%%')";
 	}else{
-		$sql_where = "";
+		$sql_where1 = "";
+		$sql_where2 = "";
 	}
 
 	if ($_REQUEST["host_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["host_id"] == "0") {
-		$sql_where .= " AND data_local.host_id=0";
+		$sql_where1 .= " AND data_local.host_id=0";
+		$sql_where2 .= " AND data_local.host_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND data_local.host_id=" . $_REQUEST["host_id"];
+		$sql_where1 .= " AND data_local.host_id=" . $_REQUEST["host_id"];
+		$sql_where2 .= " AND data_local.host_id=" . $_REQUEST["host_id"];
 	}
 
 	if ($_REQUEST["template_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["template_id"] == "0") {
-		$sql_where .= " AND data_template_data.data_template_id=0";
+		$sql_where1 .= " AND data_template_data.data_template_id=0";
+		$sql_where2 .= " AND data_template_data.data_template_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND data_template_data.data_template_id=" . $_REQUEST["template_id"];
+		$sql_where1 .= " AND data_template_data.data_template_id=" . $_REQUEST["template_id"];
+		$sql_where2 .= " AND data_template_data.data_template_id=" . $_REQUEST["template_id"];
 	}
 
 	if ($_REQUEST["method_id"] == "-1") {
 		/* Show all items */
 	}elseif ($_REQUEST["method_id"] == "0") {
-		$sql_where .= " AND data_template_data.data_input_id=0";
+		$sql_where1 .= " AND data_template_data.data_input_id=0";
+		$sql_where2 .= " AND data_template_data.data_input_id=0";
 	}elseif (!empty($_REQUEST["method_id"])) {
-		$sql_where .= " AND data_template_data.data_input_id=" . $_REQUEST["method_id"];
+		$sql_where1 .= " AND data_template_data.data_input_id=" . $_REQUEST["method_id"];
+		$sql_where2 .= " AND data_template_data.data_input_id=" . $_REQUEST["method_id"];
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
@@ -1076,7 +1086,7 @@ function ds() {
 		LEFT JOIN data_template
 		ON (data_local.data_template_id=data_template.id)
 		WHERE data_local.id=data_template_data.local_data_id
-		$sql_where"));
+		$sql_where1"));
 
 	$poller_intervals = array_rekey(db_fetch_assoc("SELECT data_template_data.local_data_id AS id,
 		Min(data_template_data.rrd_step*rra.steps) AS poller_interval
@@ -1085,7 +1095,7 @@ function ds() {
 		INNER JOIN ((data_template_data_rra
 		INNER JOIN data_template_data ON data_template_data_rra.data_template_data_id=data_template_data.id)
 		INNER JOIN rra ON data_template_data_rra.rra_id = rra.id) ON data_local.id = data_template_data.local_data_id) ON data_template.id = data_template_data.data_template_id
-		$sql_where
+		$sql_where2
 		GROUP BY data_template_data.local_data_id"), "id", "poller_interval");
 
 	$data_sources = db_fetch_assoc("SELECT
@@ -1101,7 +1111,7 @@ function ds() {
 		LEFT JOIN data_template
 		ON (data_local.data_template_id=data_template.id)
 		WHERE data_local.id=data_template_data.local_data_id
-		$sql_where
+		$sql_where1
 		ORDER BY ". $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
 		" LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
 

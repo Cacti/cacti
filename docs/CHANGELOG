@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+-bug:0001094: Filtering Broken in Data Sources
 -bug: Cacti does not guarentee RRA consolidation functions exist in RRA's.
 
 0.8.7a
