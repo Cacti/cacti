@@ -201,8 +201,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 	}
 
 	foreach ($polling_items as $item) {
-		$data_source = $item["local_data_id"];
-		$current_host = $item["hostname"];
+		$data_source  = $item["local_data_id"];
+		$current_host = $item["host_id"];
 
 		if ($current_host != $last_host) {
 			$new_host = true;
