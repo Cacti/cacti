@@ -1084,12 +1084,13 @@ function host_edit() {
 }
 
 function host() {
-	global $colors, $device_actions;
+	global $colors, $device_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_template_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	input_validate_input_number(get_request_var_request("host_status"));
+	input_validate_input_number(get_request_var_request("host_rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -1113,6 +1114,7 @@ function host() {
 		kill_session_var("sess_device_filter");
 		kill_session_var("sess_device_host_template_id");
 		kill_session_var("sess_host_status");
+		kill_session_var("sess_host_rows");
 		kill_session_var("sess_host_sort_column");
 		kill_session_var("sess_host_sort_direction");
 
@@ -1120,6 +1122,7 @@ function host() {
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_template_id"]);
 		unset($_REQUEST["host_status"]);
+		unset($_REQUEST["host_rows"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 	}
@@ -1135,8 +1138,30 @@ function host() {
 	load_current_session_value("filter", "sess_device_filter", "");
 	load_current_session_value("host_template_id", "sess_device_host_template_id", "-1");
 	load_current_session_value("host_status", "sess_host_status", "-1");
+	load_current_session_value("host_rows", "sess_host_rows", read_config_option("num_rows_device"));
 	load_current_session_value("sort_column", "sess_host_sort_column", "description");
 	load_current_session_value("sort_direction", "sess_host_sort_direction", "ASC");
+
+	/* if the number of rows is -1, set it to the default */
+	if ($_REQUEST["host_rows"] == -1) {
+		$_REQUEST["host_rows"] = read_config_option("num_rows_device");
+	}
+
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyViewDeviceFilterChange(objForm) {
+		strURL = '?host_status=' + objForm.host_status.value;
+		strURL = strURL + '&host_template_id=' + objForm.host_template_id.value;
+		strURL = strURL + '&host_rows=' + objForm.host_rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
 
 	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
 
@@ -1186,41 +1211,31 @@ function host() {
 	$host_graphs       = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id"), "host_id", "graphs");
 	$host_data_sources = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id"), "host_id", "data_sources");
 
-	$sql_query = "SELECT
-                host.id,
-                host.disabled,
-                host.status,
-                host.hostname,
-                host.description,
-                host.min_time,
-                host.max_time,
-                host.cur_time,
-                host.avg_time,
-                host.availability
-                FROM host
-                $sql_where
-                ORDER BY " . $sortby . " " . $_REQUEST["sort_direction"] . "
-		LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device");
+	$sql_query = "SELECT *
+		FROM host
+		$sql_where
+		ORDER BY " . $sortby . " " . $_REQUEST["sort_direction"] . "
+		LIMIT " . ($_REQUEST["host_rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["host_rows"];
 
 	//print $sql_query;
 
 	$hosts = db_fetch_assoc($sql_query);
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $_REQUEST["host_rows"], $total_rows, "host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='9'>
+			<td colspan='11'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
 							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . (($_REQUEST["host_rows"]*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < ($_REQUEST["host_rows"]*$_REQUEST["page"]))) ? $total_rows : ($_REQUEST["host_rows"]*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if (($_REQUEST["page"] * $_REQUEST["host_rows"]) < $total_rows) { $nav .= "<a class='linkOverDark' href='host.php?filter=" . $_REQUEST["filter"] . "&host_template_id=" . $_REQUEST["host_template_id"] . "&host_status=" . $_REQUEST["host_status"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * $_REQUEST["host_rows"]) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -1231,9 +1246,11 @@ function host() {
 
 	$display_text = array(
 		"description" => array("Description", "ASC"),
+		"id" => array("ID", "ASC"),
 		"nosort1" => array("Graphs", "ASC"),
 		"nosort2" => array("Data Sources", "ASC"),
 		"status" => array("Status", "ASC"),
+		"status_event_count" => array("Event Count", "ASC"),
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),
 		"avg_time" => array("Average (ms)", "DESC"),
@@ -1247,9 +1264,11 @@ function host() {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $host["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='host.php?action=edit&id=" . $host["id"] . "'>" .
 				(strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["description"]) : $host["description"]) . "</a>", $host["id"], 250);
+			form_selectable_cell(round(($host["id"]), 2), $host["id"]);
 			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
+			form_selectable_cell(round(($host["status_event_count"]), 2), $host["id"]);
 			form_selectable_cell((strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $host["hostname"]) : $host["hostname"]), $host["id"]);
 			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
 			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);

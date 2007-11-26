@@ -364,6 +364,20 @@ $log_tail_lines = array(
 	10000 => "10000 Lines"
 	);
 
+$item_rows = array(
+	10   => "10 Rows",
+	15   => "15 Rows",
+	20   => "20 Rows",
+	25   => "25 Rows",
+	30   => "30 Rows",
+	40   => "40 Rows",
+	50   => "50 Rows",
+	100  => "100 Rows",
+	250  => "250 Rows",
+	500  => "500 Rows",
+	1000 => "1000 Rows"
+	);
+
 $page_refresh_interval = array(
 	5 => "5 Seconds",
 	10 => "10 Seconds",
