@@ -77,8 +77,23 @@
 			</table>
 			<table cellpadding="1" cellspacing="0">
 				<tr>
+					<td nowrap style='white-space: nowrap;' width="50">
+						Rows:&nbsp;
+					</td>
+					<td width="1">
+						<select name="graph_rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
+							<option value="-1"<?php if ($_REQUEST["graph_rows"] == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if ($_REQUEST["graph_rows"] == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
 					<td width="50">
-						Search:&nbsp;
+						&nbsp;Search:&nbsp;
 					</td>
 					<td>
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">

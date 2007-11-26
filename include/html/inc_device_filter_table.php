@@ -41,7 +41,7 @@
 					</td>
 					<td width="1">
 						<select name="host_rows" onChange="applyViewDeviceFilterChange(document.form_devices)">
-							<option value="-1"<?php if ($_REQUEST["host_template_id"] == "-1") {?> selected<?php }?>>Default</option>
+							<option value="-1"<?php if ($_REQUEST["host_rows"] == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {

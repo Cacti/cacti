@@ -52,8 +52,6 @@
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>
 				</tr>
-			</table>
-			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td width="50">
 						Method:&nbsp;
@@ -77,11 +75,29 @@
 							}
 							}
 							?>
-
 						</select>
 					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Rows:&nbsp;
+					</td>
+					<td width="1">
+						<select name="ds_rows" onChange="applyDSFilterChange(document.form_data_sources)">
+							<option value="-1"<?php if ($_REQUEST["ds_rows"] == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if ($_REQUEST["ds_rows"] == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<table cellpadding="1" cellspacing="0">
+				<tr>
 					<td width="50">
-						&nbsp;Search:&nbsp;
+						Search:&nbsp;
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">

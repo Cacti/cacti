@@ -1022,10 +1022,11 @@ function changeScaleLog() {
 }
 
 function graph() {
-	global $colors, $graph_actions;
+	global $colors, $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
+	input_validate_input_number(get_request_var_request("graph_rows"));
 	input_validate_input_number(get_request_var_request("template_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
@@ -1052,6 +1053,7 @@ function graph() {
 		kill_session_var("sess_graph_sort_column");
 		kill_session_var("sess_graph_sort_direction");
 		kill_session_var("sess_graph_host_id");
+		kill_session_var("sess_graph_rows");
 		kill_session_var("sess_graph_template_id");
 
 		unset($_REQUEST["page"]);
@@ -1059,6 +1061,7 @@ function graph() {
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 		unset($_REQUEST["host_id"]);
+		unset($_REQUEST["graph_rows"]);
 		unset($_REQUEST["template_id"]);
 	}
 
@@ -1068,7 +1071,13 @@ function graph() {
 	load_current_session_value("sort_column", "sess_graph_sort_column", "title_cache");
 	load_current_session_value("sort_direction", "sess_graph_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_graph_host_id", "-1");
+	load_current_session_value("graph_rows", "sess_graph_rows", read_config_option("num_rows_graph"));
 	load_current_session_value("template_id", "sess_graph_template_id", "-1");
+
+	/* if the number of rows is -1, set it to the default */
+	if ($_REQUEST["graph_rows"] == -1) {
+		$_REQUEST["graph_rows"] = read_config_option("num_rows_graph");
+	}
 
 	?>
 	<script type="text/javascript">
@@ -1076,6 +1085,7 @@ function graph() {
 
 	function applyGraphsFilterChange(objForm) {
 		strURL = '?host_id=' + objForm.host_id.value;
+		strURL = strURL + '&graph_rows=' + objForm.graph_rows.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
 		strURL = strURL + '&template_id=' + objForm.template_id.value;
 		document.location = strURL;
@@ -1137,10 +1147,10 @@ function graph() {
 		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where
 		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
-		" LIMIT " . (read_config_option("num_rows_graph")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_graph"));
+		" LIMIT " . ($_REQUEST["graph_rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["graph_rows"]);
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_graph"), $total_rows, "graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $_REQUEST["graph_rows"], $total_rows, "graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='5'>
@@ -1150,10 +1160,10 @@ function graph() {
 							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((read_config_option("num_rows_graph")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_graph")) || ($total_rows < (read_config_option("num_rows_graph")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_graph")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . (($_REQUEST["graph_rows"]*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < $_REQUEST["graph_rows"]) || ($total_rows < ($_REQUEST["graph_rows"]*$_REQUEST["page"]))) ? $total_rows : ($_REQUEST["graph_rows"]*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_graph")) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_graph")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if (($_REQUEST["page"] * $_REQUEST["graph_rows"]) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * $_REQUEST["graph_rows"]) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>

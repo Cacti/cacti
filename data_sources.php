@@ -959,9 +959,10 @@ function get_poller_interval($seconds) {
 }
 
 function ds() {
-	global $colors, $ds_actions;
+	global $colors, $ds_actions, $item_rows;
 
 	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("ds_rows"));
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("template_id"));
 	input_validate_input_number(get_request_var_request("method_id"));
@@ -989,6 +990,7 @@ function ds() {
 		kill_session_var("sess_ds_filter");
 		kill_session_var("sess_ds_sort_column");
 		kill_session_var("sess_ds_sort_direction");
+		kill_session_var("sess_ds_rows");
 		kill_session_var("sess_ds_host_id");
 		kill_session_var("sess_ds_template_id");
 		kill_session_var("sess_ds_method_id");
@@ -997,6 +999,7 @@ function ds() {
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
+		unset($_REQUEST["ds_rows"]);
 		unset($_REQUEST["host_id"]);
 		unset($_REQUEST["template_id"]);
 		unset($_REQUEST["method_id"]);
@@ -1007,11 +1010,17 @@ function ds() {
 	load_current_session_value("filter", "sess_ds_filter", "");
 	load_current_session_value("sort_column", "sess_ds_sort_column", "name_cache");
 	load_current_session_value("sort_direction", "sess_ds_sort_direction", "ASC");
+	load_current_session_value("ds_rows", "sess_ds_rows", read_config_option("num_rows_data_source"));
 	load_current_session_value("host_id", "sess_ds_host_id", "-1");
 	load_current_session_value("template_id", "sess_ds_template_id", "-1");
 	load_current_session_value("method_id", "sess_ds_method_id", "-1");
 
 	$host = db_fetch_row("select hostname from host where id=" . $_REQUEST["host_id"]);
+
+	/* if the number of rows is -1, set it to the default */
+	if ($_REQUEST["ds_rows"] == -1) {
+		$_REQUEST["ds_rows"] = read_config_option("num_rows_data_source");
+	}
 
 	?>
 	<script type="text/javascript">
@@ -1020,6 +1029,7 @@ function ds() {
 	function applyDSFilterChange(objForm) {
 		strURL = '?host_id=' + objForm.host_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&ds_rows=' + objForm.ds_rows.value;
 		strURL = strURL + '&template_id=' + objForm.template_id.value;
 		strURL = strURL + '&method_id=' + objForm.method_id.value;
 		document.location = strURL;
@@ -1114,12 +1124,12 @@ function ds() {
 		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where1
 		ORDER BY ". $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
-		" LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source"));
+		" LIMIT " . ($_REQUEST["ds_rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["ds_rows"]);
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $_REQUEST["ds_rows"], $total_rows, "data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='7'>
@@ -1129,10 +1139,10 @@ function ds() {
 							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((read_config_option("num_rows_data_source")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_data_source")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . (($_REQUEST["ds_rows"]*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < $_REQUEST["ds_rows"]) || ($total_rows < ($_REQUEST["ds_rows"]*$_REQUEST["page"]))) ? $total_rows : ($_REQUEST["ds_rows"]*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if (($_REQUEST["page"] * $_REQUEST["ds_rows"]) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * $_REQUEST["ds_rows"]) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
