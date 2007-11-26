@@ -1330,7 +1330,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	/* basic export options */
 	$xport_opts =
 		"--start=$xport_start" . RRD_NL .
-		"--end=$xport_end" . RRD_NL;
+		"--end=$xport_end" . RRD_NL .
+		"--maxrows=10000" . RRD_NL;
 
 	$xport_defs = "";
 

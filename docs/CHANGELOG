@@ -1,8 +1,10 @@
 Cacti CHANGELOG
 
+-bug#0001089: Graph xport modification to increase default rows output
 -bug#0001091: Poller Incorrectly Identifies Unique Hosts
 -bug#0001094: Filtering Broken in Data Sources
 -bug: Cacti does not guarentee RRA consolidation functions exist in RRA's.
+-feature: Add additional logging to Graph Xport
 
 0.8.7a
 -bug#0000895: "Use Per-Data Source Value (Ignore this Value)" runs only when when checking "Allow Empty Input"
