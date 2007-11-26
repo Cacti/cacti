@@ -1038,6 +1038,7 @@ function ds() {
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST["filter"])) {
 		$sql_where1 = "AND (data_template_data.name_cache like '%%" . $_REQUEST["filter"] . "%%'" .
+			" OR data_template_data.local_data_id like '%%" . $_REQUEST["filter"] . "%%'" .
 			" OR data_template.name like '%%" . $_REQUEST["filter"] . "%%'" .
 			" OR data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
 
@@ -1121,7 +1122,7 @@ function ds() {
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "data_sources.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='6'>
+			<td colspan='7'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -1142,6 +1143,7 @@ function ds() {
 
 	$display_text = array(
 		"name_cache" => array("Name", "ASC"),
+		"local_data_id" => array("ID","ASC"),
 		"data_input_name" => array("Data Input Method", "ASC"),
 		"nosort" => array("Poller Interval", "ASC"),
 		"active" => array("Active", "ASC"),
@@ -1157,6 +1159,7 @@ function ds() {
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_source["local_data_id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id']);
 			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input_name) : $data_input_name) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);
 			form_selectable_cell(($data_source['active'] == "on" ? "Yes" : "No"), $data_source["local_data_id"]);

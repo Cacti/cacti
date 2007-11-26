@@ -1143,7 +1143,7 @@ function graph() {
 	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_graph"), $total_rows, "graphs.php?filter=" . $_REQUEST["filter"] . "&host_id=" . $_REQUEST["host_id"]);
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='4'>
+			<td colspan='5'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -1164,6 +1164,7 @@ function graph() {
 
 	$display_text = array(
 		"title_cache" => array("Graph Title", "ASC"),
+		"local_graph_id" => array("ID", "ASC"),
 		"name" => array("Template Name", "ASC"),
 		"height" => array("Size", "ASC"));
 
@@ -1173,9 +1174,9 @@ function graph() {
 	if (sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]);
-
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='graphs.php?action=graph_edit&id=" . $graph["local_graph_id"] . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . (($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))) : title_trim($graph["title_cache"], read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
+			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
 			form_selectable_cell((($_REQUEST["filter"] != "") ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
