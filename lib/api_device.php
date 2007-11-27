@@ -25,15 +25,16 @@
 /* api_device_remove - removes a device
    @arg $device_id - the id of the device to remove */
 function api_device_remove($device_id) {
-	db_execute("delete from host where id=$device_id");
-	db_execute("delete from host_graph where host_id=$device_id");
-	db_execute("delete from host_snmp_query where host_id=$device_id");
-	db_execute("delete from host_snmp_cache where host_id=$device_id");
-	db_execute("delete from poller_item where host_id=$device_id");
-	db_execute("delete from poller_reindex where host_id=$device_id");
+	db_execute("delete from host             where id=$device_id");
+	db_execute("delete from host_graph       where host_id=$device_id");
+	db_execute("delete from host_snmp_query  where host_id=$device_id");
+	db_execute("delete from host_snmp_cache  where host_id=$device_id");
+	db_execute("delete from poller_item      where host_id=$device_id");
+	db_execute("delete from poller_reindex   where host_id=$device_id");
+	db_execute("delete from poller_command   where command like '$device_id:%'");
 	db_execute("delete from graph_tree_items where host_id=$device_id");
 
-	db_execute("update data_local set host_id=0 where host_id=$device_id");
+	db_execute("update data_local  set host_id=0 where host_id=$device_id");
 	db_execute("update graph_local set host_id=0 where host_id=$device_id");
 }
 
@@ -52,19 +53,23 @@ function api_device_remove_multi($device_ids) {
 				$devices_to_delete .= ", " . $device_id;
 			}
 
+			/* poller commands go one at a time due to trashy logic */
+			db_execute("DELETE FROM poller_item      WHERE host_id=$device_id");
+			db_execute("DELETE FROM poller_reindex   WHERE host_id=$device_id");
+			db_execute("DELETE FROM poller_command   WHERE command like '$device_id:%'");
+
 			$i++;
 		}
 
-		db_execute("DELETE FROM host WHERE id IN ($devices_to_delete)");
-		db_execute("DELETE FROM host_graph WHERE host_id IN ($devices_to_delete)");
-		db_execute("DELETE FROM host_snmp_query WHERE host_id IN ($devices_to_delete)");
-		db_execute("DELETE FROM host_snmp_cache WHERE host_id IN ($devices_to_delete)");
-		db_execute("DELETE FROM poller_item WHERE host_id IN ($devices_to_delete)");
-		db_execute("DELETE FROM poller_reindex WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host             WHERE id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_graph       WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_snmp_query  WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_snmp_cache  WHERE host_id IN ($devices_to_delete)");
+
 		db_execute("DELETE FROM graph_tree_items WHERE host_id IN ($devices_to_delete)");
 
 		/* for people who choose to leave data sources around */
-		db_execute("UPDATE data_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
+		db_execute("UPDATE data_local  SET host_id=0 WHERE host_id IN ($devices_to_delete)");
 		db_execute("UPDATE graph_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
 
 	}
@@ -101,7 +106,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["id"] = $id;
 	$save["host_template_id"]     = form_input_validate($host_template_id, "host_template_id", "^[0-9]+$", false, 3);
 	$save["description"]          = form_input_validate($description, "description", "", false, 3);
-	$save["hostname"]             = form_input_validate($hostname, "hostname", "", false, 3);
+	$save["hostname"]             = form_input_validate(trim($hostname), "hostname", "", false, 3);
 	$save["notes"]                = form_input_validate($notes, "notes", "", true, 3);
 
 	$save["snmp_version"]         = form_input_validate($snmp_version, "snmp_version", "", true, 3);
