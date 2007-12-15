@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -feature: Add rows dropdown to deivces, graphs and data sources
 -feature: Add device_id and event count to devices
 -feature: Add ids to devices, graphs and data sources pages
+-feature: Add database repair utility
 
 0.8.7a
 -bug#0000895: "Use Per-Data Source Value (Ignore this Value)" runs only when when checking "Allow Empty Input"
