@@ -617,7 +617,7 @@ function utilities_view_user_log() {
 	$display_text = array(
 		"username" => array("Username", "ASC"),
 		"full_name" => array("Full Name", "ASC"),
-		"realm" => array("Authenication Realm", "ASC"),
+		"realm" => array("Authentication Realm", "ASC"),
 		"time" => array("Date", "ASC"),
 		"result" => array("Result", "DESC"),
 		"ip" => array("IP Address", "DESC"));

@@ -157,7 +157,7 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",
 			}elseif ($ldap_error == 0x31) {
 				/* invalid credentials */
 				$output["error_num"] = "1";
-				$output["error_text"] = "Authenication Failure";
+				$output["error_text"] = "Authentication Failure";
 			}elseif ($ldap_error == 0x32) {
 				/* insuffient access */
 				$output["error_num"] = "8";

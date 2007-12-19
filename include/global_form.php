@@ -1117,8 +1117,8 @@ $fields_user_user_edit_host = array(
 		),
 	"realm" => array(
 		"method" => "drop_array",
-		"friendly_name" => "Authenication Realm",
-		"description" => "Only used if you have LDAP or Web Basic authenication enabled.  Changing this to an non-enabled realm will effectively disable the user.",
+		"friendly_name" => "Authentication Realm",
+		"description" => "Only used if you have LDAP or Web Basic Authentication enabled.  Changing this to an non-enabled realm will effectively disable the user.",
 		"value" => "|arg1:realm|",
 		"default" => 0,
 		"array" => $auth_realms,
