@@ -176,8 +176,7 @@
 					</para>
 					<screen><userinput>extension_dir = /etc/php.d</userinput></screen>
 					<para>
-						This will enable PHP to find more configuration directives
-						in that very directory.
+						This will enable PHP to find more configuration directives in that very directory. Other distros point to <filename>/usr/lib/php/modules</filename> instead. In each case, you should locate e.g. <filename>mysql.so</filename> in that directory.
 					</para>
 					<para>
 						Activate the <application>MySQL</application> extension
