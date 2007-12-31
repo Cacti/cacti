@@ -33,9 +33,14 @@ include("./lib/html_tree.php");
 include("./include/top_graph_header.php");
 
 /* ================= input validation ================= */
-input_validate_input_regex(get_request_var("rra_id"), "^([0-9]+|all)$");
+input_validate_input_regex(get_request_var_request("rra_id"), "^([0-9]+|all)$");
 input_validate_input_number(get_request_var("local_graph_id"));
+input_validate_input_regex(get_request_var_request("view_type"), "^([a-zA-Z0-9]+)$");
 /* ==================================================== */
+
+if (!isset($_GET['rra_id'])) {
+	$_GET['rra_id'] = 'all';
+}
 
 if ($_GET["rra_id"] == "all") {
 	$sql_where = " where id is not null";

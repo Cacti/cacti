@@ -27,6 +27,11 @@ include_once('./lib/api_tree.php');
 include_once('./lib/tree.php');
 include_once('./lib/html_tree.php');
 
+input_validate_input_number(get_request_var('tree_id'));
+input_validate_input_number(get_request_var('leaf_id'));
+input_validate_input_number(get_request_var_post('graph_tree_id'));
+input_validate_input_number(get_request_var_post('parent_item_id'));
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 

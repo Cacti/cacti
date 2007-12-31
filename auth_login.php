@@ -51,6 +51,8 @@ if (read_config_option("auth_method") == "2") {
 	}
 }
 
+$username = sanitize_search_string($username);
+
 /* process login */
 $copy_user = false;
 $user_auth = false;

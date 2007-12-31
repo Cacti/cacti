@@ -34,6 +34,9 @@ input_validate_input_number(get_request_var("hide"));
 input_validate_input_number(get_request_var("tree_id"));
 input_validate_input_number(get_request_var("leaf_id"));
 input_validate_input_number(get_request_var("rra_id"));
+input_validate_input_regex(get_request_var_request('graph_list'), "^([\,0-9]+)$");
+input_validate_input_regex(get_request_var_request('graph_add'), "^([\,0-9]+)$");
+input_validate_input_regex(get_request_var_request('graph_remove'), "^([\,0-9]+)$");
 /* ==================================================== */
 
 if (isset($_GET["hide"])) {
@@ -417,7 +420,7 @@ case 'list':
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
-							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								/* get policy information for the sql where clause */

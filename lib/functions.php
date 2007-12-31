@@ -1618,6 +1618,9 @@ function draw_navigation_text() {
 		);
 
 	$current_page = basename($_SERVER["PHP_SELF"]);
+
+	input_validate_input_regex(get_request_var_request("action"), "^([a-zA-Z0-9_-]+)$");
+
 	$current_action = (isset($_REQUEST["action"]) ? $_REQUEST["action"] : "");
 
 	/* find the current page in the big array */
@@ -1908,8 +1911,8 @@ function debug_log_return($type) {
    @arg $string - the original raw search string
    @returns - the sanitized search string */
 function sanitize_search_string($string) {
-	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '~', '+', '[', ']', '{', '}', '#', ';', '!');
-	static $drop_char_replace = array(' ', ' ', ' ', ' ',  '',   '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '~', '+', '[', ']', '{', '}', '#', ';', '!', '=');
+	static $drop_char_replace = array(' ', ' ', ' ', ' ',  '',   '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
 	/* Replace line endings by a space */
 	$string = preg_replace('/[\n\r]/is', ' ', $string);

@@ -106,6 +106,14 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
+// Sanity Check on "Corrupt" PHP_SELF
+if (!is_file($_SERVER["PHP_SELF"])){
+	if (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"])) {
+		echo "\nInvalid PHP_SELF Path\n";
+		exit;
+	}
+}
+
 if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && ($_SERVER["PHP_SELF"] != "")) {
 	/* we don't want these pages cached */
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
