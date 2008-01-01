@@ -158,17 +158,15 @@ function get_checkbox_style() {
    @arg $default - the value to return if the specified name does not exist in the
      $_GET array
    @returns - the value of the request variable */
-function get_request_var($name, $default = "")
-{
-	if (isset($_GET[$name]))
-	{
+function get_request_var($name, $default = "") {
+	if (isset($_GET[$name])) {
 		if (isset($_POST[$name])) {
 			unset($_POST[$name]);
 			$_REQUEST[$name] = $_GET[$name];
 		}
+
 		return $_GET[$name];
-	} else
-	{
+	}else{
 		return $default;
 	}
 }
@@ -180,17 +178,15 @@ function get_request_var($name, $default = "")
    @arg $default - the value to return if the specified name does not exist in the
      $_POST array
    @returns - the value of the request variable */
-function get_request_var_post($name, $default = "")
-{
-	if (isset($_POST[$name]))
-	{
+function get_request_var_post($name, $default = "") {
+	if (isset($_POST[$name])) {
 		if (isset($_GET[$name])) {
 			unset($_GET[$name]);
 			$_REQUEST[$name] = $_POST[$name];
 		}
+
 		return $_POST[$name];
-	} else
-	{
+	}else{
 		return $default;
 	}
 }
@@ -246,19 +242,19 @@ function get_colored_device_status($disabled, $status) {
 		);
 
 	if ($disabled) {
-		return "<span style='color: #$disabled_color'>Disabled</a>";
+		return "<span style='color: #$disabled_color'>Disabled</span>";
 	}else{
 		switch ($status) {
 			case HOST_DOWN:
-				return "<span style='color: #" . $status_colors[HOST_DOWN] . "'>Down</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_DOWN] . "'>Down</span>"; break;
 			case HOST_RECOVERING:
-				return "<span style='color: #" . $status_colors[HOST_RECOVERING] . "'>Recovering</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_RECOVERING] . "'>Recovering</span>"; break;
 			case HOST_UP:
-				return "<span style='color: #" . $status_colors[HOST_UP] . "'>Up</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_UP] . "'>Up</span>"; break;
 			case HOST_ERROR:
-				return "<span style='color: #" . $status_colors[HOST_ERROR] . "'>Error</a>"; break;
+				return "<span style='color: #" . $status_colors[HOST_ERROR] . "'>Error</span>"; break;
 			default:
-				return "<span style='color: #0000ff'>Unknown</a>"; break;
+				return "<span style='color: #0000ff'>Unknown</span>"; break;
 		}
 	}
 }
