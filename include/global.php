@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/* 
+/*
    !!! IMPORTANT !!!
 
-   The following defaults are not to be altered.  Please refer to 
-   include/config.php for user configurable database settings. 
+   The following defaults are not to be altered.  Please refer to
+   include/config.php for user configurable database settings.
 
 */
 
@@ -106,11 +106,13 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
-// Sanity Check on "Corrupt" PHP_SELF
+/* Sanity Check on "Corrupt" PHP_SELF */
 if (!is_file($_SERVER["PHP_SELF"])){
 	if (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"])) {
-		echo "\nInvalid PHP_SELF Path\n";
-		exit;
+		if (!is_file($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"])) {
+			echo "\nInvalid PHP_SELF Path\n";
+			exit;
+		}
 	}
 }
 
@@ -133,8 +135,8 @@ if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && 
 			return $value;
 		}
 
-		$_POST = array_map('addslashes_deep', $_POST);
-		$_GET = array_map('addslashes_deep', $_GET);
+		$_POST   = array_map('addslashes_deep', $_POST);
+		$_GET    = array_map('addslashes_deep', $_GET);
 		$_COOKIE = array_map('addslashes_deep', $_COOKIE);
 	}
 

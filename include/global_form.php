@@ -34,6 +34,7 @@ $fields_cdef_edit = array(
 		"description" => "A useful name for this CDEF.",
 		"value" => "|arg1:name|",
 		"max_length" => "255",
+		"size" => "60"
 		),
 	"id" => array(
 		"method" => "hidden_zero",
