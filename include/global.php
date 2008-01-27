@@ -107,12 +107,10 @@ $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
 /* Sanity Check on "Corrupt" PHP_SELF */
-if (!is_file($_SERVER["PHP_SELF"])){
-	if (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"])) {
-		if (!is_file($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"])) {
-			echo "\nInvalid PHP_SELF Path\n";
-			exit;
-		}
+if ((!is_file($_SERVER["PHP_SELF"])) && (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"]))) {
+	if ((!is_file($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"])) &&	(!is_file($_SERVER["SCRIPT_FILENAME"]))) {
+		echo "\nInvalid PHP_SELF Path\n";
+		exit;
 	}
 }
 
