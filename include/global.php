@@ -106,17 +106,17 @@ $colors["form_background_dark"] = "E1E1E1";
 $colors["form_alternate1"] = "F5F5F5";
 $colors["form_alternate2"] = "E5E5E5";
 
-/* Sanity Check on "Corrupt" PHP_SELF */
-if ((!is_file($_SERVER["PHP_SELF"])) && (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"]))) {
-	if (!is_file($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"])) {
-		if (!((is_file($_SERVER["SCRIPT_FILENAME"])) && (substr_count($_SERVER["SCRIPT_FILENAME"], $_SERVER["PHP_SELF"])))) {
-			echo "\nInvalid PHP_SELF Path\n";
-			exit;
+if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && ($_SERVER["PHP_SELF"] != "")) {
+	/* Sanity Check on "Corrupt" PHP_SELF */
+	if ((!is_file($_SERVER["PHP_SELF"])) && (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"]))) {
+		if (!is_file($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"])) {
+			if (!((is_file($_SERVER["SCRIPT_FILENAME"])) && (substr_count($_SERVER["SCRIPT_FILENAME"], $_SERVER["PHP_SELF"])))) {
+				echo "\nInvalid PHP_SELF Path\n";
+				exit;
+			}
 		}
 	}
-}
 
-if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && ($_SERVER["PHP_SELF"] != "")) {
 	/* we don't want these pages cached */
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
