@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+0.8.7b
 -bug#0001083: Small Visual Fix for CACTI in "View Cacti Log File"
 -bug#0001089: Graph xport modification to increase default rows output
 -bug#0001091: Poller Incorrectly Identifies Unique Hosts
