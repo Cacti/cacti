@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2007 The Cacti Group                                 |
+ | Copyright (C) 2004-2008 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,17 +27,17 @@ function upgrade_to_0_8_4() {
 	db_install_execute("0.8.4", "DROP TABLE `user_realm_filename`;");
 	db_install_execute("0.8.4", "DROP TABLE `host_template_data_sv`;");
 	db_install_execute("0.8.4", "DROP TABLE `host_template_graph_sv`;");
-	
+
 	db_install_execute("0.8.4", "UPDATE `host` set hostname=management_ip;");
 	db_install_execute("0.8.4", "UPDATE `data_input_fields` set type_code='hostname' where type_code='management_ip';");
-	
+
 	db_install_execute("0.8.4", "ALTER TABLE `data_input_data_cache` CHANGE `management_ip` `hostname` VARCHAR( 250 ) NOT NULL, ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `snmp_port`;");
 	db_install_execute("0.8.4", "ALTER TABLE `host` ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED DEFAULT '500' NOT NULL AFTER `snmp_port`, DROP `management_ip`;");
 	db_install_execute("0.8.4", "ALTER TABLE `data_input` DROP `output_string`;");
-	
+
 	db_install_execute("0.8.4", "ALTER TABLE `host_snmp_cache` DROP PRIMARY KEY;");
 	db_install_execute("0.8.4", "ALTER TABLE `host_snmp_cache` ADD PRIMARY KEY ( `host_id` , `snmp_query_id` , `field_name` , `snmp_index` );");
-	
+
 	/* hash columns for xml export/import code */
 	db_install_execute("0.8.4", "ALTER TABLE `data_input_fields` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
 	db_install_execute("0.8.4", "ALTER TABLE `data_template_rrd` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
@@ -55,10 +55,10 @@ function upgrade_to_0_8_4() {
 	db_install_execute("0.8.4", "ALTER TABLE `graph_templates_gprint` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
 	db_install_execute("0.8.4", "ALTER TABLE `snmp_query` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
 	db_install_execute("0.8.4", "ALTER TABLE `rra` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	
+
 	/* new realms */
 	$users = db_fetch_assoc("select id from user_auth");
-	
+
 	if (sizeof($users) > 0) {
 	foreach ($users as $user) {
 		if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $user["id"])) == 13) {
@@ -68,7 +68,7 @@ function upgrade_to_0_8_4() {
 		}
 	}
 	}
-	
+
 	/* there are a LOT of hashes to set */
 	db_execute("update cdef set hash='73f95f8b77b5508157d64047342c421e' where id=2;");
 	db_execute("update cdef_items set hash='9bbf6b792507bb9bb17d2af0970f9be9' where id=7;");
@@ -725,7 +725,7 @@ function upgrade_to_0_8_4() {
 	db_execute("update rra set hash='0d9c0af8b8acdc7807943937b3208e29' where id=2;");
 	db_execute("update rra set hash='6fc2d038fb42950138b0ce3e9874cc60' where id=3;");
 	db_execute("update rra set hash='e36f3adb9f152adfa5dc50fd2b23337e' where id=4;");
-	
+
 	$item = db_fetch_assoc("select id from cdef");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update cdef set hash='" . get_hash_cdef($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
@@ -734,12 +734,12 @@ function upgrade_to_0_8_4() {
 			db_execute("update cdef_items set hash='" . get_hash_cdef($item2[$j]["id"], "cdef_item") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
-	
+
 	$item = db_fetch_assoc("select id from graph_templates_gprint");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update graph_templates_gprint set hash='" . get_hash_gprint($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 	}
-	
+
 	$item = db_fetch_assoc("select id from data_input");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update data_input set hash='" . get_hash_data_input($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
@@ -748,7 +748,7 @@ function upgrade_to_0_8_4() {
 			db_execute("update data_input_fields set hash='" . get_hash_data_input($item2[$j]["id"], "data_input_field") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
-	
+
 	$item = db_fetch_assoc("select id from data_template");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update data_template set hash='" . get_hash_data_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
@@ -757,7 +757,7 @@ function upgrade_to_0_8_4() {
 			db_execute("update data_template_rrd set hash='" . get_hash_data_template($item2[$j]["id"], "data_template_item") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
-	
+
 	$item = db_fetch_assoc("select id from graph_templates");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update graph_templates set hash='" . get_hash_graph_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
@@ -770,7 +770,7 @@ function upgrade_to_0_8_4() {
 			db_execute("update graph_template_input set hash='" . get_hash_graph_template($item2[$j]["id"], "graph_template_input") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
-	
+
 	$item = db_fetch_assoc("select id from snmp_query");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update snmp_query set hash='" . get_hash_data_query($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
@@ -787,12 +787,12 @@ function upgrade_to_0_8_4() {
 			}
 		}
 	}
-	
+
 	$item = db_fetch_assoc("select id from host_template");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update host_template set hash='" . get_hash_host_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 	}
-	
+
 	$item = db_fetch_assoc("select id from rra");
 	for ($i=0; $i<count($item); $i++) {
 		db_execute("update rra set hash='" . get_hash_round_robin_archive($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");

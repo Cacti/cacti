@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2007 The Cacti Group                                 |
+ | Copyright (C) 2004-2008 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,7 +23,7 @@
 */
 
 /* set default action */
-if (isset($_REQUEST["action"])) { 
+if (isset($_REQUEST["action"])) {
 	$action = $_REQUEST["action"];
 }else{
 	$action = "";

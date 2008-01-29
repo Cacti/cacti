@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2007 The Cacti Group                                 |
+ | Copyright (C) 2004-2008 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,22 +27,22 @@ function upgrade_to_0_8_5() {
 	db_install_execute("0.8.5", "UPDATE host_snmp_cache set field_name='ifDescr' where field_name='ifDesc' and snmp_query_id=1;");
 	db_install_execute("0.8.5", "UPDATE snmp_query_graph_rrd_sv set text = REPLACE(text,'ifDesc','ifDescr') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4 or snmp_query_graph_id=20 or snmp_query_graph_id=21 or snmp_query_graph_id=22);");
 	db_install_execute("0.8.5", "UPDATE snmp_query_graph_sv set text = REPLACE(text,'ifDesc','ifDescr') where (snmp_query_graph_id=1 or snmp_query_graph_id=13 or snmp_query_graph_id=14 or snmp_query_graph_id=16 or snmp_query_graph_id=9 or snmp_query_graph_id=2 or snmp_query_graph_id=3 or snmp_query_graph_id=4 or snmp_query_graph_id=20 or snmp_query_graph_id=21 or snmp_query_graph_id=22);");
-	
+
 	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=1;");
 	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=2;");
 	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=38;");
 	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=39;");
 	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=40;");
 	db_install_execute("0.8.5", "UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=41;");
-	
+
 	$data_templates = db_fetch_assoc("select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);");
-	
+
 	if (sizeof($data_templates) > 0) {
 	foreach ($data_templates as $item) {
 		db_install_execute("0.8.5", "UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=" . $item["id"] . ";");
 	}
 	}
-	
+
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=22;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=24;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=1;");
@@ -52,16 +52,16 @@ function upgrade_to_0_8_5() {
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=25;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=33;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=23;");
-	
+
 	db_install_execute("0.8.5", "CREATE TABLE `host_graph` (`host_id` mediumint(8) unsigned NOT NULL default '0', `graph_template_id` mediumint(8) unsigned NOT NULL default '0', PRIMARY KEY  (`host_id`,`graph_template_id`)) TYPE=MyISAM;");
-	
+
 	/* typo */
 	db_install_execute("0.8.5", "UPDATE settings set name='snmp_version' where name='smnp_version';");
-	
+
 	/* allow 'Unit Exponent Value' = 0 */
 	db_install_execute("0.8.5", "ALTER TABLE `graph_templates_graph` CHANGE `unit_exponent_value` `unit_exponent_value` VARCHAR( 5 ) NOT NULL;");
 	db_install_execute("0.8.5", "UPDATE graph_templates_graph set unit_exponent_value='' where unit_exponent_value='0';");
-	
+
 	/* allow larger rrd steps */
 	db_install_execute("0.8.5", "ALTER TABLE `data_template_data` CHANGE `rrd_step` `rrd_step` MEDIUMINT( 8 ) UNSIGNED DEFAULT '0' NOT NULL;");
 }

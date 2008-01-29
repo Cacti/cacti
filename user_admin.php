@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2007 The Cacti Group                                 |
+ | Copyright (C) 2004-2008 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -377,10 +377,10 @@ function form_save() {
 		if ($username != get_request_var_post("username")) {
 			if ($username == read_config_option("user_template")) {
 				raise_message(20);
-			}	
+			}
 			if ($username == read_config_option("guest_user")) {
 				raise_message(20);
-			}	
+			}
 		}
 
 		/* check to make sure the passwords match; if not error */

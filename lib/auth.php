@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2007 The Cacti Group                                 |
+ | Copyright (C) 2004-2008 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,7 +27,7 @@
    @arg $template_user - username of the user account that should be used as the template
    @arg $new_user - new username of the account to be created/overwritten
    @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
-   @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm 
+   @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
    @arg $data_override - Array of user_auth field and values to override on the new user
    @return - True on copy, False on no copy */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
@@ -152,7 +152,7 @@ function user_remove($user_id) {
 	db_execute("delete from settings_graphs where user_id=" . $user_id);
 	db_execute("delete from settings_tree where user_id=" . $user_id);
 
-}       
+}
 
 
 /* user_disable - disable a user account
@@ -176,7 +176,7 @@ function user_enable($user_id) {
 
 	db_execute("UPDATE user_auth SET enabled = 'on' where id=" . $user_id);
 
-}   
+}
 
 
 /* get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph

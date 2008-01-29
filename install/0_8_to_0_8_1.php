@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2007 The Cacti Group                                 |
+ | Copyright (C) 2004-2008 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -29,9 +29,9 @@ function upgrade_to_0_8_1() {
 	db_install_execute("0.8.1", "ALTER TABLE user_log add primary key (username, user_id, time);");
 	db_install_execute("0.8.1", "ALTER TABLE user_auth add realm mediumint(8) not null after password;");
 	db_install_execute("0.8.1", "UPDATE user_auth set realm = 1 where full_name='ldap user';");
-	
+
 	$_src = db_fetch_assoc("select id, username from user_auth");
-	
+
 	if (sizeof($_src) > 0) {
 		foreach ($_src as $item) {
 			db_install_execute("0.8.1", "UPDATE user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "';");
