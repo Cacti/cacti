@@ -540,7 +540,7 @@ class Net_Ping
 		if ((int)$avail_method <= 0) $avail_method = AVAIL_SNMP;
 		if ((int)$ping_type <= 0) $ping_type = PING_UDP;
 
-		if (!function_exists("socket_create")) {
+		if ((!function_exists("socket_create")) && ($avail_method != AVAIL_NONE)) {
 			$avail_method = AVAIL_SNMP;
 			cacti_log("WARNING: sockets support not enabled in PHP, falling back to SNMP ping");
 		}

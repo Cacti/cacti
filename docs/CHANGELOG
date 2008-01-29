@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0001115: View Poller Cache does not show Data Sources that have no host
 -bug#0001118: Graph Generation fails if e.g. ifDescr contains some blanks
 -bug#0001132: TCP/UDP Ping Port Ignored
+-bug#0001133: Downed Device Detection: None leads to database errors
 -bug#0001161: radio buttons have duplicate IDs. can easily be improved for usablility
 -bug: Cacti does not guarentee RRA consolidation functions exist in RRA's.
 -feature: Add additional logging to Graph Xport
