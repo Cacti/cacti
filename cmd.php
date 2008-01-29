@@ -220,6 +220,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 		if (($new_host) && (!empty($host_id))) {
 			$ping->host = $item;
+			$ping->port = $hosts[$host_id]["ping_port"];
 
 			/* perform the appropriate ping check of the host */
 			if ($ping->ping($hosts[$host_id]["availability_method"], $hosts[$host_id]["ping_method"],
