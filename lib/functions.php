@@ -632,7 +632,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			}else {
 				$ping_time = $ping->snmp_status;
 			}
-		}elseif ($ping_availability = AVAIL_NONE) {
+		}elseif ($ping_availability == AVAIL_NONE) {
 			$ping_time = 0.000;
 		}else{
 			$ping_time = $ping->ping_status;
