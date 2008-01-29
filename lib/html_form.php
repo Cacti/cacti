@@ -476,7 +476,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = "";
 	}
 
-	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . "> $form_caption\n";
+	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . "> <label for='$form_name'>$form_caption</label>\n";
 }
 
 /* form_text_box - draws a standard html radio button
