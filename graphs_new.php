@@ -672,7 +672,7 @@ function graphs() {
 										<strong>Data Query</strong> [" . $snmp_query["name"] . "]
 									</td>
 									<td align='right' nowrap>
-										<a href='graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'><img src='images/reload_icon_small.gif' alt='Reload Associated Query' border='0' align='absmiddle'></a>
+										<a href='graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='Reload Associated Query' border='0' align='absmiddle'></a>
 									</td>
 								</tr>
 							</table>
