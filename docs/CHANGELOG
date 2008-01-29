@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0001083: Small Visual Fix for CACTI in "View Cacti Log File"
 -bug#0001089: Graph xport modification to increase default rows output
 -bug#0001091: Poller Incorrectly Identifies Unique Hosts
+-bug#0001093: CLI Scripts brings MySQL down on large installations
 -bug#0001094: Filtering Broken in Data Sources
 -bug#0001103: Looping poller recache events
 -bug#0001115: View Poller Cache does not show Data Sources that have no host
