@@ -341,35 +341,35 @@ $fields_grprint_presets_edit = array(
 /* file: (graphs.php|graph_templates.php), action: (graph|template)_edit */
 $struct_graph = array(
 	"title" => array(
-		"friendly_name" => "Title",
+		"friendly_name" => "Title (--title)",
 		"method" => "textbox",
 		"max_length" => "255",
 		"default" => "",
 		"description" => "The name that is printed on the graph."
 		),
 	"image_format_id" => array(
-		"friendly_name" => "Image Format",
+		"friendly_name" => "Image Format (--imgformat)",
 		"method" => "drop_array",
 		"array" => $image_types,
 		"default" => "1",
 		"description" => "The type of graph that is generated; PNG, GIF or SVG.  The selection of graph image type is very RRDtool dependent."
 		),
 	"height" => array(
-		"friendly_name" => "Height",
+		"friendly_name" => "Height (--height)",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "120",
 		"description" => "The height (in pixels) that the graph is."
 		),
 	"width" => array(
-		"friendly_name" => "Width",
+		"friendly_name" => "Width (--width)",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "500",
 		"description" => "The width (in pixels) that the graph is."
 		),
 	"slope_mode" => array(
-		"friendly_name" => "Slope Mode",
+		"friendly_name" => "Slope Mode (--slope-mode)",
 		"method" => "checkbox",
 		"default" => "on",
 		"description" => "Using Slope Mode, in RRDtool 1.2.x and above, evens out the shape of the graphs at the expense of
@@ -447,37 +447,37 @@ $struct_graph = array(
 			cacti's export feature."
 		),
 	"upper_limit" => array(
-		"friendly_name" => "Upper Limit",
+		"friendly_name" => "Upper Limit (--upper-limit)",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "100",
 		"description" => "The maximum vertical value for the rrd graph."
 		),
 	"lower_limit" => array(
-		"friendly_name" => "Lower Limit",
+		"friendly_name" => "Lower Limit (--lower-limit)",
 		"method" => "textbox",
 		"max_length" => "255",
 		"default" => "0",
 		"description" => "The minimum vertical value for the rrd graph."
 		),
 	"base_value" => array(
-		"friendly_name" => "Base Value",
+		"friendly_name" => "Base Value (--base)",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "1000",
 		"description" => "Should be set to 1024 for memory and 1000 for traffic measurements."
 		),
 	"unit_value" => array(
-		"friendly_name" => "Unit Grid Value",
+		"friendly_name" => "Unit Grid Value (--unit/--y-grid)",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "",
-		"description" => "(--unit/--y-grid) Sets the xponent value on the Y-axis for numbers. Note: This option was
+		"description" => "Sets the xponent value on the Y-axis for numbers. Note: This option was
 			added in rrdtool 1.0.36 and depricated in 1.2.x.  In RRDtool 1.2.x, this value is replaced by the --y-grid option.
 			In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines."
 		),
 	"unit_exponent_value" => array(
-		"friendly_name" => "Unit Exponent Value",
+		"friendly_name" => "Unit Exponent Value (--units-exponent)",
 		"method" => "textbox",
 		"max_length" => "50",
 		"default" => "",
@@ -485,7 +485,7 @@ $struct_graph = array(
 			to display everything in 'u' (micro)."
 		),
 	"vertical_label" => array(
-		"friendly_name" => "Vertical Label",
+		"friendly_name" => "Vertical Label (--vertical-label)",
 		"method" => "textbox",
 		"max_length" => "255",
 		"default" => "",
