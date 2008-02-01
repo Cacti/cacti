@@ -1073,23 +1073,23 @@ function generate_data_source_path($local_data_id) {
      the list of available consolidation functions for the consolidation functions and returns
      the most appropriate.  Typically, this will be the requested value
     @arg $data_template_id
-    @arg $requesed_cf
+    @arg $requested_cf
     @returns - the best cf to use */
 function generate_graph_best_cf($local_data_id, $requested_cf) {
+
 	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
-
-		/* workaround until we hae RRA presets in 0.8.8 */
+		/* workaround until we have RRA presets in 0.8.8 */
 		if (sizeof($avail_cf_functions)) {
 			/* check through the cf's and get the best */
 			foreach($avail_cf_functions as $cf) {
-				if ($cf["rra_cf"] == $requested_cf) {
+				if ($cf == $requested_cf) {
 					return $requested_cf;
 				}
 			}
 
 			/* if none was found, take the first */
-			return $avail_cf_functions[0]["rra_cf"];
+			return $avail_cf_functions[0];
 		}
 	}
 
@@ -1101,7 +1101,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
     @arg $local_data_id
     @returns - array of the CF functions */
 function get_rrd_cfs($local_data_id) {
-	global $rrd_cfs;
+	global $rrd_cfs, $consolidation_functions;
 
 	$rrdfile = get_data_source_path($local_data_id, TRUE);
 
@@ -1115,41 +1115,45 @@ function get_rrd_cfs($local_data_id) {
 
 	$output = rrdtool_execute("info $rrdfile", FALSE, RRDTOOL_OUTPUT_STDOUT);
 
+	/* search for 
+	 * 		rra[0].cf = "LAST"
+	 * or similar
+	 */
 	if (strlen($output)) {
 		$output = explode("\n", $output);
 
 		if (sizeof($output)) {
-		foreach($output as $line) {
-			if (substr_count($line, ".cf")) {
-				$values = explode("=",$line);
-
-				if (!in_array(trim($values[1]), $cfs)) {
-					$cfs[] = trim($values[1]);
+			foreach($output as $line) {
+				if (substr_count($line, ".cf")) {
+					$values = explode("=",$line);
+	
+					if (!in_array(trim($values[1]), $cfs)) {
+						$cfs[] = trim($values[1], '" ');
+					}
 				}
 			}
-		}
 		}
 	}
 
 	$new_cfs = array();
 
 	if (sizeof($cfs)) {
-	foreach($cfs as $cf) {
-		switch($cf) {
-		case "AVG":
-			$new_cfs[] = 1;
-			break;
-		case "MIN":
-			$new_cfs[] = 2;
-			break;
-		case "MAX":
-			$new_cfs[] = 3;
-			break;
-		case "LAST":
-			$new_cfs[] = 3;
-			break;
+		foreach($cfs as $cf) {
+			switch($cf) {
+			case "AVG":
+				$new_cfs[] = array_search('AVERAGE', $consolidation_functions);
+				break;
+			case "MIN":
+				$new_cfs[] = array_search('MIN', $consolidation_functions);
+				break;
+			case "MAX":
+				$new_cfs[] = array_search('MAX', $consolidation_functions);
+				break;
+			case "LAST":
+				$new_cfs[] = array_search('LAST', $consolidation_functions);
+				break;
+			}
 		}
-	}
 	}
 
 	$rrd_cfs[$local_data_id] = $new_cfs;
