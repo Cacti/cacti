@@ -425,7 +425,7 @@ function dynamic() {
 }
 
 function changeScaleLog() {
-	alert("Log changed to '" + document.getElementById('auto_scale_log').checked + "'");
+	//alert("Log changed to '" + document.getElementById('auto_scale_log').checked + "'");
 	document.getElementById('t_scale_log_units').disabled=true;
 	document.getElementById('scale_log_units').disabled=true;
 	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&

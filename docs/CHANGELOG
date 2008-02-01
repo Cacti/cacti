@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -bug#0001161: radio buttons have duplicate IDs. can easily be improved for usablility
 -bug#0001164: alt attributes don't make tooltips, title attrs do (host.php)
 -bug: Cacti does not guarentee RRA consolidation functions exist in RRA's.
+-bug: Alert on changing logarithmic scaling removed
 -feature: Add additional logging to Graph Xport
 -feature: Add rows dropdown to deivces, graphs and data sources
 -feature: Add device_id and event count to devices
