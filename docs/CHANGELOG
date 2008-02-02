@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -bug#0001094: Filtering Broken in Data Sources
 -bug#0001103: Looping poller recache events
 -bug#0001107: ss_fping.php 100% "Pkt Loss" work not properly
+-bug#0001114: Graphs with no template and/or no host cause filtering errors on Graph Mgt. page
 -bug#0001115: View Poller Cache does not show Data Sources that have no host
 -bug#0001118: Graph Generation fails if e.g. ifDescr contains some blanks
 -bug#0001132: TCP/UDP Ping Port Ignored
