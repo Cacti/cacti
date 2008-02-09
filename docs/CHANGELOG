@@ -24,7 +24,7 @@ Cacti CHANGELOG
 -bug: add_hosts.php did not accept privacy protocol
 -feature: show basic rrdtool graph options on Graph Template Edit
 -feature: Add additional logging to Graph Xport
--feature: Add rows dropdown to deivces, graphs and data sources
+-feature: Add rows dropdown to devices, graphs and data sources
 -feature: Add device_id and event count to devices
 -feature: Add ids to devices, graphs and data sources pages
 -feature: Add database repair utility
