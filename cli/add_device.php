@@ -123,8 +123,8 @@ if (sizeof($parms)) {
 			$snmp_auth_protocol = trim($value);
 
 			break;
-		case "--authproto":
-			$snmp_auth_protocol = trim($value);
+		case "--privproto":
+			$snmp_priv_protocol = trim($value);
 
 			break;
 		case "--privpass":
