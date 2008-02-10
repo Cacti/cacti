@@ -121,7 +121,17 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
 			/* determine the host's ip address */
-			$host_ip = gethostbyname($this->host["hostname"]);
+			if ($this->is_ipaddress($this->host["hostname"])) {
+				$host_ip = $this->host["hostname"];
+			}else{
+				$host_ip = gethostbyname($this->host["hostname"]);
+
+				if (!$this->is_ipaddress($host_ip)) {
+					cacti_log("WARNING: ICMP Ping Error: gethostbyname failed for " . $this->host["hostname"]);
+					$this->response = "ICMP Ping Error: gethostbyname failed for " . $this->host["hostname"];
+					return false;
+				}
+			}
 
 			/* set the effective user of root if unix */
 			$cacti_poller_account = $this->seteuid();
@@ -363,9 +373,19 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
 			/* determine the host's ip address */
-			$host_ip = gethostbyname($this->host["hostname"]);
+			if ($this->is_ipaddress($this->host["hostname"])) {
+				$host_ip = $this->host["hostname"];
+			}else{
+				$host_ip = gethostbyname($this->host["hostname"]);
 
-			/* initilize the socket */
+				if (!$this->is_ipaddress($host_ip)) {
+					cacti_log("WARNING: UDP Ping Error: gethostbyname failed for " . $this->host["hostname"]);
+					$this->response = "UDP Ping Error: gethostbyname failed for " . $this->host["hostname"];
+					return false;
+				}
+			}
+
+ 			/* initialize the socket */
 			if (substr_count($host_ip,":") > 0) {
 				if (defined("AF_INET6")) {
 					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
@@ -460,7 +480,17 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
 			/* determine the host's ip address */
-			$host_ip = gethostbyname($this->host["hostname"]);
+			if ($this->is_ipaddress($this->host["hostname"])) {
+				$host_ip = $this->host["hostname"];
+			}else{
+				$host_ip = gethostbyname($this->host["hostname"]);
+
+				if (!$this->is_ipaddress($host_ip)) {
+					cacti_log("WARNING: TCP Ping Error: gethostbyname failed for " . $this->host["hostname"]);
+					$this->response = "TCP Ping Error: gethostbyname failed for " . $this->host["hostname"];
+					return false;
+				}
+			}
 
 			/* initilize the socket */
 			if (substr_count($host_ip,":") > 0) {
@@ -535,25 +565,28 @@ class Net_Ping
 		$this->snmp_status   = "down";
 		$this->snmp_response = "SNMP not performed due to setting or ping result.";
 
-		/* do parameter checking before call */
-		/* apply defaults if parameters are spooky */
-		if ((int)$avail_method <= 0) $avail_method = AVAIL_SNMP;
-		if ((int)$ping_type <= 0) $ping_type = PING_UDP;
+		/* short circuit for availability none */
+		if ($avail_method == AVAIL_NONE) {
+			$this->ping_status = "0.00";
+			return true;
+		}
 
 		if ((!function_exists("socket_create")) && ($avail_method != AVAIL_NONE)) {
 			$avail_method = AVAIL_SNMP;
 			cacti_log("WARNING: sockets support not enabled in PHP, falling back to SNMP ping");
 		}
 
-		if (((int)$retries <= 0) || ((int)$retries > 5))
+		if (($retries <= 0) || ($retries > 5)) {
 			$this->retries = 2;
-		else
+		}else{
 			$this->retries = $retries;
+		}
 
-		if ((int)$timeout <= 0)
+		if ($timeout <= 0) {
 			$this->timeout = 500;
-		else
+		}else{
 			$this->timeout = $timeout;
+		}
 
 		/* decimal precision is 0.0000 */
 		$this->precision = 5;
@@ -611,12 +644,50 @@ class Net_Ping
 				}else{
 					return false;
 				}
-			case AVAIL_NONE:
-				return true;
 			default:
 				return false;
 		}
 	} /* end_ping */
+
+	function is_ipaddress($ip_address = '') {
+		/* check for ipv4/v6 */
+		if (substr_count($ip_address, ":")) {
+			/* compressed dot format */
+			if (substr_count($ip_address, "::")) {
+				$ip_address = str_replace("::", ":", $ip_address);
+				$segments   = explode(":", $ip_address);
+			}else{
+				$segments = explode(":", $ip_address);
+
+				if (sizeof($segments) != 8) {
+					/* should be 8 segments */
+					return false;
+				}
+			}
+
+			foreach ($segments as $segment) {
+				if (!is_numeric("0x" . $segment)) {
+					return false;
+				}
+			}
+		}else if (strlen($ip_address) <= 15) {
+			$octets = explode('.', $ip_address);
+
+			if (count($octets) != 4) {
+				return false;
+			}
+
+			foreach($octets as $octet) {
+				if(($octet < 0) || ($octet >= 255)) {
+					return false;
+				}
+			}
+
+			return true;
+		}else{
+			return false;
+		}
+	}
 }
 
 ?>
