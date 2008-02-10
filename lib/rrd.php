@@ -955,14 +955,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = "";
+		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = ""; 
+		$cdef_similar_ds_nodups = ""; $cdef_total_ds_nodups = "";
 
 		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
 			$cdef_string = $graph_variables["cdef_cache"]{$graph_item["graph_templates_item_id"]};
 
 			/* create cdef string for "total all data sources" if requested */
 			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
-				$item_count = 0;
+				$item_count 		= 0;
+				$nodups_item_count 	= 0;
+				$already_seen		= array();
+				
 				for ($t=0;($t<count($graph_items));$t++) {
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
@@ -970,6 +974,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
 							$cdef_total_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 							$item_count++;
+							
+							/* check if this item also qualifies for NODUPS  */
+							if(!isset($already_seen[$def_name])) {
+								$cdef_total_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								$already_seen[$def_name]=TRUE;
+								$nodups_item_count++;
+							}
 						}
 					}
 				}
@@ -979,21 +990,31 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if ($item_count > 1) {
 					$cdef_total_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
 				}
+				if ($nodups_item_count > 1) {
+					$cdef_total_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				}
 			}
 
 			/* create cdef string for "total similar data sources" if requested */
 			if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
-				$sources_seen = array();
-				$item_count = 0;
+				$item_count 		= 0;
+				$nodups_item_count 	= 0;
+				$sources_seen 		= array();
 
 				for ($t=0;($t<count($graph_items));$t++) {
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"])) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
-						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]) && (!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]}))) {
+						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
 							$cdef_similar_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-							$sources_seen{$graph_items[$t]["data_template_rrd_id"]} = 1;
 							$item_count++;
+
+							/* check if this item also qualifies for NODUPS  */
+							if(!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]})) {
+								$cdef_similar_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								$sources_seen{$graph_items[$t]["data_template_rrd_id"]} = TRUE;
+								$nodups_item_count++;
+							}							
 						}
 					}
 				}
@@ -1003,11 +1024,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if ($item_count > 1) {
 					$cdef_similar_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
 				}
+				if ($nodups_item_count > 1) {
+					$cdef_similar_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				}
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds, $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds_nodups, $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $cdef_total_ds, $cdef_string);
+			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds_nodups, $cdef_string);
+			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $cdef_similar_ds, $cdef_string);
 
 			/* data source item variables */
 			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($graph_item["rrd_minimum"]) ? "0" : $graph_item["rrd_minimum"]), $cdef_string);
@@ -1477,14 +1503,18 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_xport_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = "";
+		$cdef_xport_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = ""; 
+		$cdef_similar_ds_nodups = ""; $cdef_total_ds_nodups = "";
 
 		if ((!empty($xport_item["cdef_id"])) && (!isset($cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id]))) {
 			$cdef_string = $xport_variables["cdef_cache"]{$xport_item["graph_templates_item_id"]};
 
 			/* create cdef string for "total all data sources" if requested */
 			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
-				$item_count = 0;
+				$item_count 		= 0;
+				$nodups_item_count 	= 0;
+				$already_seen		= array();
+				
 				for ($t=0;($t<count($xport_items));$t++) {
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
@@ -1492,6 +1522,13 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]));
 							$cdef_total_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 							$item_count++;
+
+							/* check if this item also qualifies for NODUPS  */
+							if(! isset($already_seen[$def_name])) {
+								$cdef_total_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								$already_seen[$def_name]=TRUE;
+								$nodups_item_count++;
+							}
 						}
 					}
 				}
@@ -1501,21 +1538,30 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 				if ($item_count > 1) {
 					$cdef_total_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
 				}
+				if ($nodups_item_count > 1) {
+					$cdef_total_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				}
 			}
 
 			/* create cdef string for "total similar data sources" if requested */
 			if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
-				$sources_seen = array();
-				$item_count = 0;
+				$item_count 		= 0;
+				$nodups_item_count 	= 0;
+				$sources_seen 		= array();
 
 				for ($t=0;($t<count($xport_items));$t++) {
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"])) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
-						if (isset($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]) && (!isset($sources_seen{$xport_items[$t]["data_template_rrd_id"]}))) {
+						if (isset($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]));
 							$cdef_similar_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-							$sources_seen{$xport_items[$t]["data_template_rrd_id"]} = 1;
 							$item_count++;
+
+							if (!isset($sources_seen{$xport_items[$t]["data_template_rrd_id"]})) {
+								$cdef_similar_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								$sources_seen{$xport_items[$t]["data_template_rrd_id"]} = TRUE;
+								$nodups_item_count++;
+							}
 						}
 					}
 				}
@@ -1525,11 +1571,16 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 				if ($item_count > 1) {
 					$cdef_similar_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
 				}
+				if ($nodups_item_count > 1) {
+					$cdef_similar_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				}
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds, $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $cdef_total_ds, $cdef_string);
+			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds_nodups, $cdef_string);
+			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $cdef_similar_ds, $cdef_string);
+			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds_nodups, $cdef_string);
 
 			/* data source item variables */
 			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($xport_item["rrd_minimum"]) ? "0" : $xport_item["rrd_minimum"]), $cdef_string);
