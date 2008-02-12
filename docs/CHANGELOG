@@ -2,28 +2,29 @@ Cacti CHANGELOG
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE
--bug#0001083: Small Visual Fix for CACTI in "View Cacti Log File"
+-bug#0001083: Small visual fix for Cacti in "View Cacti Log File"
 -bug#0001089: Graph xport modification to increase default rows output
--bug#0001091: Poller Incorrectly Identifies Unique Hosts
--bug#0001093: CLI Scripts brings MySQL down on large installations
--bug#0001094: Filtering Broken in Data Sources
--bug#0001103: Looping poller recache events
--bug#0001107: ss_fping.php 100% "Pkt Loss" work not properly
--bug#0001114: Graphs with no template and/or no host cause filtering errors on Graph Mgt. page
+-bug#0001091: Poller incorrectly identifies unique hosts
+-bug#0001093: CLI Scripts bring MySQL down on large installations
+-bug#0001094: Filtering broken on Data Sources page
+-bug#0001103: Fix looping poller recache events
+-bug#0001107: ss_fping.php 100% "Pkt Loss" does not work properly
+-bug#0001114: Graphs with no template and/or no host cause filtering errors on Graph Management page
 -bug#0001115: View Poller Cache does not show Data Sources that have no host
 -bug#0001118: Graph Generation fails if e.g. ifDescr contains some blanks
--bug#0001132: TCP/UDP Ping Port Ignored
+-bug#0001132: TCP/UDP ping port ignored
 -bug#0001133: Downed Device Detection: None leads to database errors
 -bug#0001134: update_host_status handles ping_availability incorrectly
--bug#0001143: "U" not allowed as min/max rrd value
+-bug#0001143: "U" not allowed as min/max RRD value
 -bug#0001158: Deleted user causes error on user log viewer
--bug#0001161: radio buttons have duplicate IDs. can easily be improved for usablility
--bug#0001164: alt attributes don't make tooltips, title attrs do (host.php)
+-bug#0001161: Re-assign duplicate radio button IDs
+-bug#0001164: Add HTML title attributes for certain pages
 -bug#0001168: ALL_DATA_SOURCES_NODUPS includes DUPs? SIMILAR_DATA_SOURCES_DUPS is available again
--bug: Cacti does not guarentee RRA consolidation functions exist in RRA's.
+-bug: Cacti does not guarentee RRA consolidation functions exist in RRA's
 -bug: Alert on changing logarithmic scaling removed
 -bug: add_hosts.php did not accept privacy protocol
--feature: show basic rrdtool graph options on Graph Template Edit
+-security: Fix several security vulnerabilities
+-feature: show basic RRDtool graph options on Graph Template edit
 -feature: Add additional logging to Graph Xport
 -feature: Add rows dropdown to devices, graphs and data sources
 -feature: Add device_id and event count to devices
