@@ -968,6 +968,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$already_seen		= array();
 				
 				for ($t=0;($t<count($graph_items));$t++) {
+					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $graph_items[$t]["cdef_cache"])) {
+						/* in case, this ALL_DATA_SOURCES_(NO)?DUPS entry was erraneously associated with any data source
+						 * skip counting this entry */
+						continue;
+					}
+
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
@@ -1002,6 +1008,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$sources_seen 		= array();
 
 				for ($t=0;($t<count($graph_items));$t++) {
+					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $graph_items[$t]["cdef_cache"])) {
+						/* SIMILAR_DATA_SOURCES_(NO)?DUPS entry has to be associated with a data source
+						 * we won't count this data source due to it's appearance in a SIMILAR_DATA_SOURCES_(NO)?DUPS
+						 * entry. This way, we even support multiple ALL|SIMILAR_DATA_SOURCES_(NO)?DUPS
+						 * for a single graph */
+						continue;
+					}
+
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"])) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
