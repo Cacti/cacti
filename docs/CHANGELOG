@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug: initialization of snmp_auth when using SNMP=NONE
+-bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used) 
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE

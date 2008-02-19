@@ -161,12 +161,9 @@ if (sizeof($parms)) {
 		}
 	}
 
-	if ($templateId > 0) {
-		$input_fields = getInputFields($templateId, $quietMode);
-	}
-
 	if ($listInputFields) {
 		if ($templateId > 0) {
+			$input_fields = getInputFields($templateId, $quietMode);
 			displayInputFields($input_fields, $quietMode);
 		} else {
 			echo "ERROR: You must supply an graph-template-id before you can list its input fields\n";
@@ -276,6 +273,9 @@ if (sizeof($parms)) {
 
 	if (strlen($cgInputFields)) {
 		$fields = explode(" ", $cgInputFields);
+		if ($templateId > 0) {
+			$input_fields = getInputFields($templateId, $quietMode);
+		}
 
 		if (sizeof($fields)) {
 			foreach ($fields as $option) {
