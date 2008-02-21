@@ -71,13 +71,11 @@ function upgrade_to_0_8_7() {
 	$global_auth_db = db_fetch_row("SELECT value FROM settings WHERE name = 'global_auth'");
 	if (sizeof($global_auth_db)) {
 		$global_auth = $global_auth_db["value"];
-
 	}
-        $ldap_enabled = "";
+	$ldap_enabled = "";
 	$ldap_enabled_db = db_fetch_row("SELECT value FROM settings WHERE name = 'ldap_enabled'");
 	if (sizeof($ldap_enabled_db)) {
-		$ldap_enabled = $ldap_enable_db["value"];
-
+		$ldap_enabled = $ldap_enabled_db["value"];
 	}
 	if ($global_auth == "on") {
 		if ($ldap_enabled == "on") {
@@ -88,7 +86,9 @@ function upgrade_to_0_8_7() {
 	}else{
 		db_install_execute("0.8.7", "INSERT INTO settings VALUES ('auth_method','0')");
 	}
+	db_install_execute("0.8.7", "UPDATE `settings` SET value = '0' WHERE name = 'guest_user' and value = ''");
 	db_install_execute("0.8.7", "UPDATE `settings` SET name = 'user_template' WHERE name = 'ldap_template'");
+	db_install_execute("0.8.7", "UPDATE `settings` SET value = '0' WHERE name = 'user_template' and value = ''");
 	db_install_execute("0.8.7", "DELETE FROM `settings` WHERE name = 'global_auth'");
 	db_install_execute("0.8.7", "DELETE FROM `settings` WHERE name = 'ldap_enabled'");
 
