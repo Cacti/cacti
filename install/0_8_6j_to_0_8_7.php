@@ -120,7 +120,7 @@ function upgrade_to_0_8_7() {
 					}
 				}else{
 					if ($availability_method == AVAIL_SNMP) {
-						db_install_execute("0.8.7", "UPDATE host SET availability_method=" . AVAIL_NONE . ", ping_method=" . PING_UDP . ",ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
+						db_install_execute("0.8.7", "UPDATE host SET availability_method=" . AVAIL_SNMP . ", ping_method=" . PING_UDP . ",ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
 					}else if ($availability_method == AVAIL_SNMP_AND_PING) {
 						if ($ping_method == PING_ICMP) {
 							db_install_execute("0.8.7", "UPDATE host SET availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
