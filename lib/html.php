@@ -94,14 +94,15 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			?>
-			<tr bgcolor='#<?php print ($i % 2 == 0 ? "f9f9f9" : "ffffff");?>'>
+			<tr style='background-color: #<?php print ($i % 2 == 0 ? "f9f9f9" : "ffffff");?>;'>
 				<td align='center'>
-					<table width='1' cellpadding='0'>
+					<table align='left' cellpadding='0'>
 						<tr>
 							<td>
 								<a href='graph.php?action=view&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
+								<p style='font-size: 10;' align='left'><strong><?php print $graph["title_cache"];?></strong></p>
 							</td>
-							<td valign='top' style='padding: 3px;' class='noprint'>
+							<td valign='top' style='align: left; padding: 3px;' class='noprint'>
 								<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
 								<a href='graph_xport.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
 								<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
@@ -130,23 +131,24 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
-	$i = 0; $k = 0;
+	$i = 0; $k = 0; $j = 0;
 	if (sizeof($graph_array) > 0) {
 		if ($header != "") {
 			print $header;
 		}
 
-		print "<tr>";
+		print "<tr style='background-color: #" . ($j % 2 == 0 ? "F2F2F2" : "FFFFFF") . ";'>";
 
 		foreach ($graph_array as $graph) {
 			?>
 			<td align='center' width='<?php print (98 / read_graph_config_option("num_columns"));?>%'>
-				<table width='1' cellpadding='0'>
+				<table align='left' cellpadding='0'>
 					<tr>
 						<td>
 							<a href='graph.php?action=view&rra_id=all&local_graph_id=<?php print $graph["local_graph_id"];?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&graph_height=<?php print read_graph_config_option("default_height");?>&graph_width=<?php print read_graph_config_option("default_width");?>&graph_nolegend=true<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
+							<p style='font-size: 10;' align='left'><strong><?php print $graph["title_cache"];?></strong></p>
 						</td>
-						<td valign='top' style='padding: 3px;'>
+						<td valign='top' style='align: left; padding: 3px;'>
 							<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
 							<a href='graph_xport.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
 							<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
@@ -161,7 +163,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 			if (($i == read_graph_config_option("num_columns")) && ($k < count($graph_array))) {
 				$i = 0;
-				print "</tr><tr>";
+				$j++;
+				print "</tr><tr style='background-color: #" . ($j % 2 == 0 ? "F2F2F2" : "FFFFFF") . ";'>";
 			}
 		}
 
