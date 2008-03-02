@@ -192,15 +192,21 @@ while ($poller_runs_completed < $poller_runs) {
 		$issue_list = "";
 		$count = 0;
 		foreach($issues as $issue) {
-			if ($count == 0) {
-				$issue_list .= $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
-			}else{
-				$issue_list .= ", " . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
+			if ($count <= 20) {
+				if ($count == 0) {
+					$issue_list .= $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
+				}else{
+					$issue_list .= ", " . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
+				}
 			}
 			$count++;
 		}
 
-		cacti_log("WARNING: Poller Output Table not Empty.  Potential Data Source Issues for Data Sources: $issue_list", FALSE, "POLLER");
+		if ($count > 20) {
+			$issue_list .= ", Additional Issues Remain.  Only showing first 20";
+		}
+
+		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", FALSE, "POLLER");
 		db_execute("TRUNCATE TABLE poller_output");
 	}
 

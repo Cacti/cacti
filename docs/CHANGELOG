@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug: initialization of snmp_auth when using SNMP=NONE
 -bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used)
+-bug: If the poller_output table is not empty, don't flood the log
 -feature: add graph title to graphs page
 
 
