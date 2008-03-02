@@ -147,7 +147,7 @@ function form_save() {
 			raise_message(4);
 		}else{
 			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"],
-				$_POST["hostname"], $_POST["snmp_community"], $_POST["snmp_version"],
+				trim($_POST["hostname"]), $_POST["snmp_community"], $_POST["snmp_version"],
 				$_POST["snmp_username"], $_POST["snmp_password"],
 				$_POST["snmp_port"], $_POST["snmp_timeout"],
 				(isset($_POST["disabled"]) ? $_POST["disabled"] : ""),
