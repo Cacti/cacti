@@ -640,7 +640,9 @@ function host_edit() {
 				</td>
 				<?php } ?>
 				<td class="textInfo" valign="top">
-					<span style="color: #c16921;">*</span><a href="graphs_new.php?host_id=<?php print $host["id"];?>">Create Graphs for this Host</a>
+					<span style="color: #c16921;">*</span><a href="graphs_new.php?host_id=<?php print $host["id"];?>">Create Graphs for this Host</a><br>
+					<span style="color: #c16921;">*</span><a href="data_sources.php?host_id=<?php print $host["id"];?>&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1">Data Source List</a><br>
+					<span style="color: #c16921;">*</span><a href="graphs.php?host_id=<?php print $host["id"];?>&graph_rows=30&filter=&template_id=-1&page=1">Graph List</a>
 				</td>
 			</tr>
 		</table>
