@@ -850,7 +850,15 @@ function graph_edit() {
 					<?php print get_graph_title($_GET["id"]);?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span style="color: #c16921;">*<a href='graphs.php?action=graph_edit&id=<?php print (isset($_GET["id"]) ? $_GET["id"] : 0);?>&debug=<?php print (isset($_SESSION["graph_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a>
+					<span style="color: #c16921;">*<a href='graphs.php?action=graph_edit&id=<?php print (isset($_GET["id"]) ? $_GET["id"] : 0);?>&debug=<?php print (isset($_SESSION["graph_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a><br>
+					<?php
+						if (!empty($graphs["graph_template_id"])) {
+							?><span style="color: #c16921;">*<a href='graph_templates.php?action=template_edit&id=<?php print (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0");?>'>Edit Graph Template.</a><br><?php
+						}
+						if (!empty($_GET["host_id"]) || !empty($host_id)) {
+							?><span style="color: #c16921;">*<a href='host.php?action=edit&id=<?php print (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id);?>'>Edit Host.</a><br><?php
+						}
+					?>
 				</td>
 			</tr>
 		</table>
