@@ -23,7 +23,15 @@
 */
 
 include("./include/auth.php");
+include_once("./lib/utility.php");
 include_once("./lib/cdef.php");
+
+define("MAX_DISPLAY_PAGES", 21);
+
+$cdef_actions = array(
+	1 => "Delete",
+	2 => "Duplicate"
+	);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -31,6 +39,10 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
+
+		break;
+	case 'actions':
+		form_actions();
 
 		break;
 	case 'item_movedown':
@@ -141,6 +153,101 @@ function form_save() {
 			header("Location: cdef.php?action=edit&id=" . $_POST["cdef_id"]);
 		}
 	}
+}
+
+/* ------------------------
+    The "actions" function
+   ------------------------ */
+
+function form_actions() {
+	global $colors, $cdef_actions;
+
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+
+		if ($_POST["drp_action"] == "1") { /* delete */
+			db_execute("delete from cdef where " . array_to_sql_or($selected_items, "id"));
+			db_execute("delete from cdef_items where " . array_to_sql_or($selected_items, "cdef_id"));
+
+		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				duplicate_cdef($selected_items[$i], $_POST["title_format"]);
+			}
+		}
+
+		header("Location: cdef.php");
+		exit;
+	}
+
+	/* setup some variables */
+	$cdef_list = ""; $i = 0;
+
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			$cdef_list .= "<li>" . db_fetch_cell("select name from cdef where id=" . $matches[1]) . "<br>";
+			$cdef_array[$i] = $matches[1];
+		}
+
+		$i++;
+	}
+
+	include_once("./include/top_header.php");
+
+	html_start_box("<strong>" . $cdef_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+
+	print "<form action='cdef.php' method='post'>\n";
+
+	if ($_POST["drp_action"] == "1") { /* delete */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>Are you sure you want to delete the following CDEFs?</p>
+					<p>$cdef_list</p>
+				</td>
+			</tr>\n
+			";
+	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click save, the following CDEFs will be duplicated. You can
+					optionally change the title format for the new CDEFs.</p>
+					<p>$cdef_list</p>
+					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<cdef_title> (1)", "", "255", "30", "text"); print "</p>
+				</td>
+			</tr>\n
+			";
+	}
+
+	if (!isset($cdef_array)) {
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one CDEF.</span></td></tr>\n";
+		$save_html = "";
+	}else{
+		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+	}
+
+	print "	<tr>
+			<td align='right' bgcolor='#eaeaea'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<a href='cdef.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
+				$save_html
+			</td>
+		</tr>
+		";
+
+	html_end_box();
+
+	include_once("./include/bottom_footer.php");
 }
 
 /* --------------------------
@@ -347,32 +454,111 @@ function cdef_edit() {
 }
 
 function cdef() {
-	global $colors;
+	global $colors, $cdef_actions;
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
+	/* clean up sort_column string */
+	if (isset($_REQUEST["sort_column"])) {
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	}
+
+	/* clean up sort_direction string */
+	if (isset($_REQUEST["sort_direction"])) {
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_cdef_current_page");
+		kill_session_var("sess_cdef_filter");
+		kill_session_var("sess_cdef_sort_column");
+		kill_session_var("sess_cdef_sort_direction");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_cdef_current_page", "1");
+	load_current_session_value("filter", "sess_cdef_filter", "");
+	load_current_session_value("sort_column", "sess_cdef_sort_column", "name");
+	load_current_session_value("sort_direction", "sess_cdef_sort_direction", "ASC");
 
 	html_start_box("<strong>CDEF's</strong>", "100%", $colors["header"], "3", "center", "cdef.php?action=edit");
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Name",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-	print "</tr>";
+	include("./include/html/inc_cdef_filter_table.php");
 
-	$cdefs = db_fetch_assoc("select * from cdef order by name");
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "WHERE (cdef.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
+
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(cdef.id)
+		FROM cdef
+		$sql_where");
+
+	$cdef_list = db_fetch_assoc("SELECT
+		cdef.id,cdef.name
+		FROM cdef
+		$sql_where
+		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
+		" LIMIT " . (read_config_option("num_rows_device")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_device"));
+
+	/* generate page list */
+	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "cdef.php?filter=" . $_REQUEST["filter"]);
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		<td colspan='7'>
+			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='cdef.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+					</td>\n
+					<td align='center' class='textHeaderDark'>
+						Showing Rows " . ((read_config_option("num_rows_device")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_device")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+					</td>\n
+					<td align='right' class='textHeaderDark'>
+						<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='cdef.php?filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+					</td>\n
+				</tr>
+			</table>
+		</td>
+		</tr>\n";
+
+	print $nav;
+
+	$display_text = array(
+		"name" => array("CDEF Title", "ASC"));
+
+	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
 
 	$i = 0;
-	if (sizeof($cdefs) > 0) {
-	foreach ($cdefs as $cdef) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
-			?>
-			<td>
-				<a class="linkEditMain" href="cdef.php?action=edit&id=<?php print $cdef["id"];?>"><?php print $cdef["name"];?></a>
-			</td>
-			<td align="right">
-				<a href="cdef.php?action=remove&id=<?php print $cdef["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
-			</td>
-		</tr>
-	<?php
+	if (sizeof($cdef_list) > 0) {
+		foreach ($cdef_list as $cdef) {
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $cdef["id"]);$i++;
+			form_selectable_cell("<a class='linkEditMain' href='cdef.php?action=edit&id=" . $cdef["id"] . "'>" . (strlen($_REQUEST["filter"]) ? eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $cdef["name"]) : $cdef["name"]) . "</a>", $cdef["id"]);
+			form_checkbox_cell($cdef["name"], $cdef["id"]);
+			form_end_row();
+		}
+		print $nav;
+	}else{
+		print "<tr><td><em>No CDEFs</em></td></tr>\n";
 	}
-	}
-	html_end_box();
+	html_end_box(false);
+
+	/* draw the dropdown containing a list of available actions for this form */
+	draw_actions_dropdown($cdef_actions);
+
+	print "</form>\n";
 }
 ?>

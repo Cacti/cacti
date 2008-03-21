@@ -490,4 +490,43 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	}
 }
 
+function duplicate_cdef($_cdef_id, $cdef_title) {
+	global $fields_cdef_edit;
+
+	$cdef = db_fetch_row("select * from cdef where id=$_cdef_id");
+	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$_cdef_id");
+
+	/* substitute the title variable */
+	$cdef["name"] = str_replace("<cdef_title>", $cdef["name"], $cdef_title);
+
+	/* create new entry: host_template */
+	$save["id"] = 0;
+	$save["hash"] = get_hash_cdef(0);
+
+	reset($fields_cdef_edit);
+	while (list($field, $array) = each($fields_cdef_edit)) {
+		if (!ereg("^hidden", $array["method"])) {
+			$save[$field] = $cdef[$field];
+		}
+	}
+
+	$cdef_id = sql_save($save, "cdef");
+
+	/* create new entry(s): cdef_items */
+	if (sizeof($cdef_items) > 0) {
+		foreach ($cdef_items as $cdef_item) {
+			unset($save);
+	
+			$save["id"] = 0;
+			$save["hash"] = get_hash_cdef(0, "cdef_item");
+			$save["cdef_id"] = $cdef_id;
+			$save["sequence"] = $cdef_item["sequence"];
+			$save["type"] = $cdef_item["type"];
+			$save["value"] = $cdef_item["value"];
+	
+			sql_save($save, "cdef_items");
+		}
+	}
+}
+
 ?>

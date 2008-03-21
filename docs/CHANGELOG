@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used)
 -bug: If the poller_output table is not empty, don't flood the log
 -bug: Remove warnings appear in the httpd log relative to reset attempts on settings array
+-feature#0001205: add filtering and pagination to cdef management; add "Duplicate CDEF"
 -feature: add graph title to graphs page
 -feature: add links to Graph Management and Data Sources to Device Edit Screen
 -feature: add links to Graph Template and Host Edit to Graph Edit Screen
