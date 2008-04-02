@@ -127,7 +127,7 @@ case 'zoom':
 	}
 
 	/* fetch information for the current RRA */
-	$rra = db_fetch_row("select timespan,steps,name from rra where id=" . $_GET["rra_id"]);
+	$rra = db_fetch_row("select id,timespan,steps,name from rra where id=" . $_GET["rra_id"]);
 
 	/* define the time span, which decides which rra to use */
 	$timespan = -($rra["timespan"]);
