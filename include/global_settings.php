@@ -773,14 +773,14 @@ $settings = array(
 			),
 		"ldap_port" => array(
 			"friendly_name" => "Port Standard",
-			"description" => "TCP/UDP port for Non SSL comminications.",
+			"description" => "TCP/UDP port for Non SSL communications.",
 			"method" => "textbox",
 			"max_length" => "5",
 			"default" => "389"
 			),
 		"ldap_port_ssl" => array(
 			"friendly_name" => "Port SSL",
-			"description" => "TCP/UDP port for SSL comminications.",
+			"description" => "TCP/UDP port for SSL communications.",
 			"method" => "textbox",
 			"max_length" => "5",
 			"default" => "636"
