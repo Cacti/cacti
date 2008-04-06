@@ -31,7 +31,7 @@
    @arg $db_type - the type of database server to connect to, only 'mysql' is currently supported
    @arg $retries - the number a time the server should attempt to connect before failing
    @returns - (bool) '1' for success, '0' for error */
-function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $retries = 20) {
+function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306", $retries = 20) {
 	global $cnn_id;
 
 	$i = 0;
@@ -41,7 +41,7 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 
 	while ($i <= $retries) {
 		if ($cnn_id->PConnect($hostport,$user,$pass,$db_name)) {
-			return(1);
+			return($cnn_id);
 		}
 
 		$i++;
@@ -56,19 +56,27 @@ function db_connect_real($host,$user,$pass,$db_name,$db_type, $port = "3306", $r
 
 /* db_close - closes the open connection
    @returns - the result of the close command */
-function db_close() {
+function db_close($db_conn = FALSE) {
 	global $cnn_id;
 
-	return $cnn_id->Close();
+	if (!$db_conn) {
+		return $cnn_id->Close();
+	}else{
+		return $db_conn->Close();
+	}
 }
 
 /* db_execute - run an sql query and do not return any output
    @arg $sql - the sql query to execute
    @arg $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
-function db_execute($sql, $log = TRUE) {
+function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 	global $cnn_id;
 
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
@@ -77,12 +85,12 @@ function db_execute($sql, $log = TRUE) {
 
 	$errors = 0;
 	while (1) {
-		$query = $cnn_id->Execute($sql);
+		$query = $db_conn->Execute($sql);
 
-		if (($query) || ($cnn_id->ErrorNo() == 1032)) {
+		if (($query) || ($db_conn->ErrorNo() == 1032)) {
 			return(1);
 		}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-			if ((substr_count($cnn_id->ErrorMsg(), "Deadlock")) || ($cnn_id->ErrorNo() == 1213) || ($cnn_id->ErrorNo() == 1205)) {
+			if ((substr_count($db_conn->ErrorMsg(), "Deadlock")) || ($db_conn->ErrorNo() == 1213) || ($db_conn->ErrorNo() == 1205)) {
 				$errors++;
 				if ($errors > 30) {
 					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) ."'", TRUE);
@@ -92,7 +100,7 @@ function db_execute($sql, $log = TRUE) {
 					continue;
 				}
 			}else{
-				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
+				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
 				return(0);
 			}
 		}
@@ -102,11 +110,16 @@ function db_execute($sql, $log = TRUE) {
 /* db_fetch_cell - run a 'select' sql query and return the first column of the
      first row found
    @arg $sql - the sql query to execute
-   @arg $log - whether to log error messages, defaults to true
    @arg $col_name - use this column name instead of the first one
+   @arg $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
+function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 	global $cnn_id;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
 
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
@@ -115,14 +128,14 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 	}
 
 	if ($col_name != '') {
-		$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
+		$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
 	}else{
-		$cnn_id->SetFetchMode(ADODB_FETCH_NUM);
+		$db_conn->SetFetchMode(ADODB_FETCH_NUM);
 	}
 
-	$query = $cnn_id->Execute($sql);
+	$query = $db_conn->Execute($sql);
 
-	if (($query) || ($cnn_id->ErrorNo() == 1032)) {
+	if (($query) || ($db_conn->ErrorNo() == 1032)) {
 		if (!$query->EOF) {
 			if ($col_name != '') {
 				$column = $query->fields[$col_name];
@@ -135,7 +148,7 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
 			return($column);
 		}
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -143,8 +156,13 @@ function db_fetch_cell($sql,$col_name = '', $log = TRUE) {
    @arg $sql - the sql query to execute
    @arg $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
-function db_fetch_row($sql, $log = TRUE) {
+function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 	global $cnn_id;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
 
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
@@ -152,10 +170,10 @@ function db_fetch_row($sql, $log = TRUE) {
 		cacti_log("DEBUG: SQL Row: \"" . $sql . "\"\n", FALSE);
 	}
 
-	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
-	$query = $cnn_id->Execute($sql);
+	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+	$query = $db_conn->Execute($sql);
 
-	if (($query) || ($cnn_id->ErrorNo() == 1032)) {
+	if (($query) || ($db_conn->ErrorNo() == 1032)) {
 		if (!$query->EOF) {
 			$fields = $query->fields;
 
@@ -164,7 +182,7 @@ function db_fetch_row($sql, $log = TRUE) {
 			return($fields);
 		}
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Row Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -172,8 +190,13 @@ function db_fetch_row($sql, $log = TRUE) {
    @arg $sql - the sql query to execute
    @arg $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
-function db_fetch_assoc($sql, $log = TRUE) {
+function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 	global $cnn_id;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
 
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
@@ -182,10 +205,10 @@ function db_fetch_assoc($sql, $log = TRUE) {
 	}
 
 	$data = array();
-	$cnn_id->SetFetchMode(ADODB_FETCH_ASSOC);
-	$query = $cnn_id->Execute($sql);
+	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+	$query = $db_conn->Execute($sql);
 
-	if (($query) || ($cnn_id->ErrorNo() == 1032)) {
+	if (($query) || ($db_conn->ErrorNo() == 1032)) {
 		while ((!$query->EOF) && ($query)) {
 			$data{sizeof($data)} = $query->fields;
 			$query->MoveNext();
@@ -195,7 +218,7 @@ function db_fetch_assoc($sql, $log = TRUE) {
 
 		return($data);
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $cnn_id->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
+		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}
 }
 
@@ -204,7 +227,12 @@ function db_fetch_assoc($sql, $log = TRUE) {
 function db_fetch_insert_id() {
 	global $cnn_id;
 
-	return $cnn_id->Insert_ID();
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
+
+	return $db_conn->Insert_ID();
 }
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
@@ -243,11 +271,17 @@ function array_to_sql_or($array, $sql_column) {
    @arg $keyCols - the name of the column containing the primary key
    @arg $autoQuote - whether to use intelligent quoting or not
    @returns - the auto incriment id column (if applicable) */
-function db_replace($table_name, $array_items, $keyCols) {
+function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
 	global $cnn_id;
-	$cnn_id->Replace($table_name, $array_items, $keyCols);
 
-	return $cnn_id->Insert_ID();
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
+
+	$db_conn->Replace($table_name, $array_items, $keyCols);
+
+	return $db_conn->Insert_ID();
 }
 
 /* sql_save - saves data to an sql table
@@ -255,21 +289,26 @@ function db_replace($table_name, $array_items, $keyCols) {
    @arg $table_name - the name of the table to make the replacement in
    @arg $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
-function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = true) {
+function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, $db_conn = FALSE) {
 	global $cnn_id;
 
-	while (list ($key, $value) = each ($array_items)) {
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $cnn_id;
+	}
+
+	while (list($key, $value) = each($array_items)) {
 		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
-	$replace_result = $cnn_id->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
+	$replace_result = $db_conn->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
 
 	if ($replace_result == 0) {
 		return 0;
 	}
 
 	/* get the last AUTO_ID and return it */
-	if (($cnn_id->Insert_ID() == "0") || ($replace_result == 1)) {
+	if (($db_conn->Insert_ID() == "0") || ($replace_result == 1)) {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
 				return str_replace("\"", "", $array_items[$key_cols]);
@@ -278,7 +317,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = true) 
 
 		return 0;
 	}else{
-		return $cnn_id->Insert_ID();
+		return $db_conn->Insert_ID();
 	}
 }
 
