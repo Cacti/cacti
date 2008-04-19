@@ -49,27 +49,27 @@ if (sizeof($parms)) {
 	$description   = "";
 	$ip            = "";
 	$template_id   = 0;
-	$community     = "";
-	$snmp_ver      = 1;
+	$community     = read_config_option("snmp_community");
+	$snmp_ver      = read_config_option("snmp_ver");
 	$disable       = 0;
 
 	$notes         = "";
 
-	$snmp_username        = "";
-	$snmp_password        = "";
-	$snmp_auth_protocol   = "";
-	$snmp_priv_passphrase = "";
-	$snmp_priv_protocol   = "";
+	$snmp_username        = read_config_option("snmp_username");
+	$snmp_password        = read_config_option("snmp_password");
+	$snmp_auth_protocol   = read_config_option("snmp_auth_protocol");
+	$snmp_priv_passphrase = read_config_option("snmp_priv_passphrase");
+	$snmp_priv_protocol   = read_config_option("snmp_priv_protocol");
 	$snmp_context         = "";
-	$snmp_port            = 161;
-	$snmp_timeout         = 500;
+	$snmp_port            = read_config_option("snmp_port");
+	$snmp_timeout         = read_config_option("snmp_timeout");
 
 	$avail        = 1;
-	$ping_method  = 3;
-	$ping_port    = 23;
-	$ping_timeout = 500;
-	$ping_retries = 2;
-	$max_oids     = 10;
+	$ping_method  = read_config_option("ping_method");
+	$ping_port    = read_config_option("ping_port");
+	$ping_timeout = read_config_option("ping_timeout");
+	$ping_retries = read_config_option("ping_retries");
+	$max_oids     = read_config_option("max_get_size");
 
 	$displayHostTemplates = FALSE;
 	$displayCommunities   = FALSE;
@@ -142,19 +142,19 @@ if (sizeof($parms)) {
 		case "--avail":
 			switch($value) {
 			case "none":
-				$avail = 0;
+				$avail = '0'; /* tried to use AVAIL_NONE, but then ereg failes on validation, sigh */
 
 				break;
 			case "ping":
-				$avail = 3;
+				$avail = AVAIL_PING;
 
 				break;
 			case "snmp":
-				$avail = 2;
+				$avail = AVAIL_SNMP;
 
 				break;
 			case "pingsnmp":
-				$avail = 1;
+				$avail = AVAIL_SNMP_AND_PING;
 
 				break;
 			default:
@@ -167,15 +167,15 @@ if (sizeof($parms)) {
 		case "--ping_method":
 			switch(strtolower($value)) {
 			case "icmp":
-				$ping_method = 1;
+				$ping_method = PING_ICMP;
 
 				break;
 			case "tcp":
-				$ping_method = 3;
+				$ping_method = PING_TCP;
 
 				break;
 			case "udp":
-				$ping_method = 2;
+				$ping_method = PING_UDP;
 
 				break;
 			default:
