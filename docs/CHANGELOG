@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug#0001100: spine hangs on unreachable hosts
+-bug#0001145: Save Failed error when changing Graph Details
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug: initialization of snmp_auth when using SNMP=NONE
 -bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used)

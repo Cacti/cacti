@@ -1475,7 +1475,7 @@ INSERT INTO graph_templates_graph VALUES (42,0,0,30,'',1,'','|host_description| 
 INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'0','','','on','','','','');
 INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',120,'',500,'',100,'',0,'','bytes per second','','on','','on','',2,'','','','','','on','','on','',1000,'0','','','on','','','','');
-INSERT INTO graph_templates_graph VALUES (47,0,0,34,'',1,'on','|host_description| -','','',120,'',500,'',100,'','','on',0,'on','','','on','',2,'','','','','','','','on','',1000,'0','','','on','','','','');
+INSERT INTO graph_templates_graph VALUES (47,0,0,34,'',1,'on','|host_description| -','','',120,'',500,'',100,'',0,'on','','on','','','on','',2,'','','','','','','','on','',1000,'0','','','on','','','','');
 
 --
 -- Table structure for table `graph_templates_item`
