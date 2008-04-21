@@ -115,4 +115,32 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
+function api_reapply_suggested_data_source_title($local_data_id) {
+	global $config;
+
+	$data_template_data_id = db_fetch_cell("select id from data_template_data where local_data_id=$local_data_id");
+	if (empty($data_template_data_id)) {
+		return;
+	}
+
+	$data_local = db_fetch_row("select host_id, data_template_id, snmp_query_id, snmp_index from data_local where id=$local_data_id");
+
+	$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_rrd_sv where data_template_id=" . $data_local["data_template_id"]);
+
+	if (sizeof($suggested_values) > 0) {
+		foreach ($suggested_values as $suggested_value) {
+			if(!isset($suggested_values_data[$data_template_data_id]{$suggested_value["field_name"]})) {
+ 				$subs_string = substitute_snmp_query_data($suggested_value["text"],$data_local["host_id"],
+								$data_local["snmp_query_id"], $data_local["snmp_index"],
+								read_config_option("max_data_query_field_length"));
+				/* if there are no '|query' characters, all of the substitutions were successful */
+				if (!strstr($subs_string, "|query")) {
+					db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_data_id=" . $local_data_id);
+					/* once we find a working value, stop */
+					$suggested_values_data[$data_template_data_id]{$suggested_value["field_name"]} = true;
+				}
+			}
+		}
+	}
+} 
 ?>

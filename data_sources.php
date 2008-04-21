@@ -37,6 +37,7 @@ $ds_actions = array(
 	1 => "Delete",
 	2 => "Change Data Template",
 	3 => "Change Host",
+	8 => "Reapply Suggested Names",
 	4 => "Duplicate",
 	5 => "Convert to Data Template",
 	6 => "Enable",
@@ -393,8 +394,15 @@ function form_actions() {
 			for ($i=0;($i<count($selected_items));$i++) {
 				api_data_source_disable($selected_items[$i]);
 			}
+		}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+				api_reapply_suggested_data_source_title($selected_items[$i]);
+				update_data_source_title_cache($selected_items[$i]);
+			}
 		}
-
 		header("Location: data_sources.php");
 		exit;
 	}
@@ -517,6 +525,15 @@ function form_actions() {
 				</td>
 			</tr>\n
 			";
+	}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
+		print "	<tr>
+				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<p>When you click yes, the following data sources will will have their suggested naming conventions
+					recalculated.</p>
+					<p>$ds_list</p>
+				</td>
+			</tr>\n
+			";	
 	}
 
 	if (!isset($ds_array)) {
