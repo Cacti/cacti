@@ -135,7 +135,7 @@ if (is_array($xport_array["data"])) {
 }
 
 /* log the memory usage */
-if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM && function_exists('memory_get_peak_usage')) {
 	cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", FALSE, "WEBUI");
 }
 
