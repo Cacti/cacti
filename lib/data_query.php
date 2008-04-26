@@ -175,6 +175,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	if (!$snmp_index) {
 		debug_log_insert("data_query", "No SNMP data returned");
 		return false;
+	} else {
+		/* show list of indices found */
+		for ($i=0; $i<sizeof($snmp_index); $i++) {
+			debug_log_insert("data_query", "Index found at OID: '" . $snmp_index[$i]["oid"] . "' value: '" . $snmp_index[$i]["value"] . "'");
+		}
 	}
 
 	/* the last octet of the oid is the index by default */
@@ -186,6 +191,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 		for ($i=0; $i<sizeof($snmp_index); $i++) {
 			$snmp_index[$i]["value"] = ereg_replace($index_parse_regexp, "\\1", $snmp_index[$i]["oid"]);
+			debug_log_insert("data_query", "index_parse at OID: '" . $snmp_index[$i]["oid"] . "' results: '" . $snmp_index[$i]["value"] . "'");
 		}
 	}
 
@@ -194,7 +200,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
 		if ((!isset($field_array["oid"])) && ($field_array["source"] == "index")) {
 			for ($i=0; $i<sizeof($snmp_index); $i++) {
-				debug_log_insert("data_query", "Inserting index data [value='" . $snmp_index[$i]["value"] . "']");
+				debug_log_insert("data_query", "Inserting index data for field '" . $field_name . "' [value='" . $snmp_index[$i]["value"] . "']");
 
 				db_execute("replace into host_snmp_cache
 					(host_id, snmp_query_id, field_name, field_value, snmp_index, oid)
