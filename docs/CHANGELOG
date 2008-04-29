@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -bug: Graph Export would fail while zooming on some systems
 -bug: Add API Automation tool quietMode to additional functions
 -bug: SNMP string cleanup removes too many '=' signs
+-bug: When Cacti is launched from within an iframe, cookies are dropped from IE6
 -feature#0001205: add filtering and pagination to cdef management; add "Duplicate CDEF"
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
 -feature#0001195: add graph title to graphs page

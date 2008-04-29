@@ -123,6 +123,8 @@ if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && 
 	header("Cache-Control: no-store, no-cache, must-revalidate");
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
+	/* prevent IE from silently rejects cookies sent from third party sites. */
+	header('P3P: CP="CAO PSA OUR"');
 
 	/* initilize php session */
 	session_name($cacti_session_name);
