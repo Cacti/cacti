@@ -27,7 +27,7 @@ include("../include/global.php");
 /* allow the upgrade script to run for as long as it needs to */
 ini_set("max_execution_time", "0");
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d", "0.8.6e", "0.8.6f", "0.8.6g", "0.8.6h", "0.8.6i", "0.8.6j", "0.8.6k", "0.8.7", "0.8.7a", "0.8.7b");
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d", "0.8.6e", "0.8.6f", "0.8.6g", "0.8.6h", "0.8.6i", "0.8.6j", "0.8.6k", "0.8.7", "0.8.7a", "0.8.7b", "0.8.7c");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -398,6 +398,9 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.7b") {
 			include ("0_8_7a_to_0_8_7b.php");
 			upgrade_to_0_8_7b();
+		}elseif ($cacti_versions[$i] == "0.8.7c") {
+			include ("0_8_7b_to_0_8_7c.php");
+			upgrade_to_0_8_7c();
 		}
 	}
 }

@@ -68,8 +68,7 @@ $messages = array(
 	21 => array(
 		"message" => 'User delete not permitted for designated template or guest user.',
 		"type" => "error")
-
-		);
+	);
 
 $cdef_operators = array(1 =>
 	"+",
@@ -257,7 +256,8 @@ $snmp_implimentations = array(
 
 $rrdtool_versions = array(
 	"rrd-1.0.x" => "RRDTool 1.0.x",
-	"rrd-1.2.x" => "RRDTool 1.2.x");
+	"rrd-1.2.x" => "RRDTool 1.2.x",
+	"rrd-1.3.x" => "RRDTool 1.3.x");
 
 $cdef_item_types = array(
 	1 => "Function",
@@ -479,7 +479,8 @@ $hash_version_codes = array(
 	"0.8.6j" => "0013",
 	"0.8.7"  => "0014",
 	"0.8.7a" => "0015",
-	"0.8.7b" => "0016"
+	"0.8.7b" => "0016",
+	"0.8.7c" => "0017"
 	);
 
 $hash_type_names = array(
