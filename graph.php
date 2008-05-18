@@ -174,7 +174,7 @@ case 'zoom':
 
 	$graph_height = $graph["height"];
 	$graph_width = $graph["width"];
-	if ((read_config_option("rrdtool_version")) == "rrd-1.2.x") {
+	if ((read_config_option("rrdtool_version")) != "rrd-1.0.x") {
 		if (read_graph_config_option("title_font") == "") {
 			if (read_config_option("title_font") == "") {
 				$title_font_size = 10;
