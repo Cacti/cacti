@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug#0001191: Faulty IP address validation by ping.php script
 -bug#0001204: since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
 -bug#0001215: Impossible to define a none availability with the client cli/add_device.php
+-bug#0001244: missing closing </form> on host.php
 -bug: initialization of snmp_auth when using SNMP=NONE
 -bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used)
 -bug: If the poller_output table is not empty, don't flood the log

@@ -1291,6 +1291,8 @@ function host() {
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);
+
+	print "</form>\n";
 }
 
 ?>
