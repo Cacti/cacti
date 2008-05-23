@@ -2437,11 +2437,11 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;method</entry>
-							<entry><para>Tell Cacti how you want it to gather SNMP information for this field.</para><para><parameter>get</parameter>: The 'get' method performs an snmpget for the OID specified for this field appended by the index values derived from <oid_index>/<oid_index_parse>.</para><para><parameter>walk</parameter>: The 'walk' method does a walk of the OID specified for this field.</para><para>If all OIDs belong to the same SNMP table, both methods will return the same values, even though the 'walk' method is typically more efficient.</para></entry>
+							<entry><para>Tell Cacti how you want it to gather SNMP information for this field.</para><para><parameter>get</parameter>: The 'get' method performs an snmpget for the OID specified for this field appended by the index values derived from &lt;oid_index&gt;/&lt;oid_index_parse&gt;.</para><para><parameter>walk</parameter>: The 'walk' method does a walk of the OID specified for this field.</para><para>If all OIDs belong to the same SNMP table, both methods will return the same values, even though the 'walk' method is typically more efficient.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;source</entry>
-							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para><para><parameter>index</parameter>: Simply use the value of the index for this row as the value. If the index is being parsed from the OID using the <property>oid_index_parse</property> field, you must specify <parameter>index</parameter> here. Omit the <oid>...>/oid> field, then.</para></entry>
+							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para><para><parameter>index</parameter>: Simply use the value of the index for this row as the value. If the index is being parsed from the OID using the <property>oid_index_parse</property> field, you must specify <parameter>index</parameter> here. Omit the &lt;oid&gt;...&lt;/oid&gt; field, then.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;direction</entry>
@@ -4470,6 +4470,41 @@ disk /</userinput></screen>
 					This variable will place the date and time of the last poller run on the graph. It can be used to replicate
 					<application>MRTG</application>'s "graph last updated" feature.
 				</para>
+			</sect2>
+			<sect2 id="variable_data_source_title">
+				<title>Data Source Title</title>
+				<screen><userinput>|data_source_title|</userinput></screen>
+				<para>
+					This variable, |data_source_title|, gets replaced with the name of the data source associated with a particular 
+					graph item in a graph template. This change allows the creation of generic 
+					graph templates (2-variable line graph, 3-variable stack, etc.) 
+					which can be reused with large numbers of data sources.
+					See attached examples to understand usage.
+				</para>
+				<figure id="data_source_title_template">
+					<title>Example of a Graph Template using |data_source_title|</title>
+						<mediaobject>
+						<imageobject>
+							<imagedata fileref="images/data_source_title_template.png" format="PNG">
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<figure id="data_source_title_example1">
+					<title>Example 1 of a Graph making use of |data_source_title|</title>
+						<mediaobject>
+						<imageobject>
+							<imagedata fileref="images/data_source_title_example1.png" format="PNG">
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<figure id="data_source_title_example2">
+					<title>Example 2 of a Graph making use of |data_source_title|</title>
+						<mediaobject>
+						<imageobject>
+							<imagedata fileref="images/data_source_title_example2.png" format="PNG">
+						</imageobject>
+					</mediaobject>
+				</figure>
 			</sect2>
 			<sect2 id="variable_data_query">
 				<title>Data Query Fields</title>

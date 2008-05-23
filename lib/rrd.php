@@ -873,6 +873,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables[$field_name][$graph_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $graph_variables[$field_name][$graph_item_id]);
 				}
 
+				/* data source title substitution */
+				if (strstr($graph_variables[$field_name][$graph_item_id], "|data_source_title|")) {
+					$graph_variables[$field_name][$graph_item_id] = str_replace("|data_source_title|", get_data_source_title($graph_item["local_data_id"]), $graph_variables[$field_name][$graph_item_id]);
+				}
+
 				/* data query variables */
 				$graph_variables[$field_name][$graph_item_id] = rrd_substitute_host_query_data($graph_variables[$field_name][$graph_item_id], $graph, $graph_item);
 
