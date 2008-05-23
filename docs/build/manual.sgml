@@ -4823,6 +4823,7 @@ disk /</userinput></screen>
 			Please find them in the <filename>./cli</filename> directory.
 			As of current, following scripts are supported:</para>
 			<screen>add_device.php
+add_data_query.php			
 add_graphs.php
 add_perms.php
 add_tree.php
@@ -5196,6 +5197,74 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 				<para>Please use any other combination of parameters in the same way
 				as via the web browser console. You may want to remember the new device id, <userinput>11</userinput>
 				in this case, for the next steps.</para>
+			</sect2>
+		</sect1>
+		<sect1 id="cli_add_data_query">
+		<title>Add a Data Query</title>
+			<para>It is recommended to maintain data query associations by maintaining
+			host templates. Each time, a data query is added to a host template,
+			it will automatically associated with all hosts related to that very
+			host template. The data query will be executed as well; this way the
+			snmp cache will be filled with all values related to that query.</para>
+			<para>Nevertheless, it is sometimes suitable to manually associate a certain
+			data query with a single host only without changing any host template. 
+			This is, where the script <filename>add_data_query.php</filename>
+			comes in. First, let's have a look at the whole list of features
+			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --help
+
+Add Data Query Script 1.0, Copyright 2008 - The Cacti Group
+
+A simple command line utility to add a data query to an existing device in Cacti
+
+usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]
+
+Required:
+    --host-id         the numerical ID of the host
+    --data-query-id   the numerical ID of the data_query to be added
+    --reindex-method  the reindex method to be used for that data query
+                      0|None   = no reindexing
+                      1|Uptime = Uptime goes Backwards
+                      2|Index  = Index Count Changed
+                      3|Fields = Verify all Fields
+List Options:
+    --list-hosts
+    --list-data-queries
+    --quiet - batch mode value return
+
+If the data query was already associated, it will be reindexed.</screen>
+			<para>Let's first stick to the listing options</para>
+			<sect2 id="cli_add_data_query_list_hosts">
+			<title>List all Hosts</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --list-hosts
+
+Known Hosts: (id, hostname, template, description)
+1       127.0.0.1       8       Localhost
+11      router          3       router.mydomain.com</screen>
+			</sect2>
+			<sect2 id="cli_add_data_query_list_data_queries">
+			<title>List all Data Queries</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --list-data-queries
+
+Known SNMP Queries:(id, name)
+1       SNMP - Interface Statistics
+2       ucd/net -  Get Monitored Partitions
+3       Karlnet - Wireless Bridge Statistics
+4       Netware - Get Available Volumes
+6       Unix - Get Mounted Partitions
+7       Netware - Get Processor Information
+8       SNMP - Get Mounted Partitions
+9       SNMP - Get Processor Information</screen>
+			</sect2>
+			<sect2 id="cli_add_data_query_example">
+			<title>Add a Data Query</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --host-id=11 --data-query-id=1 --reindex-method=fields
+
+Success - Host (11: router.mydomain.com) data query (1: SNMP - Interface Statistics) reindex method (3: Verify All Fields)</screen>
+			<para>This example shows the use of a string <parameter>"fields"</parameter> for specifying the reindex method. As given
+			by the help text, the use of the numeric value of <parameter>"3"</parameter> would have given
+			the exact same result. When visiting the device edit panel, you will find non-zero values for the data query status
+			column, e.g. <emphasis>Success [41 Items, 5 Rows]</emphasis>.</para>
 			</sect2>
 		</sect1>
 		<sect1 id="cli_add_graphs">
