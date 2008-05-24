@@ -24,9 +24,9 @@
 
 $guest_account = true;
 include("./include/auth.php");
-include("./lib/html_tree.php");
-include("./include/html/inc_timespan_settings.php");
-include("./include/top_graph_header.php");
+include_once("./lib/html_tree.php");
+include_once("./include/html/inc_timespan_settings.php");
+include_once("./include/top_graph_header.php");
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var("branch_id"));

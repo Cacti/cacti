@@ -5,16 +5,16 @@ Cacti CHANGELOG
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug#0001191: Faulty IP address validation by ping.php script
 -bug#0001204: since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
--bug#0001215: Impossible to define a none availability with the client cli/add_device.php
+-bug#0001206: wrong "include" statements replaced by "include_once" (was: Graphs are not Zoom-able)-bug#0001215: Impossible to define a none availability with the client cli/add_device.php
+-bug#0001216: CSV Export for zoomed graph, results in Validation error
 -bug#0001236: set 'stats_recache' to zero when no re-index is present
+-bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug: initialization of snmp_auth when using SNMP=NONE
 -bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used)
 -bug: If the poller_output table is not empty, don't flood the log
 -bug: Remove warnings appear in the httpd log relative to reset attempts on settings array
--bug: Graph Export would fail while zooming on some systems
 -bug: Add API Automation tool quietMode to additional functions
--bug: SNMP string cleanup removes too many '=' signs
 -bug: When Cacti is launched from within an iframe, cookies are dropped from IE6
 -bug: database upgrade and cacti.sql differ
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
