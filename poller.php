@@ -370,6 +370,11 @@ while ($poller_runs_completed < $poller_runs) {
 			$command_string = read_config_option("path_php_binary");
 			$extra_args = "-q " . $config["base_path"] . "/poller_commands.php";
 			exec_background($command_string, "$extra_args");
+		} else {
+			/* no re-index or Rechache present on this run
+			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
+			 * but then we'll have to call it each time to make sure, stats are updated */
+			db_execute("replace into settings (name,value) values ('stats_recache','RecacheTime:0.0 HostsRecached:0')");
 		}
 
 		/* graph export */
