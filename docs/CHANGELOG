@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -bug: When Cacti is launched from within an iframe, cookies are dropped from IE6
 -bug: database upgrade and cacti.sql differ
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
+-feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
 -feature#0001205: add filtering and pagination to cdef management; add "Duplicate CDEF"
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
 -feature#0001195: add graph title to graphs page

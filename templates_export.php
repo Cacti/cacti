@@ -28,29 +28,6 @@ include_once("./lib/export.php");
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
-$export_types = array(
-	"graph_template" => array(
-		"name" => "Graph Template",
-		"title_sql" => "select name from graph_templates where id=|id|",
-		"dropdown_sql" => "select id,name from graph_templates order by name"
-		),
-	"data_template" => array(
-		"name" => "Data Template",
-		"title_sql" => "select name from data_template where id=|id|",
-		"dropdown_sql" => "select id,name from data_template order by name"
-		),
-	"host_template" => array(
-		"name" => "Host Template",
-		"title_sql" => "select name from host_template where id=|id|",
-		"dropdown_sql" => "select id,name from host_template order by name"
-		),
-	"data_query" => array(
-		"name" => "Data Query",
-		"title_sql" => "select name from snmp_query where id=|id|",
-		"dropdown_sql" => "select id,name from snmp_query order by name"
-		)
-	);
-
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
