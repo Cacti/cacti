@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
 -feature#0001195: add graph title to graphs page
 -feature#0001189: Introducing |data_source_title| variable
+-feature#0001140: CLI-Script to associate a graph template to a host
 -feature: add links to Graph Management and Data Sources to Device Edit Screen
 -feature: add links to Graph Template and Host Edit to Graph Edit Screen
 -feature: add links to Data Template and Host Edit to Data Source Edit Screen

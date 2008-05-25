@@ -4823,7 +4823,8 @@ disk /</userinput></screen>
 			Please find them in the <filename>./cli</filename> directory.
 			As of current, following scripts are supported:</para>
 			<screen>add_device.php
-add_data_query.php			
+add_data_query.php
+add_graph_template.php			
 add_graphs.php
 add_perms.php
 add_tree.php
@@ -5200,7 +5201,7 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 			</sect2>
 		</sect1>
 		<sect1 id="cli_add_data_query">
-		<title>Add a Data Query</title>
+		<title>Associate a Data Query to an existing Host</title>
 			<para>It is recommended to maintain data query associations by maintaining
 			host templates. Each time, a data query is added to a host template,
 			it will automatically associated with all hosts related to that very
@@ -5265,6 +5266,67 @@ Success - Host (11: router.mydomain.com) data query (1: SNMP - Interface Statist
 			by the help text, the use of the numeric value of <parameter>"3"</parameter> would have given
 			the exact same result. When visiting the device edit panel, you will find non-zero values for the data query status
 			column, e.g. <emphasis>Success [41 Items, 5 Rows]</emphasis>.</para>
+			</sect2>
+		</sect1>
+		<sect1 id="cli_add_graph_template">
+		<title>Associate a Graph Template to an existing Host</title>
+			<para>It is recommended to maintain graph template associations by maintaining
+			host templates. Each time, a graph template is added to a host template,
+			it will automatically associated with all hosts related to that very
+			host template.</para>
+			<para>Nevertheless, it is sometimes suitable to manually associate a certain
+			graph template with a single host only without changing any host template. 
+			This is, where the script <filename>add_graph_template.php</filename>
+			comes in. First, let's have a look at the whole list of features
+			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
+			<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --help
+
+Add Graph Template Script 1.0, Copyright 2008 - The Cacti Group
+
+A simple command line utility to associate a graph template with a host in Cacti
+
+usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]
+    [--quiet]
+
+Required:
+    --host-id             the numerical ID of the host
+    --graph_template-id   the numerical ID of the graph template to be added
+
+List Options:
+    --list-hosts
+    --list-graph-templates
+    --quiet - batch mode value return</screen>
+			<para>Let's first stick to the listing options</para>
+			<sect2 id="cli_add_graph_template_list_hosts">
+			<title>List all Hosts</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --list-hosts
+
+Known Hosts: (id, hostname, template, description)
+1       127.0.0.1       8       Localhost
+11      router          3       router.mydomain.com</screen>
+			</sect2>
+			<sect2 id="cli_add_graph_template_list_graph_templates">
+			<title>List all Graph Template</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --list-graph-templates
+
+Known Graph Templates:(id, name)
+2       Interface - Traffic (bits/sec)
+3       ucd/net - Available Disk Space
+4       ucd/net - CPU Usage
+5       Karlnet - Wireless Levels
+6       Karlnet - Wireless Transmissions
+7       Unix - Ping Latency
+8       Unix - Processes
+9       Unix - Load Average
+10      Unix - Logged in Users
+11      ucd/net - Load Average
+...</screen>
+			</sect2>
+			<sect2 id="cli_add_graph_template_example">
+			<title>Add a Graph Template</title>
+				<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --host-id=11 --graph-template-id=7
+
+Success: Graph Template associated for host: (11: router) - graph-template: (7: Unix - Ping Latency)</screen>
 			</sect2>
 		</sect1>
 		<sect1 id="cli_add_graphs">

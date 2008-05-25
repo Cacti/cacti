@@ -33,19 +33,17 @@ $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
 include_once($config["base_path"]."/lib/api_automation_tools.php");
-include_once($config["base_path"]."/lib/data_query.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
 array_shift($parms);
 
 if (sizeof($parms)) {
-	$displayHosts 		= FALSE;
-	$displayDataQueries = FALSE;
-	$quietMode			= FALSE;
+	$displayHosts 			= FALSE;
+	$displayGraphTemplates 	= FALSE;
+	$quietMode				= FALSE;
 	unset($host_id);
-	unset($data_query_id);
-	unset($reindex_method);
+	unset($graph_template_id);
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -63,38 +61,13 @@ if (sizeof($parms)) {
 			}
 	
 			break;
-		case "--data-query-id":
-			$data_query_id = $value;
-			if (!is_numeric($data_query_id)) {
-				echo "ERROR: You must supply a numeric data-query-id for all hosts!\n";
+		case "--graph-template-id":
+			$graph_template_id = $value;
+			if (!is_numeric($graph_template_id)) {
+				echo "ERROR: You must supply a numeric graph-template-id for all hosts!\n";
 				exit(1);
 			}
 	
-			break;
-		case "--reindex-method":
-			if (is_numeric($value) &&
-				($value >= DATA_QUERY_AUTOINDEX_NONE) &&
-				($value <= DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION)) {
-				$reindex_method = $value;
-			} else {
-				switch (strtolower($value)) {
-					case "none":
-						$reindex_method = DATA_QUERY_AUTOINDEX_NONE;
-						break;
-					case "uptime":
-						$reindex_method = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
-						break;
-					case "index":
-						$reindex_method = DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE;
-						break;
-					case "fields":
-						$reindex_method = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
-						break;
-					default:
-						echo "ERROR: You must supply a valid reindex method for all hosts!\n";
-						exit(1);
-				}
-			}
 			break;
 		case "--version":
 		case "-V":
@@ -105,8 +78,8 @@ if (sizeof($parms)) {
 		case "--list-hosts":
 			$displayHosts = TRUE;
 			break;
-		case "--list-data-queries":
-			$displayDataQueries = TRUE;
+		case "--list-graph-templates":
+			$displayGraphTemplates = TRUE;
 			break;
 		case "--quiet":
 			$quietMode = TRUE;
@@ -118,18 +91,19 @@ if (sizeof($parms)) {
 		}
 	}
 
-	/* list options, recognizing $quietMode */
+	/* list options, recognizing $quiteMode */
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
 		exit(0);
 	}
+	
 	if ($displayGraphTemplates) {
-		$data_queries = getSNMPQueries();
-		displaySNMPQueries($data_queries, $quietMode);
+		$graphTemplates = getGraphTemplates();
+		displayGraphTemplates($graphTemplates, $quietMode);
 		exit(0);
 	}
-
+	
 	/* 
 	 * verify required parameters 
 	 * for update / insert options 
@@ -139,16 +113,10 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
-	if (!isset($data_query_id)) {
+	if (!isset($graph_template_id)) {
 		echo "ERROR: You must supply a valid data-query-id for all hosts!\n";
 		exit(1);
 	}
-
-	if (!isset($reindex_method)) {
-		echo "ERROR: You must supply a valid reindex-method for all hosts!\n";
-		exit(1);
-	}
-
 
 	/* 
 	 * verify valid host id and get a name for it
@@ -160,37 +128,29 @@ if (sizeof($parms)) {
 	}
 
 	/* 
-	 * verify valid data query and get a name for it
+	 * verify valid graph template and get a name for it
 	 */
-	$data_query_name = db_fetch_cell("SELECT name FROM snmp_query WHERE id = " . $data_query_id);
-	if (!isset($data_query_name)) {
-		echo "ERROR: Unknown Data Query Id ($data_query_id)\n";
+	$graph_template_name = db_fetch_cell("SELECT name FROM graph_templates WHERE id = " . $graph_template_id);
+	if (!isset($graph_template_name)) {
+		echo "ERROR: Unknown Graph Template Id ($graph_template_id)\n";
 		exit(1);
 	}
-	
-	/*
-	 * Now, add the data query and run it once to get the cache filled 
-	 */
-	$exists_already = db_fetch_cell("SELECT host_id FROM host_snmp_query WHERE host_id=$host_id AND snmp_query_id=$data_query_id AND reindex_method=$reindex_method");
+
+	/* check, if graph template was already associated */
+	$exists_already = db_fetch_cell("SELECT host_id FROM host_graph WHERE graph_template_id=$graph_template_id AND host_id=$host_id");
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
-		echo "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: $reindex_types[$reindex_method])\n";
+		echo "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
 		exit(1);
 	}else{
-		db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method) " .
-				   "VALUES (". $host_id . ","
-							 . $data_query_id . ","
-							 . $reindex_method . "
-							)");
-		/* recache snmp data */
-		run_data_query($host_id, $data_query_id);
+		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $host_id . "," . $graph_template_id . ")");
 	}
 
 	if (is_error_message()) {
-		echo "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: $reindex_types[$reindex_method])\n";
+		echo "ERROR: Failed to add this graph template for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
 		exit(1);
 	} else {
-		echo "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: $reindex_types[$reindex_method])\n";
+		echo "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
 		exit(0);
 	}
 }else{
@@ -199,22 +159,17 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Data Query Script 1.0, Copyright 2008 - The Cacti Group\n\n";
-	echo "A simple command line utility to add a data query to an existing device in Cacti\n\n";
-	echo "usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]\n\n";
+	echo "Add Graph Template Script 1.0, Copyright 2008 - The Cacti Group\n\n";
+	echo "A simple command line utility to associate a graph template with a host in Cacti\n\n";
+	echo "usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]\n";
+	echo "    [--quiet]\n\n";
 	echo "Required:\n";
-	echo "    --host-id         the numerical ID of the host\n";
-	echo "    --data-query-id   the numerical ID of the data_query to be added\n";
-	echo "    --reindex-method  the reindex method to be used for that data query\n";
-	echo "                      0|None   = no reindexing\n";
-	echo "                      1|Uptime = Uptime goes Backwards\n";
-	echo "                      2|Index  = Index Count Changed\n";
-	echo "                      3|Fields = Verify all Fields\n";
+	echo "    --host-id             the numerical ID of the host\n";
+	echo "    --graph_template-id   the numerical ID of the graph template to be added\n\n";
 	echo "List Options:\n";
 	echo "    --list-hosts\n";
-	echo "    --list-data-queries\n";
+	echo "    --list-graph-templates\n";
 	echo "    --quiet - batch mode value return\n\n";
-	echo "If the data query was already associated, it will be reindexed.\n\n";
 }
 
 ?>
