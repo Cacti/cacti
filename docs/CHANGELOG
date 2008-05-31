@@ -3,6 +3,7 @@ Cacti CHANGELOG
 -bug#0001100: spine hangs on unreachable hosts
 -bug#0001145: Save Failed error when changing Graph Details
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
+-bug#0001174: Unidentified index warning
 -bug#0001191: Faulty IP address validation by ping.php script
 -bug#0001204: since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
 -bug#0001206: wrong "include" statements replaced by "include_once" (was: Graphs are not Zoom-able)-bug#0001215: Impossible to define a none availability with the client cli/add_device.php
