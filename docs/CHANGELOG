@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug#0001204: since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
 -bug#0001206: wrong "include" statements replaced by "include_once" (was: Graphs are not Zoom-able)-bug#0001215: Impossible to define a none availability with the client cli/add_device.php
 -bug#0001216: CSV Export for zoomed graph, results in Validation error
+-bug#0001223: Missing Hard return on last GPRINT causes bad formatting
 -bug#0001236: set 'stats_recache' to zero when no re-index is present
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php

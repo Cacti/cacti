@@ -1520,7 +1520,7 @@ INSERT INTO graph_templates_item VALUES (12,'55acbcc33f46ee6d754e8e81d1b54808',0
 INSERT INTO graph_templates_item VALUES (13,'fdaf2321fc890e355711c2bffc07d036',0,0,2,55,20,'FF',4,2,1,'Outbound','','',2,5);
 INSERT INTO graph_templates_item VALUES (14,'768318f42819217ed81196d2179d3e1b',0,0,2,55,0,'FF',9,2,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (15,'cb3aa6256dcb3acd50d4517b77a1a5c3',0,0,2,55,0,'FF',9,2,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (16,'671e989be7cbf12c623b4e79d91c7bed',0,0,2,55,0,'FF',9,2,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (16,'671e989be7cbf12c623b4e79d91c7bed',0,0,2,55,0,'FF',9,2,3,'Maximum:','','on',2,8);
 INSERT INTO graph_templates_item VALUES (17,'b561ed15b3ba66d277e6d7c1640b86f7',0,0,3,4,48,'FF',7,14,1,'Used','','',2,1);
 INSERT INTO graph_templates_item VALUES (18,'99ef051057fa6adfa6834a7632e9d8a2',0,0,3,4,0,'FF',9,14,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (19,'3986695132d3f4716872df4c6fbccb65',0,0,3,4,0,'FF',9,14,1,'Average:','','',2,3);
@@ -1532,7 +1532,7 @@ INSERT INTO graph_templates_item VALUES (24,'d4a67883d53bc1df8aead21c97c0bc52',0
 INSERT INTO graph_templates_item VALUES (25,'253c9ec2d66905245149c1c2dc8e536e',0,0,3,0,1,'FF',5,15,1,'Total','','',2,9);
 INSERT INTO graph_templates_item VALUES (26,'ea9ea883383f4eb462fec6aa309ba7b5',0,0,3,0,0,'FF',9,15,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (27,'83b746bcaba029eeca170a9f77ec4864',0,0,3,0,0,'FF',9,15,1,'Average:','','',2,11);
-INSERT INTO graph_templates_item VALUES (28,'82e01dd92fd37887c0696192efe7af65',0,0,3,0,0,'FF',9,15,3,'Maximum:','','',2,12);
+INSERT INTO graph_templates_item VALUES (28,'82e01dd92fd37887c0696192efe7af65',0,0,3,0,0,'FF',9,15,3,'Maximum:','','on',2,12);
 INSERT INTO graph_templates_item VALUES (29,'ff0a6125acbb029b814ed1f271ad2d38',0,0,4,5,9,'FF',7,0,1,'System','','',2,1);
 INSERT INTO graph_templates_item VALUES (30,'f0776f7d6638bba76c2c27f75a424f0f',0,0,4,5,0,'FF',9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (31,'39f4e021aa3fed9207b5f45a82122b21',0,0,4,5,0,'FF',9,0,1,'Average:','','',2,3);
@@ -1548,7 +1548,7 @@ INSERT INTO graph_templates_item VALUES (40,'b2879248a522d9679333e1f29e9a87c3',0
 INSERT INTO graph_templates_item VALUES (41,'d800aa59eee45383b3d6d35a11cdc864',0,0,4,0,1,'FF',4,12,1,'Total','','',2,13);
 INSERT INTO graph_templates_item VALUES (42,'cab4ae79a546826288e273ca1411c867',0,0,4,0,0,'FF',9,12,4,'Current:','','',2,14);
 INSERT INTO graph_templates_item VALUES (43,'d44306ae85622fec971507460be63f5c',0,0,4,0,0,'FF',9,12,1,'Average:','','',2,15);
-INSERT INTO graph_templates_item VALUES (44,'aa5c2118035bb83be497d4e099afcc0d',0,0,4,0,0,'FF',9,12,3,'Maximum:','','',2,16);
+INSERT INTO graph_templates_item VALUES (44,'aa5c2118035bb83be497d4e099afcc0d',0,0,4,0,0,'FF',9,12,3,'Maximum:','','on',2,16);
 INSERT INTO graph_templates_item VALUES (45,'4aa34ea1b7542b770ace48e8bc395a22',0,0,5,9,48,'FF',7,0,1,'Signal Level','','',2,1);
 INSERT INTO graph_templates_item VALUES (46,'22f118a9d81d0a9c8d922efbbc8a9cc1',0,0,5,9,0,'FF',9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (47,'229de0c4b490de9d20d8f8d41059f933',0,0,5,9,0,'FF',9,0,1,'Average:','','',2,3);
@@ -1556,7 +1556,7 @@ INSERT INTO graph_templates_item VALUES (48,'cd17feb30c02fd8f21e4d4dcde04e024',0
 INSERT INTO graph_templates_item VALUES (49,'8723600cfd0f8a7b3f7dc1361981aabd',0,0,5,8,25,'FF',5,0,1,'Noise Level','','',2,5);
 INSERT INTO graph_templates_item VALUES (50,'cb06be2601b5abfb7a42fc07586de1c2',0,0,5,8,0,'FF',9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (51,'55a2ee0fd511e5210ed85759171de58f',0,0,5,8,0,'FF',9,0,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (52,'704459564c84e42462e106eef20db169',0,0,5,8,0,'FF',9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (52,'704459564c84e42462e106eef20db169',0,0,5,8,0,'FF',9,0,3,'Maximum:','','on',2,8);
 INSERT INTO graph_templates_item VALUES (53,'aaebb19ec522497eaaf8c87a631b7919',0,0,6,10,48,'FF',7,0,1,'Transmissions','','',2,1);
 INSERT INTO graph_templates_item VALUES (54,'8b54843ac9d41bce2fcedd023560ed64',0,0,6,10,0,'FF',9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (55,'05927dc83e07c7d9cffef387d68f35c9',0,0,6,10,0,'FF',9,0,1,'Average:','','',2,3);
@@ -1564,33 +1564,33 @@ INSERT INTO graph_templates_item VALUES (56,'d11e62225a7e7a0cdce89242002ca547',0
 INSERT INTO graph_templates_item VALUES (57,'6397b92032486c476b0e13a35b727041',0,0,6,11,25,'FF',5,0,1,'Re-Transmissions','','',2,5);
 INSERT INTO graph_templates_item VALUES (58,'cdfa5f8f82f4c479ff7f6f54160703f6',0,0,6,11,0,'FF',9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (59,'ce2a309fb9ef64f83f471895069a6f07',0,0,6,11,0,'FF',9,0,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (60,'9cbfbf57ebde435b27887f27c7d3caea',0,0,6,11,0,'FF',9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (60,'9cbfbf57ebde435b27887f27c7d3caea',0,0,6,11,0,'FF',9,0,3,'Maximum:','','on',2,8);
 INSERT INTO graph_templates_item VALUES (61,'80e0aa956f50c261e5143273da58b8a3',0,0,7,21,25,'FF',7,0,1,'','','',2,1);
 INSERT INTO graph_templates_item VALUES (62,'48fdcae893a7b7496e1a61efc3453599',0,0,7,21,0,'FF',9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (63,'22f43e5fa20f2716666ba9ed9a7d1727',0,0,7,21,0,'FF',9,0,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (64,'3e86d497bcded7af7ab8408e4908e0d8',0,0,7,21,0,'FF',9,0,3,'Maximum:','','',2,4);
+INSERT INTO graph_templates_item VALUES (64,'3e86d497bcded7af7ab8408e4908e0d8',0,0,7,21,0,'FF',9,0,3,'Maximum:','','on',2,4);
 INSERT INTO graph_templates_item VALUES (65,'ba00ecd28b9774348322ff70a96f2826',0,0,8,19,48,'FF',7,0,1,'Running Processes','','',2,1);
 INSERT INTO graph_templates_item VALUES (66,'8d76de808efd73c51e9a9cbd70579512',0,0,8,19,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (67,'304244ca63d5b09e62a94c8ec6fbda8d',0,0,8,19,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (68,'da1ba71a93d2ed4a2a00d54592b14157',0,0,8,19,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (68,'da1ba71a93d2ed4a2a00d54592b14157',0,0,8,19,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (69,'93ad2f2803b5edace85d86896620b9da',0,0,9,12,15,'FF',7,0,1,'1 Minute Average','','',2,1);
 INSERT INTO graph_templates_item VALUES (70,'e28736bf63d3a3bda03ea9f1e6ecb0f1',0,0,9,12,0,'FF',9,0,4,'Current:','','on',4,2);
 INSERT INTO graph_templates_item VALUES (71,'bbdfa13adc00398eed132b1ccb4337d2',0,0,9,13,8,'FF',8,0,1,'5 Minute Average','','',2,3);
 INSERT INTO graph_templates_item VALUES (72,'2c14062c7d67712f16adde06132675d6',0,0,9,13,0,'FF',9,0,4,'Current:','','on',4,4);
 INSERT INTO graph_templates_item VALUES (73,'9cf6ed48a6a54b9644a1de8c9929bd4e',0,0,9,14,9,'FF',8,0,1,'15 Minute Average','','',2,5);
 INSERT INTO graph_templates_item VALUES (74,'c9824064305b797f38feaeed2352e0e5',0,0,9,14,0,'FF',9,0,4,'Current:','','on',4,6);
-INSERT INTO graph_templates_item VALUES (75,'fa1bc4eff128c4da70f5247d55b8a444',0,0,9,0,1,'FF',4,12,1,'','','',2,7);
+INSERT INTO graph_templates_item VALUES (75,'fa1bc4eff128c4da70f5247d55b8a444',0,0,9,0,1,'FF',4,12,1,'','','on',2,7);
 INSERT INTO graph_templates_item VALUES (76,'5c94ac24bc0d6d2712cc028fa7d4c7d2',0,0,10,20,67,'FF',7,0,1,'Users','','',2,1);
 INSERT INTO graph_templates_item VALUES (77,'8bc7f905526f62df7d5c2d8c27c143c1',0,0,10,20,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (78,'cd074cd2b920aab70d480c020276d45b',0,0,10,20,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (79,'415630f25f5384ba0c82adbdb05fe98b',0,0,10,20,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (79,'415630f25f5384ba0c82adbdb05fe98b',0,0,10,20,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (80,'d77d2050be357ab067666a9485426e6b',0,0,11,33,15,'FF',7,0,1,'1 Minute Average','','',2,1);
 INSERT INTO graph_templates_item VALUES (81,'13d22f5a0eac6d97bf6c97d7966f0a00',0,0,11,33,0,'FF',9,0,4,'Current:','','on',4,2);
 INSERT INTO graph_templates_item VALUES (82,'8580230d31d2851ec667c296a665cbf9',0,0,11,34,8,'FF',8,0,1,'5 Minute Average','','',2,3);
 INSERT INTO graph_templates_item VALUES (83,'b5b7d9b64e7640aa51dbf58c69b86d15',0,0,11,34,0,'FF',9,0,4,'Current:','','on',4,4);
 INSERT INTO graph_templates_item VALUES (84,'2ec10edf4bfaa866b7efd544d4c3f446',0,0,11,35,9,'FF',8,0,1,'15 Minute Average','','',2,5);
 INSERT INTO graph_templates_item VALUES (85,'b65666f0506c0c70966f493c19607b93',0,0,11,35,0,'FF',9,0,4,'Current:','','on',4,6);
-INSERT INTO graph_templates_item VALUES (86,'6c73575c74506cfc75b89c4276ef3455',0,0,11,0,1,'FF',4,12,1,'Total','','',2,7);
+INSERT INTO graph_templates_item VALUES (86,'6c73575c74506cfc75b89c4276ef3455',0,0,11,0,1,'FF',4,12,1,'Total','','on',2,7);
 INSERT INTO graph_templates_item VALUES (95,'5fa7c2317f19440b757ab2ea1cae6abc',0,0,12,16,41,'FF',7,14,1,'Free','','',2,9);
 INSERT INTO graph_templates_item VALUES (96,'b1d18060bfd3f68e812c508ff4ac94ed',0,0,12,16,0,'FF',9,14,4,'Current:','','',2,10);
 INSERT INTO graph_templates_item VALUES (97,'780b6f0850aaf9431d1c246c55143061',0,0,12,16,0,'FF',9,14,1,'Average:','','',2,11);
@@ -1598,7 +1598,7 @@ INSERT INTO graph_templates_item VALUES (98,'2d54a7e7bb45e6c52d97a09e24b7fba7',0
 INSERT INTO graph_templates_item VALUES (99,'40206367a3c192b836539f49801a0b15',0,0,12,18,30,'FF',8,14,1,'Swap','','',2,13);
 INSERT INTO graph_templates_item VALUES (100,'7ee72e2bb3722d4f8a7f9c564e0dd0d0',0,0,12,18,0,'FF',9,14,4,'Current:','','',2,14);
 INSERT INTO graph_templates_item VALUES (101,'c8af33b949e8f47133ee25e63c91d4d0',0,0,12,18,0,'FF',9,14,1,'Average:','','',2,15);
-INSERT INTO graph_templates_item VALUES (102,'568128a16723d1195ce6a234d353ce00',0,0,12,18,0,'FF',9,14,3,'Maximum:','','',2,16);
+INSERT INTO graph_templates_item VALUES (102,'568128a16723d1195ce6a234d353ce00',0,0,12,18,0,'FF',9,14,3,'Maximum:','','on',2,16);
 INSERT INTO graph_templates_item VALUES (103,'7517a40d478e28ed88ba2b2a65e16b57',0,0,13,37,52,'FF',7,14,1,'Memory Free','','',2,1);
 INSERT INTO graph_templates_item VALUES (104,'df0c8b353d26c334cb909dc6243957c5',0,0,13,37,0,'FF',9,14,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (105,'c41a4cf6fefaf756a24f0a9510580724',0,0,13,37,0,'FF',9,14,1,'Average:','','',2,3);
@@ -1614,11 +1614,11 @@ INSERT INTO graph_templates_item VALUES (114,'35e87262efa521edbb1fd27f09c036f5',
 INSERT INTO graph_templates_item VALUES (115,'53069d7dba4c31b338f609bea4cd16f3',0,0,14,27,66,'FF',8,0,1,'Cache Checks','','',2,5);
 INSERT INTO graph_templates_item VALUES (116,'d9c102579839c5575806334d342b50de',0,0,14,27,0,'FF',9,0,4,'Current:','','',3,6);
 INSERT INTO graph_templates_item VALUES (117,'dc1897c3249dbabe269af49cee92f8c0',0,0,14,27,0,'FF',9,0,1,'Average:','','',3,7);
-INSERT INTO graph_templates_item VALUES (118,'ccd21fe0b5a8c24057f1eff4a6b66391',0,0,14,27,0,'FF',9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (118,'ccd21fe0b5a8c24057f1eff4a6b66391',0,0,14,27,0,'FF',9,0,3,'Maximum:','','on',3,8);
 INSERT INTO graph_templates_item VALUES (119,'ab09d41c358f6b8a9d0cad4eccc25529',0,0,15,76,9,'FF',7,0,1,'CPU Utilization','','',2,1);
 INSERT INTO graph_templates_item VALUES (120,'5d5b8d8fbe751dc9c86ee86f85d7433b',0,0,15,76,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (121,'4822a98464c6da2afff10c6d12df1831',0,0,15,76,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (122,'fc6fbf2a964bea0b3c88ed0f18616aa7',0,0,15,76,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (122,'fc6fbf2a964bea0b3c88ed0f18616aa7',0,0,15,76,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (123,'e4094625d5443b4c87f9a87ba616a469',0,0,16,25,67,'FF',7,0,1,'File System Reads','','',2,1);
 INSERT INTO graph_templates_item VALUES (124,'ae68425cd10e8a6623076b2e6859a6aa',0,0,16,25,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (125,'40b8e14c6568b3f6be6a5d89d6a9f061',0,0,16,25,0,'FF',9,0,1,'Average:','','',3,3);
@@ -1626,7 +1626,7 @@ INSERT INTO graph_templates_item VALUES (126,'4afbdc3851c03e206672930746b1a5e2',
 INSERT INTO graph_templates_item VALUES (127,'ea47d2b5516e334bc5f6ce1698a3ae76',0,0,16,26,93,'FF',8,0,1,'File System Writes','','',2,5);
 INSERT INTO graph_templates_item VALUES (128,'899c48a2f79ea3ad4629aff130d0f371',0,0,16,26,0,'FF',9,0,4,'Current:','','',3,6);
 INSERT INTO graph_templates_item VALUES (129,'ab474d7da77e9ec1f6a1d45c602580cd',0,0,16,26,0,'FF',9,0,1,'Average:','','',3,7);
-INSERT INTO graph_templates_item VALUES (130,'e143f8b4c6d4eeb6a28b052e6b8ce5a9',0,0,16,26,0,'FF',9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (130,'e143f8b4c6d4eeb6a28b052e6b8ce5a9',0,0,16,26,0,'FF',9,0,3,'Maximum:','','on',3,8);
 INSERT INTO graph_templates_item VALUES (131,'facfeeb6fc2255ba2985b2d2f695d78a',0,0,17,23,30,'FF',7,0,1,'Current Logins','','',2,1);
 INSERT INTO graph_templates_item VALUES (132,'2470e43034a5560260d79084432ed14f',0,0,17,23,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (133,'e9e645f07bde92b52d93a7a1f65efb30',0,0,17,23,0,'FF',9,0,1,'Average:','','',3,3);
@@ -1634,7 +1634,7 @@ INSERT INTO graph_templates_item VALUES (134,'bdfe0d66103211cfdaa267a44a98b092',
 INSERT INTO graph_templates_item VALUES (139,'098b10c13a5701ddb7d4d1d2e2b0fdb7',0,0,18,30,9,'FF',7,0,1,'CPU Usage','','',2,1);
 INSERT INTO graph_templates_item VALUES (140,'1dbda412a9926b0ee5c025aa08f3b230',0,0,18,30,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (141,'725c45917146807b6a4257fc351f2bae',0,0,18,30,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (142,'4e336fdfeb84ce65f81ded0e0159a5e0',0,0,18,30,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (142,'4e336fdfeb84ce65f81ded0e0159a5e0',0,0,18,30,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (143,'7dab7a3ceae2addd1cebddee6c483e7c',0,0,19,39,25,'FF',7,14,1,'Free Space','','',2,5);
 INSERT INTO graph_templates_item VALUES (144,'aea239f3ceea8c63d02e453e536190b8',0,0,19,39,0,'FF',9,14,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (145,'a0efae92968a6d4ae099b676e0f1430e',0,0,19,39,0,'FF',9,14,1,'Average:','','',2,7);
@@ -1658,7 +1658,7 @@ INSERT INTO graph_templates_item VALUES (162,'4d52762859a3fec297ebda0e7fd760d9',
 INSERT INTO graph_templates_item VALUES (163,'999d4ed1128ff03edf8ea47e56d361dd',0,0,20,42,1,'FF',5,0,1,'Available Directory Entries','','',2,5);
 INSERT INTO graph_templates_item VALUES (164,'3dfcd7f8c7a760ac89d34398af79b979',0,0,20,42,0,'FF',9,0,4,'Current:','','',3,6);
 INSERT INTO graph_templates_item VALUES (165,'217be75e28505c8f8148dec6b71b9b63',0,0,20,42,0,'FF',9,0,1,'Average:','','',3,7);
-INSERT INTO graph_templates_item VALUES (166,'69b89e1c5d6fc6182c93285b967f970a',0,0,20,42,0,'FF',9,0,3,'Maximum:','','',3,8);
+INSERT INTO graph_templates_item VALUES (166,'69b89e1c5d6fc6182c93285b967f970a',0,0,20,42,0,'FF',9,0,3,'Maximum:','','on',3,8);
 INSERT INTO graph_templates_item VALUES (172,'5d6dff9c14c71dc1ebf83e87f1c25695',0,0,21,44,20,'FF',8,14,1,'Available','','',2,5);
 INSERT INTO graph_templates_item VALUES (173,'b27cb9a158187d29d17abddc6fdf0f15',0,0,21,44,0,'FF',9,14,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (174,'6c0555013bb9b964e51d22f108dae9b0',0,0,21,44,0,'FF',9,14,1,'Average:','','',2,7);
@@ -1706,7 +1706,7 @@ INSERT INTO graph_templates_item VALUES (215,'175c0a68689bebc38aad2fbc271047b3',
 INSERT INTO graph_templates_item VALUES (216,'1bf2283106510491ddf3b9c1376c0b31',0,0,25,55,20,'FF',4,0,1,'Outbound','','',2,5);
 INSERT INTO graph_templates_item VALUES (217,'c5202f1690ffe45600c0d31a4a804f67',0,0,25,55,0,'FF',9,0,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (218,'eb9794e3fdafc2b74f0819269569ed40',0,0,25,55,0,'FF',9,0,1,'Average:','','',2,7);
-INSERT INTO graph_templates_item VALUES (219,'6bcedd61e3ccf7518ca431940c93c439',0,0,25,55,0,'FF',9,0,3,'Maximum:','','',2,8);
+INSERT INTO graph_templates_item VALUES (219,'6bcedd61e3ccf7518ca431940c93c439',0,0,25,55,0,'FF',9,0,3,'Maximum:','','on',2,8);
 INSERT INTO graph_templates_item VALUES (303,'b7b381d47972f836785d338a3bef6661',0,0,26,78,0,'FF',9,0,3,'Maximum:','','on',2,8);
 INSERT INTO graph_templates_item VALUES (304,'36fa8063df3b07cece878d54443db727',0,0,26,78,0,'FF',9,0,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (305,'2c35b5cae64c5f146a55fcb416dd14b5',0,0,26,78,0,'FF',9,0,4,'Current:','','',2,6);
@@ -1718,15 +1718,15 @@ INSERT INTO graph_templates_item VALUES (310,'4b8e4a6bf2757f04c3e3a088338a2f7a',
 INSERT INTO graph_templates_item VALUES (317,'8536e034ab5268a61473f1ff2f6bd88f',0,0,27,79,0,'FF',9,0,1,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (316,'d478a76de1df9edf896c9ce51506c483',0,0,27,79,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (315,'42537599b5fb8ea852240b58a58633de',0,0,27,79,9,'FF',7,0,1,'CPU Utilization','','',2,1);
-INSERT INTO graph_templates_item VALUES (318,'87e10f9942b625aa323a0f39b60058e7',0,0,27,79,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (318,'87e10f9942b625aa323a0f39b60058e7',0,0,27,79,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (319,'38f6891b0db92aa8950b4ce7ae902741',0,0,28,81,67,'FF',7,0,1,'Users','','',2,1);
 INSERT INTO graph_templates_item VALUES (320,'af13152956a20aa894ef4a4067b88f63',0,0,28,81,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (321,'1b2388bbede4459930c57dc93645284e',0,0,28,81,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (322,'6407dc226db1d03be9730f4d6f3eeccf',0,0,28,81,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (322,'6407dc226db1d03be9730f4d6f3eeccf',0,0,28,81,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (323,'fca6a530c8f37476b9004a90b42ee988',0,0,29,80,48,'FF',7,0,1,'Running Processes','','',2,1);
 INSERT INTO graph_templates_item VALUES (324,'5acebbde3dc65e02f8fda03955852fbe',0,0,29,80,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (325,'311079ffffac75efaab2837df8123122',0,0,29,80,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (326,'724d27007ebf31016cfa5530fee1b867',0,0,29,80,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (326,'724d27007ebf31016cfa5530fee1b867',0,0,29,80,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (373,'1995d8c23e7d8e1efa2b2c55daf3c5a7',0,0,32,54,22,'FF',7,2,1,'Inbound','','',2,1);
 INSERT INTO graph_templates_item VALUES (335,'',95,1,12,84,41,'FF',7,0,1,'Free','','',2,9);
 INSERT INTO graph_templates_item VALUES (336,'',96,1,12,84,0,'FF',9,0,4,'Current:','','',2,10);
@@ -1735,7 +1735,7 @@ INSERT INTO graph_templates_item VALUES (338,'',98,1,12,84,0,'FF',9,0,3,'Maximum
 INSERT INTO graph_templates_item VALUES (339,'',99,1,12,85,30,'FF',8,0,1,'Swap','','',2,13);
 INSERT INTO graph_templates_item VALUES (340,'',100,1,12,85,0,'FF',9,0,4,'Current:','','',2,14);
 INSERT INTO graph_templates_item VALUES (341,'',101,1,12,85,0,'FF',9,0,1,'Average:','','',2,15);
-INSERT INTO graph_templates_item VALUES (342,'',102,1,12,85,0,'FF',9,0,3,'Maximum:','','',2,16);
+INSERT INTO graph_templates_item VALUES (342,'',102,1,12,85,0,'FF',9,0,3,'Maximum:','','on',2,16);
 INSERT INTO graph_templates_item VALUES (343,'',69,2,9,86,15,'FF',7,0,1,'1 Minute Average','','',2,1);
 INSERT INTO graph_templates_item VALUES (344,'',70,2,9,86,0,'FF',9,0,4,'Current:','','on',4,2);
 INSERT INTO graph_templates_item VALUES (345,'',71,2,9,87,8,'FF',8,0,1,'5 Minute Average','','',2,3);
@@ -1746,11 +1746,11 @@ INSERT INTO graph_templates_item VALUES (349,'',75,2,9,0,1,'FF',4,12,1,'','','',
 INSERT INTO graph_templates_item VALUES (350,'',76,3,10,89,67,'FF',7,0,1,'Users','','',2,1);
 INSERT INTO graph_templates_item VALUES (351,'',77,3,10,89,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (352,'',78,3,10,89,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (353,'',79,3,10,89,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (353,'',79,3,10,89,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (354,'',65,4,8,90,48,'FF',7,0,1,'Running Processes','','',2,1);
 INSERT INTO graph_templates_item VALUES (355,'',66,4,8,90,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (356,'',67,4,8,90,0,'FF',9,0,1,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (357,'',68,4,8,90,0,'FF',9,0,3,'Maximum:','','',3,4);
+INSERT INTO graph_templates_item VALUES (357,'',68,4,8,90,0,'FF',9,0,3,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (358,'803b96bcaec33148901b4b562d9d2344',0,0,30,29,89,'FF',7,0,1,'Open Files','','',2,1);
 INSERT INTO graph_templates_item VALUES (359,'da26dd92666cb840f8a70e2ec5e90c07',0,0,30,29,0,'FF',9,0,4,'Current:','','',3,2);
 INSERT INTO graph_templates_item VALUES (360,'5258970186e4407ed31cca2782650c45',0,0,30,29,0,'FF',9,0,1,'Average:','','',3,3);
@@ -1763,27 +1763,27 @@ INSERT INTO graph_templates_item VALUES (366,'964c5c30cd05eaf5a49c0377d173de86',
 INSERT INTO graph_templates_item VALUES (367,'b1a6fb775cf62e79e1c4bc4933c7e4ce',0,0,31,55,0,'FF',9,2,4,'Current:','','',2,6);
 INSERT INTO graph_templates_item VALUES (368,'721038182a872ab266b5cf1bf7f7755c',0,0,31,55,0,'FF',9,2,1,'Average:','','',2,7);
 INSERT INTO graph_templates_item VALUES (369,'2302f80c2c70b897d12182a1fc11ecd6',0,0,31,55,0,'FF',9,2,3,'Maximum:','','on',2,8);
-INSERT INTO graph_templates_item VALUES (370,'4ffc7af8533d103748316752b70f8e3c',0,0,31,0,0,'FF',1,0,1,'','','on',2,9);
+INSERT INTO graph_templates_item VALUES (370,'4ffc7af8533d103748316752b70f8e3c',0,0,31,0,0,'FF',1,0,1,'','','',2,9);
 INSERT INTO graph_templates_item VALUES (371,'64527c4b6eeeaf627acc5117ff2180fd',0,0,31,55,9,'FF',2,0,1,'95th Percentile','|95:bits:0:max:2|','',2,10);
-INSERT INTO graph_templates_item VALUES (372,'d5bbcbdbf83ae858862611ac6de8fc62',0,0,31,55,0,'FF',1,0,1,'(|95:bits:6:max:2| mbit in+out)','','',2,11);
+INSERT INTO graph_templates_item VALUES (372,'d5bbcbdbf83ae858862611ac6de8fc62',0,0,31,55,0,'FF',1,0,1,'(|95:bits:6:max:2| mbit in+out)','','on',2,11);
 INSERT INTO graph_templates_item VALUES (374,'55083351cd728b82cc4dde68eb935700',0,0,32,54,0,'FF',9,2,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (375,'54782f71929e7d1734ed5ad4b8dda50d',0,0,32,54,0,'FF',9,2,1,'Average:','','',2,3);
-INSERT INTO graph_templates_item VALUES (376,'88d3094d5dc2164cbf2f974aeb92f051',0,0,32,54,0,'FF',9,2,3,'Maximum:','','',2,4);
+INSERT INTO graph_templates_item VALUES (376,'88d3094d5dc2164cbf2f974aeb92f051',0,0,32,54,0,'FF',9,2,3,'Maximum:','','on',2,4);
 INSERT INTO graph_templates_item VALUES (377,'4a381a8e87d4db1ac99cf8d9078266d3',0,0,32,55,20,'FF',4,2,1,'Outbound','','',2,6);
 INSERT INTO graph_templates_item VALUES (378,'5bff63207c7bf076d76ff3036b5dad54',0,0,32,55,0,'FF',9,2,4,'Current:','','',2,7);
 INSERT INTO graph_templates_item VALUES (379,'979fff9d691ca35e3f4b3383d9cae43f',0,0,32,55,0,'FF',9,2,1,'Average:','','',2,8);
-INSERT INTO graph_templates_item VALUES (380,'0e715933830112c23c15f7e3463f77b6',0,0,32,55,0,'FF',9,2,3,'Maximum:','','',2,11);
+INSERT INTO graph_templates_item VALUES (380,'0e715933830112c23c15f7e3463f77b6',0,0,32,55,0,'FF',9,2,3,'Maximum:','','on',2,11);
 INSERT INTO graph_templates_item VALUES (383,'5b43e4102600ad75379c5afd235099c4',0,0,32,54,0,'FF',1,0,1,'Total In:  |sum:auto:current:2:auto|','','on',2,5);
-INSERT INTO graph_templates_item VALUES (384,'db7c15d253ca666601b3296f2574edc9',0,0,32,55,0,'FF',1,0,1,'Total Out: |sum:auto:current:2:auto|','','',2,12);
-INSERT INTO graph_templates_item VALUES (385,'fdaec5b9227522c758ad55882c483a83',0,0,33,55,0,'FF',9,0,3,'Maximum:','','',2,11);
+INSERT INTO graph_templates_item VALUES (384,'db7c15d253ca666601b3296f2574edc9',0,0,32,55,0,'FF',1,0,1,'Total Out: |sum:auto:current:2:auto|','','on',2,12);
+INSERT INTO graph_templates_item VALUES (385,'fdaec5b9227522c758ad55882c483a83',0,0,33,55,0,'FF',9,0,3,'Maximum:','','on',2,11);
 INSERT INTO graph_templates_item VALUES (386,'6824d29c3f13fe1e849f1dbb8377d3f1',0,0,33,55,0,'FF',9,0,1,'Average:','','',2,8);
 INSERT INTO graph_templates_item VALUES (387,'54e3971b3dd751dd2509f62721c12b41',0,0,33,55,0,'FF',9,0,4,'Current:','','',2,7);
 INSERT INTO graph_templates_item VALUES (388,'cf8c9f69878f0f595d583eac109a9be1',0,0,33,55,20,'FF',4,0,1,'Outbound','','',2,6);
-INSERT INTO graph_templates_item VALUES (389,'de265acbbfa99eb4b3e9f7e90c7feeda',0,0,33,54,0,'FF',9,0,3,'Maximum:','','',2,4);
+INSERT INTO graph_templates_item VALUES (389,'de265acbbfa99eb4b3e9f7e90c7feeda',0,0,33,54,0,'FF',9,0,3,'Maximum:','','on',2,4);
 INSERT INTO graph_templates_item VALUES (390,'777aa88fb0a79b60d081e0e3759f1cf7',0,0,33,54,0,'FF',9,0,1,'Average:','','',2,3);
 INSERT INTO graph_templates_item VALUES (391,'66bfdb701c8eeadffe55e926d6e77e71',0,0,33,54,0,'FF',9,0,4,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (392,'3ff8dba1ca6279692b3fcabed0bc2631',0,0,33,54,22,'FF',7,0,1,'Inbound','','',2,1);
-INSERT INTO graph_templates_item VALUES (393,'d6041d14f9c8fb9b7ddcf3556f763c03',0,0,33,55,0,'FF',1,0,1,'Total Out: |sum:auto:current:2:auto|','','',2,12);
+INSERT INTO graph_templates_item VALUES (393,'d6041d14f9c8fb9b7ddcf3556f763c03',0,0,33,55,0,'FF',1,0,1,'Total Out: |sum:auto:current:2:auto|','','on',2,12);
 INSERT INTO graph_templates_item VALUES (394,'76ae747365553a02313a2d8a0dd55c8a',0,0,33,54,0,'FF',1,0,1,'Total In:  |sum:auto:current:2:auto|','','on',2,5);
 INSERT INTO graph_templates_item VALUES (403,'8a1b44ab97d3b56207d0e9e77a035d25',0,0,13,95,30,'FF',8,14,1,'Cache Memory','','',2,9);
 INSERT INTO graph_templates_item VALUES (404,'6db3f439e9764941ff43fbaae348f5dc',0,0,13,95,0,'FF',9,14,4,'Current:','','',2,10);
@@ -1916,7 +1916,7 @@ CREATE TABLE host_snmp_cache (
   field_name varchar(50) NOT NULL default '',
   field_value varchar(255) default NULL,
   snmp_index varchar(255) NOT NULL default '',
-  oid TEXT NOT NULL default '',
+  oid TEXT NOT NULL,
   PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
   KEY snmp_index (snmp_index),
@@ -2332,6 +2332,7 @@ CREATE TABLE snmp_query_graph_rrd (
   data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
   snmp_field_name varchar(50) NOT NULL default '0',
   PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
+  KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) TYPE=MyISAM;
 
@@ -2393,7 +2394,6 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
-  KEY data_template_rrd_id (data_template_rrd_id),
   KEY data_template_id (data_template_id)
 ) TYPE=MyISAM;
 
