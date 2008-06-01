@@ -960,99 +960,178 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_graph_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = ""; 
-		$cdef_similar_ds_nodups = ""; $cdef_total_ds_nodups = "";
+		$cdef_graph_defs = "";  
 
 		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
-			$cdef_string = $graph_variables["cdef_cache"]{$graph_item["graph_templates_item_id"]};
 
-			/* create cdef string for "total all data sources" if requested */
-			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
-				$item_count 		= 0;
-				$nodups_item_count 	= 0;
-				$already_seen		= array();
-				
+			$cdef_string 	= $graph_variables["cdef_cache"]{$graph_item["graph_templates_item_id"]};
+			$magic_item 	= array();
+			$already_seen	= array();
+			$sources_seen	= array();
+			$count_all_ds_dups = 0;				
+			$count_all_ds_nodups = 0;				
+			$count_similar_ds_dups = 0;				
+			$count_similar_ds_nodups = 0;				
+
+			/* if any of those magic variables are requested ... */			
+			if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $cdef_string) || 
+				ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $cdef_string)) {
+
+				/* now walk through each case to initialize array*/
+				if (ereg("ALL_DATA_SOURCES_DUPS", $cdef_string)) {
+					$magic_item["ALL_DATA_SOURCES_DUPS"] = "";				
+				}
+				if (ereg("ALL_DATA_SOURCES_NODUPS", $cdef_string)) {
+					$magic_item["ALL_DATA_SOURCES_NODUPS"] = "";				
+				}
+				if (ereg("SIMILAR_DATA_SOURCES_DUPS", $cdef_string)) {
+					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] = "";				
+				}
+				if (ereg("SIMILAR_DATA_SOURCES_NODUPS", $cdef_string)) {
+					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] = "";				
+				}
+				if (ereg("COUNT_ALL_DS_DUPS", $cdef_string)) {
+					$magic_item["COUNT_ALL_DS_DUPS"] = "";				
+				}
+				if (ereg("COUNT_ALL_DS_NODUPS", $cdef_string)) {
+					$magic_item["COUNT_ALL_DS_NODUPS"] = "";				
+				}
+				if (ereg("COUNT_SIMILAR_DS_DUPS", $cdef_string)) {
+					$magic_item["COUNT_SIMILAR_DS_DUPS"] = "";				
+				}
+				if (ereg("COUNT_SIMILAR_DS_NODUPS", $cdef_string)) {
+					$magic_item["COUNT_SIMILAR_DS_NODUPS"] = "";				
+				}
+
+				/* loop over all graph items */
 				for ($t=0;($t<count($graph_items));$t++) {
-					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $graph_items[$t]["cdef_cache"])) {
-						/* in case, this ALL_DATA_SOURCES_(NO)?DUPS entry was erraneously associated with any data source
-						 * skip counting this entry */
+
+					/* don't count any entry where a magic item was entered */
+					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $graph_items[$t]["cdef_cache"]) ||
+						ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $graph_items[$t]["cdef_cache"])) {
 						continue;
 					}
 
+					/* only work on graph items, omit GRPINTs, COMMENTs and stuff */
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
+
+						/* matching consolidation function? */
 						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_total_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-							$item_count++;
+
+							/* do we need ALL_DATA_SOURCES_DUPS? */
+							if (isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
+								$magic_item["ALL_DATA_SOURCES_DUPS"] .= ($count_all_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+							}
+
+							/* do we need COUNT_ALL_DS_DUPS? */
+							if (isset($magic_item["COUNT_ALL_DS_DUPS"])) {
+								$magic_item["COUNT_ALL_DS_DUPS"] .= ($count_all_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+							}
+
+							$count_all_ds_dups++;
 							
 							/* check if this item also qualifies for NODUPS  */
 							if(!isset($already_seen[$def_name])) {
-								$cdef_total_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								if (isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
+									$magic_item["ALL_DATA_SOURCES_NODUPS"] .= ($count_all_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								}
+								if (isset($magic_item["COUNT_ALL_DS_NODUPS"])) {
+									$magic_item["COUNT_ALL_DS_NODUPS"] .= ($count_all_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+								}
+								$count_all_ds_nodups++;
 								$already_seen[$def_name]=TRUE;
-								$nodups_item_count++;
 							}
-						}
-					}
+
+							/* check for SIMILAR data sources */
+							if ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"]) {
+	
+								/* do we need SIMILAR_DATA_SOURCES_DUPS? */
+								if (isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"]) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
+									$magic_item["SIMILAR_DATA_SOURCES_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								}
+	
+								/* do we need COUNT_SIMILAR_DS_DUPS? */
+								if (isset($magic_item["COUNT_SIMILAR_DS_DUPS"]) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
+									$magic_item["COUNT_SIMILAR_DS_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+								}
+
+								$count_similar_ds_dups++;
+
+								/* check if this item also qualifies for NODUPS  */
+								if(!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]})) {
+									if (isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
+										$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] .= ($count_similar_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+									}
+									if (isset($magic_item["COUNT_SIMILAR_DS_NODUPS"]) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
+										$magic_item["COUNT_SIMILAR_DS_NODUPS"] .= ($count_similar_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+									}
+									$count_similar_ds_nodups++;
+									$sources_seen{$graph_items[$t]["data_template_rrd_id"]} = TRUE;
+								}
+							} # SIMILAR data sources
+						} # matching consolidation function?
+					} # only work on graph items, omit GRPINTs, COMMENTs and stuff
+				} #  loop over all graph items
+
+				/* if there is only one item to total, don't even bother with the summation. 
+				 * Otherwise cdef=a,b,c,+,+ is fine. */
+				if ($count_all_ds_dups > 1 && isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
+					$magic_item["ALL_DATA_SOURCES_DUPS"] .= str_repeat(",+", ($count_all_ds_dups - 2)) . ",+";
 				}
-
-				/* if there is only one item to total, don't even bother with the summation. otherwise
-				cdef=a,b,c,+,+ is fine. */
-				if ($item_count > 1) {
-					$cdef_total_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
+				if ($count_all_ds_nodups > 1 && isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
+					$magic_item["ALL_DATA_SOURCES_NODUPS"] .= str_repeat(",+", ($count_all_ds_nodups - 2)) . ",+";
 				}
-				if ($nodups_item_count > 1) {
-					$cdef_total_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				if ($count_similar_ds_dups > 1 && isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"])) {
+					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] .= str_repeat(",+", ($count_similar_ds_dups - 2)) . ",+";
 				}
-			}
-
-			/* create cdef string for "total similar data sources" if requested */
-			if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
-				$item_count 		= 0;
-				$nodups_item_count 	= 0;
-				$sources_seen 		= array();
-
-				for ($t=0;($t<count($graph_items));$t++) {
-					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $graph_items[$t]["cdef_cache"])) {
-						/* SIMILAR_DATA_SOURCES_(NO)?DUPS entry has to be associated with a data source
-						 * we won't count this data source due to it's appearance in a SIMILAR_DATA_SOURCES_(NO)?DUPS
-						 * entry. This way, we even support multiple ALL|SIMILAR_DATA_SOURCES_(NO)?DUPS
-						 * for a single graph */
-						continue;
-					}
-
-					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"])) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
-						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
-						if (isset($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id])) {
-							$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_similar_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-							$item_count++;
-
-							/* check if this item also qualifies for NODUPS  */
-							if(!isset($sources_seen{$graph_items[$t]["data_template_rrd_id"]})) {
-								$cdef_similar_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-								$sources_seen{$graph_items[$t]["data_template_rrd_id"]} = TRUE;
-								$nodups_item_count++;
-							}							
-						}
-					}
+				if ($count_similar_ds_nodups > 1 && isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
+					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] .= str_repeat(",+", ($count_similar_ds_nodups - 2)) . ",+";
 				}
-
-				/* if there is only one item to total, don't even bother with the summation. otherwise
-				cdef=a,b,c,+,+ is fine. */
-				if ($item_count > 1) {
-					$cdef_similar_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
+				if ($count_all_ds_dups > 1 && isset($magic_item["COUNT_ALL_DS_DUPS"])) {
+					$magic_item["COUNT_ALL_DS_DUPS"] .= str_repeat(",+", ($count_all_ds_dups - 2)) . ",+";
 				}
-				if ($nodups_item_count > 1) {
-					$cdef_similar_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				if ($count_all_ds_nodups > 1 && isset($magic_item["COUNT_ALL_DS_NODUPS"])) {
+					$magic_item["COUNT_ALL_DS_NODUPS"] .= str_repeat(",+", ($count_all_ds_nodups - 2)) . ",+";
+				}
+				if ($count_similar_ds_dups > 1 && isset($magic_item["COUNT_SIMILAR_DS_DUPS"])) {
+					$magic_item["COUNT_SIMILAR_DS_DUPS"] .= str_repeat(",+", ($count_similar_ds_dups - 2)) . ",+";
+				}
+				if ($count_similar_ds_nodups > 1 && isset($magic_item["COUNT_SIMILAR_DS_NODUPS"])) {
+					$magic_item["COUNT_SIMILAR_DS_NODUPS"] .= str_repeat(",+", ($count_similar_ds_nodups - 2)) . ",+";
 				}
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds_nodups, $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $cdef_total_ds, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds_nodups, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $cdef_similar_ds, $cdef_string);
+			
+			/* ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
+			if (isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
+				$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
+				$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $magic_item["ALL_DATA_SOURCES_NODUPS"], $cdef_string);
+			}
+			if (isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"])) {
+				$cdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $magic_item["SIMILAR_DATA_SOURCES_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
+				$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $cdef_string);
+			}
+			
+			/* COUNT_ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
+			if (isset($magic_item["COUNT_ALL_DS_DUPS"])) {
+				$cdef_string = str_replace("COUNT_ALL_DS_DUPS", $magic_item["COUNT_ALL_DS_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["COUNT_ALL_DS_NODUPS"])) {
+				$cdef_string = str_replace("COUNT_ALL_DS_NODUPS", $magic_item["COUNT_ALL_DS_NODUPS"], $cdef_string);
+			}
+			if (isset($magic_item["COUNT_SIMILAR_DS_DUPS"])) {
+				$cdef_string = str_replace("COUNT_SIMILAR_DS_DUPS", $magic_item["COUNT_SIMILAR_DS_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["COUNT_SIMILAR_DS_NODUPS"])) {
+				$cdef_string = str_replace("COUNT_SIMILAR_DS_NODUPS", $magic_item["COUNT_SIMILAR_DS_NODUPS"], $cdef_string);
+			}
 
 			/* data source item variables */
 			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($graph_item["rrd_minimum"]) ? "0" : $graph_item["rrd_minimum"]), $cdef_string);
@@ -1522,84 +1601,179 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_xport_defs = ""; $cdef_total_ds = ""; $cdef_similar_ds = ""; 
-		$cdef_similar_ds_nodups = ""; $cdef_total_ds_nodups = "";
+		$cdef_xport_defs = ""; $cdef_all_ds_dups = ""; $cdef_similar_ds_dups = ""; 
+		$cdef_similar_ds_nodups = ""; $cdef_all_ds_nodups = "";
 
 		if ((!empty($xport_item["cdef_id"])) && (!isset($cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id]))) {
-			$cdef_string = $xport_variables["cdef_cache"]{$xport_item["graph_templates_item_id"]};
 
-			/* create cdef string for "total all data sources" if requested */
-			if (ereg("ALL_DATA_SOURCES_(NO)?DUPS", $cdef_string)) {
-				$item_count 		= 0;
-				$nodups_item_count 	= 0;
-				$already_seen		= array();
-				
+			$cdef_string = $xport_variables["cdef_cache"]{$xport_item["graph_templates_item_id"]};
+			$magic_item 	= array();
+			$already_seen	= array();
+			$sources_seen	= array();
+			$count_all_ds_dups = 0;				
+			$count_all_ds_nodups = 0;				
+			$count_similar_ds_dups = 0;				
+			$count_similar_ds_nodups = 0;				
+
+			/* if any of those magic variables are requested ... */			
+			if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $cdef_string) || 
+				ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $cdef_string)) {
+
+				/* now walk through each case to initialize array*/
+				if (ereg("ALL_DATA_SOURCES_DUPS", $cdef_string)) {
+					$magic_item["ALL_DATA_SOURCES_DUPS"] = "";				
+				}
+				if (ereg("ALL_DATA_SOURCES_NODUPS", $cdef_string)) {
+					$magic_item["ALL_DATA_SOURCES_NODUPS"] = "";				
+				}
+				if (ereg("SIMILAR_DATA_SOURCES_DUPS", $cdef_string)) {
+					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] = "";				
+				}
+				if (ereg("SIMILAR_DATA_SOURCES_NODUPS", $cdef_string)) {
+					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] = "";				
+				}
+				if (ereg("COUNT_ALL_DS_DUPS", $cdef_string)) {
+					$magic_item["COUNT_ALL_DS_DUPS"] = "";				
+				}
+				if (ereg("COUNT_ALL_DS_NODUPS", $cdef_string)) {
+					$magic_item["COUNT_ALL_DS_NODUPS"] = "";				
+				}
+				if (ereg("COUNT_SIMILAR_DS_DUPS", $cdef_string)) {
+					$magic_item["COUNT_SIMILAR_DS_DUPS"] = "";				
+				}
+				if (ereg("COUNT_SIMILAR_DS_NODUPS", $cdef_string)) {
+					$magic_item["COUNT_SIMILAR_DS_NODUPS"] = "";				
+				}
+
+				/* loop over all graph items */
 				for ($t=0;($t<count($xport_items));$t++) {
+
+					/* don't count any entry where a magic item was entered */
+					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $xport_items[$t]["cdef_cache"]) ||
+						ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $xport_items[$t]["cdef_cache"])) {
+						continue;
+					}
+
+					/* only work on graph items, omit GRPINTs, COMMENTs and stuff */
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
+
+						/* matching consolidation function? */
 						if (isset($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id])) {
 							$def_name = generate_graph_def_name(strval($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_total_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-							$item_count++;
 
+							/* do we need ALL_DATA_SOURCES_DUPS? */
+							if (isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
+								$magic_item["ALL_DATA_SOURCES_DUPS"] .= ($count_all_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+							}
+
+							/* do we need COUNT_ALL_DS_DUPS? */
+							if (isset($magic_item["COUNT_ALL_DS_DUPS"])) {
+								$magic_item["COUNT_ALL_DS_DUPS"] .= ($count_all_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+							}
+
+							$count_all_ds_dups++;
+							
 							/* check if this item also qualifies for NODUPS  */
-							if(! isset($already_seen[$def_name])) {
-								$cdef_total_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+							if(!isset($already_seen[$def_name])) {
+								if (isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
+									$magic_item["ALL_DATA_SOURCES_NODUPS"] .= ($count_all_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								}
+								if (isset($magic_item["COUNT_ALL_DS_NODUPS"])) {
+									$magic_item["COUNT_ALL_DS_NODUPS"] .= ($count_all_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+								}
+								$count_all_ds_nodups++;
 								$already_seen[$def_name]=TRUE;
-								$nodups_item_count++;
 							}
-						}
-					}
-				}
 
-				/* if there is only one item to total, don't even bother with the summation. otherwise
-				cdef=a,b,c,+,+ is fine. */
-				if ($item_count > 1) {
-					$cdef_total_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
-				}
-				if ($nodups_item_count > 1) {
-					$cdef_total_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
-				}
-			}
+							/* check for SIMILAR data sources */
+							if ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"]) {
+	
+								/* do we need SIMILAR_DATA_SOURCES_DUPS? */
+								if (isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"]) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
+									$magic_item["SIMILAR_DATA_SOURCES_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+								}
+	
+								/* do we need COUNT_SIMILAR_DS_DUPS? */
+								if (isset($magic_item["COUNT_SIMILAR_DS_DUPS"]) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
+									$magic_item["COUNT_SIMILAR_DS_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+								}
 
-			/* create cdef string for "total similar data sources" if requested */
-			if (ereg("SIMILAR_DATA_SOURCES_(NO)?DUPS", $cdef_string) ) {
-				$item_count 		= 0;
-				$nodups_item_count 	= 0;
-				$sources_seen 		= array();
+								$count_similar_ds_dups++;
 
-				for ($t=0;($t<count($xport_items));$t++) {
-					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"])) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
-						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
-						if (isset($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id])) {
-							$def_name = generate_graph_def_name(strval($cf_ds_cache{$xport_items[$t]["data_template_rrd_id"]}[$cf_id]));
-							$cdef_similar_ds .= ($item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-							$item_count++;
+								/* check if this item also qualifies for NODUPS  */
+								if(!isset($sources_seen{$xport_items[$t]["data_template_rrd_id"]})) {
+									if (isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
+										$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] .= ($count_similar_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+									}
+									if (isset($magic_item["COUNT_SIMILAR_DS_NODUPS"]) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
+										$magic_item["COUNT_SIMILAR_DS_NODUPS"] .= ($count_similar_ds_nodups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+									}
+									$count_similar_ds_nodups++;
+									$sources_seen{$xport_items[$t]["data_template_rrd_id"]} = TRUE;
+								}
+							} # SIMILAR data sources
+						} # matching consolidation function?
+					} # only work on graph items, omit GRPINTs, COMMENTs and stuff
+				} #  loop over all graph items
 
-							if (!isset($sources_seen{$xport_items[$t]["data_template_rrd_id"]})) {
-								$cdef_similar_ds_nodups .= ($nodups_item_count == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
-								$sources_seen{$xport_items[$t]["data_template_rrd_id"]} = TRUE;
-								$nodups_item_count++;
-							}
-						}
-					}
+				/* if there is only one item to total, don't even bother with the summation. 
+				 * Otherwise cdef=a,b,c,+,+ is fine. */
+				if ($count_all_ds_dups > 1 && isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
+					$magic_item["ALL_DATA_SOURCES_DUPS"] .= str_repeat(",+", ($count_all_ds_dups - 2)) . ",+";
 				}
-
-				/* if there is only one item to total, don't even bother with the summation. otherwise
-				cdef=a,b,c,+,+ is fine. */
-				if ($item_count > 1) {
-					$cdef_similar_ds .= str_repeat(",+", ($item_count - 2)) . ",+";
+				if ($count_all_ds_nodups > 1 && isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
+					$magic_item["ALL_DATA_SOURCES_NODUPS"] .= str_repeat(",+", ($count_all_ds_nodups - 2)) . ",+";
 				}
-				if ($nodups_item_count > 1) {
-					$cdef_similar_ds_nodups .= str_repeat(",+", ($nodups_item_count - 2)) . ",+";
+				if ($count_similar_ds_dups > 1 && isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"])) {
+					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] .= str_repeat(",+", ($count_similar_ds_dups - 2)) . ",+";
+				}
+				if ($count_similar_ds_nodups > 1 && isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
+					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] .= str_repeat(",+", ($count_similar_ds_nodups - 2)) . ",+";
+				}
+				if ($count_all_ds_dups > 1 && isset($magic_item["COUNT_ALL_DS_DUPS"])) {
+					$magic_item["COUNT_ALL_DS_DUPS"] .= str_repeat(",+", ($count_all_ds_dups - 2)) . ",+";
+				}
+				if ($count_all_ds_nodups > 1 && isset($magic_item["COUNT_ALL_DS_NODUPS"])) {
+					$magic_item["COUNT_ALL_DS_NODUPS"] .= str_repeat(",+", ($count_all_ds_nodups - 2)) . ",+";
+				}
+				if ($count_similar_ds_dups > 1 && isset($magic_item["COUNT_SIMILAR_DS_DUPS"])) {
+					$magic_item["COUNT_SIMILAR_DS_DUPS"] .= str_repeat(",+", ($count_similar_ds_dups - 2)) . ",+";
+				}
+				if ($count_similar_ds_nodups > 1 && isset($magic_item["COUNT_SIMILAR_DS_NODUPS"])) {
+					$magic_item["COUNT_SIMILAR_DS_NODUPS"] .= str_repeat(",+", ($count_similar_ds_nodups - 2)) . ",+";
 				}
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $cdef_total_ds, $cdef_string);
-			$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $cdef_total_ds_nodups, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $cdef_similar_ds, $cdef_string);
-			$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $cdef_similar_ds_nodups, $cdef_string);
+			
+			/* ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
+			if (isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
+				$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
+				$cdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $magic_item["ALL_DATA_SOURCES_NODUPS"], $cdef_string);
+			}
+			if (isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"])) {
+				$cdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $magic_item["SIMILAR_DATA_SOURCES_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
+				$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $cdef_string);
+			}
+			
+			/* COUNT_ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
+			if (isset($magic_item["COUNT_ALL_DS_DUPS"])) {
+				$cdef_string = str_replace("COUNT_ALL_DS_DUPS", $magic_item["COUNT_ALL_DS_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["COUNT_ALL_DS_NODUPS"])) {
+				$cdef_string = str_replace("COUNT_ALL_DS_NODUPS", $magic_item["COUNT_ALL_DS_NODUPS"], $cdef_string);
+			}
+			if (isset($magic_item["COUNT_SIMILAR_DS_DUPS"])) {
+				$cdef_string = str_replace("COUNT_SIMILAR_DS_DUPS", $magic_item["COUNT_SIMILAR_DS_DUPS"], $cdef_string);
+			}
+			if (isset($magic_item["COUNT_SIMILAR_DS_NODUPS"])) {
+				$cdef_string = str_replace("COUNT_SIMILAR_DS_NODUPS", $magic_item["COUNT_SIMILAR_DS_NODUPS"], $cdef_string);
+			}
 
 			/* data source item variables */
 			$cdef_string = str_replace("CURRENT_DS_MINIMUM_VALUE", (empty($xport_item["rrd_minimum"]) ? "0" : $xport_item["rrd_minimum"]), $cdef_string);

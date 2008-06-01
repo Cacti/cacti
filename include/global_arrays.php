@@ -299,15 +299,19 @@ $host_group_types = array(
 	);
 
 $custom_data_source_types = array(
-	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
-	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
-	"ALL_DATA_SOURCES_DUPS" => "All Data Sources (Include Duplicates)",
-	"SIMILAR_DATA_SOURCES_NODUPS" => "All Similar Data Sources (Don't Include Duplicates)",
-	"SIMILAR_DATA_SOURCES_DUPS" => "All Similar Data Sources (Include Duplicates)",
-	"CURRENT_DS_MINIMUM_VALUE" => "Current Data Source Item: Minimum Value",
-	"CURRENT_DS_MAXIMUM_VALUE" => "Current Data Source Item: Maximum Value",
-	"CURRENT_GRAPH_MINIMUM_VALUE" => "Graph: Lower Limit",
-	"CURRENT_GRAPH_MAXIMUM_VALUE" => "Graph: Upper Limit");
+	"CURRENT_DATA_SOURCE"				=> "Current Graph Item Data Source",
+	"ALL_DATA_SOURCES_NODUPS"			=> "All Data Sources (Don't Include Duplicates)",
+	"ALL_DATA_SOURCES_DUPS"				=> "All Data Sources (Include Duplicates)",
+	"SIMILAR_DATA_SOURCES_NODUPS"		=> "All Similar Data Sources (Don't Include Duplicates)",
+	"SIMILAR_DATA_SOURCES_DUPS"			=> "All Similar Data Sources (Include Duplicates)",
+	"CURRENT_DS_MINIMUM_VALUE"			=> "Current Data Source Item: Minimum Value",
+	"CURRENT_DS_MAXIMUM_VALUE"			=> "Current Data Source Item: Maximum Value",
+	"CURRENT_GRAPH_MINIMUM_VALUE"		=> "Graph: Lower Limit",
+	"CURRENT_GRAPH_MAXIMUM_VALUE"		=> "Graph: Upper Limit",
+	"COUNT_ALL_DS_NODUPS"				=> "Count of All Data Sources (Don't Include Duplicates)",
+	"COUNT_ALL_DS_DUPS"					=> "Count of All Data Sources (Include Duplicates)",
+	"COUNT_SIMILAR_DS_NODUPS"			=> "Count of All Similar Data Sources (Don't Include Duplicates)",
+	"COUNT_SIMILAR_DS_DUPS"		 		=> "Count of All Similar Data Sources (Include Duplicates)");
 
 $menu = array(
 	"Create" => array(

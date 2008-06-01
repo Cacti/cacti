@@ -4815,6 +4815,546 @@ disk /</userinput></screen>
 					</tgroup>
 				</table>
 			</sect2>
+			<sect2 id="cdef_special_data_source">
+				<title>Special Data Source</title>
+				<para>The <guilabel>Special Data Souce</guilabel> selection introduces some variables not known
+				to plain vanilla rrdtool. Let's spend some few words of them to unleash their power.</para>
+				<table frame='all'>
+					<title>CDEF Special Data Source</title>
+					<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+						<colspec colnum="1">
+						<colspec colwidth="3*" colnum="2">
+						<thead>
+							<row>
+								<entry align="center">Special Data Source</entry>
+								<entry align="center">Description</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry>Current Graph Item Data Source</entry>
+								<entry>Will be replaced by the DEF name of the rrdtool data source referred by the graph item this CDEF is associated to.</entry>
+							</row>
+							<row>
+								<entry>All Data Sources (Don't Include Duplicates)</entry>
+								<entry>Will add up all data sources of the whole graph to form a total. A data source that appears more than once will be counted only once. Data sources that differ by consolidation functions only are NOT counted as different data sources (e.g. traffic_in:AVERAGE and traffic_in:MAX are counted only once). It is NOT required to associate the graph item to any data source!</entry>
+							</row>
+							<row>
+								<entry>All Data Sources (Include Duplicates)</entry>
+								<entry>Will add up all data sources of the whole graph to form a total. A data source that appears more than once will be counted for each time of it's appearance. Data sources that differ by consolidation functions only are NOT counted as different data sources (e.g. traffic_in:AVERAGE and traffic_in:MAX are counted only once). It is NOT required to associate the graph item to any data source!</entry>
+							</row>
+							<row>
+								<entry>Similar Data Sources (Don't Include Duplicates)</entry>
+								<entry>It is REQUIRED to associate the graph item to the data source that shall be totalled! Let's assume the data source is named "traffic_in". Then, cacti will add up all data sources "traffic_in" of the whole graph to form a data source specific total (e.g. Total traffic In). Data sources with different consolidation functions are counted as same data sources (e.g. traffic_in:AVERAGE and traffic_in:MAX are counted once)</entry>
+							</row>
+							<row>
+								<entry>Similar Data Sources (Include Duplicates)</entry>
+								<entry>It is REQUIRED to associate the graph item to the data source that shall be totalled! If a data source appears multiple times, it will be added this many times.</entry>
+							</row>
+							<row>
+								<entry>Current Data Source Item: Minimum Value</entry>
+								<entry>Taken from the Data Template - Data Source Item related to this graph item: fetches the minimum value defined for the given data template. Caution: This is NOT the smallest entry of the given data source!</entry>
+							</row>
+							<row>
+								<entry>Current Data Source Item: Maximum Value</entry>
+								<entry>Taken from the Data Template - Data Source Item related to this graph item: fetches the maximum value defined for the given data template. Caution: This is NOT the highest entry of the given data source!</entry>
+							</row>
+							<row>
+								<entry>Graph: Lower Limit</entry>
+								<entry>Taken from the Graph Template: fetches the Lower Limit defined to the Graph Template. This is independant of all --alt-autoscaling options. It is NOT the dynamically determined lower boundary of the graph!</entry>
+							</row>
+							<row>
+								<entry>Graph: Upper Limit</entry>
+								<entry>Taken from the Graph Template: fetches the Upper Limit defined to the Graph Template. This is independant of all --alt-autoscaling options. It is NOT the dynamically determined upper boundary of the graph!</entry>
+							</row>
+							<row>
+								<entry>Count of All Data Sources (Don't Include Duplicates)</entry>
+								<entry>Will count the number of all data sources of the whole graph. A data source that appears more than once will be counted only once. Data sources that differ by consolidation functions only are NOT counted as different data sources (e.g. traffic_in:AVERAGE and traffic_in:MAX are counted only once). It is NOT required to associate the graph item to any data source!</entry>
+							</row>
+							<row>
+								<entry>Count of All Data Sources (Include Duplicates)</entry>
+								<entry>Will count the number of all data sources of the whole graph. A data source that appears more than once will be counted for each time of it's appearance. Data sources that differ by consolidation functions only are NOT counted as different data sources (e.g. traffic_in:AVERAGE and traffic_in:MAX are counted only once). It is NOT required to associate the graph item to any data source!</entry>
+							</row>
+							<row>
+								<entry>Count of Similar Data Sources (Don't Include Duplicates)</entry>
+								<entry>It is REQUIRED to associate the graph item to the data source that shall be counted! Let's assume the data source is named "traffic_in". Then, cacti will count all data sources "traffic_in" of the whole graph. Data sources with different consolidation functions are counted as same data sources (e.g. traffic_in:AVERAGE and traffic_in:MAX are counted once)</entry>
+							</row>
+							<row>
+								<entry>Count of Similar Data Sources (Include Duplicates)</entry>
+								<entry>It is REQUIRED to associate the graph item to the data source that shall be counted! If a data source appears multiple times, it will be counted this many times.</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+				<para>While the <parameter>All Data Sources/Similar Data Sources</parameter> pseudo CDEF variables
+				perform <emphasis>totaling</emphasis>, the <parameter>Count All Data Sources/Count Similar Data Sources</parameter> 
+				pseudo CDEF Variables simply <emphasis>count</emphasis> the occurences of the related data sources.
+				Thus, it is easy to compute e.g. an average of all similar data sources by creating the CDEF
+				</para>
+				<screen>CDEF=SIMILAR_DATA_SOURCES_NODUPS,COUNT_SIMILAR_DS_NODUPS,/</screen>
+			</sect2>
+			<sect2 id="cdef_special_data_source_examples">
+				<title>Using Special Data Source</title>
+				<para>Let's have some examples:</para>
+				<example>
+					<title>Sum up all Data Sources Omitting Duplicates</title>
+					<para>This is the list of graph items defined. Please note,
+					that Item#17-20 are duplicates of Item#1-4. Even if it usually does not make sense, for this
+					discussion it is very valuable. Item#21-24 are related to a 
+					<emphasis>cdef=ALL_DATA_SOURCES_NODUPS</emphasis></para>
+					<screen>
+Graph Item  Data Source                         Graph Item Type  CF Type
+Item # 1    (traffic_in): 1. Target Traffic In 	          LINE1  AVERAGE
+Item # 2    (traffic_in): Current:                       GPRINT     LAST
+Item # 3    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 4    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 5    (traffic_in): 2. Target Traffic In            LINE1  AVERAGE
+Item # 6    (traffic_in): Current:                       GPRINT     LAST
+Item # 7    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 8    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 9    (traffic_out): 1. Target Traffic Out          LINE1  AVERAGE
+Item # 10   (traffic_out): Current:                      GPRINT     LAST
+Item # 11   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 12   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 13   (traffic_out): 2. Target Traffic Out          LINE1  AVERAGE
+Item # 14   (traffic_out): Current:                      GPRINT     LAST
+Item # 15   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 16   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 17   (traffic_in): 1. Target Again Traffic In      LINE1  AVERAGE
+Item # 18   (traffic_in): Current:                       GPRINT     LAST
+Item # 19   (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 20   (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 21   (No Task): AllDsNoDups                        LINE1  AVERAGE
+Item # 22   (No Task): Current:                          GPRINT     LAST
+Item # 23   (No Task): Average:                          GPRINT  AVERAGE
+Item # 24   (No Task): Maximum:[HR]                      GPRINT      MAX</screen>
+					<para>And this is the rrd graph statement:</para>
+					<screen>/usr/bin/rrdtool graph - \
+--imgformat=PNG \
+--start=-86400 \
+--end=-300 \
+--title="Traffic AllDsNoDups" \
+--base=1000 \
+--height=120 \
+--width=500 \
+--alt-autoscale-max \
+--lower-limit=0 \
+--vertical-label="" \
+--slope-mode \
+--font TITLE:12: \
+--font AXIS:8: \
+--font LEGEND:8: \
+--font UNIT:8: \
+DEF:a="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:AVERAGE \
+DEF:b="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:MAX \
+DEF:c="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:AVERAGE \
+DEF:d="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:MAX \
+DEF:e="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:AVERAGE \
+DEF:f="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:MAX \
+DEF:g="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:AVERAGE \
+DEF:h="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:MAX \
+CDEF:cdefca=TIME,1202925514,GT,a,a,UN,0,a,IF,IF,TIME,1202925514,GT,c,c,UN,0,c,IF,IF,TIME,1202925514,GT,e,e,UN,0,e,IF,IF,TIME,1202925514,GT,g,g,UN,0,g,IF,IF,+,+,+ \
+LINE1:a#FFFF00FF:"1. Target Traffic In"  \
+GPRINT:a:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:c#FFD660FF:"2. Target Traffic In"  \
+GPRINT:c:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:c:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:d:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:e#CAF100FF:"1. Target Traffic Out"  \
+GPRINT:e:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:e:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:f:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:g#CCBB00FF:"2. Target Traffic Out"  \
+GPRINT:g:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:g:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:h:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:a#FF0000FF:"1. Target Again Traffic In"  \
+GPRINT:a:LAST:"Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:cdefca#000000FF:"AllDsNoDups"  \
+GPRINT:cdefca:LAST:"               Current\:%8.2lf%s"  \
+GPRINT:cdefca:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:cdefca:MAX:"Maximum\:%8.2lf%s\n"</screen>
+					<para>The data sources are denoted by the letters <guilabel>a</guilabel> to <guilabel>h</guilabel>.
+					<guilabel>cdefca</guilabel> represents the important part. You surely notice, that
+					all data sources using consolidation function AVERAGE are taken into account while MAX is skipped.
+					Please pay attention to the data source denoted by <guilabel>a</guilabel>. Even though the data source appears twice, 
+					the cdef shows it only once. This is due to the duplicate suppression.</para>
+				</example>
+				<example>
+					<title>Sum up all Data Sources Including Duplicates</title>
+					<para>This is the list of graph items defined. Please note,
+					that Item#17-20 are duplicates of Item#1-4. Even if it usually does not make sense, for this
+					discussion it is very valuable. Item#21-24 are related to a 
+					<emphasis>cdef=ALL_DATA_SOURCES_DUPS</emphasis></para>
+					<screen>
+Graph Item  Data Source                         Graph Item Type  CF Type
+Item # 1    (traffic_in): 1. Target Traffic In 	          LINE1  AVERAGE
+Item # 2    (traffic_in): Current:                       GPRINT     LAST
+Item # 3    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 4    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 5    (traffic_in): 2. Target Traffic In            LINE1  AVERAGE
+Item # 6    (traffic_in): Current:                       GPRINT     LAST
+Item # 7    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 8    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 9    (traffic_out): 1. Target Traffic Out          LINE1  AVERAGE
+Item # 10   (traffic_out): Current:                      GPRINT     LAST
+Item # 11   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 12   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 13   (traffic_out): 2. Target Traffic Out          LINE1  AVERAGE
+Item # 14   (traffic_out): Current:                      GPRINT     LAST
+Item # 15   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 16   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 17   (traffic_in): 1. Target Again Traffic In      LINE1  AVERAGE
+Item # 18   (traffic_in): Current:                       GPRINT     LAST
+Item # 19   (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 20   (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 21   (No Task): AllDsDups                          LINE1  AVERAGE
+Item # 22   (No Task): Current:                          GPRINT     LAST
+Item # 23   (No Task): Average:                          GPRINT  AVERAGE
+Item # 24   (No Task): Maximum:[HR]                      GPRINT      MAX</screen>
+					<para>And this is the rrd graph statement:</para>
+					<screen>/usr/bin/rrdtool graph - \
+--imgformat=PNG \
+--start=-86400 \
+--end=-300 \
+--title="Traffic AllDsDups" \
+--base=1000 \
+--height=120 \
+--width=500 \
+--alt-autoscale-max \
+--lower-limit=0 \
+--vertical-label="" \
+--slope-mode \
+--font TITLE:12: \
+--font AXIS:8: \
+--font LEGEND:8: \
+--font UNIT:8: \
+DEF:a="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:AVERAGE \
+DEF:b="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:MAX \
+DEF:c="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:AVERAGE \
+DEF:d="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:MAX \
+DEF:e="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:AVERAGE \
+DEF:f="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:MAX \
+DEF:g="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:AVERAGE \
+DEF:h="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:MAX \
+CDEF:cdefca=TIME,1202925583,GT,a,a,UN,0,a,IF,IF,TIME,1202925583,GT,c,c,UN,0,c,IF,IF,TIME,1202925583,GT,e,e,UN,0,e,IF,IF,TIME,1202925583,GT,g,g,UN,0,g,IF,IF,TIME,1202925583,GT,a,a,UN,0,a,IF,IF,+,+,+,+ \
+LINE1:a#FFFF00FF:"1. Target Traffic In"  \
+GPRINT:a:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:c#FFD660FF:"2. Target Traffic In"  \
+GPRINT:c:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:c:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:d:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:e#CAF100FF:"1. Target Traffic Out"  \
+GPRINT:e:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:e:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:f:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:g#CCBB00FF:"2. Target Traffic Out"  \
+GPRINT:g:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:g:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:h:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:a#FF0000FF:"1. Target Again Traffic In"  \
+GPRINT:a:LAST:"Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:cdefca#000000FF:"AllDsDups"  \
+GPRINT:cdefca:LAST:"                 Current\:%8.2lf%s"  \
+GPRINT:cdefca:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:cdefca:MAX:"Maximum\:%8.2lf%s\n"</screen>
+					<para>Again, the data sources are denoted by the letters <guilabel>a</guilabel> to <guilabel>h</guilabel> and
+					<guilabel>cdefca</guilabel> represents the important part. Please pay attention to the data source 
+					denoted by <guilabel>a</guilabel> appearing twice in this cdef. 
+					This is, because it appears twice (Item#17-20) in the graph item list
+					and duplicate suppression is not in effect.</para>
+				</example>
+				<example>
+					<title>Sum up Similar Data Sources Omitting Duplicates</title>
+					<para>Everything is very much like the above; again
+					Item#17-20 are duplicates of Item#1-4. Item#21-24 are related to a 
+					<emphasis>cdef=SIMILAR_DATA_SOURCES_NODUPS</emphasis> and are associated with the
+					data source <emphasis>traffic_in</emphasis> of the 1. target (it does not matter, which target is chosen,
+					as long as you only choose a traffic_in data source)</para>
+					<screen>
+Graph Item  Data Source                         Graph Item Type  CF Type
+Item # 1    (traffic_in): 1. Target Traffic In 	          LINE1  AVERAGE
+Item # 2    (traffic_in): Current:                       GPRINT     LAST
+Item # 3    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 4    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 5    (traffic_in): 2. Target Traffic In            LINE1  AVERAGE
+Item # 6    (traffic_in): Current:                       GPRINT     LAST
+Item # 7    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 8    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 9    (traffic_out): 1. Target Traffic Out          LINE1  AVERAGE
+Item # 10   (traffic_out): Current:                      GPRINT     LAST
+Item # 11   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 12   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 13   (traffic_out): 2. Target Traffic Out          LINE1  AVERAGE
+Item # 14   (traffic_out): Current:                      GPRINT     LAST
+Item # 15   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 16   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 17   (traffic_in): 1. Target Again Traffic In      LINE1  AVERAGE
+Item # 18   (traffic_in): Current:                       GPRINT     LAST
+Item # 19   (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 20   (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 21   (traffic_in): SimilarDsNoDups                 LINE1  AVERAGE
+Item # 22   (traffic_in): Current:                       GPRINT     LAST
+Item # 23   (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 24   (traffic_in): Maximum:[HR]                   GPRINT      MAX</screen>
+					<para>And this is the rrd graph statement:</para>
+					<screen>/usr/bin/rrdtool graph - \
+--imgformat=PNG \
+--start=-86400 \
+--end=-300 \
+--title="Traffic SimilarDsNoDups" \
+--base=1000 \
+--height=120 \
+--width=500 \
+--alt-autoscale-max \
+--lower-limit=0 \
+--vertical-label="" \
+--slope-mode \
+--font TITLE:12: \
+--font AXIS:8: \
+--font LEGEND:8: \
+--font UNIT:8: \
+DEF:a="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:AVERAGE \
+DEF:b="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:MAX \
+DEF:c="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:AVERAGE \
+DEF:d="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:MAX \
+DEF:e="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:AVERAGE \
+DEF:f="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:MAX \
+DEF:g="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:AVERAGE \
+DEF:h="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:MAX \
+CDEF:cdefca=TIME,1202924474,GT,a,a,UN,0,a,IF,IF,TIME,1202924474,GT,c,c,UN,0,c,IF,IF,+ \
+CDEF:cdefcd=TIME,1202924474,GT,b,b,UN,0,b,IF,IF,TIME,1202924474,GT,d,d,UN,0,d,IF,IF,+ \
+LINE1:a#FFFF00FF:"1. Target Traffic In"  \
+GPRINT:a:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:c#FFD660FF:"2. Target Traffic In"  \
+GPRINT:c:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:c:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:d:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:e#CAF100FF:"1. Target Traffic Out"  \
+GPRINT:e:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:e:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:f:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:g#CCBB00FF:"2. Target Traffic Out"  \
+GPRINT:g:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:g:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:h:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:a#FF0000FF:"1. Target Again Traffic In"  \
+GPRINT:a:LAST:"Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:cdefca#000000FF:"SimilarDsNoDups"  \
+GPRINT:cdefca:LAST:"           Current\:%8.2lf%s"  \
+GPRINT:cdefca:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
+					<para><guilabel>cdefca</guilabel> calculates the SUM of all traffic_in data sources, but
+					pays attention only to consolidation function AVERAGE. Duplicate suppression makes sure, that the second
+					occurrence of the 1. target is not taken into account. So it's only summing data source 
+					<guilabel>a</guilabel> and <guilabel>c</guilabel>. <guilabel>cdefca</guilabel> is used the the LINE1
+					graph item with exact match for consolidation function AVERAGE as well as for the best matched
+					consolidation functions LAST and MIN.</para>
+					<para><guilabel>cdefcd</guilabel> calculates the SUM of all traffic_in data sources, but
+					pays attention only to consolidation function MAX. Again, duplicate suppression is in effect. 
+					So it's only summing data source 
+					<guilabel>b</guilabel> and <guilabel>d</guilabel>. <guilabel>cdefcd</guilabel> is used for the
+					graph item with exact match for consolidation function MAX only. This is, because my rra settings
+					only define AVERAGE and MAX, where LAST and MIN are omitted. This may differ for installations
+					defining LAST and MIN as well.</para>
+				</example>
+				<example>
+					<title>Sum up Similar Data Sources Including Duplicates</title>
+					<para>Again, please note,
+					that Item#17-20 are duplicates of Item#1-4. Item#21-24 are related to a 
+					<emphasis>cdef=SIMILAR_DATA_SOURCES_DUPS</emphasis> and are associated with the
+					data source <emphasis>traffic_in</emphasis> of the 1. target (it does not matter, which target is chosen,
+					as long as you only choose a traffic_in data source)</para>
+					<screen>
+Graph Item  Data Source                         Graph Item Type  CF Type
+Item # 1    (traffic_in): 1. Target Traffic In 	          LINE1  AVERAGE
+Item # 2    (traffic_in): Current:                       GPRINT     LAST
+Item # 3    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 4    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 5    (traffic_in): 2. Target Traffic In            LINE1  AVERAGE
+Item # 6    (traffic_in): Current:                       GPRINT     LAST
+Item # 7    (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 8    (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 9    (traffic_out): 1. Target Traffic Out          LINE1  AVERAGE
+Item # 10   (traffic_out): Current:                      GPRINT     LAST
+Item # 11   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 12   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 13   (traffic_out): 2. Target Traffic Out          LINE1  AVERAGE
+Item # 14   (traffic_out): Current:                      GPRINT     LAST
+Item # 15   (traffic_out): Average:                      GPRINT  AVERAGE
+Item # 16   (traffic_out): Maximum:[HR]                  GPRINT      MAX
+Item # 17   (traffic_in): 1. Target Again Traffic In      LINE1  AVERAGE
+Item # 18   (traffic_in): Current:                       GPRINT     LAST
+Item # 19   (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 20   (traffic_in): Maximum:[HR]                   GPRINT      MAX
+Item # 21   (traffic_in): SimilarDsDups                   LINE1  AVERAGE
+Item # 22   (traffic_in): Current:                       GPRINT     LAST
+Item # 23   (traffic_in): Average:                       GPRINT  AVERAGE
+Item # 24   (traffic_in): Maximum:[HR]                   GPRINT      MAX</screen>
+					<para>And this is the rrd graph statement:</para>
+					<screen>/usr/bin/rrdtool graph - \
+--imgformat=PNG \
+--start=-86400 \
+--end=-300 \
+--title="Traffic SimilarDsDups" \
+--base=1000 \
+--height=120 \
+--width=500 \
+--alt-autoscale-max \
+--lower-limit=0 \
+--vertical-label="" \
+--slope-mode \
+--font TITLE:12: \
+--font AXIS:8: \
+--font LEGEND:8: \
+--font UNIT:8: \
+DEF:a="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:AVERAGE \
+DEF:b="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_in:MAX \
+DEF:c="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:AVERAGE \
+DEF:d="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_in:MAX \
+DEF:e="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:AVERAGE \
+DEF:f="/var/www/html/cacti/rra/target1_traffic_in_235.rrd":traffic_out:MAX \
+DEF:g="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:AVERAGE \
+DEF:h="/var/www/html/cacti/rra/target2_traffic_in_8.rrd":traffic_out:MAX \
+CDEF:cdefca=TIME,1202925634,GT,a,a,UN,0,a,IF,IF,TIME,1202925634,GT,c,c,UN,0,c,IF,IF,TIME,1202925634,GT,a,a,UN,0,a,IF,IF,+,+ \
+CDEF:cdefcd=TIME,1202925634,GT,b,b,UN,0,b,IF,IF,TIME,1202925634,GT,d,d,UN,0,d,IF,IF,TIME,1202925634,GT,b,b,UN,0,b,IF,IF,+,+ \
+LINE1:a#FFFF00FF:"1. Target Traffic In"  \
+GPRINT:a:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:c#FFD660FF:"2. Target Traffic In"  \
+GPRINT:c:LAST:"      Current\:%8.2lf%s"  \
+GPRINT:c:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:d:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:e#CAF100FF:"1. Target Traffic Out"  \
+GPRINT:e:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:e:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:f:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:g#CCBB00FF:"2. Target Traffic Out"  \
+GPRINT:g:LAST:"     Current\:%8.2lf%s"  \
+GPRINT:g:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:h:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:a#FF0000FF:"1. Target Again Traffic In"  \
+GPRINT:a:LAST:"Current\:%8.2lf%s"  \
+GPRINT:a:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:b:MAX:"Maximum\:%8.2lf%s\n"  \
+LINE1:cdefca#000000FF:"SimilarDsDups"  \
+GPRINT:cdefca:LAST:"             Current\:%8.2lf%s"  \
+GPRINT:cdefca:AVERAGE:"Average\:%8.2lf%s"  \
+GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
+					<para><guilabel>cdefca</guilabel> and <guilabel>cdefcd</guilabel> represents the important part. You surely notice, that
+					all data sources using consolidation function AVERAGE are taken into account for calculation <guilabel>cdefca</guilabel>,
+					while MAX is calculated with <guilabel>cdefcd</guilabel>.
+					Please pay attention to the data source denoted by <guilabel>a</guilabel> and <guilabel>b</guilabel>, respectively,
+					appearing twice in those cdefs as expected.</para>
+				</example>
+			</sect2>
+			<sect2 id="cdef_more_examples">
+				<title>More CDEF Examples</title>
+				<example>
+					<title>Disk Usage as a Percentage</title>
+					<para>This example is based on the standard data template <emphasis>ucd/net - Hard Drive Space</emphasis>.
+					Cacti ships an associated graph template named <emphasis>ucd/net - Available Disk Space</emphasis>.
+					Often, users complain about the fact, tha tthis template prints free and used space as absolute figures only.
+					But instead of knowing, that your data partition has about 10GB used space, you may be interested in the
+					percentage used. So let's create a simple example to show the power of the recently introduced special data sources.</para>
+					<para>To make it work, we need two new CDEFs. The first one may come in useful for a bunch of 
+					different graph templates. It's named <emphasis>Make Current Data Source 0</emphasis>. On a first glance,
+					you may wonder why this CDEF is needed. It is used for those data sources, that will be used
+					for calculations but shall not show up themselves. Here's the definition</para>
+					<screen>cdef=CURRENT_DATA_SOURCE,0,*</screen>
+					<para>Now, the other one, named <emphasis>Current DS as Percentage of all DS</emphasis></para>
+					<screen>cdef=CURRENT_DATA_SOURCE,ALL_DATA_SOURCES_NODUPS,/,100,*</screen>
+					<para>Here's a short discussion. The first three elements read: Take the current data source and
+					divide it by "The Sum of All Data Sources (Don't include Duplicates)". To form a percentage, you will have 
+					to multiply by 100. This is done by adding the elements four and five.</para>
+					<para>Now, let's build up the new graph</para>
+					<screen>
+Graph Item   Data Source         Graph Item Type  CF Type  Item Color
+    Item#1   (hdd_used):         LINE1            AVERAGE
+    Item#2   (hdd_free):         LINE1            AVERAGE
+    Item#3   (hdd_used): % Used  AREA             AVERAGE  FF0000
+</screen>
+					<para>Item#1+2 in most cases will exceed the maximum percentage of 100 by magnitudes.
+					So they are associated with the CDEF named <emphasis>Make Current Data Source 0</emphasis> to make them zero.
+					This adds the data sources to the graph but avoids them showing up. The pseudo-color of "None" is associated to 
+					both of them.</para>
+					<para>Iten#3 is associated to the data source <emphasis>hdd_used</emphasis> as we want to print the
+					"% Used" of the partition. The CDEF is <emphasis>Current DS as Percentage of all DS</emphasis>, the
+					color is set to "red (FF0000)".</para>
+					<para>And this is the rrd graph statement:</para>
+					<screen>/usr/bin/rrdtool graph - \
+--imgformat=PNG \
+--start=-86400 \
+--end=-300 \
+--title="gandalf - Disk Space - / %used" \
+--rigid \
+--base=1024 \
+--height=120 \
+--width=500 \
+--alt-autoscale-max \
+--lower-limit=0 \
+--vertical-label="Percent" \
+--slope-mode \
+--font TITLE:12: \
+--font AXIS:8: \
+--font LEGEND:8: \
+--font UNIT:8: \
+DEF:a="/var/www/html/cacti/rra/target1_hdd_free_236.rrd":hdd_used:AVERAGE \
+DEF:b="/var/www/html/cacti/rra/target1_hdd_free_236.rrd":hdd_free:AVERAGE \
+CDEF:cdefa=a,0,* \
+CDEF:cdefb=b,0,* \
+CDEF:cdefc=a,TIME,1203272123,GT,a,a,UN,0,a,IF,IF,TIME,1203272123,GT,b,b,UN,0,b,IF,IF,+,/,100,* \
+LINE1:cdefa:""  \
+LINE1:cdefb:""  \
+AREA:cdefc#FF0000FF:"% Used"</screen>
+					<para><guilabel>cdefa</guilabel> and <guilabel>cdefb</guilabel> are used to make the according graph 
+					items zero. <guilabel>cdefc</guilabel> performs the percentage calculation.</para>
+					<para>You may of cource add GPRINT legends as usual. If you do this for the "% Used" entry only, you
+					will get surprising results, if your rrd file holds either MAXIMUM, LAST and/or MINIMUM
+					consolidation function(s). This is left as an exercise to you ;-)</para>
+				</example>
+				<example>
+					<title>Background Colors for Day and Night</title>
+					<para>This set of CDEFs is used to colorize the background of a graph with different colors for day, night and weekends.
+					The CDEFs are created as usual, we will show the CDEF definition only. Examples are taken from rrdtool-users mailing list
+					courtesy Erik de Mare. Here are the definitions</para>
+					<para><emphasis>Background for Daytime</emphasis></para>
+					<screen>cdef=LTIME,86400,%,28800,GT,LTIME,86400,%,64800,LT,INF,UNKN,CURRENT_DATA_SOURCE,*,IF,UNKN,CURRENT_DATA_SOURCE,*,IF</screen>
+					<para><emphasis>Background for Nighttime</emphasis></para>
+					<screen>cdef=LTIME,86400,%,28800,LT,INF,LTIME,86400,%,64800,GT,INF,UNKN,CURRENT_DATA_SOURCE,*,IF,IF</screen>
+					<para><emphasis>Background for Weekend</emphasis></para>
+					<screen>cdef=LTIME,604800,%,172800,GT,LTIME,604800,%,345600,LT,INF,UNKN,CURRENT_DATA_SOURCE,*,IF,UNKN,CURRENT_DATA_SOURCE,*,IF</screen>
+					<para>The value of <emphasis>86400</emphasis> represents the number of seconds of a day, whereas
+					<emphasis>28800</emphasis> represents 8:00, defined as the start of the day. End of the day, <emphasis>64800</emphasis> is
+					assumed at 18:00. Please replace those values if required. For weekends, same logic applies.</para>
+					<para>Now, let's apply those new CDEFs to a Graph Template. For this example, I've chosen the <emphasis>Unix - Processes</emphasis>
+					that applies to localhost only. In turn, please create three new graph items, associate the processes data source,
+					make them AREAs, select	a color and opacity. Choose the daytime , nighttime and weekend CDEF in this sequence. 
+					As a last step, move those three new graph items to the top. I've chosen opacity of 20% for Item#1 to 3.</para>
+					<screen>
+Graph Item  Data Source                Graph Item Type  CF Type  Item Color
+Item # 1    (proc):                    AREA             AVERAGE  FFFF00
+Item # 2    (proc):                    AREA             AVERAGE  0000FF
+Item # 3    (proc):                    AREA             AVERAGE  2E3127
+Item # 4    (proc): Running Processes  AREA             AVERAGE  F51D30
+Item # 5    (proc): Current:           GPRINT           LAST
+Item # 6    (proc): Average:           GPRINT           AVERAGE
+Item # 7    (proc): Maximum:           GPRINT           MAX</screen> 	  	
+				</example>
+			</sect2>
 		</sect1>
 	</chapter>
 	<chapter id=Scripts>
