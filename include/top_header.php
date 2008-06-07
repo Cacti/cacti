@@ -42,12 +42,9 @@ global $colors;
 	<tr height="37" bgcolor="#a9a9a9">
 		<td valign="bottom" colspan="3" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr>
+				<tr style="background: transparent url('images/cacti_backdrop.gif') no-repeat center right;">
 					<td valign="bottom">
 						&nbsp;<a href="index.php"><img src="images/tab_console_down.gif" alt="Console" align="absmiddle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a>
-					</td>
-					<td align="right">
-						<img src="images/cacti_backdrop.gif" align="absmiddle">
 					</td>
 				</tr>
 			</table>
