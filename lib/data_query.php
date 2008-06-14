@@ -144,7 +144,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		snmp_priv_protocol,
 		snmp_context,
 		snmp_port,
-		snmp_timeout
+		snmp_timeout,
+		ping_retries,
+		max_oids
 		FROM host
 		WHERE id='$host_id'");
 
@@ -167,7 +169,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$snmp_index = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"],
 		$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
 		$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-		$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+		$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "'");
 
@@ -232,7 +234,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			$snmp_data = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $field_array["oid"],
 				$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
 				$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-				$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+				$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 
 			debug_log_insert("data_query", "Executing SNMP walk for data @ '" . $field_array["oid"] . "'");
 

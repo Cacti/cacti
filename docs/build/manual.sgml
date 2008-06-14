@@ -4733,6 +4733,42 @@ disk /</userinput></screen>
 							<entry><function>|host_snmp_password|</function></entry>
 							<entry>SNMP Password (v3)</entry>
 						</row>
+						<row>
+							<entry><function>|host_snmp_auth_protocol|</function></entry>
+							<entry>SNMP Authetication Protocol (v3)</entry>
+						</row>
+						<row>
+							<entry><function>|host_snmp_priv_passphrase|</function></entry>
+							<entry>SNMP Privacy Passphrase (v3)</entry>
+						</row>
+						<row>
+							<entry><function>|host_snmp_priv_protocol|</function></entry>
+							<entry>SNMP Privace Protocol (v3)</entry>
+						</row>
+						<row>
+							<entry><function>|host_snmp_context|</function></entry>
+							<entry>SNMP Context (v3)</entry>
+						</row>
+						<row>
+							<entry><function>|host_snmp_port|</function></entry>
+							<entry>SNMP Port</entry>
+						</row>
+						<row>
+							<entry><function>|host_snmp_timeout|</function></entry>
+							<entry>SNMP Timeout</entry>
+						</row>
+						<row>
+							<entry><function>|host_ping_retries|</function></entry>
+							<entry>SNMP Retries</entry>
+						</row>
+						<row>
+							<entry><function>|host_max_oids|</function></entry>
+							<entry>SNMP Maximum OIDs on a bulkwalk (v2, v3)</entry>
+						</row>
+						<row>
+							<entry><function>|host_id|</function></entry>
+							<entry>Cacti internal ID for that Host</entry>
+						</row>
 					</tbody>
 				</tgroup>
 			</table>

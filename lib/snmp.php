@@ -222,7 +222,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 	return $snmp_value;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
+function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER) {
 	global $config;
 
 	$snmp_auth	= '';
@@ -313,7 +313,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
 		}else {
 			if (file_exists($path_snmpbulkwalk) && ($version > 1)) {
-				$temp_array = exec_into_array($path_snmpbulkwalk . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr50 $hostname:$port $oid");
+				$temp_array = exec_into_array($path_snmpbulkwalk . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids $hostname:$port $oid");
 			}else{
 				$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O Qn $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
 			}

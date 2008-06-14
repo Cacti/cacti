@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
 -feature#0001195: add graph title to graphs page
 -feature#0001189: Introducing |data_source_title| variable
+-feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
 -feature#0001140: CLI-Script to associate a graph template to a host
 -feature: add links to Graph Management and Data Sources to Device Edit Screen
 -feature: add links to Graph Template and Host Edit to Graph Edit Screen
@@ -66,6 +67,8 @@ Cacti CHANGELOG
 -feature: Add device_id and event count to devices
 -feature: Add ids to devices, graphs and data sources pages
 -feature: Add database repair utility
+-feature: Default Script Server/Script Queries now accept host specific ping_retries, max_oids
+-feature: Support for new variables |host_ping_retries| and |host_max_oids|
 
 0.8.7a
 -bug#0000895: "Use Per-Data Source Value (Ignore this Value)" runs only when when checking "Allow Empty Input"
