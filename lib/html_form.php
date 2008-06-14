@@ -602,13 +602,17 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$class = " class='$class' ";
 	}
 
+	$current_color = db_fetch_cell("SELECT hex FROM colors WHERE id=$form_previous_value");
+
 	if (strlen($on_change)) {
-		$on_change = " onChange='$on_change' ";
+		$on_change = " " . $on_change . ";";
 	}
+
+	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
 	$colors_list = db_fetch_assoc("select id,hex from colors order by hex desc");
 
-	print "<select id='$form_name' name='$form_name'" . $class . $on_change . ">\n";
+	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">\n";
 
 	if ($form_none_entry != "") {
 		print "<option value='0'>$form_none_entry</option>\n";
@@ -616,7 +620,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	if (sizeof($colors_list) > 0) {
 		foreach ($colors_list as $color) {
-			print "<option style='background: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
+			print "<option style='background-color: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
 
 			if ($form_previous_value == $color["id"]) {
 				print " selected";

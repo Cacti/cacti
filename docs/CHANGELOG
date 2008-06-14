@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -bug: Add API Automation tool quietMode to additional functions
 -bug: When Cacti is launched from within an iframe, cookies are dropped from IE6
 -bug: database upgrade and cacti.sql differ
+-bug: drop color setting background on FF does not work
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
