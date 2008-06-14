@@ -670,7 +670,7 @@ $settings = array(
 			),
 		"max_get_size" => array(
 			"friendly_name" => "The Maximum SNMP OID's Per SNMP Get Request",
-			"description" => "The maximum number of snmp get OID's to issue per snmp request.  Increasing this value speeds poller performance over slow links.  The maximum value is 60 OID's.",
+			"description" => "The maximum number of snmp get OID's to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 60 OID's.  Decreasing this value to 0 or 1 will disable snmpbulkwalk",
 			"method" => "textbox",
 			"default" => "10",
 			"max_length" => "10"

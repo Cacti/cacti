@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -feature: Add some more debug lines to Data Query debugging (Verbose Query)
 -feature: Fix compatibility issues for RRDTool 1.3
 -feature: Make the tabs section work a little better with existing plugins
+-feature: Disable snmpbulkwalk if $max_oids is less than 2
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE

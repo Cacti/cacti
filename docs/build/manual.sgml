@@ -6455,8 +6455,9 @@ Known Host Graphs: (id, name, template)
 			<userinput>Settings</userinput>, <userinput>Poller</userinput>
 			and lower the value for
 			<userinput>The Maximum SNMP OID's Per SNMP Get Request</userinput>.
-			Start at a value of 1 and increase it again,
+			Start at a value of 2 and increase it again,
 			if the poller starts working.
+			(1 or less disables snmpbulkwalk)
 			Some agent's don't have the horsepower
 			to deliver that many OID's at a time. Therefore,
 			we can reduce the number for those older/underpowered devices.</para>
