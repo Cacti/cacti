@@ -176,7 +176,7 @@ if (sizeof($parms)) {
 	}
 
 	if ($displayGraphs) {
-		if (!isset($hostId)) {
+		if (!isset($hostId) || $hostId == 0) {
 			echo "ERROR: You must supply a host_id before you can list its graphs\n";
 			echo "Try --list-hosts\n";
 			exit(1);
