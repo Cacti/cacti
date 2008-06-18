@@ -49,7 +49,7 @@ if (sizeof($parms)) {
 	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
 	$rra_id     = 1;   # The rra_id for the graph to display: 1 = daily, 2 = weekly, 3 = monthly, 4 = yearly
 
-	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 3, 'numeric' => 4);
+	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3);
 	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3);
 
 	$hostId         = 0;
@@ -239,7 +239,10 @@ if (sizeof($parms)) {
 			display_help();
 			exit(1);
 		} elseif ($parentNode > 0 ) {
-			$parentNodeExists = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id = $treeId AND id = $parentNode");
+			$parentNodeExists = db_fetch_cell("SELECT id
+				FROM graph_tree_items
+				WHERE graph_tree_id=$treeId
+				AND id=$parentNode");
 
 			if (!isset($parentNodeExists)) {
 				echo "ERROR: parent-node $parentNode does not exist\n";
@@ -272,7 +275,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit(1);
 			} elseif ($rra_id > 0 ) {
-				$rraExists = db_fetch_cell("SELECT id FROM rra WHERE id = $rra_id");
+				$rraExists = db_fetch_cell("SELECT id FROM rra WHERE id=$rra_id");
 
 				if (!isset($rraExists)) {
 					echo "ERROR: rra-id $rra_id does not exist\n";
@@ -298,7 +301,7 @@ if (sizeof($parms)) {
 		}
 
 		# $nodeId could be a Header Node, a Graph Node, or a Host node.
-		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, 1, false);
+		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, $sortMethods[$sortMethod], false);
 
 		echo "Added Node node-id: ($nodeId)\n";
 
