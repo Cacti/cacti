@@ -95,7 +95,7 @@ if ($host_id == "All") {
 
 /* determine data queries to rerun */
 if ($query_id != "") {
-	$sql_where = (strlen($sql_where) ? " AND snmp_query_id=$query_id": "WHERE snmp_query_id=$query_id");
+	$sql_where .= (strlen($sql_where) ? " AND snmp_query_id=$query_id": "WHERE snmp_query_id=$query_id");
 }
 
 $data_queries = db_fetch_assoc("SELECT host_id, snmp_query_id FROM host_snmp_query" . $sql_where);
