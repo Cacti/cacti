@@ -200,7 +200,9 @@ function getInputFields($templateId) {
 
 function getAddresses() {
 	$addresses = array();
-	$tmparray  = db_fetch_assoc("select id, hostname from host order by hostname");
+	$tmparray  = db_fetch_assoc("SELECT id, hostname 
+		FROM host 
+		ORDER BY hostname");
 
 	foreach ($tmparray as $tmp) {
 		$addresses[$tmp["hostname"]] = $tmp["id"];
@@ -209,9 +211,20 @@ function getAddresses() {
 	return $addresses;
 }
 
-function getSNMPFields($hostId) {
+function getSNMPFields($hostId, $graph_template_id = "") {
 	$fieldNames = array();
-	$tmpArray   = db_fetch_assoc("select distinct field_name from host_snmp_cache where host_id = " . $hostId . " order by field_name");
+
+	if ($graph_template_id != "") {
+		$sql_where = " AND graph_template_id=$graph_template_id";
+	}else{
+		$sql_where = "";
+	}
+
+	$tmpArray   = db_fetch_assoc("SELECT DISTINCT field_name
+		FROM host_snmp_cache
+		WHERE host_id = " . $hostId . "
+		$sql_where
+		ORDER BY field_name");
 
 	foreach ($tmpArray as $f) {
 		$fieldNames[$f["field_name"]] = 1;
@@ -220,9 +233,21 @@ function getSNMPFields($hostId) {
 	return $fieldNames;
 }
 
-function getSNMPValues($hostId, $field) {
+function getSNMPValues($hostId, $field, $graph_template_id = "") {
 	$values   = array();
-	$tmpArray = db_fetch_assoc("select field_value from host_snmp_cache where host_id = " . $hostId . " and field_name = '" . $field . "' order by field_value");
+
+	if ($graph_template_id != "") {
+		$sql_where = " AND graph_template_id=$graph_template_id";
+	}else{
+		$sql_where = "";
+	}
+
+	$tmpArray = db_fetch_assoc("SELECT field_value
+		FROM host_snmp_cache
+		WHERE host_id=" . $hostId . "
+		AND field_name='" . $field . "'
+		$sql_where
+		ORDER BY field_value");
 
 	foreach ($tmpArray as $v) {
 		$values[$v["field_value"]] = 1;
@@ -233,7 +258,9 @@ function getSNMPValues($hostId, $field) {
 
 function getSNMPQueries() {
 	$queries  = array();
-	$tmpArray = db_fetch_assoc("select id, name from snmp_query order by id");
+	$tmpArray = db_fetch_assoc("SELECT id, name
+		FROM snmp_query
+		ORDER by id");
 
 	foreach ($tmpArray as $q) {
 		$queries[$q["id"]] = $q["name"];
@@ -244,7 +271,10 @@ function getSNMPQueries() {
 
 function getSNMPQueryTypes($snmpQueryId) {
 	$types    = array();
-	$tmpArray = db_fetch_assoc("select id, name from snmp_query_graph where snmp_query_id = " . $snmpQueryId . " order by id");
+	$tmpArray = db_fetch_assoc("SELECT id, name
+		FROM snmp_query_graph
+		WHERE snmp_query_id = " . $snmpQueryId . "
+		ORDER BY id");
 
 	foreach ($tmpArray as $type) {
 		$types[$type["id"]] = $type["name"];
@@ -255,7 +285,9 @@ function getSNMPQueryTypes($snmpQueryId) {
 
 function getGraphTemplates() {
 	$graph_templates = array();
-	$tmpArray        = db_fetch_assoc("select id, name from graph_templates order by id");
+	$tmpArray        = db_fetch_assoc("SELECT id, name
+		FROM graph_templates
+		ORDER BY id");
 
 	foreach ($tmpArray as $t) {
 		$graph_templates[$t["id"]] = $t["name"];

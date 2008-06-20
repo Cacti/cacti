@@ -1920,6 +1920,8 @@ CREATE TABLE host_snmp_cache (
   PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
   KEY snmp_index (snmp_index),
+  KEY field_name (field_name),
+  KEY field_value (field_value),
   KEY snmp_query_id (snmp_query_id)
 ) TYPE=MyISAM;
 

@@ -25,6 +25,8 @@
 function upgrade_to_0_8_7c() {
 	/* speed up the UI, missed in 0.8.7b upgrade */
 	db_install_execute("0.8.7c", "ALTER TABLE `data_local` ADD INDEX `host_id`(`host_id`)");
+	db_install_execute("0.8.7c", "ALTER TABLE `host_snmp_cache` ADD INDEX `field_name`(`field_name`)");
+	db_install_execute("0.8.7c", "ALTER TABLE `host_snmp_cache` ADD INDEX `field_value`(`field_value`)");
 
 	/* add a default for NOT NULL columns */
 	db_install_execute("0.8.7c", "ALTER TABLE `data_local` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");
@@ -46,6 +48,6 @@ function upgrade_to_0_8_7c() {
 	/* change size of columns to match current cacti.sql file */
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_item` MODIFY COLUMN `rrd_step` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '300';");
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_time` MODIFY COLUMN `pid` INT(11) UNSIGNED NOT NULL DEFAULT '0';");
-	
+
 }
 ?>
