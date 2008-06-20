@@ -23,8 +23,10 @@
  +-------------------------------------------------------------------------+
  */
 
-function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
-$host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
+function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id,
+	$title, $local_graph_id, $rra_id, $host_id, $host_grouping_type,
+	$sort_children_type, $propagate_changes) {
+
 	global $config;
 
 	include_once($config["library_path"] . "/tree.php");
@@ -133,12 +135,14 @@ $host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
 }
 
 function getHostTemplates() {
-	$tmparray = db_fetch_assoc("select id, name from host_template order by id");
+	$tmpArray = db_fetch_assoc("select id, name from host_template order by id");
 
 	$host_templates[0] = "None";
 
-	foreach ($tmparray as $template) {
-		$host_templates[$template["id"]] = $template["name"];
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $template) {
+			$host_templates[$template["id"]] = $template["name"];
+		}
 	}
 
 	return $host_templates;
@@ -148,8 +152,10 @@ function getHostsByDescription() {
 	$hosts = array();
 	$tmparray = db_fetch_assoc("select id, description from host order by description");
 
-	foreach ($tmparray as $tmp) {
-		$hosts[$tmp["description"]] = $tmp["id"];
+	if (sizeof($tmpArray)) {
+		foreach ($tmparray as $tmp) {
+			$hosts[$tmp["description"]] = $tmp["id"];
+		}
 	}
 
 	return $hosts;
@@ -159,8 +165,10 @@ function getHosts() {
 	$hosts    = array();
 	$tmpArray = db_fetch_assoc("select * from host order by id");
 
-	foreach ($tmpArray as $host) {
-		$hosts[$host["id"]] = $host;
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $host) {
+			$hosts[$host["id"]] = $host;
+		}
 	}
 
 	return $hosts;
@@ -191,8 +199,10 @@ function getInputFields($templateId) {
 		AND ((data_input_data.t_value)='on')
 		AND ((data_input_fields.input_output)='in'))");
 
-	foreach ($tmpArray as $row) {
-		$fields[$row["data_template_id"] . ":" . $row["name"]] = $row;
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $row) {
+			$fields[$row["data_template_id"] . ":" . $row["name"]] = $row;
+		}
 	}
 
 	return $fields;
@@ -200,22 +210,22 @@ function getInputFields($templateId) {
 
 function getAddresses() {
 	$addresses = array();
-	$tmparray  = db_fetch_assoc("SELECT id, hostname 
-		FROM host 
-		ORDER BY hostname");
+	$tmpArray  = db_fetch_assoc("SELECT id, hostname FROM host ORDER BY hostname");
 
-	foreach ($tmparray as $tmp) {
-		$addresses[$tmp["hostname"]] = $tmp["id"];
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $tmp) {
+			$addresses[$tmp["hostname"]] = $tmp["id"];
+		}
 	}
 
 	return $addresses;
 }
 
-function getSNMPFields($hostId, $graph_template_id = "") {
+function getSNMPFields($hostId, $snmp_query_id = "") {
 	$fieldNames = array();
 
-	if ($graph_template_id != "") {
-		$sql_where = " AND graph_template_id=$graph_template_id";
+	if ($snmp_query_id != "") {
+		$sql_where = " AND snmp_query_id=$snmp_query_id";
 	}else{
 		$sql_where = "";
 	}
@@ -226,18 +236,20 @@ function getSNMPFields($hostId, $graph_template_id = "") {
 		$sql_where
 		ORDER BY field_name");
 
-	foreach ($tmpArray as $f) {
-		$fieldNames[$f["field_name"]] = 1;
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $f) {
+			$fieldNames[$f["field_name"]] = 1;
+		}
 	}
 
 	return $fieldNames;
 }
 
-function getSNMPValues($hostId, $field, $graph_template_id = "") {
+function getSNMPValues($hostId, $field, $snmp_query_id = "") {
 	$values   = array();
 
-	if ($graph_template_id != "") {
-		$sql_where = " AND graph_template_id=$graph_template_id";
+	if ($snmp_query_id != "") {
+		$sql_where = " AND snmp_query_id=$snmp_query_id";
 	}else{
 		$sql_where = "";
 	}
@@ -249,8 +261,10 @@ function getSNMPValues($hostId, $field, $graph_template_id = "") {
 		$sql_where
 		ORDER BY field_value");
 
-	foreach ($tmpArray as $v) {
-		$values[$v["field_value"]] = 1;
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $v) {
+			$values[$v["field_value"]] = 1;
+		}
 	}
 
 	return $values;
@@ -262,8 +276,10 @@ function getSNMPQueries() {
 		FROM snmp_query
 		ORDER by id");
 
-	foreach ($tmpArray as $q) {
-		$queries[$q["id"]] = $q["name"];
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $q) {
+			$queries[$q["id"]] = $q["name"];
+		}
 	}
 
 	return $queries;
@@ -276,8 +292,10 @@ function getSNMPQueryTypes($snmpQueryId) {
 		WHERE snmp_query_id = " . $snmpQueryId . "
 		ORDER BY id");
 
-	foreach ($tmpArray as $type) {
-		$types[$type["id"]] = $type["name"];
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $type) {
+			$types[$type["id"]] = $type["name"];
+		}
 	}
 
 	return $types;
@@ -289,8 +307,10 @@ function getGraphTemplates() {
 		FROM graph_templates
 		ORDER BY id");
 
-	foreach ($tmpArray as $t) {
-		$graph_templates[$t["id"]] = $t["name"];
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $t) {
+			$graph_templates[$t["id"]] = $t["name"];
+		}
 	}
 
 	return $graph_templates;
@@ -315,8 +335,10 @@ function displayHostTemplates($host_templates, $quietMode = FALSE) {
 		echo "Valid Host Templates: (id, name)\n";
 	}
 
-	foreach ($host_templates as $id => $name) {
-		echo "$id\t$name\n";
+	if (sizeof($host_templates)) {
+		foreach ($host_templates as $id => $name) {
+			echo "$id\t$name\n";
+		}
 	}
 
 	if (!$quietMode) {
@@ -334,8 +356,10 @@ function displayCommunities($quietMode = FALSE) {
 		FROM host
 		ORDER BY snmp_community");
 
-	foreach ($communities as $community) {
-		echo $community["snmp_community"]."\n";
+	if (sizeof($communities)) {
+		foreach ($communities as $community) {
+			echo $community["snmp_community"]."\n";
+		}
 	}
 
 	if (!$quietMode) {

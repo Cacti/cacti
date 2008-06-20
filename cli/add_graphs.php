@@ -220,7 +220,7 @@ if (sizeof($parms)) {
 	}
 
 	/* process the snmp fields */
-	$snmpFields = getSNMPFields($hostId, $templateId);
+	$snmpFields = getSNMPFields($hostId, $dsGraph["snmpQueryId"]);
 
 	if ($listSNMPFields) {
 		displaySNMPFields($snmpFields, $hostId, $quietMode);
@@ -237,7 +237,7 @@ if (sizeof($parms)) {
 			exit(1);
 		}
 
-		$snmpValues = getSNMPValues($hostId, $dsGraph["snmpField"], $templateId);
+		$snmpValues = getSNMPValues($hostId, $dsGraph["snmpField"], $dsGraph["snmpQueryId"]);
 
 		if (isset($dsGraph["snmpValue"])) {
 			if(!isset($snmpValues[$dsGraph["snmpValue"]])) {
@@ -464,8 +464,8 @@ function display_help() {
 	echo "    --list-input-fields --graph-template-id=[ID]\n";
 	echo "    --list-snmp-queries\n";
 	echo "    --list-query-types  --snmp-query-id [ID]\n";
-	echo "    --list-snmp-fields  --host-id=[ID] [--graph-template-id=[ID]]\n";
-	echo "    --list-snmp-values  --host-id=[ID] [--graph-template-id=[ID]] --snmp-field=[Field]\n\n";
+	echo "    --list-snmp-fields  --host-id=[ID] [--snmp-query-id=[ID]]\n";
+	echo "    --list-snmp-values  --host-id=[ID] [--snmp-query-id=[ID]] --snmp-field=[Field]\n\n";
 	echo "'cg' graphs are for things like CPU temp/fan speed, while \n";
 	echo "'ds' graphs are for data-source based graphs (interface stats etc.)\n";
 }
