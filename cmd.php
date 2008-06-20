@@ -30,7 +30,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $start = date("Y-n-d H:i:s"); // for runtime measurement
 
 ini_set("max_execution_time", "0");
-ini_set("memory_limit", "64M");
+ini_set("memory_limit", "256M");
 
 $no_http_headers = true;
 
