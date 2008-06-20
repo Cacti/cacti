@@ -47,7 +47,8 @@ if (sizeof($parms) == 0) {
 	exit;
 }
 
-$debug = FALSE;
+$debug    = FALSE;
+$query_id = "";
 
 foreach($parms as $parameter) {
 	@list($arg, $value) = @explode("=", $parameter);
@@ -55,6 +56,9 @@ foreach($parms as $parameter) {
 	switch ($arg) {
 	case "-id":
 		$host_id = $value;
+		break;
+	case "-qid":
+		$query_id = $value;
 		break;
 	case "-d":
 		$debug = TRUE;
@@ -90,6 +94,10 @@ if ($host_id == "All") {
 }
 
 /* determine data queries to rerun */
+if ($query_id != "") {
+	$sql_where = (strlen($sql_where) ? " AND snmp_query_id=$query_id": "WHERE snmp_query_id=$query_id");
+}
+
 $data_queries = db_fetch_assoc("SELECT host_id, snmp_query_id FROM host_snmp_query" . $sql_where);
 
 /* issue warnings and start message if applicable */
@@ -107,9 +115,10 @@ foreach ($data_queries as $data_query) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-print "Cacti Reindex Host Script 1.0, Copyright 2007 - The Cacti Group\n\n";
-	print "usage: poller_reindex_hosts.php -id=[host_id|All] [-d] [-h] [--help] [-v] [--version]\n\n";
+print "Cacti Reindex Host Script 1.1, Copyright 2007-2008 - The Cacti Group\n\n";
+	print "usage: poller_reindex_hosts.php -id=[host_id|All] [--qid=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "-id=host_id   - The host_id to have data queries reindexed or 'All' to reindex all hosts\n";
+	print "-qid=query_id - Only index on a specific data query id\n";
 	print "-d            - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";
 	print "-h --help     - Display this help message\n";
