@@ -551,13 +551,15 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 		/* determine the error message to display */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
-			if ($hosts[$host_id]["snmp_community"] == "") {
+			if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
+				/* snmp version 1/2 without community string assume SNMP test to be successful
+				   due to backward compatibility issues */
 				$hosts[$host_id]["status_last_error"] = $ping->ping_response;
 			}else {
 				$hosts[$host_id]["status_last_error"] = $ping->snmp_response . ", " . $ping->ping_response;
 			}
 		}elseif ($ping_availability == AVAIL_SNMP) {
-			if ($hosts[$host_id]["snmp_community"] == "") {
+			if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
 				$hosts[$host_id]["status_last_error"] = "Device does not require SNMP";
 			}else {
 				$hosts[$host_id]["status_last_error"] = $ping->snmp_response;
@@ -622,14 +624,14 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		}
 		/* determine the ping statistic to set and do so */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
-			if ($hosts[$host_id]["snmp_community"] == "") {
+			if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
 				$ping_time = 0.000;
 			}else {
 				/* calculate the average of the two times */
 				$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
 			}
 		}elseif ($ping_availability == AVAIL_SNMP) {
-			if ($hosts[$host_id]["snmp_community"] == "") {
+			if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
 				$ping_time = 0.000;
 			}else {
 				$ping_time = $ping->snmp_status;
@@ -700,7 +702,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} elseif ($ping_availability == AVAIL_SNMP) {
-				if ($hosts[$host_id]["snmp_community"] == "") {
+				if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
 					cacti_log("Host[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout);
 				}else{
 					cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
