@@ -406,6 +406,7 @@ class Net_Ping
 			/* format packet */
 			$this->build_udp_packet();
 
+			$error = "";
 			$retry_count = 0;
 			while (1) {
 				if ($retry_count >= $this->retries) {
@@ -608,10 +609,13 @@ class Net_Ping
 
 		/* snmp test */
 		if (($avail_method == AVAIL_SNMP) || (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == true))) {
-			if ($this->host["snmp_community"] != "") {
-				$snmp_result = $this->ping_snmp();
-			}else{
+			if (($this->host["snmp_community"] == "") && ($this->host["snmp_version"] != 3)) {
+				/* snmp version 1/2 without community string assume SNMP test to be successful
+				   due to backward compatibility issues */
 				$snmp_result = true;
+				$snmp_status = 0.000;
+			}else{
+				$snmp_result = $this->ping_snmp();
 			}
 		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
 			$snmp_result = false;
@@ -619,7 +623,7 @@ class Net_Ping
 
 		switch ($avail_method) {
 			case AVAIL_SNMP_AND_PING:
-				if ($this->host["snmp_community"] == "") {
+				if (($this->host["snmp_community"] == "") && ($this->host["snmp_version"] != 3)) {
 					if ($ping_result) {
 						return true;
 					}else{
