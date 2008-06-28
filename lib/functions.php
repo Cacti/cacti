@@ -241,6 +241,42 @@ function is_error_message() {
 	return false;
 }
 
+/* is_valid_email - determines if an e-mail address passed is either a valid
+     email address or distribution list.
+   @arg $email - either email address or comma/semicolon delimited list of e-mails
+   @returns - (bool) if true the email address is syntactically correct */
+function is_valid_email($email) {
+	/* check for distribution list */
+	$comma = $semic = false;
+	if (substr_count($email, ",")) {
+		$comma = true;
+		$delim = ",";
+	}
+
+	if (substr_count($email, ";")) {
+		$semic = true;
+		$delim = ";";
+	}
+
+	if ($semic && $comma) {
+		return false;
+	}elseif ($semic || $comma) {
+		$members = explode($delim, $email);
+
+		foreach ($members as $member) {
+			if (preg_match("/^ *[0-9a-zA-Z]+[-_\.0-9a-zA-Z]*@([0-9a-zA-Z]+[-\.0-9a-zA-Z]+)+\.[a-zA-Z]+ *$/", $member)) {
+				continue;
+			}else{
+				return false;
+			}
+		}
+
+		return true;
+	}else{
+		return preg_match("/^ *[0-9a-zA-Z]+[-_\.0-9a-zA-Z]*@([0-9a-zA-Z]+[-\.0-9a-zA-Z]+)+\.[a-zA-Z]+ *$/", $email);
+	}
+}
+
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id) {
