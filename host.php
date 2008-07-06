@@ -143,7 +143,7 @@ function form_save() {
 	}
 
 	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_y"]))) {
-		if ($_POST["snmp_password"] != $_POST["snmp_password_confirm"]) {
+		if ($_POST["snmp_version"] == 3 && ($_POST["snmp_password"] != $_POST["snmp_password_confirm"])) {
 			raise_message(4);
 		}else{
 			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"],
