@@ -25,7 +25,8 @@ Cacti CHANGELOG
 -bug: drop color setting background on FF does not work
 -bug: cli/add_tree.php requires as least a host-id for --list-graphs
 -bug: add_tree.php did not allow nodes with propagating sort options
--bug: when adding a tree node via the api numeric and natural were reversed
+-bug: When adding a tree node via the api numeric and natural were reversed
+-bug: When saving a data query based data templates, their data sources would become corrupt
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php

@@ -28,35 +28,41 @@
    @arg $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
 	/* get data_input_id */
-	$data_template = db_fetch_row("select
+	$data_template = db_fetch_row("SELECT
 		id,
 		data_input_id
-		from data_template_data
-		where data_template_id=$data_template_id
-		and local_data_id=0");
+		FROM data_template_data
+		WHERE data_template_id=$data_template_id
+		AND local_data_id=0");
 
 	/* must be a data template */
 	if ((empty($data_template_id)) || (empty($data_template["data_input_id"]))) { return 0; }
 
 	/* get a list of data sources using this template */
-	$data_sources = db_fetch_assoc("select
+	$data_sources = db_fetch_assoc("SELECT
 		data_template_data.id
-		from data_template_data
-		where data_template_id=$data_template_id
-		and local_data_id>0");
+		FROM data_template_data
+		WHERE data_template_id=$data_template_id
+		AND local_data_id>0");
 
 	/* pull out all 'input' values so we know how much to save */
-	$input_fields = db_fetch_assoc("select
+	$input_fields = db_fetch_assoc("SELECT
+		data_template_data.id AS data_template_data_id,
 		data_input_fields.id,
 		data_input_fields.type_code,
 		data_input_data.value,
 		data_input_data.t_value
-		from data_input_fields left join data_input_data
-		on (data_input_fields.id=data_input_data.data_input_field_id)
-		where data_input_data.data_template_data_id=" . $data_template["id"] . "
-		and data_input_fields.input_output='in'");
+		FROM data_input_fields
+		INNER JOIN (data_template_data
+		INNER JOIN data_input_data
+		ON data_template_data.id = data_input_data.data_template_data_id)
+		ON data_input_fields.id = data_input_data.data_input_field_id
+		WHERE (data_input_fields.input_output='in')
+		AND (data_template_data.local_data_template_data_id=" . $data_template["id"] . ")");
 
-	$data_rra = db_fetch_assoc("select rra_id from data_template_data_rra where data_template_data_id=" . $data_template["id"]);
+	$data_rra = db_fetch_assoc("SELECT rra_id
+		FROM data_template_data_rra
+		WHERE data_template_data_id=" . $data_template["id"]);
 
 	if (sizeof($data_sources) > 0) {
 	foreach ($data_sources as $data_source) {
@@ -64,29 +70,39 @@ function push_out_data_source_custom_data($data_template_id) {
 
 		if (sizeof($input_fields) > 0) {
 		foreach ($input_fields as $input_field) {
-			/* do not push out "host fields" */
-			if (!eregi('^' . VALID_HOST_FIELDS . '$', $input_field["type_code"])) {
-				/* this is not a "host field", so we should either push out the value if it is templated
-				or leave it alone if the user checked "Use Per-Data Source Value". */
-				if ($input_field["t_value"] == "") { /* template this value */
-					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . addslashes($input_field["value"]) . "')");
+			if ($data_source["id"] == $input_field["data_template_data_id"]) {
+				/* do not push out "host fields" */
+				if (!eregi('^' . VALID_HOST_FIELDS . '$', $input_field["type_code"])) {
+					/* this is not a "host field", so we should either push out the value if it is templated
+					or leave it alone if the user checked "Use Per-Data Source Value". */
+					if ($input_field["t_value"] == "") { /* template this value */
+						db_execute("REPLACE INTO data_input_data
+							(data_input_field_id,data_template_data_id,value)
+							VALUES (" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($input_field["value"]) . "')");
+					}
+				}elseif (($input_field["t_value"] == "") && ($input_field["value"] != "")) {
+					/* we only template a "host field" when the user types something in the field. this way the data
+					template always overides the host if the user chooses to do so */
+					db_execute("REPLACE INTO data_input_data
+						(data_input_field_id,data_template_data_id,value)
+						VALUES (" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($input_field["value"]) . "')");
 				}
-			}elseif (($input_field["t_value"] == "") && ($input_field["value"] != "")) {
-				/* we only template a "host field" when the user types something in the field. this way the data
-				template always overides the host if the user chooses to do so */
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $input_field["id"] . "," . $data_source["id"] . ",'" . addslashes($input_field["value"]) . "')");
 			}
 		}
 		}
 
 		/* make sure to update the 'data_template_data_rra' table for each data source */
-		db_execute("delete from data_template_data_rra where data_template_data_id=" . $data_source["id"]);
+		db_execute("DELETE
+			FROM data_template_data_rra
+			WHERE data_template_data_id=" . $data_source["id"]);
 
 		reset($data_rra);
 
 		if (sizeof($data_rra) > 0) {
 		foreach ($data_rra as $rra) {
-			db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values (" . $data_source["id"] . "," . $rra["rra_id"] . ")");
+			db_execute("INSERT INTO data_template_data_rra
+				(data_template_data_id,rra_id)
+				VALUES (" . $data_source["id"] . "," . $rra["rra_id"] . ")");
 		}
 		}
 	}
@@ -150,15 +166,15 @@ function change_data_template($local_data_id, $data_template_id) {
 	global $struct_data_source, $struct_data_source_item;
 
 	/* always update tables to new data template (or no data template) */
-	db_execute("update data_local set data_template_id=$data_template_id where id=$local_data_id");
+	db_execute("UPDATE data_local SET data_template_id=$data_template_id WHERE id=$local_data_id");
 
 	/* get data about the template and the data source */
-	$data = db_fetch_row("select * from data_template_data where local_data_id=$local_data_id");
+	$data = db_fetch_row("SELECT * FROM data_template_data WHERE local_data_id=$local_data_id");
 	$template_data = (($data_template_id == "0") ? $data : db_fetch_row("select * from data_template_data where local_data_id=0 and data_template_id=$data_template_id"));
 
 	/* determine if we are here for the first time, or coming back */
 	if ((db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "0") ||
-	(db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "")) {
+		(db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "")) { 
 		$new_save = true;
 	}else{
 		$new_save = false;
@@ -186,8 +202,8 @@ function change_data_template($local_data_id, $data_template_id) {
 	$save["data_source_path"] = $data["data_source_path"];
 
 	$data_template_data_id = sql_save($save, "data_template_data");
-	$data_rrds_list = db_fetch_assoc("select * from data_template_rrd where local_data_id=$local_data_id");
-	$template_rrds_list = (($data_template_id == "0") ? $data_rrds_list : db_fetch_assoc("select * from data_template_rrd where local_data_id=0 and data_template_id=$data_template_id"));
+	$data_rrds_list = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=$local_data_id");
+	$template_rrds_list = (($data_template_id == "0") ? $data_rrds_list : db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=0 AND data_template_id=$data_template_id"));
 
 	if (sizeof($data_rrds_list) > 0) {
 		/* this data source already has "child" items */
@@ -214,7 +230,9 @@ function change_data_template($local_data_id, $data_template_id) {
 	}
 
 	/* make sure to copy down script data (data_input_data) as well */
-	$data_input_data = db_fetch_assoc("select data_input_field_id,t_value,value from data_input_data where data_template_data_id=" . $template_data["id"]);
+	$data_input_data = db_fetch_assoc("SELECT data_input_field_id, t_value, value
+		FROM data_input_data
+		WHERE data_template_data_id=" . $template_data["id"]);
 
 	/* this section is before most everthing else so we can determine if this is a new save, by checking
 	the status of the 'local_data_template_data_id' column */
@@ -222,18 +240,26 @@ function change_data_template($local_data_id, $data_template_id) {
 	foreach ($data_input_data as $item) {
 		/* always propagate on a new save, only propagate templated fields thereafter */
 		if (($new_save == true) || (empty($item["t_value"]))) {
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $item["data_input_field_id"] . ",$data_template_data_id,'" . $item["t_value"] . "','" . $item["value"] . "')");
+			db_execute("REPLACE INTO data_input_data
+				(data_input_field_id,data_template_data_id,t_value,value)
+				VALUES (" . $item["data_input_field_id"] . ", $data_template_data_id, '" . $item["t_value"] . "', '" . $item["value"] . "')");
 		}
 	}
 	}
 
 	/* make sure to update the 'data_template_data_rra' table for each data source */
-	$data_rra = db_fetch_assoc("select rra_id from data_template_data_rra where data_template_data_id=" . $template_data["id"]);
-	db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id");
+	$data_rra = db_fetch_assoc("SELECT rra_id
+		FROM data_template_data_rra
+		WHERE data_template_data_id=" . $template_data["id"]);
+
+	db_execute("DELETE FROM data_template_data_rra
+		WHERE data_template_data_id=$data_template_data_id");
 
 	if (sizeof($data_rra) > 0) {
 	foreach ($data_rra as $rra) {
-		db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $rra["rra_id"] . ")");
+		db_execute("INSERT INTO data_template_data_rra
+			(data_template_data_id,rra_id)
+			VALUES ($data_template_data_id," . $rra["rra_id"] . ")");
 	}
 	}
 }
@@ -658,25 +684,38 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		}
 
 		if (is_array($snmp_query_array)) {
-			$data_input_field = array_rekey(db_fetch_assoc("select
+			$data_input_field = array_rekey(db_fetch_assoc("SELECT
 				data_input_fields.id,
 				data_input_fields.type_code
-				from (snmp_query,data_input,data_input_fields)
-				where snmp_query.data_input_id=data_input.id
-				and data_input.id=data_input_fields.data_input_id
-				and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')
-				and snmp_query.id=" . $snmp_query_array["snmp_query_id"]), "type_code", "id");
+				FROM (snmp_query,data_input,data_input_fields)
+				WHERE snmp_query.data_input_id=data_input.id
+				AND data_input.id=data_input_fields.data_input_id
+				AND (data_input_fields.type_code='index_type'
+					OR data_input_fields.type_code='index_value'
+					OR data_input_fields.type_code='output_type')
+				AND snmp_query.id=" . $snmp_query_array["snmp_query_id"]), "type_code", "id");
 
-			$snmp_cache_value = db_fetch_cell("select field_value from host_snmp_cache where host_id='$host_id' and snmp_query_id='" . $snmp_query_array["snmp_query_id"] . "' and field_name='" . $snmp_query_array["snmp_index_on"] . "' and snmp_index='" . $snmp_query_array["snmp_index"] . "'");
+			$snmp_cache_value = db_fetch_cell("SELECT field_value
+				FROM host_snmp_cache
+				WHERE host_id='$host_id'
+				AND snmp_query_id='" . $snmp_query_array["snmp_query_id"] . "'
+				AND field_name='" . $snmp_query_array["snmp_index_on"] . "'
+				AND snmp_index='" . $snmp_query_array["snmp_index"] . "'");
 
 			/* save the value to index on (ie. ifindex, ifip, etc) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_index_on"] . "')");
+			db_execute("REPLACE INTO data_input_data
+				(data_input_field_id, data_template_data_id, t_value, value)
+				VALUES (" . $data_input_field["index_type"] . ", $data_template_data_id, '', '" . $snmp_query_array["snmp_index_on"] . "')");
 
 			/* save the actual value (ie. 3, 192.168.1.101, etc) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["index_value"] . ",$data_template_data_id,'','" . addslashes($snmp_cache_value) . "')");
+			db_execute("REPLACE INTO data_input_data
+				(data_input_field_id,data_template_data_id,t_value,value)
+				VALUES (" . $data_input_field["index_value"] . ",$data_template_data_id,'','" . addslashes($snmp_cache_value) . "')");
 
 			/* set the expected output type (ie. bytes, errors, packets) */
-			db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values (" . $data_input_field["output_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
+			db_execute("REPLACE INTO data_input_data
+				(data_input_field_id,data_template_data_id,t_value,value)
+				VALUES (" . $data_input_field["output_type"] . ",$data_template_data_id,'','" . $snmp_query_array["snmp_query_graph_id"] . "')");
 
 			/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
 			update_data_source_data_query_cache($cache_array["local_data_id"]{$data_template["id"]});
@@ -686,7 +725,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		if (isset($suggested_values_array[$graph_template_id]["data_template"]{$data_template["id"]})) {
 			reset($suggested_values_array[$graph_template_id]["data_template"]{$data_template["id"]});
 			while (list($field_name, $field_value) = each($suggested_values_array[$graph_template_id]["data_template"]{$data_template["id"]})) {
-				db_execute("update data_template_data set $field_name='$field_value' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+				db_execute("UPDATE data_template_data
+					SET $field_name='$field_value'
+					WHERE local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 			}
 		}
 
@@ -696,7 +737,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			while (list($data_template_item_id, $field_array) = each($suggested_values_array[$graph_template_id]["data_template_item"])) {
 				while (list($field_name, $field_value) = each($field_array)) {
 					$data_source_item_id = db_fetch_cell("select id from data_template_rrd where local_data_template_rrd_id=$data_template_item_id and local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
-					db_execute("update data_template_rrd set $field_name='$field_value' where id=$data_source_item_id");
+					db_execute("UPDATE data_template_rrd
+						SET $field_name='$field_value'
+						WHERE id=$data_source_item_id");
 				}
 			}
 		}

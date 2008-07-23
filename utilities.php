@@ -204,10 +204,34 @@ function memory_readable($val) {
 
 
 function utilities_view_tech($php_info = "") {
-	global $colors, $config, $rrdtool_versions, $poller_options, $input_types;
+	global $database_default, $colors, $config, $rrdtool_versions, $poller_options, $input_types;
 
 	/* Get table status */
-	$table_status = db_fetch_assoc("SHOW TABLE STATUS");
+	$tables = db_fetch_assoc("SHOW TABLES");
+	$skip_tables  = array();
+	$table_status = array();
+
+	if (sizeof($tables)) {
+	foreach($tables as $table) {
+		$create_syntax = db_fetch_row("SHOW CREATE TABLE " . $table["Tables_in_" . $database_default]);
+
+		if (sizeof($create_syntax)) {
+			if (substr_count(strtoupper($create_syntax["Create Table"]), "INNODB")) {
+				$skip_tables[] = $table["Tables_in_" . $database_default];
+			}else{
+				$include_tables[] = $table["Tables_in_" . $database_default];
+			}
+		}
+	}
+	}
+
+	if (sizeof($include_tables)) {
+	foreach($include_tables as $table) {
+		$status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
+
+		array_push($table_status, $status);
+	}
+	}
 
 	/* Get poller stats */
 	$poller_item = db_fetch_assoc("SELECT action, count(action) as total FROM poller_item GROUP BY action");
@@ -363,7 +387,7 @@ function utilities_view_tech($php_info = "") {
 	print "		<td class='textArea'>PHP uname</td>\n";
 	print "		<td class='textArea'>";
 	if (function_exists("php_uname")) {
-       		print php_uname();
+		print php_uname();
 	}else{
 		print "N/A";
 	}
@@ -399,10 +423,10 @@ function utilities_view_tech($php_info = "") {
 	}
 	/* Suggest values in 8M increments */
 	$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
-        if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
+	if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
 		print "<br><font color='red'>It is highly suggested that you alter you php.ini memory_limit to " . memory_readable($memory_suggestion) . " or higher.  This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.</font><br>";
-        }
-        print "</td>\n";
+	}
+	print "</td>\n";
 	print "</tr>\n";
 
 	html_header(array("MySQL Table Information"), 2);
@@ -434,6 +458,15 @@ function utilities_view_tech($php_info = "") {
 			print "  <td>" . db_fetch_cell("CHECK TABLE " . $item["Name"], "Msg_text") . "</td>\n";
 			print "</tr>\n";
 		}
+
+		if (sizeof($skip_tables)) {
+			print "<tr><td colspan='20' align='center'><strong>The Following Tables were Skipped Due to being INNODB</strong></td></tr>";
+
+			foreach($skip_tables as $table) {
+				print "<tr><td colspan='20' align='center'>" . $table . "</td></tr>";
+			}
+		}
+
 		print "</table>\n";
 	}else{
 		print "Unable to retrieve table status";
