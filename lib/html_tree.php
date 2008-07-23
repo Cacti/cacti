@@ -444,14 +444,13 @@ function grow_dhtml_trees() {
 		print $dhtml_tree[$i];
 	}
 	?>
-	foldersTree.treeID = "t2";
 	//-->
 	</script>
 	<?php
 }
 
 function create_dhtml_tree() {
-    /* Record Start Time */
+	/* Record Start Time */
 	list($micro,$seconds) = split(" ", microtime());
 	$start = $seconds + $micro;
 
@@ -460,7 +459,8 @@ function create_dhtml_tree() {
 	$dhtml_tree[0] = $start;
 	$dhtml_tree[1] = read_graph_config_option("expand_hosts");
 	$dhtml_tree[2] = "foldersTree = gFld(\"\", \"\")\n";
-	$i = 2;
+	$dhtml_tree[3] = "foldersTree.xID = \"root\"\n";
+	$i = 3;
 
 	$tree_list = get_graph_tree_array();
 
@@ -499,6 +499,8 @@ function create_dhtml_tree() {
 				order by graph_tree_items.order_key");
 
 			$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
+			$i++;
+			$dhtml_tree[$i] = "ou0.xID = \"tree_" . $tree["id"] . "\"\n";
 
 			if (sizeof($heirarchy) > 0) {
 				foreach ($heirarchy as $leaf) {
@@ -507,6 +509,8 @@ function create_dhtml_tree() {
 
 					if ($leaf["host_id"] > 0) {
 						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"<strong>Host:</strong> " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+						$i++;
+						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
 						if (read_graph_config_option("expand_hosts") == "on") {
 							if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
@@ -524,6 +528,8 @@ function create_dhtml_tree() {
 									foreach ($graph_templates as $graph_template) {
 										$i++;
 										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($graph_template["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=graph_template:" . $graph_template["id"] . "\"))\n";
+										$i++;
+										$dhtml_tree[$i] = "ou" . ($tier+1) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 									}
 								}
 							}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -555,11 +561,15 @@ function create_dhtml_tree() {
 											(($data_query["id"] > 0) && (sizeof($sort_field_data) > 0))) {
 											$i++;
 											$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($data_query["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
+											$i++;
+											$dhtml_tree[$i] = "ou" . ($tier+1) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
 											if ($data_query["id"] > 0) {
 												while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
 													$i++;
 													$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . addslashes($sort_field_value) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
+													$i++;
+													$dhtml_tree[$i] = "ou" . ($tier+2) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 												}
 											}
 										}
@@ -569,6 +579,8 @@ function create_dhtml_tree() {
 						}
 					}else{
 						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . addslashes($leaf["title"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+						$i++;
+						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 					}
 				}
 			}
@@ -636,6 +648,20 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; $title_delimeter = "-> "; }
 	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = "-> "; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = "-> "; }
+	if (isset($_REQUEST["tree_id"])) {
+		$nodeid = "tree_" . $_REQUEST["tree_id"];
+	}
+
+	if (isset($_REQUEST["leaf_id"])) {
+		$nodeid .= "_leaf" . $_REQUEST["leaf_id"];
+	}
+
+	print "<script type=\"text/javascript\">\n";
+	print "<!--\n";
+	print "myNode = findObj(\"$nodeid\")\n";
+	print "highlightObjLink(myNode)\n";
+	print "//-->\n";
+	print "</script>";
 
 	print "<table width='100%' align='center' cellpadding='3'>";
 
@@ -890,7 +916,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 	if (read_graph_config_option("thumbnail_section_tree_1") == "on") {
 		if (read_graph_config_option("timespan_sel") == "on") {
 			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
-				src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
+				src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
 			/* if we are at the end of a row, start a new one */
@@ -899,7 +925,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 			}
 		}else{
 			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
-				src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
+				src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
 			/* if we are at the end of a row, start a new one */
@@ -909,10 +935,10 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 		}
 	}else{
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
 			print "</tr><tr>\n";
 		}else{
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
 			print "</tr><tr>\n";
 		}
 	}
