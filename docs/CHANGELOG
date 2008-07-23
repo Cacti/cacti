@@ -14,14 +14,14 @@ Cacti CHANGELOG
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug#0001247: snmp ping won't work for snmp v3
--bug: host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
--bug: initialization of snmp_auth when using SNMP=NONE
--bug: speed up add_graphs.php in most cases (still slow only if --input-fields is used)
+-bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
+-bug: Initialization of snmp_auth when using SNMP=NONE
+-bug: Speed up add_graphs.php in most cases (still slow only if --input-fields is used)
 -bug: If the poller_output table is not empty, don't flood the log
 -bug: Remove warnings appear in the httpd log relative to reset attempts on settings array
 -bug: Add API Automation tool quietMode to additional functions
 -bug: When Cacti is launched from within an iframe, cookies are dropped from IE6
--bug: database upgrade and cacti.sql differ
+-bug: Database upgrade and cacti.sql differ
 -bug: drop color setting background on FF does not work
 -bug: cli/add_tree.php requires as least a host-id for --list-graphs
 -bug: add_tree.php did not allow nodes with propagating sort options
@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -feature: Add additional options to speed data query graph automation process
 -feature: Add additional indexes to speed data query graph creation
 -feature: Allow the cli reindexing of hosts to be limited to a single query
+-feature: New cli command host_update_template to allow re-templating of hosts using an updated template
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE
