@@ -46,6 +46,12 @@ function upgrade_to_0_8_7c() {
 		db_install_execute("0.8.7c", "ALTER TABLE `host_snmp_cache` ADD INDEX `field_value`(`field_value`)");
 	}
 
+	/* speed up graph automations some more */
+	db_install_execute("0.8.7c", "ALTER TABLE `data_input_data` ADD INDEX `input_output`(`input_output`)");
+
+	/* increase the width of the settings field */
+	db_install_execute("0.8.7c", "ALTER TABLE `settings` MODIFY COLUMN `name` VARCHAR(512) NOT NULL DEFAULT NULL");
+
 	/* add a default for NOT NULL columns */
 	db_install_execute("0.8.7c", "ALTER TABLE `data_local` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");
 	db_install_execute("0.8.7c", "ALTER TABLE `graph_local` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");
@@ -66,6 +72,5 @@ function upgrade_to_0_8_7c() {
 	/* change size of columns to match current cacti.sql file */
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_item` MODIFY COLUMN `rrd_step` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '300';");
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_time` MODIFY COLUMN `pid` INT(11) UNSIGNED NOT NULL DEFAULT '0';");
-
 }
 ?>
