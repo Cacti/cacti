@@ -751,7 +751,8 @@ function graphs() {
 						$sql_order
 						LIMIT " . ($row_limit*($page-1)) . "," . $row_limit;
 
-					$rows_query = "SELECT host_id, snmp_query_id, snmp_index FROM host_snmp_cache
+					$rows_query = "SELECT host_id, snmp_query_id, snmp_index
+						FROM host_snmp_cache
 						WHERE host_id=" . $host["id"] . "
 						AND snmp_query_id=" . $snmp_query["id"] . "
 						$sql_where
