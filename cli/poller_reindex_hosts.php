@@ -83,7 +83,7 @@ foreach($parms as $parameter) {
 }
 
 /* determine the hosts to reindex */
-if ($host_id == "All") {
+if (strtolower($host_id) == "all") {
 	$sql_where = "";
 }else if (is_numeric($host_id)) {
 	$sql_where = " WHERE host_id = '$host_id'";
@@ -94,8 +94,14 @@ if ($host_id == "All") {
 }
 
 /* determine data queries to rerun */
-if ($query_id != "") {
+if (strtolower($query_id) == "all") {
+	/* do nothing */
+}else if (is_numeric($query_id)) {
 	$sql_where .= (strlen($sql_where) ? " AND snmp_query_id=$query_id": "WHERE snmp_query_id=$query_id");
+}else{
+	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
+	display_help();
+	exit;
 }
 
 $data_queries = db_fetch_assoc("SELECT host_id, snmp_query_id FROM host_snmp_query" . $sql_where);
