@@ -372,6 +372,25 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
+/* timer start function */
+function timer_start() {
+	global $timer_start;
+
+	list($micro,$seconds) = split(" ", microtime());
+	$timer_start = $seconds + $micro;
+}
+
+/* timer end/step function */
+function timer_end($message = "default") {
+	global $timer_start;
+
+	list($micro,$seconds) = split(" ", microtime());
+	$timer_end = $seconds + $micro;
+
+	echo "TIMER: '$message' Time:'" . ($timer_end - $timer_start) . "' seconds\n";
+	$timer_start = $timer_end;
+}
+
 /* strip_newlines - removes \n\r from lines
 	@arg $string - the string to strip
 */
