@@ -74,9 +74,6 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 		($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
-		if (($data_input["type_id"] != DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) &&
-			(empty($field["output_type"]))) { return; }
-
 		if (strlen($field["output_type"])) {
 			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"];
 		}else{

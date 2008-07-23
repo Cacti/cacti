@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -bug: add_tree.php did not allow nodes with propagating sort options
 -bug: When adding a tree node via the api numeric and natural were reversed
 -bug: When saving a data query based data templates, their data sources would become corrupt
+-bug: If your system contains INNODB tables, the Technical Support page would hang
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
