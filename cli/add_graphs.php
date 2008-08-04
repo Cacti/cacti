@@ -360,7 +360,7 @@ if (sizeof($parms)) {
 			AND graph_templates_item.task_item_id = data_template_rrd.id
 			LIMIT 1");
 
-		push_out_host($hostId,$dataSourceId);
+		push_out_host($hostId, $dataSourceId);
 
 		echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
 	}elseif ($graph_type == "ds") {
@@ -433,7 +433,7 @@ if (sizeof($parms)) {
 					AND graph_templates_item.task_item_id = data_template_rrd.id
 					LIMIT 1");
 
-				push_out_host($hostId,$dataSourceId);
+				push_out_host($hostId, $dataSourceId);
 
 				echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
 			}
