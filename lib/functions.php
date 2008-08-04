@@ -159,6 +159,14 @@ function read_default_config_option($config_name) {
 	}
 }
 
+/* set_config_option - sets/updates a cacti config option with the given value.
+   @arg $config_name - the name of the configuration setting as specified $settings array
+   @arg $value       - the values to be saved
+   @returns          - void */
+function set_config_option($config_name, $value) {
+	db_execute("REPLACE INTO settings SET name='$config_name', $value='$value'");
+}
+
 /* read_config_option - finds the current value of a Cacti configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/global_settings.php'
