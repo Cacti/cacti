@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug#0001247: snmp ping won't work for snmp v3
+-bug#0001230: poller stops updating rrd files
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
 -bug: Initialization of snmp_auth when using SNMP=NONE
 -bug: Speed up add_graphs.php in most cases (still slow only if --input-fields is used)

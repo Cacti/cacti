@@ -65,7 +65,7 @@ function rrd_get_fd(&$rrd_struc, $fd_type) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc = array(), $logopt = "WEBLOG") {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_struc = array(), $logopt = "WEBLOG") {
 	global $config;
 
 	if (!is_numeric($output_flag)) {
@@ -96,8 +96,28 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 			session_write_close();
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 		}else{
-			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n");
-			fflush(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ));
+			$i = 0;
+
+			while (1) {
+				if (fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n") == false) {
+					cacti_log("ERROR: Detected RRDtool Crash attempting to perform write");
+					$i++;
+
+					$rrd_struc = rrd_init();
+
+					if ($i > 4) {
+						cacti_log("FATAL: RRDtool Restart Attempts Exceeded.  Giving up on command.");
+
+						break;
+					}
+
+					continue;
+				}else{
+					fflush(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ));
+
+					break;
+				}
+			}
 		}
 	}elseif ($config["cacti_server_os"] == "win32") {
 		/* an empty $rrd_struc array means no fp is available */
@@ -105,8 +125,28 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 			session_write_close();
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
 		}else{
-			fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n");
-			fflush(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ));
+			$i = 0;
+
+			while (1) {
+				if (fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n") == false) {
+					cacti_log("ERROR: Detected RRDtool Crash attempting to perform write");
+					$i++;
+
+					$rrd_struc = rrd_init();
+
+					if ($i > 4) {
+						cacti_log("FATAL: RRDtool Restart Attempts Exceeded.  Giving up on command.");
+
+						break;
+					}
+
+					continue;
+				}else{
+					fflush(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ));
+
+					break;
+				}
+			}
 		}
 	}
 
@@ -960,7 +1000,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_graph_defs = "";  
+		$cdef_graph_defs = "";
 
 		if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
 
@@ -968,39 +1008,39 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$magic_item 	= array();
 			$already_seen	= array();
 			$sources_seen	= array();
-			$count_all_ds_dups = 0;				
-			$count_all_ds_nodups = 0;				
-			$count_similar_ds_dups = 0;				
-			$count_similar_ds_nodups = 0;				
+			$count_all_ds_dups = 0;
+			$count_all_ds_nodups = 0;
+			$count_similar_ds_dups = 0;
+			$count_similar_ds_nodups = 0;
 
-			/* if any of those magic variables are requested ... */			
-			if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $cdef_string) || 
+			/* if any of those magic variables are requested ... */
+			if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $cdef_string) ||
 				ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $cdef_string)) {
 
 				/* now walk through each case to initialize array*/
 				if (ereg("ALL_DATA_SOURCES_DUPS", $cdef_string)) {
-					$magic_item["ALL_DATA_SOURCES_DUPS"] = "";				
+					$magic_item["ALL_DATA_SOURCES_DUPS"] = "";
 				}
 				if (ereg("ALL_DATA_SOURCES_NODUPS", $cdef_string)) {
-					$magic_item["ALL_DATA_SOURCES_NODUPS"] = "";				
+					$magic_item["ALL_DATA_SOURCES_NODUPS"] = "";
 				}
 				if (ereg("SIMILAR_DATA_SOURCES_DUPS", $cdef_string)) {
-					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] = "";				
+					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] = "";
 				}
 				if (ereg("SIMILAR_DATA_SOURCES_NODUPS", $cdef_string)) {
-					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] = "";				
+					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] = "";
 				}
 				if (ereg("COUNT_ALL_DS_DUPS", $cdef_string)) {
-					$magic_item["COUNT_ALL_DS_DUPS"] = "";				
+					$magic_item["COUNT_ALL_DS_DUPS"] = "";
 				}
 				if (ereg("COUNT_ALL_DS_NODUPS", $cdef_string)) {
-					$magic_item["COUNT_ALL_DS_NODUPS"] = "";				
+					$magic_item["COUNT_ALL_DS_NODUPS"] = "";
 				}
 				if (ereg("COUNT_SIMILAR_DS_DUPS", $cdef_string)) {
-					$magic_item["COUNT_SIMILAR_DS_DUPS"] = "";				
+					$magic_item["COUNT_SIMILAR_DS_DUPS"] = "";
 				}
 				if (ereg("COUNT_SIMILAR_DS_NODUPS", $cdef_string)) {
-					$magic_item["COUNT_SIMILAR_DS_NODUPS"] = "";				
+					$magic_item["COUNT_SIMILAR_DS_NODUPS"] = "";
 				}
 
 				/* loop over all graph items */
@@ -1031,7 +1071,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 							}
 
 							$count_all_ds_dups++;
-							
+
 							/* check if this item also qualifies for NODUPS  */
 							if(!isset($already_seen[$def_name])) {
 								if (isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
@@ -1046,12 +1086,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 							/* check for SIMILAR data sources */
 							if ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"]) {
-	
+
 								/* do we need SIMILAR_DATA_SOURCES_DUPS? */
 								if (isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"]) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
 									$magic_item["SIMILAR_DATA_SOURCES_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 								}
-	
+
 								/* do we need COUNT_SIMILAR_DS_DUPS? */
 								if (isset($magic_item["COUNT_SIMILAR_DS_DUPS"]) && ($graph_item["data_source_name"] == $graph_items[$t]["data_source_name"])) {
 									$magic_item["COUNT_SIMILAR_DS_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
@@ -1075,7 +1115,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					} # only work on graph items, omit GRPINTs, COMMENTs and stuff
 				} #  loop over all graph items
 
-				/* if there is only one item to total, don't even bother with the summation. 
+				/* if there is only one item to total, don't even bother with the summation.
 				 * Otherwise cdef=a,b,c,+,+ is fine. */
 				if ($count_all_ds_dups > 1 && isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
 					$magic_item["ALL_DATA_SOURCES_DUPS"] .= str_repeat(",+", ($count_all_ds_dups - 2)) . ",+";
@@ -1104,7 +1144,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			
+
 			/* ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
 			if (isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
 				$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $cdef_string);
@@ -1118,7 +1158,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
 				$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $cdef_string);
 			}
-			
+
 			/* COUNT_ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
 			if (isset($magic_item["COUNT_ALL_DS_DUPS"])) {
 				$cdef_string = str_replace("COUNT_ALL_DS_DUPS", $magic_item["COUNT_ALL_DS_DUPS"], $cdef_string);
@@ -1601,7 +1641,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
-		$cdef_xport_defs = ""; $cdef_all_ds_dups = ""; $cdef_similar_ds_dups = ""; 
+		$cdef_xport_defs = ""; $cdef_all_ds_dups = ""; $cdef_similar_ds_dups = "";
 		$cdef_similar_ds_nodups = ""; $cdef_all_ds_nodups = "";
 
 		if ((!empty($xport_item["cdef_id"])) && (!isset($cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id]))) {
@@ -1610,39 +1650,39 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$magic_item 	= array();
 			$already_seen	= array();
 			$sources_seen	= array();
-			$count_all_ds_dups = 0;				
-			$count_all_ds_nodups = 0;				
-			$count_similar_ds_dups = 0;				
-			$count_similar_ds_nodups = 0;				
+			$count_all_ds_dups = 0;
+			$count_all_ds_nodups = 0;
+			$count_similar_ds_dups = 0;
+			$count_similar_ds_nodups = 0;
 
-			/* if any of those magic variables are requested ... */			
-			if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $cdef_string) || 
+			/* if any of those magic variables are requested ... */
+			if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $cdef_string) ||
 				ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $cdef_string)) {
 
 				/* now walk through each case to initialize array*/
 				if (ereg("ALL_DATA_SOURCES_DUPS", $cdef_string)) {
-					$magic_item["ALL_DATA_SOURCES_DUPS"] = "";				
+					$magic_item["ALL_DATA_SOURCES_DUPS"] = "";
 				}
 				if (ereg("ALL_DATA_SOURCES_NODUPS", $cdef_string)) {
-					$magic_item["ALL_DATA_SOURCES_NODUPS"] = "";				
+					$magic_item["ALL_DATA_SOURCES_NODUPS"] = "";
 				}
 				if (ereg("SIMILAR_DATA_SOURCES_DUPS", $cdef_string)) {
-					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] = "";				
+					$magic_item["SIMILAR_DATA_SOURCES_DUPS"] = "";
 				}
 				if (ereg("SIMILAR_DATA_SOURCES_NODUPS", $cdef_string)) {
-					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] = "";				
+					$magic_item["SIMILAR_DATA_SOURCES_NODUPS"] = "";
 				}
 				if (ereg("COUNT_ALL_DS_DUPS", $cdef_string)) {
-					$magic_item["COUNT_ALL_DS_DUPS"] = "";				
+					$magic_item["COUNT_ALL_DS_DUPS"] = "";
 				}
 				if (ereg("COUNT_ALL_DS_NODUPS", $cdef_string)) {
-					$magic_item["COUNT_ALL_DS_NODUPS"] = "";				
+					$magic_item["COUNT_ALL_DS_NODUPS"] = "";
 				}
 				if (ereg("COUNT_SIMILAR_DS_DUPS", $cdef_string)) {
-					$magic_item["COUNT_SIMILAR_DS_DUPS"] = "";				
+					$magic_item["COUNT_SIMILAR_DS_DUPS"] = "";
 				}
 				if (ereg("COUNT_SIMILAR_DS_NODUPS", $cdef_string)) {
-					$magic_item["COUNT_SIMILAR_DS_NODUPS"] = "";				
+					$magic_item["COUNT_SIMILAR_DS_NODUPS"] = "";
 				}
 
 				/* loop over all graph items */
@@ -1673,7 +1713,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 							}
 
 							$count_all_ds_dups++;
-							
+
 							/* check if this item also qualifies for NODUPS  */
 							if(!isset($already_seen[$def_name])) {
 								if (isset($magic_item["ALL_DATA_SOURCES_NODUPS"])) {
@@ -1688,12 +1728,12 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 							/* check for SIMILAR data sources */
 							if ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"]) {
-	
+
 								/* do we need SIMILAR_DATA_SOURCES_DUPS? */
 								if (isset($magic_item["SIMILAR_DATA_SOURCES_DUPS"]) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
 									$magic_item["SIMILAR_DATA_SOURCES_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 								}
-	
+
 								/* do we need COUNT_SIMILAR_DS_DUPS? */
 								if (isset($magic_item["COUNT_SIMILAR_DS_DUPS"]) && ($xport_item["data_source_name"] == $xport_items[$t]["data_source_name"])) {
 									$magic_item["COUNT_SIMILAR_DS_DUPS"] .= ($count_similar_ds_dups == 0 ? "" : ",") . "TIME," . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
@@ -1717,7 +1757,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 					} # only work on graph items, omit GRPINTs, COMMENTs and stuff
 				} #  loop over all graph items
 
-				/* if there is only one item to total, don't even bother with the summation. 
+				/* if there is only one item to total, don't even bother with the summation.
 				 * Otherwise cdef=a,b,c,+,+ is fine. */
 				if ($count_all_ds_dups > 1 && isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
 					$magic_item["ALL_DATA_SOURCES_DUPS"] .= str_repeat(",+", ($count_all_ds_dups - 2)) . ",+";
@@ -1746,7 +1786,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			}
 
 			$cdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval((isset($cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$xport_item["data_template_rrd_id"]}[$cf_id] : "0"))), $cdef_string);
-			
+
 			/* ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
 			if (isset($magic_item["ALL_DATA_SOURCES_DUPS"])) {
 				$cdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $cdef_string);
@@ -1760,7 +1800,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			if (isset($magic_item["SIMILAR_DATA_SOURCES_NODUPS"])) {
 				$cdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $cdef_string);
 			}
-			
+
 			/* COUNT_ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
 			if (isset($magic_item["COUNT_ALL_DS_DUPS"])) {
 				$cdef_string = str_replace("COUNT_ALL_DS_DUPS", $magic_item["COUNT_ALL_DS_DUPS"], $cdef_string);
