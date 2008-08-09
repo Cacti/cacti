@@ -123,4 +123,20 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	}
 }
 
+/* api_get_graphs_from_datasource - get's all graphs related to a data source
+   @arg $local_data_id - the id of the data source
+   @returns - array($id => $name_cache) returns the graph id's and names of the graphs
+  */
+function api_get_graphs_from_datasource($local_data_id) {
+	return array_rekey(db_fetch_assoc("SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
+		graph_templates_graph.title_cache AS name
+		FROM (graph_templates_graph
+		INNER JOIN graph_templates_item
+		ON graph_templates_graph.local_graph_id=graph_templates_item.local_graph_id)
+		INNER JOIN data_template_rrd
+		ON graph_templates_item.task_item_id=data_template_rrd.id
+		WHERE graph_templates_graph.local_graph_id>0
+		AND data_template_rrd.local_data_id=$local_data_id"), "id", "name");
+}
+
 ?>
