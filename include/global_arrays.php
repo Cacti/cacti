@@ -67,6 +67,9 @@ $messages = array(
 		"type" => "error"),
 	21 => array(
 		"message" => 'User delete not permitted for designated template or guest user.',
+		"type" => "error"),
+	22 => array(
+		"message" => 'User delete not permitted for designated graph export user.',
 		"type" => "error")
 	);
 

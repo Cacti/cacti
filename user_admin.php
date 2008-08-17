@@ -195,6 +195,17 @@ function form_actions() {
 		$i++;
 	}
 
+	/* Check for deleting of Graph Export User */
+	if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
+		$exportuser = read_config_option('export_user_id');
+		if (in_array($exportuser, $user_array)) {
+			raise_message(22);
+			header("Location: user_admin.php");
+			exit;
+
+		}
+	}
+
 	include_once("./include/top_header.php");
 
 	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
