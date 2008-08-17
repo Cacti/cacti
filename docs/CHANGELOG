@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug#0001100: spine hangs on unreachable hosts
+-bug#0001135: Graph export feature not exporting as per user level selected
 -bug#0001145: Save Failed error when changing Graph Details
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug#0001174: Unidentified index warning

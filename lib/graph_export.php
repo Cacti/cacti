@@ -509,22 +509,30 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 	$fp_index = fopen($cacti_export_path . "/index.html", "w");
 
 	/* get a list of all graphs that need exported */
-	$graphs = db_fetch_assoc("SELECT
-		graph_templates_graph.id,
+	$exportuser = read_config_option("export_user_id");
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+
+	$sql_where = "WHERE " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+	$sql_join = "LEFT JOIN host ON (host.id=graph_local.host_id)
+		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
+		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=$exportuser)
+		 OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=$exportuser)
+		 OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=$exportuser))";
+
+	$sql_base = "FROM (graph_templates_graph,graph_local)
+		$sql_join
+		$sql_where
+		" . (empty($sql_where) ? "WHERE" : "AND") . " graph_templates_graph.local_graph_id > 0
+		AND graph_templates_graph.local_graph_id=graph_local.id";
+
+
+	$graphs = db_fetch_assoc("SELECT 
 		graph_templates_graph.local_graph_id,
-		graph_templates_graph.height,
-		graph_templates_graph.width,
 		graph_templates_graph.title_cache,
-		graph_templates.name,
-		graph_local.host_id
-		FROM graph_templates_graph
-		LEFT JOIN graph_templates
-		ON (graph_templates_graph.graph_template_id=graph_templates.id)
-		LEFT JOIN graph_local
-		ON (graph_templates_graph.local_graph_id=graph_local.id)
-		WHERE graph_templates_graph.local_graph_id!=0
-		AND graph_templates_graph.export='on'
-		ORDER BY graph_templates_graph.title_cache");
+		graph_templates_graph.height,
+		graph_templates_graph.width
+		$sql_base
+		GROUP BY graph_templates_graph.local_graph_id");
 
 	$rras = db_fetch_assoc("SELECT
 		rra.id,
@@ -1071,6 +1079,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 
 	$sql_join = "LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id=graph_local.id)
 		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
+		LEFT JOIN host ON (host.id=graph_local.host_id)
 		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 //		LEFT JOIN user_auth_perms ON (graph_tree_items.host_id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
