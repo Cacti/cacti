@@ -18,7 +18,7 @@ Cacti CHANGELOG
 -bug#0001230: poller stops updating rrd files
 -bug#0001262: Do not allow deletion of Graph Export User
 -bug#0001281: ICMP Ping fails if an octet == 255
--bug#:0001288: A host with ICMP ping selected as method does not properly perform ping
+-bug#0001288: A host with ICMP ping selected as method does not properly perform ping
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
 -bug: Initialization of snmp_auth when using SNMP=NONE
 -bug: Speed up add_graphs.php in most cases (still slow only if --input-fields is used)
