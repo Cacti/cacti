@@ -106,6 +106,8 @@ class Net_Ping
 	}
 
 	function ping_icmp() {
+		global $config;
+
 		/* ping me */
 		if ($this->host["hostname"]) {
 			/* initialize variables */
@@ -133,116 +135,141 @@ class Net_Ping
 				}
 			}
 
-			/* set the effective user of root if unix */
-			$cacti_poller_account = $this->seteuid();
-
-			$error = "none";
-
+			$error       = "none";
 			$retry_count = 0;
-			while (1) {
-				if ($error <> "bad_seq") {
-					/* initilize the socket */
-					if (substr_count($host_ip,":") > 0) {
-						if (defined("AF_INET6")) {
-							$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
-						}else{
-							$this->ping_response = "PHP version does not support IPv6";
-							$this->ping_status   = "down";
-							cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
+			if ($config["cacti_server_os"] != "unix") {
+				while (1) {
+					if ($error <> "bad_seq") {
+						/* initilize the socket */
+						if (substr_count($host_ip,":") > 0) {
+							if (defined("AF_INET6")) {
+								$this->socket = socket_create(AF_INET6, SOCK_RAW, 1);
+							}else{
+								$this->ping_response = "PHP version does not support IPv6";
+								$this->ping_status   = "down";
+								cacti_log("WARNING: IPv6 host detected, PHP version does not support IPv6");
 
-							/* return to real user account */
-							$this->setuid($cacti_poller_account);
+								return false;
+							}
+						}else{
+							$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
+						}
+						socket_set_block($this->socket);
+
+						if (!(@socket_connect($this->socket, $host_ip, NULL))) {
+							$this->ping_response = "Cannot connect to host";
+							$this->ping_status   = "down";
 							return false;
 						}
-					}else{
-						$this->socket = socket_create(AF_INET, SOCK_RAW, 1);
+
+						/* set socket receive timeout as appropriate */
+						socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => $to_sec, "usec" => $to_usec));
+
+						/* build the packet */
+						$this->build_icmp_packet();
+
+						/* get start time */
+						$this->start_time();
+
+						/* write to the socket */
+						socket_write($this->socket, $this->request, $this->request_len);
 					}
-					socket_set_block($this->socket);
 
-					if (!(@socket_connect($this->socket, $host_ip, NULL))) {
-						$this->ping_response = "Cannot connect to host";
-						$this->ping_status   = "down";
+					if ($retry_count >= $this->retries) {
+						$this->status = "down";
+						if ($error == "timeout") {
+							$this->ping_response = "ICMP ping Timed out";
+						}else{
+							$this->ping_response = "ICMP ping Refused";
+						}
+						$this->close_socket();
 
-						/* return to real user account */
-						$this->setuid($cacti_poller_account);
 						return false;
 					}
 
-					/* set socket receive timeout as appropriate */
-					socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => $to_sec, "usec" => $to_usec));
-
-					/* build the packet */
-					$this->build_icmp_packet();
-
-					/* get start time */
-					$this->start_time();
-
-					/* write to the socket */
-					socket_write($this->socket, $this->request, $this->request_len);
-				}
-
-				if ($retry_count >= $this->retries) {
-					$this->status = "down";
-					if ($error == "timeout") {
-						$this->ping_response = "ICMP ping Timed out";
-					}else{
-						$this->ping_response = "ICMP ping Refused";
-					}
-					$this->close_socket();
-
-					/* return to real user account */
-					$this->setuid($cacti_poller_account);
-					return false;
-				}
-
-				/* get the socket response */
-				switch(socket_select($r = array($this->socket), $w = NULL, $f = NULL, $to_sec, $to_usec)) {
-				case 2:
-					/* connection refused */
-					$error = "refused";
-					$retry_count++;
-
-					break;
-				case 1:
-					/* get the end time */
-					$this->time = $this->get_time($this->precision);
-					$result     = socket_read($this->socket, 512);
-					$sqn        = substr($result,26,2);
-
-					/* compare sequence numbers, if they do not match, then it must be from another host */
-					if ($sqn != $this->sqn) {
-						/* establish modified timeout value */
-						$to_sec = floor(($this->timeout-($this->time*1000))/1000);
-						$to_usec = (($this->timeout-($this->time*1000))%1000)*1000;
-
-						if (($to_sec < 0) || ($to_usec <= 0)) {
-							$error = "timeout";
-							$retry_count++;
-						}else{
-							$error = "bad_seq";
-						}
+					/* get the socket response */
+					switch(socket_select($r = array($this->socket), $w = NULL, $f = NULL, $to_sec, $to_usec)) {
+					case 2:
+						/* connection refused */
+						$error = "refused";
+						$retry_count++;
 
 						break;
-					}else{
-						/* set the return message */
-						$this->ping_status = $this->time * 1000;
-						$this->ping_response = "Host is alive";
+					case 1:
+						/* get the end time */
+						$this->time = $this->get_time($this->precision);
+						$result     = socket_read($this->socket, 512);
+						$sqn        = substr($result,26,2);
 
+						/* compare sequence numbers, if they do not match, then it must be from another host */
+						if ($sqn != $this->sqn) {
+							/* establish modified timeout value */
+							$to_sec  = floor(($this->timeout - ($this->time*1000))/1000);
+							$to_usec = (($this->timeout - ($this->time*1000))%1000)*1000;
+
+							if (($to_sec < 0) || ($to_usec <= 0)) {
+								$error = "timeout";
+								$retry_count++;
+							}else{
+								$error = "bad_seq";
+							}
+
+							break;
+						}else{
+							/* set the return message */
+							$this->ping_status = $this->time * 1000;
+							$this->ping_response = "ICMP Ping Success (" . $this->time*1000 . " ms)";
+
+							$this->close_socket();
+
+							return true;
+						}
+					case 0:
+						/* timeout */
 						$this->close_socket();
 
-						/* return to real user account */
-						$this->setuid($cacti_poller_account);
+						$error = "timeout";
+						$retry_count++;
 
-						return true;
+						break;
 					}
-				case 0:
-					/* timeout */
-					$this->close_socket();
+				}
+			}else{
+				/* we have to use the real ping */
+				$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
-					$error = "timeout";
-					$retry_count++;
+				if (substr_count(strtolower(PHP_OS), "sun")) {
+					$result = shell_exec("ping " . $this->host["hostname"]);
+				}else if (substr_count(strtolower(PHP_OS), "hpux")) {
+					$result = shell_exec("ping -m " . $this->timeout . " -n 1 " . $this->host["hostname"]);
+				}else if (substr_count(strtolower(PHP_OS), "mac")) {
+					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+				}else if (substr_count(strtolower(PHP_OS), "freebsd")) {
+					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+				}else if (substr_count(strtolower(PHP_OS), "bsd")) {
+					$result = shell_exec("ping -w " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+				}else if (substr_count(strtolower(PHP_OS), "aix")) {
+					$result = shell_exec("ping -i " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+				}else{
+					$result = shell_exec("ping -W " . $this->timeout . " -c 1 -p " . $pattern . " " . $this->host["hostname"]);
+				}
 
-					break;
+				$position = strpos($result, "min/avg/max");
+
+				if ($position > 0) {
+					$output  = trim(str_replace(" ms", "", substr($result, $position)));
+					$pieces  = explode("=", $output);
+					$results = explode("/", $pieces[1]);
+
+					$this->ping_status = $results[1];
+					$this->ping_response = "ICMP Ping Success (" . $results[1] . " ms)";
+
+					return true;
+				}else{
+					$this->status = "down";
+					$this->ping_response = "ICMP ping Timed out";
+
+					return false;
 				}
 			}
 		}else{
@@ -445,7 +472,7 @@ class Net_Ping
 
 					/* set the return message */
 					$this->ping_status = $this->time * 1000;
-					$this->ping_response = "Host is alive";
+					$this->ping_response = "UDP Ping Success (" . $this->time*1000 . " ms)";
 
 					$this->close_socket();
 					return true;
@@ -531,7 +558,7 @@ class Net_Ping
 					$this->time = $this->get_time($this->precision);
 
 					if (($this->time*1000) <= $this->timeout) {
-						$this->ping_response = "TCP ping success";
+						$this->ping_response = "TCP Ping Success (" . $this->time*1000 . " ms)";
 						$this->ping_status   = $this->time*1000;
 					}
 
@@ -677,14 +704,24 @@ class Net_Ping
 		}else if (strlen($ip_address) <= 15) {
 			$octets = explode('.', $ip_address);
 
+			$i = 0;
+
 			if (count($octets) != 4) {
 				return false;
 			}
 
 			foreach($octets as $octet) {
-				if(($octet < 0) || ($octet > 255)) {
-					return false;
+				if ($i == 0 || $i == 3) {
+					if(($octet < 0) || ($octet >= 255)) {
+						return false;
+					}
+				}else{
+					if(($octet < 0) || ($octet > 255)) {
+						return false;
+					}
 				}
+
+				$i++;
 			}
 
 			return true;
