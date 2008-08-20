@@ -305,6 +305,8 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 		reset($struct_graph_item);
 
 		$save["id"] = 0;
+		/* save a hash only for graph_template copy operations */
+		$save["hash"] = (!empty($_graph_template_id) ? get_hash_graph_template(0, "graph_template_item") : 0);
 		$save["local_graph_id"] = (isset($local_graph_id) ? $local_graph_id : 0);
 		$save["graph_template_id"] = (!empty($_local_graph_id) ? $graph_template_item["graph_template_id"] : $graph_template_id);
 		$save["local_graph_template_item_id"] = (isset($graph_template_item["local_graph_template_item_id"]) ? $graph_template_item["local_graph_template_item_id"] : 0);
