@@ -3361,7 +3361,7 @@ print $b;
 					<listitem>
 						<para>
 							If you have any additional functions declared within your script file, you must prefix them to
-							make then unique amongst all functions.  Our recommendation would be to prefix all functions with
+							make them unique amongst all functions.  Our recommendation would be to prefix all functions with
 							the name of the main function.  For example if you have a function called "meme" you would rename
 							it to "ss_myfunction_meme".  This guarantee's correct Script Server functionality.
 						</para>
@@ -3371,8 +3371,30 @@ print $b;
 							The last step is to change the function call that could have traditionally returned the value to the
 							Cacti poller using the PRINT function.  You must change that line  or lines in your code to utilize
 							the RETURN function instead.  However, this does not apply to PRINT statements that are not called
-							from the Poller.
+							from the Poller. For a simple script, this results in
 						</para>
+						<programlisting>function ss_myfunction() {
+	$a = 100;
+	$b = $a / 10;
+	Return $b;
+}</programlisting>
+						<para>
+							Be careful, when writing <guilabel>Script Server Data Queries</guilabel>. 
+							Use the RETURN function for returning results of the GET operation. 
+							But use PRINT for INDEX and QUERY operations, e.g.
+						</para>
+						<programlisting>	if (($cmd == "index")) {
+		...
+		print $some_index_data . "\n";
+		}
+	} elseif ($cmd == "query") {
+		...
+		print $some_query_data . "\n";
+	} elseif ($cmd == "get") {
+		...
+		result $some_get_data;
+}
+						</programlisting>						
 					</listitem>
 				</orderedlist>
 			</sect2>
