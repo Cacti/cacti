@@ -13,12 +13,14 @@ Cacti CHANGELOG
 -bug#0001215: Impossible to define a none availability with the client cli/add_device.php
 -bug#0001216: CSV Export for zoomed graph, results in Validation error
 -bug#0001223: Missing Hard return on last GPRINT causes bad formatting
+-bug#0001230: poller stops updating rrd files
 -bug#0001236: set 'stats_recache' to zero when no re-index is present
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug#0001247: snmp ping won't work for snmp v3
--bug#0001230: poller stops updating rrd files
+-bug#0001256: Spine-poller.c : Bug in size string sysUptime 
 -bug#0001262: Do not allow deletion of Graph Export User
+-bug#0001273: Escape windows paths to accomodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255
 -bug#0001288: A host with ICMP ping selected as method does not properly perform ping
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
@@ -42,6 +44,7 @@ Cacti CHANGELOG
 -bug: Allow more rows to be visible in Cacti pages
 -feature#0001289: Add "Graph Properties" wrench to tree+preview mode
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
+-feature#0001250: Dispatching job in poller can lead to unbalanced threads 
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
 -feature#0001220: Disable snmpbulkwalk if $max_oids is less than 2 (was: CACTI run problem when trying to walk using SNMP Bulk Request)

@@ -91,17 +91,35 @@ if ($cron_interval != 60) {
 	$cron_interval = 300;
 }
 
+/* see if the user wishes to use process leveling */
+$process_leveling = read_config_option("process_leveling");
+
 /* assume a scheduled task of either 60 or 300 seconds */
 if (isset($poller_interval)) {
-	$num_polling_items = db_fetch_cell("select count(*) from poller_item where rrd_next_step<=0");
+	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item WHERE rrd_next_step<=0");
+	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
+							FROM poller_item
+							WHERE rrd_next_step<=0
+							GROUP BY host_id
+							ORDER BY host_id"), "host_id", "data_sources");
 	$poller_runs       = $cron_interval / $poller_interval;
 
 	define("MAX_POLLER_RUNTIME", $poller_runs * $poller_interval - 2);
 }else{
-	$num_polling_items = db_fetch_cell("select count(*) from poller_item");
+	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item");
+	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
+							FROM poller_item
+							GROUP BY host_id
+							ORDER BY host_id"), "host_id", "data_sources");
 	$poller_runs       = 1;
 
 	define("MAX_POLLER_RUNTIME", 298);
+}
+
+if (sizeof($items_perhost)) {
+	$items_per_process   = round($num_polling_items / sizeof($items_perhost),0);
+}else{
+	$process_leveling    = "off";
 }
 
 /* some text formatting for platform specific vocabulary */
@@ -143,13 +161,14 @@ if ((($seconds - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun 
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '300' second $task_type, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
-db_execute("replace into settings (name,value) values ('poller_lastrun'," . $seconds . ')');
+db_execute("REPLACE INTO settings (name,value) VALUES ('poller_lastrun'," . $seconds . ')');
 
 /* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
 ini_set("max_execution_time", MAX_POLLER_RUNTIME + 1);
 ini_set("memory_limit", "256M");
 
 $poller_runs_completed = 0;
+$poller_items_total    = 0;
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
@@ -161,7 +180,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$overhead_time = $loop_start - $poller_start;
 	}
 
-	$polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("select id from host where disabled = '' order by id"));
+	$polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM host WHERE disabled = '' ORDER BY id"));
 
 	/* retreive the number of concurrent process settings */
 	$concurrent_processes = read_config_option("concurrent_processes");
@@ -170,15 +189,15 @@ while ($poller_runs_completed < $poller_runs) {
 	$host_count = 1;
 
 	/* initialize file creation flags */
-	$change_files = False;
+	$change_proc = false;
 
 	/* initialize file and host count pointers */
-	$process_file_number = 0;
-	$first_host          = 0;
-	$last_host           = 0;
+	$process_number = 0;
+	$first_host     = 0;
+	$last_host      = 0;
 
 	/* update web paths for the poller */
-	db_execute("replace into settings (name,value) values ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
+	db_execute("REPLACE INTO settings (name,value) VALUES ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
 
 	/* obtain some defaults from the database */
 	$poller      = read_config_option("poller_type");
@@ -213,7 +232,9 @@ while ($poller_runs_completed < $poller_runs) {
 	/* mainline */
 	if (read_config_option("poller_enabled") == "on") {
 		/* determine the number of hosts to process per file */
-		$hosts_per_file = ceil(sizeof($polling_hosts) / $concurrent_processes );
+		$hosts_per_process = ceil(sizeof($polling_hosts) / $concurrent_processes );
+
+		$items_launched    = 0;
 
 		/* exit poller if spine is selected and file does not exist */
 		if (($poller == "2") && (!file_exists(read_config_option("path_spine")))) {
@@ -226,15 +247,18 @@ while ($poller_runs_completed < $poller_runs) {
 			$command_string = read_config_option("path_spine");
 			$extra_args     = "";
 			$method         = "spine";
+			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option("path_spine")));
 		}else if ($config["cacti_server_os"] == "unix") {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args     = "-q " . $config["base_path"] . "/cmd.php";
+			$extra_args     = "-q \"" . $config["base_path"] . "/cmd.php\"";
 			$method         = "cmd.php";
+			$total_procs    = $concurrent_processes;
 		}else{
 			$command_string = read_config_option("path_php_binary");
-			$extra_args     = "-q " . strtolower($config["base_path"] . "/cmd.php");
+			$extra_args     = "-q \"" . strtolower($config["base_path"] . "/cmd.php\"");
 			$method         = "cmd.php";
+			$total_procs    = $concurrent_processes;
 		}
 
 		/* Populate each execution file with appropriate information */
@@ -243,37 +267,50 @@ while ($poller_runs_completed < $poller_runs) {
 				$first_host = $item["id"];
 			}
 
-			if ($host_count == $hosts_per_file) {
-				$last_host    = $item["id"];
-				$change_files = True;
+			if ($process_leveling != "on") {
+				if ($host_count == $hosts_per_process) {
+					$last_host    = $item["id"];
+					$change_proc  = true;
+				}
+			}else{
+				if (isset($items_perhost[$item["id"]])) {
+					$items_launched += $items_perhost[$item["id"]];
+				}
+
+				if ($items_launched >= $items_per_process) {
+					$last_host      = $item["id"];
+					$change_proc    = true;
+					$items_launched = 0;
+				}
 			}
 
 			$host_count ++;
 
-			if ($change_files) {
+			if ($change_proc) {
 				exec_background($command_string, "$extra_args $first_host $last_host");
 				usleep(100000);
 
 				$host_count   = 1;
-				$change_files = False;
+				$change_proc  = false;
 				$first_host   = 0;
 				$last_host    = 0;
 
-				$process_file_number++;
-			} /* end change_files */
+				$process_number++;
+			} /* end change_process */
 		} /* end for each */
 
+		/* launch the last process */
 		if ($host_count > 1) {
 			$last_host = $item["id"];
 
 			exec_background($command_string, "$extra_args $first_host $last_host");
 			usleep(100000);
 
-			$process_file_number++;
+			$process_number++;
 		}
 
 		/* insert the current date/time for graphs */
-		db_execute("replace into settings (name,value) values ('date',NOW())");
+		db_execute("REPLACE INTO settings (name,value) VALUES ('date',NOW())");
 
 		if ($poller == "1") {
 			$max_threads = "N/A";
@@ -286,101 +323,53 @@ while ($poller_runs_completed < $poller_runs) {
 		while (1) {
 			$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id=0");
 
-			if (sizeof($polling_items) >= $process_file_number) {
+			if (sizeof($polling_items) >= $process_number) {
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
 
-				/* take time and log performance data */
-				list($micro,$seconds) = split(" ", microtime());
-				$loop_end = $seconds + $micro;
-
-				$cacti_stats = sprintf(
-					"Time:%01.4f " .
-					"Method:%s " .
-					"Processes:%s " .
-					"Threads:%s " .
-					"Hosts:%s " .
-					"HostsPerProcess:%s " .
-					"DataSources:%s " .
-					"RRDsProcessed:%s",
-					round($loop_end-$loop_start,4),
-					$method,
-					$concurrent_processes,
-					$max_threads,
-					sizeof($polling_hosts),
-					$hosts_per_file,
-					$num_polling_items,
-					$rrds_processed);
-
-				cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
-
-				/* insert poller stats into the settings table */
-				db_execute("replace into settings (name,value) values ('stats_poller','$cacti_stats')");
+				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
+					sizeof($polling_hosts), $host_per_process, $num_polling_items, $rrds_processed);
 
 				break;
 			}else {
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					print "Waiting on " . ($process_file_number - sizeof($polling_items)) . "/$process_file_number pollers.\n";
+					print "Waiting on " . ($process_number - sizeof($polling_items)) . "/$process_number pollers.\n";
 				}
 
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
 
 				/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 				if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
-					rrd_close($rrdtool_pipe);
 					cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true, "POLLER");
 
-					/* take time and log performance data */
-					list($micro,$seconds) = split(" ", microtime());
-					$loop_end = $seconds + $micro;
-
-					$cacti_stats = sprintf(
-						"Time:%01.4f " .
-						"Method:%s " .
-						"Processes:%s " .
-						"Threads:%s " .
-						"Hosts:%s " .
-						"HostsPerProcess:%s " .
-						"DataSources:%s " .
-						"RRDsProcessed:%s",
-						round($loop_end-$loop_start,4),
-						$method,
-						$concurrent_processes,
-						$max_threads,
-						sizeof($polling_hosts),
-						$hosts_per_file,
-						$num_polling_items,
-						$rrds_processed);
-
-					cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
-
-					/* insert poller stats into the settings table */
-					db_execute("replace into settings (name,value) values ('stats_poller','$cacti_stats')");
+					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
+						sizeof($polling_hosts), $host_per_process, $num_polling_items, $rrds_processed);
 
 					break;
+				}else{
+					sleep(1);
 				}
-
-				sleep(1);
 			}
 		}
 
 		rrd_close($rrdtool_pipe);
 
 		/* process poller commands */
-		if (db_fetch_cell("select count(*) from poller_command") > 0) {
+		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command") > 0) {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args = "-q " . $config["base_path"] . "/poller_commands.php";
+			$extra_args = "-q \"" . $config["base_path"] . "/poller_commands.php\"";
 			exec_background($command_string, "$extra_args");
 		} else {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			db_execute("replace into settings (name,value) values ('stats_recache','RecacheTime:0.0 HostsRecached:0')");
+			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache','RecacheTime:0.0 HostsRecached:0')");
 		}
 
 		/* graph export */
-		if ((read_config_option("export_type") != "disabled") && (read_config_option("export_timing") != "disabled")) {
+		if ((read_config_option("export_type") != "disabled") &&
+			(read_config_option("export_timing") != "disabled")) {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args = "-q " . $config["base_path"] . "/poller_export.php";
+			$extra_args = "-q \"" . $config["base_path"] . "/poller_export.php\"";
 			exec_background($command_string, "$extra_args");
 		}
 
@@ -420,6 +409,37 @@ while ($poller_runs_completed < $poller_runs) {
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
 	}
+}
+
+function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads, $num_hosts,
+	$host_per_process, $num_polling_items, $rrds_processed) {
+
+	/* take time and log performance data */
+	list($micro,$seconds) = split(" ", microtime());
+	$loop_end = $seconds + $micro;
+
+	$cacti_stats = sprintf(
+		"Time:%01.4f " .
+		"Method:%s " .
+		"Processes:%s " .
+		"Threads:%s " .
+		"Hosts:%s " .
+		"HostsPerProcess:%s " .
+		"DataSources:%s " .
+		"RRDsProcessed:%s",
+		round($loop_end-$loop_start,4),
+		$method,
+		$concurrent_processes,
+		$max_threads,
+		sizeof($polling_hosts),
+		$hosts_per_process,
+		$num_polling_items,
+		$rrds_processed);
+
+	cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
+
+	/* insert poller stats into the settings table */
+	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_poller','$cacti_stats')");
 }
 
 function display_help() {

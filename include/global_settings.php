@@ -643,6 +643,13 @@ $settings = array(
 			"default" => "1",
 			"max_length" => "10"
 			),
+		"process_leveling" => array(
+			"friendly_name" => "Ballance Process Load",
+			"description" => "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process.",
+			"method" => "checkbox",
+			"default" => "on",
+			"max_length" => "255"
+			),
 		"spine_header" => array(
 			"friendly_name" => "Spine Specific Execution Parameters",
 			"method" => "spacer",
