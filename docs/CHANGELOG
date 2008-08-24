@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -bug: Default refresh on Cacti Log was too quick
 -bug: Some users don't like the idea of automatic page refreshes
 -bug: Allow more rows to be visible in Cacti pages
+-feature#0001289: Add "Graph Properties" wrench to tree+preview mode
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
 -feature#0001235: CLI script needed to activate a query: add_data_query.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
