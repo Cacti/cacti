@@ -181,6 +181,18 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 	}
 }
 
+function push_out_data_input_method($data_input_id) {
+	$local_data_ids = db_fetch_assoc("SELECT DISTINCT local_data_id
+		FROM data_template_data
+		WHERE data_input_id='$data_input_id'");
+
+	if (sizeof($local_data_ids)) {
+	foreach($local_data_ids as $row) {
+		update_poller_cache($row["local_data_id"]);
+	}
+	}
+}
+
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
@@ -515,14 +527,14 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	if (sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $cdef_item) {
 			unset($save);
-	
+
 			$save["id"] = 0;
 			$save["hash"] = get_hash_cdef(0, "cdef_item");
 			$save["cdef_id"] = $cdef_id;
 			$save["sequence"] = $cdef_item["sequence"];
 			$save["type"] = $cdef_item["type"];
 			$save["value"] = $cdef_item["value"];
-	
+
 			sql_save($save, "cdef_items");
 		}
 	}

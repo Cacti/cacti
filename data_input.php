@@ -100,6 +100,8 @@ function form_save() {
 
 					generate_data_input_field_sequences($_POST["input_string"], $_POST["id"]);
 				}
+
+				push_out_data_input_method($data_input_id);
 			}else{
 				raise_message(2);
 			}
