@@ -48,6 +48,7 @@ Cacti CHANGELOG
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
 -feature#0001195: add graph title to graphs page
 -feature#0001189: Introducing |data_source_title| variable
+-feature#0001177: CLI Reindexing - poller_reindex_hosts.php: allow filter on "host description"
 -feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
 -feature#0001140: CLI-Script to associate a graph template to a host
 -feature: add links to Graph Management and Data Sources to Device Edit Screen

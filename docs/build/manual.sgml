@@ -5547,24 +5547,46 @@ WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take qui
 			<para>If you feel the need for manual re-indexing, you may run it from cli.
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --help
-Cacti Reindex Host Script 1.0, Copyright 2007 - The Cacti Group
+Cacti Reindex Host Script 1.2, Copyright 2007-2008 - The Cacti Group
 
-usage: poller_reindex_hosts.php -id=[host_id|All] [-d] [-h] [--help] [-v] [--version]
+usage: poller_reindex_hosts.php --id=[host_id|All] [--qid=[ID|All]] [--host-descr=[description]]
+                           [-d] [-h] [--help] [-v] [--version]
 
--id=host_id   - The host_id to have data queries reindexed or 'All' to reindex all hosts
--d            - Display verbose output during execution
--v --version  - Display this help message
--h --help     - Display this help message</screen>
+--id=host_id             - The host_id to have data queries reindexed or 'All' to reindex all hosts
+--qid=query_id           - Only index on a specific data query id; defaults to 'All'
+--host-descr=description - The host description to filter by (SQL filters acknowledged)
+--debug                  - Display verbose output during execution
+-v --version             - Display this help message
+-h --help                - Display this help message</screen>
 			<para>Running it in debug mode for the host with <userinput>id=2</userinput> may yield</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php -id=2 -d
 WARNING: Do not interrupt this script.  Reindexing can take quite some time
 DEBUG: There are '1' data queries to run
-DEBUG: Data query number '1' starting
-DEBUG: Data query number '1' ending</screen>
+DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' starting
+DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' ending</screen>
 			<para>A silent run for all devices is issued by</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php -id=All
 WARNING: Do not interrupt this script.  Reindexing can take quite some time
 .....<prompt>shell&gt;</prompt></screen>
+			<para>You may run this script against a specific data query id using <userinput>--qid=[data query id]</userinput> like</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --id=All --qid=1 -d
+WARNING: Do not interrupt this script.  Reindexing can take quite some time
+DEBUG: There are '3' data queries to run
+DEBUG: Data query number '1' host: '1' SNMP Query Id: '1' starting
+DEBUG: Data query number '1' host: '1' SNMP Query Id: '1' ending
+DEBUG: Data query number '2' host: '2' SNMP Query Id: '1' starting
+DEBUG: Data query number '2' host: '2' SNMP Query Id: '1' ending
+DEBUG: Data query number '3' host: '15' SNMP Query Id: '1' starting
+DEBUG: Data query number '3' host: '15' SNMP Query Id: '1' ending</screen>
+			<para>It is possible, to select a host based on its host description using <userinput>--host-descr=[host description]</userinput>.
+			It is allowed to apply an SQL filter expression for the description like <userinput>--qid=some%descr</userinput>.
+			Use this parameter in conjunction with either <userinput>--id=[host id]</userinput> or
+			<userinput>--qid=[data query id]</userinput> or both:</para>
+			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --id=All --qid=1 --host-descr=ga%f -d
+WARNING: Do not interrupt this script.  Reindexing can take quite some time
+DEBUG: There are '1' data queries to run
+DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' starting
+DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' ending</screen>
 			<caution>
 				<title>Stop the Poller during Re-Indexing</title>
 				<para>Re-Indexing interferes with the poller operation.
