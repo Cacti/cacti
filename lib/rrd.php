@@ -101,15 +101,20 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_stru
 			while (1) {
 				if (fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n") == false) {
 					cacti_log("ERROR: Detected RRDtool Crash attempting to perform write");
-					$i++;
 
-					$rrd_struc = rrd_init();
+					/* close the invalid pipe */
+					rrd_close($rrd_struc);
 
 					if ($i > 4) {
 						cacti_log("FATAL: RRDtool Restart Attempts Exceeded.  Giving up on command.");
 
 						break;
+					}else{
+						$i++;
 					}
+
+					/* open a new rrdtool process */
+					$rrd_struc = rrd_init();
 
 					continue;
 				}else{
@@ -130,15 +135,20 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_stru
 			while (1) {
 				if (fwrite(rrd_get_fd($rrd_struc, RRDTOOL_PIPE_CHILD_READ), escape_command(" $command_line") . "\r\n") == false) {
 					cacti_log("ERROR: Detected RRDtool Crash attempting to perform write");
-					$i++;
 
-					$rrd_struc = rrd_init();
+					/* close the invalid pipe */
+					rrd_close($rrd_struc);
 
 					if ($i > 4) {
 						cacti_log("FATAL: RRDtool Restart Attempts Exceeded.  Giving up on command.");
 
 						break;
+					}else{
+						$i++;
 					}
+
+					/* open a new rrdtool process */
+					$rrd_struc = rrd_init();
 
 					continue;
 				}else{
