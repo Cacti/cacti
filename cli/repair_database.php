@@ -30,10 +30,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 
 $no_http_headers = true;
 
-if (file_exists("./include/config.php")) {
-	include("./include/config.php");
-}else{	include("../include/global.php");
-}
+include(dirname(__FILE__) . "/../include/global.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
