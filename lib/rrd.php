@@ -517,7 +517,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
-
+	include($config["include_path"] . "/global_arrays.php");
+	
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
@@ -1358,6 +1359,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
 	include_once($config["library_path"] . "/xml.php");
+	include($config["include_path"] . "/global_arrays.php");
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
