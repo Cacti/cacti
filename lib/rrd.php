@@ -513,11 +513,10 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrd_struc = array()) {
-	global $config;
+	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
-	include($config["include_path"] . "/global_arrays.php");
 
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
@@ -1354,12 +1353,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 }
 
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $rrd_struc = array()) {
-	global $config;
+	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
 	include_once($config["library_path"] . "/xml.php");
-	include($config["include_path"] . "/global_arrays.php");
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
