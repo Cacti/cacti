@@ -25,7 +25,7 @@
 $guest_account = true;
 include("./include/auth.php");
 include_once("./lib/html_tree.php");
-include_once("./include/html/inc_timespan_settings.php");
+include_once("./lib/timespan_settings.php");
 include_once("./include/top_graph_header.php");
 
 /* ================= input validation ================= */
