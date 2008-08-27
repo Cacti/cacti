@@ -327,7 +327,7 @@ while ($poller_runs_completed < $poller_runs) {
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-					sizeof($polling_hosts), $host_per_process, $num_polling_items, $rrds_processed);
+					sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 				break;
 			}else {
@@ -342,7 +342,7 @@ while ($poller_runs_completed < $poller_runs) {
 					cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true, "POLLER");
 
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-						sizeof($polling_hosts), $host_per_process, $num_polling_items, $rrds_processed);
+						sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 					break;
 				}else{
@@ -412,7 +412,7 @@ while ($poller_runs_completed < $poller_runs) {
 }
 
 function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads, $num_hosts,
-	$host_per_process, $num_polling_items, $rrds_processed) {
+	$hosts_per_process, $num_polling_items, $rrds_processed) {
 
 	/* take time and log performance data */
 	list($micro,$seconds) = split(" ", microtime());
@@ -431,7 +431,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		$method,
 		$concurrent_processes,
 		$max_threads,
-		sizeof($polling_hosts),
+		$num_hosts,
 		$hosts_per_process,
 		$num_polling_items,
 		$rrds_processed);
