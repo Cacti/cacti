@@ -1249,9 +1249,7 @@ function generate_graph_def_name($graph_item_id) {
    @arg $string - the input string that contains the field variables in a certain order
    @arg $data_input_id - (int) the ID of the data input method */
 function generate_data_input_field_sequences($string, $data_input_id) {
-	global $config;
-
-	include ($config["include_path"] . "/global_arrays.php");
+	global $config, $registered_cacti_names;
 
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $string, $matches)) {
 		$j = 0;
