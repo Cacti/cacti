@@ -483,9 +483,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
-	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames;
-
-	include($config["include_path"] . "/global_arrays.php");
+	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;
