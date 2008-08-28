@@ -124,7 +124,7 @@ if (sizeof($parms)) {
 		displayHosts($hosts, $quietMode);
 		exit(0);
 	}
-	if ($displayGraphTemplates) {
+	if ($displayDataQueries) {
 		$data_queries = getSNMPQueries();
 		displaySNMPQueries($data_queries, $quietMode);
 		exit(0);
