@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+0.8.7c
 -bug#0001100: spine hangs on unreachable hosts
 -bug#0001135: Graph export feature not exporting as per user level selected
 -bug#0001141: Script server appears broken for "index" and "query" requests (Documentation Fix)
@@ -15,12 +16,14 @@ Cacti CHANGELOG
 -bug#0001216: CSV Export for zoomed graph, results in Validation error
 -bug#0001217: Default Graph Tree is not reflected in Left Pane of the graph page
 -bug#0001223: Missing Hard return on last GPRINT causes bad formatting
+-bug#0001228: LDAP server port not honored 
 -bug#0001230: poller stops updating rrd files
 -bug#0001236: set 'stats_recache' to zero when no re-index is present
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug#0001247: snmp ping won't work for snmp v3
 -bug#0001256: Spine-poller.c : Bug in size string sysUptime 
+-bug#0001259: LDAP Authentication using Solaris 10 standard ldap client fails
 -bug#0001262: Do not allow deletion of Graph Export User
 -bug#0001273: Escape windows paths to accomodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255

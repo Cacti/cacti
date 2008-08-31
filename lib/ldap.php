@@ -78,6 +78,10 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",
 		return $output;
 	}
 
+	/* Fix encoding of username and password */
+	$username = utf8_encode($username);
+	$password = utf8_encode($password);
+
 	/* get LDAP parameters */
 	if (empty($ldap_dn)) {
 		$ldap_dn = read_config_option("ldap_dn");
@@ -101,15 +105,14 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",
 	if (empty($ldap_referrals)) {
 		$ldap_referrals = read_config_option("ldap_referrals");
 	}
-	if ($ldap_encryption == "1") {
-		$ldap_host = "ldaps://" . $ldap_host;
-		$ldap_port = $ldap_port_ssl;
-	}else{
-		$ldap_host = "ldap://" . $ldap_host;
-	}
 
-	/* Connect to LDAP server */
-	$ldap_conn = @ldap_connect($ldap_host,$ldap_port);
+	/* Determine connection method and create LDAP Object */
+	if ($ldap_encryption == "1") {
+		/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
+		$ldap_conn = @ldap_connect("ldaps://" . $ldap_host . ":" . $ldap_port_ssl);
+	}else{
+		$ldap_conn = @ldap_connect($ldap_host,$ldap_port);
+	}
 
 	if ($ldap_conn) {
 		/* Set protocol version */
@@ -255,6 +258,9 @@ function cacti_ldap_search_dn($username,$ldap_dn = "",$ldap_host = "",$ldap_port
 		return $output;
 	}
 
+	/* Encode username */
+	$username = utf8_encode($username);
+
 	/* strip bad chars from username - prevent altering filter from username */
 	$username = str_replace("&", "", $username);
 	$username = str_replace("|", "", $username);
@@ -328,6 +334,9 @@ function cacti_ldap_search_dn($username,$ldap_dn = "",$ldap_host = "",$ldap_port
 	}
 	$ldap_search_filter = str_replace("<username>",$username,$ldap_search_filter);
 
+	/* Fix encoding on ldap specific search DN and password */
+	$ldap_specific_password = utf8_encode($ldap_specific_password);
+	$ldap_specific_dn = utf8_encode($ldap_specific_dn);
 
 	/* Searching mode */
         /* Setup connection to LDAP server */
