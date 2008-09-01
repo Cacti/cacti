@@ -182,6 +182,7 @@ $logfile_options = array(1 =>
 $availability_options = array(
 	AVAIL_NONE => "None",
 	AVAIL_SNMP_AND_PING => "Ping and SNMP",
+	AVAIL_SNMP_OR_PING => "Ping or SNMP",
 	AVAIL_SNMP => "SNMP",
 	AVAIL_PING => "Ping");
 

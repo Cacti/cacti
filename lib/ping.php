@@ -624,7 +624,9 @@ class Net_Ping
 		$snmp_result = false;
 
 		/* icmp/udp ping test */
-		if (($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_PING)) {
+		if (($avail_method == AVAIL_SNMP_AND_PING) ||
+			($avail_method == AVAIL_SNMP_OR_PING) ||
+			($avail_method == AVAIL_PING)) {
 			if ($ping_type == PING_ICMP) {
 				$ping_result = $this->ping_icmp();
 			}else if ($ping_type == PING_UDP) {
@@ -635,7 +637,12 @@ class Net_Ping
 		}
 
 		/* snmp test */
-		if (($avail_method == AVAIL_SNMP) || (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == true))) {
+		if (($avail_method == AVAIL_SNMP_OR_PING) && ($ping_result == true)) {
+			$snmp_result = true;
+			$snmp_status = 0.000;
+		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
+			$snmp_result = false;
+		}else if (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING)) {
 			if (($this->host["snmp_community"] == "") && ($this->host["snmp_version"] != 3)) {
 				/* snmp version 1/2 without community string assume SNMP test to be successful
 				   due to backward compatibility issues */
@@ -644,12 +651,10 @@ class Net_Ping
 			}else{
 				$snmp_result = $this->ping_snmp();
 			}
-		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
-			$snmp_result = false;
 		}
 
 		switch ($avail_method) {
-			case AVAIL_SNMP_AND_PING:
+			case AVAIL_SNMP_OR_PING:
 				if (($this->host["snmp_community"] == "") && ($this->host["snmp_version"] != 3)) {
 					if ($ping_result) {
 						return true;
@@ -659,6 +664,18 @@ class Net_Ping
 				}elseif ($snmp_result) {
 					return true;
 				}elseif ($ping_result) {
+					return true;
+				}else{
+					return false;
+				}
+			case AVAIL_SNMP_AND_PING:
+				if (($this->host["snmp_community"] == "") && ($this->host["snmp_version"] != 3)) {
+					if ($ping_result) {
+						return true;
+					}else{
+						return false;
+					}
+				}elseif (($snmp_result) && ($ping_result)) {
 					return true;
 				}else{
 					return false;
@@ -696,11 +713,18 @@ class Net_Ping
 				}
 			}
 
+			$i = 0;
 			foreach ($segments as $segment) {
-				if (!is_numeric("0x" . $segment)) {
+				$i++;
+
+				if ((trim($segment) == "") && ($i == 1)) {
+					continue;
+				}elseif (!is_numeric("0x" . $segment)) {
 					return false;
 				}
 			}
+
+			return true;
 		}else if (strlen($ip_address) <= 15) {
 			$octets = explode('.', $ip_address);
 

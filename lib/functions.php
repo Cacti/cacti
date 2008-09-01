@@ -613,7 +613,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		$hosts[$host_id]["availability"] = 100 * ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
 		/* determine the error message to display */
-		if ($ping_availability == AVAIL_SNMP_AND_PING) {
+		if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP_OR_PING)) {
 			if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
 				/* snmp version 1/2 without community string assume SNMP test to be successful
 				   due to backward compatibility issues */
@@ -673,6 +673,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		$hosts[$host_id]["availability"] = 100 * ($hosts[$host_id]["total_polls"] - $hosts[$host_id]["failed_polls"]) / $hosts[$host_id]["total_polls"];
 
 		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
+			($ping_availability == AVAIL_SNMP_OR_PING) ||
 			($ping_availability == AVAIL_SNMP)) &&
 			(!is_numeric($ping->snmp_status))) {
 			cacti_log("WARNING: Poller[0] Host[$host_id] SNMP Time was not numeric", TRUE, "POLLER");
@@ -680,13 +681,15 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		}
 
 		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
+			($ping_availability == AVAIL_SNMP_OR_PING) ||
 			($ping_availability == AVAIL_PING)) &&
 			(!is_numeric($ping->ping_status))) {
 			cacti_log("WARNING: Poller[0] Host[$host_id] Ping Time was not numeric", TRUE, "POLLER");
 			$ping->ping_status = 0.000;
 		}
 		/* determine the ping statistic to set and do so */
-		if ($ping_availability == AVAIL_SNMP_AND_PING) {
+		if (($ping_availability == AVAIL_SNMP_AND_PING) ||
+			($ping_availability == AVAIL_SNMP_OR_PING)) {
 			if (($hosts[$host_id]["snmp_community"] == "") && ($hosts[$host_id]["snmp_version"] != 3)) {
 				$ping_time = 0.000;
 			}else {
