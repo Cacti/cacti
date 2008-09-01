@@ -643,6 +643,10 @@ $fields_graph_template_input_edit = array(
 
 /* file: host.php, action: edit */
 $fields_host_edit = array(
+	"host_header" => array(
+		"method" => "spacer",
+		"friendly_name" => "General Host Options"
+		),
 	"description" => array(
 		"method" => "textbox",
 		"friendly_name" => "Description",
@@ -664,15 +668,6 @@ $fields_host_edit = array(
 		"value" => "|arg1:host_template_id|",
 		"none_value" => "None",
 		"sql" => "select id,name from host_template order by name",
-		),
-	"notes" => array(
-		"method" => "textarea",
-		"friendly_name" => "Notes",
-		"description" => "Enter notes to this host.",
-		"class" => "textAreaNotes",
-		"value" => "|arg1:notes|",
-		"textarea_rows" => "5",
-		"textarea_cols" => "40"
 		),
 	"disabled" => array(
 		"method" => "checkbox",
@@ -832,6 +827,19 @@ $fields_host_edit = array(
 		"max_length" => "8",
 		"default" => read_config_option("max_get_size"),
 		"size" => "15"
+		),
+	"header4" => array(
+		"method" => "spacer",
+		"friendly_name" => "Additional Options"
+		),
+	"notes" => array(
+		"method" => "textarea",
+		"friendly_name" => "Notes",
+		"description" => "Enter notes to this host.",
+		"class" => "textAreaNotes",
+		"value" => "|arg1:notes|",
+		"textarea_rows" => "5",
+		"textarea_cols" => "50"
 		),
 	"id" => array(
 		"method" => "hidden_zero",
