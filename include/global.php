@@ -202,6 +202,6 @@ include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.7b";
+$config["cacti_version"] = "0.8.7c";
 
 ?>
