@@ -99,7 +99,7 @@ if ($action == 'login') {
 
 			if (!$ldap_error) {
 				/* auth user with LDAP */
-				$ldap_auth_response = cacti_ldap_auth($username,get_request_var_post("login_password"),$ldap_dn);
+				$ldap_auth_response = cacti_ldap_auth($username,stripslashes(get_request_var_post("login_password")),$ldap_dn);
 
 				if ($ldap_auth_response["error_num"] == "0") {
 					/* User ok */
