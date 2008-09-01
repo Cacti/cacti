@@ -35,7 +35,9 @@ if (read_config_option("auth_method") == "2") {
 	$action = "login";
 	if (isset($_SERVER["PHP_AUTH_USER"])) {
 		$username = str_replace("\\", "\\\\", $_SERVER["PHP_AUTH_USER"]);
-	} else {
+	}elseif (isset($_SERVER["REMOTE_USER"])) {
+		$username = str_replace("\\", "\\\\", $_SERVER["REMOTE_USER"]);
+	}else{
 		/* No user - Bad juju! */
 		$username = "";
 		cacti_log("ERROR: No username passed with Web Basic Authentication enabled.", false, "AUTH");
