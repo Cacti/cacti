@@ -269,8 +269,8 @@ $settings = array(
 			"friendly_name" => "Other Defaults",
 			"method" => "spacer",
 			),
-		"remove_verification" => array(
-			"friendly_name" => "Remove Verification",
+		"deletion_verification" => array(
+			"friendly_name" => "Deletion Verification",
 			"description" => "Prompt user before item deletion.",
 			"default" => "on",
 			"method" => "checkbox"

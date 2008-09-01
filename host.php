@@ -512,14 +512,14 @@ function host_remove() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	if ((read_config_option("remove_verification") == "on") && (!isset($_GET["confirm"]))) {
+	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . db_fetch_cell("select description from host where id=" . $_GET["id"]) . "'</strong>?", "host.php", "host.php?action=remove&id=" . $_GET["id"]);
 		include("./include/bottom_footer.php");
 		exit;
 	}
 
-	if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
+	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
 		api_device_remove($_GET["id"]);
 	}
 }
@@ -549,9 +549,7 @@ function host_edit() {
 				</td>
 			</tr>
 			<tr>
-				<?php if (($host["availability_method"] == AVAIL_SNMP) ||
-					($host["availability_method"] == AVAIL_SNMP_AND_PING) ||
-					($host["availability_method"] == AVAIL_SNMP_OR_PING)) { ?>
+				<?php if (($host["availability_method"] == AVAIL_SNMP) || ($host["availability_method"] == AVAIL_SNMP_AND_PING)) { ?>
 				<td class="textHeader">
 					SNMP Information<br>
 

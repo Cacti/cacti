@@ -69,8 +69,13 @@ function upgrade_to_0_8_7c() {
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_reindex` MODIFY COLUMN `arg1` VARCHAR(255) NOT NULL DEFAULT '';");
 	db_install_execute("0.8.7c", "ALTER TABLE `user_auth` MODIFY COLUMN `enabled` CHAR(2) NOT NULL DEFAULT 'on';");
 	db_install_execute("0.8.7c", "ALTER TABLE `user_log` MODIFY COLUMN `ip` VARCHAR(40) NOT NULL DEFAULT '';");
+
 	/* change size of columns to match current cacti.sql file */
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_item` MODIFY COLUMN `rrd_step` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '300';");
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_time` MODIFY COLUMN `pid` INT(11) UNSIGNED NOT NULL DEFAULT '0';");
+
+	/* Update deletion verification setting */
+	db_install_execute("0.8.7c", "UPDATE settings SET name = 'deletion_verification' WHERE name = 'remove_verification';");
+
 }
 ?>
