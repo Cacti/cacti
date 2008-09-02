@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.7c
 -bug#0000486: RRA template edit allows invalid XFF values
+-bug#0000626: Setting "Default Graph Tree" does not work with dual pane
 -bug#0000943: scripts/ping.pl has incorrect response when "icmp hop redirect" occurs
 -bug#0001090: LDAP authenication fails when using quote character in password
 -bug#0001100: spine hangs on unreachable hosts
