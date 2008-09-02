@@ -340,7 +340,7 @@ function html_header_checkbox($header_items, $form_action = "") {
 	print "</tr>\n";
 }
 
-/* create_list - draws the items for an html dropdown given an array of data
+/* html_create_list - draws the items for an html dropdown given an array of data
    @arg $form_data - an array containing data for this dropdown. it can be formatted
      in one of two ways:
      $array["id"] = "value";
@@ -380,6 +380,40 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 			}
 		}
 	}
+}
+
+/* html_split_string - takes a string and breaks it into a number of <br> separated segments
+   @arg $string - string to be modified and returned
+   @arg $length - the maximal string length to split to
+   @arg $forgiveness - the maximum number of characters to walk back from to determine
+         the correct break location.
+   @returns $new_string - the modified string to be returned. */
+function html_split_string($string, $length = 70, $forgiveness = 10) {
+	$new_string = "";
+	$j    = 0;
+	$done = false;
+
+	while (!$done) {
+		if (strlen($string) > $length) {
+			for($i = 0; $i < $forgiveness; $i++) {
+				if (substr($string, $length-$i, 1) == " ") {
+					$new_string .= substr($string, 0, $length-$i) . "<br>";
+
+					break;
+				}
+			}
+
+			$string = substr($string, $length-$i);
+		}else{
+			$new_string .= $string;
+			$done        = true;
+		}
+
+		$j++;
+		if ($j > 4) break;
+	}
+
+	return $new_string;
 }
 
 /* draw_graph_items_list - draws a nicely formatted list of graph items for display
