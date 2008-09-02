@@ -66,8 +66,8 @@ html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "
 		<p><strong>Thanks</a></strong><br>
 		<ul type="disc">
 			<li>A very special thanks to <a href="http://tobi.oetiker.ch/"><strong>Tobi Oetiker</strong></a>,
-				the creator of <a href="http://www.mrtg.org/">RRDTool</a> and the very popular
-				<a href="http://www.mrtg.org">MRTG</a>.</li>
+				the creator of <a href="http://www.rrdtool.org/">RRDTool</a> and the very popular
+				<a href="http://www.rrdtool.org">MRTG</a>.</li>
 			<li><strong>Brady Alleman</strong>, creator of NetMRG and
 				<a href="http://www.thtech.net">Treehouse Technologies</a> for questions and ideas. Just
 				as a note, NetMRG is a complete Network Monitoring solution also written in PHP/MySQL. His

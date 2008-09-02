@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -bug#0001174: Unidentified index warning
 -bug#0001176: Problem validating IPv6 addresses
 -bug#0001191: Faulty IP address validation by ping.php script
+-bug#0001194: RRDtool URL is incorrect on the about page
 -bug#0001204: since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
 -bug#0001206: wrong "include" statements replaced by "include_once" (was: Graphs are not Zoom-able)
 -bug#0001211: Allow use of "REMOTE_USER" if "PHP_AUTH_USER" is not set for authenication
