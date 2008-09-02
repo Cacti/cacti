@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-open(PROCESS, "ping -c 1 $ARGV[0] | grep icmp_seq |");
+open(PROCESS, "ping -c 1 $ARGV[0] | grep icmp_seq | grep time |");
 $ping = <PROCESS>;
 close(PROCESS);
 $ping =~ m/(.*time=)(.*) (ms|usec)/;
