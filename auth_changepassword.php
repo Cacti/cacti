@@ -24,6 +24,11 @@
 
 include("./include/global.php");
 
+/* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
+if (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"]) {
+	header("Location: index.php");
+}
+
 $user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 /* default to !bad_password */

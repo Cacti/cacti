@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -bug#0001228: LDAP server port not honored 
 -bug#0001230: poller stops updating rrd files
 -bug#0001236: set 'stats_recache' to zero when no re-index is present
+-bug#0001238: Guest user has access to change password
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug#0001247: snmp ping won't work for snmp v3
