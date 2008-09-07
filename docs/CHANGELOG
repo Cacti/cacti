@@ -41,7 +41,8 @@ Cacti CHANGELOG
 -bug#0001286: poller_item cache is not updated when "Data Input Method" is changed 
 -bug#0001288: A host with ICMP ping selected as method does not properly perform ping
 -bug#0001291: Reapply Suggested Names fails on Script Queries
--bug#0001293: When Creating Data Query Graphs, Performing Search will Cause List to Disappear 
+-bug#0001293: When Creating Data Query Graphs, Performing Search will Cause List to Disappear
+-bug#0001296: add_graphs.php does not add the graph template to the host 
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
 -bug: Initialization of snmp_auth when using SNMP=NONE
 -bug: Speed up add_graphs.php in most cases (still slow only if --input-fields is used)

@@ -28,9 +28,9 @@
 			<surname>Scheck</surname>
 		</author>
 	</authorgroup>
-	<pubdate>2007</pubdate>
+	<pubdate>2008</pubdate>
 	<copyright>
-		<year>2007</year>
+		<year>2008</year>
 		<holder>The Cacti Group</holder>
 	</copyright>
 
@@ -5956,7 +5956,7 @@ Success: Graph Template associated for host: (11: router) - graph-template: (7: 
 			<filename>add_graphs.php</filename>. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_graphs.php
 
-Add Graphs Script 1.0, Copyright 2007 - The Cacti Group
+Add Graphs Script 1.1, Copyright 2008 - The Cacti Group
 
 A simple command line utility to add graphs in Cacti
 
@@ -5975,16 +5975,22 @@ For cg graphs:
 For ds graphs:
     --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]
 
-    [--graph-title=] Defaults to what ever is in the graph template/data-source template.
+    [--graph-title=]       Defaults to what ever is in the graph template/data-source template.
 
+    [--reindex-method=]    the reindex method to be used for that data query
+                           if data query already exists, the reindex method will not be changed
+                    0|None   = no reindexing
+                    1|Uptime = Uptime goes Backwards (Default)
+                    2|Index  = Index Count Changed
+                    3|Fields = Verify all Fields
 List Options:
     --list-hosts
     --list-graph-templates
     --list-input-fields --graph-template-id=[ID]
     --list-snmp-queries
     --list-query-types  --snmp-query-id [ID]
-    --list-snmp-fields  --host-id=[ID]
-    --list-snmp-values  --host-id=[ID] --snmp-field=[Field]
+    --list-snmp-fields  --host-id=[ID] [--snmp-query-id=[ID]]
+    --list-snmp-values  --host-id=[ID] [--snmp-query-id=[ID]] --snmp-field=[Field]
 
 'cg' graphs are for things like CPU temp/fan speed, while
 'ds' graphs are for data-source based graphs (interface stats etc.)</screen>
@@ -6105,6 +6111,8 @@ Graph Added - graph-id: (39) - data-source-id: (63)</screen>
 				<para>Find the result when visiting <guimenu>Graph Management</guimenu></para>
 				<screen>Graph Title** 			Template Name 		Size
 Device Add Test - CPU Usage 	ucd/net - CPU Usage 	120x500</screen>
+				<para>If the graph template was not associated with that host before, it is now added
+				to the list of <guimenu>Associated Graph Templates</guimenu>.</para>
 			</sect2>
 			<sect2 id="cli_add_graphs_ds">
 			<title>Add Indexed Graphs</title>
@@ -6160,6 +6168,11 @@ Graph Added - graph-id: (40) - data-source-id: (65)</screen>
 				<screen>Graph Title** 				Template Name 				Size
 Device Add Test - CPU Usage 		ucd/net - CPU Usage 			120x500
 Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</screen>
+				<para>If the data query was not associated with that host before, it is now added
+				to the list of <guimenu>Associated Graph Templates</guimenu>. In this case, the
+				<guimenu>Re-Index Method</guimenu> of <parameter>Uptime Goes Backwards</parameter> 
+				is defaulted if not given otherwise. You may provide a different <guimenu>Re-Index Method</guimenu>
+				by entering the optional parameter <parameter>--reindex-method</parameter>.</para>
 			</sect2>
 		</sect1>
 		<sect1 id="cli_add_tree">

@@ -51,12 +51,13 @@ if (sizeof($parms)) {
 	$graph_type    = "";
 	$templateGraph = array();
 	$dsGraph       = array();
-	$dsGraph["snmpFieldSpec"] = "";
-	$dsGraph["snmpQueryId"]   = "";
-	$dsGraph["snmpQueryType"] = "";
-	$dsGraph["snmpField"]     = "";
-	$dsGraph["snmpValue"]     = "";
-
+	$dsGraph["snmpFieldSpec"]  = "";
+	$dsGraph["snmpQueryId"]    = "";
+	$dsGraph["snmpQueryType"]  = "";
+	$dsGraph["snmpField"]      = "";
+	$dsGraph["snmpValue"]      = "";
+	$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+	
 	$input_fields  = array();
 	$values["cg"]  = array();
 
@@ -117,6 +118,32 @@ if (sizeof($parms)) {
 			break;
 		case "--snmp-value":
 			$dsGraph["snmpValue"] = $value;
+
+			break;
+		case "--reindex-method":
+			if (is_numeric($value) &&
+				($value >= DATA_QUERY_AUTOINDEX_NONE) &&
+				($value <= DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION)) {
+				$dsGraph["reindex_method"] = $value;
+			} else {
+				switch (strtolower($value)) {
+					case "none":
+						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_NONE;
+						break;
+					case "uptime":
+						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+						break;
+					case "index":
+						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE;
+						break;
+					case "fields":
+						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
+						break;
+					default:
+						echo "ERROR: You must supply a valid reindex method for this graph!\n";
+						exit(1);
+				}
+			}
 
 			break;
 		case "--list-hosts":
@@ -214,6 +241,35 @@ if (sizeof($parms)) {
 				echo "ERROR: Unknown snmp-query-type-id (" . $dsGraph["snmpQueryType"] . ")\n";
 				echo "Try --snmp-query-id=" . $dsGraph["snmpQueryId"] . " --list-query-types\n";
 				exit(1);
+			}
+		}
+
+		if (!($listHosts ||			# you really want to create a new graph 
+			$listSNMPFields || 		# add this check to avoid reindexing on any list option
+			$listSNMPValues || 
+			$listQueryTypes ||
+			$listSNMPQueries ||
+			$listInputFields)) {
+			
+			/* if data query is not yet associated,
+			 * add it and run it once to get the cache filled */ 
+			 
+			/* is this data query already associated (independent of the reindex method)? */
+			$exists_already = db_fetch_cell("SELECT COUNT(host_id) FROM host_snmp_query WHERE host_id=$hostId AND snmp_query_id=" . $dsGraph["snmpQueryId"]);
+			if ((isset($exists_already)) &&
+				($exists_already > 0)) {
+				/* yes: do nothing, everything's fine */
+			}else{
+				db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method) " .
+						   "VALUES (". $hostId . ","
+									 . $dsGraph["snmpQueryId"] . ","
+									 . $dsGraph["reindex_method"] . 
+									")");
+				/* recache snmp data, this is time consuming, 
+				 * but should happen only once even if multiple graphs
+				 * are added for the same data query
+				 * because we checked above, if dq was already associated */
+				run_data_query($hostId, $dsGraph["snmpQueryId"]);
 			}
 		}
 	}
@@ -362,6 +418,9 @@ if (sizeof($parms)) {
 
 		push_out_host($hostId, $dataSourceId);
 
+		/* add this graph template to the list of associated graph templates for this host */
+		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $hostId . "," . $templateId . ")");
+
 		echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
 	}elseif ($graph_type == "ds") {
 		if (($dsGraph["snmpQueryId"] == "") || ($dsGraph["snmpQueryType"] == "") || ($dsGraph["snmpField"] == "") || ($dsGraph["snmpValue"] == "")) {
@@ -467,7 +526,13 @@ function display_help() {
 	echo "                    may already exist\n\n";
 	echo "For ds graphs:\n";
 	echo "    --snmp-query-id=[ID] --snmp-query-type-id=[ID] --snmp-field=[SNMP Field] --snmp-value=[SNMP Value]\n\n";
-	echo "    [--graph-title=] Defaults to what ever is in the graph template/data-source template.\n\n";
+	echo "    [--graph-title=]       Defaults to what ever is in the graph template/data-source template.\n\n";
+	echo "    [--reindex-method=]    the reindex method to be used for that data query\n";
+	echo "                           if data query already exists, the reindex method will not be changed\n";
+	echo "                    0|None   = no reindexing\n";
+	echo "                    1|Uptime = Uptime goes Backwards (Default)\n";
+	echo "                    2|Index  = Index Count Changed\n";
+	echo "                    3|Fields = Verify all Fields\n";
 	echo "List Options:\n";
 	echo "    --list-hosts\n";
 	echo "    --list-graph-templates\n";
