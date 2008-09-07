@@ -366,6 +366,8 @@ function graphs() {
 		unset($_REQUEST["host_id"]);
 		unset($_REQUEST["graph_type"]);
 		unset($_REQUEST["filter"]);
+
+		$changed = true;
 	}else{
 		/* if any of the settings changed, reset the page number */
 		$changed = 0;
