@@ -632,7 +632,7 @@ function host_edit() {
 					}
 
 				?>
-					Ping Results<br>
+					<br>Ping Results<br>
 					<span style="font-size: 10px; font-weight: normal; color: <?php print $color; ?>; font-family: monospace;">
 					<?php print $ping->ping_response; ?>
 					</span>
@@ -761,7 +761,8 @@ function host_edit() {
 		switch(type) {
 		case "NoSNMP":
 			/* remove snmp options */
-			if (am.length == 4) {
+			if (am.length == 5) {
+				am.remove(1);
 				am.remove(1);
 				am.remove(1);
 			}
@@ -782,6 +783,7 @@ function host_edit() {
 				var b=document.createElement('option');
 				var c=document.createElement('option');
 				var d=document.createElement('option');
+				var e=document.createElement('option');
 
 				a.value="0";
 				a.text="None";
@@ -790,6 +792,10 @@ function host_edit() {
 				b.value="1";
 				b.text="Ping and SNMP";
 				addSelectItem(b,am);
+
+				e.value="4";
+				e.text="Ping or SNMP";
+				addSelectItem(e,am);
 
 				c.value="2";
 				c.text="SNMP";
@@ -837,7 +843,8 @@ function host_edit() {
 
 				break;
 			case "1": // ping and snmp
-			case 3: // ping
+			case "3": // ping
+			case "4": // ping or snmp
 				if ((document.getElementById('row_ping_method').style.display == "none") ||
 					(document.getElementById('row_ping_method').style.display == undefined)) {
 					document.getElementById('ping_method').value=ping_method;
