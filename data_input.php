@@ -22,7 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include ("./include/auth.php");
+include("./include/auth.php");
+include_once("./lib/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
