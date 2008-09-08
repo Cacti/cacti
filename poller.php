@@ -94,6 +94,9 @@ if ($cron_interval != 60) {
 /* see if the user wishes to use process leveling */
 $process_leveling = read_config_option("process_leveling");
 
+/* retreive the number of concurrent process settings */
+$concurrent_processes = read_config_option("concurrent_processes");
+
 /* assume a scheduled task of either 60 or 300 seconds */
 if (isset($poller_interval)) {
 	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item WHERE rrd_next_step<=0");
@@ -117,7 +120,7 @@ if (isset($poller_interval)) {
 }
 
 if (sizeof($items_perhost)) {
-	$items_per_process   = round($num_polling_items / sizeof($items_perhost),0);
+	$items_per_process   = floor($num_polling_items / $concurrent_processes);
 }else{
 	$process_leveling    = "off";
 }
@@ -181,9 +184,6 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 
 	$polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM host WHERE disabled = '' ORDER BY id"));
-
-	/* retreive the number of concurrent process settings */
-	$concurrent_processes = read_config_option("concurrent_processes");
 
 	/* initialize counters for script file handling */
 	$host_count = 1;
@@ -277,7 +277,8 @@ while ($poller_runs_completed < $poller_runs) {
 					$items_launched += $items_perhost[$item["id"]];
 				}
 
-				if ($items_launched >= $items_per_process) {
+				if (($items_launched >= $items_per_process) ||
+					(sizeof($items_perhost) == $concurrent_processes)) {
 					$last_host      = $item["id"];
 					$change_proc    = true;
 					$items_launched = 0;
