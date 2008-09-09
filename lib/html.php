@@ -96,11 +96,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 			?>
 			<tr style='background-color: #<?php print ($i % 2 == 0 ? "f9f9f9" : "ffffff");?>;'>
 				<td align='center'>
-					<table align='left' cellpadding='0'>
+					<table align='center' cellpadding='0'>
 						<tr>
 							<td>
 								<a href='graph.php?action=view&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
-								<p style='font-size: 10;' align='left'><strong><?php print $graph["title_cache"];?></strong></p>
+								<p style='font-size: 10;' align='center'><strong><?php print $graph["title_cache"];?></strong></p>
 							</td>
 							<td valign='top' style='align: left; padding: 3px;' class='noprint'>
 								<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
@@ -143,11 +143,11 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 		foreach ($graph_array as $graph) {
 			?>
 			<td align='center' width='<?php print (98 / read_graph_config_option("num_columns"));?>%'>
-				<table align='left' cellpadding='0'>
+				<table align='center' cellpadding='0'>
 					<tr>
 						<td>
 							<a href='graph.php?action=view&rra_id=all&local_graph_id=<?php print $graph["local_graph_id"];?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&graph_height=<?php print read_graph_config_option("default_height");?>&graph_width=<?php print read_graph_config_option("default_width");?>&graph_nolegend=true<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
-							<p style='font-size: 10;' align='left'><strong><?php print $graph["title_cache"];?></strong></p>
+							<p style='font-size: 10;' align='center'><strong><?php print $graph["title_cache"];?></strong></p>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;'>
 							<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
