@@ -92,6 +92,7 @@ if (is_array($xport_array["meta"])) {
 }
 
 header("Content-type: application/vnd.ms-excel");
+header("Cache-Control: max-age=15");
 header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
 
 if (is_array($xport_array["meta"])) {
