@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -bug#0001288: A host with ICMP ping selected as method does not properly perform ping
 -bug#0001291: Reapply Suggested Names fails on Script Queries
 -bug#0001293: When Creating Data Query Graphs, Performing Search will Cause List to Disappear
+-bug#0001294: Stack overflow if database is not correctly initialized
 -bug#0001295: Division by zero when rrd_step < poller_interval
 -bug#0001296: add_graphs.php does not add the graph template to the host 
 -bug#0001299: When creating graphs the entire poller cache is recreated for a host

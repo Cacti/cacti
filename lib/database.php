@@ -181,7 +181,7 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 
 			return($fields);
 		}
-	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
+	}else if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
