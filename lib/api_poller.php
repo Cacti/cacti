@@ -116,7 +116,11 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 		$modulus = $rrd_step / $poller_interval;
 
-		$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
+		if ($modulus == 0) {
+			$rrd_next_step = 0;
+		}else{
+			$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
+		}
 
 		if ($num_rrd_items == 1) {
 			$rrd_step_counter++;
