@@ -197,6 +197,9 @@ function host_new_graphs_save() {
 				$return_array = create_complete_graph_from_template($graph_template_id, $_POST["host_id"], "", $values["cg"]);
 
 				debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
+
+				/* lastly push host-specific information to our data sources */
+				push_out_host($_POST["host_id"], $return_array["local_data_id"]);
 			}elseif ($current_form_type == "sg") {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
 					$snmp_query_array["snmp_index"] = decode_data_query_index($snmp_index, $snmp_query_array["snmp_query_id"], $_POST["host_id"]);
@@ -204,13 +207,13 @@ function host_new_graphs_save() {
 					$return_array = create_complete_graph_from_template($graph_template_id, $_POST["host_id"], $snmp_query_array, $values["sg"]{$snmp_query_array["snmp_query_id"]});
 
 					debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
+
+					/* lastly push host-specific information to our data sources */
+					push_out_host($_POST["host_id"], $return_array["local_data_id"]);
 				}
 			}
 		}
 	}
-
-	/* lastly push host-specific information to our data sources */
-	push_out_host($_POST["host_id"],0);
 }
 
 function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
