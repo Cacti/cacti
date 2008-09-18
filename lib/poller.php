@@ -81,7 +81,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 		}
 	/* execute the old fashion way */
 	}else{
-   		/* formulate command */
+		/* formulate command */
 		$command = read_config_option("path_php_binary") . " " . $command;
 
 		if (function_exists("popen")) {
@@ -276,6 +276,9 @@ function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
 			/* single one value output */
 			if ((is_numeric($value)) || ($value == "U")) {
 				$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$item["rrd_name"]} = $value;
+			/* special case of one value output: hexadecimal to decimal conversion */
+			}elseif (is_hexadecimal($value)) {
+				$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$item["rrd_name"]} = hexdec($value);
 			/* multiple value output */
 			}else{
 				$values = explode(" ", $value);

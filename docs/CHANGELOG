@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -bug#0001259: LDAP Authentication using Solaris 10 standard ldap client fails
 -bug#0001262: Do not allow deletion of Graph Export User
 -bug#0001268: resource/snmp_queries/net-snmp_disk.xml has incorrect name for "Percent Available"
+-bug#0001271: hex string to decimal conversion
 -bug#0001273: Escape windows paths to accomodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255
 -bug#0001286: poller_item cache is not updated when "Data Input Method" is changed 

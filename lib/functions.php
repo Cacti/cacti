@@ -837,6 +837,14 @@ function strip_quotes($result) {
 	return(trim($result));
 }
 
+/* is_hexadecimal - test whether a string represents a hexadecimal number,
+     ignoring space and tab, and case insensitive.
+   @arg $hexstr - the string to test
+   @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
+function is_hexadecimal($hexstr) {
+	return preg_match('/^[a-fA-F0-9 \t]*$/', $hexstr);
+}
+
 /* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
    @arg $result - (string) the result from the poll
    @returns - (int) either to result is valid or not */
