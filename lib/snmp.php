@@ -339,7 +339,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 function format_snmp_string($string) {
 	/* strip off all leading junk (the oid and stuff) */
-	$string = trim(substr($string, strpos($string, "=")));
+	$string = trim(substr($string, strpos($string, " = ")));
 
 	/* remove ALL quotes */
 	$string = str_replace("\"", "", $string);
@@ -347,6 +347,8 @@ function format_snmp_string($string) {
 	$string = str_replace(">", "", $string);
 	$string = str_replace("<", "", $string);
 	$string = str_replace("\\", "", $string);
+	$string = str_replace("\n", " ", $string);
+	$string = str_replace("\r", " ", $string);
 
 	/* Account for invalid type messages */
 	if (substr_count($string, "Wrong Type")) {
