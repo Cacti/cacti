@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -bug#0001141: Script server appears broken for "index" and "query" requests (Documentation Fix)
 -bug#0001145: Save Failed error when changing Graph Details
 -bug#0001147: Cactid doesn't trim white space from data template OIDs 
+-bug#0001153: Undefined variable: local_graph_id in graphs.php on line 201 
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug#0001174: Unidentified index warning
 -bug#0001176: Problem validating IPv6 addresses
