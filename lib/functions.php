@@ -846,9 +846,9 @@ function is_hexadecimal($hexstr) {
 }
 
 /* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
-   @arg $result - (string) the result from the poll
+   @arg $result - (string) the result from the poll, the result can be modified in the call
    @returns - (int) either to result is valid or not */
-function validate_result($result) {
+function validate_result(&$result) {
 	$delim_cnt = 0;
 	$space_cnt = 0;
 
@@ -865,6 +865,7 @@ function validate_result($result) {
 			$valid_result = true;
 		} else {
 			$valid_result = false;
+			$result = "U";
 		}
 	}
 	/* it has delimiters and has no space */

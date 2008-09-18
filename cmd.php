@@ -353,7 +353,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 					}
 
 					cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
-					$output = "U";
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
@@ -376,7 +375,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						}
 
 						cacti_log("Host[$host_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
-						$output = "U";
 					}
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
