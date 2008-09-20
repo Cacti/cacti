@@ -345,7 +345,7 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Device Script 1.0, Copyright 2007 - The Cacti Group\n\n";
+	echo "Add Device Script 1.0, Copyright 2007-2008 - The Cacti Group\n\n";
 	echo "A simple command line utility to add a device in Cacti\n\n";
 	echo "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";

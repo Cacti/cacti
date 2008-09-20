@@ -139,7 +139,7 @@ foreach ($graph_list as $graph) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Reapply Graph Names Script 1.0, Copyright 2007 - The Cacti Group\n\n";
+	print "Cacti Reapply Graph Names Script 1.0, Copyright 2007-2008 - The Cacti Group\n\n";
 	print "usage: poller_graphs_reapply_names.php -id=[host_id|All][host_id1|host_id2|...] [-s=[search_string] [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "-id=host_id   - The host_id or 'All' or a pipe delimited list of host_id's\n";
 	print "-s=search_str - A graph template name or graph title to search for\n";

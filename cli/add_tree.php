@@ -317,7 +317,7 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Tree Script 1.0, Copyright 2007 - The Cacti Group\n\n";
+	echo "Add Tree Script 1.0, Copyright 2007-2008 - The Cacti Group\n\n";
 	echo "A simple command line utility to add objects to a tree in Cacti\n\n";
 	echo "usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]\n\n";
 	echo "Tree options:\n";
