@@ -340,14 +340,6 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	include_once("./include/bottom_footer.php");
 }
 
-function check_changed($request, $session) {
-	if ((isset($_REQUEST[$request])) && (isset($_SESSION[$session]))) {
-		if ($_REQUEST[$request] != $_SESSION[$session]) {
-			return 1;
-		}
-	}
-}
-
 /* -------------------
     Graph Functions
    ------------------- */
@@ -359,6 +351,11 @@ function graphs() {
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("graph_type"));
 	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
