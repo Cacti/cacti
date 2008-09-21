@@ -995,6 +995,13 @@ $settings_graphs = array(
 			"array" => $graph_tree_views,
 			"default" => "2"
 			),
+		"treeview_graphs_per_page" => array(
+			"friendly_name" => "Graphs Per-Page",
+			"description" => "The number of graphs to display on one page in preview mode.",
+			"method" => "drop_array",
+			"default" => "10",
+			"array" => $graphs_per_page
+			),
 		"default_dual_pane_width" => array(
 			"friendly_name" => "Dual Pane Tree Width",
 			"description" => "When choosing dual pane Tree View, what width should the tree occupy in pixels.",
@@ -1007,24 +1014,30 @@ $settings_graphs = array(
 			"description" => "Choose whether to expand the graph templates used for a host on the dual pane tree.",
 			"method" => "checkbox",
 			"default" => ""
+			),
+		"show_graph_title" => array(
+			"friendly_name" => "Show Graph Title",
+			"description" => "Display the graph title on the page so that it may be searched using the browser.",
+			"method" => "checkbox",
+			"default" => ""
 			)
 		),
 	"preview" => array(
 		"preview_graphs_per_page" => array(
 			"friendly_name" => "Graphs Per-Page",
 			"description" => "The number of graphs to display on one page in preview mode.",
-			"method" => "textbox",
+			"method" => "drop_array",
 			"default" => "10",
-			"max_length" => "5"
+			"array" => $graphs_per_page
 			)
 		),
 	"list" => array(
 		"list_graphs_per_page" => array(
 			"friendly_name" => "Graphs Per-Page",
 			"description" => "The number of graphs to display on one page in list view mode.",
-			"method" => "textbox",
+			"method" => "drop_array",
 			"default" => "30",
-			"max_length" => "5"
+			"array" => $graphs_per_page
 			)
 		),
 	"fonts" => array(

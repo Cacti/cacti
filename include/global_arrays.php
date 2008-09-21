@@ -389,6 +389,17 @@ $item_rows = array(
 	5000 => "5000 Rows"
 	);
 
+$graphs_per_page = array(
+	5    => "5 Graphs",
+	10   => "10 Graphs",
+	15   => "15 Graphs",
+	20   => "20 Graphs",
+	25   => "25 Graphs",
+	30   => "30 Graphs",
+	40   => "40 Graphs",
+	50   => "50 Graphs"
+	);
+
 $page_refresh_interval = array(
 	5 => "5 Seconds",
 	10 => "10 Seconds",

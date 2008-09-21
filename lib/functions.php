@@ -230,6 +230,16 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	return $field_value;
 }
 
+/* check_changed - determines if a request variable has changed between page loads
+   @returns - (bool) true if the value changed between loads */
+function check_changed($request, $session) {
+	if ((isset($_REQUEST[$request])) && (isset($_SESSION[$session]))) {
+		if ($_REQUEST[$request] != $_SESSION[$session]) {
+			return 1;
+		}
+	}
+}
+
 /* is_error_message - finds whether an error message has been raised and has not been outputted to the
      user
    @returns - (bool) whether the messages array contains an error or not */
