@@ -470,6 +470,10 @@ function data_edit() {
 function data() {
 	global $colors, $input_types, $di_actions;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
+
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
