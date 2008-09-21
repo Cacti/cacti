@@ -104,7 +104,7 @@ function settings() {
 
 	print "<form method='post' action='graph_settings.php'>\n";
 
-	html_graph_start_box(1, true);
+	html_graph_start_box(1, false);
 
 	print "<tr bgcolor='#" . $colors["header"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Graph Settings</strong></td></tr></table></td></tr>";
 
@@ -184,7 +184,21 @@ function settings() {
 		}
 	}
 
-	window.onload = graphSettings();
+	function addLoadEvent(func) {
+		var oldonload = window.onload;
+		if (typeof window.onload != 'function') {
+			window.onload = func;
+		} else {
+			window.onload = function() {
+				if (oldonload) {
+					oldonload();
+				}
+				func();
+			}
+		}
+	}
+
+	addLoadEvent(graphSettings);
 
 	-->
 	</script>
@@ -195,7 +209,7 @@ function settings() {
 	if (isset($_SERVER["HTTP_REFERER"])) {
 		$timespan_sel_pos = strpos($_SERVER["HTTP_REFERER"],"&predefined_timespan");
 		if ($timespan_sel_pos) {
-		   $_SERVER["HTTP_REFERER"] = substr($_SERVER["HTTP_REFERER"],0,$timespan_sel_pos);
+			$_SERVER["HTTP_REFERER"] = substr($_SERVER["HTTP_REFERER"],0,$timespan_sel_pos);
 		}
 	}
 

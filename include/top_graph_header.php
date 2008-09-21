@@ -196,8 +196,10 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 			var obj;
 			obj = findObj(1);
 
-			if (!obj.isOpen) {
-				clickOnNode(1);
+			if (obj) {
+				if (!obj.isOpen) {
+					clickOnNode(1);
+				}
 			}
 
 			clickOnLink(2,'','main');
