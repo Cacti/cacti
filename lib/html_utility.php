@@ -162,10 +162,10 @@ function get_request_var($name, $default = "") {
 	if (isset($_GET[$name])) {
 		if (isset($_POST[$name])) {
 			unset($_POST[$name]);
-			$_REQUEST[$name] = $_GET[$name];
+			$_REQUEST[$name] = remove_xss($_GET[$name]);
 		}
 
-		return $_GET[$name];
+		return remove_xss($_GET[$name]);
 	}else{
 		return $default;
 	}
@@ -182,10 +182,10 @@ function get_request_var_post($name, $default = "") {
 	if (isset($_POST[$name])) {
 		if (isset($_GET[$name])) {
 			unset($_GET[$name]);
-			$_REQUEST[$name] = $_POST[$name];
+			$_REQUEST[$name] = remove_xss($_POST[$name]);
 		}
 
-		return $_POST[$name];
+		return remove_xss($_POST[$name]);
 	}else{
 		return $default;
 	}
@@ -202,7 +202,7 @@ function get_request_var_request($name, $default = "")
 {
 	if (isset($_REQUEST[$name]))
 	{
-		return $_REQUEST[$name];
+		return remove_xss($_REQUEST[$name]);
 	} else
 	{
 		return $default;
@@ -336,5 +336,162 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	return $url_page_select;
 }
+
+/* remove_xss - Remove all known cross site script (xss) attack vectors from user input 
+   @arg $data - User input to process
+   @returns - Cleaned user input
+*/
+function remove_xss($data) {
+	/* remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
+	this prevents some character re-spacing such as <java\0script>
+	note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs */
+	$data = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $data);
+	
+	/* straight replacements, the user should never need these since they're normal characters
+	this prevents like <IMG SRC=&#X40&#X61&#X76&#X61&#X73&#X63&#X72&#X69&#X70&#X74&#X3A&#X61&#X6C&#X65&#X72&#X74&#X28&#X27&#X58&#X53&#X53&#X27&#X29> */
+	$search = "abcdefghijklmnopqrstuvwxyz";
+	$search .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	$search .= "1234567890!@#$%^&*()";
+	$search .= "~`\";:?+/={}[]-_|\'\\";
+	for ($i = 0; $i < strlen($search); $i++) {
+		/* ;? matches the ;, which is optional
+		0{0,7} matches any padded zeros, which are optional and go up to 8 chars */
+		/* &#x0040 @ search for the hex values */
+		$data = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $data); 
+		/* &#00064 @ 0{0,7} matches '0' zero to seven times */
+		$data = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $data);
+	}
+	
+	/* defined keywords to process for removal */
+	$keywords = Array(
+		"javascript",
+		"vbscript",
+		"expression",
+		"applet",
+		"meta",
+		"xml",
+		"blink",
+		"link",
+		"style",
+		#"script", /* commented for "description" keyword false positive */
+		"embed",
+		"object",
+		"iframe",
+		"frame",
+		"frameset",
+		"ilayer",
+		"layer",
+		"bgsound",
+		"title",
+		"base",
+		"onabort",
+		"onactivate",
+		"onafterprint",
+		"onafterupdate",
+		"onbeforeactivate",
+		"onbeforecopy",
+		"onbeforecut",
+		"onbeforedeactivate",
+		"onbeforeeditfocus",
+		"onbeforepaste",
+		"onbeforeprint",
+		"onbeforeunload",
+		"onbeforeupdate",
+		"onblur",
+		"onbounce",
+		"oncellchange",
+		"onchange",
+		"onclick",
+		"oncontextmenu",
+		"oncontrolselect",
+		"oncopy",
+		"oncut",
+		"ondataavailable",
+		"ondatasetchanged",
+		"ondatasetcomplete",
+		"ondblclick",
+		"ondeactivate",
+		"ondrag",
+		"ondragend",
+		"ondragenter",
+		"ondragleave",
+		"ondragover",
+		"ondragstart",
+		"ondrop",
+		"onerror",
+		"onerrorupdate",
+		"onfilterchange",
+		"onfinish",
+		"onfocus",
+		"onfocusin",
+		"onfocusout",
+		"onhelp",
+		"onkeydown",
+		"onkeypress",
+		"onkeyup",
+		"onlayoutcomplete",
+		"onload",
+		"onlosecapture",
+		"onmousedown",
+		"onmouseenter",
+		"onmouseleave",
+		"onmousemove",
+		"onmouseout",
+		"onmouseover",
+		"onmouseup",
+		"onmousewheel",
+		"onmove",
+		"onmoveend",
+		"onmovestart",
+		"onpaste",
+		"onpropertychange",
+		"onreadystatechange",
+		"onreset",
+		"onresize",
+		"onresizeend",
+		"onresizestart",
+		"onrowenter",
+		"onrowexit",
+		"onrowsdelete",
+		"onrowsinserted",
+		"onscroll",
+		"onselect",
+		"onselectionchange",
+		"onselectstart",
+		"onstart",
+		"onstop",
+		"onsubmit",
+		"onunload"
+	);
+	
+	$found = true; 
+	while ($found == true) {
+		$data_before = $data;
+		for ($i = 0; $i < sizeof($keywords); $i++) {
+			$pattern = '/';
+			for ($j = 0; $j < strlen($keywords[$i]); $j++) {
+				if ($j > 0) {
+					$pattern .= '(';
+					$pattern .= '(&#[xX]0{0,8}([9ab]);)';
+					$pattern .= '|';
+					$pattern .= '|(&#0{0,8}([9|10|13]);)';
+					$pattern .= ')*';
+				}
+				$pattern .= $keywords[$i][$j];
+			}
+			$pattern .= '/i';
+			/* add in <> to nerf the tag */
+			$replacement = substr($keywords[$i], 0, 2).'<x>'.substr($keywords[$i], 2);
+			$data = preg_replace($pattern, $replacement, $data);
+			/* filter out the hex tags */
+			if ($data_before == $data) {
+				/* no replacements were made, so exit the loop */
+				$found = false;
+			}
+		}
+	}
+	return $data;
+}
+
 
 ?>

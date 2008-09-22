@@ -560,42 +560,90 @@ function utilities_view_user_log() {
 
 	html_start_box("<strong>User Login History</strong>", "100%", $colors["header"], "3", "center", "");
 
-	include("./include/html/inc_user_log_filter_table.php");
+	?>
+	<tr bgcolor="<?php print $colors["panel"];?>">
+		<form name="form_userlog">
+		<td>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td nowrap style='white-space: nowrap;' width="50">
+						Username:&nbsp;
+					</td>
+					<td width="1">
+						<select name="username" onChange="applyViewLogFilterChange(document.form_userlog)">
+							<option value="-1"<?php if (get_request_var_request("username") == "-1") {?> selected<?php }?>>All</option>
+							<option value="-2"<?php if (get_request_var_request("username") == "-2") {?> selected<?php }?>>Deleted/Invalid</option>
+							<?php
+							$users = db_fetch_assoc("SELECT DISTINCT username FROM user_auth ORDER BY username");
+
+							if (sizeof($users) > 0) {
+							foreach ($users as $user) {
+								print "<option value='" . $user["username"] . "'"; if (get_request_var_request("username") == $user["username"]) { print " selected"; } print ">" . $user["username"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Result:&nbsp;
+					</td>
+					<td width="1">
+						<select name="result" onChange="applyViewLogFilterChange(document.form_userlog)">
+							<option value="-1"<?php if (get_request_var_request("result") == '-1') {?> selected<?php }?>>Any</option>
+							<option value="1"<?php if (get_request_var_request("result") == '1') {?> selected<?php }?>>Success</option>
+							<option value="0"<?php if (get_request_var_request("result") == '0') {?> selected<?php }?>>Failed</option>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
+					</td>
+					<td nowrap style='white-space: nowrap;'>
+						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						<input type="image" src="images/button_purge.gif" name="purge" alt="Purge" border="0" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<input type='hidden' name='page' value='1'>
+		<input type='hidden' name='action' value='view_user_log'>
+		</form>
+	</tr>
+	<?php
 
 	html_end_box();
 
 	$sql_where = "";
 
-	/* filter by host */
-	if ($_REQUEST["username"] == "-1") {
-		/* Show all items */
-	}elseif ($_REQUEST["username"] == "-2") {
+	/* filter by username */
+	if (get_request_var_request("username") == "-2") {
 		$sql_where = "WHERE user_log.username NOT IN (SELECT DISTINCT username from user_auth)";
-	}elseif (!empty($_REQUEST["username"])) {
-		$sql_where = "WHERE user_log.username='" . $_REQUEST["username"] . "'";
+	}elseif (get_request_var_request("username") != "-1") {
+		$sql_where = "WHERE user_log.username='" . get_request_var_request("username") . "'";
 	}
 
 	/* filter by result */
-	if ($_REQUEST["result"] == "-1") {
-		/* Show all items */
-	}else{
+	if (get_request_var_request("result") != "-1") {
 		if (strlen($sql_where)) {
-			$sql_where .= " AND user_log.result=" . $_REQUEST["result"];
+			$sql_where .= " AND user_log.result=" . get_request_var_request("result");
 		}else{
-			$sql_where = "WHERE user_log.result=" . $_REQUEST["result"];
+			$sql_where = "WHERE user_log.result=" . get_request_var_request("result");
 		}
 	}
 
 	/* filter by search string */
-	if ($_REQUEST["filter"] <> "") {
+	if (get_request_var_request("filter") <> "") {
 		if (strlen($sql_where)) {
-			$sql_where .= " AND (user_log.username LIKE '%%" . $_REQUEST["filter"] . "%%'
-				OR user_log.time LIKE '%%" . $_REQUEST["filter"] . "%%'
-				OR user_log.ip LIKE '%%" . $_REQUEST["filter"] . "%%')";
+			$sql_where .= " AND (user_log.username LIKE '%%" . get_request_var_request("filter") . "%%'
+				OR user_log.time LIKE '%%" . get_request_var_request("filter") . "%%'
+				OR user_log.ip LIKE '%%" . get_request_var_request("filter") . "%%')";
 		}else{
-			$sql_where = "WHERE (user_log.username LIKE '%%" . $_REQUEST["filter"] . "%%'
-				OR user_log.time LIKE '%%" . $_REQUEST["filter"] . "%%'
-				OR user_log.ip LIKE '%%" . $_REQUEST["filter"] . "%%')";
+			$sql_where = "WHERE (user_log.username LIKE '%%" . get_request_var_request("filter") . "%%'
+				OR user_log.time LIKE '%%" . get_request_var_request("filter") . "%%'
+				OR user_log.ip LIKE '%%" . get_request_var_request("filter") . "%%')";
 		}
 	}
 
@@ -619,28 +667,28 @@ function utilities_view_user_log() {
 		RIGHT JOIN user_log
 		ON user_auth.username = user_log.username
 		$sql_where
-		ORDER BY " . $_REQUEST["sort_column"] . " " . $_REQUEST["sort_direction"] . "
-		LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source");
+		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") . "
+		LIMIT " . (read_config_option("num_rows_data_source")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_data_source");
 
 //	print $user_log_sql;
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_user_log&username=" . $_REQUEST["username"] . "&filter=" . $_REQUEST["filter"]);
+	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_user_log&username=" . get_request_var_request("username") . "&filter=" . get_request_var_request("filter"));
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='7'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_user_log&username=" . $_REQUEST["username"] . "&filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_user_log&username=" . get_request_var_request("username") . "&filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((read_config_option("num_rows_data_source")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_data_source")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . ((read_config_option("num_rows_data_source")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_data_source")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_user_log&username=" . $_REQUEST["username"] . "&filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_user_log&username=" . get_request_var_request("username") . "&filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -657,7 +705,7 @@ function utilities_view_user_log() {
 		"result" => array("Result", "DESC"),
 		"ip" => array("IP Address", "DESC"));
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
+	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
 	$i = 0;
 	if (sizeof($user_log) > 0) {
@@ -669,11 +717,11 @@ function utilities_view_user_log() {
 			}
 			?>
 			<td width='35%'>
-				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["username"]);?>
+				<?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["username"]);?>
 			</td>
 			<td width='20%'>
 				<?php if (isset($item["full_name"])) {
-						print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["full_name"]);
+						print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["full_name"]);
 					}else{
 						print "(User Removed)";
 					}
@@ -681,20 +729,20 @@ function utilities_view_user_log() {
 			</td>
 			<td width='20%'>
 				<?php if (isset($auth_realms[$item["realm"]])) {
-						print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $auth_realms[$item["realm"]]);
+						print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $auth_realms[$item["realm"]]);
 					}else{
 						print "N/A";
 					}
 				?>
 			</td>
 			<td width='20%'>
-				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"]);?>
+				<?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"]);?>
 			</td>
 			<td width='10%'>
 				<?php print $item["result"] == 0 ? "Failed" : "Success";?>
 			</td>
 			<td width='15%'>
-				<?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"]);?>
+				<?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"]);?>
 			</td>
 			</tr>
 			<?php
@@ -765,7 +813,7 @@ function utilities_view_logfile() {
 	$_REQUEST['page_referrer'] = 'view_logfile';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$refresh["seconds"] = $_REQUEST["refresh"];
+	$refresh["seconds"] = get_request_var_request("refresh");
 	$refresh["page"] = "utilities.php?action=view_logfile";
 
 	include_once("./include/top_header.php");
@@ -790,18 +838,94 @@ function utilities_view_logfile() {
 
 	html_start_box("<strong>Log File Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
-	include("./include/html/inc_view_logfile_table.php");
+	?>
+	<tr bgcolor="<?php print $colors["panel"];?>">
+		<form name="form_logfile">
+		<td>
+			<table cellpadding="1" cellspacing="0">
+				<tr>
+					<td nowrap style='white-space: nowrap;' width="80">
+						Tail Lines:&nbsp;
+					</td>
+					<td width="1">
+						<select name="tail_lines" onChange="applyViewLogFilterChange(document.form_logfile)">
+							<?php
+							foreach($log_tail_lines AS $tail_lines => $display_text) {
+								print "<option value='" . $tail_lines . "'"; if (get_request_var_request("tail_lines") == $tail_lines) { print " selected"; } print ">" . $display_text . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="100">
+						&nbsp;Message Type:&nbsp;
+					</td>
+					<td width="1">
+						<select name="message_type" onChange="applyViewLogFilterChange(document.form_logfile)">
+							<option value="-1"<?php if (get_request_var_request("message_type") == '-1') {?> selected<?php }?>>All</option>
+							<option value="1"<?php if (get_request_var_request("message_type") == '1') {?> selected<?php }?>>Stats</option>
+							<option value="2"<?php if (get_request_var_request("message_type") == '2') {?> selected<?php }?>>Warnings</option>
+							<option value="3"<?php if (get_request_var_request("message_type") == '3') {?> selected<?php }?>>Errors</option>
+							<option value="4"<?php if (get_request_var_request("message_type") == '4') {?> selected<?php }?>>Debug</option>
+							<option value="5"<?php if (get_request_var_request("message_type") == '5') {?> selected<?php }?>>SQL Calls</option>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;'>
+						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						<input type="image" src="images/button_purge.gif" name="purge" alt="Purge" border="0" align="absmiddle">
+					</td>
+				</tr>
+				<tr>
+					<td nowrap style='white-space: nowrap;' width="80">
+						Refresh:&nbsp;
+					</td>
+					<td width="1">
+						<select name="refresh" onChange="applyViewLogFilterChange(document.form_logfile)">
+							<?php
+							foreach($page_refresh_interval AS $seconds => $display_text) {
+								print "<option value='" . $seconds . "'"; if (get_request_var_request("refresh") == $seconds) { print " selected"; } print ">" . $display_text . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="100">
+						&nbsp;Display Order:&nbsp;
+					</td>
+					<td width="1">
+						<select name="reverse" onChange="applyViewLogFilterChange(document.form_logfile)">
+							<option value="1"<?php if (get_request_var_request("reverse") == '1') {?> selected<?php }?>>Newest First</option>
+							<option value="2"<?php if (get_request_var_request("reverse") == '2') {?> selected<?php }?>>Oldest First</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<table cellpadding="1" cellspacing="0">
+				<tr>
+					<td nowrap style='white-space: nowrap;' width="80">
+						Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="75" value="<?php print get_request_var_request("filter");?>">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<input type='hidden' name='page' value='1'>
+		<input type='hidden' name='action' value='view_logfile'>
+		</form>
+	</tr>
+	<?php
 
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents = tail_file($logfile, $_REQUEST["tail_lines"], $_REQUEST["message_type"], $_REQUEST["filter"]);
+	$logcontents = tail_file($logfile, get_request_var_request("tail_lines"), get_request_var_request("message_type"), get_request_var_request("filter"));
 
-	if ($_REQUEST["reverse"] == 1) {
+	if (get_request_var_request("reverse") == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
-	if ($_REQUEST["message_type"] > 0) {
+	if (get_request_var_request("message_type") > 0) {
 		$start_string = "<strong>Log File</strong> [Total Lines: " . sizeof($logcontents) . " - Non-Matching Items Hidden]";
 	}else{
 		$start_string = "<strong>Log File</strong> [Total Lines: " . sizeof($logcontents) . " - All Items Shown]";
@@ -894,7 +1018,7 @@ function utilities_clear_logfile() {
 
 	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
 
-	$refresh["seconds"] = $_REQUEST["refresh"];
+	$refresh["seconds"] = get_request_var_request("refresh");
 	$refresh["page"] = "utilities.php?action=view_logfile";
 
 	include_once("./include/top_header.php");
@@ -979,35 +1103,125 @@ function utilities_view_snmp_cache() {
 
 	html_start_box("<strong>SNMP Cache Items</strong>", "100%", $colors["header"], "3", "center", "");
 
-	include("./include/html/inc_snmp_cache_filter_table.php");
+	?>
+	<tr bgcolor="<?php print $colors["panel"];?>">
+		<form name="form_snmpcache">
+		<td>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td nowrap style='white-space: nowrap;' width="50">
+						Host:&nbsp;
+					</td>
+					<td width="1">
+						<select name="host_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
+							<?php
+							if (get_request_var_request("snmp_query_id") == -1) {
+								$hosts = db_fetch_assoc("SELECT DISTINCT
+											host.id,
+											host.description,
+											host.hostname
+											FROM (host_snmp_cache,snmp_query,host)
+											WHERE host_snmp_cache.host_id=host.id
+											AND host_snmp_cache.snmp_query_id=snmp_query.id
+											ORDER by host.description");
+							}else{
+								$hosts = db_fetch_assoc("SELECT DISTINCT
+											host.id,
+											host.description,
+											host.hostname
+											FROM (host_snmp_cache,snmp_query,host)
+											WHERE host_snmp_cache.host_id=host.id
+											AND host_snmp_cache.snmp_query_id=snmp_query.id
+											AND host_snmp_cache.snmp_query_id='" . get_request_var_request("snmp_query_id") . "'
+											ORDER by host.description");
+							}
+							if (sizeof($hosts) > 0) {
+							foreach ($hosts as $host) {
+								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["description"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="90">
+						&nbsp;Query Name:&nbsp;
+					</td>
+					<td width="1">
+						<select name="snmp_query_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
+							<?php
+							if (get_request_var_request("host_id") == -1) {
+								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
+											snmp_query.id,
+											snmp_query.name
+											FROM (host_snmp_cache,snmp_query,host)
+											WHERE host_snmp_cache.host_id=host.id
+											AND host_snmp_cache.snmp_query_id=snmp_query.id
+											ORDER by snmp_query.name");
+							}else{
+								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
+											snmp_query.id,
+											snmp_query.name
+											FROM (host_snmp_cache,snmp_query,host)
+											WHERE host_snmp_cache.host_id=host.id
+											AND host_snmp_cache.host_id='" . get_request_var_request("host_id") . "'
+											AND host_snmp_cache.snmp_query_id=snmp_query.id
+											ORDER by snmp_query.name");
+							}
+							if (sizeof($snmp_queries) > 0) {
+							foreach ($snmp_queries as $snmp_query) {
+								print "<option value='" . $snmp_query["id"] . "'"; if (get_request_var_request("snmp_query_id") == $snmp_query["id"]) { print " selected"; } print ">" . $snmp_query["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
+					</td>
+					<td nowrap style='white-space: nowrap;'>
+						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<input type='hidden' name='page' value='1'>
+		<input type='hidden' name='action' value='view_snmp_cache'>
+		</form>
+	</tr>
+	<?php
 
 	html_end_box();
 
 	$sql_where = "";
 
 	/* filter by host */
-	if ($_REQUEST["host_id"] == "-1") {
-		/* Show all items */
-	}elseif ($_REQUEST["host_id"] == "0") {
+	if (get_request_var_request("host_id") == "0") {
 		$sql_where .= " AND host.id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND host.id=" . $_REQUEST["host_id"];
+		$sql_where .= " AND host.id=" . get_request_var_request("host_id");
 	}
 
 	/* filter by query name */
-	if ($_REQUEST["snmp_query_id"] == "-1") {
+	if (get_request_var_request("snmp_query_id") == "-1") {
 		/* Show all items */
 	}elseif (!empty($_REQUEST["snmp_query_id"])) {
-		$sql_where .= " AND host_snmp_cache.snmp_query_id=" . $_REQUEST["snmp_query_id"];
+		$sql_where .= " AND host_snmp_cache.snmp_query_id=" . get_request_var_request("snmp_query_id");
 	}
 
 	/* filter by search string */
-	if ($_REQUEST["filter"] <> "") {
-		$sql_where .= " AND (host.description LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR snmp_query.name LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR host_snmp_cache.field_name LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR host_snmp_cache.field_value LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR host_snmp_cache.oid LIKE '%%" . $_REQUEST["filter"] . "%%')";
+	if (get_request_var_request("filter") != "") {
+		$sql_where .= " AND (host.description LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR snmp_query.name LIKE '%%" . iget_request_var_request("filter") . "%%'
+			OR host_snmp_cache.field_name LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR host_snmp_cache.field_value LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR host_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
@@ -1027,27 +1241,27 @@ function utilities_view_snmp_cache() {
 		WHERE host_snmp_cache.host_id=host.id
 		AND host_snmp_cache.snmp_query_id=snmp_query.id
 		$sql_where
-		LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source");
+		LIMIT " . (read_config_option("num_rows_data_source")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_data_source");
 
 //	print $snmp_cache_sql;
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_snmp_cache&host_id=" . $_REQUEST["host_id"] . "&filter=" . $_REQUEST["filter"]);
+	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_snmp_cache&host_id=" . get_request_var_request("host_id") . "&filter=" . get_request_var_request("filter"));
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='7'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_snmp_cache&host_id=" . $_REQUEST["host_id"] . "&filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_snmp_cache&host_id=" . get_request_var_request("host_id") . "&filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((read_config_option("num_rows_data_source")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_data_source")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . ((read_config_option("num_rows_data_source")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_data_source")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_snmp_cache&host_id=" . $_REQUEST["host_id"] . "&filter=" . $_REQUEST["filter"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_snmp_cache&host_id=" . get_request_var_request("host_id") . "&filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -1064,8 +1278,8 @@ function utilities_view_snmp_cache() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 		?>
 		<td>
-			Host: <?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["description"]);?>
-			, SNMP Query: <?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name"]);?>
+			Host: <?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["description"]);?>
+			, SNMP Query: <?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name"]);?>
 		</td>
 		</tr>
 		<?php
@@ -1073,15 +1287,15 @@ function utilities_view_snmp_cache() {
 		?>
 		<td>
 			Index: <?php print $item["snmp_index"];?>
-			, Field Name: <?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_name"]);?>
-			, Field Value: <?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_value"]);?>
+			, Field Name: <?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_name"]);?>
+			, Field Value: <?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_value"]);?>
 		</td>
 		</tr>
 		<?php
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 		?>
 		<td>
-			OID: <?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["oid"]);?>
+			OID: <?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["oid"]);?>
 		</td>
 		</tr>
 		<?php
@@ -1165,33 +1379,83 @@ function utilities_view_poller_cache() {
 
 	html_start_box("<strong>Poller Cache Items</strong>", "100%", $colors["header"], "3", "center", "");
 
-	include("./include/html/inc_poller_item_filter_table.php");
+	?>
+	<tr bgcolor="<?php print $colors["panel"];?>">
+		<form name="form_pollercache">
+		<td>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td nowrap style='white-space: nowrap;' width="50">
+						Host:&nbsp;
+					</td>
+					<td width="1">
+						<select name="host_id" onChange="applyPItemFilterChange(document.form_pollercache)">
+							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
+							<?php
+							$hosts = db_fetch_assoc("select id,description,hostname from host order by description");
+
+							if (sizeof($hosts) > 0) {
+							foreach ($hosts as $host) {
+								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["description"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Action:&nbsp;
+					</td>
+					<td width="1">
+						<select name="poller_action" onChange="applyPItemFilterChange(document.form_pollercache)">
+							<option value="-1"<?php if (get_request_var_request("poller_action") == '-1') {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request("poller_action") == '0') {?> selected<?php }?>>SNMP</option>
+							<option value="1"<?php if (get_request_var_request("poller_action") == '1') {?> selected<?php }?>>Script</option>
+							<option value="2"<?php if (get_request_var_request("poller_action") == '2') {?> selected<?php }?>>Script Server</option>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+					</td>
+					<td nowrap style='white-space: nowrap;'>
+						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<input type='hidden' name='page' value='1'>
+		<input type='hidden' name='action' value='view_poller_cache'>
+		</form>
+	</tr>
+	<?php
 
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE poller_item.local_data_id=data_template_data.local_data_id";
 
-	if ($_REQUEST["poller_action"] == "-1") {
-		/* Show all items */
-	}else {
-		$sql_where .= " AND poller_item.action='" . $_REQUEST["poller_action"] . "'";
+	if (get_request_var_request("poller_action") != "-1") {
+		$sql_where .= " AND poller_item.action='" . get_request_var_request("poller_action") . "'";
 	}
 
-	if ($_REQUEST["host_id"] == "-1") {
+	if (get_request_var_request("host_id") == "-1") {
 		/* Show all items */
-	}elseif ($_REQUEST["host_id"] == "0") {
+	}elseif (get_request_var_request("host_id") == "0") {
 		$sql_where .= " AND poller_item.host_id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND poller_item.host_id=" . $_REQUEST["host_id"];
+		$sql_where .= " AND poller_item.host_id=" . get_request_var_request("host_id");
 	}
 
-	if (strlen($_REQUEST["filter"])) {
-		$sql_where .= " AND (data_template_data.name_cache LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR host.description LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR poller_item.arg1 LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR poller_item.hostname LIKE '%%" . $_REQUEST["filter"] . "%%'
-			OR poller_item.rrd_path  LIKE '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen(get_request_var_request("filter"))) {
+		$sql_where .= " AND (data_template_data.name_cache LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR host.description LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR poller_item.arg1 LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR poller_item.hostname LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR poller_item.rrd_path  LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
@@ -1215,28 +1479,28 @@ function utilities_view_poller_cache() {
 		ON poller_item.host_id=host.id)
 		ON data_template_data.local_data_id=poller_item.local_data_id
 		$sql_where
-		ORDER BY " . $_REQUEST["sort_column"] . " " . $_REQUEST["sort_direction"] . ", action ASC
-		LIMIT " . (read_config_option("num_rows_data_source")*($_REQUEST["page"]-1)) . "," . read_config_option("num_rows_data_source");
+		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") . ", action ASC
+		LIMIT " . (read_config_option("num_rows_data_source")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_data_source");
 
 //	print $poller_sql;
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 
 	/* generate page list */
-	$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_poller_cache&host_id=" . $_REQUEST["host_id"] . "&poller_action=" . $_REQUEST["poller_action"]);
+	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_data_source"), $total_rows, "utilities.php?action=view_poller_cache&host_id=" . get_request_var_request("host_id") . "&poller_action=" . get_request_var_request("poller_action"));
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 			<td colspan='7'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_poller_cache&host_id=" . $_REQUEST["host_id"] . "&poller_action=" . $_REQUEST["poller_action"] . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_poller_cache&host_id=" . get_request_var_request("host_id") . "&poller_action=" . get_request_var_request("poller_action") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((read_config_option("num_rows_data_source")*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*$_REQUEST["page"]))) ? $total_rows : (read_config_option("num_rows_data_source")*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+							Showing Rows " . ((read_config_option("num_rows_data_source")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_data_source")) || ($total_rows < (read_config_option("num_rows_data_source")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_data_source")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_poller_cache&host_id=" . $_REQUEST["host_id"] . "&poller_action=" . $_REQUEST["poller_action"] . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "<a class='linkOverDark' href='utilities.php?action=view_poller_cache&host_id=" . get_request_var_request("host_id") . "&poller_action=" . get_request_var_request("poller_action") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_data_source")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -1249,7 +1513,7 @@ function utilities_view_poller_cache() {
 		"data_template_data.name_cache" => array("Data Source Name", "ASC"),
 		"" => array("Details", "ASC"));
 
-	html_header_sort($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"]);
+	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
 	$i = 0;
 	if (sizeof($poller_cache) > 0) {
@@ -1257,7 +1521,7 @@ function utilities_view_poller_cache() {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 			?>
 			<td width="375">
-				<a class="linkEditMain" href="data_sources.php?action=ds_edit&id=<?php print $item["local_data_id"];?>"><?php print eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name_cache"]);?></a>
+				<a class="linkEditMain" href="data_sources.php?action=ds_edit&id=<?php print $item["local_data_id"];?>"><?php print eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name_cache"]);?></a>
 			</td>
 
 			<td>
@@ -1267,16 +1531,16 @@ function utilities_view_poller_cache() {
 					$details =
 						"SNMP Version: " . $item["snmp_version"] . ", " .
 						"Community: " . $item["snmp_community"] . ", " .
-						"OID: " . eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"]);
+						"OID: " . eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"]);
 				}else{
 					$details =
 						"SNMP Version: " . $item["snmp_version"] . ", " .
 						"User: " . $item["snmp_username"] . ", OID: " . $item["arg1"];
 				}
 			}elseif ($item["action"] == 1) {
-					$details = "Script: " . eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"]);
+					$details = "Script: " . eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"]);
 			}else{
-					$details = "Script Server: " . eregi_replace("(" . preg_quote($_REQUEST["filter"]) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"]);
+					$details = "Script Server: " . eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"]);
 			}
 
 			print $details;
@@ -1374,3 +1638,5 @@ function utilities() {
 }
 
 ?>
+
+

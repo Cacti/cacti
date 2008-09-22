@@ -51,11 +51,8 @@ Cacti CHANGELOG
 -bug#0001295: Division by zero when rrd_step < poller_interval
 -bug#0001296: add_graphs.php does not add the graph template to the host 
 -bug#0001299: When creating graphs the entire poller cache is recreated for a host
+-bug: Remove include/html files to mitigate XSS issues
 -bug: IE generates errors on both the host and graph settings pages
--feature: Pagainate Treeview Dual Pane
--feature: Allow user to specify maximum graphs per page from Treeview Dual Pane
--feature: Allow Treeview Dual Pane to be filtered for graph titles
--feature: Allow the user to add or remove graph text from page for searching with the browser
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
 -bug: Initialization of snmp_auth when using SNMP=NONE
 -bug: Speed up add_graphs.php in most cases (still slow only if --input-fields is used)
@@ -90,6 +87,10 @@ Cacti CHANGELOG
 -feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
 -feature#0001140: CLI-Script to associate a graph template to a host
 -feature#0001082: Mirror Graph Rename based on template function to work with Data Sources 
+-feature: Pagainate Treeview Dual Pane
+-feature: Allow user to specify maximum graphs per page from Treeview Dual Pane
+-feature: Allow Treeview Dual Pane to be filtered for graph titles
+-feature: Allow the user to add or remove graph text from page for searching with the browser
 -feature: add links to Graph Management and Data Sources to Device Edit Screen
 -feature: add links to Graph Template and Host Edit to Graph Edit Screen
 -feature: add links to Data Template and Host Edit to Data Source Edit Screen

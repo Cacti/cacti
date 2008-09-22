@@ -169,7 +169,7 @@ case 'preview':
 	}
 	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
 	if (isset($_REQUEST["style"])) {
-		if ($_REQUEST["style"] == "selective") {
+		if (get_request_var_request("style") == "selective") {
 
 			/* process selected graphs */
 			if (! empty($_REQUEST["graph_list"])) {
@@ -205,8 +205,7 @@ case 'preview':
 				$_REQUEST["filter"]  = "";
 				$_REQUEST["host_id"] = "0";
 
-				/* Fix to avoid error in 'preview' after selection in 'list' : Notice: Undefined index: rra_id in C:\apache2\htdocs\cacti\graph_view.php on line 142 */
-				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : $_REQUEST["rra_id"];
+				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : get_request_var_request("rra_id");
 			}
 		}
 	}
@@ -216,9 +215,9 @@ case 'preview':
 		$sql_where
 		" . (empty($sql_where) ? "WHERE" : "AND") . "   graph_templates_graph.local_graph_id > 0
 		AND graph_templates_graph.local_graph_id=graph_local.id
-		AND graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'
-		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . $_REQUEST["host_id"]) . "
-		" . (empty($_REQUEST["graph_template_id"]) ? "" : " and graph_local.graph_template_id=" . $_REQUEST["graph_template_id"]) . "
+		AND graph_templates_graph.title_cache like '%%" . get_request_var_request("filter") . "%%'
+		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . get_request_var_request("host_id")) . "
+		" . (empty($_REQUEST["graph_template_id"]) ? "" : " and graph_local.graph_template_id=" . get_request_var_request("graph_template_id")) . "
 		$sql_or";
 
 	$total_rows = count(db_fetch_assoc("SELECT
@@ -226,7 +225,7 @@ case 'preview':
 		$sql_base"));
 
 	/* reset the page if you have changed some settings */
-	if (ROWS_PER_PAGE * ($_REQUEST["page"]-1) >= $total_rows) {
+	if (ROWS_PER_PAGE * (get_request_var_request("page")-1) >= $total_rows) {
 		$_REQUEST["page"] = "1";
 	}
 
@@ -236,7 +235,7 @@ case 'preview':
 		$sql_base
 		GROUP BY graph_templates_graph.local_graph_id
 		ORDER BY graph_templates_graph.title_cache
-		LIMIT " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+		LIMIT " . (ROWS_PER_PAGE*(get_request_var_request("page")-1)) . "," . ROWS_PER_PAGE);
 
 	?>
 	<script type="text/javascript">
@@ -256,27 +255,245 @@ case 'preview':
 
 	/* include graph view filter selector */
 	html_graph_start_box(3, true);
-	include("./include/html/inc_graph_view_filter_table.php");
+
+	?>
+	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+		<form name="form_graph_view" method="post">
+		<td class="noprint">
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr class="noprint">
+					<td nowrap style='white-space: nowrap;' width="40">
+						&nbsp;<strong>Host:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<select name="host_id" onChange="applyGraphPreviewFilterChange(document.form_graph_view)">
+							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>Any</option>
+
+							<?php
+							if (read_config_option("auth_method") != 0) {
+								/* get policy information for the sql where clause */
+								$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+
+								$hosts = db_fetch_assoc("SELECT DISTINCT host.id, host.description as name
+									FROM (graph_templates_graph,graph_local)
+									LEFT JOIN host ON (host.id=graph_local.host_id)
+									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
+									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
+									WHERE graph_templates_graph.local_graph_id=graph_local.id
+									" . (empty($sql_where) ? "" : "and $sql_where") . "
+									ORDER BY name");
+							}else{
+								$hosts = db_fetch_assoc("SELECT DISTINCT host.id, host.description as name
+									FROM host
+									ORDER BY name");
+							}
+
+							if (sizeof($hosts) > 0) {
+							foreach ($hosts as $host) {
+								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="70">
+						&nbsp;<strong>Template:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<select name="graph_template_id" onChange="applyGraphPreviewFilterChange(document.form_graph_view)">
+							<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>>Any</option>
+
+							<?php
+							if (read_config_option("auth_method") != 0) {
+								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
+									FROM (graph_templates_graph,graph_local)
+									LEFT JOIN host ON (host.id=graph_local.host_id)
+									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
+									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
+									WHERE graph_templates_graph.local_graph_id=graph_local.id
+									" . (empty($sql_where) ? "" : "and $sql_where") . "
+									ORDER BY name");
+							}else{
+								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
+									FROM graph_templates
+									ORDER BY name");
+							}
+
+							if (sizeof($graph_templates) > 0) {
+							foreach ($graph_templates as $template) {
+								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;<strong>Search:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+					</td>
+					<td>
+						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
+						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>
+	<?php
+
 	html_graph_end_box();
 
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
 		html_graph_start_box(3, true);
-		include("./include/html/inc_timespan_selector.php");
+
+		?>
+
+			<script type='text/javascript'>
+			// Initialize the calendar
+			calendar=null;
+		
+			// This function displays the calendar associated to the input field 'id'
+			function showCalendar(id) {
+				var el = document.getElementById(id);
+				if (calendar != null) {
+					// we already have some calendar created
+					calendar.hide();  // so we hide it first.
+				} else {
+					// first-time call, create the calendar.
+					var cal = new Calendar(true, null, selected, closeHandler);
+					cal.weekNumbers = false;  // Do not display the week number
+					cal.showsTime = true;     // Display the time
+					cal.time24 = true;        // Hours have a 24 hours format
+					cal.showsOtherMonths = false;    // Just the current month is displayed
+					calendar = cal;                  // remember it in the global var
+					cal.setRange(1900, 2070);        // min/max year allowed.
+					cal.create();
+				}
+		
+				calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
+				calendar.parseDate(el.value);                // try to parse the text in field
+				calendar.sel = el;                           // inform it what input field we use
+		
+				// Display the calendar below the input field
+				calendar.showAtElement(el, "Br");        // show the calendar
+		
+				return false;
+			}
+		
+			// This function update the date in the input field when selected
+			function selected(cal, date) {
+				cal.sel.value = date;      // just update the date in the input field.
+			}
+		
+			// This function gets called when the end-user clicks on the 'Close' button.
+			// It just hides the calendar without destroying it.
+			function closeHandler(cal) {
+				cal.hide();                        // hide the calendar
+				calendar = null;
+			}
+		</script>
+		<script type="text/javascript">
+		<!--
+		
+			function applyTimespanFilterChange(objForm) {
+				strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
+				strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
+				document.location = strURL;
+			}
+		
+		-->
+		</script>
+		
+			<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+				<form name="form_timespan_selector" method="post">
+				<td class="noprint">
+					<table width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+							<td nowrap style='white-space: nowrap;' width='55'>
+								&nbsp;<strong>Presets:</strong>&nbsp;
+							</td>
+							<td nowrap style='white-space: nowrap;' width='130'>
+								<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
+									<?php
+									if ($_SESSION["custom"]) {
+										$graph_timespans[GT_CUSTOM] = "Custom";
+										$start_val = 0;
+										$end_val = sizeof($graph_timespans);
+									} else {
+										if (isset($graph_timespans[GT_CUSTOM])) {
+											asort($graph_timespans);
+											array_shift($graph_timespans);
+										}
+										$start_val = 1;
+										$end_val = sizeof($graph_timespans)+1;
+									}
+		
+									if (sizeof($graph_timespans) > 0) {
+										for ($value=$start_val; $value < $end_val; $value++) {
+											print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+										}
+									}
+									?>
+								</select>
+							</td>
+							<td nowrap style='white-space: nowrap;' width='30'>
+								&nbsp;<strong>From:</strong>&nbsp;
+							</td>
+							<td width='150' nowrap style='white-space: nowrap;'>
+								<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
+								&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
+							</td>
+							<td nowrap style='white-space: nowrap;' width='20'>
+								&nbsp;<strong>To:</strong>&nbsp;
+							</td>
+							<td width='150' nowrap style='white-space: nowrap;'>
+								<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
+								&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='End date selector' title='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
+							</td>
+							<td width='130' nowrap style='white-space: nowrap;'>
+								&nbsp;&nbsp;<input style='padding-bottom: 4px;' type='image' name='move_left' src='images/move_left.gif' alt='Left' border='0' align='absmiddle' title='Shift Left'>
+								<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
+									<?php
+									$start_val = 1;
+									$end_val = sizeof($graph_timeshifts)+1;
+									if (sizeof($graph_timeshifts) > 0) {
+										for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+											print "<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+										}
+									}
+									?>
+								</select>
+								<input style='padding-bottom: 4px;' type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
+							</td>
+							<td nowrap style='white-space: nowrap;'>
+								&nbsp;&nbsp;<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' value='refresh'>
+								<input type='image' name='button_clear' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle'>
+							</td>
+						</tr>
+					</table>
+				</td>
+				</form>
+			</tr>
+		<?php
+
 		html_graph_end_box();
 	}
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
-		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
+		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
 	}else{
-		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . $_REQUEST["host_id"];
+		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
 	}
 
 	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
 
 	html_graph_start_box(1, true);
-	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), $_REQUEST["page"], ROWS_PER_PAGE, $total_rows, $nav_url);
+	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
 
 	if (read_graph_config_option("thumbnail_section_preview") == "on") {
 		html_graph_thumbnail_area($graphs, "","graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
@@ -284,7 +501,7 @@ case 'preview':
 		html_graph_area($graphs, "", "graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
 
-	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), $_REQUEST["page"], ROWS_PER_PAGE, $total_rows, $nav_url);
+	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
 
 	html_graph_end_box();
 
@@ -368,9 +585,9 @@ case 'list':
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
-		$nav_url = str_replace("page=" . $_REQUEST["page"], "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
+		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
 	}else{
-		#$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . $_REQUEST["host_id"];
+		#$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
 		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>";
 	}
 
@@ -420,7 +637,7 @@ case 'list':
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
-							<option value="0"<?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>Any</option>
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								/* get policy information for the sql where clause */
@@ -442,7 +659,7 @@ case 'list':
 
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='" . $host["id"] . "'"; if ($_REQUEST["host_id"] == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
+								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
 							}
 							}
 							?>
@@ -453,7 +670,7 @@ case 'list':
 					</td>
 					<td width="1">
 						<select name="graph_template_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
-							<option value="0"<?php print $_REQUEST["filter"];?><?php if ($_REQUEST["host_id"] == "0") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php print get_request_var_request("filter");?><?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>Any</option>
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
@@ -472,7 +689,7 @@ case 'list':
 
 							if (sizeof($graph_templates) > 0) {
 							foreach ($graph_templates as $template) {
-								print "<option value='" . $template["id"] . "'"; if ($_REQUEST["graph_template_id"] == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
+								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
 							}
 							}
 							?>
@@ -482,7 +699,7 @@ case 'list':
 						&nbsp;<strong>Search:</strong>&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
@@ -498,9 +715,9 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_filter = "";
-	$sql_filter .= (empty($_REQUEST["filter"]) ? "" : " graph_templates_graph.title_cache like '%" . $_REQUEST["filter"] . "%'");
-	$sql_filter .= (empty($_REQUEST["host_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.host_id=" . $_REQUEST["host_id"]);
-	$sql_filter .= (empty($_REQUEST["graph_template_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.graph_template_id=" . $_REQUEST["graph_template_id"]);
+	$sql_filter .= (empty($_REQUEST["filter"]) ? "" : " graph_templates_graph.title_cache like '%" . get_request_var_request("filter") . "%'");
+	$sql_filter .= (empty($_REQUEST["host_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.host_id=" . get_request_var_request("host_id"));
+	$sql_filter .= (empty($_REQUEST["graph_template_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.graph_template_id=" . get_request_var_request("graph_template_id"));
 
 	/* graph permissions */
 	if (read_config_option("auth_method") != 0) {
@@ -600,13 +817,13 @@ case 'list':
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; <?php if ($_REQUEST["page"] > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", ($_REQUEST["page"]-1), $nav_url) . "\"))'>"; } print "Previous"; if ($_REQUEST["page"] > 1) { print "</a>"; } ?></strong>
+						<strong>&lt;&lt; <?php if (get_request_var_request("page") > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "\"))'>"; } print "Previous"; if (get_request_var_request("page") > 1) { print "</a>"; } ?></strong>
 					</td>
 					<td align='center' class='textHeaderDark'>
-						Showing Rows <?php print ((ROWS_PER_PAGE*($_REQUEST["page"]-1))+1);?> to <?php print ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*$_REQUEST["page"]))) ? $total_rows : (ROWS_PER_PAGE*$_REQUEST["page"]));?> of <?php print $total_rows;?>
+						Showing Rows <?php print ((ROWS_PER_PAGE*(get_request_var_request("page")-1))+1);?> to <?php print ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*get_request_var_request("page")))) ? $total_rows : (ROWS_PER_PAGE*get_request_var_request("page")));?> of <?php print $total_rows;?>
 					</td>
 					<td align='right' class='textHeaderDark'>
-						<strong><?php if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", ($_REQUEST["page"]+1), $nav_url) . "\"))'>"; } print "Next"; if (($_REQUEST["page"] * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
+						<strong><?php if ((get_request_var_request("page") * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "\"))'>"; } print "Next"; if ((get_request_var_request("page") * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
 					</td>
 				</tr>
 			</table>
@@ -678,4 +895,5 @@ case 'list':
 
 include_once("./include/bottom_footer.php");
 
-?>
+?>	
+
