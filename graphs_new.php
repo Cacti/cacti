@@ -199,7 +199,9 @@ function host_new_graphs_save() {
 				debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 
 				/* lastly push host-specific information to our data sources */
-				push_out_host($_POST["host_id"], $return_array["local_data_id"]);
+				foreach($return_array["local_data_id"] as $item) {
+					push_out_host($_POST["host_id"], $item);
+				}
 			}elseif ($current_form_type == "sg") {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
 					$snmp_query_array["snmp_index"] = decode_data_query_index($snmp_index, $snmp_query_array["snmp_query_id"], $_POST["host_id"]);
@@ -209,7 +211,9 @@ function host_new_graphs_save() {
 					debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 
 					/* lastly push host-specific information to our data sources */
-					push_out_host($_POST["host_id"], $return_array["local_data_id"]);
+					foreach($return_array["local_data_id"] as $item) {
+						push_out_host($_POST["host_id"], $item);
+					}
 				}
 			}
 		}

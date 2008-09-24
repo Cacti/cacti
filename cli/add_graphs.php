@@ -409,19 +409,20 @@ if (sizeof($parms)) {
 			update_graph_title_cache($returnArray["local_graph_id"]);
 		}
 
-		$dataSourceId = db_fetch_cell("SELECT
-			data_template_rrd.local_data_id
-			FROM graph_templates_item, data_template_rrd
-			WHERE graph_templates_item.local_graph_id = " . $returnArray["local_graph_id"] . "
-			AND graph_templates_item.task_item_id = data_template_rrd.id
-			LIMIT 1");
+		foreach($returnArray["local_data_id"] as $item) {
+			push_out_host($hostId, $item);
 
-		push_out_host($hostId, $dataSourceId);
+			if (strlen($dataSourceId)) {
+				$dataSourceId .= ", " . $item;
+			}else{
+				$dataSourceId = $item;
+			}
+		}
 
 		/* add this graph template to the list of associated graph templates for this host */
 		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $hostId . "," . $templateId . ")");
 
-		echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
+		echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-ids: ($dataSourceId)\n";
 	}elseif ($graph_type == "ds") {
 		if (($dsGraph["snmpQueryId"] == "") || ($dsGraph["snmpQueryType"] == "") || ($dsGraph["snmpField"] == "") || ($dsGraph["snmpValue"] == "")) {
 			echo "ERROR: For graph-type of 'ds' you must supply more options\n";
@@ -492,9 +493,17 @@ if (sizeof($parms)) {
 					AND graph_templates_item.task_item_id = data_template_rrd.id
 					LIMIT 1");
 
-				push_out_host($hostId, $dataSourceId);
+				foreach($returnArray["local_data_id"] as $item) {
+					push_out_host($hostId, $item);
 
-				echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-id: ($dataSourceId)\n";
+					if (strlen($dataSourceId)) {
+						$dataSourceId .= ", " . $item;
+					}else{
+						$dataSourceId = $item;
+					}
+				}
+
+				echo "Graph Added - graph-id: (" . $returnArray["local_graph_id"] . ") - data-source-ids: ($dataSourceId)\n";
 			}
 		}else{
 			echo "ERROR: Could not find snmp-field " . $dsGraph["snmpField"] . " (" . $dsGraph["snmpValue"] . ") for host-id " . $hostId . " (" . $hosts[$hostId]["hostname"] . ")\n";
