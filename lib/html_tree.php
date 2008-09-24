@@ -670,20 +670,33 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	print "<table width='100%' align='center' cellpadding='3'>";
 
+print_r($_POST);
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("graphs"));
-	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_post("graphs"));
+	input_validate_input_number(get_request_var_post("page"));
 	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_post("filter"));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST["thumbnails"])) {
+		$_REQUEST["thumbnails"] = sanitize_search_string(get_request_var_post("thumbnails"));
+	}
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["button_clear_x"])) {
 		kill_session_var("sess_graph_view_graphs");
 		kill_session_var("sess_graph_view_filter");
+		kill_session_var("sess_graph_view_thumbnails");
 		kill_session_var("sess_graph_view_page");
 
 		unset($_REQUEST["graphs"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["page"]);
+		unset($_REQUEST["thumbnails"]);
 
 		$changed = true;
 	}else{
@@ -691,6 +704,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$changed = 0;
 		$changed += check_changed("graphs",          "sess_graph_view_graphs");
 		$changed += check_changed("filter",          "sess_graph_view_filter");
+		$changed += check_changed("thumbnails",      "sess_graph_view_thumbnails");
 		$changed += check_changed("action",          "sess_graph_view_action");
 	}
 
@@ -721,6 +735,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	load_current_session_value("page",   "sess_graph_view_page",   "1");
 	load_current_session_value("graphs", "sess_graph_view_graphs", read_graph_config_option("treeview_graphs_per_page"));
+	load_current_session_value("thumbnails", "sess_graph_view_thumbnails", read_graph_config_option("thumbnail_section_tree_2"));
 	load_current_session_value("filter", "sess_graph_view_filter", "");
 
 	html_graph_start_box(1, false);
@@ -729,7 +744,20 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (read_graph_config_option("timespan_sel") == "on") {
 		include($config["include_path"] . "/html/inc_timespan_selector.php");
 	}
+
 	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyGraphViewFilterChange(objForm) {
+		strURL = '?graphs=' + objForm.graphs.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&thumbnails=' + objForm.thumbnails.checked;
+		document.location = strURL;
+	}
+
+	-->
+	</script>
 	<tr class="noprint" bgcolor="#e5e5e5">
 		<form name="form_graph_view" method="post">
 			<td class="noprint">
@@ -745,7 +773,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							&nbsp;<strong>Graphs:</strong>&nbsp;
 						</td>
 						<td width="1">
-							<select name="graphs" onChange="submit()">
+							<select name="graphs" id="graphs" onChange="submit()">
 								<?php
 								if (sizeof($graphs_per_page) > 0) {
 								foreach ($graphs_per_page as $key => $value) {
@@ -754,6 +782,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								}
 								?>
 							</select>
+						</td>
+						<td width="40">
+							<label for="thumbnails"><strong>&nbsp;Thumbnails:&nbsp;<strong></label>
+						</td>
+						<td>
+							<input type="checkbox" name="thumbnails" id="thumbnails" onChange="if (this.checked == true) this.value='dogs'; else this.value='cats';submit()" <?php print (($_REQUEST['thumbnails'] == "dogs") ? "checked":"");?>>
 						</td>
 					</tr>
 				</table>
@@ -957,7 +991,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$i++;
 	}
 
-	if (read_graph_config_option("thumbnail_section_tree_2") == "on") {
+	if ($_REQUEST["thumbnails"] == "dogs") {
 		html_graph_thumbnail_area($new_graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}else{
 		html_graph_area($new_graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());

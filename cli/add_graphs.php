@@ -57,7 +57,7 @@ if (sizeof($parms)) {
 	$dsGraph["snmpField"]      = "";
 	$dsGraph["snmpValue"]      = "";
 	$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
-	
+
 	$input_fields  = array();
 	$values["cg"]  = array();
 
@@ -244,16 +244,16 @@ if (sizeof($parms)) {
 			}
 		}
 
-		if (!($listHosts ||			# you really want to create a new graph 
+		if (!($listHosts ||			# you really want to create a new graph
 			$listSNMPFields || 		# add this check to avoid reindexing on any list option
-			$listSNMPValues || 
+			$listSNMPValues ||
 			$listQueryTypes ||
 			$listSNMPQueries ||
 			$listInputFields)) {
-			
+
 			/* if data query is not yet associated,
-			 * add it and run it once to get the cache filled */ 
-			 
+			 * add it and run it once to get the cache filled */
+
 			/* is this data query already associated (independent of the reindex method)? */
 			$exists_already = db_fetch_cell("SELECT COUNT(host_id) FROM host_snmp_query WHERE host_id=$hostId AND snmp_query_id=" . $dsGraph["snmpQueryId"]);
 			if ((isset($exists_already)) &&
@@ -263,9 +263,9 @@ if (sizeof($parms)) {
 				db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method) " .
 						   "VALUES (". $hostId . ","
 									 . $dsGraph["snmpQueryId"] . ","
-									 . $dsGraph["reindex_method"] . 
+									 . $dsGraph["reindex_method"] .
 									")");
-				/* recache snmp data, this is time consuming, 
+				/* recache snmp data, this is time consuming,
 				 * but should happen only once even if multiple graphs
 				 * are added for the same data query
 				 * because we checked above, if dq was already associated */
@@ -385,16 +385,17 @@ if (sizeof($parms)) {
 
 	if ($graph_type == "cg") {
 		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$templateId AND host_id=$hostId");
-		$dataSourceId  = db_fetch_cell("SELECT
-			data_template_rrd.local_data_id
-			FROM graph_templates_item, data_template_rrd
-			WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
-			AND graph_templates_item.task_item_id = data_template_rrd.id
-			LIMIT 1");
 
 		if ((isset($existsAlready)) &&
 			($existsAlready > 0) &&
 			(!$force)) {
+			$dataSourceId  = db_fetch_cell("SELECT
+				data_template_rrd.local_data_id
+				FROM graph_templates_item, data_template_rrd
+				WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
+				AND graph_templates_item.task_item_id = data_template_rrd.id
+				LIMIT 1");
+
 			echo "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
 			exit(1);
 		}else{
