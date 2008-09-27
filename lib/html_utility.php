@@ -162,10 +162,10 @@ function get_request_var($name, $default = "") {
 	if (isset($_GET[$name])) {
 		if (isset($_POST[$name])) {
 			unset($_POST[$name]);
-			$_REQUEST[$name] = remove_xss($_GET[$name]);
+			$_REQUEST[$name] = $_GET[$name];
 		}
 
-		return remove_xss($_GET[$name]);
+		return $_GET[$name];
 	}else{
 		return $default;
 	}
@@ -182,10 +182,10 @@ function get_request_var_post($name, $default = "") {
 	if (isset($_POST[$name])) {
 		if (isset($_GET[$name])) {
 			unset($_GET[$name]);
-			$_REQUEST[$name] = remove_xss($_POST[$name]);
+			$_REQUEST[$name] = $_POST[$name];
 		}
 
-		return remove_xss($_POST[$name]);
+		return $_POST[$name];
 	}else{
 		return $default;
 	}
@@ -202,7 +202,7 @@ function get_request_var_request($name, $default = "")
 {
 	if (isset($_REQUEST[$name]))
 	{
-		return remove_xss($_REQUEST[$name]);
+		return $_REQUEST[$name];
 	} else
 	{
 		return $default;
@@ -337,11 +337,11 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	return $url_page_select;
 }
 
-/* remove_xss - Remove all known cross site script (xss) attack vectors from user input 
+/* clean_html_output - Remove all known cross site script (xss) attack vectors from user input 
    @arg $data - User input to process
    @returns - Cleaned user input
 */
-function remove_xss($data) {
+function clean_html_output($data) {
 	/* remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
 	this prevents some character re-spacing such as <java\0script>
 	note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs */
@@ -373,7 +373,7 @@ function remove_xss($data) {
 		"blink",
 		"link",
 		"style",
-		#"script", /* commented for "description" keyword false positive */
+		"script",
 		"embed",
 		"object",
 		"iframe",

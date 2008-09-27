@@ -598,7 +598,7 @@ function utilities_view_user_log() {
 						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="20" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
@@ -905,7 +905,7 @@ function utilities_view_logfile() {
 						Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="75" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="75" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>
@@ -1182,7 +1182,7 @@ function utilities_view_snmp_cache() {
 						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="20" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">

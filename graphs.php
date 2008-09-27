@@ -1205,7 +1205,7 @@ function graph() {
 						&nbsp;Search:&nbsp;
 					</td>
 					<td>
-						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>

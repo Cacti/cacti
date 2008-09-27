@@ -41,7 +41,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 						<td bgcolor="#<?php print $background_color;?>" style="padding: 3px;" colspan="100">
 							<table width="100%" cellpadding="0" cellspacing="0">
 								<tr>
-									<td bgcolor="#<?php print $background_color;?>" class="textHeaderDark"><?php print $title;?></td>
+									<td bgcolor="#<?php print $background_color;?>" class="textHeaderDark"><?php print clean_html_output($title);?></td>
 										<?php if ($add_text != "") {?><td class="textHeaderDark" align="right" bgcolor="#<?php print $colors["header"];?>"><strong><a class="linkOverDark" href="<?php print $add_text;?>">Add</a>&nbsp;</strong></td><?php }?>
 								</tr>
 							</table>

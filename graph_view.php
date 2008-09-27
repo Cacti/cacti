@@ -331,7 +331,7 @@ case 'preview':
 						&nbsp;<strong>Search:</strong>&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
@@ -670,7 +670,7 @@ case 'list':
 					</td>
 					<td width="1">
 						<select name="graph_template_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
-							<option value="0"<?php print get_request_var_request("filter");?><?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>Any</option>
+							<option value="0"<?php print clean_html_output(get_request_var_request("filter"));?><?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>Any</option>
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
@@ -699,7 +699,7 @@ case 'list':
 						&nbsp;<strong>Search:</strong>&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">

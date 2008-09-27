@@ -36,6 +36,10 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings) {
 		return $info_array;
 	}
 
+	if (isset($xml_array["name"])) {
+		$xml_array["name"] = htmlspecialchars($xml_array["name"]));
+	}
+
 	while (list($hash, $hash_array) = each($xml_array)) {
 		/* parse information from the hash */
 		$parsed_hash = parse_xml_hash($hash);
@@ -111,7 +115,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	$_graph_template_id = db_fetch_cell("select id from graph_templates where hash='$hash'");
 	$save["id"] = (empty($_graph_template_id) ? "0" : $_graph_template_id);
 	$save["hash"] = $hash;
-	$save["name"] = $xml_array["name"];
+	$save["name"] = htmlspecialchars($xml_array["name"]);
 	$graph_template_id = sql_save($save, "graph_templates");
 
 	$hash_cache["graph_template"][$hash] = $graph_template_id;

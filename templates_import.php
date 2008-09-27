@@ -108,7 +108,7 @@ function import() {
 					$type_text = "<span style='color: blue;'>[new]</span>";
 				}
 
-				print "<span style='font-family: monospace;'>$result_text " . $vals["title"] . " $type_text</span><br>\n";
+				print "<span style='font-family: monospace;'>$result_text " . clean_html_output($vals["title"]) . " $type_text</span><br>\n";
 
 				$dep_text = ""; $there_are_dep_errors = false;
 				if ((isset($vals["dep"])) && (sizeof($vals["dep"]) > 0)) {
