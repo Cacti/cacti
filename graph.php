@@ -78,7 +78,7 @@ case 'view':
 	?>
 	<tr bgcolor='#<?php print $colors["header_panel"];?>'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong>Viewing Graph</strong> '<?php print $graph_title;?>'
+			<strong>Viewing Graph</strong> '<?php print clean_html_output($graph_title);?>'
 		</td>
 	</tr>
 	<?php

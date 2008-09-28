@@ -1147,7 +1147,7 @@ function ds() {
 						</select>
 					</td>
 					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Rows:&nbsp;
+						&nbsp;Rows per Page:&nbsp;
 					</td>
 					<td width="1">
 						<select name="ds_rows" onChange="applyDSFilterChange(document.form_data_sources)">

@@ -303,19 +303,19 @@ $host_group_types = array(
 	);
 
 $custom_data_source_types = array(
-	"CURRENT_DATA_SOURCE"				=> "Current Graph Item Data Source",
-	"ALL_DATA_SOURCES_NODUPS"			=> "All Data Sources (Don't Include Duplicates)",
-	"ALL_DATA_SOURCES_DUPS"				=> "All Data Sources (Include Duplicates)",
-	"SIMILAR_DATA_SOURCES_NODUPS"		=> "All Similar Data Sources (Don't Include Duplicates)",
-	"SIMILAR_DATA_SOURCES_DUPS"			=> "All Similar Data Sources (Include Duplicates)",
-	"CURRENT_DS_MINIMUM_VALUE"			=> "Current Data Source Item: Minimum Value",
-	"CURRENT_DS_MAXIMUM_VALUE"			=> "Current Data Source Item: Maximum Value",
-	"CURRENT_GRAPH_MINIMUM_VALUE"		=> "Graph: Lower Limit",
-	"CURRENT_GRAPH_MAXIMUM_VALUE"		=> "Graph: Upper Limit",
-	"COUNT_ALL_DS_NODUPS"				=> "Count of All Data Sources (Don't Include Duplicates)",
-	"COUNT_ALL_DS_DUPS"					=> "Count of All Data Sources (Include Duplicates)",
-	"COUNT_SIMILAR_DS_NODUPS"			=> "Count of All Similar Data Sources (Don't Include Duplicates)",
-	"COUNT_SIMILAR_DS_DUPS"		 		=> "Count of All Similar Data Sources (Include Duplicates)");
+	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
+	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
+	"ALL_DATA_SOURCES_DUPS"	=> "All Data Sources (Include Duplicates)",
+	"SIMILAR_DATA_SOURCES_NODUPS" => "All Similar Data Sources (Don't Include Duplicates)",
+	"SIMILAR_DATA_SOURCES_DUPS" => "All Similar Data Sources (Include Duplicates)",
+	"CURRENT_DS_MINIMUM_VALUE" => "Current Data Source Item: Minimum Value",
+	"CURRENT_DS_MAXIMUM_VALUE" => "Current Data Source Item: Maximum Value",
+	"CURRENT_GRAPH_MINIMUM_VALUE" => "Graph: Lower Limit",
+	"CURRENT_GRAPH_MAXIMUM_VALUE" => "Graph: Upper Limit",
+	"COUNT_ALL_DS_NODUPS" => "Count of All Data Sources (Don't Include Duplicates)",
+	"COUNT_ALL_DS_DUPS" => "Count of All Data Sources (Include Duplicates)",
+	"COUNT_SIMILAR_DS_NODUPS" => "Count of All Similar Data Sources (Don't Include Duplicates)",
+	"COUNT_SIMILAR_DS_DUPS"	=> "Count of All Similar Data Sources (Include Duplicates)");
 
 $menu = array(
 	"Create" => array(
@@ -358,7 +358,7 @@ $menu = array(
 	));
 
 $log_tail_lines = array(
-	-1	=> "All Lines",
+	-1 => "All Lines",
 	10 => "10 Lines",
 	15 => "15 Lines",
 	20 => "20 Lines",
@@ -374,32 +374,33 @@ $log_tail_lines = array(
 	);
 
 $item_rows = array(
-	10   => "10 Rows",
-	15   => "15 Rows",
-	20   => "20 Rows",
-	25   => "25 Rows",
-	30   => "30 Rows",
-	40   => "40 Rows",
-	50   => "50 Rows",
-	100  => "100 Rows",
-	250  => "250 Rows",
-	500  => "500 Rows",
-	1000 => "1000 Rows",
-	2000 => "2000 Rows",
-	5000 => "5000 Rows"
+	10 => "10",
+	15 => "15",
+	20 => "20",
+	25 => "25",
+	30 => "30",
+	40 => "40",
+	50 => "50",
+	100 => "100",
+	250 => "250",
+	500 => "500",
+	1000 => "1000",
+	2000 => "2000",
+	5000 => "5000"
 	);
 
 $graphs_per_page = array(
-	4    => "4 Graphs",
-	6    => "6 Graphs",
-	8    => "8 Graphs",
-	10   => "10 Graphs",
-	14   => "14 Graphs",
-	20   => "20 Graphs",
-	24   => "24 Graphs",
-	30   => "30 Graphs",
-	40   => "40 Graphs",
-	50   => "50 Graphs"
+	4 => "4",
+	6 => "6",
+	8 => "8",
+	10 => "10",
+	14 => "14",
+	20 => "20",
+	24 => "24",
+	30 => "30",
+	40 => "40",
+	50 => "50",
+	100 => "100"
 	);
 
 $page_refresh_interval = array(
@@ -580,56 +581,56 @@ $graph_timespans = array(
 	GT_LAST_6_MONTHS =>"Last 6 Months",
 	GT_LAST_YEAR =>"Last Year",
 	GT_LAST_2_YEARS =>"Last 2 Years",
-	GT_DAY_SHIFT 	=> "Day Shift",
-	GT_THIS_DAY 	=> "This Day",
-	GT_THIS_WEEK 	=> "This Week",
-	GT_THIS_MONTH 	=> "This Month",
-	GT_THIS_YEAR 	=> "This Year",
-	GT_PREV_DAY 	=> "Previous Day",
-	GT_PREV_WEEK 	=> "Previous Week",
-	GT_PREV_MONTH 	=> "Previous Month",
-	GT_PREV_YEAR 	=> "Previous Year"
+	GT_DAY_SHIFT => "Day Shift",
+	GT_THIS_DAY => "This Day",
+	GT_THIS_WEEK => "This Week",
+	GT_THIS_MONTH => "This Month",
+	GT_THIS_YEAR => "This Year",
+	GT_PREV_DAY => "Previous Day",
+	GT_PREV_WEEK => "Previous Week",
+	GT_PREV_MONTH => "Previous Month",
+	GT_PREV_YEAR => "Previous Year"
 	);
 
 $graph_timeshifts = array(
-	GTS_HALF_HOUR 	=> "30 Min",
-	GTS_1_HOUR 		=> "1 Hour",
-	GTS_2_HOURS 	=> "2 Hours",
-	GTS_4_HOURS 	=> "4 Hours",
-	GTS_6_HOURS 	=> "6 Hours",
-	GTS_12_HOURS 	=> "12 Hours",
-	GTS_1_DAY 		=> "1 Day",
-	GTS_2_DAYS 		=> "2 Days",
-	GTS_3_DAYS 		=> "3 Days",
-	GTS_4_DAYS 		=> "4 Days",
-	GTS_1_WEEK 		=> "1 Week",
-	GTS_2_WEEKS 	=> "2 Weeks",
-	GTS_1_MONTH 	=> "1 Month",
-	GTS_2_MONTHS 	=> "2 Months",
-	GTS_3_MONTHS 	=> "3 Months",
-	GTS_4_MONTHS 	=> "4 Months",
-	GTS_6_MONTHS 	=> "6 Months",
-	GTS_1_YEAR 		=> "1 Year",
-	GTS_2_YEARS 	=> "2 Years"
+	GTS_HALF_HOUR => "30 Min",
+	GTS_1_HOUR => "1 Hour",
+	GTS_2_HOURS => "2 Hours",
+	GTS_4_HOURS => "4 Hours",
+	GTS_6_HOURS => "6 Hours",
+	GTS_12_HOURS => "12 Hours",
+	GTS_1_DAY => "1 Day",
+	GTS_2_DAYS => "2 Days",
+	GTS_3_DAYS => "3 Days",
+	GTS_4_DAYS => "4 Days",
+	GTS_1_WEEK => "1 Week",
+	GTS_2_WEEKS => "2 Weeks",
+	GTS_1_MONTH => "1 Month",
+	GTS_2_MONTHS => "2 Months",
+	GTS_3_MONTHS => "3 Months",
+	GTS_4_MONTHS => "4 Months",
+	GTS_6_MONTHS => "6 Months",
+	GTS_1_YEAR => "1 Year",
+	GTS_2_YEARS => "2 Years"
 	);
 
 $graph_weekdays = array(
-	WD_SUNDAY	 	=> date("l", strtotime("Sunday")),
-	WD_MONDAY 		=> date("l", strtotime("Monday")),
-	WD_TUESDAY	 	=> date("l", strtotime("Tuesday")),
-	WD_WEDNESDAY 	=> date("l", strtotime("Wednesday")),
-	WD_THURSDAY 	=> date("l", strtotime("Thursday")),
-	WD_FRIDAY	 	=> date("l", strtotime("Friday")),
-	WD_SATURDAY		=> date("l", strtotime("Saturday"))
+	WD_SUNDAY => date("l", strtotime("Sunday")),
+	WD_MONDAY => date("l", strtotime("Monday")),
+	WD_TUESDAY => date("l", strtotime("Tuesday")),
+	WD_WEDNESDAY => date("l", strtotime("Wednesday")),
+	WD_THURSDAY => date("l", strtotime("Thursday")),
+	WD_FRIDAY => date("l", strtotime("Friday")),
+	WD_SATURDAY => date("l", strtotime("Saturday"))
 	);
 
 $graph_dateformats = array(
-	GD_MO_D_Y =>"Month Number, Day, Year",
-	GD_MN_D_Y =>"Month Name, Day, Year",
-	GD_D_MO_Y =>"Day, Month Number, Year",
-	GD_D_MN_Y =>"Day, Month Name, Year",
-	GD_Y_MO_D =>"Year, Month Number, Day",
-	GD_Y_MN_D =>"Year, Month Name, Day"
+	GD_MO_D_Y => "Month Number, Day, Year",
+	GD_MN_D_Y => "Month Name, Day, Year",
+	GD_D_MO_Y => "Day, Month Number, Year",
+	GD_D_MN_Y => "Day, Month Name, Year",
+	GD_Y_MO_D => "Year, Month Number, Day",
+	GD_Y_MN_D => "Year, Month Name, Day"
 	);
 
 $graph_datechar = array(

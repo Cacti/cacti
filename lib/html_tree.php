@@ -393,7 +393,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 
 function set_tree_visibility_status() {
 	if (!isset($_REQUEST["subaction"])) {
-		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . $_REQUEST["id"] . "'");
+		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . get_request_var_request("id") . "'");
 
 		foreach ($headers as $header) {
 			$variable = "sess_tree_leaf_expand_" . $header["graph_tree_id"] . "_" . tree_tier_string($header["order_key"]);
@@ -402,23 +402,23 @@ function set_tree_visibility_status() {
 				$_SESSION[$variable] = true;
 			}
 		}
-	}else if (($_REQUEST["subaction"] == "expand_all") ||
-		($_REQUEST["subaction"] == "colapse_all")) {
+	}else if ((get_request_var_request("subaction") == "expand_all") ||
+		(get_request_var_request("subaction") == "colapse_all")) {
 
-		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . $_REQUEST["id"] . "'");
+		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . get_request_var_request("id") . "'");
 
 		foreach ($headers as $header) {
 			$variable = "sess_tree_leaf_expand_" . $header["graph_tree_id"] . "_" . tree_tier_string($header["order_key"]);
 
-			if ($_REQUEST["subaction"] == "expand_all") {
+			if (get_request_var_request("subaction") == "expand_all") {
 				$_SESSION[$variable] = true;
 			}else{
 				$_SESSION[$variable] = false;
 			}
 		}
 	}else{
-		$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_REQUEST["leaf_id"]);
-		$variable = "sess_tree_leaf_expand_" . $_REQUEST["id"] . "_" . tree_tier_string($order_key);
+		$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . get_request_var_request("leaf_id"));
+		$variable = "sess_tree_leaf_expand_" . get_request_var_request("id") . "_" . tree_tier_string($order_key);
 
 		if (isset($_SESSION[$variable])) {
 			if ($_SESSION[$variable]) {
@@ -784,11 +784,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = "-> "; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = "-> "; }
 	if (isset($_REQUEST["tree_id"])) {
-		$nodeid = "tree_" . $_REQUEST["tree_id"];
+		$nodeid = "tree_" . get_request_var_request("tree_id");
 	}
 
 	if (isset($_REQUEST["leaf_id"])) {
-		$nodeid .= "_leaf" . $_REQUEST["leaf_id"];
+		$nodeid .= "_leaf" . get_request_var_request("leaf_id");
 	}
 
 	print "<script type=\"text/javascript\">\n";
@@ -834,9 +834,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}else{
 		/* if any of the settings changed, reset the page number */
 		$changed = 0;
-		$changed += check_changed("graphs",          "sess_graph_view_graphs");
-		$changed += check_changed("filter",          "sess_graph_view_filter");
-		$changed += check_changed("action",          "sess_graph_view_action");
+		$changed += check_changed("graphs", "sess_graph_view_graphs");
+		$changed += check_changed("filter", "sess_graph_view_filter");
+		$changed += check_changed("action", "sess_graph_view_action");
 	}
 
 	if (isset($_SESSION["sess_graph_view_tree_id"])) {
@@ -1034,17 +1034,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<strong>&nbsp;Search:</strong>&nbsp;
 						</td>
 						<td width="130" nowrap="" style="white-space: nowrap;">
-							<input size='40' width='130' name='filter' value='<?php print $_REQUEST["filter"];?>'>
+							<input size='40' width='130' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>'>
 						</td>
 						<td nowrap style='white-space: nowrap;' width="50">
-							&nbsp;<strong>Graphs:</strong>&nbsp;
+							&nbsp;<strong>Graphs per Page:</strong>&nbsp;
 						</td>
 						<td width="1">
 							<select name="graphs" id="graphs" onChange="submit()">
 								<?php
 								if (sizeof($graphs_per_page) > 0) {
 								foreach ($graphs_per_page as $key => $value) {
-									print "<option value='" . $key . "'"; if ($_REQUEST["graphs"] == $key) { print " selected"; } print ">" . $value . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request("graphs") == $key) { print " selected"; } print ">" . $value . "</option>\n";
 								}
 								}
 								?>
@@ -1073,8 +1073,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$graph_list = array();
 
 	if (($leaf_type == "header") || (empty($leaf_id))) {
-		if (strlen($_REQUEST["filter"])) {
-			$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . $_REQUEST["filter"] . "%' OR title LIKE '%" . $_REQUEST["filter"] . "%')");
+		if (strlen(get_request_var_request("filter"))) {
+			$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . get_request_var_request("filter") . "%' OR title LIKE '%" . get_request_var_request("filter") . "%')");
 		}
 
 		$graph_list = db_fetch_assoc("SELECT
@@ -1116,8 +1116,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 			if (sizeof($graph_templates) > 0) {
 			foreach ($graph_templates as $graph_template) {
-				if (strlen($_REQUEST["filter"])) {
-					$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . $_REQUEST["filter"] . "%')");
+				if (strlen(get_request_var_request("filter"))) {
+					$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . get_request_var_request("filter") . "%')");
 				}
 
 				$graphs = db_fetch_assoc("SELECT
@@ -1167,8 +1167,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				/* fetch a list of field names that are sorted by the preferred sort field */
 				$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
 
-				if (strlen($_REQUEST["filter"])) {
-					$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . $_REQUEST["filter"] . "%')");
+				if (strlen(get_request_var_request("filter"))) {
+					$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . get_request_var_request("filter") . "%')");
 				}
 
 				/* grab a list of all graphs for this host/data query combination */
@@ -1214,21 +1214,21 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$total_rows = sizeof($graph_list);
 
 	/* generate page list */
-	if ($total_rows > $_REQUEST["graphs"]) {
-		$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $_REQUEST["graphs"], $total_rows, "graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . $_REQUEST["host_group_data"] : "") . "&filter=" . $_REQUEST["filter"]);
+	if ($total_rows > get_request_var_request("graphs")) {
+		$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, get_request_var_request("graphs"), $total_rows, "graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&filter=" . get_request_var_request("filter"));
 
 		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 				<td colspan='11'>
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
 							<td align='left' class='textHeaderDark'>
-								<strong>&lt;&lt; "; if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . $_REQUEST["host_group_data"] : "") . "&page=" . ($_REQUEST["page"]-1) . "'>"; } $nav .= "Previous"; if ($_REQUEST["page"] > 1) { $nav .= "</a>"; } $nav .= "</strong>
+								<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 							</td>\n
 							<td align='center' class='textHeaderDark'>
-								Showing Graphs " . (($_REQUEST["graphs"]*($_REQUEST["page"]-1))+1) . " to " . ((($total_rows < read_graph_config_option("treeview_graphs_per_page")) || ($total_rows < ($_REQUEST["graphs"]*$_REQUEST["page"]))) ? $total_rows : ($_REQUEST["graphs"]*$_REQUEST["page"])) . " of $total_rows [$url_page_select]
+								Showing Graphs " . ((get_request_var_request("graphs")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_graph_config_option("treeview_graphs_per_page")) || ($total_rows < (get_request_var_request("graphs")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("graphs")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 							</td>\n
 							<td align='right' class='textHeaderDark'>
-								<strong>"; if (($_REQUEST["page"] * $_REQUEST["graphs"]) < $total_rows) { $nav .= "<a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . $_REQUEST["host_group_data"] : "") . "&page=" . ($_REQUEST["page"]+1) . "'>"; } $nav .= "Next"; if (($_REQUEST["page"] * $_REQUEST["graphs"]) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+								<strong>"; if ((get_request_var_request("page") * get_request_var_request("graphs")) < $total_rows) { $nav .= "<a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("graphs")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 							</td>\n
 						</tr>
 					</table>
@@ -1240,7 +1240,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
 							<td align='center' class='textHeaderDark'>
-								Showing All Graphs" . (strlen($_REQUEST["filter"]) ? " [ Filter '" . $_REQUEST["filter"] . "' Applied ]" : "") . "
+								Showing All Graphs" . (strlen(get_request_var_request("filter")) ? " [ Filter '" . clean_html_output(get_request_var_request("filter")) . "' Applied ]" : "") . "
 							</td>
 						</tr>
 					</table>
@@ -1253,8 +1253,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	/* start graph display */
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='10' class='textHeaderDark'>$title</td></tr>";
 
-	$i = $_REQUEST["graphs"] * ($_REQUEST["page"] - 1);
-	$last_graph = $i + $_REQUEST["graphs"];
+	$i = get_request_var_request("graphs") * (get_request_var_request("page") - 1);
+	$last_graph = $i + get_request_var_request("graphs");
 
 	$new_graph_list = array();
 	while ($i < $total_rows && $i < $last_graph) {

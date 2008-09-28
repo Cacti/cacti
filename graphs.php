@@ -1186,8 +1186,14 @@ function graph() {
 			</table>
 			<table cellpadding="1" cellspacing="0">
 				<tr>
+					<td width="50">
+						&nbsp;Search:&nbsp;
+					</td>
+					<td>
+						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
+					</td>
 					<td nowrap style='white-space: nowrap;' width="50">
-						Rows:&nbsp;
+						Rows per Page:&nbsp;
 					</td>
 					<td width="1">
 						<select name="graph_rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
@@ -1200,12 +1206,6 @@ function graph() {
 							}
 							?>
 						</select>
-					</td>
-					<td width="50">
-						&nbsp;Search:&nbsp;
-					</td>
-					<td>
-						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>

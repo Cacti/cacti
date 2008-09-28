@@ -1227,8 +1227,14 @@ function host() {
 							<option value="0"<?php if (get_request_var_request("host_status") == "0") {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
+					<td nowrap style='white-space: nowrap;' width="20">
+						&nbsp;Search:&nbsp;
+					</td>
+					<td width="1">
+						<input type="text" name="filter" size="20" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
+					</td>
 					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Rows:&nbsp;
+						&nbsp;Rows per Page:&nbsp;
 					</td>
 					<td width="1">
 						<select name="host_rows" onChange="applyViewDeviceFilterChange(document.form_devices)">
@@ -1241,12 +1247,6 @@ function host() {
 							}
 							?>
 						</select>
-					</td>
-					<td nowrap style='white-space: nowrap;' width="20">
-						&nbsp;Search:&nbsp;
-					</td>
-					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
