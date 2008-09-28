@@ -249,21 +249,24 @@ $settings = array(
 			"description" => "Default SNMP timeout in milli-seconds.",
 			"method" => "textbox",
 			"default" => "500",
-			"max_length" => "100"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"snmp_port" => array(
 			"friendly_name" => "SNMP Port Number",
 			"description" => "Default UDP port to be used for SNMP Calls.  Typically 161.",
 			"method" => "textbox",
 			"default" => "161",
-			"max_length" => "100"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"snmp_retries" => array(
 			"friendly_name" => "SNMP Retries",
 			"description" => "The number times the SNMP poller will attempt to reach the host before failing.",
 			"method" => "textbox",
 			"default" => "3",
-			"max_length" => "100"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"other_header" => array(
 			"friendly_name" => "Other Defaults",
@@ -344,21 +347,24 @@ $settings = array(
 			"description" => "The height of thumbnail graphs in pixels.",
 			"method" => "textbox",
 			"default" => "100",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"export_default_width" => array(
 			"friendly_name" => "Thumbnail Width",
 			"description" => "The width of thumbnail graphs in pixels.",
 			"method" => "textbox",
 			"default" => "300",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"export_num_columns" => array(
 			"friendly_name" => "Thumbnail Columns",
 			"description" => "The number of columns to use when displaying thumbnail graphs.",
 			"method" => "textbox",
 			"default" => "2",
-			"max_length" => "5"
+			"max_length" => "5",
+			"size" => "5"
 			),
 		"export_hdr_paths" => array(
 			"friendly_name" => "Paths",
@@ -396,19 +402,22 @@ $settings = array(
 			"friendly_name" => "Export Every x Times",
 			"description" => "If you don't want Cacti to export static images every 5 minutes, put another number here. For instance, 3 would equal every 15 minutes.",
 			"method" => "textbox",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"export_hourly" => array(
 			"friendly_name" => "Hourly at specified minutes",
 			"description" => "If you want Cacti to export static images on an hourly basis, put the minutes of the hour when to do that. Cacti assumes that you run the data gathering script every 5 minutes, so it will round your value to the one closest to its runtime. For instance, 43 would equal 40 minutes past the hour.",
 			"method" => "textbox",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"export_daily" => array(
 			"friendly_name" => "Daily at specified time",
 			"description" => "If you want Cacti to export static images on an daily basis, put here the time when to do that. Cacti assumes that you run the data gathering script every 5 minutes, so it will round your value to the one closest to its runtime. For instance, 21:23 would equal 20 minutes after 9 PM.",
 			"method" => "textbox",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"export_hdr_ftp" => array(
 			"friendly_name" => "FTP Options",
@@ -430,7 +439,8 @@ $settings = array(
 			"friendly_name" => "FTP Port",
 			"description" => "Communication port with the ftp server (leave empty for defaults). Default: 21.",
 			"method" => "textbox",
-			"max_length" => "255"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"export_ftp_passive" => array(
 			"friendly_name" => "Use passive mode",
@@ -459,16 +469,17 @@ $settings = array(
 		"num_rows_graph" => array(
 			"friendly_name" => "Rows Per Page",
 			"description" => "The number of rows to display on a single page for graph management.",
-			"method" => "textbox",
+			"method" => "drop_array",
 			"default" => "30",
-			"max_length" => "10"
+			"array" => $item_rows
 			),
 		"max_title_graph" => array(
 			"friendly_name" => "Maximum Title Length",
 			"description" => "The maximum number of characters to display for a graph title.",
 			"method" => "textbox",
 			"default" => "80",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"dataqueries_header" => array(
 			"friendly_name" => "Data Queries",
@@ -479,7 +490,8 @@ $settings = array(
 			"description" => "The maximum number of characters to display for a data query field.",
 			"method" => "textbox",
 			"default" => "15",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"graphs_new_header" => array(
 			"friendly_name" => "Graph Creation",
@@ -495,9 +507,9 @@ $settings = array(
 		"num_rows_data_query" => array(
 			"friendly_name" => "Data Query Graph Rows",
 			"description" => "The maximum number Data Query rows to place on a page per Data Query.  This applies to the 'New Graphs' page.",
-			"method" => "textbox",
-			"default" => "20",
-			"max_length" => "10"
+			"method" => "drop_array",
+			"default" => "30",
+			"array" => $item_rows
 			),
 		"datasources_header" => array(
 			"friendly_name" => "Data Sources",
@@ -506,16 +518,17 @@ $settings = array(
 		"num_rows_data_source" => array(
 			"friendly_name" => "Rows Per Page",
 			"description" => "The number of rows to display on a single page for data sources.",
-			"method" => "textbox",
+			"method" => "drop_array",
 			"default" => "30",
-			"max_length" => "10"
+			"array" => $item_rows
 			),
 		"max_title_data_source" => array(
 			"friendly_name" => "Maximum Title Length",
 			"description" => "The maximum number of characters to display for a data source title.",
 			"method" => "textbox",
 			"default" => "45",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"devices_header" => array(
 			"friendly_name" => "Devices",
@@ -524,9 +537,9 @@ $settings = array(
 		"num_rows_device" => array(
 			"friendly_name" => "Rows Per Page",
 			"description" => "The number of rows to display on a single page for devices.",
-			"method" => "textbox",
+			"method" => "drop_array",
 			"default" => "30",
-			"max_length" => "10"
+			"array" => $item_rows
 			),
 		"logmgmt_header" => array(
 			"friendly_name" => "Log Management",
@@ -555,7 +568,8 @@ $settings = array(
 			"description" => "The size of the font used for Graph Titles",
 			"method" => "textbox",
 			"default" => "12",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"title_font" => array(
 			"friendly_name" => "Title Font File",
@@ -568,7 +582,8 @@ $settings = array(
 			"description" => "The size of the font used for Graph Legend items",
 			"method" => "textbox",
 			"default" => "10",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"legend_font" => array(
 			"friendly_name" => "Legend Font File",
@@ -581,7 +596,8 @@ $settings = array(
 			"description" => "The size of the font used for Graph Axis",
 			"method" => "textbox",
 			"default" => "8",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"axis_font" => array(
 			"friendly_name" => "Axis Font File",
@@ -594,7 +610,8 @@ $settings = array(
 			"description" => "The size of the font used for Graph Units",
 			"method" => "textbox",
 			"default" => "8",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"unit_font" => array(
 			"friendly_name" => "Unit Font File",
@@ -641,14 +658,14 @@ $settings = array(
 			"description" => "The number of concurrent processes to execute.  Using a higher number when using cmd.php will improve performance.  Performance improvements in spine are best resolved with the threads parameter",
 			"method" => "textbox",
 			"default" => "1",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"process_leveling" => array(
 			"friendly_name" => "Ballance Process Load",
 			"description" => "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process.",
 			"method" => "checkbox",
-			"default" => "on",
-			"max_length" => "255"
+			"default" => "on"
 			),
 		"spine_header" => array(
 			"friendly_name" => "Spine Specific Execution Parameters",
@@ -659,28 +676,32 @@ $settings = array(
 			"description" => "The maximum threads allowed per process.  Using a higher number when using Spine will improve performance.",
 			"method" => "textbox",
 			"default" => "1",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"php_servers" => array(
 			"friendly_name" => "Number of PHP Script Servers",
 			"description" => "The number of concurrent script server processes to run per Spine process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts.",
 			"method" => "textbox",
 			"default" => "1",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"script_timeout" => array(
 			"friendly_name" => "Script and Script Server Timeout Value",
 			"description" => "The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds",
 			"method" => "textbox",
 			"default" => "25",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"max_get_size" => array(
 			"friendly_name" => "The Maximum SNMP OID's Per SNMP Get Request",
 			"description" => "The maximum number of snmp get OID's to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 60 OID's.  Decreasing this value to 0 or 1 will disable snmpbulkwalk",
 			"method" => "textbox",
 			"default" => "10",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"availability_header" => array(
 			"friendly_name" => "Host Availability Settings",
@@ -705,21 +726,24 @@ $settings = array(
 			"description" => "When choosing either TCP or UDP Ping, which port should be checked for availability of the host prior to polling.",
 			"method" => "textbox",
 			"default" => "23",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"ping_timeout" => array(
 			"friendly_name" => "Ping Timeout Value",
 			"description" => "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.",
 			"method" => "textbox",
 			"default" => "400",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"ping_retries" => array(
 			"friendly_name" => "Ping Retry Count",
 			"description" => "The number of times Cacti will attempt to ping a host before failing.",
 			"method" => "textbox",
 			"default" => "1",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"updown_header" => array(
 			"friendly_name" => "Host Up/Down Settings",
@@ -730,14 +754,16 @@ $settings = array(
 			"description" => "The number of polling intervals a host must be down before logging an error and reporting host as down.",
 			"method" => "textbox",
 			"default" => "2",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			),
 		"ping_recovery_count" => array(
 			"friendly_name" => "Recovery Count",
 			"description" => "The number of polling intervals a host must remain up before returning host to an up status and issuing a notice.",
 			"method" => "textbox",
 			"default" => "3",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "5"
 			)
 		),
 	"authentication" => array(
@@ -783,14 +809,16 @@ $settings = array(
 			"description" => "TCP/UDP port for Non SSL communications.",
 			"method" => "textbox",
 			"max_length" => "5",
-			"default" => "389"
+			"default" => "389",
+			"size" => "5"
 			),
 		"ldap_port_ssl" => array(
 			"friendly_name" => "Port SSL",
 			"description" => "TCP/UDP port for SSL communications.",
 			"method" => "textbox",
 			"max_length" => "5",
-			"default" => "636"
+			"default" => "636",
+			"size" => "5"
 			),
 		"ldap_version" => array(
 			"friendly_name" => "Protocol Version",
