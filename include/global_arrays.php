@@ -390,11 +390,13 @@ $item_rows = array(
 	);
 
 $graphs_per_page = array(
-	5    => "5 Graphs",
+	4    => "4 Graphs",
+	6    => "6 Graphs",
+	8    => "8 Graphs",
 	10   => "10 Graphs",
-	15   => "15 Graphs",
+	14   => "14 Graphs",
 	20   => "20 Graphs",
-	25   => "25 Graphs",
+	24   => "24 Graphs",
 	30   => "30 Graphs",
 	40   => "40 Graphs",
 	50   => "50 Graphs"
