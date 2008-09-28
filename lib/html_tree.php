@@ -816,15 +816,18 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["button_clear_x"])) {
+	if (isset($_POST["clear_x"])) {
 		kill_session_var("sess_graph_view_graphs");
 		kill_session_var("sess_graph_view_filter");
 		kill_session_var("sess_graph_view_thumbnails");
 		kill_session_var("sess_graph_view_page");
 
+		unset($_POST["graphs"]);
 		unset($_REQUEST["graphs"]);
+		unset($_POST["filter"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["page"]);
+		unset($_POST["thumbnails"]);
 		unset($_REQUEST["thumbnails"]);
 
 		$changed = true;
@@ -833,7 +836,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$changed = 0;
 		$changed += check_changed("graphs",          "sess_graph_view_graphs");
 		$changed += check_changed("filter",          "sess_graph_view_filter");
-		$changed += check_changed("thumbnails",      "sess_graph_view_thumbnails");
 		$changed += check_changed("action",          "sess_graph_view_action");
 	}
 
@@ -864,8 +866,28 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	load_current_session_value("page",   "sess_graph_view_page",   "1");
 	load_current_session_value("graphs", "sess_graph_view_graphs", read_graph_config_option("treeview_graphs_per_page"));
-	load_current_session_value("thumbnails", "sess_graph_view_thumbnails", read_graph_config_option("thumbnail_section_tree_2"));
 	load_current_session_value("filter", "sess_graph_view_filter", "");
+
+	if (isset($_SESSION["sess_graph_view_thumbnails"])) {
+		if ($_SESSION["sess_graph_view_thumbnails"] == "on") {
+			if (isset($_POST["filter"])) {
+				if (!isset($_POST["thumbnails"])) {
+					$_SESSION["sess_graph_view_thumbnails"] = 'off';
+				}
+			}
+		}else{
+			if (isset($_POST["thumbnails"])) {
+				$_SESSION["sess_graph_view_thumbnails"] = 'on';
+			}
+		}
+	}else{
+		$_SESSION["sess_graph_view_thumbnails"] = read_graph_config_option("thumbnail_section_tree_2");
+		if ($_SESSION["sess_graph_view_thumbnails"] == '') {
+			$_SESSION["sess_graph_view_thumbnails"] = 'off';
+		}else{
+			$_SESSION["sess_graph_view_thumbnails"] = 'on';
+		}
+	}
 
 	html_graph_start_box(1, false);
 
@@ -873,7 +895,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (read_graph_config_option("timespan_sel") == "on") {
 
 		?>
-
 			<script type='text/javascript'>
 			// Initialize the calendar
 			calendar=null;
@@ -929,7 +950,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		
 		-->
 		</script>
-		
 			<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
 				<form name="form_timespan_selector" method="post">
 				<td class="noprint">
@@ -1005,18 +1025,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	?>
-	<script type="text/javascript">
-	<!--
-
-	function applyGraphViewFilterChange(objForm) {
-		strURL = '?graphs=' + objForm.graphs.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + '&thumbnails=' + objForm.thumbnails.checked;
-		document.location = strURL;
-	}
-
-	-->
-	</script>
 	<tr class="noprint" bgcolor="#e5e5e5">
 		<form name="form_graph_view" method="post">
 			<td class="noprint">
@@ -1046,7 +1054,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<label for="thumbnails"><strong>&nbsp;Thumbnails:&nbsp;<strong></label>
 						</td>
 						<td>
-							<input type="checkbox" name="thumbnails" id="thumbnails" onChange="if (this.checked == true) this.value='dogs'; else this.value='cats';submit()" <?php print (($_REQUEST['thumbnails'] == "dogs") ? "checked":"");?>>
+							<input type="checkbox" name="thumbnails" onClick="submit()" <?php print (($_SESSION['sess_graph_view_thumbnails'] == "on") ? "checked":"");?>>
 						</td>
 						<td nowrap>
 							&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
@@ -1254,7 +1262,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$i++;
 	}
 
-	if ($_REQUEST["thumbnails"] == "dogs") {
+	if ($_SESSION["sess_graph_view_thumbnails"] == "on") {
 		html_graph_thumbnail_area($new_graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}else{
 		html_graph_area($new_graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
