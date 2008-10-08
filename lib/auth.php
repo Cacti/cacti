@@ -140,7 +140,8 @@ function user_remove($user_id) {
 		if ($username == read_config_option("user_template")) {
 			raise_message(21);
 			return;
-		}                                                                                                                                                                                                                if ($username == read_config_option("guest_user")) {
+		}
+		if ($username == read_config_option("guest_user")) {
 			raise_message(21);
 			return;
 		}
