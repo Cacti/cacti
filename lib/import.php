@@ -37,7 +37,7 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings) {
 	}
 
 	if (isset($xml_array["name"])) {
-		$xml_array["name"] = htmlspecialchars($xml_array["name"]));
+		$xml_array["name"] = htmlspecialchars($xml_array["name"]);
 	}
 
 	while (list($hash, $hash_array) = each($xml_array)) {
