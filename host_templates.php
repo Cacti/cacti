@@ -457,7 +457,7 @@ function template() {
 			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (iget_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='host_templates.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 					</td>\n
 					<td align='center' class='textHeaderDark'>
 						Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
