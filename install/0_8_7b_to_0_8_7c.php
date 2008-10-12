@@ -33,7 +33,7 @@ function upgrade_to_0_8_7c() {
 	if (!in_array('host_id', $indices)) {
 		db_install_execute("0.8.7c", "ALTER TABLE `data_local` ADD INDEX `host_id`(`host_id`)");
 	}
-	
+
 	$result = db_fetch_assoc("SHOW INDEX FROM `host_snmp_cache`") or die (mysql_error());
 	$indices = array();
 	foreach($result as $index => $arr) {
@@ -75,7 +75,9 @@ function upgrade_to_0_8_7c() {
 	db_install_execute("0.8.7c", "ALTER TABLE `poller_time` MODIFY COLUMN `pid` INT(11) UNSIGNED NOT NULL DEFAULT '0';");
 
 	/* Update deletion verification setting */
-	db_install_execute("0.8.7c", "UPDATE settings SET name = 'deletion_verification' WHERE name = 'remove_verification';");
+	db_install_execute("0.8.7c", "UPDATE settings SET name = 'deletion_verification' WHERE name = 'remove_verification'");
 
+	/* Correct issue where rrd_next_step goes large in a positive way instead of the way it should go */
+	db_install_execute("0.8.7c", "ALTER TABLE `poller_item` MODIFY COLUMN `rrd_step` MEDIUMINT(8) NOT NULL DEFAULT 300");
 }
 ?>
