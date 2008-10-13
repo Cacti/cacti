@@ -168,12 +168,12 @@ echo "NOTE: Process Complete, " . sizeof($rrd_info) . " Files Processed\n";
 
 /* turn on the poller */
 function enable_poller() {
-	db_execute("UPDATE settings SET (name, value) VALUES ('poller_enabled', 'on')");
+	set_config_option('poller_enabled', 'on');
 }
 
 /* turn off the poller */
 function disable_poller() {
-	db_execute("UPDATE settings SET (name, value) VALUES ('poller_enabled', '')");
+	set_config_option('poller_enabled', '');
 }
 
 function display_help() {
@@ -200,7 +200,7 @@ function display_help() {
 	echo "If the utility encounters a problem along the way, it will:\n";
 	echo "  1) Re-enable the poller\n";
 	echo "  2) Exit\n\n";
-	echo "usage: extend_rra_paths.php --proceed [--help | -H | --version | -V]\n\n";
+	echo "usage: structure_rra_paths.php --proceed [--help | -H | --version | -V]\n\n";
 }
 
 ?>
