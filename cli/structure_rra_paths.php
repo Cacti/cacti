@@ -88,6 +88,11 @@ set_config_option("extended_paths", "on");
 /* get the host ids and rrd paths from the poller_item table  */
 $rrd_info = db_fetch_assoc("SELECT DISTINCT local_data_id, host_id, rrd_path FROM poller_item");
 
+/* setup some counters */
+$done_count   = 0;
+$ignore_count = 0;
+$warn_count   = 0;
+
 /* scan all poller_items */
 foreach ($rrd_info as $info) {
 	$new_base_path = "$base_rra_path" . "/" . $info["host_id"];
@@ -97,7 +102,7 @@ foreach ($rrd_info as $info) {
 	/* create one subfolder for every host */
 	if (!is_dir($new_base_path)) {
 		/* see if we can create the dirctory for the new file */
-		if (mkdir($new_base_path, 0777)) {
+		if (mkdir($new_base_path, 0775)) {
 			echo "NOTE: New Directory '$new_base_path' Created for RRD Files\n";
 			if ($config["cacti_server_os"] != "win32") {
 				if (chown($new_base_path, $owner_id) && chgrp($new_base_path, $group_id)) {
@@ -120,7 +125,20 @@ foreach ($rrd_info as $info) {
 	}
 
 	/* copy the file, update the database and remove the old file */
-	if (copy($old_rrd_path, $new_rrd_path)) {
+	if ($old_rrd_path == $new_rrd_path) {
+		$ignore_count++;
+
+		echo "NOTE: File '$old_rrd_path' is Already Structured, Ignoring\n";
+	} elseif (!file_exists($old_rrd_path)) {
+		$warn_count++;
+
+		echo "WARNING: Legacy RRA Path '$old_rrd_path' Does not exist, Skipping\n";
+
+		/* alter database */
+		update_database();
+	} elseif (copy($old_rrd_path, $new_rrd_path)) {
+		$done_count++;
+
 		echo "NOTE: Copy Complete for File '" . $info["rrd_path"] . "'\n";
 		if ($config["cacti_server_os"] != "win32") {
 			if (chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
@@ -134,17 +152,8 @@ foreach ($rrd_info as $info) {
 			}
 		}
 
-		/* upate table poller_item */
-		db_execute("UPDATE poller_item
-			SET rrd_path = '$new_rrd_path'
-			WHERE local_data_id=" . $info["local_data_id"]);
-
-		/* update table data_template_data */
-		db_execute("UPDATE data_template_data
-			SET data_source_path='<path_rra>/" . $info["host_id"] . "/" . $info["local_data_id"] . ".rrd'
-			WHERE local_data_id=" . $info["local_data_id"]);
-
-		echo "NOTE: Database Changes Complete for File '" . $info["rrd_path"] . "'\n";
+		/* alter database */
+		update_database();
 
 		if (unlink($old_rrd_path)) {
 			echo "NOTE: Old File '$old_rrd_path' Removed\n";
@@ -164,7 +173,22 @@ foreach ($rrd_info as $info) {
 	}
 }
 
-echo "NOTE: Process Complete, " . sizeof($rrd_info) . " Files Processed\n";
+echo "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped, '$ignore_count' Previously Structured\n";
+
+/* update database */
+function update_database($info) {
+		/* upate table poller_item */
+	db_execute("UPDATE poller_item
+		SET rrd_path = '$new_rrd_path'
+		WHERE local_data_id=" . $info["local_data_id"]);
+
+	/* update table data_template_data */
+	db_execute("UPDATE data_template_data
+		SET data_source_path='<path_rra>/" . $info["host_id"] . "/" . $info["local_data_id"] . ".rrd'
+		WHERE local_data_id=" . $info["local_data_id"]);
+
+	echo "NOTE: Database Changes Complete for File '" . $info["rrd_path"] . "'\n";
+}
 
 /* turn on the poller */
 function enable_poller() {
