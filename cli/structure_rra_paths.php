@@ -173,6 +173,9 @@ foreach ($rrd_info as $info) {
 	}
 }
 
+/* finally re-enable the poller */
+enable_poller();
+
 echo "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped, '$ignore_count' Previously Structured\n";
 
 /* update database */
