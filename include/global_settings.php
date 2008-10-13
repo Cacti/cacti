@@ -108,7 +108,16 @@ $settings = array(
 			"description" => "The path to Spine binary.",
 			"method" => "filepath",
 			"max_length" => "255"
-			)
+			),
+		"extendedpaths_header" => array(
+			"friendly_name" => "Structured RRD Path",
+			"method" => "spacer",
+			),
+		"extended_paths" => array(
+			"friendly_name" => "Structured RRA Path (/host_id/local_data_id.rrd)",
+			"description" => "Use a seperate subfolder for each hosts RRD files.",
+			"method" => "checkbox"
+ 			)
 		),
 	"general" => array(
 		"logging_header" => array(

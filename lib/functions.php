@@ -164,7 +164,7 @@ function read_default_config_option($config_name) {
    @arg $value       - the values to be saved
    @returns          - void */
 function set_config_option($config_name, $value) {
-	db_execute("REPLACE INTO settings SET name='$config_name', $value='$value'");
+	db_execute("REPLACE INTO settings SET name='$config_name', value='$value'");
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -1131,29 +1131,49 @@ function get_graph_title($local_graph_id) {
    @arg $local_data_id - (int) the ID of the data source to generate a new path for
    @returns - the new generated path */
 function generate_data_source_path($local_data_id) {
+	global $config;
+
 	$host_part = ""; $ds_part = "";
 
+	$extended_paths = read_config_option("extended_paths");
+
 	/* try any prepend the name with the host description */
-	$host_name = db_fetch_cell("select host.description from (host,data_local) where data_local.host_id=host.id and data_local.id=$local_data_id");
+	$host = db_fetch_row("SELECT
+		host.id,
+		host.description
+		FROM (host, data_local)
+		WHERE data_local.host_id=host.id
+		AND data_local.id=$local_data_id
+		LIMIT 1");
 
-	if (!empty($host_name)) {
-		$host_part = strtolower(clean_up_file_name($host_name)) . "_";
-	}
-
-	/* then try and use the internal DS name to identify it */
-	$data_source_rrd_name = db_fetch_cell("select data_source_name from data_template_rrd where local_data_id=$local_data_id order by id");
-
-	if (!empty($data_source_rrd_name)) {
-		$ds_part = strtolower(clean_up_file_name($data_source_rrd_name));
-	}else{
-		$ds_part = "ds";
-	}
+	$host_name = $host["description"];
+	$host_id   = $host["id"];
 
 	/* put it all together using the local_data_id at the end */
-	$new_path = "<path_rra>/$host_part$ds_part" . "_" . "$local_data_id.rrd";
+	if ($extended_paths == "on") {
+		$new_path = "<path_rra>/$host_id/$local_data_id.rrd";
+	}else{
+		if (!empty($host_name)) {
+			$host_part = strtolower(clean_up_file_name($host_name)) . "_";
+		}
+
+		/* then try and use the internal DS name to identify it */
+		$data_source_rrd_name = db_fetch_cell("SELECT data_source_name
+			FROM data_template_rrd
+			WHERE local_data_id=$local_data_id
+			ORDER BY id");
+
+		if (!empty($data_source_rrd_name)) {
+			$ds_part = strtolower(clean_up_file_name($data_source_rrd_name));
+		}else{
+			$ds_part = "ds";
+		}
+
+		$new_path = "<path_rra>/$host_part$ds_part" . "_" . "$local_data_id.rrd";
+	}
 
 	/* update our changes to the db */
-	db_execute("update data_template_data set data_source_path='$new_path' where local_data_id=$local_data_id");
+	db_execute("UPDATE data_template_data SET data_source_path='$new_path' WHERE local_data_id=$local_data_id");
 
 	return $new_path;
 }
