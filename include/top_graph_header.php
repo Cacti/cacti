@@ -118,7 +118,7 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 <a name='page_top'></a>
 
 <table width="100%" height="100%" cellspacing="0" cellpadding="0">
-	<tr bgcolor="#a9a9a9" class="noprint">
+	<tr height="25" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr style="background: transparent url('images/cacti_backdrop2.gif') no-repeat center right;">

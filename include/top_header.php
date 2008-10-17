@@ -39,7 +39,7 @@ global $colors;
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" background="images/left_border.gif">
 
 <table width="100%" cellspacing="0" cellpadding="0">
-	<tr bgcolor="#a9a9a9">
+	<tr height="1" bgcolor="#a9a9a9">
 		<td valign="bottom" colspan="3" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr style="background: transparent url('images/cacti_backdrop.gif') no-repeat center right;">
