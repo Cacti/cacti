@@ -108,13 +108,9 @@ $colors["form_alternate2"] = "E5E5E5";
 
 if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && ($_SERVER["PHP_SELF"] != "")) {
 	/* Sanity Check on "Corrupt" PHP_SELF */
-	if ((!is_file($_SERVER["PHP_SELF"])) && (!is_file($config["base_path"] . '/' . $_SERVER["PHP_SELF"]))) {
-		if (!is_file($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"])) {
-			if (!((is_file($_SERVER["SCRIPT_FILENAME"])) && (substr_count($_SERVER["SCRIPT_FILENAME"], $_SERVER["PHP_SELF"])))) {
-				echo "\nInvalid PHP_SELF Path\n";
-				exit;
-			}
-		}
+	if ($_SERVER["SCRIPT_NAME"] != $_SERVER["PHP_SELF"]) {
+		echo "\nInvalid PHP_SELF Path \n";
+		exit;
 	}
 
 	/* we don't want these pages cached */
