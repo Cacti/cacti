@@ -281,6 +281,13 @@ $settings = array(
 			"friendly_name" => "Other Defaults",
 			"method" => "spacer",
 			),
+		"reindex_method" => array(
+			"friendly_name" => "Reindex Method for Data Queries",
+			"description" => "The default reindex method to use for all Data Queries.",
+			"method" => "drop_array",
+			"default" => "1",
+			"array" => $reindex_types,
+			),
 		"deletion_verification" => array(
 			"friendly_name" => "Deletion Verification",
 			"description" => "Prompt user before item deletion.",

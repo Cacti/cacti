@@ -95,6 +95,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
 	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids) {
+	global $config;
 
 	/* fetch some cache variables */
 	if (empty($id)) {
@@ -158,7 +159,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 			if (sizeof($snmp_queries) > 0) {
 			foreach ($snmp_queries as $snmp_query) {
-				db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values ($host_id," . $snmp_query["snmp_query_id"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
+				db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values ($host_id," . $snmp_query["snmp_query_id"] . "," . read_config_option("reindex_method") . ")");
 
 				/* recache snmp data */
 				run_data_query($host_id, $snmp_query["snmp_query_id"]);

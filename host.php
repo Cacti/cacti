@@ -1090,7 +1090,7 @@ function host_edit() {
 						<?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
 					</td>
 					<td nowrap>Re-Index Method:&nbsp;
-						<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
+						<?php form_dropdown("reindex_method",$reindex_types,"","",read_config_option("reindex_method"),"","");?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">

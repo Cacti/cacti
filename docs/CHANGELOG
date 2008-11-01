@@ -109,6 +109,7 @@ Cacti CHANGELOG
 -feature: Add api call to associate graphs with their data sources
 -feature: Move the notes field to bottom of page
 -feature: New availability option "Ping or SNMP"
+-feature: Allow for specification of a default reindex method
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE
