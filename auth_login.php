@@ -127,7 +127,7 @@ if ($action == 'login') {
 		/* Builtin Auth */
 		if ((!$user_auth) && (!$ldap_error)) {
 			/* if auth has not occured process for builtin - AKA Ldap fall through */
-			$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $username . "' AND password = md5('" . get_request_var_post("login_password") . "') AND realm = 0");
+			$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $username . "' AND password = '" . md5(get_request_var_post("login_password")) . "' AND realm = 0");
 		}
 	}
 	/* end of switch */
