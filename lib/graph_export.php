@@ -44,9 +44,10 @@ function graph_export() {
 				break;
 			case "export_hourly":
 				$export_minute = read_config_option('export_hourly');
+				$poller_minute = read_config_option('poller_interval') / 60;
 				if (empty($export_minute)) {
 					db_execute("REPLACE INTO settings (name,value) VALUES ('export_hourly','0')");
-				} elseif (floor((date('i') / 5)) == floor((read_config_option('export_hourly') / 5))) {
+				} elseif (floor((date('i') / $poller_minute)) == floor((read_config_option('export_hourly') / $poller_minute))) {
 					$total_graphs_created = config_graph_export();
 					config_export_stats($start, $total_graphs_created);
 				}
@@ -54,8 +55,9 @@ function graph_export() {
 			case "export_daily":
 				if (strstr(read_config_option('export_daily'), ':')) {
 					$export_daily_time = explode(':', read_config_option('export_daily'));
+					$poller_minute = read_config_option('poller_interval') / 60;
 					if (date('G') == $export_daily_time[0]) {
-						if (floor((date('i') / 5)) == floor(($export_daily_time[1] / 5))) {
+						if (floor((date('i') / $poller_minute)) == floor(($export_daily_time[1] / $poller_minute))) {
 							$total_graphs_created = config_graph_export();
 							config_export_stats($start, $total_graphs_created);
 						}
@@ -526,7 +528,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 		AND graph_templates_graph.local_graph_id=graph_local.id";
 
 
-	$graphs = db_fetch_assoc("SELECT 
+	$graphs = db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title_cache,
 		graph_templates_graph.height,
@@ -950,7 +952,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		$sql_join
 		$sql_where
 		ORDER BY graph_templates_graph.title_cache";
-cacti_log(str_replace("  ", " ", str_replace("\n", " ", str_replace("\t", " ", $request))));
+
 	if ($type == "index") {
 		$graphs = array();
 	}else{
