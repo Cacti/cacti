@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -bug#0001174: Unidentified index warning
 -bug#0001175: Hide hosts in Graph Permissions that you already have access to
 -bug#0001176: Problem validating IPv6 addresses
+-bug#0001188: no graph export in tree mode 
 -bug#0001191: Faulty IP address validation by ping.php script
 -bug#0001180: Graph Export to CSV failed by using IE 6 SP2
 -bug#0001194: RRDtool URL is incorrect on the about page
