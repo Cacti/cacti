@@ -1236,7 +1236,7 @@ function get_rrd_cfs($local_data_id) {
 				if (substr_count($line, ".cf")) {
 					$values = explode("=",$line);
 
-					if (!in_array(trim($values[1]), $cfs)) {
+					if (!in_array(trim($values[1], '" '), $cfs)) {
 						$cfs[] = trim($values[1], '" ');
 					}
 				}
