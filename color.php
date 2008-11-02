@@ -127,10 +127,20 @@ function color() {
 		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-		## Space
-		DrawMatrixHeaderItem("&nbsp; &nbsp; ",$colors["header_text"],1);
+
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
-                DrawMatrixHeaderItem("Color",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+
+		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
 		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
 	print "</tr>";
 
@@ -141,23 +151,34 @@ function color() {
 		$j=0; ## even/odd counter
 		foreach ($color_list as $color) {
 			$j++;
-			if ($j % 2 == 1) {
+			if ($j % 4 == 1) {
 				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 					?>
-					<td>
-						<a class="linkEditMain" href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
+					<td width='1'>
+						<a class="linkEditMain" style='display:block;' href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?php print $color["hex"];?>" width="1%">&nbsp;</td>
+					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
 						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=1;
+			}elseif (($j % 4 == 2) || ($j % 4 == 3)) {
+					?>
+					<td></td>
+					<td width='1'>
+						<a class="linkEditMain" style='display:block;' href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
+					</td>
+					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
+					<td align="right">
+						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					</td>
+				<?php	$j=$j++;
 			} else { ?>
 					<td></td>
-					<td>
-						<a class="linkEditMain" href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
+					<td width='1'>
+						<a class="linkEditMain" style='display:block;' href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?php print $color["hex"];?>" width="1%">&nbsp;</td>
+					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
 						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
