@@ -573,7 +573,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Graph:&nbsp;
-				<?php form_dropdown("perm_graphs",db_fetch_assoc("SELECT local_graph_id,title_cache FROM graph_templates_graph WHERE local_graph_id > 0 ORDER BY title_cache"),"title_cache","local_graph_id","","","");?>
+				<?php form_dropdown("perm_graphs",db_fetch_assoc("SELECT local_graph_id, title_cache FROM graph_templates_graph WHERE local_graph_id > 0 AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY title_cache"),"title_cache","local_graph_id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph" align="absmiddle">
@@ -633,7 +633,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Host:&nbsp;
-				<?php form_dropdown("perm_hosts",db_fetch_assoc("SELECT id,CONCAT('',description,' (',hostname,')') AS name FROM host ORDER BY description,hostname"),"name","id","","","");?>
+				<?php form_dropdown("perm_hosts",db_fetch_assoc("SELECT id, CONCAT('',description,' (',hostname,')') AS name FROM host WHERE host.id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY description,hostname"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_host" align="absmiddle">
@@ -692,7 +692,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Graph Template:&nbsp;
-				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("SELECT id,name FROM graph_templates ORDER BY name"),"name","id","","","");?>
+				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("SELECT id, name FROM graph_templates WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY name"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph_template" align="absmiddle">
@@ -751,7 +751,7 @@ function graph_perms_edit() {
 	<table align='center' width='100%'>
 		<tr>
 			<td nowrap>Add Tree:&nbsp;
-				<?php form_dropdown("perm_trees",db_fetch_assoc("SELECT id,name FROM graph_tree ORDER BY name"),"name","id","","","");?>
+				<?php form_dropdown("perm_trees",db_fetch_assoc("SELECT id, name FROM graph_tree WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=2 AND user_auth_perms.user_id=".get_request_var("id",0)." ) ORDER BY name"),"name","id","","","");?>
 			</td>
 			<td align="right">
 				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_tree" align="absmiddle">
