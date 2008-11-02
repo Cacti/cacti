@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug#0000828: Truncated IOS description in |query_ifAlias|
 -bug#0000909: ALL_DATA_SOURCES_NODUPS breaks graphing when using "Consolidation Function" MAX 
 -bug#0000943: scripts/ping.pl has incorrect response when "icmp hop redirect" occurs
+-bug#0000948: Exporting graphs to a local path does not work correctly 
 -bug#0001022: strip_quotes incorrectly parsing script output
 -bug#0001090: LDAP authenication fails when using quote character in password
 -bug#0001100: spine hangs on unreachable hosts
