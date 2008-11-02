@@ -1250,6 +1250,7 @@ function get_rrd_cfs($local_data_id) {
 		foreach($cfs as $cf) {
 			switch($cf) {
 			case "AVG":
+			case "AVERAGE":
 				$new_cfs[] = array_search('AVERAGE', $consolidation_functions);
 				break;
 			case "MIN":
