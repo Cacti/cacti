@@ -23,7 +23,6 @@
 */
 
 function upgrade_to_0_8_7c() {
-
 	/* speed up the UI, missed in 0.8.7b upgrade, avoid failures if index already exists */
 	$result = db_fetch_assoc("SHOW INDEX FROM `data_local`") or die (mysql_error());
 	$indices = array();
@@ -47,10 +46,12 @@ function upgrade_to_0_8_7c() {
 	}
 
 	/* speed up graph automations some more */
-	db_install_execute("0.8.7c", "ALTER TABLE `data_input_data` ADD INDEX `input_output`(`input_output`)");
+	db_install_execute("0.8.7c", "ALTER TABLE `data_input_fields` ADD INDEX `input_output`(`input_output`)");
 
-	/* increase the width of the settings field */
-	db_install_execute("0.8.7c", "ALTER TABLE `settings` MODIFY COLUMN `name` VARCHAR(512) NOT NULL DEFAULT NULL");
+	/* increase the width of the settings field, but only if MySQL is >= 5 */
+	if (substr(db_fetch_cell("SELECT @@version"), 0, 1) >= 5) {
+		db_install_execute("0.8.7c", "ALTER TABLE `settings` MODIFY COLUMN `name` VARCHAR(512) NOT NULL DEFAULT ''");
+	}
 
 	/* add a default for NOT NULL columns */
 	db_install_execute("0.8.7c", "ALTER TABLE `data_local` MODIFY COLUMN `snmp_index` VARCHAR(255) NOT NULL DEFAULT '';");
