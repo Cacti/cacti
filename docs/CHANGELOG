@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -bug#0001090: LDAP authenication fails when using quote character in password
 -bug#0001100: spine hangs on unreachable hosts
 -bug#0001135: Graph export feature not exporting as per user level selected
+-bug#0001136: Regex ambiguous for mbstring
 -bug#0001138: Lack of error checking causes graphs to not update when rrdtool crashes
 -bug#0001141: Script server appears broken for "index" and "query" requests (Documentation Fix)
 -bug#0001145: Save Failed error when changing Graph Details

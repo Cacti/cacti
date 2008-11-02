@@ -83,8 +83,8 @@ $config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
 $config["php_snmp_support"] = function_exists("snmpget");
 
 /* used for includes */
-$config["base_path"] = strtr(ereg_replace("(.*)[\/\\]include", "\\1", dirname(__FILE__)), "\\", "/");
-$config["library_path"] = ereg_replace("(.*[\/\\])include", "\\1lib", dirname(__FILE__));
+$config["base_path"] = strtr(ereg_replace("(.*)[\\\/]include", "\\1", dirname(__FILE__)), "\\", "/");
+$config["library_path"] = ereg_replace("(.*[\\\/])include", "\\1lib", dirname(__FILE__));
 $config["include_path"] = dirname(__FILE__);
 $config["rra_path"] = $config["base_path"] . '/rra';
 
