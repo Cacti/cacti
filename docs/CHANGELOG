@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0000486: RRA template edit allows invalid XFF values
 -bug#0000626: Setting "Default Graph Tree" does not work with dual pane
 -bug#0000828: Truncated IOS description in |query_ifAlias|
+-bug#0000909: ALL_DATA_SOURCES_NODUPS breaks graphing when using "Consolidation Function" MAX 
 -bug#0000943: scripts/ping.pl has incorrect response when "icmp hop redirect" occurs
 -bug#0001022: strip_quotes incorrectly parsing script output
 -bug#0001090: LDAP authenication fails when using quote character in password
@@ -34,6 +35,7 @@ Cacti CHANGELOG
 -bug#0001230: poller stops updating rrd files
 -bug#0001236: set 'stats_recache' to zero when no re-index is present
 -bug#0001238: Guest user has access to change password
+-bug#0001239: Using the TOTAL_ALL_DATA_SOURCES in a graph where all item are using the MAX CF yields an invalid(empty) CDEF 
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: missing closing </form> on host.php
 -bug#0001247: snmp ping won't work for snmp v3

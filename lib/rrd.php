@@ -846,19 +846,45 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	$i = 0; $j = 0;
+	$last_graph_cf = array();
 	if (sizeof($graph_items) > 0) {
 
-		foreach ($graph_items as $graph_item) {
-			/* mimic the old behavior: LINE[123], AREA, STACK and GPRINT items use the CF specified in the graph item */
+		/* we need to add a new column "cf_reference", so unless PHP 5 is used, this foreach syntax is required */
+		foreach ($graph_items as $key => $graph_item) {
+			/* mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item */
 			if (($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1) ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2) ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3) ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
 				$graph_cf = $graph_item["consolidation_function_id"];
+				/* remember the last CF for this data source for use with GPRINT 
+				 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
+				 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
+				$last_graph_cf["data_source_name"]["local_data_template_rrd_id"] = $graph_cf;
+				/* remember this for second foreach loop */
+				$graph_items[$key]["cf_reference"] = $graph_cf;
+			}elseif ($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_GPRINT) {
+				/* ATTENTION! 
+				 * the "CF" given on graph_item edit screen for GPRINT is indeed NOT a real "CF",
+				 * but an aggregation function
+				 * see "man rrdgraph_data" for the correct VDEF based notation
+				 * so our task now is to "guess" the very graph_item, this GPRINT is related to
+				 * and to use that graph_item's CF */
+				if (isset($last_graph_cf["data_source_name"]["local_data_template_rrd_id"])) {
+					$graph_cf = $last_graph_cf["data_source_name"]["local_data_template_rrd_id"];
+					/* remember this for second foreach loop */
+					$graph_items[$key]["cf_reference"] = $graph_cf;
+				} else {
+					$graph_cf = generate_graph_best_cf($graph_item["local_data_id"], $graph_item["consolidation_function_id"]);
+					/* remember this for second foreach loop */
+					$graph_items[$key]["cf_reference"] = $graph_cf;
+				}
 			}else{
 				/* all other types are based on the best matching CF */
 				$graph_cf = generate_graph_best_cf($graph_item["local_data_id"], $graph_item["consolidation_function_id"]);
+				/* remember this for second foreach loop */
+				$graph_items[$key]["cf_reference"] = $graph_cf;
 			}
 
 			if ((!empty($graph_item["local_data_id"])) && (!isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf]))) {
@@ -1007,6 +1033,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$cf_id = 1; /* CF: AVERAGE */
 			}
 		}
+		/* now remember the correct CF reference */
+		$cf_id = $graph_item["cf_reference"];
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
@@ -1512,7 +1540,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	$i = 0; $j = 0;
 	$nth = 0; $sum = 0;
 	if (sizeof($xport_items) > 0) {
-		foreach ($xport_items as $xport_item) {
+		/* we need to add a new column "cf_reference", so unless PHP 5 is used, this foreach syntax is required */
+		foreach ($xport_items as $key => $xport_item) {
 			/* mimic the old behavior: LINE[123], AREA, STACK and GPRINT items use the CF specified in the graph item */
 			if (($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1) ||
 				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2) ||
@@ -1520,9 +1549,30 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
 				($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
 				$xport_cf = $xport_item["consolidation_function_id"];
+				$last_xport_cf["data_source_name"]["local_data_template_rrd_id"] = $xport_cf;
+				/* remember this for second foreach loop */
+				$xport_items[$key]["cf_reference"] = $xport_cf;
+			}elseif ($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_GPRINT) {
+				/* ATTENTION! 
+				 * the "CF" given on graph_item edit screen for GPRINT is indeed NOT a real "CF",
+				 * but an aggregation function
+				 * see "man rrdgraph_data" for the correct VDEF based notation
+				 * so our task now is to "guess" the very graph_item, this GPRINT is related to
+				 * and to use that graph_item's CF */
+				if (isset($last_xport_cf["data_source_name"]["local_data_template_rrd_id"])) {
+					$xport_cf = $last_xport_cf["data_source_name"]["local_data_template_rrd_id"];
+					/* remember this for second foreach loop */
+					$xport_items[$key]["cf_reference"] = $xport_cf;
+				} else {
+					$xport_cf = generate_graph_best_cf($xport_item["local_data_id"], $xport_item["consolidation_function_id"]);
+					/* remember this for second foreach loop */
+					$xport_items[$key]["cf_reference"] = $xport_cf;
+				}
 			}else{
 				/* all other types are based on the best matching CF */
 				$xport_cf = generate_graph_best_cf($xport_item["local_data_id"], $xport_item["consolidation_function_id"]);
+				/* remember this for second foreach loop */
+				$xport_items[$key]["cf_reference"] = $xport_cf;
 			}
 
 			if ((!empty($xport_item["local_data_id"])) &&
@@ -1648,6 +1698,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 				$cf_id = 1; /* CF: AVERAGE */
 			}
 		}
+		/* now remember the correct CF reference */
+		$cf_id = $xport_item["cf_reference"];
 
 		/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 		data source of global cdef, but is unique when those two variables combine. */
