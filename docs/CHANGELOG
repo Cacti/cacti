@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.7c
+-bug#0000157: Dual pane tree should have the option of not rendering all trees in one page 
 -bug#0000486: RRA template edit allows invalid XFF values
 -bug#0000626: Setting "Default Graph Tree" does not work with dual pane
 -bug#0000828: Truncated IOS description in |query_ifAlias|
