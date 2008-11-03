@@ -27,6 +27,9 @@ include("../include/global.php");
 /* allow the upgrade script to run for as long as it needs to */
 ini_set("max_execution_time", "0");
 
+/* verify all required php extensions */
+if (!verify_php_extensions()) {exit;}
+
 $cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", "0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d", "0.8.6e", "0.8.6f", "0.8.6g", "0.8.6h", "0.8.6i", "0.8.6j", "0.8.6k", "0.8.7", "0.8.7a", "0.8.7b", "0.8.7c");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
@@ -37,7 +40,7 @@ $old_version_index = array_search($old_cacti_version, $cacti_versions);
 /* do a version check */
 if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
+		<p style='font-family: Verdana, Arial; font-size: 12px;'>This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
 	exit;
 }elseif (ereg("^0\.6", $old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
@@ -54,6 +57,23 @@ if ($old_cacti_version == $config["cacti_version"]) {
 		Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX
 		on the cacti database.</p>";
 	exit;
+}
+
+function verify_php_extensions() {
+	$extensions = array("session", "sockets", "mysql", "xml");
+	$ok = true;
+	$missing_extension = "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
+							<p style='font-family: Verdana, Arial; font-size: 12px;'>The following PHP extensions are missing:</p><ul>";
+	foreach ($extensions as $extension) {
+		if (!extension_loaded($extension)){
+			$ok = false;
+			$missing_extension .= "<li style='font-family: Verdana, Arial; font-size: 12px;'>$extension</li>";
+		}
+	}
+	if (!$ok) {
+		print $missing_extension . "</ul><p style='font-family: Verdana, Arial; font-size: 12px;'>Please install those PHP extensions and retry</p>";
+	}
+	return $ok;
 }
 
 function db_install_execute($cacti_version, $sql) {

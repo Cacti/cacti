@@ -170,9 +170,55 @@
 			</sect1>
 			<sect1 id="unix_configure_php">
 				<title>Configure PHP</title>
+					<para>Please ensure, that PHP support is either builtin or installed for the
+					following PHP extension modules:</para>
+					<itemizedlist>
+						<listitem>
+							<para>
+								<application>mysql</application> (For configuration, see note below)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>SNMP</application> (For configuration, see note below)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>XML</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>Session</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>Sockets</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>LDAP</application> (Required only when using LDAP authentication)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>GD</application> (Required only for some Plugins)
+							</para>
+						</listitem>
+					</itemizedlist>
+					<para> You may run the following command to get the list of all
+					available PHP modules</para>
+					<screen><userinput>php -m</userinput></screen>
+					<para>Please verify, that the modules are installed and configured correctly.
+					There are several ways to do so, please consult <ulink url="http://www.php.net/manual/en/configuration.php">PHP configuration instructions</ulink>
+					for a complete description.</para>
 					<para>
-						Please find the file <filename>/etc/php.ini</filename>
-						and make the following changes to it:
+					We will continue using the most recommended way of configuring php extension modules.
+					Please find the file <filename>/etc/php.ini</filename>
+					and make the following changes to it:
 					</para>
 					<screen><userinput>extension_dir = /etc/php.d</userinput></screen>
 					<para>

@@ -87,6 +87,7 @@ Cacti CHANGELOG
 -bug: Ping and SNMP should test both conditions
 -bug: When step is less than poller interval, item will stop polling for long period of time
 -feature#0000284: Custom <path_rra> for each device
+-feature#0000431: Add php-xml to requirements, verify required PHP extensions
 -feature#0001289: Add "Graph Properties" wrench to tree+preview mode
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
 -feature#0001250: Dispatching job in poller can lead to unbalanced threads 
