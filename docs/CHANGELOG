@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -bug#0001258: "Remove Verification" is an ambiguous definition, leads to data loss
 -bug#0001259: LDAP Authentication using Solaris 10 standard ldap client fails
 -bug#0001262: Do not allow deletion of Graph Export User
+-bug#0001264: CDEFs can't recognize |query_*| 
 -bug#0001268: resource/snmp_queries/net-snmp_disk.xml has incorrect name for "Percent Available"
 -bug#0001271: hex string to decimal conversion
 -bug#0001273: Escape windows paths to accomodate spaces
