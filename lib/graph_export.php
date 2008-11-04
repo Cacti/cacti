@@ -751,7 +751,7 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 		host.description AS hostname
 		FROM graph_tree
 		INNER JOIN (graph_tree_items
-		LEFT JOIN host ON (graph_tree_items.host_id = host.id)
+		LEFT JOIN host ON (graph_tree_items.host_id=host.id)
 		$sql_join)
 		ON graph_tree.id = graph_tree_items.graph_tree_id
 		$sql_where
@@ -959,9 +959,9 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 			graph_tree_items.order_key,
 			graph_templates_graph.title_cache as title_cache
 			FROM (graph_tree_items,graph_local)
+			LEFT JOIN host ON (host.id=graph_local.host_id)
 			LEFT JOIN graph_templates_graph ON (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id AND graph_tree_items.local_graph_id>0)
 			LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id=graph_templates.id)
-			LEFT JOIN host ON (host.id=graph_local.host_id)
 			$sql_join
 			$sql_where
 			GROUP BY graph_tree_items.id
