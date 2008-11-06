@@ -679,7 +679,7 @@ $settings = array(
 			"size" => "5"
 			),
 		"process_leveling" => array(
-			"friendly_name" => "Ballance Process Load",
+			"friendly_name" => "Balance Process Load",
 			"description" => "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process.",
 			"method" => "checkbox",
 			"default" => "on"
