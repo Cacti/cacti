@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -bug#0001271: hex string to decimal conversion
 -bug#0001273: Escape windows paths to accomodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255
+-bug#0001283: graph_image.php causes PHP Notice errors on view
 -bug#0001286: poller_item cache is not updated when "Data Input Method" is changed 
 -bug#0001288: A host with ICMP ping selected as method does not properly perform ping
 -bug#0001291: Reapply Suggested Names fails on Script Queries
