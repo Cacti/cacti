@@ -196,7 +196,8 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_LOW => "LOW - Statistics and Errors",
 	POLLER_VERBOSITY_MEDIUM => "MEDIUM - Statistics, Errors and Results",
 	POLLER_VERBOSITY_HIGH => "HIGH - Statistics, Errors, Results and Major I/O Events",
-	POLLER_VERBOSITY_DEBUG => "DEBUG - Statistics, Errors, Results, I/O and Program Flow");
+	POLLER_VERBOSITY_DEBUG => "DEBUG - Statistics, Errors, Results, I/O and Program Flow",
+	POLLER_VERBOSITY_DEVDBG => "DEVEL - Developer DEBUG Level");
 
 $poller_options = array(1 =>
 	"cmd.php",

@@ -79,8 +79,8 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 	}
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("DEBUG: SQL Exec: \"" . $sql . "\"", FALSE);
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log("DEVEL: SQL Exec: \"" . $sql . "\"", FALSE);
 	}
 
 	$errors = 0;
@@ -126,8 +126,8 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("DEBUG: SQL Cell: \"" . $sql . "\"", FALSE);
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log("DEVEL: SQL Cell: \"" . $sql . "\"", FALSE);
 	}
 
 	if ($col_name != '') {
@@ -172,8 +172,8 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
-	if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("DEBUG: SQL Row: \"" . $sql . "\"\n", FALSE);
+	if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG)) {
+		cacti_log("DEVEL: SQL Row: \"" . $sql . "\"", FALSE);
 	}
 
 	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -209,8 +209,8 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 
 	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
-		cacti_log("DEBUG: SQL Assoc: \"" . $sql . "\"", FALSE);
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log("DEVEL: SQL Assoc: \"" . $sql . "\"", FALSE);
 	}
 
 	$data = array();

@@ -123,9 +123,11 @@ Cacti CHANGELOG
 -feature: Add api call to associate graphs with their data sources
 -feature: Move the notes field to bottom of page
 -feature: New availability option "Ping or SNMP"
+-feature: Add developer debug level to reduce SQL messages in DEBUG
 -feature: Allow for specification of a default reindex method
 -feature: Show more colors on a single color's page
 -feature: Exit is either a database or table does not exist
+-feature: Add developer debug level to reduce SQL messages in DEBUG
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE
