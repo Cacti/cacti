@@ -831,8 +831,11 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 
 	$sql_join  = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
-	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-	$sql_where = (empty($sql_where) ? "" : "AND $sql_where");
+	if ($current_user["policy_hosts"] == "1") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id>0)";
+	}elseif ($current_user["policy_hosts"] == "2") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id>0)";
+	}
 
 	switch ($type) {
 	case "index":
@@ -1158,8 +1161,11 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		LEFT JOIN host ON (host.id=graph_local.host_id)
 		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
-	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-	$sql_where = (empty($sql_where) ? "" : "AND $sql_where");
+	if ($current_user["policy_hosts"] == "1") {
+		$sql_where = "AND (user_auth_perms.user_id IS NULL AND graph_tree_items.host_id>0)";
+	}elseif ($current_user["policy_hosts"] == "2") {
+		$sql_where = "AND (user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id>0)";
+	}
 
 	$graphs = array();
 
@@ -1459,8 +1465,11 @@ function create_dhtml_tree_export($tree_id) {
 
 	$sql_join  = "LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
-	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-	$sql_where = (empty($sql_where) ? "" : "AND $sql_where");
+	if ($current_user["policy_hosts"] == "1") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id>0)";
+	}elseif ($current_user["policy_hosts"] == "2") {
+		$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id>0)";
+	}
 
 	if (sizeof($tree_list) > 0) {
 	foreach ($tree_list as $tree) {
