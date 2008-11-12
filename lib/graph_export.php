@@ -565,7 +565,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			$graph_data_array["export"] = true;
 			$graph_data_array["export_filename"] = "graphs/thumb_" . $graph["local_graph_id"] . ".png";
 
-			export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
+			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 
@@ -595,7 +595,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 				$graph_data_array["export"] = true;
 				$graph_data_array["export_filename"] = "graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 
-				export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
+				export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 
@@ -722,25 +722,28 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 	if (read_config_option("auth_method") != 0) {
 		$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-		$sql_join  = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
+		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
-		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-		$sql_where = (empty($sql_where) ? "" : "AND $sql_where");
+		if ($current_user["policy_hosts"] == "1") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id>0)";
+		}elseif ($current_user["policy_hosts"] == "2") {
+			$sql_where = "AND !(user_auth_perms.user_id IS NULL AND graph_tree_items.host_id>0)";
+		}
 	}else{
 		$sql_join  = "";
 		$sql_where = "";
 	}
 
 	if ($tree_id == 0) {
-		$sql_where = "WHERE graph_tree_items.local_graph_id = 0
+		$sql_where = "WHERE graph_tree_items.local_graph_id=0
 			$sql_where";
 	}else{
 		$sql_where = "WHERE graph_tree_items.graph_tree_id=" . $tree_id . "
 			$sql_where
-			AND graph_tree_items.local_graph_id = 0";
+			AND graph_tree_items.local_graph_id=0";
 	}
 
-	$heirarchy = db_fetch_assoc("SELECT DISTINCT
+	$hier_sql = "SELECT DISTINCT
 		graph_tree.name,
 		graph_tree.id AS tree_id,
 		graph_tree_items.id,
@@ -750,16 +753,18 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 		graph_tree_items.host_grouping_type,
 		host.description AS hostname
 		FROM graph_tree
-		INNER JOIN (graph_tree_items
+		LEFT JOIN (graph_tree_items
 		LEFT JOIN host ON (graph_tree_items.host_id=host.id)
 		$sql_join)
 		ON graph_tree.id = graph_tree_items.graph_tree_id
 		$sql_where
-		ORDER BY graph_tree.name, graph_tree_items.order_key");
+		ORDER BY graph_tree.name, graph_tree_items.order_key";
+
+	$hierarchy = db_fetch_assoc($hier_sql);
 
 	/* build all the html files */
-	if (sizeof($heirarchy) > 0) {
-		foreach ($heirarchy as $leaf) {
+	if (sizeof($hierarchy) > 0) {
+		foreach ($hierarchy as $leaf) {
 			if ($leaf["host_id"] > 0) {
 				build_html_file($leaf, "host");
 
@@ -1248,7 +1253,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		$graph_data_array["export"] = true;
 
 		if (read_config_option("export_tree_isolation") == "on") {
-			$graph_data_array["export_filename"] = "'" . $path . "'/graphs/thumb_" . $graph["local_graph_id"] . ".png";
+			$graph_data_array["export_filename"] =  "/" . $path . "/graphs/thumb_" . $graph["local_graph_id"] . ".png";
 			$export_filename = $cacti_export_path . "/" . $path . "/graphs/thumb_" . $graph["local_graph_id"] . ".png";
 		}else{
 			$graph_data_array["export_filename"] = "/graphs/thumb_" . $graph["local_graph_id"] . ".png";
@@ -1259,7 +1264,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			/* add the graph to the exported list */
 			array_push($exported_files, $export_filename);
 
-			export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
+			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 			/* generate the graph */
 			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
@@ -1293,12 +1298,12 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 				$graph_data_array["export"] = true;
 
 				if (read_config_option("export_tree_isolation") == "on") {
-					$graph_data_array["export_filename"] = "'" . $path . "'/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
+					$graph_data_array["export_filename"] = "/" . $path . "/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 				}else{
 					$graph_data_array["export_filename"] = "/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 				}
 
-				export_log("Creating Graph '" . $graph_data_array["export_filename"] . "'");
+				export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 				$total_graphs_created++;
@@ -1464,7 +1469,7 @@ function create_dhtml_tree_export($tree_id) {
 
 			$i++;
 
-			$heir_sql = "SELECT DISTINCT
+			$hier_sql = "SELECT DISTINCT
 					graph_tree_items.id,
 					graph_tree_items.title,
 					graph_tree_items.order_key,
@@ -1480,12 +1485,12 @@ function create_dhtml_tree_export($tree_id) {
 					AND graph_tree_items.local_graph_id = 0
 					ORDER BY graph_tree_items.order_key";
 
-			$heirarchy = db_fetch_assoc($heir_sql);
+			$hierarchy = db_fetch_assoc($hier_sql);
 
 			$dhtml_tree_id = 0;
 
-			if (sizeof($heirarchy) > 0) {
-				foreach ($heirarchy as $leaf) {
+			if (sizeof($hierarchy) > 0) {
+				foreach ($hierarchy as $leaf) {
 					if ($dhtml_tree_id <> $tree["id"]) {
 						$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . get_tree_name($tree["id"]) . "\", \"" . clean_up_export_name(get_tree_name($tree["id"])) . "_leaf.html\"))\n";
 					}
