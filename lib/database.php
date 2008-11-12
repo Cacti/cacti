@@ -89,6 +89,9 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 
 		if (($query) || ($db_conn->ErrorNo() == 1032)) {
 			return(1);
+		}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
+			printf("FATAL: Database or Table does not exist");
+			exit;
 		}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 			if ((substr_count($db_conn->ErrorMsg(), "Deadlock")) || ($db_conn->ErrorNo() == 1213) || ($db_conn->ErrorNo() == 1205)) {
 				$errors++;
@@ -147,6 +150,9 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 
 			return($column);
 		}
+	}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
+		printf("FATAL: Database or Table does not exist");
+		exit;
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
@@ -181,7 +187,10 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 
 			return($fields);
 		}
-	}else if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
+	}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
+		printf("FATAL: Database or Table does not exist");
+		exit;
+	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
@@ -217,6 +226,9 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 		$query->close();
 
 		return($data);
+	}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
+		printf("FATAL: Database or Table does not exist");
+		exit;
 	}else if (($log) || (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}

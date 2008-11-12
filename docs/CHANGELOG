@@ -125,6 +125,7 @@ Cacti CHANGELOG
 -feature: New availability option "Ping or SNMP"
 -feature: Allow for specification of a default reindex method
 -feature: Show more colors on a single color's page
+-feature: Exit is either a database or table does not exist
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE
