@@ -61,7 +61,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			<script type='text/javascript'>
 			// Initialize the calendar
 			calendar=null;
-		
+
 			// This function displays the calendar associated to the input field 'id'
 			function showCalendar(id) {
 				var el = document.getElementById(id);
@@ -79,22 +79,22 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 					cal.setRange(1900, 2070);        // min/max year allowed.
 					cal.create();
 				}
-		
+
 				calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
 				calendar.parseDate(el.value);                // try to parse the text in field
 				calendar.sel = el;                           // inform it what input field we use
-		
+
 				// Display the calendar below the input field
 				calendar.showAtElement(el, "Br");        // show the calendar
-		
+
 				return false;
 			}
-		
+
 			// This function update the date in the input field when selected
 			function selected(cal, date) {
 				cal.sel.value = date;      // just update the date in the input field.
 			}
-		
+
 			// This function gets called when the end-user clicks on the 'Close' button.
 			// It just hides the calendar without destroying it.
 			function closeHandler(cal) {
@@ -104,16 +104,16 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		</script>
 		<script type="text/javascript">
 		<!--
-		
+
 			function applyTimespanFilterChange(objForm) {
 				strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
 				strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 				document.location = strURL;
 			}
-		
+
 		-->
 		</script>
-		
+
 			<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
 				<form name="form_timespan_selector" method="post">
 				<td class="noprint">
@@ -137,7 +137,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 										$start_val = 1;
 										$end_val = sizeof($graph_timespans)+1;
 									}
-		
+
 									if (sizeof($graph_timespans) > 0) {
 										for ($value=$start_val; $value < $end_val; $value++) {
 											print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
@@ -190,7 +190,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		print "<br>";
 	}
 
-	$heirarchy = db_fetch_assoc("select
+	$hier_sql = "select
 		graph_tree_items.id,
 		graph_tree_items.title,
 		graph_tree_items.local_graph_id,
@@ -208,9 +208,11 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		where graph_tree_items.graph_tree_id=$tree_id
 		and graph_tree_items.order_key like '$search_key%'
 		$sql_where
-		order by graph_tree_items.order_key");
+		order by graph_tree_items.order_key";
 
-	print "<!-- <P>Building Heirarchy w/ " . sizeof($heirarchy) . " leaves</P>  -->\n";
+	$hierarchy = db_fetch_assoc($hier_sql);
+
+	print "<!-- <P>Building Hierarchy w/ " . sizeof($hierarchy) . " leaves</P>  -->\n";
 
 	html_graph_start_box(0, true);
 
@@ -219,8 +221,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	$i = 0;
 
 	/* loop through each tree item */
-	if (sizeof($heirarchy) > 0) {
-	foreach ($heirarchy as $leaf) {
+	if (sizeof($hierarchy) > 0) {
+	foreach ($hierarchy as $leaf) {
 		/* find out how 'deep' this item is */
 		$tier = tree_tier($leaf["order_key"]);
 
@@ -228,8 +230,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		if ($leaf["title"] != "") { $current_leaf_type = "heading"; }elseif (!empty($leaf["local_graph_id"])) { $current_leaf_type = "graph"; }else{ $current_leaf_type = "host"; }
 
 		/* find the type of the next branch. make sure the next item exists first */
-		if (isset($heirarchy{$i+1})) {
-			if ($heirarchy{$i+1}["title"] != "") { $next_leaf_type = "heading"; }elseif (!empty($heirarchy{$i+1}["local_graph_id"])) { $next_leaf_type = "graph"; }else{ $next_leaf_type = "host"; }
+		if (isset($hierarchy{$i+1})) {
+			if ($hierrarchy{$i+1}["title"] != "") { $next_leaf_type = "heading"; }elseif (!empty($hierarchy{$i+1}["local_graph_id"])) { $next_leaf_type = "graph"; }else{ $next_leaf_type = "host"; }
 		}else{
 			$next_leaf_type = "";
 		}
@@ -335,7 +337,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		where graph_tree_items.graph_tree_id=$tree_id
 		order by graph_tree_id, graph_tree_items.order_key");
 
-	print "<!-- <P>Building Heirarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
+	print "<!-- <P>Building Hierarchy w/ " . sizeof($tree) . " leaves</P>  -->\n";
 
 	##  Here we go.  Starting the main tree drawing loop.
 
@@ -613,7 +615,7 @@ function create_dhtml_tree() {
 	if (sizeof($tree_list) > 0) {
 		foreach ($tree_list as $tree) {
 			$i++;
-			$heirarchy = db_fetch_assoc("select
+			$hierarchy = db_fetch_assoc("select
 				graph_tree_items.id,
 				graph_tree_items.title,
 				graph_tree_items.order_key,
@@ -632,8 +634,8 @@ function create_dhtml_tree() {
 			$i++;
 			$dhtml_tree[$i] = "ou0.xID = \"tree_" . $tree["id"] . "\"\n";
 
-			if (sizeof($heirarchy) > 0) {
-				foreach ($heirarchy as $leaf) {
+			if (sizeof($hierarchy) > 0) {
+				foreach ($hierarchy as $leaf) {
 					$i++;
 					$tier = tree_tier($leaf["order_key"]);
 
@@ -898,7 +900,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			<script type='text/javascript'>
 			// Initialize the calendar
 			calendar=null;
-		
+
 			// This function displays the calendar associated to the input field 'id'
 			function showCalendar(id) {
 				var el = document.getElementById(id);
@@ -916,22 +918,22 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					cal.setRange(1900, 2070);        // min/max year allowed.
 					cal.create();
 				}
-		
+
 				calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
 				calendar.parseDate(el.value);                // try to parse the text in field
 				calendar.sel = el;                           // inform it what input field we use
-		
+
 				// Display the calendar below the input field
 				calendar.showAtElement(el, "Br");        // show the calendar
-		
+
 				return false;
 			}
-		
+
 			// This function update the date in the input field when selected
 			function selected(cal, date) {
 				cal.sel.value = date;      // just update the date in the input field.
 			}
-		
+
 			// This function gets called when the end-user clicks on the 'Close' button.
 			// It just hides the calendar without destroying it.
 			function closeHandler(cal) {
@@ -941,13 +943,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		</script>
 		<script type="text/javascript">
 		<!--
-		
+
 			function applyTimespanFilterChange(objForm) {
 				strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
 				strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 				document.location = strURL;
 			}
-		
+
 		-->
 		</script>
 			<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
@@ -973,7 +975,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 										$start_val = 1;
 										$end_val = sizeof($graph_timespans)+1;
 									}
-		
+
 									if (sizeof($graph_timespans) > 0) {
 										for ($value=$start_val; $value < $end_val; $value++) {
 											print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
@@ -1290,7 +1292,7 @@ function find_first_folder_url() {
 
 	if (!empty($use_tree_id)) {
 		/* find the first clickable item in the tree */
-		$heirarchy = db_fetch_assoc("select
+		$hierarchy = db_fetch_assoc("select
 			graph_tree_items.id,
 			graph_tree_items.host_id
 			from graph_tree_items
@@ -1298,8 +1300,8 @@ function find_first_folder_url() {
 			and graph_tree_items.local_graph_id = 0
 			order by graph_tree_items.order_key");
 
-		if (sizeof($heirarchy) > 0) {
-			return "graph_view.php?action=tree&tree_id=$use_tree_id&leaf_id=" . $heirarchy[0]["id"] . "&select_first=true";
+		if (sizeof($hierarchy) > 0) {
+			return "graph_view.php?action=tree&tree_id=$use_tree_id&leaf_id=" . $hierarchy[0]["id"] . "&select_first=true";
 		}else{
 			return "graph_view.php?action=tree&tree_id=$use_tree_id&select_first=true";
 		}
