@@ -795,6 +795,10 @@ $settings = array(
 			"default" => 1,
 			"array" => $auth_methods
 			),
+		"special_users_header" => array(
+			"friendly_name" => "Special Users",
+			"method" => "spacer",
+			),
 		"guest_user" => array(
 			"friendly_name" => "Guest User",
 			"description" => "The name of the guest user for viewing graphs; is \"No User\" by default.",
@@ -811,8 +815,8 @@ $settings = array(
 			"sql" => "select username as id, username as name from user_auth where realm = 0 order by username",
 			"default" => "0"
 			),
-		"ldap_header" => array(
-			"friendly_name" => "LDAP Settings",
+		"ldap_general_header" => array(
+			"friendly_name" => "LDAP General Settings",
 			"method" => "spacer"
 			),
 		"ldap_server" => array(
@@ -870,6 +874,39 @@ $settings = array(
 			"description" => "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode.",
 			"method" => "textbox",
 			"max_length" => "255"
+			),
+		"ldap_group_require" => array(
+			"friendly_name" => "Require Group Membership",
+			"description" => "Require user to be member of group to authenicate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.",
+			"default" => "",
+			"method" => "checkbox"
+			),
+		"ldap_group_header" => array(
+			"friendly_name" => "LDAP Group Settings",
+			"method" => "spacer"
+			),
+		"ldap_group_dn" => array(
+			"friendly_name" => "Group Distingished Name (DN)",
+			"description" => "Distingished Name of the group that user must have membership.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"ldap_group_attrib" => array(
+			"friendly_name" => "Group Member Attribute",
+			"description" => "Name of the attribute that contains the usernames of the members.",
+			"method" => "textbox",
+			"max_length" => "255"
+			),
+		"ldap_group_member_type" => array(
+			"friendly_name" => "Group Member Type",
+			"description" => "Defines if users use full Distingished Name or just Username in the defined Group Member Attribute.",
+			"method" => "drop_array",
+			"default" => 1,
+			"array" => array( 1 => "Distingished Name", 2 => "Username" )
+			),
+		"ldap_search_base_header" => array(
+			"friendly_name" => "LDAP Specific Search Settings",
+			"method" => "spacer"
 			),
 		"ldap_search_base" => array(
 			"friendly_name" => "Search Base",

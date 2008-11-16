@@ -36,6 +36,10 @@ LDAP functions
   @arg $ldap_version - '2' or '3', LDAP protocol version, Default = Configured settings value
   @arg $ldap_encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
   @arg $ldap_referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
+  @arg $ldap_group_require - '0' Group membership is not required, '1' Group membership is required
+  @arg $ldap_group_dn - LDAP Group DN
+  @arg $ldap_group_attrib - Name of the LDAP Attrib that contains members 
+  @arg $ldap_group_require - '1' DN or '2' Username, user group member ship type
 
   @return - array of values
     "error_num" = error number returned
@@ -57,10 +61,11 @@ Error codes:
 9	Unable to connect to server
 10	Timeout
 11	General bind error
+12	Group DN not found
 99	PHP LDAP not enabled
 
 */
-function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",$ldap_port = "",$ldap_port_ssl = "",$ldap_version = "",$ldap_encryption = "",$ldap_referrals = "") {
+function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",$ldap_port = "",$ldap_port_ssl = "",$ldap_version = "",$ldap_encryption = "",$ldap_referrals = "",$ldap_group_require = "",$ldap_group_dn = "",$ldap_group_attrib = "",$ldap_group_member_type = "") {
 
 	$output = array();
 
@@ -105,6 +110,22 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",
 	if (empty($ldap_referrals)) {
 		$ldap_referrals = read_config_option("ldap_referrals");
 	}
+	if (empty($ldap_group_require)) {
+		if (read_config_option("ldap_group_require") == "on") {
+			$ldap_group_require = 1;
+		}else{
+			$ldap_group_require = 0;
+		}
+	}
+	if (empty($ldap_group_dn)) {
+		$ldap_group_dn = read_config_option("ldap_group_dn");
+	}
+	if (empty($ldap_group_attrib)) {
+		$ldap_group_attrib = read_config_option("ldap_group_attrib");
+	}
+	if (empty($ldap_group_member_type)) {
+		$ldap_group_member_type = read_config_option("ldap_group_member_type");
+	}
 
 	/* Determine connection method and create LDAP Object */
 	if ($ldap_encryption == "1") {
@@ -147,9 +168,35 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",
 		/* Bind to the LDAP directory */
 		$ldap_response = @ldap_bind($ldap_conn,$ldap_dn,$password);
 		if ($ldap_response) {
-			/* Auth ok */
-			$output["error_num"] = "0";
-			$output["error_text"] = "Authentication Success";
+			if ($ldap_group_required == 1) {
+				/* Process group membership if required */
+				if ($ldap_group_member_type == 1) {
+					$ldap_group_response = @ldap_compare($ldap_conn,$ldap_group,$ldap_group_attrib,$ldap_dn);
+				} else {
+					$ldap_group_response = @ldap_compare($ldap_conn,$ldap_group,$ldap_group_attrib,$username);
+				}
+			        if ($ldap_group_response === true) {
+					/* Auth ok */
+					$output["error_num"] = "0";
+					$output["error_text"] = "Authentication Success";
+			        } else if ($ldap_group_response === false) {
+					$output["error_num"] = "8";
+					$output["error_text"] = "Insuffient access";
+					cacti_log("LDAP: " . $output["error_text"], false, "AUTH");
+					@ldap_close($ldap_conn);
+					return $output;
+			        } else {
+					$output["error_num"] = "12";
+					$output["error_text"] = "Group DN could not be found to compare";
+					cacti_log("LDAP: " . $output["error_text"], false, "AUTH");
+					@ldap_close($ldap_conn);
+					return $output;
+				}
+			}else{
+				/* Auth ok - No group membership required */
+				$output["error_num"] = "0";
+				$output["error_text"] = "Authentication Success";
+			}
 		}else{
 			/* unable to bind */
 			$ldap_error = ldap_errno($ldap_conn);
@@ -462,3 +509,4 @@ function cacti_ldap_search_dn($username,$ldap_dn = "",$ldap_host = "",$ldap_port
 }
 
 ?>
+

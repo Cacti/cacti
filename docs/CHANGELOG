@@ -128,6 +128,7 @@ Cacti CHANGELOG
 -feature: Show more colors on a single color's page
 -feature: Exit is either a database or table does not exist
 -feature: Add developer debug level to reduce SQL messages in DEBUG
+-feature: Add support for group membership for LDAP authenication
 
 0.8.7b
 -bug#0000855: Unnecessary (and faulty) DEF generation for CF:AVERAGE
