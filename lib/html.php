@@ -570,8 +570,11 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
 			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
 			break;
-		case ereg("(HRULE|VRULE)", $_graph_type_name):
+		case ereg("(HRULE)", $_graph_type_name):
 			$matrix_title = "HRULE: " . $item["value"];
+			break;
+		case ereg("(VRULE)", $_graph_type_name):
+			$matrix_title = "VRULE: " . $item["value"];
 			break;
 		case ereg("(COMMENT)", $_graph_type_name):
 			$matrix_title = "COMMENT: " . $item["text_format"];
