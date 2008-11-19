@@ -61,7 +61,8 @@ Cacti CHANGELOG
 -bug#0001295: Division by zero when rrd_step < poller_interval
 -bug#0001296: add_graphs.php does not add the graph template to the host 
 -bug#0001299: When creating graphs the entire poller cache is recreated for a host
--bug#0001306: Empty COMMENT + <HR> gives you a blank legend line (was: Add Blank Line to Graph via Pull down menu) 
+-bug#0001306: Empty COMMENT + <HR> gives you a blank legend line (was: Add Blank Line to Graph via Pull down menu)
+-bug#0001314: Use Data Query variables as HRULE input for graph templates  
 -bug#0001318: Graph Export with 1 minute poller re-exports graphs 5 times
 -bug#0001320: Invalid PHP_SELF Path
 -bug#0001326: If a user's password contains a single quote the login fails
