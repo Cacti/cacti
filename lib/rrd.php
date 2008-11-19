@@ -1293,12 +1293,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
 				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
-				if (trim($comment_string) != "COMMENT:\"\"") {
+				if (trim($comment_string) == 'COMMENT:"\n"') {
+					$txt_graph_items .= 'COMMENT:" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
+				} else if (trim($comment_string) != "COMMENT:\"\"") {
 					$txt_graph_items .= rrd_substitute_host_query_data($comment_string, $graph, $graph_item);
 				}
 			}else {
 				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
-				if (trim($comment_string) != "COMMENT:\"\"") {
+				if (trim($comment_string) == 'COMMENT:"\n"') {
+					$txt_graph_items .= 'COMMENT:" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
+				} else if (trim($comment_string) != "COMMENT:\"\"") {
 					$txt_graph_items .= rrd_substitute_host_query_data($comment_string, $graph, $graph_item);
 				}
 			}
