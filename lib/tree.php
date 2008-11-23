@@ -241,7 +241,7 @@ function sort_tree($sort_type, $item_id, $sort_style) {
 		return 0;
 	}
 
-	$heirarchy = db_fetch_assoc("select
+	$hier_sql = "select
 		graph_tree_items.id,
 		graph_tree_items.title,
 		graph_tree_items.local_graph_id,
@@ -253,11 +253,13 @@ function sort_tree($sort_type, $item_id, $sort_style) {
 		left join graph_templates_graph on (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id and graph_tree_items.local_graph_id>0)
 		left join host on (host.id=graph_tree_items.host_id)
 		$sql_where
-		order by graph_tree_items.order_key");
+		order by graph_tree_items.order_key";
+
+	$hierarchy = db_fetch_assoc($hier_sql);
 
 	$leaf_sort_array = array();
-	if (sizeof($heirarchy) > 0) {
-		foreach ($heirarchy as $leaf) {
+	if (sizeof($hierarchy) > 0) {
+		foreach ($hierarchy as $leaf) {
 			$_search_key = substr($leaf["order_key"], 0, ((tree_tier($leaf["order_key"]) - 1) * CHARS_PER_TIER));
 
 			if ($leaf["local_graph_id"] > 0) {
