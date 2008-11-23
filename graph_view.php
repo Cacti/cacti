@@ -79,7 +79,6 @@ case 'tree':
 	/* don't even print the table if there is not >1 tree */
 	if ((!empty($tree_dropdown_html)) && (read_graph_config_option("default_tree_view_mode") == "1")) {
 		print "
-		<br>
 		<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
 			<tr>
 				$tree_dropdown_html
@@ -105,11 +104,7 @@ case 'tree':
 		}
 	}
 
-	print "<br><br>";
-
 	break;
-
-
 case 'preview':
 	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
 
@@ -254,7 +249,7 @@ case 'preview':
 	<?php
 
 	/* include graph view filter selector */
-	html_graph_start_box(3, true);
+	html_graph_start_box(3, FALSE);
 
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
@@ -333,7 +328,7 @@ case 'preview':
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
-					<td>
+					<td style='white-space:nowrap;' nowrap>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>
@@ -344,18 +339,18 @@ case 'preview':
 	</tr>
 	<?php
 
-	html_graph_end_box();
+	html_graph_end_box(FALSE);
 
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
-		html_graph_start_box(3, true);
+		html_graph_start_box(3, FALSE);
 
 		?>
 
 			<script type='text/javascript'>
 			// Initialize the calendar
 			calendar=null;
-		
+
 			// This function displays the calendar associated to the input field 'id'
 			function showCalendar(id) {
 				var el = document.getElementById(id);
@@ -373,22 +368,22 @@ case 'preview':
 					cal.setRange(1900, 2070);        // min/max year allowed.
 					cal.create();
 				}
-		
+
 				calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
 				calendar.parseDate(el.value);                // try to parse the text in field
 				calendar.sel = el;                           // inform it what input field we use
-		
+
 				// Display the calendar below the input field
 				calendar.showAtElement(el, "Br");        // show the calendar
-		
+
 				return false;
 			}
-		
+
 			// This function update the date in the input field when selected
 			function selected(cal, date) {
 				cal.sel.value = date;      // just update the date in the input field.
 			}
-		
+
 			// This function gets called when the end-user clicks on the 'Close' button.
 			// It just hides the calendar without destroying it.
 			function closeHandler(cal) {
@@ -398,16 +393,15 @@ case 'preview':
 		</script>
 		<script type="text/javascript">
 		<!--
-		
+
 			function applyTimespanFilterChange(objForm) {
 				strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
 				strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 				document.location = strURL;
 			}
-		
+
 		-->
 		</script>
-		
 			<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
 				<form name="form_timespan_selector" method="post">
 				<td class="noprint">
@@ -431,7 +425,7 @@ case 'preview':
 										$start_val = 1;
 										$end_val = sizeof($graph_timespans)+1;
 									}
-		
+
 									if (sizeof($graph_timespans) > 0) {
 										for ($value=$start_val; $value < $end_val; $value++) {
 											print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
@@ -505,12 +499,7 @@ case 'preview':
 
 	html_graph_end_box();
 
-	print "<br><br>";
-
 	break;
-
-
-
 case 'list':
 	define("ROWS_PER_PAGE", read_graph_config_option("list_graphs_per_page"));
 
@@ -604,7 +593,7 @@ case 'list':
 	}
 
 	/* display graph view filter selector */
-	html_graph_start_box(3, true);
+	html_graph_start_box(3, FALSE);
 
 	if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
 	if (empty($_REQUEST["graph_template_id"])) { $_REQUEST["graph_template_id"] = 0; }
@@ -701,7 +690,7 @@ case 'list':
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
-					<td>
+					<td style='white-space:nowrap;' nowrap>
 						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
 						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
 					</td>
@@ -711,7 +700,7 @@ case 'list':
 		</form>
 	</tr>
 	<?php
-	html_graph_end_box();
+	html_graph_end_box(TRUE);
 
 	/* create filter for sql */
 	$sql_filter = "";
@@ -810,7 +799,7 @@ case 'list':
 
 	<?php
 
-	html_graph_start_box(1, true);
+	html_graph_start_box(1, TRUE);
 	?>
 	<tr bgcolor='#<?php print $colors["header_panel"];?>'>
 		<td colspan='3'>
@@ -895,5 +884,5 @@ case 'list':
 
 include_once("./include/bottom_footer.php");
 
-?>	
+?>
 

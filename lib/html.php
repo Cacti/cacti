@@ -176,11 +176,15 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
    @arg $header - html to use as a header */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
 	$i = 0; $k = 0; $j = 0;
-	if (sizeof($graph_array) > 0) {
+
+	$num_graphs = sizeof($graph_array);
+
+	if ($num_graphs > 0) {
 		if ($header != "") {
 			print $header;
 		}
 
+		$start = true;
 		foreach ($graph_array as $graph) {
 			if (isset($graph["graph_template_name"])) {
 				if (isset($prev_graph_template_name)) {
@@ -196,11 +200,20 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 				}
 
 				if ($print) {
-					print "<tr bgcolor='#a9b7cb'>
-						<td colspan='3' class='textHeaderDark'>
+					if (!$start) {
+						while($i % read_graph_config_option("num_columns") != 0) {
+							print "<td align='center' width='" . ceil(100 / read_graph_config_option("num_columns")) . "%'></td>";
+							$i++;
+						}
+						print "</tr>";
+					}
+
+					print "<tr style='background-color:#a9b7cb;'>
+						<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
 							<strong>Graph Template:</strong> " . $graph["graph_template_name"] . "
 						</td>
 					</tr>";
+					$i = 0;
 				}
 			}elseif (isset($graph["data_query_name"])) {
 				if (isset($prev_data_query_name)) {
@@ -216,10 +229,22 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 				}
 
 				if ($print) {
-					print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td></tr>";
+					if (!$start) {
+						while($i % read_graph_config_option("num_columns") != 0) {
+							print "<td align='center' width='" . ceil(100 / read_graph_config_option("num_columns")) . "%'></td>";
+							$i++;
+						}
+
+						print "</tr>";
+					}
+
+					print "<tr style='background-color:#a9b7cb;'>
+							<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+						</tr>";
+					$i = 0;
 				}
-				print "<tr bgcolor='#a9b7cb'>
-					<td colspan='3' class='textHeaderDark'>
+				print "<tr style='background-color:#a9b7cb;'>
+					<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
 						" . $graph["sort_field_value"]. "
 					</td>
 				</tr>";
@@ -227,10 +252,11 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 			if ($i == 0) {
 				print "<tr style='background-color: #" . ($j % 2 == 0 ? "F2F2F2" : "FFFFFF") . ";'>";
+				$start = false;
 			}
 
 			?>
-			<td align='center' width='<?php print (98 / read_graph_config_option("num_columns"));?>%'>
+			<td align='center' width='<?php print ceil(100 / read_graph_config_option("num_columns"));?>%'>
 				<table align='center' cellpadding='0'>
 					<tr>
 						<td align='center'>
@@ -251,14 +277,22 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			$i++;
 			$k++;
 
-			if (($i == read_graph_config_option("num_columns")) && ($k < count($graph_array))) {
-				$i = 0;
+			if (($i % read_graph_config_option("num_columns") == 0) && ($k < $num_graphs)) {
+				$i=0;
 				$j++;
 				print "</tr><tr style='background-color: #" . ($j % 2 == 0 ? "F2F2F2" : "FFFFFF") . ";'>";
+				$start = true;
 			}
 		}
 
-		print "</tr>";
+		if (!$start) {
+			while($i % read_graph_config_option("num_columns") != 0) {
+				print "<td align='center' width='" . ceil(100 / read_graph_config_option("num_columns")) . "%'></td>";
+				$i++;
+			}
+
+			print "</tr>";
+		}
 	}else{
 		if ($no_graphs_message != "") {
 			print "<td><em>$no_graphs_message</em></td>";

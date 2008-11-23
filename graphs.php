@@ -1155,7 +1155,7 @@ function graph() {
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
 							if (read_config_option("auth_method") != 0) {
-								$templates = db_fetch_assoc("SELECT DISTINCT graph_templates.id, graph_templates.name 
+								$templates = db_fetch_assoc("SELECT DISTINCT graph_templates.id, graph_templates.name
 									FROM (graph_templates_graph,graph_local)
 									LEFT JOIN host ON (host.id=graph_local.host_id)
 									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
