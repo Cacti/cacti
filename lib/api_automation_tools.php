@@ -318,6 +318,25 @@ function getGraphTemplates() {
 	return $graph_templates;
 }
 
+function getGraphTemplatesByHostTemplate($host_template_id) {
+	$graph_templates = array();
+	$tmpArray 		 = db_fetch_assoc("SELECT " .
+										"host_template_graph.graph_template_id AS id, " .
+										"graph_templates.name AS name " .
+									"FROM host_template_graph " .
+									"LEFT JOIN graph_templates " .
+										"ON (host_template_graph.graph_template_id = graph_templates.id) " .
+									"WHERE host_template_id = $host_template_id");
+
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $t) {
+			$graph_templates[$t["id"]] = $t["name"];
+		}
+	}
+
+	return $graph_templates;
+}
+
 function displayQueryTypes($types, $quietMode = FALSE) {
 	if (!$quietMode) {
 		echo "Known SNMP Query Types: (id, name)\n";

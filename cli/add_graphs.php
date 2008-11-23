@@ -67,16 +67,18 @@ if (sizeof($parms)) {
 	$graphTitle = "";
 	$cgInputFields = "";
 
-	$hostId     = 0;
-	$templateId = 0;
-	$force      = 0;
+	$hostId     	= 0;
+	$templateId 	= 0;
+	$hostTemplateId = 0;
+	$force      	= 0;
 
-	$listHosts       = FALSE;
-	$listSNMPFields  = FALSE;
-	$listSNMPValues  = FALSE;
-	$listQueryTypes  = FALSE;
-	$listSNMPQueries = FALSE;
-	$listInputFields = FALSE;
+	$listHosts       		= FALSE;
+	$listGraphTemplates 	= FALSE;
+	$listSNMPFields  		= FALSE;
+	$listSNMPValues  		= FALSE;
+	$listQueryTypes  		= FALSE;
+	$listSNMPQueries 		= FALSE;
+	$listInputFields 		= FALSE;
 
 	$quietMode       = FALSE;
 
@@ -94,6 +96,10 @@ if (sizeof($parms)) {
 			break;
 		case "--graph-template-id":
 			$templateId = $value;
+
+			break;
+		case "--host-template-id":
+			$hostTemplateId = $value;
 
 			break;
 		case "--host-id":
@@ -179,8 +185,9 @@ if (sizeof($parms)) {
 
 			break;
 		case "--list-graph-templates":
-			displayGraphTemplates($graphTemplates, $quietMode);
-			exit(0);
+			$listGraphTemplates = TRUE;
+			
+			break;
 		case "--version":
 		case "-V":
 		case "-H":
@@ -193,6 +200,23 @@ if (sizeof($parms)) {
 			exit(1);
 		}
 	}
+
+	if ($listGraphTemplates) {
+		/* is a Host Template Id is given, print the related Graph Templates */
+		if ($hostTemplateId > 0) {
+			$graphTemplates = getGraphTemplatesByHostTemplate($hostTemplateId);
+			if (!sizeof($graphTemplates)) {
+				echo "ERROR: You must supply a valid --host-template-id before you can list its graph templates\n";
+				echo "Try --list-graph-template-id --host-template-id=[ID]\n";
+				exit(1);
+			}
+		}
+
+		displayGraphTemplates($graphTemplates, $quietMode);
+
+		exit(0);
+	}
+
 
 	if ($listInputFields) {
 		if ($templateId > 0) {
@@ -523,7 +547,7 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Graphs Script 1.1, Copyright 2008 - The Cacti Group\n\n";
+	echo "Add Graphs Script 1.2, Copyright 2008 - The Cacti Group\n\n";
 	echo "A simple command line utility to add graphs in Cacti\n\n";
 	echo "usage: add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]\n";
 	echo "    --host-id=[ID] [--graph-title=title] [graph options] [--force] [--quiet]\n\n";
@@ -545,7 +569,7 @@ function display_help() {
 	echo "                    3|Fields = Verify all Fields\n";
 	echo "List Options:\n";
 	echo "    --list-hosts\n";
-	echo "    --list-graph-templates\n";
+	echo "    --list-graph-templates [--host_template=[ID]]\n";
 	echo "    --list-input-fields --graph-template-id=[ID]\n";
 	echo "    --list-snmp-queries\n";
 	echo "    --list-query-types  --snmp-query-id [ID]\n";

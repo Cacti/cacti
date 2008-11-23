@@ -6001,12 +6001,7 @@ Success: Graph Template associated for host: (11: router) - graph-template: (7: 
 			Surely, the task of setting up graphs is the next step. This is done using
 			<filename>add_graphs.php</filename>. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_graphs.php
-
-<<<<<<< .mine
-Add Graphs Script 1.0, Copyright 2007-2008 - The Cacti Group
-=======
-Add Graphs Script 1.1, Copyright 2008 - The Cacti Group
->>>>>>> .r4730
+Add Graphs Script 1.2, Copyright 2008 - The Cacti Group
 
 A simple command line utility to add graphs in Cacti
 
@@ -6035,15 +6030,16 @@ For ds graphs:
                     3|Fields = Verify all Fields
 List Options:
     --list-hosts
-    --list-graph-templates
+    --list-graph-templates [--host_template=[ID]]
     --list-input-fields --graph-template-id=[ID]
     --list-snmp-queries
     --list-query-types  --snmp-query-id [ID]
     --list-snmp-fields  --host-id=[ID] [--snmp-query-id=[ID]]
     --list-snmp-values  --host-id=[ID] [--snmp-query-id=[ID]] --snmp-field=[Field]
 
-'cg' graphs are for things like CPU temp/fan speed, while
-'ds' graphs are for data-source based graphs (interface stats etc.)</screen>
+'cg' graphs are for things like CPU temp/fan speed, while 
+'ds' graphs are for data-source based graphs (interface stats etc.)
+</screen>
 			<para>Like the graph creation from the console, this task is split
 			into two different ones:</para>
 			<itemizedlist>
@@ -6089,6 +6085,17 @@ Known Graph Templates:(id, name)
 ...</screen>
 				<para>We will need the graph template id of the <userinput>ucd/net - CPU Usage</userinput>
 				template later. So note the number <userinput>4</userinput> for it.</para>
+
+				<para>It is possible to reduce the listing to the graph templates associated with
+				a specific host template by using <userinput>--list-graph-templates --host-template-id=[id]</userinput>.
+				For a "ucd/net SNMP Host" this yields</para>
+				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --list-graph-templates --host-template-id=3
+
+Known Graph Templates:(id, name)
+4   ucd/net - CPU Usage
+11	ucd/net - Load Average
+13	ucd/net - Memory Usage...
+</screen>
 			</sect2>
 			<sect2 id="cli_add_graphs_list_ds">
 			<title>List Options for Associated Data Queries</title>
