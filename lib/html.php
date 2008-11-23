@@ -281,14 +281,18 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
 		<td colspan='<?php print $colspan;?>'>
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
-					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; <?php if ($current_page > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page-1), $nav_url) . "'>"; } print "Previous"; if ($current_page > 1) { print "</a>"; } ?></strong>
+					<td align='left' class='textHeaderDark' width='15%'>
+						<?php if ($current_page > 1) { 
+							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page-1), $nav_url) . "'> &lt;&lt; Previous</a></strong>"; 
+						} ?>
 					</td>
-					<td align='center' class='textHeaderDark'>
+					<td align='center' class='textHeaderDark' width='70%'>
 						Showing Rows <?php print (($rows_per_page*($current_page-1))+1);?> to <?php print ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page));?> of <?php print $total_rows;?>
 					</td>
-					<td align='right' class='textHeaderDark'>
-						<strong><?php if (($current_page * $rows_per_page) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page+1), $nav_url) . "'>"; } print "Next"; if (($current_page * $rows_per_page) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
+					<td align='right' class='textHeaderDark' width='15%'>
+						<?php if (($current_page * $rows_per_page) < $total_rows) { 
+							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page+1), $nav_url) . "'> Next &gt;&gt; </a></strong>"; 
+						} ?>
 					</td>
 				</tr>
 			</table>

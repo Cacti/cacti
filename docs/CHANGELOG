@@ -104,7 +104,8 @@ Cacti CHANGELOG
 -feature#0001177: CLI Reindexing - poller_reindex_hosts.php: allow filter on "host description"
 -feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
 -feature#0001140: CLI-Script to associate a graph template to a host
--feature#0001082: Mirror Graph Rename based on template function to work with Data Sources 
+-feature#0001082: Mirror Graph Rename based on template function to work with Data Sources
+-feature#0000852: Have "Previous" and "Next" disappear when not in use (only for graph display)  
 -feature#0000431: Add php-xml to requirements, verify required PHP extensions
 -feature#0000284: Custom <path_rra> for each device
 -feature: Paginate Treeview Dual Pane
