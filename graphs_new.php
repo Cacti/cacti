@@ -772,7 +772,7 @@ function graphs() {
 
 					$total_rows = sizeof(db_fetch_assoc($rows_query));
 
-					if (($page) * $row_limit > $total_rows) {
+					if (($page - 1) * $row_limit > $total_rows) {
 						$page = 1;
 						$_REQUEST["page" . $query["id"]] = $page;
 						load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
