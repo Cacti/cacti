@@ -66,7 +66,7 @@ if ($proceed == FALSE) {
 }
 
 /* check ownership of the current base path */
-$base_rra_path = $config["base_path"] . '/rra';
+$base_rra_path = $config["rra_path"];
 $owner_id      = fileowner($base_rra_path);
 $group_id      = filegroup($base_rra_path);
 
