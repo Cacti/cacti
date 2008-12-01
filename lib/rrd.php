@@ -275,6 +275,29 @@ function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
 		$create_rra .= "RRA:" . $consolidation_functions{$rra["consolidation_function_id"]} . ":" . $rra["x_files_factor"] . ":" . $rra["steps"] . ":" . $rra["rows"] . RRD_NL;
 	}
 
+	/* check for structured path configuration, if in place verify directory
+	   exists and if not create it.
+	 */
+	if (read_config_option("extended_paths") == "on") {
+		if (!is_dir(dirname($data_source_path))) {
+			if (mkdir(dirname($data_source_path), 0775)) {
+				if ($config["cacti_server_os"] != "win32") {
+					$owner_id      = fileowner($config["rra_path"]);
+					$group_id      = filegroup($config["rra_path"]);
+
+					if ((chown(dirname($data_source_path), $owner_id)) &&
+						(chgrp(dirname($data_source_path), $group_id))) {
+						/* permissions set ok */
+					}else{
+						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+					}
+				}
+			}else{
+				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+			}
+		}
+	}
+
 	if ($show_source == true) {
 		return read_config_option("path_rrdtool") . " create" . RRD_NL . "$data_source_path$create_ds$create_rra";
 	}else{
@@ -518,7 +541,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
 	include($config["include_path"] . "/global_arrays.php");
-	
+
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
@@ -858,14 +881,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
 				$graph_cf = $graph_item["consolidation_function_id"];
-				/* remember the last CF for this data source for use with GPRINT 
+				/* remember the last CF for this data source for use with GPRINT
 				 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 				 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
 				$last_graph_cf["data_source_name"]["local_data_template_rrd_id"] = $graph_cf;
 				/* remember this for second foreach loop */
 				$graph_items[$key]["cf_reference"] = $graph_cf;
 			}elseif ($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_GPRINT) {
-				/* ATTENTION! 
+				/* ATTENTION!
 				 * the "CF" given on graph_item edit screen for GPRINT is indeed NOT a real "CF",
 				 * but an aggregation function
 				 * see "man rrdgraph_data" for the correct VDEF based notation
@@ -1562,7 +1585,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 				/* remember this for second foreach loop */
 				$xport_items[$key]["cf_reference"] = $xport_cf;
 			}elseif ($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_GPRINT) {
-				/* ATTENTION! 
+				/* ATTENTION!
 				 * the "CF" given on graph_item edit screen for GPRINT is indeed NOT a real "CF",
 				 * but an aggregation function
 				 * see "man rrdgraph_data" for the correct VDEF based notation
