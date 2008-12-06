@@ -66,7 +66,8 @@ Cacti CHANGELOG
 -bug#0001318: Graph Export with 1 minute poller re-exports graphs 5 times
 -bug#0001320: Invalid PHP_SELF Path
 -bug#0001326: If a user's password contains a single quote the login fails
--bug#0001342: VRULE printed as HRULE on graph_templates.php graph template item list 
+-bug#0001342: VRULE printed as HRULE on graph_templates.php graph template item list
+-bug#0001351: Deleting 1000 graphs along with their Data Sources crashes the Server   
 -bug: Remove include/html files to mitigate XSS issues
 -bug: IE generates errors on both the host and graph settings pages
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"

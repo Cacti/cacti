@@ -277,14 +277,17 @@ function form_actions() {
 
 				switch ($_POST["delete_type"]) {
 					case '2': /* delete all data sources referenced by this graph */
-						$data_sources = db_fetch_assoc("select
-							data_template_data.local_data_id
-							from (data_template_rrd,data_template_data,graph_templates_item)
-							where graph_templates_item.task_item_id=data_template_rrd.id
-							and data_template_rrd.local_data_id=data_template_data.local_data_id
-							and " . array_to_sql_or($selected_items, "graph_templates_item.local_graph_id") . "
-							and data_template_data.local_data_id > 0
-							group by data_template_data.local_data_id");
+						$data_sources = db_fetch_assoc("SELECT " .
+								"data_template_data.local_data_id " .
+							"FROM " .
+								"(data_template_rrd, " .
+								"data_template_data, " .
+								"graph_templates_item) " .
+							"WHERE " .
+								"graph_templates_item.task_item_id=data_template_rrd.id " .
+								"AND data_template_rrd.local_data_id=data_template_data.local_data_id " .
+								"AND graph_templates_item.local_graph_id=" . $selected_items[$i] . " " .
+								"AND data_template_data.local_data_id > 0");
 
 						if (sizeof($data_sources) > 0) {
 							foreach ($data_sources as $data_source) {
