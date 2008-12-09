@@ -91,6 +91,7 @@ Cacti CHANGELOG
 -bug: Allow more rows to be visible in Cacti pages
 -bug: Ping and SNMP should test both conditions
 -bug: When step is less than poller interval, item will stop polling for long period of time
+-bug: When using Web Basic authentication, user is directed to default page and not REQUEST URI
 -feature#0001323: getting all graph template id associated to a host template 
 -feature#0001289: Add "Graph Properties" wrench to tree+preview mode
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"

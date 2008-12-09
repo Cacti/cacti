@@ -197,6 +197,11 @@ if ($action == 'login') {
 						if (basename($referer) == "logout.php") {
 							$referer = "index.php";
 						}
+					} else if (isset($_SERVER["REQUEST_URI"])) {
+						$referer = $_SERVER["REQUEST_URI"];
+						if (basename($referer) == "logout.php") {
+							$referer = "index.php";
+						}
 					} else {
 						$referer = "index.php";
 					}
