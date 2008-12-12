@@ -70,7 +70,8 @@ $no_http_header_files = array(
 	"poller_graphs_reapply_names.php",
 	"poller_output_empty.php",
 	"poller_reindex_hosts.php",
-	"rebuild_poller_cache.php"
+	"rebuild_poller_cache.php",
+	"repair_database.php"
 );
 
 $config = array();
