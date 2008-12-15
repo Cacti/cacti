@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 0.8.7c
--bug#0000157: Dual pane tree should have the option of not rendering all trees in one page 
+-bug#0000157: Dual pane tree does not have the option of not rendering all trees in one page 
 -bug#0000486: RRA template edit allows invalid XFF values
 -bug#0000626: Setting "Default Graph Tree" does not work with dual pane
 -bug#0000828: Truncated IOS description in |query_ifAlias|
@@ -11,24 +11,22 @@ Cacti CHANGELOG
 -bug#0000986: Graphs that are done by graph type are not exported when using the tree view
 -bug#0001022: strip_quotes incorrectly parsing script output
 -bug#0001090: LDAP authenication fails when using quote character in password
--bug#0001100: spine hangs on unreachable hosts
 -bug#0001135: Graph export feature not exporting as per user level selected
 -bug#0001136: Regex ambiguous for mbstring
 -bug#0001138: Lack of error checking causes graphs to not update when rrdtool crashes
 -bug#0001141: Script server appears broken for "index" and "query" requests (Documentation Fix)
 -bug#0001145: Save Failed error when changing Graph Details
--bug#0001147: Cactid doesn't trim white space from data template OIDs 
 -bug#0001153: Undefined variable: local_graph_id in graphs.php on line 201 
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug#0001174: Unidentified index warning
 -bug#0001175: Hide hosts in Graph Permissions that you already have access to
 -bug#0001176: Problem validating IPv6 addresses
--bug#0001188: no graph export in tree mode 
+-bug#0001188: Graph export issues in tree mode 
 -bug#0001191: Faulty IP address validation by ping.php script
 -bug#0001180: Graph Export to CSV failed by using IE 6 SP2
 -bug#0001194: RRDtool URL is incorrect on the about page
--bug#0001204: since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
--bug#0001206: wrong "include" statements replaced by "include_once" (was: Graphs are not Zoom-able)
+-bug#0001204: Since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
+-bug#0001206: Graphs are not Zoom-able with PHP warning turned on
 -bug#0001211: Allow use of "REMOTE_USER" if "PHP_AUTH_USER" is not set for authenication
 -bug#0001213: Template Copy does not hash copied template_items 
 -bug#0001215: Impossible to define a none availability with the client cli/add_device.php
@@ -36,20 +34,20 @@ Cacti CHANGELOG
 -bug#0001217: Default Graph Tree is not reflected in Left Pane of the graph page
 -bug#0001223: Missing Hard return on last GPRINT causes bad formatting
 -bug#0001228: LDAP server port not honored 
--bug#0001230: poller stops updating rrd files
--bug#0001236: set 'stats_recache' to zero when no re-index is present
+-bug#0001230: Poller stops updating rrd files
+-bug#0001236: Set 'stats_recache' to zero when no re-index is present
 -bug#0001238: Guest user has access to change password
 -bug#0001239: Using the TOTAL_ALL_DATA_SOURCES in a graph where all item are using the MAX CF yields an invalid(empty) CDEF 
 -bug#0001240: SNMP string cleanup removes too many '=' signs
--bug#0001244: missing closing </form> on host.php
--bug#0001247: snmp ping won't work for snmp v3
+-bug#0001244: Missing closing </form> on host.php
+-bug#0001247: Snmp ping won't work for snmp v3
 -bug#0001256: Spine-poller.c : Bug in size string sysUptime 
 -bug#0001258: "Remove Verification" is an ambiguous definition, leads to data loss
 -bug#0001259: LDAP Authentication using Solaris 10 standard ldap client fails
 -bug#0001262: Do not allow deletion of Graph Export User
 -bug#0001264: CDEFs can't recognize |query_*| 
 -bug#0001268: resource/snmp_queries/net-snmp_disk.xml has incorrect name for "Percent Available"
--bug#0001271: hex string to decimal conversion
+-bug#0001271: Hex string to decimal conversion for proper RRDtool storage
 -bug#0001273: Escape windows paths to accomodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255
 -bug#0001283: graph_image.php causes PHP Notice errors on view
@@ -61,7 +59,6 @@ Cacti CHANGELOG
 -bug#0001295: Division by zero when rrd_step < poller_interval
 -bug#0001296: add_graphs.php does not add the graph template to the host 
 -bug#0001299: When creating graphs the entire poller cache is recreated for a host
--bug#0001306: Empty COMMENT + <HR> gives you a blank legend line (was: Add Blank Line to Graph via Pull down menu)
 -bug#0001314: Use Data Query variables as HRULE input for graph templates  
 -bug#0001318: Graph Export with 1 minute poller re-exports graphs 5 times
 -bug#0001320: Invalid PHP_SELF Path
@@ -92,16 +89,17 @@ Cacti CHANGELOG
 -bug: Ping and SNMP should test both conditions
 -bug: When step is less than poller interval, item will stop polling for long period of time
 -bug: When using Web Basic authentication, user is directed to default page and not REQUEST URI
--feature#0001323: getting all graph template id associated to a host template 
+-feature#0001306: Add Blank Line as possible graph item
+-feature#0001323: List all graph template associated with a host template 
 -feature#0001289: Add "Graph Properties" wrench to tree+preview mode
 -feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
 -feature#0001250: Dispatching job in poller can lead to unbalanced threads 
--feature#0001235: CLI script needed to activate a query: add_data_query.php
+-feature#0001235: CLI script needs to activate a query: add_data_query.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
--feature#0001220: Disable snmpbulkwalk if $max_oids is less than 2 (was: CACTI run problem when trying to walk using SNMP Bulk Request)
--feature#0001205: add filtering and pagination to cdef management; add "Duplicate CDEF"
+-feature#0001220: Disable snmpbulkwalk if max OIDS is less than 2 
+-feature#0001205: Add filtering and pagination to cdef management; add "Duplicate CDEF"
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
--feature#0001195: add graph title to graphs page
+-feature#0001195: Add graph title to graphs page
 -feature#0001189: Introducing |data_source_title| variable
 -feature#0001177: CLI Reindexing - poller_reindex_hosts.php: allow filter on "host description"
 -feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
@@ -114,10 +112,10 @@ Cacti CHANGELOG
 -feature: Allow user to specify maximum graphs per page from Treeview Dual Pane
 -feature: Allow Treeview Dual Pane to be filtered for graph titles
 -feature: Allow the user to add or remove graph text from page for searching with the browser
--feature: add links to Graph Management and Data Sources to Device Edit Screen
--feature: add links to Graph Template and Host Edit to Graph Edit Screen
--feature: add links to Data Template and Host Edit to Data Source Edit Screen
--feature: support using the cacti database api with more than one connection
+-feature: Add links to Graph Management and Data Sources to Device Edit Screen
+-feature: Add links to Graph Template and Host Edit to Graph Edit Screen
+-feature: Add links to Data Template and Host Edit to Data Source Edit Screen
+-feature: Support using the cacti database api with more than one connection
 -feature: Add some more debug lines to Data Query debugging (Verbose Query)
 -feature: Fix compatibility issues for RRDTool 1.3
 -feature: Make the tabs section work a little better with existing plugins
