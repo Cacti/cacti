@@ -50,7 +50,7 @@ function upgrade_to_0_8_7c() {
 
 	/* increase the width of the settings field, but only if MySQL is >= 5 */
 	if (substr(db_fetch_cell("SELECT @@version"), 0, 1) >= 5) {
-		db_install_execute("0.8.7c", "ALTER TABLE `settings` MODIFY COLUMN `name` VARCHAR(512) NOT NULL DEFAULT ''");
+		db_install_execute("0.8.7c", "ALTER TABLE `settings` MODIFY COLUMN `value` VARCHAR(512) NOT NULL DEFAULT ''");
 	}
 
 	/* add a default for NOT NULL columns */
