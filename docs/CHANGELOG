@@ -3,14 +3,14 @@ Cacti CHANGELOG
 0.8.7c
 -bug#0000157: Dual pane tree does not have the option of not rendering all trees in one page 
 -bug#0000486: RRA template edit allows invalid XFF values
--bug#0000626: Setting "Default Graph Tree" does not work with dual pane
+-bug#0000626: Setting "Default Graph Tree" does not work with dual pane view
 -bug#0000828: Truncated IOS description in |query_ifAlias|
 -bug#0000909: ALL_DATA_SOURCES_NODUPS breaks graphing when using "Consolidation Function" MAX 
 -bug#0000943: scripts/ping.pl has incorrect response when "icmp hop redirect" occurs
--bug#0000948: Exporting graphs to a local path does not work correctly 
+-bug#0000948: Exporting graphs to a local path does not work correctly in some cases
 -bug#0000986: Graphs that are done by graph type are not exported when using the tree view
--bug#0001022: strip_quotes incorrectly parsing script output
--bug#0001090: LDAP authenication fails when using quote character in password
+-bug#0001022: strip_quotes incorrectly parses script output
+-bug#0001090: LDAP authentication fails when using quote character in password
 -bug#0001135: Graph export feature not exporting as per user level selected
 -bug#0001136: Regex ambiguous for mbstring
 -bug#0001138: Lack of error checking causes graphs to not update when rrdtool crashes
@@ -26,8 +26,8 @@ Cacti CHANGELOG
 -bug#0001180: Graph Export to CSV failed by using IE 6 SP2
 -bug#0001194: RRDtool URL is incorrect on the about page
 -bug#0001204: Since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
--bug#0001206: Graphs are not Zoom-able with PHP warning turned on
--bug#0001211: Allow use of "REMOTE_USER" if "PHP_AUTH_USER" is not set for authenication
+-bug#0001206: Graphs are not zoom-able with PHP warnings turned on
+-bug#0001211: Allow use of "REMOTE_USER" if "PHP_AUTH_USER" is not set for authentication
 -bug#0001213: Template Copy does not hash copied template_items 
 -bug#0001215: Impossible to define a none availability with the client cli/add_device.php
 -bug#0001216: CSV Export for zoomed graph, results in Validation error
@@ -48,7 +48,7 @@ Cacti CHANGELOG
 -bug#0001264: CDEFs can't recognize |query_*| 
 -bug#0001268: resource/snmp_queries/net-snmp_disk.xml has incorrect name for "Percent Available"
 -bug#0001271: Hex string to decimal conversion for proper RRDtool storage
--bug#0001273: Escape windows paths to accomodate spaces
+-bug#0001273: Escape windows paths to accommodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255
 -bug#0001283: graph_image.php causes PHP Notice errors on view
 -bug#0001286: poller_item cache is not updated when "Data Input Method" is changed 
@@ -89,25 +89,26 @@ Cacti CHANGELOG
 -bug: Ping and SNMP should test both conditions
 -bug: When step is less than poller interval, item will stop polling for long period of time
 -bug: When using Web Basic authentication, user is directed to default page and not REQUEST URI
--feature#0001306: Add Blank Line as possible graph item
--feature#0001323: List all graph template associated with a host template 
--feature#0001289: Add "Graph Properties" wrench to tree+preview mode
--feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
--feature#0001250: Dispatching job in poller can lead to unbalanced threads 
--feature#0001235: CLI script needs to activate a query: add_data_query.php
--feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
--feature#0001220: Disable snmpbulkwalk if max OIDS is less than 2 
--feature#0001205: Add filtering and pagination to cdef management; add "Duplicate CDEF"
--feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
--feature#0001195: Add graph title to graphs page
--feature#0001189: Introducing |data_source_title| variable
--feature#0001177: CLI Reindexing - poller_reindex_hosts.php: allow filter on "host description"
--feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
--feature#0001140: CLI-Script to associate a graph template to a host
--feature#0001082: Mirror Graph Rename based on template function to work with Data Sources
--feature#0000852: Have "Previous" and "Next" disappear when not in use (only for graph display)  
--feature#0000431: Add php-xml to requirements, verify required PHP extensions
 -feature#0000284: Custom <path_rra> for each device
+-feature#0000431: Add php-xml to requirements, verify required PHP extensions
+-feature#0000852: Have "Previous" and "Next" disappear when not in use (only for graph display)
+-feature#0001082: Mirror Graph Rename based on template function to work with Data Sources
+-feature#0001140: CLI-Script to associate a graph template to a host
+-feature#0001162: WEB UI now accepts max_oids on SNMP bulkwalks
+-feature#0001177: CLI Reindexing - poller_reindex_hosts.php: allow filter on "host description"
+-feature#0001189: Introducing |data_source_title| variable
+-feature#0001195: Add graph title to graphs page
+-feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
+-feature#0001205: Add filtering and pagination to cdef management; add "Duplicate CDEF"
+-feature#0001220: Disable snmpbulkwalk if max OIDS is less than 2
+-feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
+-feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
+-feature#0001235: CLI script needs to activate a query: add_data_query.php
+-feature#0001250: Dispatching job in poller can lead to unbalanced threads
+-feature#0001249: New pseudo CDEF variables for "Count All|Similar Data Sources (NO)?DUPS"
+-feature#0001289: Add "Graph Properties" wrench to tree+preview mode
+-feature#0001323: List all graph template associated with a host template
+-feature#0001306: Add Blank Line as possible graph item
 -feature: Paginate Treeview Dual Pane
 -feature: Allow user to specify maximum graphs per page from Treeview Dual Pane
 -feature: Allow Treeview Dual Pane to be filtered for graph titles
@@ -128,7 +129,6 @@ Cacti CHANGELOG
 -feature: Add api call to associate graphs with their data sources
 -feature: Move the notes field to bottom of page
 -feature: New availability option "Ping or SNMP"
--feature: Add developer debug level to reduce SQL messages in DEBUG
 -feature: Allow for specification of a default reindex method
 -feature: Show more colors on a single color's page
 -feature: Exit is either a database or table does not exist
