@@ -74,6 +74,10 @@ case 'tree':
 		unset($_SESSION["dhtml_tree"]);
 	}
 
+	if (isset($_GET["tree_id"])) {
+		$_SESSION["sess_graph_view_last_tree"] = get_browser_query_string();
+	}
+
 	$tree_dropdown_html = draw_tree_dropdown((isset($_GET["tree_id"]) ? $_GET["tree_id"] : "0"));
 
 	/* don't even print the table if there is not >1 tree */
