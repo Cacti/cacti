@@ -201,8 +201,6 @@ if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 					clickOnNode(1);
 				}
 			}
-
-			clickOnLink(2,'','main');
 			</script>
 			<?php } ?>
 		</td>
