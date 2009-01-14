@@ -80,7 +80,7 @@ if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) &&
 /* setup tree selection defaults if the user has not been here before */
 if ((read_graph_config_option("default_tree_view_mode") == "2") &&
 	($_REQUEST["action"] == "tree") &&
-	(!isset($_GET["leaf_id"]))) {
+	(!isset($_GET["tree_id"]))) {
 	if (isset($_SESSION["sess_graph_view_last_tree"])) {
 		header("Location: " . $_SESSION["sess_graph_view_last_tree"]);
 	}else{
