@@ -26,7 +26,6 @@ $guest_account = true;
 include("./include/auth.php");
 include_once("./lib/html_tree.php");
 include_once("./lib/timespan_settings.php");
-include_once("./include/top_graph_header.php");
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var("branch_id"));
@@ -39,6 +38,52 @@ input_validate_input_regex(get_request_var_request('graph_add'), "^([\,0-9]+)$")
 input_validate_input_regex(get_request_var_request('graph_remove'), "^([\,0-9]+)$");
 /* ==================================================== */
 
+/* use cached url if available and applicable */
+if ((isset($_SESSION["sess_graph_view_url_cache"])) &&
+	(empty($_REQUEST["action"]))) {
+	if (ereg("action=(preview|list)", $_SESSION["sess_graph_view_url_cache"])) {
+		header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
+		exit;
+	}elseif ((ereg("action=tree", $_SESSION["sess_graph_view_url_cache"])) &&
+		(ereg("tree_id=", $_SESSION["sess_graph_view_url_cache"]))) {
+		header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
+		exit;
+	}elseif (isset($_SESSION["sess_graph_view_last_tree"])) {
+		header("Location: " . $_SESSION["sess_graph_view_last_tree"]);
+		exit;
+	}
+}elseif ((!isset($_REQUEST["action"])) || (!ereg('^(tree|list|preview)$', $_REQUEST["action"]))) {
+	/* set the default action if none has been set */
+	if (read_graph_config_option("default_view_mode") == "1") {
+		$_REQUEST["action"] = "tree";
+	}elseif (read_graph_config_option("default_view_mode") == "2") {
+		$_REQUEST["action"] = "list";
+	}elseif (read_graph_config_option("default_view_mode") == "3") {
+		$_REQUEST["action"] = "preview";
+	}
+}else{
+	$_SESSION["sess_graph_view_url_cache"] = get_browser_query_string();
+}
+
+/* setup tree selection defaults if the user has not been here before */
+if ($_REQUEST["action"] == "tree") {
+	if (!isset($_GET["tree_id"])) {
+		if (isset($_SESSION["sess_graph_view_last_tree"])) {
+			header("Location: " . $_SESSION["sess_graph_view_last_tree"]);
+			exit;
+		}else{
+			$first_branch = find_first_folder_url();
+
+			if (!empty($first_branch)) {
+				header("Location: $first_branch");
+				exit;
+			}
+		}
+	}
+}
+
+include_once("./include/top_graph_header.php");
+
 if (isset($_GET["hide"])) {
 	if (($_GET["hide"] == "0") || ($_GET["hide"] == "1")) {
 		/* only update expand/contract info is this user has rights to keep their own settings */
@@ -48,13 +93,6 @@ if (isset($_GET["hide"])) {
 		}
 	}
 }
-
-if (ereg("action=(tree|preview|list)", get_browser_query_string())) {
-	$_SESSION["sess_graph_view_url_cache"] = get_browser_query_string();
-}
-
-/* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 case 'tree':

@@ -45,51 +45,9 @@ if (read_config_option("auth_method") != 0) {
 	}
 }
 
-/* use cached url if available and applicable */
-if ((isset($_SESSION["sess_graph_view_url_cache"])) &&
-	(empty($_REQUEST["action"])) &&
-	(basename($_SERVER["PHP_SELF"]) == "graph_view.php") &&
-	(ereg("action=(tree|preview|list)", $_SESSION["sess_graph_view_url_cache"]))) {
-
-	header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
-}
-
-/* set default action */
-if (!isset($_REQUEST["action"])) {
-	$_REQUEST["action"] = "";
-}
-
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
 if ($_REQUEST["action"] == "zoom") {
 	$_SESSION["sess_nav_level_cache"][2]["url"] = "graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all";
-}
-
-/* set the default action if none has been set */
-if ((!ereg('^(tree|list|preview)$', $_REQUEST["action"])) &&
-	(basename($_SERVER["PHP_SELF"]) == "graph_view.php")) {
-
-	if (read_graph_config_option("default_view_mode") == "1") {
-		$_REQUEST["action"] = "tree";
-	}elseif (read_graph_config_option("default_view_mode") == "2") {
-		$_REQUEST["action"] = "list";
-	}elseif (read_graph_config_option("default_view_mode") == "3") {
-		$_REQUEST["action"] = "preview";
-	}
-}
-
-/* setup tree selection defaults if the user has not been here before */
-if ((read_graph_config_option("default_tree_view_mode") == "2") &&
-	($_REQUEST["action"] == "tree") &&
-	(!isset($_GET["tree_id"]))) {
-	if (isset($_SESSION["sess_graph_view_last_tree"])) {
-		header("Location: " . $_SESSION["sess_graph_view_last_tree"]);
-	}else{
-		$first_branch = find_first_folder_url();
-
-		if (!empty($first_branch)) {
-			header("Location: $first_branch");
-		}
-	}
 }
 
 ?>
