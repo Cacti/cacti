@@ -186,7 +186,7 @@ if (sizeof($parms)) {
 			break;
 		case "--list-graph-templates":
 			$listGraphTemplates = TRUE;
-			
+
 			break;
 		case "--version":
 		case "-V":
@@ -424,6 +424,7 @@ if (sizeof($parms)) {
 			exit(1);
 		}else{
 			$returnArray = create_complete_graph_from_template($templateId, $hostId, "", $values["cg"]);
+			$dataSourceId = "";
 		}
 
 		if ($graphTitle != "") {
