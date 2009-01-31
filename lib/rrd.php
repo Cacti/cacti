@@ -65,7 +65,7 @@ function rrd_get_fd(&$rrd_struc, $fd_type) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_struc = array(), $logopt = "WEBLOG") {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc = array(), $logopt = "WEBLOG") {
 	global $config;
 
 	if (!is_numeric($output_flag)) {
@@ -85,14 +85,14 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_stru
 	}
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
-	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (sizeof($rrd_struc) == 0)) {
+	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (!isset($rrd_struc["fd"]) || (sizeof($rrd_struc["fd"]) == 0))) {
 		$command_line .= " 2>&1";
 	}
 
 	/* use popen to eliminate the zombie issue */
 	if ($config["cacti_server_os"] == "unix") {
 		/* an empty $rrd_struc array means no fp is available */
-		if (sizeof($rrd_struc) == 0) {
+		if (!isset($rrd_struc["fd"]) || (sizeof($rrd_struc["fd"]) == 0)) {
 			session_write_close();
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 		}else{
@@ -126,7 +126,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_stru
 		}
 	}elseif ($config["cacti_server_os"] == "win32") {
 		/* an empty $rrd_struc array means no fp is available */
-		if (sizeof($rrd_struc) == 0) {
+		if (!isset($rrd_struc["fd"]) || (sizeof($rrd_struc["fd"]) == 0)) {
 			session_write_close();
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "rb");
 		}else{
