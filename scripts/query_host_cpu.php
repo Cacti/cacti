@@ -37,12 +37,12 @@ $snmp_context         	= "";
 $snmp_community 		= "";
 
 if ($snmp_version == 3) {
-	$snmp_auth_username   = $snmp[5];
-	$snmp_auth_password   = $snmp[6];
-	$snmp_auth_protocol   = $snmp[7];
-	$snmp_priv_passphrase = $snmp[8];
-	$snmp_priv_protocol   = $snmp[9];
-	$snmp_context         = $snmp[10];
+	$snmp_auth_username   = $snmp[6];
+	$snmp_auth_password   = $snmp[7];
+	$snmp_auth_protocol   = $snmp[8];
+	$snmp_priv_passphrase = $snmp[9];
+	$snmp_priv_protocol   = $snmp[10];
+	$snmp_context         = $snmp[11];
 }else{
 	$snmp_community = $snmp[5];
 }
@@ -59,7 +59,7 @@ if ($cmd == "index") {
 
 /*
  * process QUERY requests
- */	
+ */
 }elseif ($cmd == "query") {
 	$arg = $_SERVER["argv"][5];
 
