@@ -1202,7 +1202,9 @@ function utilities_view_snmp_cache() {
 	$sql_where = "";
 
 	/* filter by host */
-	if (get_request_var_request("host_id") == "0") {
+	if (get_request_var_request("host_id") == "-1") {
+		/* Show all hosts */
+	}elseif (get_request_var_request("host_id") == "0") {
 		$sql_where .= " AND host.id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
 		$sql_where .= " AND host.id=" . get_request_var_request("host_id");
