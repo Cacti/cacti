@@ -38,7 +38,7 @@ LDAP functions
   @arg $ldap_referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
   @arg $ldap_group_require - '0' Group membership is not required, '1' Group membership is required
   @arg $ldap_group_dn - LDAP Group DN
-  @arg $ldap_group_attrib - Name of the LDAP Attrib that contains members 
+  @arg $ldap_group_attrib - Name of the LDAP Attrib that contains members
   @arg $ldap_group_require - '1' DN or '2' Username, user group member ship type
 
   @return - array of values
@@ -171,9 +171,9 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_host = "",
 			if ($ldap_group_require == 1) {
 				/* Process group membership if required */
 				if ($ldap_group_member_type == 1) {
-					$ldap_group_response = @ldap_compare($ldap_conn,$ldap_group,$ldap_group_attrib,$ldap_dn);
+					$ldap_group_response = @ldap_compare($ldap_conn,$ldap_group_dn,$ldap_group_attrib,$ldap_dn);
 				} else {
-					$ldap_group_response = @ldap_compare($ldap_conn,$ldap_group,$ldap_group_attrib,$username);
+					$ldap_group_response = @ldap_compare($ldap_conn,$ldap_group_dn,$ldap_group_attrib,$username);
 				}
 			        if ($ldap_group_response === true) {
 					/* Auth ok */
