@@ -1,6 +1,10 @@
 #!/usr/bin/perl
 
-open(PROCESS, "ping -c 1 $ARGV[0] | grep icmp_seq | grep time |");
+# take care for tcp:hostname or TCP:ip@
+$host = $ARGV[0];
+$host =~ s/tcp:/$1/gis;
+
+open(PROCESS, "ping -c 1 $host | grep icmp_seq | grep time |");
 $ping = <PROCESS>;
 close(PROCESS);
 $ping =~ m/(.*time=)(.*) (ms|usec)/;

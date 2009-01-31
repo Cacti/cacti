@@ -65,7 +65,11 @@ Cacti CHANGELOG
 -bug#0001326: If a user's password contains a single quote the login fails
 -bug#0001342: VRULE printed as HRULE on graph_templates.php graph template item list
 -bug#0001351: Deleting 1000 graphs along with their Data Sources crashes the Server
--bug#0001382: cdef.php error due to wrong function name   
+-bug#0001374: ss_host_disk.php etc. error corrected when using SNMP V3 (index off by 1)
+-bug#0001376: graph_items.php variable $id defined in wrong place
+-bug#0001378: ping.pl script fails when using tcp:hostname    
+-bug#0001382: cdef.php error due to wrong function name
+-bug#0001383: syntax error in lib/rrd.php with PHP 4.4.4
 -bug: Remove include/html files to mitigate XSS issues
 -bug: IE generates errors on both the host and graph settings pages
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
