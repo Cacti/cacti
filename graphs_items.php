@@ -205,6 +205,7 @@ function item_edit() {
 	load_current_session_value("host_id", "sess_ds_host_id", "-1");
 	load_current_session_value("data_template_id", "sess_data_template_id", "-1");
 
+	$id = (!empty($_REQUEST["id"]) ? "&id=" . $_REQUEST["id"] : "");
 	$host = db_fetch_row("select hostname from host where id=" . get_request_var_request("host_id"));
 
 	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "100%", $colors["header"], "3", "center", "");
@@ -374,11 +375,4 @@ function changeColorId() {
 		document.getElementById('alpha').disabled=false;
 	}
 }
-</script><?php
-	$id = "";
-	if (!empty($_REQUEST["id"])) {
-		$id = "&id=" . $_REQUEST["id"];
-	}
-
-?>
-
+</script>
