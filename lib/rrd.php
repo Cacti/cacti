@@ -1107,12 +1107,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* loop over all graph items */
 				for ($t=0;($t<count($graph_items));$t++) {
 
-					/* don't count any entry where a magic item was entered */
-					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $graph_items[$t]["cdef_cache"]) ||
-						ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $graph_items[$t]["cdef_cache"])) {
-						continue;
-					}
-
 					/* only work on graph items, omit GRPINTs, COMMENTs and stuff */
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
 						/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
@@ -1781,12 +1775,6 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 				/* loop over all graph items */
 				for ($t=0;($t<count($xport_items));$t++) {
-
-					/* don't count any entry where a magic item was entered */
-					if (ereg("(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)", $xport_items[$t]["cdef_cache"]) ||
-						ereg("(COUNT_ALL_DS_(NO)?DUPS|COUNT_SIMILAR_DS_(NO)?DUPS)", $xport_items[$t]["cdef_cache"])) {
-						continue;
-					}
 
 					/* only work on graph items, omit GRPINTs, COMMENTs and stuff */
 					if ((ereg("(AREA|STACK|LINE[123])", $graph_item_types{$xport_items[$t]["graph_type_id"]})) && (!empty($xport_items[$t]["data_template_rrd_id"]))) {
