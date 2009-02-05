@@ -231,7 +231,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 
 		/* find the type of the next branch. make sure the next item exists first */
 		if (isset($hierarchy{$i+1})) {
-			if ($hierrarchy{$i+1}["title"] != "") { $next_leaf_type = "heading"; }elseif (!empty($hierarchy{$i+1}["local_graph_id"])) { $next_leaf_type = "graph"; }else{ $next_leaf_type = "host"; }
+			if ($hierarchy{$i+1}["title"] != "") { $next_leaf_type = "heading"; }elseif (!empty($hierarchy{$i+1}["local_graph_id"])) { $next_leaf_type = "graph"; }else{ $next_leaf_type = "host"; }
 		}else{
 			$next_leaf_type = "";
 		}
