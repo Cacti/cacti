@@ -135,7 +135,7 @@ foreach ($rrd_info as $info) {
 		echo "WARNING: Legacy RRA Path '$old_rrd_path' Does not exist, Skipping\n";
 
 		/* alter database */
-		update_database();
+		update_database($info);
 	} elseif (copy($old_rrd_path, $new_rrd_path)) {
 		$done_count++;
 
@@ -153,7 +153,7 @@ foreach ($rrd_info as $info) {
 		}
 
 		/* alter database */
-		update_database();
+		update_database($info);
 
 		if (unlink($old_rrd_path)) {
 			echo "NOTE: Old File '$old_rrd_path' Removed\n";
@@ -180,6 +180,8 @@ echo "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped, '$
 
 /* update database */
 function update_database($info) {
+	global $new_rrd_path;
+
 		/* upate table poller_item */
 	db_execute("UPDATE poller_item
 		SET rrd_path = '$new_rrd_path'
