@@ -259,6 +259,18 @@ function utilities_view_tech($php_info = "") {
 		}
 	}
 
+	/* Get SNMP cli version */
+	$snmp_version = read_config_option("snmp_version");
+	if ((file_exists(read_config_option("path_snmpget"))) && (($config["cacti_server_os"] == "unix") || (is_executable(read_config_option("path_snmpget"))))) {
+
+		$out_array = array();
+		exec(read_config_option("path_snmpget") . " --version 2>&1", $out_array);
+
+		if (sizeof($out_array) > 0) {
+			$snmp_version = $out_array[0];
+		}
+	}
+
 	/* Check RRDTool issues */
 	$rrdtool_error = "";
 	if ($rrdtool_version != read_config_option("rrdtool_version")) {
@@ -286,7 +298,7 @@ function utilities_view_tech($php_info = "") {
 	print "</tr>\n";
 	print "<tr bgcolor='" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>SNMP Version</td>\n";
-	print "		<td class='textArea'>" . read_config_option("snmp_version") . "</td>\n";
+	print "		<td class='textArea'>" . $snmp_version . "</td>\n";
 	print "</tr>\n";
 
 	print "<tr bgcolor='" . $colors["form_alternate1"] . "'>\n";
