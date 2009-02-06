@@ -338,8 +338,25 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 }
 
 function format_snmp_string($string) {
+	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
+
 	/* strip off all leading junk (the oid and stuff) */
-	$string = trim(substr($string, strpos($string, " = ")));
+	$string_array = explode("=", $string);
+	if (sizeof($string_array) == 1) {
+		/* trim excess first */
+		$string = trim($string);
+	}else if ((substr($string, 0, 1) == ".") || (strpos($string, "::") >= 0)) {
+		/* drop the OID from the array */
+		array_pop($string_array);
+		$string = trim(implode("=", $string_array));
+	}
+
+	/* return the easy values first */
+	if ($string == "") {
+		return $string;
+	}else if (is_numeric($string)) {
+		return $string;
+	}
 
 	/* remove ALL quotes */
 	$string = str_replace("\"", "", $string);
@@ -425,8 +442,6 @@ function format_snmp_string($string) {
 	}elseif (preg_match("/Timeticks:\s\((\d+)\)\s/", $string, $matches)) {
 		$string = $matches[1];
 	}
-
-	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
 
 	return trim($string);
 }
