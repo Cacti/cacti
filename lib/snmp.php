@@ -349,6 +349,8 @@ function format_snmp_string($string) {
 		/* drop the OID from the array */
 		array_pop($string_array);
 		$string = trim(implode("=", $string_array));
+	}else {
+		$string = trim(implode("=", $string_array));
 	}
 
 	/* return the easy values first */
