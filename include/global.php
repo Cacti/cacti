@@ -71,7 +71,8 @@ $no_http_header_files = array(
 	"poller_output_empty.php",
 	"poller_reindex_hosts.php",
 	"rebuild_poller_cache.php",
-	"repair_database.php"
+	"repair_database.php",
+	"structure_rra_paths.php"
 );
 
 $config = array();
