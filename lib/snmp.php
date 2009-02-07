@@ -124,7 +124,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	}
 
 	/* strip out non-snmp data */
-	$snmp_value = format_snmp_string($snmp_value);
+	$snmp_value = format_snmp_string($snmp_value, false);
 
 	return $snmp_value;
 }
@@ -217,7 +217,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 	}
 
 	/* strip out non-snmp data */
-	$snmp_value = format_snmp_string($snmp_value);
+	$snmp_value = format_snmp_string($snmp_value, false);
 
 	return $snmp_value;
 }
@@ -225,9 +225,10 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER) {
 	global $config;
 
-	$snmp_auth	= '';
-	$snmp_array = array();
-	$temp_array = array();
+	$snmp_oid_included = false;
+	$snmp_auth	       = '';
+	$snmp_array        = array();
+	$temp_array        = array();
 
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
@@ -247,6 +248,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		/* force php to return numeric oid's */
 		if (function_exists("snmp_set_oid_numeric_print")) {
 			snmp_set_oid_numeric_print(TRUE);
+			$snmp_oid_included = true;
 		}
 
 		snmp_set_quick_print(0);
@@ -269,7 +271,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
 			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
-			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i]);
+			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i], $snmp_oid_included);
 			$o++;
 		}
 	}else{
@@ -319,48 +321,44 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}
 		}
 
-		if ((sizeof($temp_array) == 0) ||
-			(substr_count($temp_array[0], "No Such")) ||
-			(trim($temp_array[0]) == "NULL") ||
-			(substr_count($temp_array[0], "No more variables")) ||
-			(substr_count($temp_array[0], "End of MIB")) ||
-			(substr_count($temp_array[0], "Wrong Type"))) {
-			return array();
-		}
-
 		for ($i=0; $i < count($temp_array); $i++) {
-			$snmp_array[$i]["oid"] = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
-			$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i]);
+			$snmp_array[$i]["oid"]   = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
+			$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i], true);
 		}
 	}
 
 	return $snmp_array;
 }
 
-function format_snmp_string($string) {
-	$string = eregi_replace(REGEXP_SNMP_TRIM, "", $string);
+function format_snmp_string($string, $snmp_oid_included) {
+	$string = eregi_replace(REGEXP_SNMP_TRIM, "", trim($string));
 
-	/* strip off all leading junk (the oid and stuff) */
-	$string_array = explode("=", $string);
-	if (sizeof($string_array) == 1) {
-		/* trim excess first */
-		$string = trim($string);
-	}else if ((substr($string, 0, 1) == ".") || (strpos($string, "::") >= 0)) {
-		/* drop the OID from the array */
-		array_pop($string_array);
-		$string = trim(implode("=", $string_array));
-	}else {
-		$string = trim(implode("=", $string_array));
+	if ($snmp_oid_included) {
+		/* strip off all leading junk (the oid and stuff) */
+		$string_array = explode("=", $string);
+		if (sizeof($string_array) == 1) {
+			/* trim excess first */
+			$string = trim($string);
+		}else if ((substr($string, 0, 1) == ".") || (strpos($string, "::") >= 0)) {
+			/* drop the OID from the array */
+			array_shift($string_array);
+			$string = trim(implode("=", $string_array));
+		}else {
+			$string = trim(implode("=", $string_array));
+		}
 	}
 
-	/* return the easy values first */
+	/* return the easiest value */
 	if ($string == "") {
 		return $string;
-	}else if (is_numeric($string)) {
+	}
+
+	/* now check for the second most obvious */
+	if (is_numeric($string)) {
 		return $string;
 	}
 
-	/* remove ALL quotes */
+	/* remove ALL quotes, and other special delimiters */
 	$string = str_replace("\"", "", $string);
 	$string = str_replace("'", "", $string);
 	$string = str_replace(">", "", $string);
@@ -369,7 +367,7 @@ function format_snmp_string($string) {
 	$string = str_replace("\n", " ", $string);
 	$string = str_replace("\r", " ", $string);
 
-	/* Account for invalid type messages */
+	/* account for invalid MIB files */
 	if (substr_count($string, "Wrong Type")) {
 		$string = strrev($string);
 		if ($position = strpos($string, ":")) {
@@ -377,6 +375,14 @@ function format_snmp_string($string) {
 		}else{
 			$string = trim(strrev($string));
 		}
+	}
+
+	/* Handle cases where we either reached the end of data or data is not valid */
+	if ((substr_count($string, "No Such")) ||
+		(trim($string) == "NULL") ||   // AIX returns the word NULL in it's implementation of snmp for no data
+		(substr_count($string, "No more variables")) ||
+		(substr_count($string, "End of MIB"))) {
+		return;
 	}
 
 	/* Remove invalid chars */
@@ -445,7 +451,7 @@ function format_snmp_string($string) {
 		$string = $matches[1];
 	}
 
-	return trim($string);
+	return $string;
 }
 
 function snmp_escape_string($string) {
