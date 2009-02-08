@@ -48,12 +48,24 @@ function api_graph_remove_multi($local_graph_ids) {
 			}
 
 			$i++;
+
+			if (($i % 1000) == 0) {
+				db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
+				db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
+				db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
+				db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
+
+				$i = 0;
+				$ids_to_delete = "";
+			}
 		}
 
-		db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
-		db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
-		db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
-		db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
+		if ($i > 0) {
+			db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
+			db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
+			db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
+			db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
+		}
 	}
 }
 
