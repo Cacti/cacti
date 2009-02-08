@@ -261,14 +261,8 @@ function utilities_view_tech($php_info = "") {
 
 	/* Get SNMP cli version */
 	$snmp_version = read_config_option("snmp_version");
-	if ((file_exists(read_config_option("path_snmpget"))) && (($config["cacti_server_os"] == "unix") || (is_executable(read_config_option("path_snmpget"))))) {
-
-		$out_array = array();
-		exec(read_config_option("path_snmpget") . " -V 2>&1", $out_array);
-
-		if (sizeof($out_array) > 0) {
-			$snmp_version = $out_array[0];
-		}
+	if ((file_exists(read_config_option("path_snmpget"))) && (is_executable(read_config_option("path_snmpget")))) {
+		$snmp_version = shell_exec(read_config_option("path_snmpget") . " -V 2>&1");
 	}
 
 	/* Check RRDTool issues */
@@ -1215,7 +1209,7 @@ function utilities_view_snmp_cache() {
 
 	/* filter by host */
 	if (get_request_var_request("host_id") == "-1") {
-		/* Show all hosts */
+		/* Show all items */
 	}elseif (get_request_var_request("host_id") == "0") {
 		$sql_where .= " AND host.id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
