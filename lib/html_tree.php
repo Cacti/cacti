@@ -1075,7 +1075,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (($leaf_type == "header") || (empty($leaf_id))) {
 		if (strlen(get_request_var_request("filter"))) {
-			$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . get_request_var_request("filter") . "%' OR title LIKE '%" . get_request_var_request("filter") . "%')");
+			$sql_where = (empty($sql_where) ? "" : "AND (title_cache LIKE '%" . get_request_var_request("filter") . "%' OR graph_templates_graph.title LIKE '%" . get_request_var_request("filter") . "%')");
 		}
 
 		$graph_list = db_fetch_assoc("SELECT
