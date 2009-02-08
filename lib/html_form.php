@@ -203,7 +203,7 @@ function draw_edit_control($field_name, &$field_array) {
 				((isset($check_array["default"])) ? $check_array["default"] : ""),
 				((isset($check_array["form_id"])) ? $check_array["form_id"] : ""),
 				((isset($field_array["class"])) ? $field_array["class"] : ""),
-				((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+				((isset($check_array["on_change"])) ? $check_array["on_change"] : (((isset($field_array["on_change"])) ? $field_array["on_change"] : ""))));
 
 			print "<br>";
 		}
