@@ -63,6 +63,7 @@ Cacti CHANGELOG
 -bug#0001318: Graph Export with 1 minute poller re-exports graphs 5 times
 -bug#0001320: Invalid PHP_SELF Path
 -bug#0001326: If a user's password contains a single quote the login fails
+-bug#0001338: When Using Web Basic Authentication HTML Bookmarks Do Not Work 
 -bug#0001342: VRULE printed as HRULE on graph_templates.php graph template item list
 -bug#0001351: Deleting 1000 graphs along with their Data Sources crashes the Server
 -bug#0001361: SNMP query: 'No more variables left in this MIB View' instead of value of input field 
