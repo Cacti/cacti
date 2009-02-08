@@ -236,7 +236,7 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 
 /* db_fetch_insert_id - get the last insert_id or auto incriment
    @returns - the id of the last auto incriment row that was created */
-function db_fetch_insert_id() {
+function db_fetch_insert_id($db_conn = FALSE) {
 	global $cnn_id;
 
 	/* check for a connection being passed, if not use legacy behavior */
