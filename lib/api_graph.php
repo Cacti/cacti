@@ -109,7 +109,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		if (!isset($suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]})) {
 			$subs_string = substitute_snmp_query_data($suggested_value["text"], $graph_local["host_id"], $graph_local["snmp_query_id"], $graph_local["snmp_index"], read_config_option("max_data_query_field_length"));
 			/* if there are no '|' characters, all of the substitutions were successful */
-			if (!strstr($subs_string, "|query")) {
+			if ((!substr_count($subs_string, "|query")) && ($suggested_value["field_name"] == "title")) {
 				db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_graph_id=" . $local_graph_id);
 				/* once we find a working value, stop */
 				$suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]} = true;
