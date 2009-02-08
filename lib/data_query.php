@@ -251,6 +251,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						}else if ((substr_count(strtolower($snmp_data[$i]["value"]), "up")) ||
 							($snmp_data[$i]["value"] == "1")) {
 							$snmp_data[$i]["value"] = "Up";
+						}else if ((substr_count(strtolower($snmp_data[$i]["value"]), "notpresent")) ||
+							($snmp_data[$i]["value"] == "6")) {
+							$snmp_data[$i]["value"] = "notPresent";
 						}else{
 							$snmp_data[$i]["value"] = "Testing";
 						}
