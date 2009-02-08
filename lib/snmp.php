@@ -270,8 +270,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
-			$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
-			$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i], $snmp_oid_included);
+			if ((strstr($temp_array[$i], "No more") == "") && ($temp_array[$i] != "NULL")) {
+				$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
+				$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i], $snmp_oid_included);
+			}
 			$o++;
 		}
 	}else{
@@ -321,9 +323,18 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}
 		}
 
+		/* check for bad entries */
+		if ((!sizeof($temp_array)) ||
+			(strstr($temp_array[0], "End of MIB") != "") ||
+			(substr($temp_array[0], "No Such") != "")) {
+			return array();
+		}
+
 		for ($i=0; $i < count($temp_array); $i++) {
-			$snmp_array[$i]["oid"]   = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
-			$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i], true);
+			if ((strstr($temp_array[$i], "No more") == "") && ($temp_array[$i] != "NULL")) {
+				$snmp_array[$i]["oid"]   = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
+				$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i], true);
+			}
 		}
 	}
 
@@ -375,14 +386,6 @@ function format_snmp_string($string, $snmp_oid_included) {
 		}else{
 			$string = trim(strrev($string));
 		}
-	}
-
-	/* Handle cases where we either reached the end of data or data is not valid */
-	if ((substr_count($string, "No Such")) ||
-		(trim($string) == "NULL") ||   // AIX returns the word NULL in it's implementation of snmp for no data
-		(substr_count($string, "No more variables")) ||
-		(substr_count($string, "End of MIB"))) {
-		return;
 	}
 
 	/* Remove invalid chars */

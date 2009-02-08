@@ -65,6 +65,7 @@ Cacti CHANGELOG
 -bug#0001326: If a user's password contains a single quote the login fails
 -bug#0001342: VRULE printed as HRULE on graph_templates.php graph template item list
 -bug#0001351: Deleting 1000 graphs along with their Data Sources crashes the Server
+-bug#0001361: SNMP query: 'No more variables left in this MIB View' instead of value of input field 
 -bug#0001374: ss_host_disk.php etc. error corrected when using SNMP V3 (index off by 1)
 -bug#0001376: graph_items.php variable $id defined in wrong place
 -bug#0001378: ping.pl script fails when using tcp:hostname    
