@@ -326,7 +326,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		/* check for bad entries */
 		if ((!sizeof($temp_array)) ||
 			(strstr($temp_array[0], "End of MIB") != "") ||
-			(substr($temp_array[0], "No Such") != "")) {
+			(strstr($temp_array[0], "No Such") != "")) {
 			return array();
 		}
 
