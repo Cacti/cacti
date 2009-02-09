@@ -246,6 +246,8 @@ class Net_Ping
 					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "freebsd")) {
 					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+				}else if (substr_count(strtolower(PHP_OS), "darwin")) {
+					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "bsd")) {
 					$result = shell_exec("ping -w " . $this->timeout . " -c 1 " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "aix")) {
