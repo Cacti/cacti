@@ -65,7 +65,7 @@ function rrd_get_fd(&$rrd_struc, $fd_type) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc = array(), $logopt = "WEBLOG") {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrd_struc = array(), $logopt = "WEBLOG") {
 	global $config;
 
 	if (!is_numeric($output_flag)) {
