@@ -243,7 +243,7 @@ function utilities_view_tech($php_info = "") {
 
 	/* Get RRDtool version */
 	$rrdtool_version = "Unknown";
-	if ((file_exists(read_config_option("path_rrdtool"))) && (($config["cacti_server_os"] == "win32") || (is_executable(read_config_option("path_rrdtool"))))) {
+	if ((file_exists(read_config_option("path_rrdtool"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_rrdtool"))))) {
 
 		$out_array = array();
 		exec(read_config_option("path_rrdtool"), $out_array);
@@ -261,7 +261,7 @@ function utilities_view_tech($php_info = "") {
 
 	/* Get SNMP cli version */
 	$snmp_version = read_config_option("snmp_version");
-	if ((file_exists(read_config_option("path_snmpget"))) && (is_executable(read_config_option("path_snmpget")))) {
+	if ((file_exists(read_config_option("path_snmpget"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_snmpget"))))) {
 		$snmp_version = shell_exec(read_config_option("path_snmpget") . " -V 2>&1");
 	}
 
