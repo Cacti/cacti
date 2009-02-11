@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2008 The Cacti Group                                 |
+ | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -103,7 +103,7 @@ ini_set("memory_limit", $max_memory);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2007-2008 - The Cacti Group\n\n";
+	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2009 - The Cacti Group\n\n";
 	print "usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "-d            - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";

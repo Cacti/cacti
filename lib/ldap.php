@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2008 The Cacti Group                                 |
+ | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -509,4 +509,3 @@ function cacti_ldap_search_dn($username,$ldap_dn = "",$ldap_host = "",$ldap_port
 }
 
 ?>
-

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2008 The Cacti Group                                 |
+ | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -444,7 +444,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 }
 
 function display_help() {
-	echo "Cacti Poller Version " . db_fetch_cell("SELECT cacti FROM version") . ", Copyright 2007-2008 - The Cacti Group\n\n";
+	echo "Cacti Poller Version " . db_fetch_cell("SELECT cacti FROM version") . ", Copyright 2004-2009 - The Cacti Group\n\n";
 	echo "A simple command line utility to run the Cacti Poller.\n\n";
 	echo "usage: poller.php [--force] [--debug|-d]\n\n";
 	echo "Options:\n";

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2008 The Cacti Group                                 |
+ | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -233,7 +233,7 @@ if (sizeof($parms) == 0) {
 }
 
 function display_help() {
-	echo "Add Permissions Script 1.0, Copyright 2007-2008 - The Cacti Group\n\n";
+	echo "Add Permissions Script 1.0, Copyright 2004-2009 - The Cacti Group\n\n";
 	echo "A simple command line utility to add permissions to tree items in Cacti\n\n";
 	echo "usage: add_perms.php [ --user-id=[ID] ]\n";
 	echo "    --item-type=[graph|tree|host|graph_template]\n";

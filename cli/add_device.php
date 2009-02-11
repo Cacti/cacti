@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2008 The Cacti Group                                 |
+ | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -345,7 +345,7 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Device Script 1.0, Copyright 2007-2008 - The Cacti Group\n\n";
+	echo "Add Device Script 1.0, Copyright 2004-2009 - The Cacti Group\n\n";
 	echo "A simple command line utility to add a device in Cacti\n\n";
 	echo "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
