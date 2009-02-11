@@ -4,7 +4,6 @@ Cacti CHANGELOG
 -bug#0001336: Allow to specify on_change handler for checkbox_group
 -bug#0001338: When Using Web Basic Authentication HTML Bookmarks Do Not Work 
 -bug#0001388: Spine uses illegal flag for ping on Mac OS X 
--bug#0001400: LDAP authentication results in PHP warning message
 -bug#0001351: Deleting 1000 graphs along with their Data Sources crashes the Server
 -bug#0001361: SNMP query: 'No more variables left in this MIB View' instead of value of input field 
 -bug#0001374: ss_host_disk.php etc. error corrected when using SNMP V3 (index off by 1)
@@ -18,6 +17,8 @@ Cacti CHANGELOG
 -bug#0001391: parsing snmp string with "=" ?? --> WARNING: Result from SNMP not valid
 -bug#0001392: Problem on CDEF function ALL|SIMILAR_DATA_SOURCES_(NO)?DUPS 
 -bug#0001394: Error of variable in lib/html_tree.php 
+-bug#0001398: Cross site scripting checking is overly protective on search filters
+-bug#0001400: LDAP authentication results in PHP warning message
 -bug: Resolved issue with reapply suggested names not working for data sources under certain conditions
 -bug: Correct missing db_conn argument issue
 -bug: Deleting large number of hosts results in SQL errors due to MySQL buffer overrun
