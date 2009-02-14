@@ -238,22 +238,23 @@ class Net_Ping
 				/* we have to use the real ping */
 				$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
+				/* host timeout given in ms, recalculate to sec, but make it an integer */
 				if (substr_count(strtolower(PHP_OS), "sun")) {
 					$result = shell_exec("ping " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "hpux")) {
-					$result = shell_exec("ping -m " . $this->timeout . " -n 1 " . $this->host["hostname"]);
+					$result = shell_exec("ping -m " . ceil($this->timeout/1000) . " -n " . $this->retries . " " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "mac")) {
-					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+					$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "freebsd")) {
-					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+					$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "darwin")) {
-					$result = shell_exec("ping -t " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+					$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "bsd")) {
-					$result = shell_exec("ping -w " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+					$result = shell_exec("ping -w " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
 				}else if (substr_count(strtolower(PHP_OS), "aix")) {
-					$result = shell_exec("ping -i " . $this->timeout . " -c 1 " . $this->host["hostname"]);
+					$result = shell_exec("ping -i " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
 				}else{
-					$result = shell_exec("ping -W " . $this->timeout . " -c 1 -p " . $pattern . " " . $this->host["hostname"]);
+					$result = shell_exec("ping -W " . ceil($this->timeout/1000) . " -c " . $this->retries . " -p " . $pattern . " " . $this->host["hostname"]);
 				}
 
 				$position = strpos($result, "min/avg/max");

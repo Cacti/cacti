@@ -1,5 +1,7 @@
 Cacti CHANGELOG
 
+-bug#0001404: timeout in "function ping_icmp" (lib/ping.php)
+
 0.8.7d
 -bug#0001336: Allow to specify on_change handler for checkbox_group
 -bug#0001338: When Using Web Basic Authentication HTML Bookmarks Do Not Work 
