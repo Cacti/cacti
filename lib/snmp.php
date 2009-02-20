@@ -366,7 +366,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 	/* now check for the second most obvious */
 	if (is_numeric($string)) {
-		return $string;
+		return trim($string);
 	}
 
 	/* remove ALL quotes, and other special delimiters */

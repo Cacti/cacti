@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug#0001404: timeout in "function ping_icmp" (lib/ping.php)
+-bug#0001405: Spaces in DS when .rrd file is created, so it fails
 
 0.8.7d
 -bug#0001336: Allow to specify on_change handler for checkbox_group
