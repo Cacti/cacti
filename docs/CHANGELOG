@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0001405: Spaces in DS when .rrd file is created, so it fails
 -bug#0001407: Place graph thumbnail into div to lower page length changes on load graphs
 -bug#0001411: Graph Search Trouble with Cacti 8.7d 
+-bug: Top Graph Header Breaks When Plugins Used
 
 0.8.7d
 -bug#0001336: Allow to specify on_change handler for checkbox_group
