@@ -142,7 +142,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 					<table align='center' cellpadding='0'>
 						<tr>
 							<td align='center'>
-								<a href='graph.php?action=view&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a>
+								<div style="min-height: <?php echo (1.6 * read_config_option("export_default_height")) . "px"?>;"><a href='graph.php?action=view&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=all'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='graph_image.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0<?php print (($extra_url_args == "") ? "" : "&$extra_url_args");?>' border='0' alt='<?php print $graph["title_cache"];?>'></a></div>
 								<?php print (read_graph_config_option("show_graph_title") == "on" ? "<p style='font-size: 10;' align='center'><strong>" . $graph["title_cache"] . "</strong></p>" : "");?>
 							</td>
 							<td valign='top' style='align: left; padding: 3px;' class='noprint'>
