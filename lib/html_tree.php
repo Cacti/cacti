@@ -1216,7 +1216,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	/* generate page list */
 	if ($total_rows > get_request_var_request("graphs")) {
-		$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, get_request_var_request("graphs"), $total_rows, "graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&filter=" . get_request_var_request("filter"));
+		$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, get_request_var_request("graphs"), $total_rows, "graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : ""));
 
 		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 				<td colspan='11'>
