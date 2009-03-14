@@ -344,6 +344,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 function format_snmp_string($string, $snmp_oid_included) {
 	$string = eregi_replace(REGEXP_SNMP_TRIM, "", trim($string));
 
+	if (substr($string, 0, 7) == "No Such") {
+		return "";
+	}
+
 	if ($snmp_oid_included) {
 		/* strip off all leading junk (the oid and stuff) */
 		$string_array = explode("=", $string);
