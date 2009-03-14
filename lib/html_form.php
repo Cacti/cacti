@@ -33,8 +33,6 @@
 function draw_edit_form($array) {
 	global $colors;
 
-	//print "<pre>";print_r($array);print "</pre>";
-
 	if (sizeof($array) > 0) {
 		while (list($top_branch, $top_children) = each($array)) {
 			if ($top_branch == "config") {
@@ -83,13 +81,9 @@ function draw_edit_form($array) {
 				draw_edit_control($field_name, $field_array);
 
 				print "</td>\n</tr>\n";
-
-				$i++;
 			}
 
-			if ($i == sizeof($fields_array)) {
-				//print "</form>";
-			}
+			$i++;
 		}
 	}
 }

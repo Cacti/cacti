@@ -1,10 +1,11 @@
 Cacti CHANGELOG
 
+-bug#0001346: Strip out noisy 'No Such Instance currently exists at this OID' 
 -bug#0001404: timeout in "function ping_icmp" (lib/ping.php)
 -bug#0001405: Spaces in DS when .rrd file is created, so it fails
 -bug#0001407: Place graph thumbnail into div to lower page length changes on load graphs
 -bug#0001411: Graph Search Trouble with Cacti 8.7d 
--bug#0001346: Strip out noisy 'No Such Instance currently exists at this OID' 
+-bug#0001426: multiple form opening due to bug in draw_edit_form() 
 -bug: Top Graph Header Breaks When Plugins Used
 
 0.8.7d
