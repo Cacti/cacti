@@ -837,7 +837,7 @@ function strip_quotes($result) {
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
-			if (($p > 47) && ($p < 58)) {
+			if ((($p > 47) && ($p < 58)) || ($p==85)) {
 				$result = substr($result,0,$a+1);
 				break;
 			}
