@@ -66,6 +66,7 @@ $no_http_header_files = array(
 	"add_perms.php",
 	"add_tree.php",
 	"copy_user.php",
+	"host_update_template.php",
 	"poller_export.php",
 	"poller_graphs_reapply_names.php",
 	"poller_output_empty.php",
