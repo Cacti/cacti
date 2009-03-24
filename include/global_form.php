@@ -719,7 +719,7 @@ $fields_host_edit = array(
 		),
 	"ping_retries" => array(
 		"friendly_name" => "Ping Retry Count",
-		"description" => "The number of times Cacti will attempt to ping a host before failing.",
+		"description" => "After an initial failure, the number of ping retries Cacti will attempt before failing.",
 		"method" => "textbox",
 		"value" => "|arg1:ping_retries|",
 		"default" => read_config_option("ping_retries"),
