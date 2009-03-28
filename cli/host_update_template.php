@@ -34,7 +34,7 @@ $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
 include_once($config["base_path"] . "/lib/snmp.php");
-include_once($config["base_path"] . "/lib/data_query.php"); 
+include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/api_automation_tools.php");
 
 /* process calling arguments */
@@ -91,7 +91,7 @@ foreach($parms as $parameter) {
 if (strtolower($host_id) == "all") {
 	$sql_where = "";
 }else if (is_numeric($host_id)) {
-	$sql_where = " WHERE host_id='$host_id'";
+	$sql_where = " WHERE id='$host_id'";
 }else{
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
 	display_help();
@@ -114,15 +114,15 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 	if (sizeof($hosts)) {
 	foreach($hosts as $host) {
 		echo "NOTE: Updating Host '" . $host["description"] . "'\n";
-		$snmp_queries = db_fetch_assoc("SELECT snmp_query_id 
-			FROM host_template_snmp_query 
+		$snmp_queries = db_fetch_assoc("SELECT snmp_query_id
+			FROM host_template_snmp_query
 			WHERE host_template_id=" . $host["host_template_id"]);
 
 		if (sizeof($snmp_queries) > 0) {
 			echo "NOTE: Updating Data Queries. There were '" . sizeof($snmp_queries) . "' Found\n";
 			foreach ($snmp_queries as $snmp_query) {
 				echo "NOTE: Updating Data Query ID '" . $snmp_query["snmp_query_id"] . "'\n";
-				db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method) 
+				db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
 					VALUES (" . $host["id"] . ", " . $snmp_query["snmp_query_id"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
 
 				/* recache snmp data */
