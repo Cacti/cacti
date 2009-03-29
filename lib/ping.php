@@ -321,7 +321,7 @@ class Net_Ping
 
 		/* getnext does not work in php versions less than 5 */
 		if (version_compare("5", phpversion(), "<")) {
-			$oid = ".1";
+			$oid = ".1.3";
 		}else{
 			$oid = ".1.3.6.1.2.1.1.3.0";
 		}
