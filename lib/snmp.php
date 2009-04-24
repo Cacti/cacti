@@ -239,6 +239,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$path_snmpbulkwalk = read_config_option("path_snmpbulkwalk");
 
 	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&
+		(!strlen($context) || ($version != 3)) &&
 		(($version == 1) ||
 		(version_compare(phpversion(), "5.1") >= 0) ||
 		(!file_exists($path_snmpbulkwalk)))) {
