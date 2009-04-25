@@ -937,6 +937,14 @@ $settings = array(
 
 $settings_graphs = array(
 	"general" => array(
+		"default_timezone" => array(
+			"friendly_name" => "Default TimeZone",
+			"description" => "Which TimeZone do you wish to see graphs rendered in?",
+			"method" => "drop_sql",
+			"sql" => "SELECT Time_zone_id AS id, Name as name FROM mysql.time_zone_name ORDER BY Name",
+			"none_value" => "Default",
+			"default" => "0"
+			),
 		"default_rra_id" => array(
 			"friendly_name" => "Default RRA",
 			"description" => "The default RRA to use when thumbnail graphs are not being displayed or when 'Thumbnail Timespan' is set to '0'.",

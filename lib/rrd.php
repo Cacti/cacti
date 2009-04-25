@@ -47,6 +47,9 @@ function rrd_init($output_to_term = TRUE) {
 		}
 	}
 
+	/* set the timezone */
+	rrdtool_set_timezone();
+
 	$rrd_struc["fd"] = popen($command, "w");
 
 	return $rrd_struc;
@@ -94,6 +97,10 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 		/* an empty $rrd_struc array means no fp is available */
 		if (!isset($rrd_struc["fd"]) || (sizeof($rrd_struc["fd"]) == 0)) {
 			session_write_close();
+
+			/* set the timezone */
+			rrdtool_set_timezone();
+
 			$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), "r");
 		}else{
 			$i = 0;
@@ -160,6 +167,8 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 		}
 	}
 
+	rrdtool_unset_timezone();
+
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_NULL:
 			return; break;
@@ -197,6 +206,56 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrd_struc
 
 			break;
 	}
+}
+
+function rrdtool_set_timezone() {
+	global $sys_timezone;
+
+	$sys_timezone = getenv("TZ");
+
+	/* verify check the timezone */
+	if (isset($_SESSION["sess_user_id"])) {
+		if (!isset($_SESSION["cacti_timezone"])) {
+			$timezone = read_graph_config_option("default_timezone");
+
+			if ($timezone > 0) {
+				/* get the zone information for the mysql helper */
+				$zone_name = db_fetch_cell("SELECT Name FROM mysql.time_zone_name WHERE Time_zone_id=$timezone");
+
+				/* now let's see what time it is in GMT */
+				$offset = db_fetch_cell("SELECT UNIX_TIMESTAMP(UTC_TIMESTAMP())-UNIX_TIMESTAMP(CONVERT_TZ(NOW(), 'GMT', '$zone_name'))");
+
+				/* now let's see what time it is in the TimeZone of Choice */
+				$hours = floor($offset/3600);
+				$remainder = abs($offset)-($hours*3600);
+
+				if ($remainder > 0) {
+					$minutes = floor($remainder / 60);
+
+					$time_offset = ($hours > 0 ? "+":"") . $hours . ":" . $minutes;
+				}else{
+					$minutes = "";
+					$time_offset = ($hours > 0 ? "+":"") . $hours;
+				}
+
+				/* save the timezone */
+				$_SESSION["cacti_timezone"] = "\"GMT" . $time_offset . "\"";
+
+				/* set the tz environment variable */
+				putenv("TZ=\"GMT" . $time_offset . "\"");
+			}
+		}else{
+			putenv("TZ=" . $_SESSION["cacti_timezone"]);
+		}
+	}
+}
+
+function rrdtool_unset_timezone() {
+	global $sys_timezone;
+
+	$sys_timezone = getenv("TZ");
+
+	ini_set("TZ", "$sys_timezone");
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrd_struc) {
