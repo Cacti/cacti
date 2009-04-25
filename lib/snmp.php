@@ -50,7 +50,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		return "U";
 	}
 
-	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
+	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&
+		(!strlen($context) || ($version != 3))) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
@@ -143,7 +144,8 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		return "U";
 	}
 
-	if (snmp_get_method($version) == SNMP_METHOD_PHP) {
+	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&
+		(!strlen($context) || ($version != 3))) {
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 		snmp_set_quick_print(0);
