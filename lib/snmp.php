@@ -275,10 +275,11 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
-			foreach($banned_snmp_strings as $item){
-				if(strstr($temp_array[$i], $item) != ""){
-					unset($temp_array[$i]);
+		foreach($temp_array as $key => $value) {
+			foreach($banned_snmp_strings as $item) {
+				if(strstr($value, $item) != "") {
+					unset($temp_array[$key]);
+					continue 2;
 				}
 			}
 		}
@@ -339,10 +340,11 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
-			foreach($banned_snmp_strings as $item){
-				if(strstr($temp_array[$i], $item) != ""){
-					unset($temp_array[$i]);
+		foreach($temp_array as $key => $value) {
+			foreach($banned_snmp_strings as $item) {
+				if(strstr($value, $item) != "") {
+					unset($temp_array[$key]);
+					continue 2;
 				}
 			}
 		}
@@ -477,9 +479,10 @@ function format_snmp_string($string, $snmp_oid_included) {
 		$string = $matches[1];
 	}
 
-	foreach($banned_snmp_strings as $item){
-		if(strstr($string, $item) != ""){
+	foreach($banned_snmp_strings as $item) {
+		if(strstr($string, $item) != "") {
 			$string = "";
+			break;
 		}
 	}
 
