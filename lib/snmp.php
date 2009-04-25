@@ -27,6 +27,9 @@ define("REGEXP_SNMP_TRIM", "(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddre
 define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
+/* declare once, use many times */
+$banned_snmp_strings = array("End of MIB", "No Such");
+
 /* we must use an apostrophe to escape community names under Unix in case the user uses
 characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 you do this, but are perfectly happy with a quotation mark. */
@@ -225,7 +228,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER) {
-	global $config;
+	global $config, $banned_snmp_strings;
 
 	$snmp_oid_included = false;
 	$snmp_auth	       = '';
@@ -271,9 +274,18 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$temp_array = @snmp3_real_walk("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 
+		/* check for bad entries */
+		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
+			foreach($banned_snmp_strings as $item){
+				if(strstr($temp_array[$i], $item) != ""){
+					unset($temp_array[$i]);
+				}
+			}
+		}
+
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
-			if ((strstr($temp_array[$i], "No more") == "") && ($temp_array[$i] != "NULL")) {
+			if ($temp_array[$i] != "NULL") {
 				$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
 				$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i], $snmp_oid_included);
 			}
@@ -327,14 +339,16 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		if ((!sizeof($temp_array)) ||
-			(strstr($temp_array[0], "End of MIB") != "") ||
-			(strstr($temp_array[0], "No Such") != "")) {
-			return array();
+		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
+			foreach($banned_snmp_strings as $item){
+				if(strstr($temp_array[$i], $item) != ""){
+					unset($temp_array[$i]);
+				}
+			}
 		}
 
 		for ($i=0; $i < count($temp_array); $i++) {
-			if ((strstr($temp_array[$i], "No more") == "") && ($temp_array[$i] != "NULL")) {
+			if ($temp_array[$i] != "NULL") {
 				$snmp_array[$i]["oid"]   = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
 				$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i], true);
 			}
@@ -345,6 +359,8 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 }
 
 function format_snmp_string($string, $snmp_oid_included) {
+	global $banned_snmp_strings;
+
 	$string = eregi_replace(REGEXP_SNMP_TRIM, "", trim($string));
 
 	if (substr($string, 0, 7) == "No Such") {
@@ -459,6 +475,12 @@ function format_snmp_string($string, $snmp_oid_included) {
 		$string = strtoupper($octet);
 	}elseif (preg_match("/Timeticks:\s\((\d+)\)\s/", $string, $matches)) {
 		$string = $matches[1];
+	}
+
+	foreach($banned_snmp_strings as $item){
+		if(strstr($string, $item) != ""){
+			$string = "";
+		}
 	}
 
 	return $string;
