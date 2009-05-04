@@ -1475,17 +1475,17 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 
 	/* override: graph start time */
-	if ((!isset($graph_data_array["graph_start"])) || ($graph_data_array["graph_start"] == "0")) {
+	if ((!isset($xport_data_array["graph_start"])) || ($xport_data_array["graph_start"] == "0")) {
 		$graph_start = -($rra["timespan"]);
 	}else{
-		$graph_start = $graph_data_array["graph_start"];
+		$graph_start = $xport_data_array["graph_start"];
 	}
 
 	/* override: graph end time */
-	if ((!isset($graph_data_array["graph_end"])) || ($graph_data_array["graph_end"] == "0")) {
+	if ((!isset($xport_data_array["graph_end"])) || ($xport_data_array["graph_end"] == "0")) {
 		$graph_end = -($seconds_between_graph_updates);
 	}else{
-		$graph_end = $graph_data_array["graph_end"];
+		$graph_end = $xport_data_array["graph_end"];
 	}
 
 	$graph = db_fetch_row("select
