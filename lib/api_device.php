@@ -113,12 +113,17 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["snmp_version"]         = form_input_validate($snmp_version, "snmp_version", "", true, 3);
 	$save["snmp_community"]       = form_input_validate($snmp_community, "snmp_community", "", true, 3);
 
-	$save["snmp_username"]        = form_input_validate($snmp_username, "snmp_username", "", true, 3);
-	$save["snmp_password"]        = form_input_validate($snmp_password, "snmp_password", "", true, 3);
-	$save["snmp_auth_protocol"]   = form_input_validate($snmp_auth_protocol, "snmp_auth_protocol", "", true, 3);
-	$save["snmp_priv_passphrase"] = form_input_validate($snmp_priv_passphrase, "snmp_priv_passphrase", "", true, 3);
-	$save["snmp_priv_protocol"]   = form_input_validate($snmp_priv_protocol, "snmp_priv_protocol", "", true, 3);
-	$save["snmp_context"]         = form_input_validate($snmp_context, "snmp_context", "", true, 3);
+	if ($save["snmp_version"] == 3) {
+		$save["snmp_username"]        = form_input_validate($snmp_username, "snmp_username", "", true, 3);
+		$save["snmp_password"]        = form_input_validate($snmp_password, "snmp_password", "", true, 3);
+		$save["snmp_auth_protocol"]   = form_input_validate($snmp_auth_protocol, "snmp_auth_protocol", "", true, 3);
+		$save["snmp_priv_passphrase"] = form_input_validate($snmp_priv_passphrase, "snmp_priv_passphrase", "", true, 3);
+		$save["snmp_priv_protocol"]   = form_input_validate($snmp_priv_protocol, "snmp_priv_protocol", "", true, 3);
+		$save["snmp_context"]         = form_input_validate($snmp_context, "snmp_context", "", true, 3);
+	} else {
+		$save["snmp_username"]        = "";
+		$save["snmp_password"]        = "";
+	}
 
 	$save["snmp_port"]            = form_input_validate($snmp_port, "snmp_port", "^[0-9]+$", false, 3);
 	$save["snmp_timeout"]         = form_input_validate($snmp_timeout, "snmp_timeout", "^[0-9]+$", false, 3);
