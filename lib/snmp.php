@@ -275,7 +275,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		if (sizeof($temp_array)) {
+		if (is_array($temp_array) && sizeof($temp_array)) {
 		foreach($temp_array as $key => $value) {
 			foreach($banned_snmp_strings as $item) {
 				if(strstr($value, $item) != "") {
@@ -342,7 +342,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		if (sizeof($temp_array)) {
+		if (is_array($temp_array) && sizeof($temp_array)) {
 		foreach($temp_array as $key => $value) {
 			foreach($banned_snmp_strings as $item) {
 				if(strstr($value, $item) != "") {
