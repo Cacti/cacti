@@ -828,7 +828,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	@arg $result - (string) the result from the poll
 	@returns - (string) the string with quotes stripped */
 function strip_quotes($result) {
-  	/* first strip all single and double quotes from the string */
+	/* first strip all single and double quotes from the string */
 	$result = strtr($result,"'"," ");
 	$result = strtr($result,'"',' ');
 
@@ -837,7 +837,7 @@ function strip_quotes($result) {
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
-			if ((($p > 47) && ($p < 58)) || ($p==85)) {
+			if (($p > 47) && ($p < 58)) {
 				$result = substr($result,0,$a+1);
 				break;
 			}
