@@ -829,8 +829,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	@returns - (string) the string with quotes stripped */
 function strip_quotes($result) {
 	/* first strip all single and double quotes from the string */
-	$result = strtr($result,"'"," ");
-	$result = strtr($result,'"',' ');
+	$result = trim(trim($result), "'\"");
 
 	/* clean off ugly non-numeric data */
 	if ((!is_numeric($result)) && ($result != "U")) {
@@ -844,7 +843,7 @@ function strip_quotes($result) {
 		}
 	}
 
-	return(trim($result));
+	return($result);
 }
 
 /* is_hexadecimal - test whether a string represents a hexadecimal number,
