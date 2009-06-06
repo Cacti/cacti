@@ -11,7 +11,7 @@ Cacti CHANGELOG
 -bug#0001446: Wrong dates override in CSV export 
 -bug: Top Graph Header Breaks When Plugins Used
 -bug: SNMP v3 Password issue caused by Firefox's Password AutoFill
--bug: Strip Quotes does not properly remove the letter 'U'
+-bug: Strip Quotes does not properly handle the value 'U'
 
 0.8.7d
 -bug#0001336: Allow to specify on_change handler for checkbox_group
