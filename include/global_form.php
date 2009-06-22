@@ -677,7 +677,7 @@ $fields_host_edit = array(
 		"default" => "",
 		"form_id" => false
 		),
-	"avalaibility_header" => array(
+	"availability_header" => array(
 		"method" => "spacer",
 		"friendly_name" => "Availability/Reachability Options"
 		),
