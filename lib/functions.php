@@ -418,7 +418,7 @@ function strip_newlines($string) {
 
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
-   @arg $output - (bool) whether to output the log line to the browser using pring() or not
+   @arg $output - (bool) whether to output the log line to the browser using print() or not
    @arg $environ - (string) tell's from where the script was called from */
 function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	global $config;
