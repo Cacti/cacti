@@ -46,7 +46,7 @@ if (read_config_option("auth_method") != 0) {
 }
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
-if ($_REQUEST["action"] == "zoom") {
+if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	$_SESSION["sess_nav_level_cache"][2]["url"] = "graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all";
 }
 
