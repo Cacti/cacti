@@ -508,7 +508,7 @@ function &rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolu
 	}
 
 
-	/* nth_percentile_maximun is removed if Unknown values are requested in the output.  This
+	/* nth_percentile_maximum is removed if Unknown values are requested in the output.  This
 	is because the max_array function will give unpredictable results when there is a mix
 	of number and text data */
 	if ((isset($fetch_array["data_source_names"])) && ($show_unknown  == 0)) {
@@ -939,7 +939,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_items[$j]["cdef_cache"] = get_cdef($graph_item["cdef_id"]);
 			}
 
-			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSTITUTION (<>'s) +++++++++++++++++++++++ */
 
 			/* note the current item_id for easy access */
 			$graph_item_id = $graph_item["graph_templates_item_id"];
@@ -1631,7 +1631,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 				$xport_items[$j]["cdef_cache"] = get_cdef($xport_item["cdef_id"]);
 			}
 
-			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSITUTION (<>'s) +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSTITUTION (<>'s) +++++++++++++++++++++++ */
 
 			/* note the current item_id for easy access */
 			$xport_item_id = $xport_item["graph_templates_item_id"];
