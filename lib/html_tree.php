@@ -793,6 +793,18 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$nodeid .= "_leaf_" . get_request_var_request("leaf_id");
 	}
 
+	if (isset($_REQUEST["host_group_data"])) {
+		$type_id = explode(":", get_request_var_request("host_group_data"));
+
+		if ($type_id[0] == "graph_template") {
+			$nodeid .= "_hgd_gt_" . $type_id[1];
+		}elseif ($type_id[0] == "data_query") {
+			$nodeid .= "_hgd_dq_" . $type_id[1];
+		}else{
+			$nodeid .= "_hgd_dqi" . $type_id[1] . "_" . $type_id[2];
+		}
+	}
+
 	print "<script type=\"text/javascript\">\n";
 	print "<!--\n";
 	print "myNode = findObj(\"$nodeid\")\n";
