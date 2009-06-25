@@ -88,6 +88,7 @@ function rrdxport2array($data) {
 		if ((substr(trim($array[0]),0,1)) == "<") {
 			/* continue */
 		}else{
+			$new_array = array();
 			foreach($array as $element) {
 				if ((substr(trim($element),0,1)) == "<") {
 					$new_array[] = $element;
