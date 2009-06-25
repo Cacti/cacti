@@ -790,7 +790,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if (isset($_REQUEST["leaf_id"])) {
-		$nodeid .= "_leaf" . get_request_var_request("leaf_id");
+		$nodeid .= "_leaf_" . get_request_var_request("leaf_id");
 	}
 
 	print "<script type=\"text/javascript\">\n";
