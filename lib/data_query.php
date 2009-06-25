@@ -335,6 +335,10 @@ function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
 	   [output_type] => 13
 	) */
 function data_query_field_list($data_template_data_id) {
+	if (!is_numeric($data_template_data_id)) {
+		return 0;
+	}
+
 	$field = db_fetch_assoc("select
 		data_input_fields.type_code,
 		data_input_data.value
