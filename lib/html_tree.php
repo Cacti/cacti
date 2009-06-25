@@ -686,7 +686,7 @@ function create_dhtml_tree() {
 										if ($data_query["id"] == 0) {
 											$non_template_graphs = db_fetch_cell("SELECT COUNT(*) FROM graph_local WHERE host_id='" . $leaf["host_id"] . "' AND snmp_query_id='0'");
 										}else{
-											$non_template_grpahs = 0;
+											$non_template_graphs = 0;
 										}
 
 										if ((($data_query["id"] == 0) && ($non_template_graphs > 0)) ||
