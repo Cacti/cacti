@@ -80,6 +80,26 @@ function get_children($vals, &$i) {
 }
 
 function rrdxport2array($data) {
+	/* bug #1436 */
+	/* scan XML for bad data RRDtool 1.2.30 */
+	$array = explode("\n", $data);
+
+	if (sizeof($array)){
+		if ((substr(trim($array[0]),0,1)) == "<") {
+			/* continue */
+		}else{
+			foreach($array as $element) {
+				if ((substr(trim($element),0,1)) == "<") {
+					$new_array[] = $element;
+				}
+			}
+
+			$array = $new_array;
+
+			$data = implode("\n", $array);
+		}
+	}
+
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
