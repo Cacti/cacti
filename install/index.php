@@ -122,7 +122,7 @@ if ($config["cacti_server_os"] == "unix") {
 		$input["path_rrdtool"]["default"] = "/usr/local/bin/rrdtool";
 	}
 }elseif ($config["cacti_server_os"] == "win32") {
-	$which_php = find_best_path("rrdtool.exe");
+	$which_rrdtool = find_best_path("rrdtool.exe");
 
 	if (config_value_exists("path_rrdtool")) {
 		$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");

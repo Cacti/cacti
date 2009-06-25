@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0001443: format_snmp_string can return a number with a leading space 
 -bug#0001446: Wrong dates override in CSV export 
 -bug#0001456: oid_uptime is not parsed correctly 
+-bug#0001464: Typo in install/index.php 
 -bug#0001468: Tree is not expanded correctly
 -bug#0001469: Tree is not being expanded if user followed link outside of cacti
 -bug#0001478: Combo boxes on Graph Management page produce URLs with leading spaces
