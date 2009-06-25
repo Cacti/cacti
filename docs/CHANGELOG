@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -bug#0001456: oid_uptime is not parsed correctly 
 -bug#0001460: Skiping input parameters in data_query_field_list() may lead to SQL errors
 -bug#0001464: Typo in install/index.php 
+-bug#0001467: Customisable oid index parse regexp for weird MIBs
 -bug#0001468: Tree is not expanded correctly
 -bug#0001469: Tree is not being expanded if user followed link outside of cacti
 -bug#0001476: Mark stacked columns in rrdtool_function_xport() output 
