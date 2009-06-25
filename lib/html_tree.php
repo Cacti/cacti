@@ -796,6 +796,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print "<script type=\"text/javascript\">\n";
 	print "<!--\n";
 	print "myNode = findObj(\"$nodeid\")\n";
+	print "myNode.forceOpeningOfAncestorFolders();\n";
 	print "highlightObjLink(myNode)\n";
 	print "//-->\n";
 	print "</script>";
