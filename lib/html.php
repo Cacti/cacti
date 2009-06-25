@@ -243,11 +243,17 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 						</tr>";
 					$i = 0;
 				}
-				print "<tr style='background-color:#a9b7cb;'>
-					<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
-						" . $graph["sort_field_value"]. "
-					</td>
-				</tr>";
+
+				if (!isset($prev_sort_field_value) || $prev_sort_field_value != $graph["sort_field_value"]){
+					$prev_sort_field_value = $graph["sort_field_value"];
+					print "<tr style='background-color:#a9b7cb;'>
+						<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
+							" . $graph["sort_field_value"] . "
+						</td>
+					</tr>";
+					$i = 0;
+					$j = 0;
+				}
 			}
 
 			if ($i == 0) {
@@ -280,7 +286,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			if (($i % read_graph_config_option("num_columns") == 0) && ($k < $num_graphs)) {
 				$i=0;
 				$j++;
-				print "</tr><tr style='background-color: #" . ($j % 2 == 0 ? "F2F2F2" : "FFFFFF") . ";'>";
+				print "</tr>";
 				$start = true;
 			}
 		}
@@ -316,16 +322,16 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark' width='15%'>
-						<?php if ($current_page > 1) { 
-							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page-1), $nav_url) . "'> &lt;&lt; Previous</a></strong>"; 
+						<?php if ($current_page > 1) {
+							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page-1), $nav_url) . "'> &lt;&lt; Previous</a></strong>";
 						} ?>
 					</td>
 					<td align='center' class='textHeaderDark' width='70%'>
 						Showing Rows <?php print (($rows_per_page*($current_page-1))+1);?> to <?php print ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page));?> of <?php print $total_rows;?>
 					</td>
 					<td align='right' class='textHeaderDark' width='15%'>
-						<?php if (($current_page * $rows_per_page) < $total_rows) { 
-							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page+1), $nav_url) . "'> Next &gt;&gt; </a></strong>"; 
+						<?php if (($current_page * $rows_per_page) < $total_rows) {
+							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page+1), $nav_url) . "'> Next &gt;&gt; </a></strong>";
 						} ?>
 					</td>
 				</tr>
