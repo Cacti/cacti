@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -bug#0001464: Typo in install/index.php 
 -bug#0001468: Tree is not expanded correctly
 -bug#0001469: Tree is not being expanded if user followed link outside of cacti
+-bug#0001476: Mark stacked columns in rrdtool_function_xport() output 
 -bug#0001478: Combo boxes on Graph Management page produce URLs with leading spaces
 -bug: Top Graph Header Breaks When Plugins Used
 -bug: SNMP v3 Password issue caused by Firefox's Password AutoFill

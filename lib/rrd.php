@@ -1702,6 +1702,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	$xport_item_stack_type = "";
 	$txt_xport_items       = "";
+	$stacked_columns       = array();
 
 	if (sizeof($xport_items) > 0) {
 	foreach ($xport_items as $xport_item) {
@@ -1943,6 +1944,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			}else{
 				$legend_name = $xport_variables["text_format"][$xport_item_id];
 			}
+			$stacked_columns["col" . $j] = ($graph_item_types{$xport_item["graph_type_id"]} == "STACK") ? 1 : 0;
 			$j++;
 
 			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . str_replace(":", "", $legend_name) . "\"";
@@ -1963,6 +1965,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	$xport_array = rrdxport2array(rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrd_struc));
 
 	/* add host and graph information */
+	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
 	$xport_array["meta"]["title_cache"]    = $graph["title_cache"];
 	$xport_array["meta"]["vertical_label"] = $graph["vertical_label"];
 	$xport_array["meta"]["local_graph_id"] = $local_graph_id;
