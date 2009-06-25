@@ -166,7 +166,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	debug_log_insert("data_query", "XML file parsed ok.");
 
 	/* fetch specified index at specified OID */
-	$snmp_index = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"],
+	$snmp_indexes = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"],
 		$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
 		$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
 		$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
@@ -174,13 +174,13 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "'");
 
 	/* no data found; get out */
-	if (!$snmp_index) {
+	if (!$snmp_indexes) {
 		debug_log_insert("data_query", "No SNMP data returned");
 		return false;
 	} else {
 		/* show list of indices found */
-		for ($i=0; $i<sizeof($snmp_index); $i++) {
-			debug_log_insert("data_query", "Index found at OID: '" . $snmp_index[$i]["oid"] . "' value: '" . $snmp_index[$i]["value"] . "'");
+		for ($i=0; $i<sizeof($snmp_indexes); $i++) {
+			debug_log_insert("data_query", "Index found at OID: '" . $snmp_indexes[$i]["oid"] . "' value: '" . $snmp_indexes[$i]["value"] . "'");
 		}
 	}
 
@@ -191,9 +191,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	if (isset($snmp_queries["oid_index_parse"])) {
 		$index_parse_regexp = str_replace("OID/REGEXP:", "", $snmp_queries["oid_index_parse"]);
 
-		for ($i=0; $i<sizeof($snmp_index); $i++) {
-			$snmp_index[$i]["value"] = ereg_replace($index_parse_regexp, "\\1", $snmp_index[$i]["oid"]);
-			debug_log_insert("data_query", "index_parse at OID: '" . $snmp_index[$i]["oid"] . "' results: '" . $snmp_index[$i]["value"] . "'");
+		for ($i=0; $i<sizeof($snmp_indexes); $i++) {
+			$snmp_indexes[$i]["value"] = ereg_replace($index_parse_regexp, "\\1", $snmp_indexes[$i]["oid"]);
+			debug_log_insert("data_query", "index_parse at OID: '" . $snmp_indexes[$i]["oid"] . "' results: '" . $snmp_indexes[$i]["value"] . "'");
 		}
 	}
 
@@ -201,19 +201,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
 		if ((!isset($field_array["oid"])) && ($field_array["source"] == "index")) {
-			for ($i=0; $i<sizeof($snmp_index); $i++) {
-				debug_log_insert("data_query", "Inserting index data for field '" . $field_name . "' [value='" . $snmp_index[$i]["value"] . "']");
+			for ($i=0; $i<sizeof($snmp_indexes); $i++) {
+				debug_log_insert("data_query", "Inserting index data for field '" . $field_name . "' [value='" . $snmp_indexes[$i]["value"] . "']");
 
 				db_execute("replace into host_snmp_cache
 					(host_id, snmp_query_id, field_name, field_value, snmp_index, oid)
-					values ('$host_id','$snmp_query_id','$field_name','" . $snmp_index[$i]["value"] . "','" . $snmp_index[$i]["value"] . "','')");
+					values ('$host_id','$snmp_query_id','$field_name','" . $snmp_indexes[$i]["value"] . "','" . $snmp_indexes[$i]["value"] . "','')");
 			}
 		}else if (($field_array["method"] == "get") && ($field_array["direction"] == "input")) {
 			debug_log_insert("data_query", "Located input field '$field_name' [get]");
 
 			if ($field_array["source"] == "value") {
-				for ($i=0; $i<sizeof($snmp_index); $i++) {
-					$oid = $field_array["oid"] .  "." . $snmp_index[$i]["value"];
+				for ($i=0; $i<sizeof($snmp_indexes); $i++) {
+					$oid = $field_array["oid"] .  "." . $snmp_indexes[$i]["value"];
 
 					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid,
 						$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
@@ -224,7 +224,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					db_execute("replace into host_snmp_cache
 						(host_id,snmp_query_id,field_name,field_value,snmp_index,oid)
-						values ('$host_id','$snmp_query_id','$field_name','$value','" . $snmp_index[$i]["value"] . "','$oid')");
+						values ('$host_id','$snmp_query_id','$field_name','$value','" . $snmp_indexes[$i]["value"] . "','$oid')");
 				}
 			}
 		}else if (($field_array["method"] == "walk") && ($field_array["direction"] == "input")) {
