@@ -1147,7 +1147,7 @@ function graph() {
 
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value=' " . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . title_trim($host["name"], 40) . "</option>\n";
+								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . title_trim($host["name"], 40) . "</option>\n";
 							}
 							}
 							?>
@@ -1179,7 +1179,7 @@ function graph() {
 
 							if (sizeof($templates) > 0) {
 							foreach ($templates as $template) {
-								print "<option value=' " . $template["id"] . "'"; if (get_request_var_request("template_id") == $template["id"]) { print " selected"; } print ">" . title_trim($template["name"], 40) . "</option>\n";
+								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("template_id") == $template["id"]) { print " selected"; } print ">" . title_trim($template["name"], 40) . "</option>\n";
 							}
 							}
 							?>
