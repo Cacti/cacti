@@ -739,7 +739,7 @@ class Net_Ping
 
 			foreach($octets as $octet) {
 				if ($i == 0 || $i == 3) {
-					if(($octet < 0) || ($octet >= 255)) {
+					if(($octet < 0) || ($octet > 255)) {
 						return false;
 					}
 				}else{
