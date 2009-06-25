@@ -170,6 +170,8 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * on this device first */
 			if ($host["snmp_community"] != "") {
 				if (isset($data_query_xml["oid_uptime"])) {
+					$oid_uptime = $data_query_xml["oid_uptime"];
+				}elseif (isset($data_query_xml["uptime_oid"])) {
 					$oid_uptime = $data_query_xml["uptime_oid"];
 				}else{
 					$oid_uptime = ".1.3.6.1.2.1.1.3.0";
