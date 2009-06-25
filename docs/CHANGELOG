@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+-bug#0001044: Creating a DS, Output field can't be selected for DT with a DIM when "Use Per-Data Source Value" is on
 -bug#0001346: Strip out noisy 'No Such Instance currently exists at this OID' 
 -bug#0001404: timeout in "function ping_icmp" (lib/ping.php)
 -bug#0001405: Spaces in DS when .rrd file is created, so it fails

@@ -360,6 +360,14 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				}
 
 				$draw_any_items = true;
+
+				/* if the "Output field" appears here among the non-templated fields, the
+				   valid choices for the drop-down box must be fetched from the associated
+				   data input method */
+				if ($field_name == "data_input_field_id") {
+					$data_input_id = db_fetch_cell("select data_input_id from data_template_data where data_template_id=".$rrd["data_template_id"]." and local_data_id=0");
+					$form_array[$form_field_name]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=".$data_input_id." and input_output='out' and update_rra='on' order by data_name,name";
+				}
 			}
 		}
 
