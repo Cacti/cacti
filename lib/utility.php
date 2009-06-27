@@ -144,6 +144,10 @@ function update_poller_cache($local_data_id, $truncate_performed = false) {
 			foreach ($outputs as $output) {
 				if (isset($snmp_queries["fields"]{$output["snmp_field_name"]}["oid"])) {
 					$oid = $snmp_queries["fields"]{$output["snmp_field_name"]}["oid"] . "." . $data_source["snmp_index"];
+
+					if (isset($snmp_queries["fields"]{$output["snmp_field_name"]}["oid_suffix"])) {
+						$oid .= "." . $snmp_queries["fields"]{$output["snmp_field_name"]}["oid_suffix"];
+					}
 				}
 
 				if (!empty($oid)) {

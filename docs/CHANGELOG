@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 -bug#0001044: Creating a DS, Output field can't be selected for DT with a DIM when "Use Per-Data Source Value" is on
+-bug#0001341: SNMP query: add oid_suffix for weird SNMP queries 
 -bug#0001345: Overwriting $snmp_index in query_snmp_host() breaks SNMP Data query if using get method
 -bug#0001346: Strip out noisy 'No Such Instance currently exists at this OID' 
 -bug#0001404: timeout in "function ping_icmp" (lib/ping.php)
