@@ -1,5 +1,7 @@
 Cacti CHANGELOG
 
+0.8.7e
+
 -bug#0001044: Creating a DS, Output field can't be selected for DT with a DIM when "Use Per-Data Source Value" is on
 -bug#0001341: SNMP query: add oid_suffix for weird SNMP queries 
 -bug#0001345: Overwriting $snmp_index in query_snmp_host() breaks SNMP Data query if using get method
@@ -8,7 +10,7 @@ Cacti CHANGELOG
 -bug#0001405: Spaces in DS when .rrd file is created, so it fails
 -bug#0001407: Place graph thumbnail into div to lower page length changes on load graphs
 -bug#0001410: Thumbnail Columns is not honored for host display with snmp index group style
--bug#0001411: Graph Search Trouble with Cacti 8.7d 
+-bug#0001411: Graph searching issue
 -bug#0001413: strip_quotes fails 
 -bug#0001426: multiple form opening due to bug in draw_edit_form() 
 -bug#0001436: CSV Export Start Date and End Date are always 1970-01-01 01:00:00 
