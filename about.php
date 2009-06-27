@@ -52,9 +52,8 @@ html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "
 				architecture to life by providing ideas, writing code, and managing an active group of beta testers. Larry continues
 				to focus on the poller as well as RRDTool integration and SNMP in a Windows environment.</li>
 			<li><strong>Tony Roman</strong> (rony) joined the Cacti Group in October of 2004 offering years of programming and system administration
-				experience to the project. He is contributing a great deal to the upcoming 0.9 release of Cacti by providing many usability
-				and documentation changes in addition to revamping Cacti's user management component.</li>
-			<li><strong>J.P. Pasnak, CD</strong> (Linegod) joined the Cacti Group in August of 2005.  He is contributing to the 0.9 release and maintains the <a href="http://docs.cacti.net/">Documentation System</a>.
+				experience to the project.</li>
+			<li><strong>J.P. Pasnak, CD</strong> (Linegod) joined the Cacti Group in August of 2005.  He is contributing to releases and maintains the <a href="http://docs.cacti.net/">Documentation System</a>.
 			</li>
 			<li><strong>Jimmy Conner</strong> (cigamit) joined the Cacti Group in January of 2006.  He is currently in charge of the Plug-in Architecture, the new events system and maintaining many of the popular plugins.
 			</li>
