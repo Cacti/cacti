@@ -87,6 +87,12 @@ switch ($_REQUEST["action"]) {
     The Save Function
    -------------------------- */
 function form_save() {
+
+	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
+	if (isset($_SESSION['dhtml_tree'])) {
+		unset($_SESSION['dhtml_tree']);
+	}
+
 	if (isset($_POST["save_component_tree"])) {
 		$save["id"] = $_POST["id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
@@ -301,6 +307,12 @@ function item_moveup() {
 
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["id"]);
 	if ($order_key > 0) { branch_up($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
+
+	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
+	if (isset($_SESSION['dhtml_tree'])) {
+		unset($_SESSION['dhtml_tree']);
+	}
+
 }
 
 function item_movedown() {
@@ -311,6 +323,12 @@ function item_movedown() {
 
 	$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=" . $_GET["id"]);
 	if ($order_key > 0) { branch_down($order_key, 'graph_tree_items', 'order_key', 'graph_tree_id=' . $_GET["tree_id"]); }
+
+	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
+	if (isset($_SESSION['dhtml_tree'])) {
+		unset($_SESSION['dhtml_tree']);
+	}
+
 }
 
 function item_remove() {
@@ -340,6 +358,11 @@ function item_remove() {
 		delete_branch($_GET["id"]);
 	}
 
+	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
+	if (isset($_SESSION['dhtml_tree'])) {
+		unset($_SESSION['dhtml_tree']);
+	}
+
 	header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]); exit;
 }
 
@@ -364,6 +387,12 @@ function tree_remove() {
 		db_execute("delete from graph_tree where id=" . $_GET["id"]);
 		db_execute("delete from graph_tree_items where graph_tree_id=" . $_GET["id"]);
 	}
+
+	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
+	if (isset($_SESSION['dhtml_tree'])) {
+		unset($_SESSION['dhtml_tree']);
+	}
+
 }
 
 function tree_edit() {
