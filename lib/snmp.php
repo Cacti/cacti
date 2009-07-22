@@ -27,10 +27,6 @@ define("REGEXP_SNMP_TRIM", "(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddre
 define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
-/* declare once, use many times */
-global $banned_snmp_strings;
-$banned_snmp_strings = array("End of MIB", "No Such");
-
 /* we must use an apostrophe to escape community names under Unix in case the user uses
 characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 you do this, but are perfectly happy with a quotation mark. */

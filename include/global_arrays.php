@@ -174,6 +174,10 @@ $snmp_priv_protocols = array(
 	"DES" => "DES (default)",
 	"AES128" => "AES");
 
+$banned_snmp_strings = array(
+	"End of MIB",
+	"No Such");
+
 $logfile_options = array(1 =>
 	"Logfile Only",
 	"Logfile and Syslog/Eventlog",
