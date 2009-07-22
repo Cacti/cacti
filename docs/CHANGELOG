@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+SVN
+
+-bug#0001506: Reindexing fails in snmp.php
+
 0.8.7e
 
 -bug#0001044: Creating a DS, Output field can't be selected for DT with a DIM when "Use Per-Data Source Value" is on

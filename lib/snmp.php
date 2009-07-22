@@ -28,6 +28,7 @@ define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
 /* declare once, use many times */
+global $banned_snmp_strings;
 $banned_snmp_strings = array("End of MIB", "No Such");
 
 /* we must use an apostrophe to escape community names under Unix in case the user uses
