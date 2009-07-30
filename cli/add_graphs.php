@@ -570,7 +570,7 @@ function display_help() {
 	echo "                    3|Fields = Verify all Fields\n";
 	echo "List Options:\n";
 	echo "    --list-hosts\n";
-	echo "    --list-graph-templates [--host_template=[ID]]\n";
+	echo "    --list-graph-templates [--host-template-id=[ID]]\n";
 	echo "    --list-input-fields --graph-template-id=[ID]\n";
 	echo "    --list-snmp-queries\n";
 	echo "    --list-query-types  --snmp-query-id [ID]\n";
