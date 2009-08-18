@@ -341,13 +341,14 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 		foreach ($graph_template_inputs as $graph_template_input) {
 			unset($save);
 
-			$save["id"] = 0;
+			$save["id"]                = 0;
 			$save["graph_template_id"] = $graph_template_id;
-			$save["name"] = $graph_template_input["name"];
-			$save["description"] = $graph_template_input["description"];
-			$save["column_name"] = $graph_template_input["column_name"];
+			$save["name"]              = $graph_template_input["name"];
+			$save["description"]       = $graph_template_input["description"];
+			$save["column_name"]       = $graph_template_input["column_name"];
+			$save["hash"]              = get_hash_graph_template(0, "graph_template_input");
 
-			$graph_template_input_id = sql_save($save, "graph_template_input");
+			$graph_template_input_id   = sql_save($save, "graph_template_input");
 
 			$graph_template_input_defs = db_fetch_assoc("select * from graph_template_input_defs where graph_template_input_id=" . $graph_template_input["id"]);
 
@@ -432,10 +433,15 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		unset($save);
 		reset($struct_data_source_item);
 
-		$save["id"] = 0;
-		$save["local_data_id"] = (isset($local_data_id) ? $local_data_id : 0);
+		$save["id"]                         = 0;
+		$save["local_data_id"]              = (isset($local_data_id) ? $local_data_id : 0);
 		$save["local_data_template_rrd_id"] = (isset($data_template_rrd["local_data_template_rrd_id"]) ? $data_template_rrd["local_data_template_rrd_id"] : 0);
-		$save["data_template_id"] = (!empty($_local_data_id) ? $data_template_rrd["data_template_id"] : $data_template_id);
+		$save["data_template_id"]           = (!empty($_local_data_id) ? $data_template_rrd["data_template_id"] : $data_template_id);
+		if ($save["local_data_id"] == 0) {
+			$save["hash"]                   = get_hash_data_template($data_template_rrd["local_data_template_rrd_id"], "data_template_item");
+		} else {
+			$save["hash"] = '';
+		}
 
 		while (list($field, $array) = each($struct_data_source_item)) {
 			$save{$field} = $data_template_rrd{$field};

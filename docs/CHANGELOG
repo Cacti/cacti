@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 SVN
 
+-bug#0001461: (Data Query) Export/Import fails 
 -bug#0001506: Reindexing fails in snmp.php
 
 0.8.7e
