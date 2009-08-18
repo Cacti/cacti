@@ -2,8 +2,13 @@ Cacti CHANGELOG
 
 SVN
 
+-bug#0001267: Template Import - XML Parse Error
 -bug#0001461: (Data Query) Export/Import fails 
 -bug#0001506: Reindexing fails in snmp.php
+-bug#0001522: Special(?) charakters break parsing of template data.
+-bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String", When Import Template 
+-bug#0001125: XML parse error on template import with degree symbol 
+-bug#0001366: Exported data templates do not import the special characters properly 
 
 0.8.7e
 

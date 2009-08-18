@@ -914,9 +914,13 @@ function get_version_index($string_version) {
 }
 
 function xml_character_decode($text) {
-	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
-	$trans_tbl = array_flip($trans_tbl);
-	return strtr($text, $trans_tbl);
+	if (function_exists("html_entity_decode")) {
+		return html_entity_decode($text, ENT_QUOTES, "UTF-8");
+	} else {
+		$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+		$trans_tbl = array_flip($trans_tbl);
+		return strtr($text, $trans_tbl);
+	}
 }
 
 ?>
