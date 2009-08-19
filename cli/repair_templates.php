@@ -93,7 +93,8 @@ $damaged_templates = array();
 /* repair graph templates */
 if ($execute) {
 	echo "Repairing Graph Templates\n";
-} else {	echo "Performing Check of Graph Templates\n";
+} else {
+	echo "Performing Check of Graph Templates\n";
 }
 
 $damaged_templates = db_fetch_assoc("SELECT * FROM graph_template_input WHERE hash=''");
@@ -106,11 +107,12 @@ if (sizeof($damaged_templates)) {
 			db_execute("UPDATE graph_template_input SET hash='$hash' WHERE id=" . $template["id"]);
 		}
 	}
-} else {	echo "No Damaged Graph Templates Found\n";
+} else {
+	echo "No Damaged Graph Templates Found\n";
 }
 
 
-/*	display_help - displays the usage of the function */
+/* display_help - displays the usage of the function */
 function display_help () {
 	print "Cacti Database Template Repair Tool v1.0, Copyright 2004-2009 - The Cacti Group\n\n";
 	print "usage: repair_templates.php --execute [--help]\n\n";
