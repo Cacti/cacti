@@ -1,6 +1,5 @@
 <?php
 /*
- ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
