@@ -68,22 +68,19 @@ foreach($parms as $parameter) {
 $max_execution = ini_get("max_execution_time");
 $max_memory = ini_get("memory_limit");
 
-/* set new timeout */
+/* set new timeout and memory settings */
 ini_set("max_execution_time", "0");
+ini_set("memory_limit", "64M");
 
 /* clear the poller cache first */
 db_execute("truncate table poller_item");
 
 /* get the data_local Id's for the poller cache */
-$poller_data  = db_fetch_assoc("select id from data_local");
-$poller_items = array();
+$poller_data = db_fetch_assoc("select id from data_local");
 
 /* initialize some variables */
 $current_ds = 1;
 $total_ds = sizeof($poller_data);
-
-/* setting local_data_ids to an empty array saves time during updates */
-$local_data_ids = array();
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
@@ -93,13 +90,10 @@ debug("There are '" . sizeof($poller_data) . "' data source elements to update."
 if (sizeof($poller_data) > 0) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print ".";
-		$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
-
+		update_poller_cache($data["id"], true);
 		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
 	}
-
-	poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items);
 }
 if (!$debug) print "\n";
 
