@@ -90,7 +90,7 @@ The command line interface scripts are as follows:
                             table
   poller_reindex_hosts.php - Cause data query reindex on hosts
   rebuild_poller_cache.php - Rebuilds the poller cache
-  repiar_templates.php     - Certain templates, when created using the "duplicate"
+  repair_templates.php     - Certain templates, when created using the "duplicate"
       function in Cacti, do not import/export well.  This utility repairs 
       those templates.
 

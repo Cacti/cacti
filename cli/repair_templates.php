@@ -75,9 +75,11 @@ if ($execute) {
 }
 
 $damaged_templates = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE hash='' AND local_data_id=0");
-if (sizeof($damaged_templates)) {	echo "Damaged Data Templates Objects Found is '" . sizeof($damaged_templates) . "'\n";
+if (sizeof($damaged_templates)) {
+	echo "Damaged Data Templates Objects Found is '" . sizeof($damaged_templates) . "'\n";
 	if ($execute) {
-		foreach($damaged_templates as $template) {			$hash = get_hash_data_template($template["local_data_template_rrd_id"], "data_template_item");
+		foreach($damaged_templates as $template) {
+		$hash = get_hash_data_template($template["local_data_template_rrd_id"], "data_template_item");
 			db_execute("UPDATE data_template_rrd SET hash='$hash' WHERE id=" . $template["id"]);
 		}
 	}
