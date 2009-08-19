@@ -811,8 +811,8 @@ function get_item_xml($type, $id, $follow_deps) {
 }
 
 function xml_character_encode($text) {
-	if (function_exists("htmlspecialchars", ENT_QUOTES, "UTF-8")) {
-		return htmlspecialchars($text);
+	if (function_exists("htmlspecialchars")) {
+		return htmlspecialchars($text, ENT_QUOTES, "UTF-8");
 	} else {
 		$text = str_replace("&", "&amp;", $text);
 		$text = str_replace(">", "&gt;", $text);
