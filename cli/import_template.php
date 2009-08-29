@@ -104,7 +104,8 @@ if (sizeof($parms)) {
 					if ($errors) {
 						echo $dep_text;
 						exit(-1);
-					}else{						exit(0);
+					}else{
+						exit(0);
 					}
 				}
 			}

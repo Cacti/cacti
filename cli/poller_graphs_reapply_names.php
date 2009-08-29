@@ -92,11 +92,15 @@ if (strlen($filter)) {
 
 if ($host_id == "All") {
 	/* Act on all graphs */
-}elseif (substr_count($host_id, "|")) {	$hosts = explode("|", $host_id);
+}elseif (substr_count($host_id, "|")) {
+	$hosts = explode("|", $host_id);
 	$host_str = "";
 
-	foreach($hosts as $host) {		if (strlen($host_str)) {			$host_str .= ", '" . $host . "'";
-		}else{			$host_str .= "'" . $host . "'";
+	foreach($hosts as $host) {
+		if (strlen($host_str)) {
+			$host_str .= ", '" . $host . "'";
+		}else{
+			$host_str .= "'" . $host . "'";
 		}
 	}
 
@@ -105,7 +109,8 @@ if ($host_id == "All") {
 	$sql_where .= " AND graph_local.host_id=0";
 }elseif (!empty($host_id)) {
 	$sql_where .= " AND graph_local.host_id=" . $host_id;
-}else{	print "ERROR: You must specify either a host_id or 'All' to proceed.\n";
+}else{
+	print "ERROR: You must specify either a host_id or 'All' to proceed.\n";
 	display_help();
 	exit;
 }

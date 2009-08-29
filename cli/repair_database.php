@@ -73,7 +73,10 @@ echo "Repairing All Cacti Database Tables\n";
 
 $tables = db_fetch_assoc("SHOW TABLES FROM " . $database_default);
 
-if (sizeof($tables)) {	foreach($tables AS $table) {		echo "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";		$status = db_execute("REPAIR TABLE " . $table['Tables_in_' . $database_default] . $form);
+if (sizeof($tables)) {
+	foreach($tables AS $table) {
+		echo "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+		$status = db_execute("REPAIR TABLE " . $table['Tables_in_' . $database_default] . $form);
 		echo ($status == 0 ? " Failed" : " Successful") . "\n";
 	}
 }

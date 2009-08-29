@@ -75,7 +75,8 @@ if ($execute) {
 
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM data_template_rrd WHERE hash='' AND local_data_id=0");
 if (sizeof($damaged_template_ids)) {
-	foreach($damaged_template_ids as $id) {		$template_name = db_fetch_cell("SELECT name FROM data_template WHERE id=" . $id["data_template_id"]);
+	foreach($damaged_template_ids as $id) {
+		$template_name = db_fetch_cell("SELECT name FROM data_template WHERE id=" . $id["data_template_id"]);
 		echo "NOTE: Data Template '$template_name' is Damaged and can be repaired\n";
 	}
 
