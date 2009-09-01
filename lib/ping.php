@@ -156,10 +156,9 @@ class Net_Ping
 						}
 						socket_set_block($this->socket);
 
+						/* use traditional ping if we can't create a raw socket */
 						if (!(@socket_connect($this->socket, $host_ip, NULL))) {
-							$this->ping_response = "Cannot connect to host";
-							$this->ping_status   = "down";
-							return false;
+							break;
 						}
 
 						/* set socket receive timeout as appropriate */
@@ -234,29 +233,33 @@ class Net_Ping
 						break;
 					}
 				}
+			}
+
+			/* we have to use the real ping, in cases where windows failed or while using UNIX/Linux */
+			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
+
+			/* host timeout given in ms, recalculate to sec, but make it an integer */
+			if (substr_count(strtolower(PHP_OS), "sun")) {
+				$result = shell_exec("ping " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "hpux")) {
+				$result = shell_exec("ping -m " . ceil($this->timeout/1000) . " -n " . $this->retries . " " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "mac")) {
+				$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "freebsd")) {
+				$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "darwin")) {
+				$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "bsd")) {
+				$result = shell_exec("ping -w " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "aix")) {
+				$result = shell_exec("ping -i " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
+			}else if (substr_count(strtolower(PHP_OS), "winnt")) {
+				$result = shell_exec("ping -w " . $this->timeout . " -n " . $this->retries . " " . $this->host["hostname"]);
 			}else{
-				/* we have to use the real ping */
-				$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
+				$result = shell_exec("ping -W " . ceil($this->timeout/1000) . " -c " . $this->retries . " -p " . $pattern . " " . $this->host["hostname"]);
+			}
 
-				/* host timeout given in ms, recalculate to sec, but make it an integer */
-				if (substr_count(strtolower(PHP_OS), "sun")) {
-					$result = shell_exec("ping " . $this->host["hostname"]);
-				}else if (substr_count(strtolower(PHP_OS), "hpux")) {
-					$result = shell_exec("ping -m " . ceil($this->timeout/1000) . " -n " . $this->retries . " " . $this->host["hostname"]);
-				}else if (substr_count(strtolower(PHP_OS), "mac")) {
-					$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
-				}else if (substr_count(strtolower(PHP_OS), "freebsd")) {
-					$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
-				}else if (substr_count(strtolower(PHP_OS), "darwin")) {
-					$result = shell_exec("ping -t " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
-				}else if (substr_count(strtolower(PHP_OS), "bsd")) {
-					$result = shell_exec("ping -w " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
-				}else if (substr_count(strtolower(PHP_OS), "aix")) {
-					$result = shell_exec("ping -i " . ceil($this->timeout/1000) . " -c " . $this->retries . " " . $this->host["hostname"]);
-				}else{
-					$result = shell_exec("ping -W " . ceil($this->timeout/1000) . " -c " . $this->retries . " -p " . $pattern . " " . $this->host["hostname"]);
-				}
-
+			if (strtolower(PHP_OS) != "winnt") {
 				$position = strpos($result, "min/avg/max");
 
 				if ($position > 0) {
@@ -266,6 +269,24 @@ class Net_Ping
 
 					$this->ping_status = $results[1];
 					$this->ping_response = "ICMP Ping Success (" . $results[1] . " ms)";
+
+					return true;
+				}else{
+					$this->status = "down";
+					$this->ping_response = "ICMP ping Timed out";
+
+					return false;
+				}
+			}else{
+				$position = strpos($result, "Minimum");
+
+				if ($position > 0) {
+					$output  = trim(substr($result, $position));
+					$pieces  = explode(",", $output);
+					$results = explode("=", $pieces[2]);
+
+					$this->ping_status = trim(str_replace("ms", "", $results[1]));
+					$this->ping_response = "ICMP Ping Success (" . $this->ping_status . " ms)";
 
 					return true;
 				}else{
@@ -642,7 +663,7 @@ class Net_Ping
 		/* snmp test */
 		if (($avail_method == AVAIL_SNMP_OR_PING) && ($ping_result == true)) {
 			$snmp_result = true;
-			$snmp_status = 0.000;
+			$this->snmp_status = 0.000;
 		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
 			$snmp_result = false;
 		}else if (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING)) {
@@ -650,7 +671,7 @@ class Net_Ping
 				/* snmp version 1/2 without community string assume SNMP test to be successful
 				   due to backward compatibility issues */
 				$snmp_result = true;
-				$snmp_status = 0.000;
+				$this->snmp_status = 0.000;
 			}else{
 				$snmp_result = $this->ping_snmp();
 			}
