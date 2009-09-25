@@ -11,6 +11,7 @@ SVN
 -bug#0001366: Exported data templates do not import the special characters properly 
 -bug#0001528: ICMP Ping availabilty broken in UI for Windows Servers using IIS
 -bug#0001535: Tree Automation Difficult Due to Lack of Parent ID in Tree Nodes 
+-bug#0001549: Database crashes with use of array_to_sql_or
 
 0.8.7e
 
