@@ -1976,7 +1976,6 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 function rrdtool_set_font($type, $no_legend = "") {
 	global $config;
-
 	if (read_graph_config_option("custom_fonts") == "on") {
 		$font = read_graph_config_option($type . "_font");
 		$size = read_graph_config_option($type . "_size");
@@ -1986,8 +1985,18 @@ function rrdtool_set_font($type, $no_legend = "") {
 	}
 
 	/* do some simple checks */
-	if (!file_exists($font)) {
-		$font = "";
+	if (read_config_option("rrdtool_version") == "rrd-1.3.x") {	# rrdtool 1.3 uses fontconfig
+		$font = '"' . $font . '"';
+		$out_array = array();
+		exec('fc-list ' . $font, $out_array);
+		if (sizeof($out_array) == 0) {
+			$font = "";
+		}
+	} elseif (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+			  read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
+		if (!file_exists($font)) {
+			$font = "";
+		}
 	}
 
 	if ($type == "title") {

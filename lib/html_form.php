@@ -240,6 +240,14 @@ function draw_edit_control($field_name, &$field_array) {
 		}
 
 		break;
+	case 'font':
+		form_font_box($field_name, $field_array["value"],
+			((isset($field_array["default"])) ? $field_array["default"] : ""),
+			$field_array["max_length"],
+			((isset($field_array["size"])) ? $field_array["size"] : "40"), "text",
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+
+		break;
 	default:
 		print "<em>" . $field_array["value"] . "</em>";
 
@@ -625,6 +633,65 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	}
 
 	print "</select>\n";
+}
+
+/* form_font_box - draws a standard html textbox and provides status of a fonts existence
+   @arg $form_name - the name of this form element
+   @arg $form_previous_value - the current value of this form element
+   @arg $form_default_value - the value of this form element to use if there is
+     no current value available
+   @arg $form_max_length - the maximum number of characters that can be entered
+     into this textbox
+   @arg $form_size - the size (width) of the textbox
+   @arg $type - the type of textbox, either 'text' or 'password'
+   @arg $current_id - used to determine if a current value for this form element
+     exists or not. a $current_id of '0' indicates that no current value exists,
+     a non-zero value indicates that a current value does exist */
+function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+	if (($form_previous_value == "") && (empty($current_id))) {
+		$form_previous_value = $form_default_value;
+	}
+
+	print "<input type='$type'";
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			print "class='txtErrorTextBox'";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
+		}
+	}
+
+	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
+			$extra_data = "";
+	} else {
+		if (read_config_option("rrdtool_version") == "rrd-1.3.x") {	# rrdtool 1.3 uses fontconfig
+			$font = '"' . $form_previous_value . '"';
+			$out_array = array();
+			exec('fc-list ' . $font, $out_array);
+			if (sizeof($out_array) == 0) {
+				$extra_data = "<span style='color:red'><br>[" . "ERROR: FONT NOT FOUND" . "]</span>";
+			} else {
+				$extra_data = "<span style='color:green'><br>[" . "OK: FONT FOUND" . "]</span>";
+			}
+		} elseif (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+				  read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
+			if (is_file($form_previous_value)) {
+				$extra_data = "<span style='color:green'><br>[" . "OK: FILE FOUND" . "]</span>";
+			}else if (is_dir($form_previous_value)) {
+				$extra_data = "<span style='color:red'><br>[" . "ERROR: IS DIR" . "]</span>";
+			}else{
+				$extra_data = "<span style='color:red'><br>[" . "ERROR: FILE NOT FOUND" . "]</span>";
+			}
+		} # will be used for future versions of rrdtool
+	}
+
+	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_confirm - draws a table presenting the user with some choice and allowing
