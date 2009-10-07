@@ -24,12 +24,44 @@
 
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-   die("<br><strong>This script is only meant to run at the command line.</strong>");
+	die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
 
 $no_http_headers = true;
 
+declare(ticks = 1);
+
+/* need to capture signals from users */
+function sig_handler($signo) {
+	global $include_file, $function, $parameters;
+
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+		case SIGABRT:
+		case SIGQUIT:
+		case SIGSEGV:
+			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", FALSE, "PHPSVR");
+
+			exit;
+			break;
+		default:
+			cacti_log("WARNING: Script Server recieved signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", FALSE, "PHPSVR");
+
+			break;
+	}
+}
+
 /* used for includes */
+/* install signal handlers for UNIX only */
+if (function_exists("pcntl_signal")) {
+	pcntl_signal(SIGTERM, "sig_handler");
+	pcntl_signal(SIGINT, "sig_handler");
+	pcntl_signal(SIGABRT, "sig_handler");
+	pcntl_signal(SIGQUIT, "sig_handler");
+	pcntl_signal(SIGSEGV, "sig_handler");
+}
+
 error_reporting(0);
 include_once(dirname(__FILE__) . "/include/global.php");
 
