@@ -35,6 +35,8 @@ include_once("./include/top_graph_header.php");
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var_request("rra_id"), "^([0-9]+|all)$");
 input_validate_input_number(get_request_var("local_graph_id"));
+input_validate_input_number(get_request_var("graph_end"));
+input_validate_input_number(get_request_var("graph_start"));
 input_validate_input_regex(get_request_var_request("view_type"), "^([a-zA-Z0-9]+)$");
 /* ==================================================== */
 

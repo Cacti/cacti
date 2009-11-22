@@ -58,7 +58,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 		if ($_SESSION["custom"]) {
 			print "<meta http-equiv=refresh content='99999'>\r\n";
 		}else{
-			print "<meta http-equiv=refresh content='" . read_graph_config_option("page_refresh") . "'>\r\n";
+			print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>\r\n";
 		}
 	}
 	?>
@@ -113,7 +113,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	</tr>
 	<tr class="noprint">
 		<td bgcolor="#efefef" colspan="1" height="8" style="background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="images/transparent_line.gif" width="<?php print read_graph_config_option("default_dual_pane_width");?>" height="2" border="0"><br>
+			<img src="images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" height="2" border="0"><br>
 		</td>
 		<td bgcolor="#ffffff" colspan="1" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;">
 
@@ -144,7 +144,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 
 	<tr>
 		<?php if ((read_graph_config_option("default_tree_view_mode") == "2") && (($_REQUEST["action"] == "tree") || ((isset($_REQUEST["view_type"]) ? $_REQUEST["view_type"] : "") == "tree"))) { ?>
-		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='<?php print read_graph_config_option("default_dual_pane_width");?>' class='noprint'>
+		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
 			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></font></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
 			<script type="text/javascript">initializeDocument();</script>

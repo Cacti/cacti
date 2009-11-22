@@ -125,9 +125,9 @@ function process_user_input(&$timespan, $timeshift) {
 	if (isset($_POST["date1"])) {
 		/* the dates have changed, therefore, I am now custom */
 		if (($_SESSION["sess_current_date1"] != $_POST["date1"]) || ($_SESSION["sess_current_date2"] != $_POST["date2"])) {
-			$timespan["current_value_date1"] = $_POST["date1"];
+			$timespan["current_value_date1"] = sanitize_search_string($_POST["date1"]);
 			$timespan["begin_now"] =strtotime($timespan["current_value_date1"]);
-			$timespan["current_value_date2"] = $_POST["date2"];
+			$timespan["current_value_date2"] = sanitize_search_string($_POST["date2"]);
 			$timespan["end_now"]=strtotime($timespan["current_value_date2"]);
 			$_SESSION["sess_current_timespan"] = GT_CUSTOM;
 			$_SESSION["custom"] = 1;
@@ -135,8 +135,8 @@ function process_user_input(&$timespan, $timeshift) {
 		}else {
 			/* the default button wasn't pushed */
 			if (!isset($_POST["button_clear_x"])) {
-				$timespan["current_value_date1"] = $_POST["date1"];
-				$timespan["current_value_date2"] = $_POST["date2"];
+				$timespan["current_value_date1"] = sanitize_search_string($_POST["date1"]);
+				$timespan["current_value_date2"] = sanitize_search_string($_POST["date2"]);
 				$timespan["begin_now"] = $_SESSION["sess_current_timespan_begin_now"];
 				$timespan["end_now"] = $_SESSION["sess_current_timespan_end_now"];
 
