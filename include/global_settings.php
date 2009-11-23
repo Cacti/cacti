@@ -78,7 +78,7 @@ $settings = array(
 			),
 		"path_rrdtool_default_font" => array(
 			"friendly_name" => "RRDTool Default Font Path",
-			"description" => "The path to the rrdtool default true type font for version 1.2 and above.",
+			"description" => "For RRDtool 1.2, the path to the True Type Font.  For RRDtool 1.3 and above, the font name conforming to the fontconfig naming convention.",
 			"method" => "font",
 			"max_length" => "255"
 			),
@@ -197,7 +197,7 @@ $settings = array(
 			"friendly_name" => "RRDTool Utility Version",
 			"description" => "The version of RRDTool that you have installed.",
 			"method" => "drop_array",
-			"default" => "rrd-1.0.x",
+			"default" => "rrd-1.2.x",
 			"array" => $rrdtool_versions,
 			),
 		"snmp_header" => array(
