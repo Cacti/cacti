@@ -1294,6 +1294,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		/* to make things easier... if there is no text format set; set blank text */
 		if (!isset($graph_variables["text_format"][$graph_item_id])) {
 			$graph_variables["text_format"][$graph_item_id] = "";
+		} else {
+			$graph_variables["text_format"][$graph_item_id] = str_replace('"', '\"', $graph_variables["text_format"][$graph_item_id]); /* escape doublequotes */
 		}
 
 		if (!isset($hardreturn[$graph_item_id])) {
@@ -1985,16 +1987,16 @@ function rrdtool_set_font($type, $no_legend = "") {
 	}
 
 	/* do some simple checks */
-	if (read_config_option("rrdtool_version") == "rrd-1.3.x") {	# rrdtool 1.3 uses fontconfig
+	if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+		read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
+		if (!file_exists($font)) {
+			$font = "";
+		}
+	} else {	# rrdtool 1.3+ use fontconfig
 		$font = '"' . $font . '"';
 		$out_array = array();
 		exec('fc-list ' . $font, $out_array);
 		if (sizeof($out_array) == 0) {
-			$font = "";
-		}
-	} elseif (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
-			  read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
-		if (!file_exists($font)) {
 			$font = "";
 		}
 	}
