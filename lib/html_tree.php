@@ -1097,6 +1097,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			graph_tree_items.local_graph_id,
 			graph_tree_items.rra_id,
 			graph_tree_items.order_key,
+			graph_templates_graph.height,
 			graph_templates_graph.title_cache as title_cache
 			FROM (graph_tree_items,graph_local)
 			LEFT JOIN graph_templates_graph ON (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id AND graph_tree_items.local_graph_id>0)
@@ -1136,7 +1137,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 				$graphs = db_fetch_assoc("SELECT
 					graph_templates_graph.title_cache,
-					graph_templates_graph.local_graph_id
+					graph_templates_graph.local_graph_id,
+					graph_templates_graph.height
 					FROM (graph_local,graph_templates_graph)
 					$sql_join
 					WHERE graph_local.id=graph_templates_graph.local_graph_id
@@ -1189,6 +1191,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				$graphs = db_fetch_assoc("SELECT
 					graph_templates_graph.title_cache,
 					graph_templates_graph.local_graph_id,
+					graph_templates_graph.height,
 					graph_local.snmp_index
 					FROM (graph_local, graph_templates_graph)
 					$sql_join
@@ -1207,6 +1210,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 					foreach ($graphs as $graph) {
 						$snmp_index_to_graph{$graph["snmp_index"]}{$graph["local_graph_id"]} = $graph["title_cache"];
+						$graphs_height[$graph["local_graph_id"]] = $graph["height"];
 					}
 				}
 
@@ -1216,7 +1220,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					if (isset($snmp_index_to_graph[$snmp_index])) {
 						while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
 							/* reformat the array so it's compatable with the html_graph* area functions */
-							array_push($graph_list, array("data_query_name" => $data_query["name"], "sort_field_value" => $sort_field_value, "local_graph_id" => $local_graph_id, "title_cache" => $graph_title));
+							array_push($graph_list, array("data_query_name" => $data_query["name"], "sort_field_value" => $sort_field_value, "local_graph_id" => $local_graph_id, "title_cache" => $graph_title, "height" => $graphs_height[$graph["local_graph_id"]]));
 						}
 					}
 				}
