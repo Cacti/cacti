@@ -15,6 +15,7 @@ SVN
 -bug#0001535: Tree Automation Difficult Due to Lack of Parent ID in Tree Nodes 
 -bug#0001549: Database crashes with use of array_to_sql_or
 -bug#0001557: Quotes in Text Format graph template field breaks graph
+-bug: When creating new graphs without a data source, print error to user instead of throwing php error
 
 0.8.7e
 

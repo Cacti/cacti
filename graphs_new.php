@@ -199,8 +199,12 @@ function host_new_graphs_save() {
 				debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 
 				/* lastly push host-specific information to our data sources */
-				foreach($return_array["local_data_id"] as $item) {
-					push_out_host($_POST["host_id"], $item);
+				if (sizeof($return_array["local_data_id"])) { # we expect at least one data source associated
+					foreach($return_array["local_data_id"] as $item) {
+						push_out_host($_POST["host_id"], $item);
+					}
+				} else {
+					debug_log_insert("new_graphs", "ERROR: no Data Source associated. Check Template");
 				}
 			}elseif ($current_form_type == "sg") {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
@@ -211,8 +215,12 @@ function host_new_graphs_save() {
 					debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 
 					/* lastly push host-specific information to our data sources */
-					foreach($return_array["local_data_id"] as $item) {
-						push_out_host($_POST["host_id"], $item);
+					if (sizeof($return_array["local_data_id"])) { # we expect at least one data source associated
+						foreach($return_array["local_data_id"] as $item) {
+							push_out_host($_POST["host_id"], $item);
+						}
+					} else {
+						debug_log_insert("new_graphs", "ERROR: no Data Source associated. Check Template");
 					}
 				}
 			}
