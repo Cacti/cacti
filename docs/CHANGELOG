@@ -18,6 +18,7 @@ SVN
 -bug#0001587: 64bit HEX Strings don't convert to Decimal on 32bit Systems
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
+-bug: Browser query string does not contain arguments
 
 0.8.7e
 
