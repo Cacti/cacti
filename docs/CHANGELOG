@@ -19,6 +19,7 @@ SVN
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
 -bug: Browser query string does not contain arguments
+-bug: inject_form_variables does not operate if more than 1 variable needs replacing
 
 0.8.7e
 

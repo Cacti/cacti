@@ -48,18 +48,30 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 				/* if the field/sub-field combination is an array, resolve it recursively */
 				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
 			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $field_array[$field_to_check], $matches))) {
-				/* an empty field name in the variable means don't treat this as an array */
-				if ($matches[2] == "") {
-					if (is_array(${$matches[1]})) {
-						/* the existing value is already an array, leave it alone */
-						$form_array[$field_name][$field_to_check] = ${$matches[1]};
+				$string = $field_array[$field_to_check];
+				while ( 1 ) { 
+					/* an empty field name in the variable means don't treat this as an array */
+					if ($matches[2] == "") {
+						if (is_array(${$matches[1]})) {
+							/* the existing value is already an array, leave it alone */
+							$form_array[$field_name][$field_to_check] = ${$matches[1]};
+							break;
+						}else{
+							/* the existing value is probably a single variable */
+							$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
+							break;
+						}
 					}else{
-						/* the existing value is probably a single variable */
-						$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
+						/* copy the value down from the array/key specified in the variable */
+						$string = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ""), $string);
+
+						$matches = array();
+						ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $string, $matches);
+						if (!sizeof($matches)) {
+							$form_array[$field_name][$field_to_check] = $string;
+							break;
+						}
 					}
-				}else{
-					/* copy the value down from the array/key specified in the variable */
-					$form_array[$field_name][$field_to_check] = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ""), $field_array[$field_to_check]);
 				}
 			}
 		}
@@ -97,13 +109,13 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
    @arg $width - the width of the table element
    @arg $style - the style to apply to the table element */
 function form_selectable_cell($contents, $id, $width="", $style="") {
-	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line($id)'>" . $contents . "</td>\n";
+	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line(\"$id\")'>" . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id) {
-	print "\t<td onClick='select_line($id, true)' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
+	print "\t<td onClick='select_line(\"$id\", true)' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
 	print "\t\t<input type='checkbox' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
