@@ -359,7 +359,7 @@ function form_actions() {
 		print "	<tr>
 				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>To change SNMP parameters for the following devices, check the box next to the fields
-					you want to update, fill in the new value, and click Save.</p>
+					you want to update, fill in the new value, and click \"yes\".</p>
 					<p>$host_list</p>
 				</td>
 				</tr>";
@@ -390,7 +390,7 @@ function form_actions() {
 		print "	<tr>
 				<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>To change SNMP parameters for the following devices, check the box next to the fields
-					you want to update, fill in the new value, and click Save.</p>
+					you want to update, fill in the new value, and click \"yes\".</p>
 					<p>$host_list</p>
 				</td>
 				</tr>";
