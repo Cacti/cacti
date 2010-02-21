@@ -76,9 +76,8 @@ if (read_config_option("auth_method") != 0) {
 			<head>
 				<title>Cacti</title>
 				<link href="include/main.css" rel="stylesheet">
-			</style>
 			</head>
-
+			<body>
 			<br><br>
 
 			<table width="450" align='center'>
@@ -91,7 +90,7 @@ if (read_config_option("auth_method") != 0) {
 					need access to this particular section, please contact the Cacti administrator.</td>
 				</tr>
 				<tr>
-					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'>Return</a> | <a href='index.php'>Login</a> )</td>
+					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'>Return</a> | <a href='logout.php'>Login Again</a> )</td>
 				</tr>
 			</table>
 

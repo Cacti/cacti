@@ -3,6 +3,7 @@ Cacti CHANGELOG
 SVN
 
 -bug#0001267: Template Import - XML Parse Error
+-bug#0001311: Access denied for graph-only users when accessing index.php
 -bug#0001461: (Data Query) Export/Import fails 
 -bug#0001506: Reindexing fails in snmp.php
 -bug#0001522: Special(?) charakters break parsing of template data.

@@ -33,7 +33,6 @@ global $colors;
 	<?php if (isset($refresh)) {
 	print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
 	}?>
-</style>
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" background="images/left_border.gif">
