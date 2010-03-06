@@ -2,24 +2,29 @@ Cacti CHANGELOG
 
 SVN
 
+-bug#0001125: XML parse error on template import with degree symbol 
 -bug#0001267: Template Import - XML Parse Error
 -bug#0001311: Access denied for graph-only users when accessing index.php
--bug#0001461: (Data Query) Export/Import fails 
--bug#0001506: Reindexing fails in snmp.php
--bug#0001522: Special(?) charakters break parsing of template data.
--bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String", When Import Template 
--bug#0001125: XML parse error on template import with degree symbol 
 -bug#0001366: Exported data templates do not import the special characters properly 
+-bug#0001416: Graph Export fails with EXPORT FATAL ERROR: Export path /some/path/root/export is within a system path /root. Can not continue. 
+-bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String", When Import Template 
+-bug#0001461: (Data Query) Export/Import fails 
 -bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
+-bug#0001506: Reindexing fails in snmp.php
 -bug#0001508: More min-height'ed divs when showing graphs 
+-bug#0001522: Special(?) charakters break parsing of template data.
+-bug#0001524: Export graphs and Classical Presentation 
 -bug#0001528: ICMP Ping availabilty broken in UI for Windows Servers using IIS
 -bug#0001535: Tree Automation Difficult Due to Lack of Parent ID in Tree Nodes 
+-bug#0001543: all graphs are exported 
 -bug#0001549: Database crashes with use of array_to_sql_or
 -bug#0001557: Quotes in Text Format graph template field breaks graph
 -bug#0001587: 64bit HEX Strings don't convert to Decimal on 32bit Systems
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
 -bug#0001628: Message does not match available buttons in Change SNMP Options
+
+
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
 -bug: Browser query string does not contain arguments
 -bug: inject_form_variables does not operate if more than 1 variable needs replacing
