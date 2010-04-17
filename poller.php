@@ -168,7 +168,7 @@ db_execute("REPLACE INTO settings (name,value) VALUES ('poller_lastrun'," . $sec
 
 /* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
 ini_set("max_execution_time", MAX_POLLER_RUNTIME + 1);
-ini_set("memory_limit", "256M");
+ini_set("memory_limit", "512M");
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;

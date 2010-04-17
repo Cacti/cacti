@@ -28,7 +28,6 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 }
 
 ini_set("max_execution_time", "0");
-ini_set("memory_limit", "64M");
 
 $no_http_headers = true;
 

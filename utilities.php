@@ -66,15 +66,9 @@ switch ($_REQUEST["action"]) {
 
 		/* obtain timeout settings */
 		$max_execution = ini_get("max_execution_time");
-		$max_memory = ini_get("memory_limit");
-
 		ini_set("max_execution_time", "0");
-		ini_set("memory_limit", "32M");
-
 		repopulate_poller_cache();
-
 		ini_set("max_execution_time", $max_execution);
-		ini_set("memory_limit", $max_memory);
 
 		utilities_view_poller_cache();
 

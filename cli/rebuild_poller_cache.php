@@ -66,11 +66,7 @@ foreach($parms as $parameter) {
 
 /* obtain timeout settings */
 $max_execution = ini_get("max_execution_time");
-$max_memory = ini_get("memory_limit");
-
-/* set new timeout and memory settings */
 ini_set("max_execution_time", "0");
-ini_set("memory_limit", "64M");
 
 /* clear the poller cache first */
 db_execute("truncate table poller_item");
@@ -99,7 +95,6 @@ if (!$debug) print "\n";
 
 /* poller cache rebuilt, restore runtime parameters */
 ini_set("max_execution_time", $max_execution);
-ini_set("memory_limit", $max_memory);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
