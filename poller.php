@@ -121,6 +121,10 @@ if (isset($poller_interval)) {
 
 if (sizeof($items_perhost)) {
 	$items_per_process   = floor($num_polling_items / $concurrent_processes);
+
+	if ($items_per_process == 0) {
+		$process_leveling = "off";
+	}
 }else{
 	$process_leveling    = "off";
 }
