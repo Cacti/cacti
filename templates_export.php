@@ -49,6 +49,10 @@ switch ($_REQUEST["action"]) {
 function form_save() {
 	global $export_types;
 
+    /* ================= input validation ================= */
+    input_validate_input_number(get_request_var_post("export_item_id"));
+    /* ==================================================== */
+
 	if (isset($_POST["save_component_export"])) {
 		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
 
