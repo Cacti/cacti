@@ -54,12 +54,11 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 <html>
 <head>
 	<title>Cacti</title>
-	<?php if (isset($_SESSION["custom"])) {
-		if ($_SESSION["custom"]) {
-			print "<meta http-equiv=refresh content='99999'>\r\n";
-		}else{
-			print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>\r\n";
-		}
+	<?php
+	if (isset($_SESSION["custom"])) {
+		print "<meta http-equiv=refresh content='99999'>\r\n";
+	}else{
+		print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>\r\n";
 	}
 	?>
 	<link href="include/main.css" rel="stylesheet">
