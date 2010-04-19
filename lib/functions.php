@@ -1807,12 +1807,13 @@ function get_associated_rras($local_graph_id) {
 		rra.name,
 		rra.timespan,
 		data_template_data.rrd_step
-		from (graph_templates_item,data_template_data_rra,data_template_rrd,data_template_data,rra)
-		where graph_templates_item.task_item_id=data_template_rrd.id
-		and data_template_rrd.local_data_id=data_template_data.local_data_id
-		and data_template_data.id=data_template_data_rra.data_template_data_id
-		and data_template_data_rra.rra_id=rra.id
-		and graph_templates_item.local_graph_id=$local_graph_id
+		from graph_templates_item
+		LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id=data_template_rrd.id)
+		LEFT JOIN data_template_data ON (data_template_rrd.local_data_id=data_template_data.local_data_id)
+		LEFT JOIN data_template_data_rra ON (data_template_data.id=data_template_data_rra.data_template_data_id)
+		LEFT JOIN rra ON (data_template_data_rra.rra_id=rra.id)
+                where graph_templates_item.local_graph_id=$local_graph_id
+		AND data_template_rrd.local_data_id != 0
 		group by rra.id
 		order by rra.timespan");
 }
