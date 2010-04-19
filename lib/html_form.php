@@ -670,7 +670,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
 			$extra_data = "";
 	} else {
-		if (read_config_option("rrdtool_version") == "rrd-1.3.x") {	# rrdtool 1.3 uses fontconfig
+		if ((read_config_option("rrdtool_version") == "rrd-1.3.x") ||
+			(read_config_option("rrdtool_version") == "rrd-1.4.x")) {	# rrdtool 1.3++ uses fontconfig
 			$font = '"' . $form_previous_value . '"';
 			$out_array = array();
 			exec('fc-list ' . $font, $out_array);
