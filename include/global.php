@@ -49,6 +49,10 @@ if (isset($config["cacti_version"])) {
 	exit;
 }
 
+/* display ALL errors, 
+ * but suppress deprecated warnings as a workaround until 088 */
+error_reporting(E_ALL ^ E_DEPRECATED);
+
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
 	"cmd.php",
@@ -178,7 +182,7 @@ if ((bool)ini_get("register_globals")) {
 }
 
 /* display ALL errors */
-error_reporting(E_ALL);
+#error_reporting(E_ALL);
 
 /* include base modules */
 include($config["library_path"] . "/adodb/adodb.inc.php");
