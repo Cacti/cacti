@@ -672,9 +672,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	} else {
 		if ((read_config_option("rrdtool_version") == "rrd-1.3.x") ||
 			(read_config_option("rrdtool_version") == "rrd-1.4.x")) {	# rrdtool 1.3++ uses fontconfig
-			$font = '"' . $form_previous_value . '"';
 			$out_array = array();
-			exec('fc-list ' . $font, $out_array);
+			exec('fc-list ' . escapeshellarg($form_previous_value), $out_array);
 			if (sizeof($out_array) == 0) {
 				$extra_data = "<span style='color:red'><br>[" . "ERROR: FONT NOT FOUND" . "]</span>";
 			} else {

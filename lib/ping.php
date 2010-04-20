@@ -122,10 +122,12 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("tcp:", "", strtolower($this->host["hostname"]));
 			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
-			/* determine the host's ip address */
+			/* determine the host's ip address 
+			 * this prevents from command injection as well*/
 			if ($this->is_ipaddress($this->host["hostname"])) {
 				$host_ip = $this->host["hostname"];
 			}else{
+				/* again, as a side effect, prevention from command injection */
 				$host_ip = gethostbyname($this->host["hostname"]);
 
 				if (!$this->is_ipaddress($host_ip)) {
@@ -238,7 +240,11 @@ class Net_Ping
 			/* we have to use the real ping, in cases where windows failed or while using UNIX/Linux */
 			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
-			/* host timeout given in ms, recalculate to sec, but make it an integer */
+			/* host timeout given in ms, recalculate to sec, but make it an integer 
+			 * we might consider to use escapeshellarh on hostname, 
+			 * but this field has already been verified.
+			 * The other fields are numerical fields only and thus
+			 * not vulnerable for command injection */
 			if (substr_count(strtolower(PHP_OS), "sun")) {
 				$result = shell_exec("ping " . $this->host["hostname"]);
 			}else if (substr_count(strtolower(PHP_OS), "hpux")) {

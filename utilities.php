@@ -240,7 +240,7 @@ function utilities_view_tech($php_info = "") {
 	if ((file_exists(read_config_option("path_rrdtool"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_rrdtool"))))) {
 
 		$out_array = array();
-		exec(read_config_option("path_rrdtool"), $out_array);
+		exec(escapeshellcmd(read_config_option("path_rrdtool")), $out_array);
 
 		if (sizeof($out_array) > 0) {
 			if (ereg("^RRDtool 1\.3", $out_array[0])) {
@@ -256,7 +256,7 @@ function utilities_view_tech($php_info = "") {
 	/* Get SNMP cli version */
 	$snmp_version = read_config_option("snmp_version");
 	if ((file_exists(read_config_option("path_snmpget"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_snmpget"))))) {
-		$snmp_version = shell_exec(read_config_option("path_snmpget") . " -V 2>&1");
+		$snmp_version = shell_exec(escapeshellcmd(read_config_option("path_snmpget")) . " -V 2>&1");
 	}
 
 	/* Check RRDTool issues */

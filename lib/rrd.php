@@ -26,7 +26,9 @@ define("RRD_NL", " \\\n");
 define("MAX_FETCH_CACHE_SIZE", 5);
 
 function escape_command($command) {
-	return ereg_replace("(\\\$|`)", "", $command);
+	return escapeshellcmd($command);
+	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
+	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
 function rrd_init($output_to_term = TRUE) {
@@ -1993,9 +1995,8 @@ function rrdtool_set_font($type, $no_legend = "") {
 			$font = "";
 		}
 	} else {	# rrdtool 1.3+ use fontconfig
-		$font = '"' . $font . '"';
 		$out_array = array();
-		exec('fc-list ' . $font, $out_array);
+		exec('fc-list ' . escapeshellarg($font), $out_array);
 		if (sizeof($out_array) == 0) {
 			$font = "";
 		}

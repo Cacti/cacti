@@ -111,9 +111,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (empty($snmp_auth)) { return; }
 
 		if (read_config_option("snmp_version") == "ucd-snmp") {
-			exec(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
+			exec(escapeshellcmd(read_config_option("path_snmpget") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value));
 		}else {
-			exec(read_config_option("path_snmpget") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
+			exec(escapeshellcmd(read_config_option("path_snmpget") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value));
 		}
 	}
 
@@ -205,9 +205,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		if (empty($snmp_auth)) { return; }
 
 		if (read_config_option("snmp_version") == "ucd-snmp") {
-			exec(read_config_option("path_snmpgetnext") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value);
+			exec(escapeshellcmd(read_config_option("path_snmpgetnext") . " -O vt -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid", $snmp_value));
 		}else {
-			exec(read_config_option("path_snmpgetnext") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value);
+			exec(escapeshellcmd(read_config_option("path_snmpgetnext") . " -O fntev $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid", $snmp_value));
 		}
 	}
 
@@ -329,12 +329,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		if (read_config_option("snmp_version") == "ucd-snmp") {
-			$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid");
+			$temp_array = exec_into_array(escapeshellcmd(read_config_option("path_snmpwalk") . " -v$version -t $timeout -r $retries $hostname:$port $snmp_auth $oid"));
 		}else {
 			if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
-				$temp_array = exec_into_array($path_snmpbulkwalk . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids $hostname:$port $oid");
+				$temp_array = exec_into_array(escapeshellcmd($path_snmpbulkwalk . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids $hostname:$port $oid"));
 			}else{
-				$temp_array = exec_into_array(read_config_option("path_snmpwalk") . " -O Qn $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid");
+				$temp_array = exec_into_array(escapeshellcmd(read_config_option("path_snmpwalk") . " -O Qn $snmp_auth -v $version -t $timeout -r $retries $hostname:$port $oid"));
 			}
 		}
 
