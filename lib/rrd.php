@@ -1980,6 +1980,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 function rrdtool_set_font($type, $no_legend = "") {
 	global $config;
+	
 	if (read_graph_config_option("custom_fonts") == "on") {
 		$font = read_graph_config_option($type . "_font");
 		$size = read_graph_config_option($type . "_size");
@@ -1988,24 +1989,28 @@ function rrdtool_set_font($type, $no_legend = "") {
 		$size = read_config_option($type . "_size");
 	}
 
-	/* do some simple checks */
-	if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
-		read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
-		if (!is_file($font)) {
-			$font = "";
-		}
-	} else {	# rrdtool 1.3+ use fontconfig
-		if ($config["cacti_server_os"] == "unix") {
-			/* unix knows fc-list
-			 * so use it to verify the font provided */
-			$out_array = array();
-			exec('fc-list ' . escapeshellarg($font), $out_array);
-			if (sizeof($out_array) == 0) {
+	if(strlen($font)) {
+		/* do some simple checks */
+		if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+			read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
+			if (!is_file($font)) {
 				$font = "";
 			}
-		} else {
-			/* windows currently has no concept for fc-list
-			 * we can't perform any check */
+		} else {	# rrdtool 1.3+ use fontconfig
+			if ($config["cacti_server_os"] == "unix") {
+				/* unix knows fc-list
+				 * so use it to verify the font provided */
+				$out_array = array();
+				exec('fc-list ' . escapeshellarg($font), $out_array);
+				if (sizeof($out_array)) {
+					$font = escapeshellarg($font);
+				} else {
+					$font = "";
+				}
+			} else {
+				/* windows currently has no concept for fc-list
+				 * we can't perform any check */
+			}
 		}
 	}
 
