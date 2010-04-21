@@ -26,8 +26,7 @@ define("RRD_NL", " \\\n");
 define("MAX_FETCH_CACHE_SIZE", 5);
 
 function escape_command($command) {
-	return escapeshellcmd($command);
-	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
+	return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
@@ -703,8 +702,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 		}
 	}else{
-		$scale =  "--upper-limit=" . $graph["upper_limit"] . RRD_NL;
-		$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+		$scale =  "--upper-limit=" . escapeshellarg($graph["upper_limit"]) . RRD_NL;
+		$scale .= "--lower-limit=" . escapeshellarg($graph["lower_limit"]) . RRD_NL;
 	}
 
 	if ($graph["auto_scale_log"] == "on") {
@@ -723,14 +722,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (!empty($graph["unit_value"])) {
 		if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
-			$unit_value = "--y-grid=" . $graph["unit_value"] . RRD_NL;
+			$unit_value = "--y-grid=" . escapeshellarg($graph["unit_value"]) . RRD_NL;
 		}else{
-			$unit_value = "--unit=" . $graph["unit_value"] . RRD_NL;
+			$unit_value = "--unit=" . escapeshellarg($graph["unit_value"]) . RRD_NL;
 		}
 	}
 
 	if (ereg("^[0-9]+$", $graph["unit_exponent_value"])) {
-		$unit_exponent_value = "--units-exponent=" . $graph["unit_exponent_value"] . RRD_NL;
+		$unit_exponent_value = "--units-exponent=" . escapeshellarg($graph["unit_exponent_value"]) . RRD_NL;
 	}
 
 	/*
@@ -837,7 +836,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL .
 		"--start=$graph_start" . RRD_NL .
 		"--end=$graph_end" . RRD_NL .
-		"--title=\"" . str_replace("\"", "\\\"", $graph["title_cache"]) . "\"" . RRD_NL .
+		"--title=" . escapeshellarg($graph["title_cache"]) . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .
 		"--height=$graph_height" . RRD_NL .
@@ -846,7 +845,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"$unit_value" .
 		"$unit_exponent_value" .
 		"$graph_legend" .
-		"--vertical-label=\"" . $graph["vertical_label"] . "\"" . RRD_NL;
+		"--vertical-label=" . escapeshellarg($graph["vertical_label"]) . RRD_NL;
 
 	/* rrdtool 1.2.x does not provide smooth lines, let's force it */
 	if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
@@ -1970,8 +1969,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	/* add host and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
-	$xport_array["meta"]["title_cache"]    = $graph["title_cache"];
-	$xport_array["meta"]["vertical_label"] = $graph["vertical_label"];
+	$xport_array["meta"]["title_cache"]    = escapeshellarg($graph["title_cache"]);
+	$xport_array["meta"]["vertical_label"] = escapeshellarg($graph["vertical_label"]);
 	$xport_array["meta"]["local_graph_id"] = $local_graph_id;
 	$xport_array["meta"]["host_id"]        = $graph["host_id"];
 
