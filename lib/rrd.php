@@ -1991,14 +1991,21 @@ function rrdtool_set_font($type, $no_legend = "") {
 	/* do some simple checks */
 	if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
 		read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
-		if (!file_exists($font)) {
+		if (!is_file($font)) {
 			$font = "";
 		}
 	} else {	# rrdtool 1.3+ use fontconfig
-		$out_array = array();
-		exec('fc-list ' . escapeshellarg($font), $out_array);
-		if (sizeof($out_array) == 0) {
-			$font = "";
+		if ($config["cacti_server_os"] == "unix") {
+			/* unix knows fc-list
+			 * so use it to verify the font provided */
+			$out_array = array();
+			exec('fc-list ' . escapeshellarg($font), $out_array);
+			if (sizeof($out_array) == 0) {
+				$font = "";
+			}
+		} else {
+			/* windows currently has no concept for fc-list
+			 * we can't perform any check */
 		}
 	}
 

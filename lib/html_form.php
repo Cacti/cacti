@@ -648,6 +648,8 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+	global $config;
+	
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -670,17 +672,10 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
 			$extra_data = "";
 	} else {
-		if ((read_config_option("rrdtool_version") == "rrd-1.3.x") ||
-			(read_config_option("rrdtool_version") == "rrd-1.4.x")) {	# rrdtool 1.3++ uses fontconfig
-			$out_array = array();
-			exec('fc-list ' . escapeshellarg($form_previous_value), $out_array);
-			if (sizeof($out_array) == 0) {
-				$extra_data = "<span style='color:red'><br>[" . "ERROR: FONT NOT FOUND" . "]</span>";
-			} else {
-				$extra_data = "<span style='color:green'><br>[" . "OK: FONT FOUND" . "]</span>";
-			}
-		} elseif (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
-				  read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
+		
+		/* do some simple checks */
+		if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+			read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
 			if (is_file($form_previous_value)) {
 				$extra_data = "<span style='color:green'><br>[" . "OK: FILE FOUND" . "]</span>";
 			}else if (is_dir($form_previous_value)) {
@@ -688,7 +683,23 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 			}else{
 				$extra_data = "<span style='color:red'><br>[" . "ERROR: FILE NOT FOUND" . "]</span>";
 			}
-		} # will be used for future versions of rrdtool
+		} else {	# rrdtool 1.3+ use fontconfig
+			if ($config["cacti_server_os"] == "unix") {
+				/* unix knows fc-list
+				 * so use it to verify the font provided */
+				$out_array = array();
+				exec('fc-list ' . escapeshellarg($form_previous_value), $out_array);
+				if (sizeof($out_array) == 0) {
+					$extra_data = "<span style='color:red'><br>[" . "ERROR: FONT NOT FOUND" . "]</span>";
+				} else {
+					$extra_data = "<span style='color:green'><br>[" . "OK: FONT FOUND" . "]</span>";
+				}
+			} else {
+				/* windows currently has no concept for fc-list
+				 * we can't perform any check */
+				$extra_data = "<span style='color:green'><br>[" . "NO FONT VERIFICATION POSSIBLE" . "]</span>";
+			}
+		}		
 	}
 
 	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
