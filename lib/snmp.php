@@ -121,7 +121,6 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			 * snmp_auth is treated seperately, see above */
 			exec(escapeshellcmd(read_config_option("path_snmpget")) . " -O vt -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid), $snmp_value);
 		}else {
-cacti_log(escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid), false, "TEST");
 			exec(escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid), $snmp_value);
 		}
 	}
