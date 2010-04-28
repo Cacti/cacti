@@ -339,7 +339,7 @@ function form_actions() {
 
 	html_start_box("<strong>" . $device_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
-	print "<form action='host.php' method='post'>\n";
+	print "<form action='host.php' autocomplete='off' method='post'>\n";
 
 	if ($_POST["drp_action"] == "2") { /* Enable Devices */
 		print "	<tr>

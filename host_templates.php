@@ -167,7 +167,7 @@ function form_actions() {
 
 	html_start_box("<strong>" . $host_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
-	print "<form action='host_templates.php' method='post'>\n";
+	print "<form action='host_templates.php' autocomplete='off' method='post'>\n";
 
 	if ($_POST["drp_action"] == "1") { /* delete */
 		print "	<tr>
