@@ -31,6 +31,7 @@ SVN
 -bug: Turn off process leveling if there are not enough poller items to substantiate it
 -bug: Add device should allow no-snmp type devices
 -bug: Firefox Autocomplete causes issues with password validation
+-bug: Access Denied messages don't allow re-direction to login page
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
 

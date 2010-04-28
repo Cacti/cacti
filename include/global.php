@@ -181,9 +181,6 @@ if ((bool)ini_get("register_globals")) {
 	unset($input);
 }
 
-/* display ALL errors */
-#error_reporting(E_ALL);
-
 /* include base modules */
 include($config["library_path"] . "/adodb/adodb.inc.php");
 include($config["library_path"] . "/database.php");

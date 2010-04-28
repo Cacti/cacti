@@ -64,12 +64,12 @@ if (read_config_option("auth_method") != 0) {
 			$realm_id = $user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])};
 		}
 
-		if ((!db_fetch_assoc("select
+		if ($realm_id != -1 && ((!db_fetch_assoc("select
 			user_auth_realm.realm_id
 			from
 			user_auth_realm
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
-			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id))) {
+			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id)))) {
 
 			?>
 			<html>

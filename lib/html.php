@@ -697,7 +697,7 @@ function draw_menu($user_menu = "") {
 			if (is_array($item_title)) {
 				$i = 0;
 
-				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+				if ($current_realm_id == -1 || (isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* if the current page exists in the sub-items array, draw each sub-item */
 					if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
 						$draw_sub_items = true;
@@ -742,7 +742,7 @@ function draw_menu($user_menu = "") {
 					}
 				}
 			}else{
-				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+				if ($current_realm_id == -1 || (isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* draw normal (non sub-item) menu item */
 					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
 						print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
