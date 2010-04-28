@@ -286,7 +286,7 @@ if (sizeof($parms)) {
 	}
 
 	/* process snmp information */
-	if ($snmp_ver != "1" && $snmp_ver != "2" && $snmp_ver != "3") {
+	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		echo "ERROR: Invalid snmp version ($snmp_ver)\n";
  		exit(1);
 	}else{
@@ -302,7 +302,7 @@ if (sizeof($parms)) {
 	}
 
 	/* community/user/password verification */
-	if ($snmp_ver == "1" || $snmp_ver == "2") {
+	if ($snmp_ver != "3") {
 		/* snmp community can be blank */
 	}else{
 		if ($snmp_username == "" || $snmp_password == "") {
