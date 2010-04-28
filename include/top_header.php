@@ -26,7 +26,7 @@ global $colors;
 ?>
 <html>
 <head>
-	<title>Cacti</title>
+	<title><?php print draw_navigation_text();?></title>
 	<link href="include/main.css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="include/layout.js"></script>
@@ -59,7 +59,7 @@ global $colors;
 			<table width="100%">
 				<tr>
 					<td>
-						<?php draw_navigation_text();?>
+						<?php echo draw_navigation_text();?>
 					</td>
 					<td align="right">
 						<?php if (read_config_option("auth_method") != 0) { ?>

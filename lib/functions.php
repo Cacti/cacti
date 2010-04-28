@@ -1638,7 +1638,7 @@ function get_host_array() {
 
 /* draw_navigation_text - determines the top header navigation text for the current page and displays it to
      the browser */
-function draw_navigation_text() {
+function draw_navigation_text($type = "url") {
 	$nav_level_cache = (isset($_SESSION["sess_nav_level_cache"]) ? $_SESSION["sess_nav_level_cache"] : array());
 
 	$nav = array(
@@ -1740,6 +1740,7 @@ function draw_navigation_text() {
 	$current_array = $nav{$current_page . ":" . $current_action};
 	$current_mappings = split(",", $current_array["mapping"]);
 	$current_nav = "";
+	$title       = ""
 
 	/* resolve all mappings to build the navigation string */
 	for ($i=0; ($i<count($current_mappings)); $i++) {
@@ -1763,20 +1764,27 @@ function draw_navigation_text() {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
 				$current_nav .= (empty($url) ? "" : "<a href='$url'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
+				$title       .= resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . " -> ";
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
 			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
+			$title       .= resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . " -> ";
 		}
 	}
 
 	$current_nav .= resolve_navigation_variables($current_array["title"]);
+	$title       .= resolve_navigation_variables($current_array["title"]);
 
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => get_browser_query_string());
 	$_SESSION["sess_nav_level_cache"] = $nav_level_cache;
 
-	print $current_nav;
+	if ($type == "url") {
+		return $current_nav;
+	}else{
+		return $title;
+	}
 }
 
 /* resolve_navigation_variables - substitute any variables contained in the navigation text

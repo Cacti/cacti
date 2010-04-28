@@ -99,7 +99,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 			<table width="100%">
 				<tr>
 					<td>
-						<?php draw_navigation_text();?>
+						<?php echo draw_navigation_text();?>
 					</td>
 					<td align="right">
 						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { ?>

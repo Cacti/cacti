@@ -34,7 +34,7 @@ SVN
 -bug: Access Denied messages don't allow re-direction to login page
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
-
+-feature: Return nav as the title for the page.
 
 0.8.7e
 
