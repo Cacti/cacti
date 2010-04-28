@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -174,7 +174,7 @@ function change_data_template($local_data_id, $data_template_id) {
 
 	/* determine if we are here for the first time, or coming back */
 	if ((db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "0") ||
-		(db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "")) { 
+		(db_fetch_cell("select local_data_template_data_id from data_template_data where local_data_id=$local_data_id") == "")) {
 		$new_save = true;
 	}else{
 		$new_save = false;

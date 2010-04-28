@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -307,7 +307,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
 		cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . "\"", FALSE);
 	}
-	
+
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
 		$db_conn = $cnn_id;

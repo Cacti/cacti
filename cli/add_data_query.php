@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -61,7 +61,7 @@ if (sizeof($parms)) {
 				echo "ERROR: You must supply a valid host-id to run this script!\n";
 				exit(1);
 			}
-	
+
 			break;
 		case "--data-query-id":
 			$data_query_id = $value;
@@ -69,7 +69,7 @@ if (sizeof($parms)) {
 				echo "ERROR: You must supply a numeric data-query-id for all hosts!\n";
 				exit(1);
 			}
-	
+
 			break;
 		case "--reindex-method":
 			if (is_numeric($value) &&
@@ -130,9 +130,9 @@ if (sizeof($parms)) {
 		exit(0);
 	}
 
-	/* 
-	 * verify required parameters 
-	 * for update / insert options 
+	/*
+	 * verify required parameters
+	 * for update / insert options
 	 */
 	if (!isset($host_id)) {
 		echo "ERROR: You must supply a valid host-id for all hosts!\n";
@@ -150,7 +150,7 @@ if (sizeof($parms)) {
 	}
 
 
-	/* 
+	/*
 	 * verify valid host id and get a name for it
 	 */
 	$host_name = db_fetch_cell("SELECT hostname FROM host WHERE id = " . $host_id);
@@ -159,7 +159,7 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
-	/* 
+	/*
 	 * verify valid data query and get a name for it
 	 */
 	$data_query_name = db_fetch_cell("SELECT name FROM snmp_query WHERE id = " . $data_query_id);
@@ -167,9 +167,9 @@ if (sizeof($parms)) {
 		echo "ERROR: Unknown Data Query Id ($data_query_id)\n";
 		exit(1);
 	}
-	
+
 	/*
-	 * Now, add the data query and run it once to get the cache filled 
+	 * Now, add the data query and run it once to get the cache filled
 	 */
 	$exists_already = db_fetch_cell("SELECT host_id FROM host_snmp_query WHERE host_id=$host_id AND snmp_query_id=$data_query_id AND reindex_method=$reindex_method");
 	if ((isset($exists_already)) &&

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -49,7 +49,7 @@ if (isset($config["cacti_version"])) {
 	exit;
 }
 
-/* display ALL errors, 
+/* display ALL errors,
  * but suppress deprecated warnings as a workaround until 088 */
 error_reporting(E_ALL ^ E_DEPRECATED);
 

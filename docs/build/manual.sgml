@@ -3425,8 +3425,8 @@ print $b;
 	Return $b;
 }</programlisting>
 						<para>
-							Be careful, when writing <guilabel>Script Server Data Queries</guilabel>. 
-							Use the RETURN function for returning results of the GET operation. 
+							Be careful, when writing <guilabel>Script Server Data Queries</guilabel>.
+							Use the RETURN function for returning results of the GET operation.
 							But use PRINT for INDEX and QUERY operations, e.g.
 						</para>
 						<programlisting>	if (($cmd == "index")) {
@@ -3440,7 +3440,7 @@ print $b;
 		...
 		result $some_get_data;
 }
-						</programlisting>						
+						</programlisting>
 					</listitem>
 				</orderedlist>
 			</sect2>
@@ -4543,9 +4543,9 @@ disk /</userinput></screen>
 				<title>Data Source Title</title>
 				<screen><userinput>|data_source_title|</userinput></screen>
 				<para>
-					This variable, |data_source_title|, gets replaced with the name of the data source associated with a particular 
-					graph item in a graph template. This change allows the creation of generic 
-					graph templates (2-variable line graph, 3-variable stack, etc.) 
+					This variable, |data_source_title|, gets replaced with the name of the data source associated with a particular
+					graph item in a graph template. This change allows the creation of generic
+					graph templates (2-variable line graph, 3-variable stack, etc.)
 					which can be reused with large numbers of data sources.
 					See attached examples to understand usage.
 				</para>
@@ -4991,7 +4991,7 @@ disk /</userinput></screen>
 					</tgroup>
 				</table>
 				<para>While the <parameter>All Data Sources/Similar Data Sources</parameter> pseudo CDEF variables
-				perform <emphasis>totaling</emphasis>, the <parameter>Count All Data Sources/Count Similar Data Sources</parameter> 
+				perform <emphasis>totaling</emphasis>, the <parameter>Count All Data Sources/Count Similar Data Sources</parameter>
 				pseudo CDEF Variables simply <emphasis>count</emphasis> the occurences of the related data sources.
 				Thus, it is easy to compute e.g. an average of all similar data sources by creating the CDEF
 				</para>
@@ -5004,7 +5004,7 @@ disk /</userinput></screen>
 					<title>Sum up all Data Sources Omitting Duplicates</title>
 					<para>This is the list of graph items defined. Please note,
 					that Item#17-20 are duplicates of Item#1-4. Even if it usually does not make sense, for this
-					discussion it is very valuable. Item#21-24 are related to a 
+					discussion it is very valuable. Item#21-24 are related to a
 					<emphasis>cdef=ALL_DATA_SOURCES_NODUPS</emphasis></para>
 					<screen>
 Graph Item  Data Source                         Graph Item Type  CF Type
@@ -5085,14 +5085,14 @@ GPRINT:cdefca:MAX:"Maximum\:%8.2lf%s\n"</screen>
 					<para>The data sources are denoted by the letters <guilabel>a</guilabel> to <guilabel>h</guilabel>.
 					<guilabel>cdefca</guilabel> represents the important part. You surely notice, that
 					all data sources using consolidation function AVERAGE are taken into account while MAX is skipped.
-					Please pay attention to the data source denoted by <guilabel>a</guilabel>. Even though the data source appears twice, 
+					Please pay attention to the data source denoted by <guilabel>a</guilabel>. Even though the data source appears twice,
 					the cdef shows it only once. This is due to the duplicate suppression.</para>
 				</example>
 				<example>
 					<title>Sum up all Data Sources Including Duplicates</title>
 					<para>This is the list of graph items defined. Please note,
 					that Item#17-20 are duplicates of Item#1-4. Even if it usually does not make sense, for this
-					discussion it is very valuable. Item#21-24 are related to a 
+					discussion it is very valuable. Item#21-24 are related to a
 					<emphasis>cdef=ALL_DATA_SOURCES_DUPS</emphasis></para>
 					<screen>
 Graph Item  Data Source                         Graph Item Type  CF Type
@@ -5171,15 +5171,15 @@ GPRINT:cdefca:LAST:"                 Current\:%8.2lf%s"  \
 GPRINT:cdefca:AVERAGE:"Average\:%8.2lf%s"  \
 GPRINT:cdefca:MAX:"Maximum\:%8.2lf%s\n"</screen>
 					<para>Again, the data sources are denoted by the letters <guilabel>a</guilabel> to <guilabel>h</guilabel> and
-					<guilabel>cdefca</guilabel> represents the important part. Please pay attention to the data source 
-					denoted by <guilabel>a</guilabel> appearing twice in this cdef. 
+					<guilabel>cdefca</guilabel> represents the important part. Please pay attention to the data source
+					denoted by <guilabel>a</guilabel> appearing twice in this cdef.
 					This is, because it appears twice (Item#17-20) in the graph item list
 					and duplicate suppression is not in effect.</para>
 				</example>
 				<example>
 					<title>Sum up Similar Data Sources Omitting Duplicates</title>
 					<para>Everything is very much like the above; again
-					Item#17-20 are duplicates of Item#1-4. Item#21-24 are related to a 
+					Item#17-20 are duplicates of Item#1-4. Item#21-24 are related to a
 					<emphasis>cdef=SIMILAR_DATA_SOURCES_NODUPS</emphasis> and are associated with the
 					data source <emphasis>traffic_in</emphasis> of the 1. target (it does not matter, which target is chosen,
 					as long as you only choose a traffic_in data source)</para>
@@ -5262,13 +5262,13 @@ GPRINT:cdefca:AVERAGE:"Average\:%8.2lf%s"  \
 GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
 					<para><guilabel>cdefca</guilabel> calculates the SUM of all traffic_in data sources, but
 					pays attention only to consolidation function AVERAGE. Duplicate suppression makes sure, that the second
-					occurrence of the 1. target is not taken into account. So it's only summing data source 
+					occurrence of the 1. target is not taken into account. So it's only summing data source
 					<guilabel>a</guilabel> and <guilabel>c</guilabel>. <guilabel>cdefca</guilabel> is used the the LINE1
 					graph item with exact match for consolidation function AVERAGE as well as for the best matched
 					consolidation functions LAST and MIN.</para>
 					<para><guilabel>cdefcd</guilabel> calculates the SUM of all traffic_in data sources, but
-					pays attention only to consolidation function MAX. Again, duplicate suppression is in effect. 
-					So it's only summing data source 
+					pays attention only to consolidation function MAX. Again, duplicate suppression is in effect.
+					So it's only summing data source
 					<guilabel>b</guilabel> and <guilabel>d</guilabel>. <guilabel>cdefcd</guilabel> is used for the
 					graph item with exact match for consolidation function MAX only. This is, because my rra settings
 					only define AVERAGE and MAX, where LAST and MIN are omitted. This may differ for installations
@@ -5277,7 +5277,7 @@ GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
 				<example>
 					<title>Sum up Similar Data Sources Including Duplicates</title>
 					<para>Again, please note,
-					that Item#17-20 are duplicates of Item#1-4. Item#21-24 are related to a 
+					that Item#17-20 are duplicates of Item#1-4. Item#21-24 are related to a
 					<emphasis>cdef=SIMILAR_DATA_SOURCES_DUPS</emphasis> and are associated with the
 					data source <emphasis>traffic_in</emphasis> of the 1. target (it does not matter, which target is chosen,
 					as long as you only choose a traffic_in data source)</para>
@@ -5374,7 +5374,7 @@ GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
 					Often, users complain about the fact, tha tthis template prints free and used space as absolute figures only.
 					But instead of knowing, that your data partition has about 10GB used space, you may be interested in the
 					percentage used. So let's create a simple example to show the power of the recently introduced special data sources.</para>
-					<para>To make it work, we need two new CDEFs. The first one may come in useful for a bunch of 
+					<para>To make it work, we need two new CDEFs. The first one may come in useful for a bunch of
 					different graph templates. It's named <emphasis>Make Current Data Source 0</emphasis>. On a first glance,
 					you may wonder why this CDEF is needed. It is used for those data sources, that will be used
 					for calculations but shall not show up themselves. Here's the definition</para>
@@ -5382,7 +5382,7 @@ GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
 					<para>Now, the other one, named <emphasis>Current DS as Percentage of all DS</emphasis></para>
 					<screen>cdef=CURRENT_DATA_SOURCE,ALL_DATA_SOURCES_NODUPS,/,100,*</screen>
 					<para>Here's a short discussion. The first three elements read: Take the current data source and
-					divide it by "The Sum of All Data Sources (Don't include Duplicates)". To form a percentage, you will have 
+					divide it by "The Sum of All Data Sources (Don't include Duplicates)". To form a percentage, you will have
 					to multiply by 100. This is done by adding the elements four and five.</para>
 					<para>Now, let's build up the new graph</para>
 					<screen>
@@ -5393,7 +5393,7 @@ Graph Item   Data Source         Graph Item Type  CF Type  Item Color
 </screen>
 					<para>Item#1+2 in most cases will exceed the maximum percentage of 100 by magnitudes.
 					So they are associated with the CDEF named <emphasis>Make Current Data Source 0</emphasis> to make them zero.
-					This adds the data sources to the graph but avoids them showing up. The pseudo-color of "None" is associated to 
+					This adds the data sources to the graph but avoids them showing up. The pseudo-color of "None" is associated to
 					both of them.</para>
 					<para>Iten#3 is associated to the data source <emphasis>hdd_used</emphasis> as we want to print the
 					"% Used" of the partition. The CDEF is <emphasis>Current DS as Percentage of all DS</emphasis>, the
@@ -5424,7 +5424,7 @@ CDEF:cdefc=a,TIME,1203272123,GT,a,a,UN,0,a,IF,IF,TIME,1203272123,GT,b,b,UN,0,b,I
 LINE1:cdefa:""  \
 LINE1:cdefb:""  \
 AREA:cdefc#FF0000FF:"% Used"</screen>
-					<para><guilabel>cdefa</guilabel> and <guilabel>cdefb</guilabel> are used to make the according graph 
+					<para><guilabel>cdefa</guilabel> and <guilabel>cdefb</guilabel> are used to make the according graph
 					items zero. <guilabel>cdefc</guilabel> performs the percentage calculation.</para>
 					<para>You may of cource add GPRINT legends as usual. If you do this for the "% Used" entry only, you
 					will get surprising results, if your rrd file holds either MAXIMUM, LAST and/or MINIMUM
@@ -5446,7 +5446,7 @@ AREA:cdefc#FF0000FF:"% Used"</screen>
 					assumed at 18:00. Please replace those values if required. For weekends, same logic applies.</para>
 					<para>Now, let's apply those new CDEFs to a Graph Template. For this example, I've chosen the <emphasis>Unix - Processes</emphasis>
 					that applies to localhost only. In turn, please create three new graph items, associate the processes data source,
-					make them AREAs, select	a color and opacity. Choose the daytime , nighttime and weekend CDEF in this sequence. 
+					make them AREAs, select	a color and opacity. Choose the daytime , nighttime and weekend CDEF in this sequence.
 					As a last step, move those three new graph items to the top. I've chosen opacity of 20% for Item#1 to 3.</para>
 					<screen>
 Graph Item  Data Source                Graph Item Type  CF Type  Item Color
@@ -5456,7 +5456,7 @@ Item # 3    (proc):                    AREA             AVERAGE  2E3127
 Item # 4    (proc): Running Processes  AREA             AVERAGE  F51D30
 Item # 5    (proc): Current:           GPRINT           LAST
 Item # 6    (proc): Average:           GPRINT           AVERAGE
-Item # 7    (proc): Maximum:           GPRINT           MAX</screen> 	  	
+Item # 7    (proc): Maximum:           GPRINT           MAX</screen>
 				</example>
 			</sect2>
 		</sect1>
@@ -5468,7 +5468,7 @@ Item # 7    (proc): Maximum:           GPRINT           MAX</screen>
 			As of current, following scripts are supported:</para>
 			<screen>add_device.php
 add_data_query.php
-add_graph_template.php			
+add_graph_template.php
 add_graphs.php
 add_perms.php
 add_tree.php
@@ -5513,7 +5513,7 @@ Localhost - mtaReceivedVolume 	SNMP Version: 1, Community: somesecret, OID: .1.3
 
 			<para>Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php --help
-Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2009 - The Cacti Group
+Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]
 
@@ -5593,7 +5593,7 @@ WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take qui
 			<para>If you feel the need for manual re-indexing, you may run it from cli.
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --help
-Cacti Reindex Host Script 1.2, Copyright 2004-2009 - The Cacti Group
+Cacti Reindex Host Script 1.2, Copyright 2004-2010 - The Cacti Group
 
 usage: poller_reindex_hosts.php --id=[host_id|All] [--qid=[ID|All]] [--host-descr=[description]]
                            [-d] [-h] [--help] [-v] [--version]
@@ -5655,7 +5655,7 @@ DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' ending</screen>
 			<emphasis>after increasing PHP memory appropriately</emphasis> by running
 			this very script. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php --help
-Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2009 - The Cacti Group
+Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 usage: poller_output_empty.php [-h] [--help] [-v] [--version]
 
@@ -5705,7 +5705,7 @@ There were 21, RRD updates made this pass
 			all existing graphs. This is, where <application>poller_graphs_reapply_names.php</application>
 			drops in. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_graphs_reapply_names.php --help
-Cacti Reapply Graph Names Script 1.0, Copyright 2004-2009 - The Cacti Group
+Cacti Reapply Graph Names Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 usage: poller_graphs_reapply_names.php -id=[host_id|All][host_id1|host_id2|...] [-s=[search_string] [-d] [-h] [--help] [-v] [--version]
 
@@ -5776,7 +5776,7 @@ Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
 
-Add Device Script 1.0, Copyright 2004-2009 - The Cacti Group
+Add Device Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 A simple command line utility to add a device in Cacti
 
@@ -5874,13 +5874,13 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 			host template. The data query will be executed as well; this way the
 			snmp cache will be filled with all values related to that query.</para>
 			<para>Nevertheless, it is sometimes suitable to manually associate a certain
-			data query with a single host only without changing any host template. 
+			data query with a single host only without changing any host template.
 			This is, where the script <filename>add_data_query.php</filename>
 			comes in. First, let's have a look at the whole list of features
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --help
 
-Add Data Query Script 1.0, Copyright 2004-2009 - The Cacti Group
+Add Data Query Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 A simple command line utility to add a data query to an existing device in Cacti
 
@@ -5941,13 +5941,13 @@ Success - Host (11: router.mydomain.com) data query (1: SNMP - Interface Statist
 			it will automatically associated with all hosts related to that very
 			host template.</para>
 			<para>Nevertheless, it is sometimes suitable to manually associate a certain
-			graph template with a single host only without changing any host template. 
+			graph template with a single host only without changing any host template.
 			This is, where the script <filename>add_graph_template.php</filename>
 			comes in. First, let's have a look at the whole list of features
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --help
 
-Add Graph Template Script 1.0, Copyright 2004-2009 - The Cacti Group
+Add Graph Template Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 A simple command line utility to associate a graph template with a host in Cacti
 
@@ -6037,7 +6037,7 @@ List Options:
     --list-snmp-fields  --host-id=[ID] [--snmp-query-id=[ID]]
     --list-snmp-values  --host-id=[ID] [--snmp-query-id=[ID]] --snmp-field=[Field]
 
-'cg' graphs are for things like CPU temp/fan speed, while 
+'cg' graphs are for things like CPU temp/fan speed, while
 'ds' graphs are for data-source based graphs (interface stats etc.)
 </screen>
 			<para>Like the graph creation from the console, this task is split
@@ -6227,7 +6227,7 @@ Device Add Test - CPU Usage 		ucd/net - CPU Usage 			120x500
 Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</screen>
 				<para>If the data query was not associated with that host before, it is now added
 				to the list of <guimenu>Associated Graph Templates</guimenu>. In this case, the
-				<guimenu>Re-Index Method</guimenu> of <parameter>Uptime Goes Backwards</parameter> 
+				<guimenu>Re-Index Method</guimenu> of <parameter>Uptime Goes Backwards</parameter>
 				is defaulted if not given otherwise. You may provide a different <guimenu>Re-Index Method</guimenu>
 				by entering the optional parameter <parameter>--reindex-method</parameter>.</para>
 			</sect2>
@@ -6242,7 +6242,7 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_tree.php --help
 
-Add Tree Script 1.0, Copyright 2004-2009 - The Cacti Group
+Add Tree Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 A simple command line utility to add objects to a tree in Cacti
 
@@ -6431,7 +6431,7 @@ Added Node node-id: (28)</screen>
 			the parameter <userinput>--help</userinput></para>
 			<screen><prompt>shell&gt;</prompt>php -q add_perms.php --help
 
-Add Permissions Script 1.0, Copyright 2004-2009 - The Cacti Group
+Add Permissions Script 1.0, Copyright 2004-2010 - The Cacti Group
 
 A simple command line utility to add permissions to tree items in Cacti
 

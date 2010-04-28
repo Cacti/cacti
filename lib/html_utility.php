@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -49,7 +49,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
 			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $field_array[$field_to_check], $matches))) {
 				$string = $field_array[$field_to_check];
-				while ( 1 ) { 
+				while ( 1 ) {
 					/* an empty field name in the variable means don't treat this as an array */
 					if ($matches[2] == "") {
 						if (is_array(${$matches[1]})) {
@@ -349,7 +349,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	return $url_page_select;
 }
 
-/* clean_html_output - Remove all known cross site script (xss) attack vectors from user input 
+/* clean_html_output - Remove all known cross site script (xss) attack vectors from user input
    @arg $data - User input to process
    @returns - Cleaned user input
 */
@@ -358,7 +358,7 @@ function clean_html_output($data) {
 	this prevents some character re-spacing such as <java\0script>
 	note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs */
 	$data = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $data);
-	
+
 	/* straight replacements, the user should never need these since they're normal characters
 	this prevents like <IMG SRC=&#X40&#X61&#X76&#X61&#X73&#X63&#X72&#X69&#X70&#X74&#X3A&#X61&#X6C&#X65&#X72&#X74&#X28&#X27&#X58&#X53&#X53&#X27&#X29> */
 	$search = "abcdefghijklmnopqrstuvwxyz";
@@ -369,11 +369,11 @@ function clean_html_output($data) {
 		/* ;? matches the ;, which is optional
 		0{0,7} matches any padded zeros, which are optional and go up to 8 chars */
 		/* &#x0040 @ search for the hex values */
-		$data = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $data); 
+		$data = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $data);
 		/* &#00064 @ 0{0,7} matches '0' zero to seven times */
 		$data = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $data);
 	}
-	
+
 	/* defined keywords to process for removal */
 	$keywords = Array(
 		"javascript",
@@ -475,8 +475,8 @@ function clean_html_output($data) {
 		"onsubmit",
 		"onunload"
 	);
-	
-	$found = true; 
+
+	$found = true;
 	while ($found == true) {
 		$data_before = $data;
 		for ($i = 0; $i < sizeof($keywords); $i++) {

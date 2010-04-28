@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -125,7 +125,7 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Graphs Script 1.0, Copyright 2009 - The Cacti Group\n\n";
+	echo "Add Graphs Script 1.0, Copyright 2010 - The Cacti Group\n\n";
 	echo "A simple command line utility to import a Template into Cacti\n\n";
 	echo "usage: import_template.php --filename=[filename] [--with-rras]\n";
 	echo "Required:\n";

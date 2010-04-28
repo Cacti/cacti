@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -122,7 +122,7 @@ class Net_Ping
 			$this->host["hostname"] = str_replace("tcp:", "", strtolower($this->host["hostname"]));
 			$this->host["hostname"] = str_replace("udp:", "", strtolower($this->host["hostname"]));
 
-			/* determine the host's ip address 
+			/* determine the host's ip address
 			 * this prevents from command injection as well*/
 			if ($this->is_ipaddress($this->host["hostname"])) {
 				$host_ip = $this->host["hostname"];
@@ -240,8 +240,8 @@ class Net_Ping
 			/* we have to use the real ping, in cases where windows failed or while using UNIX/Linux */
 			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
-			/* host timeout given in ms, recalculate to sec, but make it an integer 
-			 * we might consider to use escapeshellarh on hostname, 
+			/* host timeout given in ms, recalculate to sec, but make it an integer
+			 * we might consider to use escapeshellarh on hostname,
 			 * but this field has already been verified.
 			 * The other fields are numerical fields only and thus
 			 * not vulnerable for command injection */

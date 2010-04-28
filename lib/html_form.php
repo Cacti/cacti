@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -649,7 +649,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
      a non-zero value indicates that a current value does exist */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
 	global $config;
-	
+
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -672,7 +672,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
 			$extra_data = "";
 	} else {
-		
+
 		/* do some simple checks */
 		if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
 			read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
@@ -699,7 +699,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 				 * we can't perform any check */
 				$extra_data = "<span style='color:green'><br>[" . "NO FONT VERIFICATION POSSIBLE" . "]</span>";
 			}
-		}		
+		}
 	}
 
 	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;

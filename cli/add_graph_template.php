@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -59,7 +59,7 @@ if (sizeof($parms)) {
 				echo "ERROR: You must supply a valid host-id to run this script!\n";
 				exit(1);
 			}
-	
+
 			break;
 		case "--graph-template-id":
 			$graph_template_id = $value;
@@ -67,7 +67,7 @@ if (sizeof($parms)) {
 				echo "ERROR: You must supply a numeric graph-template-id for all hosts!\n";
 				exit(1);
 			}
-	
+
 			break;
 		case "--version":
 		case "-V":
@@ -97,16 +97,16 @@ if (sizeof($parms)) {
 		displayHosts($hosts, $quietMode);
 		exit(0);
 	}
-	
+
 	if ($displayGraphTemplates) {
 		$graphTemplates = getGraphTemplates();
 		displayGraphTemplates($graphTemplates, $quietMode);
 		exit(0);
 	}
-	
-	/* 
-	 * verify required parameters 
-	 * for update / insert options 
+
+	/*
+	 * verify required parameters
+	 * for update / insert options
 	 */
 	if (!isset($host_id)) {
 		echo "ERROR: You must supply a valid host-id for all hosts!\n";
@@ -118,7 +118,7 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
-	/* 
+	/*
 	 * verify valid host id and get a name for it
 	 */
 	$host_name = db_fetch_cell("SELECT hostname FROM host WHERE id = " . $host_id);
@@ -127,7 +127,7 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
-	/* 
+	/*
 	 * verify valid graph template and get a name for it
 	 */
 	$graph_template_name = db_fetch_cell("SELECT name FROM graph_templates WHERE id = " . $graph_template_id);

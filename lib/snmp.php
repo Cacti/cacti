@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -48,8 +48,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	/* do not attempt to poll invalid combinations */
 	if (($version == 0) || (!is_numeric($version)) ||
 		(!is_numeric($port)) ||
-		(!is_numeric($retries)) || 
-		(!is_numeric($timeout)) || 
+		(!is_numeric($retries)) ||
+		(!is_numeric($timeout)) ||
 		(($community == "") && ($version != 3))
 		) {
 		return "U";
@@ -150,13 +150,13 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 	/* do not attempt to poll invalid combinations */
 	if (($version == 0) || (!is_numeric($version)) ||
 		(!is_numeric($port)) ||
-		(!is_numeric($retries)) || 
-		(!is_numeric($timeout)) || 
+		(!is_numeric($retries)) ||
+		(!is_numeric($timeout)) ||
 		(($community == "") && ($version != 3))
 		) {
 		return "U";
 	}
-	
+
 	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&
 		(!strlen($context) || ($version != 3))) {
 		/* make sure snmp* is verbose so we can see what types of data
@@ -256,15 +256,15 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 	/* do not attempt to poll invalid combinations */
 	if (($version == 0) || (!is_numeric($version)) ||
-		(!is_numeric($max_oids)) || 
+		(!is_numeric($max_oids)) ||
 		(!is_numeric($port)) ||
-		(!is_numeric($retries)) || 
-		(!is_numeric($timeout)) || 
+		(!is_numeric($retries)) ||
+		(!is_numeric($timeout)) ||
 		(($community == "") && ($version != 3))
 		) {
 		return "U";
 	}
-	
+
 	$path_snmpbulkwalk = read_config_option("path_snmpbulkwalk");
 
 	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&

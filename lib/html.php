@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -87,7 +87,7 @@ function html_graph_end_box() {
    @arg $header - html to use as a header */
 function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
 	global $config;
-	
+
 	$i = 0;
 	if (sizeof($graph_array) > 0) {
 		if ($header != "") {
