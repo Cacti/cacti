@@ -26,7 +26,7 @@ global $colors;
 ?>
 <html>
 <head>
-	<title><?php print draw_navigation_text();?></title>
+	<title><?php echo draw_navigation_text("title");?></title>
 	<link href="include/main.css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="include/layout.js"></script>

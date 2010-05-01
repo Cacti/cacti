@@ -1637,7 +1637,8 @@ function get_host_array() {
 }
 
 /* draw_navigation_text - determines the top header navigation text for the current page and displays it to
-     the browser */
+   @arg $type - (string) Either 'url' or 'title'
+   @returns (string> Either the navigation text or title */
 function draw_navigation_text($type = "url") {
 	$nav_level_cache = (isset($_SESSION["sess_nav_level_cache"]) ? $_SESSION["sess_nav_level_cache"] : array());
 
@@ -1740,7 +1741,7 @@ function draw_navigation_text($type = "url") {
 	$current_array = $nav{$current_page . ":" . $current_action};
 	$current_mappings = split(",", $current_array["mapping"]);
 	$current_nav = "";
-	$title       = ""
+	$title       = "";
 
 	/* resolve all mappings to build the navigation string */
 	for ($i=0; ($i<count($current_mappings)); $i++) {
