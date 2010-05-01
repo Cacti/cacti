@@ -262,7 +262,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		(!is_numeric($timeout)) ||
 		(($community == "") && ($version != 3))
 		) {
-		return "U";
+		return array();
 	}
 
 	$path_snmpbulkwalk = read_config_option("path_snmpbulkwalk");
