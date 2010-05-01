@@ -119,9 +119,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			/* escape the command to be executed and vulnerable parameters
 			 * numeric parameters are not subject to command injection
 			 * snmp_auth is treated seperately, see above */
-			exec(escapeshellcmd(read_config_option("path_snmpget")) . " -O vt -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid), $snmp_value);
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O vt -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid), $snmp_value);
 		}else {
-			exec(escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid), $snmp_value);
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid), $snmp_value);
 		}
 	}
 
@@ -221,9 +221,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			/* escape the command to be executed and vulnerable parameters
 			 * numeric parameters are not subject to command injection
 			 * snmp_auth is treated seperately, see above */
-			exec(escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O vt -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid), $snmp_value);
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O vt -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid), $snmp_value);
 		}else {
-			exec(escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntev $snmp_auth -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid), $snmp_value);
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntev $snmp_auth -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid), $snmp_value);
 		}
 	}
 
@@ -359,12 +359,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			/* escape the command to be executed and vulnerable parameters
 			 * numeric parameters are not subject to command injection
 			 * snmp_auth is treated seperately, see above */
-			$temp_array = exec_into_array(escapeshellcmd(read_config_option("path_snmpwalk")) . " -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid));
+			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -v$version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port $snmp_auth " . escapeshellarg($oid));
 		}else {
 			if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
-				$temp_array = exec_into_array(escapeshellcmd($path_snmpbulkwalk) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid));
+				$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid));
 			}else{
-				$temp_array = exec_into_array(escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid));
+				$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries " . escapeshellarg($hostname) . ":$port " . escapeshellarg($oid));
 			}
 		}
 

@@ -2054,4 +2054,19 @@ function sanitize_search_string($string) {
 	return $string;
 }
 
+function cacti_escapeshellcmd($string) {
+	global $config;
+
+	if ($config["cacti_server_os"] == "unix") {
+		return escapeshellcmd($string);
+	}else{
+		$replacements = "#&;`|*?<>^()[]{}$\\";
+
+		for ($i=0; $i < strlen($replacements); $i++) {
+			$string = str_replace($replacements[$i], " ", $string);
+		}
+		return $string;
+	}
+}
+
 ?>
