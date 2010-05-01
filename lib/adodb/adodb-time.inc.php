@@ -309,8 +309,11 @@ function adodb_date_test_date($y1,$m)
 function adodb_date_test()
 {
 	
-	#error_reporting(E_ALL);
-	error_reporting(E_ALL ^ E_DEPRECATED);
+	if (defined("E_DEPRECATED")) {
+		error_reporting(E_ALL ^ E_DEPRECATED);
+	}else{
+		error_reporting(E_ALL);
+	}
 	print "<h4>Testing adodb_date and adodb_mktime. version=".ADODB_DATE_VERSION. "</h4>";
 	@set_time_limit(0);
 	$fail = false;

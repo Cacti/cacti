@@ -51,7 +51,11 @@ if (isset($config["cacti_version"])) {
 
 /* display ALL errors,
  * but suppress deprecated warnings as a workaround until 088 */
-error_reporting(E_ALL ^ E_DEPRECATED);
+if (defined("E_DEPRECATED")) {
+	error_reporting(E_ALL ^ E_DEPRECATED);
+}else{
+	error_reporting(E_ALL);
+}
 
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
