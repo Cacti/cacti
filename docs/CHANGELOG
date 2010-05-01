@@ -32,6 +32,8 @@ SVN
 -bug: Add device should allow no-snmp type devices
 -bug: Firefox Autocomplete causes issues with password validation
 -bug: Access Denied messages don't allow re-direction to login page
+-bug: When clearing filter on new-graphs don't clear host or template
+-bug: When clearing filter, reset page to 1 for all queries
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
 -feature: Return nav as the title for the page.

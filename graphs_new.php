@@ -371,8 +371,6 @@ function graphs() {
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_graphs_new_host_id");
-		kill_session_var("sess_graphs_new_graph_type");
 		kill_session_var("sess_graphs_new_filter");
 
 		unset($_REQUEST["host_id"]);
@@ -382,7 +380,7 @@ function graphs() {
 		$changed = true;
 	}else{
 		/* if any of the settings changed, reset the page number */
-		$changed = 0;
+		$changed = false;
 		$changed += check_changed("host_id",    "sess_graphs_new_host_id");
 		$changed += check_changed("graph_type", "sess_graphs_new_graph_type");
 		$changed += check_changed("filter",     "sess_graphs_new_filter");
@@ -516,6 +514,14 @@ function graphs() {
 	$total_rows = sizeof(db_fetch_assoc("select graph_template_id from host_graph where host_id=" . $_REQUEST["host_id"]));
 
 	$i = 0;
+
+	if ($changed) {
+		foreach($snmp_queries as $query) {
+			kill_session_var("sess_graphs_new_page" . $query["id"]);
+			unset($_REQUEST["page" . $query["id"]]);
+			load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
+		}
+	}
 
 	if ($_REQUEST["graph_type"] > 0) {
 		load_current_session_value("page" . $_REQUEST["graph_type"], "sess_graphs_new_page" . $_REQUEST["graph_type"], "1");
@@ -892,7 +898,7 @@ function graphs() {
 							</td>
 							<td align='right'>
 								<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
-								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . $column_counter . ");'>
+								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ");'>
 									"; html_create_list($data_query_graphs,"name","id","0"); print "
 								</select>
 							</td>
