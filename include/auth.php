@@ -71,6 +71,12 @@ if (read_config_option("auth_method") != 0) {
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
 			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id)))) {
 
+			if (isset($_SERVER["HTTP_REFERER"])) {
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $_SERVER["HTTP_REFERER"] . "'>Return</a> | <a href='logout.php'>Login Again</a> )</td>";
+			}else{
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='logout.php'>Login Again</a> )</td>";
+			}
+
 			?>
 			<html>
 			<head>
@@ -90,7 +96,7 @@ if (read_config_option("auth_method") != 0) {
 					need access to this particular section, please contact the Cacti administrator.</td>
 				</tr>
 				<tr>
-					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'>Return</a> | <a href='logout.php'>Login Again</a> )</td>
+					<?php print $goBack;?>
 				</tr>
 			</table>
 
