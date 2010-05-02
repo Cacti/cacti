@@ -577,7 +577,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 
 			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
-			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
+			@rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 
 			$total_graphs_created++;
 
@@ -607,7 +607,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 
 				export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
-				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
+				@rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 
 				$total_graphs_created++;
 
@@ -1280,7 +1280,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 			/* generate the graph */
-			rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
+			@rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 			$total_graphs_created++;
 
 			/* generate html files for each graph */
@@ -1318,7 +1318,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 
 				export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
-				rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
+				@rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 				$total_graphs_created++;
 
 				/* write image related html */

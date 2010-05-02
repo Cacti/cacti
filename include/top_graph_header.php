@@ -136,7 +136,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 				$graph_data_array["graph_end"] = $_GET["graph_end"];
 			}
 
-			print trim(rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array));
+			print trim(@rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array));
 			?>
 		</td>
 	</tr>

@@ -1221,7 +1221,7 @@ function get_rrd_cfs($local_data_id) {
 
 	$cfs = array();
 
-	$output = rrdtool_execute("info $rrdfile", FALSE, RRDTOOL_OUTPUT_STDOUT);
+	$output = @rrdtool_execute("info $rrdfile", FALSE, RRDTOOL_OUTPUT_STDOUT);
 
 	/* search for
 	 * 		rra[0].cf = "LAST"

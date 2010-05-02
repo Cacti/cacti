@@ -47,7 +47,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 		$i = 0;
 		/* do a fetch for each data source */
 		while (list($ldi, $ldi_value) = each($local_data_id)) {
-			$fetch_array[$i] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+			$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
 			/* clean up unwanted data source items */
 			if (! empty($fetch_array[$i])) {
 				while (list($id, $name) = each($fetch_array[$i]["data_source_names"])) {
@@ -152,7 +152,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 		$fetch_array = $sum_array;
 	}else{
 		/* No array, just calculate the 95th for the data source */
-		$fetch_array = rrdtool_function_fetch($local_data_id, $start_seconds, $end_seconds, $resolution);
+		$fetch_array = @rrdtool_function_fetch($local_data_id, $start_seconds, $end_seconds, $resolution);
 	}
 
 	/* loop through each data source */
@@ -214,7 +214,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
    @arg $ds_steps - how many seconds each period represents
    @returns - (array) an array containing each data source item, and its sum */
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
-	$fetch_array = rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
+	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
 	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
 		return;

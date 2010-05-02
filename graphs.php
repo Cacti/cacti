@@ -950,10 +950,10 @@ function graph_edit() {
 					?>
 					<td>
 						<span class="textInfo">RRDTool Command:</span><br>
-						<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
+						<pre><?php print @rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
 						<span class="textInfo">RRDTool Says:</span><br>
 						<?php unset($graph_data_array["print_source"]);?>
-						<pre><?php print rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
+						<pre><?php print @rrdtool_function_graph($_GET["id"], 1, $graph_data_array);?></pre>
 					</td>
 					<?php
 				}
