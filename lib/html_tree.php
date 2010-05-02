@@ -976,7 +976,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<td nowrap style='white-space: nowrap;' width='130'>
 								<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 									<?php
-									if ($_SESSION["custom"]) {
+									if (isset($_SESSION["custom"])) {
 										$graph_timespans[GT_CUSTOM] = "Custom";
 										$start_val = 0;
 										$end_val = sizeof($graph_timespans);
