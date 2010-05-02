@@ -241,7 +241,7 @@ function update_reindex_cache($host_id, $data_query_id) {
      results to RRDTool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if TRUE */
-function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
+function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	global $config;
 
 	include_once($config["library_path"] . "/rrd.php");
