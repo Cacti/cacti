@@ -1693,7 +1693,7 @@ function del_directory($path, $deldir = true) {
 				/* if it is a directory, recursive call to the function */
 				if (is_dir($rf)) {
 					del_directory($rf);
-				}else {
+				}else if (is_file($rf) && is_writable($rf)) {
 					unlink($rf);
 				}
 			}
@@ -1701,14 +1701,14 @@ function del_directory($path, $deldir = true) {
 		closedir($d);
 
 		/* if $deldir is true, remove the directory */
-		if ($deldir) {
+		if ($deldir && is_writable($path)) {
 			rmdir($path);
 		}
 	}
 }
 
 function check_remove($filename) {
-	if (file_exists($filename) == true) {
+	if (file_exists($filename) && is_writable($filename)) {
 		unlink($filename);
 	}
 }
