@@ -1191,7 +1191,8 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			graph_templates_graph.width,
 			graph_templates_graph.title_cache,
 			graph_templates.name,
-			graph_local.host_id
+			graph_local.host_id,
+			graph_tree_items.rra_id
 			FROM (graph_tree_items, graph_templates_graph)
 			$sql_join
 			WHERE ((graph_templates_graph.local_graph_id<>0)
@@ -1232,6 +1233,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id,
+		graph_tree_items.rra_id,
 		graph_tree_items.id AS gtid
 		FROM (graph_tree_items, graph_templates_graph)
 		$sql_join
@@ -1280,7 +1282,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 			/* generate the graph */
-			@rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
+			@rrdtool_function_graph($graph["local_graph_id"], $graph["rra_id"], $graph_data_array, $rrdtool_pipe);
 			$total_graphs_created++;
 
 			/* generate html files for each graph */
@@ -1334,7 +1336,6 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			fwrite($fp_graph_index, "</td></tr></table></td></tr></table>");
 			fwrite($fp_graph_index, HTML_FOOTER_TREE);
 			fclose($fp_graph_index);
-
 		}
 	}
 	}

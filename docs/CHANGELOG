@@ -36,7 +36,9 @@ SVN
 -bug: When clearing filter, reset page to 1 for all queries
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
--feature: Return nav as the title for the page.
+-feature: Return nav as the title for the page
+-feature: Detect and correct for RRDtool segfaults
+-feature: Add rra_id for hosts and graphs to be used during tree export
 
 0.8.7e
 

@@ -255,7 +255,7 @@ function item_edit() {
 		<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
 			<td width="50%">
 				<font class="textEditTitle">Round Robin Archive</font><br>
-				Choose a round robin archive to control how this graph is displayed.
+				Choose a round robin archive to control how the Graph Thumbnail is displayed when using Tree Export.
 			</td>
 			<td>
 				<?php form_dropdown("rra_id", db_fetch_assoc("select id,name from rra order by timespan"), "name", "id", (isset($tree_item["rra_id"]) ? $tree_item["rra_id"] : ""), "", "");?>
@@ -280,6 +280,15 @@ function item_edit() {
 			</td>
 			<td>
 				<?php form_dropdown("host_grouping_type", $host_group_types, "", "", (isset($tree_item["host_grouping_type"]) ? $tree_item["host_grouping_type"] : "1"), "", "");?>
+			</td>
+		</tr>
+		<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+			<td width="50%">
+				<font class="textEditTitle">Round Robin Archive</font><br>
+				Choose a round robin archive to control how Graph Thumbnails are displayed when using Tree Export.
+			</td>
+			<td>
+				<?php form_dropdown("rra_id", db_fetch_assoc("select id,name from rra order by timespan"), "name", "id", (isset($tree_item["rra_id"]) ? $tree_item["rra_id"] : ""), "", "");?>
 			</td>
 		</tr>
 		<?php
