@@ -683,8 +683,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 				break;
 		}
 	}else{
-		$scale =  "--upper-limit=" . escapeshellarg($graph["upper_limit"]) . RRD_NL;
-		$scale .= "--lower-limit=" . escapeshellarg($graph["lower_limit"]) . RRD_NL;
+		if (strlen($graph["upper_limit"])) {
+			$scale =  "--upper-limit=" . escapeshellarg($graph["upper_limit"]) . RRD_NL;
+		}
+		if (strlen($graph["lower_limit"])) {
+			$scale .= "--lower-limit=" . escapeshellarg($graph["lower_limit"]) . RRD_NL;
+		}
 	}
 
 	if ($graph["auto_scale_log"] == "on") {

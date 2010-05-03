@@ -35,6 +35,7 @@ SVN
 -bug: When clearing filter on new-graphs don't clear host or template
 -bug: When clearing filter, reset page to 1 for all queries
 -bug: Graph List selectors do not persist between pages
+-bug: allow empty [upper|lower]_limit even without autoscaling
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
 -feature: Return nav as the title for the page
