@@ -150,7 +150,7 @@ function process_user_input(&$timespan, $timeshift) {
 				}
 
 				/* custom display refresh */
-				if ($_SESSION["custom"]) {
+				if (isset($_SESSION["custom"])) {
 					$_SESSION["sess_current_timespan"] = GT_CUSTOM;
 				/* refresh the display */
 				}else {

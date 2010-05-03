@@ -34,11 +34,13 @@ SVN
 -bug: Access Denied messages don't allow re-direction to login page
 -bug: When clearing filter on new-graphs don't clear host or template
 -bug: When clearing filter, reset page to 1 for all queries
+-bug: Graph List selectors do not persist between pages
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
 -feature: Return nav as the title for the page
 -feature: Detect and correct for RRDtool segfaults
 -feature: Add rra_id for hosts and graphs to be used during tree export
+-feature: Make the Graphs pages render like the rest of Cacti
 
 0.8.7e
 

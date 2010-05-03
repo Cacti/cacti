@@ -104,9 +104,7 @@ function settings() {
 
 	print "<form method='post' action='graph_settings.php'>\n";
 
-	html_graph_start_box(1, false);
-
-	print "<tr bgcolor='#" . $colors["header"] . "'><td colspan='3'><table cellspacing='0' cellpadding='3' width='100%'><tr><td class='textHeaderDark'><strong>Graph Settings</strong></td></tr></table></td></tr>";
+	html_start_box("<strong>Graph Settings</strong>", "100%", $colors["header"], "3", "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
@@ -149,8 +147,7 @@ function settings() {
 			);
 	}
 
-	html_graph_end_box();
-
+	html_end_box();
 	?>
 	<script type="text/javascript">
 	<!--

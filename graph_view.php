@@ -291,7 +291,7 @@ case 'preview':
 	<?php
 
 	/* include graph view filter selector */
-	html_graph_start_box(3, FALSE);
+	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
@@ -381,14 +381,9 @@ case 'preview':
 	</tr>
 	<?php
 
-	html_graph_end_box(FALSE);
-
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
-		html_graph_start_box(3, FALSE);
-
 		?>
-
 			<script type='text/javascript'>
 			// Initialize the calendar
 			calendar=null;
@@ -515,9 +510,8 @@ case 'preview':
 				</form>
 			</tr>
 		<?php
-
-		html_graph_end_box();
 	}
+	html_end_box();
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
@@ -528,8 +522,8 @@ case 'preview':
 
 	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
 
-	html_graph_start_box(1, true);
-	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
+	html_start_box("", "100%", $colors["header"], "1", "center", "");
+	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
 
 	if (read_graph_config_option("thumbnail_section_preview") == "on") {
 		html_graph_thumbnail_area($graphs, "","graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
@@ -537,14 +531,11 @@ case 'preview':
 		html_graph_area($graphs, "", "graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
 
-	html_nav_bar($colors["header_panel"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
-
-	html_graph_end_box();
+	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
+	html_end_box();
 
 	break;
 case 'list':
-	define("ROWS_PER_PAGE", read_graph_config_option("list_graphs_per_page"));
-
 	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_list"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
 	}
@@ -552,6 +543,7 @@ case 'list':
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("graph_template_id"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -559,15 +551,11 @@ case 'list':
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
-	/* reset the page counter to '1' if a search in initiated */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["page"] = "1";
+	/* reset the graph list on a new viewing */
+	if (!isset($_REQUEST["page"])) {
+		$_REQUEST["graph_list"] = "";
+		$_REQUEST["page"] = 1;
 	}
-
-	load_current_session_value("host_id", "sess_graph_view_list_host", "0");
-	load_current_session_value("graph_template_id", "sess_graph_view_list_graph_template", "0");
-	load_current_session_value("filter", "sess_graph_view_list_filter", "");
-	load_current_session_value("page", "sess_graph_view_list_current_page", "");
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
@@ -575,27 +563,36 @@ case 'list':
 		kill_session_var("sess_graph_view_list_filter");
 		kill_session_var("sess_graph_view_list_host");
 		kill_session_var("sess_graph_view_list_graph_template");
+		kill_session_var("sess_graph_view_list_rows");
+		kill_session_var("sess_graph_view_list_graph_list");
 
 		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_id"]);
 		unset($_REQUEST["graph_template_id"]);
 		unset($_REQUEST["graph_list"]);
 		unset($_REQUEST["graph_add"]);
 		unset($_REQUEST["graph_remove"]);
-
+	}else{
+		/* if any of the settings changed, reset the page number */
+		$changed = false;
+		$changed += check_changed("host_id", "sess_graphs_view_list_host");
+		$changed += check_changed("rows", "sess_graphs_view_list_rows");
+		$changed += check_changed("graph_template_id", "sess_graphs_view_list_graph_template");
+		$changed += check_changed("filter", "sess_graphs_view_list_filter");
+		if ($changed) $_REQUEST["page"] = 1;
 	}
 
-	/* make sure we have a page set */
-	if (! isset($_REQUEST["page"])) {
-		$_REQUEST["page"] = 1;
-	}
-	if (($_REQUEST["page"] == 0 ) || (empty($_REQUEST["page"]))) {
-		$_REQUEST["page"] = 1;
-	}
+	load_current_session_value("host_id", "sess_graph_view_list_host", "0");
+	load_current_session_value("graph_template_id", "sess_graph_view_list_graph_template", "0");
+	load_current_session_value("filter", "sess_graph_view_list_filter", "");
+	load_current_session_value("page", "sess_graph_view_list_current_page", "1");
+	load_current_session_value("rows", "sess_graph_view_list_rows", "-1");
+	load_current_session_value("graph_list", "sess_graph_view_list_graph_list", "");
 
 	/* save selected graphs into url */
-	if (! empty($_REQUEST["graph_list"])) {
+	if (!empty($_REQUEST["graph_list"])) {
 		foreach (explode(",",$_REQUEST["graph_list"]) as $item) {
 			$graph_list[$item] = 1;
 		}
@@ -614,38 +611,25 @@ case 'list':
 		}
 	}
 
-	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
-		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
-	}else{
-		#$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
-		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>";
-	}
+	/* update the revised graph list session variable */
+	$_REQUEST["graph_list"] = implode(",", array_keys($graph_list));
+	load_current_session_value("graph_list", "sess_graph_view_list_graph_list", "");
 
-	$nav_url = ereg_replace("(\?|&)host_id=[0-9]+|(\?|&)graph_template_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*|(\?|&)graph_add=[\,0-9]*|(\?|&)graph_remove=[\,0-9]*|(\?|&)graph_list=[\,0-9]*", "", $nav_url);
-	$graph_list_text = "";
-	if (! empty($graph_list)) {
-		foreach ($graph_list as $item => $value) {
-			$graph_list_text .= $item . ",";
-		}
-		if (substr($graph_list_text,strlen($graph_list_text) - 1, 1) == ",") {
-			$graph_list_text = substr($graph_list_text,0,strlen($graph_list_text) - 1);
-		}
-		$nav_url .= "&graph_list=" . $graph_list_text;
-	}
+	// debugging
+	//echo "GraphList:" . (strlen($_REQUEST["graph_list"]) ? $_REQUEST["graph_list"]:"-") . ", GraphRemove:" . (isset($_REQUEST["graph_remove"]) && strlen($_REQUEST["graph_remove"]) ? $_REQUEST["graph_remove"]:"-") . ", GraphAdd:" . (isset($_REQUEST["graph_add"]) && strlen($_REQUEST["graph_add"]) ? $_REQUEST["graph_add"]:"-");
+
+	$nav_url = "graph_view.php?action=list&page=<PAGE>";
 
 	/* display graph view filter selector */
-	html_graph_start_box(3, FALSE);
+	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
-	if (empty($_REQUEST["host_id"])) { $_REQUEST["host_id"] = 0; }
-	if (empty($_REQUEST["graph_template_id"])) { $_REQUEST["graph_template_id"] = 0; }
-	if (empty($_REQUEST["filter"])) { $_REQUEST["filter"] = ""; }
 	?>
 	<script type="text/javascript">
 	<!--
 	function applyGraphListFilterChange(objForm) {
 		strURL = 'graph_view.php?action=list&page=1';
 		strURL = strURL + '&host_id=' + objForm.host_id.value;
+		strURL = strURL + '&rows=' + objForm.rows.value;
 		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
 		strURL = strURL + url_graph('');
@@ -656,10 +640,10 @@ case 'list':
 	</script>
 
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.graphs,document.form_graph_list)'>
-		<input type='hidden' name='graph_list' value='<?php print $graph_list_text; ?>'>
+		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)'>
 		<input type='hidden' name='graph_add' value=''>
 		<input type='hidden' name='graph_remove' value=''>
+		<input type='hidden' name='graph_list' value='<?php print $_REQUEST["graph_list"];?>'>
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
@@ -727,6 +711,21 @@ case 'list':
 						</select>
 					</td>
 					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;<strong>Graphs per Page:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<select name="rows" onChange="applyGraphListFilterChange(document.form_graph_list)">
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
 						&nbsp;<strong>Search:</strong>&nbsp;
 					</td>
 					<td width="1">
@@ -742,7 +741,12 @@ case 'list':
 		</form>
 	</tr>
 	<?php
-	html_graph_end_box(TRUE);
+	html_end_box();
+
+	/* if the number of rows is -1, set it to the default */
+	if ($_REQUEST["rows"] == -1) {
+		$_REQUEST["rows"] = read_graph_config_option("list_graphs_per_page");
+	}
 
 	/* create filter for sql */
 	$sql_filter = "";
@@ -783,25 +787,85 @@ case 'list':
 		$sql_base
 		group by graph_templates_graph.local_graph_id
 		order by graph_templates_graph.title_cache
-		limit " . (ROWS_PER_PAGE*($_REQUEST["page"]-1)) . "," . ROWS_PER_PAGE);
+		limit " . ($_REQUEST["rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["rows"]);
 	?>
 
+	<form name='chk' id='chk' action='graph_view.php' method='get' onSubmit='form_graph(document.chk,document.chk)'>
+
+	<?php
+
+	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		<td colspan='3'>
+			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
+				<tr>
+					<td align='left' class='textHeaderDark'>
+						<strong>&lt;&lt; " . (get_request_var_request("page") > 1 ? "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "\"))'>":"") . "Previous" . (get_request_var_request("page") > 1 ? "</a>":"") . "</strong>
+					</td>
+					<td align='center' class='textHeaderDark'>
+						Showing Rows " . (($_REQUEST["rows"]*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < $_REQUEST["rows"]) || ($total_rows < ($_REQUEST["rows"]*get_request_var_request("page")))) ? $total_rows : ($_REQUEST["rows"]*get_request_var_request("page"))) . " of " . $total_rows . "
+					</td>
+					<td align='right' class='textHeaderDark'>
+						<strong>" . ((get_request_var_request("page") * $_REQUEST["rows"]) < $total_rows ? "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "\"))'>":"") . "Next" . ((get_request_var_request("page") * $_REQUEST["rows"]) < $total_rows ? "</a>":"") . " &gt;&gt;</strong>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>";
+
+	html_start_box("", "100%", $colors["header"], "1", "center", "");
+	print $nav;
+	html_header_checkbox(array("Graph Title", "Graph Size"));
+
+	$i = 0;
+	if (sizeof($graphs)) {
+		foreach ($graphs as $graph) {
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
+			form_selectable_cell("<strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title_cache"] . "</a><strong>", $graph["local_graph_id"]);
+			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
+			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
+			form_end_row();
+		}
+	}
+
+	print $nav;
+	html_end_box();
+
+	?>
+	<table align='right'>
+		<tr>
+			<td align='right'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
+			<td align='right'><input type='image' src='images/button_view.gif' alt='View'></td>
+		</tr>
+	</table>
+	<input type='hidden' name='style' value='selective'>
+	<input type='hidden' name='action' value='preview'>
+	<input type='hidden' name='graph_list' value='<?php print $_REQUEST["graph_list"]; ?>'>
+	<input type='hidden' name='graph_add' value=''>
+	<input type='hidden' name='graph_remove' value=''>
+	</form>
 	<script type='text/javascript'>
 	<!--
+	var graph_list_array = new Array(<?php print $_REQUEST["graph_list"];?>);
+	initializeChecks();
+
+	function initializeChecks() {
+		for (var i = 0; i < graph_list_array.length; i++) {
+			if (document.getElementById('chk_'+graph_list_array[i])) {
+				select_line(graph_list_array[i]);
+			}
+		}
+	}
+
 	function url_graph(strNavURL) {
 		var strURL = '';
 		var strAdd = '';
 		var strDel = '';
-		for(var i = 0; i < document.graphs.elements.length; i++) {
-			if (document.graphs.elements[i].name.substring(0,5) == 'graph') {
-				if (document.graphs.elements[i].name != 'graph_list') {
-					if (document.graphs.elements[i].checked) {
-						strAdd = strAdd + document.graphs.elements[i].value + ',';
-					} else {
-						if (document.graphs.elements[i].value != '') {
-							strDel = strDel + document.graphs.elements[i].value + ',';
-						}
-					}
+		for(var i = 0; i < document.chk.elements.length; i++) {
+			if (document.chk.elements[i].name.substr(0,4) == 'chk_') {
+				if (document.chk.elements[i].checked) {
+					strAdd = strAdd + document.chk.elements[i].id.substr(4) + ',';
+				} else if (graphChecked(document.chk.elements[i].id.substr(4))) {
+					strDel = strDel + document.chk.elements[i].id.substr(4) + ',';
 				}
 			}
 		}
@@ -809,24 +873,33 @@ case 'list':
 		strDel = strDel.substring(0,strDel.length - 1);
 		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
 		return strNavURL + strURL;
+		alert(strAdd);
+		alert(strDel);
 	}
 	function url_go(strURL) {
 		document.location = strURL;
 		return false;
 	}
+
+	function graphChecked(graph_id) {
+		for(var i = 0; i < graph_list_array.length; i++) {
+			if (graph_list_array[i] == graph_id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	function form_graph(objForm,objFormSubmit) {
 		var strAdd = '';
 		var strDel = '';
 		for(var i = 0; i < objForm.elements.length; i++) {
-			if (objForm.elements[i].name.substring(0,5) == 'graph') {
-				if (objForm.elements[i].name != 'graph_list') {
-					if (objForm.elements[i].checked) {
-						strAdd = strAdd + objForm.elements[i].value + ',';
-					} else {
-						if (objForm.elements[i].value != '') {
-							strDel = strDel + objForm.elements[i].value + ',';
-						}
-					}
+			if (objForm.elements[i].id.substring(0,4) == 'chk_') {
+				if (objForm.elements[i].checked) {
+					strAdd = strAdd + objForm.elements[i].id.substr(4) + ',';
+				} else if (graphChecked(document.chk.elements[i].id.substr(4))) {
+					strDel = strDel + objForm.elements[i].id.substr(4) + ',';
 				}
 			}
 		}
@@ -837,89 +910,7 @@ case 'list':
 	}
 	-->
 	</script>
-	<form name='graphs' id='graphs' action='graph_view.php' method='get' onSubmit='form_graph(document.graphs,document.graphs)'>
-
 	<?php
-
-	html_graph_start_box(1, TRUE);
-	?>
-	<tr bgcolor='#<?php print $colors["header_panel"];?>'>
-		<td colspan='3'>
-			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
-				<tr>
-					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; <?php if (get_request_var_request("page") > 1) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "\"))'>"; } print "Previous"; if (get_request_var_request("page") > 1) { print "</a>"; } ?></strong>
-					</td>
-					<td align='center' class='textHeaderDark'>
-						Showing Rows <?php print ((ROWS_PER_PAGE*(get_request_var_request("page")-1))+1);?> to <?php print ((($total_rows < ROWS_PER_PAGE) || ($total_rows < (ROWS_PER_PAGE*get_request_var_request("page")))) ? $total_rows : (ROWS_PER_PAGE*get_request_var_request("page")));?> of <?php print $total_rows;?>
-					</td>
-					<td align='right' class='textHeaderDark'>
-						<strong><?php if ((get_request_var_request("page") * ROWS_PER_PAGE) < $total_rows) { print "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "\"))'>"; } print "Next"; if ((get_request_var_request("page") * ROWS_PER_PAGE) < $total_rows) { print "</a>"; } ?> &gt;&gt;</strong>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr bgcolor='#6d88ad'>
-		<td colspan='3'>
-			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
-				<tr>
-					<?php
-					print "<td width='1%' align='right' class='textHeaderDark' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
-					?>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<?php
-
-	$i = 0;
-	if (sizeof($graphs) > 0) {
-		foreach ($graphs as $graph) {
-			form_alternate_row_color("f5f5f5", "ffffff", $i);
-
-			print "<td width='1%'>";
-			print "<input type='checkbox' name='graph_" . $graph["local_graph_id"] . "' id='graph_" . $graph["local_graph_id"] . "' value='" . $graph["local_graph_id"] . "'";
-			if (isset($graph_list[$graph["local_graph_id"]])) {
-				print " checked";
-			}
-			print ">\n";
-			print "</td>\n";
-
-			print "<td><strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title_cache"] . "</a></strong></td>\n";
-			print "<td>" . $graph["height"] . "x" . $graph["width"] . "</td>\n";
-			print "</tr>";
-
-			$i++;
-		}
-	}
-
-	?>
-	<tr bgcolor='#6d88ad'>
-		<td colspan='3'>
-			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
-				<tr>
-					<?php
-					print "<td width='1%' align='right' class='textHeaderDark' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllGraphs(\"graph_\",this.checked)'></td><td bgcolor='#6D88AD'><strong>Select All</strong></td>\n";
-					?>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	</table>
-	<table align='center' width='100%'>
-		<tr>
-			<td width='1'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
-			<td><input type='image' src='images/button_view.gif' alt='View'></td>
-		</tr>
-	</table>
-	<input type='hidden' name='page' value='1'>
-	<input type='hidden' name='style' value='selective'>
-	<input type='hidden' name='action' value='preview'>
-	<input type='hidden' name='graph_list' value='<?php print $graph_list_text; ?>'>
-	<input type='hidden' name='graph_add' value=''>
-	<input type='hidden' name='graph_remove' value=''>
-	</form><?php
 
 	break;
 }
