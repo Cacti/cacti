@@ -169,32 +169,32 @@ function form_actions() {
 
 	print "<form action='host_templates.php' autocomplete='off' method='post'>\n";
 
-	if ($_POST["drp_action"] == "1") { /* delete */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Are you sure you want to delete the following host templates? All devices currently attached
-					this these host templates will lose their template assocation.</p>
-					<p>$host_list</p>
-				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following host templates will be duplicated. You can
-					optionally change the title format for the new host templates.</p>
-					<p>$host_list</p>
-					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
-				</td>
-			</tr>\n
-			";
-	}
+	if (isset($host_array) && sizeof($host_array)) {
+		if ($_POST["drp_action"] == "1") { /* delete */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>Are you sure you want to delete the following host templates? All devices currently attached
+						this these host templates will lose their template assocation.</p>
+						<p>$host_list</p>
+					</td>
+				</tr>\n
+				";
+		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click save, the following host templates will be duplicated. You can
+						optionally change the title format for the new host templates.</p>
+						<p>$host_list</p>
+						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
+					</td>
+				</tr>\n
+				";
+		}
 
-	if (!isset($host_array)) {
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one host template.</span></td></tr>\n";
-		$save_html = "";
+		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
-		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one host template.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
@@ -202,7 +202,6 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='host_templates.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				$save_html
 			</td>
 		</tr>
@@ -303,7 +302,7 @@ function template_edit() {
 							order by graph_templates.name"),"name","id","","","");?>
 					</td>
 					<td align="right">
-						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_gt" align="absmiddle">
+						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Host Template">
 					</td>
 				</table>
 			</td>
@@ -353,7 +352,7 @@ function template_edit() {
 							order by snmp_query.name"),"name","id","","","");?>
 					</td>
 					<td align="right">
-						&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_dq" align="absmiddle">
+						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Host Template">
 					</td>
 				</table>
 			</td>
@@ -424,8 +423,8 @@ function template() {
 						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

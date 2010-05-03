@@ -198,23 +198,23 @@ function form_actions() {
 
 	print "<form action='data_input.php' method='post'>\n";
 
-	if ($_POST["drp_action"] == "1") { /* delete */
-		$graphs = array();
+	if (isset($di_array) && sizeof($di_array)) {
+		if ($_POST["drp_action"] == "1") { /* delete */
+			$graphs = array();
 
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Are you sure you want to delete the following data input methods?</p>
-					<p>$di_list</p>
-				</td>
-			</tr>\n";
-	}
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>Are you sure you want to delete the following data input methods?</p>
+						<p>$di_list</p>
+					</td>
+				</tr>\n";
+		}
 
-	if (!isset($di_array)) {
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
-		$save_html = "";
+		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
-		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
@@ -222,7 +222,6 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='data_input.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				$save_html
 			</td>
 		</tr>
@@ -247,7 +246,7 @@ function field_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", "data_input.php?action=edit&id=" . $_GET["data_input_id"], "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", htmlspecialchars("data_input.php?action=edit&id=" . $_GET["data_input_id"]), htmlspecialchars("data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -523,8 +522,8 @@ function data() {
 						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

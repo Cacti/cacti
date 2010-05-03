@@ -775,7 +775,7 @@ function draw_actions_dropdown($actions_array) {
 				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
 			</td>
 			<td width='1' align='right'>
-				<input type='image' src='images/button_go.gif' alt='Go'>
+				<input type='submit' value='Go' title='Execute Action'>
 			</td>
 		</tr>
 	</table>

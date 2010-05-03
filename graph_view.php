@@ -371,8 +371,8 @@ case 'preview':
 						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;' nowrap>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -501,8 +501,8 @@ case 'preview':
 								<input style='padding-bottom: 4px;' type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
 							</td>
 							<td nowrap style='white-space: nowrap;'>
-								&nbsp;&nbsp;<input type='image' name='button_refresh' src='images/button_refresh.gif' alt='Refresh selected time span' border='0' align='absmiddle' value='refresh'>
-								<input type='image' name='button_clear' src='images/button_clear.gif' alt='Return to the default time span' border='0' align='absmiddle'>
+								&nbsp;&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
+								<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
 							</td>
 						</tr>
 					</table>
@@ -732,8 +732,8 @@ case 'list':
 						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;' nowrap>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -834,7 +834,7 @@ case 'list':
 	<table align='right'>
 		<tr>
 			<td align='right'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
-			<td align='right'><input type='image' src='images/button_view.gif' alt='View'></td>
+			<td align='right'><input type='submit' value='View' title='View Graphs'></td>
 		</tr>
 	</table>
 	<input type='hidden' name='style' value='selective'>

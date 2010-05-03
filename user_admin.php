@@ -195,110 +195,110 @@ function form_actions() {
 		$i++;
 	}
 
-	/* Check for deleting of Graph Export User */
-	if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
-		$exportuser = read_config_option('export_user_id');
-		if (in_array($exportuser, $user_array)) {
-			raise_message(22);
-			header("Location: user_admin.php");
-			exit;
-
-		}
-	}
-
 	include_once("./include/top_header.php");
 
 	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
 	print "<form action='user_admin.php' method='post'>\n";
 
-	if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					<p>Are you sure you want to delete the following users?</p>
-					<p>$user_list</p>
-				</td>
-			</tr>\n";
-	}
-	$user_id = "";
-	if ((get_request_var_post("drp_action") == "2") && (sizeof($user_array))) { /* copy */
-		$user_id = $user_array[0];
-		$user_realm = db_fetch_cell("SELECT realm FROM user_auth WHERE id = " . $user_id);
+	/* Check for deleting of Graph Export User */
+	if (isset($user_array) && sizeof($user_array)) {
+		if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
+			$exportuser = read_config_option('export_user_id');
+			if (in_array($exportuser, $user_array)) {
+				raise_message(22);
+				header("Location: user_admin.php");
+				exit;
 
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					Would you like to copy this user?<br><br>
-				</td>
-			</tr><tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					Template Username: <i>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $user_id) . "</i>
-				</td>
-			</tr><tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-				New Username: ";
-		print form_text_box("new_username", "", "", 25);
-		print "				</td>
-			</tr><tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					New Full Name: ";
-		print form_text_box("new_fullname", "", "", 35);
-		print "				</td>
-			</tr><tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					New Realm: \n";
-		print form_dropdown("new_realm", $auth_realms, "", "", $user_realm, "", 0);
-		print "				</td>
+			}
+		}
 
-			</tr>\n";
-	}
+		if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						<p>Are you sure you want to delete the following users?</p>
+						<p>$user_list</p>
+					</td>
+				</tr>\n";
+		}
+		$user_id = "";
 
-	if ((get_request_var_post("drp_action") == "3") && (sizeof($user_array))) { /* enable */
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					<p>Are you sure you want to enable the following users?</p>
-					<p>$user_list</p>
-				</td>
-			</tr>\n";
-	}
+		if ((get_request_var_post("drp_action") == "2") && (sizeof($user_array))) { /* copy */
+			$user_id = $user_array[0];
+			$user_realm = db_fetch_cell("SELECT realm FROM user_auth WHERE id = " . $user_id);
 
-	if ((get_request_var_post("drp_action") == "4") && (sizeof($user_array))) { /* disable */
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					<p>Are you sure you want to disable the following users?</p>
-					<p>$user_list</p>
-				</td>
-			</tr>\n";
-	}
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						Would you like to copy this user?<br><br>
+					</td>
+				</tr><tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						Template Username: <i>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $user_id) . "</i>
+					</td>
+				</tr><tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					New Username: ";
+			print form_text_box("new_username", "", "", 25);
+			print "				</td>
+				</tr><tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						New Full Name: ";
+			print form_text_box("new_fullname", "", "", 35);
+			print "				</td>
+				</tr><tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						New Realm: \n";
+			print form_dropdown("new_realm", $auth_realms, "", "", $user_realm, "", 0);
+			print "				</td>
 
-	if ((get_request_var_post("drp_action") == "5") && (sizeof($user_array))) { /* batch copy */
-		$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>Are you sure you want to overwrite the selected users with the selected template users settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template user.<br><br></td>
-			</tr><tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					Template User: \n";
-		print form_dropdown("template_user", $usernames, "username", "id", "", "", 0);
-		print "		</td>
+				</tr>\n";
+		}
 
-			</tr><tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-					<p>Users to update:
-					$user_list</p>
-				</td>
-			</tr>\n";
-	}
+		if ((get_request_var_post("drp_action") == "3") && (sizeof($user_array))) { /* enable */
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						<p>Are you sure you want to enable the following users?</p>
+						<p>$user_list</p>
+					</td>
+				</tr>\n";
+		}
 
-	if (sizeof($user_array) == 0) {
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
-		$save_html = "<a href='user_admin.php'><img src='images/button_cancel.gif' alt='Cancel' align='absmiddle' border='0'></a>";
+		if ((get_request_var_post("drp_action") == "4") && (sizeof($user_array))) { /* disable */
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						<p>Are you sure you want to disable the following users?</p>
+						<p>$user_list</p>
+					</td>
+				</tr>\n";
+		}
 
+		if ((get_request_var_post("drp_action") == "5") && (sizeof($user_array))) { /* batch copy */
+			$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>Are you sure you want to overwrite the selected users with the selected template users settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template user.<br><br></td>
+				</tr><tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						Template User: \n";
+			print form_dropdown("template_user", $usernames, "username", "id", "", "", 0);
+			print "		</td>
+
+				</tr><tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+						<p>Users to update:
+						$user_list</p>
+					</td>
+				</tr>\n";
+		}
+
+		$save_html = "<input type='submit' value='Yes'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
-		$save_html = "<a href='user_admin.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a> <input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print " <tr>
@@ -576,7 +576,7 @@ function graph_perms_edit() {
 				<?php form_dropdown("perm_graphs",db_fetch_assoc("SELECT local_graph_id, title_cache FROM graph_templates_graph WHERE local_graph_id > 0 AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY title_cache"),"title_cache","local_graph_id","","","");?>
 			</td>
 			<td align="right">
-				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph" align="absmiddle">
+				&nbsp;<input type="submit" value="Add" name="add_graph_x" title="Add New Graph Permission">
 			</td>
 		</tr>
 	</table>
@@ -636,7 +636,7 @@ function graph_perms_edit() {
 				<?php form_dropdown("perm_hosts",db_fetch_assoc("SELECT id, CONCAT('',description,' (',hostname,')') AS name FROM host WHERE host.id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY description,hostname"),"name","id","","","");?>
 			</td>
 			<td align="right">
-				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_host" align="absmiddle">
+				&nbsp;<input type="submit" value="Add" name="add_host_x" title="Add New Host Permission">
 			</td>
 		</tr>
 	</table>
@@ -695,7 +695,7 @@ function graph_perms_edit() {
 				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("SELECT id, name FROM graph_templates WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY name"),"name","id","","","");?>
 			</td>
 			<td align="right">
-				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_graph_template" align="absmiddle">
+				&nbsp;<input type="submit" value="Add" name="add_graph_template_x" title="Add New Graph Template Permission">
 			</td>
 		</tr>
 	</table>
@@ -754,7 +754,7 @@ function graph_perms_edit() {
 				<?php form_dropdown("perm_trees",db_fetch_assoc("SELECT id, name FROM graph_tree WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=2 AND user_auth_perms.user_id=".get_request_var("id",0)." ) ORDER BY name"),"name","id","","","");?>
 			</td>
 			<td align="right">
-				&nbsp;<input type="image" src="images/button_add.gif" alt="Add" name="add_tree" align="absmiddle">
+				&nbsp;<input type="submit" value="Add" name="add_tree_x" title="Add New Tree Permission">
 			</td>
 		</tr>
 	</table>
@@ -1011,8 +1011,8 @@ function user() {
 						<input type="text" name="filter" size="40" value="<?php print clean_html_output(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

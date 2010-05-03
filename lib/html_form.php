@@ -734,10 +734,17 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
    @arg $cancel_url - the url to go to when the user clicks 'cancel'
    @arg $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm_buttons($action_url, $cancel_url) { ?>
+	<script type="text/javascript">
+	<!--
+	function returnTo(location) {
+		document.location = location;
+	}
+	-->
+	</script>
 	<tr>
 		<td bgcolor="#E1E1E1">
-			<a href="<?php print $cancel_url;?>"><img src="images/button_cancel.gif" border="0" alt="Cancel" align="absmiddle"></a>
-			<a href="<?php print $action_url . "&confirm=yes";?>"><img src="images/button_delete.gif" border="0" alt="Delete" align="absmiddle"></a>
+			<input type='button' onClick='returnTo("<?php print $cancel_url;?>")' value='Cancel'>
+			<input type='submit' onClick='returnTo("<?php print $action_url;?>&confirm=true")' value='Delete'>
 		</td>
 	</tr>
 <?php }
@@ -750,26 +757,29 @@ function form_confirm_buttons($action_url, $cancel_url) { ?>
 function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	if (empty($force_type)) {
 		if (empty($_GET[$key_field])) {
-			$img = "button_create.gif";
 			$alt = "Create";
 		}else{
-			$img = "button_save.gif";
 			$alt = "Save";
 		}
 	}elseif ($force_type == "save") {
-		$img = "button_save.gif";
 		$alt = "Save";
 	}elseif ($force_type == "create") {
-		$img = "button_create.gif";
 		$alt = "Create";
 	}
 	?>
+	<script type="text/javascript">
+	<!--
+	function returnTo(location) {
+		document.location = location;
+	}
+	-->
+	</script>
 	<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
 			<td bgcolor="#f5f5f5" align="right">
 				<input type='hidden' name='action' value='save'>
-				<a href='<?php print $cancel_url;?>'><img src='images/button_cancel2.gif' alt='Cancel' align='absmiddle' border='0'></a>
-				<input type='image' src='images/<?php print $img;?>' alt='<?php print $alt;?>' align='absmiddle'>
+				<input type='button' onClick='returnTo("<?php print $cancel_url;?>")' value='Cancel'>
+				<input type='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>
 	</table>

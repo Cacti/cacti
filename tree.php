@@ -358,7 +358,7 @@ function item_remove() {
 		}
 
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", $text, "tree.php?action=edit&id=" . $_GET["tree_id"], "tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]);
+		form_confirm("Are You Sure?", $text, htmlspecialchars("tree.php?action=edit&id=" . $_GET["tree_id"]), htmlspecialchars("tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -387,7 +387,7 @@ function tree_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", "tree.php", "tree.php?action=remove&id=" . $_GET["id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", htmlspecialchars("tree.php"), htmlspecialchars("tree.php?action=remove&id=" . $_GET["id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -437,8 +437,8 @@ function tree_edit() {
 
 		?>
 		<td>
-		<a href='tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=expand_all'><img src='images/button_expand_all.gif' border='0' alt='Expand All'></a>
-		<a href='tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=colapse_all'><img src='images/button_colapse_all.gif' border='0' alt='Colapse All'></a>
+		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=expand_all"' value='Expand All' title='Expand All Trees'>
+		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=colapse_all"' value='Colapse All' title='Colapse All Trees'></a>
 		</td>
 		<?php
 

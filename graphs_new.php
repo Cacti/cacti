@@ -495,8 +495,8 @@ function graphs() {
 				<input type="text" name="filter" size="30" width="200" value="<?php print $_REQUEST["filter"];?>">
 			</td>
 			<td align="left" nowrap style='white-space: nowrap;'>
-				&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
-				<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+				&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+				<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 			</td>
 		</tr>
 	</table>

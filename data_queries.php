@@ -244,23 +244,23 @@ function form_actions() {
 
 	print "<form action='data_queries.php' method='post'>\n";
 
-	if ($_POST["drp_action"] == "1") { /* delete */
-		$graphs = array();
+	if (isset($dq_array) && sizeof($dq_array)) {
+		if ($_POST["drp_action"] == "1") { /* delete */
+			$graphs = array();
 
-		print "
-			<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Are you sure you want to delete the following data queries?</p>
-					<p>$dq_list</p>
-				</td>
-			</tr>\n";
-	}
+			print "
+				<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>Are you sure you want to delete the following data queries?</p>
+						<p>$dq_list</p>
+					</td>
+				</tr>\n";
+		}
 
-	if (!isset($dq_array)) {
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data query.</span></td></tr>\n";
-		$save_html = "";
+		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
-		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data query.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
@@ -268,7 +268,6 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($dq_array) ? serialize($dq_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='data_queries.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				$save_html
 			</td>
 		</tr>
@@ -345,7 +344,7 @@ function data_query_item_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php?action=edit&id=" . $_GET["snmp_query_id"], "data_queries.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
+		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", htmlspecialchars("data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]), htmlspecialchars("data_queries.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -522,7 +521,7 @@ function data_query_item_edit() {
 								&nbsp;Field Name:&nbsp;<input type="text" name="svds_<?php print $data_template["id"];?>_field" size="15">
 							</td>
 							<td>
-								&nbsp;<input type="image" src="images/button_add.gif" name="svds_<?php print $data_template["id"];?>" alt="Add" align="absmiddle">
+								&nbsp;<input type="submit" name="svds_<?php print $data_template["id"];?>_x" value="Add" title="Add Data Source Name Suggested Name">
 							</td>
 						</tr>
 					</table>
@@ -584,7 +583,7 @@ function data_query_item_edit() {
 							&nbsp;Field Name:&nbsp;<input type="text" name="svg_field" size="15">
 						</td>
 						<td>
-							&nbsp;<input type="image" src="images/button_add.gif" name="svg" alt="Add" align="absmiddle">
+							&nbsp;<input type="submit" name="svg_x" value="Add" title="Add Graph Title Suggested Name">
 						</td>
 					</tr>
 				</table>
@@ -754,8 +753,8 @@ function data_query() {
 						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

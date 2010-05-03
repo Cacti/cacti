@@ -394,121 +394,121 @@ function form_actions() {
 
 	print "<form action='graphs.php' method='post'>\n";
 
-	if ($_POST["drp_action"] == "1") { /* delete */
-		$graphs = array();
+	if (isset($graph_array) && sizeof($graph_array)) {
+		if ($_POST["drp_action"] == "1") { /* delete */
+			$graphs = array();
 
-		/* find out which (if any) data sources are being used by this graph, so we can tell the user */
-		if (isset($graph_array)) {
-			$data_sources = db_fetch_assoc("select
-				data_template_data.local_data_id,
-				data_template_data.name_cache
-				from (data_template_rrd,data_template_data,graph_templates_item)
-				where graph_templates_item.task_item_id=data_template_rrd.id
-				and data_template_rrd.local_data_id=data_template_data.local_data_id
-				and " . array_to_sql_or($graph_array, "graph_templates_item.local_graph_id") . "
-				and data_template_data.local_data_id > 0
-				group by data_template_data.local_data_id
-				order by data_template_data.name_cache");
+			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
+			if (isset($graph_array)) {
+				$data_sources = db_fetch_assoc("select
+					data_template_data.local_data_id,
+					data_template_data.name_cache
+					from (data_template_rrd,data_template_data,graph_templates_item)
+					where graph_templates_item.task_item_id=data_template_rrd.id
+					and data_template_rrd.local_data_id=data_template_data.local_data_id
+					and " . array_to_sql_or($graph_array, "graph_templates_item.local_graph_id") . "
+					and data_template_data.local_data_id > 0
+					group by data_template_data.local_data_id
+					order by data_template_data.name_cache");
+			}
+
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>Are you sure you want to delete the following graphs?</p>
+						<p>$graph_list</p>
+						";
+						if (isset($data_sources) && sizeof($data_sources)) {
+							print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following data sources are in use by these graphs:</p>\n";
+
+							foreach ($data_sources as $data_source) {
+								print "<strong>" . $data_source["name_cache"] . "</strong><br>\n";
+							}
+
+							print "<br>";
+							form_radio_button("delete_type", "1", "1", "Leave the data sources untouched.", "1"); print "<br>";
+							form_radio_button("delete_type", "1", "2", "Delete all <strong>data sources</strong> referenced by these graphs.", "1"); print "<br>";
+							print "</td></tr>";
+						}
+					print "
+					</td>
+				</tr>\n
+				";
+		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>Choose a graph template and click save to change the graph template for
+						the following graphs. Be aware that all warnings will be suppressed during the
+						conversion, so graph data loss is possible.</p>
+						<p>$graph_list</p>
+						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
+					</td>
+				</tr>\n
+				";
+		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click save, the following graphs will be duplicated. You can
+						optionally change the title format for the new graphs.</p>
+						<p>$graph_list</p>
+						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> (1)", "", "255", "30", "text"); print "</p>
+					</td>
+				</tr>\n
+				";
+		}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click save, the following graphs will be converted into graph templates.
+						You can optionally change the title format for the new graph templates.</p>
+						<p>$graph_list</p>
+						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> Template", "", "255", "30", "text"); print "</p>
+					</td>
+				</tr>\n
+				";
+		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click save, the following graphs will be placed under the branch selected
+						below.</p>
+						<p>$graph_list</p>
+						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+					</td>
+				</tr>\n
+				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
+				";
+		}elseif ($_POST["drp_action"] == "5") { /* change host */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>Choose a new host for these graphs:</p>
+						<p>$graph_list</p>
+						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
+					</td>
+				</tr>\n
+				";
+		}elseif ($_POST["drp_action"] == "6") { /* reapply suggested naming to host */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click save, the following graphs will have thier suggested naming convensions
+						recalculated and applies to the graphs.</p>
+						<p>$graph_list</p>
+					</td>
+				</tr>\n
+				";
+		}elseif ($_POST["drp_action"] == "7") { /* reapply suggested naming to host */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click save, the following graphs will be resized per your specifications.</p>
+						<p>$graph_list</p>
+						<p><strong>Graph Height:</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
+						<p><strong>Graph Width:</strong><br>"; form_text_box("graph_width", "", "", "255", "30", "text"); print "</p>
+					</td>
+				</tr>\n
+				";
 		}
 
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Are you sure you want to delete the following graphs?</p>
-					<p>$graph_list</p>
-					";
-					if (sizeof($data_sources) > 0) {
-						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following data sources are in use by these graphs:</p>\n";
-
-						foreach ($data_sources as $data_source) {
-							print "<strong>" . $data_source["name_cache"] . "</strong><br>\n";
-						}
-
-						print "<br>";
-						form_radio_button("delete_type", "1", "1", "Leave the data sources untouched.", "1"); print "<br>";
-						form_radio_button("delete_type", "1", "2", "Delete all <strong>data sources</strong> referenced by these graphs.", "1"); print "<br>";
-						print "</td></tr>";
-					}
-				print "
-				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "2") { /* change graph template */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Choose a graph template and click save to change the graph template for
-					the following graphs. Be aware that all warnings will be suppressed during the
-					conversion, so graph data loss is possible.</p>
-					<p>$graph_list</p>
-					<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
-				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "3") { /* duplicate */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will be duplicated. You can
-					optionally change the title format for the new graphs.</p>
-					<p>$graph_list</p>
-					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> (1)", "", "255", "30", "text"); print "</p>
-				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will be converted into graph templates.
-					You can optionally change the title format for the new graph templates.</p>
-					<p>$graph_list</p>
-					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> Template", "", "255", "30", "text"); print "</p>
-				</td>
-			</tr>\n
-			";
-	}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will be placed under the branch selected
-					below.</p>
-					<p>$graph_list</p>
-					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
-				</td>
-			</tr>\n
-			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
-			";
-	}elseif ($_POST["drp_action"] == "5") { /* change host */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>Choose a new host for these graphs:</p>
-					<p>$graph_list</p>
-					<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
-				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "6") { /* reapply suggested naming to host */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will have thier suggested naming convensions
-					recalculated and applies to the graphs.</p>
-					<p>$graph_list</p>
-				</td>
-			</tr>\n
-			";
-	}elseif ($_POST["drp_action"] == "7") { /* reapply suggested naming to host */
-		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-					<p>When you click save, the following graphs will be resized per your specifications.</p>
-					<p>$graph_list</p>
-					<p><strong>Graph Height:</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
-					<p><strong>Graph Width:</strong><br>"; form_text_box("graph_width", "", "", "255", "30", "text"); print "</p>
-				</td>
-			</tr>\n
-			";
-	}
-
-	if (!isset($graph_array)) {
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
-		$save_html = "";
+		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
-		$save_html = "<input type='image' src='images/button_yes.gif' alt='Save' align='absmiddle'>";
+		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
@@ -516,7 +516,6 @@ function form_actions() {
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
-				<a href='graphs.php'><img src='images/button_no.gif' alt='Cancel' align='absmiddle' border='0'></a>
 				$save_html
 			</td>
 		</tr>
@@ -1186,8 +1185,8 @@ function graph() {
 						</select>
 					</td>
 					<td width="120" nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

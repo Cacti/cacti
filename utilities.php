@@ -603,9 +603,9 @@ function utilities_view_user_log() {
 						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
-						<input type="image" src="images/button_purge.gif" name="purge" alt="Purge" border="0" align="absmiddle">
+						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="submit" name="purge_x" value="Purge" title="Purge User Log">
 					</td>
 				</tr>
 			</table>
@@ -718,10 +718,10 @@ function utilities_view_user_log() {
 				form_alternate_row_color("FF9D9D","FFAFAF",$i);
 			}
 			?>
-			<td width='35%'>
+			<td width='20%'>
 				<?php print (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["username"])) : $item["username"]);?>
 			</td>
-			<td width='20%'>
+			<td width='10%'>
 				<?php if (isset($item["full_name"])) {
 						print (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["full_name"])) : $item["full_name"]);
 					}else{
@@ -729,7 +729,7 @@ function utilities_view_user_log() {
 					}
 				?>
 			</td>
-			<td width='20%'>
+			<td width='10%'>
 				<?php if (isset($auth_realms[$item["realm"]])) {
 						print (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $auth_realms[$item["realm"]])) : $auth_realms[$item["realm"]]);
 					}else{
@@ -737,13 +737,13 @@ function utilities_view_user_log() {
 					}
 				?>
 			</td>
-			<td width='20%'>
+			<td width='15%'>
 				<?php print (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["time"])) : $item["time"]);?>
 			</td>
 			<td width='10%'>
 				<?php print $item["result"] == 0 ? "Failed" : "Success";?>
 			</td>
-			<td width='15%'>
+			<td width='5%'>
 				<?php print (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["ip"])) : $item["ip"]);?>
 			</td>
 			</tr>
@@ -872,9 +872,9 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
-						<input type="image" src="images/button_purge.gif" name="purge" alt="Purge" border="0" align="absmiddle">
+						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="submit" name="purge_x" value="Purge" title="Purge Log File">
 					</td>
 				</tr>
 				<tr>
@@ -1187,8 +1187,8 @@ function utilities_view_snmp_cache() {
 						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Fitlers">
 					</td>
 				</tr>
 			</table>
@@ -1425,8 +1425,8 @@ function utilities_view_poller_cache() {
 						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="image" src="images/button_go.gif" name="go" alt="Go" border="0" align="absmiddle">
-						<input type="image" src="images/button_clear.gif" name="clear" alt="Clear" border="0" align="absmiddle">
+						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

@@ -42,6 +42,7 @@ SVN
 -feature: Detect and correct for RRDtool segfaults
 -feature: Add rra_id for hosts and graphs to be used during tree export
 -feature: Make the Graphs pages render like the rest of Cacti
+-feature: Convert base Cacti UI to use buttons and not images
 
 0.8.7e
 
