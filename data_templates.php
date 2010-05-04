@@ -319,7 +319,7 @@ function form_actions() {
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>Are you sure you want to delete the following data templates? Any data sources attached
 					to these templates will become individual data sources.</p>
-					<p>$ds_list</p>
+					<p><ul>$ds_list</ul></p>
 				</td>
 			</tr>\n
 			";
@@ -328,7 +328,7 @@ function form_actions() {
 				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 					<p>When you click save, the following data templates will be duplicated. You can
 					optionally change the title format for the new data templates.</p>
-					<p>$ds_list</p>
+					<p><ul>$ds_list</ul></p>
 					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 				</td>
 			</tr>\n

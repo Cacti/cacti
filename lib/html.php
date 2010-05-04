@@ -272,7 +272,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<p style='font-size: 10;' align='center'><strong>" . $graph["title_cache"] . "</strong></p>" : "");?>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;'>
-							<a href='graph.php?action=zoom&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
+							<a href='<?php print htmlspecialchars("graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
 							<a href='graph_xport.php?local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
 							<a href='graph.php?action=properties&local_graph_id=<?php print $graph["local_graph_id"];?>&rra_id=0&<?php print $extra_url_args;?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a><br>
 							<a href='#page_top'><img src='images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
@@ -325,7 +325,7 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
 				<tr>
 					<td align='left' class='textHeaderDark' width='15%'>
 						<?php if ($current_page > 1) {
-							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page-1), $nav_url) . "'> &lt;&lt; Previous</a></strong>";
+							print "<strong><a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", ($current_page-1), $nav_url)) . "'> &lt;&lt; Previous</a></strong>";
 						} ?>
 					</td>
 					<td align='center' class='textHeaderDark' width='70%'>
@@ -333,7 +333,7 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
 					</td>
 					<td align='right' class='textHeaderDark' width='15%'>
 						<?php if (($current_page * $rows_per_page) < $total_rows) {
-							print "<strong><a class='linkOverDark' href='" . str_replace("<PAGE>", ($current_page+1), $nav_url) . "'> Next &gt;&gt; </a></strong>";
+							print "<strong><a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", ($current_page+1), $nav_url)) . "'> Next &gt;&gt; </a></strong>";
 						} ?>
 					</td>
 				</tr>
@@ -380,7 +380,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='textSubHeaderDark'>" . $display_text . "</td>\n";
 		}else{
 			print "<td " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
-			print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
+			print "<a class='textSubHeaderDark' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "</td>\n";
 		}
 
@@ -430,7 +430,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			print "<td class='textSubHeaderDark'>" . $display_text . "</td>\n";
 		}else{
 			print "<td>";
-			print "<a class='textSubHeaderDark' href=" . $_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction . ">" . $display_text . "</a>";
+			print "<a class='textSubHeaderDark' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "</td>\n";
 		}
 	}
@@ -605,7 +605,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		}
 
 		print "<td>";
-		if ($disable_controls == false) { print "<a href='$filename?action=item_edit&id=" . $item["id"] . "&$url_data'>"; }
+		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
 		print "<strong>Item # " . ($i+1) . "</strong>";
 		if ($disable_controls == false) { print "</a>"; }
 		print "</td>\n";
@@ -638,9 +638,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
 
 		if ($disable_controls == false) {
-			print "<td><a href='$filename?action=item_movedown&id=" . $item["id"] . "&$url_data'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='$filename?action=item_moveup&id=" . $item["id"] . "&$url_data'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='$filename?action=item_remove&id=" . $item["id"] . "&$url_data'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a></td>\n";
+			print "<td><a href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+					<a href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a></td>\n";
 		}
 
 		print "</tr>";
@@ -732,9 +732,9 @@ function draw_menu($user_menu = "") {
 						that is contained in the sub-items array */
 						if (($i == 0) || ($draw_sub_items)) {
 							if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
-								print "<tr><td class='$td_class' background='$background'>$prepend_string<strong><a href='$item_sub_url'>$item_sub_title</a></strong></td></tr>\n";
+								print "<tr><td class='$td_class' style='background-image:url(\"$background\");'>$prepend_string<strong><a href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></strong></td></tr>\n";
 							}else{
-								print "<tr><td class='$td_class' background='$background'>$prepend_string<a href='$item_sub_url'>$item_sub_title</a></td></tr>\n";
+								print "<tr><td class='$td_class' style='background-image:url(\"$background\");'>$prepend_string<a href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></td></tr>\n";
 							}
 						}
 
@@ -745,16 +745,16 @@ function draw_menu($user_menu = "") {
 				if ($current_realm_id == -1 || (isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* draw normal (non sub-item) menu item */
 					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
-						print "<tr><td class='textMenuItemSelected' background='images/menu_line.gif'><strong><a href='$item_url'>$item_title</a></strong></td></tr>\n";
+						print "<tr><td class='textMenuItemSelected' style='background-image:url(\"images/menu_line.gif\");'><strong><a href='" . htmlspecialchars($item_url) . "'>$item_title</a></strong></td></tr>\n";
 					}else{
-						print "<tr><td class='textMenuItem' background='images/menu_line.gif'><a href='$item_url'>$item_title</a></td></tr>\n";
+						print "<tr><td class='textMenuItem' style='background-image:url(\"images/menu_line.gif\");'><a href='" . htmlspecialchars($item_url) . "'>$item_title</a></td></tr>\n";
 					}
 				}
 			}
 		}
 	}
 
-	print "<tr><td class='textMenuItem' background='images/menu_line.gif'></td></tr>\n";
+	print "<tr><td class='textMenuItem' style='background-image:url(\"images/menu_line.gif\");'></td></tr>\n";
 
 	print "</table></td></tr>";
 }

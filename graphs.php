@@ -415,14 +415,16 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following graphs?</p>
-						<p>$graph_list</p>
-						";
+						<p><ul>$graph_list</ul></p>";
+
 						if (isset($data_sources) && sizeof($data_sources)) {
 							print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following data sources are in use by these graphs:</p>\n";
 
+							print "<ul>";
 							foreach ($data_sources as $data_source) {
-								print "<strong>" . $data_source["name_cache"] . "</strong><br>\n";
+								print "<li><strong>" . $data_source["name_cache"] . "</strong></li>\n";
 							}
+							print "</ul>";
 
 							print "<br>";
 							form_radio_button("delete_type", "1", "1", "Leave the data sources untouched.", "1"); print "<br>";
@@ -439,7 +441,7 @@ function form_actions() {
 						<p>Choose a graph template and click save to change the graph template for
 						the following graphs. Be aware that all warnings will be suppressed during the
 						conversion, so graph data loss is possible.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
@@ -1112,9 +1114,9 @@ function graph() {
 	html_start_box("<strong>Graph Management</strong>", "100%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . get_request_var_request("host_id"));
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_graph_id">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
+			<form name="form_graph_id">
 			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td width="50">
@@ -1215,9 +1217,9 @@ function graph() {
 					</td>
 				</tr>
 			</table>
+			<input type='hidden' name='page' value='1'>
+			</form>
 		</td>
-		<input type='hidden' name='page' value='1'>
-		</form>
 	</tr>
 	<?php
 
@@ -1309,7 +1311,7 @@ function graph() {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='graphs.php?action=graph_edit&id=" . $graph["local_graph_id"] . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))) : title_trim($graph["title_cache"], read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
-			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name) . "</a>", $graph["local_graph_id"]);
+			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
 			form_end_row();

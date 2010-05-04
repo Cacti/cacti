@@ -424,7 +424,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following devices?</p>
-						<p>$host_list</p>";
+						<p><ul>$host_list</ul></p>";
 						form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.  Data sources will be disabled however.", "1"); print "<br>";
 						form_radio_button("delete_type", "2", "2", "Delete all associated <strong>graphs</strong> and <strong>data sources</strong>.", "1"); print "<br>";
 						print "</td></tr>
@@ -436,7 +436,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following hosts will be placed under the branch selected
 						below.</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
@@ -525,8 +525,6 @@ function host_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
-
-	display_output_messages();
 
 	if (!empty($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
@@ -1184,7 +1182,7 @@ function host() {
 	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"));
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_devices">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">

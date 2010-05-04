@@ -294,7 +294,7 @@ case 'preview':
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 		<form name="form_graph_view" method="post">
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -439,7 +439,7 @@ case 'preview':
 
 		-->
 		</script>
-			<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+			<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 				<form name="form_timespan_selector" method="post">
 				<td class="noprint">
 					<table width="100%" cellpadding="0" cellspacing="0">
@@ -639,7 +639,7 @@ case 'list':
 	-->
 	</script>
 
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)'>
 		<input type='hidden' name='graph_add' value=''>
 		<input type='hidden' name='graph_remove' value=''>

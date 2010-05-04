@@ -202,7 +202,7 @@ function form_actions() {
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following data input methods?</p>
-						<p>$di_list</p>
+						<p><ul>$di_list</ul></p>
 					</td>
 				</tr>\n";
 		}
@@ -401,7 +401,7 @@ function data_edit() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><?php print $field["data_name"];?></a>
+					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print $field["data_name"];?></a>
 				</td>
 				<td>
 					<?php print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
@@ -410,7 +410,7 @@ function data_edit() {
 					<?php print $field["name"];?>
 				</td>
 				<td align="right">
-					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -436,7 +436,7 @@ function data_edit() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="data_input.php?action=field_edit&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><?php print $field["data_name"];?></a>
+					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print $field["data_name"];?></a>
 				</td>
 				<td>
 					<?php print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
@@ -448,7 +448,7 @@ function data_edit() {
 					<?php print html_boolean_friendly($field["update_rra"]);?>
 				</td>
 				<td align="right">
-					<a href="data_input.php?action=field_remove&id=<?php print $field["id"];?>&data_input_id=<?php print $_GET["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -506,7 +506,7 @@ function data() {
 	html_start_box("<strong>Data Input Methods</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 		<form name="form_graph_id" method="get">
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -560,13 +560,13 @@ function data() {
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='data_input.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_input.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
 							Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_input.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_input.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -586,7 +586,7 @@ function data() {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_input["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='data_input.php?action=edit&id=" . $data_input["id"] . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input["name"]) : $data_input["name"]) . "</a>", $data_input["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input["name"]) : $data_input["name"]) . "</a>", $data_input["id"]);
 			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
 			form_checkbox_cell($data_input["name"], $data_input["id"]);
 			form_end_row();

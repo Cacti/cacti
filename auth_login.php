@@ -235,17 +235,18 @@ function auth_display_custom_error_message($message) {
 	/* kill the session */
 	setcookie(session_name(),"",time() - 3600,"/");
 	/* print error */
+	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	print "<html>\n<head>\n";
-        print "     <title>" . "Cacti" . "</title>\n";
-        print "     <link href=\"include/main.css\" rel=\"stylesheet\">";
+	print "     <title>" . "Cacti" . "</title>\n";
+	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
 	print "</head>\n";
 	print "<body leftmargin=\"0\" topmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">\n<br><br>\n";
 	display_custom_error_message($message);
-        print "</body>\n</html>\n";
+	print "</body>\n</html>\n";
 }
 
 ?>
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title>Login to Cacti</title>

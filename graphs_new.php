@@ -395,9 +395,34 @@ function graphs() {
 	$row_limit = read_config_option("num_rows_data_query");
 	$debug_log = debug_log_return("new_graphs");
 
+	if (!empty($debug_log)) {
+		debug_log_clear("new_graphs");
+		?>
+		<div id='message' style='z-index:-1;background-color:"#<?php print $oolors["light"];?>;position:relative;padding:3px;font-family:monospace;background-color: #f5f5f5; border: 1px solid #bbbbbb;'>
+			<?php print $debug_log;?>
+		</div>
+		<br>
+		<?php
+	}
 	?>
 	<script type="text/javascript">
 	<!--
+	if (document.getElementById('message')) {
+		height = document.getElementById('message').scrollHeight + 15;
+		height *= -1;
+		setTimeout("removeMessage(0,"+height+")", 2000);
+	}
+
+	function removeMessage(position, height) {
+		document.getElementById('message').style.top = position+"px";
+		position -= 4;
+		document.getElementById('main').style.top = position+"px";
+		position -= 16;
+		if (position < height -5) {
+			return;
+		}
+		setTimeout("removeMessage("+position+","+height+")",20);
+	}
 
 	function applyGraphsNewFilterChange(objForm) {
 		strURL = '?graph_type=' + objForm.graph_type.value;
@@ -408,23 +433,6 @@ function graphs() {
 
 	-->
 	</script>
-	<?php
-
-	if (!empty($debug_log)) {
-		debug_log_clear("new_graphs");
-		?>
-		<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
-			<tr bgcolor="<?php print $colors["light"];?>">
-				<td style="padding: 3px; font-family: monospace;">
-					<?php print $debug_log;?>
-				</td>
-			</tr>
-		</table>
-		<br>
-		<?php
-	}
-	?>
-
 	<form name="form_graphs_new">
 	<table width="100%" cellpadding="4" align="center">
 		<tr>

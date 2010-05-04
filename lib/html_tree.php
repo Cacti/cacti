@@ -108,7 +108,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		}
 		-->
 		</script>
-		<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 			<form name="form_timespan_selector" method="post">
 			<td class="noprint">
 				<table width="100%" cellpadding="0" cellspacing="0">
@@ -215,7 +215,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 			<table cellspacing='0' cellpadding='3' width='100%'>
 				<tr>
 					<td class='textHeaderDark'>
-						<strong><a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"] . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong>
+						<strong><a class='linkOverDark' href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $_SESSION["sess_view_tree_id"]) . "'>[root]</a> - " . db_fetch_cell("select name from graph_tree where id=" . $_SESSION["sess_view_tree_id"]) . "</strong>
 					</td>
 				</tr>
 			</table>
@@ -352,7 +352,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
 		$tier = tree_tier($leaf["order_key"]);
-		$transparent_indent = "<img width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
+		$transparent_indent = "<img src='images/transparent_line.gif' style='padding-right:" . (($tier-1) * 20) . "px;' height='1' align='middle' alt=''>&nbsp;";
 		$sort_cache[$tier] = $leaf["sort_children_type"];
 
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
@@ -361,19 +361,19 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 
 		if ($leaf["local_graph_id"] > 0) {
 			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'>" . $leaf["graph_title"] . "</a></td>\n";
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
+				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>" . $leaf["graph_title"] . "</a></td>\n";
+				print "<td bgcolor='#$row_color'>Graph</td>";
 			}
 		}elseif ($leaf["title"] != "") {
 			$icon = get_icon($leaf["graph_tree_id"], $leaf["order_key"]);
 			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change'><img src='" . $icon . "' border='0'></a><a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Heading</td>";
+				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' border='0'></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
+				print "<td bgcolor='#$row_color'>Heading</td>";
 			}
 		}elseif ($leaf["host_id"] > 0) {
 			if ($visible) {
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"] . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='host.php?action=edit&id=" . $leaf["host_id"] . "'>(Edit host)</a></td>\n";
-				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
+				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("host.php?action=edit&id=" . $leaf["host_id"]) . "'>(Edit host)</a></td>\n";
+				print "<td bgcolor='#$row_color'>Host</td>";
 			}
 		}
 
@@ -382,13 +382,13 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 				print "<td bgcolor='#$row_color' width='80'></td>\n";
 			}else{
 				print "<td bgcolor='#$row_color' width='80' align='center'>\n
-					<a href='tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
-					<a href='tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"] . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
+					<a href='" . htmlspecialchars("tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"]) . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
+					<a href='" . htmlspecialchars("tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"]) . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
 					</td>\n";
 			}
 
 			print 	"<td bgcolor='#$row_color' align='right'>\n
-				<a href='tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
+				<a href='" . htmlspecialchars("tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id") . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
 				</td></tr>\n";
 		}
 	}
@@ -964,7 +964,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 		-->
 		</script>
-		<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
+		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 			<form name="form_timespan_selector" method="post">
 			<td class="noprint">
 				<table width="100%" cellpadding="0" cellspacing="0">
@@ -1237,13 +1237,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
 							<td align='left' class='textHeaderDark'>
-								<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+								<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 							</td>\n
 							<td align='center' class='textHeaderDark'>
 								Showing Graphs " . ((get_request_var_request("graphs")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_graph_config_option("treeview_graphs_per_page")) || ($total_rows < (get_request_var_request("graphs")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("graphs")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 							</td>\n
 							<td align='right' class='textHeaderDark'>
-								<strong>"; if ((get_request_var_request("page") * get_request_var_request("graphs")) < $total_rows) { $nav .= "<a class='linkOverDark' href='graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("graphs")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+								<strong>"; if ((get_request_var_request("page") * get_request_var_request("graphs")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree_id . "&leaf_id=" . $leaf_id  . (isset($_REQUEST["host_group_data"]) ? "&host_group_data=" . get_request_var_request("host_group_data") : "") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("graphs")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 							</td>\n
 						</tr>
 					</table>
@@ -1344,17 +1344,17 @@ function draw_tree_header_row($tree_id, $tree_item_id, $current_tier, $current_t
 			$ec_icon =  'hide';
 		}
 
-		print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
-			href='graph_view.php?action=tree&tree_id=$tree_id&hide=$other_status&branch_id=$tree_item_id'>
+		print "<td bgcolor='#" . $colors["panel"] . "' align='center' width='1%'><a
+			href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=$tree_id&hide=$other_status&branch_id=$tree_item_id") . "'>
 			<img src='images/$ec_icon.gif' border='0'></a></td>\n";
 	}elseif (!($use_expand_contract) && (!empty($current_title))) {
-		print "<td bgcolor='" . $colors["panel"] . "' width='10'></td>\n";
+		print "<td bgcolor='#" . $colors["panel"] . "' width='10'></td>\n";
 	}
 
 	/* draw the actual cell containing the header */
 	if (!empty($current_title)) {
-		print "<td bgcolor='" . $colors["panel"] . "' NOWRAP><strong>
-			" . (($show_url == true) ? "<a href='graph_view.php?action=tree&tree_id=$tree_id&start_branch=$tree_item_id'>" : "") . $current_title . (($show_url == true) ? "</a>" : "") . "&nbsp;</strong></td>\n";
+		print "<td bgcolor='#" . $colors["panel"] . "' NOWRAP><strong>
+			" . (($show_url == true) ? "<a href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=$tree_id&start_branch=$tree_item_id") . "'>" : "") . $current_title . (($show_url == true) ? "</a>" : "") . "&nbsp;</strong></td>\n";
 	}
 
 	/* end the nested table for the heading */
@@ -1381,7 +1381,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 	/* print out the actual graph html */
 	if (read_graph_config_option("thumbnail_section_tree_1") == "on") {
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
 				src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
@@ -1390,7 +1390,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 				print "</tr><tr>\n";
 			}
 		}else{
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
 				src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
 
@@ -1401,10 +1401,10 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 		}
 	}else{
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
 			print "</tr><tr>\n";
 		}else{
-			print "<td><a href='graph.php?local_graph_id=$local_graph_id&rra_id=all'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
 			print "</tr><tr>\n";
 		}
 	}

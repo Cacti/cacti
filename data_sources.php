@@ -451,14 +451,16 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following data sources?</p>
-						<p>$ds_list</p>
-						";
+						<p><ul>$ds_list</ul></p>";
+
 						if (sizeof($graphs) > 0) {
 							print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following graphs are using these data sources:</p>\n";
 
+							print "<ul>";
 							foreach ($graphs as $graph) {
-								print "<strong>" . $graph["title_cache"] . "</strong><br>\n";
+								print "<li><strong>" . $graph["title_cache"] . "</strong></li>\n";
 							}
+							print "</ul>";
 
 							print "<br>";
 							form_radio_button("delete_type", "3", "1", "Leave the graphs untouched.", "1"); print "<br>";
@@ -476,7 +478,7 @@ function form_actions() {
 						<p>Choose a data template and click save to change the data template for
 						the following data souces. Be aware that all warnings will be suppressed during the
 						conversion, so graph data loss is possible.</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 						<p><strong>New Data Template:</strong><br>"; form_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
@@ -485,7 +487,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Choose a new host for these data sources:</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
@@ -495,7 +497,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following data sources will be duplicated. You can
 						optionally change the title format for the new data sources.</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<ds_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -505,7 +507,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following data sources will be converted into data templates.
 						You can optionally change the title format for the new data templates.</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<ds_title> Template", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -514,7 +516,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click yes, the following data sources will be enabled.</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n
 				";
@@ -522,7 +524,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click yes, the following data sources will be disabled.</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n
 				";
@@ -531,7 +533,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click yes, the following data sources will will have their suggested naming conventions
 						recalculated.</p>
-						<p>$ds_list</p>
+						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n
 				";

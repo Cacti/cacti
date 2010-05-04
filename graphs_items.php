@@ -211,7 +211,7 @@ function item_edit() {
 	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "100%", $colors["header"], "3", "center", "");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_graph_items">
 		<td>
 			<table cellpadding="0" cellspacing="0">

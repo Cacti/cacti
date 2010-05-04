@@ -203,16 +203,16 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $cdef_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
-
 	print "<form action='cdef.php' method='post'>\n";
+
+	html_start_box("<strong>" . $cdef_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
 	if (isset($cdef_array) && sizeof($cdef_array)) {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following CDEFs?</p>
-						<p>$cdef_list</p>
+						<p><ul>$cdef_list</ul></p>
 					</td>
 				</tr>\n
 				";
@@ -221,7 +221,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following CDEFs will be duplicated. You can
 						optionally change the title format for the new CDEFs.</p>
-						<p>$cdef_list</p>
+						<p><ul>$cdef_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<cdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -298,6 +298,8 @@ function item_edit() {
 	draw_cdef_preview($_GET["cdef_id"]);
 	html_end_box();
 
+	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
+
 	html_start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "100%", $colors["header"], "3", "center", "");
 
 	if (isset($_GET["type_select"])) {
@@ -307,8 +309,6 @@ function item_edit() {
 	}else{
 		$current_type = "1";
 	}
-
-	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
 
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">
@@ -430,17 +430,17 @@ function cdef_edit() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="cdef.php?action=item_edit&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>">Item #<?php print $i;?></a>
+					<a class="linkEditMain" href="<?php print htmlspecialchars("cdef.php?action=item_edit&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>">Item #<?php print $i;?></a>
 				</td>
 				<td>
 					<em><?php $cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print get_cdef_item_name($cdef_item["id"]);?></strong>
 				</td>
 				<td>
-					<a href="cdef.php?action=item_movedown&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-					<a href="cdef.php?action=item_moveup&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+					<a href="<?php print htmlspecialchars("cdef.php?action=item_movedown&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+					<a href="<?php print htmlspecialchars("cdef.php?action=item_moveup&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 				</td>
 				<td align="right">
-					<a href="cdef.php?action=item_remove&id=<?php print $cdef_item["id"];?>&cdef_id=<?php print $cdef["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars("cdef.php?action=item_remove&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -493,9 +493,9 @@ function cdef() {
 	html_start_box("<strong>CDEF's</strong>", "100%", $colors["header"], "3", "center", "cdef.php?action=edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_cdef">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
+			<form name="form_cdef">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -510,9 +510,9 @@ function cdef() {
 					</td>
 				</tr>
 			</table>
+			<input type='hidden' name='page' value='1'>
+			</form>
 		</td>
-		<input type='hidden' name='page' value='1'>
-		</form>
 	</tr>
 	<?php
 
@@ -543,13 +543,13 @@ function cdef() {
 			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='cdef.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("cdef.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 					</td>\n
 					<td align='center' class='textHeaderDark'>
 						Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device") * get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 					</td>\n
 					<td align='right' class='textHeaderDark'>
-						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='cdef.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("cdef.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 					</td>\n
 				</tr>
 			</table>
@@ -567,7 +567,7 @@ function cdef() {
 	if (sizeof($cdef_list) > 0) {
 		foreach ($cdef_list as $cdef) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $cdef["id"]);$i++;
-			form_selectable_cell("<a class='linkEditMain' href='cdef.php?action=edit&id=" . $cdef["id"] . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $cdef["name"]) : $cdef["name"]) . "</a>", $cdef["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("cdef.php?action=edit&id=" . $cdef["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $cdef["name"]) : $cdef["name"]) . "</a>", $cdef["id"]);
 			form_checkbox_cell($cdef["name"], $cdef["id"]);
 			form_end_row();
 		}

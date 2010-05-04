@@ -244,7 +244,7 @@ function form_actions() {
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following data queries?</p>
-						<p>$dq_list</p>
+						<p><ul>$dq_list</ul></p>
 					</td>
 				</tr>\n";
 		}
@@ -488,11 +488,11 @@ function data_query_item_edit() {
 							<?php print $suggested_value["text"];?>
 						</td>
 						<td width="70">
-							<a href="data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-							<a href="data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+							<a href="<?php print htmlspecialchars("data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=" . $_GET["id"] . "&id=". $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&data_template_id=" . $data_template["id"] . "&field_name=" . $suggested_value["field_name"]);?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+							<a href="<?php print htmlspecialchars("data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=" . $_GET["id"] . "&id=" . $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&data_template_id=" . $data_template["id"] . "&field_name=" . $suggested_value["field_name"]);?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 						</td>
 						<td align="right">
-							<a href="data_queries.php?action=item_remove_dssv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&data_template_id=<?php print $data_template["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+							<a href="<?php print htmlspecialchars("data_queries.php?action=item_remove_dssv&snmp_query_graph_id=" . $_GET["id"] . "&id=" . $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&data_template_id=" . $data_template["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 						</td>
 					</tr>
 					<?php
@@ -550,11 +550,11 @@ function data_query_item_edit() {
 						<?php print $suggested_value["text"];?>
 					</td>
 					<td width="70">
-						<a href="data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
-						<a href="data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>&field_name=<?php print $suggested_value["field_name"];?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
+						<a href="<?php print htmlspecialchars("data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=" . $_GET["id"] . "&id=" . $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&field_name=" . $suggested_value["field_name"]);?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
+						<a href="<?php print htmlspecialchars("data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=" . $_GET["id"] . "&id=" . $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&field_name=" . $suggested_value["field_name"]);?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 					</td>
 					<td align="right">
-						<a href="data_queries.php?action=item_remove_gsv&snmp_query_graph_id=<?php print $_GET["id"];?>&id=<?php print $suggested_value["id"];?>&snmp_query_id=<?php print $_GET["snmp_query_id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("data_queries.php?action=item_remove_gsv&snmp_query_graph_id=" . $_GET["id"] . "&id=" . $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 				<?php
@@ -671,13 +671,13 @@ function data_query_edit() {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
 					<td>
-						<strong><a href="data_queries.php?action=item_edit&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><?php print $snmp_query_graph["name"];?></a></strong>
+						<strong><a href="<?php print htmlspecialchars("data_queries.php?action=item_edit&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><?php print $snmp_query_graph["name"];?></a></strong>
 					</td>
 					<td>
 						<?php print $snmp_query_graph["graph_template_name"];?>
 					</td>
 					<td align="right">
-						<a href="data_queries.php?action=item_remove&id=<?php print $snmp_query_graph["id"];?>&snmp_query_id=<?php print $snmp_query["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("data_queries.php?action=item_remove&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 				<?php
@@ -789,13 +789,13 @@ function data_query() {
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='data_queries.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_queries.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
 							Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_queries.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_queries.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -814,7 +814,7 @@ function data_query() {
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i, 'line' . $snmp_query["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='data_queries.php?action=edit&id=" . $snmp_query["id"] . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["name"]) : $snmp_query["name"]) . "</a>", $snmp_query["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["name"]) : $snmp_query["name"]) . "</a>", $snmp_query["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]) : $snmp_query["data_input_method"]), $snmp_query["id"]);
 			form_checkbox_cell($snmp_query["name"], $snmp_query["id"]);
 			form_end_row();

@@ -231,7 +231,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following graph templates? Any graphs attached
 						to these templates will become individual graphs.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n
 				";
@@ -240,7 +240,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following graph templates will be duplicated. You can
 						optionally change the title format for the new graph templates.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -479,7 +479,7 @@ function template() {
 	html_start_box("<strong>Graph Templates</strong>", "100%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_host_template">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">

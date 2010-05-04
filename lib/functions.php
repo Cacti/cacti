@@ -316,18 +316,18 @@ function display_output_messages() {
 				switch ($messages[$current_message_id]["type"]) {
 				case 'info':
 					if ($error_message == false) {
-						print "<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>";
-						print "<tr><td bgcolor='#f5f5f5'><p class='textInfo'>$message</p></td></tr>";
-						print "</table><br>";
+						print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;position:relative;z-index:-1;background-color: #ffffff; border: 1px solid #bbbbbb;'>";
+						print "$message";
+						print "</div>";
 
 						/* we don't need these if there are no error messages */
 						kill_session_var("sess_field_values");
 					}
 					break;
 				case 'error':
-					print "<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #ff0000;'>";
-					print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
-					print "</table><br>";
+					print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;position:relative;z-index:-1;background-color: #ffffff; border: 1px solid #ff0000;'>";
+					print "Error: $message";
+					print "</div>";
 					break;
 				}
 			}
@@ -335,6 +335,25 @@ function display_output_messages() {
 			display_custom_error_message($_SESSION["sess_messages"]);
 		}
 	}
+	?>
+	<script type="text/javascript">
+	<!--
+	if (document.getElementById('message')) {
+		setTimeout("removeMessage(0)", 2000);
+	}
+
+	function removeMessage(position) {
+		document.getElementById('message').style.top = position+"px";
+			document.getElementById('main').style.top = position+"px";
+		position -=4;
+		if (position < -36) {
+			return;
+		}
+		setTimeout("removeMessage("+position+")",20);
+	}
+	-->
+	</script>
+	<?php
 
 	kill_session_var("sess_messages");
 }
@@ -343,9 +362,9 @@ function display_output_messages() {
      the pre-defined error messages
    @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #ff0000;'>";
-	print "<tr><td bgcolor='#f5f5f5'><p class='textError'>Error: $message</p></td></tr>";
-	print "</table><br>";
+	print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;position:relative;z-index:-1;background-color: #ffffff; border: 1px solid #ff0000;'>";
+	print "Error: $message";
+	print "</div>";
 }
 
 /* clear_messages - clears the message cache */

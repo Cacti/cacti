@@ -171,7 +171,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following host templates? All devices currently attached
 						this these host templates will lose their template assocation.</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 					</td>
 				</tr>\n
 				";
@@ -180,7 +180,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following host templates will be duplicated. You can
 						optionally change the title format for the new host templates.</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -236,8 +236,6 @@ function template_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
-
-	display_output_messages();
 
 	if (!empty($_GET["id"])) {
 		$host_template = db_fetch_row("select * from host_template where id=" . $_GET["id"]);
@@ -407,7 +405,7 @@ function template() {
 	html_start_box("<strong>Host Templates</strong>", "100%", $colors["header"], "3", "center", "host_templates.php?action=edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_graph_template">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">

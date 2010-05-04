@@ -72,16 +72,17 @@ if (read_config_option("auth_method") != 0) {
 			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id)))) {
 
 			if (isset($_SERVER["HTTP_REFERER"])) {
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $_SERVER["HTTP_REFERER"] . "'>Return</a> | <a href='logout.php'>Login Again</a> )</td>";
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "'>Return</a> | <a href='logout.php'>Login Again</a> )</td>";
 			}else{
 				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='logout.php'>Login Again</a> )</td>";
 			}
 
 			?>
+			<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 			<html>
 			<head>
 				<title>Cacti</title>
-				<link href="include/main.css" rel="stylesheet">
+				<link href="include/main.css" type="text/css" rel="stylesheet">
 			</head>
 			<body>
 			<br><br>

@@ -24,10 +24,11 @@
 
 global $colors;
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title><?php echo draw_navigation_text("title");?></title>
-	<link href="include/main.css" rel="stylesheet">
+	<link href="include/main.css" type="text/css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="include/layout.js"></script>
 	<?php if (isset($refresh)) {
@@ -35,7 +36,7 @@ global $colors;
 	}?>
 </head>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" background="images/left_border.gif">
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" style="background-image:url('images/left_border.gif');">
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr height="1" bgcolor="#a9a9a9">
@@ -88,5 +89,5 @@ global $colors;
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
 			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
 		</td>
-		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?>
+		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?><div style='position:relative;' id='main'>
 

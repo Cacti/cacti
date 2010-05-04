@@ -194,30 +194,29 @@ function form_actions() {
 		$i++;
 	}
 
+	/* Check for deleting of Graph Export User */
+	if ((get_request_var_post("drp_action") == "1") && isset($user_array) && sizeof($user_array)) { /* delete */
+		$exportuser = read_config_option('export_user_id');
+		if (in_array($exportuser, $user_array)) {
+			raise_message(22);
+			header("Location: user_admin.php");
+			exit;
+		}
+	}
+
 	include_once("./include/top_header.php");
 
 	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
 	print "<form action='user_admin.php' method='post'>\n";
 
-	/* Check for deleting of Graph Export User */
 	if (isset($user_array) && sizeof($user_array)) {
-		if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
-			$exportuser = read_config_option('export_user_id');
-			if (in_array($exportuser, $user_array)) {
-				raise_message(22);
-				header("Location: user_admin.php");
-				exit;
-
-			}
-		}
-
 		if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
 			print "
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 						<p>Are you sure you want to delete the following users?</p>
-						<p>$user_list</p>
+						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
 		}
@@ -260,7 +259,7 @@ function form_actions() {
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 						<p>Are you sure you want to enable the following users?</p>
-						<p>$user_list</p>
+						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
 		}
@@ -270,7 +269,7 @@ function form_actions() {
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 						<p>Are you sure you want to disable the following users?</p>
-						<p>$user_list</p>
+						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
 		}
@@ -289,7 +288,7 @@ function form_actions() {
 				</tr><tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 						<p>Users to update:
-						$user_list</p>
+						<ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
 		}
@@ -317,7 +316,6 @@ function form_actions() {
 	html_end_box();
 
 	include_once("./include/bottom_footer.php");
-
 }
 
 /* --------------------------
@@ -842,7 +840,7 @@ function graph_settings_edit() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr bgcolor='<?php print $colors["header_panel"];?>'>
+		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
 				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>
@@ -993,7 +991,7 @@ function user() {
 	html_start_box("<strong>User Management</strong>", "100%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<form name="form_user_admin">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">

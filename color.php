@@ -155,32 +155,32 @@ function color() {
 				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 					?>
 					<td width='1'>
-						<a class="linkEditMain" style='display:block;' href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
+						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=1;
 			}elseif (($j % 4 == 2) || ($j % 4 == 3)) {
 					?>
 					<td></td>
 					<td width='1'>
-						<a class="linkEditMain" style='display:block;' href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
+						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=$j++;
 			} else { ?>
 					<td></td>
 					<td width='1'>
-						<a class="linkEditMain" style='display:block;' href="color.php?action=edit&id=<?php print $color["id"];?>"><?php print $color["hex"];?></a>
+						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="color.php?action=remove&id=<?php print $color["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 			<?php

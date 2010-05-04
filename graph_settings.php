@@ -108,7 +108,7 @@ function settings() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr bgcolor='<?php print $colors["header_panel"];?>'>
+		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
 				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>

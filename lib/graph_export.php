@@ -1714,7 +1714,8 @@ function check_remove($filename) {
 }
 
 define("HTML_HEADER_TREE",
-"<html>
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+<html>
 <head>
 	<title>Cacti</title>
 	<link href='main.css' rel='stylesheet'>
@@ -1800,6 +1801,7 @@ define("HTML_FOOTER_TREE", "
 
 /* HTML header for the Classic Presentation */
 define("HTML_HEADER_CLASSIC", "
+	<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
 	<html>
 	<head>
 		<title>cacti</title>

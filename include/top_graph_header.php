@@ -61,7 +61,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 		print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>\r\n";
 	}
 	?>
-	<link href="include/main.css" rel="stylesheet">
+	<link href="include/main.css" type="text/css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="include/layout.js"></script>
 	<script type="text/javascript" src="include/treeview/ua.js"></script>
