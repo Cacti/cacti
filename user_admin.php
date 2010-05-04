@@ -171,7 +171,6 @@ function form_actions() {
 			}
 		}
 
-
 		header("Location: user_admin.php");
 		exit;
 	}
@@ -321,7 +320,6 @@ function form_actions() {
 
 }
 
-
 /* --------------------------
     Save Function
    -------------------------- */
@@ -465,11 +463,7 @@ function form_save() {
 	}
 
 	/* redirect to the appropriate page */
-	if (is_error_message()) {
-		header("Location: user_admin.php?action=user_edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
-	}else{
-		header("Location: user_admin.php");
-	}
+	header("Location: user_admin.php?action=user_edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
 }
 
 /* --------------------------
@@ -952,7 +946,7 @@ function user_edit() {
 		user_realms_edit();
 	}
 
-	form_save_button("user_admin.php");
+	form_save_button("user_admin.php", "return");
 }
 
 function user() {
