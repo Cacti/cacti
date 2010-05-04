@@ -350,7 +350,7 @@ function item_edit() {
 
 		if (sizeof($graph_item_input_fields) > 0) {
 		foreach ($graph_item_input_fields as $field) {
-			$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_GET["graph_template_id"] . "'>Field Not Templated</a>]";
+			$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='" . htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_GET["graph_template_id"]) . "'>Field Not Templated</a>]";
 		}
 		}
 	}

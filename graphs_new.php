@@ -493,8 +493,8 @@ function graphs() {
 				</select>
 			</td>
 			<td nowrap style='white-space: nowrap;' class="textInfo" align="center" valign="top">
-				<span style="white-space: nowrap; color: #c16921;">*</span><a href="host.php?action=edit&id=<?php print $_REQUEST["host_id"];?>">Edit this Host</a><br>
-				<span style="white-space: nowrap; color: #c16921;">*</span><a href="host.php?action=edit">Create New Host</a>
+				<span style="white-space: nowrap; color: #c16921;">*</span><a href="<?php print htmlspecialchars("host.php?action=edit&id=" . $_REQUEST["host_id"]);?>">Edit this Host</a><br>
+				<span style="white-space: nowrap; color: #c16921;">*</span><a href="<?php print htmlspecialchars("host.php?action=edit");?>">Create New Host</a>
 			</td>
 		</tr>
 	</table>
@@ -705,7 +705,7 @@ function graphs() {
 										<strong>Data Query</strong> [" . $snmp_query["name"] . "]
 									</td>
 									<td align='right' nowrap>
-										<a href='graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='Reload Associated Query' border='0' align='absmiddle'></a>
+										<a href='" . htmlspecialchars("graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"]) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='Reload Associated Query' border='0' align='absmiddle'></a>
 									</td>
 								</tr>
 							</table>
@@ -810,13 +810,13 @@ function graphs() {
 										<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 											<tr>
 												<td align='left' class='textHeaderDark'>
-													<strong>&lt;&lt; "; if ($page > 1) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page-1) . "'>"; } $nav .= "Previous"; if ($page > 1) { $nav .= "</a>"; } $nav .= "</strong>
+													<strong>&lt;&lt; "; if ($page > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("graphs_new.php?page" . $snmp_query["id"] . "=" . ($page-1)) . "'>"; } $nav .= "Previous"; if ($page > 1) { $nav .= "</a>"; } $nav .= "</strong>
 												</td>\n
 												<td align='center' class='textHeaderDark'>
 													Showing Rows " . (($row_limit*($page-1))+1) . " to " . ((($total_rows < $row_limit) || ($total_rows < ($row_limit*$page))) ? $total_rows : ($row_limit*$page)) . " of $total_rows [$url_page_select]
 												</td>\n
 												<td align='right' class='textHeaderDark'>
-													<strong>"; if (($page * $row_limit) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs_new.php?page" . $snmp_query["id"] . "=" . ($page+1) . "'>"; } $nav .= "Next"; if (($page * $row_limit) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+													<strong>"; if (($page * $row_limit) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("graphs_new.php?page" . $snmp_query["id"] . "=" . ($page+1)) . "'>"; } $nav .= "Next"; if (($page * $row_limit) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 												</td>\n
 											</tr>
 										</table>
@@ -839,7 +839,7 @@ function graphs() {
 
 					if (!sizeof($snmp_query_indexes)) {
 						print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td>This data query returned 0 rows, perhaps there was a problem executing this
-							data query. You can <a href='host.php?action=query_verbose&id=" . $snmp_query["id"] . "&host_id=" . $host["id"] . "'>run this data
+							data query. You can <a href='" . htmlspecialchars("host.php?action=query_verbose&id=" . $snmp_query["id"] . "&host_id=" . $host["id"]) . "'>run this data
 							query in debug mode</a> to get more information.</td></tr>\n";
 					}else{
 						print "	<tr bgcolor='#" . $colors["header_panel"] . "'>

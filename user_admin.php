@@ -548,7 +548,7 @@ function graph_perms_edit() {
 					$i++;
 					print "	<tr>
 							<td><span style='font-weight: bold; color: " . (($policy["policy_graphs"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["title_cache"] . "</td>
-							<td align='right'><a href='user_admin.php?action=perm_remove&type=graph&id=" . $item["local_graph_id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
+							<td align='right'><a href='" . htmlspecialchars("user_admin.php?action=perm_remove&type=graph&id=" . $item["local_graph_id"] . "&user_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
 				}else{ print "<tr><td><em>No Graphs</em></td></tr>";
@@ -606,7 +606,7 @@ function graph_perms_edit() {
 						$i++;
 						print "	<tr>
 							<td><span style='font-weight: bold; color: " . (($policy["policy_hosts"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
-							<td align='right'><a href='user_admin.php?action=perm_remove&type=host&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
+							<td align='right'><a href='" . htmlspecialchars("user_admin.php?action=perm_remove&type=host&id=" . $item["id"] . "&user_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 					}
 				}else{
@@ -666,7 +666,7 @@ function graph_perms_edit() {
 					$i++;
 					print "	<tr>
 							<td><span style='font-weight: bold; color: " . (($policy["policy_graph_templates"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
-							<td align='right'><a href='user_admin.php?action=perm_remove&type=graph_template&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
+							<td align='right'><a href='" . htmlspecialchars("user_admin.php?action=perm_remove&type=graph_template&id=" . $item["id"] . "&user_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
 				}else{ print "<tr><td><em>No Graph Templates</em></td></tr>";
@@ -725,7 +725,7 @@ function graph_perms_edit() {
 					$i++;
 					print "	<tr>
 							<td><span style='font-weight: bold; color: " . (($policy["policy_trees"] == "1") ? "red" : "blue") . ";'>$i)</span> " . $item["name"] . "</td>
-							<td align='right'><a href='user_admin.php?action=perm_remove&type=tree&id=" . $item["id"] . "&user_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
+							<td align='right'><a href='" . htmlspecialchars("user_admin.php?action=perm_remove&type=tree&id=" . $item["id"] . "&user_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>&nbsp;</td>
 						</tr>\n";
 				}
 				}else{ print "<tr><td><em>No Trees</em></td></tr>";
@@ -918,15 +918,15 @@ function user_edit() {
 			<tr>
 				<td width='1'></td>
 				<td <?php print (((get_request_var("action") == "user_realms_edit") || (get_request_var("action") == "user_edit")) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-					<span class='textHeader'><a href='user_admin.php?action=user_realms_edit&id=<?php print $_GET["id"];?>'>Realm Permissions</a></span>
+					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_realms_edit&id=" . $_GET["id"]);?>'>Realm Permissions</a></span>
 				</td>
 				<td width='1'></td>
 				<td <?php print ((get_request_var("action") == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-					<span class='textHeader'><a href='user_admin.php?action=graph_perms_edit&id=<?php print $_GET["id"];?>'>Graph Permissions</a></span>
+					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=graph_perms_edit&id=" . $_GET["id"]);?>'>Graph Permissions</a></span>
 				</td>
 				<td width='1'></td>
 				<td <?php print ((get_request_var("action") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
-					<span class='textHeader'><a href='user_admin.php?action=graph_settings_edit&id=<?php print $_GET["id"];?>'>Graph Settings</a></span>
+					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></span>
 				</td>
 				<td></td>
 			</tr>
@@ -1054,13 +1054,13 @@ function user() {
 			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='user_admin.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page") - 1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("user_admin.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page") - 1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 					</td>\n
 					<td align='center' class='textHeaderDark'>
 						Showing Rows " . ((read_config_option("num_rows_device") * (get_request_var_request("page") - 1)) + 1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device") * get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device") * get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 					</td>\n
 					<td align='right' class='textHeaderDark'>
-						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='user_admin.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page") + 1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("user_admin.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page") + 1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 					</td>\n
 				</tr>
 			</table>
@@ -1095,7 +1095,7 @@ function user() {
 			}
 
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $user["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='user_admin.php?action=user_edit&id=" . $user["id"] . "'>" .
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&id=" . $user["id"]) . "'>" .
 			(strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
 			, $user["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);

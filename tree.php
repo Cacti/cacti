@@ -469,10 +469,10 @@ function tree() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="tree.php?action=edit&id=<?php print $tree["id"];?>"><?php print $tree["name"];?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars("tree.php?action=edit&id=" . $tree["id"]);?>"><?php print $tree["name"];?></a>
 			</td>
 			<td align="right">
-				<a href="tree.php?action=remove&id=<?php print $tree["id"];?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+				<a href="<?php print htmlspecialchars("tree.php?action=remove&id=" . $tree["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
 			</td>
 		</tr>
 	<?php

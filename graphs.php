@@ -854,13 +854,13 @@ function graph_edit() {
 					<?php print get_graph_title($_GET["id"]);?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span style="color: #c16921;">*<a href='graphs.php?action=graph_edit&id=<?php print (isset($_GET["id"]) ? $_GET["id"] : 0);?>&debug=<?php print (isset($_SESSION["graph_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a><br>
+					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0") . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1"));?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a><br>
 					<?php
 						if (!empty($graphs["graph_template_id"])) {
-							?><span style="color: #c16921;">*<a href='graph_templates.php?action=template_edit&id=<?php print (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0");?>'>Edit Graph Template.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graph_templates.php?action=template_edit&id=" . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"));?>'>Edit Graph Template.</a><br><?php
 						}
 						if (!empty($_GET["host_id"]) || !empty($host_id)) {
-							?><span style="color: #c16921;">*<a href='host.php?action=edit&id=<?php print (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id);?>'>Edit Host.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("host.php?action=edit&id=" . (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id));?>'>Edit Host.</a><br><?php
 						}
 					?>
 				</td>
@@ -1281,13 +1281,13 @@ function graph() {
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
 							Showing Rows " . ((get_request_var_request("graph_rows")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < get_request_var_request("graph_rows")) || ($total_rows < (get_request_var_request("graph_rows")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("graph_rows")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if ((get_request_var_request("page") * get_request_var_request("graph_rows")) < $total_rows) { $nav .= "<a class='linkOverDark' href='graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("graph_rows")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * get_request_var_request("graph_rows")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("graph_rows")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -1309,7 +1309,7 @@ function graph() {
 		foreach ($graph_list as $graph) {
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : $graph["name"]);
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='graphs.php?action=graph_edit&id=" . $graph["local_graph_id"] . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))) : title_trim($graph["title_cache"], read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))) : title_trim($graph["title_cache"], read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
 			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);

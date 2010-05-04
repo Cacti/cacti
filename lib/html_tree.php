@@ -634,7 +634,7 @@ function create_dhtml_tree() {
 				and graph_tree_items.local_graph_id = 0
 				order by graph_tree_items.order_key");
 
-			$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . $tree["name"] . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "\"))\n";
+			$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . htmlspecialchars($tree["name"]) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"]) . "\"))\n";
 			$i++;
 			$dhtml_tree[$i] = "ou0.xID = \"tree_" . $tree["id"] . "\"\n";
 
@@ -644,7 +644,7 @@ function create_dhtml_tree() {
 					$tier = tree_tier($leaf["order_key"]);
 
 					if ($leaf["host_id"] > 0) {
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"<strong>Host:</strong> " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . "<strong>Host:</strong> " . htmlspecialchars($leaf["hostname"]) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"]) . "\"))\n";
 						$i++;
 						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
@@ -663,7 +663,7 @@ function create_dhtml_tree() {
 								if (sizeof($graph_templates) > 0) {
 									foreach ($graph_templates as $graph_template) {
 										$i++;
-										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($graph_template["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=graph_template:" . $graph_template["id"] . "\"))\n";
+										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . htmlspecialchars($graph_template["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=graph_template:" . $graph_template["id"] . "\"))\n";
 										$i++;
 										$dhtml_tree[$i] = "ou" . ($tier+1) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "_hgd_gt_" . $graph_template["id"] . "\"\n";
 									}
@@ -696,14 +696,14 @@ function create_dhtml_tree() {
 										if ((($data_query["id"] == 0) && ($non_template_graphs > 0)) ||
 											(($data_query["id"] > 0) && (sizeof($sort_field_data) > 0))) {
 											$i++;
-											$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . addslashes($data_query["name"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"] . "\"))\n";
+											$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . htmlspecialchars($data_query["name"]) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query:" . $data_query["id"]) . "\"))\n";
 											$i++;
 											$dhtml_tree[$i] = "ou" . ($tier+1) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "_hgd_dq_" . $data_query["id"] . "\"\n";
 
 											if ($data_query["id"] > 0) {
 												while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
 													$i++;
-													$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . addslashes($sort_field_value) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index) . "\"))\n";
+													$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . htmlspecialchars($sort_field_value) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "&host_group_data=data_query_index:" . $data_query["id"] . ":" . urlencode($snmp_index)) . "\"))\n";
 													$i++;
 													$dhtml_tree[$i] = "ou" . ($tier+2) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "_hgd_dqi" . $data_query["id"] . "_" . urlencode($snmp_index) . "\"\n";
 												}
@@ -714,7 +714,7 @@ function create_dhtml_tree() {
 							}
 						}
 					}else{
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . addslashes($leaf["title"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . htmlspecialchars($leaf["title"]) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"]) . "\"))\n";
 						$i++;
 						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 					}

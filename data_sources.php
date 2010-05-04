@@ -722,13 +722,13 @@ function ds_edit() {
 					<?php print get_data_source_title($_GET["id"]);?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span style="color: #c16921;">*<a href='data_sources.php?action=ds_edit&id=<?php print (isset($_GET["id"]) ? $_GET["id"] : 0);?>&debug=<?php print (isset($_SESSION["ds_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On");?></strong> Data Source Debug Mode.</a><br>
+					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("data_sources.php?action=ds_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));?>&debug=<?php print (isset($_SESSION["ds_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On");?></strong> Data Source Debug Mode.</a><br>
 					<?php
 						if (!empty($data_template["id"])) {
-							?><span style="color: #c16921;">*<a href='data_templates.php?action=template_edit&id=<?php print (isset($data_template["id"]) ? $data_template["id"] : "0");?>'>Edit Data Template.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("data_templates.php?action=template_edit&id=" . (isset($data_template["id"]) ? $data_template["id"] : "0"));?>'>Edit Data Template.</a><br><?php
 						}
 						if (!empty($_GET["host_id"]) || !empty($data_local["host_id"])) {
-							?><span style="color: #c16921;">*<a href='host.php?action=edit&id=<?php print (isset($_GET["host_id"]) ? $_GET["host_id"] : $data_local["host_id"]);?>'>Edit Host.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("host.php?action=edit&id=" . (isset($_GET["host_id"]) ? $_GET["host_id"] : $data_local["host_id"]));?>'>Edit Host.</a><br><?php
 						}
 					?>
 				</td>
@@ -871,7 +871,7 @@ function ds_edit() {
 					foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
 						print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center' class='tab'>
-								<span class='textHeader'><a href='data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"] . "'>$i: " . $template_data_rrd["data_source_name"] . "</a>" . (($use_data_template == false) ? " <a href='data_sources.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&local_data_id=" . $_GET["id"] . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : "") . "</span>
+								<span class='textHeader'><a href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"]) . "'>$i: " . $template_data_rrd["data_source_name"] . "</a>" . (($use_data_template == false) ? " <a href='" . htmlspecialchars("data_sources.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&local_data_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : "") . "</span>
 							</td>\n
 							<td width='1'></td>\n";
 					}
@@ -893,7 +893,7 @@ function ds_edit() {
 					<strong>Data Source Item</strong> $header_label
 				</td>
 				<td class='textHeaderDark' align='right' bgcolor='" . $colors["header"] . "'>
-					" . ((!empty($_GET["id"]) && (empty($data_template["id"]))) ? "<strong><a class='linkOverDark' href='data_sources.php?action=rrd_add&id=" . $_GET["id"] . "'>New</a>&nbsp;</strong>" : "") . "
+					" . ((!empty($_GET["id"]) && (empty($data_template["id"]))) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars("data_sources.php?action=rrd_add&id=" . $_GET["id"]) . "'>New</a>&nbsp;</strong>" : "") . "
 				</td>
 			</tr>\n";
 
@@ -1273,13 +1273,13 @@ function ds() {
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")-1) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
+							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 						</td>\n
 						<td align='center' class='textHeaderDark'>
 							Showing Rows " . ((get_request_var_request("ds_rows")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < get_request_var_request("ds_rows")) || ($total_rows < (get_request_var_request("ds_rows")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("ds_rows")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 						</td>\n
 						<td align='right' class='textHeaderDark'>
-							<strong>"; if ((get_request_var_request("page") * get_request_var_request("ds_rows")) < $total_rows) { $nav .= "<a class='linkOverDark' href='data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")+1) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("ds_rows")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+							<strong>"; if ((get_request_var_request("page") * get_request_var_request("ds_rows")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("ds_rows")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 						</td>\n
 					</tr>
 				</table>
@@ -1305,12 +1305,12 @@ function ds() {
 			$data_input_name    = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : $data_source["data_input_name"]);
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_source["local_data_id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"] . "' title='" . htmlspecialchars($data_source["name_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . htmlspecialchars($data_source["name_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlentities($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id']);
-			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input_name) : $data_input_name) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input_name) : $data_input_name), $data_source["local_data_id"]);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);
 			form_selectable_cell(($data_source['active'] == "on" ? "Yes" : "No"), $data_source["local_data_id"]);
-			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']) : $data_source['data_template_name']) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']) : $data_source['data_template_name']), $data_source["local_data_id"]);
 			form_checkbox_cell($data_source["name_cache"], $data_source["local_data_id"]);
 			form_end_row();
 		}

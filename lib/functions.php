@@ -1783,12 +1783,12 @@ function draw_navigation_text($type = "url") {
 		if ($current_mappings[$i] == "?") {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? "" : "<a href='$url'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
+				$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
 				$title       .= resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . " -> ";
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? "" : "<a href='$url'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
+			$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
 			$title       .= resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . " -> ";
 		}
 	}

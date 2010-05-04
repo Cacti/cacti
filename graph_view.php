@@ -799,13 +799,13 @@ case 'list':
 			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 				<tr>
 					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; " . (get_request_var_request("page") > 1 ? "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "\"))'>":"") . "Previous" . (get_request_var_request("page") > 1 ? "</a>":"") . "</strong>
+						<strong>&lt;&lt; " . (get_request_var_request("page") > 1 ? "<a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url)) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")-1), $nav_url) . "\"))'>":"") . "Previous" . (get_request_var_request("page") > 1 ? "</a>":"") . "</strong>
 					</td>
 					<td align='center' class='textHeaderDark'>
 						Showing Rows " . (($_REQUEST["rows"]*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < $_REQUEST["rows"]) || ($total_rows < ($_REQUEST["rows"]*get_request_var_request("page")))) ? $total_rows : ($_REQUEST["rows"]*get_request_var_request("page"))) . " of " . $total_rows . "
 					</td>
 					<td align='right' class='textHeaderDark'>
-						<strong>" . ((get_request_var_request("page") * $_REQUEST["rows"]) < $total_rows ? "<a class='linkOverDark' href='" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "\"))'>":"") . "Next" . ((get_request_var_request("page") * $_REQUEST["rows"]) < $total_rows ? "</a>":"") . " &gt;&gt;</strong>
+						<strong>" . ((get_request_var_request("page") * $_REQUEST["rows"]) < $total_rows ? "<a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url)) . "' onClick='return url_go(url_graph(\"" . str_replace("<PAGE>", (get_request_var_request("page")+1), $nav_url) . "\"))'>":"") . "Next" . ((get_request_var_request("page") * $_REQUEST["rows"]) < $total_rows ? "</a>":"") . " &gt;&gt;</strong>
 					</td>
 				</tr>
 			</table>
@@ -820,7 +820,7 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
-			form_selectable_cell("<strong><a href='graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all'>" . $graph["title_cache"] . "</a><strong>", $graph["local_graph_id"]);
+			form_selectable_cell("<strong><a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . $graph["title_cache"] . "</a><strong>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
 			form_end_row();
