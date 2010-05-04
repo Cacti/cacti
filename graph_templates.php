@@ -480,8 +480,8 @@ function template() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_host_template" action="graph_templates.php">
 		<td>
+		<form name="form_host_template" action="graph_templates.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -496,9 +496,9 @@ function template() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -506,6 +506,9 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (graph_templates.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='graph_templates.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -547,7 +550,7 @@ function template() {
 	$display_text = array(
 		"name" => array("Template Title", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {

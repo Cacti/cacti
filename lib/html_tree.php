@@ -54,63 +54,12 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 
 	/* include time span selector */
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
+
 	if (read_graph_config_option("timespan_sel") == "on") {
 		?>
-		<script type='text/javascript'>
-		<!--
-		// Initialize the calendar
-		calendar=null;
-
-		// This function displays the calendar associated to the input field 'id'
-		function showCalendar(id) {
-			var el = document.getElementById(id);
-			if (calendar != null) {
-				// we already have some calendar created
-				calendar.hide();  // so we hide it first.
-			} else {
-				// first-time call, create the calendar.
-				var cal = new Calendar(true, null, selected, closeHandler);
-				cal.weekNumbers = false;  // Do not display the week number
-				cal.showsTime = true;     // Display the time
-				cal.time24 = true;        // Hours have a 24 hours format
-				cal.showsOtherMonths = false;    // Just the current month is displayed
-				calendar = cal;                  // remember it in the global var
-				cal.setRange(1900, 2070);        // min/max year allowed.
-				cal.create();
-			}
-
-			calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
-			calendar.parseDate(el.value);                // try to parse the text in field
-			calendar.sel = el;                           // inform it what input field we use
-
-			// Display the calendar below the input field
-			calendar.showAtElement(el, "Br");        // show the calendar
-
-			return false;
-		}
-
-		// This function update the date in the input field when selected
-		function selected(cal, date) {
-			cal.sel.value = date;      // just update the date in the input field.
-		}
-
-		// This function gets called when the end-user clicks on the 'Close' button.
-		// It just hides the calendar without destroying it.
-		function closeHandler(cal) {
-			cal.hide();                        // hide the calendar
-			calendar = null;
-		}
-
-		function applyTimespanFilterChange(objForm) {
-			strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
-			strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-			document.location = strURL;
-		}
-		-->
-		</script>
 		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-			<form name="form_timespan_selector" method="post" action="graph_view.php">
 			<td class="noprint">
+			<form style="margin:0px;padding:0px;" name="form_timespan_selector" method="post" action="graph_view.php">
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
 						<td nowrap style='white-space: nowrap;' width='55'>
@@ -145,17 +94,17 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 						</td>
 						<td width='150' nowrap style='white-space: nowrap;'>
 							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-							&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
+							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">&nbsp;
 						</td>
 						<td nowrap style='white-space: nowrap;' width='20'>
 							&nbsp;<strong>To:</strong>&nbsp;
 						</td>
 						<td width='150' nowrap style='white-space: nowrap;'>
 							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-							&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='End date selector' title='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
+							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
 						<td width='130' nowrap style='white-space: nowrap;'>
-							&nbsp;&nbsp;<input style='padding-bottom: 4px;' type='image' name='move_left' src='images/move_left.gif' alt='Left' border='0' align='absmiddle' title='Shift Left'>
+							&nbsp;&nbsp;<input style='padding-bottom:8px;' type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
 							<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 								<?php
 								$start_val = 1;
@@ -167,7 +116,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 								}
 								?>
 							</select>
-							<input style='padding-bottom: 4px;' type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
+							<input style='padding-bottom:8px;' type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
 						</td>
 						<td nowrap style='white-space: nowrap;'>
 							&nbsp;&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
@@ -175,8 +124,8 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 						</td>
 					</tr>
 				</table>
-			</td>
 			</form>
+			</td>
 		</tr>
 		<?php
 
@@ -912,61 +861,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
 		?>
-		<script type='text/javascript'>
-		<!--
-		// Initialize the calendar
-		calendar=null;
-
-		// This function displays the calendar associated to the input field 'id'
-		function showCalendar(id) {
-			var el = document.getElementById(id);
-			if (calendar != null) {
-				// we already have some calendar created
-				calendar.hide();  // so we hide it first.
-			} else {
-				// first-time call, create the calendar.
-				var cal = new Calendar(true, null, selected, closeHandler);
-				cal.weekNumbers = false;  // Do not display the week number
-				cal.showsTime = true;     // Display the time
-				cal.time24 = true;        // Hours have a 24 hours format
-				cal.showsOtherMonths = false;    // Just the current month is displayed
-				calendar = cal;                  // remember it in the global var
-				cal.setRange(1900, 2070);        // min/max year allowed.
-				cal.create();
-			}
-
-			calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
-			calendar.parseDate(el.value);                // try to parse the text in field
-			calendar.sel = el;                           // inform it what input field we use
-
-			// Display the calendar below the input field
-			calendar.showAtElement(el, "Br");        // show the calendar
-
-			return false;
-		}
-
-		// This function update the date in the input field when selected
-		function selected(cal, date) {
-			cal.sel.value = date;      // just update the date in the input field.
-		}
-
-		// This function gets called when the end-user clicks on the 'Close' button.
-		// It just hides the calendar without destroying it.
-		function closeHandler(cal) {
-			cal.hide();                        // hide the calendar
-			calendar = null;
-		}
-
-		function applyTimespanFilterChange(objForm) {
-			strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
-			strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-			document.location = strURL;
-		}
-		-->
-		</script>
 		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-			<form name="form_timespan_selector" method="post" action="graph_view.php">
 			<td class="noprint">
+			<form style="margin:0px;padding:0px;" name="form_timespan_selector" method="post" action="graph_view.php">
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
 						<td nowrap style='white-space: nowrap;' width='55'>
@@ -1001,17 +898,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</td>
 						<td width='150' nowrap style='white-space: nowrap;'>
 							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-							&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
+							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">&nbsp;
 						</td>
 						<td nowrap style='white-space: nowrap;' width='20'>
 							&nbsp;<strong>To:</strong>&nbsp;
 						</td>
 						<td width='150' nowrap style='white-space: nowrap;'>
 							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-							&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='End date selector' title='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
+							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
 						<td width='130' nowrap style='white-space: nowrap;'>
-							&nbsp;&nbsp;<input style='padding-bottom: 4px;' type='image' name='move_left' src='images/move_left.gif' alt='Left' border='0' align='absmiddle' title='Shift Left'>
+							&nbsp;&nbsp;<input style='padding-bottom:8px;' type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
 							<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 								<?php
 								$start_val = 1;
@@ -1023,7 +920,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								}
 								?>
 							</select>
-							<input style='padding-bottom: 4px;' type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
+							<input style='padding-bottom:8px;' type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
 						</td>
 						<td nowrap style='white-space: nowrap;'>
 							&nbsp;&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
@@ -1031,51 +928,51 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</td>
 					</tr>
 				</table>
-			</td>
 			</form>
+			</td>
 		</tr>
 		<?php
 	}
 	?>
 	<tr class="noprint" bgcolor="#e5e5e5">
-		<form name="form_graph_view" method="post" action="graph_view.php">
-			<td class="noprint">
-				<table cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="55" nowrap="" style="white-space: nowrap;">
-							<strong>&nbsp;Search:</strong>&nbsp;
-						</td>
-						<td width="130" nowrap="" style="white-space: nowrap;">
-							<input size='30' width='100' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>'>
-						</td>
-						<td nowrap style='white-space:nowrap;' width="110">
-							&nbsp;<strong>Graphs per Page:</strong>&nbsp;
-						</td>
-						<td width="1">
-							<select name="graphs" id="graphs" onChange="submit()">
-								<?php
-								if (sizeof($graphs_per_page) > 0) {
-								foreach ($graphs_per_page as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("graphs") == $key) { print " selected"; } print ">" . $value . "</option>\n";
-								}
-								}
-								?>
-							</select>
-						</td>
-						<td width="40">
-							<label for="thumbnails"><strong>&nbsp;Thumbnails:&nbsp;<strong></label>
-						</td>
-						<td>
-							<input type="checkbox" name="thumbnails" onClick="submit()" <?php print (($_SESSION['sess_graph_view_thumbnails'] == "on") ? "checked":"");?>>
-						</td>
-						<td style='white-space:nowrap;' nowrap>
-							&nbsp;<input type="submit" value="Go" title="Set/Refresh Filter">
-							<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
-						</td>
-					</tr>
-				</table>
-			</td>
+		<td class="noprint">
+		<form style="margin:0px;padding:0px;" name="form_graph_view" method="post">
+			<table cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="55" nowrap="" style="white-space: nowrap;">
+						<strong>&nbsp;Search:</strong>&nbsp;
+					</td>
+					<td width="130" nowrap="" style="white-space: nowrap;">
+						<input size='30' width='100' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>'>
+					</td>
+					<td nowrap style='white-space:nowrap;' width="110">
+						&nbsp;<strong>Graphs per Page:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<select name="graphs" id="graphs" onChange="submit()">
+							<?php
+							if (sizeof($graphs_per_page) > 0) {
+							foreach ($graphs_per_page as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var_request("graphs") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td width="40">
+						<label for="thumbnails"><strong>&nbsp;Thumbnails:&nbsp;</strong></label>
+					</td>
+					<td>
+						<input type="checkbox" name="thumbnails" onClick="submit()" <?php print (($_SESSION['sess_graph_view_thumbnails'] == "on") ? "checked":"");?>>
+					</td>
+					<td style='white-space:nowrap;' nowrap>
+						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filter">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+					</td>
+				</tr>
+			</table>
 		</form>
+		</td>
 	</tr>
 	<?php
 	html_end_box();
@@ -1382,8 +1279,8 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 	if (read_graph_config_option("thumbnail_section_tree_1") == "on") {
 		if (read_graph_config_option("timespan_sel") == "on") {
 			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
-				src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
-				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
+				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
+				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true") . "' border='0'></a></td>\n";
 
 			/* if we are at the end of a row, start a new one */
 			if ($graph_counter % read_graph_config_option("num_columns") == 0) {
@@ -1391,8 +1288,8 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 			}
 		}else{
 			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
-				src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
-				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true' border='0'></a></td>\n";
+				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
+				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true") . "' border='0'></a></td>\n";
 
 			/* if we are at the end of a row, start a new one */
 			if ($graph_counter % read_graph_config_option("num_columns") == 0) {

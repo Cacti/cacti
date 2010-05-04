@@ -517,6 +517,9 @@ function cdef() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (cdef.name LIKE '%%" . get_request_var_request("filter") . "%%')";
 
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='cdef.php'>\n";
+
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
@@ -557,7 +560,7 @@ function cdef() {
 	$display_text = array(
 		"name" => array("CDEF Title", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($cdef_list) > 0) {

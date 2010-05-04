@@ -513,7 +513,6 @@ function graph_perms_edit() {
 
 	?>
 	<form method="post" action="user_admin.php">
-
 	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
@@ -977,8 +976,8 @@ function user() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_user_admin" action="user_admin.php">
 		<td>
+		<form name="form_user_admin" action="user_admin.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -993,9 +992,9 @@ function user() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -1007,6 +1006,9 @@ function user() {
 	}else{
 		$sql_where = "";
 	}
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='user_admin.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -1062,8 +1064,7 @@ function user() {
 		"policy_graphs" => array("Default Graph Policy", "ASC"),
 		"dtime" => array("Last Login", "DESC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($user_list) > 0) {

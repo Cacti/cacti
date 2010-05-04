@@ -507,8 +507,8 @@ function data() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_id" method="get" action="data_input.php">
 		<td class="noprint">
+		<form name="form_graph_id" method="get" action="data_input.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -523,13 +523,16 @@ function data() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
 	html_end_box();
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='data_input.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -579,7 +582,7 @@ function data() {
 		"name" => array("Name", "ASC"),
 		"type_id" => array("Data Input Method", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($data_inputs) > 0) {

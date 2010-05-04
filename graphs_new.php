@@ -564,21 +564,20 @@ function graphs() {
 			AND graph_local.host_id=" . $host["id"] . "
 			GROUP BY graph_local.graph_template_id");
 
-		print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
-
+		$script = "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
 		if (sizeof($template_graphs) > 0) {
-			print "<script type='text/javascript'>\n<!--\n";
-			print "var gt_created_graphs = new Array(";
+			$script .= "<script type='text/javascript'>\n";
+			$script .= "var gt_created_graphs = new Array(";
 
 			$cg_ctr = 0;
 			foreach ($template_graphs as $template_graph) {
-				print (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'";
+				$script .= (($cg_ctr > 0) ? "," : "") . "'" . $template_graph["graph_template_id"] . "'";
 
 				$cg_ctr++;
 			}
 
-			print ")\n";
-			print "//-->\n</script>\n";
+			$script .= ")\n";
+			$script .= "</script>\n";
 		}
 
 		/* create a row for each graph template associated with the host template */
@@ -598,7 +597,7 @@ function graphs() {
 		}
 		}
 
-		print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
+		$script .= "gt_update_deps(1);\n";
 
 		$available_graph_templates = db_fetch_assoc("SELECT
 			graph_templates.id, graph_templates.name
@@ -628,7 +627,7 @@ function graphs() {
 			($_REQUEST["graph_type"] != -2 ? " AND snmp_query.id=" . $_REQUEST["graph_type"] : '') . "
 			ORDER BY snmp_query.name");
 
-		print "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
+		$script .= "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
 
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
@@ -666,7 +665,7 @@ function graphs() {
 			$snmp_query_graphs = db_fetch_assoc("SELECT snmp_query_graph.id,snmp_query_graph.name FROM snmp_query_graph WHERE snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " ORDER BY snmp_query_graph.name");
 
 			if (sizeof($snmp_query_graphs) > 0) {
-				print "<script type='text/javascript'>\n<!--\n";
+				$script .= "<script type='text/javascript'>\n";
 
 				foreach ($snmp_query_graphs as $snmp_query_graph) {
 					$created_graphs = db_fetch_assoc("SELECT DISTINCT
@@ -679,22 +678,25 @@ function graphs() {
 						AND data_input_data.value='" . $snmp_query_graph["id"] . "'
 						AND data_local.host_id=" . $host["id"]);
 
-					print "created_graphs[" . $snmp_query_graph["id"] . "] = new Array(";
+					$script .= "created_graphs[" . $snmp_query_graph["id"] . "] = new Array(";
 
 					$cg_ctr = 0;
 					if (sizeof($created_graphs) > 0) {
 					foreach ($created_graphs as $created_graph) {
-						print (($cg_ctr > 0) ? "," : "") . "'" . encode_data_query_index($created_graph["snmp_index"]) . "'";
+						$script .= (($cg_ctr > 0) ? "," : "") . "'" . encode_data_query_index($created_graph["snmp_index"]) . "'";
 
 						$cg_ctr++;
 					}
 					}
 
-					print ")\n";
+					$script .= ")\n";
 				}
 
-				print "//-->\n</script>\n";
+				$script .= "</script>\n";
 			}
+
+			/* echo the javascript */
+			print $script;
 
 			print "	<table width='100%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
 					<tr>
@@ -705,7 +707,7 @@ function graphs() {
 										<strong>Data Query</strong> [" . $snmp_query["name"] . "]
 									</td>
 									<td align='right' nowrap>
-										<a href='" . htmlspecialchars("graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"]) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='Reload Associated Query' border='0' align='absmiddle'></a>
+										<a href='" . htmlspecialchars("graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"]) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='' border='0' align='middle'></a>
 									</td>
 								</tr>
 							</table>

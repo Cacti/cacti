@@ -1068,9 +1068,9 @@ function ds() {
 	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "100%", $colors["header"], "3", "center", "data_sources.php?action=ds_edit&host_id=" . get_request_var_request("host_id"));
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_data_sources" action="data_sources.php">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
+		<form name="form_data_sources" action="data_sources.php">
 			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td width="50">
@@ -1174,9 +1174,9 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -1263,6 +1263,8 @@ function ds() {
 		ORDER BY ". get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("ds_rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("ds_rows"));
 
+	print "<form name='chk' method='post' action='data_sources.php'>\n";
+
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	/* generate page list */
@@ -1296,7 +1298,7 @@ function ds() {
 		"active" => array("Active", "ASC"),
 		"data_template_name" => array("Template Name", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($data_sources) > 0) {

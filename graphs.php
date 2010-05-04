@@ -942,7 +942,7 @@ function graph_edit() {
 		<table width="100%" align="center">
 			<tr>
 				<td align="center" class="textInfo" colspan="2">
-					<img src="graph_image.php?action=edit&local_graph_id=<?php print $_GET["id"];?>&rra_id=<?php print read_graph_config_option("default_rra_id");?>" alt="">
+					<img src="<?php print htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . $_GET["id"] . "&rra_id=" . read_graph_config_option("default_rra_id"));?>" alt="">
 				</td>
 				<?php
 				if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
@@ -1249,6 +1249,9 @@ function graph() {
 		$sql_where .= " AND graph_templates_graph.graph_template_id=" . get_request_var_request("template_id");
 	}
 
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='graphs.php'>\n";
+
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
@@ -1302,7 +1305,7 @@ function graph() {
 		"name" => array("Template Name", "ASC"),
 		"height" => array("Size", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($graph_list) > 0) {

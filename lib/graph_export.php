@@ -1726,16 +1726,16 @@ define("HTML_HEADER_TREE",
 	<script type=\"text/javascript\" src=\"./treeview/ftiens4.js\"></script>
 </head>
 <body>
-<table width='100%' height='100%' cellspacing='0' cellpadding='0'>
+<table style='width:100%;height:100%;' cellspacing='0' cellpadding='0'>
 	<tr style='height:37px;' bgcolor='#a9a9a9'>
 		<td colspan='2' valign='bottom' nowrap>
 			<table width='100%' cellspacing='0' cellpadding='0'>
 				<tr>
 					<td nowrap>
-						&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='absmiddle' border='0'></a>
+						&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle' border='0'></a>
 					</td>
 					<td align='right'>
-						<img src='cacti_backdrop.gif' align='absmiddle'>
+						<img src='cacti_backdrop.gif' align='middle'>
 					</td>
 				</tr>
 			</table>
@@ -1815,10 +1815,10 @@ define("HTML_HEADER_CLASSIC", "
 				<table width='100%' cellspacing='0' cellpadding='0'>
 					<tr>
 						<td valign='bottom'>
-							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='absmiddle' border='0'></a>
+							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle' border='0'></a>
 						</td>
 						<td align='right'>
-							<img src='cacti_backdrop.gif' align='absmiddle'>
+							<img src='cacti_backdrop.gif' align='middle'>
 						</td>
 					</tr>
 				</table>

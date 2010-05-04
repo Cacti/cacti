@@ -137,13 +137,12 @@ function export() {
 			form_radio_button("output_format", "3", "1", "Output to the Browser (within Cacti)","1",true); print "<br>";
 			form_radio_button("output_format", "3", "2", "Output to the Browser (raw XML)","1",true); print "<br>";
 			form_radio_button("output_format", "3", "3", "Save File Locally","1",true);
+			form_hidden_box("export_type", $_REQUEST["export_type"], "");
+			form_hidden_box("save_component_export","1","");
 			?>
 		</td>
 	</tr>
 	<?php
-
-	form_hidden_box("export_type", $_REQUEST["export_type"], "");
-	form_hidden_box("save_component_export","1","");
 
 	html_end_box();
 

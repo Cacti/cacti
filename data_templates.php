@@ -644,9 +644,9 @@ function template() {
 	html_start_box("<strong>Data Templates</strong>", "100%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_data_template" action="data_templates.php">
+	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
+		<form name="form_data_template" action="data_templates.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -661,9 +661,9 @@ function template() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -671,6 +671,9 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "where (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='data_templates.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -720,7 +723,7 @@ function template() {
 		"data_input_method" => array("Data Input Method", "ASC"),
 		"active" => array("Status", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {

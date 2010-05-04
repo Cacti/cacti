@@ -564,8 +564,8 @@ function utilities_view_user_log() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_userlog" action="utilities.php">
 		<td>
+		<form name="form_userlog" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -609,10 +609,10 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
-		<input type='hidden' name='action' value='view_user_log'>
+			<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='action' value='view_user_log'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -842,8 +842,8 @@ function utilities_view_logfile() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_logfile" action="utilities.php">
 		<td>
+		<form name="form_logfile" action="utilities.php">
 			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="80">
@@ -911,10 +911,10 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
-		<input type='hidden' name='action' value='view_logfile'>
+			<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='action' value='view_logfile'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -1107,8 +1107,8 @@ function utilities_view_snmp_cache() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_snmpcache" action="utilities.php">
 		<td>
+		<form name="form_snmpcache" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -1192,10 +1192,10 @@ function utilities_view_snmp_cache() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
-		<input type='hidden' name='action' value='view_snmp_cache'>
+			<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='action' value='view_snmp_cache'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -1385,8 +1385,8 @@ function utilities_view_poller_cache() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_pollercache" action="utilities.php">
 		<td>
+		<form name="form_pollercache" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -1430,10 +1430,10 @@ function utilities_view_poller_cache() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
-		<input type='hidden' name='action' value='view_poller_cache'>
+			<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='action' value='view_poller_cache'>
 		</form>
+		</td>
 	</tr>
 	<?php
 

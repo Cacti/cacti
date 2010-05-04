@@ -434,6 +434,9 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var_request("filter") . "%%')";
 
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='host_templates.php'>\n";
+
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
@@ -474,7 +477,7 @@ function template() {
 	$display_text = array(
 		"name" => array("Template Title", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {

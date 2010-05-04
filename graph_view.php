@@ -274,29 +274,13 @@ case 'preview':
 		ORDER BY graph_templates_graph.title_cache
 		LIMIT " . (ROWS_PER_PAGE*(get_request_var_request("page")-1)) . "," . ROWS_PER_PAGE);
 
-	?>
-	<script type="text/javascript">
-	<!--
-
-	function applyGraphPreviewFilterChange(objForm) {
-		strURL = '?action=preview';
-		strURL = strURL + '&host_id=' + objForm.host_id.value;
-		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
-	}
-
-	-->
-	</script>
-	<?php
-
 	/* include graph view filter selector */
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_view" method="post" action="graph_view.php">
 		<td class="noprint">
+		<form style="margin:0px;padding:0px;" name="form_graph_view" method="post" action="graph_view.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
 					<td nowrap style='white-space: nowrap;' width="40">
@@ -376,139 +360,84 @@ case 'preview':
 					</td>
 				</tr>
 			</table>
-		</td>
 		</form>
+		</td>
 	</tr>
 	<?php
 
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
 		?>
-			<script type='text/javascript'>
-			// Initialize the calendar
-			calendar=null;
-
-			// This function displays the calendar associated to the input field 'id'
-			function showCalendar(id) {
-				var el = document.getElementById(id);
-				if (calendar != null) {
-					// we already have some calendar created
-					calendar.hide();  // so we hide it first.
-				} else {
-					// first-time call, create the calendar.
-					var cal = new Calendar(true, null, selected, closeHandler);
-					cal.weekNumbers = false;  // Do not display the week number
-					cal.showsTime = true;     // Display the time
-					cal.time24 = true;        // Hours have a 24 hours format
-					cal.showsOtherMonths = false;    // Just the current month is displayed
-					calendar = cal;                  // remember it in the global var
-					cal.setRange(1900, 2070);        // min/max year allowed.
-					cal.create();
-				}
-
-				calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
-				calendar.parseDate(el.value);                // try to parse the text in field
-				calendar.sel = el;                           // inform it what input field we use
-
-				// Display the calendar below the input field
-				calendar.showAtElement(el, "Br");        // show the calendar
-
-				return false;
-			}
-
-			// This function update the date in the input field when selected
-			function selected(cal, date) {
-				cal.sel.value = date;      // just update the date in the input field.
-			}
-
-			// This function gets called when the end-user clicks on the 'Close' button.
-			// It just hides the calendar without destroying it.
-			function closeHandler(cal) {
-				cal.hide();                        // hide the calendar
-				calendar = null;
-			}
-		</script>
-		<script type="text/javascript">
-		<!--
-
-			function applyTimespanFilterChange(objForm) {
-				strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
-				strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-				document.location = strURL;
-			}
-
-		-->
-		</script>
-			<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-				<form name="form_timespan_selector" method="post" action="graph_view.php">
-				<td class="noprint">
-					<table width="100%" cellpadding="0" cellspacing="0">
-						<tr>
-							<td nowrap style='white-space: nowrap;' width='55'>
-								&nbsp;<strong>Presets:</strong>&nbsp;
-							</td>
-							<td nowrap style='white-space: nowrap;' width='130'>
-								<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
-									<?php
-									if ($_SESSION["custom"]) {
-										$graph_timespans[GT_CUSTOM] = "Custom";
-										$start_val = 0;
-										$end_val = sizeof($graph_timespans);
-									} else {
-										if (isset($graph_timespans[GT_CUSTOM])) {
-											asort($graph_timespans);
-											array_shift($graph_timespans);
-										}
-										$start_val = 1;
-										$end_val = sizeof($graph_timespans)+1;
+		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
+			<td class="noprint">
+			<form style="margin:0px;padding:0px;" name="form_timespan_selector" method="post" action="graph_view.php">
+				<table width="100%" cellpadding="0" cellspacing="0">
+					<tr>
+						<td nowrap style='white-space: nowrap;' width='55'>
+							&nbsp;<strong>Presets:</strong>&nbsp;
+						</td>
+						<td nowrap style='white-space: nowrap;' width='130'>
+							<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
+								<?php
+								if ($_SESSION["custom"]) {
+									$graph_timespans[GT_CUSTOM] = "Custom";
+									$start_val = 0;
+									$end_val = sizeof($graph_timespans);
+								} else {
+									if (isset($graph_timespans[GT_CUSTOM])) {
+										asort($graph_timespans);
+										array_shift($graph_timespans);
 									}
-
-									if (sizeof($graph_timespans) > 0) {
-										for ($value=$start_val; $value < $end_val; $value++) {
-											print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
-										}
-									}
-									?>
-								</select>
-							</td>
-							<td nowrap style='white-space: nowrap;' width='30'>
-								&nbsp;<strong>From:</strong>&nbsp;
-							</td>
-							<td width='150' nowrap style='white-space: nowrap;'>
-								<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-								&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='Start date selector' title='Start date selector' border='0' align='absmiddle' onclick="return showCalendar('date1');">&nbsp;
-							</td>
-							<td nowrap style='white-space: nowrap;' width='20'>
-								&nbsp;<strong>To:</strong>&nbsp;
-							</td>
-							<td width='150' nowrap style='white-space: nowrap;'>
-								<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-								&nbsp;<input style='padding-bottom: 4px;' type='image' src='images/calendar.gif' alt='End date selector' title='End date selector' border='0' align='absmiddle' onclick="return showCalendar('date2');">
-							</td>
-							<td width='130' nowrap style='white-space: nowrap;'>
-								&nbsp;&nbsp;<input style='padding-bottom: 4px;' type='image' name='move_left' src='images/move_left.gif' alt='Left' border='0' align='absmiddle' title='Shift Left'>
-								<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
-									<?php
 									$start_val = 1;
-									$end_val = sizeof($graph_timeshifts)+1;
-									if (sizeof($graph_timeshifts) > 0) {
-										for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-											print "<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
-										}
+									$end_val = sizeof($graph_timespans)+1;
+								}
+
+								if (sizeof($graph_timespans) > 0) {
+									for ($value=$start_val; $value < $end_val; $value++) {
+										print "<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
 									}
-									?>
-								</select>
-								<input style='padding-bottom: 4px;' type='image' name='move_right' src='images/move_right.gif' alt='Right' border='0' align='absmiddle' title='Shift Right'>
-							</td>
-							<td nowrap style='white-space: nowrap;'>
-								&nbsp;&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
-								<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
-							</td>
-						</tr>
-					</table>
-				</td>
-				</form>
-			</tr>
+								}
+								?>
+							</select>
+						</td>
+						<td nowrap style='white-space: nowrap;' width='30'>
+							&nbsp;<strong>From:</strong>&nbsp;
+						</td>
+						<td width='150' nowrap style='white-space: nowrap;'>
+							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
+							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">&nbsp;
+						</td>
+						<td nowrap style='white-space: nowrap;' width='20'>
+							&nbsp;<strong>To:</strong>&nbsp;
+						</td>
+						<td width='150' nowrap style='white-space: nowrap;'>
+							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
+							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
+						</td>
+						<td width='130' nowrap style='white-space: nowrap;'>
+							&nbsp;&nbsp;<input style='padding-bottom:8px;' type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
+							<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
+								<?php
+								$start_val = 1;
+								$end_val = sizeof($graph_timeshifts)+1;
+								if (sizeof($graph_timeshifts) > 0) {
+									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+										print "<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+									}
+								}
+								?>
+							</select>
+							<input style='padding-bottom:8px;' type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
+						</td>
+						<td nowrap style='white-space: nowrap;'>
+							&nbsp;&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
+							<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
+						</td>
+					</tr>
+				</table>
+			</form>
+			</td>
+		</tr>
 		<?php
 	}
 	html_end_box();
@@ -624,27 +553,9 @@ case 'list':
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
-	<script type="text/javascript">
-	<!--
-	function applyGraphListFilterChange(objForm) {
-		strURL = 'graph_view.php?action=list&page=1';
-		strURL = strURL + '&host_id=' + objForm.host_id.value;
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + url_graph('');
-		document.location = strURL;
-		return false;
-	}
-	-->
-	</script>
-
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)' action="graph_view.php">
-		<input type='hidden' name='graph_add' value=''>
-		<input type='hidden' name='graph_remove' value=''>
-		<input type='hidden' name='graph_list' value='<?php print $_REQUEST["graph_list"];?>'>
 		<td>
+		<form style="margin:0px;padding:0px;" name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)' action="graph_view.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="40">
@@ -737,8 +648,11 @@ case 'list':
 					</td>
 				</tr>
 			</table>
-		</td>
+			<input type='hidden' name='graph_add' value=''>
+			<input type='hidden' name='graph_remove' value=''>
+			<input type='hidden' name='graph_list' value='<?php print $_REQUEST["graph_list"];?>'>
 		</form>
+		</td>
 	</tr>
 	<?php
 	html_end_box();

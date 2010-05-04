@@ -170,13 +170,13 @@ function import() {
 			<?php
 			form_radio_button("import_rra", 1, 1, "Use defaults for this installation (Recommended)", 1); echo "<br />";
 			form_radio_button("import_rra", 1, 2, "Use custom RRA settings from the template", 1);
+			form_hidden_box("save_component_import","1","");
 			?>
 		</td>
 	</tr>
 
 	<?php
 
-	form_hidden_box("save_component_import","1","");
 
 	html_end_box();
 

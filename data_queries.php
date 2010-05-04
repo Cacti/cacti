@@ -733,9 +733,9 @@ function data_query() {
 	html_start_box("<strong>Data Queries</strong>", "100%", $colors["header"], "3", "center", "data_queries.php?action=edit");
 
 	?>
-	<tr bgcolor="<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_id" method="get" action="data_queries.php">
+	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 		<td class="noprint">
+		<form name="form_graph_id" method="get" action="data_queries.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -750,13 +750,16 @@ function data_query() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
 	html_end_box();
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='data_queries.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -808,7 +811,7 @@ function data_query() {
 		"name" => array("Name", "ASC"),
 		"data_input_method" => array("Data Input Method", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {

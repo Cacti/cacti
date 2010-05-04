@@ -985,7 +985,7 @@ function host_edit() {
 					<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
 				</td>
 				<td align='right' nowrap>
-					<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='absmiddle'></a>
+					<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
 				</td>
 			</tr>
 			<?php
@@ -1067,8 +1067,8 @@ function host_edit() {
 					<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
 				</td>
 				<td align='right' nowrap>
-					<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='absmiddle'></a>&nbsp;
-					<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='absmiddle'></a>
+					<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
+					<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
 				</td>
 			</tr>
 			<?php
@@ -1183,8 +1183,8 @@ function host() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_devices" action="host.php">
 		<td>
+		<form name="form_devices" action="host.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -1247,9 +1247,9 @@ function host() {
 					</td>
 				</tr>
 			</table>
-		</td>
-		<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 
@@ -1281,6 +1281,9 @@ function host() {
 	}elseif (!empty($_REQUEST["host_template_id"])) {
 		$sql_where .= (strlen($sql_where) ? " and host.host_template_id=" . get_request_var_request("host_template_id") : "where host.host_template_id=" . get_request_var_request("host_template_id"));
 	}
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='hosts.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
@@ -1340,7 +1343,7 @@ function host() {
 		"avg_time" => array("Average (ms)", "DESC"),
 		"availability" => array("Availability", "ASC"));
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	$i = 0;
 	if (sizeof($hosts) > 0) {
