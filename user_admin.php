@@ -34,6 +34,9 @@ $user_actions = array(
 	5 => "Batch Copy"
 	);
 
+/* remember the tab we came from */
+load_current_session_value("tab", "sess_user_admin_tab", "user_realms_edit");
+
 switch (get_request_var_request("action")) {
 	case 'actions':
 		form_actions();
@@ -45,24 +48,6 @@ switch (get_request_var_request("action")) {
 
 	case 'perm_remove':
 		perm_remove();
-		break;
-
-	case 'user_realms_edit':
-		include_once("include/top_header.php");
-		user_edit();
-		include_once("include/bottom_footer.php");
-		break;
-
-	case 'graph_settings_edit':
-		include_once("include/top_header.php");
-		user_edit();
-		include_once("include/bottom_footer.php");
-		break;
-
-	case 'graph_perms_edit':
-		include_once("include/top_header.php");
-		user_edit();
-		include_once("include/bottom_footer.php");
 		break;
 
 	case 'user_edit':
@@ -356,7 +341,7 @@ function form_save() {
 		}
 
 		if ($add_button_clicked == true) {
-			header("Location: user_admin.php?action=graph_perms_edit&id=" . get_request_var_post("id"));
+			header("Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=" . get_request_var_post("id"));
 			exit;
 		}
 	}
@@ -484,7 +469,7 @@ function perm_remove() {
 		db_execute("DELETE FROM user_auth_perms WHERE type = 4 AND user_id=" . get_request_var("user_id") . " and item_id = " . get_request_var("id"));
 	}
 
-	header("Location: user_admin.php?action=graph_perms_edit&id=" . get_request_var("user_id"));
+	header("Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=" . get_request_var("user_id"));
 }
 
 function graph_perms_edit() {
@@ -917,16 +902,16 @@ function user_edit() {
 		<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
 			<tr>
 				<td width='1'></td>
-				<td <?php print (((get_request_var("action") == "user_realms_edit") || (get_request_var("action") == "user_edit")) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_realms_edit&id=" . $_GET["id"]);?>'>Realm Permissions</a></span>
+				<td <?php print ((get_request_var_request("tab") == "user_realms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $_GET["id"]);?>'>Realm Permissions</a></span>
 				</td>
 				<td width='1'></td>
-				<td <?php print ((get_request_var("action") == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=graph_perms_edit&id=" . $_GET["id"]);?>'>Graph Permissions</a></span>
+				<td <?php print ((get_request_var_request("tab") == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
+					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_perms_edit&id=" . $_GET["id"]);?>'>Graph Permissions</a></span>
 				</td>
 				<td width='1'></td>
-				<td <?php print ((get_request_var("action") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
-					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></span>
+				<td <?php print ((get_request_var_request("tab") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
+					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></span>
 				</td>
 				<td></td>
 			</tr>
@@ -934,11 +919,11 @@ function user_edit() {
 		<?php
 	}
 
-	if (get_request_var("action") == "graph_settings_edit") {
+	if (get_request_var_request("tab") == "graph_settings_edit") {
 		graph_settings_edit();
-	}elseif (get_request_var("action") == "user_realms_edit") {
+	}elseif (get_request_var_request("tab") == "user_realms_edit") {
 		user_realms_edit();
-	}elseif (get_request_var("action") == "graph_perms_edit") {
+	}elseif (get_request_var_request("tab") == "graph_perms_edit") {
 		graph_perms_edit();
 	}else{
 		user_realms_edit();
@@ -1095,7 +1080,7 @@ function user() {
 			}
 
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $user["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&id=" . $user["id"]) . "'>" .
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $user["id"]) . "'>" .
 			(strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["username"]) : $user["username"])
 			, $user["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
