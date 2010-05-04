@@ -433,7 +433,7 @@ function graphs() {
 
 	-->
 	</script>
-	<form name="form_graphs_new">
+	<form name="form_graphs_new" action="graphs_items.php">
 	<table width="100%" cellpadding="4" align="center">
 		<tr>
 			<td nowrap style='white-space: nowrap;' width="30%" class="textInfo">
@@ -588,7 +588,7 @@ function graphs() {
 
 			print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 
-			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'><span id='gt_text$query_row" . "_0'>
+			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'>
 						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
 					</td>
 					<td align='right'>
@@ -830,7 +830,7 @@ function graphs() {
 						if ($field_array["direction"] == "input") {
 							foreach($field_names as $row) {
 								if ($row["field_name"] == $field_name) {
-									$html_dq_header .= "<td height='1'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></td>\n";
+									$html_dq_header .= "<td style='height:1px;'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></td>\n";
 									break;
 								}
 							}
@@ -898,16 +898,16 @@ function graphs() {
 			$data_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
 
 			if (sizeof($data_query_graphs) == 1) {
-				form_hidden_box("sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"], $data_query_graphs[0]["id"], "");
+				echo "<input type='hidden' id='sgg_" . $snmp_query["id"] . "' name='sgg_" . $snmp_query["id"] . "' value='" . $data_query_graphs[0]["id"] . "'>\n";
 			}elseif (sizeof($data_query_graphs) > 1) {
 				print "	<table align='center' width='100%'>
 						<tr>
 							<td width='1' valign='top'>
-								<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+								<img src='images/arrow.gif' alt=''>&nbsp;
 							</td>
 							<td align='right'>
 								<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
-								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ");'>
+								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ")'>
 									"; html_create_list($data_query_graphs,"name","id","0"); print "
 								</select>
 							</td>
@@ -916,7 +916,7 @@ function graphs() {
 			}
 
 			print "<br>";
-			print "<script type='text/javascript'>dq_update_deps(" . $snmp_query["id"] . "," . ($num_visible_fields) . ");</script>\n";
+			print "<script type='text/javascript'>dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields . ");</script>\n";
 		}
 		}
 	}

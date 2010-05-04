@@ -75,7 +75,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 <a name='page_top'></a>
 
 <table width="100%" height="100%" cellspacing="0" cellpadding="0">
-	<tr height="25" bgcolor="#a9a9a9" class="noprint">
+	<tr style="height:25px;" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr style="background: transparent url('images/cacti_backdrop2.gif') no-repeat center right;">
@@ -89,12 +89,12 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 			</table>
 		</td>
 	</tr>
-	<tr height="2" colspan="2" bgcolor="#183c8f" class="noprint">
+	<tr style="height:2px;" colspan="2" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
-			<img src="images/transparent_line.gif" width="170" height="2" border="0"><br>
+			<img src="images/transparent_line.gif" width="170" style="height:2px;" border="0"><br>
 		</td>
 	</tr>
-	<tr height="5" bgcolor="#e9e9e9" class="noprint">
+	<tr style="height:5px;" bgcolor="#e9e9e9" class="noprint">
 		<td colspan="2">
 			<table width="100%">
 				<tr>
@@ -111,17 +111,17 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 		</td>
 	</tr>
 	<tr class="noprint">
-		<td bgcolor="#efefef" colspan="1" height="8" style="background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" height="2" border="0"><br>
+		<td bgcolor="#efefef" colspan="1" style="height:8px;background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" style="height:2px;" border="0"><br>
 		</td>
-		<td bgcolor="#ffffff" colspan="1" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;">
+		<td bgcolor="#ffffff" colspan="1" style="height:8px;background-image: url(images/shadow.gif); background-repeat: repeat-x;">
 
 		</td>
 	</tr>
 
 	<?php if ((basename($_SERVER["PHP_SELF"]) == "graph.php") && ($_REQUEST["action"] == "properties")) {?>
 	<tr>
-		<td valign="top" height="1" colspan="3" bgcolor="#efefef">
+		<td valign="top" style="height:1px;" colspan="3" bgcolor="#efefef">
 			<?php
 			$graph_data_array["print_source"] = true;
 

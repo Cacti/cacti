@@ -75,7 +75,7 @@ function gt_update_deps(num_columns) {
 	for (var i = 0; i < gt_created_graphs.length; i++) {
 		for (var j = 0; j < num_columns; j++) {
 			lineid = document.getElementById('gt_text' + gt_created_graphs[i] + '_' + j);
-			lineid.style.color = '999999';
+			lineid.style.color = '#999999';
 		}
 
 		chkbx = document.getElementById('cg_' + gt_created_graphs[i]);
@@ -94,7 +94,7 @@ function gt_reset_deps(num_columns) {
 		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
 			for (var j = 0; j < num_columns; j++) {
 				lineid = document.getElementById('gt_text' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
-				lineid.style.color = '000000';
+				lineid.style.color = '#000000';
 			}
 
 			chkbx = document.getElementById('cg_' + document.chk.elements[i].name.substr(prefix.length));
@@ -195,7 +195,7 @@ function dq_update_deps(snmp_query_id, num_columns) {
 	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
 		for (var j = 0; j < num_columns; j++) {
 			lineid = document.getElementById('text' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i] + '_' + j);
-			if ( lineid ) { lineid.style.color = '999999' };
+			if ( lineid ) { lineid.style.color = '#999999' };
 		}
 
 		chkbx = document.getElementById('sg_' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
@@ -216,7 +216,7 @@ function dq_reset_deps(snmp_query_id, num_columns) {
 		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
 			for (var j = 0; j < num_columns; j++) {
 				lineid = document.getElementById('text' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
-				lineid.style.color = '000000';
+				lineid.style.color = '#000000';
 			}
 
 			chkbx = document.getElementById('sg_' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length));

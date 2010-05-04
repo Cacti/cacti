@@ -564,7 +564,7 @@ function utilities_view_user_log() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_userlog">
+		<form name="form_userlog" action="utilities.php">
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr>
@@ -842,7 +842,7 @@ function utilities_view_logfile() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_logfile">
+		<form name="form_logfile" action="utilities.php">
 		<td>
 			<table cellpadding="1" cellspacing="0">
 				<tr>
@@ -1107,7 +1107,7 @@ function utilities_view_snmp_cache() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_snmpcache">
+		<form name="form_snmpcache" action="utilities.php">
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr>
@@ -1385,7 +1385,7 @@ function utilities_view_poller_cache() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_pollercache">
+		<form name="form_pollercache" action="utilities.php">
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr>

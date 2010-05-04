@@ -1116,7 +1116,7 @@ function graph() {
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
-			<form name="form_graph_id">
+			<form name="form_graph_id" action="graphs.php">
 			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td width="50">

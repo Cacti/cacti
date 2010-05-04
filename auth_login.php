@@ -270,29 +270,29 @@ function auth_display_custom_error_message($message) {
 		<?php
 
 		if ($ldap_error) {?>
-		<tr height="10"><td></td></tr>
+		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td colspan="2"><font color="#FF0000"><strong><?php print $ldap_error_message; ?></strong></font></td>
 		</tr>
 		<?php }else{
 		if ($action == "login") {?>
-		<tr height="10"><td></td></tr>
+		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td colspan="2"><font color="#FF0000"><strong>Invalid User Name/Password Please Retype</strong></font></td>
 		</tr>
 		<?php }
 		if ($user_enabled == "0") {?>
-		<tr height="10"><td></td></tr>
+		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td colspan="2"><font color="#FF0000"><strong>User Account Disabled</strong></font></td>
 		</tr>
 		<?php } } ?>
 
-		<tr height="10"><td></td></tr>
+		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td colspan="2">Please enter your Cacti user name and password below:</td>
 		</tr>
-		<tr height="10"><td></td></tr>
+		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td>User Name:</td>
 			<td><input type="text" name="login_username" size="40" style="width: 295px;" value="<?php print clean_html_output($username); ?>"></td>
@@ -313,7 +313,7 @@ function auth_display_custom_error_message($message) {
 			</td>
         	</tr>
 		<?php }?>
-		<tr height="10"><td></td></tr>
+		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td><input type="submit" value="Login"></td>
 		</tr>

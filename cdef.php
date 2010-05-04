@@ -436,7 +436,7 @@ function cdef_edit() {
 					<a href="<?php print htmlspecialchars("cdef.php?action=item_moveup&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/move_up.gif" border="0" alt="Move Up"></a>
 				</td>
 				<td align="right">
-					<a href="<?php print htmlspecialchars("cdef.php?action=item_remove&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars("cdef.php?action=item_remove&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -491,7 +491,7 @@ function cdef() {
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
-			<form name="form_cdef">
+			<form name="form_cdef" action="cdef.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">

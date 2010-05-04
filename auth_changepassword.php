@@ -96,19 +96,19 @@ case 'changepassword':
 		<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
 	</tr>
 	<?php if ($bad_password == true) {?>
-	<tr height="10"><td></td></tr>
+	<tr style="height:10px;"><td></td></tr>
 	<tr>
 		<td colspan="2"><font color="#FF0000"><strong>Your passwords do not match, please retype:</strong></font></td>
 	</tr>
 	<?php }?>
-	<tr height="10"><td></td></tr>
+	<tr style="height:10px;"><td></td></tr>
 	<tr>
 		<td colspan="2">
 			<strong><font color="#FF0000">*** Forced Password Change ***</font></strong><br><br>
 			Please enter a new password for cacti:
 		</td>
 	</tr>
-	<tr height="10"><td></td></tr>
+	<tr style="height:10px;"><td></td></tr>
 	<tr>
 		<td>Password:</td>
 		<td><input type="password" name="password" size="40"></td>
@@ -117,7 +117,7 @@ case 'changepassword':
 		<td>Confirm:</td>
 		<td><input type="password" name="confirm" size="40"></td>
 	</tr>
-	<tr height="10"><td></td></tr>
+	<tr style="height:10px;"><td></td></tr>
 	<tr>
 		<td><input type="submit" value="Save"></td>
 	</tr>

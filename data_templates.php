@@ -645,7 +645,7 @@ function template() {
 
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_data_template">
+		<form name="form_data_template" action="data_templates.php">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>

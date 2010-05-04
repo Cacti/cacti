@@ -410,7 +410,7 @@ function data_edit() {
 					<?php print $field["name"];?>
 				</td>
 				<td align="right">
-					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -448,7 +448,7 @@ function data_edit() {
 					<?php print html_boolean_friendly($field["update_rra"]);?>
 				</td>
 				<td align="right">
-					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -507,7 +507,7 @@ function data() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_id" method="get">
+		<form name="form_graph_id" method="get" action="data_input.php">
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
@@ -597,7 +597,7 @@ function data() {
 		print "<tr><td><em>No Data Input Methods</em></td></tr>";
 	}
 
-	html_end_box();
+	html_end_box(false);
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($di_actions);

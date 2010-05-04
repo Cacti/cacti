@@ -91,7 +91,7 @@ if (read_config_option("auth_method") != 0) {
 				<tr>
 					<td colspan='2'><img src='images/auth_deny.gif' border='0' alt='Access Denied'></td>
 				</tr>
-				<tr height='10'><td></td></tr>
+				<tr style='height:10px;'><td></td></tr>
 				<tr>
 					<td class='textArea' colspan='2'>You are not permitted to access this section of Cacti. If you feel that you
 					need access to this particular section, please contact the Cacti administrator.</td>

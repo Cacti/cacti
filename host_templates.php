@@ -275,7 +275,7 @@ function template_edit() {
 					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
 				<td align="right">
-					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_gt&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>
+					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_gt&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 				</td>
 			</tr>
 			<?php
@@ -325,7 +325,7 @@ function template_edit() {
 					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
 				<td align='right'>
-					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_dq&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>
+					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_dq&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 				</td>
 			</tr>
 			<?php
@@ -407,7 +407,7 @@ function template() {
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
-		<form name="form_graph_template">
+		<form name="form_graph_template" action="host_templates.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">

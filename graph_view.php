@@ -295,7 +295,7 @@ case 'preview':
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-		<form name="form_graph_view" method="post">
+		<form name="form_graph_view" method="post" action="graph_view.php">
 		<td class="noprint">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr class="noprint">
@@ -440,7 +440,7 @@ case 'preview':
 		-->
 		</script>
 			<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-				<form name="form_timespan_selector" method="post">
+				<form name="form_timespan_selector" method="post" action="graph_view.php">
 				<td class="noprint">
 					<table width="100%" cellpadding="0" cellspacing="0">
 						<tr>
@@ -640,7 +640,7 @@ case 'list':
 	</script>
 
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)'>
+		<form name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)' action="graph_view.php">
 		<input type='hidden' name='graph_add' value=''>
 		<input type='hidden' name='graph_remove' value=''>
 		<input type='hidden' name='graph_list' value='<?php print $_REQUEST["graph_list"];?>'>
@@ -833,7 +833,7 @@ case 'list':
 	?>
 	<table align='right'>
 		<tr>
-			<td align='right'><img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;</td>
+			<td align='right'><img src='images/arrow.gif' alt=''>&nbsp;</td>
 			<td align='right'><input type='submit' value='View' title='View Graphs'></td>
 		</tr>
 	</table>

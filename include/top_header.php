@@ -39,7 +39,7 @@ global $colors;
 <body style="background-image:url('images/left_border.gif');">
 
 <table width="100%" cellspacing="0" cellpadding="0">
-	<tr height="1" bgcolor="#a9a9a9">
+	<tr style="height:1px;" bgcolor="#a9a9a9">
 		<td valign="bottom" colspan="3" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr style="background: transparent url('images/cacti_backdrop.gif') no-repeat center right;">
@@ -50,12 +50,12 @@ global $colors;
 			</table>
 		</td>
 	</tr>
-	<tr height="2" bgcolor="#183c8f">
+	<tr style="height:2px;" bgcolor="#183c8f">
 		<td colspan="3">
-			<img src="images/transparent_line.gif" height="2" border="0"><br>
+			<img src="images/transparent_line.gif" style="height:2px;" border="0"><br>
 		</td>
 	</tr>
-	<tr height="5" bgcolor="#e9e9e9">
+	<tr style="height:5px;" bgcolor="#e9e9e9">
 		<td colspan="3">
 			<table width="100%">
 				<tr>
@@ -72,10 +72,10 @@ global $colors;
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="#f5f5f5" colspan="1" height="8" width="135" style="background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="images/transparent_line.gif" width="135" height="2" border="0"><br>
+		<td bgcolor="#f5f5f5" colspan="1" width="135" style="height:8px;background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="images/transparent_line.gif" width="135" style="height:2px;" border="0"><br>
 		</td>
-		<td colspan="2" height="8" style="background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
+		<td colspan="2" style="height:8px;background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
 
 		</td>
 	</tr>
@@ -85,9 +85,9 @@ global $colors;
 				<?php draw_menu();?>
 			</table>
 
-			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
+			<img src="images/transparent_line.gif" width="135" style="height:5px;" border="0"><br>
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
-			<img src="images/transparent_line.gif" width="135" height="5" border="0"><br>
+			<img src="images/transparent_line.gif" width="135" style="height:5px;" border="0"><br>
 		</td>
 		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?><div style='position:relative;' id='main'>
 

@@ -1725,11 +1725,9 @@ define("HTML_HEADER_TREE",
 	<script type=\"text/javascript\" src=\"./treeview/ua.js\"></script>
 	<script type=\"text/javascript\" src=\"./treeview/ftiens4.js\"></script>
 </head>
-
 <body>
-
 <table width='100%' height='100%' cellspacing='0' cellpadding='0'>
-	<tr height='37' bgcolor='#a9a9a9'>
+	<tr style='height:37px;' bgcolor='#a9a9a9'>
 		<td colspan='2' valign='bottom' nowrap>
 			<table width='100%' cellspacing='0' cellpadding='0'>
 				<tr>
@@ -1743,12 +1741,12 @@ define("HTML_HEADER_TREE",
 			</table>
 		</td>
 	</tr>
-	<tr height='2' colspan='2' bgcolor='#183c8f'>
+	<tr style='height:2px;' colspan='2' bgcolor='#183c8f'>
 		<td colspan='2'>
-			<img src='transparent_line.gif' width='170' height='2' border='0'><br>
+			<img src='transparent_line.gif' style='width:170px;height:2px;' border='0'><br>
 		</td>
 	</tr>
-	<tr height='5' bgcolor='#e9e9e9'>
+	<tr style='height:5px;' bgcolor='#e9e9e9'>
 		<td colspan='2'>
 			<table width='100%'>
 				<tr>
@@ -1760,10 +1758,10 @@ define("HTML_HEADER_TREE",
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor='#efefef' colspan='1' height='8' style='background-image: url(shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;'>
-			<img src='transparent_line.gif' width='200' height='2' border='0'><br>
+		<td bgcolor='#efefef' colspan='1' style='height:8px;background-image: url(shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;'>
+			<img src='transparent_line.gif' width='200' style='height:2px;' border='0'><br>
 		</td>
-		<td bgcolor='#ffffff' colspan='1' height='8' style='background-image: url(shadow.gif); background-repeat: repeat-x;'>
+		<td bgcolor='#ffffff' colspan='1' style='height:8px;background-image: url(shadow.gif); background-repeat: repeat-x;'>
 		</td>
 	</tr>
 	<tr>
@@ -1810,11 +1808,9 @@ define("HTML_HEADER_CLASSIC", "
 		<meta http-equiv=Pragma content=no-cache>
 		<meta http-equiv=cache-control content=no-cache>
 	</head>
-
-	<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0'>
-
+	<body>
 	<table width='100%' cellspacing='0' cellpadding='0'>
-		<tr height='37' bgcolor='#a9a9a9'>
+		<tr style='height:37px;' bgcolor='#a9a9a9'>
 			<td valign='bottom' colspan='3' nowrap>
 				<table width='100%' cellspacing='0' cellpadding='0'>
 					<tr>
@@ -1828,12 +1824,12 @@ define("HTML_HEADER_CLASSIC", "
 				</table>
 			</td>
 		</tr>\n
-		<tr height='2' bgcolor='#183c8f'>
+		<tr style='height:2px;' bgcolor='#183c8f'>
 			<td colspan='3'>
-				<img src='transparent_line.gif' width='170' height='2' border='0'><br>
+				<img src='transparent_line.gif' style='width:170px;height:2px;' border='0'><br>
 			</td>
 		</tr>\n
-		<tr height='5' bgcolor='#e9e9e9'>
+		<tr style='height:5px;' bgcolor='#e9e9e9'>
 			<td colspan='3'>
 				<table width='100%'>
 					<tr>
@@ -1845,7 +1841,7 @@ define("HTML_HEADER_CLASSIC", "
 			</td>
 		</tr>\n
 		<tr>
-			<td colspan='3' height='8' style='background-image: url(shadow.gif); background-repeat: repeat-x;' bgcolor='#ffffff'>
+			<td colspan='3' style='height:8px;background-image: url(shadow.gif); background-repeat: repeat-x;' bgcolor='#ffffff'>
 
 			</td>
 		</tr>\n

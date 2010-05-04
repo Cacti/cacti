@@ -109,7 +109,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		-->
 		</script>
 		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-			<form name="form_timespan_selector" method="post">
+			<form name="form_timespan_selector" method="post" action="graph_view.php">
 			<td class="noprint">
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
@@ -352,7 +352,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
 		$tier = tree_tier($leaf["order_key"]);
-		$transparent_indent = "<img src='images/transparent_line.gif' style='padding-right:" . (($tier-1) * 20) . "px;' height='1' align='middle' alt=''>&nbsp;";
+		$transparent_indent = "<img src='images/transparent_line.gif' style='padding-right:" . (($tier-1) * 20) . "px;' style='height:1px;' align='middle' alt=''>&nbsp;";
 		$sort_cache[$tier] = $leaf["sort_children_type"];
 
 		if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
@@ -388,7 +388,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			}
 
 			print 	"<td bgcolor='#$row_color' align='right'>\n
-				<a href='" . htmlspecialchars("tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id") . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a>\n
+				<a href='" . htmlspecialchars("tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id") . "'><img src='images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a>\n
 				</td></tr>\n";
 		}
 	}
@@ -965,7 +965,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		-->
 		</script>
 		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
-			<form name="form_timespan_selector" method="post">
+			<form name="form_timespan_selector" method="post" action="graph_view.php">
 			<td class="noprint">
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
@@ -1038,7 +1038,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 	?>
 	<tr class="noprint" bgcolor="#e5e5e5">
-		<form name="form_graph_view" method="post">
+		<form name="form_graph_view" method="post" action="graph_view.php">
 			<td class="noprint">
 				<table cellspacing="0" cellpadding="0">
 					<tr>
@@ -1449,8 +1449,8 @@ function draw_tree_dropdown($current_tree_id) {
 
 	/* make the dropdown list of trees */
 	if (sizeof($tree_list) > 1) {
-		$html ="<form name='form_tree_id'>
-			<td valign='middle' height='30' bgcolor='#" . $colors["panel"] . "'>\n
+		$html ="<form name='form_tree_id' action='graph_view.php'>
+			<td valign='middle' style='height:30px;' bgcolor='#" . $colors["panel"] . "'>\n
 				<table width='100%' cellspacing='0' cellpadding='0'>\n
 					<tr>\n
 						<td width='200' class='textHeader'>\n

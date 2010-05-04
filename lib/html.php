@@ -640,7 +640,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		if ($disable_controls == false) {
 			print "<td><a href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
 					<a href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a></td>\n";
+			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img src='images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a></td>\n";
 		}
 
 		print "</tr>";
@@ -768,7 +768,7 @@ function draw_actions_dropdown($actions_array) {
 	<table align='center' width='100%'>
 		<tr>
 			<td width='1' valign='top'>
-				<img src='images/arrow.gif' alt='' align='absmiddle'>&nbsp;
+				<img src='images/arrow.gif' alt=''>&nbsp;
 			</td>
 			<td align='right'>
 				Choose an action:
@@ -789,7 +789,7 @@ function draw_actions_dropdown($actions_array) {
  */
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
-		<td height="1" colspan="<?php print $column_span;?>">
+		<td style="height:1px;" colspan="<?php print $column_span;?>">
 			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
 		</td>
 <?php }

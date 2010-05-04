@@ -1183,7 +1183,7 @@ function host() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_devices">
+		<form name="form_devices" action="host.php">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>

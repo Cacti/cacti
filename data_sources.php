@@ -1069,7 +1069,7 @@ function ds() {
 
 	?>
 	<tr bgcolor="<?php print $colors["panel"];?>">
-		<form name="form_data_sources">
+		<form name="form_data_sources" action="data_sources.php">
 		<td>
 			<table cellpadding="1" cellspacing="0">
 				<tr>

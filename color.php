@@ -159,7 +159,7 @@ function color() {
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=1;
 			}elseif (($j % 4 == 2) || ($j % 4 == 3)) {
@@ -170,7 +170,7 @@ function color() {
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=$j++;
 			} else { ?>
@@ -180,7 +180,7 @@ function color() {
 					</td>
 					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 			<?php

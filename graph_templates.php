@@ -324,7 +324,7 @@ function item() {
 				<a class="linkEditMain" href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><?php print $item["name"];?></a>
 			</td>
 			<td align="right">
-				<a href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" width="10" height="10" border="0" alt="Delete"></a>
+				<a href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 			</td>
 		</tr>
 	<?php
@@ -480,7 +480,7 @@ function template() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_host_template">
+		<form name="form_host_template" action="graph_templates.php">
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
