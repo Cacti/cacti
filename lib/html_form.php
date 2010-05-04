@@ -780,7 +780,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 		$alt = "Export";
 	}
 
-	if ($force_type != "import" && $force_type != "export") {
+	if ($force_type != "import" && $force_type != "export" && $force_type != "save") {
 		$cancel_action = "<input type='button' onClick='returnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
 	}else{
 		$cancel_action = "";

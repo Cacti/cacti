@@ -115,7 +115,7 @@ default:
 
 	form_hidden_box("tab", $current_tab, "");
 
-	form_save_button("settings.php?tab=$current_tab", "save");
+	form_save_button("", "save");
 
 	include("./include/bottom_footer.php");
 
