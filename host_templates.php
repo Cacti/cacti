@@ -406,8 +406,8 @@ function template() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_graph_template">
 		<td>
+		<form name="form_graph_template">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="50">
@@ -422,9 +422,9 @@ function template() {
 					</td>
 				</tr>
 			</table>
-		</td>
 		<input type='hidden' name='page' value='1'>
 		</form>
+		</td>
 	</tr>
 	<?php
 

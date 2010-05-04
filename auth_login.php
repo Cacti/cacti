@@ -240,7 +240,7 @@ function auth_display_custom_error_message($message) {
 	print "     <title>" . "Cacti" . "</title>\n";
 	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
 	print "</head>\n";
-	print "<body leftmargin=\"0\" topmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">\n<br><br>\n";
+	print "<body>\n<br><br>\n";
 	display_custom_error_message($message);
 	print "</body>\n</html>\n";
 }

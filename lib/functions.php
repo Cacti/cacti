@@ -334,26 +334,27 @@ function display_output_messages() {
 		}else{
 			display_custom_error_message($_SESSION["sess_messages"]);
 		}
-	}
-	?>
-	<script type="text/javascript">
-	<!--
-	if (document.getElementById('message')) {
-		setTimeout("removeMessage(0)", 2000);
-	}
 
-	function removeMessage(position) {
-		document.getElementById('message').style.top = position+"px";
-			document.getElementById('main').style.top = position+"px";
-		position -=4;
-		if (position < -36) {
-			return;
+		?>
+		<script type="text/javascript">
+		<!--
+		if (document.getElementById('message')) {
+			setTimeout("removeMessage(0)", 2000);
 		}
-		setTimeout("removeMessage("+position+")",20);
+
+		function removeMessage(position) {
+			document.getElementById('message').style.top = position+"px";
+				document.getElementById('main').style.top = position+"px";
+			position -=4;
+			if (position < -36) {
+				return;
+			}
+			setTimeout("removeMessage("+position+")",20);
+		}
+		-->
+		</script>
+		<?php
 	}
-	-->
-	</script>
-	<?php
 
 	kill_session_var("sess_messages");
 }

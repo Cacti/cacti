@@ -1726,7 +1726,7 @@ define("HTML_HEADER_TREE",
 	<script type=\"text/javascript\" src=\"./treeview/ftiens4.js\"></script>
 </head>
 
-<body leftmargin='0' topmargin='0' marginwidth='0' marginheight='0'>
+<body>
 
 <table width='100%' height='100%' cellspacing='0' cellpadding='0'>
 	<tr height='37' bgcolor='#a9a9a9'>

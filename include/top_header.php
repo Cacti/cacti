@@ -36,7 +36,7 @@ global $colors;
 	}?>
 </head>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" style="background-image:url('images/left_border.gif');">
+<body style="background-image:url('images/left_border.gif');">
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr height="1" bgcolor="#a9a9a9">
