@@ -129,11 +129,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: data_queries.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
-		}else{
-			header("Location: data_queries.php");
-		}
+		header("Location: data_queries.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("id"));
@@ -192,11 +188,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
-			header("Location: data_queries.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
-		}else{
-			header("Location: data_queries.php?action=edit&id=" . $_POST["snmp_query_id"]);
-		}
+		header("Location: data_queries.php?action=item_edit&id=" . (empty($snmp_query_graph_id) ? $_POST["id"] : $snmp_query_graph_id) . "&snmp_query_id=" . $_POST["snmp_query_id"]);
 	}
 }
 
@@ -515,7 +507,7 @@ function data_query_item_edit() {
 					<table cellspacing="0" cellpadding="3" border="0" width="100%">
 						<tr>
 							<td width="1">
-								<input type="text" name="svds_<?php print $data_template["id"];?>_text" size="30">
+								<input type="text" name="svds_<?php print $data_template["id"];?>_text" size="60">
 							</td>
 							<td width="220" nowrap>
 								&nbsp;Field Name:&nbsp;<input type="text" name="svds_<?php print $data_template["id"];?>_field" size="15">
@@ -577,7 +569,7 @@ function data_query_item_edit() {
 				<table cellspacing="0" cellpadding="3" border="0" width="100%">
 					<tr>
 						<td width="1">
-							<input type="text" name="svg_text" size="30">
+							<input type="text" name="svg_text" size="60">
 						</td>
 						<td width="220" nowrap>
 							&nbsp;Field Name:&nbsp;<input type="text" name="svg_field" size="15">
@@ -594,7 +586,7 @@ function data_query_item_edit() {
 		html_end_box();
 	}
 
-	form_save_button("data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
+	form_save_button("data_queries.php?action=edit&id=" . $_GET["snmp_query_id"], "return");
 }
 
 /* ---------------------
@@ -698,7 +690,7 @@ function data_query_edit() {
 		}
 	}
 
-	form_save_button("data_queries.php");
+	form_save_button("data_queries.php", "return");
 }
 
 function data_query() {

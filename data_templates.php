@@ -243,11 +243,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["data_template_id"]))) {
-			header("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
-		}else{
-			header("Location: data_templates.php");
-		}
+		header("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
 	}
 }
 
@@ -564,7 +560,7 @@ function template_edit() {
 	$i = 0;
 	if (!empty($_GET["id"])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by sequence");
+		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 
 		html_start_box("<strong>Custom Data</strong> [data input: " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "100%", $colors["header"], "3", "center", "");
 
@@ -600,7 +596,7 @@ function template_edit() {
 		html_end_box();
 	}
 
-	form_save_button("data_templates.php");
+	form_save_button("data_templates.php", "return");
 }
 
 function template() {

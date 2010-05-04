@@ -82,10 +82,13 @@ $fields_data_input_edit = array(
 		"array" => $input_types,
 		),
 	"input_string" => array(
-		"method" => "textbox",
+		"method" => "textarea",
 		"friendly_name" => "Input String",
 		"description" => "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets.",
 		"value" => "|arg1:input_string|",
+		"textarea_rows" => "4",
+		"textarea_cols" => "60",
+		"class" => "textAreaNotes",
 		"max_length" => "255",
 		),
 	"id" => array(
@@ -142,7 +145,8 @@ $fields_data_input_field_edit = array(
 		"friendly_name" => "Regular Expression Match",
 		"description" => "If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).",
 		"value" => "|arg1:regexp_match|",
-		"max_length" => "200"
+		"max_length" => "200",
+		"size" => "70"
 		),
 	"allow_nulls" => array(
 		"method" => "checkbox",
@@ -155,7 +159,7 @@ $fields_data_input_field_edit = array(
 	"type_code" => array(
 		"method" => "textbox",
 		"friendly_name" => "Special Type Code",
-		"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are 'hostname', 'snmp_community', 'snmp_username', 'snmp_password', 'snmp_auth_protocol', 'snmp_priv_passphrase', 'snmp_priv_protocol', 'snmp_port', 'snmp_timeout', and 'snmp_version'.",
+		"description" => "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are " . (str_replace(")", "'", str_replace("(", "'", str_replace("|", "', '", VALID_HOST_FIELDS)))),
 		"value" => "|arg1:type_code|",
 		"max_length" => "40"
 		),
@@ -942,6 +946,7 @@ $fields_data_query_edit = array(
 		"friendly_name" => "Description",
 		"description" => "A description for this data query.",
 		"value" => "|arg1:description|",
+		"size" => "80",
 		"max_length" => "255",
 		),
 	"xml_path" => array(
@@ -950,6 +955,7 @@ $fields_data_query_edit = array(
 		"description" => "The full path to the XML file containing definitions for this data query.",
 		"value" => "|arg1:xml_path|",
 		"default" => "<path_cacti>/resource/",
+		"size" => "80",
 		"max_length" => "255",
 		),
 	"data_input_id" => array(

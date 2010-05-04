@@ -106,11 +106,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"])) || ($redirect_back == true)) {
-			header("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
-		}else{
-			header("Location: host_templates.php");
-		}
+		header("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
 	}
 }
 
@@ -362,7 +358,7 @@ function template_edit() {
 		html_end_box();
 	}
 
-	form_save_button("host_templates.php");
+	form_save_button("host_templates.php", "return");
 }
 
 function template() {

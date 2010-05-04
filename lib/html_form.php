@@ -755,12 +755,21 @@ function form_confirm_buttons($action_url, $cancel_url) { ?>
    @arg $force_type - if specified, will force the 'action' button to be either
      'save' or 'create'. otherwise this field should be properly auto-detected */
 function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
-	if (empty($force_type)) {
+	$calt = "Cancel";
+
+	if (empty($force_type) || $force_type == "return") {
 		if (empty($_GET[$key_field])) {
 			$alt = "Create";
 		}else{
 			$alt = "Save";
+
+			if (strlen($force_type)) {
+				$calt   = "Return";
+			}else{
+				$calt   = "Cancel";
+			}
 		}
+
 	}elseif ($force_type == "save") {
 		$alt = "Save";
 	}elseif ($force_type == "create") {
@@ -770,7 +779,11 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	<script type="text/javascript">
 	<!--
 	function returnTo(location) {
-		document.location = location;
+		if (location != "") {
+			document.location = location;
+		}else{
+			document.history.back();
+		}
 	}
 	-->
 	</script>
@@ -778,7 +791,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 		<tr>
 			<td bgcolor="#f5f5f5" align="right">
 				<input type='hidden' name='action' value='save'>
-				<input type='button' onClick='returnTo("<?php print $cancel_url;?>")' value='Cancel'>
+				<input type='button' onClick='returnTo("<?php print $cancel_url;?>")' value='<?php print $calt;?>'>
 				<input type='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>

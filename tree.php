@@ -111,11 +111,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: tree.php?action=edit&id=" . (empty($tree_id) ? $_POST["id"] : $tree_id));
-		}else{
-			header("Location: tree.php");
-		}
+		header("Location: tree.php?action=edit&id=" . (empty($tree_id) ? $_POST["id"] : $tree_id));
 	}elseif (isset($_POST["save_component_tree_item"])) {
 		$tree_item_id = api_tree_item_save($_POST["id"], $_POST["graph_tree_id"], $_POST["type"], $_POST["parent_item_id"],
 			(isset($_POST["title"]) ? $_POST["title"] : ""), (isset($_POST["local_graph_id"]) ? $_POST["local_graph_id"] : "0"),
@@ -452,7 +448,7 @@ function tree_edit() {
 		html_end_box();
 	}
 
-	form_save_button("tree.php");
+	form_save_button("tree.php", "return");
 }
 
 function tree() {

@@ -347,7 +347,12 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	form_hidden_box("save_component_new_graphs", "1", "");
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
 
-	form_save_button("graphs_new.php?host_id=$host_id");
+	if (!substr_count($_SERVER["HTTP_REFERER"], "graphs_new")) {
+		$_REQUEST["returnto"] = basename($_SERVER["HTTP_REFERER"]);
+	}
+	load_current_session_value("returnto", "sess_graphs_new_returnto", "");
+
+	form_save_button($_REQUEST["returnto"]);
 
 	include_once("./include/bottom_footer.php");
 }
@@ -912,7 +917,12 @@ function graphs() {
 	form_hidden_box("host_id", $host["id"], "0");
 	form_hidden_box("host_template_id", $host["host_template_id"], "0");
 
-	form_save_button((isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
+	if (!substr_count($_SERVER["HTTP_REFERER"], "graphs_new")) {
+		$_REQUEST["returnto"] = basename($_SERVER["HTTP_REFERER"]);
+	}
+	load_current_session_value("returnto", "sess_graphs_new_returnto", "");
+
+	form_save_button($_REQUEST["returnto"]);
 
 	print "<script type='text/javascript'>dq_update_selection_indicators();</script>\n";
 	print "<script type='text/javascript'>gt_update_selection_indicators();</script>\n";

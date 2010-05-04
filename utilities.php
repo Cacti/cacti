@@ -1222,7 +1222,7 @@ function utilities_view_snmp_cache() {
 	/* filter by search string */
 	if (get_request_var_request("filter") != "") {
 		$sql_where .= " AND (host.description LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR snmp_query.name LIKE '%%" . iget_request_var_request("filter") . "%%'
+			OR snmp_query.name LIKE '%%" . get_request_var_request("filter") . "%%'
 			OR host_snmp_cache.field_name LIKE '%%" . get_request_var_request("filter") . "%%'
 			OR host_snmp_cache.field_value LIKE '%%" . get_request_var_request("filter") . "%%'
 			OR host_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";

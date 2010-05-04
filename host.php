@@ -114,7 +114,7 @@ function add_tree_names_to_actions_array() {
    -------------------------- */
 
 function form_save() {
-	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
+	if ((!empty($_POST["add_dq_x"])) && (!empty($_POST["snmp_query_id"]))) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("id"));
 		input_validate_input_number(get_request_var_post("snmp_query_id"));
@@ -130,7 +130,7 @@ function form_save() {
 		exit;
 	}
 
-	if ((!empty($_POST["add_gt_y"])) && (!empty($_POST["graph_template_id"]))) {
+	if ((!empty($_POST["add_gt_x"])) && (!empty($_POST["graph_template_id"]))) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("id"));
 		input_validate_input_number(get_request_var_post("graph_template_id"));
@@ -142,7 +142,7 @@ function form_save() {
 		exit;
 	}
 
-	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_y"]))) {
+	if ((isset($_POST["save_component_host"])) && (empty($_POST["add_dq_x"]))) {
 		if ($_POST["snmp_version"] == 3 && ($_POST["snmp_password"] != $_POST["snmp_password_confirm"])) {
 			raise_message(4);
 		}else{
@@ -158,11 +158,7 @@ function form_save() {
 				$_POST["snmp_priv_protocol"], $_POST["snmp_context"], $_POST["max_oids"]);
 		}
 
-		if ((is_error_message()) || ($_POST["host_template_id"] != $_POST["_host_template_id"])) {
-			header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
-		}else{
-			header("Location: host.php");
-		}
+		header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
 	}
 }
 
@@ -1102,7 +1098,7 @@ function host_edit() {
 		html_end_box();
 	}
 
-	form_save_button("host.php");
+	form_save_button("host.php", "return");
 }
 
 function host() {

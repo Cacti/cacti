@@ -154,11 +154,7 @@ function form_save() {
 		}
 	}
 
-	if ((is_error_message()) || (empty($_POST["graph_template_id"]))) {
-		header("Location: graph_templates.php?action=template_edit&id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
-	}else{
-		header("Location: graph_templates.php");
-	}
+	header("Location: graph_templates.php?action=template_edit&id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
 }
 
 /* ------------------------
@@ -403,7 +399,7 @@ function template_edit() {
 	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
 	html_end_box();
 
-	form_save_button("graph_templates.php");
+	form_save_button("graph_templates.php", "return");
 
 //Now we need some javascript to make it dynamic
 ?>
