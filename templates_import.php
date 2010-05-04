@@ -180,6 +180,6 @@ function import() {
 
 	html_end_box();
 
-	form_save_button("templates_import.php", "save");
+	form_save_button("", "import");
 }
 ?>

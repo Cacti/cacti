@@ -774,8 +774,20 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 		$alt = "Save";
 	}elseif ($force_type == "create") {
 		$alt = "Create";
+	}elseif ($force_type == "import") {
+		$alt = "Import";
+	}elseif ($force_type == "export") {
+		$alt = "Export";
 	}
+
+	if ($force_type != "import" && $force_type != "export") {
+		$cancel_action = "<input type='button' onClick='returnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
+	}else{
+		$cancel_action = "";
+	}
+
 	?>
+
 	<script type="text/javascript">
 	<!--
 	function returnTo(location) {
@@ -791,7 +803,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 		<tr>
 			<td bgcolor="#f5f5f5" align="right">
 				<input type='hidden' name='action' value='save'>
-				<input type='button' onClick='returnTo("<?php print $cancel_url;?>")' value='<?php print $calt;?>'>
+				<?php print $cancel_action;?>
 				<input type='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>

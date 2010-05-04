@@ -147,6 +147,6 @@ function export() {
 
 	html_end_box();
 
-	form_save_button("templates_export.php");
+	form_save_button("", "export");
 }
 ?>
