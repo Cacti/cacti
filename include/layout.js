@@ -328,6 +328,10 @@ function applyGraphListFilterChange(objForm) {
 	return false;
 }
 
-
-
-
+function cactiReturnTo(location) {
+	if (location != "") {
+		document.location = location;
+	}else{
+		document.history.back();
+	}
+}

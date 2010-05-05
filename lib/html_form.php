@@ -392,7 +392,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+	print "<div style='display:none;'><input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'></div>\n";
 }
 
 /* form_dropdown - draws a standard html dropdown box
@@ -478,7 +478,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = "";
 	}
 
-	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . "> <label for='$form_name'>$form_caption</label>\n";
+	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != "" ? " <label for='$form_name'>$form_caption</label>\n":"");
 }
 
 /* form_text_box - draws a standard html radio button
@@ -734,17 +734,10 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
    @arg $cancel_url - the url to go to when the user clicks 'cancel'
    @arg $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm_buttons($action_url, $cancel_url) { ?>
-	<script type="text/javascript">
-	<!--
-	function returnTo(location) {
-		document.location = location;
-	}
-	-->
-	</script>
 	<tr>
 		<td bgcolor="#E1E1E1">
-			<input type='button' onClick='returnTo("<?php print $cancel_url;?>")' value='Cancel'>
-			<input type='submit' onClick='returnTo("<?php print $action_url;?>&confirm=true")' value='Delete'>
+			<input type='button' onClick='cactiReturnTo("<?php print $cancel_url;?>")' value='Cancel'>
+			<input type='submit' onClick='cactiReturnTo("<?php print $action_url;?>&confirm=true")' value='Delete'>
 		</td>
 	</tr>
 <?php }
@@ -781,24 +774,12 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	}
 
 	if ($force_type != "import" && $force_type != "export" && $force_type != "save") {
-		$cancel_action = "<input type='button' onClick='returnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
+		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
 	}else{
 		$cancel_action = "";
 	}
 
 	?>
-
-	<script type="text/javascript">
-	<!--
-	function returnTo(location) {
-		if (location != "") {
-			document.location = location;
-		}else{
-			document.history.back();
-		}
-	}
-	-->
-	</script>
 	<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
 			<td bgcolor="#f5f5f5" align="right">

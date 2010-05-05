@@ -158,9 +158,9 @@ function item_edit() {
 
 	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . $_GET["tree_id"] . "'");
 
-	html_start_box("<strong>Tree Items</strong>", "100%", $colors["header"], "3", "center", "");
-
 	print "<form method='post' action='tree.php' name='form_tree'>\n";
+
+	html_start_box("<strong>Tree Items</strong>", "100%", $colors["header"], "3", "center", "");
 
 	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 		<td width="50%">

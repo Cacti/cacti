@@ -434,6 +434,7 @@ function graphs() {
 	-->
 	</script>
 	<form name="form_graphs_new" action="graphs_items.php">
+
 	<table width="100%" cellpadding="4" align="center">
 		<tr>
 			<td nowrap style='white-space: nowrap;' width="30%" class="textInfo">
@@ -505,7 +506,7 @@ function graphs() {
 				Search:&nbsp;
 			</td>
 			<td nowrap style='white-space: nowrap;' width="200">
-				<input type="text" name="filter" size="30" width="200" value="<?php print $_REQUEST["filter"];?>">
+				<input type="text" name="filter" size="30" value="<?php print $_REQUEST["filter"];?>">
 			</td>
 			<td align="left" nowrap style='white-space: nowrap;'>
 				&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
@@ -540,6 +541,8 @@ function graphs() {
 		}
 	}
 
+	$script = "";
+
 	if ($_REQUEST["graph_type"] < 0) {
 		html_start_box("<strong>Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
 
@@ -564,9 +567,8 @@ function graphs() {
 			AND graph_local.host_id=" . $host["id"] . "
 			GROUP BY graph_local.graph_template_id");
 
-		$script = "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
+		$script .= "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n";
 		if (sizeof($template_graphs) > 0) {
-			$script .= "<script type='text/javascript'>\n";
 			$script .= "var gt_created_graphs = new Array(";
 
 			$cg_ctr = 0;
@@ -577,7 +579,6 @@ function graphs() {
 			}
 
 			$script .= ")\n";
-			$script .= "</script>\n";
 		}
 
 		/* create a row for each graph template associated with the host template */
@@ -627,7 +628,7 @@ function graphs() {
 			($_REQUEST["graph_type"] != -2 ? " AND snmp_query.id=" . $_REQUEST["graph_type"] : '') . "
 			ORDER BY snmp_query.name");
 
-		$script .= "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
+		$script .= (!strlen($script) ? "<script type='text/javascript'>\nvar created_graphs = new Array()\n":"");
 
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
@@ -665,8 +666,6 @@ function graphs() {
 			$snmp_query_graphs = db_fetch_assoc("SELECT snmp_query_graph.id,snmp_query_graph.name FROM snmp_query_graph WHERE snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " ORDER BY snmp_query_graph.name");
 
 			if (sizeof($snmp_query_graphs) > 0) {
-				$script .= "<script type='text/javascript'>\n";
-
 				foreach ($snmp_query_graphs as $snmp_query_graph) {
 					$created_graphs = db_fetch_assoc("SELECT DISTINCT
 						data_local.snmp_index
@@ -691,12 +690,7 @@ function graphs() {
 
 					$script .= ")\n";
 				}
-
-				$script .= "</script>\n";
 			}
-
-			/* echo the javascript */
-			print $script;
 
 			print "	<table width='100%' style='background-color: #" . $colors["form_alternate2"] . "; border: 1px solid #" . $colors["header"] . ";' align='center' cellpadding='3' cellspacing='0'>\n
 					<tr>
@@ -909,7 +903,7 @@ function graphs() {
 							</td>
 							<td align='right'>
 								<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
-								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ")'>
+								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ");'>
 									"; html_create_list($data_query_graphs,"name","id","0"); print "
 								</select>
 							</td>
@@ -918,9 +912,15 @@ function graphs() {
 			}
 
 			print "<br>";
-			print "<script type='text/javascript'>dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields . ");</script>\n";
+
+			$script .= "dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields . ");\n";
 		}
 		}
+	}
+
+	if (strlen($script)) {
+		$script .= "</script>\n";
+		print $script;
 	}
 
 	form_hidden_box("save_component_graph", "1", "");

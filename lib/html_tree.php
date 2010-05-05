@@ -593,7 +593,7 @@ function create_dhtml_tree() {
 					$tier = tree_tier($leaf["order_key"]);
 
 					if ($leaf["host_id"] > 0) {
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . "<strong>Host:</strong> " . htmlspecialchars($leaf["hostname"]) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"]) . "\"))\n";
+						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"" . "Host: " . htmlspecialchars($leaf["hostname"]) . "\", \"" . htmlspecialchars("graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"]) . "\"))\n";
 						$i++;
 						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
@@ -765,8 +765,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print "highlightObjLink(myNode)\n";
 	print "//-->\n";
 	print "</script>";
-
-	print "<table width='100%' align='center' cellpadding='3'>";
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post("graphs"));
@@ -943,7 +941,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<strong>&nbsp;Search:</strong>&nbsp;
 					</td>
 					<td width="130" nowrap="" style="white-space: nowrap;">
-						<input size='30' width='100' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>'>
+						<input size='30' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>'>
 					</td>
 					<td nowrap style='white-space:nowrap;' width="110">
 						&nbsp;<strong>Graphs per Page:</strong>&nbsp;
@@ -976,6 +974,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	</tr>
 	<?php
 	html_end_box();
+
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$graph_list = array();
@@ -1163,7 +1162,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print $nav;
 
 	/* start graph display */
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='10' class='textHeaderDark'>$title</td></tr>";
+	print "<tr bgcolor='#" . $colors["header_panel"] . "'><td width='390' colspan='11' class='textHeaderDark'>$title</td></tr>";
 
 	$i = get_request_var_request("graphs") * (get_request_var_request("page") - 1);
 	$last_graph = $i + get_request_var_request("graphs");
@@ -1346,7 +1345,7 @@ function draw_tree_dropdown($current_tree_id) {
 
 	/* make the dropdown list of trees */
 	if (sizeof($tree_list) > 1) {
-		$html ="<form name='form_tree_id' action='graph_view.php'>
+		$html ="<form name='form_tree_id' id='form_tree_id' action='graph_view.php'>
 			<td valign='middle' style='height:30px;' bgcolor='#" . $colors["panel"] . "'>\n
 				<table width='100%' cellspacing='0' cellpadding='0'>\n
 					<tr>\n

@@ -132,7 +132,7 @@ function drawFolder(insertAtObj)
     if (this.isLastNode) //the last child in the children array
 	    leftSide = leftSide + "<td valign=top>" + auxEv + "<img name='nodeIcon" + this.id + "' id='nodeIcon" + this.id + "' src='" + nodeName + "' width=16 height=22 border=0></a></td>"
     else
-      leftSide = leftSide + "<td valign=top background=" + ICONPATH + "ftv2vertline.gif>" + auxEv + "<img name='nodeIcon" + this.id + "' id='nodeIcon" + this.id + "' src='" + nodeName + "' width=16 height=22 border=0></a></td>"
+      leftSide = leftSide + "<td valign=top style='background-image:" + ICONPATH + "ftv2vertline.gif;'>" + auxEv + "<img name='nodeIcon" + this.id + "' id='nodeIcon" + this.id + "' src='" + nodeName + "' width=16 height=22 border=0></a></td>"
 
   this.isRendered = 1
 
@@ -411,7 +411,7 @@ function drawItem(insertAtObj)
     }
     else
     {
-      leftSide = leftSide + "<td valign=top background=" + ICONPATH + "ftv2vertline.gif><img src='" + ICONPATH + "ftv2node.gif' width=16 height=22></td>"
+      leftSide = leftSide + "<td valign=top style='background-image:" + ICONPATH + "ftv2vertline.gif;'><img src='" + ICONPATH + "ftv2node.gif' width=16 height=22></td>"
     }
 
   docW = docW + this.blockStartHTML("item")
@@ -559,7 +559,7 @@ function leftSideHTML(leftSideCoded) {
 	{
 		if (leftSideCoded.charAt(i) == "1")
 		{
-			retStr = retStr + "<td valign=top background=" + ICONPATH + "ftv2vertline.gif><img src='" + ICONPATH + "ftv2vertline.gif' width=16 height=22></td>"
+			retStr = retStr + "<td valign=top style='background-image:" + ICONPATH + "ftv2vertline.gif;'><img src='" + ICONPATH + "ftv2vertline.gif' width=16 height=22></td>"
 		}
 		if (leftSideCoded.charAt(i) == "0")
 		{

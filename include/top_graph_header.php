@@ -89,7 +89,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 			</table>
 		</td>
 	</tr>
-	<tr style="height:2px;" colspan="2" bgcolor="#183c8f" class="noprint">
+	<tr style="height:2px;" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
 			<img src="images/transparent_line.gif" width="170" style="height:2px;" border="0"><br>
 		</td>
@@ -144,7 +144,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	<tr>
 		<?php if ((read_graph_config_option("default_tree_view_mode") == "2") && ((isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") || ((isset($_REQUEST["view_type"]) ? $_REQUEST["view_type"] : "") == "tree"))) { ?>
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
-			<table border=0 cellpadding=0 cellspacing=0><tr><td><font size=-2><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></font></td></tr></table>
+			<table border=0 cellpadding=0 cellspacing=0><tr><td><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
 			<script type="text/javascript">initializeDocument();</script>
 

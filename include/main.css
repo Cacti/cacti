@@ -121,19 +121,25 @@ a:hover {
 
 /* tabs */
 td.tab {
-    border-top: 1px solid #999;
-    border-right: 1px solid #666;
-    border-left: 1px solid #999;
-    border-bottom: none;
-    border-radius: 2px;
-    -moz-border-radius: 2px;
+	border-top: 1px solid #999;
+	border-right: 1px solid #666;
+	border-left: 1px solid #999;
+	border-bottom: none;
+	border-top-radius-right: 4px;
+	border-top-radius-left: 4px;
+	-moz-border-radius-topright: 4px;
+	-moz-border-radius-topleft: 4px;
 }
 
 table.tabs      {
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    border-bottom: 1px solid #666;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+	border-bottom: 1px solid #666;
+	border-top-radius-right: 4px;
+	border-top-radius-left: 4px;
+	-moz-border-radius-topright: 4px;
+	-moz-border-radius-topleft: 4px;
 }
 
 /* The main calendar widget.  DIV containing a table. */
@@ -141,19 +147,19 @@ table.tabs      {
 div.calendar { position: relative; }
 
 .calendar, .calendar table {
-  border: 1px solid #556;
-  font-size: 11px;
-  color: #000;
-  cursor: default;
-  background: #eef;
-  font-family: tahoma,verdana,sans-serif;
+	border: 1px solid #556;
+	font-size: 11px;
+	color: #000;
+	cursor: default;
+	background: #eef;
+	font-family: tahoma,verdana,sans-serif;
 }
 
 /* Header part -- contains navigation buttons and day names. */
 
 .calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
-  text-align: center;    /* They are the navigation buttons */
-  padding: 2px;          /* Make the buttons seem like they're pressing */
+	text-align: center;    /* They are the navigation buttons */
+	padding: 2px;          /* Make the buttons seem like they're pressing */
 }
 
 .calendar .nav {
