@@ -72,8 +72,8 @@ global $colors;
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="#f5f5f5" colspan="1" width="135" style="height:8px;background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="images/transparent_line.gif" width="135" style="height:2px;" border="0"><br>
+		<td bgcolor="#f5f5f5" colspan="1" style="height:8px;width:135px;background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="images/transparent_line.gif" style="height:2px;width:135px;" border="0"><br>
 		</td>
 		<td colspan="2" style="height:8px;background-image: url(images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
 
@@ -85,9 +85,9 @@ global $colors;
 				<?php draw_menu();?>
 			</table>
 
-			<img src="images/transparent_line.gif" width="135" style="height:5px;" border="0"><br>
+			<img src="images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
 			<p align="center"><a href='about.php'><img src="images/cacti_logo.gif" border="0"></a></p>
-			<img src="images/transparent_line.gif" width="135" style="height:5px;" border="0"><br>
+			<img src="images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
 		</td>
 		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?><div style='position:relative;' id='main'>
 

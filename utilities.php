@@ -1515,7 +1515,7 @@ function utilities_view_poller_cache() {
 
 	$display_text = array(
 		"data_template_data.name_cache" => array("Data Source Name", "ASC"),
-		"none" => array("Details", "ASC"));
+		"nosort" => array("Details", "ASC"));
 
 	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

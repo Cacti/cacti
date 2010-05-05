@@ -91,7 +91,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	</tr>
 	<tr style="height:2px;" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
-			<img src="images/transparent_line.gif" width="170" style="height:2px;" border="0"><br>
+			<img src="images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
 		</td>
 	</tr>
 	<tr style="height:5px;" bgcolor="#e9e9e9" class="noprint">

@@ -63,13 +63,12 @@ $ldap_error = false;
 $ldap_error_message = "";
 $realm = 0;
 if ($action == 'login') {
-
 	switch (read_config_option("auth_method")) {
 	case "0":
 		/* No auth, no action, also shouldn't get here */
 		exit;
-		break;
 
+		break;
 	case "2":
 		/* Web Basic Auth */
 		$copy_user = true;
@@ -77,12 +76,11 @@ if ($action == 'login') {
 		$realm = 2;
 		/* Locate user in database */
 		$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $username . "' AND realm = 2");
-		break;
 
+		break;
 	case "3":
 		/* LDAP Auth */
  		if ((get_request_var_post("realm") == "ldap") && (strlen(get_request_var_post("login_password")) > 0)) {
-
 			/* include LDAP lib */
 			include_once("./lib/ldap.php");
 
@@ -133,7 +131,7 @@ if ($action == 'login') {
 	/* end of switch */
 
 	/* Create user from template if requested */
-	if ((! sizeof($user)) && ($copy_user) && (read_config_option("user_template") != "0") && (strlen($username) > 0)) {
+	if ((!sizeof($user)) && ($copy_user) && (read_config_option("user_template") != "0") && (strlen($username) > 0)) {
 		cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, "AUTH");
 		/* check that template user exists */
 		if (db_fetch_row("SELECT id FROM user_auth WHERE username = '" . read_config_option("user_template") . "' AND realm = 0")) {
@@ -214,7 +212,6 @@ if ($action == 'login') {
 				header("Location: graph_view.php"); break;
 		}
 		exit;
-
 	}else{
 		if ((!$guest_user) && ($user_auth)) {
 			/* No guest account defined */
@@ -303,15 +300,15 @@ function auth_display_custom_error_message($message) {
 		</tr>
 		<?php
 		if (read_config_option("auth_method") == "3") {?>
-        	<tr>
-	                <td>Realm:</td>
-	                <td>
+		<tr>
+			<td>Realm:</td>
+			<td>
 				<select name="realm" style="width: 295px;">
 					<option value="local">Local</option>
 					<option value="ldap" selected>LDAP</option>
 				</select>
 			</td>
-        	</tr>
+			</tr>
 		<?php }?>
 		<tr style="height:10px;"><td></td></tr>
 		<tr>

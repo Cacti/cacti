@@ -37,7 +37,6 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	input_validate_input_number($new_realm);
 	/* ==================================================== */
 
-
 	/* Check get template users array */
 	$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = " . $template_realm);
 	if (! isset($user_auth)) {
@@ -155,7 +154,6 @@ function user_remove($user_id) {
 
 }
 
-
 /* user_disable - disable a user account
    @arg $user_id - Id of the user account to disable */
 function user_disable($user_id) {
@@ -164,9 +162,7 @@ function user_disable($user_id) {
 	/* ==================================================== */
 
 	db_execute("UPDATE user_auth SET enabled = '' where id=" . $user_id);
-
 }
-
 
 /* user_enable - enable a user account
    @arg $user_id - Id of the user account to enable */
@@ -176,7 +172,6 @@ function user_enable($user_id) {
 	/* ==================================================== */
 
 	db_execute("UPDATE user_auth SET enabled = 'on' where id=" . $user_id);
-
 }
 
 
