@@ -22,6 +22,35 @@
  +-------------------------------------------------------------------------+
 */
 
+/* tick use required as of PHP 4.3.0 to accomodate signal handling */
+declare(ticks = 1);
+
+function sig_handler($signo) {
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			cacti_log("WARNING: Cacti Master Poller process terminated by user", TRUE);
+
+			$running_processes = db_fetch_assoc("SELECT * FROM poller_time WHERE end_time='0000-00-00 00:00:00'");
+
+			if (sizeof($running_processes)) {
+			foreach($running_processes as $process) {
+				if (function_exists("posix_kill")) {
+					cacti_log("WARNING: Termination poller process with pid '" . $process["pid"] . "'", TRUE, "POLLER");
+					posix_kill($process["pid"], SIG_TERM);
+				}
+			}
+			}
+
+			db_execute("TRUNCATE TABLE poller_time");
+
+			exit;
+			break;
+		default:
+			/* ignore all other signals */
+	}
+}
+
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
@@ -71,6 +100,12 @@ foreach($parms as $parameter) {
 		exit(1);
 	}
 }
+}
+
+/* install signal handlers for UNIX only */
+if (function_exists("pcntl_signal")) {
+	pcntl_signal(SIGTERM, "sig_handler");
+	pcntl_signal(SIGINT, "sig_handler");
 }
 
 /* record the start time */
@@ -136,7 +171,7 @@ if ($config["cacti_server_os"] == "unix") {
 	$task_type = "Scheduled Task";
 }
 
-if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 	$poller_seconds_sincerun = "never";
 	if (isset($poller_lastrun)) {
 		$poller_seconds_sincerun = $seconds - $poller_lastrun;
@@ -156,7 +191,7 @@ if ($poller_interval <= 60) {
 if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) && (!$force)) {
 	/* give the user some flexibility to run a little moe often */
 	if ((($seconds - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
-		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 			cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER');
 		}
 		exit;
@@ -196,9 +231,9 @@ while ($poller_runs_completed < $poller_runs) {
 	$change_proc = false;
 
 	/* initialize file and host count pointers */
-	$process_number = 0;
-	$first_host     = 0;
-	$last_host      = 0;
+	$started_processes = 0;
+	$first_host        = 0;
+	$last_host         = 0;
 
 	/* update web paths for the poller */
 	db_execute("REPLACE INTO settings (name,value) VALUES ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
@@ -208,6 +243,10 @@ while ($poller_runs_completed < $poller_runs) {
 	$max_threads = read_config_option("max_threads");
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
+	$running_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE end_date='0000-00-00 00:00:00'");
+	if ($running_processes) {
+		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", TRUE, "POLLER");
+	}
 	db_execute("TRUNCATE TABLE poller_time");
 
 	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output");
@@ -229,7 +268,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$issue_list .= ", Additional Issues Remain.  Only showing first 20";
 		}
 
-		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", FALSE, "POLLER");
+		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", TRUE, "POLLER");
 		db_execute("TRUNCATE TABLE poller_output");
 	}
 
@@ -300,7 +339,7 @@ while ($poller_runs_completed < $poller_runs) {
 				$first_host   = 0;
 				$last_host    = 0;
 
-				$process_number++;
+				$started_processes++;
 			} /* end change_process */
 		} /* end for each */
 
@@ -311,7 +350,7 @@ while ($poller_runs_completed < $poller_runs) {
 			exec_background($command_string, "$extra_args $first_host $last_host");
 			usleep(100000);
 
-			$process_number++;
+			$started_processes++;
 		}
 
 		/* insert the current date/time for graphs */
@@ -326,9 +365,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 		$rrds_processed = 0;
 		while (1) {
-			$polling_items = db_fetch_assoc("select poller_id,end_time from poller_time where poller_id=0");
+			$finished_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE poller_id=0 AND end_time>'0000-00-00 00:00:00'");
 
-			if (sizeof($polling_items) >= $process_number) {
+			if ($finished_processes >= $started_processes) {
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
@@ -337,7 +376,7 @@ while ($poller_runs_completed < $poller_runs) {
 				break;
 			}else {
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					print "Waiting on " . ($process_number - sizeof($polling_items)) . "/$process_number pollers.\n";
+					print "Waiting on " . ($started_processes - $finished_processes) . " of " . $started_processes . " pollers.\n";
 				}
 
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
@@ -381,7 +420,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($method == "spine") {
 			chdir(read_config_option("path_webroot"));
 		}
-	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		cacti_log("NOTE: There are no items in your poller for this polling cycle!", TRUE, "POLLER");
 	}
 
@@ -411,7 +450,7 @@ while ($poller_runs_completed < $poller_runs) {
 			usleep($sleep_time * 1000000);
 			db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
 		}
-	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
 	}
 }
@@ -441,7 +480,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		$num_polling_items,
 		$rrds_processed);
 
-	cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
+	cacti_log("STATS: " . $cacti_stats , true, "SYSTEM");
 
 	/* insert poller stats into the settings table */
 	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_poller','$cacti_stats')");

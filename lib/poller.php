@@ -36,7 +36,7 @@ function exec_poll($command) {
 		}
 
 		/* return if the popen command was not successfull */
-		if ($fp == 0) {
+		if (!is_resource($fp)) {
 			cacti_log("WARNING; Problem with POPEN command.");
 			return "U";
 		}
@@ -92,7 +92,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			}
 
 			/* return if the popen command was not successfull */
-			if ($fp == 0) {
+			if (!is_resource($fp)) {
 				cacti_log("WARNING; Problem with POPEN command.");
 				return "U";
 			}
@@ -113,9 +113,9 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
    @arg $filename - the full pathname to the script to execute
    @arg $args - any additional arguments that must be passed onto the executable */
 function exec_background($filename, $args = "") {
-	global $config;
+	global $config, $debug;
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG || $debug) {
 		cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, "POLLER");
 	}
 
@@ -242,7 +242,7 @@ function update_reindex_cache($host_id, $data_query_id) {
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if TRUE */
 function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
-	global $config;
+	global $config, $debug;
 
 	include_once($config["library_path"] . "/rrd.php");
 
@@ -311,7 +311,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 					if (sizeof($matches) == 2) {
 						if (isset($rrd_field_names{$matches[0]})) {
-							if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+							if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG || $debug) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . ":" . $matches[1] . "' [map " . $matches[0] . "->" . $rrd_field_names{$matches[0]} . "]" , true, "POLLER");
 							}
 
