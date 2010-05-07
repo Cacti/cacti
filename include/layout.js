@@ -23,23 +23,21 @@
 
 /* graph template stuff */
 function gt_update_selection_indicators() {
-	if (document.getElementById) {
-		there_are_any_unchecked_ones = false;
+	there_are_any_unchecked_ones = false;
 
-		for (var j = 0; j < document.chk.elements.length; j++) {
-			if (document.chk.elements[j].name.substr(0,3) == 'cg_') {
-				if (document.chk.elements[j].checked == false) {
-					there_are_any_unchecked_ones = true;
-				}
+	for (var j = 0; j < document.chk.elements.length; j++) {
+		if (document.chk.elements[j].name.substr(0,3) == 'cg_') {
+			if (document.chk.elements[j].checked == false) {
+				there_are_any_unchecked_ones = true;
+			}
 
-				if (!isNaN(document.chk.elements[j].name.substr(3))) {
-					lineid = document.getElementById('gt_line' + document.chk.elements[j].name.substr(3));
+			if (!isNaN(document.chk.elements[j].name.substr(3))) {
+				lineid = document.getElementById('gt_line' + document.chk.elements[j].name.substr(3));
 
-					if (document.chk.elements[j].checked) {
-						lineid.style.backgroundColor = 'khaki';
-					}else{
-						lineid.style.backgroundColor = '';
-					}
+				if (document.chk.elements[j].checked) {
+					lineid.style.backgroundColor = 'khaki';
+				}else{
+					lineid.style.backgroundColor = '';
 				}
 			}
 		}
@@ -49,14 +47,9 @@ function gt_update_selection_indicators() {
 function gt_select_line(graph_template_id, update) {
 	if (gt_is_disabled(graph_template_id)) { return; }
 
-	if (document.getElementById) {
-		msgid = document.getElementById('cg_' + graph_template_id);
-		lineid = document.getElementById('gt_line'+ graph_template_id);
-
-		if (!update) msgid.checked = !msgid.checked;
-
-		gt_update_selection_indicators();
-	}
+	msgid = document.getElementById('cg_' + graph_template_id);
+	if (!update) msgid.checked = !msgid.checked;
+	gt_update_selection_indicators();
 }
 
 function gt_is_disabled(graph_template_id) {
@@ -75,7 +68,9 @@ function gt_update_deps(num_columns) {
 	for (var i = 0; i < gt_created_graphs.length; i++) {
 		for (var j = 0; j < num_columns; j++) {
 			lineid = document.getElementById('gt_text' + gt_created_graphs[i] + '_' + j);
-			lineid.style.color = '#999999';
+			if (lineid) {
+				lineid.style.color = '#999999';
+			}
 		}
 
 		chkbx = document.getElementById('cg_' + gt_created_graphs[i]);
@@ -83,7 +78,9 @@ function gt_update_deps(num_columns) {
 		chkbx.checked = false;
 
 		lineid = document.getElementById('gt_line' + gt_created_graphs[i]);
-		lineid.style.backgroundColor = '';
+		if (lineid) {
+			lineid.style.backgroundColor = '';
+		}
 	}
 }
 
@@ -94,7 +91,9 @@ function gt_reset_deps(num_columns) {
 		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
 			for (var j = 0; j < num_columns; j++) {
 				lineid = document.getElementById('gt_text' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
-				lineid.style.color = '#000000';
+				if (lineid) {
+					lineid.style.color = '#000000';
+				}
 			}
 
 			chkbx = document.getElementById('cg_' + document.chk.elements[i].name.substr(prefix.length));
@@ -105,17 +104,16 @@ function gt_reset_deps(num_columns) {
 
 /* general id based selects */
 function update_selection_indicators() {
-	if (document.getElementById) {
-		there_are_any_unchecked_ones = false;
+	there_are_any_unchecked_ones = false;
 
-		for (var j = 0; j < document.chk.elements.length; j++) {
-			if( document.chk.elements[j].name.substr( 0, 4 ) == 'chk_') {
-				if (document.chk.elements[j].checked == false) {
-					there_are_any_unchecked_ones = true;
-				}
+	for (var j = 0; j < document.chk.elements.length; j++) {
+		if( document.chk.elements[j].name.substr( 0, 4 ) == 'chk_') {
+			if (document.chk.elements[j].checked == false) {
+				there_are_any_unchecked_ones = true;
+			}
 
-				lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(4));
-
+			lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(4));
+			if (lineid) {
 				if (document.chk.elements[j].checked) {
 					lineid.style.backgroundColor = 'khaki';
 				}else{
@@ -127,29 +125,23 @@ function update_selection_indicators() {
 }
 
 function select_line(id, update) {
-	if (document.getElementById) {
-		msgid  = document.getElementById('chk_' + id);
-		lineid = document.getElementById('line'+ id);
-
-		if (!update) msgid.checked = !msgid.checked;
-
-		update_selection_indicators();
-	}
+	msgid  = document.getElementById('chk_' + id);
+	if (!update) msgid.checked = !msgid.checked;
+	update_selection_indicators();
 }
 
 /* data query stuff */
 function dq_update_selection_indicators() {
-	if (document.getElementById) {
-		there_are_any_unchecked_ones = false;
+	there_are_any_unchecked_ones = false;
 
-		for (var j = 0; j < document.chk.elements.length; j++) {
-			if( document.chk.elements[j].name.substr( 0, 3 ) == 'sg_') {
-				if (document.chk.elements[j].checked == false) {
-					there_are_any_unchecked_ones = true;
-				}
+	for (var j = 0; j < document.chk.elements.length; j++) {
+		if( document.chk.elements[j].name.substr( 0, 3 ) == 'sg_') {
+			if (document.chk.elements[j].checked == false) {
+				there_are_any_unchecked_ones = true;
+			}
 
-				lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(3));
-
+			lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(3));
+			if (lineid) {
 				if (document.chk.elements[j].checked) {
 					lineid.style.backgroundColor = 'khaki';
 				}else{
@@ -163,14 +155,12 @@ function dq_update_selection_indicators() {
 function dq_select_line(snmp_query_id, snmp_index, update) {
 	if (dq_is_disabled(snmp_query_id, snmp_index)) { return; }
 
-	if (document.getElementById) {
-		msgid  = document.getElementById('sg_' + snmp_query_id + '_' + snmp_index);
-		lineid = document.getElementById('line'+ snmp_query_id + '_' + snmp_index);
+	msgid  = document.getElementById('sg_' + snmp_query_id + '_' + snmp_index);
+	lineid = document.getElementById('line'+ snmp_query_id + '_' + snmp_index);
 
-		if (!update) msgid.checked = !msgid.checked;
+	if (!update) msgid.checked = !msgid.checked;
 
-		dq_update_selection_indicators();
-	}
+	dq_update_selection_indicators();
 }
 
 function dq_is_disabled(snmp_query_id, snmp_index) {
@@ -233,11 +223,12 @@ function SelectAll(prefix, checkbox_state) {
 
 		if (prefix == "chk_") {
 			lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
-
-			if (document.chk.elements[i].checked) {
-				if ( lineid ) { lineid.style.backgroundColor = 'khaki'; }
-			}else{
-				if ( lineid ) { lineid.style.backgroundColor = ''; }
+			if (lineid) {
+				if (document.chk.elements[i].checked) {
+					if ( lineid ) { lineid.style.backgroundColor = 'khaki'; }
+				}else{
+					if ( lineid ) { lineid.style.backgroundColor = ''; }
+				}
 			}
 		}
 	}
