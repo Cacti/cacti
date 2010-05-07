@@ -214,9 +214,9 @@ function form_actions() {
 
 			$graph_list .= "<li>" . db_fetch_cell("select name from graph_templates where id=" . $matches[1]) . "<br>";
 			$graph_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");

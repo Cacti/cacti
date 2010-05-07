@@ -174,9 +174,9 @@ function form_actions() {
 				$user_list .= "<li>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1]) . "<br>";
 			}
 			$user_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	/* Check for deleting of Graph Export User */

@@ -419,9 +419,9 @@ function form_actions() {
 
 			$ds_list .= "<li>" . get_data_source_title($matches[1]) . "<br>";
 			$ds_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");

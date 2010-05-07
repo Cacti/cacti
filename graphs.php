@@ -380,9 +380,9 @@ function form_actions() {
 
 			$graph_list .= "<li>" . get_graph_title($matches[1]) . "<br>";
 			$graph_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");
@@ -399,7 +399,7 @@ function form_actions() {
 			$graphs = array();
 
 			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
-			if (isset($graph_array)) {
+			if (isset($graph_array) && sizeof($graph_array)) {
 				$data_sources = db_fetch_assoc("select
 					data_template_data.local_data_id,
 					data_template_data.name_cache
@@ -451,7 +451,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following graphs will be duplicated. You can
 						optionally change the title format for the new graphs.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -461,7 +461,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following graphs will be converted into graph templates.
 						You can optionally change the title format for the new graph templates.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> Template", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
@@ -471,7 +471,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following graphs will be placed under the branch selected
 						below.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
@@ -481,7 +481,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Choose a new host for these graphs:</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
@@ -491,7 +491,7 @@ function form_actions() {
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following graphs will have thier suggested naming convensions
 						recalculated and applies to the graphs.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n
 				";
@@ -499,7 +499,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click save, the following graphs will be resized per your specifications.</p>
-						<p>$graph_list</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>Graph Height:</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
 						<p><strong>Graph Width:</strong><br>"; form_text_box("graph_width", "", "", "255", "30", "text"); print "</p>
 					</td>

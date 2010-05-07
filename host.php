@@ -323,9 +323,9 @@ function form_actions() {
 
 			$host_list .= "<li>" . db_fetch_cell("select description from host where id=" . $matches[1]) . "<br>";
 			$host_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");
@@ -342,14 +342,14 @@ function form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To enable the following devices, press the \"yes\" button below.</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
 		}elseif ($_POST["drp_action"] == "3") { /* Disable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To disable the following devices, press the \"yes\" button below.</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
 		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
@@ -357,7 +357,7 @@ function form_actions() {
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To change SNMP parameters for the following devices, check the box next to the fields
 						you want to update, fill in the new value, and click \"yes\".</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
 					$form_array = array();
@@ -388,7 +388,7 @@ function form_actions() {
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To change SNMP parameters for the following devices, check the box next to the fields
 						you want to update, fill in the new value, and click \"yes\".</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
 					$form_array = array();
@@ -417,7 +417,7 @@ function form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To clear the counters for the following devices, press the \"yes\" button below.</p>
-						<p>$host_list</p>
+						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
 		}elseif ($_POST["drp_action"] == "1") { /* delete */

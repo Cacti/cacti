@@ -303,9 +303,9 @@ function form_actions() {
 
 			$ds_list .= "<li>" . db_fetch_cell("select name from data_template where id=" . $matches[1]) . "<br>";
 			$ds_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");

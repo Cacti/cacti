@@ -225,9 +225,9 @@ function form_actions() {
 
 			$dq_list .= "<li>" . db_fetch_cell("SELECT snmp_query.name FROM snmp_query WHERE id='" . $matches[1] . "'") . "<br>";
 			$dq_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");
