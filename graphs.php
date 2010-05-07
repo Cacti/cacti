@@ -414,7 +414,8 @@ function form_actions() {
 
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Are you sure you want to delete the following graphs?</p>
+						<p>When you click \"Continue\", the following Graph(s) will be deleted.  Please note, Data Sources should be deleted only if they are only used by these Graph(s)
+						and not others.</p>
 						<p><ul>$graph_list</ul></p>";
 
 						if (isset($data_sources) && sizeof($data_sources)) {
@@ -435,79 +436,85 @@ function form_actions() {
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Delete Graph(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Choose a graph template and click save to change the graph template for
-						the following graphs. Be aware that all warnings will be suppressed during the
-						conversion, so graph data loss is possible.</p>
+						<p>Choose a Graph Template and click \"Continue\" to change the Graph Template for
+						the following Graph(s). Be aware that all warnings will be suppressed during the
+						conversion, so Graph data loss is possible.</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Change Graph Template'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following graphs will be duplicated. You can
-						optionally change the title format for the new graphs.</p>
+						<p>When you click \"Continue\", the following Graph(s) will be duplicated. You can
+						optionally change the title format for the new Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Duplicate Graph(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following graphs will be converted into graph templates.
-						You can optionally change the title format for the new graph templates.</p>
+						<p>When you click \"Continue\", the following Graph(s) will be converted into Graph Template(s).
+						You can optionally change the title format for the new Graph Template(s).</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<graph_title> Template", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Convert to Graph Template'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following graphs will be placed under the branch selected
-						below.</p>
+						<p>When you click \"Continue\", the following Graph(s) will be placed under the Tree Branch selected below.</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Place Graph(s) on Tree'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "5") { /* change host */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Choose a new host for these graphs:</p>
+						<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Change Graph(s) Associated Device'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "6") { /* reapply suggested naming to host */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following graphs will have thier suggested naming convensions
+						<p>When you click \"Continue\", the following graphs will have thier suggested naming convensions
 						recalculated and applies to the graphs.</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n
 				";
-		}elseif ($_POST["drp_action"] == "7") { /* reapply suggested naming to host */
+			$save_html = "<input type='submit' value='Continue' title='Reapply Suggested Naming to Graph(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+		}elseif ($_POST["drp_action"] == "7") { /* resize graphs */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following graphs will be resized per your specifications.</p>
+						<p>When you click \"Continue\", the following graphs will be resized per your specifications.</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Graph Height:</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
 						<p><strong>Graph Width:</strong><br>"; form_text_box("graph_width", "", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
-		}
 
-		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
+			$save_html = "<input type='submit' value='Continue' title='Resize Selected Graph(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";

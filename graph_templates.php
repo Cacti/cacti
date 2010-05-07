@@ -229,25 +229,25 @@ function form_actions() {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Are you sure you want to delete the following graph templates? Any graphs attached
-						to these templates will become individual graphs.</p>
+						<p>When you click \"Continue\", the following Graph Templates will be deleted.  Any Graphs associated with
+						the Template(s) will become individual Graphs.</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Delete Graph Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following graph templates will be duplicated. You can
-						optionally change the title format for the new graph templates.</p>
+						<p>When you click \"Continue\", the following Graph Templates will be duplicated. You can
+						optionally change the title format for the new Graph Templates.</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Duplicate Graph Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}
-
-		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";

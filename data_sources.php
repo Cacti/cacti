@@ -450,7 +450,7 @@ function form_actions() {
 
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Are you sure you want to delete the following data sources?</p>
+						<p>When you click \"Continue\", the following Data Source(s) will be deleted.</p>
 						<p><ul>$ds_list</ul></p>";
 
 						if (sizeof($graphs) > 0) {
@@ -472,74 +472,80 @@ function form_actions() {
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Delete Data Source(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Choose a data template and click save to change the data template for
-						the following data souces. Be aware that all warnings will be suppressed during the
+						<p>Choose a Data Template and click \"Continue\" to change the Data Template for
+						the following Data Source(s). Be aware that all warnings will be suppressed during the
 						conversion, so graph data loss is possible.</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>New Data Template:</strong><br>"; form_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Change Graph Template for Data Source(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "3") { /* change host */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Choose a new host for these data sources:</p>
+						<p>Choose a new Device for these Data Source(s) and click \"Continue\"</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Change Device'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "4") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following data sources will be duplicated. You can
-						optionally change the title format for the new data sources.</p>
+						<p>When you click \"Continue\", the following Data Source(s) will be duplicated. You can
+						optionally change the title format for the new Data Source(s).</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<ds_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Duplicate Data Source(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click save, the following data sources will be converted into data templates.
-						You can optionally change the title format for the new data templates.</p>
+						<p>When you click \"Continue\", the following Data Source(s) will be converted into Data Template(s).
+						You can optionally change the title format for the new Data Templates.</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<ds_title> Template", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Convert Data Source(s) to Data Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "6") { /* data source enable */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click yes, the following data sources will be enabled.</p>
+						<p>When you click \"Continue\", the following Data Source(s) will be enabled.</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Enable Data Source(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "7") { /* data source disable */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click yes, the following data sources will be disabled.</p>
+						<p>When you click \"Continue\", the following Data Source(s) will be disabled.</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Disable Data Source(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click yes, the following data sources will will have their suggested naming conventions
+						<p>When you click \"Continue\", the following Data Source(s) will will have their suggested naming conventions
 						recalculated.</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n
 				";
+			$save_html = "<input type='submit' value='Continue' title='Reapply Suggested Naming to Data Source(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 		}
-
-		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data source.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";

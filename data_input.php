@@ -201,13 +201,13 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>Are you sure you want to delete the following data input methods?</p>
+						<p>When you click \"Continue\", the following Data Input Method(s) will be deleted.</p>
 						<p><ul>$di_list</ul></p>
 					</td>
 				</tr>\n";
 		}
 
-		$save_html = "<input type='submit' value='Yes' title='Execute Action'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
+		$save_html = "<input type='submit' value='Continue' title='Delete Data Input Method(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
