@@ -560,7 +560,7 @@ function host_edit() {
 							$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
 
 						/* modify for some system descriptions */
-						/* 0000937: System output in hosts.php poor for Alcatel */
+						/* 0000937: System output in host.php poor for Alcatel */
 						if (substr_count($snmp_system, "00:")) {
 							$snmp_system = str_replace("00:", "", $snmp_system);
 							$snmp_system = str_replace(":", " ", $snmp_system);
@@ -1283,7 +1283,7 @@ function host() {
 	}
 
 	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='hosts.php'>\n";
+	print "<form name='chk' method='post' action='host.php'>\n";
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
