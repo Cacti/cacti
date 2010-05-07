@@ -44,6 +44,7 @@ SVN
 -feature: Add rra_id for hosts and graphs to be used during tree export
 -feature: Make the Graphs pages render like the rest of Cacti
 -feature: Convert base Cacti UI to use buttons and not images
+-feature: Make poller sane so that it can be used by other cacti processes
 
 0.8.7e
 
