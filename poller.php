@@ -243,7 +243,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$max_threads = read_config_option("max_threads");
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
-	$running_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE end_date='0000-00-00 00:00:00'");
+	$running_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE end_time='0000-00-00 00:00:00'");
 	if ($running_processes) {
 		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", TRUE, "POLLER");
 	}
