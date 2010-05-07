@@ -245,7 +245,7 @@ function SelectAllGraphs(prefix, checkbox_state) {
 
 /* calendar stuff */
 // Initialize the calendar
-calendar=null;
+var calendar=null;
 
 // This function displays the calendar associated to the input field 'id'
 function showCalendar(id) {
@@ -299,12 +299,6 @@ function applyGraphPreviewFilterChange(objForm) {
 	strURL = strURL + '&host_id=' + objForm.host_id.value;
 	strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
 	strURL = strURL + '&filter=' + objForm.filter.value;
-	document.location = strURL;
-}
-
-function applyTimespanFilterChange(objForm) {
-	strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
-	strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 	document.location = strURL;
 }
 
