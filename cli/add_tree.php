@@ -33,6 +33,7 @@ $no_http_headers = true;
 include(dirname(__FILE__)."/../include/global.php");
 include_once($config["base_path"]."/lib/api_automation_tools.php");
 include_once($config["base_path"].'/lib/tree.php');
+include_once($config["base_path"].'/lib/api_tree.php');
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
