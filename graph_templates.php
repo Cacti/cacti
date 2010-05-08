@@ -229,24 +229,24 @@ function form_actions() {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click \"Continue\", the following Graph Templates will be deleted.  Any Graphs associated with
-						the Template(s) will become individual Graphs.</p>
+						<p>When you click \"Continue\", the following Graph Template(s) will be deleted.  Any Graph(s) associated with
+						the Template(s) will become individual Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='submit' value='Continue' title='Delete Graph Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph Template(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click \"Continue\", the following Graph Templates will be duplicated. You can
-						optionally change the title format for the new Graph Templates.</p>
+						<p>When you click \"Continue\", the following Graph Template(s) will be duplicated. You can
+						optionally change the title format for the new Graph Template(s).</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='submit' value='Continue' title='Duplicate Graph Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Graph Template(s)'>";
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";

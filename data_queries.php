@@ -249,7 +249,7 @@ function form_actions() {
 				</tr>\n";
 		}
 
-		$save_html = "<input type='submit' value='Continue' title='Delete Data Querie(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Querie(s)'>";
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data query.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";

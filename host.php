@@ -341,24 +341,24 @@ function form_actions() {
 		if ($_POST["drp_action"] == "2") { /* Enable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>To enable the following devices, click \"Continue\".</p>
+						<p>To enable the following Device(s), click \"Continue\".</p>
 						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
 
-			$save_html = "<input type='submit' value='Continue' title='Enable Device(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
 		}elseif ($_POST["drp_action"] == "3") { /* Disable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>To disable the following devices, click \"Continue\".</p>
+						<p>To disable the following Device(s), click \"Continue\".</p>
 						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
-			$save_html = "<input type='submit' value='Continue' title='Disable Device(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
 		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>To change SNMP parameters for the following devices, check the box next to the fields
+						<p>To change SNMP parameters for the following Device(s), check the box next to the fields
 						you want to update, fill in the new value, and click \"Continue\".</p>
 						<p><ul>$host_list</ul></p>
 					</td>
@@ -386,11 +386,11 @@ function form_actions() {
 							"fields" => $form_array
 							)
 						);
-			$save_html = "<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
 		}elseif ($_POST["drp_action"] == "6") { /* change availability options */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>To change SNMP parameters for the following devices, check the box next to the fields
+						<p>To change Availability parameters for the following Device(s), check the box next to the fields
 						you want to update, fill in the new value, and click \"Continue\".</p>
 						<p><ul>$host_list</ul></p>
 					</td>
@@ -417,7 +417,7 @@ function form_actions() {
 							"fields" => $form_array
 							)
 						);
-			$save_html = "<input type='submit' value='Continue' title='Change Device(s) Availability Options'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
 		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
@@ -425,19 +425,19 @@ function form_actions() {
 						<p><ul>$host_list</ul></p>
 					</td>
 					</tr>";
-			$save_html = "<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
 		}elseif ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click \"Continue\" the following Device(s) will be deleted.</p>
 						<p><ul>$host_list</ul></p>";
-						form_radio_button("delete_type", "2", "1", "Leave all graphs and data sources untouched.  Data sources will be disabled however.", "1"); print "<br>";
-						form_radio_button("delete_type", "2", "2", "Delete all associated <strong>graphs</strong> and <strong>data sources</strong>.", "1"); print "<br>";
+						form_radio_button("delete_type", "2", "1", "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.", "1"); print "<br>";
+						form_radio_button("delete_type", "2", "2", "Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>.", "1"); print "<br>";
 						print "</td></tr>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='submit' value='Continue' title='Delete Device(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
 		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
@@ -449,7 +449,7 @@ function form_actions() {
 				</tr>\n
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 				";
-			$save_html = "<input type='submit' value='Continue' title='Place Device(s) on Tree'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one device.</span></td></tr>\n";

@@ -170,23 +170,23 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following Host Template(s)? All Devices currently associated
-						with these Host Templates will lose that assocation.</p>
+						with these Host Template(s) will lose that assocation.</p>
 						<p><ul>$host_list</ul></p>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='submit' value='Continue' title='Delete Host Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Host Template(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click \"Continue\", the following Host Templates will be duplicated. You can
-						optionally change the title format for the new Host Templates.</p>
+						<p>When you click \"Continue\", the following Host Template(s) will be duplicated. You can
+						optionally change the title format for the new Host Template(s).</p>
 						<p><ul>$host_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='submit' value='Continue' title='Duplicate Host Template(s)'>&nbsp;<input type='button' value='Cancel' onClick='window.history.back()'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Host Template(s)'>";
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one host template.</span></td></tr>\n";

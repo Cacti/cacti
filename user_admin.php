@@ -200,10 +200,11 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-						<p>Are you sure you want to delete the following users?</p>
+						<p>When you click \"Continue\", the selected User(s) will be deleted.</p>
 						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete User(s)'>";
 		}
 		$user_id = "";
 
@@ -214,7 +215,7 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-						Would you like to copy this user?<br><br>
+						When you click \"Continue\" the selected User will be copied to the new User below<br><br>
 					</td>
 				</tr><tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
@@ -237,33 +238,36 @@ function form_actions() {
 			print "				</td>
 
 				</tr>\n";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
 		}
 
 		if ((get_request_var_post("drp_action") == "3") && (sizeof($user_array))) { /* enable */
 			print "
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-						<p>Are you sure you want to enable the following users?</p>
+						<p>When you click \"Continue\" the selected User(s) will be enabled.</p>
 						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
 		}
 
 		if ((get_request_var_post("drp_action") == "4") && (sizeof($user_array))) { /* disable */
 			print "
 				<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-						<p>Are you sure you want to disable the following users?</p>
+						<p>When you click \"Continue\" the selected User(s) will be disabled.</p>
 						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
 		}
 
 		if ((get_request_var_post("drp_action") == "5") && (sizeof($user_array))) { /* batch copy */
 			$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>Are you sure you want to overwrite the selected users with the selected template users settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template user.<br><br></td>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>When you click \"Continue\" you will overwrite selected the User(s) settings with the selected template User settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
 				</tr><tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
 						Template User: \n";
@@ -272,13 +276,12 @@ function form_actions() {
 
 				</tr><tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
-						<p>Users to update:
+						<p>User(s) to update:
 						<ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reset User(s) Settings'>";
 		}
-
-		$save_html = "<input type='submit' value='Yes'>&nbsp;<input type='button' value='No' onClick='window.history.back()'>";
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
