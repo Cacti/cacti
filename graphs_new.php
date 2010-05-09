@@ -33,7 +33,6 @@ define("MAX_DISPLAY_PAGES", 21);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
-echo "Hello";
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
