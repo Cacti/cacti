@@ -33,7 +33,7 @@ define("MAX_DISPLAY_PAGES", 21);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
-
+echo "Hello";
 switch ($_REQUEST["action"]) {
 	case 'save':
 		form_save();
@@ -433,7 +433,7 @@ function graphs() {
 
 	-->
 	</script>
-	<form name="form_graphs_new" action="graphs_items.php">
+	<form name="form_graphs_new" action="graphs_new.php">
 
 	<table width="100%" cellpadding="4" align="center">
 		<tr>
