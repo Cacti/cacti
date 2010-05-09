@@ -680,6 +680,7 @@ function ds_edit() {
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_id"));
 	/* ==================================================== */
 
 	$use_data_template = true;
