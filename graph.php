@@ -33,7 +33,7 @@ include_once("./lib/html_tree.php");
 include_once("./include/top_graph_header.php");
 
 /* ================= input validation ================= */
-input_validate_input_regex(get_request_var_request("rra_id"), "^([0-9]+|all)$");
+input_validate_input_regex(get_request_var("rra_id"), "^([0-9]+|all)$");
 input_validate_input_number(get_request_var("local_graph_id"));
 input_validate_input_number(get_request_var("graph_end"));
 input_validate_input_number(get_request_var("graph_start"));

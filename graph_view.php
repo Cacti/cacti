@@ -242,7 +242,7 @@ case 'preview':
 				$_REQUEST["filter"]  = "";
 				$_REQUEST["host_id"] = "0";
 
-				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : get_request_var_request("rra_id");
+				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : get_request_var("rra_id");
 			}
 		}
 	}
