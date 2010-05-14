@@ -862,12 +862,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
 			<td class="noprint">
 			<form style="margin:0px;padding:0px;" name="form_timespan_selector" method="post" action="graph_view.php">
-				<table width="100%" cellpadding="0" cellspacing="0">
+				<table cellpadding="0" cellspacing="0">
 					<tr>
-						<td nowrap style='white-space: nowrap;' width='55'>
+						<td nowrap style='white-space: nowrap;'>
 							&nbsp;<strong>Presets:</strong>&nbsp;
 						</td>
-						<td nowrap style='white-space: nowrap;' width='130'>
+						<td nowrap style='white-space: nowrap;'>
 							<select name='predefined_timespan' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 								<?php
 								if (isset($_SESSION["custom"])) {
@@ -891,23 +891,29 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								?>
 							</select>
 						</td>
-						<td nowrap style='white-space: nowrap;' width='30'>
+						<td nowrap style='white-space: nowrap;'>
 							&nbsp;<strong>From:</strong>&nbsp;
 						</td>
-						<td width='150' nowrap style='white-space: nowrap;'>
-							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">&nbsp;
+						<td nowrap style='white-space: nowrap;'>
+							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='15' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
 						</td>
-						<td nowrap style='white-space: nowrap;' width='20'>
+						<td nowrap style='white-space: nowrap;'>
+							&nbsp;<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
+						</td>
+						<td nowrap style='white-space: nowrap;'>
 							&nbsp;<strong>To:</strong>&nbsp;
 						</td>
-						<td width='150' nowrap style='white-space: nowrap;'>
-							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-							&nbsp;<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
+						<td nowrap style='white-space: nowrap;'>
+							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='15' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
 						</td>
-						<td width='130' nowrap style='white-space: nowrap;'>
-							&nbsp;&nbsp;<input style='padding-bottom:8px;' type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
-							<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
+						<td nowrap style='white-space: nowrap;'>
+							&nbsp;<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
+						</td>
+						<td nowrap style='white-space: nowrap;'>
+							&nbsp;<input type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
+						</td>
+						<td nowrap style='white-space: nowrap;'>
+							&nbsp;<select name='predefined_timeshift' title='Define Shifting Interval' onChange="applyTimespanFilterChange(document.form_timespan_selector)">
 								<?php
 								$start_val = 1;
 								$end_val = sizeof($graph_timeshifts)+1;
@@ -918,10 +924,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								}
 								?>
 							</select>
-							<input style='padding-bottom:8px;' type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
 						</td>
 						<td nowrap style='white-space: nowrap;'>
-							&nbsp;&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
+							&nbsp;<input type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
+						</td>
+						<td nowrap style='white-space: nowrap;'>
+							&nbsp;<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
+						</td>
+						<td nowrap style='white-space: nowrap;'>
 							<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
 						</td>
 					</tr>
