@@ -540,7 +540,7 @@ function graphs() {
 		}
 	}
 
-	$script = "";
+	$script = "<script type='text/javascript'>\nvar gt_created_graphs = new Array();\nvar created_graphs = new Array()\n";
 
 	if ($_REQUEST["graph_type"] < 0) {
 		html_start_box("<strong>Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
@@ -566,7 +566,6 @@ function graphs() {
 			AND graph_local.host_id=" . $host["id"] . "
 			GROUP BY graph_local.graph_template_id");
 
-		$script .= "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n";
 		if (sizeof($template_graphs) > 0) {
 			$script .= "var gt_created_graphs = new Array(";
 
@@ -626,8 +625,6 @@ function graphs() {
 			AND host_snmp_query.host_id=" . $host["id"] .
 			($_REQUEST["graph_type"] != -2 ? " AND snmp_query.id=" . $_REQUEST["graph_type"] : '') . "
 			ORDER BY snmp_query.name");
-
-		$script .= (!strlen($script) ? "<script type='text/javascript'>\nvar created_graphs = new Array()\n":"");
 
 		if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
