@@ -31,7 +31,6 @@
 var cURLBase = "graph.php?action=zoom";
 
 // Global variables
-var gZoomGraphName = "zoomGraphImage";
 var gZoomGraphObj;
 var gMouseObj;
 var gUrlObj;
@@ -122,7 +121,6 @@ function mouseObjLeftButtonPressed() {
 	// alert ("Button Pressed");
 	if (gBrowserObj.browser == "IE") {
 		LeftButtonPressed = (this.event.button < 2);
-		// alert ("Net");
 	} else {
 		LeftButtonPressed = (this.event.which  < 2);
 	}
@@ -139,7 +137,6 @@ function mouseObjRightButtonPressed() {
 		if ((this.event.button >= 2) && (this.event.button != 4)) {
 			RightButtonPressed = true;
 		}
-		// alert ("Net");
 	} else {
 		if (this.event.which > 2) {
 			RightButtonPressed = true;
@@ -154,7 +151,7 @@ function mouseObjRightButtonPressed() {
 function mouseObjGetCurrentPosition() {
 	this.currentX = this.event.clientX + document.body.scrollLeft;
 	this.currentY = this.event.clientY + document.body.scrollTop;
-// alert (this.currentX + "\n" + this.currentY);
+	// alert (this.currentX + "\n" + this.currentY);
 }
 
 /*+++++++++++++++++  mouseObjSaveCurrentToStartPosition  ++++++++++++++++++++*/
@@ -215,52 +212,33 @@ function zoomGraphObj(zoomGraphName) {
 /*+++++++++++++++++++++++++++  zoomGraphObjRefresh  +++++++++++++++++++++++++*/
 
 function zoomGraphObjRefresh() {
-	//  constants
-	var cZoomBoxName = "zoomBox";
-
 	var titleFontSize = parseInt(gUrlObj.getUrlParameterValue("title_font_size"));
 
 	if (titleFontSize == 0) {
 		var cZoomBoxTopOffsetWOText = 15 - 1;
 		var cZoomBoxTopOffsetWText  = 32 - 1;
-		var cZoomBoxRightOffset     = -16;
+		var cZoomBoxRightOffset     = 16;
 	} else {
 		var cZoomBoxTopOffsetWOText = 10 - 1;
 		var cZoomBoxTopOffsetWText  = titleFontSize + (titleFontSize * 1.6) + 10 - 1;
-		var cZoomBoxRightOffset     = -28;
+		var cZoomBoxRightOffset     = 28;
 	}
 
 	// zone outside of Zoom box where user can move cursor to without causing odd behavior
-	var cZoomSensitiveZoneName   = "zoomSensitiveZone";
-	var cZoomSensitiveZoneOffset = 30;
+	var cZoomSensitiveZoneOffset = 5;
 
-	// variables
-	var imgObject;
-	// var imgSource;
-	var imgAlt;
-
-	var divObject;
-
-	var left;
-	var top;
-	var width;
-	var height;
-
-	// zoomable selection area Width and Height
-	var zoomBoxWidth;
-	var zoomBoxHeight;
-
-	imgObject = this.imgObject;
-	//imgSource = imgObject.src;
-	imgAlt = imgObject.alt;
-
-	// determine the overall graph size
-	width  = imgObject.width;
-	height = imgObject.height;
+	var imgObject = this.imgObject;
+	var imgAlt = imgObject.alt;
 
 	// get the graph area size from the url
-	zoomBoxWidth  = parseInt(gUrlObj.getUrlParameterValue("graph_width")) + 1;
-	zoomBoxHeight = parseInt(gUrlObj.getUrlParameterValue("graph_height")) + 1;
+	var imageWidth  = imgObject.clientWidth;
+	var imageHeight = imgObject.clientHeight;
+	//alert("Overall Image Dimensions:"+imageWidth+", "+imageHeight);
+
+	// get the graph area size from the url
+	var graphWidth  = parseInt(gUrlObj.getUrlParameterValue("graph_width")) + 1;
+	var graphHeight = parseInt(gUrlObj.getUrlParameterValue("graph_height")) + 1;
+	//alert("Inside Image Dimensions:"+zoomBoxWidth+", "+zoomBoxHeight);
 
 	// Get absolute image position relative to the overall window.
 	//
@@ -268,24 +246,25 @@ function zoomGraphObjRefresh() {
 	// ancestory of elements (tables, div's, spans, etc...) until
 	// we're at the top of the display.  Along the way we add in each element's
 	// coordinates to get absolute image postion.
-	left = 0;
-	top  = 0;
+	var imageLeft = 0;
+	var imageTop  = 0;
 	do {
-		left += imgObject.offsetLeft;
-		top  += imgObject.offsetTop;
+		imageLeft += imgObject.offsetLeft;
+		imageTop  += imgObject.offsetTop;
 		imgObject  = imgObject.offsetParent;
 	} while(imgObject);
 
 	// set the images's Ix1,Iy1 and Ix2,Iy2 postions based upon results
-	this.zoomGraphLeft   = left;
-	this.zoomGraphTop    = top;
-	this.zoomGraphRight  = left + width;
-	this.zoomGraphBottom = top  + height;
-	this.zoomGraphWidth  = width;
-	this.zoomGraphHeight = height;
+	this.zoomGraphLeft   = imageLeft;
+	this.zoomGraphTop    = imageTop;
+	this.zoomGraphRight  = imageLeft + imageWidth;
+	this.zoomGraphBottom = imageTop  + imageHeight;
+	this.zoomGraphWidth  = imageWidth;
+	this.zoomGraphHeight = imageHeight;
+	//alert("Image Position (x,y):("+imageLeft+','+imageTop+') x ('+this.zoomGraphRight+', '+this.zoomGraphBottom+')');
 
 	// calculate the right hand coordinate (rrdGAx2) of the zoom box (aka rrd Graph area)
-	this.zoomBoxRight = this.zoomGraphRight + cZoomBoxRightOffset;
+	this.zoomBoxRight = this.zoomGraphRight - cZoomBoxRightOffset;
 
 	// calculate the top coordinate (rrdGAy2) of the zoom box (aka rrd Graph area)
 	if(imgAlt == "") {
@@ -295,23 +274,24 @@ function zoomGraphObjRefresh() {
 	}
 
 	// calculate the left hand coordinate (rrdGAx1) of the zoom box (aka rrd Graph area)
-	this.zoomBoxLeft = this.zoomBoxRight - zoomBoxWidth;
+	this.zoomBoxLeft = this.zoomBoxRight - graphWidth;
 
 	// calculate the bottom coordinate (rrdGAy1) of the zoom box (aka rrd Graph area)
-	this.zoomBoxBottom = this.zoomBoxTop + zoomBoxHeight;
+	this.zoomBoxBottom = this.zoomBoxTop + graphHeight;
+	//alert("ZoomBox Position (x,y):("+this.zoomBoxLeft+', '+this.zoomBoxTop+') x ('+this.zoomBoxRight+', '+this.zoomBoxBottom+')');
 
 	// set the objects zoom sizes from the url values (aka rrd Graph size)
-	this.zoomBoxWidth  = zoomBoxWidth;
-	this.zoomBoxHeight = zoomBoxHeight;
+	this.zoomBoxWidth  = graphWidth;
+	this.zoomBoxHeight = graphHeight;
 
 	// this.drawSelection(this.zoomBoxLeft, this.zoomBoxTop, this.zoomBoxRight, this.zoomBoxBottom);
 	this.drawSelection(0, 0, 0, 0); // reset selection
 
-	divObject              = document.getElementById(cZoomBoxName);
-	divObject.style.left   = this.zoomBoxLeft;
-	divObject.style.top    = this.zoomBoxTop;
-	divObject.style.width  = this.zoomBoxWidth;
-	divObject.style.height = this.zoomBoxHeight;
+	var zoomBox          = document.getElementById("zoomBox");
+	zoomBox.style.left   = this.zoomBoxLeft+'px';
+	zoomBox.style.top    = this.zoomBoxTop+'px';
+	zoomBox.style.width  = this.zoomBoxWidth+'px';
+	zoomBox.style.height = this.zoomBoxHeight+'px';
 
 	// allow the crosshair to extend outside of the Graph area without graphical glitches
 	this.zoomSensitiveZoneLeft   = this.zoomBoxLeft - cZoomSensitiveZoneOffset;
@@ -321,19 +301,16 @@ function zoomGraphObjRefresh() {
 	this.zoomSensitiveZoneWidth  = this.zoomSensitiveZoneRight - this.zoomSensitiveZoneLeft;
 	this.zoomSensitiveZoneHeight = this.zoomSensitiveZoneBottom - this.zoomSensitiveZoneTop;
 
-	divObject              = document.getElementById(cZoomSensitiveZoneName);
-	divObject.style.left   = this.zoomSensitiveZoneLeft;
-	divObject.style.top    = this.zoomSensitiveZoneTop;
-	divObject.style.width  = this.zoomSensitiveZoneWidth;
-	divObject.style.height = this.zoomSensitiveZoneHeight;
+	var zoomZone          = document.getElementById("zoomSensitiveZone");
+	zoomZone.style.left   = this.zoomSensitiveZoneLeft+'px';
+	zoomZone.style.top    = this.zoomSensitiveZoneTop+'px';
+	zoomZone.style.width  = this.zoomSensitiveZoneWidth+'px';
+	zoomZone.style.height = this.zoomSensitiveZoneHeight+'px';
 }
 
 /*++++++++++++++++++++++  zoomGraphObjDrawSelection  ++++++++++++++++++++++++*/
 
 function zoomGraphObjDrawSelection (x1, y1, x2, y2) {
-	var cZoomBoxName = "zoomBox";
-	var divObject;
-
 	x1 = x1 - this.zoomBoxLeft;
 	x2 = x2 - this.zoomBoxLeft;
 	y1 = y1 - this.zoomBoxTop;
@@ -344,8 +321,8 @@ function zoomGraphObjDrawSelection (x1, y1, x2, y2) {
 	var minY = Math.min(y1, y2);
 	var maxY = Math.max(y1, y2) + 1;
 
-	divObject = document.getElementById(cZoomBoxName);
-	divObject.style.clip ="rect(" + minY + "px " + maxX + "px " + maxY + "px " + minX + "px)";
+	var divObject = document.getElementById("zoomBox");
+	divObject.style.clip ="rect(" + minY + "px, " + maxX + "px, " + maxY + "px, " + minX + "px)";
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -392,18 +369,19 @@ function BrowserDetector(ua) {
 	this.majorver = "";
 	this.minorver = "";
 
-	uaLen = ua.length;
+	if (ua) {
+		var uaLen = ua.length;
+		var i = ua.indexOf("(");
+	}
 
 	// ##### split into stuff before parens and stuff in parens
 	var preparens = "";
 	var parenthesized = "";
 
-	i = ua.indexOf("(");
-
 	if (i >= 0) {
 		preparens = Trim(ua.substring(0,i));
 		parenthesized = ua.substring(i+1, uaLen);
-		j = parenthesized.indexOf(")");
+		var j = parenthesized.indexOf(")");
 		if (j >= 0) {
 			parenthesized = parenthesized.substring(0, j);
 		}
@@ -489,10 +467,10 @@ function BrowserDetector(ua) {
 
 function initBonsai() {
 	gBrowserObj   = new BrowserDetector(navigator.userAgent);
-	// alert("Browser: " + gBrowserObj.browser + "\nPlatform: " + gBrowserObj.platform + "\nVersion: " + gBrowserObj.version + "\nMajorVer: " + gBrowserObj.majorver + "\nMinorVer: " + gBrowserObj.minorver);
+	//alert("Browser: " + gBrowserObj.browser + "\nPlatform: " + gBrowserObj.platform + "\nVersion: " + gBrowserObj.version + "\nMajorVer: " + gBrowserObj.majorver + "\nMinorVer: " + gBrowserObj.minorver);
 
 	// gUrlObj = new urlObj(document.URL);
-	gZoomGraphObj = new zoomGraphObj(gZoomGraphName);
+	gZoomGraphObj = new zoomGraphObj("zoomGraphImage");
 	gMouseObj     = new mouseObj();
 	initEvents();
 }
@@ -514,7 +492,7 @@ function insideZoomBox() {
 /*++++++++++++++++++++++++++++  initEvents  +++++++++++++++++++++++++++++++++*/
 
 function initEvents() {
-	document.onmousemove = onMouseMouveEvent;
+	document.onmousemove = onMouseMoveEvent;
 	document.onmousedown = onMouseDownEvent;
 	document.onmouseup = onMouseUpEvent;
 	window.onresize = windowOnResizeEvent;
@@ -547,9 +525,9 @@ function onMouseDownEvent(e) {
 	}
 }
 
-/*+++++++++++++++++++++++++++  onMouseMouveEvent  +++++++++++++++++++++++++++*/
+/*+++++++++++++++++++++++++++  onMouseMoveEvent  +++++++++++++++++++++++++++*/
 
-function onMouseMouveEvent(e) {
+function onMouseMoveEvent(e) {
 	gMouseObj.setEvent(e);
 	if (gMouseObj.dragging) {
 		gMouseObj.getCurrentPosition();
@@ -663,6 +641,5 @@ function windowOnResizeEvent() {
 
 window.onload = initBonsai;
 
-// end of script
-//-->
+-->
 </script>

@@ -70,7 +70,7 @@ $graph_title = get_graph_title($_GET["local_graph_id"]);
 if ($_REQUEST["view_type"] == "tree") {
 	print "<table width='100%' style='background-color: #ffffff; border: 1px solid #ffffff;' align='center' cellpadding='3'>";
 }else{
-	print "<br><table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>";
+	print "<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellspacing='0' cellpadding='3'>";
 }
 
 $rras = get_associated_rras($_GET["local_graph_id"]);
@@ -191,13 +191,13 @@ case 'zoom':
 	}
 
 	?>
-	<tr bgcolor='#<?php print $colors["header_panel"];?>'>
+	<tr bgcolor='#<?php print $colors["header"];?>'>
 		<td colspan='3' class='textHeaderDark'>
 			<strong>Zooming Graph</strong> '<?php print $graph_title;?>'
 		</td>
 	</tr>
-	<div id='zoomBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
-	<div id='zoomSensitiveZone' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
+	<div id='zoomBox' style='position:fixed; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
+	<div id='zoomSensitiveZone' style='position:fixed; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
 	<STYLE MEDIA="print">
 	/*Turn off the zoomBox*/
 	div#zoomBox, div#zoomSensitiveZone {display: none}
