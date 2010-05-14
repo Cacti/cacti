@@ -252,6 +252,10 @@ function template_edit() {
 		"fields" => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
 		));
 
+	/* we have to hide this button to make a form change in the main form trigger the correct
+	 * submit action */
+	echo "<div style='display:none;'><input type='submit' value='Default Submit Button'></div>";
+
 	html_end_box();
 
 	if (!empty($_GET["id"])) {

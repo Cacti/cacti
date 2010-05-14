@@ -661,6 +661,10 @@ function host_edit() {
 		"fields" => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
 		));
 
+	/* we have to hide this button to make a form change in the main form trigger the correct
+	 * submit action */
+	echo "<div style='display:none;'><input type='submit' value='Default Submit Button'></div>";
+
 	html_end_box();
 
 	?>

@@ -345,8 +345,8 @@ function display_output_messages() {
 		function removeMessage(position) {
 			document.getElementById('message').style.top = position+"px";
 				document.getElementById('main').style.top = position+"px";
-			position -=4;
-			if (position < -36) {
+			position -=2;
+			if (position <= -39) {
 				return;
 			}
 			setTimeout("removeMessage("+position+")",20);
