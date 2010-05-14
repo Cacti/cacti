@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
 -bug#0001628: Message does not match available buttons in Change SNMP Options
 -bug#0001695: suppress deprecated warnings in Cacti code 
+-bug#0001746: SNMP Hex-String matching 
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
 -bug: Browser query string does not contain arguments
 -bug: inject_form_variables does not operate if more than 1 variable needs replacing
@@ -39,6 +40,7 @@ Cacti CHANGELOG
 -bug: When clearing filter, reset page to 1 for all queries
 -bug: Graph List selectors do not persist between pages
 -bug: allow empty [upper|lower]_limit even without autoscaling
+-bug: Availability method Ping or SNMP generates meaningless warnings
 -feature: Add logging to SQL Save error handling
 -feature: Add utility to convert database to InnoDB
 -feature: Return nav as the title for the page
@@ -47,6 +49,7 @@ Cacti CHANGELOG
 -feature: Make the Graphs pages render like the rest of Cacti
 -feature: Convert base Cacti UI to use buttons and not images
 -feature: Make poller sane so that it can be used by other cacti processes
+-feature: Add snmp timeout warnings for lib/snmp.php
 
 0.8.7e
 
