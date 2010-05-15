@@ -82,7 +82,7 @@ $graph_info = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_grap
 $xport_meta = array();
 
 /* Get graph export */
-$xport_array = rrdtool_function_xport($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array, $xport_meta);
+$xport_array = @rrdtool_function_xport($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array, $xport_meta);
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array["meta"])) {
