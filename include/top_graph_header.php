@@ -163,4 +163,4 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 			<?php } ?>
 		</td>
 		<?php } ?>
-		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><div style='position:relative;' id='main'>
+		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><div style='position:static;' id='main'>

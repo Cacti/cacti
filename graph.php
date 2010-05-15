@@ -196,15 +196,15 @@ case 'zoom':
 			<strong>Zooming Graph</strong> '<?php print $graph_title;?>'
 		</td>
 	</tr>
-	<div id='zoomBox' style='position:fixed; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible;'></div>
-	<div id='dragBox' style='position:fixed; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
-	<div id='zoomSensitiveZone' style='position:fixed; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
-	<STYLE MEDIA="print">
+	<div id='zoomBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible;'></div>
+	<div id='dragBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
+	<div id='zoomSensitiveZone' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
+	<style media="print">
 	/*Turn off the zoomBox*/
-	div#zoomBox, div#zoomSensitiveZone {display: none}
+	div#zoomBox, div#zoomSensitiveZone, div#dragBox {display: none}
 	/*This keeps IE from cutting things off*/
 	#why {position: static; width: auto}
-	</STYLE>
+	</style>
 	<tr>
 		<td align='center'>
 			<table width='1' cellpadding='0'>
