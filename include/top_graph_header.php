@@ -51,6 +51,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 }
 
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title><?php echo draw_navigation_text("title");?></title>
@@ -73,7 +74,6 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 
 <body>
 <a name='page_top'></a>
-
 <table style="width:100%;height:100%;" cellspacing="0" cellpadding="0">
 	<tr style="height:25px;" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
@@ -139,11 +139,13 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 			?>
 		</td>
 	</tr>
-	<?php }?>
-
+	<?php }
+	load_current_session_value("action", "sess_cacti_graph_action", $graph_views[read_graph_config_option("default_tree_view_mode")]);
+	load_current_session_value("view_type", "sess_cacti_graph_view_type", $graph_views[read_graph_config_option("default_tree_view_mode")]);
+	?>
 	<tr>
-		<?php if ((read_graph_config_option("default_tree_view_mode") == "2") && ((isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") || ((isset($_REQUEST["view_type"]) ? $_REQUEST["view_type"] : "") == "tree"))) { ?>
-		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
+		<?php if ($_REQUEST["action"] == "tree" || $_REQUEST["view_type"] == "tree") { ?>
+		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;background-repeat:repeat-y;background-color:#efefef;" bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
 			<table border=0 cellpadding=0 cellspacing=0><tr><td><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
 			<script type="text/javascript">initializeDocument();</script>

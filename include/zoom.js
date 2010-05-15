@@ -321,8 +321,21 @@ function zoomGraphObjDrawSelection (x1, y1, x2, y2) {
 	var minY = Math.min(y1, y2);
 	var maxY = Math.max(y1, y2) + 1;
 
-	var divObject = document.getElementById("zoomBox");
-	divObject.style.clip ="rect(" + minY + "px, " + maxX + "px, " + maxY + "px, " + minX + "px)";
+	/* check for upper bounds */
+	if (maxX > this.zoomBoxWidth) {
+		maxX = this.zoomBoxWidth;
+	}
+
+	if (maxY > this.zoomBoxHeight) {
+		maxY = this.zoomBoxHeight;
+	}
+
+	var divObject = document.getElementById("dragBox");
+	divObject.style.top    = this.zoomBoxTop+minY+"px";
+	divObject.style.left   = this.zoomBoxLeft+minX+"px";
+	divObject.style.width  = maxX-minX+"px";
+	divObject.style.height = maxY-minY+"px";
+//	divObject.style.clip ="rect(" + minY + "px  " + maxX + "px  " + maxY + "px  " + minX + "px)";
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -492,16 +505,16 @@ function insideZoomBox() {
 /*++++++++++++++++++++++++++++  initEvents  +++++++++++++++++++++++++++++++++*/
 
 function initEvents() {
-	document.onmousemove = onMouseMoveEvent;
-	document.onmousedown = onMouseDownEvent;
-	document.onmouseup = onMouseUpEvent;
+	object = document.getElementById("zoomSensitiveZone");
+
+	if (object) {
+		object.onmousemove   = onMouseMoveEvent;
+		object.onmousedown   = onMouseDownEvent;
+		object.onmouseup     = onMouseUpEvent;
+	}
+
 	window.onresize = windowOnResizeEvent;
 
-	if (gBrowserObj.browser == "Netscape") {
-		document.captureEvents(Event.MOUSEMOVE);
-		document.captureEvents(Event.MOUSEDOWN);
-		document.captureEvents(Event.MOUSEUP);
-	}
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -520,6 +533,7 @@ function onMouseDownEvent(e) {
 			gMouseObj.saveCurrentToStartPosition();
 			gZoomGraphObj.drawSelection(gMouseObj.currentX, gMouseObj.currentY, gMouseObj.currentX, gMouseObj.currentY);
 		} else if (gMouseObj.rightButtonPressed()) {
+			e.preventDefault();
 			var test = true;
 		}
 	}
