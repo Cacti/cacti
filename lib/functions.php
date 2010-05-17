@@ -316,7 +316,7 @@ function display_output_messages() {
 				switch ($messages[$current_message_id]["type"]) {
 				case 'info':
 					if ($error_message == false) {
-						print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;position:relative;z-index:-1;background-color: #ffffff; border: 1px solid #bbbbbb;'>";
+						print "<div id='message' class='textInfo' style='padding:5px 20px;position:relative;background-color: #ffffff; border: 1px solid #bbbbbb;'>";
 						print "$message";
 						print "</div>";
 
@@ -325,7 +325,7 @@ function display_output_messages() {
 					}
 					break;
 				case 'error':
-					print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;position:relative;z-index:-1;background-color: #ffffff; border: 1px solid #ff0000;'>";
+					print "<div id='message' class='textError' style='padding:5px 20px;position:relative;background-color: #ffffff; border: 1px solid #ff0000;'>";
 					print "Error: $message";
 					print "</div>";
 					break;
@@ -338,18 +338,39 @@ function display_output_messages() {
 		?>
 		<script type="text/javascript">
 		<!--
+		var obj = document.getElementById('message');
+		if (window.innerHeight) {
+			height = window.innerHeight;
+			width  = window.innerWidth;
+		}else{
+			height = document.body.clientHeight;
+			width  = document.body.clientWidth;
+		}
+		var opacity=1;
+
+		obj.style.zIndex = 2;
+		obj.style.position = "absolute";
+		obj.style.backgroundColor = "#EAEAEA";
+		obj.style.padding = "10px 20px";
+		cw = obj.scrollWidth;
+		ch = obj.scrollHeight;
+		obj.style.top = '150px';
+		obj.style.left = ((width/2) - (cw / 2) - 75)+'px';
+		obj.style.border = 'medium solid #AEAEAE';
+		opacity = 1;
+		obj.style.opacity = opacity;
+		obj.zoom = "100%";
 		if (document.getElementById('message')) {
-			setTimeout("removeMessage(0)", 2000);
+			setTimeout("removeMessage()", 2000);
 		}
 
-		function removeMessage(position) {
-			document.getElementById('message').style.top = position+"px";
-				document.getElementById('main').style.top = position+"px";
-			position -=2;
-			if (position <= -39) {
-				return;
-			}
-			setTimeout("removeMessage("+position+")",20);
+		function removeMessage() {
+			if (obj.style.opacity <= 0) return;
+			opacity-=0.15;
+			iopacity = opacity * 100;
+			obj.style.opacity = opacity;
+			obj.style.filter = 'alpha(opacity='+iopacity+')';
+			setTimeout("removeMessage()",40);
 		}
 		-->
 		</script>
@@ -363,7 +384,7 @@ function display_output_messages() {
      the pre-defined error messages
    @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;position:relative;z-index:-1;background-color: #ffffff; border: 1px solid #ff0000;'>";
+	print "<div id='message' class='textError' style='padding:5px 20px;position:relative;background-color:#" . $colors["light"] . ";border:1px solid #00438C;'>";
 	print "Error: $message";
 	print "</div>";
 }
@@ -2038,9 +2059,17 @@ function debug_log_clear($type = "") {
 function debug_log_return($type) {
 	$log_text = "";
 
-	if (isset($_SESSION["debug_log"][$type])) {
-		for ($i=0; $i<count($_SESSION["debug_log"][$type]); $i++) {
-			$log_text .= "+ " . $_SESSION["debug_log"][$type][$i] . "<br>";
+	if ($type == "new_graphs") {
+		if (isset($_SESSION["debug_log"][$type])) {
+			for ($i=0; $i<count($_SESSION["debug_log"][$type]); $i++) {
+				$log_text .= "<li>" . $_SESSION["debug_log"][$type][$i] . "</li>";
+			}
+		}
+	}else{
+		if (isset($_SESSION["debug_log"][$type])) {
+			for ($i=0; $i<count($_SESSION["debug_log"][$type]); $i++) {
+				$log_text .= "+ " . $_SESSION["debug_log"][$type][$i] . "<br>";
+			}
 		}
 	}
 

@@ -397,30 +397,50 @@ function graphs() {
 	if (!empty($debug_log)) {
 		debug_log_clear("new_graphs");
 		?>
-		<div id='message' style='z-index:-1;background-color:"#<?php print $oolors["light"];?>;position:relative;padding:3px;font-family:monospace;background-color: #f5f5f5; border: 1px solid #bbbbbb;'>
-			<?php print $debug_log;?>
+		<div id='message' style='display:none;color:#FFFFFF;background-color:"#<?php print $colors["light"];?>;border:1px solid #00438C;'>
+			<?php print "<center style='font-size:16pt;background-color:#" . $colors["header"] . ";text-align:center;'>Graphs Created</center>";?>
+			<?php print "<ul style='text-align:left;white-space:nowrap;color:#000000;padding:5px 20px;'>" . $debug_log . "</ul>";?>
 		</div>
-		<br>
 		<?php
 	}
 	?>
 	<script type="text/javascript">
 	<!--
+	var obj = document.getElementById('message');
+	if (window.innerHeight) {
+		height = window.innerHeight;
+		width  = window.innerWidth;
+	}else{
+		height = document.body.clientHeight;
+		width  = document.body.clientWidth;
+	}
+	var opacity=1;
+
+	obj.style.position = "absolute";
+	obj.style.backgroundColor = "#EAEAEA";
+	obj.style.padding = "5px 5px";
+	obj.style.display = "";
+	cw = obj.offsetWidth;
+	// Adjust for IE6
+	if (!cw) cw = 150;
+	ch = obj.offsetHeight;
+	obj.style.top = '150px';
+	obj.style.left = ((width/2) - (cw / 2) - 165)+'px';
+	obj.style.border = 'medium solid #AEAEAE';
+	opacity = 1;
+	obj.style.opacity = opacity;
+	obj.zoom = "100%";
 	if (document.getElementById('message')) {
-		height = document.getElementById('message').scrollHeight + 15;
-		height *= -1;
-		setTimeout("removeMessage(0,"+height+")", 2000);
+		setTimeout("removeMessage()", 4000);
 	}
 
-	function removeMessage(position, height) {
-		document.getElementById('message').style.top = position+"px";
-		position -= 4;
-		document.getElementById('main').style.top = position+"px";
-		position -= 16;
-		if (position < height -5) {
-			return;
-		}
-		setTimeout("removeMessage("+position+","+height+")",20);
+	function removeMessage() {
+		if (obj.style.opacity <= 0) return;
+		opacity-=0.15;
+		iopacity = opacity * 100;
+		obj.style.opacity = opacity;
+		obj.style.filter = 'alpha(opacity='+iopacity+')';
+		setTimeout("removeMessage()",40);
 	}
 
 	function applyGraphsNewFilterChange(objForm) {
@@ -923,7 +943,7 @@ function graphs() {
 	form_hidden_box("host_id", $host["id"], "0");
 	form_hidden_box("host_template_id", $host["host_template_id"], "0");
 
-	if (!substr_count($_SERVER["HTTP_REFERER"], "graphs_new")) {
+	if (isset($_SERVER["HTTP_REFERER"]) && !substr_count($_SERVER["HTTP_REFERER"], "graphs_new")) {
 		$_REQUEST["returnto"] = basename($_SERVER["HTTP_REFERER"]);
 	}
 	load_current_session_value("returnto", "sess_graphs_new_returnto", "");
