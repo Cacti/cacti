@@ -1,37 +1,33 @@
 Cacti CHANGELOG
 
 0.8.7f
-
--security: SQL injection and shell escaping issues reported by Bonsai Information Security (http:////www.bonsai-sec.com)
+-security: SQL injection and shell escaping issues reported by Bonsai Information Security (http://www.bonsai-sec.com)
 -security: Cross-site scripting issues reported by VUPEN Security (http://www.vupen.com)
 -security: MOPS-2010-023: Cacti Graph Viewer SQL Injection Vulnerability (http://php-security.org)
 -bug#0001125: XML parse error on template import with degree symbol 
--bug#0001267: Template Import - XML Parse Error
--bug#0001311: Access denied for graph-only users when accessing index.php
--bug#0001366: Exported data templates do not import the special characters properly 
+-bug#0001311: Access denied for graph-only users when accessing index.php directly
+-bug#0001366: Exported data templates do not import special characters properly 
 -bug#0001416: Graph Export fails with EXPORT FATAL ERROR: Export path /some/path/root/export is within a system path /root. Can not continue. 
--bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String", When Import Template 
--bug#0001461: (Data Query) Export/Import fails 
+-bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String" after importing template 
+-bug#0001461: Data query export/import fails
 -bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
--bug#0001506: Reindexing fails in snmp.php
--bug#0001508: More min-height'ed divs when showing graphs 
--bug#0001522: Special(?) charakters break parsing of template data.
--bug#0001524: Export graphs and Classical Presentation 
+-bug#0001506: Reindexing fails due to global include issue in lib/snmp.php
+-bug#0001522: Special characters break parsing of template data
+-bug#0001524: Export graphs and Classical Presentation does not honor per graph export rules
 -bug#0001528: ICMP Ping availabilty broken in UI for Windows Servers using IIS
--bug#0001535: Tree Automation Difficult Due to Lack of Parent ID in Tree Nodes 
--bug#0001543: all graphs are exported 
--bug#0001549: Database crashes with use of array_to_sql_or
--bug#0001557: Quotes in Text Format graph template field breaks graph
+-bug#0001535: No display of parent ID in tree nodes for CLI tree add script
+-bug#0001543: All graphs are exported dispite graph export rules
+-bug#0001549: Function array_to_sql_or creates poor sql where clauses
+-bug#0001557: Quotes in Text Format graph template field break graph rendering
 -bug#0001587: 64bit HEX Strings don't convert to Decimal on 32bit Systems
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
--bug#0001628: Message does not match available buttons in Change SNMP Options
--bug#0001695: suppress deprecated warnings in Cacti code 
--bug#0001725: Error while trying to add a tree node via cli 
--bug#0001746: SNMP Hex-String matching 
+-bug#0001628: Inconsistent message for Change SNMP Options related to available buttons
+-bug#0001695: Suppress deprecated warnings in Cacti code
+-bug#0001725: PHP Fatal Error while trying to add a tree node via cli 
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
 -bug: Browser query string does not contain arguments
--bug: inject_form_variables does not operate if more than 1 variable needs replacing
+-bug: Function inject_form_variables does not operate if more than 1 variable needs replacing
 -bug: Script imposed memory limits cause issues with some scripts
 -bug: Turn off process leveling if there are not enough poller items to substantiate it
 -bug: Add device should allow no-snmp type devices
@@ -53,7 +49,6 @@ Cacti CHANGELOG
 -feature: Add snmp timeout warnings for lib/snmp.php
 
 0.8.7e
-
 -bug#0001044: Creating a DS, Output field can't be selected for DT with a DIM when "Use Per-Data Source Value" is on
 -bug#0001341: SNMP query: add oid_suffix for weird SNMP queries 
 -bug#0001345: Overwriting $snmp_index in query_snmp_host() breaks SNMP Data query if using get method
