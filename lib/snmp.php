@@ -388,7 +388,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}
 		}
 
-		if (substr_count(implode(" ", $tmp_array), "Timeout:")) {
+		if (substr_count(implode(" ", $temp_array), "Timeout:")) {
 			cacti_log("WARNING: SNMP Walk Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 
