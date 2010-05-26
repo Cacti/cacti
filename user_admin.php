@@ -329,16 +329,16 @@ function form_save() {
 
 		$add_button_clicked = false;
 
-		if (isset($_POST["add_graph_y"])) {
+		if (isset($_POST["add_graph_x"])) {
 			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_graphs") . ",1)");
 			$add_button_clicked = true;
-		}elseif (isset($_POST["add_tree_y"])) {
+		}elseif (isset($_POST["add_tree_x"])) {
 			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_trees") . ",2)");
 			$add_button_clicked = true;
-		}elseif (isset($_POST["add_host_y"])) {
+		}elseif (isset($_POST["add_host_x"])) {
 			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_hosts") . ",3)");
 			$add_button_clicked = true;
-		}elseif (isset($_POST["add_graph_template_y"])) {
+		}elseif (isset($_POST["add_graph_template_x"])) {
 			db_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (" . get_request_var_post("id") . "," . get_request_var_post("perm_graph_templates") . ",4)");
 			$add_button_clicked = true;
 		}
