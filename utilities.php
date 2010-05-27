@@ -244,7 +244,7 @@ function utilities_view_tech($php_info = "") {
 
 		if (sizeof($out_array) > 0) {
 			if (ereg("^RRDtool 1\.4", $out_array[0])) {
-				$rrdtool_version = "rrd-1.3.x";
+				$rrdtool_version = "rrd-1.4.x";
 			}else if (ereg("^RRDtool 1\.3\.", $out_array[0])) {
 				$rrdtool_version = "rrd-1.3.x";
 			}else if (ereg("^RRDtool 1\.2\.", $out_array[0])) {

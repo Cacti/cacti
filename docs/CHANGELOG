@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 SVN
 -bug: Warning in lib/snmp.php by misspelled variable
+-bug#0001765: "Tech Support" report indicates error with RRDTool 1.4.x
 
 0.8.7f
 -security: SQL injection and shell escaping issues reported by Bonsai Information Security (http://www.bonsai-sec.com)
