@@ -62,6 +62,14 @@ if ($cmd == "index") {
 	}
 
 /*
+ * process NUM_INDEXES requests
+ */
+}elseif ($cmd == "num_indexes") {
+	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
+
+	print sizeof($return_arr) . "\n";	
+
+/*
  * process QUERY requests
  */
 }elseif ($cmd == "query") {
@@ -89,6 +97,8 @@ if ($cmd == "index") {
 	}else{
 		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol,$snmp_priv_passphrase,$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, SNMP_POLLER));
 	}
+}else {
+	print "ERROR: Invalid command given\n";
 }
 
 function reindex($arr) {
