@@ -112,7 +112,7 @@ if ($_SERVER["argc"] >= 2) {
 	$poller_id = 0;
 }
 
-if(read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+if(read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 	cacti_log("DEBUG: SERVER: " . $environ, false, "PHPSVR");
 
 	if ($config["cacti_server_os"] == "win32") {
@@ -150,7 +150,7 @@ while (1) {
 				/* user has requested to quit */
 				if (substr_count($command_array[0], "quit")) {
 					fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
-					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 						cacti_log("DEBUG: PHP Script Server Shutdown request received, exiting", false, "PHPSVR");
 					}
 					exit(1);
@@ -177,7 +177,7 @@ while (1) {
 					$parameters_array = array();
 				}
 
-				if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 					cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, "PHPSVR");
 				}
 
@@ -213,7 +213,7 @@ while (1) {
 					fputs(STDOUT, trim($result) . "\n");
 					fflush(STDOUT);
 
-					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 						cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$value'", false, "PHPSVR");
 					}
 
