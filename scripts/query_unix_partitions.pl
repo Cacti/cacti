@@ -37,7 +37,7 @@ while (<DF>) {
 }
 
 close(DF);
-$count++;
+
 if ($ARGV[0] eq "num_indexes") {
 	print "$count\n";
 }
