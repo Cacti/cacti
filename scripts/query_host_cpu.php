@@ -58,6 +58,14 @@ if ($cmd == "index") {
 	}
 
 /*
+ * process NUM_INDEXES requests
+ */
+}elseif ($cmd == "num_indexes") {
+	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER);
+	
+	print sizeof($arr_index) . "\n";	
+	
+/*
  * process QUERY requests
  */
 }elseif ($cmd == "query") {
