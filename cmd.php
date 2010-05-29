@@ -294,17 +294,24 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						/* do the check */
 						switch ($index_item["action"]) {
 						case POLLER_ACTION_SNMP: /* snmp */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: OID " . $index_item["arg1"], $print_data_to_stdout);
+							}
 							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"],
 								$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $print_data_to_stdout);
+							}
 							$output = exec_poll($index_item["arg1"]);
 							break;
 						}
 
 						/* assert the result with the expected value in the db; recache if the assert fails */
+						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
 							db_execute("replace into poller_command (poller_id, time, action, command) values (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");

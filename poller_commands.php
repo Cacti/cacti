@@ -70,13 +70,13 @@ if (sizeof($poller_commands) > 0) {
 			}
 
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] RECACHE: Re-cache for Host, data query #$data_query_id", true, "PCOMMAND");
+				cacti_log("Host[$host_id] RECACHE: Recache for Host, data query #$data_query_id", true, "PCOMMAND");
 			}
 
 			run_data_query($host_id, $data_query_id);
 
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] RECACHE: Re-cache successful.", true, "PCOMMAND");
+				cacti_log("Host[$host_id] RECACHE: Recache successful.", true, "PCOMMAND");
 			}
 			break;
 		default:
