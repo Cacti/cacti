@@ -684,10 +684,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		}
 	}else{
 		if (strlen($graph["upper_limit"])) {
-			$scale =  "--upper-limit=" . escapeshellarg($graph["upper_limit"]) . RRD_NL;
+			$scale =  "--upper-limit=" . cacti_escapeshellarg($graph["upper_limit"]) . RRD_NL;
 		}
 		if (strlen($graph["lower_limit"])) {
-			$scale .= "--lower-limit=" . escapeshellarg($graph["lower_limit"]) . RRD_NL;
+			$scale .= "--lower-limit=" . cacti_escapeshellarg($graph["lower_limit"]) . RRD_NL;
 		}
 	}
 
@@ -707,14 +707,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 
 	if (!empty($graph["unit_value"])) {
 		if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
-			$unit_value = "--y-grid=" . escapeshellarg($graph["unit_value"]) . RRD_NL;
+			$unit_value = "--y-grid=" . cacti_escapeshellarg($graph["unit_value"]) . RRD_NL;
 		}else{
-			$unit_value = "--unit=" . escapeshellarg($graph["unit_value"]) . RRD_NL;
+			$unit_value = "--unit=" . cacti_escapeshellarg($graph["unit_value"]) . RRD_NL;
 		}
 	}
 
 	if (ereg("^[0-9]+$", $graph["unit_exponent_value"])) {
-		$unit_exponent_value = "--units-exponent=" . escapeshellarg($graph["unit_exponent_value"]) . RRD_NL;
+		$unit_exponent_value = "--units-exponent=" . cacti_escapeshellarg($graph["unit_exponent_value"]) . RRD_NL;
 	}
 
 	/*
@@ -821,7 +821,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL .
 		"--start=$graph_start" . RRD_NL .
 		"--end=$graph_end" . RRD_NL .
-		"--title=" . escapeshellarg($graph["title_cache"]) . RRD_NL .
+		"--title=" . cacti_escapeshellarg($graph["title_cache"]) . RRD_NL .
 		"$rigid" .
 		"--base=" . $graph["base_value"] . RRD_NL .
 		"--height=$graph_height" . RRD_NL .
@@ -830,7 +830,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		"$unit_value" .
 		"$unit_exponent_value" .
 		"$graph_legend" .
-		"--vertical-label=" . escapeshellarg($graph["vertical_label"]) . RRD_NL;
+		"--vertical-label=" . cacti_escapeshellarg($graph["vertical_label"]) . RRD_NL;
 
 	/* rrdtool 1.2.x does not provide smooth lines, let's force it */
 	if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
@@ -1954,8 +1954,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	/* add host and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
-	$xport_array["meta"]["title_cache"]    = escapeshellarg($graph["title_cache"]);
-	$xport_array["meta"]["vertical_label"] = escapeshellarg($graph["vertical_label"]);
+	$xport_array["meta"]["title_cache"]    = cacti_escapeshellarg($graph["title_cache"]);
+	$xport_array["meta"]["vertical_label"] = cacti_escapeshellarg($graph["vertical_label"]);
 	$xport_array["meta"]["local_graph_id"] = $local_graph_id;
 	$xport_array["meta"]["host_id"]        = $graph["host_id"];
 
@@ -1985,9 +1985,9 @@ function rrdtool_set_font($type, $no_legend = "") {
 				/* unix knows fc-list
 				 * so use it to verify the font provided */
 				$out_array = array();
-				exec('fc-list ' . escapeshellarg($font), $out_array);
+				exec('fc-list ' . cacti_escapeshellarg($font), $out_array);
 				if (sizeof($out_array)) {
-					$font = escapeshellarg($font);
+					$font = cacti_escapeshellarg($font);
 				} else {
 					$font = "";
 				}

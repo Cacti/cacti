@@ -688,7 +688,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 				/* unix knows fc-list
 				 * so use it to verify the font provided */
 				$out_array = array();
-				exec('fc-list ' . escapeshellarg($form_previous_value), $out_array);
+				exec('fc-list ' . cacti_escapeshellarg($form_previous_value), $out_array);
 				if (sizeof($out_array) == 0) {
 					$extra_data = "<span style='color:red'><br>[" . "ERROR: FONT NOT FOUND" . "]</span>";
 				} else {
