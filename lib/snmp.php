@@ -435,7 +435,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 		if (sizeof($string_array) == 1) {
 			/* trim excess first */
 			$string = trim($string);
-		}else if ((substr($string, 0, 1) == ".") || (strpos($string, "::") >= 0)) {
+		}else if ((substr($string, 0, 1) == ".") || (strpos($string, "::") !== false)) {
 			/* drop the OID from the array */
 			array_shift($string_array);
 			$string = trim(implode("=", $string_array));
