@@ -214,7 +214,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			if ($field_array["source"] == "value") {
 				for ($i=0; $i<sizeof($snmp_indexes); $i++) {
 					$oid = $field_array["oid"] .  "." . $snmp_indexes[$i]["value"];
-
+					$oid .= isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "";
+					
 					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid,
 						$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
 						$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
