@@ -426,7 +426,13 @@ function utilities_view_tech($php_info = "") {
 	/* Suggest values in 8M increments */
 	$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
 	if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
-		print "<br><font color='red'>It is highly suggested that you alter you php.ini memory_limit to " . memory_readable($memory_suggestion) . " or higher.  This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.</font><br>";
+		print "<br><font color='red'>";
+		if ((ini_get('memory_limit') == -1)) {
+			print "You've set memory limit to 'unlimited'.<br/>";
+		}
+		print "It is highly suggested that you alter you php.ini memory_limit to " . memory_readable($memory_suggestion) . " or higher. <br/>
+			This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.";
+		print "</font><br>";
 	}
 	print "</td>\n";
 	print "</tr>\n";
