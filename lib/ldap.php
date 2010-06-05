@@ -367,14 +367,14 @@ class Ldap {
 
 		if ($this->mode == "0") {
 			/* Just bind mode, make dn and return */
-			$output["dn"] = $dn;
+			$output["dn"] = $this->dn;
 			$output["error_num"] = "0";
 			$output["error_text"] = "User found";
 			return $output;
 		}elseif ($this->mode == "2") {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
-				$output["dn"] = $dn;
+				$output["dn"] = $this->dn;
 				$output["error_num"] = "14";
 				$output["error_text"] = "Specific DN and Password required";
 				return $output;
