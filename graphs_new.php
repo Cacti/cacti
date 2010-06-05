@@ -397,9 +397,9 @@ function graphs() {
 	if (!empty($debug_log)) {
 		debug_log_clear("new_graphs");
 		?>
-		<div id='message' style='display:none;color:#FFFFFF;background-color:"#<?php print $colors["light"];?>;border:1px solid #00438C;'>
-			<?php print "<center style='font-size:16pt;background-color:#" . $colors["header"] . ";text-align:center;'>Graphs Created</center>";?>
-			<?php print "<ul style='text-align:left;white-space:nowrap;color:#000000;padding:5px 20px;'>" . $debug_log . "</ul>";?>
+		<div id='message'>
+			<?php print "<table align='center' style='width:100%;background-color:#" . $colors["header"] . ";'><tr><td style='align:center;padding:3px;font-weight:bold;font-size:10pt;text-align:center;'>Graphs Created</td><td style='width:1px;align:right;'><input type='button' value='Clear' onClick='javascript:document.getElementById(\"message\").style.display=\"none\"' style='align=right;'></td></tr></table>";?>
+			<?php print "<table align='left' style='width:100%;'><tr><td><ul style='text-align:left;white-space:nowrap;color:#000000;padding:2px 10px;margin:10px;'>" . $debug_log . "</ul></td></tr></table>";?>
 		</div>
 		<?php
 	}
@@ -407,6 +407,8 @@ function graphs() {
 	<script type="text/javascript">
 	<!--
 	var obj = document.getElementById('message');
+
+	if (obj) {
 	if (window.innerHeight) {
 		height = window.innerHeight;
 		width  = window.innerWidth;
@@ -414,33 +416,19 @@ function graphs() {
 		height = document.body.clientHeight;
 		width  = document.body.clientWidth;
 	}
-	var opacity=1;
-
 	obj.style.position = "absolute";
-	obj.style.backgroundColor = "#EAEAEA";
-	obj.style.padding = "5px 5px";
+		obj.style.padding = "0px";
 	obj.style.display = "";
+		obj.style.overflow = "auto";
+		obj.style.color = "#FFFFFF";
+		obj.style.backgroundColor = "#<?php print $colors["light"];?>";
+		obj.style.border = "1px solid #<?php print $colors["header"];?>";
 	cw = obj.offsetWidth;
 	// Adjust for IE6
 	if (!cw) cw = 150;
 	ch = obj.offsetHeight;
-	obj.style.top = '150px';
-	obj.style.left = ((width/2) - (cw / 2) - 165)+'px';
-	obj.style.border = 'medium solid #AEAEAE';
-	opacity = 1;
-	obj.style.opacity = opacity;
-	obj.zoom = "100%";
-	if (document.getElementById('message')) {
-		setTimeout("removeMessage()", 4000);
-	}
-
-	function removeMessage() {
-		if (obj.style.opacity <= 0) return;
-		opacity-=0.15;
-		iopacity = opacity * 100;
-		obj.style.opacity = opacity;
-		obj.style.filter = 'alpha(opacity='+iopacity+')';
-		setTimeout("removeMessage()",40);
+		obj.style.top = '65px';
+		obj.style.left = ((width/2) - (cw/2) - 88)+'px';
 	}
 
 	function applyGraphsNewFilterChange(objForm) {

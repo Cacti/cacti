@@ -304,7 +304,7 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config, $messages;
+	global $config, $colors, $messages;
 
 	if (isset($_SESSION["sess_messages"])) {
 		$error_message = is_error_message();
@@ -316,7 +316,7 @@ function display_output_messages() {
 				switch ($messages[$current_message_id]["type"]) {
 				case 'info':
 					if ($error_message == false) {
-						print "<div id='message' class='textInfo' style='padding:5px 20px;position:relative;background-color: #ffffff; border: 1px solid #bbbbbb;'>";
+						print "<div id='message' class='textInfo' style='position:relative;'>";
 						print "$message";
 						print "</div>";
 
@@ -325,7 +325,7 @@ function display_output_messages() {
 					}
 					break;
 				case 'error':
-					print "<div id='message' class='textError' style='padding:5px 20px;position:relative;background-color: #ffffff; border: 1px solid #ff0000;'>";
+					print "<div id='message' class='textError' style='position:relative;'>";
 					print "Error: $message";
 					print "</div>";
 					break;
@@ -339,6 +339,8 @@ function display_output_messages() {
 		<script type="text/javascript">
 		<!--
 		var obj = document.getElementById('message');
+
+		if (obj) {
 		if (window.innerHeight) {
 			height = window.innerHeight;
 			width  = window.innerWidth;
@@ -350,13 +352,15 @@ function display_output_messages() {
 
 		obj.style.zIndex = 2;
 		obj.style.position = "absolute";
-		obj.style.backgroundColor = "#EAEAEA";
-		obj.style.padding = "10px 20px";
+			obj.style.backgroundColor = "#<?php print $colors["light"];?>";
+			obj.style.border = "1px solid #<?php print $colors["header"];?>";
+			obj.style.padding = "10px";
 		cw = obj.scrollWidth;
+			// Adjust for IE6
+			if (!cw) cw = 150;
 		ch = obj.scrollHeight;
-		obj.style.top = '150px';
-		obj.style.left = ((width/2) - (cw / 2) - 75)+'px';
-		obj.style.border = 'medium solid #AEAEAE';
+			obj.style.top = '65px';
+			obj.style.left = ((width/2) - (cw/2) + 60)+'px';
 		opacity = 1;
 		obj.style.opacity = opacity;
 		obj.zoom = "100%";
@@ -370,7 +374,9 @@ function display_output_messages() {
 			iopacity = opacity * 100;
 			obj.style.opacity = opacity;
 			obj.style.filter = 'alpha(opacity='+iopacity+')';
+	
 			setTimeout("removeMessage()",40);
+		}
 		}
 		-->
 		</script>
@@ -384,7 +390,7 @@ function display_output_messages() {
      the pre-defined error messages
    @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<div id='message' class='textError' style='padding:5px 20px;position:relative;background-color:#" . $colors["light"] . ";border:1px solid #00438C;'>";
+	print "<div id='message' class='textError' style='position:relative;'>";
 	print "Error: $message";
 	print "</div>";
 }
