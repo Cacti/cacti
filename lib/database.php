@@ -35,13 +35,18 @@ function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306"
 	global $cnn_id;
 
 	$i = 0;
-	$cnn_id = NewADOConnection($db_type);
+	$cnn = NewADOConnection($db_type);
+	$class = get_class($cnn);
+	
+	if (!is_a($cnn_id, $class)) {
+		$cnn_id = $cnn;
+	}
 
 	$hostport = $host . ":" . $port;
 
 	while ($i <= $retries) {
-		if ($cnn_id->PConnect($hostport,$user,$pass,$db_name)) {
-			return($cnn_id);
+		if ($cnn->PConnect($hostport,$user,$pass,$db_name)) {
+			return($cnn);
 		}
 
 		$i++;

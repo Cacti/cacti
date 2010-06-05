@@ -63,7 +63,7 @@ function read_default_graph_config_option($config_name) {
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
-	global $config;
+	global $config, $database_default;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 
@@ -124,7 +124,8 @@ function read_graph_config_option($config_name, $force = FALSE) {
      in 'include/global_settings.php'
    @returns (bool) - true if a value exists, false if a value does not exist */
 function config_value_exists($config_name) {
-	return sizeof(db_fetch_assoc("select value from settings where name='$config_name'"));
+	global $database_default;
+	return sizeof(db_fetch_assoc("select value from `$database_default`.`settings` where name='$config_name'"));
 }
 
 /* graph_config_value_exists - determines if a value exists for the current user/setting specified
@@ -164,7 +165,8 @@ function read_default_config_option($config_name) {
    @arg $value       - the values to be saved
    @returns          - void */
 function set_config_option($config_name, $value) {
-	db_execute("REPLACE INTO settings SET name='$config_name', value='$value'");
+	global $database_default;
+	db_execute("REPLACE INTO `$database_default`.`settings` SET name='$config_name', value='$value'");
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -172,7 +174,7 @@ function set_config_option($config_name, $value) {
      in 'include/global_settings.php'
    @returns - the current value of the configuration option */
 function read_config_option($config_name, $force = FALSE) {
-	global $config;
+	global $config, $database_default;
 
 	if (isset($_SESSION["sess_config_array"])) {
 		$config_array = $_SESSION["sess_config_array"];
@@ -181,7 +183,7 @@ function read_config_option($config_name, $force = FALSE) {
 	}
 
 	if ((!isset($config_array[$config_name])) || ($force)) {
-		$db_setting = db_fetch_row("select value from settings where name='$config_name'", FALSE);
+		$db_setting = db_fetch_row("select value from `$database_default`.`settings` where name='$config_name'", FALSE);
 
 		if (isset($db_setting["value"])) {
 			$config_array[$config_name] = $db_setting["value"];
@@ -374,7 +376,7 @@ function display_output_messages() {
 			iopacity = opacity * 100;
 			obj.style.opacity = opacity;
 			obj.style.filter = 'alpha(opacity='+iopacity+')';
-	
+
 			setTimeout("removeMessage()",40);
 		}
 		}
