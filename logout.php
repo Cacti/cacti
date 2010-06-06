@@ -36,6 +36,7 @@ if (read_config_option("auth_method") == "2") {
 <html>
 <head>
 	<title>Logout of Cacti</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<STYLE TYPE="text/css">
 	<!--
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}

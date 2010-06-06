@@ -235,6 +235,7 @@ function auth_display_custom_error_message($message) {
 	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	print "<html>\n<head>\n";
 	print "     <title>" . "Cacti" . "</title>\n";
+	print "     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
 	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
 	print "</head>\n";
 	print "<body>\n<br><br>\n";
@@ -247,6 +248,7 @@ function auth_display_custom_error_message($message) {
 <html>
 <head>
 	<title>Login to Cacti</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<STYLE TYPE="text/css">
 	<!--
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}

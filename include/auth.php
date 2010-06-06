@@ -82,6 +82,7 @@ if (read_config_option("auth_method") != 0) {
 			<html>
 			<head>
 				<title>Cacti</title>
+				<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 				<link href="include/main.css" type="text/css" rel="stylesheet">
 			</head>
 			<body>

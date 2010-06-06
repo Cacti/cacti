@@ -440,6 +440,7 @@ if ($_REQUEST["step"] == "4") {
 <html>
 <head>
 	<title>cacti</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<style>
 	<!--
 		BODY,TABLE,TR,TD

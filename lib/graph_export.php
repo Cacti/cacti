@@ -1719,6 +1719,7 @@ define("HTML_HEADER_TREE",
 <head>
 	<title>Cacti</title>
 	<link href='main.css' rel='stylesheet'>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<meta http-equiv=refresh content='300'; url='index.html'>
 	<meta http-equiv=Pragma content=no-cache>
 	<meta http-equiv=cache-control content=no-cache>
@@ -1804,6 +1805,7 @@ define("HTML_HEADER_CLASSIC", "
 	<head>
 		<title>cacti</title>
 		<link href='main.css' rel='stylesheet'>
+		<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 		<meta http-equiv=refresh content='300'; url='index.html'>
 		<meta http-equiv=Pragma content=no-cache>
 		<meta http-equiv=cache-control content=no-cache>

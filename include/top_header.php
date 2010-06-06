@@ -30,13 +30,14 @@ global $colors;
 	<title><?php echo draw_navigation_text("title");?></title>
 	<link href="include/main.css" type="text/css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<script type="text/javascript" src="include/layout.js"></script>
 	<?php if (isset($refresh)) {
 	print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
 	}?>
 </head>
 
-<body style="background-image:url('images/left_border.gif');">
+<body style="background-image:url('images/left_border.gif');background-repeat:repeat-y;">
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr style="height:1px;" bgcolor="#a9a9a9">
