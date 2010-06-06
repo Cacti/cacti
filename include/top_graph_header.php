@@ -152,11 +152,11 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 
 			<?php if (isset($_GET["select_first"])) { ?>
 			<script type="text/javascript">
-			var obj;
-			obj = findObj(1);
+			var tobj;
+			tobj = findObj(1);
 
-			if (obj) {
-				if (!obj.isOpen) {
+			if (tobj) {
+				if (!tobj.isOpen) {
 					clickOnNode(1);
 				}
 			}

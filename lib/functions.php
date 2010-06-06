@@ -318,7 +318,7 @@ function display_output_messages() {
 				switch ($messages[$current_message_id]["type"]) {
 				case 'info':
 					if ($error_message == false) {
-						print "<div id='message' class='textInfo' style='position:relative;'>";
+						print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
 						print "$message";
 						print "</div>";
 
@@ -327,7 +327,7 @@ function display_output_messages() {
 					}
 					break;
 				case 'error':
-					print "<div id='message' class='textError' style='position:relative;'>";
+					print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
 					print "Error: $message";
 					print "</div>";
 					break;
@@ -337,6 +337,7 @@ function display_output_messages() {
 			display_custom_error_message($_SESSION["sess_messages"]);
 		}
 
+		if (read_config_option("cacti_popup_messages") == "on") {
 		?>
 		<script type="text/javascript">
 		<!--
@@ -383,6 +384,7 @@ function display_output_messages() {
 		-->
 		</script>
 		<?php
+		}
 	}
 
 	kill_session_var("sess_messages");
@@ -392,7 +394,7 @@ function display_output_messages() {
      the pre-defined error messages
    @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<div id='message' class='textError' style='position:relative;'>";
+	print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
 	print "Error: $message";
 	print "</div>";
 }

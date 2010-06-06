@@ -396,16 +396,25 @@ function graphs() {
 
 	if (!empty($debug_log)) {
 		debug_log_clear("new_graphs");
-		?>
+		if (read_config_option("cacti_popup_messages") == "on") { ?>
 		<div id='message'>
 			<?php print "<table align='center' style='width:100%;background-color:#" . $colors["header"] . ";'><tr><td style='align:center;padding:3px;font-weight:bold;font-size:10pt;text-align:center;'>Graphs Created</td><td style='width:1px;align:right;'><input type='button' value='Clear' onClick='javascript:document.getElementById(\"message\").style.display=\"none\"' style='align=right;'></td></tr></table>";?>
 			<?php print "<table align='left' style='width:100%;'><tr><td><ul style='text-align:left;white-space:nowrap;color:#000000;padding:2px 10px;margin:10px;'>" . $debug_log . "</ul></td></tr></table>";?>
 		</div>
-		<?php
+		<?php }else{ ?>
+		<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
+			<tr bgcolor="<?php print $colors["light"];?>">
+				<td style="padding: 3px; font-family: monospace;">
+					<ul style='margin:0px 5px;padding-left:10px'><?php print $debug_log;?></ul>
+				</td>
+			</tr>
+		</table>
+		<br><?php }
 	}
 	?>
 	<script type="text/javascript">
 	<!--
+	<?php if (read_config_option("cacti_popup_messages") == "on") {?>
 	var obj = document.getElementById('message');
 
 	if (obj) {
@@ -430,6 +439,7 @@ function graphs() {
 		obj.style.top = '65px';
 		obj.style.left = ((width/2) - (cw/2) - 88)+'px';
 	}
+	<?php } ?>
 
 	function applyGraphsNewFilterChange(objForm) {
 		strURL = '?graph_type=' + objForm.graph_type.value;
@@ -441,7 +451,6 @@ function graphs() {
 	-->
 	</script>
 	<form name="form_graphs_new" action="graphs_new.php">
-
 	<table width="100%" cellpadding="4" align="center">
 		<tr>
 			<td nowrap style='white-space: nowrap;' width="30%" class="textInfo">
