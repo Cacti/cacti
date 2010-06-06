@@ -63,7 +63,7 @@ function read_default_graph_config_option($config_name) {
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
-	global $config, $database_default;
+	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 
