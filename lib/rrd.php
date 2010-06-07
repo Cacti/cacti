@@ -1981,20 +1981,10 @@ function rrdtool_set_font($type, $no_legend = "") {
 				$font = "";
 			}
 		} else {	# rrdtool 1.3+ use fontconfig
-			if ($config["cacti_server_os"] == "unix") {
-				/* unix knows fc-list
-				 * so use it to verify the font provided */
-				$out_array = array();
-				exec('fc-list ' . cacti_escapeshellarg($font), $out_array);
-				if (sizeof($out_array)) {
-					$font = cacti_escapeshellarg($font);
-				} else {
-					$font = "";
-				}
-			} else {
-				/* windows currently has no concept for fc-list
-				 * we can't perform any check */
-			}
+			/* verifying all possible pango font params is too complex to be tested here
+			 * so we only escape the font
+			 */
+			$font = cacti_escapeshellarg($font);
 		}
 	}
 

@@ -77,8 +77,10 @@ $settings = array(
 			"max_length" => "255"
 			),
 		"path_rrdtool_default_font" => array(
-			"friendly_name" => "RRDTool Default Font Path",
-			"description" => "For RRDtool 1.2, the path to the True Type Font.  For RRDtool 1.3 and above, the font name conforming to the fontconfig naming convention.",
+			"friendly_name" => "RRDTool Default Font",
+			"description" => "For RRDtool 1.2, the path to the True Type Font File." . "<br/>" .
+							"For RRDtool 1.3 and above, the font name conforming to the pango naming convention:" . "<br/>" .
+							'You can to use the full Pango syntax when selecting your font: The font name has the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of families optionally terminated by a comma, STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. Any one of the options may be absent.',
 			"method" => "font",
 			"max_length" => "255"
 			),
@@ -589,7 +591,10 @@ $settings = array(
 			),
 		"title_font" => array(
 			"friendly_name" => "Title Font File",
-			"description" => "The font file to use for Graph Titles",
+			"description" => "The font to use for Graph Titles" . "<br/>" .
+							"For RRDtool 1.2, the path to the True Type Font File." . "<br/>" .
+							"For RRDtool 1.3 and above, the font name conforming to the pango naming convention:" . "<br/>" .
+							'You can to use the full Pango syntax when selecting your font: The font name has the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of families optionally terminated by a comma, STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. Any one of the options may be absent.',
 			"method" => "font",
 			"max_length" => "100"
 			),
