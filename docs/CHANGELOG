@@ -1,19 +1,18 @@
 Cacti CHANGELOG
 
-SVN
--bug: Warning in lib/snmp.php by misspelled variable
--bug: Use windows-aware escapeshellarg
--bug#0001747: oid_suffix doesn't work for direction input 
--bug#0001756: Alternate font styles don't work 
+0.8.7g
+-bug: Warning in lib/snmp.php caused by misspelled variable
+-bug: Use windows-aware shell escaping
+-bug#0001747: oid_suffix do not work correctly for data queries input direction 
+-bug#0001756: Alternate font styles do not work correctly
 -bug#0001763: Adding permissions doesn't work 
--bug#0001757: LDAP realm authentication throws error 
--bug#0001765: "Tech Support" report indicates error with RRDTool 1.4.x
--bug#0001766: Cacti not honoring Page Refresh setting              
--bug#0001771: "index count changed" not implemented for query_unix_partitions.pl
-              query_host_partitions.pl, query_cpu_partitions.pl, ss_host_cpu.php, ss_host_disk.php
--bug#0001773: character encoding problem after upgrade to 0.8.7f
--bug#0001775: Tech Support page does not allow for no memory limit in PHP 
--bug#0001776: Cacti Support for Multiple Simultaneous Databases Broken 
+-bug#0001757: LDAP realm authentication outputs warning for undefined index
+-bug#0001765: Tech support does not work correctly with RRDTool 1.4.x
+-bug#0001766: Page refresh setting not being honored
+-bug#0001771: "index count changed" not implemented for query_unix_partitions.pl, query_host_partitions.pl, query_cpu_partitions.pl, ss_host_cpu.php and ss_host_disk.php
+-bug#0001773: Character encoding problem after upgrade to 0.8.7f
+-bug#0001775: Tech support page does account for no memory limit set for PHP 
+-bug#0001776: Simultaneous databases connections are not supported 
 
 0.8.7f
 -security: SQL injection and shell escaping issues reported by Bonsai Information Security (http://www.bonsai-sec.com)
@@ -34,7 +33,7 @@ SVN
 -bug#0001543: All graphs are exported dispite graph export rules
 -bug#0001549: Function array_to_sql_or creates poor sql where clauses
 -bug#0001557: Quotes in Text Format graph template field break graph rendering
--bug#0001587: 64bit HEX Strings don't convert to Decimal on 32bit Systems
+-bug#0001587: 64bit HEX Strings do not convert to Decimal on 32bit Systems
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
 -bug#0001628: Inconsistent message for Change SNMP Options related to available buttons
@@ -47,8 +46,8 @@ SVN
 -bug: Turn off process leveling if there are not enough poller items to substantiate it
 -bug: Add device should allow no-snmp type devices
 -bug: Firefox Autocomplete causes issues with password validation
--bug: Access Denied messages don't allow re-direction to login page
--bug: When clearing filter on new-graphs don't clear host or template
+-bug: Access Denied messages do not allow re-direction to login page
+-bug: When clearing filter on new-graphs do not clear host or template
 -bug: When clearing filter, reset page to 1 for all queries
 -bug: Graph List selectors do not persist between pages
 -bug: allow empty [upper|lower]_limit even without autoscaling
@@ -186,7 +185,7 @@ SVN
 -bug: Host save failed in FireFox 3 for non-SNMP V3 hosts, complaining about "password mismatch"
 -bug: Initialization of snmp_auth when using SNMP=NONE
 -bug: Speed up add_graphs.php in most cases (still slow only if --input-fields is used)
--bug: If the poller_output table is not empty, don't flood the log
+-bug: If the poller_output table is not empty, do not flood the log
 -bug: Remove warnings appear in the httpd log relative to reset attempts on settings array
 -bug: Add API Automation tool quietMode to additional functions
 -bug: When Cacti is launched from within an iframe, cookies are dropped from IE6
@@ -200,7 +199,7 @@ SVN
 -bug: The default user tree link icon would not be properly highlighted when opening graphs
 -bug: Severe performance problems when adding data query based graphs.
 -bug: Default refresh on Cacti Log was too quick
--bug: Some users don't like the idea of automatic page refreshes
+-bug: Some users do not like the idea of automatic page refreshes
 -bug: Allow more rows to be visible in Cacti pages
 -bug: Ping and SNMP should test both conditions
 -bug: When step is less than poller interval, item will stop polling for long period of time
@@ -545,7 +544,7 @@ SVN
 -bug: Graphs with items having Legend text defined but no color will fail under RRDtool 1.2.x.
 -feature: Add MySQL 5.x support.
 -feature: Add IPv6 support to lib/ping.php.
--feature: When utilizing cmd.php, don't run the script_server if it is not required for a process.
+-feature: When utilizing cmd.php, do not run the script_server if it is not required for a process.
 -feature: Incorporate snmpbulkwalk binary path to user interface to speed snmpv2 and snmpv3 walk calls.
 -feature: Incorporate snmpgetnext binary path to user interface to make available for certain plugins.
 -feature; Add support for Nth percentile functions, not just 95th.
