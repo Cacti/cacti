@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug: RRDTool 1.4.x exists in settings, but not in install.php
 -bug: Warning in lib/snmp.php caused by misspelled variable
 -bug: Use windows-aware shell escaping
+-bug: typo in help text of add_graph_template.php
 -bug#0001747: oid_suffix do not work correctly for data queries input direction 
 -bug#0001756: Alternate font styles do not work correctly
 -bug#0001763: Adding permissions doesn't work 

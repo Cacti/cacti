@@ -165,7 +165,7 @@ function display_help() {
 	echo "    [--quiet]\n\n";
 	echo "Required:\n";
 	echo "    --host-id             the numerical ID of the host\n";
-	echo "    --graph_template-id   the numerical ID of the graph template to be added\n\n";
+	echo "    --graph-template-id   the numerical ID of the graph template to be added\n\n";
 	echo "List Options:\n";
 	echo "    --list-hosts\n";
 	echo "    --list-graph-templates\n";
