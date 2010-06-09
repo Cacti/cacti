@@ -284,8 +284,10 @@ if ((file_exists($input["path_rrdtool"]["default"])) && (($config["cacti_server_
 	exec($input["path_rrdtool"]["default"], $out_array);
 
 	if (sizeof($out_array) > 0) {
-		if (ereg("^RRDtool 1\.3", $out_array[0])) {
-			$input["rrdtool_version"]["default"] = "rrd-1.3.x";
+		if (ereg("^RRDtool 1\.4", $out_array[0])) {
+            $input["rrdtool_version"]["default"] = "rrd-1.4.x";
+		}else if (ereg("^RRDtool 1\.3\.", $out_array[0])) {
+            $input["rrdtool_version"]["default"] = "rrd-1.3.x";
 		}else if (ereg("^RRDtool 1\.2\.", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.2.x";
 		}else if (ereg("^RRDtool 1\.0\.", $out_array[0])) {
