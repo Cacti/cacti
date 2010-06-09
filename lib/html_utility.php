@@ -38,16 +38,17 @@
    @returns - $form_array with all available variables substituted with their
      proper values */
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
-	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items");
+	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items", "tree_id");
 
 	/* loop through each available field */
+	if (sizeof($form_array)) {
 	while (list($field_name, $field_array) = each($form_array)) {
 		/* loop through each sub-field that we are going to check for variables */
 		foreach ($check_fields as $field_to_check) {
 			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
 				/* if the field/sub-field combination is an array, resolve it recursively */
 				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
-			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $field_array[$field_to_check], $matches))) {
+			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (preg_match("/\|(arg[123]):([a-zA-Z0-9_]*)\|/", $field_array[$field_to_check], $matches))) {
 				$string = $field_array[$field_to_check];
 				while ( 1 ) {
 					/* an empty field name in the variable means don't treat this as an array */
@@ -66,7 +67,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 						$string = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ""), $string);
 
 						$matches = array();
-						ereg("\|(arg[123]):([a-zA-Z0-9_]*)\|", $string, $matches);
+						preg_match("/\|(arg[123]):([a-zA-Z0-9_]*)\|/", $string, $matches);
 						if (!sizeof($matches)) {
 							$form_array[$field_name][$field_to_check] = $string;
 							break;
@@ -75,6 +76,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 				}
 			}
 		}
+	}
 	}
 
 	return $form_array;
@@ -305,11 +307,7 @@ function get_current_graph_end() {
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = "page") {
 	$url_page_select = "";
 
-	if ($rows_per_page > 0) {
-		$total_pages = ceil($total_rows / $rows_per_page);
-	}else{
-		$total_pages = 0;
-	}
+	$total_pages = ceil($total_rows / $rows_per_page);
 
 	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
 	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));
