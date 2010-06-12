@@ -45,7 +45,7 @@ global $colors;
 			<table width="100%" cellspacing="0" cellpadding="0">
 				<tr style="background: transparent url('images/cacti_backdrop.gif') no-repeat center right;">
 					<td id="tabs" valign="bottom">
-						&nbsp;<a href="index.php"><img src="images/tab_console_down.gif" alt="Console" align="middle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Graphs" align="middle" border="0"></a>
+						&nbsp;<a href="index.php"><img src="images/tab_console_down.gif" alt="Console" align="absmiddle" border="0"></a><a href="graph_view.php"><img src="images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a>
 					</td>
 				</tr>
 			</table>
