@@ -434,7 +434,7 @@ function tree_edit() {
 		?>
 		<td>
 		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=expand_all"' value='Expand All' title='Expand All Trees'>
-		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=colapse_all"' value='Colapse All' title='Colapse All Trees'></a>
+		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=collapse_all"' value='Collapse All' title='Colapse All Trees'></a>
 		</td>
 		<?php
 

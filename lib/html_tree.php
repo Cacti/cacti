@@ -358,7 +358,7 @@ function set_tree_visibility_status() {
 			}
 		}
 	}else if ((get_request_var_request("subaction") == "expand_all") ||
-		(get_request_var_request("subaction") == "colapse_all")) {
+		(get_request_var_request("subaction") == "collapse_all")) {
 
 		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key FROM graph_tree_items WHERE host_id='0' AND local_graph_id='0' AND graph_tree_id='" . get_request_var_request("id") . "'");
 
