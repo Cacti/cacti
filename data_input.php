@@ -181,7 +181,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "<br>";
+			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "</li>";
 			$di_array[$i] = $matches[1];
 
 			$i++;
