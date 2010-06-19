@@ -287,6 +287,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 					$rrd_update_array{$item["rrd_path"]}["times"][$unix_time]{$item["rrd_name"]} = hexdec($value);
 				}elseif (function_exists("bcpow")) {
 					$dec = 0;
+					$vallen = strlen($value);
 					for ($i = 1; $i <= $vallen; $i++) {
 						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
