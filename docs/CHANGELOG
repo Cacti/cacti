@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -bug: Warning in lib/snmp.php caused by misspelled variable
 -bug: Use windows-aware shell escaping
 -bug: typo in help text of add_graph_template.php
+-bug#0001486: No way to login after going not allowed page
 -bug#0001516: "Show the page that user pointed their browser" does not work 
 -bug#0001587: Feature from BugID 0001271 breaks for large values 
 -bug#0001620: Max OID's max value reported incorrectly in Web UI
