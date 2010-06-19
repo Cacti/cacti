@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug: Use windows-aware shell escaping
 -bug: typo in help text of add_graph_template.php
 -bug#0001587: Feature from BugID 0001271 breaks for large values 
+-bug#0001620: Max OID's max value reported incorrectly in Web UI
 -bug#0001747: oid_suffix do not work correctly for data queries input direction 
 -bug#0001756: Alternate font styles do not work correctly
 -bug#0001763: Adding permissions doesn't work 
