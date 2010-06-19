@@ -358,13 +358,6 @@ class Ldap {
 
 		$this->dn = str_replace("<username>", $this->username, $this->dn);
 
-		if ($this->encryption == "1") {
-			$this->host = "ldaps://" . $this->host;
-			$this->port = $this->port_ssl;
-		}else{
-			$this->host = "ldap://" . $this->host;
-		}
-
 		if ($this->mode == "0") {
 			/* Just bind mode, make dn and return */
 			$output["dn"] = $this->dn;
@@ -392,8 +385,12 @@ class Ldap {
 		$this->specific_dn       = utf8_encode($this->specific_dn);
 
 		/* Searching mode */
-		/* Setup connection to LDAP server */
-		$ldap_conn = @ldap_connect($this->host, $this->port);
+		if ($this->encryption == "1") {
+			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
+			$ldap_conn = @ldap_connect("ldaps://" . $this->host . ":" . $this->port_ssl);
+		}else{
+			$ldap_conn = @ldap_connect($this->host, $this->port);
+		}
 
 		if ($ldap_conn) {
 			/* Set protocol version */

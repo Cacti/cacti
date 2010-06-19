@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -bug: typo in help text of add_graph_template.php
 -bug#0001486: No way to login after going not allowed page
 -bug#0001516: "Show the page that user pointed their browser" does not work 
+-bug#0001575: LDAP-Authentifications doesn't work. ldap_host set incorrect
 -bug#0001587: Feature from BugID 0001271 breaks for large values 
 -bug#0001607: Web Basic authentication does not work with fastcgi 
 -bug#0001620: Max OID's max value reported incorrectly in Web UI
