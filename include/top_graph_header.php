@@ -27,6 +27,8 @@ $show_console_tab = true;
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request("local_graph_id"));
+input_validate_input_number(get_request_var_request("graph_start"));
+input_validate_input_number(get_request_var_request("graph_end"));
 /* ==================================================== */
 
 if (read_config_option("auth_method") != 0) {
@@ -128,15 +130,15 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 
 			/* override: graph start time (unix time) */
 			if (!empty($_GET["graph_start"])) {
-				$graph_data_array["graph_start"] = $_GET["graph_start"];
+				$graph_data_array["graph_start"] = get_request_var_request("graph_start");
 			}
 
 			/* override: graph end time (unix time) */
 			if (!empty($_GET["graph_end"])) {
-				$graph_data_array["graph_end"] = $_GET["graph_end"];
+				$graph_data_array["graph_end"] = get_request_var_request("graph_end");
 			}
 
-			print trim(@rrdtool_function_graph($_GET["local_graph_id"], $_GET["rra_id"], $graph_data_array));
+			print trim(@rrdtool_function_graph(get_request_var_request("local_graph_id"), get_request_var_request("rra_id"), $graph_data_array));
 			?>
 		</td>
 	</tr>

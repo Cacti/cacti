@@ -951,7 +951,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<strong>&nbsp;Search:</strong>&nbsp;
 					</td>
 					<td width="130" nowrap="" style="white-space: nowrap;">
-						<input size='30' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>'>
+						<input size='30' name='filter' value='<?php print htmlspecialchars(get_request_var_request("filter"));?>'>
 					</td>
 					<td nowrap style='white-space:nowrap;' width="110">
 						&nbsp;<strong>Graphs per Page:</strong>&nbsp;
@@ -1161,7 +1161,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
 							<td align='center' class='textHeaderDark'>
-								Showing All Graphs" . (strlen(get_request_var_request("filter")) ? " [ Filter '" . clean_html_output(get_request_var_request("filter")) . "' Applied ]" : "") . "
+								Showing All Graphs" . (strlen(get_request_var_request("filter")) ? " [ Filter '" . htmlspecialchars(get_request_var_request("filter")) . "' Applied ]" : "") . "
 							</td>
 						</tr>
 					</table>

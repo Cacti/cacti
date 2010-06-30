@@ -80,7 +80,7 @@ case 'view':
 	?>
 	<tr bgcolor='#<?php print $colors["header"];?>'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong>Viewing Graph</strong> '<?php print clean_html_output($graph_title);?>'
+			<strong>Viewing Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>
 	</tr>
 	<?php

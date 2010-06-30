@@ -522,7 +522,7 @@ function graphs() {
 				Search:&nbsp;
 			</td>
 			<td nowrap style='white-space: nowrap;' width="200">
-				<input type="text" name="filter" size="30" value="<?php print $_REQUEST["filter"];?>">
+				<input type="text" name="filter" size="30" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 			</td>
 			<td align="left" nowrap style='white-space: nowrap;'>
 				&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">

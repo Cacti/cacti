@@ -1177,7 +1177,7 @@ function ds() {
 						Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>

@@ -606,7 +606,7 @@ function utilities_view_user_log() {
 						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
@@ -913,7 +913,7 @@ function utilities_view_logfile() {
 						Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="75" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="75" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>
@@ -1190,7 +1190,7 @@ function utilities_view_snmp_cache() {
 						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
@@ -1428,7 +1428,7 @@ function utilities_view_poller_cache() {
 						&nbsp;Search:&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">

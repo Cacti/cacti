@@ -296,7 +296,7 @@ function auth_display_custom_error_message($message) {
 		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td>User Name:</td>
-			<td><input type="text" name="login_username" size="40" style="width: 295px;" value="<?php print clean_html_output($username); ?>"></td>
+			<td><input type="text" name="login_username" size="40" style="width: 295px;" value="<?php print htmlspecialchars($username); ?>"></td>
 		</tr>
 		<tr>
 			<td>Password:</td>
