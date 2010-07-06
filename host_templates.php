@@ -245,7 +245,7 @@ function template_edit() {
 		$_GET["id"] = 0;
 	}
 
-	html_start_box("<strong>Host Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Host Templates</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -487,7 +487,7 @@ function template() {
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $template["id"]);$i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);
 			form_end_row();
 		}

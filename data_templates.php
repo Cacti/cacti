@@ -422,7 +422,7 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Templates</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -562,7 +562,7 @@ function template_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 
-		html_start_box("<strong>Custom Data</strong> [data input: " . db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"]) . "]", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Custom Data</strong> [data input: " . htmlspecialchars(db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"])) . "]", "100%", $colors["header"], "3", "center", "");
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -729,8 +729,8 @@ function template() {
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i, 'line' . $template["id"]);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
-			form_selectable_cell((empty($template["data_input_method"]) ? "<em>None</em>": $template["data_input_method"]), $template["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
+			form_selectable_cell((empty($template["data_input_method"]) ? "<em>None</em>": htmlspecialchars($template["data_input_method"])), $template["id"]);
 			form_selectable_cell((($template["active"] == "on") ? "Active" : "Disabled"), $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);
 			form_end_row();

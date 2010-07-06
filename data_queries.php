@@ -390,66 +390,66 @@ function data_query_item_edit() {
 
 		$i = 0;
 		if (sizeof($data_templates) > 0) {
-		foreach ($data_templates as $data_template) {
-			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-					<td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
-				</tr>";
+            foreach ($data_templates as $data_template) {
+                print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+                        <td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
+                    </tr>";
 
-			$data_template_rrds = db_fetch_assoc("select
-				data_template_rrd.id,
-				data_template_rrd.data_source_name,
-				snmp_query_graph_rrd.snmp_field_name,
-				snmp_query_graph_rrd.snmp_query_graph_id
-				from data_template_rrd
-				left join snmp_query_graph_rrd on (snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.id and snmp_query_graph_rrd.snmp_query_graph_id=" . $_GET["id"] . " and snmp_query_graph_rrd.data_template_id=" . $data_template["id"] . ")
-				where data_template_rrd.data_template_id=" . $data_template["id"] . "
-				and data_template_rrd.local_data_id=0
-				order by data_template_rrd.data_source_name");
+                $data_template_rrds = db_fetch_assoc("select
+                    data_template_rrd.id,
+                    data_template_rrd.data_source_name,
+                    snmp_query_graph_rrd.snmp_field_name,
+                    snmp_query_graph_rrd.snmp_query_graph_id
+                    from data_template_rrd
+                    left join snmp_query_graph_rrd on (snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.id and snmp_query_graph_rrd.snmp_query_graph_id=" . $_GET["id"] . " and snmp_query_graph_rrd.data_template_id=" . $data_template["id"] . ")
+                    where data_template_rrd.data_template_id=" . $data_template["id"] . "
+                    and data_template_rrd.local_data_id=0
+                    order by data_template_rrd.data_source_name");
 
-			$i = 0;
-			if (sizeof($data_template_rrds) > 0) {
-			foreach ($data_template_rrds as $data_template_rrd) {
-				if (empty($data_template_rrd["snmp_query_graph_id"])) {
-					$old_value = "";
-				}else{
-					$old_value = "on";
-				}
+                $i = 0;
+                if (sizeof($data_template_rrds) > 0) {
+                    foreach ($data_template_rrds as $data_template_rrd) {
+                        if (empty($data_template_rrd["snmp_query_graph_id"])) {
+                            $old_value = "";
+                        }else{
+                            $old_value = "on";
+                        }
 
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-				?>
-					<td>
-						<table cellspacing="0" cellpadding="0" border="0" width="100%">
-							<tr>
-								<td width="200">
-									<strong>Data Source:</strong>
-								</td>
-								<td width="200">
-									<?php print $data_template_rrd["data_source_name"];?>
-								</td>
-								<td width="1">
-									<?php
-									$snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
-									$xml_outputs = array();
+                        form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+                        ?>
+                            <td>
+                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                    <tr>
+                                        <td width="200">
+                                            <strong>Data Source:</strong>
+                                        </td>
+                                        <td width="200">
+                                            <?php print $data_template_rrd["data_source_name"];?>
+                                        </td>
+                                        <td width="1">
+                                            <?php
+                                            $snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
+                                            $xml_outputs = array();
 
-									while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
-										if ($field_array["direction"] == "output") {
-											$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;
-										}
-									}
+                                            while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
+                                                if ($field_array["direction"] == "output") {
+                                                    $xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;
+                                                }
+                                            }
 
-									form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
-								</td>
-								<td align="right">
-									<?php form_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "", "", $_GET["id"]); print "<br>";?>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<?php
-			}
-			}
-		}
+                                            form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
+                                        </td>
+                                        <td align="right">
+                                            <?php form_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "", "", $_GET["id"]); print "<br>";?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                }
+            }
 		}
 
 		html_end_box();
@@ -471,7 +471,7 @@ function data_query_item_edit() {
 				order by field_name,sequence");
 
 			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-					<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
+					<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Data Template - " . htmlspecialchars($data_template["name"]) . "</span></td>
 				</tr>";
 
 			$i = 0;
@@ -482,10 +482,10 @@ function data_query_item_edit() {
 					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 					?>
 						<td width="120">
-							<strong><?php print $suggested_value["field_name"];?></strong>
+							<strong><?php print htmlspecialchars($suggested_value["field_name"]);?></strong>
 						</td>
 						<td>
-							<?php print $suggested_value["text"];?>
+							<?php print htmlspecialchars($suggested_value["text"]);?>
 						</td>
 						<td width="70">
 							<a href="<?php print htmlspecialchars("data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=" . $_GET["id"] . "&id=". $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&data_template_id=" . $data_template["id"] . "&field_name=" . $suggested_value["field_name"]);?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
@@ -544,10 +544,10 @@ function data_query_item_edit() {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
 					<td width="120">
-						<strong><?php print $suggested_value["field_name"];?></strong>
+						<strong><?php print htmlspecialchars($suggested_value["field_name"]);?></strong>
 					</td>
 					<td>
-						<?php print $suggested_value["text"];?>
+						<?php print htmlspecialchars($suggested_value["text"]);?>
 					</td>
 					<td width="70">
 						<a href="<?php print htmlspecialchars("data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=" . $_GET["id"] . "&id=" . $suggested_value["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"] . "&field_name=" . $suggested_value["field_name"]);?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
@@ -817,7 +817,7 @@ function data_query() {
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i, 'line' . $snmp_query["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["name"]) : $snmp_query["name"]) . "</a>", $snmp_query["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($snmp_query["name"])) : htmlspecialchars($snmp_query["name"])) . "</a>", $snmp_query["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]) : $snmp_query["data_input_method"]), $snmp_query["id"]);
 			form_checkbox_cell($snmp_query["name"], $snmp_query["id"]);
 			form_end_row();

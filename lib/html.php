@@ -489,27 +489,27 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		foreach (array_keys($form_data) as $id) {
-			print '<option value="' . $id . '"';
+			print '<option value="' . htmlspecialchars($id) . '"';
 
 			if ($form_previous_value == $id) {
 			print " selected";
 			}
 
-			print ">" . title_trim(null_out_substitutions($form_data[$id]), 75) . "</option>\n";
+			print ">" . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
 		}
 	}else{
 		if (sizeof($form_data) > 0) {
 			foreach ($form_data as $row) {
-				print "<option value='$row[$column_id]'";
+				print "<option value='" . htmlspecialchars($row[$column_id]) . "'";
 
 				if ($form_previous_value == $row[$column_id]) {
 					print " selected";
 				}
 
 				if (isset($row["host_id"])) {
-					print ">" . title_trim($row[$column_display], 75) . "</option>\n";
+					print ">" . title_trim(htmlspecialchars($row[$column_display]), 75) . "</option>\n";
 				}else{
-					print ">" . title_trim(null_out_substitutions($row[$column_display]), 75) . "</option>\n";
+					print ">" . title_trim(null_out_substitutions(htmlspecialchars($row[$column_display])), 75) . "</option>\n";
 				}
 			}
 		}

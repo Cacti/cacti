@@ -432,7 +432,7 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select id='$form_name' name='$form_name'" . $class . $on_change . ">";
+	print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . ">";
 
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? " selected" : "") . ">$form_none_entry</option>\n";
