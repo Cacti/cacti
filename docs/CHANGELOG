@@ -4,24 +4,25 @@ Cacti CHANGELOG
 -bug: RRDTool 1.4.x exists in settings, but not in install.php
 -bug: Warning in lib/snmp.php caused by misspelled variable
 -bug: Use windows-aware shell escaping
--bug: typo in help text of add_graph_template.php
+-bug: Fixed multiple unreported cross site scripting vunerbilities
 -bug#0001292: Over 8TByte Partition in Windows cant get correct data from snmp 
--bug#0001486: No way to login after going not allowed page
--bug#0001516: "Show the page that user pointed their browser" does not work 
--bug#0001575: LDAP-Authentifications doesn't work. ldap_host set incorrect
--bug#0001587: Feature from BugID 0001271 breaks for large values 
+-bug#0001486: Unable to login after redirection to access denied page
+-bug#0001516: "Show the page that user pointed their browser" does not seem to work
+-bug#0001561: Over zelous HTML excaping on filter strings
+-bug#0001575: LDAP-Authentifications does not work due to ldap_host being set incorrect
+-bug#0001587: Feature from bug#0001271 breaks on large values 
 -bug#0001607: Web Basic authentication does not work with fastcgi 
 -bug#0001620: Max OID's max value reported incorrectly in Web UI
--bug#0001747: oid_suffix do not work correctly for data queries input direction 
+-bug#0001747: oid_suffix do not work correctly for input direction on data queries 
 -bug#0001756: Alternate font styles do not work correctly
--bug#0001763: Adding permissions doesn't work 
+-bug#0001763: Unable to add graph permissions on a user
 -bug#0001757: LDAP realm authentication outputs warning for undefined index
 -bug#0001765: Tech support does not work correctly with RRDTool 1.4.x
 -bug#0001766: Page refresh setting not being honored
 -bug#0001771: "index count changed" not implemented for query_unix_partitions.pl, query_host_partitions.pl, query_cpu_partitions.pl, ss_host_cpu.php and ss_host_disk.php
 -bug#0001773: Character encoding problem after upgrade to 0.8.7f
 -bug#0001775: Tech support page does account for no memory limit set for PHP 
--bug#0001776: Simultaneous databases connections are not supported 
+-bug#0001776: Simultaneous databases connections are not supported
 
 0.8.7f
 -security: SQL injection and shell escaping issues reported by Bonsai Information Security (http://www.bonsai-sec.com)
