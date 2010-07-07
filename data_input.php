@@ -371,7 +371,7 @@ function data_edit() {
 
 	if (!empty($_GET["id"])) {
 		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $data_input["name"] . "]";
+		$header_label = "[edit: " . htmlspecialchars($data_input["name"]) . "]";
 	}else{
 		$header_label = "[new]";
 	}
@@ -589,7 +589,7 @@ function data() {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_input["id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_input["name"]) : $data_input["name"]) . "</a>", $data_input["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_input["name"])) : htmlspecialchars($data_input["name"])) . "</a>", $data_input["id"]);
 			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
 			form_checkbox_cell($data_input["name"], $data_input["id"]);
 			form_end_row();

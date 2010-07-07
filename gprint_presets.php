@@ -95,7 +95,7 @@ function gprint_presets_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include_once("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"]) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", htmlspecialchars("gprint_presets.php"), htmlspecialchars("gprint_presets.php?action=remove&id=" . $_GET["id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . htmlspecialchars(db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"])) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", htmlspecialchars("gprint_presets.php"), htmlspecialchars("gprint_presets.php?action=remove&id=" . $_GET["id"]));
 		exit;
 	}
 
@@ -113,7 +113,7 @@ function gprint_presets_edit() {
 
 	if (!empty($_GET["id"])) {
 		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $gprint_preset["name"] . "]";
+		$header_label = "[edit: " . htmlspecialchars($gprint_preset["name"]) . "]";
 	}else{
 		$header_label = "[new]";
 	}
@@ -150,7 +150,7 @@ function gprint_presets() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
 			?>
 			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("gprint_presets.php?action=edit&id=" . $template["id"]);?>"><?php print $template["name"];?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars("gprint_presets.php?action=edit&id=" . $template["id"]);?>"><?php print htmlspecialchars($template["name"]);?></a>
 			</td>
 			<td align="right">
 				<a href="<?php print htmlspecialchars("gprint_presets.php?action=remove&id=" . $template["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>

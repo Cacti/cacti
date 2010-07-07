@@ -109,7 +109,7 @@ function rra_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include_once("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . db_fetch_cell("select name from rra where id=" . $_GET["id"]) . "'</strong>?", htmlspecialchars("rra.php"), htmlspecialchars("rra.php?action=remove&id=" . $_GET["id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . htmlspecialchars(db_fetch_cell("select name from rra where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("rra.php"), htmlspecialchars("rra.php?action=remove&id=" . $_GET["id"]));
 		exit;
 	}
 
@@ -128,7 +128,7 @@ function rra_edit() {
 
 	if (!empty($_GET["id"])) {
 		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $rra["name"] . "]";
+		$header_label = "[edit: " . htmlspecialchars($rra["name"]) . "]";
 	}else{
 		$header_label = "[new]";
 	}
@@ -187,7 +187,7 @@ function rra() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("rra.php?action=edit&id=" . $rra["id"]);?>"><?php print $rra["name"];?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars("rra.php?action=edit&id=" . $rra["id"]);?>"><?php print htmlspecialchars($rra["name"]);?></a>
 			</td>
 			<td>
 				<?php print $rra["steps"];?>

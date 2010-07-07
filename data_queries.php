@@ -223,7 +223,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$dq_list .= "<li>" . db_fetch_cell("SELECT snmp_query.name FROM snmp_query WHERE id='" . $matches[1] . "'") . "<br>";
+			$dq_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT snmp_query.name FROM snmp_query WHERE id='" . $matches[1] . "'")) . "<br>";
 			$dq_array[$i] = $matches[1];
 
 			$i++;
@@ -362,7 +362,7 @@ function data_query_item_edit() {
 	}
 
 	$snmp_query = db_fetch_row("select name,xml_path from snmp_query where id=" . $_GET["snmp_query_id"]);
-	$header_label = "[edit: " . $snmp_query["name"] . "]";
+	$header_label = "[edit: " . htmlspecialchars($snmp_query["name"]) . "]";
 
 	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
@@ -390,66 +390,66 @@ function data_query_item_edit() {
 
 		$i = 0;
 		if (sizeof($data_templates) > 0) {
-            foreach ($data_templates as $data_template) {
-                print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-                        <td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
-                    </tr>";
+			foreach ($data_templates as $data_template) {
+				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+						<td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
+					</tr>";
 
-                $data_template_rrds = db_fetch_assoc("select
-                    data_template_rrd.id,
-                    data_template_rrd.data_source_name,
-                    snmp_query_graph_rrd.snmp_field_name,
-                    snmp_query_graph_rrd.snmp_query_graph_id
-                    from data_template_rrd
-                    left join snmp_query_graph_rrd on (snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.id and snmp_query_graph_rrd.snmp_query_graph_id=" . $_GET["id"] . " and snmp_query_graph_rrd.data_template_id=" . $data_template["id"] . ")
-                    where data_template_rrd.data_template_id=" . $data_template["id"] . "
-                    and data_template_rrd.local_data_id=0
-                    order by data_template_rrd.data_source_name");
+				$data_template_rrds = db_fetch_assoc("select
+					data_template_rrd.id,
+					data_template_rrd.data_source_name,
+					snmp_query_graph_rrd.snmp_field_name,
+					snmp_query_graph_rrd.snmp_query_graph_id
+					from data_template_rrd
+					left join snmp_query_graph_rrd on (snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.id and snmp_query_graph_rrd.snmp_query_graph_id=" . $_GET["id"] . " and snmp_query_graph_rrd.data_template_id=" . $data_template["id"] . ")
+					where data_template_rrd.data_template_id=" . $data_template["id"] . "
+					and data_template_rrd.local_data_id=0
+					order by data_template_rrd.data_source_name");
 
-                $i = 0;
-                if (sizeof($data_template_rrds) > 0) {
-                    foreach ($data_template_rrds as $data_template_rrd) {
-                        if (empty($data_template_rrd["snmp_query_graph_id"])) {
-                            $old_value = "";
-                        }else{
-                            $old_value = "on";
-                        }
+				$i = 0;
+				if (sizeof($data_template_rrds) > 0) {
+					foreach ($data_template_rrds as $data_template_rrd) {
+						if (empty($data_template_rrd["snmp_query_graph_id"])) {
+							$old_value = "";
+						}else{
+							$old_value = "on";
+						}
 
-                        form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-                        ?>
-                            <td>
-                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
-                                    <tr>
-                                        <td width="200">
-                                            <strong>Data Source:</strong>
-                                        </td>
-                                        <td width="200">
-                                            <?php print $data_template_rrd["data_source_name"];?>
-                                        </td>
-                                        <td width="1">
-                                            <?php
-                                            $snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
-                                            $xml_outputs = array();
+						form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+						?>
+							<td>
+								<table cellspacing="0" cellpadding="0" border="0" width="100%">
+									<tr>
+										<td width="200">
+											<strong>Data Source:</strong>
+										</td>
+										<td width="200">
+											<?php print $data_template_rrd["data_source_name"];?>
+										</td>
+										<td width="1">
+											<?php
+											$snmp_queries = get_data_query_array($_GET["snmp_query_id"]);
+											$xml_outputs = array();
 
-                                            while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
-                                                if ($field_array["direction"] == "output") {
-                                                    $xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;
-                                                }
-                                            }
+											while (list($field_name, $field_array) = each($snmp_queries["fields"])) {
+												if ($field_array["direction"] == "output") {
+													$xml_outputs[$field_name] = $field_name . " (" . $field_array["name"] . ")";;
+												}
+											}
 
-                                            form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
-                                        </td>
-                                        <td align="right">
-                                            <?php form_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "", "", $_GET["id"]); print "<br>";?>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <?php
-                    }
-                }
-            }
+											form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");?>
+										</td>
+										<td align="right">
+											<?php form_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "", "", $_GET["id"]); print "<br>";?>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<?php
+					}
+				}
+			}
 		}
 
 		html_end_box();
