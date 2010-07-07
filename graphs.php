@@ -571,7 +571,7 @@ function item() {
 			order by graph_templates_item.sequence");
 
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
-		$header_label = "[edit: " . get_graph_title($_GET["id"]) . "]";
+		$header_label = "[edit: " . htmlspecialchars(get_graph_title($_GET["id"])) . "]";
 	}
 
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
@@ -834,7 +834,7 @@ function graph_edit() {
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
 
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
-		$header_label = "[edit: " . get_graph_title($_GET["id"]) . "]";
+		$header_label = "[edit: " . htmlspecialchars(get_graph_title($_GET["id"])) . "]";
 
 		if ($graphs["graph_template_id"] == "0") {
 			$use_graph_template = false;
@@ -858,7 +858,7 @@ function graph_edit() {
 		<table width="100%" align="center">
 			<tr>
 				<td class="textInfo" colspan="2" valign="top">
-					<?php print get_graph_title($_GET["id"]);?>
+					<?php print htmlspecialchars(get_graph_title($_GET["id"]));?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
 					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0") . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1"));?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a><br>

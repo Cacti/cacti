@@ -534,7 +534,7 @@ function host_edit() {
 
 	if (!empty($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $host["description"] . "]";
+		$header_label = "[edit: " . htmlspecialchars($host["description"]) . "]";
 	}else{
 		$header_label = "[new]";
 	}
@@ -544,7 +544,7 @@ function host_edit() {
 		<table width="100%" align="center">
 			<tr>
 				<td class="textInfo" colspan="2">
-					<?php print htmlspecialchars($host["description"]);?> (<?php print $host["hostname"];?>)
+					<?php print htmlspecialchars($host["description"]);?> (<?php print htmlspecialchars($host["hostname"]);?>)
 				</td>
 			</tr>
 			<tr>

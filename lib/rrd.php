@@ -1378,7 +1378,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 
 	/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
 	if (isset($graph_data_array["print_source"])) {
-		print "<PRE>" . read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items</PRE>";
+		print "<PRE>" . htmlspecialchars(read_config_option("path_rrdtool") . " graph " . $graph_opts . $graph_defs . $txt_graph_items) . "</PRE>";
 	}else{
 		if (isset($graph_data_array["export"])) {
 			@rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);

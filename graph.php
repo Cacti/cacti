@@ -87,32 +87,32 @@ case 'view':
 
 	$i = 0;
 	if (sizeof($rras) > 0) {
-	foreach ($rras as $rra) {
-		?>
-		<tr>
-			<td align='center'>
-				<table width='1' cellpadding='0'>
-					<tr>
-						<td>
-							<img class='graphimage' id='graph_<?php print $_GET["local_graph_id"] ?>' src='<?php print htmlspecialchars("graph_image.php?action=view&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"]);?>' border='0' alt='<?php print $graph_title;?>'>
-						</td>
-						<td valign='top' style='padding: 3px;' class='noprint'>
-							<a href='<?php print htmlspecialchars("graph.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"]. "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
-							<a href='<?php print htmlspecialchars("graph_xport.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
-							<a href='<?php print htmlspecialchars("graph.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a>
-						</td>
-					</tr>
-					<tr>
-						<td colspan='2' align='center'>
-							<strong><?php print $rra["name"];?></strong>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<?php
-		$i++;
-	}
+		foreach ($rras as $rra) {
+			?>
+			<tr>
+				<td align='center'>
+					<table width='1' cellpadding='0'>
+						<tr>
+							<td>
+								<img class='graphimage' id='graph_<?php print $_GET["local_graph_id"] ?>' src='<?php print htmlspecialchars("graph_image.php?action=view&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"]);?>' border='0' alt='<?php print htmlspecialchars($graph_title);?>'>
+							</td>
+							<td valign='top' style='padding: 3px;' class='noprint'>
+								<a href='<?php print htmlspecialchars("graph.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"]. "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
+								<a href='<?php print htmlspecialchars("graph_xport.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
+								<a href='<?php print htmlspecialchars("graph.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a>
+							</td>
+						</tr>
+						<tr>
+							<td colspan='2' align='center'>
+								<strong><?php print htmlspecialchars($rra["name"]);?></strong>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<?php
+			$i++;
+		}
 	}
 
 	break;
@@ -193,7 +193,7 @@ case 'zoom':
 	?>
 	<tr bgcolor='#<?php print $colors["header"];?>'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong>Zooming Graph</strong> '<?php print $graph_title;?>'
+			<strong>Zooming Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>
 	</tr>
 	<div id='zoomBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible;'></div>
@@ -210,7 +210,7 @@ case 'zoom':
 			<table width='1' cellpadding='0'>
 				<tr>
 					<td>
-						<img id='zoomGraphImage' src='<?php print htmlspecialchars("graph_image.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"] . "&graph_start=" . $graph_start . "&graph_end=" . $graph_end . "&graph_height=" . $graph_height . "&graph_width=" . $graph_width . "&title_font_size=" . $title_font_size);?>' border='0' alt='<?php print $graph_title;?>'>
+						<img id='zoomGraphImage' src='<?php print htmlspecialchars("graph_image.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"] . "&graph_start=" . $graph_start . "&graph_end=" . $graph_end . "&graph_height=" . $graph_height . "&graph_width=" . $graph_width . "&title_font_size=" . $title_font_size);?>' border='0' alt='<?php print htmlspecialchars($graph_title);?>'>
 					</td>
 					<td valign='top' style='padding: 3px;' class='noprint'>
 						<a href='<?php print htmlspecialchars("graph.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"] . "&graph_start=" . $graph_start . "&graph_end=" . $graph_end);?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a>
@@ -219,7 +219,7 @@ case 'zoom':
 				</tr>
 				<tr>
 					<td colspan='2' align='center'>
-						<strong><?php print $rra["name"];?></strong>
+						<strong><?php print htmlspecialchars($rra["name"]);?></strong>
 					</td>
 				</tr>
 			</table>
@@ -234,7 +234,7 @@ case 'properties':
 	?>
 	<tr bgcolor='#<?php print $colors["header"];?>'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong>Viewing Graph Properties </strong> '<?php print $graph_title;?>'
+			<strong>Viewing Graph Properties </strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>
 	</tr>
 	<tr>
@@ -242,7 +242,7 @@ case 'properties':
 			<table width='1' cellpadding='0'>
 				<tr>
 					<td>
-						<img src='<?php print htmlspecialchars("graph_image.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&graph_start=" . (isset($_GET["graph_start"]) ? $_GET["graph_start"] : "0") . "&graph_end=" . (isset($_GET["graph_end"]) ? $_GET["graph_end"] : "0"));?>' border='0' alt='<?php print $graph_title;?>'>
+						<img src='<?php print htmlspecialchars("graph_image.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&graph_start=" . (isset($_GET["graph_start"]) ? $_GET["graph_start"] : "0") . "&graph_end=" . (isset($_GET["graph_end"]) ? $_GET["graph_end"] : "0"));?>' border='0' alt='<?php print htmlspecialchars($graph_title);?>'>
 					</td>
 					<td valign='top' style='padding: 3px;'>
 						<a href='<?php print htmlspecialchars("graph.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"]);?>'><img src='images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>

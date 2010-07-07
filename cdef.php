@@ -298,7 +298,7 @@ function item_edit() {
 
 	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
 
-	html_start_box("<strong>CDEF Items</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>CDEF Items</strong> [edit: " . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"])) . "]", "100%", $colors["header"], "3", "center", "");
 
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];

@@ -726,7 +726,7 @@ function ds_edit() {
 		<table width="100%" align="center">
 			<tr>
 				<td class="textInfo" colspan="2" valign="top">
-					<?php print get_data_source_title($_GET["id"]);?>
+					<?php print htmlspecialchars(get_data_source_title($_GET["id"]));?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
 					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("data_sources.php?action=ds_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0"));?>&debug=<?php print (isset($_SESSION["ds_debug_mode"]) ? "0" : "1");?>'>Turn <strong><?php print (isset($_SESSION["ds_debug_mode"]) ? "Off" : "On");?></strong> Data Source Debug Mode.</a><br>

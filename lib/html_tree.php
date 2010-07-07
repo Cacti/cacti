@@ -316,12 +316,12 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 		}elseif ($leaf["title"] != "") {
 			$icon = get_icon($leaf["graph_tree_id"], $leaf["order_key"]);
 			if ($visible) {
-				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' border='0'></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
+				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' border='0'></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . htmlspecialchars($leaf["title"]) . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
 				print "<td bgcolor='#$row_color'>Heading</td>";
 			}
 		}elseif ($leaf["host_id"] > 0) {
 			if ($visible) {
-				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("host.php?action=edit&id=" . $leaf["host_id"]) . "'>(Edit host)</a></td>\n";
+				print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . htmlspecialchars($leaf["hostname"]) . "</a>&nbsp;<a href='" . htmlspecialchars("host.php?action=edit&id=" . $leaf["host_id"]) . "'>(Edit host)</a></td>\n";
 				print "<td bgcolor='#$row_color'>Host</td>";
 			}
 		}
@@ -734,9 +734,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$data_query_index = $host_group_data_array[2];
 	}
 
-	if (!empty($tree_name)) { $title .= $title_delimeter . "<strong>Tree:</strong> $tree_name"; $title_delimeter = "-> "; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; $title_delimeter = "-> "; }
-	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $host_name"; $title_delimeter = "-> "; }
+	if (!empty($tree_name)) { $title .= $title_delimeter . "<strong>Tree:</strong>" . htmlspecialchars($tree_name); $title_delimeter = "-> "; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong>Leaf:</strong>" . htmlspecialchars($leaf_name); $title_delimeter = "-> "; }
+	if (!empty($host_name)) { $title .= $title_delimeter . "<strong>Host:</strong>" . htmlspecialchars($host_name); $title_delimeter = "-> "; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = "-> "; }
 	if (isset($_REQUEST["tree_id"])) {
 		$nodeid = "tree_" . get_request_var_request("tree_id");
@@ -1287,7 +1287,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 	/* print out the actual graph html */
 	if (read_graph_config_option("thumbnail_section_tree_1") == "on") {
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='" . htmlspecialchars($graph_title) . "' class='graphimage' id='graph_$local_graph_id'
 				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true") . "' border='0'></a></td>\n";
 
@@ -1296,7 +1296,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 				print "</tr><tr>\n";
 			}
 		}else{
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='$graph_title' class='graphimage' id='graph_$local_graph_id'
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='" . htmlspecialchars($graph_title) . "' class='graphimage' id='graph_$local_graph_id'
 				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
 				read_graph_config_option("default_height") . '&graph_width=' . read_graph_config_option("default_width") . "&graph_nolegend=true") . "' border='0'></a></td>\n";
 
@@ -1307,10 +1307,10 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 		}
 	}else{
 		if (read_graph_config_option("timespan_sel") == "on") {
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end() . "' border='0' alt='" . htmlspecialchars($graph_title) . "'></a></td>";
 			print "</tr><tr>\n";
 		}else{
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='$graph_title'></a></td>";
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='" . htmlspecialchars($graph_title) . "'></a></td>";
 			print "</tr><tr>\n";
 		}
 	}

@@ -618,7 +618,7 @@ function data_query_edit() {
 
 	if (!empty($_GET["id"])) {
 		$snmp_query = db_fetch_row("select * from snmp_query where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $snmp_query["name"] . "]";
+		$header_label = "[edit: " . htmlspecialchars($snmp_query["name"]) . "]";
 	}else{
 		$header_label = "[new]";
 	}

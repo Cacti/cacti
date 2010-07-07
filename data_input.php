@@ -309,7 +309,7 @@ function field_edit() {
 		return;
 	}
 
-	html_start_box("<strong>$header_name Fields</strong> [edit: " . $data_input["name"] . "]", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>$header_name Fields</strong> [edit: " . htmlspecialchars($data_input["name"]) . "]", "100%", $colors["header"], "3", "center", "");
 
 	$form_array = array();
 

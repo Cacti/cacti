@@ -310,9 +310,9 @@ case 'preview':
 							}
 
 							if (sizeof($hosts) > 0) {
-							foreach ($hosts as $host) {
-								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
-							}
+								foreach ($hosts as $host) {
+									print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . htmlspecialchars($host["name"]) . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -341,9 +341,9 @@ case 'preview':
 							}
 
 							if (sizeof($graph_templates) > 0) {
-							foreach ($graph_templates as $template) {
-								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
-							}
+								foreach ($graph_templates as $template) {
+									print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . htmlspecialchars($template["name"]) . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -592,9 +592,9 @@ case 'list':
 							}
 
 							if (sizeof($hosts) > 0) {
-							foreach ($hosts as $host) {
-								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["name"] . "</option>\n";
-							}
+								foreach ($hosts as $host) {
+									print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . htmlspecialchars($host["name"]) . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -622,9 +622,9 @@ case 'list':
 							}
 
 							if (sizeof($graph_templates) > 0) {
-							foreach ($graph_templates as $template) {
-								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
-							}
+								foreach ($graph_templates as $template) {
+									print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . htmlspecialchars($template["name"]) . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -742,7 +742,7 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
-			form_selectable_cell("<strong><a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . $graph["title_cache"] . "</a><strong>", $graph["local_graph_id"]);
+			form_selectable_cell("<strong><a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . htmlspecialchars($graph["title_cache"]) . "</a><strong>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
 			form_end_row();

@@ -1813,18 +1813,18 @@ function draw_navigation_text($type = "url") {
 		if ($current_mappings[$i] == "?") {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
-				$title       .= resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . " -> ";
+				$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . (empty($url) ? "" : "</a>") . " -> ";
+				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . " -> ";
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -> ";
-			$title       .= resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . " -> ";
+			$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . (empty($url) ? "" : "</a>") . " -> ";
+			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . " -> ";
 		}
 	}
 
-	$current_nav .= resolve_navigation_variables($current_array["title"]);
-	$title       .= resolve_navigation_variables($current_array["title"]);
+	$current_nav .= htmlspecialchars(resolve_navigation_variables($current_array["title"]));
+	$title       .= htmlspecialchars(resolve_navigation_variables($current_array["title"]));
 
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => get_browser_query_string());

@@ -454,12 +454,12 @@ function graphs() {
 	<table width="100%" cellpadding="4" align="center">
 		<tr>
 			<td nowrap style='white-space: nowrap;' width="30%" class="textInfo">
-				<?php print $host["description"];?> (<?php print $host["hostname"];?>)
+				<?php print htmlspecialchars($host["description"]);?> (<?php print htmlspecialchars($host["hostname"]);?>)
 			</td>
 			<td align="left" class="textInfo" colspan="2" style="color: #aaaaaa;">
 				<?php
 				if (!empty($host["host_template_id"])) {
-					print db_fetch_cell("select name from host_template where id=" . $host["host_template_id"]);
+					print htmlspecialchars(db_fetch_cell("select name from host_template where id=" . $host["host_template_id"]));
 				}
 				?>
 			</td>
@@ -476,9 +476,9 @@ function graphs() {
 				$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 
 				if (sizeof($hosts) > 0) {
-				foreach ($hosts as $item) {
-					print "<option value='" . $item["id"] . "'"; if ($_REQUEST["host_id"] == $item["id"]) { print " selected"; } print ">" . $item["name"] . "</option>\n";
-				}
+					foreach ($hosts as $item) {
+						print "<option value='" . $item["id"] . "'"; if ($_REQUEST["host_id"] == $item["id"]) { print " selected"; } print ">" . htmlspecialchars($item["name"]) . "</option>\n";
+					}
 				}
 				?>
 				</select>
@@ -604,7 +604,7 @@ function graphs() {
 			print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
 
 			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'>
-						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . $graph_template["graph_template_name"] . "</span>
+						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . htmlspecialchars($graph_template["graph_template_name"]) . "</span>
 					</td>
 					<td align='right'>
 						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onClick='gt_update_selection_indicators();'>

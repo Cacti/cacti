@@ -1,10 +1,9 @@
 Cacti CHANGELOG
 
 0.8.7g
--bug: RRDTool 1.4.x exists in settings, but not in install.php
--bug: Warning in lib/snmp.php caused by misspelled variable
--bug: Use windows-aware shell escaping
--bug: Fixed multiple unreported cross site scripting vunerbilities
+-bug: RRDTool 1.4.x not recognized during installation
+-bug: Implement windows-aware shell escaping
+-bug: Fixed multiple cross site scripting vulnerabilities reported by Tomas Hoger of the Red Hat Security Response Team
 -bug#0001292: Over 8TByte Partition in Windows cant get correct data from snmp 
 -bug#0001486: Unable to login after redirection to access denied page
 -bug#0001516: "Show the page that user pointed their browser" does not seem to work

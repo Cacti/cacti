@@ -414,7 +414,7 @@ function tree_edit() {
 
 	if (!empty($_GET["id"])) {
 		$tree = db_fetch_row("select * from graph_tree where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $tree["name"] . "]";
+		$header_label = "[edit: " . htmlspecialchars($tree["name"]) . "]";
 	}else{
 		$header_label = "[new]";
 	}
@@ -469,7 +469,7 @@ function tree() {
 		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 			?>
 			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("tree.php?action=edit&id=" . $tree["id"]);?>"><?php print $tree["name"];?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars("tree.php?action=edit&id=" . $tree["id"]);?>"><?php print htmlspecialchars($tree["name"]);?></a>
 			</td>
 			<td align="right">
 				<a href="<?php print htmlspecialchars("tree.php?action=remove&id=" . $tree["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
