@@ -401,13 +401,13 @@ function data_edit() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print $field["data_name"];?></a>
+					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print htmlspecialchars($field["data_name"]);?></a>
 				</td>
 				<td>
 					<?php print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
 				</td>
 				<td>
-					<?php print $field["name"];?>
+					<?php print htmlspecialchars($field["name"]);?>
 				</td>
 				<td align="right">
 					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
@@ -436,13 +436,13 @@ function data_edit() {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
 				?>
 				<td>
-					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print $field["data_name"];?></a>
+					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print htmlspecialchars($field["data_name"]);?></a>
 				</td>
 				<td>
 					<?php print $field["sequence"]; if ($field["sequence"] == "0") { print " (Not In Use)"; }?>
 				</td>
 				<td>
-					<?php print $field["name"];?>
+					<?php print htmlspecialchars($field["name"]);?>
 				</td>
 				<td>
 					<?php print html_boolean_friendly($field["update_rra"]);?>

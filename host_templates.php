@@ -276,7 +276,7 @@ function template_edit() {
 			?>
 			<tr>
 				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
 				<td align="right">
 					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_gt&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
@@ -326,7 +326,7 @@ function template_edit() {
 			?>
 			<tr>
 				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
 				<td align='right'>
 					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_dq&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>

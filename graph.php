@@ -251,7 +251,7 @@ case 'properties':
 				</tr>
 				<tr>
 					<td colspan='2' align='center'>
-						<strong><?php print db_fetch_cell("select name from rra where id=" . $_GET["rra_id"]);?></strong>
+						<strong><?php print htmlspecialchars(db_fetch_cell("select name from rra where id=" . $_GET["rra_id"]));?></strong>
 					</td>
 				</tr>
 			</table>

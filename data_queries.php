@@ -533,7 +533,7 @@ function data_query_item_edit() {
 			order by field_name,sequence");
 
 		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-				<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Graph Template - " . db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"]) . "</span></td>
+				<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Graph Template - " . htmlspecialchars(db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"])) . "</span></td>
 			</tr>";
 
 		$i = 0;
@@ -671,10 +671,10 @@ function data_query_edit() {
 				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
 				?>
 					<td>
-						<strong><a href="<?php print htmlspecialchars("data_queries.php?action=item_edit&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><?php print $snmp_query_graph["name"];?></a></strong>
+						<strong><a href="<?php print htmlspecialchars("data_queries.php?action=item_edit&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><?php print htmlspecialchars($snmp_query_graph["name"]);?></a></strong>
 					</td>
 					<td>
-						<?php print $snmp_query_graph["graph_template_name"];?>
+						<?php print htmlspecialchars($snmp_query_graph["graph_template_name"]);?>
 					</td>
 					<td align="right">
 						<a href="<?php print htmlspecialchars("data_queries.php?action=item_remove&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
