@@ -344,42 +344,42 @@ function display_output_messages() {
 		var obj = document.getElementById('message');
 
 		if (obj) {
-		if (window.innerHeight) {
-			height = window.innerHeight;
-			width  = window.innerWidth;
-		}else{
-			height = document.body.clientHeight;
-			width  = document.body.clientWidth;
-		}
-		var opacity=1;
+			if (window.innerHeight) {
+				height = window.innerHeight;
+				width  = window.innerWidth;
+			}else{
+				height = document.body.clientHeight;
+				width  = document.body.clientWidth;
+			}
+			var opacity=1;
 
-		obj.style.zIndex = 2;
-		obj.style.position = "absolute";
+			obj.style.zIndex = 2;
+			obj.style.position = "absolute";
 			obj.style.backgroundColor = "#<?php print $colors["light"];?>";
 			obj.style.border = "1px solid #<?php print $colors["header"];?>";
 			obj.style.padding = "10px";
-		cw = obj.scrollWidth;
+			cw = obj.scrollWidth;
 			// Adjust for IE6
 			if (!cw) cw = 150;
-		ch = obj.scrollHeight;
+			ch = obj.scrollHeight;
 			obj.style.top = '65px';
 			obj.style.left = ((width/2) - (cw/2) + 60)+'px';
-		opacity = 1;
-		obj.style.opacity = opacity;
-		obj.zoom = "100%";
-		if (document.getElementById('message')) {
-			setTimeout("removeMessage()", 2000);
-		}
-
-		function removeMessage() {
-			if (obj.style.opacity <= 0) return;
-			opacity-=0.15;
-			iopacity = opacity * 100;
+			opacity = 1;
 			obj.style.opacity = opacity;
-			obj.style.filter = 'alpha(opacity='+iopacity+')';
+			obj.zoom = "100%";
+			if (document.getElementById('message')) {
+				setTimeout("removeMessage()", 2000);
+			}
 
-			setTimeout("removeMessage()",40);
-		}
+			function removeMessage() {
+				if (obj.style.opacity <= 0) return;
+				opacity-=0.15;
+				iopacity = opacity * 100;
+				obj.style.opacity = opacity;
+				obj.style.filter = 'alpha(opacity='+iopacity+')';
+
+				setTimeout("removeMessage()",40);
+			}
 		}
 		-->
 		</script>
