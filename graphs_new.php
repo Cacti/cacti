@@ -418,24 +418,24 @@ function graphs() {
 	var obj = document.getElementById('message');
 
 	if (obj) {
-	if (window.innerHeight) {
-		height = window.innerHeight;
-		width  = window.innerWidth;
-	}else{
-		height = document.body.clientHeight;
-		width  = document.body.clientWidth;
-	}
-	obj.style.position = "absolute";
+		if (window.innerHeight) {
+			height = window.innerHeight;
+			width  = window.innerWidth;
+		}else{
+			height = document.body.clientHeight;
+			width  = document.body.clientWidth;
+		}
+		obj.style.position = "absolute";
 		obj.style.padding = "0px";
-	obj.style.display = "";
+		obj.style.display = "";
 		obj.style.overflow = "auto";
 		obj.style.color = "#FFFFFF";
 		obj.style.backgroundColor = "#<?php print $colors["light"];?>";
 		obj.style.border = "1px solid #<?php print $colors["header"];?>";
-	cw = obj.offsetWidth;
-	// Adjust for IE6
-	if (!cw) cw = 150;
-	ch = obj.offsetHeight;
+		cw = obj.offsetWidth;
+		// Adjust for IE6
+		if (!cw) cw = 150;
+		ch = obj.offsetHeight;
 		obj.style.top = '65px';
 		obj.style.left = ((width/2) - (cw/2) - 88)+'px';
 	}
