@@ -72,7 +72,7 @@ if (php_sapi_name() != "cli") {
 }
 
 /* record the script start time */
-list($micro,$seconds) = split(" ", microtime());
+list($micro,$seconds) = explode(" ", microtime());
 $start = $seconds + $micro;
 
 /* some debugging */
@@ -171,7 +171,11 @@ while (1) {
 
 				if (isset($command_array[2])) {
 					$parameters = trim($command_array[2]);
-					$parameter_array = explode(" ", trim($command_array[2]));
+					$parameter_array = array();
+					if (!parseArgs($parameters, $parameter_array)) {
+						cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, "PHPSVR");
+						return "U";
+					}
 				}else{
 					$parameters = "";
 					$parameters_array = array();
@@ -235,4 +239,112 @@ while (1) {
 		cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded for the Script Server. Exiting.", true, "PHPSVR");
 		exit (-1);
 	}
+}
+
+function parseArgs($string, &$str_list, $debug = false) {
+	$delimiters = array("'",'"');
+	$delimited  = false;
+	$str_list   = array();
+
+	if ($debug) echo "String: '" . $string . "'\n";
+
+	foreach($delimiters as $delimiter) {
+		if (strpos($string, $delimiter) !== false) {
+			$delimited = true;
+			break;
+		}
+	}
+
+	/* process the simple case */
+	if (!$delimited) {
+		$str_list = explode(" ", $string);
+
+		if ($debug) echo "Output: '" . implode(",", $str_list) . "'\n";
+
+		return true;
+	}
+
+	/* Break str down into an array of characters and process */
+	$char_array = str_split($string);
+	$escaping = false;
+	$indelim  = false;
+	$parse_ok = true;
+	$curstr   = '';
+	foreach($char_array as $char) {
+		switch ($char) {
+		case '\'':
+		case '"':
+			if (!$indelim) {
+				if (!$escaping) {
+					$indelim = true;
+				}else{
+					$curstr .= $char;
+					$escaping = false;
+				}
+			}elseif (!$escaping) {
+				$str_list[] = $curstr;
+				$curstr     = '';
+				$indelim    = false;
+			}elseif ($escaping) {
+				$curstr  .= $char;
+				$escaping = false;
+			}
+
+			break;
+		case '\\':
+			if ($escaping) {
+				$curstr  .= $char;
+				$escaping = false;
+			}else{
+				$escaping = true;
+			}
+
+			break;
+		case ' ':
+			if ($escaping) {
+				$parse_ok = false;
+				$msg = 'Parse error attempting to parse string';
+			}elseif ($indelim) {
+				$curstr .= $char;
+			}elseif (strlen($curstr)) {
+				$str_list[] = $curstr;
+				$curstr = '';
+			}
+
+			break;
+		case '`':
+			$parse_ok = false;
+			$msg   = 'Backtic (`) characters not allowed';
+
+			break;
+		default:
+			if ($escaping) {
+				$parse_ok = false;
+				$msg   = 'Parse error attempting to parse string';
+			}else{
+				$curstr .= $char;
+			}
+			break;
+		}
+
+		if (!$parse_ok) {
+			break;
+		}
+	}
+
+	/* Add the last str to the string array */
+	if ($indelim || $escaping) {
+		$parse_ok = false;
+		$msg = 'Parse error attempting to parse string';
+	}
+
+	if (!$parse_ok) {
+		echo "ERROR: " . $msg . " '" . $string . "'\n";
+	}else{
+		$str_list[] = $curstr;
+	}
+
+	if ($debug) echo "Output: '" . implode(",", $str_list) . "'\n";
+
+	return $parse_ok;
 }
