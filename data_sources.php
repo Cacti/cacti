@@ -899,7 +899,7 @@ function ds_edit() {
 				<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark'>
 					<strong>Data Source Item</strong> $header_label
 				</td>
-				<td class='textHeaderDark' align='right' bgcolor='" . $colors["header"] . "'>
+				<td class='textHeaderDark' align='right' bgcolor='#" . $colors["header"] . "'>
 					" . ((!empty($_GET["id"]) && (empty($data_template["id"]))) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars("data_sources.php?action=rrd_add&id=" . $_GET["id"]) . "'>New</a>&nbsp;</strong>" : "") . "
 				</td>
 			</tr>\n";
