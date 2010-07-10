@@ -620,6 +620,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	}
 
 	/* update the cache */
+	/* TODO: if both $sort field and $title_format are empty, this yields funny results */
 	db_execute("update host_snmp_query set sort_field = '$sort_field', title_format = '$title_format' where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
 }
 
