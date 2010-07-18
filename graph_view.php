@@ -204,7 +204,7 @@ case 'preview':
 		$sql_where = "";
 		$sql_join = "";
 	}
-	/* the user select a bunch of graphs of the 'list' view and wants them dsplayed here */
+	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	if (isset($_REQUEST["style"])) {
 		if (get_request_var_request("style") == "selective") {
 
@@ -296,8 +296,9 @@ case 'preview':
 								$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 
 								$hosts = db_fetch_assoc("SELECT DISTINCT host.id, host.description as name
-									FROM (graph_templates_graph,graph_local)
-									LEFT JOIN host ON (host.id=graph_local.host_id)
+									FROM host
+									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
+									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
 									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
 									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 									WHERE graph_templates_graph.local_graph_id=graph_local.id
@@ -327,8 +328,9 @@ case 'preview':
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
-									FROM (graph_templates_graph,graph_local)
-									LEFT JOIN host ON (host.id=graph_local.host_id)
+									FROM host
+									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
+									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
 									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
 									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 									WHERE graph_templates_graph.local_graph_id=graph_local.id
@@ -514,10 +516,10 @@ case 'list':
 	}else{
 		/* if any of the settings changed, reset the page number */
 		$changed = false;
-		$changed += check_changed("host_id", "sess_graphs_view_list_host");
-		$changed += check_changed("rows", "sess_graphs_view_list_rows");
-		$changed += check_changed("graph_template_id", "sess_graphs_view_list_graph_template");
-		$changed += check_changed("filter", "sess_graphs_view_list_filter");
+		$changed += check_changed("host_id", "sess_graph_view_list_host");
+		$changed += check_changed("rows", "sess_graph_view_list_rows");
+		$changed += check_changed("graph_template_id", "sess_graph_view_list_graph_template");
+		$changed += check_changed("filter", "sess_graph_view_list_filter");
 		if ($changed) $_REQUEST["page"] = 1;
 	}
 
@@ -563,7 +565,7 @@ case 'list':
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
 		<td>
-		<form style="margin:0px;padding:0px;" name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)' action="graph_view.php">
+		<form style="margin:0px;padding:0px;" name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)'>
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<tr>
 					<td nowrap style='white-space: nowrap;' width="40">
@@ -578,8 +580,9 @@ case 'list':
 								$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 
 								$hosts = db_fetch_assoc("SELECT DISTINCT host.id, host.description as name
-									FROM (graph_templates_graph,graph_local)
-									LEFT JOIN host ON (host.id=graph_local.host_id)
+									FROM host
+									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
+									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
 									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
 									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 									WHERE graph_templates_graph.local_graph_id=graph_local.id
@@ -608,8 +611,9 @@ case 'list':
 							<?php
 							if (read_config_option("auth_method") != 0) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
-									FROM (graph_templates_graph,graph_local)
-									LEFT JOIN host ON (host.id=graph_local.host_id)
+									FROM host
+									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
+									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
 									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
 									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
 									WHERE graph_templates_graph.local_graph_id=graph_local.id
@@ -736,13 +740,13 @@ case 'list':
 
 	html_start_box("", "100%", $colors["header"], "1", "center", "");
 	print $nav;
-	html_header_checkbox(array("Graph Title", "Graph Size"));
+	html_header_checkbox(array("Graph Title", "Graph Size"), false);
 
 	$i = 0;
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
-			form_selectable_cell("<strong><a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . htmlspecialchars($graph["title_cache"]) . "</a><strong>", $graph["local_graph_id"]);
+			form_selectable_cell("<strong><a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . htmlspecialchars($graph["title_cache"]) . "</a></strong>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
 			form_end_row();
@@ -795,8 +799,8 @@ case 'list':
 		strDel = strDel.substring(0,strDel.length - 1);
 		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
 		return strNavURL + strURL;
-		alert(strAdd);
-		alert(strDel);
+		//alert(strAdd);
+		//alert(strDel);
 	}
 	function url_go(strURL) {
 		document.location = strURL;
@@ -840,4 +844,3 @@ case 'list':
 include_once("./include/bottom_footer.php");
 
 ?>
-
