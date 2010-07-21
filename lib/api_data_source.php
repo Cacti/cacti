@@ -131,12 +131,12 @@ function api_data_source_disable_multi($local_data_ids) {
 
 			$i++;
 
-			if ($i % 1000) {
+			if (!($i % 1000)) {
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
 				$i = 0;
-				$ids_to_delete = "";
+				$ids_to_disable = "";
 			}
 		}
 
