@@ -250,7 +250,7 @@ class Ldap {
 			if ($ldap_response) {
 				if ($this->group_require == 1) {
 					/* Process group membership if required */
-					if ($ldap_group_member_type == 1) {
+					if ($this->group_member_type == 1) {
 						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
 					} else {
 						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
