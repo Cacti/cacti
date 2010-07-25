@@ -65,7 +65,7 @@ function draw_edit_form($array) {
 					form_alternate_row_color($colors["form_alternate1"], $colors["form_alternate2"], $i, 'row_' . $field_name);
 				}
 
-				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . htmlspecialchars($field_array["friendly_name"]) . "</font><br>\n";
+				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
 
 				if (isset($field_array["sub_checkbox"])) {
 					form_checkbox($field_array["sub_checkbox"]["name"], $field_array["sub_checkbox"]["value"],
