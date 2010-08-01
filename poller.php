@@ -109,7 +109,7 @@ if (function_exists("pcntl_signal")) {
 }
 
 /* record the start time */
-list($micro,$seconds) = split(" ", microtime());
+list($micro,$seconds) = explode(" ", microtime());
 $poller_start         = $seconds + $micro;
 $overhead_time = 0;
 
@@ -215,7 +215,7 @@ $polling_hosts         = array_merge(array(0 => array("id" => "0")), db_fetch_as
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$loop_start = $seconds + $micro;
 
 	/* calculate overhead time */
@@ -426,7 +426,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$poller_runs_completed++;
 
 	/* record the start time for this loop */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$loop_end  = $seconds + $micro;
 	$loop_time = $loop_end - $loop_start;
 
