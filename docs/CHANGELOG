@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 SVN
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments 
+-bug#0001815: 1-minute with 5-minute crontab broken
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation

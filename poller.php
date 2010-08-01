@@ -140,7 +140,7 @@ if (isset($poller_interval)) {
 							WHERE rrd_next_step<=0
 							GROUP BY host_id
 							ORDER BY host_id"), "host_id", "data_sources");
-	$poller_runs       = $cron_interval / $poller_interval;
+	$poller_runs       = intval($cron_interval / $poller_interval);
 
 	define("MAX_POLLER_RUNTIME", $poller_runs * $poller_interval - 2);
 }else{
@@ -211,6 +211,7 @@ ini_set("memory_limit", "512M");
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
+$polling_hosts         = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM host WHERE disabled='' ORDER BY id"));
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
@@ -221,8 +222,6 @@ while ($poller_runs_completed < $poller_runs) {
 	if ($overhead_time == 0) {
 		$overhead_time = $loop_start - $poller_start;
 	}
-
-	$polling_hosts = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM host WHERE disabled = '' ORDER BY id"));
 
 	/* initialize counters for script file handling */
 	$host_count = 1;
@@ -428,20 +427,21 @@ while ($poller_runs_completed < $poller_runs) {
 
 	/* record the start time for this loop */
 	list($micro,$seconds) = split(" ", microtime());
-	$loop_end = $seconds + $micro;
+	$loop_end  = $seconds + $micro;
+	$loop_time = $loop_end - $loop_start;
 
-	if (($loop_end - $loop_start) < $poller_interval) {
+	if ($loop_time < $poller_interval) {
 		if ($poller_runs_completed == 1) {
-			$sleep_time = ($poller_interval - ($loop_end - $loop_start) - $overhead_time);
-		}else{
-			$sleep_time = ($poller_interval -  ($loop_end - $loop_start));
+			$sleep_time = $poller_interval - $loop_time - $overhead_time;
+		} else {
+			$sleep_time = $poller_interval -  $loop_time - $loop_start;
 		}
 
 		/* log some nice debug information */
-		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-			echo "Loop  Time is: " . ($loop_end - $loop_start) . "\n";
-			echo "Sleep Time is: " . $sleep_time . "\n";
-			echo "Total Time is: " . ($loop_end - $poller_start) . "\n";
+		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || $debug) {
+			echo "Loop  Time is: " . round($loop_time, 2) . "\n";
+			echo "Sleep Time is: " . round($sleep_time, 2) . "\n";
+			echo "Total Time is: " . round($loop_end - $poller_start, 2) . "\n";
  		}
 
 		/* sleep the appripriate amount of time */
