@@ -374,7 +374,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 				break;
 			}else {
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM || $debug) {
 					print "Waiting on " . ($started_processes - $finished_processes) . " of " . $started_processes . " pollers.\n";
 				}
 
@@ -434,7 +434,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_runs_completed == 1) {
 			$sleep_time = $poller_interval - $loop_time - $overhead_time;
 		} else {
-			$sleep_time = $poller_interval -  $loop_time - $loop_start;
+			$sleep_time = $poller_interval - $loop_time;
 		}
 
 		/* log some nice debug information */
@@ -446,9 +446,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
-			db_close();
 			usleep($sleep_time * 1000000);
-			db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
@@ -459,7 +457,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
 
 	/* take time and log performance data */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$loop_end = $seconds + $micro;
 
 	$cacti_stats = sprintf(
