@@ -37,15 +37,15 @@ function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306"
 	$i = 0;
 	$cnn = NewADOConnection($db_type);
 	$class = get_class($cnn);
-	
-	if (!is_a($cnn_id, $class)) {
-		$cnn_id = $cnn;
-	}
 
 	$hostport = $host . ":" . $port;
 
 	while ($i <= $retries) {
 		if ($cnn->PConnect($hostport,$user,$pass,$db_name)) {
+			if (!is_a($cnn_id, $class)) {
+				$cnn_id = $cnn;
+			}
+
 			return($cnn);
 		}
 
@@ -92,7 +92,7 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 	while (1) {
 		$query = $db_conn->Execute($sql);
 
-		if (($query) || ($db_conn->ErrorNo() == 1032)) {
+		if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
 			return(1);
 		}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
 			printf("FATAL: Database or Table does not exist");
@@ -143,7 +143,7 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 
 	$query = $db_conn->Execute($sql);
 
-	if (($query) || ($db_conn->ErrorNo() == 1032)) {
+	if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
 		if (!$query->EOF) {
 			if ($col_name != '') {
 				$column = $query->fields[$col_name];
@@ -184,7 +184,7 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $db_conn->Execute($sql);
 
-	if (($query) || ($db_conn->ErrorNo() == 1032)) {
+	if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
 		if (!$query->EOF) {
 			$fields = $query->fields;
 
@@ -222,7 +222,7 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = $db_conn->Execute($sql);
 
-	if (($query) || ($db_conn->ErrorNo() == 1032)) {
+	if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
 		while ((!$query->EOF) && ($query)) {
 			$data{sizeof($data)} = $query->fields;
 			$query->MoveNext();
@@ -324,7 +324,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 
 	$replace_result = $db_conn->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
 
-	if ($replace_result == 0) {
+	if ($db_conn->ErrorNo() == 0) {
 		cacti_log("ERROR: SQL Save Command Failed for Table '$table_name'.  Error was '" . $cnn_id->ErrorMsg() . "'", false);
 		return 0;
 	}
