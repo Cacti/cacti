@@ -324,7 +324,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 
 	$replace_result = $db_conn->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
 
-	if ($db_conn->ErrorNo() == 0) {
+	if ($replace_result == 0) {
 		cacti_log("ERROR: SQL Save Command Failed for Table '$table_name'.  Error was '" . $cnn_id->ErrorMsg() . "'", false);
 		return 0;
 	}
