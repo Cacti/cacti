@@ -389,7 +389,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 					break;
 				}else{
-					sleep(1);
+					usleep(500);
 				}
 			}
 		}
