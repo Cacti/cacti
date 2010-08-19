@@ -577,12 +577,16 @@ class Net_Ping
 				switch(socket_select($r = array($this->socket), $w = array($this->socket), $f = array($this->socket), $to_sec, $to_usec)){
 				case 2:
 					/* connection refused */
-					$this->ping_response = "TCP ping connection refused";
-					$this->ping_status   = "down";
+					$this->time = $this->get_time($this->precision);
+
+					if (($this->time*1000) <= $this->timeout) {
+						$this->ping_response = "TCP Ping connection refused (" . $this->time*1000 . " ms)";
+						$this->ping_status   = $this->time*1000;
+					}
 
 					$this->close_socket();
-
-					return false;
+					
+					return true; /* "connection refused" says: host is alive (else ping would time out) */
 				case 1:
 					/* connected, so calculate the total time and return */
 					$this->time = $this->get_time($this->precision);
