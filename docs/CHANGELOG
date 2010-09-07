@@ -3,6 +3,7 @@ Cacti CHANGELOG
 SVN
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments 
 -bug#0001815: 1-minute with 5-minute crontab broken
+-bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
 -bug: accept "Connection refused" on TCP ping tests
 -bug#0001504: no newline fix
 
