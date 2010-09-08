@@ -82,7 +82,7 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 }
 
 /* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
-   @arg $graph_templates_graph_id - the id of the graph to reapply the name to
+   @param int $graph_templates_graph_id - the id of the graph to reapply the name to
 */
 function api_reapply_suggested_graph_title($local_graph_id) {
 	global $config;
@@ -95,10 +95,20 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		return;
 	}
 
-	/* get the host associated with this graph */
-	$graph_local = db_fetch_row("select host_id, graph_template_id, snmp_query_id, snmp_index from graph_local where id=" . $local_graph_id);
+	/* get the host associated with this graph for data queries only
+	 * there's no "reapply suggested title" for "simple" graph templates */
+	$graph_local = db_fetch_row("select host_id, graph_template_id, snmp_query_id, snmp_index from graph_local where snmp_query_id>0 AND id=" . $local_graph_id);
+	/* if this is not a data query graph, simply return */
+	if (!isset($graph_local["host_id"])) {
+		return;
+	}
 	$snmp_query_graph_id = db_fetch_cell("select id from snmp_query_graph where graph_template_id=" . $graph_local["graph_template_id"] .
 										" and snmp_query_id=" . $graph_local["snmp_query_id"]);
+
+	/* no snmp query graph id found */
+	if ($snmp_query_graph_id == 0) {
+		return;
+	}
 
 	/* get the suggested values from the suggested values cache */
 	$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_sv where snmp_query_graph_id=" . $snmp_query_graph_id . " order by sequence");
