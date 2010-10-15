@@ -6,6 +6,7 @@ SVN
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
 -bug: accept "Connection refused" on TCP ping tests
 -bug#0001504: no newline fix
+-bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
