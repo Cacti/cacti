@@ -4,7 +4,9 @@
 $host = $ARGV[0];
 $host =~ s/tcp:/$1/gis;
 
-open(PROCESS, "ping -c 1 $host | grep icmp_seq | grep time |");
+# old linux version use "icmp_seq"
+# newer use "icmp_req" instead
+open(PROCESS, "ping -c 1 $host | grep 'icmp_[s|r]eq' | grep time |");
 $ping = <PROCESS>;
 close(PROCESS);
 $ping =~ m/(.*time=)(.*) (ms|usec)/;
