@@ -271,6 +271,16 @@ function utilities_view_tech($php_info = "") {
 		$rrdtool_error .= "<br><font color='red'>ERROR: RRDTool 1.2.x does not support the GIF images format, but " . $graph_gif_count . " graph(s) and/or templates have GIF set as the image format.</font><br>";
 	}
 
+	/* Get spine version */
+	$spine_version = "Unknown";
+	if ((file_exists(read_config_option("path_spine"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_spine"))))) {
+		$out_array = array();
+		exec(read_config_option("path_spine") . " --version", $out_array);
+		if (sizeof($out_array) > 0) {
+			$spine_version = $out_array[0];
+		}
+	}
+		
 	/* Display tech information */
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
 	html_header(array("General Information"), 2);
@@ -323,10 +333,15 @@ function utilities_view_tech($php_info = "") {
 	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>Interval</td>\n";
 	print "		<td class='textArea'>" . read_config_option("poller_interval") . "</td>\n";
+	if (file_exists(read_config_option("path_spine")) && $poller_options[read_config_option("poller_type")] == 'spine') {
+		$type = $spine_version;
+	} else {
+		$type = $poller_options[read_config_option("poller_type")];
+	}
 	print "</tr>\n";
 	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>Type</td>\n";
-	print "		<td class='textArea'>" . $poller_options[read_config_option("poller_type")] . "</td>\n";
+	print "		<td class='textArea'>" . $type . "</td>\n";
 	print "</tr>\n";
 	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>Items</td>\n";

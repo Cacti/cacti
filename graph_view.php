@@ -148,12 +148,15 @@ case 'tree':
 
 	break;
 case 'preview':
-	define("ROWS_PER_PAGE", read_graph_config_option("preview_graphs_per_page"));
+	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_preview"]))) {
+		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
+	}
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("graph_template_id"));
 	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -161,10 +164,14 @@ case 'preview':
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
-	$sql_or = ""; $sql_where = ""; $sql_join = "";
+	/* reset the graph list on a new viewing */
+	if (!isset($_REQUEST["page"])) {
+		$_REQUEST["page"] = 1;
+	}
 
-	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_preview"]))) {
-		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
+	/* reset the page counter to '1' if a search in initiated */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["page"] = "1";
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -173,112 +180,37 @@ case 'preview':
 		kill_session_var("sess_graph_view_filter");
 		kill_session_var("sess_graph_view_graph_template");
 		kill_session_var("sess_graph_view_host");
+		kill_session_var("sess_graph_view_rows");
 
 		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_id"]);
 		unset($_REQUEST["graph_template_id"]);
 		unset($_REQUEST["graph_list"]);
 		unset($_REQUEST["graph_add"]);
 		unset($_REQUEST["graph_remove"]);
-	}
-
-	/* reset the page counter to '1' if a search in initiated */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["page"] = "1";
+	}else{
+		/* if any of the settings changed, reset the page number */
+		$changed = false;
+		$changed += check_changed("host_id", "sess_graph_view_host");
+		$changed += check_changed("rows", "sess_graph_view_rows");
+		$changed += check_changed("graph_template_id", "sess_graph_view_graph_template");
+		$changed += check_changed("filter", "sess_graph_view_filter");
+		if ($changed) $_REQUEST["page"] = 1;
 	}
 
 	load_current_session_value("host_id", "sess_graph_view_host", "0");
 	load_current_session_value("graph_template_id", "sess_graph_view_graph_template", "0");
 	load_current_session_value("filter", "sess_graph_view_filter", "");
 	load_current_session_value("page", "sess_graph_view_current_page", "1");
-
-	/* graph permissions */
-	if (read_config_option("auth_method") != 0) {
-		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-
-		$sql_join = "left join host on (host.id=graph_local.host_id)
-			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
-			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
-	}else{
-		$sql_where = "";
-		$sql_join = "";
-	}
-	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
-	if (isset($_REQUEST["style"])) {
-		if (get_request_var_request("style") == "selective") {
-
-			/* process selected graphs */
-			if (! empty($_REQUEST["graph_list"])) {
-				foreach (explode(",",$_REQUEST["graph_list"]) as $item) {
-					$graph_list[$item] = 1;
-				}
-			}else{
-				$graph_list = array();
-			}
-			if (! empty($_REQUEST["graph_add"])) {
-				foreach (explode(",",$_REQUEST["graph_add"]) as $item) {
-					$graph_list[$item] = 1;
-				}
-			}
-			/* remove items */
-			if (! empty($_REQUEST["graph_remove"])) {
-				foreach (explode(",",$_REQUEST["graph_remove"]) as $item) {
-					unset($graph_list[$item]);
-				}
-			}
-
-			$i = 0;
-			foreach ($graph_list as $item => $value) {
-				$graph_array[$i] = $item;
-				$i++;
-			}
-
-			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
-				/* build sql string including each graph the user checked */
-				$sql_or = "AND " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
-
-				/* clear the filter vars so they don't affect our results */
-				$_REQUEST["filter"]  = "";
-				$_REQUEST["host_id"] = "0";
-
-				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : get_request_var("rra_id");
-			}
-		}
-	}
-
-	$sql_base = "FROM (graph_templates_graph,graph_local)
-		$sql_join
-		$sql_where
-		" . (empty($sql_where) ? "WHERE" : "AND") . "   graph_templates_graph.local_graph_id > 0
-		AND graph_templates_graph.local_graph_id=graph_local.id
-		AND graph_templates_graph.title_cache like '%%" . get_request_var_request("filter") . "%%'
-		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . get_request_var_request("host_id")) . "
-		" . (empty($_REQUEST["graph_template_id"]) ? "" : " and graph_local.graph_template_id=" . get_request_var_request("graph_template_id")) . "
-		$sql_or";
-
-	$total_rows = count(db_fetch_assoc("SELECT
-		graph_templates_graph.local_graph_id
-		$sql_base"));
-
-	/* reset the page if you have changed some settings */
-	if (ROWS_PER_PAGE * (get_request_var_request("page")-1) >= $total_rows) {
-		$_REQUEST["page"] = "1";
-	}
-
-	$graphs = db_fetch_assoc("SELECT
-		graph_templates_graph.local_graph_id,
-		graph_templates_graph.title_cache
-		$sql_base
-		GROUP BY graph_templates_graph.local_graph_id
-		ORDER BY graph_templates_graph.title_cache
-		LIMIT " . (ROWS_PER_PAGE*(get_request_var_request("page")-1)) . "," . ROWS_PER_PAGE);
+	load_current_session_value("rows", "sess_graph_view_rows", "-1");
 
 	/* include graph view filter selector */
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
+	<tr bgcolor="#<?php print $colors['panel'];?>" class="noprint">
 		<td class="noprint">
 		<form style="margin:0px;padding:0px;" name="form_graph_view" method="post">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -351,6 +283,21 @@ case 'preview':
 						</select>
 					</td>
 					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;<strong>Graphs per Page:</strong>&nbsp;
+					</td>
+					<td width="1">
+						<select name="rows" onChange="applyGraphPreviewFilterChange(document.form_graph_view)">
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
 						&nbsp;<strong>Search:</strong>&nbsp;
 					</td>
 					<td width="1">
@@ -370,7 +317,7 @@ case 'preview':
 	/* include time span selector */
 	if (read_graph_config_option("timespan_sel") == "on") {
 		?>
-		<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
+		<tr bgcolor="#<?php print $colors['panel'];?>" class="noprint">
 			<td class="noprint">
 			<form style="margin:0px;padding:0px;" name="form_timespan_selector" method="post" action="graph_view.php">
 				<table cellpadding="0" cellspacing="0">
@@ -452,6 +399,89 @@ case 'preview':
 	}
 	html_end_box();
 
+	/* if the number of rows is -1, set it to the default */
+	if ($_REQUEST["rows"] == -1) {
+		$_REQUEST["rows"] = read_graph_config_option("preview_graphs_per_page");
+	}
+	
+	$sql_or = ""; $sql_where = ""; $sql_join = "";
+	
+	/* graph permissions */
+	if (read_config_option("auth_method") != 0) {
+		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+
+		$sql_join = "left join host on (host.id=graph_local.host_id)
+			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
+			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))";
+	}else{
+		$sql_where = "";
+		$sql_join = "";
+	}
+	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
+	if (isset($_REQUEST["style"])) {
+		if (get_request_var_request("style") == "selective") {
+
+			/* process selected graphs */
+			if (! empty($_REQUEST["graph_list"])) {
+				foreach (explode(",",$_REQUEST["graph_list"]) as $item) {
+					$graph_list[$item] = 1;
+				}
+			}else{
+				$graph_list = array();
+			}
+			if (! empty($_REQUEST["graph_add"])) {
+				foreach (explode(",",$_REQUEST["graph_add"]) as $item) {
+					$graph_list[$item] = 1;
+				}
+			}
+			/* remove items */
+			if (! empty($_REQUEST["graph_remove"])) {
+				foreach (explode(",",$_REQUEST["graph_remove"]) as $item) {
+					unset($graph_list[$item]);
+				}
+			}
+
+			$i = 0;
+			foreach ($graph_list as $item => $value) {
+				$graph_array[$i] = $item;
+				$i++;
+			}
+
+			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
+				/* build sql string including each graph the user checked */
+				$sql_or = "AND " . array_to_sql_or($graph_array, "graph_templates_graph.local_graph_id");
+
+				/* clear the filter vars so they don't affect our results */
+				$_REQUEST["filter"]  = "";
+				$_REQUEST["host_id"] = "0";
+
+				$set_rra_id = empty($rra_id) ? read_graph_config_option("default_rra_id") : get_request_var("rra_id");
+			}
+		}
+	}
+
+	$sql_base = "FROM (graph_templates_graph,graph_local)
+		$sql_join
+		$sql_where
+		" . (empty($sql_where) ? "WHERE" : "AND") . "   graph_templates_graph.local_graph_id > 0
+		AND graph_templates_graph.local_graph_id=graph_local.id
+		AND graph_templates_graph.title_cache like '%%" . get_request_var_request("filter") . "%%'
+		" . (empty($_REQUEST["host_id"]) ? "" : " and graph_local.host_id=" . get_request_var_request("host_id")) . "
+		" . (empty($_REQUEST["graph_template_id"]) ? "" : " and graph_local.graph_template_id=" . get_request_var_request("graph_template_id")) . "
+		$sql_or";
+
+	$total_rows = count(db_fetch_assoc("SELECT " .
+		"graph_templates_graph.local_graph_id " .
+		$sql_base));
+
+	$graphs = db_fetch_assoc("SELECT " .
+		"graph_templates_graph.local_graph_id, " .
+		"graph_templates_graph.title_cache " .
+		$sql_base . " " .
+		"GROUP BY graph_templates_graph.local_graph_id " .
+		"ORDER BY graph_templates_graph.title_cache " .
+		"limit " . ($_REQUEST["rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["rows"]);
+	
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
 		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
@@ -462,7 +492,7 @@ case 'preview':
 	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
 
 	html_start_box("", "100%", $colors["header"], "1", "center", "");
-	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
+	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), $_REQUEST["rows"], $total_rows, $nav_url);
 
 	if (read_graph_config_option("thumbnail_section_preview") == "on") {
 		html_graph_thumbnail_area($graphs, "","graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
@@ -470,7 +500,7 @@ case 'preview':
 		html_graph_area($graphs, "", "graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
 
-	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), ROWS_PER_PAGE, $total_rows, $nav_url);
+	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), $_REQUEST["rows"], $total_rows, $nav_url);
 	html_end_box();
 
 	break;
@@ -563,7 +593,7 @@ case 'list':
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr bgcolor="#<?php print $colors['panel'];?>">
 		<td>
 		<form style="margin:0px;padding:0px;" name="form_graph_list" method="POST" onSubmit='form_graph(document.chk,document.form_graph_list)'>
 			<table width="100%" cellpadding="0" cellspacing="0">
