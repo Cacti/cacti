@@ -372,7 +372,7 @@ class Ldap {
 				$output["error_text"] = "Specific DN and Password required";
 				return $output;
 			}
-		}elseif ($mode == "1"){
+		}elseif ($this->mode == "1"){
 			/* assume anonymous */
 			$specific_dn       = "";
 			$specific_password = "";
