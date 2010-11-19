@@ -10,6 +10,7 @@ SVN
 -bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
 -bug:         accept "Connection refused" on TCP ping tests
 -bug:         add missing row selection to graph preview
+-bug:         script server throws "undefined variable" error when in debug mode
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation

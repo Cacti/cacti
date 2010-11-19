@@ -218,7 +218,7 @@ while (1) {
 					fflush(STDOUT);
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$value'", false, "PHPSVR");
+						cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, "PHPSVR");
 					}
 
 					$ctr++;
