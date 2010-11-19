@@ -1,14 +1,15 @@
 Cacti CHANGELOG
 
 SVN
+-bug#0001504: no newline fix
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments 
 -bug#0001815: 1-minute with 5-minute crontab broken
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
--bug:         accept "Connection refused" on TCP ping tests
--bug:         correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
--bug:         add missing row selection to graph preview
--bug#0001504: no newline fix
+-bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
+-bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
+-bug:         accept "Connection refused" on TCP ping tests
+-bug:         add missing row selection to graph preview
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
