@@ -8,9 +8,10 @@ SVN
 -bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
 -bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
--bug:         accept "Connection refused" on TCP ping tests
--bug:         add missing row selection to graph preview
--bug:         script server throws "undefined variable" error when in debug mode
+-bug: accept "Connection refused" on TCP ping tests
+-bug: add missing row selection to graph preview
+-bug: script server throws "undefined variable" error when in debug mode
+-bug: Removing graphs was not taking advantage of bulk deletes causing major slowdowns
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
