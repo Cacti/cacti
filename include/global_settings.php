@@ -585,7 +585,7 @@ $settings = array(
 			"friendly_name" => "Title Font Size",
 			"description" => "The size of the font used for Graph Titles",
 			"method" => "textbox",
-			"default" => "12",
+			"default" => "10",
 			"max_length" => "10",
 			"size" => "5"
 			),
@@ -602,7 +602,7 @@ $settings = array(
 			"friendly_name" => "Legend Font Size",
 			"description" => "The size of the font used for Graph Legend items",
 			"method" => "textbox",
-			"default" => "10",
+			"default" => "8",
 			"max_length" => "10",
 			"size" => "5"
 			),
@@ -616,7 +616,7 @@ $settings = array(
 			"friendly_name" => "Axis Font Size",
 			"description" => "The size of the font used for Graph Axis",
 			"method" => "textbox",
-			"default" => "8",
+			"default" => "7",
 			"max_length" => "10",
 			"size" => "5"
 			),
@@ -630,7 +630,7 @@ $settings = array(
 			"friendly_name" => "Unit Font Size",
 			"description" => "The size of the font used for Graph Units",
 			"method" => "textbox",
-			"default" => "8",
+			"default" => "7",
 			"max_length" => "10",
 			"size" => "5"
 			),

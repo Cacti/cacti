@@ -12,6 +12,8 @@ SVN
 -bug: add missing row selection to graph preview
 -bug: script server throws "undefined variable" error when in debug mode
 -bug: Removing graphs was not taking advantage of bulk deletes causing major slowdowns
+-bug: Add some command escaping
+-bug: Change default font sizes
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
