@@ -40,6 +40,7 @@ global $debug;
 
 $debug = FALSE;
 $size  = 300000;
+$rebuild = FALSE;
 
 foreach($parms as $parameter) {
 	@list($arg, $value) = @explode("=", $parameter);
@@ -48,6 +49,10 @@ foreach($parms as $parameter) {
 	case "-d":
 	case "--debug":
 		$debug = TRUE;
+		break;
+	case "-r":
+	case "--rebuild":
+		$rebuild = TRUE;
 		break;
 	case "-s":
 	case "--size":
@@ -88,7 +93,7 @@ $tables = db_fetch_assoc("SHOW TABLE STATUS");
 
 if (sizeof($tables)) {
 foreach($tables AS $table) {
-	if ($table["Engine"] == "MyISAM") {
+	if ($table["Engine"] == "MyISAM" || ($table["Engine"] == "InnoDB" && $rebuild)) {
 		if ($table["Rows"] < $size) {
 			echo "Converting Table -> '" . $table['Name'] . "'";
 			$status = db_execute("ALTER TABLE " . $table['Name'] . " ENGINE=Innodb");
