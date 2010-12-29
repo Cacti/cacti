@@ -14,6 +14,7 @@ SVN
 -bug: Removing graphs was not taking advantage of bulk deletes causing major slowdowns
 -bug: Add some command escaping
 -bug: Change default font sizes
+-bug: when using template and serach filter on graph management, sql error occurs
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation

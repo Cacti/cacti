@@ -1229,7 +1229,7 @@ function graph() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var_request("filter"))) {
-		$sql_where = "AND (graph_templates_graph.title_cache like '%%" . get_request_var_request("filter") . "%%'" .
+		$sql_where = " AND (graph_templates_graph.title_cache like '%%" . get_request_var_request("filter") . "%%'" .
 			" OR graph_templates.name like '%%" . get_request_var_request("filter") . "%%')";
 	}else{
 		$sql_where = "";
