@@ -54,7 +54,7 @@ if (sizeof($parms)) {
 			case "--help":
 			case "--version":		display_help($me);								exit(0);
 			case "--quiet":			$quietMode = TRUE;								break;
-			default:				echo __("ERROR: Invalid Argument: (%s)", $arg) . "\n\n"; display_help($me); exit(1);
+			default:				echo "ERROR: Invalid Argument: ($arg)\n\n"; display_help($me); exit(1);
 		}
 	}
 
@@ -99,7 +99,7 @@ function associate($data_template_id, $data_rra) {
 	return;
 }
 
-function display_help() {
+function display_help($me) {
 	echo "Data Template Associate RRA Script 1.0, Copyright 2004-2010 - The Cacti Group\n\n";
 	echo "A simple command line utility to associate RRA definitions to a data template in Cacti\n\n";
 	echo "usage: $me --rra='rra-1:..:rra-n' --data-template-id=[ID]\n";
