@@ -26,14 +26,14 @@ include("./include/global.php");
 
 /* check to see if this is a new installation */
 if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
-	header ("Location: install/");
+	header ("Location: " . $config['url_path'] . "install/");
 	exit;
 }
 
 if (read_config_option("auth_method") != 0) {
 	/* handle change password dialog */
 	if ((isset($_SESSION['sess_change_password'])) && (read_config_option("webbasic_enabled") != "on")) {
-		header ("Location: auth_changepassword.php?ref=" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
+		header ("Location: " . $config['url_path'] . "auth_changepassword.php?ref=" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
 		exit;
 	}
 
@@ -72,9 +72,9 @@ if (read_config_option("auth_method") != 0) {
 			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id)))) {
 
 			if (isset($_SERVER["HTTP_REFERER"])) {
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "'>Return</a> | <a href='logout.php'>Login Again</a> )</td>";
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
 			}else{
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='logout.php'>Login Again</a> )</td>";
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
 			}
 
 			?>
@@ -83,14 +83,14 @@ if (read_config_option("auth_method") != 0) {
 			<head>
 				<title>Cacti</title>
 				<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-				<link href="include/main.css" type="text/css" rel="stylesheet">
+				<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
 			</head>
 			<body>
 			<br><br>
 
 			<table width="450" align='center'>
 				<tr>
-					<td colspan='2'><img src='images/auth_deny.gif' border='0' alt='Access Denied'></td>
+					<td colspan='2'><img src='<?php echo $config['url_path']; ?>images/auth_deny.gif' border='0' alt='Access Denied'></td>
 				</tr>
 				<tr style='height:10px;'><td></td></tr>
 				<tr>
