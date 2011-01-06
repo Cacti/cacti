@@ -247,8 +247,7 @@ function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe) {
 		/* use the cacti ds name by default or the user defined one, if entered */
 		$data_source_name = get_data_source_item_name($data_source["id"]);
 
-		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . (empty($data_source["rrd_maximum"]) ? "U" : $data_source["rrd_maximum"]) . RRD_NL;
-	}
+		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . (empty($data_source["rrd_maximum"]) ? "U" : ((int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]?(int)$data_source["rrd_minimum"]+1:$data_source["rrd_maximum"])) . RRD_NL; 	}
 	}
 
 	$create_rra = "";
