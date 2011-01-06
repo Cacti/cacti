@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-define("REGEXP_SNMP_TRIM", "(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):");
+define("REGEXP_SNMP_TRIM", "/(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):/i");
 
 define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
@@ -338,7 +338,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$o = 0;
 		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
 			if ($temp_array[$i] != "NULL") {
-				$snmp_array[$o]["oid"] = ereg_replace("^\.", "", $i);
+				$snmp_array[$o]["oid"] = preg_replace("/^\./", "", $i);
 				$snmp_array[$o]["value"] = format_snmp_string($temp_array[$i], $snmp_oid_included);
 			}
 			$o++;
@@ -411,7 +411,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		for ($i=0; $i < count($temp_array); $i++) {
 			if ($temp_array[$i] != "NULL") {
-				$snmp_array[$i]["oid"]   = trim(ereg_replace("(.*) =.*", "\\1", $temp_array[$i]));
+				$snmp_array[$i]["oid"]   = trim(preg_replace("/(.*) =.*/", "\\1", $temp_array[$i]));
 				$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i], true);
 			}
 		}
@@ -423,7 +423,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 function format_snmp_string($string, $snmp_oid_included) {
 	global $banned_snmp_strings;
 
-	$string = eregi_replace(REGEXP_SNMP_TRIM, "", trim($string));
+	$string = preg_replace(REGEXP_SNMP_TRIM, "", trim($string));
 
 	if (substr($string, 0, 7) == "No Such") {
 		return "";
@@ -486,11 +486,11 @@ function format_snmp_string($string, $snmp_oid_included) {
 		(substr_count($string, "Hex-")) ||
 		(substr_count($string, "Hex:"))) {
 		/* strip of the 'Hex-STRING:' */
-		$string = eregi_replace("Hex-STRING: ?", "", $string);
-		$string = eregi_replace("Hex: ?", "", $string);
-		$string = eregi_replace("Hex- ?", "", $string);
+		$string = preg_replace("/Hex-STRING: ?/i", "", $string);
+		$string = preg_replace("/Hex: ?/i", "", $string);
+		$string = preg_replace("/Hex- ?/i", "", $string);
 
-		$string_array = split(" ", $string);
+		$string_array = explode(" ", $string);
 
 		/* loop through each string character and make ascii */
 		$string = "";
@@ -517,11 +517,11 @@ function format_snmp_string($string, $snmp_oid_included) {
 		}
 
 		if ($ishex) $string = $hexval;
-	}elseif (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/", $string)) {
+	}elseif (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i", $string)) {
 		$octet = "";
 
 		/* strip of the 'hex:' */
-		$string = eregi_replace("hex: ?", "", $string);
+		$string = preg_replace("/hex: ?/i", "", $string);
 
 		/* split the hex on the delimiter */
 		$octets = preg_split("/\s|:/", $string);

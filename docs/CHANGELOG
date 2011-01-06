@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 SVN
 -bug#0001504: no newline fix
+-bug#0001568: Cacti currently gives a lot of warnings of deprecated functions on PHP 5.3
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments
 -bug#0001768: perform consistency check on ds maximum vs. ds minimum
 -bug#0001815: 1-minute with 5-minute crontab broken

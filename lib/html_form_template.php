@@ -433,11 +433,11 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			/* find our field name */
 			$form_field_name = str_replace("|id|", $field["id"], $field_name_format);
 
-			if ((!empty($host_id)) && (eregi('^' . VALID_HOST_FIELDS . '$', $field["type_code"])) && (empty($can_template))) { /* no host fields */
+			if ((!empty($host_id)) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field["type_code"])) && (empty($can_template))) { /* no host fields */
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, "");
 				}
-			}elseif ((!empty($snmp_query_id)) && (eregi('^(index_type|index_value|output_type)$', $field["type_code"]))) { /* no data query fields */
+			}elseif ((!empty($snmp_query_id)) && (preg_match('/^(index_type|index_value|output_type)$/i', $field["type_code"]))) { /* no data query fields */
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, "");
 				}

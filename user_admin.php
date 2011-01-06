@@ -165,7 +165,7 @@ function form_actions() {
 	$user_array = array();
 	$i = 0;
 	while (list($var,$val) = each($_POST)) {
-		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -416,7 +416,7 @@ function form_save() {
 				db_execute("DELETE FROM user_auth_realm WHERE user_id = " . $user_id);
 
 				while (list($var, $val) = each($_POST)) {
-					if (eregi("^[section]", $var)) {
+					if (preg_match("/^[section]/i", $var)) {
 						if (substr($var, 0, 7) == "section") {
 						    db_execute("REPLACE INTO user_auth_realm (user_id,realm_id) VALUES (" . $user_id . "," . substr($var, 7) . ")");
 						}
@@ -1085,9 +1085,9 @@ function user() {
 
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $user["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $user["id"]) . "'>" .
-			(strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>",  htmlspecialchars($user["username"])) : htmlspecialchars($user["username"]))
+			(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>",  htmlspecialchars($user["username"])) : htmlspecialchars($user["username"]))
 			, $user["id"]);
-			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($user["full_name"])) : htmlspecialchars($user["full_name"])), $user["id"]);
+			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($user["full_name"])) : htmlspecialchars($user["full_name"])), $user["id"]);
 			form_selectable_cell($enabled, $user["id"]);
 			form_selectable_cell($auth_realms[$user["realm"]], $user["id"]);
 			if ($user["policy_graphs"] == "1") {

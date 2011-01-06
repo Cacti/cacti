@@ -185,7 +185,7 @@ function form_actions() {
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -568,7 +568,7 @@ function cdef() {
 	if (sizeof($cdef_list) > 0) {
 		foreach ($cdef_list as $cdef) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $cdef["id"]);$i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("cdef.php?action=edit&id=" . $cdef["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($cdef["name"])) : htmlspecialchars($cdef["name"])) . "</a>", $cdef["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("cdef.php?action=edit&id=" . $cdef["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($cdef["name"])) : htmlspecialchars($cdef["name"])) . "</a>", $cdef["id"]);
 			form_checkbox_cell($cdef["name"], $cdef["id"]);
 			form_end_row();
 		}

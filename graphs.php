@@ -318,7 +318,7 @@ function form_actions() {
 
 				graph_to_graph_template($selected_items[$i], $_POST["title_format"]);
 			}
-		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			input_validate_input_number(get_request_var_post("tree_id"));
 			input_validate_input_number(get_request_var_post("tree_item_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -368,7 +368,7 @@ function form_actions() {
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -466,7 +466,7 @@ function form_actions() {
 				</tr>\n
 				";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Convert to Graph Template'>";
-		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click \"Continue\", the following Graph(s) will be placed under the Tree Branch selected below.</p>
@@ -752,13 +752,13 @@ function graph_diff() {
 		if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
 
 		switch (true) {
-		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
+		case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
 			$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
 			break;
-		case ereg("(HRULE|VRULE)", $_graph_type_name):
+		case preg_match("/(HRULE|VRULE)/", $_graph_type_name):
 			$matrix_title = "HRULE: " . $graph_preview_item_values["value"];
 			break;
-		case ereg("(COMMENT)", $_graph_type_name):
+		case preg_match("/(COMMENT)/", $_graph_type_name):
 			$matrix_title = "COMMENT: " . $graph_preview_item_values["text_format"];
 			break;
 		}
@@ -1315,9 +1315,9 @@ function graph() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : htmlspecialchars($graph["name"]));
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
-			form_selectable_cell(((get_request_var_request("filter") != "") ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
+			form_selectable_cell(((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
 			form_end_row();

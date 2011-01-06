@@ -163,9 +163,9 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
-					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
+					if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
-					}elseif (($field_name == "color_id") && (ereg("^[a-fA-F0-9]{6}$", $item_array[$field_name])) && (get_version_index($parsed_hash["version"]) >= get_version_index("0.8.5"))) { /* treat the 'color' field differently */
+					}elseif (($field_name == "color_id") && (preg_match("/^[a-fA-F0-9]{6}$/", $item_array[$field_name])) && (get_version_index($parsed_hash["version"]) >= get_version_index("0.8.5"))) { /* treat the 'color' field differently */
 						$color_id = db_fetch_cell("select id from colors where hex='" . $item_array[$field_name] . "'");
 
 						if (empty($color_id)) {
@@ -268,7 +268,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array["ds"][$field_name])) {
 			/* is the value of this field a hash or not? */
-			if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $xml_array["ds"][$field_name])) {
+			if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $xml_array["ds"][$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array["ds"][$field_name], $hash_cache);
 			}else{
 				$save[$field_name] = addslashes(xml_character_decode($xml_array["ds"][$field_name]));
@@ -337,7 +337,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
-					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
+					if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
 						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
@@ -390,7 +390,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			/* is the value of this field a hash or not? */
-			if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $xml_array[$field_name])) {
+			if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $xml_array[$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], $hash_cache);
 			}else{
 				$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
@@ -422,7 +422,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
-					if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $item_array[$field_name])) {
+					if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
 						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
@@ -822,7 +822,7 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 }
 
 function parse_xml_hash($hash) {
-	if (ereg("hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})", $hash, $matches)) {
+	if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $hash, $matches)) {
 		$parsed_hash["type"] = check_hash_type($matches[1]);
 		$parsed_hash["version"] = strval(check_hash_version($matches[2]));
 		$parsed_hash["hash"] = $matches[3];

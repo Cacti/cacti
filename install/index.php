@@ -44,7 +44,7 @@ if ($old_cacti_version == $config["cacti_version"]) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
 	exit;
-}elseif (ereg("^0\.6", $old_cacti_version)) {
+}elseif (preg_match("/^0\.6/", $old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
 		<p style='font-family: Verdana, Arial; font-size: 12px;'>You are attempting to install cacti " . $config["cacti_version"] . "
 		onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and
@@ -284,13 +284,13 @@ if ((file_exists($input["path_rrdtool"]["default"])) && (($config["cacti_server_
 	exec("\"" . $input["path_rrdtool"]["default"] . "\"", $out_array);
 
 	if (sizeof($out_array) > 0) {
-		if (ereg("^RRDtool 1\.4", $out_array[0])) {
+		if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.4.x";
-		}else if (ereg("^RRDtool 1\.3\.", $out_array[0])) {
+		}else if (preg_match("/^RRDtool 1\.3\./", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.3.x";
-		}else if (ereg("^RRDtool 1\.2\.", $out_array[0])) {
+		}else if (preg_match("/^RRDtool 1\.2\./", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.2.x";
-		}else if (ereg("^RRDtool 1\.0\.", $out_array[0])) {
+		}else if (preg_match("/^RRDtool 1\.0\./", $out_array[0])) {
 			$input["rrdtool_version"]["default"] = "rrd-1.0.x";
 		}
 	}

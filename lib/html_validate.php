@@ -35,7 +35,7 @@ function input_validate_input_number($value) {
 }
 
 function input_validate_input_regex($value, $regex) {
-	if ((!ereg($regex, $value)) && ($value != "")) {
+	if ((!preg_match('/' . $regex . '/', $value)) && ($value != "")) {
 		die_html_input_error();
 	}
 }

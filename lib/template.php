@@ -72,7 +72,7 @@ function push_out_data_source_custom_data($data_template_id) {
 		foreach ($input_fields as $input_field) {
 			if ($data_source["id"] == $input_field["data_template_data_id"]) {
 				/* do not push out "host fields" */
-				if (!eregi('^' . VALID_HOST_FIELDS . '$', $input_field["type_code"])) {
+				if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field["type_code"])) {
 					/* this is not a "host field", so we should either push out the value if it is templated
 					or leave it alone if the user checked "Use Per-Data Source Value". */
 					if ($input_field["t_value"] == "") { /* template this value */
@@ -125,7 +125,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 	reset($struct_data_source_item);
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		/* are we allowed to push out the column? */
-		if (((empty($data_template_rrd{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_rrd{"t_" . $field_name})) && (isset($data_template_rrd[$field_name])))) {
+		if (((empty($data_template_rrd{"t_" . $field_name})) || (preg_match("/FORCE:/", $field_name))) && ((isset($data_template_rrd{"t_" . $field_name})) && (isset($data_template_rrd[$field_name])))) {
 			db_execute("update data_template_rrd set $field_name='" . addslashes($data_template_rrd[$field_name]) . "' where local_data_template_rrd_id=" . $data_template_rrd["id"]);
 		}
 	}
@@ -146,7 +146,7 @@ function push_out_data_source($data_template_data_id) {
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		/* are we allowed to push out the column? */
-		if (((empty($data_template_data{"t_" . $field_name})) || (ereg("FORCE:", $field_name))) && ((isset($data_template_data{"t_" . $field_name})) && (isset($data_template_data[$field_name])))) {
+		if (((empty($data_template_data{"t_" . $field_name})) || (preg_match("/FORCE:/", $field_name))) && ((isset($data_template_data{"t_" . $field_name})) && (isset($data_template_data[$field_name])))) {
 			db_execute("update data_template_data set $field_name='" . addslashes($data_template_data[$field_name]) . "' where local_data_template_data_id=" . $data_template_data["id"]);
 
 			/* update the title cache */

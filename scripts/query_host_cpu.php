@@ -100,7 +100,7 @@ function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_use
 	$j = 0;
 
 	for ($i=0;($i<sizeof($arr));$i++) {
-		if (ereg("^[0-9]+$", $arr[$i])) {
+		if (preg_match("/^[0-9]+$/", $arr[$i])) {
 			$return_arr[$j] = $arr[$i];
 			$j++;
 		}
@@ -116,7 +116,7 @@ function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_usern
 	$j = 0;
 
 	for ($i=0;($i<sizeof($arr));$i++) {
-		if (ereg("^[0-9]+$", $arr[$i])) {
+		if (preg_match("/^[0-9]+$/", $arr[$i])) {
 			$return_arr[$j] = $j;
 			$j++;
 		}

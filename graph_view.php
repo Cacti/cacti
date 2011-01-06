@@ -41,18 +41,18 @@ input_validate_input_regex(get_request_var_request('graph_remove'), "^([\,0-9]+)
 /* use cached url if available and applicable */
 if ((isset($_SESSION["sess_graph_view_url_cache"])) &&
 	(empty($_REQUEST["action"]))) {
-	if (ereg("action=(preview|list)", $_SESSION["sess_graph_view_url_cache"])) {
+	if (preg_match("/action=(preview|list)/", $_SESSION["sess_graph_view_url_cache"])) {
 		header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
 		exit;
-	}elseif ((ereg("action=tree", $_SESSION["sess_graph_view_url_cache"])) &&
-		(ereg("tree_id=", $_SESSION["sess_graph_view_url_cache"]))) {
+	}elseif ((preg_match("/action=tree/", $_SESSION["sess_graph_view_url_cache"])) &&
+		(preg_match("/tree_id=/", $_SESSION["sess_graph_view_url_cache"]))) {
 		header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
 		exit;
 	}elseif (isset($_SESSION["sess_graph_view_last_tree"])) {
 		header("Location: " . $_SESSION["sess_graph_view_last_tree"]);
 		exit;
 	}
-}elseif ((!isset($_REQUEST["action"])) || (!ereg('^(tree|list|preview)$', $_REQUEST["action"]))) {
+}elseif ((!isset($_REQUEST["action"])) || (!preg_match('/^(tree|list|preview)$/', $_REQUEST["action"]))) {
 	/* set the default action if none has been set */
 	if (read_graph_config_option("default_view_mode") == "1") {
 		$_REQUEST["action"] = "tree";
@@ -483,13 +483,13 @@ case 'preview':
 		"limit " . ($_REQUEST["rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["rows"]);
 	
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
+	if (preg_match("/page=[0-9]+/",basename($_SERVER["QUERY_STRING"]))) {
 		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
 	}else{
 		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
 	}
 
-	$nav_url = ereg_replace("((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)", "", $nav_url);
+	$nav_url = preg_replace("/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/", "", $nav_url);
 
 	html_start_box("", "100%", $colors["header"], "1", "center", "");
 	html_nav_bar($colors["header"], read_graph_config_option("num_columns"), get_request_var_request("page"), $_REQUEST["rows"], $total_rows, $nav_url);

@@ -24,7 +24,7 @@
 
 function graph_export() {
 	/* take time to log performance data */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$start = $seconds + $micro;
 
 	if (read_config_option("export_timing") != "disabled") {
@@ -123,7 +123,7 @@ function config_graph_export() {
 
 function config_export_stats($start, $total_graphs_created) {
 	/* take time to log performance data */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$end = $seconds + $micro;
 
 	$export_stats = sprintf(
@@ -1456,7 +1456,7 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 
 function create_dhtml_tree_export($tree_id) {
 	/* record start time */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$start = $seconds + $micro;
 	$search_key = "";
 

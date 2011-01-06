@@ -506,7 +506,7 @@ function grow_dhtml_trees() {
 	HIGHLIGHT = 1
 	<?php
 	/* get current time */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$current_time = $seconds + $micro;
 	$expand_hosts = read_graph_config_option("expand_hosts");
 
@@ -536,7 +536,7 @@ function grow_dhtml_trees() {
 
 function create_dhtml_tree() {
 	/* Record Start Time */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$start = $seconds + $micro;
 
 	$dhtml_tree = array();

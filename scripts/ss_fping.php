@@ -23,7 +23,7 @@ if (!isset($called_by_script_server)) {
 
 function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
 	/* record start time */
-	list($micro,$seconds) = split(" ", microtime());
+	list($micro,$seconds) = explode(" ", microtime());
 	$ss_fping_start = $seconds + $micro;
 
 	$ping = new Net_Ping;
@@ -73,7 +73,7 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
 		$i++;
 
 		/* get current time */
-		list($micro,$seconds) = split(" ", microtime());
+		list($micro,$seconds) = explode(" ", microtime());
 		$ss_fping_current = $seconds + $micro;
 
 		/* if called from script server, end one second before a timeout occurs */

@@ -613,16 +613,16 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
 
 		switch (true) {
-		case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
+		case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
 			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
 			break;
-		case ereg("(HRULE)", $_graph_type_name):
+		case preg_match("/(HRULE)/", $_graph_type_name):
 			$matrix_title = "HRULE: " . $item["value"];
 			break;
-		case ereg("(VRULE)", $_graph_type_name):
+		case preg_match("/(VRULE)/", $_graph_type_name):
 			$matrix_title = "VRULE: " . $item["value"];
 			break;
-		case ereg("(COMMENT)", $_graph_type_name):
+		case preg_match("/(COMMENT)/", $_graph_type_name):
 			$matrix_title = "COMMENT: " . $item["text_format"];
 			break;
 		}

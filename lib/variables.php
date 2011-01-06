@@ -120,7 +120,7 @@ function update_graph_title_cache($local_graph_id) {
 function null_out_substitutions($string) {
 	global $regexps;
 
-	return eregi_replace("\|host_" . VALID_HOST_FIELDS . "\|( - )?", "", $string);
+	return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", "", $string);
 }
 
 /* expand_title - takes a string and substitutes all data query variables contained in it or cleans

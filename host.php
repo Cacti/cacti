@@ -295,7 +295,7 @@ function form_actions() {
 			}
 
 			api_device_remove_multi($devices_to_act_on);
-		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -316,7 +316,7 @@ function form_actions() {
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -365,7 +365,7 @@ function form_actions() {
 					</tr>";
 					$form_array = array();
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
-						if ((ereg("^snmp_", $field_name)) ||
+						if ((preg_match("/^snmp_/", $field_name)) ||
 							($field_name == "max_oids")) {
 							$form_array += array($field_name => $fields_host_edit[$field_name]);
 
@@ -397,7 +397,7 @@ function form_actions() {
 					</tr>";
 					$form_array = array();
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
-						if (ereg("(availability_method|ping_method|ping_port)", $field_name)) {
+						if (preg_match("/(availability_method|ping_method|ping_port)/", $field_name)) {
 							$form_array += array($field_name => $fields_host_edit[$field_name]);
 
 							$form_array[$field_name]["value"] = "";
@@ -438,7 +438,7 @@ function form_actions() {
 				</tr>\n
 				";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
-		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click \"Continue\", the following Device(s) will be placed under the branch selected
@@ -1360,13 +1360,13 @@ function host() {
 		foreach ($hosts as $host) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $host["id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $host["id"]) . "'>" .
-				(strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"], 250);
+				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"], 250);
 			form_selectable_cell(round(($host["id"]), 2), $host["id"]);
 			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
 			form_selectable_cell(round(($host["status_event_count"]), 2), $host["id"]);
-			form_selectable_cell((strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);
+			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);
 			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
 			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);
 			form_selectable_cell(round($host["availability"], 2), $host["id"]);

@@ -27,12 +27,12 @@ function ss_sql() {
 		$result = `mysqladmin --host=$database_hostname --user=$database_username status`;
 	}
 
-	$result = ereg_replace(": ", ":", $result);
-	$result = ereg_replace("  ", " ", $result);
-	$result = ereg_replace("Slow queries", "SlowQueries", $result);
-	$result = ereg_replace("Open tables", "OpenTables", $result);
-	$result = ereg_replace("Queries per second avg", "QPS", $result);
-	$result = ereg_replace("Flush tables", "FlushTables", $result);
+	$result = preg_replace("/: /", ":", $result);
+	$result = preg_replace("/  /", " ", $result);
+	$result = preg_replace("/Slow queries/", "SlowQueries", $result);
+	$result = preg_replace("/Open tables/", "OpenTables", $result);
+	$result = preg_replace("/Queries per second avg/", "QPS", $result);
+	$result = preg_replace("/Flush tables/", "FlushTables", $result);
 
 	return trim($result);
 }

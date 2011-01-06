@@ -157,7 +157,7 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{$_GET["id"]}))) {
 		move_graph_group($_GET["id"], $arr, $next_id, "next");
-	}elseif (ereg("(GPRINT|VRULE|HRULE|COMMENT)", $graph_item_types{db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"])})) {
+	}elseif (preg_match("/(GPRINT|VRULE|HRULE|COMMENT)/", $graph_item_types{db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"])})) {
 		move_item_down("graph_templates_item", $_GET["id"], "local_graph_id=" . $_GET["local_graph_id"]);
 	}
 }
@@ -175,7 +175,7 @@ function item_moveup() {
 
 	if ((!empty($previous_id)) && (isset($arr{$_GET["id"]}))) {
 		move_graph_group($_GET["id"], $arr, $previous_id, "previous");
-	}elseif (ereg("(GPRINT|VRULE|HRULE|COMMENT)", $graph_item_types{db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"])})) {
+	}elseif (preg_match("/(GPRINT|VRULE|HRULE|COMMENT)/", $graph_item_types{db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"])})) {
 		move_item_up("graph_templates_item", $_GET["id"], "local_graph_id=" . $_GET["local_graph_id"]);
 	}
 }
