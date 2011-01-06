@@ -241,7 +241,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			if ($field_array["source"] == "value") {
 				for ($i=0; $i<sizeof($snmp_data); $i++) {
-					$snmp_index = preg_replace(isset($field_array["oid_index_parse"]) ? '/' . $field_array["oid_index_parse"] . '/' : '/' . $index_parse_regexp . '/', "\\1", $snmp_data[$i]["oid"]);
+					$snmp_index = preg_replace('/' . (isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp) . '/', "\\1", $snmp_data[$i]["oid"]);
 
 					$oid = $field_array["oid"] . ".$snmp_index";
 
