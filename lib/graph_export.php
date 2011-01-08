@@ -490,6 +490,7 @@ function export() {
 
 function classical_export($cacti_root_path, $cacti_export_path) {
 	global $config;
+	include_once($config["base_path"] . "/lib/time.php");
 
 	$total_graphs_created = 0;
 
@@ -553,9 +554,11 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 		ORDER BY timespan");
 
 	/* write the html header data to the index file */
+	$stats = "Export Date: " . date(date_time_format()) . "<br>"; 
+	$stats.= "Total Graphs: " . sizeof($graphs);
 	fwrite($fp_index, HTML_HEADER_CLASSIC);
 	fwrite($fp_index, HTML_GRAPH_HEADER_ONE_CLASSIC);
-	fwrite($fp_index, "<strong>Displaying " . sizeof($graphs) . " Exported Graph" . ((sizeof($graphs) > 1) ? "s" : "") . "</strong>");
+	fwrite($fp_index, $stats);
 	fwrite($fp_index, HTML_GRAPH_HEADER_TWO_CLASSIC);
 
 	/* open a pipe to rrdtool for writing */
@@ -647,6 +650,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 
 function tree_export() {
 	global $config;
+	include_once($config["base_path"] . "/lib/time.php");
 
 	$total_graphs_created = 0;
 
@@ -686,7 +690,9 @@ function tree_export() {
 		}
 
 		/* build base index files first */
-		build_html_file(0, "index");
+		$stats["timestamp"] = date(date_time_format());
+		$stats["total_graphs_created"] = $total_graphs_created;
+		build_html_file(0, "index", $stats);
 
 		foreach($trees as $tree) {
 			$leaf["tree_id"] = $tree["id"];
@@ -711,7 +717,9 @@ function tree_export() {
 			create_export_directory_structure($cacti_root_path, $cacti_export_path . "/" . clean_up_export_name($tree["name"]));
 
 			/* build base index files first */
-			build_html_file($tree["id"], "index");
+			$stats["timestamp"] = date(date_time_format());
+			$stats["total_graphs_created"] = $total_graphs_created;
+			build_html_file($tree["id"], "index", $stats);
 
 			$leaf["tree_id"] = $tree["id"];
 			$leaf["title"] = "";
@@ -1038,7 +1046,13 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 	fwrite($fp, HTML_GRAPH_HEADER_ONE_TREE);
 	switch($type) {
 	case "index":
-		fwrite($fp, "<strong>Graphs Last Updated on :</strong></td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><br>" . str_replace("_", " ", str_replace(":", ": ", str_replace(" ", "<br>", trim(read_config_option("stats_export"))))) . "</td></tr><tr>");
+		fwrite($fp, "<strong>Graphs Last Updated on :</strong></td></tr>" .
+				"<tr bgcolor='#a9b7cb'>" .
+					"<td colspan='3' class='textHeaderDark'>" . 
+						"Export Date: " . $array_data["timestamp"] . "<br>" .
+						"Total Graphs: " . $array_data["total_graphs_created"] .
+					"</td>" .
+				"</tr><tr>");
 		break;
 	case "tree":
 		fwrite($fp, "<strong>Tree:</strong> " . get_tree_name($leaf["tree_id"]) . " - Associated Graphs" . "</td></tr><tr>");
