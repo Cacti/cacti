@@ -23,22 +23,20 @@
 */
 
 function run_data_query($host_id, $snmp_query_id) {
-	global $config;
+	global $config, $input_types;
 
 	include_once($config["library_path"] . "/poller.php");
 	include_once($config["library_path"] . "/utility.php");
 
 	debug_log_insert("data_query", "Running data query [$snmp_query_id].");
 	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
+	if (isset($input_types[$type_id])) debug_log_insert("data_query", "Found type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
-		debug_log_insert("data_query", "Found type = '3' [snmp query].");
 		$result = query_snmp_host($host_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-		debug_log_insert("data_query", "Found type = '4 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
-		debug_log_insert("data_query", "Found type = '6 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}else{
 		debug_log_insert("data_query", "Unknown type = '$type_id'");
