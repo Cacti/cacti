@@ -1327,6 +1327,8 @@ function utilities_view_snmp_cache() {
 	}
 	}
 
+	print $nav;
+
 	html_end_box();
 }
 
@@ -1586,6 +1588,8 @@ function utilities_view_poller_cache() {
 		$i++;
 	}
 	}
+
+	print $nav;
 
 	html_end_box();
 }
